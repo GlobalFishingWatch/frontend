@@ -7773,9 +7773,2187 @@ const DEFAULT_STATE = {
     historyNavigation: [],
   },
   workspaces: {
-    ids: [],
-    entities: {},
-    status: 'idle',
+    ids: [
+      'revillagigedo-public',
+      'niue-public',
+      'micronesia-public',
+      'guyana-public',
+      'ascension-public',
+      'maldives-public',
+      'fiji-public',
+      'palau-public',
+      'tristan-public',
+      'mediterranean-public',
+    ],
+    entities: {
+      'revillagigedo-public': {
+        id: 'revillagigedo-public',
+        viewAccess: 'public',
+        editAccess: 'password',
+        name: 'Revillagigedo',
+        description: '',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: '90',
+          reportCategory: 'activity',
+          mapRulersVisible: true,
+          reportBufferUnit: 'nauticalmiles',
+          reportVesselGraph: 'flag',
+          bivariateDataviews: null,
+          reportActivityGraph: 'evolution',
+          reportResultsPerPage: 10,
+          timebarVisualisation: 'heatmap',
+          mapAnnotationsVisible: true,
+          reportBufferOperation: 'dissolve',
+        },
+        startAt: '2022-11-03T00:00:00.000Z',
+        endAt: '2022-12-03T00:00:00.000Z',
+        viewport: {
+          zoom: 4.6734492426520555,
+          latitude: 18.928905533254962,
+          longitude: -111.58768174430867,
+        },
+        dataviewInstances: [
+          {
+            id: 'user-polygons-1719295033068',
+            config: {
+              color: '#FFAA0D',
+              colorRamp: 'orange',
+            },
+            dataviewId: 'default-environmental-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'context-tiles',
+                datasetId: 'public-revillagigedo-1719295032775',
+              },
+            ],
+          },
+          {
+            id: 'coral-reefs-1719294823720',
+            config: {
+              color: '#FFAE9B',
+              visible: false,
+            },
+            dataviewId: 'gfw-environmental-layer',
+            datasetsConfig: [
+              {
+                endpoint: 'context-tiles',
+                datasetId: 'public-coral-reefs',
+              },
+            ],
+          },
+          {
+            id: 'mangroves-1719294828524',
+            config: {
+              color: '#A6FF59',
+              visible: false,
+            },
+            dataviewId: 'gfw-environmental-layer',
+            datasetsConfig: [
+              {
+                endpoint: 'context-tiles',
+                datasetId: 'public-mangroves',
+              },
+            ],
+          },
+          {
+            id: 'seamounts-1719294792664',
+            config: {
+              color: '#00EEFF',
+              visible: false,
+            },
+            dataviewId: 'gfw-environmental-layer',
+            datasetsConfig: [
+              {
+                endpoint: 'context-tiles',
+                datasetId: 'public-seamounts',
+              },
+            ],
+          },
+          {
+            id: 'bathymetry-1719294782188',
+            config: {
+              color: 'bathymetry',
+              group: 'bathymetry',
+              breaks: [
+                1731.47, 2517.06, 3003.48, 3263.89, 3500.06, 3707.1, 3903.48, 4101.36, 4345.34,
+                4345.35,
+              ],
+              maxZoom: '8',
+              visible: true,
+              colorRamp: 'bathymetry',
+            },
+            dataviewId: 'heatmap-static-layer',
+            datasetsConfig: [
+              {
+                params: [
+                  {
+                    id: 'type',
+                    value: 'heatmap',
+                  },
+                ],
+                endpoint: '4wings-tiles',
+                datasetId: 'public-global-bathymetry',
+              },
+            ],
+          },
+          {
+            id: 'basemap',
+            config: {},
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'fishing',
+            config: {
+              visible: false,
+              datasets: ['public-global-fishing-effort:v3.0'],
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-v-3',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: true,
+              datasets: ['public-global-presence:v3.0'],
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-3',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              datasets: ['public-global-viirs-presence:v3.0'],
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-3',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+              datasets: ['public-global-sar-presence:v3.0'],
+            },
+            category: '',
+            dataviewId: 'sar-v-3',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-3',
+            datasetsConfig: [],
+          },
+          {
+            id: 'thgt-1719294837402',
+            config: {
+              color: '#FFAE9B',
+              visible: false,
+              colorRamp: 'salmon',
+            },
+            dataviewId: 'heatmap-environmental-layer',
+            datasetsConfig: [
+              {
+                params: [
+                  {
+                    id: 'type',
+                    value: 'heatmap',
+                  },
+                ],
+                endpoint: '4wings-tiles',
+                datasetId: 'public-global-thgt:v20231213',
+              },
+            ],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: true,
+              colorRamp: 'jungle-green',
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'protected-seas',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'protected-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+              colorRamp: 'atomic-tangerine',
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2024-06-25T05:56:00.712Z',
+        ownerId: 175,
+        ownerType: 'user',
+      },
+      'niue-public': {
+        id: 'niue-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Niue',
+        description: 'Niue',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-06-01T00:00:00.000Z',
+        endAt: '2021-06-01T00:00:00.000Z',
+        viewport: {
+          zoom: 5.337614548261696,
+          latitude: -19.14763237326284,
+          longitude: -168.1570142743223,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-1638352102456',
+            config: {
+              color: '#F09300',
+              visible: false,
+              colorRamp: 'tangerine',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-benthic-1638352102079',
+              },
+            ],
+          },
+          {
+            id: 'context-1638352078015',
+            config: {
+              color: '#FBFF8B',
+              visible: false,
+              colorRamp: 'dolly',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-geomorphic-1638352077553',
+              },
+            ],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:44.721Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'micronesia-public': {
+        id: 'micronesia-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Federated States of Micronesia',
+        description: 'Federated States of Micronesia',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-02-28T00:00:00.000Z',
+        endAt: '2021-02-28T23:59:59.000Z',
+        viewport: {
+          zoom: 4.2795546659512915,
+          latitude: 6.951267134309835,
+          longitude: 149.93918428725596,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.404Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'guyana-public': {
+        id: 'guyana-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Guyana',
+        description: 'Guyana',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-06-01T00:00:00.000Z',
+        endAt: '2021-06-01T00:00:00.000Z',
+        viewport: {
+          zoom: 5,
+          latitude: 10.465605262104242,
+          longitude: -56.19010137111911,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.426Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'ascension-public': {
+        id: 'ascension-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Ascension',
+        description: 'Ascension',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-06-01T00:00:00.000Z',
+        endAt: '2021-06-01T00:00:00.000Z',
+        viewport: {
+          zoom: 5.816343622220759,
+          latitude: -7.793073426866722,
+          longitude: -13.333698914378177,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.321Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'maldives-public': {
+        id: 'maldives-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Maldives',
+        description: 'Maldives',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2020-03-31T23:59:59.999Z',
+        endAt: '2022-03-31T23:59:59.999Z',
+        viewport: {
+          zoom: 4.837777998465939,
+          latitude: 2.62672271087956,
+          longitude: 71.39541931988352,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.586Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'fiji-public': {
+        id: 'fiji-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Fiji',
+        description: 'Fiji',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-02-28T00:00:00.000Z',
+        endAt: '2021-02-28T23:59:59.000Z',
+        viewport: {
+          zoom: 5.2583859968801505,
+          latitude: -17.716146387555632,
+          longitude: 179.26220362598707,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.836Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'palau-public': {
+        id: 'palau-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Palau',
+        description: 'Palau',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2020-06-26T00:00:00.000Z',
+        endAt: '2022-06-26T00:00:00.000Z',
+        viewport: {
+          zoom: 5.5495805063379615,
+          latitude: 5.981625820059506,
+          longitude: 134.51721235415175,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-1657038895288',
+            config: {
+              color: '#C0CA33',
+              colorRamp: 'earls-green',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-dfz-commercial-fishing-zone-1656576838954',
+              },
+            ],
+          },
+          {
+            id: 'context-1657038856467',
+            config: {
+              color: '#FCA26F',
+              visible: true,
+              colorRamp: 'atomic-tangerine',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-artisanal-fishing-24-nm-1656577088142',
+              },
+            ],
+          },
+          {
+            id: 'context-1657038797120',
+            config: {
+              color: '#F95E5E',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-palau-national-marine-sanctuary-1656576499213',
+              },
+            ],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:45.234Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'tristan-public': {
+        id: 'tristan-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Tristan da Cunha',
+        description: 'Tristan da Cunha',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2019-06-01T00:00:00.000Z',
+        endAt: '2021-06-01T00:00:00.000Z',
+        viewport: {
+          zoom: 5.516878565208109,
+          latitude: -38.63713727884071,
+          longitude: -10.544230900281741,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-1618837323998',
+            config: {
+              color: '#B39DDB',
+              visible: true,
+              colorRamp: 'cold-purple',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-no-take-zone-1618836692786',
+              },
+            ],
+          },
+          {
+            id: 'context-1618837318443',
+            config: {
+              color: '#F4511F',
+              visible: false,
+              colorRamp: 'pomegranate',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-areas-to-be-avoided-1618836788619',
+              },
+            ],
+          },
+          {
+            id: 'context-1618837309140',
+            config: {
+              color: '#FBFF8B',
+              visible: false,
+              colorRamp: 'dolly',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-inshore-fishing-zone-1618837176535',
+              },
+            ],
+          },
+          {
+            id: 'context-1618837303690',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+              colorRamp: 'spring-green',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-tristan-seamounts-existing-1618586378121',
+              },
+            ],
+          },
+          {
+            id: 'context-1618837299209',
+            config: {
+              color: '#67FBFE',
+              visible: false,
+              colorRamp: 'aquamarine',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-tristan-seamounts-200-1618586314138',
+              },
+            ],
+          },
+          {
+            id: 'context-1618837295426',
+            config: {
+              color: '#4184F4',
+              visible: false,
+              colorRamp: 'cornflower-blue',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-tristan-seamounts-3000-1618586349746',
+              },
+            ],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:44.795Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+      'mediterranean-public': {
+        id: 'mediterranean-public',
+        viewAccess: 'private',
+        editAccess: 'private',
+        name: 'Mediterranean and Black Sea',
+        description: 'Mediterranean and Black Sea',
+        app: 'fishing-map',
+        category: 'marine-manager',
+        state: {
+          sidebarOpen: true,
+          timebarGraph: 'none',
+          visibleEvents: 'all',
+          daysFromLatest: 730,
+          timebarVisualisation: 'heatmap',
+        },
+        startAt: '2021-01-01T00:00:00.000Z',
+        endAt: '2022-01-01T00:00:00.000Z',
+        viewport: {
+          zoom: 4.155695852966412,
+          latitude: 41.16177446379178,
+          longitude: 14.284705724617714,
+        },
+        dataviewInstances: [
+          {
+            id: 'fishing',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'apparent-fishing-effort-ais-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'presence',
+            config: {
+              color: '#FF64CE',
+              visible: false,
+              colorRamp: 'magenta',
+            },
+            category: '',
+            dataviewId: 'presence-activity-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sentinel2',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sentinel-2-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'viirs-match',
+            config: {
+              color: '#FFEA00',
+              visible: false,
+              colorRamp: 'yellow',
+            },
+            category: '',
+            dataviewId: 'viirs-match-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'sar-match',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'sar-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'encounter-events',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'encounter-cluster-events-v-4',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-chlorophyl',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-chlorophyll',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-water-salinity',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-water-salinity',
+            datasetsConfig: [],
+          },
+          {
+            id: 'global-sea-surface-temperature',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'global-sea-surface-temperature',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-1646841377437',
+            config: {
+              color: '#F95E5E',
+              visible: false,
+              colorRamp: 'carnation',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-fisheries-restricted-areas-source-gfcm-fao-1646841377028',
+              },
+            ],
+          },
+          {
+            id: 'context-1622716965516',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+              colorRamp: 'spring-green',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-cold-water-corals',
+              },
+            ],
+          },
+          {
+            id: 'context-1622708252068',
+            config: {
+              color: '#F95E5E',
+              visible: false,
+              colorRamp: 'carnation',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-gs-as-simplified',
+              },
+            ],
+          },
+          {
+            id: 'context-1619173571431',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-mediterranean-area-of-interest-1',
+              },
+            ],
+          },
+          {
+            id: 'context-1619173128856',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+              colorRamp: 'spring-green',
+            },
+            category: '',
+            dataviewId: 'default-context-layer',
+            datasetsConfig: [
+              {
+                endpoint: 'user-context-tiles',
+                datasetId: 'public-gulf-of-lion-french-zones',
+              },
+            ],
+          },
+          {
+            id: 'basemap',
+            config: null,
+            category: '',
+            dataviewId: 'basemap',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-graticules',
+            config: {
+              visible: true,
+            },
+            category: '',
+            dataviewId: 'graticules',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-eez',
+            config: {
+              color: '#33B679',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'eez',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-mpa',
+            config: {
+              color: '#1AFF6B',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'mpa',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-rfmo',
+            config: {
+              color: '#6b67e5',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'tuna-rfmo-areas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'context-layer-high-seas',
+            config: {
+              color: '#FCA26F',
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'high-seas',
+            datasetsConfig: [],
+          },
+          {
+            id: 'basemap-labels',
+            config: {
+              visible: false,
+            },
+            category: '',
+            dataviewId: 'basemap-labels',
+            datasetsConfig: [],
+          },
+        ],
+        createdAt: '2025-12-17T16:17:44.805Z',
+        ownerId: 0,
+        ownerType: 'super-user',
+      },
+    },
+    status: 'finished',
     error: {},
     statusId: null,
     currentRequestIds: [],
