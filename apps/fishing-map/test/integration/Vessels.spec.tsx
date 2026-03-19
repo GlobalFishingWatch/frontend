@@ -294,6 +294,9 @@ describe('Vessel map popup', () => {
     const filterButton = getByTestId('activity-layer-panel-btn-filter-presence')
 
     await userEvent.hover(filterButton)
+
+    await new Promise((resolve) => setTimeout(resolve, 300))
+
     await userEvent.click(filterButton)
     await userEvent.click(getByTestId('multi-select-input').first())
     await userEvent.type(getByTestId('multi-select-input').first(), 'Spa')
