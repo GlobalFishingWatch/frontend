@@ -25,6 +25,9 @@ test/integration/
 ├── App.spec.tsx              # Core app functionality
 ├── Datasets.spec.tsx          # Layer management (reference, environment, events, detections)
 ├── Map.spec.tsx               # Map rendering and interactions
+├── MarineManager.spec.tsx     # MM workspaces
+├── Polygon.spec.tsx           # Drawing polygon
+├── Reports.spec.tsx           # Reports (Private, Global, Others, Data comparison)
 ├── Sidebar.spec.tsx           # Sidebar tools and controls
 ├── Timebar.spec.tsx           # Timebar interactions and integration
 ├── User.spec.tsx              # User authentication flows
