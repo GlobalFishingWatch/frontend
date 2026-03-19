@@ -86,10 +86,12 @@ describe('Polygon', () => {
     await userEvent.click(getByTestId('app-main'), { position: { x: 300, y: 200 } })
     await userEvent.click(getByTestId('draw-save-polygon'))
 
+    // Wait for polygon save and and navigation to map to complete
     await new Promise((resolve) => setTimeout(resolve, 4000))
 
     store.dispatch(navigateToPolygonEditorAction)
 
+    // Wait for polygon to be loaded in the drawer
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
@@ -98,6 +100,7 @@ describe('Polygon', () => {
     await userEvent.click(getByTestId('draw-delete-polygon'))
     await userEvent.click(getByTestId('draw-save-polygon'))
 
+    // Wait for polygon save and and navigation to map to complete
     await new Promise((resolve) => setTimeout(resolve, 4000))
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
