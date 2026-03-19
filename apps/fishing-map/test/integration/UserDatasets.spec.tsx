@@ -1,7 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -184,7 +184,7 @@ describe('User Datasets', () => {
           },
           datasetsConfig: [
             {
-              datasetId: 'public-hawaii-1771993699463',
+              datasetId: USER_POLYGON_DATASET_ID,
               endpoint: 'context-tiles',
               params: [],
             },
