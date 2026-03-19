@@ -1002,10 +1002,15 @@
     "extraInfo": "Request additional information at",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "First transmission date",
+    "fishingLicenseCode": "Fishing license code",
+    "fishingLicenseEndDate": "Fishing license end date",
+    "fishingLicenseStartDate": "Fishing license start date",
+    "fishingLicenseStatus": "Fishing license status",
     "fishingZone": "Fishing zone",
     "flag": "Flag",
     "flag_other": "Flags",
     "fleet": "Fleet",
+    "fleetCode": "Fleet code",
     "geartype": "Gear type",
     "gearType": "Gear Type",
     "geartype_other": "Gear types",
@@ -1204,6 +1209,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
+    "vesselRegistrationCode": "",
     "vesselType": "Vessel type",
     "vesselTypes": {
       "": "Unknown",
