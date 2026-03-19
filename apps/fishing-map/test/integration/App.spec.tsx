@@ -12,7 +12,7 @@ describe('Fishing Map App', () => {
     vi.clearAllMocks()
   })
 
-  it('should reflex store changes on layer toggle', async () => {
+  it('should reflect store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const { getByTestId } = await render(<App />, { store })

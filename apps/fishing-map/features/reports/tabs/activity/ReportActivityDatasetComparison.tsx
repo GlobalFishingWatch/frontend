@@ -152,6 +152,7 @@ const ReportActivityDatasetComparison = () => {
           selectedOption={selectedMainDataset}
           disabled={mainDatasetOptions.length <= 1}
           containerClassName={styles.select}
+          testId="main-dataset-select"
         />
         <Select
           options={layerOptions}
@@ -161,6 +162,7 @@ const ReportActivityDatasetComparison = () => {
           placeholder={t((t) => t.analysis.selectDatasetPlaceholder, {
             ns: 'translations',
           })}
+          testId="comparison-dataset-select"
         />
       </div>
       <p className={styles.printableTitle}>

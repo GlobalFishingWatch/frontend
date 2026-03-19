@@ -21,7 +21,7 @@ describe('Marine Manager', () => {
 
     const { getByTestId, getByText, getByRole } = await render(<App />, { store })
 
-    await userEvent.click(getByTestId('link-category-marine-manager'))
+    await userEvent.click(getByTestId('category-tab-marine-manager'))
 
     await userEvent.click(getByRole('link', { name: 'Fiji' }).first())
 
