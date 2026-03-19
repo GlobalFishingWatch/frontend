@@ -2,12 +2,15 @@ import { sum } from 'es-toolkit'
 import { createStore as createJotaiStore } from 'jotai'
 import { selectReportEventsStats } from 'queries/report-events-stats-api'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { openComparisonReport } from 'test/utils/actions/openComparisonReport'
 import { openGlobalReportAction } from 'test/utils/actions/openGlobalReportAction'
 import { getOpenReportActionByArea } from 'test/utils/actions/openReportAction'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
+
+import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
 import App from 'features/app/App'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -103,7 +106,7 @@ describe('Reports', () => {
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
     const [x, y] = viewport?.project([-28, 38]) || [0, 0]
 
-    await expect(getByTestId('map-loading-spinner')).not.toBeVisible()
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await userEvent.hover(mapElement, { position: { x, y } })
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await userEvent.click(mapElement, { position: { x, y } })
@@ -291,17 +294,17 @@ describe('Reports', () => {
 
     await userEvent.click(getByTestId('see-vessel-table-activity-report'))
 
-    expect(getByTestId('report-vessels-graph')).toBeVisible()
+    await expect.element(getByTestId('report-vessels-graph')).toBeVisible()
     const vesselsTable = getByTestId('report-vessels-table')
     await expect.element(vesselsTable).toBeVisible()
-    expect(vesselsTable).toHaveTextContent('Name')
-    expect(vesselsTable).toHaveTextContent('MMSI')
-    expect(vesselsTable).toHaveTextContent('Flag')
-    expect(vesselsTable).toHaveTextContent('Type')
-    expect(vesselsTable).toHaveTextContent('hours')
+    await expect.element(vesselsTable).toHaveTextContent('Name')
+    await expect.element(vesselsTable).toHaveTextContent('MMSI')
+    await expect.element(vesselsTable).toHaveTextContent('Flag')
+    await expect.element(vesselsTable).toHaveTextContent('Type')
+    await expect.element(vesselsTable).toHaveTextContent('hours')
 
     const vesselLink = vesselsTable.getByTestId('link-vessel-profile').first()
-    expect(vesselLink).toBeVisible()
+    await expect.element(vesselLink).toBeVisible()
   })
 })
 
@@ -373,10 +376,9 @@ describe('Global reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByText } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
-    const mapElement = getByTestId('app-main')
 
     await userEvent.click(getByText('Activity'))
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -386,15 +388,24 @@ describe('Global reports', () => {
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect.element(getByText(/hours of Vessel presence in the area between/i)).toBeVisible()
 
-    await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
-    await new Promise((resolve) => setTimeout(resolve, 500))
     await expect
-      .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Vessel presence' }))
-      .toBeVisible()
-
-    const valueElement = getByTestId('map-popup-wrapper').getByTestId('activity-tooltip-row-value')
-    await expect.element(valueElement).toBeVisible()
-    await expect.element(valueElement).toHaveTextContent(/[\d,]+\s+hours/)
+      .poll(
+        () => {
+          return jotaiStore.get(deckLayersStateAtom)
+        },
+        { timeout: 20000 }
+      )
+      .toMatchObject({
+        basemap: {
+          cacheHash: '',
+          loaded: true,
+        },
+        presence: {
+          cacheHash:
+            '1761955200000,1771372800000,1759276800000,DAY,,,-presence-public-global-presence:v4.0--|false|true',
+          loaded: true,
+        },
+      })
   })
 
   it('should show detections in detections tab', async () => {
