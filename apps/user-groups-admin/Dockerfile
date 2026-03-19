@@ -1,12 +1,12 @@
 #################################################################################
 # Generate htpasswd file
 #################################################################################
-FROM appsoa/docker-alpine-htpasswd as htpasswd
-ARG BASIC_AUTH_USER=gfw
-ARG BASIC_AUTH_PASS=default
-ENV BASIC_AUTH_USER $BASIC_AUTH_USER
-ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
-RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
+# FROM appsoa/docker-alpine-htpasswd as htpasswd
+# ARG BASIC_AUTH_USER=gfw
+# ARG BASIC_AUTH_PASS=default
+# ENV BASIC_AUTH_USER $BASIC_AUTH_USER
+# ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
+# RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
 
 FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest AS builder
 
@@ -28,12 +28,12 @@ RUN yarn install --immutable --inline-builds && \
 #################################################################################
 # Using stable version that uses alpine 3.14 to fix build errors
 # https://github.com/alpinelinux/docker-alpine/issues/182
-FROM nginx:stable-alpine as production
+FROM nginx:stable-alpine AS production
 RUN apk update && apk upgrade libxml2
 COPY --from=builder /app/dist/apps/user-groups-admin/nginx.conf /etc/nginx/nginx.template
-COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
-RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/user-groups-admin/entrypoint.sh entrypoint.sh
+# COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
+# RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
+COPY --from=builder /app/dist/apps/user-groups-admin/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/user-groups-admin/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 
