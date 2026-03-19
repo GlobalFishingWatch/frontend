@@ -11,6 +11,7 @@ import {
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -71,6 +72,7 @@ const VesselIdentity = () => {
     identityId,
     identitySource,
   })
+  console.log('🚀 ~ VesselIdentity ~ vesselIdentity:', vesselIdentity)
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     dispatchQueryParams({ vesselIdentitySource: tab.id })
@@ -225,8 +227,12 @@ const VesselIdentity = () => {
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
                   {fieldGroup.map((field) => {
+                    const isVMS = vesselIdentity.sourceCode.some((source) =>
+                      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+                    )
                     let label = field.label || field.key
                     if (
+                      !isVMS &&
                       identitySource === VesselIdentitySourceEnum.SelfReported &&
                       (label === 'geartypes' || label === 'shiptypes')
                     ) {
