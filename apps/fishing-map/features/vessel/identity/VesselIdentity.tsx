@@ -72,7 +72,6 @@ const VesselIdentity = () => {
     identityId,
     identitySource,
   })
-  console.log('🚀 ~ VesselIdentity ~ vesselIdentity:', vesselIdentity)
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     dispatchQueryParams({ vesselIdentitySource: tab.id })
