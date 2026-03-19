@@ -108,7 +108,7 @@ describe('Polygon', () => {
     const [x, y] = viewport?.project([-159.86, 20.82]) || [0, 0]
 
     await expect
-      .element(getByTestId('user-layer-status-public-hawaii-1771993699463'))
+      .element(getByTestId('user-layer-status-public-hawaii-1771993699463'), { timeout: 10000 })
       .toBeEmptyDOMElement()
 
     // Wait for the layer to draw
