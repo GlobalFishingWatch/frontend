@@ -318,7 +318,7 @@ describe('Global reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const rendered = await render(<App />, { store })
     const getByTestId = rendered.getByTestId
-    await getByTestId('category-tab-reports').click()
+    await getByTestId('link-category-reports').click()
     const reportWorkspaceLink = getByTestId('highlighted-workspace-events-report')
     await reportWorkspaceLink.getByText('see report').click()
     const statsQueryState = await waitForStatsQueryLoaded(store)
