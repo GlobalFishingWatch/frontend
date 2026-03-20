@@ -16,6 +16,24 @@ const IS_PRODUCTION =
   process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
   process.env.NODE_ENV === 'production'
 
+const gfwPackages = [
+  '@globalfishingwatch/api-client',
+  '@globalfishingwatch/api-types',
+  '@globalfishingwatch/data-transforms',
+  '@globalfishingwatch/datasets-client',
+  '@globalfishingwatch/dataviews-client',
+  '@globalfishingwatch/deck-layer-composer',
+  '@globalfishingwatch/deck-layers',
+  '@globalfishingwatch/deck-loaders',
+  '@globalfishingwatch/i18n-labels',
+  '@globalfishingwatch/ocean-areas',
+  '@globalfishingwatch/pbf-decoders',
+  '@globalfishingwatch/react-hooks',
+  '@globalfishingwatch/responsive-visualizations',
+  '@globalfishingwatch/timebar',
+  '@globalfishingwatch/ui-components',
+]
+
 function patchWasmModuleImport(
   config: {
     experiments: any
@@ -46,23 +64,7 @@ function patchWasmModuleImport(
 }
 
 const nextConfig: NextConfig = {
-  transpilePackages: [
-    '@globalfishingwatch/api-client',
-    '@globalfishingwatch/api-types',
-    '@globalfishingwatch/data-transforms',
-    '@globalfishingwatch/datasets-client',
-    '@globalfishingwatch/dataviews-client',
-    '@globalfishingwatch/deck-layer-composer',
-    '@globalfishingwatch/deck-layers',
-    '@globalfishingwatch/deck-loaders',
-    '@globalfishingwatch/i18n-labels',
-    '@globalfishingwatch/ocean-areas',
-    '@globalfishingwatch/pbf-decoders',
-    '@globalfishingwatch/react-hooks',
-    '@globalfishingwatch/responsive-visualizations',
-    '@globalfishingwatch/timebar',
-    '@globalfishingwatch/ui-components',
-  ],
+  transpilePackages: gfwPackages,
   async rewrites() {
     return [
       {
@@ -186,21 +188,7 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: false,
     esmExternals: true,
-    optimizePackageImports: [
-      '@globalfishingwatch/api-client',
-      '@globalfishingwatch/api-types',
-      '@globalfishingwatch/data-transforms',
-      '@globalfishingwatch/datasets-client',
-      '@globalfishingwatch/dataviews-client',
-      '@globalfishingwatch/deck-layer-composer',
-      '@globalfishingwatch/deck-layers',
-      '@globalfishingwatch/deck-loaders',
-      '@globalfishingwatch/ocean-areas',
-      '@globalfishingwatch/pbf-decoders',
-      '@globalfishingwatch/react-hooks',
-      '@globalfishingwatch/timebar',
-      '@globalfishingwatch/ui-components',
-    ],
+    optimizePackageImports: gfwPackages,
     // swcPlugins: [['@swc-jotai/react-refresh', {}]],
   },
   cleanDistDir: true,

@@ -1,1 +1,0 @@
-# @globalfishingwatchapp/real-time-prototype
