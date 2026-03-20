@@ -54,7 +54,7 @@ describe('Marine Manager', () => {
 
     expect(fijiWorkspace).toBeDefined()
 
-    const expectedProps = {
+    const expectedLayerProps = {
       loaded: expect.any(Boolean),
       cacheHash: expect.any(String),
     }
@@ -62,21 +62,21 @@ describe('Marine Manager', () => {
     await expect
       .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000, interval: 1000 })
       .toMatchObject({
-        basemap: expectedProps,
-        'context-layer-high-seas': expectedProps,
-        'context-layer-rfmo': expectedProps,
-        'context-layer-mpa': expectedProps,
-        'context-layer-eez': expectedProps,
-        'sar-match-auxiliar': expectedProps,
-        'sentinel2-auxiliar': expectedProps,
-        'global-sea-surface-temperature': expectedProps,
-        'global-water-salinity': expectedProps,
-        'global-chlorophyl': expectedProps,
-        'sentinel2,viirs-match,sar-match': expectedProps,
-        'fishing,presence': expectedProps,
-        'encounter-events': expectedProps,
-        'basemap-labels': expectedProps,
-        'context-layer-graticules': expectedProps,
+        basemap: expectedLayerProps,
+        'context-layer-high-seas': expectedLayerProps,
+        'context-layer-rfmo': expectedLayerProps,
+        'context-layer-mpa': expectedLayerProps,
+        'context-layer-eez': expectedLayerProps,
+        'sar-match-auxiliar': expectedLayerProps,
+        'sentinel2-auxiliar': expectedLayerProps,
+        'global-sea-surface-temperature': expectedLayerProps,
+        'global-water-salinity': expectedLayerProps,
+        'global-chlorophyl': expectedLayerProps,
+        'sentinel2,viirs-match,sar-match': expectedLayerProps,
+        'fishing,presence': expectedLayerProps,
+        'encounter-events': expectedLayerProps,
+        'basemap-labels': expectedLayerProps,
+        'context-layer-graticules': expectedLayerProps,
       })
   })
 })

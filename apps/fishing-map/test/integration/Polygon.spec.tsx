@@ -122,6 +122,16 @@ describe('Polygon', () => {
 
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
 
-    await expect.element(getByTestId('map-popup-wrapper')).not.toBeInTheDocument()
+    const expectedLayerProps = {
+      loaded: expect.any(Boolean),
+      cacheHash: expect.any(String),
+    }
+
+    await expect
+      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000, interval: 1000 })
+      .toMatchObject({
+        basemap: expectedLayerProps,
+        'user-polygons-1771416000000-1771416000000': expectedLayerProps,
+      })
   })
 })
