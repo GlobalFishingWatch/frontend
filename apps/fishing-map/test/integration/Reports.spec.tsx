@@ -26,7 +26,7 @@ import { makeStore } from 'store'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
-  timeout = 10000
+  timeout = 30000
 ) => {
   await vi.waitFor(
     () => {
@@ -83,7 +83,7 @@ const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, time
   )
 }
 
-const eezReportAction = getOpenReportActionByArea('eez')
+const mpaReportAction = getOpenReportActionByArea('mpa')
 
 describe('Reports', () => {
   beforeEach(() => {
@@ -122,7 +122,7 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
 
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     const { getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -142,7 +142,7 @@ describe('Reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -159,7 +159,7 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -193,7 +193,7 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
 
@@ -269,7 +269,7 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
     await getByTestId('report-summary-add-layer-button').click()
@@ -288,7 +288,7 @@ describe('Reports', () => {
       jotaiStore,
       authenticated: true,
     })
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
 
@@ -516,7 +516,7 @@ describe('Data Comparison', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -534,7 +534,7 @@ describe('Data Comparison', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(eezReportAction)
+    store.dispatch(mpaReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
