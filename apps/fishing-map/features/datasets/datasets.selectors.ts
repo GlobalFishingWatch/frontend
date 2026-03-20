@@ -3,6 +3,7 @@ import { uniqBy } from 'es-toolkit'
 
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 
+import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/vessel-groups/vessel-groups.config'
 
 import { selectAllDatasets, selectDeprecatedDatasets } from './datasets.slice'
@@ -35,6 +36,7 @@ export const selectVesselGroupCompatibleDatasets = createSelector(
     return datasets.filter(
       (d) =>
         d.status !== DatasetStatus.Deleted &&
+        isDatasetSearchFieldNeededSupported(d) &&
         d.configuration?.apiSupportedVersions?.includes(VESSEL_GROUPS_MIN_API_VERSION) &&
         !deprecatedDatasets[d.id]
     )

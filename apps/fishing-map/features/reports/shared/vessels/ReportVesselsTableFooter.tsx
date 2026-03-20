@@ -27,6 +27,7 @@ import {
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import {
@@ -49,6 +50,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
   const reportSubCategory = useSelector(selectReportSubCategory)
   const reportAreaName = useSelector(selectReportAreaName)
   const reportUnit = useSelector(selectReportUnit)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const vesselGroup = useSelector(selectVGRData)
   const allVessels = useSelector(selectReportVessels)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
@@ -98,9 +100,11 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
     if (vessels?.length) {
       const csv = unparseCSV(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      const fileName = [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
-        .filter(Boolean)
-        .join('-')
+      const fileName = isVesselGroupReportLocation
+        ? vesselGroup?.name
+        : [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
+            .filter(Boolean)
+            .join('-')
       saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
