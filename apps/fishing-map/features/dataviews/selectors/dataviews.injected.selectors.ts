@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { DataviewCategory, EndpointId, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
@@ -327,8 +327,8 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           dataview.config?.visible &&
           dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
       )
-      if (!hasPortVisitDataviewInstance) {
-        const portVisitDataviewInstance = {
+      if (!hasPortVisitDataviewInstance && portReportDatasetId) {
+        const portVisitDataviewInstance: UrlDataviewInstance = {
           id: PORT_VISITS_REPORT_DATAVIEW_ID,
           category: DataviewCategory.Events,
           config: {
@@ -340,6 +340,13 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
             },
           },
           dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+          datasetsConfig: [
+            {
+              params: [],
+              endpoint: EndpointId.ClusterTiles,
+              datasetId: portReportDatasetId,
+            },
+          ],
         }
         dataviewInstancesInjected.push(portVisitDataviewInstance)
       }
