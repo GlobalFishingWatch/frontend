@@ -22,38 +22,40 @@ const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
 const NAVIGATION_TIMEOUT_MS = 10000
 const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
 
-const TOKEN_VALIDITY_TTL_MS = 30 * 60 * 1000 // 30 minutes
-let tokenValidityPromise: Promise<boolean> | null = null
-let tokenValidityTimestamp = 0
-
-export function isAuthCacheExpired(): boolean {
-  return Date.now() - tokenValidityTimestamp > TOKEN_VALIDITY_TTL_MS
-}
-
 async function hasValidTokens(): Promise<boolean> {
-  const isExpired = Date.now() - tokenValidityTimestamp > TOKEN_VALIDITY_TTL_MS
-  if (tokenValidityPromise !== null && !isExpired) {
-    return tokenValidityPromise
+  if (!fs.existsSync(TOKENS_FILE)) {
+    return false
   }
-  tokenValidityTimestamp = Date.now()
-  tokenValidityPromise = (async () => {
-    if (!fs.existsSync(TOKENS_FILE)) {
+  try {
+    const { token } = JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
+    if (!token || typeof token !== 'string') {
       return false
     }
-    try {
-      const { token } = JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
-      if (!token || typeof token !== 'string') {
-        return false
-      }
-      const response = await fetch(`${GFWAPI.baseUrl}/${GFWAPI.apiVersion}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      return response.ok
-    } catch {
+    const response = await fetch(`${GFWAPI.baseUrl}/${GFWAPI.apiVersion}/auth/me?cache=false`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!response.ok) {
       return false
     }
-  })()
-  return tokenValidityPromise
+
+    const responseBody = await response.json().catch(() => null)
+    if (!responseBody || typeof responseBody !== 'object') {
+      return false
+    }
+
+    const hasTokenError =
+      typeof (responseBody as { error?: unknown }).error === 'string' &&
+      Boolean((responseBody as { error?: string }).error)
+    const hasUnauthorizedStatus = (responseBody as { status?: unknown }).status === 401
+
+    if (hasTokenError || hasUnauthorizedStatus) {
+      return false
+    }
+
+    return true
+  } catch {
+    return false
+  }
 }
 
 function rejectAfter(ms: number, message: string): Promise<never> {

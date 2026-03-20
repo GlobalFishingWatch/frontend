@@ -124,6 +124,7 @@ export default function ReportActivityGraphSelector({
         selectedOption={selectedOption}
         onSelect={onSelect}
         containerClassName={cx(styles.select, 'print-hidden')}
+        testId='graph-type-selector'
       />
     </>
   )

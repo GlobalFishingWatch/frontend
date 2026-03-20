@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
@@ -174,7 +174,7 @@ function UserPanel({
         defaultValue: dataview?.name || dataview?.id,
       })
 
-  const hasLayerProperties = hasSchemaFilterSelection || datasetGeometryType === 'tracks'
+  const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
   return (
     <div
@@ -224,6 +224,7 @@ function UserPanel({
             <>
               {isUserLayer && !isBQEditorLayer && (
                 <IconButton
+                  testId={`user-layer-edit-${dataset.id}`}
                   icon="edit"
                   size="small"
                   disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
@@ -308,6 +309,7 @@ function UserPanel({
           )}
         </div>
         <IconButton
+          testId={`user-layer-status-${dataset.id}`}
           icon={layerActive ? (error ? 'warning' : 'more') : undefined}
           type={error ? 'warning' : 'default'}
           loading={layerLoading || dataset?.status === DatasetStatus.Importing}
@@ -330,7 +332,7 @@ function UserPanel({
               </div>
             </div>
           )}
-          {datasetGeometryType === 'tracks' && <UserLayerTrackPanel dataview={dataview} />}
+          {hasFeaturesColoredByField && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
       {layerActive && hasLegend && (

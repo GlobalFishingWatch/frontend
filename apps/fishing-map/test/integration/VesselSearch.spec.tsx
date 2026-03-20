@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { navigateToVesselSearchAction } from 'test/utils/actions/navigateToVesselSearch'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

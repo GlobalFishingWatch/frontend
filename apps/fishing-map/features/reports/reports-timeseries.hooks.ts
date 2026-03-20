@@ -108,6 +108,8 @@ const initialReportState: ReportState = {
 
 const reportStateAtom = atom(initialReportState)
 
+export { reportStateAtom }
+
 export function useTimeseriesStats() {
   return useAtomValue(reportStateAtom)?.stats
 }

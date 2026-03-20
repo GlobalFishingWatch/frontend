@@ -53,7 +53,7 @@ const AggregatedGraphTooltip = (props: any) => {
     const date = getUTCDateTime(label).setLocale(i18n.language)
     const formattedLabel = formatDateForInterval(date, timeChunkInterval)
     return (
-      <div className={styles.tooltipContainer}>
+      <div className={styles.tooltipContainer} data-testid="aggregated-graph-tooltip">
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
           {payload
@@ -187,6 +187,7 @@ export default function EventsReportGraphEvolution({
     <div
       ref={containerRef}
       className={cx(styles.graph, styles.evolution, { [styles.paddingTop]: isIndividualSupported })}
+      data-testid="evolution-timeseries-chart"
     >
       {isIndividualSupported && (
         <EventsReportDownload
