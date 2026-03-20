@@ -108,7 +108,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
             datasets: datasetsToResolve,
           })
         )
-        if (searchVesselGroupsVesselsThunk.fulfilled.match(action)) {
+        if (searchVesselGroupsVesselsThunk.fulfilled.match(action) && action.payload) {
           resolvedVesselGroupVessels = action.payload
         }
       }
