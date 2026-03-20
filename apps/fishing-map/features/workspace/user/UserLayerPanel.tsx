@@ -174,7 +174,7 @@ function UserPanel({
         defaultValue: dataview?.name || dataview?.id,
       })
 
-  const hasLayerProperties = hasSchemaFilterSelection || datasetGeometryType === 'tracks'
+  const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
   return (
     <div
@@ -332,7 +332,7 @@ function UserPanel({
               </div>
             </div>
           )}
-          {datasetGeometryType === 'tracks' && <UserLayerTrackPanel dataview={dataview} />}
+          {hasFeaturesColoredByField && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
       {layerActive && hasLegend && (
