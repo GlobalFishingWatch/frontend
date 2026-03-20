@@ -476,7 +476,11 @@ function LayerFilters({
             {t((t) => t.common.applyToAll)}
           </Button>
         )}
-        <Button disabled={!newDataviewInstanceConfig} onClick={() => onConfirmFilters()}>
+        <Button
+          disabled={!newDataviewInstanceConfig}
+          onClick={() => onConfirmFilters()}
+          testId="confirm-filters-button"
+        >
           {t((t) => t.common.confirm)}
         </Button>
       </div>

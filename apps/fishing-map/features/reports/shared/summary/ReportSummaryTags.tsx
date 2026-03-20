@@ -133,6 +133,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
             className={styles.expandedContainer}
             component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
             disabled={disabledFilters}
+            testId="reports-summary-expanded-container"
           >
             <IconButton
               icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
@@ -148,6 +149,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
               }
               tooltipPlacement="top"
               disabled={disabledFilters}
+              data-testid="reports-summary-tags-filters"
             />
           </ExpandedContainer>
         )}

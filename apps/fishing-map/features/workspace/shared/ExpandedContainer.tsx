@@ -26,6 +26,7 @@ interface ExpandedContainerProps {
   onClickOutside: () => void
   overflowDOMId?: string | null
   disabled?: boolean
+  testId?: string
 }
 
 function ExpandedContainer({
@@ -37,6 +38,7 @@ function ExpandedContainer({
   referenceClassName = '',
   overflowDOMId = SCROLL_CONTAINER_DOM_ID,
   disabled = false,
+  testId,
 }: ExpandedContainerProps) {
   const [isOpen, setIsOpen] = useState(disabled ? false : visible)
 
@@ -111,6 +113,7 @@ function ExpandedContainer({
           style={floatingStyles}
           {...getFloatingProps()}
           className={cx(styles.expandedContainer, className)}
+          data-testid={testId}
         >
           {component}
           <FloatingArrow
