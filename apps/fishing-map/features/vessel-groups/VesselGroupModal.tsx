@@ -209,6 +209,9 @@ function VesselGroupModal(): React.ReactElement<any> {
       csvData?: string[]
       csvColumns?: string[]
     }) => {
+      const datasets = sourcesSelected.length
+        ? sourcesSelected.map(({ id }) => id)
+        : sourceOptions.map(({ id }) => id)
       searchVesselGroupsVesselsRef.current = dispatch(
         searchVesselGroupsVesselsThunk({
           ids,
@@ -428,9 +431,7 @@ function VesselGroupModal(): React.ReactElement<any> {
     !selectedCsvColumns ||
     selectedCsvColumns.length === 0 ||
     (selectedCsvColumns.length === 1 && selectedCsvColumns[0].toLowerCase() === 'flag')
-
-  const searchingByIdMissingParams =
-    searchIdField === '' || !vesselGroupModalSearchIds?.length || !sourcesSelected?.length
+  const searchingByIdMissingParams = searchIdField === '' || !vesselGroupModalSearchIds?.length
 
   const missesRequiredParams = hasVesselGroupsVessels
     ? groupName === ''
