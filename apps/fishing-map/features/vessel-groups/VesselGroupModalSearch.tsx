@@ -4,17 +4,20 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
 
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
+import { FLAG_LENGTH, SSVID_LENGTH, VESSEL_ID_LENGTH } from 'features/search/search.config'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { readBlobAs } from 'utils/files'
 import { listAsSentence } from 'utils/shared'
 
 import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
+import type { VesselGroupCsvData } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalCsvColumns,
   selectVesselGroupModalCsvData,
@@ -60,10 +63,10 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     async (file: File) => {
       setCsvName(file.name)
       const fileData = await readBlobAs(file, 'text')
-      const { data } = parseCSV(fileData, {
+      const { data } = parseCSV<VesselGroupCsvData>(fileData, {
         header: true,
         skipEmptyLines: true,
-      }) as { data: string[] }
+      })
       dispatch(setVesselGroupModalCsvData(data))
       setSearchText('')
     },
@@ -90,19 +93,19 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const selectableColumns = useMemo(() => {
     if (!csvData?.[0]) return []
     return Object.keys(csvData[0]).filter((column) => {
-      if (column.toLowerCase() === 'flag') {
-        return csvData.map((row) => row[column]).every((flag) => flag?.length === 3) // ISO3
+      const resolved = resolveVesselPropertyColumn(column)
+      if (!resolved) return false
+      const values = csvData.map((row) => row[column])
+      if (resolved === 'flag') {
+        return values.every((v) => v?.length === FLAG_LENGTH) // ISO3
       }
-      if (column.toLowerCase() === 'mmsi') {
-        return csvData.map((row) => row[column]).every((mmsi) => mmsi?.length === 9) // MMSI
+      if (resolved === 'mmsi') {
+        return values.every((v) => v?.length === SSVID_LENGTH) // MMSI
       }
-      if (column.toLowerCase() === 'vesselid') {
-        return csvData.map((row) => row[column]).every((vesselid) => vesselid?.length === 37) // GFW Vessel ID
+      if (resolved === 'vesselId') {
+        return values.every((v) => v?.length === VESSEL_ID_LENGTH) // GFW Vessel ID
       }
-      const isSelectable = CSV_COLUMN_LOOKUP.some(
-        (lookup) => lookup.toLowerCase() === column.toLowerCase()
-      )
-      return isSelectable
+      return false
     })
   }, [csvData])
 
@@ -163,54 +166,60 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         <div className={styles.columnSelectionWrapper}>
           <label>{t((t) => t.vesselGroup.columnSelection)}</label>
           <div className={styles.vesselsTableContainer}>
-            <table className={styles.vesselsTable}>
-              <thead>
-                <tr>
-                  {selectableColumns.map((column, index) => {
-                    const isSelected =
-                      selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+            {selectableColumns.length > 0 ? (
+              <table className={styles.vesselsTable}>
+                <thead>
+                  <tr>
+                    {selectableColumns.map((column, index) => {
+                      const isSelected =
+                        selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+                      return (
+                        <th key={index}>
+                          <Checkbox
+                            active={isSelected}
+                            onClick={() => toggleCsvColumn(column)}
+                            label={column}
+                            className={styles.columnCheckbox}
+                            labelClassname={cx(styles.columnHeader, {
+                              [styles.selected]: isSelected,
+                            })}
+                          />
+                        </th>
+                      )
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {csvData.slice(0, 100).map((row, rowIndex) => {
                     return (
-                      <th key={index}>
-                        <Checkbox
-                          active={isSelected}
-                          onClick={() => toggleCsvColumn(column)}
-                          label={column}
-                          className={styles.columnCheckbox}
-                          labelClassname={cx(styles.columnHeader, {
-                            [styles.selected]: isSelected,
-                          })}
-                        />
-                      </th>
+                      <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
+                        {Object.keys(row).map((column, cellIndex) => {
+                          const isSelectable = selectableColumns.includes(column)
+                          const isSelected =
+                            selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+                          if (!isSelectable) {
+                            return null
+                          }
+                          return (
+                            <td
+                              key={cellIndex}
+                              title={row[column]}
+                              className={cx(styles.columnCell, { [styles.selected]: isSelected })}
+                            >
+                              {row[column]}
+                            </td>
+                          )
+                        })}
+                      </tr>
                     )
                   })}
-                </tr>
-              </thead>
-              <tbody>
-                {csvData.slice(0, 100).map((row, rowIndex) => {
-                  return (
-                    <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
-                      {Object.keys(row).map((column, cellIndex) => {
-                        const isSelectable = selectableColumns.includes(column)
-                        const isSelected =
-                          selectedCsvColumns !== null && selectedCsvColumns.includes(column)
-                        if (!isSelectable) {
-                          return null
-                        }
-                        return (
-                          <td
-                            key={cellIndex}
-                            title={row[column]}
-                            className={cx(styles.columnCell, { [styles.selected]: isSelected })}
-                          >
-                            {row[column]}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            ) : (
+              <div className={cx(styles.errorPlaceholder, styles.errorMsg)}>
+                {t((t) => t.vesselGroup.noColumnsToSelect)}
+              </div>
+            )}
           </div>
         </div>
       )}

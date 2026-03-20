@@ -15,6 +15,7 @@ import type {
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 
@@ -28,6 +29,7 @@ import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 import {
   flatVesselGroupSearchVessels,
   mergeVesselGroupVesselIdentities,
+  vesselPropertyToApiSearch,
 } from './vessel-groups.utils'
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
@@ -36,6 +38,7 @@ export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorks
 
 export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
 
+export type VesselGroupCsvData = Record<string, string>
 interface VesselGroupModalState {
   isModalOpen: boolean
   vesselGroupEditId: string | null
@@ -49,7 +52,7 @@ interface VesselGroupModalState {
     status: AsyncReducerStatus
     error: ParsedAPIError | null
     csvColumns: string[] | null
-    csvData: any[] | null
+    csvData: VesselGroupCsvData[] | null
   }
   isOwnedByUser: boolean
 }
@@ -123,7 +126,7 @@ type SearchVesselsInVGParams = {
   signal: AbortSignal
   ids?: string[]
   idField?: IdField
-  csvData?: any[]
+  csvData?: VesselGroupCsvData[]
   csvColumns?: string[]
   transmissionDateFrom?: string
   transmissionDateTo?: string
@@ -153,7 +156,7 @@ const searchVesselsInVesselGroup = async ({
   }
   let whereClauses: string[] = []
   if (ids && idField) {
-    const searchKey = idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : 'imo'
+    const searchKey = vesselPropertyToApiSearch(idField)
     whereClauses = [
       `(${uniq(ids)
         .map((id) => `${searchKey} = "${id}"`)
@@ -169,12 +172,11 @@ const searchVesselsInVesselGroup = async ({
               if (!value) {
                 return []
               }
-              if (column === 'vesselId') {
-                return `id = "${value}"`
-              } else if (column.toLowerCase() === 'mmsi') {
-                return `ssvid = "${value}"`
+              const resolved = resolveVesselPropertyColumn(column)
+              if (!resolved) {
+                return []
               }
-              return `${column.toLowerCase()} = "${value}"`
+              return `${vesselPropertyToApiSearch(resolved)} = "${value}"`
             })
             .join(' AND ')
           return rowClauses || []
@@ -278,7 +280,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     }: {
       ids?: string[]
       idField?: IdField
-      csvData?: any[]
+      csvData?: VesselGroupCsvData[]
       csvColumns?: string[]
       datasets?: string[]
       transmissionDateFrom?: string
@@ -395,7 +397,7 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupModalCsvColumns: (state, action: PayloadAction<string[]>) => {
       state.search.csvColumns = action.payload
     },
-    setVesselGroupModalCsvData: (state, action: PayloadAction<any[]>) => {
+    setVesselGroupModalCsvData: (state, action: PayloadAction<VesselGroupCsvData[]>) => {
       state.search.csvData = action.payload
     },
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {

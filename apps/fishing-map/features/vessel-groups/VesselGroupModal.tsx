@@ -70,7 +70,7 @@ import {
   getVesselGroupUniqVessels,
   getVesselGroupVesselsCount,
 } from './vessel-groups.utils'
-import type { VesselGroupConfirmationMode } from './vessel-groups-modal.slice'
+import type { VesselGroupConfirmationMode, VesselGroupCsvData } from './vessel-groups-modal.slice'
 import {
   getVesselInVesselGroupThunk,
   MAX_VESSEL_GROUP_VESSELS,
@@ -164,6 +164,7 @@ function VesselGroupModal(): React.ReactElement<any> {
     [vesselDatasets]
   )
   const vesselGroupModalSources = useSelector(selectVesselGroupModalSources)
+
   const sourcesSelected = useMemo(
     () => sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)),
     [sourceOptions, vesselGroupModalSources]
@@ -206,7 +207,7 @@ function VesselGroupModal(): React.ReactElement<any> {
     }: {
       ids?: string[]
       idField?: IdField
-      csvData?: string[]
+      csvData?: VesselGroupCsvData[]
       csvColumns?: string[]
     }) => {
       const datasets = sourcesSelected.length
@@ -218,7 +219,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           idField,
           csvData,
           csvColumns,
-          datasets: sourcesSelected.map(({ id }) => id),
+          datasets,
           transmissionDateFrom,
           transmissionDateTo,
         })
@@ -235,7 +236,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch, sourcesSelected, t, transmissionDateFrom, transmissionDateTo]
+    [dispatch, sourcesSelected, sourceOptions, t, transmissionDateFrom, transmissionDateTo]
   )
 
   useEffect(() => {
@@ -554,21 +555,31 @@ function VesselGroupModal(): React.ReactElement<any> {
         ) : hasVesselGroupsVessels ? (
           <Fragment>
             <label>
-              {t((t) => t.vesselGroup.searchResultsTable, {
-                field: selectedCsvColumns ? listAsSentence(selectedCsvColumns) : searchIdField,
-                timeRange:
-                  transmissionDateFrom && transmissionDateTo
-                    ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
-                        start: formatI18nDate(transmissionDateTo),
-                        end: formatI18nDate(transmissionDateFrom),
-                      })}`
-                    : transmissionDateFrom
-                      ? ` ${t((t) => t.common.active_before)} ${formatI18nDate(transmissionDateFrom)}`
-                      : transmissionDateTo
-                        ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
-                        : '',
-                number: getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup),
-              })}
+              {editingVesselGroup
+                ? `${t((t) => t.common.vessel, {
+                    count: getVesselGroupVesselsCount({
+                      vessels: vesselGroupVessels,
+                    } as VesselGroup),
+                  })}:  ${getVesselGroupVesselsCount({
+                    vessels: vesselGroupVessels,
+                  } as VesselGroup)}`
+                : t((t) => t.vesselGroup.searchResultsTable, {
+                    field: selectedCsvColumns ? listAsSentence(selectedCsvColumns) : searchIdField,
+                    timeRange:
+                      transmissionDateFrom && transmissionDateTo
+                        ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
+                            start: formatI18nDate(transmissionDateTo),
+                            end: formatI18nDate(transmissionDateFrom),
+                          })}`
+                        : transmissionDateFrom
+                          ? ` ${t((t) => t.common.active_before)} ${formatI18nDate(transmissionDateFrom)}`
+                          : transmissionDateTo
+                            ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
+                            : '',
+                    number: getVesselGroupVesselsCount({
+                      vessels: vesselGroupVessels,
+                    } as VesselGroup),
+                  })}
             </label>
             <div className={styles.vesselsTableContainer}>
               <VesselGroupVessels searchIdField={searchIdField || 'imo'} />

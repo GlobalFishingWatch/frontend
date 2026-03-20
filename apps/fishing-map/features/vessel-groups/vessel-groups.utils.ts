@@ -2,6 +2,7 @@ import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
 import type { IdentityVessel, VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 
 import { PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -14,6 +15,18 @@ import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   const isPrivate = !vesselGroup.id.endsWith(`-${PUBLIC_SUFIX}`)
   return `${isPrivate ? `${PRIVATE_ICON} ` : ''}${vesselGroup.name}`
+}
+
+export const vesselPropertyToApiSearch = (
+  col: VesselPropertyGuessColumn
+): 'id' | 'ssvid' | 'imo' | 'flag' => {
+  const map: Record<VesselPropertyGuessColumn, 'id' | 'ssvid' | 'imo' | 'flag'> = {
+    vesselId: 'id',
+    mmsi: 'ssvid',
+    imo: 'imo',
+    flag: 'flag',
+  }
+  return map[col]
 }
 
 export const isOutdatedVesselGroup = (vesselGroup: VesselGroup) => {

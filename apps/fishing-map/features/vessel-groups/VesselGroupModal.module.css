@@ -98,6 +98,15 @@
 
 .idsArea textarea {
   flex: 1;
+  resize: none;
+}
+
+.errorPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-S);
+  height: 100%;
 }
 
 .columnCheckbox {

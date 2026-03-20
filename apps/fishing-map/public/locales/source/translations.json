@@ -1262,6 +1262,7 @@
     "loginToAdd": "Login to add to group",
     "missingParam": "Vessel group {{param}} is mandatory",
     "new": "New vessel group",
+    "noColumnsToSelect": "The csv file has no columns to select",
     "notFound": "Vessel group not found",
     "remove": "Remove vessel group",
     "removeUnknownVessels": "Do you want to remove all ({{param}}) unnamed vessels?",
