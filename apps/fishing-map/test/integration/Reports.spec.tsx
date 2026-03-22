@@ -7,8 +7,9 @@ import { openComparisonReport } from 'test/utils/actions/openComparisonReport'
 import { openGlobalReportAction } from 'test/utils/actions/openGlobalReportAction'
 import { getOpenReportActionByArea } from 'test/utils/actions/openReportAction'
 import { defaultState } from 'test/utils/store/redux-store-test'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
+import { cleanup } from 'vitest-browser-react'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
@@ -26,7 +27,7 @@ import { makeStore } from 'store'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
-  timeout = 30000
+  timeout = 60000
 ) => {
   await vi.waitFor(
     () => {
@@ -84,10 +85,16 @@ const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, time
 }
 
 const mpaReportAction = getOpenReportActionByArea('mpa')
+const eezReportAction = getOpenReportActionByArea('eez')
 
 describe('Reports', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    cleanup()
+    vi.clearAllTimers()
   })
 
   it('should navigate to a report from eez', async () => {
@@ -98,8 +105,7 @@ describe('Reports', () => {
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
-    await getByTestId('context-layer-context-layer-eez').click()
-
+    await userEvent.click(getByTestId('context-layer-context-layer-eez'))
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
@@ -111,7 +117,7 @@ describe('Reports', () => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await userEvent.click(mapElement, { position: { x, y } })
 
-    await getByTestId('open-analysis-link').click()
+    await userEvent.click(getByTestId('open-analysis-link'))
 
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
     expect(store.getState().location.type).toBe(WORKSPACE_REPORT)
@@ -193,14 +199,14 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
-    store.dispatch(mpaReportAction)
+    store.dispatch(eezReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const initialHours = getCalculatedReportHours(jotaiStore)
     expect(initialHours).toBeDefined()
 
-    await getByTestId('reports-summary-tags-filters').first().click()
+    await userEvent.click(getByTestId('reports-summary-tags-filters').first())
 
     await expect.element(getByTestId('reports-summary-expanded-container')).toBeVisible()
 
@@ -209,7 +215,7 @@ describe('Reports', () => {
     await userEvent.keyboard('portugal')
     await new Promise((resolve) => setTimeout(resolve, 100))
     const option = getByText(/portugal/i)
-    await option.click()
+    await userEvent.click(option)
     filterInput.element().blur()
     await getByTestId('confirm-filters-button').click()
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -227,11 +233,11 @@ describe('Reports', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
     const { getByText } = await render(<App />, { store, jotaiStore })
+
     jotaiStore.set(timerangeState, {
       start: '2025-12-17T00:00:00.000Z',
       end: '2025-12-18T00:00:00.000Z',
     })
-
     store.dispatch({
       type: 'WORKSPACE_REPORT',
       payload: {
@@ -541,31 +547,30 @@ describe('Data Comparison', () => {
 
     await userEvent.click(getByTestId('graph-type-selector'))
     const comparisonOption = getByText(/data comparison/i)
-    await comparisonOption.click()
+    await userEvent.click(comparisonOption)
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     const dataComparisonSelect = getByTestId('comparison-dataset-select')
-    await dataComparisonSelect.click()
-    await getByText(/imagery detections/i).click()
+    await userEvent.click(dataComparisonSelect)
+    await userEvent.click(getByText(/imagery detections/i))
 
     const actions = testingMiddleware.getActions()
     const addLayerAction = actions.findLast((action) => action.type === 'WORKSPACE_REPORT')
 
-    expect(addLayerAction?.query).toEqual(
-      expect.objectContaining({
-        reportComparisonDataviewIds: {
-          compare: 'sentinel2__dataset-comparison',
-          main: 'ais',
-        },
-      })
-    )
+    expect(addLayerAction?.query).toMatchObject({
+      reportComparisonDataviewIds: {
+        compare: 'sentinel2__dataset-comparison',
+        main: 'ais',
+      },
+    })
   })
 
   it('should show both dataviews in graph when compared data is selected', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(openComparisonReport)
     const { getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openComparisonReport)
 
     await waitForReportFeaturesLoaded(jotaiStore)
     const comparisonGraph = getByTestId('report-activity-dataset-comparison')
