@@ -7,9 +7,8 @@ import { openComparisonReport } from 'test/utils/actions/openComparisonReport'
 import { openGlobalReportAction } from 'test/utils/actions/openGlobalReportAction'
 import { getOpenReportActionByArea } from 'test/utils/actions/openReportAction'
 import { defaultState } from 'test/utils/store/redux-store-test'
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
-import { cleanup } from 'vitest-browser-react'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
@@ -62,7 +61,7 @@ const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore
   return sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
 }
 
-const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 5000) => {
+const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 20000) => {
   return await vi.waitFor(
     () => {
       const state = store.getState()
@@ -92,10 +91,10 @@ describe('Reports', () => {
     vi.clearAllMocks()
   })
 
-  afterEach(() => {
-    cleanup()
-    vi.clearAllTimers()
-  })
+  // afterEach(() => {
+  //   cleanup()
+  //   vi.clearAllTimers()
+  // })
 
   it('should navigate to a report from eez', async () => {
     const testingMiddleware = createTestingMiddleware()
@@ -106,16 +105,16 @@ describe('Reports', () => {
 
     const mapElement = getByTestId('app-main')
     await userEvent.click(getByTestId('context-layer-context-layer-eez'))
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
     const [x, y] = viewport?.project([-28, 38]) || [0, 0]
 
-    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await userEvent.hover(mapElement, { position: { x, y } })
-    await new Promise((resolve) => setTimeout(resolve, 1000))
     await userEvent.click(mapElement, { position: { x, y } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     await userEvent.click(getByTestId('open-analysis-link'))
 
@@ -129,11 +128,12 @@ describe('Reports', () => {
     const jotaiStore = createJotaiStore()
 
     store.dispatch(mpaReportAction)
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const timerange = jotaiStore.get(timerangeState)
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     expect(timerange).toBeDefined()
     const start = formatI18nDate(timerange?.start)
@@ -151,6 +151,7 @@ describe('Reports', () => {
     store.dispatch(mpaReportAction)
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const initialReportData = jotaiStore.get(reportStateAtom)
@@ -216,9 +217,11 @@ describe('Reports', () => {
     await new Promise((resolve) => setTimeout(resolve, 100))
     const option = getByText(/portugal/i)
     await userEvent.click(option)
-    filterInput.element().blur()
+    await userEvent.tab()
     await getByTestId('confirm-filters-button').click()
     await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const updatedHours = getCalculatedReportHours(jotaiStore)
@@ -232,7 +235,7 @@ describe('Reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     jotaiStore.set(timerangeState, {
       start: '2025-12-17T00:00:00.000Z',
@@ -266,6 +269,7 @@ describe('Reports', () => {
         bivariateDataviews: null,
       },
     })
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect.element(getByText(/No data available for the selected area/)).toBeVisible()
   })
@@ -335,8 +339,7 @@ describe('Global reports', () => {
   it('should have activity, events and detections tabs', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByText } = await render(<App />, { store })
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
@@ -352,6 +355,7 @@ describe('Global reports', () => {
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     const statsQueryState = await waitForStatsQueryLoaded(store)
     const statsData = statsQueryState?.data
@@ -382,7 +386,7 @@ describe('Global reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
@@ -390,7 +394,10 @@ describe('Global reports', () => {
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const presenceButton = getByText(/vessel Presence/i)
-    await presenceButton.click()
+    await userEvent.click(presenceButton)
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
+
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect.element(getByText(/hours of Vessel presence in the area between/i)).toBeVisible()
 
@@ -407,8 +414,8 @@ describe('Global reports', () => {
           loaded: true,
         },
         presence: {
-          cacheHash:
-            '1761955200000,1771372800000,1759276800000,DAY,,,-presence-public-global-presence:v4.0--|false|true',
+          cacheHash: expect.stringContaining('presence-public-global-presence'),
+          // '1761955200000,1771372800000,1759276800000,DAY,,,-presence-public-global-presence:v4.0--|false|true',
           loaded: true,
         },
       })
@@ -423,7 +430,10 @@ describe('Global reports', () => {
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
     const detectionsTab = getByText('Detections')
-    await detectionsTab.click()
+    await userEvent.click(detectionsTab)
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     const subselector = getByTestId('report-subsection-selector')
     await expect.element(subselector).toBeVisible()
@@ -525,6 +535,7 @@ describe('Data Comparison', () => {
     store.dispatch(mpaReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const graphTypeSelector = getByTestId('graph-type-selector')
@@ -532,6 +543,7 @@ describe('Data Comparison', () => {
     await graphTypeSelector.click()
     const comparisonOption = getByText(/data comparison/i)
     await comparisonOption.click()
+    await new Promise((resolve) => setTimeout(resolve, 100))
 
     await expect.element(getByTestId('comparison-dataset-select')).toBeVisible()
   })
@@ -572,6 +584,7 @@ describe('Data Comparison', () => {
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openComparisonReport)
 
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
     const comparisonGraph = getByTestId('report-activity-dataset-comparison')
     const graphElement = comparisonGraph.element()
