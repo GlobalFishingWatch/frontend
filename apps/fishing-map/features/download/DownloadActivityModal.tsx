@@ -15,7 +15,10 @@ import {
 import { selectDownloadActivityModalOpen } from 'features/download/download.selectors'
 import {
   resetDownloadActivityState,
+  resetDownloadActivityStateKeepPolling,
   selectDownloadActiveTabId,
+  selectIsDownloadActivityLoading,
+  selectIsDownloadActivityTimeoutError,
   setDownloadActiveTab,
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityEnvironment from 'features/download/DownloadActivityEnvironment'
@@ -36,6 +39,8 @@ function DownloadActivityModal() {
   const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
   const [disableDownloadSurvey, _] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
   const [showSurvey, setShowSurvey] = useState(false)
+  const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
 
   useEffect(() => {
     if (activityAndDetectionsDataviews.length > 0) {
@@ -83,7 +88,11 @@ function DownloadActivityModal() {
   }
 
   const onClose = () => {
-    dispatch(resetDownloadActivityState())
+    if (!isDownloadLoading && !isDownloadTimeoutError) {
+      dispatch(resetDownloadActivityStateKeepPolling())
+    } else {
+      dispatch(resetDownloadActivityState())
+    }
   }
 
   return (

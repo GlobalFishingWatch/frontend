@@ -20,7 +20,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
 import type { GroupBy, SpatialResolution, TemporalResolution } from './downloadActivity.config'
-import { HeatmapDownloadFormat,HeatmapDownloadTab } from './downloadActivity.config'
+import { HeatmapDownloadFormat, HeatmapDownloadTab } from './downloadActivity.config'
 
 export type DateRange = {
   start: string
@@ -156,6 +156,7 @@ export const downloadActivityThunk = createAsyncThunk<
       }).then((blob) => {
         saveAs(blob as any, fileName)
       })
+      console.log('🚀 ~ createdDownload:', createdDownload)
 
       return createdDownload
     } catch (e: any) {
@@ -190,6 +191,9 @@ const downloadActivitySlice = createSlice({
       state.fileName = ''
       state.hadTimeoutError = false
     },
+    resetDownloadActivityStateKeepPolling: (state) => {
+      state.areaKey = undefined
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(downloadActivityLastReportThunk.pending, (state) => {
@@ -221,7 +225,8 @@ const downloadActivitySlice = createSlice({
       } else {
         state.status = AsyncReducerStatus.Error
         if (action.payload?.message) {
-          const isTimeoutError = getIsTimeoutError(action.payload)
+          const isTimeoutError =
+            getIsTimeoutError(action.payload) || getIsConcurrentError(action.payload)
           if (isTimeoutError) {
             state.hadTimeoutError = true
           }
@@ -237,6 +242,7 @@ export const {
   setDownloadActiveTab,
   setDownloadActivityAreaKey,
   resetDownloadActivityState,
+  resetDownloadActivityStateKeepPolling,
 } = downloadActivitySlice.actions
 
 const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
