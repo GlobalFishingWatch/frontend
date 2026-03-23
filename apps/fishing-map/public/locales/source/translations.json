@@ -464,7 +464,7 @@
     "downloading": "Downloading",
     "downloadOptions": "Download options",
     "doYouNeedAnAPI": "Does your application need continuous data?",
-    "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
+    "errorConcurrentReport": "You have already requested to download an area, please wait for the download to complete before requesting another.",
     "eventsDownload": "Download events",
     "eventsDownloadLogin": "Register and login to download vessel events (it is free and takes 2 minutes)",
     "format": "Format",

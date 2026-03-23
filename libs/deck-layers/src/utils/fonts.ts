@@ -14,6 +14,9 @@ export function loadDeckFont() {
       .then(() => {
         ;(document.fonts as any).add(font)
       })
+      .catch((error) => {
+        console.error('Failed to load DeckFont', error)
+      })
       .finally(() => {
         resolve(true)
       })
