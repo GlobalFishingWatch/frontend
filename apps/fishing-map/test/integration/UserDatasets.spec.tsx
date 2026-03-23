@@ -41,13 +41,16 @@ describe('User Datasets', () => {
 
     await openLayerModalButton.click()
 
+    // wait for the modal to open and fetch user datasets
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     await userEvent.click(getByRole('button', { name: 'User' }))
 
     const addLayerModal = getByRole('dialog')
 
     await expect.element(addLayerModal.getByText('Tracks')).toBeVisible()
     await expect.element(addLayerModal.getByText('Polygons')).toBeVisible()
-    await expect.element(addLayerModal.getByText('Points')).toBeVisible()
+    await expect.element(addLayerModal.getByText('Points', { exact: true })).toBeVisible()
     await expect.element(addLayerModal.getByText('Bigquery')).toBeVisible()
   })
 
@@ -85,9 +88,9 @@ describe('User Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
-    expect(
-      getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' })
-    ).toBeVisible()
+    await expect
+      .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' }))
+      .toBeVisible()
     expect(addLayerAction?.query).toEqual({
       longitude: 26,
       latitude: 19,
@@ -382,7 +385,7 @@ describe('User Datasets', () => {
     window.confirm = () => true
     await userEvent.click(getByTestId('sidebar-login-icon'))
     await userEvent.click(getByText('Dataset'))
-    const deleteButton = getByTestId(/delete-dataset-public-iccat-2019-points-/)
+    const deleteButton = getByTestId(/delete-dataset-public-iccat-2019-points-/).first()
     await userEvent.click(deleteButton)
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
