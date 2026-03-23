@@ -30,7 +30,7 @@ export const OPEN_REPORT_ACTION = {
   },
 }
 
-type DatasetId = 'public-eez-areas' | 'public-mpa-areas' | 'public-rfmo'
+type DatasetId = 'public-eez-areas' | 'public-mpa-all' | 'public-rfmo'
 const dataviewInstancesByDatasetId: Record<DatasetId, UrlDataviewInstance[]> = {
   'public-eez-areas': [
     {
@@ -38,7 +38,7 @@ const dataviewInstancesByDatasetId: Record<DatasetId, UrlDataviewInstance[]> = {
       config: { visible: true },
     },
   ],
-  'public-mpa-areas': [
+  'public-mpa-all': [
     {
       id: MPA_DATAVIEW_INSTANCE_ID,
       config: { visible: true },
@@ -72,7 +72,7 @@ const getOpenReportActionByDatasetAndAreaName = (
   const areaId =
     datasetId === 'public-eez-areas'
       ? eezAreaIdsByName[areaName as EEZNames]
-      : datasetId === 'public-mpa-areas'
+      : datasetId === 'public-mpa-all'
         ? mpaAreaIdsByName[areaName as MPANames]
         : rfmoAreaIdsByName[areaName as RFMONames]
   if (!areaId) {
@@ -98,7 +98,7 @@ export const getOpenReportActionByArea = (reportArea: ReportArea) => {
     case 'eez':
       return getOpenReportActionByDatasetAndAreaName('public-eez-areas', 'Azores')
     case 'mpa':
-      return getOpenReportActionByDatasetAndAreaName('public-mpa-areas', 'Coco')
+      return getOpenReportActionByDatasetAndAreaName('public-mpa-all', 'Coco')
     case 'rfmo':
       return getOpenReportActionByDatasetAndAreaName('public-rfmo', 'ICCAT')
   }
