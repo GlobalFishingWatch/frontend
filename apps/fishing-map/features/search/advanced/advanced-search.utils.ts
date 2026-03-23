@@ -20,8 +20,13 @@ export const schemaFilterIds: (keyof VesselSearchState)[] = [
   'targetSpecies',
   'nationalId',
   // pipe 4 new fields
-  'externalId',
-  'sourceFleet',
+  'selfReportedInfo.externalId',
+  'selfReportedInfo.sourceFleet',
+  'selfReportedInfo.hull',
+  'selfReportedInfo.origin',
+  'selfReportedInfo.fishingLicenseCode',
+  'selfReportedInfo.fleetCode',
+  'selfReportedInfo.vesselRegistrationCode',
 ]
 
 export const getSearchDataview = (

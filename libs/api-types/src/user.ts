@@ -30,6 +30,7 @@ export type UserPermissionType =
   | 'user-property'
 
 export type UserPermissionValue =
+  | 'tmt'
   | 'carrier-portal'
   | 'carriers:*'
   | 'data-portal'

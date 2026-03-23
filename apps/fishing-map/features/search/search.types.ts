@@ -12,19 +12,29 @@ export type VesselSearchState = {
   ssvid?: string
   imo?: string
   callsign?: string
-  codMarinha?: string // pipe 3
-  nationalId?: string // pipe 3
-  externalId?: string
   flag?: string[]
   geartypes?: GearType[]
   shiptypes?: VesselType[]
-  targetSpecies?: string
   transmissionDateFrom?: string
   transmissionDateTo?: string
   owner?: string
-  sourceFleet?: string[]
-  fleet?: string[] // pipe 3
+  // VMS pipe 3
   origin?: string
+  fleet?: string[]
+  externalId?: string
+  nationalId?: string
+  codMarinha?: string
+  targetSpecies?: string
+  // VMS pipe 4
+  'selfReportedInfo.externalId'?: string
+  'selfReportedInfo.sourceFleet'?: string[]
+  // VMS-PER
+  'selfReportedInfo.hull'?: string
+  'selfReportedInfo.origin'?: string
+  // VMS-BRA
+  'selfReportedInfo.fishingLicenseCode'?: string
+  'selfReportedInfo.fleetCode'?: string
+  'selfReportedInfo.vesselRegistrationCode'?: string
 }
 
 export type VesselSearchStateProperty = keyof VesselSearchState
