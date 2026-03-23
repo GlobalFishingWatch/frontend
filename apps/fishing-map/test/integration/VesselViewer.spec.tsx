@@ -30,7 +30,7 @@ describe('Vessel viewer', async () => {
     await expect.element(getByText('Length (M)')).toBeVisible()
     await expect.element(getByText('Depth (M)')).toBeVisible()
     await expect.element(getByText('Gross Tonnage')).toBeVisible()
-    await expect.element(getByText('Owner')).toBeVisible()
+    await expect.element(getByText('Owner').first()).toBeVisible()
     await expect.element(getByText('Operator')).toBeVisible()
     await expect.element(getByText('Authorization')).toBeVisible()
     await expect.element(getByText('View in')).toBeVisible()
