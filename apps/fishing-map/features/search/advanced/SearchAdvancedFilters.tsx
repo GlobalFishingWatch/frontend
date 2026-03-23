@@ -11,7 +11,7 @@ import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
-import { getDataviewFilterConfig } from 'features/dataviews/dataviews.filters'
+import { getDataviewFilterConfig, getFilterLabel } from 'features/dataviews/dataviews.filters'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   ADVANCED_SEARCH_FIELDS,
@@ -165,7 +165,12 @@ function SearchAdvancedFilters() {
   return (
     <div className={styles.filters}>
       {ADVANCED_SEARCH_FIELDS.map((field) => (
-        <AdvancedFilterInputField key={field} field={field} onChange={onInputChange} />
+        <AdvancedFilterInputField
+          key={field}
+          field={field}
+          onChange={onInputChange}
+          label={getFilterLabel(field)}
+        />
       ))}
       <Select
         label={t((t) => t.vessel.infoSource)}
@@ -235,6 +240,7 @@ function SearchAdvancedFilters() {
           return (
             <AdvancedFilterInputField
               key={schemaFilter.id}
+              label={schemaFilter.label}
               field={schemaFilter.id as keyof VesselSearchState}
               onChange={onInputChange}
             />
@@ -252,7 +258,7 @@ function SearchAdvancedFilters() {
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={t((t: any) => t.vessel[translationKey], { defaultValue: translationKey })}
+            label={schemaFilter.label || getFilterLabel(translationKey as SupportedDatasetFilter)}
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,

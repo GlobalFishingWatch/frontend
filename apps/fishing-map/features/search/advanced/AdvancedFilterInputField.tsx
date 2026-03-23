@@ -9,9 +9,10 @@ import type { VesselSearchState } from 'features/search/search.types'
 type AdvancedFilterInputFieldProps = {
   onChange: (ev: React.ChangeEvent<HTMLInputElement>) => void
   field: keyof VesselSearchState
+  label: string
 }
 
-function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldProps) {
+function AdvancedFilterInputField({ onChange, field, label }: AdvancedFilterInputFieldProps) {
   const { t } = useTranslation()
   const searchFilterErrors = useSearchFiltersErrors()
   const { searchFilters } = useSearchFiltersConnect()
@@ -42,7 +43,7 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
       }
       value={value}
       placeholder={PLACEHOLDER_BY_FIELD[field as string]}
-      label={t((t: any) => t.vessel[field === 'ssvid' ? 'mmsi' : field], { defaultValue: field })}
+      label={label}
     />
   )
 }
