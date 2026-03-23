@@ -50,8 +50,10 @@ import {
 import type { ReportVesselWithDatasets } from './area-reports.selectors'
 
 export const tickFormatter = (tick: number) => {
-  const formatter = tick < 1 && tick > -1 ? '~r' : '~s'
-  return format(formatter)(tick)
+  return new Intl.NumberFormat('en', {
+    notation: 'compact',
+    compactDisplay: 'short',
+  }).format(tick)
 }
 
 export const formatDate = (date: DateTime, timeChunkInterval: FourwingsInterval | string) => {
