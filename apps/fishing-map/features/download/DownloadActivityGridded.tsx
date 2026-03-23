@@ -26,6 +26,7 @@ import type { DateRange, DownloadActivityParams } from 'features/download/downlo
 import {
   downloadActivityThunk,
   selectDownloadActivityAreaKey,
+  selectIsDownloadActivityConcurrentError,
   selectIsDownloadActivityError,
   selectIsDownloadActivityFinished,
   selectIsDownloadActivityLoading,
@@ -44,7 +45,6 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -83,6 +83,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
   const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id)
+  const isDownloadConcurrentError = useSelector(selectIsDownloadActivityConcurrentError)
 
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -294,8 +295,16 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
             testId="download-activity-gridded-button"
             onClick={onDownloadClick}
             className={styles.downloadBtn}
+            tooltip={
+              isDownloadConcurrentError ? t((t) => t.download.errorConcurrentReport) : undefined
+            }
             loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
-            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
+            disabled={
+              !isDownloadReportSupported ||
+              isDownloadAreaLoading ||
+              isDownloadError ||
+              isDownloadConcurrentError
+            }
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>

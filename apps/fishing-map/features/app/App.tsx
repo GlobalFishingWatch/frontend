@@ -14,6 +14,7 @@ import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import AppModals from 'features/modals/Modals'
@@ -80,6 +81,8 @@ function App() {
   useUserLanguageUpdate()
   useFeatureFlagsToast()
   useFetchTrackCorrections()
+  useActivityDownloadTimeoutRefresh()
+
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
