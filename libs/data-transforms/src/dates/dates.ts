@@ -6,21 +6,22 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
+const DATE_PARSE_METHODS: DateTimeParseFunction[] = [
+  DateTime.fromISO,
+  DateTime.fromSQL,
+  DateTime.fromRFC2822,
+  (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
+  (s: string, opts: any) => DateTime.fromFormat(s, 'd/M/yyyy', opts),
+]
+
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
   // it could receive a timestamp as a string
   const millis = toNumber(timestamp)
   if (typeof timestamp === 'number' || !isNaN(millis))
     return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
-
-  const tryParseMethods: DateTimeParseFunction[] = [
-    DateTime.fromISO,
-    DateTime.fromSQL,
-    DateTime.fromRFC2822,
-    (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
-  ]
   let result
-  for (let index = 0; index < tryParseMethods.length; index++) {
-    const parse = tryParseMethods[index]
+  for (let index = 0; index < DATE_PARSE_METHODS.length; index++) {
+    const parse = DATE_PARSE_METHODS[index]
     try {
       result = parse(timestamp, { zone: 'UTC' })
       if (result.isValid) {
@@ -54,14 +55,9 @@ export const getUTCDateTime = (d: SupportedDateType): DateTime => {
     }
     return DateTime.fromMillis(millis, { zone: 'UTC' })
   }
-  const tryParseMethods: DateTimeParseFunction[] = [
-    DateTime.fromISO,
-    DateTime.fromSQL,
-    DateTime.fromRFC2822,
-  ]
   let result
-  for (let index = 0; index < tryParseMethods.length; index++) {
-    const parse = tryParseMethods[index]
+  for (let index = 0; index < DATE_PARSE_METHODS.length; index++) {
+    const parse = DATE_PARSE_METHODS[index]
     try {
       result = parse(d, { zone: 'UTC' })
       if (result.isValid) {
@@ -102,7 +98,7 @@ export const formatDateForInterval = (
   timeChunkInterval: FourwingsInterval
 ) => {
   const dateTime = DateTime.isDateTime(date) ? date : getUTCDateTime(date)
-  let formattedTick = ''
+  let formattedTick
   switch (timeChunkInterval) {
     case 'YEAR':
       formattedTick = dateTime.year.toString()
