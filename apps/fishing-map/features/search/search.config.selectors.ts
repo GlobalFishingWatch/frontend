@@ -32,13 +32,30 @@ export const selectSearchShiptypes = selectVesselSearchStateProperty('shiptypes'
 export const selectSearchTargetSpecies = selectVesselSearchStateProperty('targetSpecies')
 export const selectSearchOrigin = selectVesselSearchStateProperty('origin')
 
-export const selectSearchExternalId = selectVesselSearchStateProperty('externalId')
+export const selectSearchSelfReportedExternalId = selectVesselSearchStateProperty(
+  'selfReportedInfo.externalId'
+)
+export const selectSearchSelfReportedSourceFleet = selectVesselSearchStateProperty(
+  'selfReportedInfo.sourceFleet'
+)
+export const selectSearchSelfReportedFishingLicenseCode = selectVesselSearchStateProperty(
+  'selfReportedInfo.fishingLicenseCode'
+)
+export const selectSearchSelfReportedFleetCode = selectVesselSearchStateProperty(
+  'selfReportedInfo.fleetCode'
+)
+export const selectSearchSelfReportedVesselRegistrationCode = selectVesselSearchStateProperty(
+  'selfReportedInfo.vesselRegistrationCode'
+)
+export const selectSearchSelfReportedHull = selectVesselSearchStateProperty('selfReportedInfo.hull')
+export const selectSearchSelfReportedOrigin =
+  selectVesselSearchStateProperty('selfReportedInfo.origin')
 
 //TO DO: remove the below selectors when migrate to pipe 4
 export const selectSearchNationalId = selectVesselSearchStateProperty('nationalId')
 export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
 export const selectSearchFleet = IS_PIPE_4
-  ? selectVesselSearchStateProperty('sourceFleet')
+  ? selectVesselSearchStateProperty('selfReportedInfo.sourceFleet')
   : selectVesselSearchStateProperty('fleet')
 
 export const selectSearchFilters = createSelector(
@@ -52,7 +69,6 @@ export const selectSearchFilters = createSelector(
     selectSearchImo,
     selectSearchCallsign,
     selectSearchOwner,
-    selectSearchExternalId,
     selectSearchNationalId,
     selectSearchCodMarinha,
     selectSearchGeartypes,
@@ -61,6 +77,13 @@ export const selectSearchFilters = createSelector(
     selectSearchFleet,
     selectSearchOrigin,
     selectSearchInfoSource,
+    selectSearchSelfReportedExternalId,
+    selectSearchSelfReportedSourceFleet,
+    selectSearchSelfReportedFishingLicenseCode,
+    selectSearchSelfReportedFleetCode,
+    selectSearchSelfReportedVesselRegistrationCode,
+    selectSearchSelfReportedHull,
+    selectSearchSelfReportedOrigin,
   ],
   (
     id,
@@ -72,7 +95,6 @@ export const selectSearchFilters = createSelector(
     imo,
     callsign,
     owner,
-    externalId,
     nationalId,
     codMarinha,
     geartypes,
@@ -80,7 +102,14 @@ export const selectSearchFilters = createSelector(
     targetSpecies,
     fleet,
     origin,
-    infoSource
+    infoSource,
+    selfReportedExternalId,
+    selfReportedSourceFleet,
+    selfReportedFishingLicenseCode,
+    selfReportedFleetCode,
+    selfReportedVesselRegistrationCode,
+    selfReportedHull,
+    selfReportedOrigin
   ): VesselSearchState => {
     return {
       id,
@@ -92,7 +121,6 @@ export const selectSearchFilters = createSelector(
       imo,
       callsign,
       owner,
-      externalId,
       nationalId,
       codMarinha,
       geartypes,
@@ -101,6 +129,13 @@ export const selectSearchFilters = createSelector(
       fleet,
       origin,
       infoSource,
+      'selfReportedInfo.externalId': selfReportedExternalId,
+      'selfReportedInfo.fishingLicenseCode': selfReportedFishingLicenseCode,
+      'selfReportedInfo.sourceFleet': selfReportedSourceFleet,
+      'selfReportedInfo.fleetCode': selfReportedFleetCode,
+      'selfReportedInfo.hull': selfReportedHull,
+      'selfReportedInfo.origin': selfReportedOrigin,
+      'selfReportedInfo.vesselRegistrationCode': selfReportedVesselRegistrationCode,
     }
   }
 )

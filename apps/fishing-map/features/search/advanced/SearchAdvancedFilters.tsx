@@ -33,7 +33,13 @@ import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
-const VMS_FILTERS_WITH_STRING_SEARCH = IS_PIPE_4 ? ['externalId'] : ['codMarinha', 'nationalId']
+const VMS_FILTERS_WITH_STRING_SEARCH = IS_PIPE_4
+  ? [
+      'selfReportedInfo.externalId',
+      'selfReportedInfo.fishingLicenseCode',
+      'selfReportedInfo.vesselRegistrationCode',
+    ]
+  : ['codMarinha', 'nationalId']
 
 type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
 type IncompatibleFilterSelection = {
