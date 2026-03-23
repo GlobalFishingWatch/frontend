@@ -82,11 +82,27 @@
   },
   "private-bra-onyxsat-vessel-identity-fishing": {
     "name": "VMS Brazil (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil)"
+    "description": "Fishing Vessels (VMS Brazil)",
+    "schema": {
+      "selfReportedInfo.codMarinha": {
+        "keyword": "codMarinha"
+      },
+      "selfReportedInfo.targetSpecies": {
+        "keyword": "targetSpecies"
+      }
+    }
   },
   "private-bra-onyxsat-vessel-identity-non-fishing": {
     "name": "VMS Brazil (Non Fishing Vessels)",
-    "description": "Non Fishing Vessels (VMS Brazil)"
+    "description": "Non Fishing Vessels (VMS Brazil)",
+    "schema": {
+      "selfReportedInfo.codMarinha": {
+        "keyword": "codMarinha"
+      },
+      "selfReportedInfo.targetSpecies": {
+        "keyword": "targetSpecies"
+      }
+    }
   },
   "private-brazil-opentuna-presence": {
     "name": "Brazil VMS",
@@ -148,6 +164,9 @@
           "48": "48"
         }
       },
+      "is_closed": {
+        "keyword": "is_closed"
+      },
       "start_distance_from_port_trunc": {
         "keyword": "start_distance_from_port_trunc",
         "enum": {
@@ -169,6 +188,25 @@
           "4": "4",
           "5": "5"
         }
+      }
+    }
+  },
+  "private-global-planet-footprints": {
+    "name": "Planet footprints",
+    "description": "Planet footprints"
+  },
+  "private-global-planet-presence": {
+    "name": "Planet Imagery detections (Optical)",
+    "description": "<h2>Overview</h2> <p> This layer shows vessels detected using optical satellite imagery collected by the European Space Agency's Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths. This type of imagery provides high-resolution detail that allows us to spot small vessels, identify wake patterns, and better understand activity near shore. </p> <p> Global Fishing Watch uses a machine learning model that processes each image to identify vessels and estimate their length, orientation, and speed based on wake features. The detections are then filtered using a secondary classifier to remove objects that are not vessels, such as clouds, rocks or icebergs. Each detection is linked to a cropped image (a thumbnail) so users can visually inspect what the model identified. </p> <p> Because optical satellites rely on sunlight and clear skies, detections are only possible during the day and when the area is not obscured by clouds or haze. Despite these limitations, detections with optical imagery are especially helpful in identifying small untracked vessels that may not appear in other tracking systems. </p> <h2>Use cases</h2> <ul> <li> Monitor vessel presence (both fishing and non-fishing) in areas of interest such as marine protected areas (MPAs), exclusive economic zones (EEZs), inshore exclusion zones (IEZs) and Regional Fisheries Management Organisations (RFMOs). In some cases, activity like bottom trawling can be seen through disturbance to seabed sediment. </li> <li> Assess presence of vessels that don't show up on cooperative tracking systems—including automatic identification system (AIS) and vessel monitoring system (VMS)—near vulnerable marine ecosystems and essential fish habitats. </li> <li> Goes beyond vessel detection in other satellite remote sensors like Sentinel-1 SAR and VIIRS which simply detect the presence of an object, with Sentinel-2 users can often infer the object's activity based on the wake of a detection, and in some cases, the dataset can be used to identify fishing activity e.g. sediment plumes of trawlers, net encircling fish in purse seine vessels. </li> <li> Support analyses on small-scale fishing. While the 10m resolution is still too coarse to comprehensively map small-scale fishing, Sentinel-2 detections have been integrated into multiple analyses related to regional small-scale fishery and demonstrated the potential as a valuable addition to the limited vessel tracking data. </li> </ul> <h2>Limitations</h2> <ul> <li> Vessel detection with optical imagery requires daylight and clear skies <ul> <li> Unlike radar, optical satellites cannot see through clouds, fog, or haze. Detections are only possible during daylight hours when the view is unobstructed. </li> </ul> </li> <li> Not all geographies are covered equally <ul> <li> Sentinel-2 coverage is mostly limited to coastal waters. It revisits most areas every five days, but the image availability depends on the weather. Cloudy or hazy regions have lower effective revisit frequencies than regions with better weather conditions. </li> </ul> </li> <li> The detections may include false positives <ul> <li> Despite post-processing, the model may still produce occasional false detections—e.g., picking up buoys, debris, fixed infrastructure, or image artifacts. These false positives are reduced using a secondary classifier, but not completely eliminated. </li> </ul> </li> <li> Uncertainty in some vessel features <ul> <li> Smaller or slower-moving vessels may not produce visible wakes, making it more difficult to estimate their speed or heading. Therefore, these values may be inaccurate for small boats. </li> </ul> </li> <li> Not all detections unmatched to AIS are untracked vessels <ul> <li> The detections include both vessels on AIS and untracked vessels. We try to match detections to AIS tracks, but sometimes matching is not feasible due to large time gaps between AIS positions and in areas with high density of detections. </li> </ul> </li> </ul> <h2>Methods</h2> <h3>Optical imagery</h3> <p> This layer is based on images from the Sentinel-2 satellites operated by the European Space Agency (ESA). These satellites capture medium-resolution images (10 m per pixel) of the ocean using visible and near-infrared light (among several other bands). Combined, the satellites acquire images of most coastal waters and dedicated areas in the open ocean roughly every five days, and the imagery is made freely available by the ESA. </p> <h3>Image processing and selection</h3> <p> We use pre-processed Sentinel-2 images that have been corrected for geometric distortions and aligned to the Earth's surface. These images are split into manageable tiles, and we selected the tiles that cover only ocean areas (image tiles over land are excluded). We use four image bands: red, green, blue (RGB), and near-infrared (NIR), all at 10-meter resolution. These bands give us the detail and contrast needed to detect and classify vessels. </p> <h3>Vessel detection</h3> <p> Our machine learning model scans each image tile to detect vessels. It is trained to look for features such as the shape, brightness, and wake of a vessel. When it finds a likely candidate, the model predicts a score for vessel presence alongside estimates of the vessel's location, size, orientation, and speed. </p> <p> The detection model was trained on over 11,000 manually reviewed vessel examples across thousands of Sentinel-2 scenes. This training process included many small vessels and scenes from around the world, helping the model to perform well across different environments and vessel types. </p> <h3>Image thumbnails</h3> <p> Each detection includes a small visual \"chip\" showing the detected vessel at the center. These thumbnails come in two formats: a color version from the RGB bands, and a grayscale version from the near-infrared band. Each chip covers an area of 1 km². These thumbnails are helpful for visually confirming a detection or understanding its context. For very small vessels (under 15 meters), it may still be difficult to see them clearly. </p> <h3>Reducing false positives</h3> <p> Not everything that looks like a vessel in satellite imagery actually is one. To help remove false detections (like buoys, offshore platforms, sea ice, or clouds), we run each detection through a secondary classifier. This classifier is a machine learning model that uses both the image thumbnail and additional information about the detection (such as distance from shore, local depth, and vessel density nearby, among others) to decide whether the object is likely to be a vessel. We also flag detections that are close to known fixed infrastructure or in areas with substantial sea ice or iceberg presence. </p> <p> If a detection is classified as likely non-vessel or flagged as potential infrastructure or ice, we remove it from the map layer so only high-confidence detections are included. We also clip the satellite footprints (displayed on the map layer) to exclude the areas under the icy-region mask. However, we provide all the false positives with labels through the data download portal for stakeholders who require a more complete dataset. </p> <h3>AIS matching and vessel identity</h3> <p> AIS data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large \"blind spots\" along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched imagery detections therefore provide the missing information about vessel traffic in the ocean. </p> <p> Matching imagery detections to vessels' GPS coordinates from AIS is challenging because the timestamps of the images and AIS records do not coincide, and a single AIS identity can potentially match to multiple vessels appearing in the image, and vice versa. To determine the likelihood that a vessel broadcasting AIS corresponded to a specific detection, we developed a matching approach based on probability rasters of where a vessel is likely to be minutes before and after an AIS position was recorded. These rasters were produced from one year of global AIS data from the Global Fishing Watch pipeline, which sources satellite data from Spire Global and Orbcomm. The probability rasters are based on roughly 10 billion vessel positions and are computed for six different vessel classes, considering six different speeds and 36 time intervals. So we obtain the likely position of a vessel that could match a detection based on the vessel class, speed and time interval. In addition to the spatiotemporal matching, we factor in the similarity between the model-inferred vessel length and the length from AIS identity data to avoid (likely incorrect) matches with large discrepancies in size, e.g., AIS of a tugboat and the detection of a large vessel behind it. </p> <h3>Detection footprints</h3> <p> To help users understand where detections were possible, we show the detection \"footprints\" on the map. These polygons are the portions of the satellite images that cover the ocean and that were used for detection. Thus, if you see a footprint but no detections, it means no vessels were detected in that area. If there is no footprint, no image was processed for that location and time. </p> <h3>Automation and updates</h3> <p> Our detection and matching system runs automatically each day. It checks for new Sentinel-2 images published to Google Cloud and processes those that meet our quality criteria. New detections are typically available within 1–2 days of the satellite capturing the image. The automated pipeline also re-checks any images published late to ensure any data gaps are filled. </p> <h2>Source data and citations</h2> <p> All vessel data are freely available through the Global Fishing Watch data portal at <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\" >https://globalfishingwatch.org/data-download/</a >. </p> <h2>License</h2> <p> Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us. </p>",
+    "schema": {
+      "length": {
+        "keyword": "length"
+      },
+      "matched": {
+        "keyword": "matched"
+      },
+      "shiptype": {
+        "keyword": "shiptype"
       }
     }
   },
@@ -256,11 +294,33 @@
   },
   "private-panama-vessel-identity-fishing": {
     "name": "Panama Private VMS (Private Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Private)"
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.nationalRegisterNumber": {
+        "keyword": "nationalRegisterNumber"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "private-panama-vessel-identity-non-fishing": {
     "name": "Panama Private VMS (Private Non Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Private)"
+    "description": "Dataset for VMS Panama (Private)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.nationalRegisterNumber": {
+        "keyword": "nationalRegisterNumber"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "private-peru-fishing-effort": {
     "name": "Apparent Fishing Effort Peru VMS",
@@ -308,20 +368,16 @@
   },
   "private-peru-vessel-identity-fishing": {
     "name": "Private Peru VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Peru (Private)"
+    "description": "Dataset for VMS Peru (Private)",
+    "schema": {
+      "selfReportedInfo.nationalId": {
+        "keyword": "nationalId"
+      }
+    }
   },
   "private-png-fishing-effort": {
     "name": "Papua New Guinea VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
-    "schema": {
-      "flag": {
-        "keyword": "flag",
-        "enum": {
-          "PNG": "PNG",
-          "PHL": "PHL"
-        }
-      }
-    }
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques"
   },
   "private-png-fishing-identity-vessels": {
     "name": "Papua New Guinea VMS (Fishing Vessels)",
@@ -677,7 +733,7 @@
         "keyword": "duration",
         "enum": {
           "0": "0",
-          "49": "49"
+          "48": "48"
         }
       },
       "type": {
@@ -728,7 +784,66 @@
   },
   "private-vms-bra-vessel-identity": {
     "name": "VMS Brazil",
-    "description": "Vessels (VMS Brazil)"
+    "description": "Vessels (VMS Brazil)",
+    "schema": {
+      "selfReportedInfo.fishingLicenseCode": {
+        "keyword": "fishingLicenseCode"
+      },
+      "selfReportedInfo.fleetCode": {
+        "keyword": "fleetCode",
+        "enum": {
+          "1.1": "1.1",
+          "1.10": "1.10",
+          "1.12": "1.12",
+          "1.13": "1.13",
+          "1.14": "1.14",
+          "1.17": "1.17",
+          "1.18": "1.18",
+          "1.2": "1.2",
+          "1.3": "1.3",
+          "1.4": "1.4",
+          "1.5": "1.5",
+          "1.6": "1.6",
+          "1.7": "1.7",
+          "1.8": "1.8",
+          "1.9": "1.9",
+          "2.10": "2.10",
+          "2.11": "2.11",
+          "2.13": "2.13",
+          "2.2": "2.2",
+          "2.3": "2.3",
+          "2.4": "2.4",
+          "2.5": "2.5",
+          "3.1": "3.1",
+          "3.10": "3.10",
+          "3.11": "3.11",
+          "3.12": "3.12",
+          "3.13": "3.13",
+          "3.2": "3.2",
+          "3.3": "3.3",
+          "3.5": "3.5",
+          "3.6": "3.6",
+          "3.9": "3.9",
+          "4.1": "4.1",
+          "4.2": "4.2",
+          "4.3": "4.3",
+          "4.4": "4.4",
+          "4.6": "4.6",
+          "5.1": "5.1",
+          "5.10": "5.10",
+          "5.11": "5.11",
+          "5.2": "5.2",
+          "5.3": "5.3",
+          "5.4": "5.4",
+          "5.6": "5.6",
+          "5.9": "5.9",
+          "Sem código IN": "Sem código IN"
+        }
+      },
+      "selfReportedInfo.vesselRegistrationCode": {
+        "keyword": "vesselRegistrationCode"
+      }
+    }
   },
   "private-vms-chl-encounters-events": {
     "name": "Encounter Events. (CHL)",
@@ -770,8 +885,8 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "SMALL_FISHERIES": "SMALL_FISHERIES",
-          "INDUSTRY": "INDUSTRY"
+          "INDUSTRY": "INDUSTRY",
+          "SMALL_FISHERIES": "SMALL_FISHERIES"
         }
       }
     }
@@ -839,10 +954,10 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "AQUACULTURE": "AQUACULTURE",
           "INDUSTRY": "INDUSTRY",
-          "TRANSPORT": "TRANSPORT",
-          "AQUACULTURE": "AQUACULTURE"
+          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "TRANSPORT": "TRANSPORT"
         }
       },
       "speed": {
@@ -880,7 +995,7 @@
   },
   "private-vms-cri-encounters-events": {
     "name": "Encounter Events. (CRI)",
-    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "description": "<h2>Overview</h2> <p> Encounter events identify instances where two vessels appear to meet at sea. Our VMS Encounter dataset is currently experimental, and we calculate these events across all VMS sources. Because VMS predominantly tracks fishing vessels, encounters in this dataset are more likely to reflect fishing-related activity - such as pair fishing - than transshipment-related activity, which is more commonly observed in AIS data. </p> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <ul> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage </li> </ul> <h2>Caveats</h2> <ul> <li> When encounter events involve a vessel in a foreign VMS source, the foreign vessel will appear as anonymous due to MOU restrictions. Specifically, we only display the flag and vessel type for the foreign vessel and hide the rest of its identity fields, so the vessel name appears as “Unknown” on the map. </li> <li> Because VMS datasets consist predominantly of fishing vessels - unlike AIS, which captures a broader range of vessel types - encounter events are more likely to represent pair fishing activity than transshipment. As with all Global Fishing Watch encounter data, these events are derived from rule-based algorithms and may reflect a wide range of at-sea interactions, so they should not be taken as evidence of any specific activity without further investigation. </li> <li> Some vessels appear in multiple VMS sources simultaneously due to country regulations, which can cause a vessel to appear to encounter itself. To reduce this noise, we have applied a filter that removes encounters between vessels sharing the same name across different VMS sources, though this is not a perfect solution and we are continuing to work on improvements. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. Note that the 10 km anchorage-distance filter is applied before this merging step, so in rare cases a merged encounter’s average location may fall within 10 km of an anchorage even though each underlying (pre-merge) encounter was more than 10 km from the nearest anchorage. </li> <li> It is a known issue that the encounter detection algorithm does not evaluate continuity across the day boundary (midnight UTC). As a result, encounters that span midnight are not detected and will be missing from the dataset. Specifically those that start after ~22:00 UTC or end before ~02:00 UTC. </li> <li> Encounter detection relies on first creating a regular 10-minute timeline of a vessel’s positions. This timeline is created by interpolating between consecutive positions only when they are less than 60 minutes apart. If a vessel’s polling rate is 60 minutes or longer, no interpolation is performed, so encounters for that vessel are less likely to be detected and may be missed. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. </li> <li> Global Fishing Watch recommends visually inspecting vessel tracks, always referring to additional data sources and/or information, and requesting records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "duration": {
         "keyword": "duration",
@@ -918,16 +1033,16 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
+          "ATUNEROS": "ATUNEROS",
           "AVANZADOS": "AVANZADOS",
-          "SARDINEROS": "SARDINEROS",
-          "ATUNEROS": "ATUNEROS"
+          "SARDINEROS": "SARDINEROS"
         }
       }
     }
   },
   "private-vms-cri-loitering-events": {
     "name": "Loitering Events (CRI)",
-    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "description": "<h2>Overview</h2> <p> Encounter events identify instances where two vessels appear to meet at sea. Our VMS Encounter dataset is currently experimental, and we calculate these events across all VMS sources. Because VMS predominantly tracks fishing vessels, encounters in this dataset are more likely to reflect fishing-related activity - such as pair fishing - than transshipment-related activity, which is more commonly observed in AIS data. </p> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <ul> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage </li> </ul> <h2>Caveats</h2> <ul> <li> When encounter events involve a vessel in a foreign VMS source, the foreign vessel will appear as anonymous due to MOU restrictions. </li> <li> Because VMS datasets consist predominantly of fishing vessels - unlike AIS, which captures a broader range of vessel types - encounter events are more likely to represent pair fishing activity than transshipment. As with all Global Fishing Watch encounter data, these events are derived from rule-based algorithms and may reflect a wide range of at-sea interactions, so they should not be taken as evidence of any specific activity without further investigation. </li> <li> Some vessels appear in multiple VMS sources simultaneously due to country regulations, which can cause a vessel to appear to encounter itself. To reduce this noise, we have applied a filter that removes encounters between vessels sharing the same name across different VMS sources, though this is not a perfect solution and we are continuing to work on improvements. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. </li> <li> Global Fishing Watch recommends visually inspecting vessel tracks, always referring to additional data sources and/or information, and requesting records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "duration": {
         "keyword": "duration",
@@ -951,7 +1066,7 @@
   },
   "private-vms-cri-port-visits-events": {
     "name": "Port Visits Events (CRI)",
-    "description": "The dataset contains port visits events for CRI",
+    "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "confidences": {
         "keyword": "confidences",
@@ -988,9 +1103,9 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
+          "ATUNEROS": "ATUNEROS",
           "AVANZADOS": "AVANZADOS",
-          "SARDINEROS": "SARDINEROS",
-          "ATUNEROS": "ATUNEROS"
+          "SARDINEROS": "SARDINEROS"
         }
       },
       "speed": {
@@ -1026,19 +1141,19 @@
     "name": "VMS Costa Rica",
     "description": "Vessels (VMS Costa Rica)",
     "schema": {
-      "source_fleet": {
-        "keyword": "source_fleet",
+      "selfReportedInfo.sourceFleet": {
+        "keyword": "sourceFleet",
         "enum": {
-          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
-          "costarica_vms_atuneros": "costarica_vms_atuneros",
-          "costarica_vms_sardineros": "costarica_vms_sardineros"
+          "ATUNEROS": "ATUNEROS",
+          "AVANZADOS": "AVANZADOS",
+          "SARDINEROS": "SARDINEROS"
         }
       }
     }
   },
   "private-vms-ecu-encounters-events": {
     "name": "Encounter Events. (ECU)",
-    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "description": "<h2>Overview</h2> <p> Encounter events identify instances where two vessels appear to meet at sea. Our VMS Encounter dataset is currently experimental, and we calculate these events across all VMS sources. Because VMS predominantly tracks fishing vessels, encounters in this dataset are more likely to reflect fishing-related activity - such as pair fishing - than transshipment-related activity, which is more commonly observed in AIS data. </p> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <ul> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage </li> </ul> <h2>Caveats</h2> <ul> <li> When encounter events involve a vessel in a foreign VMS source, the foreign vessel will appear as anonymous due to MOU restrictions. Specifically, we only display the flag and vessel type for the foreign vessel and hide the rest of its identity fields, so the vessel name appears as “Unknown” on the map. </li> <li> Because VMS datasets consist predominantly of fishing vessels - unlike AIS, which captures a broader range of vessel types - encounter events are more likely to represent pair fishing activity than transshipment. As with all Global Fishing Watch encounter data, these events are derived from rule-based algorithms and may reflect a wide range of at-sea interactions, so they should not be taken as evidence of any specific activity without further investigation. </li> <li> Some vessels appear in multiple VMS sources simultaneously due to country regulations, which can cause a vessel to appear to encounter itself. To reduce this noise, we have applied a filter that removes encounters between vessels sharing the same name across different VMS sources, though this is not a perfect solution and we are continuing to work on improvements. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. Note that the 10 km anchorage-distance filter is applied before this merging step, so in rare cases a merged encounter’s average location may fall within 10 km of an anchorage even though each underlying (pre-merge) encounter was more than 10 km from the nearest anchorage. </li> <li> It is a known issue that the encounter detection algorithm does not evaluate continuity across the day boundary (midnight UTC). As a result, encounters that span midnight are not detected and will be missing from the dataset. Specifically those that start after ~22:00 UTC or end before ~02:00 UTC. </li> <li> Encounter detection relies on first creating a regular 10-minute timeline of a vessel’s positions. This timeline is created by interpolating between consecutive positions only when they are less than 60 minutes apart. If a vessel’s polling rate is 60 minutes or longer, no interpolation is performed, so encounters for that vessel are less likely to be detected and may be missed. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. </li> <li> Global Fishing Watch recommends visually inspecting vessel tracks, always referring to additional data sources and/or information, and requesting records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "duration": {
         "keyword": "duration",
@@ -1089,7 +1204,7 @@
   },
   "private-vms-ecu-loitering-events": {
     "name": "Loitering Events (ECU)",
-    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "description": "<h2>Overview</h2> <p> Encounter events identify instances where two vessels appear to meet at sea. Our VMS Encounter dataset is currently experimental, and we calculate these events across all VMS sources. Because VMS predominantly tracks fishing vessels, encounters in this dataset are more likely to reflect fishing-related activity - such as pair fishing - than transshipment-related activity, which is more commonly observed in AIS data. </p> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <ul> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage </li> </ul> <h2>Caveats</h2> <ul> <li> When encounter events involve a vessel in a foreign VMS source, the foreign vessel will appear as anonymous due to MOU restrictions. </li> <li> Because VMS datasets consist predominantly of fishing vessels - unlike AIS, which captures a broader range of vessel types - encounter events are more likely to represent pair fishing activity than transshipment. As with all Global Fishing Watch encounter data, these events are derived from rule-based algorithms and may reflect a wide range of at-sea interactions, so they should not be taken as evidence of any specific activity without further investigation. </li> <li> Some vessels appear in multiple VMS sources simultaneously due to country regulations, which can cause a vessel to appear to encounter itself. To reduce this noise, we have applied a filter that removes encounters between vessels sharing the same name across different VMS sources, though this is not a perfect solution and we are continuing to work on improvements. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. </li> <li> Global Fishing Watch recommends visually inspecting vessel tracks, always referring to additional data sources and/or information, and requesting records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "duration": {
         "keyword": "duration",
@@ -1178,7 +1293,12 @@
   },
   "private-vms-ecu-vessel-identity": {
     "name": "VMS Ecuador",
-    "description": "Vessels (VMS Ecuador)"
+    "description": "Vessels (VMS Ecuador)",
+    "schema": {
+      "selfReportedInfo.registryNumber": {
+        "keyword": "registryNumber"
+      }
+    }
   },
   "private-vms-mne-encounters-events": {
     "name": "Encounter Events. (MNE)",
@@ -1194,7 +1314,8 @@
       "encounter_type": {
         "keyword": "encounter_type",
         "enum": {
-          "FISHING-FISHING": "FISHING-FISHING"
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-SUPPORT": "FISHING-SUPPORT"
         }
       }
     }
@@ -1213,17 +1334,6 @@
           "4": "4",
           "5": "5"
         }
-      },
-      "vessel_type": {
-        "keyword": "vessel_type",
-        "enum": {
-          "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
-        }
       }
     }
   },
@@ -1234,7 +1344,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1266,7 +1376,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1318,7 +1428,15 @@
   },
   "private-vms-mne-vessel-identity": {
     "name": "VMS Montenegro",
-    "description": "Vessels (VMS Montenegro)"
+    "description": "Vessels (VMS Montenegro)",
+    "schema": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      }
+    }
   },
   "private-vms-nor-encounters-events": {
     "name": "Encounter Events. (NOR)",
@@ -1365,7 +1483,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1397,7 +1515,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1510,7 +1628,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1542,7 +1660,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1602,7 +1720,18 @@
   },
   "private-vms-pan-vessel-identity": {
     "name": "VMS Panama",
-    "description": "Vessels (VMS Panama)"
+    "description": "Vessels (VMS Panama)",
+    "schema": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "private-vms-per-encounters-events": {
     "name": "Encounter Events. (PER)",
@@ -1669,7 +1798,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1701,7 +1830,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1760,7 +1889,10 @@
     "name": "VMS Peru",
     "description": "Vessels (VMS Peru)",
     "schema": {
-      "hull": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.hull": {
         "keyword": "hull",
         "enum": {
           "ACERO NAVAL": "ACERO NAVAL",
@@ -1770,19 +1902,20 @@
           "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
         }
       },
-      "origin": {
+      "selfReportedInfo.origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
-          "Foreign": "Foreign"
+          "PERU": "PERU",
+          "FOREIGN": "FOREIGN"
         }
       },
-      "sourceFleet": {
+      "selfReportedInfo.sourceFleet": {
         "keyword": "sourceFleet",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "not defined": "not defined"
+          "": "",
+          "ARTISANAL": "ARTISANAL",
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE"
         }
       }
     }
@@ -1844,17 +1977,6 @@
           "4": "4",
           "5": "5"
         }
-      },
-      "vessel_type": {
-        "keyword": "vessel_type",
-        "enum": {
-          "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
-        }
       }
     }
   },
@@ -1865,7 +1987,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1897,7 +2019,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -1949,7 +2071,12 @@
   },
   "private-vms-plw-vessel-identity": {
     "name": "VMS Palau",
-    "description": "Vessels (VMS Palau)"
+    "description": "Vessels (VMS Palau)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      }
+    }
   },
   "private-vms-png-encounters-events": {
     "name": "Encounter Events. (PNG)",
@@ -1998,7 +2125,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -2030,7 +2157,7 @@
       "duration": {
         "keyword": "duration",
         "enum": {
-          "2": "2",
+          "0": "0",
           "48": "48"
         }
       },
@@ -2177,7 +2304,15 @@
   },
   "public-bra-onyxsat-vessel-identity-fishing": {
     "name": "VMS Brazil (Fishing Vessels)",
-    "description": "Fishing Vessels (VMS Brazil)"
+    "description": "Fishing Vessels (VMS Brazil)",
+    "schema": {
+      "selfReportedInfo.targetSpecies": {
+        "keyword": "targetSpecies"
+      },
+      "targetSpecies": {
+        "keyword": "targetSpecies"
+      }
+    }
   },
   "public-brazil-opentuna-presence": {
     "name": "Brazil Open Tuna VMS",
@@ -2185,7 +2320,59 @@
   },
   "public-brazil-opentuna-vessel-identity-fishing": {
     "name": "Brazil Open Tuna VMS (Fishing vessels)",
-    "description": "Dataset for VMS Brazil (Public)"
+    "description": "Dataset for VMS Brazil (Public)",
+    "schema": {
+      "selfReportedInfo.code": {
+        "keyword": "code"
+      }
+    }
+  },
+  "public-cfc-exploration-areas-individual": {
+    "name": "CFC Exploration Areas",
+    "description": "Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. For cobalt-rich ferromanganese crusts, the exploration area allocated to each contractor is 3,000 square kilometres and consists of 150 blocks. Each block is no greater than 20 square kilometres.",
+    "schema": {
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1447023600000": "1447023600000",
+          "1697752800000": "1697752800000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key"
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREACRFC1": "KOREACRFC1",
+          "COMRACRFC1": "COMRACRFC1",
+          "BrazilCRFC1": "BrazilCRFC1",
+          "JOGMECCRFC1": "JOGMECCRFC1",
+          "RUSMNRCRFC1": "RUSMNRCRFC1"
+        }
+      }
+    }
+  },
+  "public-cfc-reserved-areas-individual": {
+    "name": "CFC Reserved Areas",
+    "description": "Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.",
+    "schema": {
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1425942000000": "1425942000000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key"
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "CRFCReserved": "CRFCReserved"
+        }
+      }
+    }
   },
   "public-chile-fishing-effort": {
     "name": "VMS Chili",
@@ -2223,6 +2410,10 @@
     "name": "Chile VMS (Non fishing Vessels)",
     "description": "Dataset for VMS Chile (Public)"
   },
+  "public-clarion-clipperton-zone-isa-claim-areas": {
+    "name": "Clarion-Clipperton Zone ISA License Areas",
+    "description": "This area represents the cumulative and contiguous area of the Clarion-Clipperton Zone, a region in the Eastern Pacific that is being targeted for seabed mining and managed by the International Seabed Authority. This region includes claim areas slated for exploration, areas reserved for developing states, and areas protected for environmental interest. The primary resource targeted in this region is polymetallic nodules."
+  },
   "public-cold-water-corals": {
     "name": "Cold Water Corals",
     "description": "Buffered at ~1km"
@@ -2249,7 +2440,7 @@
     "name": "Costa Rica VMS",
     "description": "Dataset for VMS Costa Rica (Public)",
     "schema": {
-      "fleet": {
+      "selfReportedInfo.fleet": {
         "keyword": "fleet",
         "enum": {
           "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
@@ -2286,11 +2477,27 @@
   },
   "public-ecuador-vessel-identity-fishing": {
     "name": "Ecuador VMS (Fishing vessels)",
-    "description": "VMS Ecuador (Fishing vessels)"
+    "description": "VMS Ecuador (Fishing vessels)",
+    "schema": {
+      "selfReportedInfo.nationalId": {
+        "keyword": "nationalId"
+      },
+      "selfReportedInfo.nNationalId": {
+        "keyword": "nNationalId"
+      }
+    }
   },
   "public-ecuador-vessel-identity-non-fishing": {
     "name": "Ecuador VMS (Non fishing vessels)",
-    "description": "VMS Ecuador (Non fishing vessels)"
+    "description": "VMS Ecuador (Non fishing vessels)",
+    "schema": {
+      "selfReportedInfo.nationalId": {
+        "keyword": "nationalId"
+      },
+      "selfReportedInfo.nNationalId": {
+        "keyword": "nNationalId"
+      }
+    }
   },
   "public-eez-areas": {
     "name": "EEZs",
@@ -2312,20 +2519,6 @@
     "name": "FAO major fishing areas",
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer"
   },
-  "public-fixed-infrastructure": {
-    "name": "Fixed infrastructure",
-    "description": "SAR identified fixed infrastructure",
-    "schema": {
-      "label": {
-        "keyword": "label",
-        "enum": {
-          "oil": "oil",
-          "wind": "wind",
-          "unknown": "unknown"
-        }
-      }
-    }
-  },
   "public-fixed-infrastructure-filtered": {
     "name": "Offshore Fixed Infrastructure (SAR, Optical)",
     "description": "<h2>Overview</h2> <p>Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans.</p> <p>Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level.<em></em>The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans. For example, you can easily observe the expansion of wind farms in the North and East China Seas, or changes in oil infrastructure in the Gulf of Mexico or Persian Gulf.</p> <p>By overlaying the existing map layers, you can explore how vessels interact with oil and wind structures, visualise the density of synthetic aperture radar (SAR) and Visible Infrared Imaging Radiometer Suite (VIIRS) vessel detections around infrastructure, or determine which marine protected areas (MPAs) contain wind, oil, or other infrastructure types. These are only examples of the types of questions we can now ask. Offshore fixed infrastructure is a first of its kind dataset that not only brings to light the extensive industrialization of our oceans, but enables users across industries to use this information in research, monitoring and management.</p> <h2>Use cases</h2> <ul> <li>Maritime domain awareness</li> <ul> <li>Infrastructure locations can support maritime domain awareness, and understanding of other activities occurring at sea.</li> <li>Infrastructure data supports assessments of ocean industrialization, facilitating monitoring of areas experiencing build-up or new development</li> </ul> <li>Monitoring vessels</li> <ul> <li>Infrastructure locations can be used to analyse the behaviour of vessels associated with infrastructure, including grouping vessels based on their interaction with oil and wind structures.</li> <li>Interactions between vessels and infrastructure can help quantify the resources required to support offshore industrial activity</li> <li>The impacts of infrastructure on fishing, including attracting or deterring fishing, can be analysed.</li> </ul> <li>Marine protected areas (MPAs) and marine spatial planning</li> <ul> <li>During the planning stage in the designation of new protected areas, knowing the location of existing infrastructure will be vital to understand which stakeholders shall be included in the consultation process, to understand potential conflicts, and identify easy wins.</li> </ul> <li>Environmental impacts</li> <ul> <li>Infrastructure locations can be used to help detect marine pollution events, and to differentiate between types of pollution events (e.g. pollution from vessels versus pollution from platforms)</li> </ul> </ul> <h2>Caveats</h2> <ul> <li><strong>Sentinel-1 and Sentinel-2 satellites do not sample most of the open ocean.</strong></li> <ul> <li>Most industrial activity happens relatively close to shore.</li> <li>The extent and frequency of SAR acquisitions is determined by the mission priorities.</li> <li>For more info see: https://www.nature.com/articles/s41586-023-06825-8/figures/5</li> </ul> <li><strong>We do not provide detections of infrastructure within 1 km of shore</strong></li> <ul> <li>We do not classify objects within 1 km of shore because it is difficult to map where the shoreline begins, and ambiguous coastlines and rocks cause false positives.</li> <li>The bulk of industrial activities, including offshore development with medium-to-large oil rigs and wind farms, occur several kilometers from shore.</li> </ul> <li> <strong>False positives can be produced from noise artifacts.</strong> </li> <ul> <li>Rocks, small islands, sea ice, radar ambiguities (radar echoes), and image artifacts can cause false positives</li> <li>Detections in some areas including Southern Chile, the Arctic, and the Norwegian Sea have been filtered to remove noise.</li> </ul> <li><strong>Spatial coverage varies over time, which can produce different detections results year on year - <a target=\"_blank\" href=\"https://share.cleanshot.com/yG0qfF\"> <span style=\"color:rgb(0, 0, 0);\">Example</span> </a></strong> </li> <ul> <li>Infrastructure detentions from 2017-01-01 to near real time are available, and updated on a monthly basis.</li> </ul> <li> <strong>Labels can change over time</strong> </li> <ul> <li>The label assigned to a structure is the greatest predicted label averaged across time. As we get more data, the label may change, and more accurately predict the true infrastructure type.</li> </ul> <li><strong>Global datasets aren’t perfect</strong></li> <ul> <li>We’ve done our best to create the most accurate product possible, but there will be infrastructure that isn’t detected, or has been classified incorrectly. This will be most evident when working at the project level.</li> <li>We strongly encourage users to provide feedback to the research team so that we may improve future versions of the model. All feedback is greatly appreciated.</li> </ul> </ul> <h2>Methods</h2> <h3>SAR imagery</h3> <p>We use SAR imagery from the Copernicus Sentinel-1 mission of the European Space Agency (ESA) [1]. The images are sourced from two satellites (S1A and S1B up until December 2021 when S1B stopped operating, and S1A only from 2022 onward) that orbit 180 degrees out of phase with each other in a polar, sun-synchronous orbit. Each satellite has a repeat-cycle of 12 days, so that together they provide a global mapping of coastal waters around the world approximately every six days for the period that both were operating. The number of images per location, however, varies greatly depending on mission priorities, latitude, and degree of overlap between adjacent satellite passes. Spatial coverage also varies over time [2]. Our data consist of dual-polarization images (VH and VV) from the Interferometric Wide (IW) swath mode, with a resolution of about 20 m.</p> <p>[1] <a target=\"_blank\" href=\"https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf\"> <span style=\"color:rgb(0, 0, 0);\">https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf</span> </a> </p> <p>[2]<a target=\"_blank\" href=\"https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario\"> <span style=\"color:rgb(0, 0, 0);\"></span> <span style=\"color:rgb(0, 0, 0);\">https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario</span> </a> </p> <h3>Infrastructure detection by SAR</h3> <p>Detecting infrastructure with SAR is based on the widely used Constant False Alarm Rate (CFAR) algorithm, an anomaly detection method conceived for detecting ships in synthetic aperture radar images, that has been modified to remove non-stationary objects. This algorithm is designed to search for pixel values that are unusually bright (the targets) compared to those in the surrounding area (the sea clutter). This method sets a threshold based on the pixel values of the local background (within a window), scanning the whole image pixel-by-pixel. Pixel values above the threshold constitute an anomaly and are likely to be samples from a target.</p> <h3>Infrastructure classification</h3> <p>To classify every detected offshore infrastructure, we used deep learning and designed a ConvNet based on the ConvNeXt architecture. A novel aspect of our deep learning classification approach is the combination of SAR imagery from Sentinel-1 with optical imagery from Sentinel-2. From six-month composites of dual-band SAR (VH and VV) and four-band optical (RGB and NIR) images, we extracted small tiles for every detected fixed infrastructure, with the respective objects at the center of the tile. A single model output includes the probabilities for the specified classes: wind, oil, unknown, lake maracaibo, and noise.</p> <h3>Filtering</h3> <p>GFW post-processed the classified SAR detections to reduce noise (false positives), remove vessels, exclude areas with sea ice at high latitudes, and incorporate expert feedback. We used a clustering approach to identify detections across time (within a 50 m radius) that were likely the same structure but their coordinates differed slightly, and assigned them the greatest average predicted label of the cluster. We also filled in gaps for fixed structures that were missing in one timestep but detected in the previous and following timesteps, and dropped detections appearing in a single timestep. Finally, the dataset underwent extensive manual review and editing by researchers and industry experts in order to refine the final product, and provide the most accurate dataset possible.</p> <h3>Data field descriptions</h3> <p>Each detection has a unique individual identifier (<em>detection_id</em>). A six-month image composite is used in the classification, therefore the <em>detection_date</em> represents the middle of the six month period. This helps to remove non-stationary objects (i.e. vessels), and avoid confusion in the model if a structure is being built, or there isn’t adequate imagery available. <em>structure_id</em> allows you to track a structure through time. There are therefore many <em>detection_id</em> (one for each month the structure is detected) for each <em>structure_id</em>. Labels of <em>wind</em> and <em>oil </em>represent any wind or oil related structure respectively. <em>Unknown</em> represents a structure that is not oil or wind related, such as bridges or navigational buoys. </p> <p>Label confidence levels of ‘High’. ‘Medium’ and ‘Low’ are assigned to each structure, and are conditional on where the detections fell in relation to the boundaries of manually developed wind and oil polygons, and whether the label has changed from the previous month. The <em>label_confidence</em> field can be used to filter analysis. </p> <h2>Resources, code and other notes</h2> <p>Two repos are used in the automation process, both of which are private, and should not be shared publicly.</p> <p>Detection and classification: https://github.com/GlobalFishingWatch/sentinel-1-ee/tree/master</p> <p>Clustering and reclassification: https://github.com/GlobalFishingWatch/infrastructure-post-processing</p> <p>All code developed for the paper, Paolo, F.S., Kroodsma, D., Raynor, J. et al. Satellite mapping reveals extensive industrial activity at sea. Nature 625, 85–91 (2024). https://doi.org/10.1038/s41586-023-06825-8, including SAR detection, deep learning models, and analyses is open source and freely available at https://github.com/GlobalFishingWatch/paper-industrial-activity.</p> <h2>Sources data and citations</h2> <p>Copernicus Sentinel data 2017-current</p> <p>Lujala, Päivi; Jan Ketil Rød &amp; Nadia Thieme, 2007. 'Fighting over Oil: Introducing A New Dataset', Conflict Management and Peace Science 24(3), 239-256</p> <p>Sabbatino, M., Romeo, L., Baker, V., Bauer, J., Barkhurst, A., Bean, A., DiGiulio, J., Jones, K., Jones, T.J., Justman, D., Miller III, R., Rose, K., and Tong., A., Global Oil &amp; Gas Infrastructure Features Database Geocube Collection, 2019-03-25, https://edx.netl.doe.gov/dataset/global-oil-gas-infrastructure-features-database-geocube-collection, DOI: 10.18141/1502839</p> <h2>License</h2> <p>Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us.</p> <h2>Global Fishing Watch metadata</h2> <p>Infrastructure development methods should reference the paper:</p> <p>Paolo, F.S., Kroodsma, D., Raynor, J. et al. Satellite mapping reveals extensive industrial activity at sea. Nature 625, 85–91 (2024). https://doi.org/10.1038/s41586-023-06825-8</p> <p>All code developed for the paper, including SAR detection, deep learning models, and analyses is open source and freely available at https://github.com/GlobalFishingWatch/paper-industrial-activity. All the data generated and used by these scripts can reference the following data repos:</p> <p>Analysis and Figures: https://doi.org/10.6084/m9.figshare.24309475</p> <p>Training and Evaluation: https://doi.org/10.6084/m9.figshare.24309469</p>",
@@ -2345,6 +2538,15 @@
           "medium": "medium",
           "low": "low"
         }
+      },
+      "structure_end_date": {
+        "keyword": "structure_end_date"
+      },
+      "structure_id": {
+        "keyword": "structure_id"
+      },
+      "structure_start_date": {
+        "keyword": "structure_start_date"
       }
     }
   },
@@ -2526,7 +2728,18 @@
   },
   "public-global-ports-footprint": {
     "name": "Anchorages convex hulls by portId",
-    "description": "Anchorages footprint using the convex hull grouped by portId"
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "area": {
+        "keyword": "area"
+      },
+      "label": {
+        "keyword": "label"
+      },
+      "perimeter": {
+        "keyword": "perimeter"
+      }
+    }
   },
   "public-global-presence-vi-653": {
     "name": "AIS",
@@ -2680,11 +2893,111 @@
   },
   "public-global-vessel-identity-vi-653": {
     "name": "AIS (all vessel types)",
-    "description": "Vessel Identity (all shiptypes)"
+    "description": "Vessel Identity (all shiptypes)",
+    "schema": {
+      "imo": {
+        "keyword": "imo"
+      },
+      "registryInfo.callsign": {
+        "keyword": "callsign"
+      },
+      "registryInfo.flag": {
+        "keyword": "flag"
+      },
+      "registryInfo.imo": {
+        "keyword": "imo"
+      },
+      "registryInfo.nShipname": {
+        "keyword": "nShipname"
+      },
+      "registryInfo.recordId": {
+        "keyword": "recordId"
+      },
+      "registryInfo.shipname": {
+        "keyword": "shipname"
+      },
+      "registryInfo.ssvid": {
+        "keyword": "ssvid"
+      },
+      "registryInfo.transmissionDateFrom": {
+        "keyword": "transmissionDateFrom"
+      },
+      "registryInfo.transmissionDateTo": {
+        "keyword": "transmissionDateTo"
+      },
+      "registryLastUpdateDate": {
+        "keyword": "registryLastUpdateDate"
+      },
+      "registryOwners.name": {
+        "keyword": "name"
+      },
+      "registryTmtExtraFields.masterEntityId": {
+        "keyword": "masterEntityId"
+      },
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      },
+      "ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "public-global-vessel-identity": {
     "name": "AIS (all vessel types)",
-    "description": "Vessel Identity (all shiptypes)"
+    "description": "Vessel Identity (all shiptypes)",
+    "schema": {
+      "imo": {
+        "keyword": "imo"
+      },
+      "registryInfo.callsign": {
+        "keyword": "callsign"
+      },
+      "registryInfo.flag": {
+        "keyword": "flag"
+      },
+      "registryInfo.imo": {
+        "keyword": "imo"
+      },
+      "registryInfo.nShipname": {
+        "keyword": "nShipname"
+      },
+      "registryInfo.recordId": {
+        "keyword": "recordId"
+      },
+      "registryInfo.shipname": {
+        "keyword": "shipname"
+      },
+      "registryInfo.ssvid": {
+        "keyword": "ssvid"
+      },
+      "registryInfo.transmissionDateFrom": {
+        "keyword": "transmissionDateFrom"
+      },
+      "registryInfo.transmissionDateTo": {
+        "keyword": "transmissionDateTo"
+      },
+      "registryLastUpdateDate": {
+        "keyword": "registryLastUpdateDate"
+      },
+      "registryOwners.name": {
+        "keyword": "name"
+      },
+      "registryTmtExtraFields.masterEntityId": {
+        "keyword": "masterEntityId"
+      },
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      },
+      "ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "public-global-vessel-insights": {
     "name": "AIS (Insights)",
@@ -2779,6 +3092,10 @@
     "name": "Important Marine Mammal Areas (IMMA)",
     "description": "<h2>Overview</h2>\n<p>Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.</p>\n<p>IMMAs are not marine protected areas (MPAs). IMMAs are identified based on scientific expert knowledge, along with peer review, in order to prioritise their consideration for conservation measures by governments, intergovernmental organisations, conservation groups, industry or business, and the general public.</p>\n<p>The IMMA spatial layer aims to attract the attention of policy- and decision-makers to the opportunity, as well as to the need, to ensure the favourable conservation status of marine mammals in specific areas through the implementation of the most appropriate management measures. This can include an MPA designation, shipping or fishing regulations, and/or monitoring. However, IMMAs per se are a scientific knowledge product totally devoid of management implications.</p>\n<p>Please note the following:</p>\n<ul>\n<li>Dedicated efforts to identify IMMAs have not yet covered all of the global ocean but global coverage is anticipated in the near future.</li><li>Waters outside of IMMAs in all areas of the ocean may still be important for the long-term survival and well-being of marine mammals.</li><li>Human activities taking place in marine environments everywhere must be conducted responsibly.</li></ul>"
   },
+  "public-indian-ocean-isa-claim-areas": {
+    "name": "Indian Ocean ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the Indian Ocean, which primarily contain polymetallic sulfides and polymetallic nodules. Exploration leases in this region are currently held by India, Germany, South Korea, and China."
+  },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
     "description": "VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques."
@@ -2799,32 +3116,81 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)"
   },
-  "public-isa-layers": {
-    "name": "ISA layers",
-    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area. ",
+  "public-isa-areas-contractor": {
+    "name": "ISA Areas by Contractor",
+    "description": "<h2>ISA Contractor Information</h2> <table> <thead> <tr> <th>Contractor ID</th> <th>Preferred Contractor Name</th> <th>Nationality</th> </tr> </thead> <tbody> <tr> <td>BGRPMN1</td> <td> Federal Institute for Geosciences and Natural Resources of Germany - PMN </td> <td>Germany</td> </tr> <tr> <td>BGRPMS1</td> <td> Federal Institute for Geosciences and Natural Resources of Germany - PMS </td> <td>Germany</td> </tr> <tr> <td>BMJPMN1</td> <td>Blue Minerals Jamaica Limited (BMJ) - PMN</td> <td>Jamaica</td> </tr> <tr> <td>BPHDCPMN1</td> <td>Beijing Pioneer Hi-Tech Development Corporation - PMN</td> <td>China</td> </tr> <tr> <td>BrazilCRFC1</td> <td>Companhia de Pesquisa de Recursos Minerais S.A. - CRFC</td> <td>Brazil</td> </tr> <tr> <td>CIICPMN1</td> <td>Cook Islands Investment Corporation - PMN</td> <td>Cook Islands</td> </tr> <tr> <td>CMMPMN1</td> <td>China Minmetals Corporation - PMN</td> <td>China</td> </tr> <tr> <td>COMRACRFC1</td> <td> China Ocean Mineral Resources Research and Development Association - CRFC </td> <td>China</td> </tr> <tr> <td>COMRAPMN1</td> <td> China Ocean Mineral Resources Research and Development Association - PMN </td> <td>China</td> </tr> <tr> <td>COMRAPMS1</td> <td> China Ocean Mineral Resources Research and Development Association - PMS </td> <td>China</td> </tr> <tr> <td>DORDPMN1</td> <td>Deep Ocean Resources Development Co. Ltd. - PMN</td> <td>Japan</td> </tr> <tr> <td>GSRPMN1</td> <td>Global Sea Mineral Resources NV - PMN</td> <td>Belgium</td> </tr> <tr> <td>IFREMERPMN1</td> <td> Institut français de recherche pour l'exploitation de la mer - PMN </td> <td>France</td> </tr> <tr> <td>IFREMERPMS1</td> <td> Institut français de recherche pour l'exploitation de la mer - PMS </td> <td>France</td> </tr> <tr> <td>IndiaPMN1</td> <td>Government of India - PMN</td> <td>India</td> </tr> <tr> <td>IndiaPMS1</td> <td>Government of India - PMS</td> <td>India</td> </tr> <tr> <td>IOMPMN1</td> <td>Interoceanmetal Joint Organization - PMN</td> <td>Poland</td> </tr> <tr> <td>KOREACRFC1</td> <td>Government of the Republic of Korea - CRFC</td> <td>Korea</td> </tr> <tr> <td>KOREAPMN1</td> <td>Government of the Republic of Korea - PMN</td> <td>Korea</td> </tr> <tr> <td>KOREAPMS1</td> <td>Government of the Republic of Korea - PMS</td> <td>Korea</td> </tr> <tr> <td>MARAWAPMN1</td> <td>Marawa Research and Exploration Ltd. - PMN</td> <td>Kiribati</td> </tr> <tr> <td>NORIPMN1</td> <td>Nauru Ocean Resources Inc. - PMN</td> <td>Nauru</td> </tr> <tr> <td>OMSPMN1</td> <td>Ocean Mineral Singapore Pte. Ltd. - PMN</td> <td>Singapore</td> </tr> <tr> <td>POLPMS1</td> <td>Government of the Republic of Poland - PMS</td> <td>Poland</td> </tr> <tr> <td>RUSFEDPMS1</td> <td>Government of the Russian Federation - PMS</td> <td>Russia</td> </tr> <tr> <td>RUSMNRCRFC1</td> <td> Ministry of Natural resources and environment of the russian federation - CRFC </td> <td>Russia</td> </tr> <tr> <td>TOMLPMN1</td> <td>Tonga Offshore Mining Limited - PMN</td> <td>Tonga</td> </tr> <tr> <td>UKSRLPMN1</td> <td>UK Seabed Resources Ltd. - I - PMN</td> <td>UK</td> </tr> <tr> <td>UKSRLPMN2</td> <td>UK Seabed Resources Ltd. - II - PMN</td> <td>UK</td> </tr> <tr> <td>YUZHPMN1</td> <td>Yuzhmorgeologiya - PMN</td> <td>Russia</td> </tr> </tbody> </table>",
     "schema": {
-      "label": {
-        "keyword": "label",
+      "act_date": {
+        "keyword": "act_date",
         "enum": {
-          "Clarion-Clipperton Zone management area": "Clarion-Clipperton Zone management area",
-          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "Areas of particular environmental interest within the Clarion-Clipperton Zone",
-          "CFC Exploration Areas": "CFC Exploration Areas",
-          "CFC Reserved Areas": "CFC Reserved Areas",
-          "PMN Exploration Areas": "PMN Exploration Areas",
-          "PMN Reserved Areas": "PMN Reserved Areas",
-          "PMS Exploration Areas": "PMS Exploration Areas"
+          "1425945600000": "1425945600000",
+          "1474848000000": "1474848000000"
+        }
+      },
+      "contract": {
+        "keyword": "contract",
+        "enum": {
+          "BrazilCRFC1": "BrazilCRFC1",
+          "BGRPMN1": "BGRPMN1",
+          "IFREMERPMN1": "IFREMERPMN1",
+          "KOREACRFC1": "KOREACRFC1",
+          "KOREAPMN1": "KOREAPMN1",
+          "JOGMECCRFC1": "JOGMECCRFC1",
+          "IFREMERPMS1": "IFREMERPMS1",
+          "IOMPMN1": "IOMPMN1",
+          "BPHDCPMN1": "BPHDCPMN1",
+          "DORDPMN1": "DORDPMN1",
+          "POLPMS1": "POLPMS1",
+          "UKSRLPMN2": "UKSRLPMN2",
+          "UKSRLPMN1": "UKSRLPMN1",
+          "YUZHPMN1": "YUZHPMN1",
+          "BMJPMN1": "BMJPMN1",
+          "RUSMNRCRFC1": "RUSMNRCRFC1",
+          "CIICPMN1": "CIICPMN1",
+          "IndiaPMS1": "IndiaPMS1",
+          "IndiaPMN1": "IndiaPMN1",
+          "OMSPMN1": "OMSPMN1",
+          "RUSFEDPMS1": "RUSFEDPMS1",
+          "CRFCReserved": "CRFCReserved",
+          "GSRPMN1": "GSRPMN1",
+          "KOREAPMS1": "KOREAPMS1",
+          "MARAWAPMN1": "MARAWAPMN1",
+          "COMRAPMS1": "COMRAPMS1",
+          "COMRACRFC1": "COMRACRFC1",
+          "CMMPMN1": "CMMPMN1",
+          "NORIPMN1": "NORIPMN1",
+          "TOMLPMN1": "TOMLPMN1",
+          "BGRPMS1": "BGRPMS1",
+          "COMRAPMN1": "COMRAPMN1",
+          "PMNReserved": "PMNReserved"
         }
       },
       "layer": {
         "keyword": "layer",
         "enum": {
-          "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy": "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy",
-          "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved": "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved",
-          "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved": "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved",
-          "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved": "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved",
-          "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved": "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved",
-          "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved": "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved",
-          "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved": "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved"
+          "CFC Reserved Areas": "CFC Reserved Areas",
+          "CFC Exploration Areas": "CFC Exploration Areas",
+          "PMN Reserved Areas": "PMN Reserved Areas",
+          "PMN Exploration Areas": "PMN Exploration Areas",
+          "PMS Exploration Areas": "PMS Exploration Areas"
+        }
+      }
+    }
+  },
+  "public-isa-layers": {
+    "name": "ISA Areas by Resource Type",
+    "description": "This layer shows the areas managed by the International Seabed Authority across all ocean regions and seabed mineral resource types. \n\nExploration areas are those that have been licensed to States or individual contractors sponsored by a State for exploration of mineral resources under a 15-year contract. This enables the contract holder to conduct seabed surveys and environmental studies to assess the resource and region. These are the areas that could ultimately become licensed for exploitation if a State or contractor were to apply for a commercial exploitation permit. \n\nReserved areas are those that have been set aside by the ISA on behalf of developing nations to safeguard opportunity and access to these common heritage resources in the future. \n\nAreas of Particular Environmental Interest (APEI): These areas are protected from future exploitation of mineral resources to safeguard biodiversity and ecosystem health. The Regional Environmental Management Plan (REMP) of the International Seabed Authority initially established nine APEIs, but four more have been added as of December 2021. A total of thirteen APEIs have been designated by the ISA to date, protecting nearly 2 million square kilometers of the Clarion-Clipperton Zone in the Pacific Ocean. \n\nCFC Exploration Areas: Cobalt-rich ferromanganese crust resource areas licensed for exploration under the International Seabed Authority.\n\nCFC Reserved Areas: Cobalt-rich ferromanganese crust resource areas reserved under the International Seabed Authority.\n\nClarion-Clipperton Zone Management Area: This area encompasses the entire management region of the Clarion-Clipperton Zone of the Eastern Pacific Ocean, including all exploration areas, reserved areas, and areas of particular environmental interest. The CCZ spans 4.5 million square kilometers between Hawai’i and Mexico. \n\nPMN Exploration Areas: Polymetallic nodule resource areas licensed for exploration by the International Seabed Authority.\n\n\nPMN Reserved Areas: Polymetallic nodule resource areas reserved under the International Seabed Authority.\n\nPMS Exploration Areas: Polymetallic sulphide resource areas licensed for exploration by the International Seabed Authority.",
+    "schema": {
+      "label": {
+        "keyword": "label",
+        "enum": {
+          "CFC Reserved Areas": "CFC Reserved Areas",
+          "PMN Exploration Areas": "PMN Exploration Areas",
+          "PMS Exploration Areas": "PMS Exploration Areas",
+          "PMN Reserved Areas": "PMN Reserved Areas",
+          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "Areas of particular environmental interest within the Clarion-Clipperton Zone",
+          "Clarion-Clipperton Zone management area": "Clarion-Clipperton Zone management area",
+          "CFC Exploration Areas": "CFC Exploration Areas"
         }
       }
     }
@@ -2876,6 +3242,10 @@
     "name": "Mexico VMS (Fishing vessels)",
     "description": "Dataset for VMS Mexico (Public)"
   },
+  "public-mid-atlantic-isa-claim-areas": {
+    "name": "Mid-Atlantic ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining on the Mid-Atlantic Ridge, which contain polymetallic sulfides. Exploration leases in this region are currently held by France, Russia, and Poland."
+  },
   "public-mp-atlas": {
     "name": "MPAs (MPAtlas)",
     "description": "<p><a href=\"https://www.science.org/doi/10.1126/science.abf0861/\" target=\"_blank\" >The MPA Guide</a > is intended to fill a gap in existing MPA classification and assessment tools to help determine how likely MPAs are to deliver the desired conservation outcomes. Over the past few years, the MPAtlas team and key collaborators have applied The MPA Guide framework to MPAs around the world to develop a clearer picture of global marine protection, which includes a recent study establishing a baseline for global \"30x30\" targets - Publication: <a href=\"https://conbio.onlinelibrary.wiley.com/doi/10.1111/conl.13020\" target=\"_blank\" >Ocean Protection Quality is Lagging Behind Quantity</a >. MPAtlas is the online repository for MPA Guide assessments and associated data. Stage of Establishment represents where the MPA is in its process of being an MPA. <u>Proposed/Committed</u>: The intent to create an MPA is made public. <u>Designated</u>: MPA is established/recognized through legal means or other authoritative rulemaking. <u>Implemented</u>: MPA is acknowledged to be operation ‘in the water’ with plans for management activated. <u>Actively managed</u>: MPA management is ongoing, with monitoring, periodic review and adjustments made as needed to achieve biodiversity conservation and other ecological and social goals. Level of Protection represents the extent to which the MPA protected from seven main types of human activities and is likely to generate positive biodiversity outcomes. <u>Fully Protected</u>: No impact from extractive or destructive activities is allowed, and all abatable impacts are minimized. <u>Highly Protected</u>: Only light extractive activities are allowed that have low total impact, and all other abatable impacts are minimized. <u>Lightly Protected</u>: Some protection of biodiversity exists, but extractive or destructive activities that can have moderate to significant impact are allowed. <u>Minimally Protected</u>: Extensive extraction and other activities with high total impact are allowed, but the site can still be considered an MPA under the IUCN protected area definition and provides some conservation benefit. Some areas allow activities that have an impact so large that they are incompatible with the conservation of biodiversity, as defined by the IUCN. For more information, please visit <a href=\"https://mpatlas.org/\" target=\"_blank\">https://mpatlas.org/</a>. Each assessed MPA has a score card that describes its stage of establishment and level of protection, as well as more details about the components that contributed to these assessments. Note: The MPAtlas dataset does not contain boundaries for all global MPAs, only those assessed against MPA quality frameworks. </p>",
@@ -2919,17 +3289,13 @@
     "name": "Marine Protection Zone",
     "description": "90% of EEZ"
   },
+  "public-northwest-pacific-isa-claim-areas": {
+    "name": "Northwest Pacific ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the Northwestern Pacific, which primarily contain resources from cobalt-rich ferromanganese crusts and polymetallic nodules. Several countries hold exploration leases in this region including China, Japan, Russia, and South Korea."
+  },
   "public-norway-fishing-effort": {
     "name": "Norway VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the The Norwegian Directorate of Fisheries. Data is collected using Norway’s vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
-    "schema": {
-      "flag": {
-        "keyword": "flag",
-        "enum": {
-          "NOR": "NOR"
-        }
-      }
-    }
+    "description": "Vessel monitoring system (VMS) data is provided by the The Norwegian Directorate of Fisheries. Data is collected using Norway’s vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques"
   },
   "public-norway-presence": {
     "name": "Norway VMS",
@@ -2948,11 +3314,49 @@
   },
   "public-norway-vessel-identity-fishing": {
     "name": "Norway VMS (Fishing Vessels)",
-    "description": "Dataset for VMS Norway (Public)"
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "selfReportedInfo.geartypes.name": {
+        "keyword": "geartypes",
+        "enum": {
+          "DREDGE_FISHING": "DREDGE_FISHING",
+          "DRIFTING_LONGLINES": "DRIFTING_LONGLINES",
+          "FISHING": "FISHING",
+          "FIXED_GEAR": "FIXED_GEAR",
+          "POLE_AND_LINE": "POLE_AND_LINE",
+          "POTS_AND_TRAPS": "POTS_AND_TRAPS",
+          "PURSE_SEINES": "PURSE_SEINES",
+          "SEINERS": "SEINERS",
+          "SET_GILLNETS": "SET_GILLNETS",
+          "SET_LONGLINES": "SET_LONGLINES",
+          "TRAWLERS": "TRAWLERS",
+          "TROLLERS": "TROLLERS"
+        }
+      }
+    }
   },
   "public-norway-vessel-identity-non-fishing": {
     "name": "Norway VMS (Non Fishing Vessels)",
-    "description": "Dataset for VMS Norway (Public)"
+    "description": "Dataset for VMS Norway (Public)",
+    "schema": {
+      "selfReportedInfo.geartypes.name": {
+        "keyword": "geartypes",
+        "enum": {
+          "DREDGE_FISHING": "DREDGE_FISHING",
+          "DRIFTING_LONGLINES": "DRIFTING_LONGLINES",
+          "FISHING": "FISHING",
+          "FIXED_GEAR": "FIXED_GEAR",
+          "POLE_AND_LINE": "POLE_AND_LINE",
+          "POTS_AND_TRAPS": "POTS_AND_TRAPS",
+          "PURSE_SEINES": "PURSE_SEINES",
+          "SEINERS": "SEINERS",
+          "SET_GILLNETS": "SET_GILLNETS",
+          "SET_LONGLINES": "SET_LONGLINES",
+          "TRAWLERS": "TRAWLERS",
+          "TROLLERS": "TROLLERS"
+        }
+      }
+    }
   },
   "public-paa-duke": {
     "name": "PAAS",
@@ -2964,11 +3368,33 @@
   },
   "public-panama-vessel-identity-fishing": {
     "name": "Panama VMS (Public Fishing Vessels)",
-    "description": "Dataset for VMS Panama (Public)"
+    "description": "Dataset for VMS Panama (Public)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.nationalRegisterNumber": {
+        "keyword": "nationalRegisterNumber"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "public-panama-vessel-identity-non-fishing": {
     "name": "Panama VMS (Public Non fishing vessels)",
-    "description": "Dataset for VMS Panama - Carriers (Public)"
+    "description": "Dataset for VMS Panama - Carriers (Public)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.nationalRegisterNumber": {
+        "keyword": "nationalRegisterNumber"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "public-peru-fishing-effort": {
     "name": "Peru VMS",
@@ -3018,7 +3444,7 @@
     "name": "Peru VMS (Fishing Vessels)",
     "description": "Dataset for VMS Peru (Public)",
     "schema": {
-      "casco": {
+      "selfReportedInfo.casco": {
         "keyword": "casco",
         "enum": {
           "ACERO NAVAL": "ACERO NAVAL",
@@ -3028,7 +3454,10 @@
           "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
         }
       },
-      "fleet": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.fleet": {
         "keyword": "fleet",
         "enum": {
           "industrial": "industrial",
@@ -3036,7 +3465,7 @@
           "not defined": "not defined"
         }
       },
-      "origin": {
+      "selfReportedInfo.origin": {
         "keyword": "origin",
         "enum": {
           "Peru": "Peru",
@@ -3045,18 +3474,100 @@
       }
     }
   },
-  "public-png-fishing-effort": {
-    "name": "Papua New Guinea VMS",
-    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques",
+  "public-pmn-exploration-areas-individual": {
+    "name": "PMN Exploration Areas",
+    "description": "Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Exploration Areas under the International Seabed Authority are areas licensed for exploration of mineral resources to particular States and associated contractors. 75,000 square kilometers are allocated to each contractor for polymetallic nodule Exploration Areas.",
     "schema": {
-      "flag": {
-        "keyword": "flag",
+      "act_date": {
+        "keyword": "act_date",
         "enum": {
-          "PNG": "PNG",
-          "PHL": "PHL"
+          "985816800000": "985816800000",
+          "1717970400000": "1717970400000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key"
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREAPMN1": "KOREAPMN1",
+          "IOMPMN1": "IOMPMN1",
+          "DORDPMN1": "DORDPMN1",
+          "BMJPMN1": "BMJPMN1",
+          "IndiaPMN1": "IndiaPMN1",
+          "TOMLPMN1": "TOMLPMN1",
+          "IFREMERPMN1": "IFREMERPMN1",
+          "BGRPMN1": "BGRPMN1",
+          "BPHDCPMN1": "BPHDCPMN1",
+          "UKSRLPMN2": "UKSRLPMN2",
+          "UKSRLPMN1": "UKSRLPMN1",
+          "YUZHPMN1": "YUZHPMN1",
+          "CIICPMN1": "CIICPMN1",
+          "OMSPMN1": "OMSPMN1",
+          "GSRPMN1": "GSRPMN1",
+          "MARAWAPMN1": "MARAWAPMN1",
+          "CMMPMN1": "CMMPMN1",
+          "NORIPMN1": "NORIPMN1",
+          "COMRAPMN1": "COMRAPMN1"
         }
       }
     }
+  },
+  "public-pmn-reserved-areas-individual": {
+    "name": "PMN Reserved Areas",
+    "description": "Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.",
+    "schema": {
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "988322400000": "988322400000",
+          "1617487200000": "1617487200000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key"
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "BPHDCPMN1": "BPHDCPMN1",
+          "PMNReserved": "PMNReserved"
+        }
+      }
+    }
+  },
+  "public-pms-exploration-areas-individual": {
+    "name": "PMS Exploration Areas",
+    "description": "Polymetallic sulphides, or seafloor massive sulphides, are formed at hydrothermal vents near mid-ocean ridges and back-arc basins between approximately 1,000 and 4,000 meters in depth. They are formed when superheated, mineral-rich fluids from the Earth’s mantle are rapidly cooled by deep water. Rapid cooling results in dissolved metals in the fluid precipitating as metal sulfides. These sulfides and surrounding polymetallic muds can contain copper, zinc, silver, and gold. For polymetallic sulphides, the exploration area allocated to each contractor is 10,000 square kilometres and consists of 100 blocks. Each block is no greater than 100 square kilometres.",
+    "schema": {
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1474840800000": "1474840800000",
+          "1698098400000": "1698098400000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key"
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREAPMS1": "KOREAPMS1",
+          "COMRAPMS1": "COMRAPMS1",
+          "IFREMERPMS1": "IFREMERPMS1",
+          "POLPMS1": "POLPMS1",
+          "RUSFEDPMS1": "RUSFEDPMS1",
+          "BGRPMS1": "BGRPMS1",
+          "IndiaPMS1": "IndiaPMS1"
+        }
+      }
+    }
+  },
+  "public-png-fishing-effort": {
+    "name": "Papua New Guinea VMS",
+    "description": "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques"
   },
   "public-png-presence": {
     "name": "Papua New Guinea VMS",
@@ -3065,10 +3576,6 @@
   "public-png-vessel-identity-fishing": {
     "name": "Papua New Guinea VMS (Fishing Vessels)",
     "description": "Dataset for VMS Papua New Guinea (Public) "
-  },
-  "public-ports": {
-    "name": "Ports",
-    "description": "Named ports"
   },
   "public-ports-v1": {
     "name": "Ports v1",
@@ -3124,54 +3631,25 @@
   },
   "public-rfmo": {
     "name": "RFMO",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
-    "schema": {
-      "id": {
-        "keyword": "id",
-        "enum": {
-          "APFIC": "APFIC",
-          "BOBP-IGO": "BOBP-IGO",
-          "CCAMLR": "CCAMLR",
-          "CCBSP": "CCBSP",
-          "CCSBT": "CCSBT",
-          "CCSBT Primary Area": "CCSBT Primary Area",
-          "COREP": "COREP",
-          "CPPS": "CPPS",
-          "CRFM": "CRFM",
-          "CTMFM": "CTMFM",
-          "FCWC": "FCWC",
-          "FFA": "FFA",
-          "GFCM": "GFCM",
-          "IATTC": "IATTC",
-          "ICCAT": "ICCAT",
-          "ICES": "ICES",
-          "IOTC": "IOTC",
-          "IPHC": "IPHC",
-          "LTA": "LTA",
-          "NAFO": "NAFO",
-          "NAMMCO": "NAMMCO",
-          "NASCO": "NASCO",
-          "NEAFC": "NEAFC",
-          "NPAFC": "NPAFC",
-          "NPFC": "NPFC",
-          "OSPESCA": "OSPESCA",
-          "PERSGA": "PERSGA",
-          "PICES": "PICES",
-          "RECOFI": "RECOFI",
-          "SEAFDEC": "SEAFDEC",
-          "SIOFA": "SIOFA",
-          "SPC": "SPC",
-          "SPRFMO": "SPRFMO",
-          "SRFC": "SRFC",
-          "SWIOFC": "SWIOFC",
-          "WCPFC": "WCPFC"
-        }
-      }
-    }
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer."
   },
   "public-seagrasses": {
     "name": "Lamun",
-    "description": "<h2>Overview</h2>\n<ul>\n<li>Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>"
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Seagrasses are a productive ecosystem found globally in shallow marine areas where they provide food and habitat for organisms and play a key role in nutrient cycling. This dataset shows the global distribution of seagrasses.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://data.unep-wcmc.org/datasets/7'>UNEP-WCMC, Short FT (2021). Global distribution of seagrasses (version 7.1). Seventh update to the data layer used in Green and Short (2003). Cambridge (UK): UN Environment World Conservation Monitoring Centre. Data DOI: https://doi.org/10.34892/x6r3-d211. </a></li>",
+    "schema": {
+      "BIO_CLASS": {
+        "keyword": "BIO_CLASS"
+      },
+      "FAMILY": {
+        "keyword": "FAMILY"
+      },
+      "GENUS": {
+        "keyword": "GENUS"
+      },
+      "habitat": {
+        "keyword": "habitat"
+      }
+    }
   },
   "public-seamounts": {
     "name": "Gunung laut",
@@ -3185,6 +3663,10 @@
         }
       }
     }
+  },
+  "public-south-atlantic-isa-claim-areas": {
+    "name": "South Atlantic ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the South Atlantic Ocean, which contain resources cobalt-rich ferromanganese crusts. Brazil is currently the only country holding leases in this region."
   },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "Depth: -200 m",
@@ -3229,7 +3711,7 @@
   },
   "public-vms-blz-tracks": {
     "name": "Belize VMS",
-    "description": "Tracks dataset for VMS Belize (public)"
+    "description": "Tracks dataset for VMS Belize (Public)"
   },
   "public-vms-blz-vessel-identity": {
     "name": "VMS Belize",
@@ -3397,11 +3879,19 @@
   },
   "public-vms-bra-tracks": {
     "name": "Brazil VMS",
-    "description": "Tracks dataset for VMS Brazil (public)"
+    "description": "Tracks dataset for VMS Brazil (Public)"
   },
   "public-vms-bra-vessel-identity": {
     "name": "VMS Brazil",
-    "description": "Vessels (VMS Brazil)"
+    "description": "Vessels (VMS Brazil)",
+    "schema": {
+      "selfReportedInfo.fishingLicenseCode": {
+        "keyword": "fishingLicenseCode"
+      },
+      "selfReportedInfo.vesselRegistrationCode": {
+        "keyword": "vesselRegistrationCode"
+      }
+    }
   },
   "public-vms-chl-fishing-effort": {
     "name": "VMS Chile",
@@ -3421,8 +3911,8 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "SMALL_FISHERIES": "SMALL_FISHERIES",
-          "INDUSTRY": "INDUSTRY"
+          "INDUSTRY": "INDUSTRY",
+          "SMALL_FISHERIES": "SMALL_FISHERIES"
         }
       }
     }
@@ -3434,10 +3924,10 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "AQUACULTURE": "AQUACULTURE",
           "INDUSTRY": "INDUSTRY",
-          "TRANSPORT": "TRANSPORT",
-          "AQUACULTURE": "AQUACULTURE"
+          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "TRANSPORT": "TRANSPORT"
         }
       },
       "speed": {
@@ -3467,7 +3957,7 @@
   },
   "public-vms-chl-tracks": {
     "name": "CHILE VMS",
-    "description": "Tracks dataset for VMS CHILE (public)"
+    "description": "Tracks dataset for VMS CHILE (Public)"
   },
   "public-vms-chl-vessel-identity": {
     "name": "VMS Chile",
@@ -3491,9 +3981,9 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
+          "ATUNEROS": "ATUNEROS",
           "AVANZADOS": "AVANZADOS",
-          "SARDINEROS": "SARDINEROS",
-          "ATUNEROS": "ATUNEROS"
+          "SARDINEROS": "SARDINEROS"
         }
       }
     }
@@ -3505,9 +3995,9 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
+          "ATUNEROS": "ATUNEROS",
           "AVANZADOS": "AVANZADOS",
-          "SARDINEROS": "SARDINEROS",
-          "ATUNEROS": "ATUNEROS"
+          "SARDINEROS": "SARDINEROS"
         }
       },
       "speed": {
@@ -3537,18 +4027,18 @@
   },
   "public-vms-cri-tracks": {
     "name": "Costa Rica VMS",
-    "description": "Tracks dataset for VMS Costa Rica (public)"
+    "description": "Tracks dataset for VMS Costa Rica (Public)"
   },
   "public-vms-cri-vessel-identity": {
     "name": "VMS Costa Rica",
     "description": "Vessels (VMS Costa Rica)",
     "schema": {
-      "source_fleet": {
+      "selfReportedInfo.source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "costarica_vms_industrial_longline": "costarica_vms_industrial_longline",
-          "costarica_vms_atuneros": "costarica_vms_atuneros",
-          "costarica_vms_sardineros": "costarica_vms_sardineros"
+          "ATUNEROS": "ATUNEROS",
+          "AVANZADOS": "AVANZADOS",
+          "SARDINEROS": "SARDINEROS"
         }
       }
     }
@@ -3603,7 +4093,12 @@
   },
   "public-vms-ecu-vessel-identity": {
     "name": "VMS Ecuador",
-    "description": "Vessels (VMS Ecuador)"
+    "description": "Vessels (VMS Ecuador)",
+    "schema": {
+      "selfReportedInfo.registryNumber": {
+        "keyword": "registryNumber"
+      }
+    }
   },
   "public-vms-nor-fishing-effort": {
     "name": "VMS Norway",
@@ -3723,7 +4218,18 @@
   },
   "public-vms-pan-vessel-identity": {
     "name": "VMS Panama",
-    "description": "Vessels (VMS Panama)"
+    "description": "Vessels (VMS Panama)",
+    "schema": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
+      },
+      "selfReportedInfo.ssvid": {
+        "keyword": "ssvid"
+      }
+    }
   },
   "public-vms-per-fishing-effort": {
     "name": "VMS Peru",
@@ -3767,7 +4273,8 @@
         "keyword": "origin",
         "enum": {
           "Foreign": "Foreign",
-          "PER": "PER"
+          "PER": "PER",
+          "": ""
         }
       },
       "source_fleet": {
@@ -3801,7 +4308,10 @@
     "name": "VMS Peru",
     "description": "Vessels (VMS Peru)",
     "schema": {
-      "hull": {
+      "selfReportedInfo.externalId": {
+        "keyword": "externalId"
+      },
+      "selfReportedInfo.hull": {
         "keyword": "hull",
         "enum": {
           "ACERO NAVAL": "ACERO NAVAL",
@@ -3811,20 +4321,80 @@
           "FIBRA DE VIDRIO": "FIBRA DE VIDRIO"
         }
       },
-      "origin": {
+      "selfReportedInfo.origin": {
         "keyword": "origin",
         "enum": {
-          "Peru": "Peru",
-          "Foreign": "Foreign"
+          "PERU": "PERU",
+          "FOREIGN": "FOREIGN"
         }
       },
-      "sourceFleet": {
+      "selfReportedInfo.sourceFleet": {
         "keyword": "sourceFleet",
         "enum": {
-          "industrial": "industrial",
-          "artisanal": "artisanal",
-          "not defined": "not defined"
+          "": "",
+          "ARTISANAL": "ARTISANAL",
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE"
         }
+      }
+    }
+  },
+  "public-vms-plw-fishing-effort": {
+    "name": "VMS Palau",
+    "description": "<h2>Overview</h2> <p> Vessel Monitoring System (VMS) data for Palau is provided by the Palau National Marine Sanctuary. The data is collected via satellite and includes information on vessels' identity, location, speed, and course. It is published with a 3-day delay, and historical data is available from 2021 onward. </p> <p> Please note that given the lower polling rates of VMS compared to AIS, estimates for apparent fishing activity may be less accurate. We are currently improving our fishing models to be better suited to VMS data. </p> <h2>Access & Availability</h2> <p> Vessel names and tracks are visible to public users, but tracks cannot be downloaded. If you require data access beyond what is publicly available, please contact our support team at support@globalfishingwatch.org. </p> <p> If you notice missing data on the map, it may be due to a VMS data outage. We are currently working on better ways to communicate these outages clearly within the platform. If you have any questions regarding gaps in data, please do not hesitate to reach out to our support email. </p>",
+    "schema": {
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "public-vms-plw-presence": {
+    "name": "VMS Palau Presence",
+    "description": "<h2>Overview</h2> <p> Vessel Monitoring System (VMS) data for Palau is provided by the Palau National Marine Sanctuary. The data is collected via satellite and includes information on vessels' identity, location, speed, and course. It is published with a 3-day delay, and historical data is available from 2021 onward. </p> <p> Please note that given the lower polling rates of VMS compared to AIS, estimates for apparent fishing activity may be less accurate. We are currently improving our fishing models to be better suited to VMS data. </p> <h2>Access & Availability</h2> <p> Vessel names and tracks are visible to public users, but tracks cannot be downloaded. If you require data access beyond what is publicly available, please contact our support team at support@globalfishingwatch.org. </p> <p> If you notice missing data on the map, it may be due to a VMS data outage. We are currently working on better ways to communicate these outages clearly within the platform. If you have any questions regarding gaps in data, please do not hesitate to reach out to our support email. </p>",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      }
+    }
+  },
+  "public-vms-plw-tracks": {
+    "name": "Palau VMS",
+    "description": "Tracks dataset for VMS Palau (Public)"
+  },
+  "public-vms-plw-vessel-identity": {
+    "name": "VMS Palau",
+    "description": "Vessels (VMS Palau)",
+    "schema": {
+      "selfReportedInfo.imo": {
+        "keyword": "imo"
       }
     }
   },
