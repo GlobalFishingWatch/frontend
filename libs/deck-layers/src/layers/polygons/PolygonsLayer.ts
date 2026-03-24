@@ -15,6 +15,7 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
+  getFetchLoadOptions,
   getLayerGroupOffset,
   getPickedFeatureToHighlight,
   hexToDeckColor,
@@ -170,6 +171,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         id: `${id}-highlight-fills`,
         stroked: false,
         data: dataToRender,
+        loadOptions: getFetchLoadOptions(),
         pickable: pickable,
         getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getFillColor: (d) => this.getFillColor(d as PolygonFeature),
@@ -180,6 +182,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-lines`,
         data: dataToRender,
+        loadOptions: getFetchLoadOptions(),
         lineWidthUnits: 'pixels',
         lineWidthMinPixels: 0,
         lineWidthMaxPixels: 2,
@@ -191,6 +194,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-lines-bg`,
         data: dataToRender,
+        loadOptions: getFetchLoadOptions(),
         lineWidthMinPixels: 0,
         lineWidthUnits: 'pixels',
         filled: false,
@@ -208,6 +212,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-lines-fg`,
         data: dataToRender,
+        loadOptions: getFetchLoadOptions(),
         lineWidthMinPixels: 0,
         lineWidthUnits: 'pixels',
         filled: false,

@@ -1,22 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
 
-import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { FLAG_LENGTH, SSVID_LENGTH, VESSEL_ID_LENGTH } from 'features/search/search.config'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { readBlobAs } from 'utils/files'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { listAsSentence } from 'utils/shared'
 
-import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
+import {
+  selectVesselGroupModalSelectableColumns,
+  selectVesselGroupsModalSearchIds,
+} from './vessel-groups.selectors'
 import type { VesselGroupCsvData } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalCsvColumns,
@@ -36,6 +38,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const dispatch = useAppDispatch()
   const [csvName, setCsvName] = useState<string>('')
   const csvData = useSelector(selectVesselGroupModalCsvData)
+  const selectableColumns = useSelector(selectVesselGroupModalSelectableColumns)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
   const sliceSearchText = useSelector(selectVesselGroupsModalSearchText)
   const [searchText, setSearchText] = useState(sliceSearchText)
@@ -89,25 +92,6 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     },
     [dispatch, selectedCsvColumns]
   )
-
-  const selectableColumns = useMemo(() => {
-    if (!csvData?.[0]) return []
-    return Object.keys(csvData[0]).filter((column) => {
-      const resolved = resolveVesselPropertyColumn(column)
-      if (!resolved) return false
-      const values = csvData.map((row) => row[column])
-      if (resolved === 'flag') {
-        return values.every((v) => v?.length === FLAG_LENGTH) // ISO3
-      }
-      if (resolved === 'mmsi') {
-        return values.every((v) => v?.length === SSVID_LENGTH) // MMSI
-      }
-      if (resolved === 'vesselId') {
-        return values.every((v) => v?.length === VESSEL_ID_LENGTH) // GFW Vessel ID
-      }
-      return false
-    })
-  }, [csvData])
 
   return (
     <div className={styles.vesselGroupSearchContainer}>
@@ -206,7 +190,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
                               title={row[column]}
                               className={cx(styles.columnCell, { [styles.selected]: isSelected })}
                             >
-                              {row[column]}
+                              {row[column] || EMPTY_FIELD_PLACEHOLDER}
                             </td>
                           )
                         })}

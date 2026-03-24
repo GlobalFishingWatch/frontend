@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { Locale } from '@globalfishingwatch/api-types'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA } from 'data/config'
@@ -23,6 +24,7 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
 
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
+  selectVesselGroupModalCsvColumns,
   selectVesselGroupModalVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
@@ -55,6 +57,10 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
     dataset,
   } = getSearchIdentityResolved(vessel.identity!, { prioritizedProperty: searchIdField })
   const vesselDataset = useSelector(selectDatasetById(dataset))
+  const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
+  const normalisedselectedCsvColumns = selectedCsvColumns?.map((column) =>
+    resolveVesselPropertyColumn(column)
+  )
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
 
@@ -68,10 +74,16 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
 
   return (
     <tr className={className}>
-      <td>{hiddenProperties.includes('ssvid') ? '' : ssvid || EMPTY_FIELD_PLACEHOLDER}</td>
-      <td>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</td>
-      <td>{vesselName}</td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('mmsi') })}>
+        <span>{hiddenProperties.includes('ssvid') ? '' : ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+      </td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('imo') })}>
+        <span>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</span>
+      </td>
       <td>
+        <span>{vesselName}</span>
+      </td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('flag') })}>
         <span>{flag ? t((t) => t[flag], { ns: 'flags' }) : EMPTY_FIELD_PLACEHOLDER}</span>
       </td>
       <td>

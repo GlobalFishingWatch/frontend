@@ -2,7 +2,7 @@ import type { DatasetFilter, DatasetFilters } from '@globalfishingwatch/api-type
 import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
-export type VesselPropertyGuessColumn = 'vesselId' | 'mmsi' | 'imo' | 'flag'
+export type VesselPropertyGuessColumn = 'vesselId' | 'mmsi' | 'imo' | 'flag' | 'callsign'
 
 export const LatitudeMatches = ['latitude', 'latitud', 'lat', 'location-lat', 'y']
 export const LongitudeMatches = [
@@ -22,6 +22,14 @@ export const VesselIdMatches = ['vesselId', 'vesselid', 'vessel_id', 'id']
 export const MmsiMatches = ['mmsi', 'ssvid']
 export const ImoMatches = ['imo']
 export const FlagMatches = ['flag', 'bandera', 'pavillon', 'bandeira']
+export const CallsignMatches = [
+  'callsign',
+  'call sign',
+  'Call sign',
+  'Call Sign',
+  'call-sign',
+  'callSign',
+]
 
 const matchesWithUpperCase = (matches: string[]) => {
   return [
@@ -42,6 +50,7 @@ export const VESSEL_PROPERTY_GUESS_COLUMN_DICT: Record<VesselPropertyGuessColumn
   mmsi: matchesWithUpperCase(MmsiMatches),
   imo: matchesWithUpperCase(ImoMatches),
   flag: matchesWithUpperCase(FlagMatches),
+  callsign: matchesWithUpperCase(CallsignMatches),
 }
 
 export const GUESS_COLUMN_NAMES = Object.entries(GUESS_COLUMN_DICT)

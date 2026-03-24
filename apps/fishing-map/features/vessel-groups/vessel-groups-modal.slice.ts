@@ -54,7 +54,6 @@ interface VesselGroupModalState {
     csvColumns: string[] | null
     csvData: VesselGroupCsvData[] | null
   }
-  isOwnedByUser: boolean
 }
 
 type SearchVesselsBody = {
@@ -263,7 +262,6 @@ const initialState: VesselGroupModalState = {
     csvColumns: null,
     csvData: null,
   },
-  isOwnedByUser: false,
 }
 
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
@@ -403,9 +401,6 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
     },
-    setIsOwnedByUser: (state, action: PayloadAction<boolean>) => {
-      state.isOwnedByUser = action.payload
-    },
     setVesselGroupConfirmationMode: (state, action: PayloadAction<VesselGroupConfirmationMode>) => {
       state.confirmationMode = action.payload
     },
@@ -460,7 +455,6 @@ export const {
   setVesselGroupModalCsvColumns,
   setVesselGroupModalCsvData,
   setVesselGroupEditId,
-  setIsOwnedByUser,
   setVesselGroupConfirmationMode,
   resetVesselGroupModal,
 } = vesselGroupModalSlice.actions
@@ -483,6 +477,5 @@ export const selectVesselGroupEditId = (state: RootState) =>
   state.vesselGroupModal.vesselGroupEditId
 export const selectVesselGroupConfirmationMode = (state: RootState) =>
   state.vesselGroupModal.confirmationMode
-export const selectIsOwnedByUser = (state: RootState) => state.vesselGroupModal.isOwnedByUser
 
 export default vesselGroupModalSlice.reducer

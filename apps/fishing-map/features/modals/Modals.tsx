@@ -14,7 +14,6 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   selectBigQueryActive,
   selectTurningTidesActive,
-  setBigQueryMode,
   toggleBigQueryModal,
   toggleTurningTidesModal,
 } from 'features/bigquery/bigquery.slice'

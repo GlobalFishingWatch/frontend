@@ -9,7 +9,8 @@ import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
 import { DEFAULT_VIEWPORT } from 'data/config'
 import App from 'features/app/App'
-import { viewStateAtom } from 'features/map/map.atoms'
+import { mapInstanceAtom, viewStateAtom } from 'features/map/map.atoms'
+import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import { makeStore } from 'store'
 
@@ -197,5 +198,39 @@ describe('Map', () => {
       longitude: DEFAULT_VIEWPORT.longitude,
       zoom: DEFAULT_VIEWPORT.zoom + 1,
     })
+  })
+
+  it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
+    const store = makeStore(defaultState, [], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render(<App />, { store, jotaiStore, authenticated: true })
+
+    await userEvent.dragAndDrop(getByTestId('app-main'), getByTestId('app-main'), {
+      sourcePosition: { x: 100, y: 35 },
+      targetPosition: { x: 380, y: 35 },
+      steps: 10,
+    })
+
+    // Zoom in multiple times to enable positions layer
+    for (let i = 0; i < 8; i++) {
+      await userEvent.click(getByTestId('map-control-zoom-in'))
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+
+    await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
+
+    await userEvent.click(
+      getByTestId('activity-section').getByTestId('activity-visualizations-change-positions')
+    )
+
+    await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
+
+    const mapInstance = jotaiStore.get(mapInstanceAtom)
+    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    const [x, y] = viewport?.project([-37.0458, 19.0776]) || [0, 0]
+
+    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
+
+    await expect.element(getByTestId('map-popup-wrapper').getByText(/No.805 Oryong/i)).toBeVisible()
   })
 })

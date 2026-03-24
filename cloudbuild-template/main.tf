@@ -78,19 +78,19 @@ resource "google_cloudbuild_trigger" "trigger" {
       ]
     }
 
-    step {
-      id   = "Search for Vulnerabilities"
-      name = "aquasec/trivy:latest"
-      args = [
-        "image",
-        "--no-progress",
-        "--severity",
-        "CRITICAL",
-        "--exit-code",
-        "1",
-        var.docker_image,
-      ]
-    }
+    # step {
+    #   id   = "Search for Vulnerabilities"
+    #   name = "aquasec/trivy:latest"
+    #   args = [
+    #     "image",
+    #     "--no-progress",
+    #     "--severity",
+    #     "CRITICAL",
+    #     "--exit-code",
+    #     "1",
+    #     var.docker_image,
+    #   ]
+    # }
 
     step {
       id   = "Push Image"

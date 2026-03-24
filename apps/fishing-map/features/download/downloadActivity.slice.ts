@@ -14,6 +14,7 @@ import type { Dataview, DownloadActivity } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -136,8 +137,12 @@ export const downloadActivityThunk = createAsyncThunk<
         'spatial-aggregation': spatialAggregation,
         'spatial-resolution': spatialResolution,
         'temporal-resolution': temporalResolution,
-        'region-id': areaId,
-        'region-dataset': datasetId,
+        ...(areaId === ENTIRE_WORLD_REPORT_AREA_ID
+          ? { 'region-world': true }
+          : {
+              'region-id': areaId,
+              'region-dataset': datasetId,
+            }),
         'group-by': groupBy,
         'buffer-unit': bufferUnit?.toUpperCase(),
         'buffer-value': bufferValue,
