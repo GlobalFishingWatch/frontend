@@ -37,6 +37,7 @@ import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
   selectVesselGroupModalDatasetsWithoutEventsRelated,
+  selectVesselGroupModalSelectableColumns,
   selectVesselGroupsModalSearchIds,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -135,6 +136,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const presenceDataview = useSelector(selectPresenceDataview)
+  const selectableColumns = useSelector(selectVesselGroupModalSelectableColumns)
   const query = useSelector(selectLocationQuery)
   const datasetsWithoutRelatedEvents = useSelector(
     selectVesselGroupModalDatasetsWithoutEventsRelated
@@ -459,8 +461,9 @@ function VesselGroupModal(): React.ReactElement<any> {
         ? t((t) => t.vesselGroup.missingParam, {
             param: t((t) => t.vesselGroup.idField).toLowerCase(),
           })
-        : selectedCsvColumns?.length === 0
-          ? t((t) => t.vesselGroup.columnSelection)
+        : selectableColumns?.length > 0 &&
+            (selectedCsvColumns === null || selectedCsvColumns?.length === 0)
+          ? t((t) => t.vesselGroup.columnSelectionTooltip)
           : searchVesselStatus === AsyncReducerStatus.Loading
             ? t((t) => t.common.loading)
             : t((t) => t.vesselGroup.searchVesselsRequired)
