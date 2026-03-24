@@ -16,7 +16,8 @@ describe('PrivateWorkspace', async () => {
 
     const { getByTestId } = await render(<App />, { store })
 
-    await expect.element(getByTestId('login-link')).toBeVisible()
+    await expect.element(getByText(/Workspace01/)).not.toBeVisible()
+    await expect.element(getByText(/The workspace you requested was not found./)).toBeVisible()
   })
 
   it('should be able to navigate to the private workspace if authenticated', async () => {
