@@ -446,7 +446,7 @@ export const getFiltersInDataview = (
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetFilter[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewFilterSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewFilterSupported(dataview, f))
-  const fielsAllowedOrdered =
+  const fieldsAllowedOrdered =
     fieldsOrder && fieldsOrder.length > 0
       ? fieldsAllowed.sort((a, b) => {
           const aIndex = fieldsOrder.findIndex((f) => f === a)
@@ -454,7 +454,7 @@ export const getFiltersInDataview = (
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const filtersAllowed = fielsAllowedOrdered.map((id) => {
+  const filtersAllowed = fieldsAllowedOrdered.map((id) => {
     return getDataviewFilterConfig(dataview, id, {
       vesselGroups,
       isGuestUser,

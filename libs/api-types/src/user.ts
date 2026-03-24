@@ -104,6 +104,7 @@ export type UserData = {
   language?: string
   country?: string
   organization?: string
+  organizationCategory?: string
   organizationType?: string
   intendedUse?: UserApplicationIntendedUse
   whoEndUsers?: string

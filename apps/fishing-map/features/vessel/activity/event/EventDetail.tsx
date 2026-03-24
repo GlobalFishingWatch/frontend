@@ -12,7 +12,6 @@ import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -34,7 +33,6 @@ const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC'
 const TimeFields = ({ event }: { event: VesselEvent }) => {
   const { t, i18n } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
-  const isGFWUser = useSelector(selectIsGFWUser)
   return (
     <Fragment>
       <li>
@@ -44,7 +42,7 @@ const TimeFields = ({ event }: { event: VesselEvent }) => {
             : t((t) => t.eventInfo.start)}
         </label>
         <span>{formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })}</span>
-        {event.coordinates && isGFWUser && (
+        {event.coordinates && (
           <SolarStatus
             lon={event.coordinates[0]}
             lat={event.coordinates[1]}
@@ -60,7 +58,7 @@ const TimeFields = ({ event }: { event: VesselEvent }) => {
             : t((t) => t.eventInfo.end)}
         </label>
         <span>{formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })}</span>
-        {event.coordinates && isGFWUser && (
+        {event.coordinates && (
           <SolarStatus
             lon={event.coordinates[0]}
             lat={event.coordinates[1]}

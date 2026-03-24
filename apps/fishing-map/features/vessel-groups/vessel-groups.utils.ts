@@ -17,14 +17,17 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   return `${isPrivate ? `${PRIVATE_ICON} ` : ''}${vesselGroup.name}`
 }
 
+type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign'
+
 export const vesselPropertyToApiSearch = (
   col: VesselPropertyGuessColumn
-): 'id' | 'ssvid' | 'imo' | 'flag' => {
-  const map: Record<VesselPropertyGuessColumn, 'id' | 'ssvid' | 'imo' | 'flag'> = {
+): VesselPropertyApiSearch => {
+  const map: Record<VesselPropertyGuessColumn, VesselPropertyApiSearch> = {
     vesselId: 'id',
     mmsi: 'ssvid',
     imo: 'imo',
     flag: 'flag',
+    callsign: 'callsign',
   }
   return map[col]
 }

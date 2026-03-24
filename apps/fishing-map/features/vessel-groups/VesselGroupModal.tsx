@@ -32,10 +32,12 @@ import {
 } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
   selectVesselGroupModalDatasetsWithoutEventsRelated,
+  selectVesselGroupModalSelectableColumns,
   selectVesselGroupsModalSearchIds,
   selectVesselGroupWorkspaceToNavigate,
   selectWorkspaceVessselGroupsIds,
@@ -77,7 +79,6 @@ import {
   resetVesselGroupModal,
   resetVesselGroupModalSearchStatus,
   searchVesselGroupsVesselsThunk,
-  selectIsOwnedByUser,
   selectVesselGroupConfirmationMode,
   selectVesselGroupEditId,
   selectVesselGroupModalCsvColumns,
@@ -99,15 +100,16 @@ function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
+  const userData = useSelector(selectUserData)
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const csvData = useSelector(selectVesselGroupModalCsvData)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
-  const userIsVesselGroupOwner = useSelector(selectIsOwnedByUser)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
+  const isUserVesselGroupOwner = editingVesselGroup?.ownerId === userData?.id
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsError = useSelector(selectVesselGroupsError)
@@ -134,6 +136,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const presenceDataview = useSelector(selectPresenceDataview)
+  const selectableColumns = useSelector(selectVesselGroupModalSelectableColumns)
   const query = useSelector(selectLocationQuery)
   const datasetsWithoutRelatedEvents = useSelector(
     selectVesselGroupModalDatasetsWithoutEventsRelated
@@ -315,7 +318,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupVessels)
       let dispatchedAction
-      if (editingVesselGroupId && userIsVesselGroupOwner) {
+      if (editingVesselGroupId && isUserVesselGroupOwner) {
         const vesselGroup: UpdateVesselGroupThunkParams = {
           id: editingVesselGroupId,
           name: groupName,
@@ -409,7 +412,7 @@ function VesselGroupModal(): React.ReactElement<any> {
     [
       vesselGroupVessels,
       editingVesselGroupId,
-      userIsVesselGroupOwner,
+      isUserVesselGroupOwner,
       groupName,
       dispatch,
       createAsPublic,
@@ -458,8 +461,9 @@ function VesselGroupModal(): React.ReactElement<any> {
         ? t((t) => t.vesselGroup.missingParam, {
             param: t((t) => t.vesselGroup.idField).toLowerCase(),
           })
-        : selectedCsvColumns?.length === 0
-          ? t((t) => t.vesselGroup.columnSelection)
+        : selectableColumns?.length > 0 &&
+            (selectedCsvColumns === null || selectedCsvColumns?.length === 0)
+          ? t((t) => t.vesselGroup.columnSelectionTooltip)
           : searchVesselStatus === AsyncReducerStatus.Loading
             ? t((t) => t.common.loading)
             : t((t) => t.vesselGroup.searchVesselsRequired)

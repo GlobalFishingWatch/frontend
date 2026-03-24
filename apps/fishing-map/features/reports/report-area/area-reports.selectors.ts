@@ -406,9 +406,6 @@ export const selectReportAreaStatus = createSelector(
   }
 )
 
-export const selectIsGlobalReport = createSelector(
-  [selectCurrentReport, selectReportArea],
-  (report, reportArea) => {
-    return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
-  }
-)
+export const selectIsGlobalReport = createSelector([selectReportArea], (reportArea) => {
+  return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+})

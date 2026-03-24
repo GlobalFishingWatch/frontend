@@ -23,14 +23,12 @@ import {
 import { getStatsValue } from 'features/reports/reports-timeseries-shared.utils'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
-import { useGetHasDataviewSchemaFilters } from 'features/reports/shared/summary/report-summary.hooks'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ReportOthers.module.css'
-import summaryStyles from 'features/reports/shared/summary/ReportSummary.module.css'
 
 function ReportOthers() {
   useComputeReportTimeSeries()
@@ -39,7 +37,6 @@ function ReportOthers() {
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
-  const getHasDataviewSchemaFilters = useGetHasDataviewSchemaFilters()
   const timeseriesStats = useTimeseriesStats()
   const otherDataviews = useSelector(selectPointsActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -94,18 +91,19 @@ function ReportOthers() {
         const statsCounts = timeseriesStats?.[mergedDataviewId]
           ? getStatsValue(timeseriesStats[mergedDataviewId], 'count')
           : undefined
-        const hasDataviewSchemaFilters = dataviews.some((d) => getHasDataviewSchemaFilters(d))
 
         const StatsComponent =
           totalValue !== undefined ? (
             <p className={cx(styles.summary)}>
               <Fragment>
                 <span>
-                  {statsCounts}
-                  {' ' +
-                    t((t) => t.common.points, {
-                      count: statsCounts,
-                    })}
+                  <strong>
+                    {statsCounts}
+                    {' ' +
+                      t((t) => t.common.points, {
+                        count: statsCounts,
+                      })}
+                  </strong>
                   {hasAggregateByProperty &&
                     ' ' +
                       t((t) => t.common.aggregatedBy, {
@@ -143,15 +141,13 @@ function ReportOthers() {
 
         return (
           <div key={mergedDataviewId} className={styles.container}>
-            <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
+            <h2 className={styles.title}>
+              <strong>{title}</strong> {unit && <span>({unit})</span>}
+            </h2>
             {hasTimeFilter && loading ? <ReportStatsPlaceholder /> : StatsComponent}
             {dataviews?.length > 0 && (
               <div className={styles.selectContainer}>
-                <div
-                  className={cx(summaryStyles.tagsContainer, {
-                    [summaryStyles.tagsContainerNoFilters]: !hasDataviewSchemaFilters,
-                  })}
-                >
+                <div className={styles.tagsContainer}>
                   {dataviews?.map((d) => (
                     <ReportSummaryTags key={d.id} dataview={d} />
                   ))}

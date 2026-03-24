@@ -205,6 +205,10 @@
   overflow: visible;
 }
 
+.vesselsTable td.highlighted span {
+  background-color: var(--color-highlight-blue);
+}
+
 .backButton {
   margin-right: 1rem;
 }
