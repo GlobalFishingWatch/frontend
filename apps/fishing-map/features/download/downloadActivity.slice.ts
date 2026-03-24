@@ -161,7 +161,6 @@ export const downloadActivityThunk = createAsyncThunk<
       }).then((blob) => {
         saveAs(blob as any, fileName)
       })
-      console.log('🚀 ~ createdDownload:', createdDownload)
 
       return createdDownload
     } catch (e: any) {
