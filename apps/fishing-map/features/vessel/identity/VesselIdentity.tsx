@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { saveAs } from 'file-saver'
 
-import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type { RegistryExtraFieldValue, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
   API_LOGIN_REQUIRED,
   SelfReportedSource,
@@ -245,12 +245,19 @@ const VesselIdentity = () => {
                         ? EMPTY_FIELD_PLACEHOLDER
                         : (vesselIdentity[key] as string)
                     if (key === 'depthM' || key === 'builtYear') {
-                      value =
-                        (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
-                          ? API_LOGIN_REQUIRED
-                          : vesselIdentity[key]?.value
-                            ? vesselIdentity[key]?.value?.toString()
-                            : EMPTY_FIELD_PLACEHOLDER
+                      const builtYear = vesselIdentity[key] as
+                        | RegistryExtraFieldValue<number>
+                        | string
+                      if (builtYear === API_LOGIN_REQUIRED) {
+                        value = API_LOGIN_REQUIRED
+                      } else {
+                        value =
+                          // For registry data the builtYear is a RegistryExtraFieldValue<number>
+                          (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
+                          // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
+                          (builtYear as string) ||
+                          EMPTY_FIELD_PLACEHOLDER
+                      }
                     }
                     const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
                     return (
