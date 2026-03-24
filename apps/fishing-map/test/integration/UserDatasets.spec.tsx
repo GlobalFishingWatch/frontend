@@ -385,13 +385,17 @@ describe('User Datasets', () => {
     window.confirm = () => true
     await userEvent.click(getByTestId('sidebar-login-icon'))
     await userEvent.click(getByText('Dataset'))
-    const deleteButton = getByTestId(/delete-dataset-public-iccat-2019-points-/).first()
-    await userEvent.click(deleteButton)
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
 
-    // TODO: solve refetch after delete to be able to check that the dataset is not visible on the map anymore
-    // await expect.element(deleteButton).not.toBeInTheDocument()
+    const deleteButtons = getByTestId(/delete-dataset-public-iccat-2019-points-/).all()
+
+    for (const button of deleteButtons) {
+      await userEvent.click(button)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
+    expect(getByTestId(/delete-dataset-public-iccat-2019-points-/)).not.toBeInTheDocument()
 
     dateNowSpy?.mockRestore()
   })

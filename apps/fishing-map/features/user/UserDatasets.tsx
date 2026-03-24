@@ -2,7 +2,7 @@ import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
@@ -132,7 +132,7 @@ function UserDatasets() {
           </Button>
         </div>
         {loading ? (
-          <div className={styles.placeholder}>
+          <div className={styles.placeholder} data-testid="datasets-spinner">
             <Spinner size="small" />
           </div>
         ) : (
