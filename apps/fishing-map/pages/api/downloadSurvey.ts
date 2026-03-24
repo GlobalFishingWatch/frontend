@@ -11,6 +11,7 @@ export type FeedbackFormData = {
   name?: string
   email: string
   organization?: string
+  organizationType?: string
   groups?: string
   usageIntent?: string
   contactConsent?: ContactConsent

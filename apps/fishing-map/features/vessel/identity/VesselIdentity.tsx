@@ -19,6 +19,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectHasTMTPermission } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -145,6 +146,7 @@ const VesselIdentity = () => {
   const hasMoreInfo =
     vesselIdentity?.hasComplianceInfo ||
     vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
+  const hasTMTPermission = useSelector(selectHasTMTPermission)
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
   return (
@@ -291,6 +293,7 @@ const VesselIdentity = () => {
               })}
             {identitySource === VesselIdentitySourceEnum.Registry &&
               hasMoreInfo &&
+              hasTMTPermission &&
               registrySourceData && (
                 <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
                   <img

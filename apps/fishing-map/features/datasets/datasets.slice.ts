@@ -92,8 +92,8 @@ type FetchDatasetsFromApiParams = {
   existingIds: string[]
   signal: AbortSignal
   maxDepth?: number
-  onlyUserDatasets?: boolean
   includeRelated?: boolean
+  fetchUserDatasetsMode?: FetchUserDatasetsMode
 }
 const fetchDatasetsFromApi = async (
   {
@@ -101,8 +101,8 @@ const fetchDatasetsFromApi = async (
     existingIds,
     signal,
     maxDepth = 5,
-    onlyUserDatasets = true,
     includeRelated = true,
+    fetchUserDatasetsMode = 'user-only',
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length
@@ -115,11 +115,13 @@ const fetchDatasetsFromApi = async (
         return !existingIds.includes(id)
       })
     : []
-  if (!uniqIds.length && !onlyUserDatasets) {
+  if (!uniqIds.length && fetchUserDatasetsMode === 'user-only') {
     return { datasetsDeprecated: {}, datasets: [] }
   }
   const datasetsParams = {
-    ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': onlyUserDatasets }),
+    ...(uniqIds?.length
+      ? { ids: uniqIds }
+      : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
     cache: false,
     ...DEFAULT_PAGINATION_PARAMS,
   }
@@ -166,16 +168,17 @@ const fetchDatasetsFromApi = async (
   return { datasetsDeprecated: datasetsDeprecatedDict, datasets }
 }
 
+type FetchUserDatasetsMode = 'all' | 'user-only'
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
   Dataset[],
-  { ids: string[]; onlyUserDatasets?: boolean; includeRelated?: boolean },
+  { ids: string[]; fetchUserDatasetsMode?: FetchUserDatasetsMode; includeRelated?: boolean },
   {
     rejectValue: AsyncError
   }
 >(
   'datasets/fetch',
   async (
-    { ids, onlyUserDatasets = true, includeRelated = true },
+    { ids, fetchUserDatasetsMode = 'user-only', includeRelated = true },
     { signal, rejectWithValue, getState, dispatch }
   ) => {
     const state = getState() as DatasetsSliceState
@@ -184,7 +187,11 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       const dataset = selectById(state, id) as Dataset
       return dataset ? [dataset] : []
     })
-    if (ids.length === existingRequestedDatasets.length && !onlyUserDatasets) {
+    if (
+      ids.length > 0 &&
+      ids.length === existingRequestedDatasets.length &&
+      fetchUserDatasetsMode === 'user-only'
+    ) {
       return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
     }
     try {
@@ -192,7 +199,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         ids,
         existingIds,
         signal,
-        onlyUserDatasets,
+        fetchUserDatasetsMode,
         includeRelated,
       })
       if (Object.keys(datasetsDeprecated).length) {
@@ -208,12 +215,12 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
 
 export const fetchAllDatasetsThunk = createAsyncThunk<
   any,
-  { onlyUserDatasets?: boolean } | undefined,
+  { fetchUserDatasetsMode?: FetchUserDatasetsMode } | undefined,
   {
     rejectValue: AsyncError
   }
->('datasets/all', ({ onlyUserDatasets } = {}, { dispatch }) => {
-  return dispatch(fetchDatasetsByIdsThunk({ ids: [], onlyUserDatasets }))
+>('datasets/all', ({ fetchUserDatasetsMode } = {}, { dispatch }) => {
+  return dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode }))
 })
 
 export type UpsertDataset = {
