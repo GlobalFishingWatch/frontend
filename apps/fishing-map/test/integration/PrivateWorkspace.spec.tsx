@@ -14,10 +14,10 @@ describe('PrivateWorkspace', async () => {
 
     store.dispatch(navigateToWorkspace01Action)
 
-    const { getByTestId } = await render(<App />, { store })
+    const { getByText } = await render(<App />, { store })
 
-    await expect.element(getByText(/Workspace01/)).not.toBeVisible()
-    await expect.element(getByText(/The workspace you requested was not found./)).toBeVisible()
+    await expect.element(getByText(/Workspace01/)).not.toBeInTheDocument()
+    await expect.element(getByText(/This is a private workspace/)).toBeVisible()
   })
 
   it('should be able to navigate to the private workspace if authenticated', async () => {
