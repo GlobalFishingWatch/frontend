@@ -52,13 +52,15 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
 
   const onConfirm = useCallback(async () => {
     setLoading(true)
-    const { firstName, lastName, email, organization, organizationType } = userData || {}
+    const { firstName, lastName, email, organization, organizationType, organizationCategory } =
+      userData || {}
     const surveyAnswer: FeedbackFormData = {
       date: new Date().toISOString(),
       name: `${firstName} ${lastName}`,
       email: email as string,
       groups: (userGroups || []).join(', '),
       organization: organization || '',
+      organizationCategory: organizationCategory || '',
       organizationType: organizationType || '',
       usageIntent,
       contactConsent,
