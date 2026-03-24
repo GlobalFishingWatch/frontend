@@ -34,25 +34,28 @@ export const useTrackLayerFitBounds = () => {
     }) => {
       if (layer && start && end) {
         if (layer instanceof UserTracksLayer) {
-          const bbox = layer.getBbox()
+          let bbox = layer.getBbox({ startDate: start, endDate: end })
+          if (!bbox) {
+            bbox = layer.getBbox() // try again to get the bbox without the time filter
+            const segments = layer.getSegments()
+            if (segments.length) {
+              let minTimestamp = Number.POSITIVE_INFINITY
+              let maxTimestamp = Number.NEGATIVE_INFINITY
+              segments.forEach((seg) => {
+                seg.forEach((pt) => {
+                  if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
+                  if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
+                })
+              })
+              if (maxTimestamp > minTimestamp)
+                setTimerange({
+                  start: getUTCDate(minTimestamp).toISOString() as string,
+                  end: getUTCDate(maxTimestamp).toISOString() as string,
+                })
+            }
+          }
           if (bbox) {
             fitBounds(bbox as Bbox, { padding: 60, fitZoom: true, flyTo: true })
-          }
-          const segments = layer.getSegments()
-          if (segments.length) {
-            let minTimestamp = Number.POSITIVE_INFINITY
-            let maxTimestamp = Number.NEGATIVE_INFINITY
-            segments.forEach((seg) => {
-              seg.forEach((pt) => {
-                if (pt.timestamp && pt.timestamp < minTimestamp) minTimestamp = pt.timestamp
-                if (pt.timestamp && pt.timestamp > maxTimestamp) maxTimestamp = pt.timestamp
-              })
-            })
-            if (maxTimestamp > minTimestamp)
-              setTimerange({
-                start: getUTCDate(minTimestamp).toISOString() as string,
-                end: getUTCDate(maxTimestamp).toISOString() as string,
-              })
           }
         } else {
           const bbox = layer.getVesselTrackBounds()
