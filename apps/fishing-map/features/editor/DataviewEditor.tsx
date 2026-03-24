@@ -86,7 +86,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
 
   useEffect(() => {
     if (!isEditingDataview) {
-      dispatch(fetchAllDatasetsThunk({ onlyUserDatasets: false }))
+      dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'all' }))
     }
   }, [dispatch, isEditingDataview])
 
