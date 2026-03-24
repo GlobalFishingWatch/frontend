@@ -241,14 +241,16 @@ const VesselIdentity = () => {
                     }
                     const key = field.key as keyof VesselLastIdentity
                     let value =
-                      isChileanVMSVessel && key === 'ssvid' ? '--' : (vesselIdentity[key] as string)
+                      isChileanVMSVessel && key === 'ssvid'
+                        ? EMPTY_FIELD_PLACEHOLDER
+                        : (vesselIdentity[key] as string)
                     if (key === 'depthM' || key === 'builtYear') {
                       value =
                         (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
                           ? API_LOGIN_REQUIRED
                           : vesselIdentity[key]?.value
                             ? vesselIdentity[key]?.value?.toString()
-                            : (vesselIdentity[key] as unknown as string)
+                            : EMPTY_FIELD_PLACEHOLDER
                     }
                     const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
                     return (
