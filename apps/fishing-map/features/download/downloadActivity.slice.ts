@@ -195,6 +195,9 @@ const downloadActivitySlice = createSlice({
       state.fileName = ''
       state.hadTimeoutError = false
     },
+    resetDownloadActivityStateKeepPolling: (state) => {
+      state.areaKey = undefined
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(downloadActivityLastReportThunk.pending, (state) => {
@@ -226,7 +229,8 @@ const downloadActivitySlice = createSlice({
       } else {
         state.status = AsyncReducerStatus.Error
         if (action.payload?.message) {
-          const isTimeoutError = getIsTimeoutError(action.payload)
+          const isTimeoutError =
+            getIsTimeoutError(action.payload) || getIsConcurrentError(action.payload)
           if (isTimeoutError) {
             state.hadTimeoutError = true
           }
@@ -242,6 +246,7 @@ export const {
   setDownloadActiveTab,
   setDownloadActivityAreaKey,
   resetDownloadActivityState,
+  resetDownloadActivityStateKeepPolling,
 } = downloadActivitySlice.actions
 
 const selectDownloadActivityStatus = (state: RootState) => state.downloadActivity.status
