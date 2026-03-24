@@ -25,7 +25,6 @@ import {
 } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
-  setIsOwnedByUser,
   setVesselGroupConfirmationMode,
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -103,7 +102,6 @@ function VesselGroupLayerPanel({
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
       dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
-      dispatch(setIsOwnedByUser(isVesselGroupOwner))
       dispatch(setVesselGroupsModalOpen(true))
       if (isOutdated) {
         dispatch(setVesselGroupConfirmationMode('update'))
