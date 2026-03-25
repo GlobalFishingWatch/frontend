@@ -24,7 +24,11 @@ export default defineConfig({
   expect: {
     /* Timeout for expect assertions */
     timeout: 10 * 1000, // 10 seconds
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+    },
   },
+  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
@@ -44,9 +48,8 @@ export default defineConfig({
     httpCredentials: {
       username: process.env.BASIC_AUTH_USER || 'user',
       password: process.env.BASIC_AUTH_PASS || 'password',
-    }
+    },
   },
-
   /* Configure projects for major browsers */
   projects: [
     {
