@@ -165,13 +165,15 @@ export function getReportRequestHash({
   datasets,
   filters,
   dateRange,
+  areaId,
 }: {
   datasets: string[]
   filters: string[]
   dateRange: DateRange
+  areaId?: string
 }) {
   const datasetsHash = datasets.join(',')
-  return [datasetsHash, ...filters, dateRange.start, dateRange.end].join('-')
+  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || ''].join('-')
 }
 
 const reportSlice = createSlice({
