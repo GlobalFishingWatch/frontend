@@ -156,7 +156,7 @@ terraform.tfstate.backup
 
 # Vitest traces
 __traces__
-__screenshots__
+apps/fishing-map/**/__screenshots__
 .vitest-attachments
 
 # Playwright test artifacts
