@@ -3,6 +3,10 @@ import test, { expect } from '@playwright/test'
 import { MAP_URLS } from './screenshots.config'
 
 const TILES_RENDER_TIMEOUT = 20_000
+const MASK_SELECTORS = [
+  // Legend values are data-driven and change over time
+  '[class*="MapLegend-module"][class*="legend"]',
+]
 
 test.use({
   baseURL: undefined,
@@ -30,8 +34,10 @@ for (const { id, url } of MAP_URLS) {
     })
 
     test('full page', async ({ page }) => {
+      const mask = (MASK_SELECTORS ?? []).map((selector) => page.locator(selector))
       await expect(page).toHaveScreenshot(`${id}-full-page.png`, {
         maxDiffPixels: 2,
+        mask,
       })
     })
   })
