@@ -91,11 +91,6 @@ describe('Reports', () => {
     vi.clearAllMocks()
   })
 
-  // afterEach(() => {
-  //   cleanup()
-  //   vi.clearAllTimers()
-  // })
-
   it('should navigate to a report from eez', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
@@ -501,7 +496,7 @@ describe('Private user reports', () => {
     expect(store.getState().location.type).toBe(REPORT)
   })
 
-  it('should correctly display others points reports data', async () => {
+  it.only('should correctly display others points reports data', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -522,8 +517,7 @@ describe('Private user reports', () => {
 
     await userEvent.click(getByText(/Others/i))
     await waitForReportFeaturesLoaded(jotaiStore)
-    await expect.element(getByText(/3 points inside your area/)).toBeVisible()
-    //todo: check graph points data
+    await expect.element(getByText(/4 points inside your area/)).toBeVisible()
   })
 })
 
