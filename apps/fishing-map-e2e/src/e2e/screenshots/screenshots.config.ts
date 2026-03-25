@@ -100,8 +100,4 @@ const PUBLIC_URLS: MapUrl[] = [
   },
 ]
 
-export const MAP_URLS = [
-  ...PUBLIC_URLS,
-  // ...MARINE_MANAGER_URLS,
-  // ...ANALYSTS_URLS
-]
+export const MAP_URLS = [...PUBLIC_URLS, ...MARINE_MANAGER_URLS, ...ANALYSTS_URLS]
