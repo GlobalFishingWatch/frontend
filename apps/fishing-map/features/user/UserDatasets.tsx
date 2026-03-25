@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -27,6 +27,7 @@ import {
 } from 'features/datasets/datasets.hook'
 import {
   deleteDatasetThunk,
+  fetchAllDatasetsThunk,
   selectDatasetsStatus,
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
@@ -54,6 +55,10 @@ function UserDatasets() {
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }))
+  }, [dispatch])
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)

@@ -102,7 +102,7 @@ const fetchDatasetsFromApi = async (
     signal,
     maxDepth = 5,
     includeRelated = true,
-    fetchUserDatasetsMode = 'user-only',
+    fetchUserDatasetsMode,
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length
@@ -115,7 +115,7 @@ const fetchDatasetsFromApi = async (
         return !existingIds.includes(id)
       })
     : []
-  if (!uniqIds.length && fetchUserDatasetsMode === 'user-only') {
+  if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
     return { datasetsDeprecated: {}, datasets: [] }
   }
   const datasetsParams = {
