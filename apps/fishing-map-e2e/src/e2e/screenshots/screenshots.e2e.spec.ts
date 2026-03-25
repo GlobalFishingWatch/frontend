@@ -3,10 +3,10 @@ import test, { expect } from '@playwright/test'
 import { MAP_URLS } from './screenshots.config'
 
 const TILES_RENDER_TIMEOUT = 20_000
-const MASK_SELECTORS = [
-  // Legend values are data-driven and change over time
-  '[class*="MapLegend-module"][class*="legend"]',
-]
+// const MASK_SELECTORS = [
+//   // Legend values are data-driven and change over time
+//   '[class*="MapLegend-module"][class*="legend"]',
+// ]
 
 test.use({
   baseURL: undefined,
@@ -17,7 +17,10 @@ test.use({
 for (const { id, url } of MAP_URLS) {
   test.describe(`Screenshot comparison - ${id}`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 60_000 })
+      const queryParams = new URLSearchParams(url)
+      queryParams.set('skipColorDomainSampling', 'true')
+      const urlWithSkipColorDomainSampling = `${url}?${queryParams.toString()}`
+      await page.goto(urlWithSkipColorDomainSampling, { waitUntil: 'networkidle', timeout: 60_000 })
 
       const closeButton = page.getByTestId('modal-close-button')
       if (await closeButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
@@ -34,10 +37,10 @@ for (const { id, url } of MAP_URLS) {
     })
 
     test('full page', async ({ page }) => {
-      const mask = (MASK_SELECTORS ?? []).map((selector) => page.locator(selector))
+      // const mask = (MASK_SELECTORS ?? []).map((selector) => page.locator(selector))
       await expect(page).toHaveScreenshot(`${id}-full-page.png`, {
         maxDiffPixels: 2,
-        mask,
+        // mask,
       })
     })
   })
