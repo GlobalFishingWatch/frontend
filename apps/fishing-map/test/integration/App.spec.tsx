@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import App from 'features/app/App'
@@ -12,7 +12,7 @@ describe('Fishing Map App', () => {
     vi.clearAllMocks()
   })
 
-  it('should reflex store changes on layer toggle', async () => {
+  it('should reflect store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const { getByTestId } = await render(<App />, { store })

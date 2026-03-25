@@ -238,7 +238,7 @@ export default function ReportVesselsGraph({
   }, [individualData])
 
   return (
-    <div className={styles.graph} data-test="report-vessels-graph">
+    <div className={styles.graph} data-testid="report-vessels-graph">
       <ResponsiveBarChart
         color={color}
         aggregatedValueKey={aggregatedValueKey}

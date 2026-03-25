@@ -79,6 +79,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: './test/setup/vitest.setup.ts',
       globalSetup: './test/setup/vitest.setup-global.ts',
       browser: {
+        retry: 1,
         enabled: true,
         provider: defaultPlaywrightProvider,
         ui: isUiMode,

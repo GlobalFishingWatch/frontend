@@ -201,7 +201,7 @@ function MapDraw() {
     saveTooltip = t((t) => t.layer.geometryError)
   }
 
-  let placeholderMessage: string = ''
+  let placeholderMessage: string
 
   switch (true) {
     case !!error:
@@ -250,6 +250,7 @@ function MapDraw() {
       />
       <div className={cx(styles.flex, styles.iconsWrapper)}>
         <IconButton
+          testId="draw-add-polygon"
           icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
           tooltip={
             mapDrawingMode === 'points'
@@ -259,6 +260,7 @@ function MapDraw() {
           onClick={onAddPolygonClick}
         />
         <IconButton
+          testId="draw-delete-polygon"
           type="warning"
           icon="delete"
           disabled={!drawFeaturesIndexes.length}
@@ -283,6 +285,7 @@ function MapDraw() {
             {t((t) => t.common.cancel)}
           </Button>
           <Button
+            testId="draw-save-polygon"
             className={styles.button}
             loading={loading || mapDrawEditGeometry?.status === AsyncReducerStatus.Loading}
             disabled={

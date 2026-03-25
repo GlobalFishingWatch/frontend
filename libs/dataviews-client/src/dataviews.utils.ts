@@ -6,7 +6,14 @@ import {
 } from './config'
 
 export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
-  const prefix = dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  const hasEncounterPrefix = dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  const hasVesselPrefix = dataviewInstanceId?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+  
+  if (!hasEncounterPrefix && !hasVesselPrefix) {
+    return dataviewInstanceId
+  }
+  
+  const prefix = hasEncounterPrefix
     ? VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
     : VESSEL_DATAVIEW_INSTANCE_PREFIX
   return dataviewInstanceId.split(prefix)[1].split(DATASET_VERSION_SEPARATOR)[0]

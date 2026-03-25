@@ -112,6 +112,7 @@ function ReportActivitySubsectionSelector() {
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
+      testId="report-subsection-selector"
       className={styles.selector}
     />
   )

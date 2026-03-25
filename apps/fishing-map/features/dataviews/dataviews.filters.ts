@@ -68,7 +68,7 @@ export const isDataviewFilterSupported = (
   return filtersSupported
 }
 
-export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId: string) => {
+export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: string) => {
   if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${filter}.keyword`)) {
     const label = t((t) => t[datasetId]?.schema?.[filter]?.keyword, {
       ns: 'datasets',
@@ -78,8 +78,12 @@ export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId: string
       return label
     }
   }
-  if (i18n.exists(`vessel.${filter}`)) {
-    const label = t((t: any) => t.vessel[filter], { defaultValue: filter.toString(), count: 2 })
+  const vesselField = filter === 'ssvid' ? 'mmsi' : filter
+  if (i18n.exists(`vessel.${vesselField}`)) {
+    const label = t((t: any) => t.vessel[vesselField], {
+      defaultValue: filter.toString(),
+      count: 2,
+    })
     if (label !== filter) {
       return label
     }
@@ -442,7 +446,7 @@ export const getFiltersInDataview = (
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetFilter[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewFilterSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewFilterSupported(dataview, f))
-  const fielsAllowedOrdered =
+  const fieldsAllowedOrdered =
     fieldsOrder && fieldsOrder.length > 0
       ? fieldsAllowed.sort((a, b) => {
           const aIndex = fieldsOrder.findIndex((f) => f === a)
@@ -450,7 +454,7 @@ export const getFiltersInDataview = (
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const filtersAllowed = fielsAllowedOrdered.map((id) => {
+  const filtersAllowed = fieldsAllowedOrdered.map((id) => {
     return getDataviewFilterConfig(dataview, id, {
       vesselGroups,
       isGuestUser,

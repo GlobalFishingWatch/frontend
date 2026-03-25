@@ -32,7 +32,7 @@ export default function EvolutionGraphTooltip(props: any) {
       return name === 'line'
     })
     return (
-      <div className={styles.tooltipContainer}>
+      <div className={styles.tooltipContainer} data-testid="evolution-graph-tooltip">
         <p className={styles.tooltipLabel}>{formattedLabel}</p>
         <ul>
           {formattedValues

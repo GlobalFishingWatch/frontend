@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
 
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
@@ -13,6 +14,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permissions'
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveHeatmapDowloadDataviewsByTab,
@@ -26,6 +28,7 @@ import type { DateRange, DownloadActivityParams } from 'features/download/downlo
 import {
   downloadActivityThunk,
   selectDownloadActivityAreaKey,
+  selectIsDownloadActivityConcurrentError,
   selectIsDownloadActivityError,
   selectIsDownloadActivityFinished,
   selectIsDownloadActivityLoading,
@@ -35,16 +38,18 @@ import DownloadActivityProductsBanner from 'features/download/DownloadActivityPr
 import { DownloadAreaLabel } from 'features/download/DownloadAreaLabel'
 import UserGuideLink from 'features/help/UserGuideLink'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
+import { selectIsGlobalReport } from 'features/reports/report-area/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import {
+  selectIsAnyReportLocation,
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -83,10 +88,19 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
   const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
   const [format, setFormat] = useState(GRIDDED_FORMAT_OPTIONS[0].id)
+  const isDownloadConcurrentError = useSelector(selectIsDownloadActivityConcurrentError)
 
+  const isGlobalReport = useSelector(selectIsGlobalReport)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const downloadArea = useSelector(selectDownloadActivityArea)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
-  const downloadAreaName = downloadAreaKey?.areaName
+  const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
+  const downloadAreaName =
+    isAnyReportLocation && isGlobalReport
+      ? t((t) => t.analysis.global)
+      : downloadAreaDataset?.source === DRAW_DATASET_SOURCE
+        ? downloadAreaDataset.name
+        : downloadAreaKey?.areaName
   const areaId = downloadAreaKey?.areaId as AreaKeyId
   const datasetId = downloadAreaKey?.datasetId as string
   const downloadAreaGeometry = downloadArea?.data?.geometry
@@ -180,7 +194,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
     }
 
     const downloadParams: DownloadActivityParams = {
-      areaId,
+      areaId: isGlobalReport ? ENTIRE_WORLD_REPORT_AREA_ID : (downloadAreaKey?.areaId as AreaKeyId),
       datasetId,
       dateRange: timerange as DateRange,
       areaName: downloadAreaName as string,
@@ -294,8 +308,16 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
             testId="download-activity-gridded-button"
             onClick={onDownloadClick}
             className={styles.downloadBtn}
+            tooltip={
+              isDownloadConcurrentError ? t((t) => t.download.errorConcurrentReport) : undefined
+            }
             loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
-            disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
+            disabled={
+              !isDownloadReportSupported ||
+              isDownloadAreaLoading ||
+              isDownloadError ||
+              isDownloadConcurrentError
+            }
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>

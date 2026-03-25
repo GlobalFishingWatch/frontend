@@ -299,7 +299,7 @@ export function MultiSelect(props: MultiSelectProps) {
             {...getInputProps({
               ref: inputRef,
             })}
-            data-testid={`${testId}-input`}
+            testId={`${testId}-input`}
             disabled={disabled}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

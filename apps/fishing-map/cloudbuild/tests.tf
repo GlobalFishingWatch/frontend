@@ -143,11 +143,11 @@ cat integration-tests-output | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]
     target = $4
     is_test = ($4 ~ /:test$/)
     output = ""
-    failed = 0
+    failed = 1
   }
   is_test {
     output = (output == "" ? $0 : output "\n" $0)
-    if (/Unhandled Error/ || /exited with non-zero/ || /exiting with code 1/) failed = 1
+    if (/Tests +[0-9]+ passed/ && !/failed/) failed = 0
   }
   END {
     flush()

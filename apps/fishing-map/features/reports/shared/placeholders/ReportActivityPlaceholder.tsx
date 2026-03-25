@@ -34,7 +34,7 @@ export default function ReportActivityPlaceholder({
   }, [])
 
   return (
-    <div style={{ height: showHeader ? '34rem' : '30rem' }} className={styles.relative}>
+    <div style={{ height: showHeader ? '34rem' : '32rem' }} className={styles.relative}>
       {/* header */}
       {showHeader && (
         <div className={cx(styles.flex, styles.spaceBetween)}>

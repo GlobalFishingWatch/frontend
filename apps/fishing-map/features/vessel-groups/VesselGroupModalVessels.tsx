@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { Locale } from '@globalfishingwatch/api-types'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA } from 'data/config'
@@ -23,6 +24,7 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
 
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
+  selectVesselGroupModalCsvColumns,
   selectVesselGroupModalVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
@@ -55,6 +57,10 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
     dataset,
   } = getSearchIdentityResolved(vessel.identity!, { prioritizedProperty: searchIdField })
   const vesselDataset = useSelector(selectDatasetById(dataset))
+  const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
+  const normalisedselectedCsvColumns = selectedCsvColumns?.map((column) =>
+    resolveVesselPropertyColumn(column)
+  )
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
 
@@ -68,10 +74,16 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
 
   return (
     <tr className={className}>
-      <td>{hiddenProperties.includes('ssvid') ? '' : ssvid || EMPTY_FIELD_PLACEHOLDER}</td>
-      <td>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</td>
-      <td>{vesselName}</td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('mmsi') })}>
+        <span>{hiddenProperties.includes('ssvid') ? '' : ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+      </td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('imo') })}>
+        <span>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</span>
+      </td>
       <td>
+        <span>{vesselName}</span>
+      </td>
+      <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('flag') })}>
         <span>{flag ? t((t) => t[flag], { ns: 'flags' }) : EMPTY_FIELD_PLACEHOLDER}</span>
       </td>
       <td>
@@ -176,32 +188,28 @@ function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField
         </tr>
       </thead>
       <tbody>
-        {Object.values(uniqVesselGroupVesselsByProperty).map((vessels) => {
+        {Object.values(uniqVesselGroupVesselsByProperty).map((vessels, vesselsIndex) => {
           if (!vessels.length) {
             return null
           }
-          const mainVessel = vessels[0]
-          const otherVessels = vessels.slice(1)
-          const hasOtherVessels = otherVessels.length > 0
           return (
-            <Fragment key={`${mainVessel?.vesselId}-${mainVessel.dataset}`}>
-              <VesselGroupVesselRow
-                key={`${mainVessel?.vesselId}-${mainVessel.dataset}`}
-                vessel={mainVessel}
-                onRemoveClick={onVesselRemoveClick}
-                className={hasOtherVessels ? styles.noBorderBottom : ''}
-                searchIdField={searchIdField}
-              />
-              {hasOtherVessels &&
-                otherVessels.map((otherVessel) => (
-                  <VesselGroupVesselRow
-                    key={`${otherVessel?.vesselId}-${otherVessel.dataset}`}
-                    vessel={otherVessel}
-                    onRemoveClick={onVesselRemoveClick}
-                    className={cx(styles.noBorderTop)}
-                    hiddenProperties={[GROUP_BY_PROPERTY]}
-                  />
-                ))}
+            <Fragment key={`${vessels[0].vesselId}-${vessels[0].dataset}`}>
+              {vessels.map((vessel, vesselIndex) => (
+                <VesselGroupVesselRow
+                  key={`${vessel?.vesselId}-${vessel.dataset}`}
+                  vessel={vessel}
+                  onRemoveClick={onVesselRemoveClick}
+                  className={cx(
+                    { [styles.odd]: vesselsIndex % 2 === 0 },
+                    { [styles.noBorderTop]: vesselIndex !== 0 },
+                    {
+                      [styles.noBorderBottom]: vesselIndex !== vessels.length - 1,
+                    }
+                  )}
+                  hiddenProperties={vesselIndex !== 0 ? [GROUP_BY_PROPERTY] : []}
+                  searchIdField={searchIdField}
+                />
+              ))}
             </Fragment>
           )
         })}

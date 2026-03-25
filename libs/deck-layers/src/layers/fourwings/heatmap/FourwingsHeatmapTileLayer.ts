@@ -706,7 +706,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
-
+    const zoomOffset = getZoomOffsetByResolution(resolution!, zoom)
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
@@ -717,7 +717,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         comparisonMode,
         tilesCache,
         scales,
-        minZoom: 0,
+        minZoom: -1, // fixes global report when zoom is 0
         onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),

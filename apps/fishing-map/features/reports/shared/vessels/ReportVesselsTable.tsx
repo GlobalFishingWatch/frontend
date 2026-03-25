@@ -99,7 +99,7 @@ export default function ReportVesselsTable({
 
   return (
     <div>
-      <div className={styles.tableContainer} data-test="report-vessels-table">
+      <div className={styles.tableContainer} data-testid="report-vessels-table">
         {isAnyAreaReportLocation &&
           reportCategory === 'activity' &&
           datasetsDownloadNotSupported.length > 0 && (

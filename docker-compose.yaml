@@ -1,5 +1,56 @@
-version: '3.9'
 services:
+  data-download-portal:
+    build:
+      dockerfile: apps/data-download-portal/Dockerfile
+      target: production
+      args:
+        API_GATEWAY: ${API_GATEWAY:-https://gateway.api.dev.globalfishingwatch.org}
+    container_name: data-download-portal
+    ports:
+      - 3000:80
+    environment:
+      - PORT=80
+      - BASIC_AUTH=off
+
+  user-groups-admin:
+    build:
+      dockerfile: apps/user-groups-admin/Dockerfile
+      target: production
+      args:
+        API_GATEWAY: ${API_GATEWAY:-https://gateway.api.dev.globalfishingwatch.org}
+    container_name: user-groups-admin
+    ports:
+      - 3001:80
+    environment:
+      - PORT=80
+      - BASIC_AUTH=off
+
+  image-labeler:
+    build:
+      dockerfile: apps/image-labeler/Dockerfile
+      target: production
+      args:
+        API_GATEWAY: ${API_GATEWAY:-https://gateway.api.dev.globalfishingwatch.org}
+    container_name: image-labeler
+    ports:
+      - 3002:80
+    environment:
+      - PORT=80
+      - BASIC_AUTH=off
+
+  track-labeler:
+    build:
+      dockerfile: apps/track-labeler/Dockerfile
+      target: production
+      args:
+        API_GATEWAY: ${API_GATEWAY:-https://gateway.api.dev.globalfishingwatch.org}
+    container_name: track-labeler
+    ports:
+      - 3003:80
+    environment:
+      - PORT=80
+      - BASIC_AUTH=off
+
   map:
     build:
       context: ./dist/apps/fishing-map
@@ -16,8 +67,6 @@ services:
       - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org/
       - PORT=80
       - BASIC_AUTH=off
-    networks:
-      - frontend-network
 
   api-portal:
     build:
@@ -36,27 +85,3 @@ services:
       - apps/api-portal/.build.env
     environment:
       - PORT=80
-    networks:
-      - frontend-network
-
-  webserver:
-    # restart: always
-    image: nginx:latest
-    container_name: webserver
-    ports:
-      - 80:80
-      - 443:443
-    links:
-      - api-portal
-      - map
-    depends_on:
-      - api-portal
-      - map
-    volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf
-      - ./config/ssl:/etc/nginx/ssl
-    networks:
-      - frontend-network
-
-networks:
-  frontend-network:

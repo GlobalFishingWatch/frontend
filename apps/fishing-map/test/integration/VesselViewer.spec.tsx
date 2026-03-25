@@ -1,6 +1,6 @@
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { navigateToVesselViewerAction } from 'test/utils/actions/navigateToVesselViewer'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -30,7 +30,7 @@ describe('Vessel viewer', async () => {
     await expect.element(getByText('Length (M)')).toBeVisible()
     await expect.element(getByText('Depth (M)')).toBeVisible()
     await expect.element(getByText('Gross Tonnage')).toBeVisible()
-    await expect.element(getByText('Owner')).toBeVisible()
+    await expect.element(getByText('Owner').first()).toBeVisible()
     await expect.element(getByText('Operator')).toBeVisible()
     await expect.element(getByText('Authorization')).toBeVisible()
     await expect.element(getByText('View in')).toBeVisible()

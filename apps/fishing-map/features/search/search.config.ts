@@ -7,6 +7,8 @@ export type SearchType = 'basic' | 'advanced'
 export const RESULTS_PER_PAGE = 20
 export const SSVID_LENGTH = 9
 export const IMO_LENGTH = 7
+export const FLAG_LENGTH = 3 // ISO3
+export const VESSEL_ID_LENGTH = 37 // GFW Vessel ID
 export const CALLSIGN_MIN_LENGTH = 4
 export const EMPTY_SEARCH_FILTERS = {
   id: undefined,

@@ -23,6 +23,7 @@ import {
   COLOR_TRANSPARENT,
   DEFAULT_ID_PROPERTY,
   getLayerGroupOffset,
+  getUTCDateTime,
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
@@ -283,13 +284,25 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     return segmentsGeo
   }
 
-  getBbox() {
+  getBbox(params = {} as { startDate?: number | string; endDate?: number | string }) {
     const segments = this.getSegments({ includeMiddlePoints: true })
     if (!segments.length) return null
+
+    const startDate = params?.startDate
+      ? getUTCDateTime(params.startDate).toMillis()
+      : undefined
+    const endDate = params?.endDate
+      ? getUTCDateTime(params.endDate).toMillis()
+      : undefined
 
     const bbox = segments.reduce(
       (acc, segment) =>
         segment.reduce((acc, point) => {
+          const timestamp = point.timestamp
+          if (timestamp !== undefined && timestamp !== null) {
+            if (startDate && timestamp < startDate) return acc
+            if (endDate && timestamp > endDate) return acc
+          }
           if (point.longitude! < acc[0]) acc[0] = point.longitude as number
           if (point.longitude! > acc[2]) acc[2] = point.longitude as number
           if (point.latitude! < acc[1]) acc[1] = point.latitude as number
@@ -298,6 +311,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         }, acc),
       [Infinity, Infinity, -Infinity, -Infinity] as Bbox
     )
+
+    if (bbox[0] === Infinity) return null
+
     return bbox
   }
 

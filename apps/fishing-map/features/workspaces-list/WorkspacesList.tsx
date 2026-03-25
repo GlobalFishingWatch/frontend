@@ -133,7 +133,11 @@ function WorkspacesList() {
           }
 
           return (
-            <li key={id || name} className={cx(styles.workspace)}>
+            <li
+              key={id || name}
+              className={cx(styles.workspace)}
+              data-testid={`highlighted-workspace-${id}`}
+            >
               <Link
                 to={linkTo}
                 onClick={() => onWorkspaceClick(highlightedWorkspace)}

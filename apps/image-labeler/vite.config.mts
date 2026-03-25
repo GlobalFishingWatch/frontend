@@ -7,8 +7,8 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
-export default defineConfig({
-  devtools: true,
+export default defineConfig(({ command }) => ({
+  devtools: command === 'serve',
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/image-labeler',
 
@@ -77,4 +77,4 @@ export default defineConfig({
   //     provider: 'v8',
   //   },
   // },
-})
+}))
