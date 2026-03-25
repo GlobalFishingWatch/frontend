@@ -228,7 +228,7 @@ const VesselIdentity = () => {
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
                   {fieldGroup.map((field) => {
-                    const isVMS = vesselIdentity.sourceCode.some((source) =>
+                    const isVMS = vesselIdentity.sourceCode?.some((source) =>
                       source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
                     )
                     let label = field.label || field.key
