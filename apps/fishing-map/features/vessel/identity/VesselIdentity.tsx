@@ -11,11 +11,12 @@ import {
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import { DATASET_PRIVATE_PREFIX, VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -34,6 +35,7 @@ import {
   REGISTRY_SOURCES,
 } from 'features/vessel/vessel.config'
 import {
+  selectVesselDatasetId,
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
@@ -61,6 +63,7 @@ const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
+  const vesselDatasetId = useSelector(selectVesselDatasetId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { dispatchQueryParams } = useLocationConnect()
@@ -132,14 +135,19 @@ const VesselIdentity = () => {
     }
   }
 
-  const source = vesselIdentity?.sourceCode
+  const source = useMemo(() => vesselIdentity?.sourceCode, [vesselIdentity])
 
   const identityFields = useMemo(() => {
-    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source?.[0]]
-    return customIdentityFields?.length
+    const baseSource = source?.[0] as SelfReportedSource
+    const privateSource = `${baseSource}-${DATASET_PRIVATE_PREFIX}` as SelfReportedSource
+    const customIdentityFields = isPrivateDataset({ id: vesselDatasetId })
+      ? CUSTOM_VMS_IDENTITY_FIELD_GROUPS[privateSource] ||
+        CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
+      : CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
+    return customIdentityFields && customIdentityFields?.length
       ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]
       : IDENTITY_FIELD_GROUPS[identitySource]
-  }, [identitySource, source])
+  }, [identitySource, source, vesselDatasetId])
 
   const isChileanVMSVessel =
     source?.includes(SelfReportedSource.Chile) || vesselIdentity?.flag === 'CHL'
@@ -228,7 +236,7 @@ const VesselIdentity = () => {
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
                   {fieldGroup.map((field) => {
-                    const isVMS = vesselIdentity.sourceCode.some((source) =>
+                    const isVMS = vesselIdentity.sourceCode?.some((source) =>
                       source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
                     )
                     let label = field.label || field.key

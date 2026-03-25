@@ -359,15 +359,15 @@ export function getIntervalFrames({
   }
 
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const tileStartFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval]?.getIntervalFrame(bufferedStart) ?? 0
-  )
-  const startFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileStartFrame
-  )
-  const endFrame = Math.ceil(
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(endTime) - tileStartFrame
-  )
+  const intervalConfig = CONFIG_BY_INTERVAL[interval]
+  if (!intervalConfig) {
+    console.error(`Invalid interval: ${interval}`)
+    return { interval, tileStartFrame: 0, startFrame: 0, endFrame: 0 }
+  }
+
+  const tileStartFrame = Math.ceil(intervalConfig.getIntervalFrame(bufferedStart) ?? 0)
+  const startFrame = Math.ceil(intervalConfig.getIntervalFrame(startTime) - tileStartFrame)
+  const endFrame = Math.ceil(intervalConfig.getIntervalFrame(endTime) - tileStartFrame)
 
   const result = { interval, tileStartFrame, startFrame, endFrame } as FourwingsIntervalFrames
   intervalFramesCache.set(cacheKey, result)

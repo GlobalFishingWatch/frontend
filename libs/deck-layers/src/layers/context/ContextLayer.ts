@@ -245,8 +245,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
             )
 
             const filterKeys = Object.keys(sublayer.filters || {})
-            const hasValidFilters =
-              filterCategories.length > 0 && sublayer.filters?.length > 0 && filterKeys.length > 0
+            const hasValidFilters = filterCategories.length > 0 && filterKeys.length > 0
             const filtersHash = getContextFiltersHash(sublayer.filters)
             const extensions = [
               ...mvtSublayerProps.extensions,

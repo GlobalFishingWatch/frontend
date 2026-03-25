@@ -295,9 +295,14 @@ export const getActiveDatasetsInDataview = (dataview: Dataview | UrlDataviewInst
   if (dataview.category === DataviewCategory.User) {
     return dataview.datasets
   }
-  return dataview.config?.datasets
-    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-    : dataview?.datasets
+  if (dataview.config?.datasets?.length) {
+    const datasetIds = dataview.config.datasets.map((dataset) => {
+      // vessel dataviews can have the entire dataset objects for searching
+      return typeof dataset === 'string' ? dataset : (dataset as any).id
+    })
+    return dataview.datasets?.filter((dataset) => datasetIds.includes(dataset.id))
+  }
+  return dataview?.datasets
 }
 
 export const getActiveActivityDatasetsInDataviews = (
