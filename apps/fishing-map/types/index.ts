@@ -65,6 +65,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   vesselsColorBy?: VesselsColorByProperty
   vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents
+  skipColorDomainSampling?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
