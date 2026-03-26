@@ -9,7 +9,9 @@ jobs:
     name: Run Integration Tests
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-      
+    permissions:
+      pull-requests: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,7 +54,11 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run affected tests
-        run: yarn nx test api-client
+        id: run-tests
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          yarn nx test api-client | tee test-output.txt
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
@@ -64,7 +70,47 @@ jobs:
           TEST_CHROME_ONLY: 'true'
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-          
+
+      - name: Parse test results
+        if: always()
+        run: |
+          echo "<!-- integration-tests-comment -->" > summary.md
+          sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
+            function flush() {
+              if (target != "" && is_test) {
+                status = (failed ? "❌" : "✅")
+                printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
+                if (failed) fail_count++; else pass_count++
+              }
+            }
+            BEGIN { print "## Test Results\n" }
+            /^> nx run /{
+              flush()
+              target = $4
+              is_test = ($4 ~ /:test$/)
+              output = ""
+              failed = 1
+            }
+            is_test {
+              output = (output == "" ? $0 : output "\n" $0)
+              if (/Tests +[0-9]+ passed/ && !/failed/) failed = 0
+            }
+            END {
+              flush()
+              if (pass_count == 0 && fail_count == 0) {
+                printf "---\n**Summary:** No tests were run\n"
+              } else {
+                printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
+              }
+            }
+          ' >> summary.md
+
+      - name: Update PR comment with results
+        if: always()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          body-path: summary.md
+
       - name: Save yarn cache
         if: always() && steps.yarn-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
