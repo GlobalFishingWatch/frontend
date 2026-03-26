@@ -1,8 +1,9 @@
 import { Fragment, useEffect, useState } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
 import { DateTime } from 'luxon'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { ResponseError } from '@globalfishingwatch/api-client'
+import { GFWAPI, isForbidden } from '@globalfishingwatch/api-client'
 import type { DownloadDataset } from '@globalfishingwatch/api-types'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -60,6 +61,7 @@ const columns = [
 function DatasetPage() {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
   const [dataset, setDataset] = useState<(DownloadDataset & { files: TableData[] }) | null>(null)
+  const [error, setError] = useState<ResponseError | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const { logged } = useGFWLogin(GFWAPI)
 
@@ -79,6 +81,7 @@ function DatasetPage() {
         setDataset(formatDataset(data))
       })
       .catch((e) => {
+        setError(e)
         console.warn(e)
       })
       .finally(() => {
@@ -87,6 +90,21 @@ function DatasetPage() {
   }, [datasetId])
 
   const readme = dataset?.readme
+
+  if (isForbidden(error)) {
+    return (
+      <div className={styles.permissions}>
+        <Link to={'/'}>
+          <IconButton icon="arrow-left" type="border" tooltip="Return to all datasets" />
+        </Link>
+
+        <b>
+          You don’t have permissions to see this dataset. If you have any questions, please contact
+          us at <u>support@globalfishingwatch.org</u>
+        </b>
+      </div>
+    )
+  }
 
   return (
     <Fragment>
