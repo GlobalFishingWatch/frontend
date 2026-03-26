@@ -41,6 +41,7 @@ jobs:
           path: |
             .yarn/cache
             .yarn/install-state.gz
+            node_modules
           key: yarn-${{ github.head_ref }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn-${{ github.head_ref }}-
@@ -71,4 +72,5 @@ jobs:
           path: |
             .yarn/cache
             .yarn/install-state.gz
+            node_modules
           key: ${{ steps.yarn-cache.outputs.cache-primary-key }}
