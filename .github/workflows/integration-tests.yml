@@ -52,20 +52,30 @@ jobs:
             yarn-${{ github.head_ref }}-
             yarn-${{ github.base_ref }}-
             yarn-
+      
+      - name: Restore Playwright cache
+        id: playwright-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ hashFiles('**/package.json') }}
 
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --immutable --inline-builds
 
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
+        
       - name: Run affected tests
         run: yarn nx affected --target=test
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
-
+          
       - name: Save yarn cache
         if: always()
         uses: actions/cache/save@v4
@@ -75,3 +85,10 @@ jobs:
             .yarn/install-state.gz
             node_modules
           key: ${{ steps.yarn-cache.outputs.cache-primary-key }}
+            
+      - name: Save Playwright cache
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+            path: ~/.cache/ms-playwright
+            key: ${{ steps.playwright-cache.outputs.cache-primary-key }}
