@@ -48,7 +48,7 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import { getVesselGroupInDataview } from 'features/datasets/datasets.utils'
+import { getIsSkylightDataset, getVesselGroupInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveDetectionsDataviews,
   selectEventsDataviews,
@@ -72,6 +72,7 @@ type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
 }
 
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
+  skylight_id?: string
   hours?: number
   detections?: number
   events?: number
@@ -302,13 +303,13 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersVesselsIdsResponse = await GFWAPI.fetch<
           APIPagination<ExtendedFeatureVessel[]>
         >(interactionUrl, { signal })
-
+        const isSkylightDataset = getIsSkylightDataset(fourWingsDataset?.id)
         const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
           sublayer.flatMap((vessel) => {
             const { id, vessel_id, ...rest } = vessel as ExtendedFeatureVessel & {
               vessel_id: string
             }
-            if (!id && !vessel_id) {
+            if (!id && !vessel_id && !isSkylightDataset) {
               return []
             }
             // vessel_id needed for VIIRS layers
