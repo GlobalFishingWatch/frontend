@@ -6,8 +6,8 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import 'dotenv/config'
 
-export default defineConfig({
-  devtools: true,
+export default defineConfig(({ command }) => ({
+  devtools: command === 'serve',
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/track-labeler',
 
@@ -76,4 +76,4 @@ export default defineConfig({
   //     provider: 'v8',
   //   },
   // },
-})
+}))

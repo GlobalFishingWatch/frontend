@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -294,12 +294,17 @@ describe('Vessel map popup', () => {
     const filterButton = getByTestId('activity-layer-panel-btn-filter-presence')
 
     await userEvent.hover(filterButton)
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     await userEvent.click(filterButton)
     await userEvent.click(getByTestId('multi-select-input').first())
     await userEvent.type(getByTestId('multi-select-input').first(), 'Spa')
     await userEvent.click(getByTestId('multi-select-option-ESP'))
     await userEvent.tab()
     await userEvent.click(getByText('Confirm'))
+
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)

@@ -37,9 +37,9 @@ export const sortFields = (a: Field, b: Field) => {
   return aLabel.localeCompare(bLabel)
 }
 
-export const listAsSentence = (list: string[]) => {
+export const listAsSentence = (list: string[], andOr: 'and' | 'or' = 'and') => {
   if (!list) return
   if (list.length === 1) return list[0]
-  if (list.length === 2) return list.join(` ${t((t) => t.common.and)} `)
-  return `${list.slice(0, -1).join(', ')} ${t((t) => t.common.and)} ${list.slice(-1)}`
+  if (list.length === 2) return list.join(` ${t((t) => t.common[andOr])} `)
+  return `${list.slice(0, -1).join(', ')} ${t((t) => t.common[andOr])} ${list.slice(-1)}`
 }

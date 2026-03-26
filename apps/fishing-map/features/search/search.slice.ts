@@ -16,7 +16,7 @@ import type {
   IdentityVessel,
   RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import {
   getDatasetFiltersAllowed,
   getRelatedDatasetByType,
@@ -84,7 +84,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
-
     try {
       if (searchType === 'advanced') {
         const fieldsAllowed = Array.from(
@@ -100,10 +99,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
             infoSource: filters.infoSource,
           })
 
-          const cleanField = field
-            .replace(`${VesselIdentitySourceEnum.Registry}.`, '')
-            .replace(`${VesselIdentitySourceEnum.SelfReported}.`, '')
-          const filter = (filters as any)[cleanField]
+          const filter = (filters as any)[field]
           if (filter && isInFieldsAllowed) {
             let value = Array.isArray(filter)
               ? (filter.map((f) => f.trim()) as string[])

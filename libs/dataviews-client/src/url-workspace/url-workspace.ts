@@ -102,6 +102,8 @@ const PARAMS_TO_ABBREVIATED = {
   reportVesselGraph: 'rVG',
   reportVesselPage: 'rVP',
   reportLoadVessels: 'rLV',
+  // Vessel filters
+  selfReportedInfo: 'sRI',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 

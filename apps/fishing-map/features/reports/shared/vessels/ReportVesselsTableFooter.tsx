@@ -5,6 +5,8 @@ import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 import filesaver from 'file-saver'
 import papaparse from 'papaparse'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
@@ -26,7 +28,6 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
 import {
@@ -49,6 +50,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
   const reportSubCategory = useSelector(selectReportSubCategory)
   const reportAreaName = useSelector(selectReportAreaName)
   const reportUnit = useSelector(selectReportUnit)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const vesselGroup = useSelector(selectVGRData)
   const allVessels = useSelector(selectReportVessels)
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
@@ -98,9 +100,11 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
     if (vessels?.length) {
       const csv = papaparse.unparse(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
-      const fileName = [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
-        .filter(Boolean)
-        .join('-')
+      const fileName = isVesselGroupReportLocation
+        ? vesselGroup?.name
+        : [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
+            .filter(Boolean)
+            .join('-')
       filesaver.saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,

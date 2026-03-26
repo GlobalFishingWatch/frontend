@@ -11,23 +11,37 @@ export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
 
 export const ADVANCED_SEARCH_QUERY_FIELDS = [
   'id' as const,
+  'shipname' as const,
+  'ssvid' as const,
+  'imo' as const,
+  'mmsi' as const,
   'callsign' as const,
   'flag' as const,
   'fleet' as const,
   'geartypes' as const,
-  'imo' as const,
-  'mmsi' as const,
-  'origin' as const,
-  'owner' as const,
-  'selfReportedInfo.externalId' as const,
-  'selfReportedInfo.codMarinha' as const,
-  'selfReportedInfo.nationalId' as const,
-  'shipname' as const,
   'shiptypes' as const,
-  'ssvid' as const,
-  'targetSpecies' as const,
   'transmissionDateFrom' as const,
   'transmissionDateTo' as const,
+  'owner' as const,
+  // VMS pipe 3
+  'origin' as const,
+  'fleet' as const,
+  'externalId' as const,
+  'nationalId' as const,
+  'codMarinha' as const,
+  'targetSpecies' as const,
+  'selfReportedInfo.codMarinha' as const,
+  'selfReportedInfo.nationalId' as const,
+  // VMS pipe 4
+  'selfReportedInfo.externalId' as const,
+  'selfReportedInfo.sourceFleet' as const,
+  // VMS-PER
+  'selfReportedInfo.hull' as const,
+  'selfReportedInfo.origin' as const,
+  // VMS-BRA
+  'selfReportedInfo.fishingLicenseCode' as const,
+  'selfReportedInfo.fleetCode' as const,
+  'selfReportedInfo.vesselRegistrationCode' as const,
 ] as const
 export type AdvancedSearchQueryFieldKey = (typeof ADVANCED_SEARCH_QUERY_FIELDS)[number]
 
@@ -108,8 +122,17 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     operator: '>',
     transformation: toUpperCaseWithQuotationMarks,
   },
-  // VMS specific
-
+  // VMS pipe 3
+  externalId: {
+    operator: '=',
+  },
+  nationalId: {
+    operator: 'LIKE',
+    transformation: toUpperCaseWithWildcardsAndQuotationMarks,
+  },
+  codMarinha: {
+    operator: '=',
+  },
   'selfReportedInfo.externalId': {
     operator: '=',
   },
@@ -128,6 +151,30 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
   },
   origin: {
     operator: '=',
+  },
+  // VMS pipe 4
+  'selfReportedInfo.sourceFleet': {
+    operator: '=',
+  },
+  // VMS-PER
+  'selfReportedInfo.hull': {
+    operator: '=',
+  },
+  'selfReportedInfo.origin': {
+    operator: '=',
+  },
+  // VMS-BRA
+  'selfReportedInfo.fishingLicenseCode': {
+    operator: '=',
+    transformation: withQuotationMarks,
+  },
+  'selfReportedInfo.fleetCode': {
+    operator: '=',
+    transformation: withQuotationMarks,
+  },
+  'selfReportedInfo.vesselRegistrationCode': {
+    operator: '=',
+    transformation: withQuotationMarks,
   },
 }
 

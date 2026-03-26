@@ -1,9 +1,9 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
-import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
@@ -28,6 +28,7 @@ import {
 } from 'features/datasets/datasets.hook'
 import {
   deleteDatasetThunk,
+  fetchAllDatasetsThunk,
   selectDatasetsStatus,
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
@@ -55,6 +56,10 @@ function UserDatasets() {
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }))
+  }, [dispatch])
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -133,7 +138,7 @@ function UserDatasets() {
           </Button>
         </div>
         {loading ? (
-          <div className={styles.placeholder}>
+          <div className={styles.placeholder} data-testid="datasets-spinner">
             <Spinner size="small" />
           </div>
         ) : (

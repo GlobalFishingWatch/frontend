@@ -1,7 +1,8 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { defaultState } from 'test/utils/store/redux-store-test'
+import { USER_POLYGON_DATASET_ID } from 'test/utils/store/redux-store-test.data'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -40,13 +41,16 @@ describe('User Datasets', () => {
 
     await openLayerModalButton.click()
 
+    // wait for the modal to open and fetch user datasets
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     await userEvent.click(getByRole('button', { name: 'User' }))
 
     const addLayerModal = getByRole('dialog')
 
     await expect.element(addLayerModal.getByText('Tracks')).toBeVisible()
     await expect.element(addLayerModal.getByText('Polygons')).toBeVisible()
-    await expect.element(addLayerModal.getByText('Points')).toBeVisible()
+    await expect.element(addLayerModal.getByText('Points', { exact: true })).toBeVisible()
     await expect.element(addLayerModal.getByText('Bigquery')).toBeVisible()
   })
 
@@ -84,9 +88,9 @@ describe('User Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
-    expect(
-      getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' })
-    ).toBeVisible()
+    await expect
+      .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' }))
+      .toBeVisible()
     expect(addLayerAction?.query).toEqual({
       longitude: 26,
       latitude: 19,
@@ -184,7 +188,7 @@ describe('User Datasets', () => {
           },
           datasetsConfig: [
             {
-              datasetId: 'public-hawaii-1771993699463',
+              datasetId: USER_POLYGON_DATASET_ID,
               endpoint: 'context-tiles',
               params: [],
             },
@@ -381,13 +385,17 @@ describe('User Datasets', () => {
     window.confirm = () => true
     await userEvent.click(getByTestId('sidebar-login-icon'))
     await userEvent.click(getByText('Dataset'))
-    const deleteButton = getByTestId(/delete-dataset-public-iccat-2019-points-/)
-    await userEvent.click(deleteButton)
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
 
-    // TODO: solve refetch after delete to be able to check that the dataset is not visible on the map anymore
-    // await expect.element(deleteButton).not.toBeInTheDocument()
+    const deleteButtons = getByTestId(/delete-dataset-public-iccat-2019-points-/).all()
+
+    for (const button of deleteButtons) {
+      await userEvent.click(button)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
+    expect(getByTestId(/delete-dataset-public-iccat-2019-points-/)).not.toBeInTheDocument()
 
     dateNowSpy?.mockRestore()
   })

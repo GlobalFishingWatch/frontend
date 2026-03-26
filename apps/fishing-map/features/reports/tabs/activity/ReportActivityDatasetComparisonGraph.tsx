@@ -142,7 +142,7 @@ const ReportActivityDatasetComparisonGraph = ({
   const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
 
   return (
-    <div className={styles.graph} data-test="report-activity-dataset-comparison">
+    <div className={styles.graph} data-testid="report-activity-dataset-comparison">
       <ComposedChart
         responsive
         width="100%"

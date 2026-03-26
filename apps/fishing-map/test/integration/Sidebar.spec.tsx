@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

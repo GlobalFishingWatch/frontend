@@ -51,6 +51,14 @@ export class TestingStoreMiddleware {
     return actions.filter((action) => action.type === type)
   }
 
+  getLastActionByType(type: string) {
+    const actions = this.filterMiddlewareRegistered
+      ? this.dispatchedActions.filter((action) => !action.type.includes('middlewareRegistered'))
+      : this.dispatchedActions
+    const filteredActions = actions.filter((action) => action.type === type)
+    return filteredActions[filteredActions.length - 1]
+  }
+
   expectAction(action: string | ActionMatcher, stateAfter?: StateAssertion) {
     this.expectedActions.push({ action, stateAfter })
   }

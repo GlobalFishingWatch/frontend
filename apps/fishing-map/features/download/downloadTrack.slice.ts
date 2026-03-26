@@ -77,9 +77,9 @@ export const downloadTrackThunk = createAsyncThunk<
       ...(thinning && { ...thinning }),
     }
 
-    const fileName = `${vesselName || vesselIds?.[0]} - ${downloadTrackParams['start-date']},${
-      downloadTrackParams['end-date']
-    }.zip`
+    const fileName = `${vesselName || vesselIds?.[0]} (${downloadTrackParams['start-date'].split('T')[0]} - ${
+      downloadTrackParams['end-date'].split('T')[0]
+    }).zip`
     const rateLimit = await GFWAPI.fetch<Response>(
       `/vessels/${vesselIds.join(',')}/tracks/download?${stringify(downloadTrackParams)}`,
       {

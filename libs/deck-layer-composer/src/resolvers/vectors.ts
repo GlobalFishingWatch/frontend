@@ -53,6 +53,12 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
               value: 'heatmap',
             },
           ],
+          query: [
+            {
+              id: 'datasets',
+              value: [],
+            },
+          ],
         },
         { absolute: true }
       )

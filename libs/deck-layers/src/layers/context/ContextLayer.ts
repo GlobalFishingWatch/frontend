@@ -244,10 +244,8 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               (value) => value || []
             )
 
-            const hasValidFilters =
-              filterCategories.length > 0 &&
-              sublayer.filters &&
-              Object.keys(sublayer.filters).length > 0
+            const filterKeys = Object.keys(sublayer.filters || {})
+            const hasValidFilters = filterCategories.length > 0 && filterKeys.length > 0
             const filtersHash = getContextFiltersHash(sublayer.filters)
             const extensions = [
               ...mvtSublayerProps.extensions,
@@ -257,7 +255,6 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               ? {
                   getFilterCategory: (d: ContextFeature) => {
                     // TODO: do we need to handle multiple filters?
-                    const filterKeys = Object.keys(sublayer.filters || {})
                     if (filterKeys.length === 0) return 0
                     const propertyValue = d.properties[filterKeys[0]]
                     return propertyValue !== undefined ? propertyValue : 0

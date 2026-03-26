@@ -30,10 +30,13 @@ import {
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
 import UserGuideLink from 'features/help/UserGuideLink'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
+import { selectIsGlobalReport } from 'features/reports/report-area/area-reports.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import {
+  selectIsAnyReportLocation,
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
@@ -69,6 +72,8 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
   const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
   const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
   const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
@@ -90,9 +95,11 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
     filteredTemporalResolutionOptions[0].id
   )
   const downloadAreaName =
-    downloadAreaDataset?.source === DRAW_DATASET_SOURCE
-      ? downloadAreaDataset.name
-      : downloadAreaKey?.areaName
+    isAnyReportLocation && isGlobalReport
+      ? t((t) => t.analysis.global)
+      : downloadAreaDataset?.source === DRAW_DATASET_SOURCE
+        ? downloadAreaDataset.name
+        : downloadAreaKey?.areaName
 
   const onDownloadClick = async () => {
     const downloadDataviews = dataviews
@@ -128,7 +135,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
     onDownloadCallback?.()
 
     const downloadParams: DownloadActivityParams = {
-      areaId: downloadAreaKey?.areaId as AreaKeyId,
+      areaId: isGlobalReport ? ENTIRE_WORLD_REPORT_AREA_ID : (downloadAreaKey?.areaId as AreaKeyId),
       datasetId: downloadAreaKey?.datasetId as string,
       dateRange: timerange as DateRange,
       areaName: downloadAreaName as string,

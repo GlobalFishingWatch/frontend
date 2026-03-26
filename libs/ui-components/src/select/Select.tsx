@@ -31,6 +31,7 @@ interface SelectProps {
   disabled?: boolean
   type?: 'primary' | 'secondary'
   infoTooltip?: string
+  testId?: string
 }
 
 const isItemSelected = (selectedItem: SelectOption | undefined, item: SelectOption) => {
@@ -57,6 +58,7 @@ export function Select(props: SelectProps) {
     onToggleButtonClick,
     type = 'primary',
     infoTooltip,
+    testId,
   } = props
 
   const listRef = useRef<HTMLUListElement>(null)
@@ -126,6 +128,7 @@ export function Select(props: SelectProps) {
           { [styles.disabled]: disabled },
           className
         )}
+        data-testid={testId}
       >
         <div
           {...toggleButtonProps}
@@ -194,6 +197,7 @@ export function Select(props: SelectProps) {
                           [styles.notAllowed]: itemDisabled,
                         })}
                         {...getItemProps({ item, index: virtualRow.index })}
+                        data-testid={`${testId}-option-${item.id}`}
                       >
                         {item.label}
                         <Icon

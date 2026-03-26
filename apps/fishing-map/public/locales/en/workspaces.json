@@ -8,11 +8,11 @@
       "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Conservation Corridor is a regional conservation and sustainable use initiative of the governments of Colombia, Costa Rica, Ecuador and Panama that seeks the proper management of biodiversity and marine and coastal resources through ecosystem management and the establishment of joint regional government strategies. All supported by civil society, international cooperation and non-governmental organizations, anchored in ten core MPAs in the Pacific ocean EEZs of the four countries.",
       "name": "CMAR core MPAs"
     },
-    "colombia_3-public": {
+    "colombia-public": {
       "description": "Colombia has created and managed MPAs along its Pacific and Caribbean coasts spanning Yurupari-Malpelo Integrated Management District, where the fully protected Malpelo Sanctuary of Fauna and Flora is nested, Lomas and Colinas, Gorgona, and Cabo Manglares in the Pacific Ocean, as well as Beata and Corales de Profundidad in the Caribbean Sea. ",
       "name": "Colombia"
     },
-    "costa_rica_1-public": {
+    "costa_rica-public": {
       "description": "Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers.",
       "name": "Costa Rica"
     },
@@ -52,7 +52,7 @@
       "description": "The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. ",
       "name": "Palau"
     },
-    "panama_1-public": {
+    "panama-public": {
       "description": "Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.",
       "name": "Panama"
     },

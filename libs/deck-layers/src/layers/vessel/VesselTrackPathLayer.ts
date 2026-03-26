@@ -25,6 +25,22 @@ export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
   elevation: 3,
 }
 
+function includeSpeedInTrackShader(props: _VesselTrackPathLayerProps) {
+  return (
+    props.colorBy === 'speed' ||
+    props.minSpeedFilter !== undefined ||
+    props.maxSpeedFilter !== undefined
+  )
+}
+
+function includeElevationInTrackShader(props: _VesselTrackPathLayerProps) {
+  return (
+    props.colorBy === 'elevation' ||
+    props.minElevationFilter !== undefined ||
+    props.maxElevationFilter !== undefined
+  )
+}
+
 /** Properties added by track. */
 export type _VesselTrackPathLayerProps<DataT = any> = {
   id: string
@@ -264,9 +280,8 @@ export class VesselTrackPathLayer<
 
   getShaders() {
     const shaders = super.getShaders()
-    const colorBy = this.props.colorBy
-    const hasSpeedAttribute = colorBy === 'speed'
-    const hasElevationAttribute = colorBy === 'elevation'
+    const hasSpeedAttribute = includeSpeedInTrackShader(this.props)
+    const hasElevationAttribute = includeElevationInTrackShader(this.props)
     const hasGapAttribute = this.props.maxTimeGapHours
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
@@ -351,7 +366,7 @@ export class VesselTrackPathLayer<
 
   getPropsInstancedAttributes() {
     return {
-      ...(this.props.colorBy === 'elevation' && {
+      ...(includeElevationInTrackShader(this.props) && {
         elevations: {
           size: 1,
           accessor: 'getElevation',
@@ -360,7 +375,7 @@ export class VesselTrackPathLayer<
           },
         },
       }),
-      ...(this.props.colorBy === 'speed' && {
+      ...(includeSpeedInTrackShader(this.props) && {
         speeds: {
           size: 1,
           accessor: 'getSpeed',

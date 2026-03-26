@@ -88,7 +88,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
         <div
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.scrollContainer)}
-          data-test="sidebar-container"
+          data-testid="sidebar-container"
         >
           {content}
         </div>

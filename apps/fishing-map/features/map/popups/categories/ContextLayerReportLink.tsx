@@ -117,6 +117,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         to="/$category/$workspaceId/report/$datasetId/$areaId"
         params={reportLinkParams}
         search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
+        data-testid="open-analysis-link"
         onClick={onReportClick}
       >
         <IconButton
@@ -133,6 +134,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
           params={addReportLinkParams}
           search={reportLinkSearch}
           onClick={onReportClick}
+          data-testid="add-area-to-report-link"
         >
           <IconButton
             icon="add-polygon-to-analysis"
@@ -149,6 +151,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
           params={removeReportLinkParams}
           search={reportLinkSearch}
           onClick={onReportClick}
+          data-testid="remove-area-from-report-link"
         >
           <IconButton
             icon="remove-polygon-from-analysis"

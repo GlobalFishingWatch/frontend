@@ -5,19 +5,22 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import filesaver from 'file-saver'
 
-import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
+import type { RegistryExtraFieldValue, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
   API_LOGIN_REQUIRED,
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+import { DATASET_PRIVATE_PREFIX, VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectHasTMTPermission } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -32,6 +35,7 @@ import {
   REGISTRY_SOURCES,
 } from 'features/vessel/vessel.config'
 import {
+  selectVesselDatasetId,
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
@@ -60,6 +64,7 @@ const VesselIdentity = () => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
+  const vesselDatasetId = useSelector(selectVesselDatasetId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { setTimerange } = useTimerangeConnect()
@@ -130,20 +135,26 @@ const VesselIdentity = () => {
     }
   }
 
-  const source = vesselIdentity?.sourceCode
+  const source = useMemo(() => vesselIdentity?.sourceCode, [vesselIdentity])
 
   const identityFields = useMemo(() => {
-    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source?.[0]]
-    return customIdentityFields?.length
+    const baseSource = source?.[0] as SelfReportedSource
+    const privateSource = `${baseSource}-${DATASET_PRIVATE_PREFIX}` as SelfReportedSource
+    const customIdentityFields = isPrivateDataset({ id: vesselDatasetId })
+      ? CUSTOM_VMS_IDENTITY_FIELD_GROUPS[privateSource] ||
+        CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
+      : CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
+    return customIdentityFields && customIdentityFields?.length
       ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]
       : IDENTITY_FIELD_GROUPS[identitySource]
-  }, [identitySource, source])
+  }, [identitySource, source, vesselDatasetId])
 
   const isChileanVMSVessel =
     source?.includes(SelfReportedSource.Chile) || vesselIdentity?.flag === 'CHL'
   const hasMoreInfo =
     vesselIdentity?.hasComplianceInfo ||
     vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
+  const hasTMTPermission = useSelector(selectHasTMTPermission)
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
   return (
@@ -225,8 +236,12 @@ const VesselIdentity = () => {
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
                   {fieldGroup.map((field) => {
+                    const isVMS = vesselIdentity.sourceCode?.some((source) =>
+                      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+                    )
                     let label = field.label || field.key
                     if (
+                      !isVMS &&
                       identitySource === VesselIdentitySourceEnum.SelfReported &&
                       (label === 'geartypes' || label === 'shiptypes')
                     ) {
@@ -234,12 +249,23 @@ const VesselIdentity = () => {
                     }
                     const key = field.key as keyof VesselLastIdentity
                     let value =
-                      isChileanVMSVessel && key === 'ssvid' ? '--' : (vesselIdentity[key] as string)
+                      isChileanVMSVessel && key === 'ssvid'
+                        ? EMPTY_FIELD_PLACEHOLDER
+                        : (vesselIdentity[key] as string)
                     if (key === 'depthM' || key === 'builtYear') {
-                      value =
-                        (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
-                          ? API_LOGIN_REQUIRED
-                          : vesselIdentity[key]?.value?.toString()
+                      const builtYear = vesselIdentity[key] as
+                        | RegistryExtraFieldValue<number>
+                        | string
+                      if (builtYear === API_LOGIN_REQUIRED) {
+                        value = API_LOGIN_REQUIRED
+                      } else {
+                        value =
+                          // For registry data the builtYear is a RegistryExtraFieldValue<number>
+                          (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
+                          // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
+                          (builtYear as string) ||
+                          EMPTY_FIELD_PLACEHOLDER
+                      }
                     }
                     const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
                     return (
@@ -282,6 +308,7 @@ const VesselIdentity = () => {
               })}
             {identitySource === VesselIdentitySourceEnum.Registry &&
               hasMoreInfo &&
+              hasTMTPermission &&
               registrySourceData && (
                 <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
                   <img

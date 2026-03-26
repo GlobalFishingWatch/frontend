@@ -35,10 +35,12 @@ function HomePage() {
       .then((data) => {
         const sortedData = sortByLastUpdated(data)
         setDatasets(sortedData)
-        setLoading(false)
       })
       .catch((e) => {
         console.warn(e)
+      })
+      .finally(() => {
+        setLoading(false)
       })
   }, [])
 

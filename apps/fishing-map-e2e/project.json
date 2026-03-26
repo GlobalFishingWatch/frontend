@@ -9,7 +9,8 @@
     "e2e": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/fishing-map-e2e/playwright.config.mts"
+        "config": "apps/fishing-map-e2e/playwright.config.mts",
+        "grep": "^(?!.*Screenshot comparison).*"
       },
       "cache": true,
       "inputs": ["default", "^production"],
@@ -18,7 +19,8 @@
     "e2e:local": {
       "executor": "@nx/playwright:playwright",
       "options": {
-        "config": "apps/fishing-map-e2e/playwright.config.mts"
+        "config": "apps/fishing-map-e2e/playwright.config.mts",
+        "grep": "^(?!.*Screenshot comparison).*"
       },
       "cache": false,
       "inputs": ["default", "^production"],
@@ -37,6 +39,21 @@
         "headed": {
           "cache": false,
           "headed": true
+        }
+      }
+    },
+    "screenshots": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/fishing-map-e2e/playwright.config.mts",
+        "testFiles": ["src/e2e/screenshots/"],
+        "project": ["chromium"],
+        "workers": 2
+      },
+      "cache": false,
+      "configurations": {
+        "update": {
+          "updateSnapshots": true
         }
       }
     },

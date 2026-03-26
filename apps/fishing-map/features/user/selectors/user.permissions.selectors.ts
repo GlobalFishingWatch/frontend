@@ -22,6 +22,12 @@ const hasUserPermission = (permission: UserPermission) =>
     return checkExistPermissionInList(userData.permissions, permission)
   })
 
+export const selectHasTMTPermission = hasUserPermission({
+  type: 'application',
+  value: 'tmt',
+  action: 'read',
+})
+
 export const selectHasDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',

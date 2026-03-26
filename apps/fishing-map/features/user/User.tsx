@@ -80,12 +80,6 @@ function User() {
   }, [dispatch, userData?.id, userLogged])
 
   useEffect(() => {
-    dispatch(fetchWorkspaceThunk({ workspaceId: '' }))
-    // dispatch(fetchDefaultWorkspaceThunk())
-    dispatch(fetchAllDatasetsThunk())
-  }, [dispatch])
-
-  useEffect(() => {
     dispatch(fetchVesselGroupsThunk())
   }, [dispatch])
 

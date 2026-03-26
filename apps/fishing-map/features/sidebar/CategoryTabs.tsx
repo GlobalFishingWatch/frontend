@@ -172,6 +172,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               placement="right"
             >
               <li
+                data-testid={`link-category-${category}`}
                 className={cx(styles.tab, {
                   [styles.current]:
                     !isAnySearchLocation &&

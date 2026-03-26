@@ -8,11 +8,11 @@
       "description": "Iniciado en 2004, el Corredor de Conservación Marítima del Pacífico Tropical Oriental es una iniciativa regional de conservación y uso sostenible de los gobiernos de Colombia, Costa Rica, Ecuador y Panamá que buscan el manejo adecuado de la biodiversidad y de los recursos marinos y costeros a través del manejo de los ecosistemas y el establecimiento de estrategias conjuntas del gobierno regional. Todos ellos apoyados por la sociedad civil, la cooperación internacional y las organizaciones no gubernamentales, envueltas en diez MPAs centrales en las ZEE del Océano Pacífico de los cuatro países.",
       "name": "AMP núcleo del CMAR"
     },
-    "colombia_3-public": {
-      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe. ",
+    "colombia-public": {
+      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe.",
       "name": "Colombia"
     },
-    "costa_rica_1-public": {
+    "costa_rica-public": {
       "description": "El Parque Nacional Isla del Coco es un área totalmente protegida que abarca casi 55.000 kilómetros cuadrados. El Área Marina de Manejo del Bicentenario que rodea el Parque Nacional Isla del Coco tiene 106.000 kilómetros cuadrados.",
       "name": "Costa Rica"
     },
@@ -52,7 +52,7 @@
       "description": "La República de Palau es un grupo de islas situadas en el océano Pacífico occidental. En 2020, Palau protegió completamente el 80% de su zona económica exclusiva para formar el Santuario Marino Nacional de Palau, que representa 475.077 kilómetros cuadrados (183.000 millas cuadradas), cerrando estas aguas a todas las formas de actividades extractivas, incluida la pesca. ",
       "name": "Palau"
     },
-    "panama_1-public": {
+    "panama-public": {
       "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba.",
       "name": "Panamá"
     },
