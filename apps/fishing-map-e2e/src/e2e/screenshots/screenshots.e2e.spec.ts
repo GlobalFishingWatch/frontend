@@ -17,9 +17,9 @@ test.use({
 for (const { id, url } of MAP_URLS) {
   test.describe(`Screenshot comparison - ${id}`, () => {
     test.beforeEach(async ({ page }) => {
-      const queryParams = new URLSearchParams(url)
-      queryParams.set('skipColorDomainSampling', 'true')
-      const urlWithSkipColorDomainSampling = `${url}?${queryParams.toString()}`
+      const parsedUrl = new URL(url)
+      parsedUrl.searchParams.set('skipColorDomainSampling', 'true')
+      const urlWithSkipColorDomainSampling = parsedUrl.toString()
       await page.goto(urlWithSkipColorDomainSampling, { waitUntil: 'networkidle', timeout: 60_000 })
 
       const closeButton = page.getByTestId('modal-close-button')
