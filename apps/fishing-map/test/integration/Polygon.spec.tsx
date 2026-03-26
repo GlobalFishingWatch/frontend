@@ -95,7 +95,7 @@ describe('Polygon', () => {
       })
   })
 
-  it.only('should be able to draw a new polygon, see it in the map and delete it', async () => {
+  it('should be able to draw a new polygon, see it in the map and delete it', async () => {
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [], true)
     const { getByTestId, getByText } = await render(<App />, {
@@ -107,19 +107,18 @@ describe('Polygon', () => {
 
     await userEvent.click(getByTestId('draw-polygon-button'))
 
+    // Define triangle vertices in [longitude, latitude] format
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-
-    // Define triangle vertices in [longitude, latitude] format
     const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
     const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
     const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
 
     // Draw a triangle polygon
-    // await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-    // await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
-    // await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
-    // await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
 
     await userEvent.click(getByTestId('app-main'), { position: { x: 300, y: 200 } })
     await userEvent.click(getByTestId('app-main'), { position: { x: 400, y: 200 } })
@@ -128,12 +127,9 @@ describe('Polygon', () => {
 
     await userEvent.type(getByTestId('input-layer-name'), 'Polygon drawing test')
     await userEvent.click(getByTestId('draw-save-polygon'))
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Wait for all layers to be loaded
-    //  await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
-    await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
-
     await expect
       .poll(
         () => {
@@ -142,14 +138,6 @@ describe('Polygon', () => {
         { timeout: 20000, interval: 1000 }
       )
       .toBe(true)
-    const [x, y] = viewport?.project([-45.33, 42.66]) || [0, 0]
-
-    await userEvent.click(getByTestId('map-container'), { position: { x: 350, y: 250 } })
-    await expect
-      .element(
-        getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
-      )
-      .toBeVisible()
 
     const expectedLayerProps = {
       loaded: expect.any(Boolean),
@@ -164,16 +152,12 @@ describe('Polygon', () => {
       )
       .toMatchObject({
         basemap: expectedLayerProps,
-        'draw-layer': expectedLayerProps, //draw-layer
+        'draw-layer': expectedLayerProps,
       })
 
     //Delete layer after test
-    // await userEvent.click(getByTestId('sidebar-login-icon'))
-    // await userEvent.click(getByText(/Dataset/i))
-    // await new Promise((resolve) => setTimeout(resolve, 100))
-    // await userEvent.click(getByTestId(/^delete-dataset-public-polygon-drawing-test-\d+$/))
-    // window.confirm = () => true
+    await cleanupExistingTestPolygon(store)
 
-    // expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
+    expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
   })
 })

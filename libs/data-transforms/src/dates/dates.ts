@@ -10,8 +10,8 @@ const DATE_PARSE_METHODS: DateTimeParseFunction[] = [
   DateTime.fromISO,
   DateTime.fromSQL,
   DateTime.fromRFC2822,
-  (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
-  (s: string, opts: any) => DateTime.fromFormat(s, 'd/M/yyyy', opts),
+  // (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
+  // (s: string, opts: any) => DateTime.fromFormat(s, 'd/M/yyyy', opts),
 ]
 
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
