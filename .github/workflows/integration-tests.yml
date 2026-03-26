@@ -26,6 +26,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -45,5 +48,5 @@ jobs:
       - name: Run affected tests
         run: yarn nx affected --target=test --verbose
         env:
-          NX_BASE: origin/develop
+          NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
