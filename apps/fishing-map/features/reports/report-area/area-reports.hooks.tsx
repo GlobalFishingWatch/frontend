@@ -364,6 +364,7 @@ export function useFetchReportVessel() {
       reportBufferValue,
       reportBufferOperation,
       timeComparison: timeComparisonValues,
+      areaId,
     }
     const query = getReportQuery(params)
     updateWorkspaceReportUrls(query)
