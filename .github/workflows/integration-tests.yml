@@ -116,6 +116,13 @@ jobs:
         with:
           path: summary.md
 
+      - name: Upload test traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-traces
+          path: apps/fishing-map/test/integration/__traces__
+
       - name: Save yarn cache
         if: always() && steps.yarn-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
