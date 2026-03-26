@@ -22,7 +22,6 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     id: VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
     dataviewId: VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
-    onlyGFWUser: true,
     config: {
       color: '#FFEA00',
       colorRamp: 'yellow',
