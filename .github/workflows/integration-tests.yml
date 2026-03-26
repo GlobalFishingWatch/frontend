@@ -13,6 +13,12 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Notify the developer about integration tests running
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          message: |
+            ## ⏳ Integration tests are running...
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
