@@ -45,6 +45,7 @@ jobs:
             yarn-${{ github.head_ref }}-
             yarn-${{ github.base_ref }}-
             yarn-
+          save-always: true
 
       - name: Enable Corepack and set Yarn version
         run: |
