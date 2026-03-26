@@ -25,6 +25,7 @@ import type { IconType } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
+import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 
@@ -55,6 +56,9 @@ const GFW_ONLY_DATASETS = [
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id || '')
+
+export const getIsSkylightDataset = (datasetId: Dataset['id']) =>
+  datasetId === SKYLIGHT_PROTOTYPE_DATASET_ID
 
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
