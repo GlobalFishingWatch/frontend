@@ -197,7 +197,7 @@
   },
   "private-global-planet-presence": {
     "name": "Planet Imagery detections (Optical)",
-    "description": "<h2>Overview</h2> <p> This layer shows vessels detected using optical satellite imagery collected by the European Space Agency's Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths. This type of imagery provides high-resolution detail that allows us to spot small vessels, identify wake patterns, and better understand activity near shore. </p> <p> Global Fishing Watch uses a machine learning model that processes each image to identify vessels and estimate their length, orientation, and speed based on wake features. The detections are then filtered using a secondary classifier to remove objects that are not vessels, such as clouds, rocks or icebergs. Each detection is linked to a cropped image (a thumbnail) so users can visually inspect what the model identified. </p> <p> Because optical satellites rely on sunlight and clear skies, detections are only possible during the day and when the area is not obscured by clouds or haze. Despite these limitations, detections with optical imagery are especially helpful in identifying small untracked vessels that may not appear in other tracking systems. </p> <h2>Use cases</h2> <ul> <li> Monitor vessel presence (both fishing and non-fishing) in areas of interest such as marine protected areas (MPAs), exclusive economic zones (EEZs), inshore exclusion zones (IEZs) and Regional Fisheries Management Organisations (RFMOs). In some cases, activity like bottom trawling can be seen through disturbance to seabed sediment. </li> <li> Assess presence of vessels that don't show up on cooperative tracking systems—including automatic identification system (AIS) and vessel monitoring system (VMS)—near vulnerable marine ecosystems and essential fish habitats. </li> <li> Goes beyond vessel detection in other satellite remote sensors like Sentinel-1 SAR and VIIRS which simply detect the presence of an object, with Sentinel-2 users can often infer the object's activity based on the wake of a detection, and in some cases, the dataset can be used to identify fishing activity e.g. sediment plumes of trawlers, net encircling fish in purse seine vessels. </li> <li> Support analyses on small-scale fishing. While the 10m resolution is still too coarse to comprehensively map small-scale fishing, Sentinel-2 detections have been integrated into multiple analyses related to regional small-scale fishery and demonstrated the potential as a valuable addition to the limited vessel tracking data. </li> </ul> <h2>Limitations</h2> <ul> <li> Vessel detection with optical imagery requires daylight and clear skies <ul> <li> Unlike radar, optical satellites cannot see through clouds, fog, or haze. Detections are only possible during daylight hours when the view is unobstructed. </li> </ul> </li> <li> Not all geographies are covered equally <ul> <li> Sentinel-2 coverage is mostly limited to coastal waters. It revisits most areas every five days, but the image availability depends on the weather. Cloudy or hazy regions have lower effective revisit frequencies than regions with better weather conditions. </li> </ul> </li> <li> The detections may include false positives <ul> <li> Despite post-processing, the model may still produce occasional false detections—e.g., picking up buoys, debris, fixed infrastructure, or image artifacts. These false positives are reduced using a secondary classifier, but not completely eliminated. </li> </ul> </li> <li> Uncertainty in some vessel features <ul> <li> Smaller or slower-moving vessels may not produce visible wakes, making it more difficult to estimate their speed or heading. Therefore, these values may be inaccurate for small boats. </li> </ul> </li> <li> Not all detections unmatched to AIS are untracked vessels <ul> <li> The detections include both vessels on AIS and untracked vessels. We try to match detections to AIS tracks, but sometimes matching is not feasible due to large time gaps between AIS positions and in areas with high density of detections. </li> </ul> </li> </ul> <h2>Methods</h2> <h3>Optical imagery</h3> <p> This layer is based on images from the Sentinel-2 satellites operated by the European Space Agency (ESA). These satellites capture medium-resolution images (10 m per pixel) of the ocean using visible and near-infrared light (among several other bands). Combined, the satellites acquire images of most coastal waters and dedicated areas in the open ocean roughly every five days, and the imagery is made freely available by the ESA. </p> <h3>Image processing and selection</h3> <p> We use pre-processed Sentinel-2 images that have been corrected for geometric distortions and aligned to the Earth's surface. These images are split into manageable tiles, and we selected the tiles that cover only ocean areas (image tiles over land are excluded). We use four image bands: red, green, blue (RGB), and near-infrared (NIR), all at 10-meter resolution. These bands give us the detail and contrast needed to detect and classify vessels. </p> <h3>Vessel detection</h3> <p> Our machine learning model scans each image tile to detect vessels. It is trained to look for features such as the shape, brightness, and wake of a vessel. When it finds a likely candidate, the model predicts a score for vessel presence alongside estimates of the vessel's location, size, orientation, and speed. </p> <p> The detection model was trained on over 11,000 manually reviewed vessel examples across thousands of Sentinel-2 scenes. This training process included many small vessels and scenes from around the world, helping the model to perform well across different environments and vessel types. </p> <h3>Image thumbnails</h3> <p> Each detection includes a small visual \"chip\" showing the detected vessel at the center. These thumbnails come in two formats: a color version from the RGB bands, and a grayscale version from the near-infrared band. Each chip covers an area of 1 km². These thumbnails are helpful for visually confirming a detection or understanding its context. For very small vessels (under 15 meters), it may still be difficult to see them clearly. </p> <h3>Reducing false positives</h3> <p> Not everything that looks like a vessel in satellite imagery actually is one. To help remove false detections (like buoys, offshore platforms, sea ice, or clouds), we run each detection through a secondary classifier. This classifier is a machine learning model that uses both the image thumbnail and additional information about the detection (such as distance from shore, local depth, and vessel density nearby, among others) to decide whether the object is likely to be a vessel. We also flag detections that are close to known fixed infrastructure or in areas with substantial sea ice or iceberg presence. </p> <p> If a detection is classified as likely non-vessel or flagged as potential infrastructure or ice, we remove it from the map layer so only high-confidence detections are included. We also clip the satellite footprints (displayed on the map layer) to exclude the areas under the icy-region mask. However, we provide all the false positives with labels through the data download portal for stakeholders who require a more complete dataset. </p> <h3>AIS matching and vessel identity</h3> <p> AIS data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large \"blind spots\" along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched imagery detections therefore provide the missing information about vessel traffic in the ocean. </p> <p> Matching imagery detections to vessels' GPS coordinates from AIS is challenging because the timestamps of the images and AIS records do not coincide, and a single AIS identity can potentially match to multiple vessels appearing in the image, and vice versa. To determine the likelihood that a vessel broadcasting AIS corresponded to a specific detection, we developed a matching approach based on probability rasters of where a vessel is likely to be minutes before and after an AIS position was recorded. These rasters were produced from one year of global AIS data from the Global Fishing Watch pipeline, which sources satellite data from Spire Global and Orbcomm. The probability rasters are based on roughly 10 billion vessel positions and are computed for six different vessel classes, considering six different speeds and 36 time intervals. So we obtain the likely position of a vessel that could match a detection based on the vessel class, speed and time interval. In addition to the spatiotemporal matching, we factor in the similarity between the model-inferred vessel length and the length from AIS identity data to avoid (likely incorrect) matches with large discrepancies in size, e.g., AIS of a tugboat and the detection of a large vessel behind it. </p> <h3>Detection footprints</h3> <p> To help users understand where detections were possible, we show the detection \"footprints\" on the map. These polygons are the portions of the satellite images that cover the ocean and that were used for detection. Thus, if you see a footprint but no detections, it means no vessels were detected in that area. If there is no footprint, no image was processed for that location and time. </p> <h3>Automation and updates</h3> <p> Our detection and matching system runs automatically each day. It checks for new Sentinel-2 images published to Google Cloud and processes those that meet our quality criteria. New detections are typically available within 1–2 days of the satellite capturing the image. The automated pipeline also re-checks any images published late to ensure any data gaps are filled. </p> <h2>Source data and citations</h2> <p> All vessel data are freely available through the Global Fishing Watch data portal at <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\" >https://globalfishingwatch.org/data-download/</a >. </p> <h2>License</h2> <p> Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us. </p>",
+    "description": "<h2>Overview</h2> <p> This layer shows vessels detected using optical satellite imagery collected by the European Space Agency's Planet satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths. This type of imagery provides high-resolution detail that allows us to spot small vessels, identify wake patterns, and better understand activity near shore. </p> <p> Global Fishing Watch uses a machine learning model that processes each image to identify vessels and estimate their length, orientation, and speed based on wake features. The detections are then filtered using a secondary classifier to remove objects that are not vessels, such as clouds, rocks or icebergs. Each detection is linked to a cropped image (a thumbnail) so users can visually inspect what the model identified. </p> <p> Because optical satellites rely on sunlight and clear skies, detections are only possible during the day and when the area is not obscured by clouds or haze. Despite these limitations, detections with optical imagery are especially helpful in identifying small untracked vessels that may not appear in other tracking systems. </p> <h2>Use cases</h2> <ul> <li> Monitor vessel presence (both fishing and non-fishing) in areas of interest such as marine protected areas (MPAs), exclusive economic zones (EEZs), inshore exclusion zones (IEZs) and Regional Fisheries Management Organisations (RFMOs). In some cases, activity like bottom trawling can be seen through disturbance to seabed sediment. </li> <li> Assess presence of vessels that don't show up on cooperative tracking systems—including automatic identification system (AIS) and vessel monitoring system (VMS)—near vulnerable marine ecosystems and essential fish habitats. </li> <li> Goes beyond vessel detection in other satellite remote sensors like Sentinel-1 SAR and VIIRS which simply detect the presence of an object, with Planet users can often infer the object's activity based on the wake of a detection, and in some cases, the dataset can be used to identify fishing activity e.g. sediment plumes of trawlers, net encircling fish in purse seine vessels. </li> <li> Support analyses on small-scale fishing. While the 10m resolution is still too coarse to comprehensively map small-scale fishing, Planet detections have been integrated into multiple analyses related to regional small-scale fishery and demonstrated the potential as a valuable addition to the limited vessel tracking data. </li> </ul> <h2>Limitations</h2> <ul> <li> Vessel detection with optical imagery requires daylight and clear skies <ul> <li> Unlike radar, optical satellites cannot see through clouds, fog, or haze. Detections are only possible during daylight hours when the view is unobstructed. </li> </ul> </li> <li> Not all geographies are covered equally <ul> <li> Planet coverage is mostly limited to coastal waters. It revisits most areas every five days, but the image availability depends on the weather. Cloudy or hazy regions have lower effective revisit frequencies than regions with better weather conditions. </li> </ul> </li> <li> The detections may include false positives <ul> <li> Despite post-processing, the model may still produce occasional false detections—e.g., picking up buoys, debris, fixed infrastructure, or image artifacts. These false positives are reduced using a secondary classifier, but not completely eliminated. </li> </ul> </li> <li> Uncertainty in some vessel features <ul> <li> Smaller or slower-moving vessels may not produce visible wakes, making it more difficult to estimate their speed or heading. Therefore, these values may be inaccurate for small boats. </li> </ul> </li> <li> Not all detections unmatched to AIS are untracked vessels <ul> <li> The detections include both vessels on AIS and untracked vessels. We try to match detections to AIS tracks, but sometimes matching is not feasible due to large time gaps between AIS positions and in areas with high density of detections. </li> </ul> </li> </ul> <h2>Methods</h2> <h3>Optical imagery</h3> <p> This layer is based on images from the Planet satellites operated by the European Space Agency (ESA). These satellites capture medium-resolution images (10 m per pixel) of the ocean using visible and near-infrared light (among several other bands). Combined, the satellites acquire images of most coastal waters and dedicated areas in the open ocean roughly every five days, and the imagery is made freely available by the ESA. </p> <h3>Image processing and selection</h3> <p> We use pre-processed Planet images that have been corrected for geometric distortions and aligned to the Earth's surface. These images are split into manageable tiles, and we selected the tiles that cover only ocean areas (image tiles over land are excluded). We use four image bands: red, green, blue (RGB), and near-infrared (NIR), all at 10-meter resolution. These bands give us the detail and contrast needed to detect and classify vessels. </p> <h3>Vessel detection</h3> <p> Our machine learning model scans each image tile to detect vessels. It is trained to look for features such as the shape, brightness, and wake of a vessel. When it finds a likely candidate, the model predicts a score for vessel presence alongside estimates of the vessel's location, size, orientation, and speed. </p> <p> The detection model was trained on over 11,000 manually reviewed vessel examples across thousands of Planet scenes. This training process included many small vessels and scenes from around the world, helping the model to perform well across different environments and vessel types. </p> <h3>Image thumbnails</h3> <p> Each detection includes a small visual \"chip\" showing the detected vessel at the center. These thumbnails come in two formats: a color version from the RGB bands, and a grayscale version from the near-infrared band. Each chip covers an area of 1 km². These thumbnails are helpful for visually confirming a detection or understanding its context. For very small vessels (under 15 meters), it may still be difficult to see them clearly. </p> <h3>Reducing false positives</h3> <p> Not everything that looks like a vessel in satellite imagery actually is one. To help remove false detections (like buoys, offshore platforms, sea ice, or clouds), we run each detection through a secondary classifier. This classifier is a machine learning model that uses both the image thumbnail and additional information about the detection (such as distance from shore, local depth, and vessel density nearby, among others) to decide whether the object is likely to be a vessel. We also flag detections that are close to known fixed infrastructure or in areas with substantial sea ice or iceberg presence. </p> <p> If a detection is classified as likely non-vessel or flagged as potential infrastructure or ice, we remove it from the map layer so only high-confidence detections are included. We also clip the satellite footprints (displayed on the map layer) to exclude the areas under the icy-region mask. However, we provide all the false positives with labels through the data download portal for stakeholders who require a more complete dataset. </p> <h3>AIS matching and vessel identity</h3> <p> AIS data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large \"blind spots\" along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched imagery detections therefore provide the missing information about vessel traffic in the ocean. </p> <p> Matching imagery detections to vessels' GPS coordinates from AIS is challenging because the timestamps of the images and AIS records do not coincide, and a single AIS identity can potentially match to multiple vessels appearing in the image, and vice versa. To determine the likelihood that a vessel broadcasting AIS corresponded to a specific detection, we developed a matching approach based on probability rasters of where a vessel is likely to be minutes before and after an AIS position was recorded. These rasters were produced from one year of global AIS data from the Global Fishing Watch pipeline, which sources satellite data from Spire Global and Orbcomm. The probability rasters are based on roughly 10 billion vessel positions and are computed for six different vessel classes, considering six different speeds and 36 time intervals. So we obtain the likely position of a vessel that could match a detection based on the vessel class, speed and time interval. In addition to the spatiotemporal matching, we factor in the similarity between the model-inferred vessel length and the length from AIS identity data to avoid (likely incorrect) matches with large discrepancies in size, e.g., AIS of a tugboat and the detection of a large vessel behind it. </p> <h3>Detection footprints</h3> <p> To help users understand where detections were possible, we show the detection \"footprints\" on the map. These polygons are the portions of the satellite images that cover the ocean and that were used for detection. Thus, if you see a footprint but no detections, it means no vessels were detected in that area. If there is no footprint, no image was processed for that location and time. </p> <h3>Automation and updates</h3> <p> Our detection and matching system runs automatically each day. It checks for new Planet images published to Google Cloud and processes those that meet our quality criteria. New detections are typically available within 1–2 days of the satellite capturing the image. The automated pipeline also re-checks any images published late to ensure any data gaps are filled. </p> <h2>Source data and citations</h2> <p> All vessel data are freely available through the Global Fishing Watch data portal at <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\" >https://globalfishingwatch.org/data-download/</a >. </p> <h2>License</h2> <p> Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us. </p>",
     "schema": {
       "length": {
         "keyword": "length"
@@ -553,118 +553,55 @@
           "5": "5"
         }
       },
-      "license_category": {
-        "keyword": "license_category",
+      "fleet_code": {
+        "keyword": "fleet_code",
         "enum": {
-          "": "",
-          "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
-          "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
-          "1.11 - Espinhel vertical": "1.11 - Espinhel vertical",
-          "1.12 - Linha de mão (fundo)": "1.12 - Linha de mão (fundo)",
-          "1.13 - Linha/vara - com isca viva": "1.13 - Linha/vara - com isca viva",
-          "1.14 - Linha de mão (fundo)": "1.14 - Linha de mão (fundo)",
-          "1.15 - Linha de mão (superfície)": "1.15 - Linha de mão (superfície)",
-          "1.17 - Cardume associado": "1.17 - Cardume associado",
-          "1.18 - Cardume associado": "1.18 - Cardume associado",
-          "1.2 - Espinhel horizontal (superfície)": "1.2 - Espinhel horizontal (superfície)",
-          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "1.3 - Espinhel horizontal (superfície) - com isca-viva",
-          "1.4 - Espinhel horizontal (superfície)": "1.4 - Espinhel horizontal (superfície)",
-          "1.5 - Espinhel horizontal (fundo)": "1.5 - Espinhel horizontal (fundo)",
-          "1.6 - Espinhel horizontal (fundo)": "1.6 - Espinhel horizontal (fundo)",
-          "1.7 - Espinhel horizontal (fundo)": "1.7 - Espinhel horizontal (fundo)",
-          "1.8 - Espinhel vertical/covos": "1.8 - Espinhel vertical/covos",
-          "1.9 - Espinhel vertical/Covos": "1.9 - Espinhel vertical/Covos",
-          "2.10 - Emalhe costeiro (fundo)": "2.10 - Emalhe costeiro (fundo)",
-          "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
-          "2.12 - Emalhe costeiro (fundo)": "2.12 - Emalhe costeiro (fundo)",
-          "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
-          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
-          "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
-          "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
-          "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
-          "2.6 - Emalhe costeiro (superfície)": "2.6 - Emalhe costeiro (superfície)",
-          "2.7 - Emalhe costeiro (superfície)": "2.7 - Emalhe costeiro (superfície)",
-          "2.8 - Emalhe costeiro (superfície)": "2.8 - Emalhe costeiro (superfície)",
-          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
-          "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
-          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
-          "3.12 - Arrasto oceânico (fundo) – simples e duplo": "3.12 - Arrasto oceânico (fundo) – simples e duplo",
-          "3.13 - Arrasto oceânico (fundo) – simples e duplo": "3.13 - Arrasto oceânico (fundo) – simples e duplo",
-          "3.14 - Arrasto (meia água)": "3.14 - Arrasto (meia água)",
-          "3.2 - Arrasto (fundo) – Simples ou parelha": "3.2 - Arrasto (fundo) – Simples ou parelha",
-          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "3.3 - Arrasto (fundo) - duplo ou simples (**)",
-          "3.4 - Arrasto (fundo) - duplo ou simples": "3.4 - Arrasto (fundo) - duplo ou simples",
-          "3.5 - Arrasto (fundo) - duplo ou simples": "3.5 - Arrasto (fundo) - duplo ou simples",
-          "3.6 - Arrasto (fundo) - duplo": "3.6 - Arrasto (fundo) - duplo",
-          "3.7 - Arrasto (fundo)– duplo": "3.7 - Arrasto (fundo)– duplo",
-          "3.8 - Arrasto (fundo) - duplo ou simples": "3.8 - Arrasto (fundo) - duplo ou simples",
-          "3.9 - Arrasto (fundo) - duplo ou simples": "3.9 - Arrasto (fundo) - duplo ou simples",
-          "4.1 - Cerco": "4.1 - Cerco",
-          "4.2 - Cerco": "4.2 - Cerco",
-          "4.3 - Cerco": "4.3 - Cerco",
-          "4.4 - Cerco": "4.4 - Cerco",
-          "4.6 - Cerco": "4.6 - Cerco",
-          "5.1 - Covos": "5.1 - Covos",
-          "5.10 - Potes": "5.10 - Potes",
-          "5.11 - Potes": "5.11 - Potes",
-          "5.12 - Potes": "5.12 - Potes",
-          "5.2 - Covos": "5.2 - Covos",
-          "5.3 - Covos": "5.3 - Covos",
-          "5.4 - Covos": "5.4 - Covos",
-          "5.5 - Covos": "5.5 - Covos",
-          "5.6 - Covos": "5.6 - Covos",
-          "5.9 - Covos": "5.9 - Covos",
-          "Sem código IN - Covos": "Sem código IN - Covos"
-        }
-      },
-      "target_species": {
-        "keyword": "target_species",
-        "enum": {
-          "": "",
-          "Agulha": "Agulha",
-          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
-          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
-          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
-          "Anchoíta, galo, calamar": "Anchoíta, galo, calamar",
-          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
-          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
-          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
-          "Bonito listrado": "Bonito listrado",
-          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
-          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
-          "Camarão santana e barba ruça": "Camarão santana e barba ruça",
-          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
-          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
-          "Camarões de profundidade": "Camarões de profundidade",
-          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
-          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
-          "Cavalas, Albacorinhas": "Cavalas, Albacorinhas",
-          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
-          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
-          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
-          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
-          "Dourado": "Dourado",
-          "Espadarte": "Espadarte",
-          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
-          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
-          "Pargo": "Pargo",
-          "Pargo rosa": "Pargo rosa",
-          "Peixe sapo": "Peixe sapo",
-          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
-          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
-          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
-          "Piramutaba": "Piramutaba",
-          "Piramutaba e dourada": "Piramutaba e dourada",
-          "Polvo": "Polvo",
-          "Saramunete": "Saramunete",
-          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
-          "Sardinha verdadeira": "Sardinha verdadeira",
-          "Sardinha-lage": "Sardinha-lage",
-          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
-          "Serra": "Serra",
-          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
-          "Tainha": "Tainha",
-          "Vermelhos (especificar)": "Vermelhos (especificar)"
+          "1.1": "1.1",
+          "1.10": "1.10",
+          "1.12": "1.12",
+          "1.13": "1.13",
+          "1.14": "1.14",
+          "1.17": "1.17",
+          "1.18": "1.18",
+          "1.2": "1.2",
+          "1.3": "1.3",
+          "1.4": "1.4",
+          "1.5": "1.5",
+          "1.6": "1.6",
+          "1.7": "1.7",
+          "1.8": "1.8",
+          "1.9": "1.9",
+          "2.10": "2.10",
+          "2.11": "2.11",
+          "2.13": "2.13",
+          "2.2": "2.2",
+          "2.3": "2.3",
+          "2.4": "2.4",
+          "2.5": "2.5",
+          "3.1": "3.1",
+          "3.10": "3.10",
+          "3.11": "3.11",
+          "3.12": "3.12",
+          "3.13": "3.13",
+          "3.2": "3.2",
+          "3.3": "3.3",
+          "3.5": "3.5",
+          "3.6": "3.6",
+          "3.9": "3.9",
+          "4.1": "4.1",
+          "4.2": "4.2",
+          "4.3": "4.3",
+          "4.4": "4.4",
+          "4.6": "4.6",
+          "5.1": "5.1",
+          "5.10": "5.10",
+          "5.11": "5.11",
+          "5.2": "5.2",
+          "5.3": "5.3",
+          "5.4": "5.4",
+          "5.6": "5.6",
+          "5.9": "5.9",
+          "Sem código IN": "Sem código IN"
         }
       }
     }
@@ -2226,7 +2163,7 @@
   },
   "proto-global-skylight-viirs": {
     "name": "Skylight Viirs",
-    "description": "Skylight viirs",
+    "description": "<h2>Overview</h2> <ul> <li> This layer shows vessels detected using the Visible Infrared Imaging Radiometer Suite (VIIRS) \"Day/Night Band\" on board the Suomi NPP, NOAA-20, and NOAA-21 satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect anthropogenic light sources on the ocean surface, such as vessel deck lights or high-intensity lamps used to lure catch. </li> <li> Skylight processes these nightly global sweeps using a suite of seven parallel computer vision models. These models differentiate between actual vessels and \"noise,\" such as gas flares or lightning, to provide a near real-time map of illuminated maritime activity during the middle of the night (typically 1-4 a.m. local time). </li> </ul> <h2>Use cases</h2> <ul> <li> Identify industrial fishing operations, such as squid jiggers and purse seiners, that use bright lights but may not be broadcasting AIS or VMS positions. </li> <li> Fill surveillance gaps in vast areas of the ocean where other satellite coverage is infrequent, as Night Lights provides daily global revisits. </li> <li> Use Night Lights in tandem with Radar (SAR) or Optical (Sentinel-2) detections to build a 24-hour timeline of a vessel's presence in an area of interest. </li> </ul> <h2>Caveats</h2> <ul> <li> While the model filters most noise, heavy cloud cover can diffuse light (making detections appear larger), and extreme moonlight reflection (glint) may occasionally result in false positives. </li> <li> With a resolution of approximately 750 meters per pixel, multiple vessels in close proximity may appear as a single detection. </li> </ul> <h2>Methods</h2> <ul> <li> Multi-Model Computer Vision: Because the VIIRS sensor was originally designed for weather monitoring, Skylight uses specialized machine learning to isolate vessel signals. The system employs seven distinct models to filter out non-vessel light sources like oil platform gas flares, lightning strikes, and ionospheric noise (the South Atlantic Anomaly). </li> <li> AIS Matching &amp; Identification: Skylight automatically attempts to correlate each light detection with AIS records. By comparing the light's location and timing with known vessel tracks, the system can distinguish between AIS-transmitting vessels and \"unmatched\" detections. </li> <li> Global Daily Coverage: The constellation of three satellites follows a sun-synchronous polar orbit. This ensures that every point on Earth is imaged at least once per night, with occasional multiple passes that can help analysts infer a vessel's course based on consecutive detections. </li> </ul>",
     "schema": {
       "matched": {
         "keyword": "matched",
@@ -2519,6 +2456,20 @@
     "name": "Principales zones de pêche FAO",
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas. <a href='https://www.fao.org/fishery/en/area/search' target='_blank'>Source</a>. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer"
   },
+  "public-fixed-infrastructure": {
+    "name": "Fixed infrastructure",
+    "description": "SAR identified fixed infrastructure",
+    "schema": {
+      "label": {
+        "keyword": "label",
+        "enum": {
+          "oil": "oil",
+          "wind": "wind",
+          "unknown": "unknown"
+        }
+      }
+    }
+  },
   "public-fixed-infrastructure-filtered": {
     "name": "Infrastructure fixe offshore (SAR, Optique)",
     "description": "<h2>Présentation</h2> <p>L'infrastructure fixe offshore est un ensemble de données mondial qui utilise l'IA et l'apprentissage automatique pour détecter et classer les structures dans les océans du monde. </p> <p>Des étiquettes de classification (pétrole, éolien et inconnu) sont fournies, ainsi que des niveaux de confiance (élevé, moyen ou faible) reflétant notre certitude dans l'étiquette attribuée. Les détections peuvent être filtrées et colorées sur la carte en utilisant à la fois l'étiquette et le niveau de confiance.< em ></ em >Les données sont mises à jour sur une base mensuelle et de nouvelles détections classées sont ajoutées au début de chaque mois. La visualisation des changements à l'aide de la barre temporelle est simple et permet à chacun de reconnaître l'industrialisation rapide des océans du monde. Par exemple, vous pouvez facilement observer l'expansion des parcs éoliens dans les mers de Chine du Nord et de l'Est, ou les changements dans les infrastructures pétrolières dans le golfe du Mexique ou le golfe Persique.</p> <p>En superposant les couches cartographiques existantes, vous pouvez explorer la manière dont les navires interagissent avec les structures pétrolières et éoliennes, visualiser la densité des détections de navires par radar à synthèse d'ouverture (SAR) et par radiomètre d'imagerie infrarouge visible (VIIRS) autour des infrastructures, ou déterminer quelles zones marines protégées (AMP) contiennent des éoliennes, du pétrole ou d'autres types d'infrastructures. Ce ne sont là que quelques exemples des types de questions que nous pouvons désormais poser. Les infrastructures fixes offshore constituent un ensemble de données unique en son genre qui met non seulement en lumière l'industrialisation extensive de nos océans, mais permet également aux utilisateurs de tous les secteurs d'utiliser ces informations dans la recherche, la surveillance et la gestion.</p> <h2>Cas d'utilisation</h2> < ul > <li>Connaissance du domaine maritime</li> < ul > <li>L'emplacement des infrastructures peut soutenir la connaissance du domaine maritime et la compréhension d'autres activités se déroulant en mer.</li> <li>Les données sur les infrastructures soutiennent les évaluations de l'industrialisation des océans, facilitant la surveillance des zones connaissant une accumulation ou un nouveau développement.</li> </ ul > <li>Surveillance des navires</li> < ul > <li>L'emplacement des infrastructures peut être utilisé pour analyser le comportement des navires associés aux infrastructures, notamment en regroupant les navires en fonction de leur interaction avec les structures pétrolières et éoliennes.</li> <li>Les interactions entre les navires et les infrastructures peuvent aider à quantifier les ressources nécessaires pour soutenir l'activité industrielle offshore.</li> <li>Les impacts des infrastructures sur la pêche, y compris l'attraction ou la dissuasion de la pêche, peuvent être analysés .</li> </ ul > <li>Aires marines protégées (AMP) et planification spatiale marine</li> < ul > <li>Pendant la phase de planification de la désignation de nouvelles aires protégées, il sera essentiel de connaître l'emplacement des infrastructures existantes pour comprendre quelles parties prenantes doivent être incluses dans le processus de consultation, pour comprendre les conflits potentiels et identifier les gains faciles.</li> </ ul > <li>Impacts environnementaux</li> < ul > <li>L'emplacement des infrastructures peut être utilisé pour aider à détecter les événements de pollution marine et pour différencier les types d'événements de pollution (par exemple, la pollution par les navires par rapport à la pollution par les plateformes)</li> </ ul > </ ul > <h2>Mises en garde</h2> < ul > <li><strong>Les satellites Sentinel-1 et Sentinel-2 n'échantillonnent pas la majeure partie de l'océan ouvert.</strong></li> < ul > <li>La plupart des activités industrielles se déroulent relativement près du rivage.</li> <li>L'étendue et la fréquence des acquisitions SAR sont déterminées par les priorités de la mission.</li> <li>Pour plus d'informations, voir : Anglais :https://www.nature.com/articles/s41586-023-06825- 8/figures/5</li> </ ul > <li><strong>Nous ne fournissons pas de détections d'infrastructures à moins de 1 km du rivage</strong></li> < ul > <li>Nous ne classons pas les objets à moins de 1 km du rivage car il est difficile de cartographier où commence le rivage, et les côtes et les rochers ambigus provoquent des faux positifs.</li> <li>La majeure partie des activités industrielles, y compris le développement offshore avec des plates-formes pétrolières et des parcs éoliens de moyenne à grande taille, se déroule à plusieurs kilomètres du rivage.</li> </ ul > <li> <strong>Des faux positifs peuvent être produits à partir d'artefacts de bruit.</strong> </li> < ul > <li>Les rochers, les petites îles, la glace de mer, les ambiguïtés radar (échos radar) et les artefacts d'image peuvent provoquer des faux positifs.</li> <li>Les détections dans certaines zones, notamment le sud du Chili, l'Arctique et la mer de Norvège, ont été filtrées pour les supprimer. bruit.</li> </ ul > <li><strong>La couverture spatiale varie au fil du temps, ce qui peut produire des résultats de détection différents d'une année sur l'autre - <a target=\"_blank\" href =\"https://share.cleanshot.com/yG0qfF\"> <span style=\" color:rgb (0, 0, 0);\">Exemple</span> </a></strong> </li> < ul > <li>Les détentions d'infrastructures du 01/01/2017 au temps quasi réel sont disponibles et mises à jour sur une base mensuelle.</li> </ ul > <li> <strong>Les étiquettes peuvent changer au fil du temps</strong> </li> < ul > <li>L'étiquette attribuée à une structure est la plus grande étiquette prédite en moyenne au fil du temps. À mesure que nous obtenons plus de données, l'étiquette peut changer et prédire plus précisément le véritable type d'infrastructure. </li> </ ul > <li><strong>Les ensembles de données mondiaux ne sont pas parfaits</strong></li> < ul > <li>Nous avons fait de notre mieux pour créer le produit le plus précis possible, mais certaines infrastructures ne seront pas détectées ou auront été classées de manière incorrecte. Cela sera particulièrement évident lorsque nous travaillerons au niveau du projet. </li> <li>Nous encourageons vivement les utilisateurs à fournir des commentaires à l'équipe de recherche afin que nous puissions améliorer les futures versions du modèle. Tous les commentaires sont grandement appréciés. </li> </ ul > </ ul > <h2>Méthodes</h2> <h3>Imagerie SAR</h3> <p>Nous utilisons l'imagerie SAR de la mission Copernicus Sentinel-1 de l'Agence spatiale européenne (ESA) [1]. Les images proviennent de deux satellites (S1A et S1B jusqu'en décembre 2021, date à laquelle S1B a cessé de fonctionner, et S1A uniquement à partir de 2022) qui orbitent à 180 degrés de décalage l'un par rapport à l'autre sur une orbite polaire héliosynchrone. Chaque satellite a un cycle de répétition de 12 jours, de sorte qu'ensemble, ils fournissent une cartographie globale des eaux côtières du monde entier environ tous les six jours pendant la période où les deux satellites étaient en fonctionnement. Le nombre d'images par emplacement varie toutefois considérablement en fonction des priorités de la mission, de la latitude et du degré de chevauchement entre les passages de satellites adjacents. La couverture spatiale varie également au fil du temps [2]. Nos données sont constituées d'images à double polarisation (VH et VV) du mode de balayage interférométrique large (IW), avec une résolution d'environ 20 m.</p> <p>[1] <a target=\"_blank\" href=\"https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf\"> <span style=\" color:rgb (0, 0, 0);\">https://sedas.satapps.org/wp-content/uploads/2015/07/Sentinel-1_User_Handbook.pdf</span> </a> </p> <p>[2]<a target=\"_blank\" href=\"https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario\"> <span style=\" color:rgb (0, 0, 0);\"></span> <span style=\" color:rgb (0, 0, 0);\">https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-1/observation-scenario</span> </a> </p> <h3>Détection d'infrastructures par SAR</h3> <p>La détection d'infrastructures avec SAR est basée sur l'algorithme largement utilisé CFAR (Constant False Alarm Rate), une méthode de détection d'anomalies conçue pour détecter les navires dans les images radar à synthèse d'ouverture, qui a été modifiée pour supprimer les objets non stationnaires. Cet algorithme est conçu pour rechercher des valeurs de pixels qui sont inhabituellement lumineuses (les cibles) par rapport à celles de la zone environnante (l'encombrement marin). Cette méthode définit un seuil basé sur les valeurs de pixels de l'arrière-plan local (dans une fenêtre), en balayant l'image entière pixel par pixel. Les valeurs de pixels supérieures au seuil constituent une anomalie et sont susceptibles d'être des échantillons d'une cible.</p> <h3>Classification des infrastructures</h3> <p>Pour classer chaque infrastructure offshore détectée, nous avons utilisé l'apprentissage profond et conçu un ConvNet basé sur l' architecture ConvNeXt . Un nouvel aspect de notre approche de classification par apprentissage profond est la combinaison de l'imagerie SAR de Sentinel-1 avec l'imagerie optique de Sentinel-2. À partir de composites de six mois d'images SAR à double bande (VH et VV) et optiques à quatre bandes (RGB et NIR), nous avons extrait de petites tuiles pour chaque infrastructure fixe détectée, avec les objets respectifs au centre de la tuile. Une sortie de modèle unique inclut les probabilités pour les classes spécifiées : vent, pétrole, inconnu, lac Maracaibo et bruit. </p> <h3>Filtrage</h3 > <p> GFW a post-traité les détections SAR classées pour réduire le bruit (faux positifs), supprimer les navires, exclure les zones avec de la glace de mer à haute latitude et intégrer les commentaires des experts. Nous avons utilisé une approche de regroupement pour identifier les détections dans le temps (dans un rayon de 50 m) qui étaient probablement la même structure mais dont les coordonnées différaient légèrement, et leur avons attribué la plus grande étiquette moyenne prédite du groupe. Nous avons également comblé les lacunes pour les structures fixes qui manquaient dans un pas de temps mais détectées dans les pas de temps précédents et suivants, et nous avons abandonné les détections apparaissant dans un seul pas de temps. Enfin, l'ensemble de données a fait l'objet d'un examen et d'une édition manuels approfondis par des chercheurs et des experts du secteur afin d'affiner le produit final et de fournir l'ensemble de données le plus précis possible. < /p> <h3>Descriptions des champs de données</h3> <p>Chaque détection a un identifiant individuel unique (< em > detection_id </ em >). Une image composite de six mois est utilisée dans la classification, donc la < em > detection_date </ em > représente le milieu de la période de six mois . Cela permet de supprimer les objets non stationnaires (c'est-à-dire les vaisseaux ) et d'éviter toute confusion dans le modèle si une structure est en cours de construction ou s'il n'y a pas d'imagerie adéquate disponible. < em > structure_id </ em > vous permet de suivre une structure au fil du temps. Il existe donc plusieurs < em > detection_id </ em > (un pour chaque mois où la structure est détectée) pour chaque < em > structure_id </ em >. Les étiquettes < em >wind</ em > et < em >oil </ em > représentent respectivement toute structure liée au vent ou au pétrole. < em >Unknown</ em > représente une structure qui n'est pas liée au pétrole ou au vent, comme les ponts ou les bouées de navigation. </p> <p>Les niveaux de confiance des étiquettes sont « Élevé ». « Moyen » et « Faible » sont attribués à chaque structure et dépendent de l'endroit où les détections se situent par rapport aux limites des polygones éoliens et pétroliers développés manuellement et du fait que l'étiquette a changé par rapport au mois précédent. Le champ < em > label_confidence </ em > peut être utilisé pour filtrer l'analyse. </p> <h2>Ressources, code et autres notes</h2> <p>Deux référentiels sont utilisés dans le processus d'automatisation, tous deux privés et ne doivent pas être partagés publiquement.</p> <p>Détection et classification : https://github.com/GlobalFishingWatch/sentinel-1-ee/tree/master</p> <p>Clustering et reclassification : https://github.com/GlobalFishingWatch/infrastructure-post-processing</p> <p>Tout le code développé pour l'article, Paolo, FS, Kroodsma , D., Raynor, J. et al. La cartographie par satellite révèle une activité industrielle extensive en mer. Nature 625, 85–91 (2024). https://doi.org/10.1038/s41586-023-06825-8, y compris la détection SAR, les modèles d'apprentissage profond et les analyses, est open source et disponible gratuitement sur https://github.com/GlobalFishingWatch/paper-industrial-activity.</p> <h2>Sources des données et citations</h2> <p>Données Copernicus Sentinel 2017-actuel</p> <p> Lujala , Päivi ; Jan Ketil Rød &amp; Nadia Thieme, 2007. « Lutte pour le pétrole : introduction d'un nouvel ensemble de données », Conflict Management and Peace Science 24(3), 239-256</p> <p>Sabbatino, M., Romeo, L., Baker, V., Bauer, J., Barkhurst, A., Bean, A., DiGiulio, J., Jones, K., Jones, TJ, Justman, D., Miller III, R., Rose, K., et Tong., A., Global Oil &amp; Gas Infrastructure Features Database Geocube Collection, 2019-03-25, https://edx.netl.doe.gov/dataset/global-oil-gas-infrastructure-features-database-geocube-collection, DOI : 10.18141/1502839</p> <h2>Licence</h2> <p>Utilisation non commerciale uniquement. Le Site et les Services sont fournis pour une utilisation non commerciale uniquement, conformément à la licence CC BY-NC 4.0. Si vous souhaitez utiliser le Site et/ou les Services à des fins commerciales, veuillez nous contacter. </p> <h2>Métadonnées de Global Fishing Watch</h2> <p>Les méthodes de développement des infrastructures doivent faire référence au document :</p> <p>Paolo, FS, Kroodsma , D., Raynor, J. et al. La cartographie par satellite révèle une activité industrielle extensive en mer. Nature 625, 85–91 (2024). Anglais : https://doi.org/10.1038/s41586-023-06825-8</p> <p>Tout le code développé pour l'article, y compris la détection SAR, les modèles d'apprentissage profond et les analyses est open source et disponible gratuitement sur https://github.com/GlobalFishingWatch/paper-industrial-activity.Toutes les données générées et utilisées par ces scripts peuvent référencer les référentiels de données suivants :</p> <p>Analyse et chiffres : https://doi.org/10.6084/m9.figshare.24309475</p> <p>Formation et évaluation : https://doi.org/10.6084/m9.figshare.24309469</p>",
@@ -2564,7 +2515,23 @@
   },
   "public-global-all-tracks": {
     "name": "Trajectoires",
-    "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 3.0"
+    "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 3.0",
+    "schema": {
+      "elevation": {
+        "keyword": "elevation",
+        "enum": {
+          "0": "0",
+          "-2000": "-2000"
+        }
+      },
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
   },
   "public-global-bathymetry": {
     "name": "Bathymétrie",
@@ -3631,7 +3598,50 @@
   },
   "public-rfmo": {
     "name": "RFMO",
-    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer."
+    "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
+    "schema": {
+      "ID": {
+        "keyword": "ID",
+        "enum": {
+          "APFIC": "APFIC",
+          "BOBP-IGO": "BOBP-IGO",
+          "CCAMLR": "CCAMLR",
+          "CCBSP": "CCBSP",
+          "CCSBT": "CCSBT",
+          "CCSBT Primary Area": "CCSBT Primary Area",
+          "COREP": "COREP",
+          "CPPS": "CPPS",
+          "CRFM": "CRFM",
+          "CTMFM": "CTMFM",
+          "FCWC": "FCWC",
+          "FFA": "FFA",
+          "GFCM": "GFCM",
+          "IATTC": "IATTC",
+          "ICCAT": "ICCAT",
+          "ICES": "ICES",
+          "IOTC": "IOTC",
+          "IPHC": "IPHC",
+          "LTA": "LTA",
+          "NAFO": "NAFO",
+          "NAMMCO": "NAMMCO",
+          "NASCO": "NASCO",
+          "NEAFC": "NEAFC",
+          "NPAFC": "NPAFC",
+          "NPFC": "NPFC",
+          "OSPESCA": "OSPESCA",
+          "PERSGA": "PERSGA",
+          "PICES": "PICES",
+          "RECOFI": "RECOFI",
+          "SEAFDEC": "SEAFDEC",
+          "SIOFA": "SIOFA",
+          "SPC": "SPC",
+          "SPRFMO": "SPRFMO",
+          "SRFC": "SRFC",
+          "SWIOFC": "SWIOFC",
+          "WCPFC": "WCPFC"
+        }
+      }
+    }
   },
   "public-seagrasses": {
     "name": "Herbiers marins",
@@ -3883,15 +3893,7 @@
   },
   "public-vms-bra-vessel-identity": {
     "name": "VMS Brazil",
-    "description": "Vessels (VMS Brazil)",
-    "schema": {
-      "selfReportedInfo.fishingLicenseCode": {
-        "keyword": "fishingLicenseCode"
-      },
-      "selfReportedInfo.vesselRegistrationCode": {
-        "keyword": "vesselRegistrationCode"
-      }
-    }
+    "description": "Vessels (VMS Brazil)"
   },
   "public-vms-chl-fishing-effort": {
     "name": "VMS Chile",
