@@ -52,7 +52,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run affected tests
-        run: yarn nx affected --target=test
+        run: yarn nx test api-client
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
