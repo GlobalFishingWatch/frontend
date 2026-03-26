@@ -9,25 +9,15 @@ jobs:
     name: Run Integration Tests
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
-
-    env:
-      NEXT_PUBLIC_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
-      NEXT_PUBLIC_WORKSPACE_ENV: development
-      CI: '1'
-      NX_DAEMON: 'false'
-      NODE_OPTIONS: --trace-warnings
-      TEST_CHROME_ONLY: 'true'
-      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 100
 
       - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=100
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -52,32 +42,30 @@ jobs:
             yarn-${{ github.head_ref }}-
             yarn-${{ github.base_ref }}-
             yarn-
-      
-      - name: Restore Playwright cache
-        id: playwright-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-chromium-${{ hashFiles('**/package.json') }}
 
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --immutable --inline-builds
 
-
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
-        
       - name: Run affected tests
         run: yarn nx affected --target=test
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
+          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
+          NEXT_PUBLIC_WORKSPACE_ENV: development
+          CI: '1'
+          NX_DAEMON: 'false'
+          NODE_OPTIONS: --trace-warnings
+          TEST_CHROME_ONLY: 'true'
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           
       - name: Save yarn cache
-        if: always()
+        if: always() && steps.yarn-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: |
@@ -85,10 +73,3 @@ jobs:
             .yarn/install-state.gz
             node_modules
           key: ${{ steps.yarn-cache.outputs.cache-primary-key }}
-            
-      - name: Save Playwright cache
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-            path: ~/.cache/ms-playwright
-            key: ${{ steps.playwright-cache.outputs.cache-primary-key }}
