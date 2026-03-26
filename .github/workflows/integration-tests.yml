@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   integration-tests:
     name: Run Integration Tests
@@ -80,7 +84,6 @@ jobs:
       - name: Parse test results
         if: always()
         run: |
-          echo "<!-- integration-tests-comment -->" > summary.md
           sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
             function flush() {
               if (target != "" && is_test) {
