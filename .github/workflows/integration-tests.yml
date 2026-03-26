@@ -1,0 +1,49 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    env:
+      NEXT_PUBLIC_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+      NEXT_PUBLIC_WORKSPACE_ENV: development
+      CI: '1'
+      NX_DAEMON: 'false'
+      NODE_OPTIONS: --trace-warnings
+      TEST_CHROME_ONLY: 'true'
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+
+      - name: Enable Corepack and set Yarn version
+        run: |
+          corepack enable
+          yarn set version 4.12.0
+
+      - name: Install dependencies
+        run: yarn install --immutable --inline-builds
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Derive appropriate SHAs for Nx
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Run affected tests
+        run: yarn nx affected --target=test
