@@ -46,4 +46,4 @@ jobs:
         uses: nrwl/nx-set-shas@v4
 
       - name: Run affected tests
-        run: yarn nx affected --target=test
+        run: yarn nx affected --target=test --verbose
