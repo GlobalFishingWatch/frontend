@@ -9,10 +9,10 @@ const MARINE_MANAGER_URLS: MapUrl[] = [
     id: 'cmar_core_mpas',
     url: 'https://globalfishingwatch.org/map/marine-manager/cmar_core_mpas-public',
   },
-  { id: 'colombia_3', url: 'https://globalfishingwatch.org/map/marine-manager/colombia_3-public' },
+  { id: 'colombia', url: 'https://globalfishingwatch.org/map/marine-manager/colombia-public' },
   {
-    id: 'costa_rica_1',
-    url: 'https://globalfishingwatch.org/map/marine-manager/costa_rica_1-public',
+    id: 'costa_rica',
+    url: 'https://globalfishingwatch.org/map/marine-manager/costa_rica-public',
   },
   { id: 'fiji', url: 'https://globalfishingwatch.org/map/marine-manager/fiji-public' },
   { id: 'galapagos', url: 'https://globalfishingwatch.org/map/marine-manager/galapagos-public' },
@@ -29,7 +29,7 @@ const MARINE_MANAGER_URLS: MapUrl[] = [
   { id: 'micronesia', url: 'https://globalfishingwatch.org/map/marine-manager/micronesia-public' },
   { id: 'niue', url: 'https://globalfishingwatch.org/map/marine-manager/niue-public' },
   { id: 'palau', url: 'https://globalfishingwatch.org/map/marine-manager/palau-public' },
-  { id: 'panama_1', url: 'https://globalfishingwatch.org/map/marine-manager/panama_1-public' },
+  { id: 'panama', url: 'https://globalfishingwatch.org/map/marine-manager/panama-public' },
   {
     id: 'revillagigedo',
     url: 'https://globalfishingwatch.org/map/marine-manager/revillagigedo-public',
