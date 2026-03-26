@@ -66,6 +66,7 @@ type FetchReportVesselsThunkParams = {
   reportBufferValue?: number
   reportBufferOperation?: BufferOperation
   timeComparison?: ReportTimeComparisonValues
+  areaId?: string
 }
 
 const REPORT_FIELDS_TO_INCLUDE = [
@@ -204,11 +205,12 @@ const reportSlice = createSlice({
     builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
-      const { datasets, filters, dateRange } = action.meta.arg
+      const { datasets, filters, dateRange, areaId } = action.meta.arg
       state.reportRequestHash = getReportRequestHash({
         datasets,
         filters,
         dateRange,
+        areaId,
       })
     })
     builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
