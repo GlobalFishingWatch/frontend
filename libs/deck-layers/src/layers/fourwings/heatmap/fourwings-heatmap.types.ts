@@ -99,6 +99,7 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   compareEnd?: number
   aggregationOperation?: FourwingsAggregationOperation
   highlightedFeatures?: FourwingsHeatmapPickingObject[]
+  skipColorDomainSampling?: boolean
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &

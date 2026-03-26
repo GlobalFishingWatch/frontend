@@ -114,6 +114,7 @@ function Hint({ id, className }: HintProps) {
         className={cx(styles.hintTarget, className, 'print-hidden')}
         onClick={visible ? onDismiss : showHint}
         key={`${id}-bubble`}
+        data-testid={`hint-button-${id}`}
       >
         <div className={cx(styles.hintBubble, styles[pulse])}>
           <Icon icon="help" className={styles.icon} />

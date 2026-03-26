@@ -3,6 +3,7 @@ import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
+import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 
 import { TEST_END_DATE } from '../test.config'
 
@@ -21,10 +22,10 @@ Settings.now = () => mockDate.valueOf()
 // Mock Web Workers to prevent blocking in tests
 // This is needed for filterCellsByPolygonWorker used in reports
 vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
-  const { filterByPolygon } = await vi.importActual<
-    typeof ReportsGeoUtilsModule
-  >('features/reports/reports-geo.utils')
-  
+  const { filterByPolygon } = await vi.importActual<typeof ReportsGeoUtilsModule>(
+    'features/reports/reports-geo.utils'
+  )
+
   return {
     useFilterCellsByPolygonWorker: () => {
       return async (params: any) => {
@@ -47,6 +48,11 @@ beforeAll(async () => {
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
-    localStorage.setItem('HighlightPopup', '"sentinel2"')
+    localStorage.setItem('HighlightPopup', `"${HIGHLIGHT_DATAVIEW_INSTANCE_ID}"`)
+    localStorage.setItem('i18nextLng', '"en"')
+    localStorage.setItem(
+      'hints',
+      '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true,"userContextLayers":true}'
+    )
   }
 })

@@ -18,12 +18,14 @@ import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getDatasetsLatestEndDate,
+  getIsVMSDataset,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
-import { VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
+import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
+import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 
@@ -54,6 +56,9 @@ const GFW_ONLY_DATASETS = [
 
 export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id || '')
+
+export const getIsSkylightDataset = (datasetId: Dataset['id']) =>
+  datasetId === SKYLIGHT_PROTOTYPE_DATASET_ID
 
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
@@ -171,12 +176,22 @@ export const getDatasetTitleByDataview = (
   let datasetTitle = dataview.name || ''
   const { category, subcategory, id } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    const sourceType =
+    let sourceType: 'VMS' | 'AIS' | '' = ''
+    if (
       dataviewInstance.id.toString().toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID) ||
-      id?.toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID)
-        ? 'VMS'
-        : 'AIS'
-    datasetTitle = `${t((t) => t.common.apparentFishing)} (${sourceType})`
+      dataviewInstance.slug?.toString().toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID) ||
+      dataviewInstance.datasets?.every((d) => getIsVMSDataset(d.id))
+    ) {
+      sourceType = t((t) => t.common.vms) as 'VMS'
+    } else if (
+      dataviewInstance.id.toString().toLowerCase().includes(AIS_DATAVIEW_INSTANCE_ID) ||
+      id?.toLowerCase().includes(AIS_DATAVIEW_INSTANCE_ID)
+    ) {
+      sourceType = t((t) => t.common.ais) as 'AIS'
+    }
+    datasetTitle = sourceType
+      ? `${t((t) => t.common.apparentFishing)} (${sourceType})`
+      : `${t((t) => t.common.apparentFishing)}`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t((t) => t.common.presence)
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
@@ -295,9 +310,14 @@ export const getActiveDatasetsInDataview = (dataview: Dataview | UrlDataviewInst
   if (dataview.category === DataviewCategory.User) {
     return dataview.datasets
   }
-  return dataview.config?.datasets
-    ? dataview?.datasets?.filter((dataset) => dataview.config?.datasets?.includes(dataset.id))
-    : dataview?.datasets
+  if (dataview.config?.datasets?.length) {
+    const datasetIds = dataview.config.datasets.map((dataset) => {
+      // vessel dataviews can have the entire dataset objects for searching
+      return typeof dataset === 'string' ? dataset : (dataset as any).id
+    })
+    return dataview.datasets?.filter((dataset) => datasetIds.includes(dataset.id))
+  }
+  return dataview?.datasets
 }
 
 export const getActiveActivityDatasetsInDataviews = (

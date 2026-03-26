@@ -3,7 +3,11 @@ import {
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
+import {
+  DATASET_PRIVATE_PREFIX,
+  PIPE_DATASET_ID,
+  PIPE_DATASET_VERSION,
+} from '@globalfishingwatch/datasets-client'
 
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -23,6 +27,8 @@ export const REGISTRY_SOURCES = [
     contact: 'jac-coord@tm-tracking.org',
   },
 ]
+
+const VMS_BRAZIL_IDENTITY_PREVIEW = process.env.NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW === 'true'
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
@@ -53,7 +59,12 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 // TODO review private datasets to ensure there are no missing fields
 
 export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
-type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
+type CustomVMSGroup = Partial<
+  Record<
+    SelfReportedSource | `${SelfReportedSource}-${typeof DATASET_PRIVATE_PREFIX}`,
+    VesselRenderField[][]
+  >
+>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Peru_Pipe3]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
@@ -76,14 +87,21 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
   [SelfReportedSource.Brazil]: [
+    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
+    [{ key: 'externalId' }],
+  ],
+  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+}
+
+if (VMS_BRAZIL_IDENTITY_PREVIEW) {
+  CUSTOM_VMS_IDENTITY_FIELD_GROUPS[`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`] = [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode' }],
     [{ key: 'fishingLicenseCode' }, { key: 'fishingLicenseStatus' }],
     [{ key: 'fishingLicenseStartDate' }, { key: 'fishingLicenseEndDate' }],
     [{ key: 'builtYear' }, { key: 'length' }],
     [{ key: 'grossTonnage' }, { key: 'horsePower' }],
-  ],
-  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  ]
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [

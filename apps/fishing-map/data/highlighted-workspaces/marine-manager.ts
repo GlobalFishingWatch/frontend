@@ -53,7 +53,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-mediterranean.jpg`,
   },
   {
-    id: 'costa_rica_1-public',
+    id: 'costa_rica-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-costa-rica.jpg`,
     reports: [
       {
@@ -62,7 +62,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     ],
   },
   {
-    id: 'colombia_3-public',
+    id: 'colombia-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-colombia.jpg`,
     reports: [
       {
@@ -71,7 +71,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     ],
   },
   {
-    id: 'panama_1-public',
+    id: 'panama-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-panama.jpg`,
     reports: [
       {

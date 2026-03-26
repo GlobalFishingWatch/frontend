@@ -43,6 +43,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     compareEnd,
     highlightedTime,
     onPositionsMaxPointsError,
+    skipColorDomainSampling,
   }
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
@@ -159,6 +160,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     visualizationMode,
     aggregationOperation,
     availableIntervals,
+    skipColorDomainSampling,
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
