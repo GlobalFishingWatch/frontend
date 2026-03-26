@@ -235,7 +235,7 @@
     "name": "Night light detections (VIIRS)"
   },
   "viirs-skylight": {
-    "description": "TODO: description",
+    "description": "This layer shows vessels detected at night using the Visible Infrared Imaging Radiometer Suite (VIIRS) on board several satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect vessels by the light they emit at sea, such as deck lights or high-intensity fishing lamps.",
     "moreInfoLink": "",
     "name": "Night light detections (VIIRS Skylight)"
   },
