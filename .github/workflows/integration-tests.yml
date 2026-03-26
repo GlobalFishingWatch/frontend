@@ -34,8 +34,9 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Cache yarn dependencies
-        uses: actions/cache@v4
+      - name: Restore yarn cache
+        id: yarn-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             .yarn/cache
@@ -45,7 +46,6 @@ jobs:
             yarn-${{ github.head_ref }}-
             yarn-${{ github.base_ref }}-
             yarn-
-          save-always: true
 
       - name: Enable Corepack and set Yarn version
         run: |
@@ -63,3 +63,12 @@ jobs:
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
+
+      - name: Save yarn cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: ${{ steps.yarn-cache.outputs.cache-primary-key }}
