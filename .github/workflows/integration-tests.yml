@@ -105,11 +105,10 @@ jobs:
             }
           ' >> summary.md
 
-      - name: Update PR comment with results
-        if: always()
-        uses: peter-evans/create-or-update-comment@v4
+      - name: Comment on PR with test results
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
-          body-path: summary.md
+          path: summary.md
 
       - name: Save yarn cache
         if: always() && steps.yarn-cache.outputs.cache-hit != 'true'
