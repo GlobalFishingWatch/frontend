@@ -119,13 +119,6 @@ export const getSchemaValueRounded = (value: number, decimals = 2): number => {
 }
 
 const getSliderConfigBySchema = (schemaFilter: DataviewFilterConfig) => {
-  if (schemaFilter?.id === 'radiance') {
-    return {
-      steps: [0, 1, 10, 100, 1000, 10000],
-      min: 0,
-      max: 10000,
-    }
-  }
   const schemaMin = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
   const schemaMaxValue =
     schemaFilter.options.length === 2
