@@ -42,8 +42,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Derive appropriate SHAs for Nx
-        uses: nrwl/nx-set-shas@v4
-
       - name: Run affected tests
         run: yarn nx affected --target=test --verbose
+        env:
+          NX_BASE: origin/develop
+          NX_HEAD: HEAD
