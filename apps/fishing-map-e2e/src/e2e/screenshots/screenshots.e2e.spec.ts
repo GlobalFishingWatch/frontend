@@ -17,21 +17,22 @@ test.use({
 for (const { id, url } of MAP_URLS) {
   test.describe(`Screenshot comparison - ${id}`, () => {
     test.beforeEach(async ({ page }) => {
+      await page.addInitScript(() => {
+        localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
+        localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
+        localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
+        localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
+        // We need to ensure this is set to ensure the highlight popup is using the same
+        // HIGHLIGHT_DATAVIEW_INSTANCE_ID but the import is not working in the e2e tests
+        localStorage.setItem('HighlightPopup', '"sentinel2"')
+        localStorage.setItem(
+          'hints',
+          '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true,"userContextLayers":true}'
+        )
+      })
       const parsedUrl = new URL(url)
       parsedUrl.searchParams.set('skipColorDomainSampling', 'true')
-      const urlWithSkipColorDomainSampling = parsedUrl.toString()
-      await page.goto(urlWithSkipColorDomainSampling, { waitUntil: 'networkidle', timeout: 60_000 })
-
-      const closeButton = page.getByTestId('modal-close-button')
-      if (await closeButton.isVisible({ timeout: 5_000 }).catch(() => false)) {
-        await closeButton.click()
-      }
-
-      const dismissButton = page.getByText('Dismiss').first()
-      if (await dismissButton.isVisible({ timeout: 3_000 }).catch(() => false)) {
-        await dismissButton.click()
-      }
-
+      await page.goto(parsedUrl.toString(), { waitUntil: 'networkidle', timeout: 60_000 })
       await page.waitForLoadState('networkidle')
       await page.waitForTimeout(TILES_RENDER_TIMEOUT)
     })
