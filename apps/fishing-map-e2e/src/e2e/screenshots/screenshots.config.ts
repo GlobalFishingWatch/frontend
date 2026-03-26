@@ -93,6 +93,16 @@ const ANALYSTS_URLS: MapUrl[] = [
   },
 ]
 
-const PUBLIC_URLS: MapUrl[] = [{ id: 'default', url: 'https://globalfishingwatch.org/map' }]
+const PUBLIC_URLS: MapUrl[] = [
+  {
+    id: 'default',
+    url: 'https://globalfishingwatch.org/map',
+  },
+]
 
-export const MAP_URLS = [...PUBLIC_URLS, ...MARINE_MANAGER_URLS, ...ANALYSTS_URLS]
+// prettier-ignore
+export const MAP_URLS = [
+  ...PUBLIC_URLS,
+  ...MARINE_MANAGER_URLS,
+  ...ANALYSTS_URLS
+]
