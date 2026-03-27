@@ -8,11 +8,11 @@
       "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Conservation Corridor is a regional conservation and sustainable use initiative of the governments of Colombia, Costa Rica, Ecuador and Panama that seeks the proper management of biodiversity and marine and coastal resources through ecosystem management and the establishment of joint regional government strategies. All supported by civil society, international cooperation and non-governmental organizations, anchored in ten core MPAs in the Pacific ocean EEZs of the four countries.",
       "name": "CMAR core MPAs"
     },
-    "colombia_3-public": {
+    "colombia-public": {
       "description": "Colombia has created and managed MPAs along its Pacific and Caribbean coasts spanning Yurupari-Malpelo Integrated Management District, where the fully protected Malpelo Sanctuary of Fauna and Flora is nested, Lomas and Colinas, Gorgona, and Cabo Manglares in the Pacific Ocean, as well as Beata and Corales de Profundidad in the Caribbean Sea. ",
       "name": "Colombia"
     },
-    "costa_rica_1-public": {
+    "costa_rica-public": {
       "description": "Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers.",
       "name": "Costa Rica"
     },
@@ -52,7 +52,7 @@
       "description": "Republik Palau adalah sekumpulan pulau yang terletak di Samudra Pasifik Barat. Pada tahun 2020, Palau sepenuhnya melindungi 80% zona ekonomi eksklusifnya untuk membentuk Suaka Laut Nasional Palau, yang mewakili 475.077 kilometer persegi (183.000 mil persegi), dengan menutup perairan ini untuk semua bentuk kegiatan ekstraktif, termasuk penangkapan ikan. ",
       "name": "Palau"
     },
-    "panama_1-public": {
+    "panama-public": {
       "description": "Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.",
       "name": "Panama"
     },

@@ -7,7 +7,7 @@ import {
   PRESENCE_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
   SENTINEL2_DATAVIEW_INSTANCE_ID,
-  VIIRS_DATAVIEW_INSTANCE_ID,
+  VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from 'data/dataviews'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -17,30 +17,32 @@ import {
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  DEFAULT_FISHING_DATASET_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
+  FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   PORTS_AIS_DATAVIEW_SLUG,
   PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
-  VIIRS_MATCH_DATAVIEW_SLUG,
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { PORTS_LAYER_ID } from 'features/map/map.config'
-// import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -66,7 +68,6 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        datasets: [DEFAULT_FISHING_DATASET_ID],
         filters: {
           distance_from_port_km: '3',
         },
@@ -92,11 +93,11 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
-      id: VIIRS_DATAVIEW_INSTANCE_ID,
+      id: VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },
-      dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
+      dataviewId: VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
       datasetsConfig: [],
     },
     {
@@ -120,6 +121,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
     },
+    // {
+    //   id: GAPS_EVENTS_SOURCE_ID,
+    //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+    //   config: {
+    //     visible: false,
+    //   },
+    // },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
@@ -140,6 +148,15 @@ const workspace: Workspace<WorkspaceState> = {
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
+    // {
+    //   id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
+    //   config: {
+    //     visible: false,
+    //     color: '#8E24A9',
+    //     colorRamp: 'seance',
+    //   },
+    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    // },
     // {
     //   id: `${PORTS_LAYER_ID}-ais`,
     //   config: {
