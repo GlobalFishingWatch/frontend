@@ -25,7 +25,7 @@ import type { IconType } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
-import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
+import { SKYLIGHT_VIIRS_DATASET_ID } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 
@@ -58,7 +58,7 @@ export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
   GFW_ONLY_DATASETS.includes(dataset?.id || '')
 
 export const getIsSkylightDataset = (datasetId: Dataset['id']) =>
-  datasetId === SKYLIGHT_PROTOTYPE_DATASET_ID
+  datasetId === SKYLIGHT_VIIRS_DATASET_ID
 
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
@@ -195,7 +195,9 @@ export const getDatasetTitleByDataview = (
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t((t) => t.common.presence)
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
-    datasetTitle = t((t) => t.common.viirs)
+    datasetTitle = activeDatasets?.some((d) => getIsSkylightDataset(d.id))
+      ? t((t) => t.common.viirsSkylight)
+      : t((t) => t.common.viirs)
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
     datasetTitle = t((t) => t.common.sar)
   } else if (activeDatasets) {
