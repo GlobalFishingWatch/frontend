@@ -611,9 +611,17 @@ export function resolveDataviews(
       const { filters } = dataviewInstance.config
       if (filters) {
         dataviewInstance.config.filter = getDataviewSqlFiltersResolved(dataviewInstance)
-      }
-      if (filters?.['vessel-groups']) {
-        dataviewInstance.config['vessel-groups'] = filters['vessel-groups'].join(',')
+        const vesselGroupFilters =
+          typeof filters['vessel-groups'] === 'string'
+            ? [filters['vessel-groups']]
+            : filters['vessel-groups']
+        if (vesselGroupFilters?.length) {
+          const vesselGroupsOperator = dataviewInstance.config?.filterOperators?.['vessel-groups']
+          const vesselGroupPrefix = vesselGroupsOperator === EXCLUDE_FILTER_ID ? '!' : ''
+          dataviewInstance.config['vessel-groups'] = vesselGroupFilters
+            .map((f: string) => `${vesselGroupPrefix}${f}`)
+            .join(',')
+        }
       }
       return dataviewInstance
     }
