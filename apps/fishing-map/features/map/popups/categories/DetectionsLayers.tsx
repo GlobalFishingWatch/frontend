@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
-import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
+import { getIsSkylightDataset } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
 import VesselsTable, { getVesselsInfoConfig } from 'features/map/popups/categories/VesselsTable'
@@ -30,9 +30,9 @@ function DetectionsTooltipRow({
   // Avoid showing not matched detections
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
   const hasVesselsResolved = feature?.vessels && feature?.vessels?.length > 0
-  const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (
-    feature?.vessels || []
-  ).filter((v: any) => v.id !== null)
+  const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (feature?.vessels || [])
+    // newly added skylight vessels could include skylight_id
+    .filter((v) => v.id || v.skylight_id)
   const matchedDetections = hasVesselsResolved
     ? matchedVessels.reduce((acc, vessel: any) => acc + vessel.detections, 0)
     : 0
@@ -46,7 +46,7 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
-  const isSkylight = feature.datasets.some((d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID)
+  const isSkylight = feature.datasets.some((d) => getIsSkylightDataset(d))
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,

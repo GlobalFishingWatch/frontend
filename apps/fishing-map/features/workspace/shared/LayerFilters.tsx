@@ -223,12 +223,12 @@ function LayerFilters({
   }, [])
 
   const onSelectSourceClick: MultiSelectOnChange = (source) => {
-    let datasets: string[] = []
-    if (source.id === allOption.id) {
-      datasets = sourceOptions.map((s) => s.id)
-    } else {
-      datasets = allSelected ? [source.id] : [...(dataview.config?.datasets || []), source.id]
-    }
+    const datasets =
+      source.id === allOption.id
+        ? sourceOptions.map((s) => s.id)
+        : allSelected
+          ? [source.id]
+          : [...(dataview.config?.datasets || []), source.id]
 
     const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
     const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions, isGuestUser)

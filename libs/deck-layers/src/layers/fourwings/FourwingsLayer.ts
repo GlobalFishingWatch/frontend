@@ -44,6 +44,7 @@ export type FourwingsLayerProps = Omit<
   'resolution' | 'highlightedFeatures'
 > & {
   highlightedFeatures?: FourwingsPickingObject[]
+  skipColorDomainSampling?: boolean
 }
 
 type AnyFourwingsLayer =
@@ -110,6 +111,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       this.getSubLayerProps({
         id: resolution,
         resolution,
+        skipColorDomainSampling: this.props.skipColorDomainSampling,
         onViewportLoad: this.props.onViewportLoad,
       })
     )

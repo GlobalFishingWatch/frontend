@@ -104,6 +104,8 @@ const PARAMS_TO_ABBREVIATED = {
   reportLoadVessels: 'rLV',
   // Vessel filters
   selfReportedInfo: 'sRI',
+  // Global
+  skipColorDomainSampling: 'sCDS',
 }
 const ABBREVIATED_TO_PARAMS = invert(PARAMS_TO_ABBREVIATED)
 

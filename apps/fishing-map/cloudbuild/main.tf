@@ -66,6 +66,7 @@ module "develop" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW=true"
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
@@ -217,6 +218,7 @@ module "staging" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=staging",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"

@@ -77,6 +77,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapTileLayerProps> = {
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
   tilesUrl: HEATMAP_API_TILES_URL,
+  skipColorDomainSampling: false,
   resolution: 'default',
 }
 
@@ -154,7 +155,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       startTime,
       endTime,
       availableIntervals,
+      skipColorDomainSampling,
     } = this.props
+
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
@@ -176,7 +179,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
 
     const dataSample =
-      currentZoomData.length > MAX_RAMP_VALUES
+      currentZoomData.length > MAX_RAMP_VALUES || skipColorDomainSampling
         ? currentZoomData.filter((d, i) => filterCells(d, i))
         : currentZoomData
 

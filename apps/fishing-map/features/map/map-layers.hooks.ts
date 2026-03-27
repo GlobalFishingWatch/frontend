@@ -24,6 +24,7 @@ import {
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
+  selectSkipColorDomainSampling,
   selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
@@ -146,6 +147,7 @@ export const useGlobalConfigConnect = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
 
   const highlightedTime = useMemo(() => {
     if (
@@ -199,6 +201,7 @@ export const useGlobalConfigConnect = () => {
       highlightedTime,
       highlightEventIds,
       onPositionsMaxPointsError,
+      skipColorDomainSampling,
       start,
       token: GFWAPI.token,
       trackGraphExtent,
@@ -237,6 +240,7 @@ export const useGlobalConfigConnect = () => {
     highlightedFeatures,
     trackGraphExtent,
     onPositionsMaxPointsError,
+    skipColorDomainSampling,
     showTimeComparison,
     timeComparisonValues,
   ])

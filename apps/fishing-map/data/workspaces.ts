@@ -21,7 +21,7 @@ export enum WorkspaceCategory {
 }
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
-export const SKYLIGHT_PROTOTYPE_DATASET_ID = 'proto-global-skylight-viirs:v1.0'
+export const SKYLIGHT_VIIRS_DATASET_ID = 'public-global-skylight-viirs:v1.0'
 
 const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
@@ -112,6 +112,7 @@ const PRESENCE_DATAVIEWS = [
 
 const DETECTIONS_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
 ]
