@@ -232,12 +232,12 @@
   "viirs": {
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
     "moreInfoLink": "",
-    "name": "Night light detections (EOG)"
+    "name": "Night light detections (VIIRS)"
   },
   "viirs-skylight": {
     "description": "This layer shows vessels detected at night using the Visible Infrared Imaging Radiometer Suite (VIIRS) on board several satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect vessels by the light they emit at sea, such as deck lights or high-intensity fishing lamps.",
     "moreInfoLink": "",
-    "name": "Night light detections (Skylight)"
+    "name": "Night light detections (VIIRS Skylight)"
   },
   "winds": {
     "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
