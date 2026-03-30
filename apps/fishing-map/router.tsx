@@ -18,6 +18,7 @@ function createAppRouter() {
     routeTree,
     basepath: PATH_BASENAME,
     defaultPreload: 'intent',
+    trailingSlash: 'preserve',
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }) => <ErrorBoundaryUI error={error} />,

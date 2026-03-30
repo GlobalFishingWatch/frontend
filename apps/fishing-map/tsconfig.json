@@ -7,10 +7,11 @@
     "allowSyntheticDefaultImports": true,
     "types": [
       "node",
-      "@vitest/browser/matchers",
-      "@vitest/browser-playwright",
+      "vite/client",
+      "vitest",
       "vitest-browser-react",
-      "vitest"
+      "@vitest/browser/matchers",
+      "@vitest/browser-playwright"
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,

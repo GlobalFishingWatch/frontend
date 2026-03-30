@@ -80,19 +80,13 @@
     },
     "start": {
       "dependsOn": ["prepare-start"],
-      "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "fishing-map:build",
         "port": 3003
       },
       "configurations": {
-        "development": {
-          "buildTarget": "fishing-map:build:development"
-        },
-        "production": {
-          "buildTarget": "fishing-map:build:production"
-        }
+        "development": {},
+        "production": {}
       }
     },
     "serve": {

@@ -1,4 +1,4 @@
-import { Fragment, Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -195,7 +195,6 @@ function App() {
 
   return (
     <Fragment>
-      <HeadContent />
       {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
       <ConfirmVesselProfileLeave />
