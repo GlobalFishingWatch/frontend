@@ -4,6 +4,7 @@ import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { navigateToPolygonEditorAction } from 'test/utils/actions/navigateToPolygonEditor'
 import { getDefaultStateWithDatasets } from 'test/utils/store/redux-store-test'
 import {
+  USER_NEW_POLYGON_DATASET_ID,
   USER_POLYGON_DATASET,
   USER_POLYGON_DATASET_ID,
 } from 'test/utils/store/redux-store-test.data'
@@ -13,24 +14,15 @@ import { userEvent } from 'vitest/browser'
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
 import App from 'features/app/App'
-import { deleteDatasetThunk, fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
+import { deleteDatasetThunk } from 'features/datasets/datasets.slice'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
-import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { makeStore } from 'store'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) => {
-  await store.dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }) as any)
-  const state = store.getState()
-  // Find and delete test polygons from state
-  const datasets = selectUserDatasets(state)
-  for (const dataset of datasets) {
-    if (dataset.id?.includes('polygon-drawing-test')) {
-      await store.dispatch(deleteDatasetThunk(dataset.id) as any)
-    }
-  }
+  await store.dispatch(deleteDatasetThunk(USER_NEW_POLYGON_DATASET_ID) as any)
 }
 
 describe('Polygon', () => {
@@ -78,7 +70,12 @@ describe('Polygon', () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     await expect
-      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000 })
+      .poll(
+        () => {
+          return jotaiStore.get(deckLayersStateAtom)
+        },
+        { timeout: 20000 }
+      )
       .toMatchObject({
         basemap: {
           loaded: true,
@@ -123,10 +120,11 @@ describe('Polygon', () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Wait for all layers to be loaded
+    const deckLayersState = jotaiStore.get(deckLayersStateAtom)
     await expect
       .poll(
         () => {
-          return Object.values(jotaiStore.get(deckLayersStateAtom)).every((layer) => layer.loaded)
+          return Object.values(deckLayersState).every((layer) => layer.loaded)
         },
         { timeout: 20000, interval: 1000 }
       )
@@ -139,7 +137,7 @@ describe('Polygon', () => {
     await expect
       .poll(
         () => {
-          return jotaiStore.get(deckLayersStateAtom)
+          return deckLayersState
         },
         { timeout: 20000, interval: 1000 }
       )
@@ -147,6 +145,19 @@ describe('Polygon', () => {
         basemap: expectedLayerProps,
         'draw-layer': expectedLayerProps,
       })
+
+    await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
+
+    // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
+    const [x, y] = viewport?.project([-90, 49]) || [0, 0]
+    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
+
+    await expect
+      .element(
+        getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
+      )
+      .toBeVisible()
 
     //Delete layer after test
     await cleanupExistingTestPolygon(store)
