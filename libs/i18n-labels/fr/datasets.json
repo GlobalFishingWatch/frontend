@@ -2276,14 +2276,14 @@
     }
   },
   "proto-global-skylight-viirs": {
-    "name": "Skylight Viirs",
+    "name": "VIIRS (Skylight)",
     "description": "<h2>Overview</h2> <ul> <li> This layer shows vessels detected using the Visible Infrared Imaging Radiometer Suite (VIIRS) \"Day/Night Band\" on board the Suomi NPP, NOAA-20, and NOAA-21 satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect anthropogenic light sources on the ocean surface, such as vessel deck lights or high-intensity lamps used to lure catch. </li> <li> Skylight processes these nightly global sweeps using a suite of seven parallel computer vision models. These models differentiate between actual vessels and \"noise,\" such as gas flares or lightning, to provide a near real-time map of illuminated maritime activity during the middle of the night (typically 1-4 a.m. local time). </li> </ul> <h2>Use cases</h2> <ul> <li> Identify industrial fishing operations, such as squid jiggers and purse seiners, that use bright lights but may not be broadcasting AIS or VMS positions. </li> <li> Fill surveillance gaps in vast areas of the ocean where other satellite coverage is infrequent, as Night Lights provides daily global revisits. </li> <li> Use Night Lights in tandem with Radar (SAR) or Optical (Sentinel-2) detections to build a 24-hour timeline of a vessel's presence in an area of interest. </li> </ul> <h2>Caveats</h2> <ul> <li> While the model filters most noise, heavy cloud cover can diffuse light (making detections appear larger), and extreme moonlight reflection (glint) may occasionally result in false positives. </li> <li> With a resolution of approximately 750 meters per pixel, multiple vessels in close proximity may appear as a single detection. </li> </ul> <h2>Methods</h2> <ul> <li> Multi-Model Computer Vision: Because the VIIRS sensor was originally designed for weather monitoring, Skylight uses specialized machine learning to isolate vessel signals. The system employs seven distinct models to filter out non-vessel light sources like oil platform gas flares, lightning strikes, and ionospheric noise (the South Atlantic Anomaly). </li> <li> AIS Matching &amp; Identification: Skylight automatically attempts to correlate each light detection with AIS records. By comparing the light's location and timing with known vessel tracks, the system can distinguish between AIS-transmitting vessels and \"unmatched\" detections. </li> <li> Global Daily Coverage: The constellation of three satellites follows a sun-synchronous polar orbit. This ensures that every point on Earth is imaged at least once per night, with occasional multiple passes that can help analysts infer a vessel's course based on consecutive detections. </li> </ul>",
     "schema": {
       "matched": {
         "keyword": "matched",
         "enum": {
           "true": "true",
-          "false": "false"
+          "false": "AIS unmatched"
         }
       },
       "radiance": {
