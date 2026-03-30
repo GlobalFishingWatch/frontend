@@ -2275,26 +2275,6 @@
       }
     }
   },
-  "proto-global-skylight-viirs": {
-    "name": "crwdns109038:0crwdne109038:0",
-    "description": "crwdns109040:0crwdne109040:0",
-    "schema": {
-      "matched": {
-        "keyword": "crwdns109044:0crwdne109044:0",
-        "enum": {
-          "true": "crwdns109046:0crwdne109046:0",
-          "false": "crwdns109048:0crwdne109048:0"
-        }
-      },
-      "radiance": {
-        "keyword": "crwdns112928:0crwdne112928:0",
-        "enum": {
-          "0": "crwdns112930:0crwdne112930:0",
-          "1000": "crwdns112932:0crwdne112932:0"
-        }
-      }
-    }
-  },
   "public-areas-to-be-avoided-1618836788619": {
     "name": "crwdns65549:0crwdne65549:0",
     "description": "crwdns65551:0crwdne65551:0"
@@ -2561,6 +2541,10 @@
   "public-eez-boundaries": {
     "name": "crwdns66089:0crwdne66089:0",
     "description": "crwdns66091:0crwdne66091:0"
+  },
+  "public-eez-land": {
+    "name": "crwdns120294:0crwdne120294:0",
+    "description": "crwdns120296:0crwdne120296:0"
   },
   "public-fao": {
     "name": "crwdns66097:0crwdne66097:0",
@@ -2940,6 +2924,26 @@
           "cargo": "crwdns93720:0crwdne93720:0",
           "fishing": "crwdns93722:0crwdne93722:0",
           "discrepancy": "crwdns93724:0crwdne93724:0"
+        }
+      }
+    }
+  },
+  "public-global-skylight-viirs": {
+    "name": "crwdns120298:0crwdne120298:0",
+    "description": "crwdns120300:0crwdne120300:0",
+    "schema": {
+      "matched": {
+        "keyword": "crwdns120302:0crwdne120302:0",
+        "enum": {
+          "true": "crwdns120304:0crwdne120304:0",
+          "false": "crwdns120306:0crwdne120306:0"
+        }
+      },
+      "radiance": {
+        "keyword": "crwdns120308:0crwdne120308:0",
+        "enum": {
+          "0": "crwdns120310:0crwdne120310:0",
+          "1000": "crwdns120312:0crwdne120312:0"
         }
       }
     }
