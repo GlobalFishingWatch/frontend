@@ -7,7 +7,7 @@ import {
   USER_POLYGON_DATASET,
   USER_POLYGON_DATASET_ID,
 } from 'test/utils/store/redux-store-test.data'
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
@@ -34,13 +34,13 @@ const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) =
 }
 
 describe('Polygon', () => {
-  const createdPolygonId: string | null = null
+  afterAll(async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
 
-  // afterAll(async () => {
-  //   if (createdPolygonId) {
-  //     await deletePolygonViaAPI(createdPolygonId)
-  //   }
-  // })
+    //Make sure layer is deleted in case test fails before deletion
+    await cleanupExistingTestPolygon(store)
+  })
 
   it('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
@@ -103,7 +103,6 @@ describe('Polygon', () => {
       jotaiStore,
       authenticated: true,
     })
-    await cleanupExistingTestPolygon(store)
 
     await userEvent.click(getByTestId('draw-polygon-button'))
 
@@ -119,12 +118,6 @@ describe('Polygon', () => {
     await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
     await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
     await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-
-    await userEvent.click(getByTestId('app-main'), { position: { x: 300, y: 200 } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: 400, y: 200 } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: 350, y: 300 } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: 300, y: 200 } })
-
     await userEvent.type(getByTestId('input-layer-name'), 'Polygon drawing test')
     await userEvent.click(getByTestId('draw-save-polygon'))
     await new Promise((resolve) => setTimeout(resolve, 500))
