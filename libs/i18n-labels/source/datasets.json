@@ -553,55 +553,118 @@
           "5": "5"
         }
       },
-      "fleet_code": {
-        "keyword": "fleet_code",
+      "license_category": {
+        "keyword": "license_category",
         "enum": {
-          "1.1": "1.1",
-          "1.10": "1.10",
-          "1.12": "1.12",
-          "1.13": "1.13",
-          "1.14": "1.14",
-          "1.17": "1.17",
-          "1.18": "1.18",
-          "1.2": "1.2",
-          "1.3": "1.3",
-          "1.4": "1.4",
-          "1.5": "1.5",
-          "1.6": "1.6",
-          "1.7": "1.7",
-          "1.8": "1.8",
-          "1.9": "1.9",
-          "2.10": "2.10",
-          "2.11": "2.11",
-          "2.13": "2.13",
-          "2.2": "2.2",
-          "2.3": "2.3",
-          "2.4": "2.4",
-          "2.5": "2.5",
-          "3.1": "3.1",
-          "3.10": "3.10",
-          "3.11": "3.11",
-          "3.12": "3.12",
-          "3.13": "3.13",
-          "3.2": "3.2",
-          "3.3": "3.3",
-          "3.5": "3.5",
-          "3.6": "3.6",
-          "3.9": "3.9",
-          "4.1": "4.1",
-          "4.2": "4.2",
-          "4.3": "4.3",
-          "4.4": "4.4",
-          "4.6": "4.6",
-          "5.1": "5.1",
-          "5.10": "5.10",
-          "5.11": "5.11",
-          "5.2": "5.2",
-          "5.3": "5.3",
-          "5.4": "5.4",
-          "5.6": "5.6",
-          "5.9": "5.9",
-          "Sem código IN": "Sem código IN"
+          "": "",
+          "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
+          "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
+          "1.11 - Espinhel vertical": "1.11 - Espinhel vertical",
+          "1.12 - Linha de mão (fundo)": "1.12 - Linha de mão (fundo)",
+          "1.13 - Linha/vara - com isca viva": "1.13 - Linha/vara - com isca viva",
+          "1.14 - Linha de mão (fundo)": "1.14 - Linha de mão (fundo)",
+          "1.15 - Linha de mão (superfície)": "1.15 - Linha de mão (superfície)",
+          "1.17 - Cardume associado": "1.17 - Cardume associado",
+          "1.18 - Cardume associado": "1.18 - Cardume associado",
+          "1.2 - Espinhel horizontal (superfície)": "1.2 - Espinhel horizontal (superfície)",
+          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "1.3 - Espinhel horizontal (superfície) - com isca-viva",
+          "1.4 - Espinhel horizontal (superfície)": "1.4 - Espinhel horizontal (superfície)",
+          "1.5 - Espinhel horizontal (fundo)": "1.5 - Espinhel horizontal (fundo)",
+          "1.6 - Espinhel horizontal (fundo)": "1.6 - Espinhel horizontal (fundo)",
+          "1.7 - Espinhel horizontal (fundo)": "1.7 - Espinhel horizontal (fundo)",
+          "1.8 - Espinhel vertical/covos": "1.8 - Espinhel vertical/covos",
+          "1.9 - Espinhel vertical/Covos": "1.9 - Espinhel vertical/Covos",
+          "2.10 - Emalhe costeiro (fundo)": "2.10 - Emalhe costeiro (fundo)",
+          "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
+          "2.12 - Emalhe costeiro (fundo)": "2.12 - Emalhe costeiro (fundo)",
+          "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
+          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
+          "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
+          "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
+          "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
+          "2.6 - Emalhe costeiro (superfície)": "2.6 - Emalhe costeiro (superfície)",
+          "2.7 - Emalhe costeiro (superfície)": "2.7 - Emalhe costeiro (superfície)",
+          "2.8 - Emalhe costeiro (superfície)": "2.8 - Emalhe costeiro (superfície)",
+          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
+          "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
+          "3.12 - Arrasto oceânico (fundo) – simples e duplo": "3.12 - Arrasto oceânico (fundo) – simples e duplo",
+          "3.13 - Arrasto oceânico (fundo) – simples e duplo": "3.13 - Arrasto oceânico (fundo) – simples e duplo",
+          "3.14 - Arrasto (meia água)": "3.14 - Arrasto (meia água)",
+          "3.2 - Arrasto (fundo) – Simples ou parelha": "3.2 - Arrasto (fundo) – Simples ou parelha",
+          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "3.3 - Arrasto (fundo) - duplo ou simples (**)",
+          "3.4 - Arrasto (fundo) - duplo ou simples": "3.4 - Arrasto (fundo) - duplo ou simples",
+          "3.5 - Arrasto (fundo) - duplo ou simples": "3.5 - Arrasto (fundo) - duplo ou simples",
+          "3.6 - Arrasto (fundo) - duplo": "3.6 - Arrasto (fundo) - duplo",
+          "3.7 - Arrasto (fundo)– duplo": "3.7 - Arrasto (fundo)– duplo",
+          "3.8 - Arrasto (fundo) - duplo ou simples": "3.8 - Arrasto (fundo) - duplo ou simples",
+          "3.9 - Arrasto (fundo) - duplo ou simples": "3.9 - Arrasto (fundo) - duplo ou simples",
+          "4.1 - Cerco": "4.1 - Cerco",
+          "4.2 - Cerco": "4.2 - Cerco",
+          "4.3 - Cerco": "4.3 - Cerco",
+          "4.4 - Cerco": "4.4 - Cerco",
+          "4.6 - Cerco": "4.6 - Cerco",
+          "5.1 - Covos": "5.1 - Covos",
+          "5.10 - Potes": "5.10 - Potes",
+          "5.11 - Potes": "5.11 - Potes",
+          "5.12 - Potes": "5.12 - Potes",
+          "5.2 - Covos": "5.2 - Covos",
+          "5.3 - Covos": "5.3 - Covos",
+          "5.4 - Covos": "5.4 - Covos",
+          "5.5 - Covos": "5.5 - Covos",
+          "5.6 - Covos": "5.6 - Covos",
+          "5.9 - Covos": "5.9 - Covos",
+          "Sem código IN - Covos": "Sem código IN - Covos"
+        }
+      },
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "": "",
+          "Agulha": "Agulha",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
+          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
+          "Anchoíta, galo, calamar": "Anchoíta, galo, calamar",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
+          "Bonito listrado": "Bonito listrado",
+          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
+          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
+          "Camarão santana e barba ruça": "Camarão santana e barba ruça",
+          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
+          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
+          "Camarões de profundidade": "Camarões de profundidade",
+          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
+          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
+          "Cavalas, Albacorinhas": "Cavalas, Albacorinhas",
+          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
+          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
+          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
+          "Dourado": "Dourado",
+          "Espadarte": "Espadarte",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
+          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
+          "Pargo": "Pargo",
+          "Pargo rosa": "Pargo rosa",
+          "Peixe sapo": "Peixe sapo",
+          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
+          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
+          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
+          "Piramutaba": "Piramutaba",
+          "Piramutaba e dourada": "Piramutaba e dourada",
+          "Polvo": "Polvo",
+          "Saramunete": "Saramunete",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
+          "Sardinha verdadeira": "Sardinha verdadeira",
+          "Sardinha-lage": "Sardinha-lage",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
+          "Serra": "Serra",
+          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
+          "Tainha": "Tainha",
+          "Vermelhos (especificar)": "Vermelhos (especificar)"
         }
       },
       "fleet_code": {
@@ -2212,26 +2275,6 @@
       }
     }
   },
-  "proto-global-skylight-viirs": {
-    "name": "Skylight Viirs",
-    "description": "<h2>Overview</h2> <ul> <li> This layer shows vessels detected using the Visible Infrared Imaging Radiometer Suite (VIIRS) \"Day/Night Band\" on board the Suomi NPP, NOAA-20, and NOAA-21 satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect anthropogenic light sources on the ocean surface, such as vessel deck lights or high-intensity lamps used to lure catch. </li> <li> Skylight processes these nightly global sweeps using a suite of seven parallel computer vision models. These models differentiate between actual vessels and \"noise,\" such as gas flares or lightning, to provide a near real-time map of illuminated maritime activity during the middle of the night (typically 1-4 a.m. local time). </li> </ul> <h2>Use cases</h2> <ul> <li> Identify industrial fishing operations, such as squid jiggers and purse seiners, that use bright lights but may not be broadcasting AIS or VMS positions. </li> <li> Fill surveillance gaps in vast areas of the ocean where other satellite coverage is infrequent, as Night Lights provides daily global revisits. </li> <li> Use Night Lights in tandem with Radar (SAR) or Optical (Sentinel-2) detections to build a 24-hour timeline of a vessel's presence in an area of interest. </li> </ul> <h2>Caveats</h2> <ul> <li> While the model filters most noise, heavy cloud cover can diffuse light (making detections appear larger), and extreme moonlight reflection (glint) may occasionally result in false positives. </li> <li> With a resolution of approximately 750 meters per pixel, multiple vessels in close proximity may appear as a single detection. </li> </ul> <h2>Methods</h2> <ul> <li> Multi-Model Computer Vision: Because the VIIRS sensor was originally designed for weather monitoring, Skylight uses specialized machine learning to isolate vessel signals. The system employs seven distinct models to filter out non-vessel light sources like oil platform gas flares, lightning strikes, and ionospheric noise (the South Atlantic Anomaly). </li> <li> AIS Matching &amp; Identification: Skylight automatically attempts to correlate each light detection with AIS records. By comparing the light's location and timing with known vessel tracks, the system can distinguish between AIS-transmitting vessels and \"unmatched\" detections. </li> <li> Global Daily Coverage: The constellation of three satellites follows a sun-synchronous polar orbit. This ensures that every point on Earth is imaged at least once per night, with occasional multiple passes that can help analysts infer a vessel's course based on consecutive detections. </li> </ul>",
-    "schema": {
-      "matched": {
-        "keyword": "matched",
-        "enum": {
-          "true": "true",
-          "false": "false"
-        }
-      },
-      "radiance": {
-        "keyword": "radiance",
-        "enum": {
-          "0": "0",
-          "1000": "1000"
-        }
-      }
-    }
-  },
   "public-areas-to-be-avoided-1618836788619": {
     "name": "Areas to be Avoided by Cargo Shipping",
     "description": "25 nm buffer around islands recommending shipping diversion"
@@ -2498,6 +2541,10 @@
   "public-eez-boundaries": {
     "name": "Areas boundaries for eez",
     "description": "EEZs boundaries are shown as solid lines for '200 NM', 'Treaty', 'Median line', 'Joint regime', 'Connection Line', 'Unilateral claim (undisputed)' and dashed lines for 'Joint regime', 'Unsettled', 'Unsettled median line' based on the 'LINE_TYPE' field. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
+  },
+  "public-eez-land": {
+    "name": "EEZ (marineregions.org)",
+    "description": "Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11. Source: marineregions.org"
   },
   "public-fao": {
     "name": "FAO",
@@ -2881,6 +2928,26 @@
       }
     }
   },
+  "public-global-skylight-viirs": {
+    "name": "VIIRS (Skylight)",
+    "description": "<h2>Overview</h2> <ul> <li> This layer shows vessels detected using the Visible Infrared Imaging Radiometer Suite (VIIRS) \"Day/Night Band\" on board the Suomi NPP, NOAA-20, and NOAA-21 satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect anthropogenic light sources on the ocean surface, such as vessel deck lights or high-intensity lamps used to lure catch. </li> <li> Skylight processes these nightly global sweeps using a suite of seven parallel computer vision models. These models differentiate between actual vessels and \"noise,\" such as gas flares or lightning, to provide a near real-time map of illuminated maritime activity during the middle of the night (typically 1-4 a.m. local time). </li> </ul> <h2>Use cases</h2> <ul> <li> Identify industrial fishing operations, such as squid jiggers and purse seiners, that use bright lights but may not be broadcasting AIS or VMS positions. </li> <li> Fill surveillance gaps in vast areas of the ocean where other satellite coverage is infrequent, as Night Lights provides daily global revisits. </li> <li> Use Night Lights in tandem with Radar (SAR) or Optical (Sentinel-2) detections to build a 24-hour timeline of a vessel's presence in an area of interest. </li> </ul> <h2>Caveats</h2> <ul> <li> While the model filters most noise, heavy cloud cover can diffuse light (making detections appear larger), and extreme moonlight reflection (glint) may occasionally result in false positives. </li> <li> With a resolution of approximately 750 meters per pixel, multiple vessels in close proximity may appear as a single detection. </li> </ul> <h2>Methods</h2> <ul> <li> Multi-Model Computer Vision: Because the VIIRS sensor was originally designed for weather monitoring, Skylight uses specialized machine learning to isolate vessel signals. The system employs seven distinct models to filter out non-vessel light sources like oil platform gas flares, lightning strikes, and ionospheric noise (the South Atlantic Anomaly). </li> <li> AIS Matching &amp; Identification: Skylight automatically attempts to correlate each light detection with AIS records. By comparing the light's location and timing with known vessel tracks, the system can distinguish between AIS-transmitting vessels and \"unmatched\" detections. </li> <li> Global Daily Coverage: The constellation of three satellites follows a sun-synchronous polar orbit. This ensures that every point on Earth is imaged at least once per night, with occasional multiple passes that can help analysts infer a vessel's course based on consecutive detections. </li> </ul>",
+    "schema": {
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      },
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "0": "0",
+          "1000": "1000"
+        }
+      }
+    }
+  },
   "public-global-sst-anomalies-max": {
     "name": "Sea Surface Temperatures anomalies (Max)",
     "description": "Sea surface temperatures anomalies (Max)"
@@ -3022,7 +3089,7 @@
     "description": "Vessel Insights from AIS"
   },
   "public-global-viirs-presence": {
-    "name": "Night light detections (VIIRS)",
+    "name": "VIIRS (EOG)",
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.The satellite makes a single over-pass across the entire planet every night, detecting lights not obscured by clouds and designed to give at least one observation globally every day. Because the vessels are detected solely based on light emission, we can detect individual vessels and even entire fishing fleets that are not broadcasting automatic identification system (AIS) and so are not represented in the AIS apparent fishing effort layer. Lights from fixed offshore infrastructure and other non-vessel sources are excluded. Global Fishing Watch ingests boat detections processed from low light imaging data collected by the U.S. National Oceanic and Atmospheric Administration (NOAA) VIIRS. The boat detections are processed in near-real time by NOAA’s Earth Observation Group, located in Boulder, Colorado. The data, known as VIIRS boat detections, picks up the presence of fishing vessels using lights to attract catch or to conduct operations at night. More than 85% of the detections are from vessels that lack AIS or Vessel Monitoring System (VMS) transponders. Due to the orbit design of polar orbiting satellites, regions closer to polar will have more over-passes per day, while equatorial regions have only one over-pass daily. Read more about this product, and download the data <a href=\"https://ngdc.noaa.gov/eog/viirs/download_boat.html\" target=\"_blank\" rel=\"noopener\">here</a>.Those using night light detections data should acknowledge the South Atlantic Anomaly (SAA), an area where the Earth's inner Van Allen radiation belt is at its lowest altitude, allowing more energetic particles from space to penetrate. When such particles hit the sensors on a satellite, this can create a false signal which might cause the algorithm to recognize it as a boat presence. A filtration algorithm has been applied but there may still be some mis-identification. The GFW layer includes quality flags (QF), including a filter to show only detections which NOAA has classified as vessels (QF1)",
     "schema": {
       "matched": {

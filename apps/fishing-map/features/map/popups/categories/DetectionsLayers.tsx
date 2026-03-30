@@ -29,10 +29,11 @@ function DetectionsTooltipRow({
   const { t } = useTranslation()
   // Avoid showing not matched detections
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])
+  const isSkylight = feature.datasets.some((d) => getIsSkylightDataset(d))
   const hasVesselsResolved = feature?.vessels && feature?.vessels?.length > 0
-  const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (feature?.vessels || [])
-    // newly added skylight vessels could include skylight_id
-    .filter((v) => v.id || v.skylight_id)
+  const matchedVessels: SliceExtendedFourwingsDeckSublayer['vessels'] = (
+    feature?.vessels || []
+  ).filter((v) => (isSkylight ? v.id || v.skylight_id || v.shipname : v.id))
   const matchedDetections = hasVesselsResolved
     ? matchedVessels.reduce((acc, vessel: any) => acc + vessel.detections, 0)
     : 0
@@ -46,15 +47,14 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
-  const isSkylight = feature.datasets.some((d) => getIsSkylightDataset(d))
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,
       selfReportedInfo: [
         {
           id: vessel.id,
-          shipname: (vessel as any).shipname,
-          flag: (vessel as any).flag,
+          shipname: vessel.shipname,
+          flag: vessel.flag,
         } as SelfReportedInfo,
       ],
     }))
@@ -95,7 +95,6 @@ function DetectionsTooltipRow({
         {!loading && error && <p className={styles.error}>{error}</p>}
         {!loading && showFeaturesDetails && (
           <VesselsTable
-            linkToSkylight={isSkylight}
             feature={{ ...featureVesselsFilter, category: feature.category }}
             vesselProperty="detections"
           />

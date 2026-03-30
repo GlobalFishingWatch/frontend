@@ -332,11 +332,7 @@ export const getFilterOperationInDataview = (
   dataview: DataviewWithFilters,
   filter: SupportedDatasetFilter
 ) => {
-  if (
-    filter === 'vessel-groups' ||
-    filter === 'neural_vessel_type' ||
-    dataview.category === DataviewCategory.Context
-  ) {
+  if (filter === 'neural_vessel_type' || dataview.category === DataviewCategory.Context) {
     return
   }
   return dataview.config?.filterOperators?.[filter] || INCLUDE_FILTER_ID
