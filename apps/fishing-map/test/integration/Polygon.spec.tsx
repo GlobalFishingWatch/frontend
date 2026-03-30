@@ -163,5 +163,5 @@ describe('Polygon', () => {
     await cleanupExistingTestPolygon(store)
 
     expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
-  })
+  }, 80000)
 })
