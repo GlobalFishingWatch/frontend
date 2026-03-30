@@ -612,7 +612,7 @@ export function resolveDataviews(
       if (filters) {
         dataviewInstance.config.filter = getDataviewSqlFiltersResolved(dataviewInstance)
         const vesselGroupFilters =
-          typeof filters['vessel-groups'] === 'string'
+          typeof filters['vessel-groups'] === 'string' && filters['vessel-groups'] !== ''
             ? [filters['vessel-groups']]
             : filters['vessel-groups']
         if (vesselGroupFilters?.length) {
