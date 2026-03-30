@@ -750,7 +750,6 @@
     "scenario": "Scenario",
     "seeDescription": "Klik untuk melihat deskripsi lapisan",
     "selectPolygonToRemove": "Pilih poligon yang akan dihapus",
-    "source": "Sumber",
     "sources": "Sources",
     "specie": "specie",
     "speed": "Kecepatan",
@@ -1389,6 +1388,15 @@
       "exploreGlobal": "Lihat global",
       "help": "Anda bisa memindahkan peta dan memperbarui ruang kerja Anda nanti",
       "title": "Atur ruang kerja Marine Manager untuk area manapun secara global"
+    }
+  },
+  "public-global-sar-presence": {
+    "schema": {
+      "matched": {
+        "enum": {
+          "true": "Sumber"
+        }
+      }
     }
   }
 }

@@ -750,7 +750,6 @@
     "scenario": "Escenario",
     "seeDescription": "Haga clic para ver la descripción de la capa",
     "selectPolygonToRemove": "Selecciona el polígono para eliminar",
-    "source": "Fuente",
     "sources": "Fuentes",
     "specie": "especie",
     "speed": "Velocidad",
@@ -1389,6 +1388,15 @@
       "exploreGlobal": "Explorar globalmente",
       "help": "Puedes mover el mapa y actualizar tu área de trabajo más tarde",
       "title": "Configurar un área de trabajo de gestión marina para cualquier área globalmente"
+    }
+  },
+  "public-global-sar-presence": {
+    "schema": {
+      "matched": {
+        "enum": {
+          "true": "Fuente"
+        }
+      }
     }
   }
 }
