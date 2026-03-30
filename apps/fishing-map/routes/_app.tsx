@@ -1,13 +1,13 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
+import type { AppStore } from 'store'
 import { makeStore } from 'store'
 
 import 'utils/polyfills'
-import 'features/i18n/i18n'
 
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
@@ -19,13 +19,18 @@ export const Route = createFileRoute('/_app')({
   validateSearch: validateRootSearchParams,
 })
 
-const store = makeStore()
 function AppLayout() {
+  const storeRef = useRef<AppStore | null>(null)
+  if (!storeRef.current) {
+    storeRef.current = makeStore()
+  }
+  const store = storeRef.current
   const router = useRouter()
 
   useEffect(() => {
+    import('features/i18n/i18n')
     setupRouterSync(router, store)
-  }, [router])
+  }, [router, store])
 
   return (
     <Provider store={store}>

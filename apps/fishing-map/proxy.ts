@@ -8,9 +8,7 @@ const basicAuthEnabled =
   (process.env['BASIC_AUTH'] || 'none').toLocaleLowerCase() === 'restricted'
 const basicAuthUser = process.env['BASIC_AUTH_USER']
 const basicAuthPass = process.env['BASIC_AUTH_PASS']
-const basePath =
-  (process.env['NEXT_PUBLIC_URL'] || process.env['VITE_PUBLIC_URL'] || '/map').replace(/\/$/, '') ||
-  '/map'
+const basePath = (process.env['VITE_PUBLIC_URL'] || '/map').replace(/\/$/, '') || '/map'
 
 function createAuthRequiredResponse() {
   return new Response('Auth Required.', {

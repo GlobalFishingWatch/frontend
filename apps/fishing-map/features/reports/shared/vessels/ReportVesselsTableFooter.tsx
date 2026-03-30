@@ -5,8 +5,6 @@ import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 import filesaver from 'file-saver'
 import papaparse from 'papaparse'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
@@ -28,6 +26,8 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import {

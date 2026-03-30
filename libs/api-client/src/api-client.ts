@@ -221,7 +221,8 @@ export class GFW_API_CLASS {
     this.status = 'downloading'
     return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
       .then(async (blob) => {
-        const { saveAs } = await import('file-saver')
+        const fileSaverModule = await import('file-saver')
+        const saveAs = fileSaverModule.saveAs ?? fileSaverModule.default?.saveAs
         saveAs(blob, fileName)
         this.status = 'idle'
         return true
@@ -395,7 +396,7 @@ export class GFW_API_CLASS {
       return user
     } catch (e: any) {
       console.warn(e)
-      throw new Error('Error trying to get user data')
+      throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
@@ -413,7 +414,7 @@ export class GFW_API_CLASS {
       return user
     } catch (e: any) {
       console.warn(e)
-      throw new Error('Error trying to get user data')
+      throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
@@ -526,7 +527,7 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.warn(`GFWAPI: Logout invalid session fail`)
       }
-      throw new Error('Error on the logout proccess')
+      throw new Error('Error on the logout proccess', { cause: e })
     }
   }
 }
