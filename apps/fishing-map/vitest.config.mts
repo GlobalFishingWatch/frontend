@@ -83,7 +83,7 @@ export default defineConfig(({ mode }) => {
         enabled: true,
         provider: defaultPlaywrightProvider,
         ui: isUiMode,
-        headless: !isUiMode,
+        headless: false,
         viewport: DEFAULT_VIEWPORT,
         trace: {
           screenshots: true,

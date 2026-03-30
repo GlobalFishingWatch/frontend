@@ -9,7 +9,7 @@ import {
   USER_POLYGON_DATASET_ID,
   USER_POLYGON_LAYER_ID,
 } from 'test/utils/store/redux-store-test.data'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
@@ -27,14 +27,22 @@ const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) =
 }
 
 describe('Polygon', () => {
+  beforeEach(async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    await render(<App />, {
+      store,
+      authenticated: true,
+    })
+    //Make sure layer is deleted in case test fails before deletion
+    await cleanupExistingTestPolygon(store)
+  })
+
   it('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
 
     const { getByTestId, getByRole } = await render(<App />, { authenticated: true, store })
-
-    //Make sure created polygon is deleted in case test fails before deletion
-    await cleanupExistingTestPolygon(store)
 
     await userEvent.click(getByTestId('activity-layer-panel-switch-ais'))
     await userEvent.click(getByTestId('activity-layer-panel-switch-vms'))
