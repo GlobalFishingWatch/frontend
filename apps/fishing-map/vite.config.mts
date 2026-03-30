@@ -4,7 +4,6 @@ import { createRequire } from 'module'
 
 import svgr from 'vite-plugin-svgr'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -63,7 +62,7 @@ export default defineConfig(({ command }) => ({
         basepath: basePath,
       },
       spa: {
-        enabled: true,
+        enabled: false,
       },
     }),
     nitro({
@@ -75,15 +74,6 @@ export default defineConfig(({ command }) => ({
     react(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
-    }),
-    sentryTanstackStart({
-      org: 'global-fishing-watch',
-      project: 'frontend',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      sourcemaps: {
-        assets: ['.output/public/**'],
-      },
-      telemetry: false,
     }),
     process.env.ANALYZE === 'true' &&
       visualizer({

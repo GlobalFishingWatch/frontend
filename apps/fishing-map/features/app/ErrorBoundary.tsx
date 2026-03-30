@@ -1,5 +1,4 @@
 import { Component } from 'react'
-import * as Sentry from '@sentry/tanstackstart-react'
 
 import ErrorBoundaryUI from './ErrorBoundaryUI'
 
@@ -16,13 +15,6 @@ export default class ErrorBoundary extends Component<any, { error: Error | null 
   componentDidCatch(error: any, errorInfo: any) {
     console.error(error, errorInfo)
     console.log('error:', error)
-    Sentry.captureException(error, {
-      contexts: {
-        react: {
-          componentStack: errorInfo.componentStack,
-        },
-      },
-    })
   }
 
   render() {
