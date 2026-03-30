@@ -750,6 +750,7 @@
     "scenario": "crwdns83184:0crwdne83184:0",
     "seeDescription": "crwdns60315:0crwdne60315:0",
     "selectPolygonToRemove": "crwdns60317:0crwdne60317:0",
+    "source": "crwdns120292:0crwdne120292:0",
     "sources": "crwdns106700:0crwdne106700:0",
     "specie": "crwdns83186:0crwdne83186:0",
     "speed": "crwdns70384:0crwdne70384:0",
@@ -1388,15 +1389,6 @@
       "exploreGlobal": "crwdns60755:0crwdne60755:0",
       "help": "crwdns60757:0crwdne60757:0",
       "title": "crwdns60759:0crwdne60759:0"
-    }
-  },
-  "public-global-sar-presence": {
-    "schema": {
-      "matched": {
-        "enum": {
-          "true": "crwdns60319:0crwdne60319:0"
-        }
-      }
     }
   }
 }
