@@ -79,7 +79,7 @@ jobs:
         env:
           NX_BASE: origin/${{ github.event.pull_request.base.ref }}
           NX_HEAD: HEAD
-          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
+          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
           NEXT_PUBLIC_WORKSPACE_ENV: development
           CI: '1'
           NX_DAEMON: 'false'
