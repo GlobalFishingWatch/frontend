@@ -417,3 +417,15 @@ export function getIdentitySourceLabel(
     return `${t((t) => t.vessel.infoSources.selfReported)} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
   return EMPTY_FIELD_PLACEHOLDER
 }
+
+export function getSkylightLink({
+  skylightId,
+  start,
+  end,
+}: {
+  skylightId: string
+  start: string
+  end: string
+}): string {
+  return `https://app.skylight.earth/vesseldetails/${skylightId}?startTime=${start}&endTime=${end}&timesliderStart=${start}&timesliderEnd=${end}`
+}
