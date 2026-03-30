@@ -750,6 +750,7 @@
     "scenario": "Scenario",
     "seeDescription": "Click to see layer description",
     "selectPolygonToRemove": "Select the polygon to remove",
+    "source": "Source",
     "sources": "Sources",
     "specie": "specie",
     "speed": "Speed",
@@ -1388,15 +1389,6 @@
       "exploreGlobal": "See global",
       "help": "You can move the map and update your workspace later",
       "title": "Setup a marine manager workspace for any area globally"
-    }
-  },
-  "public-global-sar-presence": {
-    "schema": {
-      "matched": {
-        "enum": {
-          "true": "Source"
-        }
-      }
     }
   }
 }
