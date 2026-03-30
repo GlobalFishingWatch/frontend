@@ -91,29 +91,29 @@ export default defineConfig(({ mode }) => {
           mode: isUiMode ? 'on' : 'on-first-retry',
         },
         instances:
-          isUiMode || isChromeOnly
-            ? [
-                {
-                  browser: 'chromium',
-                  name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
-                },
-              ]
-            : [
-                {
-                  browser: 'chromium',
-                  name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
-                },
-                {
-                  browser: 'firefox',
-                  name: 'fishing-map-firefox',
-                },
-                {
-                  browser: 'webkit',
-                  name: 'fishing-map-webkit',
-                },
-              ],
+          // isUiMode || isChromeOnly?
+          [
+            {
+              browser: 'chromium',
+              name: 'fishing-map-chromium',
+              // provider: chromiumPlaywrightProvider,
+            },
+          ],
+        // : [
+        //     {
+        //       browser: 'chromium',
+        //       name: 'fishing-map-chromium',
+        //       // provider: chromiumPlaywrightProvider,
+        //     },
+        //     {
+        //       browser: 'firefox',
+        //       name: 'fishing-map-firefox',
+        //     },
+        //     {
+        //       browser: 'webkit',
+        //       name: 'fishing-map-webkit',
+        //     },
+        //   ],
       },
     },
   }

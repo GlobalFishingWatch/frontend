@@ -8473,7 +8473,7 @@ export const REDUX_STORE_DEFAULT_STATE = {
     active: false,
     featureFlags: { workspaceGenerator: false },
     options: {
-      addDatasetIdHash: true,
+      addDatasetIdHash: false,
       areasOnScreen: false,
       dataTerminologyIframe: false,
       debugTiles: false,
