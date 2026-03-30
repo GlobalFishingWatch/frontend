@@ -27,25 +27,3 @@
 .tagsContainerNoFilters {
   padding-bottom: var(--space-XS);
 }
-
-.sticky {
-  background-color: var(--color-white);
-  z-index: 2;
-}
-
-.sticky .tagsContainer {
-  padding: var(--space-XS) var(--space-M);
-  gap: var(--space-XS);
-}
-
-.sticky .tagsContainer label {
-  font: var(--font-XS);
-}
-
-.sticky .tagsContainer span {
-  font: var(--font-S);
-}
-
-.sticky button {
-  display: none;
-}
