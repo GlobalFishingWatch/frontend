@@ -750,6 +750,7 @@
     "scenario": "Scénario",
     "seeDescription": "Cliquez pour voir la description du calque",
     "selectPolygonToRemove": "Sélectionnez le polygone à supprimer",
+    "source": "Source",
     "sources": "Sources",
     "specie": "espèce",
     "speed": "Vitesse",
@@ -1388,15 +1389,6 @@
       "exploreGlobal": "Voir le monde",
       "help": "Vous pouvez déplacer la carte et mettre à jour votre espace de travail plus tard",
       "title": "Configurez un espace de travail du marine manager pour n'importe quelle zone dans le monde"
-    }
-  },
-  "public-global-sar-presence": {
-    "schema": {
-      "matched": {
-        "enum": {
-          "true": "Source"
-        }
-      }
     }
   }
 }
