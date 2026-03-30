@@ -225,8 +225,17 @@ describe('Map', () => {
 
     await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
 
+    await expect
+      .poll(() => jotaiStore.get(mapInstanceAtom), {
+        timeout: 10000,
+        interval: 500,
+      })
+      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    if (!viewport) {
+      throw new Error('Map viewport not found - cannot project coordinates')
+    }
     const [x, y] = viewport?.project([-37.0458, 19.0776]) || [0, 0]
 
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
