@@ -120,13 +120,12 @@ describe('Polygon', () => {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Wait for all layers to be loaded
-    const deckLayersState = jotaiStore.get(deckLayersStateAtom)
     await expect
       .poll(
         () => {
-          return Object.values(deckLayersState).every((layer) => layer.loaded)
+          return Object.values(jotaiStore.get(deckLayersStateAtom)).every((layer) => layer.loaded)
         },
-        { timeout: 20000, interval: 1000 }
+        { timeout: 5000, interval: 1000 }
       )
       .toBe(true)
 
@@ -134,17 +133,10 @@ describe('Polygon', () => {
       loaded: expect.any(Boolean),
       cacheHash: expect.any(String),
     }
-    await expect
-      .poll(
-        () => {
-          return deckLayersState
-        },
-        { timeout: 20000, interval: 1000 }
-      )
-      .toMatchObject({
-        basemap: expectedLayerProps,
-        'draw-layer': expectedLayerProps,
-      })
+    expect(jotaiStore.get(deckLayersStateAtom)).toMatchObject({
+      basemap: expectedLayerProps,
+      'draw-layer': expectedLayerProps,
+    })
 
     await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
