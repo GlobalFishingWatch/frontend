@@ -60,23 +60,18 @@ jobs:
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
-      - name: Cache Nx Local Cache
-        uses: actions/cache@v4
-        with:
-          path: .nx/cache
-          key: nx-local-${{ runner.os }}-${{ hashFiles('**/*.{ts,tsx,js,jsx}') }}
-      - name: Cache Vite Dependencies
+      - name: Cache Build Data
         uses: actions/cache@v4
         with:
           path: |
+            .nx/cache
             node_modules/.vite
             node_modules/.cache/esbuild
-          key: vite-local-${{ runner.os }}-${{ hashFiles('**/vite.config.*') }}
-      - name: Cache TypeScript Build Info
-        uses: actions/cache@v4
-        with:
-          path: "**/*.tsbuildinfo"
-          key: ts-build-${{ runner.os }}-${{ hashFiles('**/tsconfig*.json') }}
+            **/*.tsbuildinfo
+          # Using run_id and run_attempt forces a unique primary key so the cache always saves new test results
+          key: build-cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            build-cache-${{ runner.os }}-
 
       
       # --- Running tests -----------------------------------------------------
