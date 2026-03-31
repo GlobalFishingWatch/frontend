@@ -32,6 +32,29 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
+import {
+  HOME,
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
+} from 'router/routes'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnySearchLocation,
+  selectIsMapDrawing,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectLocationType,
+  selectReportId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
