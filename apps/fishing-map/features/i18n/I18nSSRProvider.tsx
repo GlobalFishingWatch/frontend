@@ -19,7 +19,7 @@ function createI18nFromState(state: I18nServerState) {
     lng: state.initialLanguage,
     defaultNS: DEFAULT_NAMESPACE,
     ns: namespaces.length > 0 ? namespaces : [DEFAULT_NAMESPACE],
-    initImmediate: false,
+    initAsync: true,
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
   })

@@ -22,13 +22,7 @@ const SUPPORTED_LANGUAGES = [
 const DEFAULT_NAMESPACE = 'translations'
 const FALLBACK_LNG = import.meta.env.DEV ? 'source' : Locale.en
 
-const NAMESPACES = [
-  'translations',
-  'workspaces',
-  'data-terminology',
-  'layer-library',
-  'help-hints',
-] as const
+const NAMESPACES = ['translations'] as const
 
 function detectLanguageFromRequest(request: Request): string {
   const acceptLanguage = request.headers.get('accept-language')
@@ -68,7 +62,7 @@ export async function createServerI18n(request: Request): Promise<{
       backend: {
         loadPath: localesPath,
       },
-      initImmediate: false,
+      initAsync: true,
       interpolation: {
         escapeValue: false,
       },
