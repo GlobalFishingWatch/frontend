@@ -74,13 +74,19 @@ export async function createServerI18n(request: Request): Promise<{
   // Preload all namespaces so initialI18nStore contains translations used during SSR
   await i18n.loadNamespaces(NAMESPACES)
 
+  // If we only embed the primary language, the client still has fallbackLng (dev: source,
+  // prod: en) and i18next-http-backend will fetch that locale — duplicating data already
+  // implied by SSR. Load and embed the fallback language too when it differs.
+  if (FALLBACK_LNG !== language) {
+    await i18n.loadLanguages([FALLBACK_LNG])
+  }
+
   const initialI18nStore: Record<string, Record<string, Record<string, unknown>>> = {}
-  // Only serialize the primary detected language — i18n.languages includes the full
-  // fallback chain (e.g. ['en', 'source'] in dev), which causes duplicate identical
-  // translations to be embedded in the SSR HTML.
-  const data = i18n.services.resourceStore.data[language]
-  if (data) {
-    initialI18nStore[language] = data as Record<string, Record<string, unknown>>
+  for (const lng of new Set([language, FALLBACK_LNG])) {
+    const data = i18n.services.resourceStore.data[lng]
+    if (data) {
+      initialI18nStore[lng] = data as Record<string, Record<string, unknown>>
+    }
   }
 
   return {

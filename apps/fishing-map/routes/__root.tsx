@@ -121,9 +121,9 @@ export const Route = createRootRoute({
   component: RootComponent,
 })
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode; lang: string }>) {
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>
@@ -148,7 +148,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 function RootComponent() {
   const { i18nState } = Route.useLoaderData() ?? {}
   return (
-    <RootDocument>
+    <RootDocument lang={i18nState?.initialLanguage}>
       <Suspense fallback={null}>
         <I18nSSRProvider serverState={i18nState}>
           <Outlet />
