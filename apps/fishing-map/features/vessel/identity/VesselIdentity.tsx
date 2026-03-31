@@ -45,6 +45,7 @@ import { parseVesselToCSV } from 'features/vessel/vessel.download'
 import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
+  getSkylightLink,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
 import {
@@ -67,7 +68,7 @@ const VesselIdentity = () => {
   const vesselDatasetId = useSelector(selectVesselDatasetId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const { setTimerange } = useTimerangeConnect()
+  const { start, end, setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
@@ -359,7 +360,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={`https://sc-production.skylight.earth/vesselsearch?mmsi=${vesselIdentity?.ssvid}`}
+              href={getSkylightLink({ skylightId: vesselIdentity?.ssvid, start, end })}
               target="_blank"
               onClick={() => {
                 trackEvent({

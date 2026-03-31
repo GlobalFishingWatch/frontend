@@ -115,6 +115,7 @@
     "**/node_modules": true,
     "**/dist": true,
     "**/build": true,
+    "**/.output": true,
     "**/.tanstack": true,
     "**/.next": true,
     "**/.nx": true,

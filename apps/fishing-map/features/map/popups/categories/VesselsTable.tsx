@@ -27,7 +27,11 @@ import type {
 import { MAX_TOOLTIP_LIST } from 'features/map/map.slice'
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/map/map-interactions.hooks'
 import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
-import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getOtherVesselNames,
+  getSkylightLink,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
@@ -61,14 +65,12 @@ function VesselsTable({
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
   showValue = true,
-  linkToSkylight = false,
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
   activityType?: `${DatasetSubCategory}`
   testId?: string
   showValue?: boolean
-  linkToSkylight?: boolean
 }) {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
@@ -111,11 +113,9 @@ function VesselsTable({
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t((t) => t.common.vessels)}</th>
               <th>{t((t) => t.vessel.flag)}</th>
-              {!linkToSkylight && (
-                <th>
-                  {isPresenceActivity ? t((t) => t.vessel.type) : t((t) => t.vessel.gearType_short)}
-                </th>
-              )}
+              <th>
+                {isPresenceActivity ? t((t) => t.vessel.type) : t((t) => t.vessel.gearType_short)}
+              </th>
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {isHoursProperty && <th>{t((t) => t.vessel.source_short)}</th>}
               {showValue && (
@@ -172,9 +172,8 @@ function VesselsTable({
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
                     {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
                       <Fragment>
-                        {linkToSkylight ? (
+                        {!vessel.id ? (
                           <span className={styles.skylightLink}>
-                            {vesselName}
                             <Link
                               className={styles.link}
                               to="/$category/$workspaceId/vessel-search"
@@ -184,28 +183,22 @@ function VesselsTable({
                               }}
                               search={{
                                 searchOption: 'advanced',
-                                query: vesselName as string,
-                                ssvid: vessel.id,
-                                flag: [(vessel as any).flag],
+                                query: vesselName,
+                                ...(vessel.skylight_id
+                                  ? { ssvid: vessel.skylight_id }
+                                  : { query: vesselName }),
+                                transmissionDateFrom: end,
+                                transmissionDateTo: start,
+                                flag: [vessel.flag],
                               }}
                             >
                               <IconButton
                                 icon="search"
-                                size="tiny"
+                                size="small"
                                 tooltip={t((t) => t.vessel.skylightSearch)}
                               />
                             </Link>
-                            <a
-                              href={`https://sc-production.skylight.earth/vesseldetails/${vessel.id}?startTime=${start}&endTime=${end}&timesliderStart=${start}&timesliderEnd=${end}`}
-                              target="_blank"
-                              className={styles.link}
-                            >
-                              <IconButton
-                                icon="external-link"
-                                size="tiny"
-                                tooltip={t((t) => t.vessel.skylightLink)}
-                              />
-                            </a>
+                            {vesselName}
                           </span>
                         ) : (
                           <VesselLink
@@ -222,6 +215,19 @@ function VesselsTable({
                             {vesselName}
                           </VesselLink>
                         )}
+                        {!vessel.id && vessel.skylight_id && (
+                          <a
+                            href={getSkylightLink({ skylightId: vessel.skylight_id, start, end })}
+                            target="_blank"
+                            className={styles.link}
+                          >
+                            <IconButton
+                              icon="external-link"
+                              size="tiny"
+                              tooltip={t((t) => t.vessel.skylightLink)}
+                            />
+                          </a>
+                        )}
                         {otherVesselsLabel && (
                           <span className={styles.secondary}>{otherVesselsLabel}</span>
                         )}
@@ -235,9 +241,7 @@ function VesselsTable({
                       <span>{vesselFlag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
-                  {!linkToSkylight && (
-                    <td className={styles.columnSpace}>{vesselType || EMPTY_FIELD_PLACEHOLDER}</td>
-                  )}
+                  <td className={styles.columnSpace}>{vesselType || EMPTY_FIELD_PLACEHOLDER}</td>
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>

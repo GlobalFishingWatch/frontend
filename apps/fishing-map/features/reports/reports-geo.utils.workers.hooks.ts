@@ -13,7 +13,9 @@ const requests = new Map<number, Request>()
 
 function getWorker() {
   if (worker === undefined) {
-    worker = new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url))
+    worker = new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url), {
+      type: 'module',
+    })
     worker.onmessage = ({ data }: MessageEvent<{ id: number; result: FilteredPolygons[] }>) => {
       const request = requests.get(data.id)
       if (request) {

@@ -1,10 +1,11 @@
 import { initReactI18next } from 'react-i18next'
-import i18n from 'i18next'
+import i18n, { type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import { WORKSPACE_ENV } from 'data/workspaces'
+import type { I18nServerState } from 'features/i18n/i18n.server'
 import { Locale } from 'types'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
@@ -33,6 +34,14 @@ if (IS_DEVELOPMENT_ENV) {
   SUPPORTED_LANGUAGES.push('source')
 }
 
+// Read TanStack Router's dehydrated root-loader data before React hydrates.
+// $_TSR.router.matches holds each route's loader result (l); the root match id starts with '__root__'.
+const ssrState: I18nServerState | undefined =
+  typeof window !== 'undefined'
+    ? (window as any)?.$_TSR?.router?.matches?.find((m: any) => m.i?.startsWith('__root__'))?.l
+        ?.i18nState
+    : undefined
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -45,7 +54,12 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    showSupportNotice: false,
+    ...(ssrState && {
+      resources: ssrState.initialI18nStore as Resource,
+      lng: ssrState.initialLanguage,
+      // Resources only contain the SSR language — let the backend load others on demand
+      partialBundledLanguages: true,
+    }),
     backend: {
       loadPath: (lngs: string[], namespaces: string[]) => {
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {

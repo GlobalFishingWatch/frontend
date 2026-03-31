@@ -72,6 +72,9 @@ type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
 }
 
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
+  // skylight detections might not have a vessel_id, but still can use the shipname, flag and skylight_id
+  shipname?: string
+  flag?: string
   skylight_id?: string
   hours?: number
   detections?: number
@@ -306,14 +309,20 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const isSkylightDataset = getIsSkylightDataset(fourWingsDataset?.id)
         const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
           sublayer.flatMap((vessel) => {
-            const { id, vessel_id, ...rest } = vessel as ExtendedFeatureVessel & {
+            const {
+              id: vesselId,
+              vessel_id,
+              ...rest
+            } = vessel as ExtendedFeatureVessel & {
               vessel_id: string
             }
-            if (!id && !vessel_id && !isSkylightDataset) {
+            // vessel_id needed for VIIRS layers
+            const id = vesselId || vessel_id
+            // Skylight migh don't have a vessel_id, but still can use the skylight_id
+            if (!id && !isSkylightDataset) {
               return []
             }
-            // vessel_id needed for VIIRS layers
-            return { ...rest, id: id || vessel_id }
+            return { ...rest, id }
           })
         )
 
@@ -371,7 +380,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         )
 
         const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
-        const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
+        const topActivityVesselIds = topActivityVessels.flatMap(({ id }) => id || [])
         const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
         const sublayersIds = heatmapFeatures.flatMap(

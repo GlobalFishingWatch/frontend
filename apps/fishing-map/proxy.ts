@@ -4,8 +4,7 @@
  * Supports both root (/ and /map) and /monitoring paths for basepath deployments.
  */
 
-const basicAuthEnabled =
-  (process.env['BASIC_AUTH'] || 'none').toLocaleLowerCase() === 'restricted'
+const basicAuthEnabled = (process.env['BASIC_AUTH'] || 'none').toLocaleLowerCase() === 'restricted'
 const basicAuthUser = process.env['BASIC_AUTH_USER']
 const basicAuthPass = process.env['BASIC_AUTH_PASS']
 const basePath = (process.env['VITE_PUBLIC_URL'] || '/map').replace(/\/$/, '') || '/map'

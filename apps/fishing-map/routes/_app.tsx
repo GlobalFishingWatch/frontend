@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { setupRouterSync } from 'router/router-sync'
@@ -20,15 +20,10 @@ export const Route = createFileRoute('/_app')({
 })
 
 function AppLayout() {
-  const storeRef = useRef<AppStore | null>(null)
-  if (!storeRef.current) {
-    storeRef.current = makeStore()
-  }
-  const store = storeRef.current
+  const [store] = useState<AppStore>(() => makeStore())
   const router = useRouter()
 
   useEffect(() => {
-    import('features/i18n/i18n')
     setupRouterSync(router, store)
   }, [router, store])
 
