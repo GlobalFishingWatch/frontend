@@ -12,7 +12,7 @@ jobs:
   integration-tests:
     name: Run Integration Tests
     if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       pull-requests: write
 
@@ -75,10 +75,13 @@ jobs:
         continue-on-error: true
         run: |
           set -euo pipefail
-          yarn nx affected --target=test | tee test-output.txt
+          yarn nx affected \
+            --target=test \
+            --parallel=4 \
+            --base=origin/${{ github.event.pull_request.base.ref }} \
+            --head=HEAD
+            | tee test-output.txt
         env:
-          NX_BASE: origin/${{ github.event.pull_request.base.ref }}
-          NX_HEAD: HEAD
           NEXT_PUBLIC_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
           NEXT_PUBLIC_WORKSPACE_ENV: development
           CI: '1'
