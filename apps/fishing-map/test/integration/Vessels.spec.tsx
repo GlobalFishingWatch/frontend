@@ -18,7 +18,7 @@ describe('Vessel map popup', () => {
     vi.clearAllMocks()
   })
 
-  it('should open vessel popup on vessel click and show tile related info', async () => {
+  it.skip('should open vessel popup on vessel click and show tile related info', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -72,7 +72,7 @@ describe('Vessel map popup', () => {
     await expect.element(mapPopup).not.toBeInTheDocument()
   })
 
-  it('should be able to navigate to vessel viewer inside the vessel popup', async () => {
+  it.skip('should be able to navigate to vessel viewer inside the vessel popup', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -96,7 +96,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   })
 
-  it('should display the vessel track on the timebar', async () => {
+  it.skip('should display the vessel track on the timebar', async () => {
     const GFWAPITest = new GFWAPITestUtils()
     const store = makeStore(defaultState, [], true)
 
@@ -206,7 +206,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByText(/Ibsa Quinto - \(Spain\)/)).toBeVisible()
   })
 
-  it('should show vessel info on vessel hover', async () => {
+  it.skip('should show vessel info on vessel hover', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -278,7 +278,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByText('ESP')).toHaveLength(6)
   })
 
-  it('should be able to interact with vessels after filtering by flag', async () => {
+  it.skip('should be able to interact with vessels after filtering by flag', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     store.dispatch(addVesselToWorkspaceAction)

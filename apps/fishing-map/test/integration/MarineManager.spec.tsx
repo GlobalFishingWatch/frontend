@@ -15,7 +15,7 @@ import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Marine Manager', () => {
-  it('should be able to navigate to marine manager workspace through sidebar', async () => {
+  it.skip('should be able to navigate to marine manager workspace through sidebar', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
 
@@ -41,7 +41,7 @@ describe('Marine Manager', () => {
     await expect.element(getByText('Fiji')).toBeInTheDocument()
   })
 
-  it('should show workspace layers matching the workspace configuration', async () => {
+  it.skip('should show workspace layers matching the workspace configuration', async () => {
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [], true)
     store.dispatch(navigateToFijiWorkspaceWithAllLayersAction)

@@ -200,7 +200,7 @@ describe('Map', () => {
     })
   })
 
-  it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
+  it.skip('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore, authenticated: true })

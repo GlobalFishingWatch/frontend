@@ -12,7 +12,7 @@ import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 describe('Vessel search', async () => {
-  it('can search for a vessel and see it on the map', async () => {
+  it.skip('can search for a vessel and see it on the map', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 

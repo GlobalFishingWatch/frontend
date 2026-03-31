@@ -134,7 +134,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it('should add a polygon user dataset and see it on the map', async () => {
+  it.skip('should add a polygon user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)

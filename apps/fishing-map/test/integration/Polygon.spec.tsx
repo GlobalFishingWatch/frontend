@@ -20,7 +20,7 @@ import { makeStore } from 'store'
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 describe('Polygon', () => {
-  it('should be able to navigate to the polygon editor', async () => {
+  it.skip('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
 

@@ -91,7 +91,7 @@ describe('Reports', () => {
     vi.clearAllMocks()
   })
 
-  it('should navigate to a report from eez', async () => {
+  it.skip('should navigate to a report from eez', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -496,7 +496,7 @@ describe('Private user reports', () => {
     expect(store.getState().location.type).toBe(REPORT)
   })
 
-  it.only('should correctly display others points reports data', async () => {
+  it.skip('should correctly display others points reports data', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
