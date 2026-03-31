@@ -373,7 +373,9 @@ export const parseWorkspace = (
 }
 
 export const URL_STRINGIFY_CONFIG = {
-  encodeValuesOnly: true,
+  // This throws a redirect error in tanstack start as the url missmatched
+  // see https://github.com/TanStack/router/issues/4514
+  // encodeValuesOnly: true,
   strictNullHandling: true,
 }
 

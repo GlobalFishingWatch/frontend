@@ -22,7 +22,7 @@ export const FourwingsClustersWorkerLoader: Loader = {
   options: {
     fourwingsClusters: {
       ...baseFourwingsLoaderOptions,
-      workerUrl: `${PATH_BASENAME}/workers/fourwings-clusters-worker.js`,
+      workerUrl: `${PATH_BASENAME}workers/fourwings-clusters-worker.js`,
       temporalAggregation: false,
     } as ParseFourwingsClustersOptions,
   } as FourwingsClustersLoaderOptions,

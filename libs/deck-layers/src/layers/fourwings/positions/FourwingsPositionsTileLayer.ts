@@ -463,7 +463,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       new IconLayerClass(this.props, {
         id: `${this.props.id}-allPositions`,
         data: positions,
-        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+        iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
         iconMapping: VESSEL_SPRITE_ICON_MAPPING,
         getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vessel' : 'circle'),
         getPosition: (d: any) => d.geometry.coordinates,
@@ -481,7 +481,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       new IconLayerClass(this.props, {
         id: `${this.props.id}-allPositionsHighlight`,
         data: positions,
-        iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
+        iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
         iconMapping: VESSEL_SPRITE_ICON_MAPPING,
         getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vesselHighlight' : 'circle'),
         getPosition: (d: any) => d.geometry.coordinates,

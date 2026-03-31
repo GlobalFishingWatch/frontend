@@ -3,7 +3,7 @@ import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { HeadContent, Outlet } from '@tanstack/react-router'
+import { Outlet } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -63,14 +63,6 @@ import { useAppDispatch } from './app.hooks'
 import Main from './Main'
 
 import styles from './App.module.css'
-
-const TanStackRouterDevtools = import.meta.env.DEV
-  ? lazy(() =>
-      import('@tanstack/react-router-devtools').then(({ TanStackRouterDevtools }) => ({
-        default: TanStackRouterDevtools,
-      }))
-    )
-  : null
 
 declare global {
   interface Window {
@@ -242,11 +234,6 @@ function App() {
           closeButton={false}
         />
       </ErrorBoundary>
-      {import.meta.env.DEV && TanStackRouterDevtools && (
-        <Suspense fallback={null}>
-          <TanStackRouterDevtools position="bottom-right" />
-        </Suspense>
-      )}
     </Fragment>
   )
 }
