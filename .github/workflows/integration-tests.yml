@@ -82,7 +82,7 @@ jobs:
             --head=HEAD
             | tee test-output.txt
         env:
-          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
           NEXT_PUBLIC_WORKSPACE_ENV: development
           CI: '1'
           NX_DAEMON: 'false'
