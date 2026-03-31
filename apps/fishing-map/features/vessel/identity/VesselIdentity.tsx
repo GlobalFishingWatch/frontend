@@ -1,8 +1,11 @@
-import { Fragment, useMemo } from 'react'
+/* eslint-disable @next/next/no-img-element */
+import { Fragment, ReactNode, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import filesaver from 'file-saver'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 
 import type { RegistryExtraFieldValue, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
@@ -45,8 +48,6 @@ import {
   getSkylightLink,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -156,10 +157,8 @@ const VesselIdentity = () => {
     vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
   const hasTMTPermission = useSelector(selectHasTMTPermission)
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
-
-  return (
-    <Fragment>
-      <Tabs tabs={identityTabs} activeTab={identitySource} onTabClick={onTabClick} />
+  const IdentityComponent = () => {
+    return (
       <div className={styles.container}>
         <div className={cx(styles.fieldGroup)}>
           {identitySource === VesselIdentitySourceEnum.Registry && (
@@ -330,8 +329,21 @@ const VesselIdentity = () => {
         )}
         <VesselIdentitySelector />
       </div>
+    )
+  }
+  return (
+    <div className={styles.identityContainer}>
+      <Tabs
+        tabs={identityTabs.map((t) => ({
+          ...t,
+          content: <IdentityComponent />,
+        }))}
+        activeTab={identitySource}
+        onTabClick={onTabClick}
+        className={styles.tabsContainer}
+      />
       {vesselIdentity?.ssvid && (
-        <div className={styles.container}>
+        <div className={cx('card', styles.externalToolsContainer)}>
           <label>{t((t) => t.common.viewIn)}</label>
           <div className={styles.externalToolLinks}>
             <a
@@ -389,7 +401,7 @@ const VesselIdentity = () => {
           </div>
         </div>
       )}
-    </Fragment>
+    </div>
   )
 }
 

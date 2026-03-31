@@ -64,7 +64,7 @@ const RelatedVessels = () => {
       </div>
       <Choice
         options={relatedOptions}
-        size="small"
+        size="medium"
         activeOption={vesselRelatedSubsection}
         className={styles.choice}
         onSelect={changeVesselRelatedSubsection}

@@ -34,7 +34,7 @@ function VesselInfoCorrection() {
         icon="feedback-error"
         tooltip={t((t) => t.layer.vessel_info_correction)}
         tooltipPlacement="bottom"
-        size="small"
+        size="medium"
         onClick={onInfoCorrectionClick}
       />
       {modalOpen && (

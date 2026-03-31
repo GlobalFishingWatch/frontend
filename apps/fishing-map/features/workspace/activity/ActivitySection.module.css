@@ -4,7 +4,7 @@
   justify-content: center;
   position: relative;
   overflow: hidden;
-  height: 2.8rem;
+  height: var(--size-SM);
   transition: var(--transition);
 }
 
@@ -13,23 +13,23 @@
   position: absolute;
   left: var(--space-S);
   top: 50%;
-  bottom: 1.3rem;
+  bottom: calc(var(--size-SM) / 2);
   height: 0.1rem;
-  width: calc(50% - 2.3rem);
+  width: calc(50% - (var(--size-SM) / 2) - var(--space-S));
   background-color: var(--color-border);
-  z-index: -1;
+  z-index: 0;
 }
 
 .bivariateToggleContainer::after {
   content: '';
   position: absolute;
-  left: calc(50% + 1.3rem);
+  left: calc(50% + (var(--size-SM) / 2));
   top: 50%;
-  bottom: 1.3rem;
+  bottom: calc(var(--size-SM) / 2);
   height: 0.1rem;
-  width: calc(50% - 1.3rem);
+  width: calc(50% - (var(--size-SM) / 2));
   background-color: var(--color-border);
-  z-index: -1;
+  z-index: 0;
 }
 
 .hidden {

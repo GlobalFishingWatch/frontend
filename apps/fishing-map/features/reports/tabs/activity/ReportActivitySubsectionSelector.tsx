@@ -108,7 +108,7 @@ function ReportActivitySubsectionSelector() {
 
   return (
     <Choice
-      size="small"
+      size="medium"
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}

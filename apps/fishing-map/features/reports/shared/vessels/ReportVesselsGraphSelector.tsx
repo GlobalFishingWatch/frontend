@@ -123,7 +123,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
 
   return (
     <Choice
-      size="small"
+      size="medium"
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}

@@ -74,7 +74,7 @@ function ReportEnvironmentGraph({
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const { function: aggregationFunction } = getDatasetConfiguration(dataset, 'fourwingsV1')
   return (
-    <div className={styles.container}>
+    <div className={cx('card', styles.container)}>
       <p className={styles.summary}>
         {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}

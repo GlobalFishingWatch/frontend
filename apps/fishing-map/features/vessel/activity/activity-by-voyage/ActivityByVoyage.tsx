@@ -151,9 +151,14 @@ const ActivityByVoyage = () => {
                   events={events}
                   onToggleClick={handleToggleClick}
                   onMapClick={selectVoyageOnMap}
+                  className={cx(
+                    styles.eventGroup,
+                    { [styles.first]: index === 0 },
+                    { [styles.last]: index === groups.length - 1 },
+                    { [styles.expanded]: expanded }
+                  )}
                   // onMapHover={onVoyageMapHover}
                 />
-                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
               </Fragment>
             )
           }}
@@ -175,11 +180,16 @@ const ActivityByVoyage = () => {
                     fitEventBounds(event)
                   }}
                   onInfoClick={handleEventClick}
-                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+                  className={cx(
+                    styles.event,
+                    { [styles.eventExpanded]: expanded },
+                    { [styles.lastEvent]: index === events.length - 1 },
+                    {
+                      [styles.lastEventFromLastGroup]:
+                        index === events.length - 1 && groupIndex === groups.length - 1,
+                    }
+                  )}
                 />
-                {index === events.length - 1 && groupIndex === groups.length - 1 && (
-                  <div style={{ height: '48vh' }}></div>
-                )}
               </Fragment>
             )
           }}

@@ -17,7 +17,7 @@
   width: calc(100% - var(--space-S));
   background-color: var(--color-border);
   opacity: 0;
-  z-index: -1;
+  z-index: 0;
   transition: var(--transition);
 }
 
@@ -27,7 +27,6 @@
 
 .expandedContainerOpen {
   z-index: 1;
-  filter: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), 0.4));
 }
 
 .header {
@@ -50,10 +49,6 @@
 .expandedContainerOpen .dragger,
 .LayerPanel:hover .dragger {
   width: var(--size-S);
-}
-
-.expandedContainerOpen .header {
-  background-color: var(--color-off-white);
 }
 
 .name {
@@ -110,6 +105,7 @@
 
 .properties {
   padding: 0 var(--space-S) var(--space-S);
+  z-index: 1;
 }
 
 .propertiesNoPaddingBlock {

@@ -5,7 +5,7 @@
 
 .expandedContainerOpen {
   z-index: 1;
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-1);
 }
 
 .header {
@@ -67,12 +67,10 @@
     opacity 150ms linear;
   opacity: 0;
   border-top: var(--border);
-  border-bottom: var(--border);
 }
 
 .expandedContainerOpen .expandedContainer {
-  padding: var(--space-S);
-  padding-bottom: var(--space-M);
+  padding-bottom: var(--space-SM);
   background: var(--color-white);
   transform: translateY(4.3rem);
   opacity: 1;

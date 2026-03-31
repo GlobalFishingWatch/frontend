@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react'
+import cx from 'classnames'
 import { lazy, Suspense, useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -85,7 +86,7 @@ function SearchAdvanced({
 
   return (
     <div className={styles.advancedLayout}>
-      <div className={styles.form}>
+      <div className={cx('card', styles.form)}>
         <div className={styles.formFields} ref={ref}>
           {isGFWUser && (
             <div>
@@ -146,7 +147,7 @@ function SearchAdvanced({
           </Button>
         </div>
       </div>
-      <div className={styles.scrollContainer}>
+      <div className={cx('card', styles.scrollContainer)}>
         {searchStatus === AsyncReducerStatus.Aborted &&
         searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>

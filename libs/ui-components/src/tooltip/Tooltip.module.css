@@ -1,7 +1,7 @@
 .tooltip {
   position: relative;
   font: var(--font-M);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background: var(--color-primary-blue);
   color: var(--color-white);
   padding: var(--space-XS) var(--space-S);

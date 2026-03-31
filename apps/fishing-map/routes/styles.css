@@ -7,8 +7,19 @@
   --footer-height: 2.4rem;
   --header-height: 5.2rem;
   --sidebar-width: 32rem;
-  --sidebar-tabs-width: 5.2rem;
+  --sidebar-tabs-width: 4.8rem;
   --switch-height: 4.4rem;
+}
+
+.card {
+  background-color: var(--color-off-white-0);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+  margin: var(--space-S);
+}
+
+.cardContainer .card {
+  background: var(--color-off-white-1);
 }
 
 html:has(.printing) {

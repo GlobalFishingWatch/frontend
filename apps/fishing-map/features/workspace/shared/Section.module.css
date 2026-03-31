@@ -1,10 +1,6 @@
 .container {
-  padding-block: var(--space-XS);
   position: relative;
-}
-
-.container:not(:last-of-type) {
-  border-bottom: var(--border-thick);
+  padding-block: var(--space-XS);
 }
 
 .header {

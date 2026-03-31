@@ -43,7 +43,7 @@ export default function ReportVesselsPlaceholder({
             {/* search */}
             {showSearch && (
               <div
-                style={{ width: '100%', borderRadius: 'var(--border-radius)' }}
+                style={{ width: '100%', borderRadius: 'var(--border-radius-0)' }}
                 className={cx(styles.block, styles.grow, styles.thick, styles.marginV, {
                   [styles.animate]: animate,
                 })}

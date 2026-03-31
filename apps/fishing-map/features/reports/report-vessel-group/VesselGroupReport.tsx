@@ -188,7 +188,7 @@ function VesselGroupReport() {
   }
 
   return (
-    <div>
+    <div className={styles.container}>
       <Tabs
         tabs={sectionTabs}
         activeTab={reportCategory}

@@ -1,10 +1,27 @@
+.tabContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-L);
+}
+
+.section {
+  padding-block: var(--space-XS);
+}
+
+.front {
+  position: relative;
+  z-index: 1;
+}
+
+.singleTabContainer .section {
+  padding-block: 0;
+}
+
 .container {
-  padding: var(--space-M);
+  padding: var(--space-SM);
 }
 
 .subsectionSelectorContainer {
-  padding: var(--space-SM) var(--space-M);
-  padding-bottom: 0;
+  padding: var(--space-S);
 }
 
 .error {

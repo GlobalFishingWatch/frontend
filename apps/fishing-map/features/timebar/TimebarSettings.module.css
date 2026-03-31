@@ -14,8 +14,10 @@
 
 .optionsContainer {
   position: absolute;
-  padding: var(--space-M);
+  padding: var(--space-SM) var(--space-M);
   background-color: var(--color-white);
+  box-shadow: var(--box-shadow-2);
+  border-radius: var(--border-radius-1);
   bottom: 5rem;
   right: 0;
   white-space: nowrap;

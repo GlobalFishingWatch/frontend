@@ -1,3 +1,7 @@
+.container {
+  margin: var(--space-S);
+}
+
 .emptyState {
   height: 100%;
   color: var(--color-secondary-blue);

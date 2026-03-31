@@ -378,18 +378,22 @@ function ActivityReport() {
   ])
 
   return (
-    <Fragment>
+    <div className={styles.section}>
       {activeReportSubCategories && activeReportSubCategories.length > 1 && (
         <div className={styles.subsectionSelectorContainer}>
           <ReportActivitySubsectionSelector />
         </div>
       )}
       {!isVesselGroupReportLocation && (
-        <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+        <div className={cx('card', styles.subsection, styles.front)}>
+          <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+        </div>
       )}
-      <ReportActivityGraph />
-      {ReportComponent}
-    </Fragment>
+      <div className={cx('card', styles.subsection)}>
+        <ReportActivityGraph />
+      </div>
+      <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
+    </div>
   )
 }
 

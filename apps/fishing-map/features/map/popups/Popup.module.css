@@ -4,7 +4,7 @@
 }
 
 .contentWrapper {
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-1);
 }
 
 .arrow {
@@ -28,8 +28,8 @@
     opacity 0.15s linear,
     color 0.15s linear;
   z-index: 1;
-  top: -2rem;
-  right: -2rem;
+  top: -1.6rem;
+  right: -1.6rem;
   background-color: var(--color-primary-blue);
   /* stylelint-disable-next-line color-function-alias-notation */
   color: rgba(var(--white-rgb), 0.8);
@@ -58,7 +58,8 @@
 
 .click .content {
   min-width: var(--sidebar-width);
-  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-1);
+  box-shadow: var(--box-shadow-1);
 }
 
 .click .loading {

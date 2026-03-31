@@ -14,7 +14,7 @@
   padding: var(--space-XS);
   color: var(--color-primary-blue);
   background: var(--color-terthiary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   border: var(--border);
 }
 

@@ -5,9 +5,21 @@
 }
 
 .container {
-  padding: var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-SM);
+  padding-bottom: var(--space-SM);
   position: relative;
+}
+
+.tabsContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-XS);
+}
+
+.identityContainer .externalToolsContainer {
+  padding: var(--space-SM);
+  padding-bottom: var(--space-SM);
+  position: relative;
+  margin-bottom: var(--space-SM);
 }
 
 .fieldGroupContainer {
@@ -46,7 +58,7 @@
   justify-content: flex-end;
   gap: var(--space-S);
   position: absolute;
-  right: var(--space-M);
+  right: var(--space-SM);
 }
 
 .secondary {

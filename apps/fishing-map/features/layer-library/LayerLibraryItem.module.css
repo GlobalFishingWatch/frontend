@@ -14,7 +14,7 @@
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .content {

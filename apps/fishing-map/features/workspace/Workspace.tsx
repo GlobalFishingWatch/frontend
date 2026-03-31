@@ -5,6 +5,8 @@ import Sticky from 'react-sticky-el'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLocationCategory } from 'router/routes.selectors'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
@@ -42,8 +44,6 @@ import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectLocationCategory } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
