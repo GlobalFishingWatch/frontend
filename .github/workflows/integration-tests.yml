@@ -22,53 +22,64 @@ jobs:
         with:
           message: |
             ## ⏳ Integration tests are running...
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 100
-
       - name: Fetch base branch
         run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=100
 
+
+      # --- Setting up dependencies and cache ---------------------------------
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Enable Corepack and set Yarn version
-        run: |
-          corepack enable
-          yarn set version 4.12.0
-
-      - name: Restore yarn cache
+      - name: Cache Yarn dependencies
         id: yarn-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache@v4
         with:
           path: |
             .yarn/cache
             .yarn/install-state.gz
             node_modules
-          key: yarn-${{ github.head_ref }}-${{ hashFiles('yarn.lock') }}
+          key: yarn-${{ github.base_ref }}-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            yarn-${{ github.head_ref }}-
             yarn-${{ github.base_ref }}-
             yarn-
-
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --immutable --inline-builds
-
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-1.58.2
-
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+      - name: Cache Nx Local Cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-local-${{ runner.os }}-${{ hashFiles('**/*.{ts,tsx,js,jsx}') }}
+      - name: Cache Vite Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules/.vite
+            node_modules/.cache/esbuild
+          key: vite-local-${{ runner.os }}-${{ hashFiles('**/vite.config.*') }}
+      - name: Cache TypeScript Build Info
+        uses: actions/cache@v4
+        with:
+          path: "**/*.tsbuildinfo"
+          key: ts-build-${{ runner.os }}-${{ hashFiles('**/tsconfig*.json') }}
+
+      
+      # --- Running tests -----------------------------------------------------
 
       - name: Run affected tests
         id: run-tests
@@ -128,20 +139,3 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v3
         with:
           path: summary.md
-
-      - name: Upload test traces
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-test-traces
-          path: apps/fishing-map/test/integration/__traces__
-
-      - name: Save yarn cache
-        if: always() && steps.yarn-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            .yarn/cache
-            .yarn/install-state.gz
-            node_modules
-          key: ${{ steps.yarn-cache.outputs.cache-primary-key }}
