@@ -76,7 +76,6 @@
 }
 
 .skylightLink {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-XS);
 }
