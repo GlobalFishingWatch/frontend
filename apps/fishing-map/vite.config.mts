@@ -6,9 +6,7 @@ import { defineConfig } from 'vite'
 import { nitro } from 'nitro/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-const DEFAULT_BASE_PATH = process.env.NODE_ENV === 'production' ? '/map' : ''
-const basePath =
-  import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || DEFAULT_BASE_PATH
+const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
 
 export default defineConfig(({ command }) => ({
   root: __dirname,
@@ -20,6 +18,7 @@ export default defineConfig(({ command }) => ({
   server: {
     port: 3003,
     strictPort: true,
+    allowedHosts: ['local.globalfishingwatch.org'],
   },
   plugins: [
     nxViteTsPaths(),

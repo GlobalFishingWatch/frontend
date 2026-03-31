@@ -12,11 +12,9 @@ export function getEnv(key: string, fallback?: string): string | undefined {
   return fallback
 }
 
-export const IS_PRODUCTION = getEnv('NODE_ENV') === 'production' || getEnv('MODE') === 'production'
 export const IS_TEST_ENV = getEnv('NODE_ENV') === 'test' || getEnv('VITEST') === 'true'
 
-const DEFAULT_PATH_BASENAME =
-  getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || IS_PRODUCTION ? '/map/' : '/'
+const DEFAULT_PATH_BASENAME = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/map/'
 export const PATH_BASENAME = DEFAULT_PATH_BASENAME.endsWith('/')
   ? DEFAULT_PATH_BASENAME
   : DEFAULT_PATH_BASENAME + '/'
