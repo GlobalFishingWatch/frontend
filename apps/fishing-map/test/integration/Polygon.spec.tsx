@@ -27,6 +27,8 @@ const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) =
 }
 
 describe('Polygon', () => {
+  const isChromium = /chrome|chromium/i.test(navigator.userAgent)
+
   beforeEach(async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
@@ -96,67 +98,70 @@ describe('Polygon', () => {
       })
   })
 
-  it('should be able to draw a new polygon, see it in the map and delete it', async () => {
-    const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId, getByText } = await render(<App />, {
-      store,
-      jotaiStore,
-      authenticated: true,
-    })
-
-    await userEvent.click(getByTestId('draw-polygon-button'))
-
-    // Define triangle vertices in [longitude, latitude] format
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
+  it.skipIf(!isChromium)(
+    'should be able to draw a new polygon, see it in the map and delete it',
+    async () => {
+      const jotaiStore = createJotaiStore()
+      const store = makeStore(defaultState, [], true)
+      const { getByTestId, getByText } = await render(<App />, {
+        store,
+        jotaiStore,
+        authenticated: true,
       })
-      .toBeDefined()
-    const mapInstance = jotaiStore.get(mapInstanceAtom)
-    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
+
+      await userEvent.click(getByTestId('draw-polygon-button'))
+
+      // Define triangle vertices in [longitude, latitude] format
+      await expect
+        .poll(() => jotaiStore.get(mapInstanceAtom), {
+          timeout: 10000,
+          interval: 500,
+        })
+        .toBeDefined()
+      const mapInstance = jotaiStore.get(mapInstanceAtom)
+      const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+      if (!viewport) {
+        throw new Error('Map viewport not found - cannot project coordinates')
+      }
+      const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
+      const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
+      const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
+
+      // Draw a triangle polygon
+      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+      await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
+      await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
+      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+      await userEvent.type(getByTestId('input-layer-name'), 'Polygon drawing test')
+      await userEvent.click(getByTestId('draw-save-polygon'))
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Wait for all layers to be loaded
+      await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
+      await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
+
+      const expectedLayerProps = {
+        loaded: expect.any(Boolean),
+        cacheHash: expect.any(String),
+      }
+      expect(jotaiStore.get(deckLayersStateAtom)).toMatchObject({
+        basemap: expectedLayerProps,
+        [USER_POLYGON_LAYER_ID]: expectedLayerProps,
+      })
+
+      // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
+      const [x, y] = viewport?.project([-90, 49]) || [150, 200]
+      await userEvent.click(getByTestId('app-main'), { position: { x, y } })
+
+      await expect
+        .element(
+          getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
+        )
+        .toBeVisible()
+
+      //Delete layer after test
+      await cleanupExistingTestPolygon(store)
+      expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
     }
-    const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
-    const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
-    const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
-
-    // Draw a triangle polygon
-    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
-    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-    await userEvent.type(getByTestId('input-layer-name'), 'Polygon drawing test')
-    await userEvent.click(getByTestId('draw-save-polygon'))
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // Wait for all layers to be loaded
-    await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
-    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
-
-    const expectedLayerProps = {
-      loaded: expect.any(Boolean),
-      cacheHash: expect.any(String),
-    }
-    expect(jotaiStore.get(deckLayersStateAtom)).toMatchObject({
-      basemap: expectedLayerProps,
-      [USER_POLYGON_LAYER_ID]: expectedLayerProps,
-    })
-
-    // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
-    const [x, y] = viewport?.project([-90, 49]) || [150, 200]
-    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
-
-    await expect
-      .element(
-        getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
-      )
-      .toBeVisible()
-
-    //Delete layer after test
-    await cleanupExistingTestPolygon(store)
-    expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
-  }, 60000)
+  )
 })
