@@ -69,7 +69,6 @@ export default defineConfig(({ mode }) => {
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       fileParallelism: false,
-      maxWorkers: 1,
       reporters: ['default'],
       coverage: {
         enabled: isCoverageMode,
