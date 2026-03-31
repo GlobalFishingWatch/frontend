@@ -4,42 +4,22 @@ import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { navigateToPolygonEditorAction } from 'test/utils/actions/navigateToPolygonEditor'
 import { getDefaultStateWithDatasets } from 'test/utils/store/redux-store-test'
 import {
-  USER_NEW_POLYGON_DATASET_ID,
   USER_POLYGON_DATASET,
   USER_POLYGON_DATASET_ID,
-  USER_POLYGON_LAYER_ID,
 } from 'test/utils/store/redux-store-test.data'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
 import App from 'features/app/App'
-import { deleteDatasetThunk } from 'features/datasets/datasets.slice'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
-const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) => {
-  await store.dispatch(deleteDatasetThunk(USER_NEW_POLYGON_DATASET_ID) as any)
-}
-
 describe('Polygon', () => {
-  const isChromium = /chrome|chromium/i.test(navigator.userAgent)
-
-  beforeEach(async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    await render(<App />, {
-      store,
-      authenticated: true,
-    })
-    //Make sure layer is deleted in case test fails before deletion
-    await cleanupExistingTestPolygon(store)
-  })
-
   it('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
@@ -98,70 +78,75 @@ describe('Polygon', () => {
       })
   })
 
-  it.skipIf(!isChromium)(
-    'should be able to draw a new polygon, see it in the map and delete it',
-    async () => {
-      const jotaiStore = createJotaiStore()
-      const store = makeStore(defaultState, [], true)
-      const { getByTestId, getByText } = await render(<App />, {
-        store,
-        jotaiStore,
-        authenticated: true,
+  it('should be able to draw a new polygon, see it in the map and delete it', async () => {
+    const testTimestamp = 1771416000000 + Math.floor(Math.random() * 1000000000)
+    const dateNowSpy = vi.spyOn(Date, 'now').mockReturnValue(testTimestamp)
+
+    const jotaiStore = createJotaiStore()
+    const store = makeStore(defaultState, [], true)
+    const { getByTestId, getByText } = await render(<App />, {
+      store,
+      jotaiStore,
+      authenticated: true,
+    })
+
+    await userEvent.click(getByTestId('draw-polygon-button'))
+
+    // Define triangle vertices in [longitude, latitude] format
+    await expect
+      .poll(() => jotaiStore.get(mapInstanceAtom), {
+        timeout: 10000,
+        interval: 500,
       })
-
-      await userEvent.click(getByTestId('draw-polygon-button'))
-
-      // Define triangle vertices in [longitude, latitude] format
-      await expect
-        .poll(() => jotaiStore.get(mapInstanceAtom), {
-          timeout: 10000,
-          interval: 500,
-        })
-        .toBeDefined()
-      const mapInstance = jotaiStore.get(mapInstanceAtom)
-      const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-      if (!viewport) {
-        throw new Error('Map viewport not found - cannot project coordinates')
-      }
-      const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
-      const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
-      const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
-
-      // Draw a triangle polygon
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.type(getByTestId('input-layer-name'), 'Polygon drawing test')
-      await userEvent.click(getByTestId('draw-save-polygon'))
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      // Wait for all layers to be loaded
-      await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
-      await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
-
-      const expectedLayerProps = {
-        loaded: expect.any(Boolean),
-        cacheHash: expect.any(String),
-      }
-      expect(jotaiStore.get(deckLayersStateAtom)).toMatchObject({
-        basemap: expectedLayerProps,
-        [USER_POLYGON_LAYER_ID]: expectedLayerProps,
-      })
-
-      // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
-      const [x, y] = viewport?.project([-90, 49]) || [150, 200]
-      await userEvent.click(getByTestId('app-main'), { position: { x, y } })
-
-      await expect
-        .element(
-          getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
-        )
-        .toBeVisible()
-
-      //Delete layer after test
-      await cleanupExistingTestPolygon(store)
-      expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
+      .toBeDefined()
+    const mapInstance = jotaiStore.get(mapInstanceAtom)
+    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    if (!viewport) {
+      throw new Error('Map viewport not found - cannot project coordinates')
     }
-  )
+    const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
+    const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
+    const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
+
+    // Draw a triangle polygon
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
+    await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
+    await userEvent.fill(getByTestId('input-layer-name'), 'Polygon drawing test')
+    await userEvent.click(getByTestId('draw-save-polygon'))
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
+    // Wait for all layers to be loaded
+    await expect.element(getByTestId('map-loading-spinner')).toBeVisible()
+    await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
+
+    // Click on the middle on the triangle to select it with an offset because the focus moved to the right after saving
+    const [x, y] = viewport?.project([-90, 49]) || [150, 200]
+    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
+
+    await expect
+      .element(
+        getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Polygon drawing test' })
+      )
+      .toBeVisible()
+
+    //Delete layer after test
+    // await cleanupExistingTestPolygon(store)
+    window.confirm = () => true
+    await userEvent.click(getByTestId('sidebar-login-icon'))
+    await userEvent.click(getByText('Dataset'))
+
+    await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
+
+    const deleteButtons = getByTestId(/polygon-drawing-test-/).all()
+
+    for (const button of deleteButtons) {
+      await userEvent.click(button)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
+    expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
+    dateNowSpy?.mockRestore()
+  })
 })

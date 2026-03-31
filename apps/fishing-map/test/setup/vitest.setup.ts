@@ -2,6 +2,7 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
+import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
 import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 
@@ -11,6 +12,19 @@ import '../../pages/styles.css'
 import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
+
+// Add this function in case tests fail before cleanup of test polygons
+// const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) => {
+//   await store.dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }) as any)
+//   const state = store.getState()
+//   // Find and delete test polygons from state
+//   const datasets = selectUserDatasets(state)
+//   for (const dataset of datasets) {
+//     if (dataset.id?.includes('polygon-drawing-test') ||dataset.id?.includes('public-iccat-2019-points')) {
+//       await store.dispatch(deleteDatasetThunk(dataset.id) as any)
+//     }
+//   }
+// }
 
 // Set the system time to February 18th, 2026 at 12:00 PM UTC
 const mockDate = new Date(TEST_END_DATE)
@@ -56,3 +70,10 @@ beforeAll(async () => {
     )
   }
 })
+
+// afterAll(() => {
+//  cleanupExistingTestPolygon(store)
+//   vi.clearAllMocks()
+//   vi.restoreAllMocks()
+//   vi.useRealTimers()
+// })
