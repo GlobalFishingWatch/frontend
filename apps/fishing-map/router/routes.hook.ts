@@ -100,6 +100,12 @@ export const useReplaceLoginUrl = () => {
     const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
     const hasCallbackUrlStorageQuery = currentQuery[DEFAULT_CALLBACK_URL_PARAM]
     const accessToken = currentQuery[ACCESS_TOKEN_STRING]
+
+    if (hasCallbackUrlStorageQuery && window.parent !== window) {
+      window.parent.postMessage({ type: 'LOGIN_SUCCESS', accessToken }, window.location.origin)
+      return
+    }
+
     if (redirectUrl && hasCallbackUrlStorageQuery) {
       const query = {
         ...parseWorkspace(new URL(redirectUrl).search),
