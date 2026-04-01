@@ -75,11 +75,18 @@ import { timebar } from '@globalfishingwatch/i18n-labels'
 console.log(timebar.playback.playAnimation) // "Play animation"
 ```
 
-## Build and publish
+## Build and publish to npm (latest)
 
 ```bash
-nx build i18n-labels
+nx version i18n-labels
 nx publish i18n-labels
+```
+
+## Publish to production (stable)
+
+```bash
+nx publish:stable i18n-labels
+nx purge:stable i18n-labels
 ```
 
 ## License
