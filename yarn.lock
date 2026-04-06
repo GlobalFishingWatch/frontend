@@ -3004,6 +3004,7 @@ __metadata:
     "@types/shpjs": "npm:3.4.7"
     "@types/suncalc": "npm:^1.9.2"
     "@types/topojson-client": "npm:3.1.5"
+    "@types/upng-js": "npm:^2.1.5"
     "@uiw/react-json-view": "npm:^2.0.0-alpha.41"
     "@vitejs/devtools": "npm:^0.1.0"
     "@vitejs/plugin-react": "npm:^6.0.1"
@@ -3012,7 +3013,7 @@ __metadata:
     "@vitest/coverage-istanbul": "npm:4.1.0"
     "@vitest/coverage-v8": "npm:4.1.0"
     "@vitest/ui": "npm:4.1.0"
-    "@xmldom/xmldom": "npm:0.8.11"
+    "@xmldom/xmldom": "npm:0.8.12"
     abortcontroller-polyfill: "npm:1.7.8"
     array.prototype.flatmap: "npm:1.3.3"
     babel-jest: "npm:30.3.0"
@@ -3078,7 +3079,7 @@ __metadata:
     lint-staged: "npm:16.4.0"
     load-json-file: "npm:7.0.1"
     local-ssl-proxy: "npm:^2.0.5"
-    lodash: "npm:4.17.23"
+    lodash: "npm:4.18.1"
     luxon: "npm:3.7.2"
     make-dir-cli: "npm:4.0.0"
     mapbox-gl: "npm:empty-npm-package@1.0.0"
@@ -3147,6 +3148,7 @@ __metadata:
     typescript-eslint: "npm:8.57.0"
     unified: "npm:^11.0.5"
     unist-util-visit: "npm:^5.1.0"
+    upng-js: "npm:^2.1.0"
     use-debounce: "npm:10.1.0"
     usehooks-ts: "npm:3.1.1"
     vite: "npm:8.0.0"
@@ -16333,6 +16335,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/upng-js@npm:^2.1.5":
+  version: 2.1.5
+  resolution: "@types/upng-js@npm:2.1.5"
+  checksum: 10/d09eba084a4bd6eb0b0a791fda229df6398aa22e124bac9990aa301e47c28bbbd83ab43bc9330eb2400b48dc03493242933cfb9b60f03773eaa7911febeccf92
+  languageName: node
+  linkType: hard
+
 "@types/use-sync-external-store@npm:^0.0.6":
   version: 0.0.6
   resolution: "@types/use-sync-external-store@npm:0.0.6"
@@ -17290,10 +17299,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:0.8.11":
-  version: 0.8.11
-  resolution: "@xmldom/xmldom@npm:0.8.11"
-  checksum: 10/f6d6ffdf71cf19d9b3c10e978fad40d2f85453bf5b2aa05be8aa0c5ad13f84690c3153316729213cc652d06ec12c605ddb0aa03886f1d73d51b974b4105d31e3
+"@xmldom/xmldom@npm:0.8.12":
+  version: 0.8.12
+  resolution: "@xmldom/xmldom@npm:0.8.12"
+  checksum: 10/0fc20bc72a057a939ed17afc3fb35d6be2eb19e42aa9ba3c78aa8bdf471da0b4b17c2710581ce6a2cd68ce3995c2ee7d689593a70a26df1273c0c9c29dfca257
   languageName: node
   linkType: hard
 
@@ -20851,9 +20860,9 @@ __metadata:
   linkType: hard
 
 "defu@npm:^6.1.4":
-  version: 6.1.4
-  resolution: "defu@npm:6.1.4"
-  checksum: 10/aeffdb47300f45b4fdef1c5bd3880ac18ea7a1fd5b8a8faf8df29350ff03bf16dd34f9800205cab513d476e4c0a3783aa0cff0a433aff0ac84a67ddc4c8a2d64
+  version: 6.1.6
+  resolution: "defu@npm:6.1.6"
+  checksum: 10/8fc81f8e4484a008d13fceeb79261677c9b887ea6a0c6841b8a87802366d7b4ce63317ba87f08a59f9448b78cf9bbaecf0e0f840a091bbb2edf9a9adff108343
   languageName: node
   linkType: hard
 
@@ -27139,9 +27148,9 @@ __metadata:
   linkType: hard
 
 "lodash-es@npm:^4.2.1":
-  version: 4.17.23
-  resolution: "lodash-es@npm:4.17.23"
-  checksum: 10/1feae200df22eb0bd93ca86d485e77784b8a9fb1d13e91b66e9baa7a7e5e04be088c12a7e20c2250fc0bd3db1bc0ef0affc7d9e3810b6af2455a3c6bf6dde59e
+  version: 4.18.1
+  resolution: "lodash-es@npm:4.18.1"
+  checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce
   languageName: node
   linkType: hard
 
@@ -27236,7 +27245,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.23, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.2.1":
+"lodash@npm:4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.2.1":
   version: 4.17.23
   resolution: "lodash@npm:4.17.23"
   checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
@@ -29804,7 +29820,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pako@npm:1.0.11, pako@npm:^1.0.11, pako@npm:~1.0.2":
+"pako@npm:1.0.11, pako@npm:^1.0.11, pako@npm:^1.0.5, pako@npm:~1.0.2":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 10/1ad07210e894472685564c4d39a08717e84c2a68a70d3c1d9e657d32394ef1670e22972a433cbfe48976cb98b154ba06855dcd3fcfba77f60f1777634bec48c0
@@ -36266,6 +36282,15 @@ __metadata:
   bin:
     update-browserslist-db: cli.js
   checksum: 10/059f774300efb4b084a49293143c511f3ae946d40397b5c30914e900cd5691a12b8e61b41dd54ed73d3b56c8204165a0333107dd784ccf8f8c81790bcc423175
+  languageName: node
+  linkType: hard
+
+"upng-js@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "upng-js@npm:2.1.0"
+  dependencies:
+    pako: "npm:^1.0.5"
+  checksum: 10/ed4098eea838da09b061cfcbf80b453a977fc0e6910249d0b4e54ee8e8a7f2197fd02eda585df54c95883990db085fa695360f9b9c6cdea895fb694d846c97d1
   languageName: node
   linkType: hard
 
