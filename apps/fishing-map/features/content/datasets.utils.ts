@@ -5,6 +5,7 @@ import type { APIPagination, Dataset, DatasetFilters } from '@globalfishingwatch
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { sdk } from 'features/content/strapi-sdk'
+import { Locale } from 'types'
 
 type ParsedSchemaValue = { keyword: string; enum?: Record<string, string> }
 type ParsedSchema = Record<string, ParsedSchemaValue>
@@ -125,7 +126,9 @@ export async function internationalizeDatasets(): Promise<void> {
 
   for (const dataset of datasetsParsed) {
     try {
-      await strapiDatasets.create(dataset)
+      for (const locale of Object.values(Locale)) {
+        await strapiDatasets.create(dataset, { locale: [locale] })
+      }
     } catch (error) {
       console.error(`Failed to create dataset ${dataset.dataset_id}:`, error)
     }
