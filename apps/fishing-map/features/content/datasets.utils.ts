@@ -2,6 +2,7 @@ import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataset, DatasetFilters } from '@globalfishingwatch/api-types'
+import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
 import { sdk } from 'features/content/strapi-sdk'
@@ -25,7 +26,7 @@ async function filterDatasets(datasets: Dataset[]): Promise<Dataset[]> {
   const filteredDatasets = datasets.filter(
     (dataset) =>
       dataset.configuration?.frontend?.translate === true &&
-      !existing.data.some((d: any) => d.dataset_id === dataset.id.split(':')[0])
+      !existing.data.some((d: any) => d.dataset_id === removeDatasetVersion(dataset.id))
   )
   return filteredDatasets
 }
@@ -91,7 +92,7 @@ function parseFilters(filters: DatasetFilters | undefined): ParsedSchema {
 function parseDatasets(datasets: Dataset[]): ParsedDataset[] {
   return datasets.map((dataset) => {
     const { id, name, description, filters } = dataset
-    const idWithoutVersion = id.split(':')[0]
+    const idWithoutVersion = removeDatasetVersion(id)
     const datasetParsed: ParsedDataset = {
       dataset_id: idWithoutVersion,
       name,
@@ -127,7 +128,7 @@ export async function internationalizeDatasets(): Promise<void> {
   for (const dataset of datasetsParsed) {
     try {
       for (const locale of Object.values(Locale)) {
-        await strapiDatasets.create(dataset, { locale: [locale] })
+        await strapiDatasets.create(dataset, { locale: locale })
       }
     } catch (error) {
       console.error(`Failed to create dataset ${dataset.dataset_id}:`, error)
