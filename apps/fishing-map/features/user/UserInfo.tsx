@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -19,7 +18,9 @@ import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { internationalizeDatasets } from 'features/content/datasets.utils'
 import {
+  selectIsGFWAdminUser,
   selectIsGFWUser,
   selectIsUserLogged,
   selectUserData,
@@ -47,6 +48,7 @@ function UserInfo() {
   const router = useRouter()
   const userLogged = useSelector(selectIsUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isGFWAdminUser = useSelector(selectIsGFWAdminUser)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)
   const hasAmbassadorBadge = useSelector(selectHasAmbassadorBadge)
@@ -196,6 +198,11 @@ function UserInfo() {
               </Fragment>
             </Modal>
           </Fragment>
+        )}
+        {isGFWAdminUser && (
+          <Button type="secondary" onClick={() => internationalizeDatasets()}>
+            <span>{'Refresh Strapi datasets'}</span>
+          </Button>
         )}
       </div>
     </div>
