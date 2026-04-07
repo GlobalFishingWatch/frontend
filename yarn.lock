@@ -3147,6 +3147,7 @@ __metadata:
     "@playwright/test": "npm:1.57.0"
     "@reduxjs/toolkit": "npm:2.11.2"
     "@researchgate/react-intersection-observer": "npm:1.3.5"
+    "@strapi/client": "npm:^1.6.1"
     "@swc-node/register": "npm:1.11.1"
     "@swc/cli": "npm:0.8.0"
     "@swc/core": "npm:1.15.18"
@@ -11671,6 +11672,16 @@ __metadata:
   version: 0.3.0
   resolution: "@standard-schema/utils@npm:0.3.0"
   checksum: 10/7084f875d322792f2e0a5904009434c8374b9345b09ba89828b68fd56fa3c2b366d35bf340d9e8c72736ef01793c2f70d350c372ed79845dc3566c58d34b4b51
+  languageName: node
+  linkType: hard
+
+"@strapi/client@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@strapi/client@npm:1.6.1"
+  dependencies:
+    debug: "npm:4.4.0"
+    qs: "npm:6.14.0"
+  checksum: 10/e01582cacb2bbee35721e369d1b06915d1a4b248a28f055f6e955334ac16caaffe57ce8fae2e87eff515622493d62e0bc1fa6f334a728688a10da745d31d3189
   languageName: node
   linkType: hard
 
@@ -20664,6 +20675,18 @@ __metadata:
     supports-color:
       optional: true
   checksum: 10/9ada3434ea2993800bd9a1e320bd4aa7af69659fb51cca685d390949434bc0a8873c21ed7c9b852af6f2455a55c6d050aa3937d52b3c69f796dab666f762acad
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.4.0":
+  version: 4.4.0
+  resolution: "debug@npm:4.4.0"
+  dependencies:
+    ms: "npm:^2.1.3"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 10/1847944c2e3c2c732514b93d11886575625686056cd765336212dc15de2d2b29612b6cd80e1afba767bb8e1803b778caf9973e98169ef1a24a7a7009e1820367
   languageName: node
   linkType: hard
 
@@ -31484,6 +31507,15 @@ __metadata:
   dependencies:
     hookified: "npm:^1.14.0"
   checksum: 10/69a6340d290d6a322b2fc36a958b9a3ee6014c5e5bd2d46ac77498f1b9686efbc1b0ab6d2d1d42b720dad0eeec1ff18a4b29b7618e33435104f8cd6a3909ae70
+  languageName: node
+  linkType: hard
+
+"qs@npm:6.14.0":
+  version: 6.14.0
+  resolution: "qs@npm:6.14.0"
+  dependencies:
+    side-channel: "npm:^1.1.0"
+  checksum: 10/a60e49bbd51c935a8a4759e7505677b122e23bf392d6535b8fc31c1e447acba2c901235ecb192764013cd2781723dc1f61978b5fdd93cc31d7043d31cdc01974
   languageName: node
   linkType: hard
 

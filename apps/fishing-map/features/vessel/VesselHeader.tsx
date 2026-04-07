@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'

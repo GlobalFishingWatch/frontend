@@ -102,7 +102,6 @@ function EventsReport() {
     if (!hasEvents) {
       return (
         <div className={styles.emptyState}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={EventsEmptyState.src}
             alt=""
