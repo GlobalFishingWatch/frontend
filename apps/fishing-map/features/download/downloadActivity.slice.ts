@@ -65,7 +65,7 @@ export type DownloadActivityParams = {
   spatialAggregation?: boolean
   spatialResolution?: SpatialResolution
   temporalResolution?: TemporalResolution
-  groupBy: GroupBy
+  groupBy?: GroupBy
 }
 
 export const downloadActivityLastReportThunk = createAsyncThunk(
