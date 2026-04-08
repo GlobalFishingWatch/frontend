@@ -112,7 +112,7 @@ export const getVesselGroupOptions = (): ChoiceOption<GroupBy>[] => [
 
 export const getGriddedGroupOptions = (): ChoiceOption<GroupBy>[] => [
   {
-    id: GroupBy.None,
+    id: GroupBy.Vessel,
     label: t((t) => t.common.none),
   },
   ...getBaseGroupByOptions(),
