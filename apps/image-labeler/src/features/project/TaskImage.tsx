@@ -224,7 +224,7 @@ export function TaskImage({ thumbnail, scale, open, imageStyle }: TaskImageProps
       {open && scale !== undefined && canvasWidth !== undefined && (
         <Fragment>
           <span className={styles.scaleValue}>
-            {(scale * canvasWidth) / (canvasWidth / SCALE_LINE_WIDTH_PERCENTAGE)} m
+            {(scale * canvasWidth) / (100 / SCALE_LINE_WIDTH_PERCENTAGE)} m
           </span>
           <div className={styles.scaleLine} style={{ width: `${SCALE_LINE_WIDTH_PERCENTAGE}%` }} />
         </Fragment>
