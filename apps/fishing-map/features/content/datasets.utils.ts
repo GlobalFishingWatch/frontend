@@ -1,3 +1,5 @@
+// migrated from https://github.com/GlobalFishingWatch/crowdin-datasets-internationalization
+
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -20,13 +22,31 @@ interface ParsedDataset {
 
 const strapiDatasets = sdk.collection('datasets')
 
+async function fetchAllStrapiDatasets(): Promise<any[]> {
+  const pageSize = 50
+  let page = 1
+  const allData: any[] = []
+
+  while (true) {
+    const response = await strapiDatasets.find({
+      fields: ['dataset_id'],
+      pagination: { page, pageSize },
+    })
+    allData.push(...response.data)
+    if (response.data.length < pageSize) break
+    page++
+  }
+
+  return allData
+}
+
 async function filterDatasets(datasets: Dataset[]): Promise<Dataset[]> {
-  const existing = await strapiDatasets.find({ fields: ['dataset_id'] })
+  const existing = await fetchAllStrapiDatasets()
 
   const filteredDatasets = datasets.filter(
     (dataset) =>
       dataset.configuration?.frontend?.translate === true &&
-      !existing.data.some((d: any) => d.dataset_id === removeDatasetVersion(dataset.id))
+      !existing.some((d: any) => d.dataset_id === removeDatasetVersion(dataset.id))
   )
   return filteredDatasets
 }
@@ -124,11 +144,14 @@ export async function internationalizeDatasets(): Promise<void> {
   const datasetsFiltered = await filterDatasets(initialDatasets.entries)
   const datasetsSorted = sortDatasetsById(datasetsFiltered)
   const datasetsParsed = parseDatasets(datasetsSorted)
-
   for (const dataset of datasetsParsed) {
     try {
+      const newDataset = await strapiDatasets.create(dataset)
       for (const locale of Object.values(Locale)) {
-        await strapiDatasets.create(dataset, { locale: locale })
+        // skipping english locale as it's the default one in Strapi
+        if (locale !== 'en') {
+          await strapiDatasets.update(newDataset.data.documentId, dataset, { locale: locale })
+        }
       }
     } catch (error) {
       console.error(`Failed to create dataset ${dataset.dataset_id}:`, error)

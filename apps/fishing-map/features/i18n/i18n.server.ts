@@ -13,7 +13,7 @@ const SUPPORTED_LANGUAGES = [
   Locale.en,
   Locale.es,
   Locale.fr,
-  Locale.id,
+  // Locale.id,
   Locale.pt,
   'val',
   ...(import.meta.env.DEV ? (['source'] as const) : []),
