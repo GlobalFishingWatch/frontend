@@ -18,7 +18,6 @@ import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { internationalizeDatasets } from 'features/content/datasets.utils'
 import {
   selectIsGFWAdminUser,
   selectIsGFWUser,
@@ -198,11 +197,6 @@ function UserInfo() {
               </Fragment>
             </Modal>
           </Fragment>
-        )}
-        {isGFWAdminUser && (
-          <Button type="secondary" onClick={() => internationalizeDatasets()}>
-            <span>{'Refresh Strapi datasets'}</span>
-          </Button>
         )}
       </div>
     </div>
