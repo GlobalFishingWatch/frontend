@@ -187,11 +187,13 @@ function App() {
   } else if (isWorkspaceLocation) {
     asideWidth = isPrinting ? '34rem' : '39rem'
   }
-
-  /* TODO:RR test if we can remove this */
+  // TODO:RR test if we can remove this
   // if (!i18n.ready) {
   //   return null
   // }
+  if (window.opener) {
+    return null
+  }
 
   return (
     <Fragment>

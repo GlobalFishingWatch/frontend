@@ -1,10 +1,8 @@
-import { forwardRef, useEffect, useState } from 'react'
+import { forwardRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getLoginUrl, useLoginRedirect } from '@globalfishingwatch/react-hooks'
-import { Modal } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
@@ -19,14 +17,11 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
   const { saveRedirectUrl, saveHistoryNavigation } = useLoginRedirect()
   const dispatch = useAppDispatch()
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-  const [iframeOpen, setIframeOpen] = useState(false)
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return
       if (event.data?.type === 'LOGIN_SUCCESS') {
         dispatch(fetchUserThunk({ accessToken: event.data.accessToken }))
-        setIframeOpen(false)
       }
     }
     window.addEventListener('message', handleMessage)
@@ -38,35 +33,30 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
     dispatch(setWorkspaceSuggestSave(false))
     saveRedirectUrl()
     saveHistoryNavigation(workspaceHistoryNavigation)
-    setIframeOpen(true)
+
+    const width = 500
+    const height = 750
+    const left = window.screenX + (window.outerWidth - width) / 2
+    const top = window.screenY + (window.outerHeight - height) / 2
+
+    window.open(
+      getLoginUrl(),
+      'SSO Login',
+      `width=${width},height=${height},left=${left},top=${top}`
+    )
   }
 
   return (
-    <>
-      <a
-        ref={ref}
-        href={getLoginUrl()}
-        onClick={onClick}
-        className={className}
-        title="Login"
-        data-testid="login-link"
-      >
-        {children}
-      </a>
-      {iframeOpen && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          isOpen={iframeOpen}
-          onClose={() => setIframeOpen(false)}
-        >
-          <iframe
-            src={getLoginUrl()}
-            style={{ width: '100%', height: '80vh', border: 'none', minHeight: '600px' }}
-            title="SSO Login"
-          />
-        </Modal>
-      )}
-    </>
+    <a
+      ref={ref}
+      href={getLoginUrl()}
+      onClick={onClick}
+      className={className}
+      title="Login"
+      data-testid="login-link"
+    >
+      {children}
+    </a>
   )
 }
 
