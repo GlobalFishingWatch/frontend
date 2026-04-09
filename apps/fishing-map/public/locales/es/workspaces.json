@@ -56,6 +56,10 @@
       "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba.",
       "name": "Panamá"
     },
+    "rapanui-public": {
+      "description": "The Marine Protected Areas system of Rapa Nui is located on the western edge of the Sala y Gómez Ridge and covers a total surface area of approximately 729,371 km². The Multiple-Use Marine Protected Area (MPA) of Rapa Nui protects 579,368 km² and surrounds the Motu Motiro Hiva Marine Park, which spans 150,000 km². The Rapa Nui Multiple-Use MPA also includes three previously designated small coastal Multiple-Use Conservation Areas: Coral Nui Nui, Motu Tautara, and Hanga Oteo.",
+      "name": "Rapa Nui"
+    },
     "reserva_de_la_biosfera_cmar-public": {
       "description": "Iniciado en 2004, el Corredor Marino del Pacífico Este Tropical es un esfuerzo cooperativo regional voluntario para proteger uno de los ecosistemas más productivos y biodiversos del mundo.",
       "name": "AMPs núcleo del CMAR"
