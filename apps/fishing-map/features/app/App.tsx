@@ -196,7 +196,7 @@ function App() {
     asideWidth = isPrinting ? '34rem' : '39rem'
   }
 
-  if (!i18n.ready) {
+  if (!i18n.ready || window.opener) {
     return null
   }
 

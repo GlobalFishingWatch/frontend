@@ -54,7 +54,9 @@ export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
-  async ({ guest, accessToken: paramToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
+  async (
+    { guest, accessToken: paramToken }: { guest?: boolean; accessToken?: string } = { guest: false }
+  ) => {
     if (guest) {
       return await GFWAPI.fetchGuestUser()
     }

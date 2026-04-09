@@ -152,6 +152,11 @@ export class GFW_API_CLASS {
   }
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+    // We need to avoid requesting tokens from the Login window because the accessToken
+    // needs to be used for the first time in the main window
+    if (window.opener) {
+      return { token: '', refreshToken: '' }
+    }
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )
