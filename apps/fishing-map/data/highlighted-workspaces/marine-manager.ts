@@ -108,6 +108,10 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     ],
   },
   {
+    id: 'rapanui-public',
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-rapanui.jpg`,
+  },
+  {
     id: 'revillagigedo-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-revillagigedo.jpg`,
     reports: [
