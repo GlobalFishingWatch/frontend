@@ -104,10 +104,8 @@ function EventsReport() {
         <div className={styles.emptyState}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={EventsEmptyState.src}
+            src={EventsEmptyState}
             alt=""
-            width={EventsEmptyState.width / 2}
-            height={EventsEmptyState.height / 2}
           />
           {t((t) => t.vessel.noEventsinTimeRange)}
         </div>

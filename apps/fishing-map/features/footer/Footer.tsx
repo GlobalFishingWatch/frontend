@@ -28,7 +28,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
         <div className={styles.partners}>
           {!smallScreen && <span className={styles.text}>{t((t) => t.footer.supportBy)}</span>}
           <a href="https://donabertarelli.com/" rel="noopener noreferrer" target="_blank">
-            <img src={LogoDonaBertarelli.src} alt="Dona Bertarelli" width="129px" />
+            <img src={LogoDonaBertarelli} alt="Dona Bertarelli" width="129px" />
           </a>
         </div>
       )
@@ -37,13 +37,13 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
         <div className={styles.partners}>
           {!smallScreen && <span className={styles.text}>{t((t) => t.footer.convenedBy)}</span>}
           <a href="https://oceana.org/" rel="noopener noreferrer" target="_blank">
-            <img src={LogoOceana.src} alt="Oceana" width="64px" height="24px" />
+            <img src={LogoOceana} alt="Oceana" width="64px" height="24px" />
           </a>
           <a href="https://skytruth.org/" rel="noopener noreferrer" target="_blank">
-            <img src={LogoSkytruth.src} alt="Skytruth" width="79px" height="24px" />
+            <img src={LogoSkytruth} alt="Skytruth" width="79px" height="24px" />
           </a>
           <a href="https://google.com" rel="noopener noreferrer" target="_blank">
-            <img src={LogoGoogle.src} alt="Google" width="57px" height="24px" />
+            <img src={LogoGoogle} alt="Google" width="57px" height="24px" />
           </a>
         </div>
       )

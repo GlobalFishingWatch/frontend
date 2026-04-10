@@ -77,28 +77,28 @@ function UserInfo() {
   const BADGES: Record<Badge, BadgeInfo> = useMemo(
     () => ({
       presenter: {
-        image: presenterImg.src,
-        placeholder: presenterPlaceholderImg.src,
+        image: presenterImg,
+        placeholder: presenterPlaceholderImg,
         userHasIt: hasPresenterBadge,
       },
       teacher: {
-        image: teacherImg.src,
-        placeholder: teacherPlaceholderImg.src,
+        image: teacherImg,
+        placeholder: teacherPlaceholderImg,
         userHasIt: hasTeacherBadge,
       },
       fixer: {
-        image: fixerImg.src,
-        placeholder: fixerPlaceholderImg.src,
+        image: fixerImg,
+        placeholder: fixerPlaceholderImg,
         userHasIt: hasFeedbackProviderBadge,
       },
       ambassador: {
-        image: ambassadorImg.src,
-        placeholder: ambassadorPlaceholderImg.src,
+        image: ambassadorImg,
+        placeholder: ambassadorPlaceholderImg,
         userHasIt: hasAmbassadorBadge,
       },
       impactReporter: {
-        image: impactReporterImg.src,
-        placeholder: impactReporterPlaceholderImg.src,
+        image: impactReporterImg,
+        placeholder: impactReporterPlaceholderImg,
         userHasIt: hasImpactReporterBadge,
       },
     }),

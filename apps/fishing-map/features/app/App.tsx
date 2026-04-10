@@ -221,7 +221,7 @@ function App() {
         {!readOnly && (
           <Menu
             appSelector={ROOT_DOM_ELEMENT}
-            bgImage={menuBgImage.src}
+            bgImage={menuBgImage}
             isOpen={menuOpen}
             onClose={() => setMenuOpen(false)}
             activeLinkId="map-data"

@@ -32,28 +32,28 @@ type HintConfig = {
 
 const hintsConfig: Record<HintId, HintConfig> = {
   fishingEffortHeatmap: {
-    imageUrl: fishingEffortHeatmapImg.src,
+    imageUrl: fishingEffortHeatmapImg,
     placement: 'right',
     pulse: 'light',
     openedByDefault: true,
   },
   filterActivityLayers: {
-    imageUrl: howToFilterActivityLayersImg.src,
+    imageUrl: howToFilterActivityLayersImg,
     placement: 'bottom-end',
     pulse: 'dark',
   },
   clickingOnAGridCellToShowVessels: {
-    imageUrl: clickingOnAGridCellToShowVesselsImg.src,
+    imageUrl: clickingOnAGridCellToShowVesselsImg,
     placement: 'right',
     pulse: 'light',
   },
   changingTheTimeRange: {
-    imageUrl: changingTheTimeRangeImg.src,
+    imageUrl: changingTheTimeRangeImg,
     placement: 'top',
     pulse: 'light',
   },
   areaSearch: {
-    imageUrl: areaSearchImg.src,
+    imageUrl: areaSearchImg,
     placement: 'right',
     pulse: 'light',
   },
