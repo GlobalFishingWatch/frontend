@@ -67,8 +67,6 @@ export const Route = createFileRoute('/_app')({
 function AppLayout() {
   const [store] = useState<AppStore>(() => makeStore())
   const router = useRouter()
-  const { sidePanelId } = Route.useSearch()
-  const { data } = Route.useLoaderData()
 
   useEffect(() => {
     setupRouterSync(router, store)
@@ -77,12 +75,6 @@ function AppLayout() {
   return (
     <Provider store={store}>
       <Suspense fallback={null}>
-        <ContentPanel sidePanelId={sidePanelId}>
-          {data.map((dataset) =>
-            htmlSafeParse(dataset.contentBlocks.map((block) => block.body).join(''))
-          )}
-        </ContentPanel>
-
         <App />
       </Suspense>
     </Provider>

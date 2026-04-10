@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import ContentPanel from 'features/content/ContentPanel'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
@@ -55,7 +56,9 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -90,6 +93,9 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+
+  const { sidePanelId } = Route.useSearch()
+  const { data } = Route.useLoaderData()
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -198,42 +204,54 @@ function App() {
         {/* If we need a memory plot we need to find a new one, this one no longer works  */}
         {/* {showStats && <MemoryStatsComponent corner="topRight" />} */}
       </div>
-      <ErrorBoundary>
-        <SplitView
-          isOpen={sidebarOpen && !isMapDrawing}
-          showToggle={isWorkspaceLocation || vesselLocation}
-          onToggle={onToggle}
-          aside={
-            <Sidebar onMenuClick={onMenuClick}>
-              <Suspense fallback={null}>
-                <Outlet />
-              </Suspense>
-            </Sidebar>
-          }
-          main={<Main />}
-          asideWidth={asideWidth}
-          showAsideLabel={getSidebarName()}
-          showMainLabel={t((t) => t.common.map)}
-          className={styles.splitContainer}
-          asideClassName={styles.aside}
-          mainClassName={styles.main}
-        />
-        {!readOnly && (
-          <Menu
-            appSelector={ROOT_DOM_ELEMENT}
-            bgImage={menuBgImage.src}
-            isOpen={menuOpen}
-            onClose={() => setMenuOpen(false)}
-            activeLinkId="map-data"
-          />
+      <div className={styles.appLayout}>
+        <div className={styles.appLayoutContent}>
+          <ErrorBoundary>
+            <SplitView
+              isOpen={sidebarOpen && !isMapDrawing}
+              showToggle={isWorkspaceLocation || vesselLocation}
+              onToggle={onToggle}
+              aside={
+                <Sidebar onMenuClick={onMenuClick}>
+                  <Suspense fallback={null}>
+                    <Outlet />
+                  </Suspense>
+                </Sidebar>
+              }
+              main={<Main />}
+              asideWidth={asideWidth}
+              showAsideLabel={getSidebarName()}
+              showMainLabel={t((t) => t.common.map)}
+              className={styles.splitContainer}
+              asideClassName={styles.aside}
+              mainClassName={styles.main}
+            />
+
+            {!readOnly && (
+              <Menu
+                appSelector={ROOT_DOM_ELEMENT}
+                bgImage={menuBgImage.src}
+                isOpen={menuOpen}
+                onClose={() => setMenuOpen(false)}
+                activeLinkId="map-data"
+              />
+            )}
+            <AppModals />
+            <ToastContainer
+              position="top-center"
+              className={styles.toastContainer}
+              closeButton={false}
+            />
+          </ErrorBoundary>
+        </div>
+        {sidePanelId && (
+          <ContentPanel sidePanelId={sidePanelId}>
+            {data.map((dataset) =>
+              htmlSafeParse(dataset.contentBlocks.map((block) => block.body).join(''))
+            )}
+          </ContentPanel>
         )}
-        <AppModals />
-        <ToastContainer
-          position="top-center"
-          className={styles.toastContainer}
-          closeButton={false}
-        />
-      </ErrorBoundary>
+      </div>
     </Fragment>
   )
 }

@@ -1,7 +1,11 @@
 .container {
-  display: flex;
-  height: 70vh;
-  min-height: 400px;
+  z-index: 10;
+  position: relative;
+  height: 100%;
+  width: 400px;
+  min-width: 400px;
+  background: var(--color-background);
+  flex-shrink: 0;
 }
 
 .sidebar {

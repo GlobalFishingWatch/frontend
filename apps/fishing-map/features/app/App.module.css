@@ -1,3 +1,15 @@
+.appLayout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.appLayoutContent {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
 .main {
   height: 100%;
   display: flex;
