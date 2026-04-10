@@ -1,4 +1,8 @@
-import { createNewDatasets, getAllDatasetIds } from 'features/content/loaders/datasets'
+import { getAllDatasetIds, getDatasetById } from 'features/content/loaders/datasets'
+import {
+  getAllUserGuideSections,
+  getUserGuideSectionById,
+} from 'features/content/loaders/userGuide'
 
 /**
  * Strapi API - Server functions for fetching data from Strapi
@@ -16,8 +20,6 @@ import { createNewDatasets, getAllDatasetIds } from 'features/content/loaders/da
  * ```
  */
 export const strapiApi = {
-  datasets: {
-    getAllDatasetIds,
-    createNewDatasets,
-  },
+  userGuide: { getUserGuideSectionById, getAllUserGuideSections },
+  datasets: { getDatasetById, getAllDatasetIds },
 }

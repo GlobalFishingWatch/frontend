@@ -3,6 +3,8 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { useReplaceQueryParams } from 'router/routes.hook'
+
 import styles from './UserGuideLink.module.css'
 
 export type UserGuideSection =
@@ -59,27 +61,24 @@ const USER_GUIDE_SECTIONS_ES: Record<UserGuideSection, string> = {
 }
 
 type UserGuideLinkProps = {
-  section: UserGuideSection
+  section: UserGuideSection | string
   className?: string
 }
 
 function UserGuideLink({ section, className }: UserGuideLinkProps) {
   const { t, i18n } = useTranslation()
-  const userGuideLink = i18n.language === 'es' ? USER_GUIDE_LINK_ES : USER_GUIDE_LINK_EN
-  const userGuideSections = i18n.language === 'es' ? USER_GUIDE_SECTIONS_ES : USER_GUIDE_SECTIONS_EN
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const handleClick = () => {
+    replaceQueryParams({ sidePanelId: section })
+  }
   return (
-    <a
-      className={cx(styles.link, className)}
-      href={`${userGuideLink}${userGuideSections[section]}`}
-      target="_blank"
-      rel="noreferrer"
-    >
+    <button className={cx(styles.link, className)} onClick={handleClick} type="button">
       <IconButton size="small" icon="help" className={styles.icon} />{' '}
       <div>
         <label className={styles.label}>{t((t) => t.userGuide.title)}</label>
         <span>{t((t) => t.userGuide[section])}</span>
       </div>
-    </a>
+    </button>
   )
 }
 

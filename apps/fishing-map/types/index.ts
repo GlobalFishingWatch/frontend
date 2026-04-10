@@ -96,6 +96,7 @@ export type AppState = {
   mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
+  sidePanelId?: string
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

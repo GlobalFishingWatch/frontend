@@ -20,14 +20,9 @@ export type StrapiResponse<T> = {
   }
 }
 
-export type UserGuideSection = StrapiBaseAttributes & {
+export type ContentPanelSection = StrapiBaseAttributes & {
   title: string
   contentBlocks: ContentBlocks[]
-}
-
-export type Topics = StrapiBaseAttributes & {
-  title: string | null
-  description: string | null
 }
 
 export type ContentBlocks = {
@@ -43,32 +38,13 @@ export type TImage = {
   url: string
 }
 
-// Author content type
-export type TDataset = {
-  id: string
-  documentId: string
+export type TDataset = StrapiBaseAttributes & {
   dataset_id: string
   name: string
   description: string
   schema: object
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
 }
 
-// Category content type
-export type TCategory = {
-  id: number
-  documentId: string
-  name: string
-  slug: string
-  description?: string
-  createdAt: string
-  updatedAt: string
-  publishedAt: string
-}
-
-// Strapi response wrappers
 export type TStrapiResponseSingle<T> = {
   data: T
   meta?: {
@@ -103,13 +79,4 @@ export type TStrapiResponse<T = null> = {
   meta?: {
     pagination?: TStrapiPagination
   }
-}
-
-type ParsedSchemaValue = { keyword: string; enum?: Record<string, string> }
-type ParsedSchema = Record<string, ParsedSchemaValue>
-
-export interface ParsedDataset {
-  name: string
-  description: string
-  schema?: ParsedSchema
 }

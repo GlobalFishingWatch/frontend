@@ -3,7 +3,6 @@ import { queriesApiReducers } from 'queries'
 
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
-import contentReducer from 'features/content/content.slice'
 import datasetsReducer from 'features/datasets/datasets.slice'
 import dataviewsReducer from 'features/dataviews/dataviews.slice'
 import debugReducer from 'features/debug/debug.slice'
@@ -35,7 +34,6 @@ export const rootReducer = combineReducers({
   ...queriesApiReducers,
   areas: areasReducer,
   bigQuery: bigQueryReducer,
-  content: contentReducer,
   datasets: datasetsReducer,
   dataviews: dataviewsReducer,
   debug: debugReducer,

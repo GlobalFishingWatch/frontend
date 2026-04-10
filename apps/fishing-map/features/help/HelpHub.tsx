@@ -6,7 +6,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useUserGuidePanel } from 'features/content/content.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
@@ -21,12 +21,12 @@ const HELP_COLOR =
 function HelpHub() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
-  const { open: openUserGuide } = useUserGuidePanel()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
   const hintsDismissedArray = Object.keys(hintsDismissed || {})
   const percentageOfHintsSeen = (hintsDismissedArray.length / hintsConfigArray.length) * 100
   const noHelpHintsSeen = percentageOfHintsSeen === 0
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const onHelpClick = () => {
     trackEvent({
@@ -88,7 +88,7 @@ function HelpHub() {
                 category: TrackCategory.HelpHints,
                 action: 'Open user guide modal',
               })
-              openUserGuide()
+              replaceQueryParams({ sidePanelId: 'userGuide' })
             }}
           >
             {t((t) => t.common.userGuide)}
