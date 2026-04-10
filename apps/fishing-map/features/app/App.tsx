@@ -184,6 +184,9 @@ function App() {
   // if (!i18n.ready) {
   //   return null
   // }
+  if (window?.opener) {
+    return null
+  }
 
   return (
     <Fragment>
