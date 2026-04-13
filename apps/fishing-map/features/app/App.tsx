@@ -58,7 +58,6 @@ import {
 } from 'router/routes.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -245,11 +244,15 @@ function App() {
           </ErrorBoundary>
         </div>
         {sidePanelId && (
-          <ContentPanel sidePanelId={sidePanelId}>
-            {data.map((dataset) =>
-              htmlSafeParse(dataset.contentBlocks.map((block) => block.body).join(''))
-            )}
-          </ContentPanel>
+          <ContentPanel
+            sidePanelId={sidePanelId}
+            title={data[0].title}
+            children={
+              data[0].contentBlocks.map((dataset) => {
+                return dataset.body
+              })[0] || ''
+            }
+          />
         )}
       </div>
     </Fragment>

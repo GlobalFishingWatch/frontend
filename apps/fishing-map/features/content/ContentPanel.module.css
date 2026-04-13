@@ -1,144 +1,100 @@
 .container {
-  z-index: 10;
   position: relative;
   height: 100%;
-  width: 400px;
+  width: 540px;
   min-width: 400px;
-  background: var(--color-background);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(229, 240, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  background-size: 100% 518px;
+  background-repeat: no-repeat;
 }
 
-.sidebar {
-  width: 280px;
-  min-width: 280px;
-  border-left: 1px solid var(--color-border);
-  overflow-y: auto;
-  padding: 1rem 0;
+.userGuideBackground {
+  background-color: var(--color-white);
+  background-image: linear-gradient(180deg, rgba(249, 245, 214, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  background-size: 100% 518px;
+  background-repeat: no-repeat;
 }
 
-.tocList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.tocItem {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1.5rem;
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  transition:
-    background-color 0.15s ease,
-    color 0.15s ease;
-}
-
-.tocItem:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
-}
-
-.tocItemActive {
-  background-color: var(--color-bg-selected);
-  color: var(--color-primary-blue);
-  font-weight: 500;
-  border-left: 3px solid var(--color-primary-blue);
+.scrollContainer {
+  flex: 1;
+  overflow: hidden auto;
+  min-height: 0;
 }
 
 .content {
-  flex: 1;
-  overflow-y: auto;
   padding: 1.5rem 2rem;
+  font: var(--font-S);
 }
 
-.sectionTitle {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-  color: var(--color-text-primary);
-}
-
-.sectionContent {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
-}
-
-.contentBlock {
-  margin-bottom: 1.5rem;
-}
-
-.contentBlock h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 2rem 0 1rem 0;
-  color: var(--color-text-primary);
-}
-
-.contentBlock h3 {
-  font-size: 17px;
-  font-weight: 600;
-  margin: 1.5rem 0 0.75rem 0;
-  color: var(--color-text-primary);
-}
-
-.contentBlock p {
-  margin: 0 0 1rem 0;
-}
-
-.contentBlock ul,
-.contentBlock ol {
-  margin: 0 0 1rem 0;
-  padding-left: 1.5rem;
-}
-
-.contentBlock li {
-  margin-bottom: 0.5rem;
-}
-
-.contentBlock a {
-  color: var(--color-secondary-blue);
+.content a,
+.content a:visited {
+  color: var(--color-highlight-orange-rgb);
   text-decoration: none;
 }
 
-.contentBlock a:hover {
-  text-decoration: underline;
+.content b,
+.content strong {
+  font-weight: bold;
 }
 
-.contentBlock img {
+.content p {
+  margin-bottom: var(--space-M);
+}
+
+.content img {
   max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin: 1rem 0;
 }
 
-.contentBlock code {
-  background: var(--color-bg-code);
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-size: 0.9em;
+.content h2 {
+  color: var(--color-primary-blue) !important;
+  font: var(--font-L);
+  padding: var(--space-S) 0;
 }
 
-.contentBlock pre {
-  background: var(--color-bg-code);
-  padding: 1rem;
-  border-radius: 4px;
-  overflow-x: auto;
+.content h3 {
+  font: var(--font-M);
 }
 
-.contentBlock pre code {
-  background: none;
-  padding: 0;
+.content ol,
+.content ul {
+  padding-left: var(--space-M);
+  list-style-type: circle;
 }
 
-.contentBlock blockquote {
-  border-left: 4px solid var(--color-primary-blue);
-  margin: 1rem 0;
-  padding: 0.5rem 0 0.5rem 1rem;
-  color: var(--color-text-secondary);
-  font-style: italic;
+.content > ol,
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
+}
+
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: var(--box-shadow-1);
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
+  background-color: var(--color-white);
+}
+
+.content th {
+  color: white;
+  padding: var(--space-S);
+  text-align: left;
+  font-weight: bold;
+}
+
+.content td {
+  padding: 10px;
+  border-bottom: var(--border);
+}
+
+.content tr:hover {
+  background-color: var(--color-off-white-0);
 }

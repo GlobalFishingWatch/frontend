@@ -1,39 +1,40 @@
-import { type ReactNode, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useMemo } from 'react'
 import cx from 'classnames'
 
-import { Spinner } from '@globalfishingwatch/ui-components'
-
-import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import ContentHeader from 'features/content/ContentHeader'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './ContentPanel.module.css'
 
 type ContentPanelProps = {
-  children: ReactNode
+  children: string
+  title?: string
   sidePanelId?: string
 }
 
-function ContentPanel({ sidePanelId, children }: ContentPanelProps) {
-  console.log('🚀 ~ ContentPanel ~ sidePanelId:', sidePanelId)
-  const isUserLogged = useSelector(selectIsUserLogged)
-
+function ContentPanel({ sidePanelId, title, children }: ContentPanelProps) {
   const content = useMemo(() => {
-    if (!sidePanelId) return null
-    if (!isUserLogged) {
-      return <Spinner />
-    }
-    return children
-  }, [isUserLogged, children, sidePanelId])
+    if (!sidePanelId || !children) return null
+    return htmlSafeParse(children)
+  }, [children, sidePanelId])
 
   return (
-    <div className={cx(styles.container)}>
-      <div className={cx(styles.content)}>
-        <div className={cx('scrollContainer', styles.scrollContainer)}>
-          <h1>test</h1>
+    <div
+      className={cx(
+        styles.container,
+        sidePanelId?.includes('user-guide') && styles.userGuideBackground
+      )}
+    >
+      <div className={cx(styles.header)}>
+        <ContentHeader />
+      </div>
+      <div className={cx(styles.scrollContainer)}>
+        <div className={cx(styles.content)}>
+          <h2>{title}</h2>
           {content}
         </div>
       </div>
+      <div className={cx(styles.userGuideBackground)}></div>
     </div>
   )
 }

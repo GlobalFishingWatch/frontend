@@ -97,6 +97,7 @@ export type AppState = {
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
   sidePanelId?: string
+  sidePanelContent?: 'userGuide' | 'datasets'
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

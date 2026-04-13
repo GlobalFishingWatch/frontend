@@ -24,6 +24,7 @@
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
   --help-yellow-rgb: 255, 248, 205; /* rgb(255, 248, 205) */
+  --highlight-orange-rgb: 226, 46, 18; /* rgb(226, 46, 18); */
   --background-rgb: 230, 230, 240; /* rgb(231, 238, 243) */
   --off-white-0-rgb: 246, 246, 248; /* rgb(246, 246, 248) */
   --off-white-1-rgb: 250, 250, 250; /* rgb(250, 250, 250) */
@@ -37,6 +38,7 @@
   --color-danger-red: rgba(var(--danger-red-rgb));
   --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
+  --color-highlight-orange-rgb: rgba(var(--highlight-orange-rgb));
   --color-help-yellow: rgba(var(--help-yellow-rgb));
   --color-background: rgba(var(--background-rgb));
   --color-off-white-0: rgba(var(--off-white-0-rgb));

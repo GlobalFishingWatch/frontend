@@ -20,7 +20,7 @@ const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
 
 export const Route = createRootRoute({
-  loader: async (_ctx) => {
+  loader: async () => {
     const i18nState = await getI18nState()
     return {
       i18nState,

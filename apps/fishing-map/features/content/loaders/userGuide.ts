@@ -16,7 +16,7 @@ const getUserGuideSections = async (page?: number) => {
       page: page || 1,
       pageSize: 50,
     },
-    populate: ['*'],
+    populate: '*',
   }) as Promise<TStrapiResponseCollection<ContentPanelSection>>
 }
 
