@@ -69,7 +69,7 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
   const { t, i18n } = useTranslation()
   const { replaceQueryParams } = useReplaceQueryParams()
   const handleClick = () => {
-    replaceQueryParams({ sidePanelId: section })
+    replaceQueryParams({ sidePanelContent: 'userGuide', sidePanelId: section })
   }
   return (
     <button className={cx(styles.link, className)} onClick={handleClick} type="button">

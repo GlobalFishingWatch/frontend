@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfiguration, removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getVesselIdFromDatasetConfig,
@@ -18,6 +18,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
 import InfoModalContent from 'features/workspace/shared/InfoModalContent'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './InfoModal.module.css'
 
@@ -37,6 +38,8 @@ const InfoModal = ({
   showAllDatasets,
 }: InfoModalProps) => {
   const { t, ready: i18nReady } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
+
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
@@ -82,13 +85,17 @@ const InfoModal = ({
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
-      setModalInfoOpen(true)
-      if (onModalStateChange) onModalStateChange(true)
+      replaceQueryParams({
+        sidePanelContent: 'datasets',
+        sidePanelId: removeDatasetVersion(dataset?.id || ''),
+      })
+      // setModalInfoOpen(true)
+      // if (onModalStateChange) onModalStateChange(true)
       if (onClick) {
         onClick(e)
       }
     },
-    [onClick, onModalStateChange]
+    [dataset?.id, onClick, replaceQueryParams]
   )
   const onModalClose = useCallback(() => {
     setModalInfoOpen(false)

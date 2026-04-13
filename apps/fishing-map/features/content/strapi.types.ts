@@ -30,14 +30,6 @@ export type ContentBlocks = {
   body: string
 }
 
-// Base image type from Strapi media library
-export type TImage = {
-  id: number
-  documentId: string
-  alternativeText: string | null
-  url: string
-}
-
 export type TDataset = StrapiBaseAttributes & {
   dataset_id: string
   name: string
@@ -45,6 +37,13 @@ export type TDataset = StrapiBaseAttributes & {
   schema: object
 }
 
+// Base image type from Strapi media library
+export type TImage = {
+  id: number
+  documentId: string
+  alternativeText: string | null
+  url: string
+}
 export type TStrapiResponseSingle<T> = {
   data: T
   meta?: {
@@ -79,4 +78,16 @@ export type TStrapiResponse<T = null> = {
   meta?: {
     pagination?: TStrapiPagination
   }
+}
+
+export type SidePanelContentTypeMap = {
+  userGuide: ContentPanelSection
+  datasets: TDataset
+}
+
+export function castSidePanelData<K extends keyof SidePanelContentTypeMap>(
+  _content: K,
+  data: ContentPanelSection | TDataset
+): SidePanelContentTypeMap[K] {
+  return data as SidePanelContentTypeMap[K]
 }

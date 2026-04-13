@@ -32,10 +32,13 @@ export const getAllDatasetIds = createServerFn({
 export const getDatasetById = createServerFn({
   method: 'GET',
 })
-  .inputValidator((documentId: string) => documentId)
-  .handler(async ({ data: documentId }): Promise<TStrapiResponseSingle<TDataset>> => {
-    const response = (await datasets.findOne(documentId, {
+  .inputValidator((datasetId: string) => datasetId)
+  .handler(async ({ data: datasetId }): Promise<TStrapiResponseCollection<TDataset>> => {
+    const response = (await datasets.find({
+      filters: {
+        dataset_id: { $eq: datasetId },
+      },
       locale: 'en',
-    })) as TStrapiResponseSingle<TDataset>
+    })) as TStrapiResponseCollection<TDataset>
     return response
   })

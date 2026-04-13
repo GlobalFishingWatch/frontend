@@ -31,9 +31,14 @@ export const getUserGuideSectionById = createServerFn({
   method: 'GET',
 })
   .inputValidator((documentId: string) => documentId)
-  .handler(async ({ data: documentId }): Promise<TStrapiResponseSingle<ContentPanelSection>> => {
-    const response = (await userGuideSections.findOne(documentId, {
-      locale: 'en',
-    })) as TStrapiResponseSingle<ContentPanelSection>
-    return response
-  })
+  .handler(
+    async ({ data: documentId }): Promise<TStrapiResponseCollection<ContentPanelSection>> => {
+      const response = (await userGuideSections.find({
+        filters: {
+          documentId: { $eq: documentId },
+        },
+        locale: 'en',
+      })) as TStrapiResponseCollection<ContentPanelSection>
+      return response
+    }
+  )

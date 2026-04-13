@@ -67,7 +67,11 @@ function ContentHeader() {
     <div className={cx(styles.sticky)}>
       <div className={cx(styles.sidebarHeader)}>
         <h2>{contentType}</h2>
-        <IconButton icon="close" aria-label={t((t) => t.common.close)} />
+        <IconButton
+          icon="close"
+          aria-label={t((t) => t.common.close)}
+          onClick={() => replaceQueryParams({ sidePanelId: undefined })}
+        />
       </div>
     </div>
   )
