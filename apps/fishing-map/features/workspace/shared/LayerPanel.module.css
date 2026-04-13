@@ -8,7 +8,7 @@
   min-height: var(--size-M);
 }
 
-.LayerPanelContainer:not(:last-child) .LayerPanel::after {
+.LayerPanelContainer:not(:last-of-type) .LayerPanel::after {
   content: '';
   position: absolute;
   left: var(--space-S);
@@ -21,7 +21,7 @@
   transition: var(--transition);
 }
 
-.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+.LayerPanelContainer:not(:last-of-type) .LayerPanel:not(.noBorder)::after {
   opacity: 1;
 }
 

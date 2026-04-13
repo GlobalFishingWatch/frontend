@@ -36,6 +36,7 @@ import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-g
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'router/LoginLink'
@@ -273,11 +274,13 @@ function VesselsSection(): React.ReactElement<any> {
         <SortableContext items={dataviews}>
           {dataviews.length > 0 ? (
             dataviews?.map((dataview) => (
-              <VesselLayerPanel
-                key={dataview.id}
-                dataview={dataview}
-                showApplyToAll={dataviews.length > 1}
-              />
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <VesselLayerPanel
+                  key={dataview.id}
+                  dataview={dataview}
+                  showApplyToAll={dataviews.length > 1}
+                />
+              </LayerPanelContainer>
             ))
           ) : (
             <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>
