@@ -1,15 +1,8 @@
-import { Fragment, lazy, useCallback } from 'react'
+import { Fragment, lazy, Suspense,useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsAnySearchLocation,
-  selectIsUserLocation,
-  selectIsWorkspaceLocation,
-} from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
@@ -41,6 +34,13 @@ import {
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsAnySearchLocation,
+  selectIsUserLocation,
+  selectIsWorkspaceLocation,
+} from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from './CategoryTabs.module.css'
@@ -238,10 +238,12 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
       </ul>
       {modalFeedbackOpen && (
-        <FeedbackModal
-          isOpen={modalFeedbackOpen}
-          onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
-        />
+        <Suspense fallback={null}>
+          <FeedbackModal
+            isOpen={modalFeedbackOpen}
+            onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
+          />
+        </Suspense>
       )}
     </Fragment>
   )

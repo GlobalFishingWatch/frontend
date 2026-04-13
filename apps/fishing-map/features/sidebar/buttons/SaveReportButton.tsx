@@ -1,4 +1,4 @@
-import { Fragment, lazy, useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense,useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
@@ -86,12 +86,14 @@ function SaveReportButton() {
         />
       </LoginButtonWrapper>
       {showReportCreateModal && (
-        <NewReportModal
-          isOpen={showReportCreateModal}
-          onClose={onCloseCreateReport}
-          onFinish={onSaveCreateReport}
-          report={report}
-        />
+        <Suspense fallback={null}>
+          <NewReportModal
+            isOpen={showReportCreateModal}
+            onClose={onCloseCreateReport}
+            onFinish={onSaveCreateReport}
+            report={report}
+          />
+        </Suspense>
       )}
     </Fragment>
   )
