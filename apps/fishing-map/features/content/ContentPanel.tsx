@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import ContentHeader from 'features/content/ContentHeader'
@@ -8,6 +8,10 @@ import { Route } from 'routes/_app'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './ContentPanel.module.css'
+
+const MIN_PANEL_WIDTH = 320
+const MAX_PANEL_WIDTH = 800
+const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 
 type UserGuideContentProps = { data: TUserGuideSection[] }
 
@@ -47,17 +51,72 @@ function ContentPanel() {
   const { data } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
 
-  return sidePanelContent === 'userGuide' ? (
-    <UserGuideContent data={data as TUserGuideSection[]} />
-  ) : (
-    <div className={cx(styles.container)}>
-      <div className={cx(styles.header)}>
-        <ContentHeader title={(data[0] as TDataset).name} />
-      </div>
-      <div className={cx(styles.scrollContainer)}>
-        <div className={cx(styles.content)}>{htmlSafeParse((data[0] as TDataset).description)}</div>
-      </div>
-      <div className={cx(styles.userGuideBackground)}></div>
+  const [isDragging, setIsDragging] = useState(false)
+  const [panelWidth, setPanelWidth] = useState(() => {
+    const stored = localStorage.getItem(PANEL_WIDTH_STORAGE_KEY)
+    return stored ? parseInt(stored) : 540
+  })
+
+  const startCursorX = useRef<number | null>(null)
+  const startWidth = useRef<number | null>(null)
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (startCursorX.current === null || startWidth.current === null) return
+    const cursorXDelta = startCursorX.current - e.clientX
+    let newWidth = Math.min(startWidth.current + cursorXDelta, MAX_PANEL_WIDTH)
+    newWidth = Math.max(MIN_PANEL_WIDTH, newWidth)
+    setPanelWidth(newWidth)
+    localStorage.setItem(PANEL_WIDTH_STORAGE_KEY, newWidth.toString())
+  }, [])
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+    startCursorX.current = null
+    startWidth.current = null
+  }, [])
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
+      }
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp])
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    startCursorX.current = e.clientX
+    startWidth.current = panelWidth
+    setIsDragging(true)
+  }
+
+  return (
+    <div className={styles.panel} style={{ width: `${panelWidth}px` }}>
+      <div
+        role="button"
+        tabIndex={0}
+        className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
+        onMouseDown={handleMouseDown}
+      />
+      {sidePanelContent === 'userGuide' ? (
+        <UserGuideContent data={data as TUserGuideSection[]} />
+      ) : (
+        <div className={cx(styles.container)}>
+          <div className={cx(styles.header)}>
+            <ContentHeader title={(data[0] as TDataset).name} />
+          </div>
+          <div className={cx(styles.scrollContainer)}>
+            <div className={cx(styles.content)}>
+              {htmlSafeParse((data[0] as TDataset).description)}
+            </div>
+          </div>
+          <div className={cx(styles.userGuideBackground)}></div>
+        </div>
+      )}
     </div>
   )
 }
