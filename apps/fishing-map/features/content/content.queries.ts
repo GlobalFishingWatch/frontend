@@ -3,33 +3,23 @@ import { queryOptions, skipToken } from '@tanstack/react-query'
 import type { AppState } from 'types'
 
 import { strapiApi } from './loaders'
-import type {
-  ContentPanelSection,
-  TDataset,
-  TStrapiResponseCollection,
-  TStrapiResponseSingle,
-} from './strapi.types'
+import type { TDataset, TStrapiResponse, TUserGuideSection } from './strapi.types'
 
 type SidePanelContent = NonNullable<AppState['sidePanelContent']>
 
 type StrapiResult =
-  | TStrapiResponseCollection<ContentPanelSection>
-  | TStrapiResponseSingle<ContentPanelSection>
-  | TStrapiResponseCollection<TDataset>
-  | TStrapiResponseSingle<TDataset>
+  //   | TStrapiResponseCollection<TUserGuideSection>
+  | TStrapiResponse<TUserGuideSection>
+  //   | TStrapiResponseCollection<TDataset>
+  | TStrapiResponse<TDataset>
 
 const sidePanelFetcherMap: Record<
   SidePanelContent,
   (sidePanelId?: string) => Promise<StrapiResult>
 > = {
   userGuide: (sidePanelId) =>
-    sidePanelId
-      ? strapiApi.userGuide.getUserGuideSectionById({ data: sidePanelId })
-      : strapiApi.userGuide.getAllUserGuideSections(),
-  datasets: (sidePanelId) =>
-    sidePanelId
-      ? strapiApi.datasets.getDatasetById({ data: sidePanelId })
-      : strapiApi.datasets.getAllDatasetIds(),
+    sidePanelId ? strapiApi.userGuide.getById({ data: sidePanelId }) : strapiApi.userGuide.getAll(),
+  datasets: (sidePanelId) => strapiApi.datasets.getById({ data: sidePanelId! }),
 }
 
 /** Use directly in route loaders — no QueryClient context required */

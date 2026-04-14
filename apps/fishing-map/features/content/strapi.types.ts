@@ -1,3 +1,11 @@
+export type TStrapiResponse<T = null> = {
+  data?: T[]
+  error?: TStrapiError
+  meta?: {
+    pagination?: TStrapiPagination
+  }
+}
+
 export type StrapiBaseAttributes = {
   id: string
   documentId: string
@@ -8,19 +16,7 @@ export type StrapiBaseAttributes = {
   localizations: string[]
 }
 
-export type StrapiResponse<T> = {
-  data: T[]
-  meta: {
-    pagination: {
-      page: number
-      pageSize: number
-      pageCount: number
-      total: number
-    }
-  }
-}
-
-export type ContentPanelSection = StrapiBaseAttributes & {
+export type TUserGuideSection = StrapiBaseAttributes & {
   title: string
   contentBlocks: ContentBlocks[]
 }
@@ -44,20 +40,6 @@ export type TImage = {
   alternativeText: string | null
   url: string
 }
-export type TStrapiResponseSingle<T> = {
-  data: T
-  meta?: {
-    pagination?: TStrapiPagination
-  }
-}
-
-export type TStrapiResponseCollection<T> = {
-  data: T[]
-  meta?: {
-    pagination?: TStrapiPagination
-  }
-}
-
 export type TStrapiPagination = {
   page: number
   pageSize: number
@@ -72,22 +54,22 @@ export type TStrapiError = {
   details?: Record<string, string[]>
 }
 
-export type TStrapiResponse<T = null> = {
-  data?: T
-  error?: TStrapiError
-  meta?: {
-    pagination?: TStrapiPagination
-  }
-}
-
 export type SidePanelContentTypeMap = {
-  userGuide: ContentPanelSection
+  userGuide: TUserGuideSection
   datasets: TDataset
 }
 
 export function castSidePanelData<K extends keyof SidePanelContentTypeMap>(
   _content: K,
-  data: ContentPanelSection | TDataset
+  data: TUserGuideSection | TDataset
 ): SidePanelContentTypeMap[K] {
   return data as SidePanelContentTypeMap[K]
+}
+
+export function isTUserGuideSection(item: unknown): item is TUserGuideSection {
+  return typeof item === 'object' && item !== null && 'contentBlocks' in item
+}
+
+export function isTDataset(item: unknown): item is TDataset {
+  return typeof item === 'object' && item !== null && 'dataset_id' in item
 }

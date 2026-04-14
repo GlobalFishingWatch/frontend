@@ -14,7 +14,7 @@ import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content/ContentPanel'
-import type { ContentPanelSection, TDataset } from 'features/content/strapi.types'
+import type { TDataset, TUserGuideSection } from 'features/content/strapi.types'
 import { castSidePanelData } from 'features/content/strapi.types'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -97,8 +97,6 @@ function App() {
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
 
   const { sidePanelId, sidePanelContent } = Route.useSearch()
-  const { data } = Route.useLoaderData()
-  console.log('🚀 ~ App ~ data:', data)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -247,29 +245,7 @@ function App() {
             />
           </ErrorBoundary>
         </div>
-        {sidePanelContent &&
-          data &&
-          (() => {
-            if (sidePanelContent === 'userGuide') {
-              return (
-                <ContentPanel sidePanelId={sidePanelId}>
-                  {(data as ContentPanelSection[]).map((section) =>
-                    section.contentBlocks.map((block) => (
-                      <Fragment key={block.id}>{htmlSafeParse(block.body)}</Fragment>
-                    ))
-                  )}
-                </ContentPanel>
-              )
-            } else if (sidePanelContent === 'datasets') {
-              const item = data[0] as TDataset
-              return (
-                <ContentPanel sidePanelId={sidePanelId}>
-                  {htmlSafeParse(item.description)}
-                </ContentPanel>
-              )
-            }
-            return null
-          })()}
+        {sidePanelContent && <ContentPanel />}
       </div>
     </Fragment>
   )

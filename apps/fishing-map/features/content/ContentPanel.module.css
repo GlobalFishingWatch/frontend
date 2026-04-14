@@ -22,10 +22,10 @@
   flex: 1;
   overflow: hidden auto;
   min-height: 0;
+  padding: 1.5rem 2rem;
 }
 
 .content {
-  padding: 1.5rem 2rem;
   font: var(--font-S);
 }
 
@@ -97,4 +97,9 @@
 
 .content tr:hover {
   background-color: var(--color-off-white-0);
+}
+
+.listItem {
+  cursor: pointer;
+  padding: var(--space-S) 0;
 }

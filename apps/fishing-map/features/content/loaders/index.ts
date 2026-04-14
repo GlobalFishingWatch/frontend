@@ -1,7 +1,10 @@
-import { getAllDatasetIds, getDatasetById } from 'features/content/loaders/datasets'
 import {
-  getAllUserGuideSections,
-  getUserGuideSectionById,
+  getAll as getAllDatasets,
+  getById as getByIdDatasets,
+} from 'features/content/loaders/datasets'
+import {
+  getAll as getAllUserGuide,
+  getById as getByIdUserGuide,
 } from 'features/content/loaders/userGuide'
 
 /**
@@ -20,6 +23,6 @@ import {
  * ```
  */
 export const strapiApi = {
-  userGuide: { getUserGuideSectionById, getAllUserGuideSections },
-  datasets: { getDatasetById, getAllDatasetIds },
+  userGuide: { getById: getByIdUserGuide, getAll: getAllUserGuide },
+  datasets: { getById: getByIdDatasets, getAll: getAllDatasets },
 }

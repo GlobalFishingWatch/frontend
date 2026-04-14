@@ -1,10 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type {
-  TDataset,
-  TStrapiResponseCollection,
-  TStrapiResponseSingle,
-} from 'features/content/strapi.types'
+import type { TDataset, TStrapiResponse } from 'features/content/strapi.types'
 
 import { sdk } from '../strapi-sdk'
 
@@ -19,26 +15,26 @@ const getDatasetIds = async (page?: number) => {
       pageSize: 50,
     },
     populate: ['cover', 'author', 'category'],
-  }) as Promise<TStrapiResponseCollection<TDataset>>
+  }) as Promise<TStrapiResponse<TDataset>>
 }
 
-export const getAllDatasetIds = createServerFn({
+export const getAll = createServerFn({
   method: 'GET',
-}).handler(async (): Promise<TStrapiResponseCollection<TDataset>> => {
+}).handler(async (): Promise<TStrapiResponse<TDataset>> => {
   const response = await getDatasetIds()
   return response
 })
 
-export const getDatasetById = createServerFn({
+export const getById = createServerFn({
   method: 'GET',
 })
   .inputValidator((datasetId: string) => datasetId)
-  .handler(async ({ data: datasetId }): Promise<TStrapiResponseCollection<TDataset>> => {
+  .handler(async ({ data: datasetId }): Promise<TStrapiResponse<TDataset>> => {
     const response = (await datasets.find({
       filters: {
         dataset_id: { $eq: datasetId },
       },
       locale: 'en',
-    })) as TStrapiResponseCollection<TDataset>
+    })) as TStrapiResponse<TDataset>
     return response
   })

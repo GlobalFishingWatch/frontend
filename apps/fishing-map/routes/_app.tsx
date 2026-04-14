@@ -27,7 +27,6 @@ export const Route = createFileRoute('/_app')({
     try {
       const response = await fetchSidePanelContent(sidePanelContent, sidePanelId)
 
-      // Check if we got data
       if (!response || !response.data) {
         return {
           status: 'empty',

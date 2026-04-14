@@ -88,7 +88,7 @@ function HelpHub() {
                 category: TrackCategory.HelpHints,
                 action: 'Open user guide modal',
               })
-              replaceQueryParams({ sidePanelId: 'userGuide' })
+              replaceQueryParams({ sidePanelContent: 'userGuide' })
             }}
           >
             {t((t) => t.common.userGuide)}

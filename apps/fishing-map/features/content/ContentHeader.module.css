@@ -1,7 +1,7 @@
 .sidebarHeader {
   display: flex;
   align-items: center;
-  padding: 0 var(--space-S);
+  padding: 0 var(--space-M);
   height: var(--header-height);
   justify-content: space-between;
 }

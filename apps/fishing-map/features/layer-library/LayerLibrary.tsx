@@ -296,7 +296,6 @@ const LayerLibrary: FC = () => {
           <InputText
             onChange={onInputChange}
             value={searchQuery || ''}
-            className={styles.input}
             type="search"
             disabled={!i18nReady}
             placeholder={t((t) => t.search.title, {
