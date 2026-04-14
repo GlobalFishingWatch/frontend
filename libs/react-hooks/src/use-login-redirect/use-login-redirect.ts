@@ -37,7 +37,7 @@ export const getLoginUrl = (callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARA
   if (typeof window !== 'undefined') {
     const { origin, pathname } = window.location
     return GFWAPI.getLoginUrl(
-      `${origin}${pathname}${callbackUrlParam ? `?${callbackUrlParam}=true` : ''}`
+      `${origin}${pathname}?isPopup=true${callbackUrlParam ? `&${callbackUrlParam}=true` : ''}`
     )
   }
   return ''
