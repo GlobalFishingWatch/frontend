@@ -36,6 +36,7 @@ export const selectLatestAvailableDataDate = createSelector(
 export const selectActivityCategory = selectWorkspaceStateProperty('activityCategory')
 export const selectBivariateDataviews = selectWorkspaceStateProperty('bivariateDataviews')
 export const selectReadOnly = selectWorkspaceStateProperty('readOnly')
+export const selectScreenshotMode = selectWorkspaceStateProperty('screenshotMode')
 export const selectSidebarOpen = selectWorkspaceStateProperty('sidebarOpen')
 export const selectAreMapRulersVisible = selectWorkspaceStateProperty('mapRulersVisible')
 export const selectMapRulers = selectWorkspaceStateProperty('mapRulers')
