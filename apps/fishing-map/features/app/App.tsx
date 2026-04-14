@@ -14,8 +14,6 @@ import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content/ContentPanel'
-import type { TDataset, TUserGuideSection } from 'features/content/strapi.types'
-import { castSidePanelData } from 'features/content/strapi.types'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
@@ -60,7 +58,6 @@ import {
 } from 'router/routes.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -96,7 +93,7 @@ function App() {
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
 
-  const { sidePanelId, sidePanelContent } = Route.useSearch()
+  const { sidePanelContent } = Route.useSearch()
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -245,7 +242,13 @@ function App() {
             />
           </ErrorBoundary>
         </div>
-        {sidePanelContent && <ContentPanel />}
+        {sidePanelContent && (
+          <ErrorBoundary>
+            <Suspense fallback={<div>Loading...</div>}>
+              <ContentPanel />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </div>
     </Fragment>
   )

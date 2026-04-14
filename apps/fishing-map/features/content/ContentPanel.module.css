@@ -123,3 +123,24 @@
   cursor: pointer;
   padding: var(--space-S) 0;
 }
+
+.subtitle {
+  font: var(--font-S);
+  text-transform: uppercase;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  margin-right: var(--space-S);
+}
+
+.sourceSelector {
+  padding-top: var(--space-M);
+  padding-inline: var(--space-M);
+  padding-bottom: 0;
+}
+
+.title {
+  flex: 1;
+}

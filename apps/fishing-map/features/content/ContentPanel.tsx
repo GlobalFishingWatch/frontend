@@ -16,15 +16,30 @@ const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 type UserGuideContentProps = { data: TUserGuideSection[] }
 
 const UserGuideContent = ({ data }: UserGuideContentProps) => {
-  const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(false)
+  const { sidePanelId } = Route.useSearch()
+  const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return data
+    const q = searchQuery.toLowerCase()
+    return data.filter(
+      (s) =>
+        s.title.toLowerCase().includes(q) ||
+        s.contentBlocks.some((block) => block.body.toLowerCase().includes(q))
+    )
+  }, [data, searchQuery])
+
   const listItems = useMemo(
-    () =>
-      data.map((section) => ({
-        id: section.documentId,
-        label: section.title,
-      })),
-    [data]
+    () => filteredSections.map((s) => ({ id: s.id, label: s.title })),
+    [filteredSections]
   )
+
+  const selectedSection = useMemo(() => {
+    return sidePanelId
+      ? (data.find((s) => s.id.toString() === sidePanelId.toString()) ?? data[0])
+      : data[0]
+  }, [data, sidePanelId])
 
   return (
     <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
@@ -35,11 +50,16 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
       </div>
       <div className={cx(styles.scrollContainer)}>
         {isTableOfContentsOpen ? (
-          <TableOfContents listItems={listItems} />
+          <TableOfContents
+            listItems={listItems}
+            onClick={setIsTableOfContentsOpen}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
         ) : (
           <div className={cx(styles.content)}>
-            <h2>{data[0].title}</h2>
-            {data.map((section) => section.contentBlocks.map((block) => htmlSafeParse(block.body)))}
+            <h2>{selectedSection.title}</h2>
+            {selectedSection.contentBlocks.map((block) => htmlSafeParse(block.body))}
           </div>
         )}
       </div>
@@ -52,10 +72,7 @@ function ContentPanel() {
   const { sidePanelContent } = Route.useSearch()
 
   const [isDragging, setIsDragging] = useState(false)
-  const [panelWidth, setPanelWidth] = useState(() => {
-    const stored = localStorage.getItem(PANEL_WIDTH_STORAGE_KEY)
-    return stored ? parseInt(stored) : 540
-  })
+  const [panelWidth, setPanelWidth] = useState(540)
 
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
@@ -93,6 +110,8 @@ function ContentPanel() {
     startWidth.current = panelWidth
     setIsDragging(true)
   }
+
+  if (!data) return <div className={styles.panel}>No content found.</div>
 
   return (
     <div className={styles.panel} style={{ width: `${panelWidth}px` }}>
