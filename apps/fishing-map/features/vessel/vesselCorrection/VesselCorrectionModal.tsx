@@ -10,6 +10,7 @@ import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import flags from 'data/flags'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { getModalParent } from 'features/modals/Modals'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -150,6 +151,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.top}>

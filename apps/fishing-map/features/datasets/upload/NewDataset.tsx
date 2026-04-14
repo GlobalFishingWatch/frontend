@@ -8,7 +8,7 @@ import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types
 import { getDatasetFiltersAllowed } from '@globalfishingwatch/datasets-client'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
+import { NEW_DATASET_MODAL_ID, ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -18,6 +18,7 @@ import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
 import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { getModalParent } from 'features/modals/Modals'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection/UserSection'
@@ -34,7 +35,6 @@ import {
 
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
-import { NEW_DATASET_MODAL_ID } from 'data/config'
 
 import styles from './NewDataset.module.css'
 
@@ -196,6 +196,7 @@ function NewDataset() {
       className={style === 'transparent' ? styles.transparentOverlay : undefined}
       size={style === 'transparent' ? 'fullscreen' : 'default'}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>

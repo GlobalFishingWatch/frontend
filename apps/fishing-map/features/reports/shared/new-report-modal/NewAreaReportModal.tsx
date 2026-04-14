@@ -18,6 +18,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/Modals'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk, updateReportThunk } from 'features/reports/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -161,6 +162,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       <form onSubmit={isEditing ? updateReport : createReport}>
         <div className={styles.row}>

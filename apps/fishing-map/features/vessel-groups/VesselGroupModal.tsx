@@ -26,6 +26,7 @@ import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.s
 import UserGuideLink from 'features/help/UserGuideLink'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { getModalParent } from 'features/modals/Modals'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,
@@ -489,6 +490,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       contentClassName={styles.modalContainer}
       onClose={() => onBackClick('close')}
       size="fullscreen"
+      parentSelector={getModalParent}
     >
       <div className={styles.modalContent}>
         <div className={styles.parameters}>

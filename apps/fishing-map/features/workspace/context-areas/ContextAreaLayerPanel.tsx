@@ -34,6 +34,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import { getModalParent } from 'features/modals/Modals'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
@@ -355,6 +356,7 @@ function LayerPanel({
                     isOpen={modalDataWarningOpen}
                     onClose={onDataWarningModalClose}
                     contentClassName={styles.modalContent}
+                    parentSelector={getModalParent}
                   >
                     {htmlSafeParse(t((t: any) => t.dataview[dataview?.id].dataWarningDetail))}
                   </Modal>

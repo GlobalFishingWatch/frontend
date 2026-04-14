@@ -10,6 +10,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import type I18nNamespaces from 'features/i18n/i18n.types'
+import { getModalParent } from 'features/modals/Modals'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectVesselSection } from '../vessel.config.selectors'
@@ -71,6 +72,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         contentClassName={
           debugOptions.dataTerminologyIframe ? styles.iFramecontent : styles.content
         }
+        parentSelector={getModalParent}
       >
         {debugOptions.dataTerminologyIframe ? (
           <Fragment>

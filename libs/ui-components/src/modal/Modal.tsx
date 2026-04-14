@@ -25,6 +25,7 @@ interface ModalProps {
   size?: 'fullscreen' | 'default' | 'auto'
   children: React.ReactNode
   onClose: (e: React.MouseEvent) => void
+  parentSelector?: () => HTMLElement
 }
 
 export function Modal(props: ModalProps) {
@@ -33,6 +34,7 @@ export function Modal(props: ModalProps) {
     onClose,
     appSelector = 'root',
     header = true,
+    parentSelector,
     title,
     portalClassName,
     className,
@@ -75,6 +77,7 @@ export function Modal(props: ModalProps) {
       appElement={appElement}
       isOpen={isOpen}
       onRequestClose={onClose}
+      parentSelector={parentSelector}
     >
       {header ? (
         <div className={cx(styles.header, headerClassName, { [styles.withTitle]: title })}>

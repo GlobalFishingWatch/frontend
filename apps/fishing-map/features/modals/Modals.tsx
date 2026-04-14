@@ -89,6 +89,8 @@ const ResetWorkspaceConfig = {
   },
 }
 
+export const getModalParent = () => document.getElementById('app-layout-content') as HTMLElement
+
 const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
@@ -145,6 +147,7 @@ const AppModals = () => {
         onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
         contentClassName={styles.layerLibraryModal}
         size="fullscreen"
+        parentSelector={getModalParent}
       >
         <LayerLibrary />
       </Modal>
@@ -160,6 +163,7 @@ const AppModals = () => {
         shouldCloseOnEsc
         onClose={dispatchToggleDebugMenu}
         contentClassName={styles.debugMenuModal}
+        parentSelector={getModalParent}
       >
         <DebugMenu />
       </Modal>
@@ -175,6 +179,7 @@ const AppModals = () => {
           isOpen={editorActive && !anyAppModalOpen}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
+          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <EditorMenu />
@@ -194,6 +199,7 @@ const AppModals = () => {
             isOpen={bigqueryActive}
             onClose={dispatchBigQueryMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <BigQueryModal />
@@ -210,6 +216,7 @@ const AppModals = () => {
             isOpen={turningTidesActive}
             onClose={dispatchTurningTidesMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <TurningTidesModal />
@@ -225,6 +232,7 @@ const AppModals = () => {
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
           contentClassName={styles.workspaceGeneratorModal}
           header={false}
+          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <WorkspaceGenerator />

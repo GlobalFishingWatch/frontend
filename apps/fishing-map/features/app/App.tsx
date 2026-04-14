@@ -206,7 +206,7 @@ function App() {
         {/* {showStats && <MemoryStatsComponent corner="topRight" />} */}
       </div>
       <div className={styles.appLayout}>
-        <div className={styles.appLayoutContent}>
+        <div id="app-layout-content" className={styles.appLayoutContent}>
           <ErrorBoundary>
             <SplitView
               isOpen={sidebarOpen && !isMapDrawing}
