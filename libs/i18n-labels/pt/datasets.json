@@ -2608,7 +2608,7 @@
     "description": "Anchorages footprint using the convex hull grouped by portId"
   },
   "public-global-ais-ports": {
-    "name": "Ports v1 for AIS v4",
+    "name": "Visitas portuárias (AIS)",
     "description": "Named ports v1"
   },
   "public-global-all-tracks": {
@@ -3122,7 +3122,7 @@
     "description": "Anchorages footprint using the convex hull grouped by portId"
   },
   "public-global-vms-ports": {
-    "name": "Ports v1 for AIS v4",
+    "name": "Visitas portuárias (AIS)",
     "description": "Named ports v1"
   },
   "public-global-water-salinity-max": {
@@ -3281,7 +3281,7 @@
     }
   },
   "public-location-labels": {
-    "name": "Location Labels",
+    "name": "Legendas",
     "description": "Combination of countries, places and seas dataset labels"
   },
   "public-mangroves": {
