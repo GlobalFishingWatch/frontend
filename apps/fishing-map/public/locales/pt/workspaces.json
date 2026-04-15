@@ -84,7 +84,7 @@
       "name": "Carrier Vessel Portal"
     },
     "deep-sea-mining-public": {
-      "cta": "Explore the portal",
+      "cta": "Explore no portal",
       "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
       "name": "Deep Sea Mining Watch"
     },
