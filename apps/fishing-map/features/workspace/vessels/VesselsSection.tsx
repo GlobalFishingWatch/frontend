@@ -146,7 +146,7 @@ function VesselsSection(): React.ReactElement<any> {
       })
       .map((d) => d.id)
     replaceQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
-  }, [dataviews, resources, sortOrder])
+  }, [dataviews, resources, sortOrder, replaceQueryParams])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -158,6 +158,7 @@ function VesselsSection(): React.ReactElement<any> {
     router.navigate({
       to: ROUTE_PATHS.WORKSPACE_SEARCH,
       params: { category, workspaceId },
+      search: (prev) => prev,
     })
   }, [router, workspace])
 
