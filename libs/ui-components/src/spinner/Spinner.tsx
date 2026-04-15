@@ -10,14 +10,11 @@ interface SpinnerProps {
   inline?: boolean
 }
 
-const spinnerVarColor =
-  (typeof window !== 'undefined' &&
-    window.getComputedStyle(document.documentElement).getPropertyValue('--color-primary-blue')) ||
-  'rgb(22, 63, 137)'
+const DEFAULT_SPINNER_COLOR = 'var(--color-primary-blue, rgb(22, 63, 137))'
 
 export function Spinner(props: SpinnerProps) {
   const {
-    color = spinnerVarColor || '#22447e',
+    color = DEFAULT_SPINNER_COLOR,
     size = 'default',
     className = '',
     inline = false,
