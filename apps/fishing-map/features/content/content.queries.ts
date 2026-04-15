@@ -9,16 +9,18 @@ type StrapiResult = TStrapiResponse<TUserGuideSection> | TStrapiResponse<TDatase
 
 const sidePanelFetcherMap: Record<
   SidePanelContent,
-  (sidePanelId?: string) => Promise<StrapiResult>
+  (sidePanelId?: string, locale?: string) => Promise<StrapiResult>
 > = {
-  userGuide: () => strapiApi.userGuide.getAll(),
-  datasets: (sidePanelId) => strapiApi.datasets.getById({ data: sidePanelId! }),
+  userGuide: (_, locale) => strapiApi.userGuide.getAll({ data: { locale } }),
+  datasets: (sidePanelId, locale) =>
+    strapiApi.datasets.getById({ data: { datasetId: sidePanelId!, locale } }),
 }
 
 export function fetchSidePanelContent(
   sidePanelContent: SidePanelContent | undefined,
-  sidePanelId?: string
+  sidePanelId?: string,
+  locale?: string
 ) {
   if (!sidePanelContent) return null
-  return sidePanelFetcherMap[sidePanelContent](sidePanelId)
+  return sidePanelFetcherMap[sidePanelContent](sidePanelId, locale)
 }

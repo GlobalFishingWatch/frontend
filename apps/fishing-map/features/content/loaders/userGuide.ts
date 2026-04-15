@@ -6,42 +6,51 @@ import { sdk } from '../strapi-sdk'
 
 const userGuideSections = sdk.collection('user-guide-sections')
 
-const getUserGuideSections = async (page?: number) => {
+const getUserGuideSections = async (locale?: string, page?: number) => {
   return userGuideSections.find({
     pagination: {
       page: page || 1,
       pageSize: 50,
     },
+    sort: ['createdAt:asc'],
     populate: '*',
+    locale: locale || 'en',
   }) as Promise<TStrapiResponse<TUserGuideSection>>
 }
 
 export const getAll = createServerFn({
   method: 'GET',
-}).handler(async (): Promise<TStrapiResponse<TUserGuideSection>> => {
-  const response = await getUserGuideSections()
-  return response
 })
+  .inputValidator((params: { locale?: string } = {}) => params)
+  .handler(async ({ data: { locale } }): Promise<TStrapiResponse<TUserGuideSection>> => {
+    const response = await getUserGuideSections(locale)
+    return response
+  })
 
 export const getById = createServerFn({
   method: 'GET',
 })
-  .inputValidator((documentId: string) => documentId)
-  .handler(async ({ data: documentId }): Promise<TStrapiResponse<TUserGuideSection>> => {
-    const response = (await userGuideSections.find({
-      filters: {
-        $or: [
-          {
-            title: { $contains: documentId },
-          },
-          {
-            documentId: { $eq: documentId },
-          },
-        ],
-      },
-      populate: '*',
-      locale: 'en',
-    })) as TStrapiResponse<TUserGuideSection>
+  .inputValidator((params: { documentId: string; locale?: string }) => params)
+  .handler(
+    async ({ data: { documentId, locale } }): Promise<TStrapiResponse<TUserGuideSection>> => {
+      const response = (await userGuideSections.find({
+        filters: {
+          $or: [
+            {
+              id: { $eq: documentId },
+            },
+            {
+              title: { $contains: documentId },
+            },
+            {
+              documentId: { $eq: documentId },
+            },
+          ],
+        },
+        populate: '*',
+        locale: locale || 'en',
+      })) as TStrapiResponse<TUserGuideSection>
 
-    return response
-  })
+      return response
+    }
+  )
