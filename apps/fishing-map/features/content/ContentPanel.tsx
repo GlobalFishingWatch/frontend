@@ -68,7 +68,7 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
 }
 
 function ContentPanel() {
-  const { data } = Route.useLoaderData()
+  const { status, data } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
 
   const [isDragging, setIsDragging] = useState(false)
@@ -111,7 +111,7 @@ function ContentPanel() {
     setIsDragging(true)
   }
 
-  if (!data) return <div className={styles.panel}>No content found.</div>
+  if (!data || status === 'empty' || status === 'error') return null
 
   return (
     <div className={styles.panel} style={{ width: `${panelWidth}px` }}>

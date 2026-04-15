@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 
@@ -10,37 +10,26 @@ import {
   isHeatmapVectorsDataview,
 } from '@globalfishingwatch/dataviews-client'
 import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
-import { Choice, IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
+import { Choice, Select } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
 import InfoModalContent from 'features/workspace/shared/InfoModalContent'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
-import styles from './InfoModal.module.css'
+import styles from './ContentPanel.module.css'
 
-type InfoModalProps = {
+type DatasetInfoContentProps = {
   dataview: UrlDataviewInstance
   onClick?: (e: React.MouseEvent) => void
   className?: string
   showAllDatasets?: boolean
   onModalStateChange?: (open: boolean) => void
 }
-
-const InfoModal = ({
-  dataview,
-  onClick,
-  className,
-  onModalStateChange,
-  showAllDatasets,
-}: InfoModalProps) => {
+export const InfoContainer = ({ dataview, showAllDatasets }: DatasetInfoContentProps) => {
   const { t, ready: i18nReady } = useTranslation()
-  const { replaceQueryParams } = useReplaceQueryParams()
 
-  const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const options = useMemo(() => {
@@ -83,24 +72,6 @@ const InfoModal = ({
   }, [dataview, showAllDatasets, isHeatmapVector, i18nReady])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      replaceQueryParams({
-        sidePanelContent: 'datasets',
-        sidePanelId: dataset?.id,
-      })
-      // setModalInfoOpen(true)
-      // if (onModalStateChange) onModalStateChange(true)
-      if (onClick) {
-        onClick(e)
-      }
-    },
-    [dataset?.id, onClick, replaceQueryParams]
-  )
-  const onModalClose = useCallback(() => {
-    setModalInfoOpen(false)
-    if (onModalStateChange) onModalStateChange(false)
-  }, [onModalStateChange])
 
   const isSingleTab = options?.length === 1
 
@@ -109,7 +80,6 @@ const InfoModal = ({
 
   let tooltip: string = t((t) => t.layer.seeDescription)
   const { importLogs = '' } = getDatasetConfiguration(dataset, 'userContextLayerV1')
-  const { geometryType } = getDatasetConfiguration(dataset)
   if (datasetImporting) {
     tooltip = t((t) => t.dataset.importing)
   }
@@ -119,20 +89,6 @@ const InfoModal = ({
   const selectedDataset = useMemo(() => {
     return dataview.datasets?.find((d) => d.id === activeTab?.id)
   }, [dataview.datasets, activeTab])
-
-  if (geometryType === 'draw') {
-    return datasetImporting || datasetError ? (
-      <IconButton
-        size="small"
-        icon={'info'}
-        type={datasetError ? 'warning' : 'default'}
-        loading={datasetImporting}
-        className={className}
-        tooltip={tooltip}
-        tooltipPlacement="top"
-      />
-    ) : null
-  }
 
   let userGuideLink: UserGuideSection | undefined
   if (dataview.category === DataviewCategory.Activity) {
@@ -149,60 +105,29 @@ const InfoModal = ({
       userGuideLink = 'detectionsSAR'
     }
   }
-
-  return (
-    options &&
-    options.length > 0 && (
-      <Fragment>
-        <IconButton
-          icon={datasetError ? 'warning' : 'info'}
-          type={datasetError ? 'warning' : 'default'}
-          size="small"
-          loading={datasetImporting}
-          className={className}
-          tooltip={tooltip}
-          tooltipPlacement="top"
-          onClick={handleClick}
-        />
-        {modalInfoOpen && (
-          <Modal
-            appSelector={ROOT_DOM_ELEMENT}
-            title={
-              <div className={styles.titleContainer}>
-                <span className={styles.title}>
-                  {isSingleTab ? options[0].label : dataview.name}
-                </span>
-                {userGuideLink && <UserGuideLink section={userGuideLink} />}
-              </div>
-            }
-            isOpen={modalInfoOpen}
-            onClose={onModalClose}
-            contentClassName={styles.modalContent}
-          >
-            {!isSingleTab && (
-              <div className={styles.sourceSelector}>
-                {options.length <= 3 ? (
-                  <Choice
-                    options={options}
-                    activeOption={activeTab?.id}
-                    onSelect={(option) => setActiveTab(option as ChoiceOption)}
-                    size="medium"
-                  />
-                ) : (
-                  <Select
-                    options={options}
-                    selectedOption={activeTab as SelectOption}
-                    onSelect={(option) => setActiveTab(option as SelectOption)}
-                  />
-                )}
-              </div>
-            )}
-            {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
-          </Modal>
+  ;<div>
+    <div className={styles.titleContainer}>
+      <span className={styles.title}>{isSingleTab ? options[0].label : dataview.name}</span>
+      {userGuideLink && <UserGuideLink section={userGuideLink} />}
+    </div>
+    {!isSingleTab && (
+      <div className={styles.sourceSelector}>
+        {options.length <= 3 ? (
+          <Choice
+            options={options}
+            activeOption={activeTab?.id}
+            onSelect={(option) => setActiveTab(option as ChoiceOption)}
+            size="medium"
+          />
+        ) : (
+          <Select
+            options={options}
+            selectedOption={activeTab as SelectOption}
+            onSelect={(option) => setActiveTab(option as SelectOption)}
+          />
         )}
-      </Fragment>
-    )
-  )
+      </div>
+    )}
+    {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
+  </div>
 }
-
-export default InfoModal
