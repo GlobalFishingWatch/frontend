@@ -5,6 +5,10 @@
   z-index: var(--timebar-z-timeline-bookmark);
 }
 
+.fullWidth {
+  width: 100%;
+}
+
 :global(.printing) .Timeline {
   width: 100%;
 }
@@ -34,7 +38,7 @@
   position: absolute;
   height: 100%;
   top: 0;
-  transition: 'none';
+  transition: none;
   z-index: 1;
   pointer-events: all;
 }
