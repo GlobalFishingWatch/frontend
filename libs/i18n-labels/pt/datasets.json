@@ -4221,7 +4221,7 @@
     }
   },
   "public-vms-nor-fishing-effort": {
-    "name": "VMS Norway",
+    "name": "VMS Noruega",
     "description": "<h2>Overview</h2> <p> Vessel Monitoring System (VMS) data for Norway is provided by the Norwegian Directorate of Fisheries. The data is collected via satellite and includes information on vessels' identity, location, speed, course, and movement. It is published with a 3-day delay, and historical data is available from 2015 onward. </p> <p> Please note that given the lower polling rates of VMS compared to AIS, estimates for apparent fishing activity may be less accurate. We are currently improving our fishing models to be better suited to VMS data. </p> <h2>Access & Availability</h2> <p> Vessel names and tracks are visible to public users, but tracks cannot be downloaded. If you require data access beyond what is publicly available, please contact our support team at support@globalfishingwatch.org. </p> <p> If you notice missing data on the map, it may be due to a VMS data outage. We are currently working on better ways to communicate these outages clearly within the platform. If you have any questions regarding gaps in data, please do not hesitate to reach out to our support email. </p>",
     "schema": {
       "distance_from_port_km": {
