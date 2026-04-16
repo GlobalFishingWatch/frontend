@@ -66,3 +66,27 @@
   font: var(--font-S);
   width: 100%;
 }
+
+.migramarSelectors {
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.migramarSelectors > div {
+  flex: 1;
+}
+
+.migramarTooltip {
+  background: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.migramarDot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-right: var(--space-XS);
+}
