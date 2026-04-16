@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
-import type { DataviewDatasetConfig, IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import type { DataviewDatasetConfig, IdentityVessel, Locale,Resource  } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
@@ -19,6 +19,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
+import { BASEMAP_LABELS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
@@ -28,6 +29,7 @@ import {
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
+import i18n from 'features/i18n/i18n'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
@@ -162,6 +164,15 @@ export const selectAllDataviewInstancesResolved = createSelector(
                   highlightEndTime: highlightedTime.end,
                   showVesselIcon: true,
                 }),
+            },
+          }
+        }
+        if (dataview.slug === BASEMAP_LABELS_DATAVIEW_SLUG && i18n.language) {
+          return {
+            ...dataview,
+            config: {
+              ...(dataview.config || {}),
+              locale: i18n.language as Locale,
             },
           }
         }

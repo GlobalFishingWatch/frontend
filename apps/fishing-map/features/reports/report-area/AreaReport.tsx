@@ -1,4 +1,4 @@
-import { Fragment, lazy, useCallback, useEffect, useMemo } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -196,14 +196,18 @@ export default function Report() {
 
   return filteredCategoryTabs.length > 1 ? (
     <div className="cardContainer">
-      <Tabs
-        className={styles.tabContainer}
-        tabs={filteredCategoryTabs}
-        activeTab={reportCategory}
-        onTabClick={handleTabClick}
-      />
+      <Suspense fallback={<Spinner />}>
+        <Tabs
+          className={styles.tabContainer}
+          tabs={filteredCategoryTabs}
+          activeTab={reportCategory}
+          onTabClick={handleTabClick}
+        />
+      </Suspense>
     </div>
   ) : (
-    filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content
+    <Suspense fallback={<Spinner />}>
+      {filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content}
+    </Suspense>
   )
 }

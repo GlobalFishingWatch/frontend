@@ -109,7 +109,11 @@ const MapControls = ({
               center={debouncedOptions.center}
             />
           </Suspense>
-          {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
+          {miniGlobeHovered && (
+            <Suspense fallback={null}>
+              <MiniGlobeInfo viewport={viewState} />
+            </Suspense>
+          )}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
           {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (

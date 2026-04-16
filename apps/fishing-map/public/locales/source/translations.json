@@ -1138,6 +1138,7 @@
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
       "sectionTitle": "Vessel insights between {{start}} and {{end}}"
     },
+    "inWorkspace": "",
     "lastTransmissionDate": "Last transmission date",
     "length": "Length",
     "lengthM": "Length (m)",

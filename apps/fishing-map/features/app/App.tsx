@@ -3,7 +3,7 @@ import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { Outlet } from '@tanstack/react-router'
+import { Outlet, useSearch } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -188,6 +188,11 @@ function App() {
   // if (!i18n.ready) {
   //   return null
   // }
+
+  const searchParams = useSearch({ strict: false })
+  if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
+    return null
+  }
 
   return (
     <Fragment>

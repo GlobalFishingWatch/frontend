@@ -7,11 +7,16 @@ import { MaterialReactTable } from 'material-react-table'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  getVesselDataviewInstanceId,
+  getVesselIdFromInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -64,6 +69,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const vesselsSelected = useSelector(selectSelectedVessels)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const vesselDataviews = useSelector(selectVesselsDataviews)
   const { setTimerange } = useTimerangeConnect()
 
   const onVesselClick = useCallback(
@@ -165,6 +171,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             includeRelatedIdentities: searchFilters.id ? false : true,
           } as Record<QueryParam, any>
 
+          const isInWorkspace = vesselDataviews?.some(
+            (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(vesselData.id)
+          )
+
           return (
             <VesselLink
               vesselId={vesselData.id}
@@ -172,10 +182,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
-              className={styles.advancedName}
+              className={`${styles.advancedName}${isInWorkspace ? ` ${styles.inWorkspace}` : ''}`}
               fitBounds={isSearchLocation}
             >
-              <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
+              <Tooltip
+                content={
+                  (isInWorkspace ? t((t) => t.vessel.inWorkspace) : '') +
+                  (label?.length > TOOLTIP_LABEL_CHARACTERS ? label : '')
+                }
+              >
                 <span>
                   {getHighlightedText(name, searchQuery || '', styles)}{' '}
                   {otherNamesLabel && <span className={styles.secondary}>{otherNamesLabel}</span>}
@@ -310,14 +325,10 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     i18n.language,
     isSearchLocation,
     onVesselClick,
-    searchFilters?.callsign,
-    searchFilters?.id,
-    searchFilters?.imo,
-    searchFilters?.infoSource,
-    searchFilters?.owner,
-    searchFilters?.ssvid,
+    searchFilters,
     searchQuery,
     t,
+    vesselDataviews,
   ])
 
   const fetchMoreOnBottomReached = useCallback(() => {
@@ -340,10 +351,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     [dispatch]
   )
 
-  const vesselSelectedIds = useMemo(
-    () => vesselsSelected.map((vessel) => getSearchVesselId(vessel)),
-    [vesselsSelected]
-  )
+  const vesselSelectedIds = useMemo(() => {
+    const selectedIds = vesselsSelected.map((vessel) => getSearchVesselId(vessel))
+    const workspaceIds =
+      vesselDataviews?.map((vd) => `${vd.config?.info}-${getVesselIdFromInstanceId(vd.id)}`) ?? []
+    return [...selectedIds, ...workspaceIds]
+  }, [vesselsSelected, vesselDataviews])
 
   const rowSelection = useMemo(() => {
     return Object.fromEntries(
@@ -381,11 +394,19 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       enableStickyHeader
       enableMultiRowSelection
       enableRowVirtualization
-      enableRowSelection={(row) =>
-        row.original.identities.some(
-          (i: any) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+      enableRowSelection={(row) => {
+        const isInWorkspace = vesselDataviews?.some(
+          (vesselDataview) =>
+            vesselDataview.id ===
+            getVesselDataviewInstanceId(getSearchIdentityResolved(row.original).id)
         )
-      }
+        return (
+          !isInWorkspace &&
+          row.original.identities.some(
+            (i: any) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+          )
+        )
+      }}
       onRowSelectionChange={undefined}
       selectAllMode="all"
       getRowId={(row, index) => `${index}-${row.id}`}

@@ -70,17 +70,20 @@ export function ConfirmVesselProfileLeave() {
           ...(nextSearch.dataviewInstances || []),
           cleanVesselDataviewInstance,
         ])
-        router.navigate({
-          to: toValidRoutePath(stripAppPrefix(next.routeId) as RoutePathValues, next.params),
-          params: next.params,
-          search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
-          replace: true,
-          resetScroll: false,
+        setTimeout(() => {
+          router.navigate({
+            to: toValidRoutePath(stripAppPrefix(next.routeId) as RoutePathValues, next.params),
+            params: next.params,
+            search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
+            replace: true,
+            resetScroll: false,
+            ignoreBlocker: true,
+          })
         })
         return true // block the original navigation; our navigate handles it
+      } else {
+        return false // don't block navigation
       }
-
-      return true // block navigation
     },
     disabled: !enabled,
   })

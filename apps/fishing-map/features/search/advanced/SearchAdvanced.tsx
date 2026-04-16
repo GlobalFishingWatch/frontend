@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react'
-import cx from 'classnames'
 import { lazy, Suspense, useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'

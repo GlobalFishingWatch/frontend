@@ -103,10 +103,8 @@ function EventsReport() {
       return (
         <div className={styles.emptyState}>
           <img
-            src={EventsEmptyState.src}
+            src={EventsEmptyState}
             alt=""
-            width={EventsEmptyState.width / 2}
-            height={EventsEmptyState.height / 2}
           />
           {t((t) => t.vessel.noEventsinTimeRange)}
         </div>

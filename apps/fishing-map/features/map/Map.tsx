@@ -78,7 +78,9 @@ const MapWrapper = () => {
       {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
         <Logo className={styles.logo} type="invert" />
       )}
-      <DeckGLWrapper />
+      <Suspense fallback={null}>
+        <DeckGLWrapper />
+      </Suspense>
       {isMapDrawing && (
         <Fragment>
           <CoordinateEditOverlay />

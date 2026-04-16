@@ -149,7 +149,9 @@ const AppModals = () => {
         size="fullscreen"
         parentSelector={getModalParent}
       >
-        <LayerLibrary />
+        <Suspense fallback={null}>
+          <LayerLibrary />
+        </Suspense>
       </Modal>
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
@@ -165,7 +167,9 @@ const AppModals = () => {
         contentClassName={styles.debugMenuModal}
         parentSelector={getModalParent}
       >
-        <DebugMenu />
+        <Suspense fallback={null}>
+          <DebugMenu />
+        </Suspense>
       </Modal>
       {isGFWUser && (
         <Modal
@@ -275,7 +279,9 @@ const AppModals = () => {
             </Suspense>
           )}
           {welcomePopupContentKey === WorkspaceCategory.MarineManager && (
-            <Welcome contentKey={WorkspaceCategory.MarineManager} />
+            <Suspense fallback={null}>
+              <Welcome contentKey={WorkspaceCategory.MarineManager} />
+            </Suspense>
           )}
           {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>

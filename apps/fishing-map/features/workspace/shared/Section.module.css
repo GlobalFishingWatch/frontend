@@ -138,6 +138,11 @@
   padding: 0;
 }
 
+.vesselsOnScreenList {
+  padding: var(--space-S);
+  padding-top: var(--space-XS);
+}
+
 .vesselOnScreen {
   flex: 1;
   display: flex;
