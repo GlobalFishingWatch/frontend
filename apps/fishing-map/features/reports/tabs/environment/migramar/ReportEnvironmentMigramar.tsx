@@ -14,6 +14,7 @@ import ReportEnvironmentMigramarGraph from './ReportEnvironmentMigramarGraph'
 
 import styles from '../ReportEnvironment.module.css'
 
+// TODO:Migramar make id dynamic
 const AREA_ID = 'coco_island_national_park'
 
 function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance<DataviewType> }) {
@@ -25,23 +26,22 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
   const [selectedIndicator, setSelectedIndicator] = useState<SelectOption | undefined>()
 
   const speciesOptions: SelectOption[] = useMemo(
-    () => species.map((s) => ({ id: s.id, label: i18n.language === 'es' ? s.label_es : s.label_en })),
-    [species, i18n.language]
+    () =>
+      species
+        .filter((s) => rows.some((r) => r.species === s.id))
+        .map((s) => ({ id: s.id, label: i18n.language === 'es' ? s.label_es : s.label_en })),
+    [species, rows, i18n.language]
   )
 
   const indicatorOptions: SelectOption[] = useMemo(
     () =>
       indicators
-        .filter((ind) =>
-          selectedSpecies
-            ? rows.some((r) => r.species === selectedSpecies.id && r.indicator === ind.id)
-            : true
-        )
+        .filter((ind) => rows.some((r) => r.indicator === ind.id))
         .map((ind) => ({
           id: ind.id,
           label: i18n.language === 'es' ? ind.label_es_long : ind.label_en_long,
         })),
-    [indicators, rows, selectedSpecies, i18n.language]
+    [indicators, rows, i18n.language]
   )
 
   const loading = optionsLoading || dataLoading
@@ -66,7 +66,10 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
           selectedOption={selectedSpecies}
           onSelect={(option) => {
             setSelectedSpecies(option)
-            setSelectedIndicator(undefined)
+            const firstMatch = indicatorOptions.find((ind) =>
+              rows.some((r) => r.species === option.id && r.indicator === ind.id)
+            )
+            setSelectedIndicator(firstMatch)
           }}
           placeholder={loading ? '…' : 'Select a species'}
           disabled={loading}
@@ -75,7 +78,13 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
           label={t((t) => t.analysis.migramar.indicator)}
           options={indicatorOptions}
           selectedOption={selectedIndicator}
-          onSelect={setSelectedIndicator}
+          onSelect={(option) => {
+            setSelectedIndicator(option)
+            const firstMatch = speciesOptions.find((sp) =>
+              rows.some((r) => r.indicator === option.id && r.species === sp.id)
+            )
+            setSelectedSpecies(firstMatch)
+          }}
           placeholder={loading ? '…' : 'Select an indicator'}
           disabled={loading}
         />
@@ -90,7 +99,7 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
           <span>
             {t((t) => t.analysis.dataSource)}: {selectedRow.data_owner}
           </span>
-          {selectedRow.contact_info && <span>{selectedRow.contact_info}</span>}
+          {/* {selectedRow.contact_info && <span>{selectedRow.contact_info}</span>} */}
         </p>
       )}
     </div>
