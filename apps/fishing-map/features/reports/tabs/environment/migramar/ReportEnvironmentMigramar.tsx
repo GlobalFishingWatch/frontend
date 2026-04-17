@@ -24,15 +24,25 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
   const [selectedSpecies, setSelectedSpecies] = useState<SelectOption | undefined>()
   const [selectedIndicator, setSelectedIndicator] = useState<SelectOption | undefined>()
 
-  const speciesOptions: SelectOption[] = species.map((s) => ({
-    id: s.id,
-    label: i18n.language === 'es' ? s.label_es : s.label_en,
-  }))
+  const speciesOptions: SelectOption[] = useMemo(
+    () => species.map((s) => ({ id: s.id, label: i18n.language === 'es' ? s.label_es : s.label_en })),
+    [species, i18n.language]
+  )
 
-  const indicatorOptions: SelectOption[] = indicators.map((ind) => ({
-    id: ind.id,
-    label: i18n.language === 'es' ? ind.label_es_long : ind.label_en_long,
-  }))
+  const indicatorOptions: SelectOption[] = useMemo(
+    () =>
+      indicators
+        .filter((ind) =>
+          selectedSpecies
+            ? rows.some((r) => r.species === selectedSpecies.id && r.indicator === ind.id)
+            : true
+        )
+        .map((ind) => ({
+          id: ind.id,
+          label: i18n.language === 'es' ? ind.label_es_long : ind.label_en_long,
+        })),
+    [indicators, rows, selectedSpecies, i18n.language]
+  )
 
   const loading = optionsLoading || dataLoading
 
@@ -54,7 +64,10 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
           label={t((t) => t.analysis.migramar.species)}
           options={speciesOptions}
           selectedOption={selectedSpecies}
-          onSelect={setSelectedSpecies}
+          onSelect={(option) => {
+            setSelectedSpecies(option)
+            setSelectedIndicator(undefined)
+          }}
           placeholder={loading ? '…' : 'Select a species'}
           disabled={loading}
         />
