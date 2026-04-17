@@ -7,6 +7,7 @@ export * from './Select'
 export type SelectOption<Id = any, Label = string | JSX.Element> = {
   id: Id
   label: Label
+  labelString?: string
   disabled?: boolean
   tooltip?: string
   tooltipPlacement?: TooltipPlacement
