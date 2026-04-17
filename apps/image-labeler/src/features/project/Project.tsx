@@ -25,6 +25,7 @@ export function Project() {
   const [imageStyleEditorOpen, setImageStyleOpen] = useLocalStorage('imageStyleEditorOpen', true)
   const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1)
   const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
+  const [imageStyleBrightness, setImageStyleBrightness] = useLocalStorage('brightness', 2)
   const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
 
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
@@ -121,7 +122,7 @@ export function Project() {
           onFinishTask={setNextTask}
           scale={taskData.metadata.scale}
           imageStyle={{
-            filter: ` saturate(${imageStyleSaturation}) contrast(${imageStyleContrast})`,
+            filter: ` saturate(${imageStyleSaturation}) contrast(${imageStyleContrast}) brightness(${imageStyleBrightness})`,
           }}
         />
       ))}
@@ -153,34 +154,45 @@ export function Project() {
                 size="small"
               />
             </div>
-            {!showEnhancedImage && (
-              <Fragment>
-                <Slider
-                  label="Saturation"
-                  config={{
-                    min: 0,
-                    max: 4,
-                    steps: [0, 4],
-                  }}
-                  initialValue={imageStyleSaturation}
-                  onChange={(value) => setImageStyleSaturation(value)}
-                  thumbsSize="small"
-                  className={styles.slider}
-                />
-                <Slider
-                  label="Contrast"
-                  config={{
-                    min: 0,
-                    max: 4,
-                    steps: [0, 4],
-                  }}
-                  initialValue={imageStyleContrast}
-                  onChange={(value) => setImageStyleContrast(value)}
-                  thumbsSize="small"
-                  className={styles.slider}
-                />
-              </Fragment>
-            )}
+            <Slider
+              label="Brightness"
+              config={{
+                step: 0.1,
+                min: 0,
+                max: 2,
+                steps: [0, 2],
+              }}
+              initialValue={imageStyleBrightness}
+              onChange={(value) => setImageStyleBrightness(value)}
+              thumbsSize="small"
+              className={styles.slider}
+            />
+            <Slider
+              label="Saturation"
+              config={{
+                step: 0.1,
+                min: 0,
+                max: 2,
+                steps: [0, 2],
+              }}
+              initialValue={imageStyleSaturation}
+              onChange={(value) => setImageStyleSaturation(value)}
+              thumbsSize="small"
+              className={styles.slider}
+            />
+            <Slider
+              label="Contrast"
+              config={{
+                step: 0.1,
+                min: 0,
+                max: 2,
+                steps: [0, 2],
+              }}
+              initialValue={imageStyleContrast}
+              onChange={(value) => setImageStyleContrast(value)}
+              thumbsSize="small"
+              className={styles.slider}
+            />
           </div>
         )}
         <IconButton
