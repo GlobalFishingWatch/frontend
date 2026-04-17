@@ -362,7 +362,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={`https://app.triton.fish/search?${vesselIdentity?.ssvid ? `name=${vesselIdentity.ssvid}` : `name=${vesselIdentity.imo}`}`}
+              href={`https://app.triton.fish/search?name=${vesselIdentity?.imo || vesselIdentity?.ssvid || vesselIdentity?.callsign || vesselIdentity?.shipname}`}
               target="_blank"
               onClick={() => {
                 trackEvent({
