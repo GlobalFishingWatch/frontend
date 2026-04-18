@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Markdown from 'react-markdown'
 import cx from 'classnames'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
 
 import ContentHeader from 'features/content/ContentHeader'
 import type { TDataset, TUserGuideSection } from 'features/content/strapi.types'
@@ -59,7 +62,11 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
         ) : (
           <div className={cx(styles.content)}>
             <h2>{selectedSection.title}</h2>
-            {selectedSection.contentBlocks.map((block) => htmlSafeParse(block.body))}
+            {selectedSection.contentBlocks.map((block, i) => (
+              <Markdown key={i} rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+                {block.body}
+              </Markdown>
+            ))}
           </div>
         )}
       </div>
