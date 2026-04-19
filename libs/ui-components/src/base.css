@@ -24,7 +24,7 @@
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
   --help-yellow-rgb: 255, 248, 205; /* rgb(255, 248, 205) */
-  --background-rgb: 230, 230, 240; /* rgb(231, 238, 243) */
+  --background-rgb: 232, 240, 252; /* rgb(232, 240, 252) */
   --off-white-0-rgb: 246, 246, 248; /* rgb(246, 246, 248) */
   --off-white-1-rgb: 250, 250, 250; /* rgb(250, 250, 250) */
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
@@ -51,18 +51,19 @@
   --color-encounter-status-unauthorized: rgba(216, 86, 118);
 
   /* OPACITIES */
+  --opacity-primary: 1;
   --opacity-hover: 0.9;
   --opacity-secondary: 0.8;
   --opacity-terthiary: 0.1;
-  --opacity-border: 0.1;
-  --opacity-border-thick: 0.2;
+  --opacity-border: 0.12;
+  --opacity-border-thick: 0.22;
   --opacity-border-extra-thick: 0.5;
 
   /* SHADOWS */
-  --box-shadow-0: 0 0rem 0.2rem 0 rgba(var(--primary-blue-rgb), 0.1);
-  --box-shadow-1: 0 0.2rem 0.4rem 0 rgba(var(--primary-blue-rgb), 0.1);
-  --box-shadow-1-top: 0 -0.4rem 0.4rem 0 rgba(var(--primary-blue-rgb), 0.1);
-  --box-shadow-2: 0 0.8rem 1.6rem 0 rgba(var(--primary-blue-rgb), 0.1);
+  --box-shadow-0: 0 0rem 0.2rem 0 rgba(var(--primary-blue-rgb), 0.12);
+  --box-shadow-1: 0 0.2rem 0.6rem 0 rgba(var(--primary-blue-rgb), 0.12);
+  --box-shadow-1-top: 0 -0.4rem 0.6rem 0 rgba(var(--primary-blue-rgb), 0.12);
+  --box-shadow-2: 0 0.8rem 2rem 0 rgba(var(--primary-blue-rgb), 0.12);
   --filter-drop-shadow-0: drop-shadow(1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
     drop-shadow(-1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
     drop-shadow(0px 1px 0px rgba(var(--primary-blue-rgb), 0.05))
@@ -82,9 +83,11 @@
   --border-thick: 1px solid var(--color-border-thick);
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
-  --transition: all 150ms ease-out;
-  --border-radius-0: 0.4rem;
-  --border-radius-1: 0.8rem;
+  --transition: all 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  --transition-spring: all 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-press: all 60ms ease;
+  --border-radius-0: 0.6rem;
+  --border-radius-1: 1.2rem;
 
   /* SIZES */
   --size-XXS: 1.6rem;
@@ -227,6 +230,7 @@ label {
   color: var(--color-secondary-blue);
   font: var(--font-S);
   text-transform: uppercase;
+  letter-spacing: 0.03em;
   display: block;
 }
 

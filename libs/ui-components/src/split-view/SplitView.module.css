@@ -13,6 +13,7 @@
   height: 100%;
   transform: translateX(-100%);
   background: var(--color-background);
+  transition: transform 280ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .isOpen .aside {
@@ -34,14 +35,20 @@
   justify-content: center;
   position: absolute;
   top: var(--space-XS);
-  right: -2.4rem;
-  width: 2.4rem;
-  height: 5rem;
+  right: -2rem;
+  width: 2rem;
+  height: 4.8rem;
   cursor: pointer;
   color: var(--color-white);
   background-color: var(--color-primary-blue);
-  border-radius: 0 var(--border-radius-0) var(--border-radius-0) 0;
+  border-radius: 0 1rem 1rem 0;
   transition: var(--transition);
+}
+
+.toggleBtn:hover {
+  background-color: var(--color-primary-blue-hover);
+  right: -2.4rem;
+  width: 2.4rem;
 }
 
 @media only screen and (width <= 800px) {
