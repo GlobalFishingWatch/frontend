@@ -314,13 +314,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     i18n.language,
     isSearchLocation,
     onVesselClick,
-    searchFilters?.callsign,
-    searchFilters?.id,
-    searchFilters?.imo,
-    searchFilters?.infoSource,
-    searchFilters?.owner,
-    searchFilters?.ssvid,
+    searchFilters,
     searchQuery,
+    sourceIsBrazilVMS,
     t,
   ])
 
