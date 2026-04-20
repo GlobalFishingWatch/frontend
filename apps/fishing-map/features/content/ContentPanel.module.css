@@ -38,11 +38,16 @@
   background-repeat: no-repeat;
 }
 
+.tableOfContentsOpen {
+  background: rgb(255, 255, 255);
+  border-top: 1px solid var(--color-border-thick);
+}
+
 .scrollContainer {
   flex: 1;
   overflow: hidden auto;
   min-height: 0;
-  padding: 1.5rem 2rem;
+  padding: var(--space-SM) var(--space-M);
 }
 
 .content {
@@ -122,6 +127,22 @@
 .listItem {
   cursor: pointer;
   padding: var(--space-S) 0;
+  color: rgba(var(--primary-blue-rgb), 0.65);
+}
+
+.listItem:hover,
+.listItemActive {
+  color: var(--primary-blue-rgb);
+}
+
+.listItem button {
+  cursor: pointer;
+}
+
+.tableOfContentsContainer {
+  display: flex;
+  gap: var(--space-SM);
+  flex-direction: column;
 }
 
 .subtitle {

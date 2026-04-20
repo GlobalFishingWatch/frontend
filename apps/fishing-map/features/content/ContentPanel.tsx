@@ -20,7 +20,6 @@ const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 type UserGuideContentProps = { data: TUserGuideSection[] }
 
 const UserGuideContent = ({ data }: UserGuideContentProps) => {
-  console.log('🚀 ~ UserGuideContent ~ data:', data)
   const { sidePanelId } = Route.useSearch()
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [searchQuery, setSearchQuery] = useState('')
@@ -56,10 +55,15 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
           openTableOfContents={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
         />
       </div>
-      <div className={cx(styles.scrollContainer)}>
+      <div
+        className={cx(styles.scrollContainer, {
+          [styles.tableOfContentsOpen]: isTableOfContentsOpen,
+        })}
+      >
         {isTableOfContentsOpen ? (
           <TableOfContents
             listItems={listItems}
+            activeId={sidePanelId}
             onClick={setIsTableOfContentsOpen}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 
 import { InputText } from '@globalfishingwatch/ui-components'
 
@@ -8,6 +9,7 @@ import styles from './ContentPanel.module.css'
 
 type TableOfContentsProps = {
   listItems: { id: string; label: string }[]
+  activeId?: string
   searchQuery: string
   onSearchChange: (value: string) => void
   onClick?: (isOpen: boolean) => void
@@ -15,6 +17,7 @@ type TableOfContentsProps = {
 
 function TableOfContents({
   listItems,
+  activeId,
   searchQuery,
   onSearchChange,
   onClick,
@@ -23,7 +26,7 @@ function TableOfContents({
   const { replaceQueryParams } = useReplaceQueryParams()
 
   return (
-    <div>
+    <div className={styles.tableOfContentsContainer}>
       <InputText
         onChange={(e) => onSearchChange(e.target.value)}
         value={searchQuery || ''}
@@ -34,7 +37,10 @@ function TableOfContents({
       />
       <ul>
         {listItems.map((item) => (
-          <li key={item.id} className={styles.listItem}>
+          <li
+            key={item.id}
+            className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
+          >
             <button
               type="button"
               onClick={() => {
