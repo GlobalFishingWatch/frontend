@@ -1017,7 +1017,7 @@
     "gearType": "Gear Type",
     "geartype_other": "Gear types",
     "gearType_short": "gear",
-    "geartypes": "Gear types",
+    "geartypes": "Gear type",
     "gearTypes": {
       "": "Unknown",
       "bunker": "Bunker",
@@ -1182,7 +1182,7 @@
     "share": "Share vessel",
     "shipname": "Name",
     "shiptype": "Vessel type",
-    "shiptypes": "Ship types",
+    "shiptypes": "Vessel type",
     "skylightLink": "Click to see Skylight vessel profile",
     "skylightSearch": "Click to search this vessel",
     "sortAsc": "Sort vessels alphabetically (ascending)",
