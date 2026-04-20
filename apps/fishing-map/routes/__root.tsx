@@ -89,6 +89,7 @@ export const Route = createRootRoute({
           href: `${PATH_BASENAME}/icons/favicon-48x48.png`,
         },
         { rel: 'manifest', href: `${PATH_BASENAME}/icons/manifest.webmanifest` },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com/' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com/' },
         {
           rel: 'preconnect',
@@ -98,7 +99,6 @@ export const Route = createRootRoute({
         {
           href: 'https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap',
           rel: 'stylesheet',
-          media: 'print',
         },
         {
           rel: 'apple-touch-icon',

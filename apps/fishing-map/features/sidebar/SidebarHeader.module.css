@@ -60,7 +60,7 @@
 .sticky {
   background-color: var(--color-white);
   z-index: 3;
-  box-shadow: var(--box-shadow-2);
+  box-shadow: 0 1px 0 rgba(var(--primary-blue-rgb), 0.1), 0 4px 16px rgba(var(--primary-blue-rgb), 0.08);
 }
 
 @media print {

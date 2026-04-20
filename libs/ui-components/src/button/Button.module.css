@@ -6,17 +6,23 @@
   gap: var(--space-XS);
   border: none;
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   background-repeat: no-repeat;
   background-position: center center;
   padding: 0 var(--space-S);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   line-height: 1;
   border-radius: var(--border-radius-0);
 }
 
 .button:focus {
   box-shadow: var(--box-shadow-highlight);
+}
+
+.button:active:not(.disabled) {
+  transform: scale(0.96);
+  transition: var(--transition-press);
 }
 
 a.button,
