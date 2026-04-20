@@ -698,7 +698,7 @@
       "mpa": "MPA",
       "mpa_other": "MPAs (WDPA)",
       "port": "Port",
-      "rfmo": "RFMOs"
+      "rfmo": "RFB/ RFMO"
     },
     "areasOnScreen": "Areas on the map",
     "closePolygonHint": "Press enter or click the first point to close the polygon",
@@ -835,6 +835,7 @@
     "filterNotSupported": "One of your sources selected doesn’t support filtering by {{filter}}",
     "learnMore": "Learn more about our identity work <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>here</a>.",
     "mainQueryLabel": "Name, IMO, MMSI or call sign",
+    "mainQueryLabelPrivateVMSBrazil": "Name, Registration Number, License Code, IMO, MMSI or call sign",
     "minCharacters_one": "Please type at least {{count}} character",
     "minCharacters_many": "Please type at least {{count}} characters",
     "minCharacters_other": "Please type at least {{count}} characters",
@@ -1212,7 +1213,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
-    "vesselRegistrationCode": "Vessel registration code",
+    "vesselRegistrationCode": "Vessel registration number",
     "vesselType": "Vessel type",
     "vesselTypes": {
       "": "Unknown",

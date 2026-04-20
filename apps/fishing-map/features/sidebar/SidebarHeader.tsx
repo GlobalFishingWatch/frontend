@@ -41,6 +41,7 @@ import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.s
 import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
+  selectIsAnyReportLocation,
   selectIsAnySearchLocation,
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
@@ -65,6 +66,7 @@ function SidebarHeader() {
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
@@ -141,9 +143,6 @@ function SidebarHeader() {
   }
 
   const sectionHeaderComponent = useMemo(() => {
-    // if (isTrackCorrectionOpen) {
-    //   return <TrackCorrectionHeader />
-    // }
     if (isAnyVesselLocation) {
       return <VesselHeader isSticky={isSticky} />
     }
@@ -182,10 +181,7 @@ function SidebarHeader() {
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && !isTrackCorrectionOpen && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation ||
-              isAreaReportLocation ||
-              isAnyVesselLocation ||
-              isVesselGroupReportLocation) &&
+            {(isWorkspaceLocation || isAnyVesselLocation || isAnyReportLocation) &&
               !isTrackCorrectionOpen && <ShareWorkspaceButton />}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}

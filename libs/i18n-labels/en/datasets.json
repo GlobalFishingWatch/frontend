@@ -838,10 +838,10 @@
     "description": "Vessels (VMS Brazil)",
     "schema": {
       "selfReportedInfo.fishingLicenseCode": {
-        "keyword": "fishingLicenseCode"
+        "keyword": "Fishing License Code"
       },
       "selfReportedInfo.fleetCode": {
-        "keyword": "fleetCode",
+        "keyword": "Fleet Code",
         "enum": {
           "1.1": "1.1",
           "1.10": "1.10",
@@ -892,7 +892,7 @@
         }
       },
       "selfReportedInfo.vesselRegistrationCode": {
-        "keyword": "vesselRegistrationCode"
+        "keyword": "Vessel Registration Number"
       }
     }
   },
