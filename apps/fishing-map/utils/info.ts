@@ -123,6 +123,7 @@ export const formatInfoField = (
     | 'port'
     | 'name'
     | 'fleet'
+    | 'builtYear'
     | 'transmissionDateFrom'
     | 'transmissionDateTo',
   {
@@ -186,6 +187,9 @@ export const formatInfoField = (
       )
     }
   } else if (fieldValue) {
+    if (type === 'builtYear') {
+      return fieldValue
+    }
     return formatI18nNumber(fieldValue)
   }
   return fieldValue || fallbackValue || EMPTY_FIELD_PLACEHOLDER
