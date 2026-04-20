@@ -62,7 +62,7 @@ function SearchBasic({
   const vesselsSelected = useSelector(selectSelectedVessels)
   const { dispatchQueryParams } = useLocationConnect()
   const userGroups = useSelector(selectUserGroupsClean)
-  const userFromBrazilGroup = userGroups.every((g: string) => g === PRIVATE_BRAZIL_GROUP_ID)
+  const userFromBrazilGroup = userGroups?.every((g: string) => g === PRIVATE_BRAZIL_GROUP_ID)
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
