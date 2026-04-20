@@ -1213,7 +1213,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
-    "vesselRegistrationCode": "Vessel registration code",
+    "vesselRegistrationCode": "Vessel registration number",
     "vesselType": "Vessel type",
     "vesselTypes": {
       "": "Unknown",
