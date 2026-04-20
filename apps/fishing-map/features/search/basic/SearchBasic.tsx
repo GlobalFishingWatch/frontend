@@ -26,6 +26,8 @@ import {
   SearchNoResultsState,
   SearchNotAllowed,
 } from 'features/search/SearchPlaceholders'
+import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
+import { PRIVATE_BRAZIL_GROUP_ID } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -59,6 +61,8 @@ function SearchBasic({
   const searchStatus = useSelector(selectSearchStatus)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const { dispatchQueryParams } = useLocationConnect()
+  const userGroups = useSelector(selectUserGroupsClean)
+  const userFromBrazilGroup = userGroups.every((g: string) => g === PRIVATE_BRAZIL_GROUP_ID)
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
@@ -91,6 +95,10 @@ function SearchBasic({
   )
   const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
+  const placeholderFieldsLabel = userFromBrazilGroup
+    ? t((t) => t.search.mainQueryLabelPrivateVMSBrazil)
+    : t((t) => t.search.mainQueryLabel)
+
   return (
     <Downshift
       onSelect={(selectedItem: IdentityVesselData | null) => {
@@ -116,7 +124,7 @@ function SearchBasic({
                 searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted
               }
-              placeholder={`${t((t) => t.search.placeholder)} (${t((t) => t.search.mainQueryLabel)})`}
+              placeholder={`${t((t) => t.search.placeholder)} (${placeholderFieldsLabel})`}
             />
           </div>
           <div className={styles.scrollContainer}>
