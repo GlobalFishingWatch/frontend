@@ -5,6 +5,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import ContentHeader from 'features/content/ContentHeader'
+import EmptyContent from 'features/content/EmptyContent'
 import type { TDataset, TUserGuideSection } from 'features/content/strapi.types'
 import TableOfContents from 'features/content/TableOfContents'
 import { Route } from 'routes/_app'
@@ -19,6 +20,7 @@ const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 type UserGuideContentProps = { data: TUserGuideSection[] }
 
 const UserGuideContent = ({ data }: UserGuideContentProps) => {
+  console.log('🚀 ~ UserGuideContent ~ data:', data)
   const { sidePanelId } = Route.useSearch()
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [searchQuery, setSearchQuery] = useState('')
@@ -40,7 +42,10 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
 
   const selectedSection = useMemo(() => {
     return sidePanelId
-      ? (data.find((s) => s.id.toString() === sidePanelId.toString()) ?? data[0])
+      ? (data.find(
+          (s) =>
+            s.id.toString() === sidePanelId.toString() || s.title.includes(sidePanelId.toString())
+        ) ?? data[0])
       : data[0]
   }, [data, sidePanelId])
 
@@ -118,7 +123,9 @@ function ContentPanel() {
     setIsDragging(true)
   }
 
-  if (!data || status === 'empty' || status === 'error') return null
+  if (!data || status === 'error') return null
+
+  const isEmpty = status === 'empty' || (Array.isArray(data) && data.length === 0)
 
   return (
     <div className={styles.panel} style={{ width: `${panelWidth}px` }}>
@@ -128,7 +135,9 @@ function ContentPanel() {
         className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
         onMouseDown={handleMouseDown}
       />
-      {sidePanelContent === 'userGuide' ? (
+      {isEmpty ? (
+        <EmptyContent />
+      ) : sidePanelContent === 'userGuide' ? (
         <UserGuideContent data={data as TUserGuideSection[]} />
       ) : (
         <div className={cx(styles.container)}>

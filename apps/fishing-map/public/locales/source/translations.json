@@ -233,6 +233,7 @@
     "name": "Name",
     "navigateBackTo": "Go back to {{section}}",
     "newTimerange": "New Time Range",
+    "noData": "",
     "none": "None",
     "numEvents": "number of events",
     "of": "of",
