@@ -224,6 +224,17 @@ function VesselGroupModal(): React.ReactElement<any> {
           : sourceOptions.map(({ id }) => id)
         : [DEFAULT_VESSEL_IDENTITY_ID]
 
+      trackEvent({
+        category: TrackCategory.VesselGroups,
+        action: `match vessels from ${ids ? 'IDs' : csvData && 'CSV'} to create a vessel group`,
+        label: getEventLabel([
+          transmissionDateFrom && `active after: ${transmissionDateFrom}`,
+          transmissionDateTo && `active before: ${transmissionDateTo}`,
+          datasets && `datasets: ${datasets.join(', ')}`,
+          searchIdField && `id field: ${searchIdField}`,
+        ]),
+      })
+
       searchVesselGroupsVesselsRef.current = dispatch(
         searchVesselGroupsVesselsThunk({
           ids,
@@ -248,13 +259,14 @@ function VesselGroupModal(): React.ReactElement<any> {
       }
     },
     [
-      dispatch,
       isGFWUser,
       sourcesSelected,
       sourceOptions,
-      t,
       transmissionDateFrom,
       transmissionDateTo,
+      searchIdField,
+      dispatch,
+      t,
     ]
   )
 
@@ -319,11 +331,11 @@ function VesselGroupModal(): React.ReactElement<any> {
       dispatchSearchVesselsGroupsThunk({ csvData, csvColumns: selectedCsvColumns })
     }
   }, [
-    dispatchSearchVesselsGroupsThunk,
     vesselGroupModalSearchIds,
     searchIdField,
     csvData,
     selectedCsvColumns,
+    dispatchSearchVesselsGroupsThunk,
   ])
 
   const onCreateGroupClick = useCallback(
@@ -412,8 +424,6 @@ function VesselGroupModal(): React.ReactElement<any> {
           dispatch(resetVesselGroupReportData())
           dispatch(fetchVesselGroupReportThunk({ vesselGroupId: editingVesselGroupId }))
         }
-        close()
-        setButtonLoading('')
         trackEvent({
           category: TrackCategory.VesselGroups,
           action: `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group`,
@@ -423,6 +433,8 @@ function VesselGroupModal(): React.ReactElement<any> {
           ]),
           value: `number of vessels: ${vessels.length}`,
         })
+        close()
+        setButtonLoading('')
       }
     },
     [
