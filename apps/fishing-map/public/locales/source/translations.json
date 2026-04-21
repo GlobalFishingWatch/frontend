@@ -1290,7 +1290,8 @@
     "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Vessel group",
     "vesselGroupProfile": "Vessel group profile",
-    "vesselGroups": "Vessel groups"
+    "vesselGroups": "Vessel groups",
+    "vesselGroupTooltip": "Instead of searching for vessels one by one, this feature offers bulk-search or upload to create custom vessel groups through your own datasets, offering more targeted vessel analysis and monitoring. By uploading a list of known IMO, MMSI numbers and/or other vessel identifiers such as vessel name, flag, call sign through a spreadsheet (CSV) file, users can cross-match your vessel list with Global Fishing Watch automatic identification system (AIS) and public registry based vessel tracking information."
   },
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",

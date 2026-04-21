@@ -486,7 +486,17 @@ function VesselGroupModal(): React.ReactElement<any> {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={t((t) => t.vesselGroup.vesselGroup)}
+      title={
+        <div className={styles.textAlign}>
+          {t((t) => t.vesselGroup.vesselGroup)}
+          <IconButton
+            size="small"
+            icon="info"
+            type="default"
+            tooltip={t((t) => t.vesselGroup.vesselGroupTooltip)}
+          />
+        </div>
+      }
       isOpen={isModalOpen}
       className={styles.modal}
       contentClassName={styles.modalContainer}

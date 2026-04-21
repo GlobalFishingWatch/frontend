@@ -23,7 +23,7 @@
   gap: var(--space-S);
 }
 
-.disclaimerFooter {
+.textAlign {
   display: flex;
   align-items: center;
 }
