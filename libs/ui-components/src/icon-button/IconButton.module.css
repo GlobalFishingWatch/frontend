@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   border: none;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center center;
@@ -21,6 +21,11 @@
 
 .iconButton:focus {
   box-shadow: var(--box-shadow-highlight);
+}
+
+.iconButton:active:not(:disabled) {
+  transform: scale(0.88);
+  transition: var(--transition-press);
 }
 
 .default,
@@ -69,15 +74,24 @@
 }
 
 .map-tool {
-  color: rgba(var(--white-rgb), var(--opacity-secondary));
-  background-color: var(--color-primary-blue);
-  border: var(--border-white);
+  color: rgba(var(--white-rgb), 0.9);
+  background-color: rgba(var(--primary-blue-rgb), 0.8);
+  border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(1, 30, 66, 0.35);
 }
 
 .map-tool:hover,
 .map-tool:focus {
   color: var(--color-white);
-  background-color: var(--color-primary-blue-hover);
+  background-color: rgba(var(--primary-blue-rgb), 0.92);
+  border-color: rgba(var(--white-rgb), 0.3);
+}
+
+.map-tool:active {
+  transform: scale(0.84);
+  background-color: rgba(var(--primary-blue-rgb), 1);
+  transition: var(--transition-press);
 }
 
 .solid {

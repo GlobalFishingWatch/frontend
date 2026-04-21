@@ -242,7 +242,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                 <Popover
                   open={showBufferTooltip}
                   onClickOutside={handleTooltipHide}
-                  className={cx(styles.highlightPanel, 'print-hidden')}
+                  className={cx(styles.highlightPanel, styles.bufferContainer, 'print-hidden')}
                   placement="bottom"
                   content={
                     <div className={styles.filterButtonWrapper}>

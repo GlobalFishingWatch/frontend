@@ -82,7 +82,6 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const showTabs = !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen
   return (
     <div className={cx(styles.container, { [styles.overlay]: isTrackCorrectionOpen })}>
-      {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
       <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
         <SidebarHeader />
         <div
@@ -93,6 +92,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
           {content}
         </div>
       </div>
+      {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
     </div>
   )
 }
