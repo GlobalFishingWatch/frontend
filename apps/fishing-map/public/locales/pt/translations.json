@@ -1139,7 +1139,7 @@
       "sectionTitle": "Indicadores da embarcação entre {{start}} e {{end}}"
     },
     "lastTransmissionDate": "Última data de transmissão",
-    "length": "Comprimento",
+    "length": "Comprimento (M)",
     "lengthM": "Comprimento (m)",
     "lengthRange": "Intervalo do comprimento",
     "license_category": "Categoria da licença",
