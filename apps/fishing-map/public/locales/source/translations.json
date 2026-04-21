@@ -1017,7 +1017,7 @@
     "gearType": "Gear Type",
     "geartype_other": "Gear types",
     "gearType_short": "gear",
-    "geartypes": "Gear types",
+    "geartypes": "Gear type",
     "gearTypes": {
       "": "Unknown",
       "bunker": "Bunker",
@@ -1277,7 +1277,7 @@
     "searchLink": "Search to add more vessels to this group",
     "searchNotFound": "No vessels found",
     "searchResultsTable": "Vessels matched by {{field}}{{timeRange}}: {{number}}",
-    "searchVesselsRequired": "Search for vessels to create a vessel group",
+    "searchVesselsRequired": "To match with GFW dataset and create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_many": "Maximum number of vessels is {{count}}",
