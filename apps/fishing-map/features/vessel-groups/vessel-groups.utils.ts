@@ -17,7 +17,7 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   return `${isPrivate ? `${PRIVATE_ICON} ` : ''}${vesselGroup.name}`
 }
 
-type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign'
+export type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign'
 
 export const vesselPropertyToApiSearch = (
   col: VesselPropertyGuessColumn

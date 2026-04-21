@@ -51,6 +51,7 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
     flag,
     ssvid,
     imo,
+    callsign,
     transmissionDateFrom,
     transmissionDateTo,
     geartypes,
@@ -80,6 +81,14 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
       <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('imo') })}>
         <span>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</span>
       </td>
+      <td
+        className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('callsign') })}
+      >
+        <span>
+          {hiddenProperties.includes('callsign') ? '' : callsign || EMPTY_FIELD_PLACEHOLDER}
+        </span>
+      </td>
+
       <td>
         <span>{vesselName}</span>
       </td>
@@ -179,6 +188,7 @@ function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField
         <tr>
           <th>{t((t) => t.vessel.mmsi)}</th>
           <th>{t((t) => t.vessel.imo)}</th>
+          <th>{t((t) => t.vessel.callsign)}</th>
           <th>{t((t) => t.common.name)}</th>
           <th>{t((t) => t.vessel.flag)}</th>
           <th>{t((t) => t.vessel.gearType_short)}</th>
