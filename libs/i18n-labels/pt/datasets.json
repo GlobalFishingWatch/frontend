@@ -841,7 +841,7 @@
         "keyword": "fishingLicenseCode"
       },
       "selfReportedInfo.fleetCode": {
-        "keyword": "fleetCode",
+        "keyword": "CÓDIGO IN",
         "enum": {
           "1.1": "1.1 - Drifting longline",
           "1.10": "1.10 - Vertical longline",
