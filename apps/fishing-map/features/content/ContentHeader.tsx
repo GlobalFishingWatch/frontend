@@ -19,11 +19,9 @@ function ContentHeader({ title, openTableOfContents }: ContentHeaderProps) {
   return (
     <div className={cx(styles.sticky)}>
       <div className={cx(styles.sidebarHeader)}>
-        <h2>
-          {openTableOfContents && (
-            <IconButton icon="list" onClick={() => openTableOfContents()} />
-          )}
-          {title || t((t) => t.content.userGuide)}
+        <h2 className={cx(styles.title)}>
+          {openTableOfContents && <IconButton icon="list" onClick={() => openTableOfContents()} />}
+          {title || t((t) => t.common.userGuide)}
         </h2>
         <div>
           <IconButton

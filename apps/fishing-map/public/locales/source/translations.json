@@ -311,9 +311,6 @@
     "whatsNew": "What's new?",
     "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
   },
-  "content": {
-    "userGuide": "User Guide"
-  },
   "dataset": {
     "addContext": "Add reference layer",
     "addEnvironmental": "Add environmental dataset",
