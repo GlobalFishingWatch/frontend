@@ -29,13 +29,19 @@ function HelpHub() {
   const onHelpClick = () => {
     trackEvent({
       category: TrackCategory.HelpHints,
-      action: `Pressing the '?' on the left of the screen to restore help hints after they've been dismissed`,
-      label: percentageOfHintsSeen.toString(),
+      action: `restore help hints after they've been dismissed`,
+      label: `percentage of hints seen: ${percentageOfHintsSeen.toString()}%`,
     })
     dispatch(resetHints())
   }
 
   const getUserGuideLink = () => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: `redirect to user guide`,
+      label: i18n.language,
+    })
+
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
     if (i18n.language === 'fr') return 'https://globalfishingwatch.org/user-guide-french/'
     if (i18n.language === 'pt') return 'https://globalfishingwatch.org/user-guide-portuguese/'
@@ -43,11 +49,23 @@ function HelpHub() {
   }
 
   const getFAQsLink = () => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: `redirect to FAQs`,
+      label: i18n.language,
+    })
+
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/ayuda-faqs/'
     return 'https://globalfishingwatch.org/help-faqs/'
   }
 
   const getVideoTutorialsLink = () => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: `redirect to video tutorials`,
+      label: i18n.language,
+    })
+
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/tutoriales'
     return 'https://globalfishingwatch.org/tutorials'
   }
