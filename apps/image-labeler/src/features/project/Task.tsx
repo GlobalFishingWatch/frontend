@@ -18,7 +18,6 @@ type TaskProps = {
   onClick?: () => void
   onFinishTask: (taskId: string) => void
   scale?: number
-  imageStyle?: React.CSSProperties
 }
 
 export function Task({
@@ -28,7 +27,6 @@ export function Task({
   onClick,
   onFinishTask,
   scale,
-  imageStyle,
 }: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
@@ -135,7 +133,6 @@ export function Task({
             key={index}
             scale={scale}
             open={open}
-            imageStyle={imageStyle}
           />
         ))}
       </div>

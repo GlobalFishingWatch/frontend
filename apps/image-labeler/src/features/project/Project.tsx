@@ -1,9 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import uniqBy from 'lodash/uniqBy'
 
-import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { Button, Choice, IconButton, Slider, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import {
   useGetLabellingProjectTasksByIdQuery,
@@ -22,12 +21,6 @@ export function Project() {
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
-  const [imageStyleEditorOpen, setImageStyleOpen] = useLocalStorage('imageStyleEditorOpen', true)
-  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1)
-  const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
-  const [imageStyleBrightness, setImageStyleBrightness] = useLocalStorage('brightness', 2)
-  const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
-
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
 
   const { data: taskData, isLoading: areTasksLoading } = useGetLabellingProjectTasksQuery({
@@ -121,86 +114,8 @@ export function Project() {
           onClick={() => setActiveTaskId(task.id)}
           onFinishTask={setNextTask}
           scale={taskData.metadata.scale}
-          imageStyle={{
-            filter: ` saturate(${imageStyleSaturation}) contrast(${imageStyleContrast}) brightness(${imageStyleBrightness})`,
-          }}
         />
       ))}
-      <div
-        className={styles.imageStyleEditor}
-        style={{
-          borderRadius: imageStyleEditorOpen ? '1rem' : '4rem',
-        }}
-      >
-        {imageStyleEditorOpen && (
-          <div className={styles.editorContent}>
-            <div className={styles.switch}>
-              <Choice
-                label="image style"
-                activeOption={showEnhancedImage ? 'normalized' : 'original'}
-                options={[
-                  {
-                    id: 'original',
-                    label: 'original',
-                  },
-                  {
-                    id: 'normalized',
-                    label: 'normalized',
-                  },
-                ]}
-                onSelect={(selected) => {
-                  setShowEnhancedImage(selected.id === 'normalized')
-                }}
-                size="small"
-              />
-            </div>
-            <Slider
-              label="Brightness"
-              config={{
-                step: 0.1,
-                min: 0,
-                max: 2,
-                steps: [0, 2],
-              }}
-              initialValue={imageStyleBrightness}
-              onChange={(value) => setImageStyleBrightness(value)}
-              thumbsSize="small"
-              className={styles.slider}
-            />
-            <Slider
-              label="Saturation"
-              config={{
-                step: 0.1,
-                min: 0,
-                max: 2,
-                steps: [0, 2],
-              }}
-              initialValue={imageStyleSaturation}
-              onChange={(value) => setImageStyleSaturation(value)}
-              thumbsSize="small"
-              className={styles.slider}
-            />
-            <Slider
-              label="Contrast"
-              config={{
-                step: 0.1,
-                min: 0,
-                max: 2,
-                steps: [0, 2],
-              }}
-              initialValue={imageStyleContrast}
-              onChange={(value) => setImageStyleContrast(value)}
-              thumbsSize="small"
-              className={styles.slider}
-            />
-          </div>
-        )}
-        <IconButton
-          onClick={() => setImageStyleOpen(!imageStyleEditorOpen)}
-          icon={imageStyleEditorOpen ? 'close' : 'photo-edit'}
-          type="border"
-        />
-      </div>
       <Button onClick={handleLoadMoreTasks} className={styles.loadMoreButton} type="secondary">
         Load more tasks
       </Button>
