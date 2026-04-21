@@ -1236,6 +1236,8 @@
     "widthRange": "Width range"
   },
   "vesselGroup": {
+    "activeAfterTooltip": "General end date to support group data validation",
+    "activeBeforeTooltip": "General start date to support group data validation",
     "add": "Add to vessel group",
     "addToWorkspace": "Add vessel group to workspace",
     "addVisibleVessels": "Add visible vessels to vessel group",

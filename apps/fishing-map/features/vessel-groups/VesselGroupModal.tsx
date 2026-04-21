@@ -521,6 +521,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                   max={AVAILABLE_END.slice(0, 10) as string}
                   min={AVAILABLE_START.slice(0, 10) as string}
                   label={t((t) => t.common.active_after)}
+                  labelTooltip={t((t) => t.vesselGroup.activeAfterTooltip)}
                   onChange={(e) => {
                     setTransmissionDateTo(e.target.value)
                   }}
@@ -535,6 +536,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                   max={AVAILABLE_END.slice(0, 10) as string}
                   min={AVAILABLE_START.slice(0, 10) as string}
                   label={t((t) => t.common.active_before)}
+                  labelTooltip={t((t) => t.vesselGroup.activeBeforeTooltip)}
                   onChange={(e) => {
                     setTransmissionDateFrom(e.target.value)
                   }}
