@@ -835,7 +835,6 @@
     "filterNotSupported": "Una de las fuentes seleccionadas no admite el filtrado por {{filter}}",
     "learnMore": "Más información sobre nuestro trabajo de identidad <a href='https://globalfishingwatch.org/es/proyecto-investigacion-identidad-embarcaciones/' target='_blank'>aquí</a>.",
     "mainQueryLabel": "Nombre, IMO, MMSI o Call sign",
-    "mainQueryLabelPrivateVMSBrazil": "Name, Registration Number, License Code, IMO, MMSI or call sign",
     "minCharacters_one": "Introduce al menos {{count}} caracteres",
     "minCharacters_many": "Introduce al menos {{count}} caracteres",
     "minCharacters_other": "Introduce al menos {{count}} caracteres",
@@ -1213,7 +1212,7 @@
       "send": "Enviar corrección",
       "title": "Corrección de información de buque"
     },
-    "vesselRegistrationCode": "Vessel registration number",
+    "vesselRegistrationCode": "Vessel registration code",
     "vesselType": "Tipos de embarcaciones",
     "vesselTypes": {
       "": "Desconocido",
