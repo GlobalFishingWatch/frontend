@@ -1245,7 +1245,7 @@
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "copyOf": "Copy of",
-    "createNewGroup": "Create new group",
+    "createNewGroup": "Upload new group",
     "csvFile": "Upload a file",
     "csvLink": "Click to see an example CSV file",
     "csvPlaceholder": "Upload a CSV file with a {{field}} column",
@@ -1277,7 +1277,7 @@
     "searchLink": "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'.",
     "searchNotFound": "No vessels found",
     "searchResultsTable": "Vessels matched by {{field}}{{timeRange}}: {{number}}",
-    "searchVesselsRequired": "Search for vessels to create a vessel group",
+    "searchVesselsRequired": "Click to match with GFW dataset and create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_many": "Maximum number of vessels is {{count}}",
@@ -1290,7 +1290,7 @@
     "vesselGroups": "Vessel groups"
   },
   "vesselGroupReport": {
-    "clickToSee": "Click to analyse vessel group and see report",
+    "clickToSee": "Click to analyze vessel group and see report",
     "insights": {
       "fishingEventsError": "There was an error loading the fishing events",
       "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
