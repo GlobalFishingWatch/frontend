@@ -88,6 +88,7 @@ import {
   selectVesselGroupModalOpen,
   selectVesselGroupModalSearchIdField,
   selectVesselGroupModalSources,
+  selectVesselGroupModalUnmatchedIDs,
   selectVesselGroupModalVessels,
   selectVesselGroupSearchStatus,
   setVesselGroupModalName,
@@ -107,6 +108,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const csvData = useSelector(selectVesselGroupModalCsvData)
+  const unmatchedIDs = useSelector(selectVesselGroupModalUnmatchedIDs)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
@@ -629,6 +631,21 @@ function VesselGroupModal(): React.ReactElement<any> {
                     } as VesselGroup),
                   })}
             </label>
+            {unmatchedIDs && (
+              <label className={styles.textAlign}>
+                <Icon icon="warning" type="warning" />
+                {t((t) => t.vesselGroup.unmatchedIDs, {
+                  field: searchIdField,
+                  ids: unmatchedIDs.join(', '),
+                })}
+                <IconButton
+                  size="small"
+                  icon="copy"
+                  tooltip={t((t) => t.common.copy, { text: 'IDs' })}
+                  onClick={() => navigator.clipboard.writeText(unmatchedIDs.join(', '))}
+                />
+              </label>
+            )}
             <div className={styles.vesselsTableContainer}>
               <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
             </div>
