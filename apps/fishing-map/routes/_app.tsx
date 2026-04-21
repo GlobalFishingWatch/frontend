@@ -1,7 +1,8 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
+import App from 'features/app/App'
 import { fetchSidePanelContent } from 'features/content/content.queries'
 import i18n from 'features/i18n/i18n'
 import { setupRouterSync } from 'router/router-sync'
@@ -13,8 +14,6 @@ import 'utils/polyfills'
 
 import '@globalfishingwatch/timebar/timebar-settings.css'
 import '@globalfishingwatch/ui-components/base.css'
-
-const App = lazy(() => import('features/app/App'))
 
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
