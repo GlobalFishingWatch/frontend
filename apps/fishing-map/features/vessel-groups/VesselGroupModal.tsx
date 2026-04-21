@@ -32,7 +32,8 @@ import {
 } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
@@ -101,6 +102,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
   const userData = useSelector(selectUserData)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
@@ -156,21 +158,24 @@ function VesselGroupModal(): React.ReactElement<any> {
     if (editingVesselGroup?.name) {
       dispatch(setVesselGroupModalName(editingVesselGroup?.name))
     }
-  }, [editingVesselGroup?.name])
+  }, [dispatch, editingVesselGroup?.name])
+
+  const vesselGroupModalSources = useSelector(selectVesselGroupModalSources)
 
   const sourceOptions = useMemo(
     () =>
-      vesselDatasets.map((d) => ({
-        id: d.id,
-        label: getDatasetLabel(d),
-      })),
-    [vesselDatasets]
+      isGFWUser
+        ? vesselDatasets.map((d) => ({
+            id: d.id,
+            label: getDatasetLabel(d),
+          }))
+        : [],
+    [vesselDatasets, isGFWUser]
   )
-  const vesselGroupModalSources = useSelector(selectVesselGroupModalSources)
 
   const sourcesSelected = useMemo(
-    () => sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)),
-    [sourceOptions, vesselGroupModalSources]
+    () => (isGFWUser ? sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)) : []),
+    [isGFWUser, sourceOptions, vesselGroupModalSources]
   )
 
   const setGroupName = useCallback(
@@ -213,9 +218,12 @@ function VesselGroupModal(): React.ReactElement<any> {
       csvData?: VesselGroupCsvData[]
       csvColumns?: string[]
     }) => {
-      const datasets = sourcesSelected.length
-        ? sourcesSelected.map(({ id }) => id)
-        : sourceOptions.map(({ id }) => id)
+      const datasets = isGFWUser
+        ? sourcesSelected.length
+          ? sourcesSelected.map(({ id }) => id)
+          : sourceOptions.map(({ id }) => id)
+        : [DEFAULT_VESSEL_IDENTITY_ID]
+
       searchVesselGroupsVesselsRef.current = dispatch(
         searchVesselGroupsVesselsThunk({
           ids,
@@ -239,7 +247,15 @@ function VesselGroupModal(): React.ReactElement<any> {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch, sourcesSelected, sourceOptions, t, transmissionDateFrom, transmissionDateTo]
+    [
+      dispatch,
+      isGFWUser,
+      sourcesSelected,
+      sourceOptions,
+      t,
+      transmissionDateFrom,
+      transmissionDateTo,
+    ]
   )
 
   useEffect(() => {
@@ -514,17 +530,19 @@ function VesselGroupModal(): React.ReactElement<any> {
           />
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
-              <MultiSelect
-                label={t((t) => t.layer.sources)}
-                placeholder={getPlaceholderBySelections({
-                  selection: sourcesSelected.map(({ id }) => id),
-                  options: sourceOptions,
-                })}
-                options={sourceOptions}
-                selectedOptions={sourcesSelected}
-                onSelect={onSelectSourceClick}
-                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-              />
+              {isGFWUser && (
+                <MultiSelect
+                  label={t((t) => t.layer.sources)}
+                  placeholder={getPlaceholderBySelections({
+                    selection: sourcesSelected.map(({ id }) => id),
+                    options: sourceOptions,
+                  })}
+                  options={sourceOptions}
+                  selectedOptions={sourcesSelected}
+                  onSelect={onSelectSourceClick}
+                  onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+                />
+              )}
               <div>
                 <InputDate
                   value={transmissionDateTo || ''}
@@ -620,7 +638,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {datasetsWithoutRelatedEvents.length >= 1 && (
-            <div className={styles.disclaimerFooter}>
+            <div className={styles.textAlign}>
               <Icon icon="warning" type="warning" />
               {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
                 features: t((t) => t.vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix),
