@@ -542,19 +542,21 @@ function VesselGroupModal(): React.ReactElement<any> {
           />
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
-              {isGFWUser && (
-                <MultiSelect
-                  label={t((t) => t.layer.sources)}
-                  placeholder={getPlaceholderBySelections({
-                    selection: sourcesSelected.map(({ id }) => id),
-                    options: sourceOptions,
-                  })}
-                  options={sourceOptions}
-                  selectedOptions={sourcesSelected}
-                  onSelect={onSelectSourceClick}
-                  onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-                />
-              )}
+              <div>
+                {isGFWUser && (
+                  <MultiSelect
+                    label={t((t) => t.layer.sources)}
+                    placeholder={getPlaceholderBySelections({
+                      selection: sourcesSelected.map(({ id }) => id),
+                      options: sourceOptions,
+                    })}
+                    options={sourceOptions}
+                    selectedOptions={sourcesSelected}
+                    onSelect={onSelectSourceClick}
+                    onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+                  />
+                )}
+              </div>
               <div>
                 <InputDate
                   value={transmissionDateTo || ''}
