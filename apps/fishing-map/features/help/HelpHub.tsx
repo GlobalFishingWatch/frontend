@@ -36,12 +36,6 @@ function HelpHub() {
   }
 
   const getUserGuideLink = () => {
-    trackEvent({
-      category: TrackCategory.HelpHints,
-      action: `redirect to user guide`,
-      label: i18n.language,
-    })
-
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
     if (i18n.language === 'fr') return 'https://globalfishingwatch.org/user-guide-french/'
     if (i18n.language === 'pt') return 'https://globalfishingwatch.org/user-guide-portuguese/'
@@ -49,25 +43,21 @@ function HelpHub() {
   }
 
   const getFAQsLink = () => {
-    trackEvent({
-      category: TrackCategory.HelpHints,
-      action: `redirect to FAQs`,
-      label: i18n.language,
-    })
-
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/ayuda-faqs/'
     return 'https://globalfishingwatch.org/help-faqs/'
   }
 
   const getVideoTutorialsLink = () => {
-    trackEvent({
-      category: TrackCategory.HelpHints,
-      action: `redirect to video tutorials`,
-      label: i18n.language,
-    })
-
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/tutoriales'
     return 'https://globalfishingwatch.org/tutorials'
+  }
+
+  const redirectEvent = (destination: string) => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: `redirect to ${destination}`,
+      label: i18n.language,
+    })
   }
 
   return (
@@ -103,7 +93,13 @@ function HelpHub() {
           )}
         </li>
         <li>
-          <a href={getUserGuideLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
+          <a
+            href={getUserGuideLink()}
+            target="_blank"
+            rel="noreferrer"
+            className={cx(styles.link)}
+            onClick={() => redirectEvent('user guide')}
+          >
             {t((t) => t.common.userGuide)}
           </a>
         </li>
@@ -113,12 +109,19 @@ function HelpHub() {
             target="_blank"
             rel="noreferrer"
             className={cx(styles.link)}
+            onClick={() => redirectEvent('video tutorials')}
           >
             {t((t) => t.common.tutorials)}
           </a>
         </li>
         <li>
-          <a href={getFAQsLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
+          <a
+            href={getFAQsLink()}
+            target="_blank"
+            rel="noreferrer"
+            className={cx(styles.link)}
+            onClick={() => redirectEvent('faqs')}
+          >
             {t((t) => t.common.faq)}
           </a>
         </li>
