@@ -72,6 +72,7 @@ import {
   calculateVMSVesselsPercentage,
   getVesselGroupUniqVessels,
   getVesselGroupVesselsCount,
+  normaliseCsvColumns,
 } from './vessel-groups.utils'
 import type { VesselGroupConfirmationMode, VesselGroupCsvData } from './vessel-groups-modal.slice'
 import {
@@ -110,6 +111,10 @@ function VesselGroupModal(): React.ReactElement<any> {
   const csvData = useSelector(selectVesselGroupModalCsvData)
   const unmatchedIDs = useSelector(selectVesselGroupModalUnmatchedIDs)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
+  const normalisedSelectedCsvColumns = useMemo(
+    () => normaliseCsvColumns(selectedCsvColumns),
+    [selectedCsvColumns]
+  )
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
@@ -647,7 +652,9 @@ function VesselGroupModal(): React.ReactElement<any> {
               </label>
             )}
             <div className={styles.vesselsTableContainer}>
-              <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
+              <VesselGroupVessels
+                searchIdField={normalisedSelectedCsvColumns[0] || searchIdField}
+              />
             </div>
           </Fragment>
         ) : (
