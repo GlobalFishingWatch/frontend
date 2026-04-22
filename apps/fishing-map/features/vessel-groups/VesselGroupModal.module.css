@@ -127,6 +127,8 @@
 
 .errorMsg {
   color: var(--color-danger-red);
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .warning {
