@@ -28,6 +28,7 @@ import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivi
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
 
+import ReportEnvironmentMigramar from './migramar/ReportEnvironmentMigramar'
 import ReportEnvironmentGraph from './ReportEnvironmentGraph'
 import ReportEnvironmentGraphSelector from './ReportEnvironmentGraphSelector'
 
@@ -67,6 +68,8 @@ function ReportEnvironment() {
       <div>
         {reportGraphType !== REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
           environmentalDataviews.map((dataview, index) => {
+            // TODO:Migramar only show when dataview is migramar
+            return <ReportEnvironmentMigramar key={dataview.id} dataview={dataview} />
             return (
               <ReportEnvironmentGraph
                 key={dataview.id}

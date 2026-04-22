@@ -22,6 +22,8 @@ import { Route as ApiOceanAreasIndexRouteImport } from './routes/api/ocean-areas
 import { Route as AppCategoryIndexRouteImport } from './routes/_app/$category/index'
 import { Route as ApiOceanAreasSearchRouteImport } from './routes/api/ocean-areas/search'
 import { Route as ApiOceanAreasNameRouteImport } from './routes/api/ocean-areas/name'
+import { Route as ApiMigramarOptionsRouteImport } from './routes/api/migramar/options'
+import { Route as ApiMigramarAreaIdRouteImport } from './routes/api/migramar/$areaId'
 import { Route as AppVesselVesselIdRouteImport } from './routes/_app/vessel.$vesselId'
 import { Route as AppReportReportIdRouteImport } from './routes/_app/report.$reportId'
 import { Route as AppCategoryWorkspaceIdRouteImport } from './routes/_app/$category/$workspaceId'
@@ -98,6 +100,16 @@ const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
 const ApiOceanAreasNameRoute = ApiOceanAreasNameRouteImport.update({
   id: '/api/ocean-areas/name',
   path: '/api/ocean-areas/name',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMigramarOptionsRoute = ApiMigramarOptionsRouteImport.update({
+  id: '/api/migramar/options',
+  path: '/api/migramar/options',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMigramarAreaIdRoute = ApiMigramarAreaIdRouteImport.update({
+  id: '/api/migramar/$areaId',
+  path: '/api/migramar/$areaId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppVesselVesselIdRoute = AppVesselVesselIdRouteImport.update({
@@ -181,6 +193,8 @@ export interface FileRoutesByFullPath {
   '/$category/$workspaceId': typeof AppCategoryWorkspaceIdRouteWithChildren
   '/report/$reportId': typeof AppReportReportIdRoute
   '/vessel/$vesselId': typeof AppVesselVesselIdRoute
+  '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
+  '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/$category/': typeof AppCategoryIndexRoute
@@ -206,6 +220,8 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/report/$reportId': typeof AppReportReportIdRoute
   '/vessel/$vesselId': typeof AppVesselVesselIdRoute
+  '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
+  '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/$category': typeof AppCategoryIndexRoute
@@ -234,6 +250,8 @@ export interface FileRoutesById {
   '/_app/$category/$workspaceId': typeof AppCategoryWorkspaceIdRouteWithChildren
   '/_app/report/$reportId': typeof AppReportReportIdRoute
   '/_app/vessel/$vesselId': typeof AppVesselVesselIdRoute
+  '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
+  '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/_app/$category/': typeof AppCategoryIndexRoute
@@ -262,6 +280,8 @@ export interface FileRouteTypes {
     | '/$category/$workspaceId'
     | '/report/$reportId'
     | '/vessel/$vesselId'
+    | '/api/migramar/$areaId'
+    | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/$category/'
@@ -287,6 +307,8 @@ export interface FileRouteTypes {
     | '/'
     | '/report/$reportId'
     | '/vessel/$vesselId'
+    | '/api/migramar/$areaId'
+    | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/$category'
@@ -314,6 +336,8 @@ export interface FileRouteTypes {
     | '/_app/$category/$workspaceId'
     | '/_app/report/$reportId'
     | '/_app/vessel/$vesselId'
+    | '/api/migramar/$areaId'
+    | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/_app/$category/'
@@ -336,6 +360,8 @@ export interface RootRouteChildren {
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
   ApiFeedbackRoute: typeof ApiFeedbackRoute
+  ApiMigramarAreaIdRoute: typeof ApiMigramarAreaIdRoute
+  ApiMigramarOptionsRoute: typeof ApiMigramarOptionsRoute
   ApiOceanAreasNameRoute: typeof ApiOceanAreasNameRoute
   ApiOceanAreasSearchRoute: typeof ApiOceanAreasSearchRoute
   ApiOceanAreasIndexRoute: typeof ApiOceanAreasIndexRoute
@@ -435,6 +461,20 @@ declare module '@tanstack/react-router' {
       path: '/api/ocean-areas/name'
       fullPath: '/api/ocean-areas/name'
       preLoaderRoute: typeof ApiOceanAreasNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/migramar/options': {
+      id: '/api/migramar/options'
+      path: '/api/migramar/options'
+      fullPath: '/api/migramar/options'
+      preLoaderRoute: typeof ApiMigramarOptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/migramar/$areaId': {
+      id: '/api/migramar/$areaId'
+      path: '/api/migramar/$areaId'
+      fullPath: '/api/migramar/$areaId'
+      preLoaderRoute: typeof ApiMigramarAreaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/vessel/$vesselId': {
@@ -584,6 +624,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,
   ApiFeedbackRoute: ApiFeedbackRoute,
+  ApiMigramarAreaIdRoute: ApiMigramarAreaIdRoute,
+  ApiMigramarOptionsRoute: ApiMigramarOptionsRoute,
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
