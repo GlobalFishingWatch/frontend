@@ -422,7 +422,7 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupModalSearchText: (state, action: PayloadAction<string>) => {
       state.search.text = action.payload
     },
-    setVesselGroupModalCsvColumns: (state, action: PayloadAction<string[]>) => {
+    setVesselGroupModalCsvColumns: (state, action: PayloadAction<VesselPropertyApiSearch[]>) => {
       state.search.csvColumns = action.payload
     },
     setVesselGroupModalCsvData: (state, action: PayloadAction<VesselGroupCsvData[]>) => {
