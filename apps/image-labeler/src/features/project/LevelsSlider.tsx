@@ -13,9 +13,13 @@ const dimColor = 'rgb(95, 95, 95)'
 export function LevelsSlider({
   initialValues,
   onChange,
+  min = 0,
+  max = 255,
 }: {
   initialValues: LevelsValues
   onChange: (v: LevelsValues) => void
+  min?: number
+  max?: number
 }) {
   const [internal, setInternal] = useState<LevelsValues>(initialValues)
 
@@ -24,8 +28,8 @@ export function LevelsSlider({
   }
 
   const background = getTrackBackground({
-    min: 0,
-    max: 255,
+    min,
+    max,
     values: internal,
     colors: [dimColor, activeColor, activeColor, dimColor],
   })
@@ -34,8 +38,8 @@ export function LevelsSlider({
     <div className={styles.levelsSlider}>
       <Range
         values={internal}
-        min={0}
-        max={255}
+        min={min}
+        max={max}
         step={1}
         allowOverlap={false}
         onChange={handleChange}

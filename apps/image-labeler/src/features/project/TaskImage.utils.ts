@@ -6,6 +6,8 @@ export const HIST_H = 40
 
 export type RawImageData = { data: Uint8ClampedArray; width: number; height: number }
 export type LevelsValues = [number, number, number]
+export type DataRange = [number, number]
+export type AutoLevelsResult = { levels: LevelsValues; range: DataRange }
 
 export const decodeEnhancedToRaw = async (src: string): Promise<RawImageData | null> => {
   try {
@@ -21,9 +23,12 @@ export const decodeEnhancedToRaw = async (src: string): Promise<RawImageData | n
   }
 }
 
+export type NormMode = 'global' | 'per-channel'
+
 export const decodeOriginalToRaw = async (
   src: string,
-  img: HTMLImageElement
+  img: HTMLImageElement,
+  normMode: NormMode = 'global'
 ): Promise<RawImageData | null> => {
   const { width, height } = img
   const base64 = src.split(',')[1]
@@ -44,38 +49,40 @@ export const decodeOriginalToRaw = async (
         : new DataView(pngData)
       const numChannels = ctype === 0 ? 1 : ctype === 2 ? 3 : ctype === 4 ? 2 : ctype === 6 ? 4 : 1
 
-      let minVal = 65535,
-        maxVal = 0
+      let minR = 65535,
+        maxR = 0,
+        minG = 65535,
+        maxG = 0,
+        minB = 65535,
+        maxB = 0
       for (let i = 0; i < width * height; i++) {
         const off = i * numChannels * 2
         if (ctype === 0 || ctype === 4) {
           const v = view.getUint16(off, false)
-          if (v < minVal) minVal = v
-          if (v > maxVal) maxVal = v
+          if (v < minR) minR = v
+          if (v > maxR) maxR = v
         } else if (ctype === 2 || ctype === 6) {
-          minVal = Math.min(
-            minVal,
-            view.getUint16(off, false),
-            view.getUint16(off + 2, false),
-            view.getUint16(off + 4, false)
-          )
-          maxVal = Math.max(
-            maxVal,
-            view.getUint16(off, false),
-            view.getUint16(off + 2, false),
-            view.getUint16(off + 4, false)
-          )
+          const rv = view.getUint16(off, false)
+          const gv = view.getUint16(off + 2, false)
+          const bv = view.getUint16(off + 4, false)
+          if (rv < minR) minR = rv
+          if (rv > maxR) maxR = rv
+          if (gv < minG) minG = gv
+          if (gv > maxG) maxG = gv
+          if (bv < minB) minB = bv
+          if (bv > maxB) maxB = bv
         }
       }
 
-      let sMin = minVal,
-        sMax = maxVal
-      if (maxVal - minVal < 0.1 * 65535) {
-        const c = (minVal + maxVal) / 2
-        sMin = c - 0.05 * 65535
-        sMax = c + 0.05 * 65535
-      }
-      const sRange = sMax - sMin || 1
+      const isGray = ctype === 0 || ctype === 4
+      const gMin = normMode === 'per-channel' ? minR : Math.min(minR, minG, minB)
+      const gMax = normMode === 'per-channel' ? maxR : Math.max(maxR, maxG, maxB)
+      const rRange = (normMode === 'per-channel' && !isGray ? maxR - minR : gMax - gMin) || 1
+      const gRange = (normMode === 'per-channel' && !isGray ? maxG - minG : gMax - gMin) || 1
+      const bRange = (normMode === 'per-channel' && !isGray ? maxB - minB : gMax - gMin) || 1
+      const rMin = normMode === 'per-channel' && !isGray ? minR : gMin
+      const gMin2 = normMode === 'per-channel' && !isGray ? minG : gMin
+      const bMin = normMode === 'per-channel' && !isGray ? minB : gMin
 
       for (let i = 0; i < width * height; i++) {
         let r = 0,
@@ -85,13 +92,24 @@ export const decodeOriginalToRaw = async (
         const off = i * numChannels * 2
         if (ctype === 0 || ctype === 4) {
           const v = view.getUint16(off, false)
-          r = g = b = Math.min(255, Math.max(0, ((v - sMin) / sRange) * 255))
-          if (ctype === 4) a = view.getUint16(off + 2, false) / 256
+          if (v === 0) {
+            a = 0
+          } else {
+            r = g = b = ((v - gMin) / (gMax - gMin || 1)) * 255
+            if (ctype === 4) a = view.getUint16(off + 2, false) / 256
+          }
         } else if (ctype === 2 || ctype === 6) {
-          r = Math.min(255, Math.max(0, ((view.getUint16(off, false) - sMin) / sRange) * 255))
-          g = Math.min(255, Math.max(0, ((view.getUint16(off + 2, false) - sMin) / sRange) * 255))
-          b = Math.min(255, Math.max(0, ((view.getUint16(off + 4, false) - sMin) / sRange) * 255))
-          if (ctype === 6) a = view.getUint16(off + 6, false) / 256
+          const rv = view.getUint16(off, false)
+          const gv = view.getUint16(off + 2, false)
+          const bv = view.getUint16(off + 4, false)
+          if (rv === 0 && gv === 0 && bv === 0) {
+            a = 0
+          } else {
+            r = ((rv - rMin) / rRange) * 255
+            g = ((gv - gMin2) / gRange) * 255
+            b = ((bv - bMin) / bRange) * 255
+            if (ctype === 6) a = view.getUint16(off + 6, false) / 256
+          }
         }
         data[i * 4] = r
         data[i * 4 + 1] = g
@@ -111,7 +129,10 @@ export const decodeOriginalToRaw = async (
   if (!ctx) return null
   ctx.drawImage(img, 0, 0)
   const d = ctx.getImageData(0, 0, width, height)
-  return { data: new Uint8ClampedArray(d.data), width, height }
+  const out = new Uint8ClampedArray(d.data)
+  for (let i = 0; i < out.length; i += 4)
+    if (out[i] === 0 && out[i + 1] === 0 && out[i + 2] === 0) out[i + 3] = 0
+  return { data: out, width, height }
 }
 
 const applyLevelToChannel = (
@@ -145,27 +166,50 @@ export const applyLevelsToCanvas = (
   ctx.putImageData(new ImageData(out, raw.width, raw.height), 0, 0)
 }
 
-export const computeAutoLevels = (raw: RawImageData): LevelsValues => {
+export const computeAutoLevels = (raw: RawImageData): AutoLevelsResult => {
   const bins = new Int32Array(256)
   const pixelCount = raw.data.length / 4
-  for (let i = 0; i < raw.data.length; i += 4) {
+  for (let i = 0; i < raw.data.length; i += 4)
     bins[Math.round((raw.data[i] + raw.data[i + 1] + raw.data[i + 2]) / 3)]++
+
+  let dataMin = 1,
+    dataMax = 255
+  for (let x = 1; x < 256; x++) {
+    if (bins[x] > 0) {
+      dataMin = x
+      break
+    }
+  }
+  for (let x = 255; x >= 1; x--) {
+    if (bins[x] > 0) {
+      dataMax = x
+      break
+    }
   }
 
-  const lo = pixelCount * 0.003
-  const hi = pixelCount * 0.997
-  let cumul = 0
-  let minVal = 0,
-    maxVal = 255
-  for (let x = 0; x < 256; x++) {
+  const nonBlackCount = pixelCount - bins[0]
+  const lo = nonBlackCount * 0.0001
+  const hi = nonBlackCount * 0.9999
+  let cumul = 0,
+    minVal = dataMin,
+    maxVal = dataMax
+  for (let x = dataMin; x <= dataMax; x++) {
     cumul += bins[x]
     if (cumul < lo) minVal = x
     if (cumul < hi) maxVal = x
   }
-  return [minVal, Math.round(minVal + (maxVal - minVal) / 3), maxVal]
+  return {
+    levels: [minVal, Math.round(minVal + (maxVal - minVal) / 3), maxVal],
+    range: [dataMin, dataMax],
+  }
 }
 
-export const drawHistogram = (canvas: HTMLCanvasElement, data: Uint8ClampedArray) => {
+export const drawHistogram = (
+  canvas: HTMLCanvasElement,
+  data: Uint8ClampedArray,
+  range: DataRange,
+  normMode: NormMode = 'global'
+) => {
   const dpr = window.devicePixelRatio || 1
   canvas.width = HIST_W * dpr
   canvas.height = HIST_H * dpr
@@ -176,14 +220,46 @@ export const drawHistogram = (canvas: HTMLCanvasElement, data: Uint8ClampedArray
   ctx.fillStyle = 'rgba(0,0,0,0.7)'
   ctx.fillRect(0, 0, HIST_W, HIST_H)
 
-  const bins = new Float32Array(256)
-  for (let i = 0; i < data.length; i += 4) {
-    bins[Math.round((data[i] + data[i + 1] + data[i + 2]) / 3)]++
-  }
-  const maxBin = Math.max(...bins) || 1
-  ctx.fillStyle = 'rgb(215, 215, 215)'
-  for (let x = 0; x < 256; x++) {
-    const h = (Math.log1p(bins[x]) / Math.log1p(maxBin)) * HIST_H
-    ctx.fillRect(x, HIST_H - h, 1, h)
+  const [rangeMin, rangeMax] = range
+  const span = rangeMax - rangeMin || 1
+  const barW = HIST_W / span
+
+  if (normMode === 'per-channel') {
+    const rBins = new Float32Array(256)
+    const gBins = new Float32Array(256)
+    const bBins = new Float32Array(256)
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] === 0) continue
+      rBins[data[i]]++
+      gBins[data[i + 1]]++
+      bBins[data[i + 2]]++
+    }
+    const maxBin = Math.max(Math.max(...rBins), Math.max(...gBins), Math.max(...bBins)) || 1
+    const channels = [
+      { bins: rBins, color: 'rgba(255,0,0, 0.8)' },
+      { bins: gBins, color: 'rgba(0,255,0, 0.8)' },
+      { bins: bBins, color: 'rgba(0,0,255, 0.8)' },
+    ]
+    ctx.globalCompositeOperation = 'screen'
+    for (const { bins, color } of channels) {
+      ctx.fillStyle = color
+      for (let x = rangeMin; x <= rangeMax; x++) {
+        const h = (Math.log1p(bins[x]) / Math.log1p(maxBin)) * HIST_H
+        ctx.fillRect((x - rangeMin) * barW, HIST_H - h, barW, h)
+      }
+    }
+    ctx.globalCompositeOperation = 'source-over'
+  } else {
+    const bins = new Float32Array(256)
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] === 0) continue
+      bins[Math.round((data[i] + data[i + 1] + data[i + 2]) / 3)]++
+    }
+    const maxBin = Math.max(...bins) || 1
+    ctx.fillStyle = 'rgb(215, 215, 215)'
+    for (let x = rangeMin; x <= rangeMax; x++) {
+      const h = (Math.log1p(bins[x]) / Math.log1p(maxBin)) * HIST_H
+      ctx.fillRect((x - rangeMin) * barW, HIST_H - h, barW, h)
+    }
   }
 }
