@@ -145,6 +145,7 @@
     "context_areas": "Reference layers",
     "continue": "Lanjutkan",
     "copiedToClipboard": "Tautan untuk membagikan tampilan ini telah disalin ke papan klip Anda.",
+    "copy": "Copy {{text}} to clipboard",
     "country": "Country",
     "country_one": "Country",
     "country_many": "countries",
@@ -835,6 +836,7 @@
     "filterNotSupported": "One of your sources selected doesn’t support filtering by {{filter}}",
     "learnMore": "Pelajari lebih lanjut tentang proyek identitas kapal <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>di sini</a>.",
     "mainQueryLabel": "Nama, IMO atau MMSI",
+    "mainQueryLabelPrivateVMSBrazil": "Name, Registration Number, License Code, IMO, MMSI or call sign",
     "minCharacters_one": "Harap masukkan setidaknya {{count}} karakter",
     "minCharacters_many": "Please type at least {{count}} characters",
     "minCharacters_other": "Harap masukkan setidaknya {{count}} karakter",
@@ -1235,6 +1237,8 @@
     "widthRange": "Rentang lebar"
   },
   "vesselGroup": {
+    "activeAfterTooltip": "General start date to support group data validation",
+    "activeBeforeTooltip": "General end date to support group data validation",
     "add": "Tambahkan ke kelompok",
     "addToWorkspace": "Add vessel group to workspace",
     "addVisibleVessels": "Add visible vessels to vessel group",
@@ -1282,12 +1286,14 @@
     "tooManyVessels_one": "Jumlah maksimum kapal adalah {{count}}",
     "tooManyVessels_many": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Jumlah maksimum kapal adalah {{count}}",
+    "unmatchedIDs": "Unmatched vessels: {{ids}}",
     "updateRequired": "Update required",
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
     "vesselAddedToGroup": "Your vessel group was updated",
     "vesselGroup": "Kelompok kapal",
     "vesselGroupProfile": "Vessel group profile",
-    "vesselGroups": "Kelompok kapal"
+    "vesselGroups": "Kelompok kapal",
+    "vesselGroupTooltip": "Run a bulk-search or upload up to 1000 vessels to create a custom vessel group through your own datasets. By uploading a list of known IMO, MMSI numbers and/or other vessel identifiers such as vessel name, flag, call sign through a CSV file, users can cross-match your list with Global Fishing Watch AIS and registry based vessel tracking information."
   },
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
