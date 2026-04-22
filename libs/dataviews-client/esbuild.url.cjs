@@ -2,6 +2,20 @@ const { build } = require('esbuild')
 const path = require('path')
 const fs = require('fs')
 
+// Swap legacy dataset migrations for identity stubs — the UDF parses
+// URL structure only and does not rewrite legacy dataset IDs.
+const stubMigrationsPlugin = {
+  name: 'stub-migrations',
+  setup(build) {
+    const stubPath = path.resolve(__dirname, 'src/url-workspace/migrations.stub.ts')
+    build.onResolve({ filter: /(^|\/)migrations$/ }, (args) => {
+      if (args.importer.includes(path.join('src', 'url-workspace'))) {
+        return { path: stubPath }
+      }
+    })
+  },
+}
+
 async function buildBundle() {
   // Build the UDF library bundle
   await build({
@@ -19,6 +33,7 @@ async function buildBundle() {
     target: 'es2017',
     tsconfig: 'libs/dataviews-client/tsconfig.url.json',
     resolveExtensions: ['.ts', '.js'],
+    plugins: [stubMigrationsPlugin],
     logLevel: 'info',
     banner: {
       js: `// Shim for require in browser/BigQuery environment

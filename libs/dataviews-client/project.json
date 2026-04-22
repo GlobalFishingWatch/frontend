@@ -22,7 +22,7 @@
       "outputs": ["{workspaceRoot}/dist/libs/dataviews-client/url-workspace-bundle"],
       "dependsOn": [],
       "options": {
-        "commands": ["node libs/dataviews-client/esbuild.url.ts"],
+        "commands": ["node libs/dataviews-client/esbuild.url.cjs"],
         "cwd": "."
       }
     },
