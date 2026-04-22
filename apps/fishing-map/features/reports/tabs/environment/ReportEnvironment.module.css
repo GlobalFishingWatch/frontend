@@ -1,3 +1,7 @@
+.section {
+  padding-block: var(--space-XS);
+}
+
 .container {
   padding: var(--space-SM);
 }
