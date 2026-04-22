@@ -145,6 +145,7 @@
     "context_areas": "crwdns106656:0crwdne106656:0",
     "continue": "crwdns59721:0crwdne59721:0",
     "copiedToClipboard": "crwdns59723:0crwdne59723:0",
+    "copy": "crwdns120320:0{{text}}crwdne120320:0",
     "country": "crwdns84530:0crwdne84530:0",
     "country_one": "crwdns106658:0crwdne106658:0",
     "country_many": "crwdns106750:0crwdne106750:0",
@@ -835,6 +836,7 @@
     "filterNotSupported": "crwdns83048:0{{filter}}crwdne83048:0",
     "learnMore": "crwdns69436:0crwdne69436:0",
     "mainQueryLabel": "crwdns60373:0crwdne60373:0",
+    "mainQueryLabelPrivateVMSBrazil": "crwdns120322:0crwdne120322:0",
     "minCharacters_one": "crwdns68411:0{{count}}crwdne68411:0",
     "minCharacters_many": "crwdns106702:0{{count}}crwdne106702:0",
     "minCharacters_other": "crwdns68413:0{{count}}crwdne68413:0",
@@ -1235,6 +1237,8 @@
     "widthRange": "crwdns60653:0crwdne60653:0"
   },
   "vesselGroup": {
+    "activeAfterTooltip": "crwdns120324:0crwdne120324:0",
+    "activeBeforeTooltip": "crwdns120326:0crwdne120326:0",
     "add": "crwdns60655:0crwdne60655:0",
     "addToWorkspace": "crwdns83720:0crwdne83720:0",
     "addVisibleVessels": "crwdns83724:0crwdne83724:0",
@@ -1282,12 +1286,14 @@
     "tooManyVessels_one": "crwdns60693:0{{count}}crwdne60693:0",
     "tooManyVessels_many": "crwdns106730:0{{count}}crwdne106730:0",
     "tooManyVessels_other": "crwdns60695:0{{count}}crwdne60695:0",
+    "unmatchedIDs": "crwdns120328:0{{ids}}crwdne120328:0",
     "updateRequired": "crwdns83738:0crwdne83738:0",
     "uploadPublic": "crwdns60697:0crwdne60697:0",
     "vesselAddedToGroup": "crwdns83808:0crwdne83808:0",
     "vesselGroup": "crwdns60699:0crwdne60699:0",
     "vesselGroupProfile": "crwdns84636:0crwdne84636:0",
-    "vesselGroups": "crwdns60701:0crwdne60701:0"
+    "vesselGroups": "crwdns60701:0crwdne60701:0",
+    "vesselGroupTooltip": "crwdns120330:0crwdne120330:0"
   },
   "vesselGroupReport": {
     "clickToSee": "crwdns83844:0crwdne83844:0",
