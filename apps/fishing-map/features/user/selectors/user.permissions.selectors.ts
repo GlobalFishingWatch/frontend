@@ -9,6 +9,7 @@ import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } f
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllReports } from 'features/reports/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import type { PRIVATE_SUPPORTED_GROUPS } from 'features/user/user.config'
 import { DEFAULT_GROUP_ID } from 'features/user/user.config'
 import { selectWorkspaces } from 'features/workspaces-list/workspaces-list.slice'
 

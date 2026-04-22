@@ -19,7 +19,7 @@ import {
 import { AVAILABLE_END, AVAILABLE_START, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
+import { selectVesselGroupSearchDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -32,8 +32,7 @@ import {
 } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
@@ -104,7 +103,6 @@ function VesselGroupModal(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
   const userData = useSelector(selectUserData)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
@@ -159,7 +157,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const workspace = useSelector(selectWorkspace)
   const { dispatchLocation } = useLocationConnect()
 
-  const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
+  const vesselDatasets = useSelector(selectVesselGroupSearchDatasets)
 
   useEffect(() => {
     if (editingVesselGroup?.name) {
@@ -171,18 +169,16 @@ function VesselGroupModal(): React.ReactElement<any> {
 
   const sourceOptions = useMemo(
     () =>
-      isGFWUser
-        ? vesselDatasets.map((d) => ({
-            id: d.id,
-            label: getDatasetLabel(d),
-          }))
-        : [],
-    [vesselDatasets, isGFWUser]
+      vesselDatasets.map((d) => ({
+        id: d.id,
+        label: getDatasetLabel(d),
+      })),
+    [vesselDatasets]
   )
 
   const sourcesSelected = useMemo(
-    () => (isGFWUser ? sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)) : []),
-    [isGFWUser, sourceOptions, vesselGroupModalSources]
+    () => sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)),
+    [sourceOptions, vesselGroupModalSources]
   )
 
   const setGroupName = useCallback(
@@ -225,11 +221,9 @@ function VesselGroupModal(): React.ReactElement<any> {
       csvData?: VesselGroupCsvData[]
       csvColumns?: string[]
     }) => {
-      const datasets = isGFWUser
-        ? sourcesSelected.length
-          ? sourcesSelected.map(({ id }) => id)
-          : sourceOptions.map(({ id }) => id)
-        : [DEFAULT_VESSEL_IDENTITY_ID]
+      const datasets = sourcesSelected.length
+        ? sourcesSelected.map(({ id }) => id)
+        : sourceOptions.map(({ id }) => id)
 
       trackEvent({
         category: TrackCategory.VesselGroups,
@@ -266,7 +260,6 @@ function VesselGroupModal(): React.ReactElement<any> {
       }
     },
     [
-      isGFWUser,
       sourcesSelected,
       sourceOptions,
       transmissionDateFrom,
@@ -550,7 +543,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
               <div>
-                {isGFWUser && (
+                {sourceOptions.length > 1 ? (
                   <MultiSelect
                     label={t((t) => t.layer.sources)}
                     placeholder={getPlaceholderBySelections({
@@ -562,7 +555,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                     onSelect={onSelectSourceClick}
                     onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
                   />
-                )}
+                ) : null}
               </div>
               <div>
                 <InputDate
