@@ -145,6 +145,7 @@
     "context_areas": "Reference layers",
     "continue": "Continuer",
     "copiedToClipboard": "Le lien pour partager cette vue a été copié dans votre presse-papiers.",
+    "copy": "Copy {{text}} to clipboard",
     "country": "Country",
     "country_one": "Country",
     "country_many": "countries",
@@ -835,6 +836,7 @@
     "filterNotSupported": "Une de vos sources sélectionnées ne prend pas en charge le filtrage par {{filter}}",
     "learnMore": "En savoir plus à propos de notre travail sur l'identité des navires <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>ici</a>.",
     "mainQueryLabel": "Nom, OMI ou MMSI",
+    "mainQueryLabelPrivateVMSBrazil": "Name, Registration Number, License Code, IMO, MMSI or call sign",
     "minCharacters_one": "Veuillez saisir au moins {{count}} caractère",
     "minCharacters_many": "Please type at least {{count}} characters",
     "minCharacters_other": "Veuillez saisir au moins {{count}} caractères",
@@ -1235,6 +1237,8 @@
     "widthRange": "Plage de largeur"
   },
   "vesselGroup": {
+    "activeAfterTooltip": "General start date to support group data validation",
+    "activeBeforeTooltip": "General end date to support group data validation",
     "add": "Ajouter au groupe",
     "addToWorkspace": "Ajouter un groupe de navires à l'espace de travail",
     "addVisibleVessels": "Ajouter les navires visibles au groupe de navires",
@@ -1282,12 +1286,14 @@
     "tooManyVessels_one": "Le nombre maximum de navires est de {{count}}",
     "tooManyVessels_many": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Le nombre maximum de navires est {{count}}",
+    "unmatchedIDs": "Unmatched vessels: {{ids}}",
     "updateRequired": "Mise à jour requise",
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce groupe de navires lorsque vous partagez un espace de travail",
     "vesselAddedToGroup": "Votre groupe de navires a été mis à jour",
     "vesselGroup": "Groupe de navires",
     "vesselGroupProfile": "Vessel group profile",
-    "vesselGroups": "Groupes de navires"
+    "vesselGroups": "Groupes de navires",
+    "vesselGroupTooltip": "Run a bulk-search or upload up to 1000 vessels to create a custom vessel group through your own datasets. By uploading a list of known IMO, MMSI numbers and/or other vessel identifiers such as vessel name, flag, call sign through a CSV file, users can cross-match your list with Global Fishing Watch AIS and registry based vessel tracking information."
   },
   "vesselGroupReport": {
     "clickToSee": "Cliquez pour analyser le groupe de navires et voir le rapport",
