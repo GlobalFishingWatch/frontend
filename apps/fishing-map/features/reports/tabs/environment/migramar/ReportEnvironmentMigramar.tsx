@@ -22,6 +22,7 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
   const { species, indicators, loading: optionsLoading } = useMigramarOptions()
   const { rows, loading: dataLoading } = useMigramarAreaData(AREA_ID)
 
+  // TODO:Migramar take these values from dataview config
   const [selectedSpecies, setSelectedSpecies] = useState<SelectOption | undefined>()
   const [selectedIndicator, setSelectedIndicator] = useState<SelectOption | undefined>()
 
@@ -57,7 +58,7 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
   )
 
   return (
-    <div className={styles.container}>
+    <div className={cx('card', styles.container)}>
       <p className={styles.summary}>{t((t) => t.analysis.migramar.title)}</p>
       <div className={styles.migramarSelectors}>
         <Select

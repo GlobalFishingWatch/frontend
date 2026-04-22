@@ -59,7 +59,7 @@ function ReportEnvironment() {
   if (!environmentalDataviews?.length && !comparisonDataviews?.length) return null
 
   return (
-    <Fragment>
+    <div className={styles.section}>
       {environmentalDataviews.some(
         (dv) => isEnvironmentalDataview(dv) || isHeatmapVectorsDataview(dv)
       ) ? (
@@ -67,21 +67,23 @@ function ReportEnvironment() {
       ) : null}
       <div>
         {reportGraphType !== REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
-          environmentalDataviews.map((dataview, index) => {
-            // TODO:Migramar only show when dataview is migramar
-            return <ReportEnvironmentMigramar key={dataview.id} dataview={dataview} />
-            return (
-              <ReportEnvironmentGraph
-                key={dataview.id}
-                dataview={dataview}
-                GraphComponent={ReportActivityEvolution}
-                data={layersTimeseriesFiltered?.[index]}
-                isLoading={loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'}
-                index={index}
-                removeEmptyValues={dataview.category === DataviewCategory.Environment}
-              />
-            )
-          })
+          <>
+            {environmentalDataviews.map((dataview, index) => {
+              return (
+                <ReportEnvironmentGraph
+                  key={dataview.id}
+                  dataview={dataview}
+                  GraphComponent={ReportActivityEvolution}
+                  data={layersTimeseriesFiltered?.[index]}
+                  isLoading={loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'}
+                  index={index}
+                  removeEmptyValues={dataview.category === DataviewCategory.Environment}
+                />
+              )
+            })}
+            {/* TODO:Migramar only show when migramar dataview is present */}
+            <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
+          </>
         ) : (
           <Fragment>
             <div className={styles.comparisonContainer}>
@@ -106,7 +108,7 @@ function ReportEnvironment() {
           </Button>
         </div>
       )}
-    </Fragment>
+    </div>
   )
 }
 

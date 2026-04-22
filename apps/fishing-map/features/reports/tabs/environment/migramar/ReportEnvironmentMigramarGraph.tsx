@@ -110,7 +110,7 @@ function ReportEnvironmentMigramarGraph({ row }: { row: MigramarRow }) {
 
   return (
     <ResponsiveContainer width="100%" height={320}>
-      <LineChart data={data} margin={{ top: 12, right: 16, left: -16, bottom: 0 }}>
+      <LineChart data={data} margin={{ top: 12, right: 16, left: -32, bottom: 0 }}>
         <CartesianGrid vertical={false} stroke="var(--color-terthiary-blue)" strokeOpacity={0.3} />
         <XAxis
           dataKey="year"
