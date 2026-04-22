@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import uniqBy from 'lodash/uniqBy'
 
-import { Button, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import {
   useGetLabellingProjectTasksByIdQuery,
@@ -18,6 +19,17 @@ const routePath = '/project/$projectId'
 const route = getRouteApi(routePath)
 
 export function Project() {
+  const [rangeMode, setRangeMode] = useState<'compressed' | 'full'>('compressed')
+  const rangeModeOptions: ChoiceOption[] = [
+    { id: 'compressed', label: 'Compressed' },
+    { id: 'full', label: 'Full' },
+  ]
+  const [normMode, setNormMode] = useState<'global' | 'per-channel'>('global')
+  const [showCrosshair, setShowCrosshair] = useState(false)
+  const normModeOptions: ChoiceOption[] = [
+    { id: 'global', label: 'Global' },
+    { id: 'per-channel', label: 'Per channel' },
+  ]
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
@@ -105,6 +117,36 @@ export function Project() {
       </div>
 
       <h2 className={styles.tasksTitle}>Tasks</h2>
+      <div className={styles.imageSettings}>
+        <div>
+          <label>Range</label>
+          <Choice
+            options={rangeModeOptions}
+            activeOption={rangeMode}
+            size="tiny"
+            onSelect={(o) => setRangeMode(o.id as 'compressed' | 'full')}
+          />
+        </div>
+        <div>
+          <label>Normalization</label>
+          <Choice
+            options={normModeOptions}
+            activeOption={normMode}
+            size="tiny"
+            onSelect={(o) => setNormMode(o.id as 'global' | 'per-channel')}
+          />
+        </div>
+        <div>
+          <IconButton
+            icon="target"
+            size="small"
+            type={showCrosshair ? 'warning-border' : 'border'}
+            tooltip="Toggle crosshair"
+            onClick={() => setShowCrosshair((v) => !v)}
+            style={{ display: 'flex' }}
+          />
+        </div>
+      </div>
       {data.map((task, index) => (
         <Task
           projectId={projectId}
@@ -114,6 +156,9 @@ export function Project() {
           onClick={() => setActiveTaskId(task.id)}
           onFinishTask={setNextTask}
           scale={taskData.metadata.scale}
+          rangeMode={rangeMode}
+          normMode={normMode}
+          showCrosshair={showCrosshair}
         />
       ))}
       <Button onClick={handleLoadMoreTasks} className={styles.loadMoreButton} type="secondary">

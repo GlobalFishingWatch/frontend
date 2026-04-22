@@ -47,6 +47,14 @@
   height: 40px;
 }
 
+.crosshair {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .levelsSlider {
   padding: var(--space-S);
   padding-top: 0;

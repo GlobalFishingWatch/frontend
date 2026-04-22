@@ -145,6 +145,7 @@
     "context_areas": "Capas de referencia",
     "continue": "Continuar",
     "copiedToClipboard": "El enlace para compartir esta vista ha sido copiado al portapapeles.",
+    "copy": "Copy {{text}} to clipboard",
     "country": "País",
     "country_one": "País",
     "country_many": "países",
@@ -1213,7 +1214,7 @@
       "send": "Enviar corrección",
       "title": "Corrección de información de buque"
     },
-    "vesselRegistrationCode": "Vessel registration number",
+    "vesselRegistrationCode": "Vessel registration code",
     "vesselType": "Tipos de embarcaciones",
     "vesselTypes": {
       "": "Desconocido",
@@ -1236,6 +1237,8 @@
     "widthRange": "Rango de ancho"
   },
   "vesselGroup": {
+    "activeAfterTooltip": "General start date to support group data validation",
+    "activeBeforeTooltip": "General end date to support group data validation",
     "add": "Agregar al grupo",
     "addToWorkspace": "Añadir grupo de buques al área de trabajo",
     "addVisibleVessels": "Añadir buques visibles al grupo de buques",
@@ -1283,12 +1286,14 @@
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_many": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
+    "unmatchedIDs": "Unmatched vessels: {{ids}}",
     "updateRequired": "Actualización requerida",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "vesselAddedToGroup": "Tu grupo de buques fue actualizado",
     "vesselGroup": "Grupo de embarcaciones",
     "vesselGroupProfile": "Perfil del grupo de buques",
-    "vesselGroups": "Grupos de embarcaciones"
+    "vesselGroups": "Grupos de embarcaciones",
+    "vesselGroupTooltip": "Run a bulk-search or upload up to 1000 vessels to create a custom vessel group through your own datasets. By uploading a list of known IMO, MMSI numbers and/or other vessel identifiers such as vessel name, flag, call sign through a CSV file, users can cross-match your list with Global Fishing Watch AIS and registry based vessel tracking information."
   },
   "vesselGroupReport": {
     "clickToSee": "Haga clic para analizar el grupo de buques y ver su informe",
