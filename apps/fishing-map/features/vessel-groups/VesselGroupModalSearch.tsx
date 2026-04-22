@@ -8,6 +8,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
@@ -134,6 +135,12 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.dropzoneLink}
+              onClick={() =>
+                trackEvent({
+                  category: TrackCategory.HelpHints,
+                  action: 'click see csv format link in vessel group modal',
+                })
+              }
             >
               ({t((t) => t.vesselGroup.csvLink)})
             </a>

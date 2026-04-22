@@ -108,7 +108,6 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const csvData = useSelector(selectVesselGroupModalCsvData)
-  console.log('🚀 ~ VesselGroupModal ~ csvData:', csvData)
   const unmatchedIDs = useSelector(selectVesselGroupModalUnmatchedIDs)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
@@ -632,7 +631,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                     } as VesselGroup),
                   })}
             </label>
-            {unmatchedIDs && (
+            {unmatchedIDs && unmatchedIDs.length > 0 && (
               <label className={styles.textAlign}>
                 <Icon icon="warning" type="warning" />
                 {t((t) => t.vesselGroup.unmatchedIDs, {
