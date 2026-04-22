@@ -46,6 +46,11 @@
     "insideYourArea": "inside your area",
     "kilometers": "kilometers",
     "linkToReport": "Check the dynamic report here",
+    "migramar": {
+      "indicator": "indicator",
+      "species": "species",
+      "title": "Species Monitoring Plan CMAR"
+    },
     "nauticalmiles": "nautical miles",
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
