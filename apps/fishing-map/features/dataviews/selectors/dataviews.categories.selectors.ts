@@ -10,6 +10,7 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/da
 import {
   isContextDataviewReportSupported,
   isUserContextDataviewReportSupported,
+  isUserContextPolygonsDataviewReportSupported,
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
@@ -161,6 +162,31 @@ export const selectPointsActiveReportDataviewsGrouped = createSelector(
   (otherDataviews = []) => {
     return groupContextDataviews(otherDataviews)
   }
+)
+
+export const selectPolygonsActiveReportDataviews = createSelector(
+  [selectCustomUserDataviews],
+  (userDataviews = []) => {
+    return userDataviews.filter((dataview) => {
+      if (!dataview.config?.visible) return false
+      return isUserContextPolygonsDataviewReportSupported(dataview)
+    })
+  }
+)
+
+export const selectPolygonsActiveReportDataviewsGrouped = createSelector(
+  [selectPolygonsActiveReportDataviews],
+  (dataviews = []) => groupContextDataviews(dataviews)
+)
+
+export const selectOthersActiveReportDataviews = createSelector(
+  [selectPointsActiveReportDataviews, selectPolygonsActiveReportDataviews],
+  (points = [], polygons = []) => [...points, ...polygons]
+)
+
+export const selectOthersActiveReportDataviewsGrouped = createSelector(
+  [selectOthersActiveReportDataviews],
+  (dataviews = []) => groupContextDataviews(dataviews)
 )
 
 export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(

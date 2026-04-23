@@ -131,13 +131,29 @@ export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDat
   return getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) === 'points'
 }
 
+export const isUserContextPolygonsDataviewReportSupported = (
+  dataview: Dataview | UrlDataviewInstance
+) => {
+  if (dataview.category !== DataviewCategory.User) {
+    return false
+  }
+  const dataset = dataview.datasets?.[0]
+  if (!dataset) {
+    return false
+  }
+  return getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) === 'polygons'
+}
+
 export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
     return false
   }
   if (category === DataviewCategory.User) {
-    return isUserContextDataviewReportSupported(dataview)
+    return (
+      isUserContextDataviewReportSupported(dataview) ||
+      isUserContextPolygonsDataviewReportSupported(dataview)
+    )
   }
   if (category === DataviewCategory.Context) {
     return isContextDataviewReportSupported(dataview)
@@ -163,7 +179,8 @@ export const getReportCategoryFromDataview = (
 ): ReportCategory => {
   if (
     isContextDataviewReportSupported(dataview) ||
-    isUserContextDataviewReportSupported(dataview)
+    isUserContextDataviewReportSupported(dataview) ||
+    isUserContextPolygonsDataviewReportSupported(dataview)
   ) {
     return ReportCategory.Others
   }
