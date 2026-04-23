@@ -7,6 +7,7 @@ import type { DateTimeSeries } from 'features/reports/report-area/area-reports.h
 import type {
   FourwingsReportGraphStats,
   PointsReportGraphStats,
+  PolygonsReportGraphStats,
 } from 'features/reports/reports-timeseries.hooks'
 
 export interface TimeSeriesFrame {
@@ -38,16 +39,23 @@ export const frameTimeseriesToDateTimeseries = (
 }
 
 export function getStatsValue<
-  T extends keyof FourwingsReportGraphStats | keyof PointsReportGraphStats,
+  T extends
+    | keyof FourwingsReportGraphStats
+    | keyof PointsReportGraphStats
+    | keyof PolygonsReportGraphStats,
 >(
-  stats: FourwingsReportGraphStats | PointsReportGraphStats,
+  stats: FourwingsReportGraphStats | PointsReportGraphStats | PolygonsReportGraphStats,
   property: T
-): T extends keyof PointsReportGraphStats
-  ? PointsReportGraphStats[T]
-  : T extends keyof FourwingsReportGraphStats
-    ? FourwingsReportGraphStats[T]
-    : never {
-  if (stats.type === 'points') {
+): T extends keyof PolygonsReportGraphStats
+  ? PolygonsReportGraphStats[T]
+  : T extends keyof PointsReportGraphStats
+    ? PointsReportGraphStats[T]
+    : T extends keyof FourwingsReportGraphStats
+      ? FourwingsReportGraphStats[T]
+      : never {
+  if (stats.type === 'polygons') {
+    return stats[property as keyof PolygonsReportGraphStats] as any
+  } else if (stats.type === 'points') {
     return stats[property as keyof PointsReportGraphStats] as any
   } else {
     return stats[property as keyof FourwingsReportGraphStats] as any

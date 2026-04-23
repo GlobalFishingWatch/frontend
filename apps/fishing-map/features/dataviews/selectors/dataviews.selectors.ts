@@ -31,7 +31,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
-  selectPointsActiveReportDataviews,
+  selectOthersActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -117,7 +117,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
-    selectPointsActiveReportDataviews,
+    selectOthersActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -130,7 +130,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    let dataviews: UrlDataviewInstance<DataviewType>[]
     switch (reportCategory) {
       case ReportCategory.Activity:
         dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews

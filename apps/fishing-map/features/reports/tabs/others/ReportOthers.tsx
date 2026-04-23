@@ -10,10 +10,11 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
-import { selectPointsActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { isUserContextPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
@@ -38,7 +39,7 @@ function ReportOthers() {
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectPointsActiveReportDataviewsGrouped)
+  const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   if (!Object.keys(otherDataviews)?.length) return null
@@ -75,6 +76,7 @@ function ReportOthers() {
         )
         const hasAggregateByProperty = Boolean(dataview.config?.aggregateByProperty)
 
+        const isPolygonsDataview = isUserContextPolygonsDataviewReportSupported(dataview)
         const mergedDataviewId = getMergedDataviewId(dataviews)
         const hasTimeFilter = dataviewHasUserPointsTimeRange(dataview)
         const title = getDatasetNameTranslated(dataset)
@@ -82,17 +84,43 @@ function ReportOthers() {
           dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA'
             ? dataset.unit
             : undefined
-        const totalValue = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'total')
+
+        const layerStats = timeseriesStats?.[mergedDataviewId]
+
+        const containedCount = layerStats ? getStatsValue(layerStats, 'contained') : undefined
+        const overlappingCount = layerStats ? getStatsValue(layerStats, 'overlapping') : undefined
+        const areaCoverageRatio = layerStats
+          ? getStatsValue(layerStats, 'areaCoverageRatio')
           : undefined
-        const statsValues = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'values')
-          : undefined
-        const statsCounts = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'count')
+        const areaCoverageKm2 = layerStats
+          ? getStatsValue(layerStats, 'areaCoverageKm2')
           : undefined
 
-        const StatsComponent =
+        const totalValue = layerStats ? getStatsValue(layerStats, 'total') : undefined
+        const statsValues = layerStats ? getStatsValue(layerStats, 'values') : undefined
+        const statsCounts = layerStats ? getStatsValue(layerStats, 'count') : undefined
+
+        const PolygonsStatsComponent =
+          containedCount !== undefined ? (
+            <p className={cx(styles.summary)}>
+              <strong>{containedCount}</strong> {t((t) => t.analysis.polygonsContained)}
+              {', '}
+              <strong>{overlappingCount}</strong>{' '}
+              {t((t) => t.analysis.polygonsOverlapping, { count: overlappingCount as number })}{' '}
+              {t((t) => t.analysis.insideYourArea)}
+              {', '}
+              {t((t) => t.analysis.polygonsAreaCoverage, {
+                areakm2: formatI18nNumber(areaCoverageKm2 as number, {
+                  maximumFractionDigits: 1,
+                }).toString(),
+                coverage: formatI18nNumber((areaCoverageRatio as number) * 100, {
+                  maximumFractionDigits: 3,
+                }).toString(),
+              })}
+            </p>
+          ) : null
+
+        const PointsStatsComponent =
           totalValue !== undefined ? (
             <p className={cx(styles.summary)}>
               <Fragment>
@@ -107,7 +135,7 @@ function ReportOthers() {
                   {hasAggregateByProperty &&
                     ' ' +
                       t((t) => t.common.aggregatedBy, {
-                        total: formatI18nNumber(totalValue),
+                        total: formatI18nNumber(totalValue as number),
                         property: dataview.config?.aggregateByProperty,
                       })}{' '}
                   {t((t) => t.analysis.insideYourArea)}
@@ -119,17 +147,17 @@ function ReportOthers() {
                     </>
                   )}
                 </span>
-                {statsValues && statsValues?.length > 1 && (
+                {statsValues && (statsValues as number[])?.length > 1 && (
                   <Fragment>
                     (
-                    {statsValues.map((value, index) => (
+                    {(statsValues as number[]).map((value, index) => (
                       <Fragment key={index}>
                         <span
                           className={styles.dot}
                           style={{ color: dataviews[index]?.config?.color }}
                         ></span>
                         {value}
-                        {index < statsValues.length - 1 ? ', ' : ''}
+                        {index < (statsValues as number[]).length - 1 ? ', ' : ''}
                       </Fragment>
                     ))}
                     ){' '}
@@ -138,6 +166,8 @@ function ReportOthers() {
               </Fragment>
             </p>
           ) : null
+
+        const StatsComponent = isPolygonsDataview ? PolygonsStatsComponent : PointsStatsComponent
 
         return (
           <div key={mergedDataviewId} className={styles.container}>
