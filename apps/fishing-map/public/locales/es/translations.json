@@ -1242,6 +1242,7 @@
     "add": "Agregar al grupo",
     "addToWorkspace": "Añadir grupo de buques al área de trabajo",
     "addVisibleVessels": "Añadir buques visibles al grupo de buques",
+    "clearFile": "Clear file",
     "clickToUpdate": "Haga clic para actualizar",
     "clickToUpdateLong": "Haga clic para actualizar su grupo de barcos para ver los últimos datos y características",
     "columnSelection": "Select identifier columns to match with the GFW dataset",
