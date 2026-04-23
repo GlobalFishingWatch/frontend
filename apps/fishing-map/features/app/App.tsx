@@ -1,8 +1,9 @@
-import { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { Action } from '@dnd-kit/core/dist/store'
 import { Outlet, useSearch } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
@@ -10,7 +11,6 @@ import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
@@ -27,7 +27,6 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
-  selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
@@ -35,7 +34,6 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { ConfirmLeave } from 'router/ConfirmLeave'
 import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
-  HOME,
   REPORT,
   SEARCH,
   USER,
@@ -49,6 +47,7 @@ import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
   selectIsMapDrawing,
+  selectIsRouteWithWorkspace,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
@@ -96,7 +95,6 @@ function App() {
   }, [])
 
   const locationType = useSelector(selectLocationType)
-  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const currentReportId = useSelector(selectWorkspaceReportId)
   const reportId = useSelector(selectReportId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
@@ -113,8 +111,9 @@ function App() {
   // Workspace fetching for routes NOT under the workspace layout route:
   // - HOME (/) needs the default workspace
   // - Standalone REPORT (/report/$reportId) needs a workspace loaded
-  const isHomeLocation = locationType === HOME
-  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
+
+  // TODO:RR This solves loading the app in non-home routes, check if it has unexpected consecuences
+  const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const standaloneReportNeedsFetch = locationType === REPORT
   const hasStandaloneReportIdChanged = locationType === REPORT && currentReportId !== reportId
 
@@ -139,7 +138,7 @@ function App() {
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || standaloneReportNeedsFetch || hasStandaloneReportIdChanged)
+      (isRouteWithWorkspace || standaloneReportNeedsFetch || hasStandaloneReportIdChanged)
     ) {
       fetchWorkspace()
     }
@@ -149,7 +148,7 @@ function App() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, standaloneReportNeedsFetch, hasStandaloneReportIdChanged])
+  }, [userLogged, isRouteWithWorkspace, standaloneReportNeedsFetch, hasStandaloneReportIdChanged])
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })
