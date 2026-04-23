@@ -12,6 +12,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
+import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
 import { readBlobAs } from 'utils/files'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { listAsSentence } from 'utils/shared'
@@ -93,8 +94,8 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const toggleCsvColumn = useCallback(
     (column: string) => {
       const newSelectedCsvColumns = selectedCsvColumns?.includes(column)
-        ? selectedCsvColumns.filter((c) => c !== column)
-        : [...(selectedCsvColumns || []), column]
+        ? (selectedCsvColumns as VesselPropertyApiSearch[]).filter((c) => c !== column)
+        : ([...(selectedCsvColumns || []), column] as VesselPropertyApiSearch[])
       dispatch(setVesselGroupModalCsvColumns(newSelectedCsvColumns))
     },
     [dispatch, selectedCsvColumns]

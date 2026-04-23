@@ -15,6 +15,7 @@ import type {
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
@@ -166,7 +167,7 @@ const searchVesselsInVesselGroup = async ({
   let whereClauses: string[] = []
   let input: ParsedSearchInput | undefined
   if (ids && idField) {
-    const property = vesselPropertyToApiSearch(idField)
+    const property = vesselPropertyToApiSearch(idField as VesselPropertyGuessColumn)
     const values = uniq(ids)
     input = { type: 'ids', property, values }
     whereClauses = [`(${values.map((id) => `${property} = "${id}"`).join(' OR ')})`]
