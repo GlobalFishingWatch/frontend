@@ -60,7 +60,7 @@ function DatasetSchemaField({
     : schemaFieldSelected
 
   const valuesAreRangeOfNumbers =
-    filterConfig?.type === 'number' &&
+    (filterConfig?.type === 'range' || filterConfig?.type === 'number') &&
     valuesSelected.length > 1 &&
     valuesSelected.every((value: any) => {
       const label = Array.isArray(value) ? (value[0]?.label as string) : value.label
