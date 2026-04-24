@@ -6,6 +6,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content/contentPanel.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import hintsConfig from './hints.content'
@@ -26,7 +27,7 @@ function HelpHub() {
   const hintsDismissedArray = Object.keys(hintsDismissed || {})
   const percentageOfHintsSeen = (hintsDismissedArray.length / hintsConfigArray.length) * 100
   const noHelpHintsSeen = percentageOfHintsSeen === 0
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const { openSidePanel } = useSidePanel()
 
   const onHelpClick = () => {
     trackEvent({
@@ -88,7 +89,7 @@ function HelpHub() {
                 category: TrackCategory.HelpHints,
                 action: 'Open user guide modal',
               })
-              replaceQueryParams({ sidePanelContent: 'userGuide', sidePanelId: undefined })
+              openSidePanel({ type: 'userGuide' })
             }}
           >
             {t((t) => t.common.userGuide)}

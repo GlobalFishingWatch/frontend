@@ -6,10 +6,10 @@ import remarkGfm from 'remark-gfm'
 
 import ContentHeader from 'features/content/ContentHeader'
 import EmptyContent from 'features/content/EmptyContent'
-import type { TDataset, TUserGuideSection } from 'features/content/strapi.types'
+import InfoContainer from 'features/content/InfoContainer'
+import type { TUserGuideSection } from 'features/content/strapi.types'
 import TableOfContents from 'features/content/TableOfContents'
 import { Route } from 'routes/_app'
-import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './ContentPanel.module.css'
 
@@ -86,6 +86,7 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
 function ContentPanel() {
   const { status, data } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
+  const isDatasets = sidePanelContent === 'datasets'
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(540)
@@ -127,9 +128,11 @@ function ContentPanel() {
     setIsDragging(true)
   }
 
-  if (!data || status === 'error') return null
+  if (status === 'error') return null
+  if (!isDatasets && !data) return null
 
-  const isEmpty = status === 'empty' || (Array.isArray(data) && data.length === 0)
+  const isEmpty =
+    !isDatasets && (status === 'empty' || (Array.isArray(data) && data.length === 0))
 
   return (
     <div className={styles.panel} style={{ width: `${panelWidth}px` }}>
@@ -139,22 +142,12 @@ function ContentPanel() {
         className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
         onMouseDown={handleMouseDown}
       />
-      {isEmpty ? (
+      {isDatasets ? (
+        <InfoContainer />
+      ) : isEmpty ? (
         <EmptyContent />
-      ) : sidePanelContent === 'userGuide' ? (
-        <UserGuideContent data={data as TUserGuideSection[]} />
       ) : (
-        <div className={cx(styles.container)}>
-          <div className={cx(styles.header)}>
-            <ContentHeader title={(data[0] as TDataset).name} />
-          </div>
-          <div className={cx(styles.scrollContainer)}>
-            <div className={cx(styles.content)}>
-              {htmlSafeParse((data[0] as TDataset).description)}
-            </div>
-          </div>
-          <div className={cx(styles.userGuideBackground)}></div>
-        </div>
+        <UserGuideContent data={data as TUserGuideSection[]} />
       )}
     </div>
   )

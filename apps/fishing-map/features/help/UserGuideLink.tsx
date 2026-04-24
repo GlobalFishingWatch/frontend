@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { useSidePanel } from 'features/content/contentPanel.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './UserGuideLink.module.css'
@@ -66,10 +67,11 @@ type UserGuideLinkProps = {
 }
 
 function UserGuideLink({ section, className }: UserGuideLinkProps) {
-  const { t, i18n } = useTranslation()
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const { t } = useTranslation()
+  const { openSidePanel } = useSidePanel()
+
   const handleClick = () => {
-    replaceQueryParams({ sidePanelContent: 'userGuide', sidePanelId: section })
+    openSidePanel({ type: 'userGuide', id: section })
   }
   return (
     <button className={cx(styles.link, className)} onClick={handleClick} type="button">

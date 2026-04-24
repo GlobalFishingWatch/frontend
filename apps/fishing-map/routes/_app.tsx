@@ -20,28 +20,23 @@ export const Route = createFileRoute('/_app')({
   validateSearch: validateRootSearchParams,
   loaderDeps: ({ search }) => ({
     sidePanelContent: search.sidePanelContent,
-    // For datasets, sidePanelId determines which item to fetch.
-    // For userGuide, we always fetch all sections and select client-side.
-    sidePanelId: search.sidePanelContent === 'datasets' ? search.sidePanelId : undefined,
   }),
+  // Only userGuide content is loaded server-side; dataset info is fetched
+  // client-side in InfoContainer so the user can switch between a dataview's
+  // datasets without round-tripping through the URL.
   loader: async ({ deps }) => {
-    const { sidePanelId, sidePanelContent } = deps
+    const { sidePanelContent } = deps
+    if (sidePanelContent !== 'userGuide') {
+      return { status: 'success' as const, data: [], meta: undefined }
+    }
     try {
-      const response = await fetchSidePanelContent(sidePanelContent, sidePanelId, i18n.language)
+      const response = await fetchSidePanelContent(sidePanelContent, undefined, i18n.language)
 
-      if (!response || !response.data) {
+      if (!response || !response.data || response.data.length === 0) {
         return {
           status: 'empty',
           data: [],
           meta: response?.meta,
-        }
-      }
-
-      if (response.data.length === 0) {
-        return {
-          status: 'empty',
-          data: [],
-          meta: response.meta,
         }
       }
 

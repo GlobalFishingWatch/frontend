@@ -50,7 +50,7 @@ import { htmlSafeParse } from 'utils/html-parser'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
 import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
@@ -303,7 +303,7 @@ function LayerPanel({
                 </div>
               </ExpandedContainer>
             )}
-          {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
+          {!isBasemapLabelsDataview && <InfoButton dataview={dataview} />}
           <Remove
             dataview={dataview}
             loading={!showSortHandler && layerActive && !layerLoaded}

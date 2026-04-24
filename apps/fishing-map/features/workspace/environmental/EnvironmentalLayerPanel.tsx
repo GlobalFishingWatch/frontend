@@ -29,7 +29,7 @@ import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -211,7 +211,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               onClickOutside={closeExpandedContainer}
             />
           )}
-          <InfoModal dataview={dataview} />
+          <InfoButton dataview={dataview} />
           {!readOnly && (
             <Remove
               dataview={dataview}

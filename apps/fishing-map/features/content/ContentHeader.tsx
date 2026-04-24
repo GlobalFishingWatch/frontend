@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { useSidePanel } from 'features/content/contentPanel.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './ContentHeader.module.css'
@@ -14,7 +15,7 @@ type ContentHeaderProps = {
 
 function ContentHeader({ title, openTableOfContents }: ContentHeaderProps) {
   const { t } = useTranslation()
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const { closeSidePanel } = useSidePanel()
 
   return (
     <div className={cx(styles.sticky)}>
@@ -27,9 +28,7 @@ function ContentHeader({ title, openTableOfContents }: ContentHeaderProps) {
           <IconButton
             icon="close"
             aria-label={t((t) => t.common.close)}
-            onClick={() =>
-              replaceQueryParams({ sidePanelId: undefined, sidePanelContent: undefined })
-            }
+            onClick={() => closeSidePanel()}
           />
         </div>
       </div>
