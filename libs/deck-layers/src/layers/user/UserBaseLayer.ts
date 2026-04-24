@@ -147,19 +147,25 @@ export abstract class UserBaseLayer<
     const features = this._pickObjects(maxFeatures)
     const featureCache = new Set()
     const renderedFeatures: UserLayerFeature[] = []
-    // TODO: support multiple sublayers
     const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
 
     for (const f of features) {
+      const layerId = this.props.layers.find((l) => f.layer?.id.startsWith(l.id))?.id
+      const obj = layerId
+        ? {
+            ...(f.object as ContextFeature),
+            properties: { ...(f.object as ContextFeature)?.properties, layerId },
+          }
+        : (f.object as UserLayerFeature)
       const featureId = getContextId(f.object as ContextFeature, idProperty)
+      // Include layerId in cache key so features from different layers aren't deduplicated against each other
+      const cacheKey = layerId !== undefined ? `${layerId}:${featureId}` : featureId
 
       if (featureId === undefined) {
-        // we have no id for the feature, we just add to the list
-        renderedFeatures.push(f.object as UserLayerFeature)
-      } else if (!featureCache.has(featureId)) {
-        // Add removing duplicates
-        featureCache.add(featureId)
-        renderedFeatures.push(f.object as UserLayerFeature)
+        renderedFeatures.push(obj as UserLayerFeature)
+      } else if (!featureCache.has(cacheKey)) {
+        featureCache.add(cacheKey)
+        renderedFeatures.push(obj as UserLayerFeature)
       }
     }
 

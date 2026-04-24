@@ -9,7 +9,7 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
-import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
+import { dataviewHasUserTimeRange } from 'features/dataviews/dataviews.utils'
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -26,10 +26,12 @@ import ReportActivityPlaceholder from 'features/reports/shared/placeholders/Repo
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportPolygonsEvolution from 'features/reports/tabs/others/ReportPolygonsEvolution'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ReportOthers.module.css'
+import reportStyles from 'features/reports/report-area/AreaReport.module.css'
 
 function ReportOthers() {
   useComputeReportTimeSeries()
@@ -45,8 +47,8 @@ function ReportOthers() {
   if (!Object.keys(otherDataviews)?.length) return null
 
   return (
-    <Fragment>
-      {Object.values(otherDataviews).map((dataviews, index) => {
+    <div className={reportStyles.section}>
+      {Object.values(otherDataviews).map((dataviews) => {
         const dataview = dataviews[0]
         const dataset = dataview.datasets?.find(
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
@@ -78,7 +80,21 @@ function ReportOthers() {
 
         const isPolygonsDataview = isUserContextPolygonsDataviewReportSupported(dataview)
         const mergedDataviewId = getMergedDataviewId(dataviews)
-        const hasTimeFilter = dataviewHasUserPointsTimeRange(dataview)
+
+        const layerTimeseries = layersTimeseriesFiltered?.find((ts) => ts.id === mergedDataviewId)
+        const layerTimeseriesWithCurrentColors = layerTimeseries
+          ? {
+              ...layerTimeseries,
+              sublayers: layerTimeseries.sublayers.map((sublayer, i) => ({
+                ...sublayer,
+                legend: {
+                  ...sublayer.legend,
+                  color: dataviews[i]?.config?.color || sublayer.legend.color,
+                },
+              })),
+            }
+          : undefined
+        const hasTimeFilter = dataviewHasUserTimeRange(dataview)
         const title = getDatasetNameTranslated(dataset)
         const unit =
           dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA'
@@ -87,8 +103,9 @@ function ReportOthers() {
 
         const layerStats = timeseriesStats?.[mergedDataviewId]
 
-        const containedCount = layerStats ? getStatsValue(layerStats, 'contained') : undefined
-        const overlappingCount = layerStats ? getStatsValue(layerStats, 'overlapping') : undefined
+        // polygons
+        const containedCount = layerStats ? getStatsValue(layerStats, 'contained') : 0
+        const overlappingCount = layerStats ? getStatsValue(layerStats, 'overlapping') : 0
         const areaCoverageRatio = layerStats
           ? getStatsValue(layerStats, 'areaCoverageRatio')
           : undefined
@@ -96,18 +113,28 @@ function ReportOthers() {
           ? getStatsValue(layerStats, 'areaCoverageKm2')
           : undefined
 
+        // points
         const totalValue = layerStats ? getStatsValue(layerStats, 'total') : undefined
         const statsValues = layerStats ? getStatsValue(layerStats, 'values') : undefined
         const statsCounts = layerStats ? getStatsValue(layerStats, 'count') : undefined
 
         const PolygonsStatsComponent =
-          containedCount !== undefined ? (
+          containedCount || overlappingCount ? (
             <p className={cx(styles.summary)}>
-              <strong>{containedCount}</strong> {t((t) => t.analysis.polygonsContained)}
-              {', '}
-              <strong>{overlappingCount}</strong>{' '}
-              {t((t) => t.analysis.polygonsOverlapping, { count: overlappingCount as number })}{' '}
-              {t((t) => t.analysis.insideYourArea)}
+              {containedCount !== 0 && (
+                <Fragment>
+                  <strong>{containedCount}</strong> {t((t) => t.analysis.polygonsFullyContained)}{' '}
+                  {t((t) => t.common.and)}{' '}
+                </Fragment>
+              )}
+              {overlappingCount !== 0 && (
+                <Fragment>
+                  <strong>{overlappingCount}</strong> {t((t) => t.analysis.polygonsOverlapping)}
+                </Fragment>
+              )}{' '}
+              {t((t) => t.analysis.polygons, {
+                count: (containedCount || 0) + (overlappingCount || 0),
+              })}
               {', '}
               {t((t) => t.analysis.polygonsAreaCoverage, {
                 areakm2: formatI18nNumber(areaCoverageKm2 as number, {
@@ -170,7 +197,7 @@ function ReportOthers() {
         const StatsComponent = isPolygonsDataview ? PolygonsStatsComponent : PointsStatsComponent
 
         return (
-          <div key={mergedDataviewId} className={styles.container}>
+          <div key={mergedDataviewId} className={cx('card', styles.subsection)}>
             <h2 className={styles.title}>
               <strong>{title}</strong> {unit && <span>({unit})</span>}
             </h2>
@@ -196,6 +223,12 @@ function ReportOthers() {
             {hasTimeFilter &&
               (loading ? (
                 <ReportActivityPlaceholder showHeader={false} loading />
+              ) : isPolygonsDataview ? (
+                <ReportPolygonsEvolution
+                  start={start}
+                  end={end}
+                  data={layerTimeseriesWithCurrentColors}
+                />
               ) : statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
                   {t((t) => t.analysis.noDataByArea)}
@@ -204,13 +237,13 @@ function ReportOthers() {
                 <ReportActivityEvolution
                   start={start}
                   end={end}
-                  data={layersTimeseriesFiltered?.[index]}
+                  data={layerTimeseriesWithCurrentColors}
                 />
               ))}
           </div>
         )
       })}
-    </Fragment>
+    </div>
   )
 }
 

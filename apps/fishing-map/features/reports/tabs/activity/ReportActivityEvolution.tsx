@@ -46,7 +46,7 @@ const ReportActivityEvolution = ({
   removeEmptyValues = false,
   freezeTooltipOnClick = false,
 }: {
-  data: ReportGraphProps
+  data?: ReportGraphProps
   start: string
   end: string
   TooltipContent?: ReactNode
@@ -56,8 +56,9 @@ const ReportActivityEvolution = ({
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
+  if (!data) return null
   const fourwingsInterval = getFourwingsInterval(start, end)
-  let interval: FourwingsInterval = data?.interval
+  let interval: FourwingsInterval = data.interval
   if (interval === 'MONTH' && (fourwingsInterval === 'DAY' || fourwingsInterval === 'HOUR')) {
     interval = 'DAY'
   }

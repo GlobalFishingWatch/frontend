@@ -24,6 +24,7 @@ import {
   getPointsTimeseries,
   getPointsTimeseriesStats,
 } from 'features/reports/tabs/others/reports-points-timeseries.utils'
+import { getPolygonsTimeseries } from 'features/reports/tabs/others/reports-polygons-timeseries.utils'
 
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
@@ -127,23 +128,17 @@ export const getTimeseries = <T extends ReportDeckLayer>({
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPolygonLayer(instance)) {
-      // Polygon layers don't generate time series (static data)
-      return
+      const polygonsTimeseries = getPolygonsTimeseries({ features, instance })
+      timeseries.push({ ...polygonsTimeseries, id: instance.id })
     } else if (isInstanceOfPointsLayer(instance)) {
-      const pointsTimeseries = getPointsTimeseries({
-        instance,
-        features,
-      })
+      const pointsTimeseries = getPointsTimeseries({ instance, features })
       if (pointsTimeseries) {
-        timeseries.push(pointsTimeseries)
+        timeseries.push({ ...pointsTimeseries, id: instance.id })
       }
     } else {
-      const fourwingsTimeseries = getFourwingsTimeseries({
-        instance: instance,
-        features,
-      })
+      const fourwingsTimeseries = getFourwingsTimeseries({ instance: instance, features })
       if (fourwingsTimeseries) {
-        timeseries.push(fourwingsTimeseries)
+        timeseries.push({ ...fourwingsTimeseries, id: instance.id })
       }
     }
   })
