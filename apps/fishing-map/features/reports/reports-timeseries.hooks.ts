@@ -75,6 +75,7 @@ export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): Re
 }
 
 export interface ReportGraphProps {
+  id?: string
   timeseries: (EvolutionGraphData & { mode?: ReportGraphMode })[]
   sublayers: ReportSublayerGraph[]
   interval: FourwingsInterval

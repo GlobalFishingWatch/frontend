@@ -62,7 +62,7 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
 }
 
-export function dataviewHasUserPointsTimeRange(dataview: UrlDataviewInstance) {
+export function dataviewHasUserTimeRange(dataview: UrlDataviewInstance) {
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
   )

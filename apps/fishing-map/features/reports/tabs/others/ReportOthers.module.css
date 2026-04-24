@@ -6,6 +6,13 @@
   gap: var(--space-S);
 }
 
+.subsection {
+  padding: var(--space-SM);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-1);
+  border: var(--border);
+}
+
 .title {
   font: var(--font-L);
 }

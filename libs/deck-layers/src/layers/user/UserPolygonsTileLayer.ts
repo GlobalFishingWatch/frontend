@@ -43,8 +43,9 @@ const defaultProps: DefaultProps<_UserContextLayerProps> = {
   debounceTime: 500,
 }
 
-type UserContextLayerState = UserBaseLayerState & {
+type UserPolygonsLayerState = UserBaseLayerState & {
   scale: ScaleLinear<string, string, never>
+  viewportLoaded: boolean
   error: string
 }
 
@@ -53,7 +54,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 > {
   static layerName = 'UserContextTileLayer'
   static defaultProps = defaultProps
-  declare state: UserContextLayerState
+  declare state: UserPolygonsLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -63,6 +64,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (this.props.steps && this.props.steps?.length > 0 && colorRange) {
       this.state = {
         scale: scaleLinear(this.props.steps as number[], colorRange).clamp(true),
+        viewportLoaded: false,
         error: '',
       }
     }
@@ -72,22 +74,59 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     return this?.state.error
   }
 
-  updateState({ props, oldProps }: UpdateParameters<this>) {
+  get filtersHash(): string {
+    const filters =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
+      ) || {}
+    return filters.length > 0
+      ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
+      : ''
+  }
+
+  get aggregatedPropertyHash(): string {
+    const aggregatedProperty =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
+      ) || []
+    return aggregatedProperty.length > 0
+      ? aggregatedProperty.reduce((acc, property) => `${acc}-${property}`, '')
+      : ''
+  }
+
+  get cacheHash(): string {
+    const { id, startTime, endTime } = this.props
+    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}-${this.viewportLoaded}`
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
+  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
     const { steps } = props
     // TODO: support multiple sublayers
     const color = props.layers?.[0]?.sublayers?.[0]?.color
     const oldColor = oldProps.layers?.[0]?.sublayers?.[0]?.color
     const newColor = color !== oldColor
     const newSteps = steps !== oldProps.steps
+    const deferredStateUpdates: Partial<UserPolygonsLayerState> = {}
+
+    if (changeFlags.dataChanged) {
+      deferredStateUpdates.viewportLoaded = false
+    }
 
     if (newColor || newSteps) {
       if (steps && steps.length > 0) {
         const colorRange = getColorRampByOpacitySteps(color)
         const scale = scaleLinear(steps as number[], colorRange)
-        this.setState({ scale })
+        deferredStateUpdates.scale = scale
       } else {
-        this.setState({ scale: undefined })
+        deferredStateUpdates.scale = undefined
       }
+    }
+    if (Object.keys(deferredStateUpdates).length > 0) {
+      this.setState(deferredStateUpdates)
     }
   }
 

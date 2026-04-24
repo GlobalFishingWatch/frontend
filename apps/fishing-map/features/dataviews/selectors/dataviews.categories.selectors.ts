@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -14,9 +15,8 @@ import {
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
-import { selectReportVesselGroupId } from 'router/routes.selectors'
 
-import { dataviewHasUserPointsTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
+import { dataviewHasUserTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
 
 import { selectDataviewInstancesResolvedVisible } from './dataviews.instances.selectors'
 
@@ -193,7 +193,7 @@ export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(
   [selectPointsActiveReportDataviews],
   (dataviews) => {
     return dataviews.filter((dataview) => {
-      return dataviewHasUserPointsTimeRange(dataview)
+      return dataviewHasUserTimeRange(dataview)
     })
   }
 )
