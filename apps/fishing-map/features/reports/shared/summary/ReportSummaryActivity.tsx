@@ -130,7 +130,7 @@ export default function ReportSummaryActivity({
       })
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
       const timeseriesMaxHours = sum(
-        formattedTimeseries?.map((t) => sum(t.range?.map((r) => r?.[1]) || [])) || []
+        formattedTimeseries?.map((t) => sum(t.range?.map((r) => r?.[1] || 0) || [])) || []
       )
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =
