@@ -23,7 +23,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "strictNullChecks": true,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
