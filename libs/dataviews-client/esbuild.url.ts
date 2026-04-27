@@ -1,6 +1,4 @@
-const { build } = require('esbuild')
-const path = require('path')
-const fs = require('fs')
+import { build } from 'esbuild'
 
 async function buildBundle() {
   // Build the UDF library bundle
@@ -19,6 +17,10 @@ async function buildBundle() {
     target: 'es2017',
     tsconfig: 'libs/dataviews-client/tsconfig.url.json',
     resolveExtensions: ['.ts', '.js'],
+    alias: {
+      '@globalfishingwatch/datasets-client':
+        './libs/datasets-client/src/migrations/datasets.migrations-v2.ts',
+    },
     logLevel: 'info',
     banner: {
       js: `// Shim for require in browser/BigQuery environment
@@ -61,4 +63,7 @@ async function buildBundle() {
     `)
 }
 
-buildBundle().catch(console.error)
+buildBundle().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})
