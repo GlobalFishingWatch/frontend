@@ -33,7 +33,7 @@ locals {
     "NEXT_TURNING_TIDES_PERU_ID",
     "NEXT_WORKSPACES_AGENT_ID",
   ]
-  vite_secrets = [
+  secrets = [
     "BASIC_AUTH_PASS",
     "VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID",
     "VITE_FEEDBACK_SPREADSHEET_ID",
@@ -53,9 +53,15 @@ locals {
     "VITE_WORKSPACES_AGENT_ID",
   ]
 
+  generate_next_secrets = {
+    for env, path in local.secrets_path : env => [
+      for secret in local.next_secrets :
+      "${secret}=${path}/FISHING_MAP_${secret}"
+    ]
+  }
   generate_secrets = {
     for env, path in local.secrets_path : env => [
-      for secret in local.vite_secrets :
+      for secret in local.secrets :
       "${secret}=${path}/FISHING_MAP_${secret}"
     ]
   }
@@ -93,7 +99,7 @@ module "develop" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets  = local.generate_secrets.dev
+  set_secrets  = local.generate_next_secrets.dev
   machine_type = "E2_HIGHCPU_8"
 }
 
@@ -132,7 +138,7 @@ module "preview-dev" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets = local.generate_next_secrets.dev
 }
 
 module "router-refactor" {
@@ -248,7 +254,7 @@ module "random-forest" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets = local.generate_next_secrets.dev
 }
 
 module "staging" {
@@ -284,7 +290,7 @@ module "staging" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.sta
+  set_secrets = local.generate_next_secrets.sta
 }
 
 module "production" {
@@ -321,5 +327,5 @@ module "production" {
   set_env_vars = [
     "BASIC_AUTH=off"
   ]
-  set_secrets = local.generate_secrets.pro
+  set_secrets = local.generate_next_secrets.pro
 }
