@@ -2,9 +2,7 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
-import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
-import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 
 import { TEST_END_DATE } from '../test.config'
 
@@ -32,6 +30,8 @@ vi.setSystemTime(mockDate)
 
 // Mock Luxon's now() function globally
 Settings.now = () => mockDate.valueOf()
+
+const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'sentinel2'
 
 // Mock Web Workers to prevent blocking in tests
 // This is needed for filterCellsByPolygonWorker used in reports
