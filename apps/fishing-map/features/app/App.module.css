@@ -8,6 +8,13 @@
   height: 100%;
 }
 
+.logo {
+  position: fixed;
+  top: 0;
+  left: 1rem;
+  z-index: 1;
+}
+
 :global(#__root__:not(.printing)) .withTimebar {
   height: 100%;
 }

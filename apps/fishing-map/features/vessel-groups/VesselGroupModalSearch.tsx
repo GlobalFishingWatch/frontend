@@ -7,9 +7,11 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
+import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
 import { readBlobAs } from 'utils/files'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { listAsSentence } from 'utils/shared'
@@ -45,7 +47,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
   const hasGroupVesselsToSearch = vesselGroupModalSearchIds && vesselGroupModalSearchIds.length > 0
-  const showIdsSection = !csvData?.length
+  const showIdsSection = !selectableColumns.length
   const showDropzoneSection = !vesselGroupModalSearchIds?.length
   const showDivider = showIdsSection && showDropzoneSection
 
@@ -75,6 +77,12 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     [dispatch]
   )
 
+  const onCSVCleared = useCallback(() => {
+    setCsvName('')
+    dispatch(setVesselGroupModalCsvData([]))
+    dispatch(setVesselGroupModalCsvColumns([]))
+  }, [dispatch])
+
   const onIdFieldChange = useCallback(
     (option: SelectOption) => {
       dispatch(setVesselGroupSearchIdField(option.id))
@@ -85,8 +93,8 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const toggleCsvColumn = useCallback(
     (column: string) => {
       const newSelectedCsvColumns = selectedCsvColumns?.includes(column)
-        ? selectedCsvColumns.filter((c) => c !== column)
-        : [...(selectedCsvColumns || []), column]
+        ? (selectedCsvColumns as VesselPropertyApiSearch[]).filter((c) => c !== column)
+        : ([...(selectedCsvColumns || []), column] as VesselPropertyApiSearch[])
       dispatch(setVesselGroupModalCsvColumns(newSelectedCsvColumns))
     },
     [dispatch, selectedCsvColumns]
@@ -127,6 +135,12 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.dropzoneLink}
+              onClick={() =>
+                trackEvent({
+                  category: TrackCategory.HelpHints,
+                  action: 'click see csv format link in vessel group modal',
+                })
+              }
             >
               ({t((t) => t.vesselGroup.csvLink)})
             </a>
@@ -134,6 +148,12 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           <FileDropzone
             className={cx(styles.dropzone, { [styles.filled]: csvData?.length })}
             onFileLoaded={onCSVLoaded}
+            onFileCleared={csvName ? onCSVCleared : undefined}
+            error={
+              selectableColumns.length === 0 && csvName
+                ? t((t) => t.vesselGroup.noColumnsToSelect)
+                : undefined
+            }
             fileTypes={['CSV']}
             label={
               csvName
@@ -145,64 +165,58 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           />
         </div>
       )}
-      {csvData && csvData.length > 0 && (
+      {selectableColumns.length > 0 && csvData && csvData.length > 0 && (
         <div className={styles.columnSelectionWrapper}>
           <label>{t((t) => t.vesselGroup.columnSelection)}</label>
           <div className={styles.vesselsTableContainer}>
-            {selectableColumns.length > 0 ? (
-              <table className={styles.vesselsTable}>
-                <thead>
-                  <tr>
-                    {selectableColumns.map((column, index) => {
-                      const isSelected =
-                        selectedCsvColumns !== null && selectedCsvColumns.includes(column)
-                      return (
-                        <th key={index}>
-                          <Checkbox
-                            active={isSelected}
-                            onClick={() => toggleCsvColumn(column)}
-                            label={column}
-                            className={styles.columnCheckbox}
-                            labelClassname={cx(styles.columnHeader, {
-                              [styles.selected]: isSelected,
-                            })}
-                          />
-                        </th>
-                      )
-                    })}
-                  </tr>
-                </thead>
-                <tbody>
-                  {csvData.slice(0, 100).map((row, rowIndex) => {
+            <table className={styles.vesselsTable}>
+              <thead>
+                <tr>
+                  {selectableColumns.map((column, index) => {
+                    const isSelected =
+                      selectedCsvColumns !== null && selectedCsvColumns.includes(column)
                     return (
-                      <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
-                        {Object.keys(row).map((column, cellIndex) => {
-                          const isSelectable = selectableColumns.includes(column)
-                          const isSelected =
-                            selectedCsvColumns !== null && selectedCsvColumns.includes(column)
-                          if (!isSelectable) {
-                            return null
-                          }
-                          return (
-                            <td
-                              key={cellIndex}
-                              title={row[column]}
-                              className={cx(styles.columnCell, { [styles.selected]: isSelected })}
-                            >
-                              {row[column] || EMPTY_FIELD_PLACEHOLDER}
-                            </td>
-                          )
-                        })}
-                      </tr>
+                      <th key={index}>
+                        <Checkbox
+                          active={isSelected}
+                          onClick={() => toggleCsvColumn(column)}
+                          label={column}
+                          className={styles.columnCheckbox}
+                          labelClassname={cx(styles.columnHeader, {
+                            [styles.selected]: isSelected,
+                          })}
+                        />
+                      </th>
                     )
                   })}
-                </tbody>
-              </table>
-            ) : (
-              <div className={cx(styles.errorPlaceholder, styles.errorMsg)}>
-                {t((t) => t.vesselGroup.noColumnsToSelect)}
-              </div>
-            )}
+                </tr>
+              </thead>
+              <tbody>
+                {csvData.slice(0, 100).map((row, rowIndex) => {
+                  return (
+                    <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
+                      {Object.keys(row).map((column, cellIndex) => {
+                        const isSelectable = selectableColumns.includes(column)
+                        const isSelected =
+                          selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+                        if (!isSelectable) {
+                          return null
+                        }
+                        return (
+                          <td
+                            key={cellIndex}
+                            title={row[column]}
+                            className={cx(styles.columnCell, { [styles.selected]: isSelected })}
+                          >
+                            {row[column] || EMPTY_FIELD_PLACEHOLDER}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

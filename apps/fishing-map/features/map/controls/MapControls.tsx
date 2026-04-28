@@ -8,6 +8,7 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
+import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/map/controls/ReportControl'
@@ -46,6 +47,7 @@ const MapControls = ({
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const screenshotMode = useSelector(selectScreenshotMode)
   const showExtendedControls =
     (isWorkspaceLocation || isAnyVesselLocation || isAnyReportLocation) && !isMapDrawing
 
@@ -115,67 +117,69 @@ const MapControls = ({
             </Suspense>
           )}
         </div>
-        <div className={cx('print-hidden', styles.controlsNested)}>
-          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
-            <Suspense fallback={null}>
-              <MapSearch />
-            </Suspense>
-          )}
-          <IconButton
-            icon="plus"
-            type="map-tool"
-            tooltip={t((t) => t.map.zoom_in)}
-            onClick={onZoomInClick}
-            data-testid="map-control-zoom-in"
-          />
-          <IconButton
-            icon="minus"
-            type="map-tool"
-            tooltip={t((t) => t.map.zoom_out)}
-            onClick={onZoomOutClick}
-            data-testid="map-control-zoom-out"
-          />
-          {showExtendedControls && (
-            <Fragment>
+        {!screenshotMode && (
+          <div className={cx('print-hidden', styles.controlsNested)}>
+            {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
               <Suspense fallback={null}>
-                <Rulers />
+                <MapSearch />
               </Suspense>
-              <Suspense fallback={null}>
-                <MapAnnotations />
-              </Suspense>
-              {gfwUser && <ReportControls disabled={mapLoading} />}
-              <Suspense fallback={null}>
-                <MapControlScreenshot />
-              </Suspense>
-              <Tooltip
-                content={
-                  currentBasemap === BasemapType.Default
-                    ? t((t) => t.map.change_basemap_satellite)
-                    : t((t) => t.map.change_basemap_default)
-                }
-                placement="left"
-              >
-                <button
-                  aria-label={
+            )}
+            <IconButton
+              icon="plus"
+              type="map-tool"
+              tooltip={t((t) => t.map.zoom_in)}
+              onClick={onZoomInClick}
+              data-testid="map-control-zoom-in"
+            />
+            <IconButton
+              icon="minus"
+              type="map-tool"
+              tooltip={t((t) => t.map.zoom_out)}
+              onClick={onZoomOutClick}
+              data-testid="map-control-zoom-out"
+            />
+            {showExtendedControls && (
+              <Fragment>
+                <Suspense fallback={null}>
+                  <Rulers />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <MapAnnotations />
+                </Suspense>
+                {gfwUser && <ReportControls disabled={mapLoading} />}
+                <Suspense fallback={null}>
+                  <MapControlScreenshot />
+                </Suspense>
+                <Tooltip
+                  content={
                     currentBasemap === BasemapType.Default
                       ? t((t) => t.map.change_basemap_satellite)
                       : t((t) => t.map.change_basemap_default)
                   }
-                  className={cx(styles.basemapSwitcher, styles[currentBasemap])}
-                  onClick={switchBasemap}
-                ></button>
-              </Tooltip>
-            </Fragment>
-          )}
-          {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
-          <IconButton
-            testId="map-loading-spinner"
-            type="map-tool"
-            tooltip={t((t) => t.map.loading)}
-            loading={mapLoading}
-            className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
-          />
-        </div>
+                  placement="left"
+                >
+                  <button
+                    aria-label={
+                      currentBasemap === BasemapType.Default
+                        ? t((t) => t.map.change_basemap_satellite)
+                        : t((t) => t.map.change_basemap_default)
+                    }
+                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                    onClick={switchBasemap}
+                  ></button>
+                </Tooltip>
+              </Fragment>
+            )}
+            {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
+            <IconButton
+              testId="map-loading-spinner"
+              type="map-tool"
+              tooltip={t((t) => t.map.loading)}
+              loading={mapLoading}
+              className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+            />
+          </div>
+        )}
       </div>
     </Fragment>
   )
