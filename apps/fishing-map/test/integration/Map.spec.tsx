@@ -238,6 +238,8 @@ describe('Map', () => {
     }
     const [x, y] = viewport?.project([-37.0458, 19.0776]) || [0, 0]
 
+    await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
 
     await expect.element(getByTestId('map-popup-wrapper').getByText(/No.805 Oryong/i)).toBeVisible()
