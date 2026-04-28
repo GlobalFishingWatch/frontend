@@ -154,6 +154,19 @@ function RootComponent() {
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
+      {import.meta.env.DEV && (
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
+      )}
     </RootDocument>
   )
 }
