@@ -33,7 +33,7 @@ export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/ma
 export const REPORT_DAYS_LIMIT =
   typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(import.meta.env.VITE_REPORT_DAYS_LIMIT)
-    : 364 // 1 year
+    : 366 // 1 year
 
 export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as
   | string

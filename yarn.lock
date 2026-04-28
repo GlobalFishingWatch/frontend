@@ -2999,7 +2999,7 @@ __metadata:
     "@tanstack/react-router": "npm:1.168.25"
     "@tanstack/react-router-devtools": "npm:1.166.13"
     "@tanstack/react-router-ssr-query": "npm:1.166.12"
-    "@tanstack/react-start": "npm:^1.167.50"
+    "@tanstack/react-start": "npm:1.167.50"
     "@tanstack/react-virtual": "npm:^3.13.24"
     "@tanstack/router-devtools": "npm:1.166.13"
     "@tanstack/router-plugin": "npm:^1.167.28"
@@ -12426,7 +12426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-start@npm:^1.167.50":
+"@tanstack/react-start@npm:1.167.50":
   version: 1.167.50
   resolution: "@tanstack/react-start@npm:1.167.50"
   dependencies:
