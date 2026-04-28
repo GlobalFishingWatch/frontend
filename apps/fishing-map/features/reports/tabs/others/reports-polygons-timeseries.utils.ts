@@ -3,7 +3,7 @@ import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
@@ -73,7 +73,8 @@ export const getPolygonsTimeseries = ({
   instance,
 }: GetPolygonsTimeseriesParams): ReportGraphProps => {
   const { startTime, endTime, startTimeProperty, endTimeProperty, layers } = instance.props
-  const sublayers = (layers?.flatMap((l) => l?.sublayers) || []).map((sublayer) => ({
+  const sublayerConfigs = layers?.flatMap((l) => l?.sublayers) || []
+  const sublayers = sublayerConfigs.map((sublayer) => ({
     id: sublayer.id,
     legend: { color: sublayer.color },
   }))
@@ -89,40 +90,35 @@ export const getPolygonsTimeseries = ({
   const interval = getFourwingsInterval(startTime, endTime)
   const bins = generateTimeBins(startTime, endTime, interval)
 
-  // Map each layer's id to its starting flat sublayer index
-  const layerIdToSublayerIndex = new Map<string, number>()
-  let idx = 0
-  for (const layer of layers || []) {
-    layerIdToSublayerIndex.set(layer.id, idx)
-    idx += layer.sublayers?.length || 1
-  }
-
   const timeseries = bins.map(({ date, startMs, endMs }) => {
     const containedCounts = new Array(sublayers.length).fill(0)
     const overlappingCounts = new Array(sublayers.length).fill(0)
 
     for (const f of contained as Feature<Geometry>[]) {
       if (!isPolygonInBin(f, startMs, endMs, startTimeProperty, endTimeProperty)) continue
-      const layerId = (f.properties as Record<string, unknown>)?.layerId as string
-      const sublayerIdx = layerId ? (layerIdToSublayerIndex.get(layerId) ?? 0) : 0
-      containedCounts[sublayerIdx]++
+      for (let i = 0; i < sublayerConfigs.length; i++) {
+        const sublayerConfig = sublayerConfigs[i]
+        if (isFeatureInFilters(f, sublayerConfig?.filters, sublayerConfig?.filterOperators)) {
+          containedCounts[i]++
+        }
+      }
     }
     for (const f of overlapping as Feature<Geometry>[]) {
       if (!isPolygonInBin(f, startMs, endMs, startTimeProperty, endTimeProperty)) continue
-      const layerId = (f.properties as Record<string, unknown>)?.layerId as string
-      const sublayerIdx = layerId ? (layerIdToSublayerIndex.get(layerId) ?? 0) : 0
-      overlappingCounts[sublayerIdx]++
+      for (let i = 0; i < sublayerConfigs.length; i++) {
+        const sublayerConfig = sublayerConfigs[i]
+        if (isFeatureInFilters(f, sublayerConfig?.filters, sublayerConfig?.filterOperators)) {
+          overlappingCounts[i]++
+        }
+      }
     }
 
     return {
       date,
-      // min = contained
       min: containedCounts,
-      // max = overlapping
       max: overlappingCounts,
     }
   })
-  console.log('🚀 ~ timeseries:', timeseries)
 
   return { interval, sublayers, timeseries }
 }
