@@ -3,7 +3,6 @@ import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
-import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 
 import { TEST_END_DATE } from '../test.config'
 
@@ -12,12 +11,27 @@ import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
+// Add this function in case tests fail before cleanup of test polygons
+// const cleanupExistingTestPolygon = async (store: ReturnType<typeof makeStore>) => {
+//   await store.dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }) as any)
+//   const state = store.getState()
+//   // Find and delete test polygons from state
+//   const datasets = selectUserDatasets(state)
+//   for (const dataset of datasets) {
+//     if (dataset.id?.includes('polygon-drawing-test') ||dataset.id?.includes('public-iccat-2019-points')) {
+//       await store.dispatch(deleteDatasetThunk(dataset.id) as any)
+//     }
+//   }
+// }
+
 // Set the system time to February 18th, 2026 at 12:00 PM UTC
 const mockDate = new Date(TEST_END_DATE)
 vi.setSystemTime(mockDate)
 
 // Mock Luxon's now() function globally
 Settings.now = () => mockDate.valueOf()
+
+const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'sentinel2'
 
 // Mock Web Workers to prevent blocking in tests
 // This is needed for filterCellsByPolygonWorker used in reports
@@ -56,3 +70,10 @@ beforeAll(async () => {
     )
   }
 })
+
+// afterAll(() => {
+//  cleanupExistingTestPolygon(store)
+//   vi.clearAllMocks()
+//   vi.restoreAllMocks()
+//   vi.useRealTimers()
+// })

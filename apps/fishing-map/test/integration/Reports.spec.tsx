@@ -103,8 +103,17 @@ describe('Reports', () => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
+    await expect
+      .poll(() => jotaiStore.get(mapInstanceAtom), {
+        timeout: 10000,
+        interval: 500,
+      })
+      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    if (!viewport) {
+      throw new Error('Map viewport not found - cannot project coordinates')
+    }
     const [x, y] = viewport?.project([-28, 38]) || [0, 0]
 
     await userEvent.hover(mapElement, { position: { x, y } })
@@ -128,6 +137,7 @@ describe('Reports', () => {
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const timerange = jotaiStore.get(timerangeState)
+    console.log('🚀 ~ timerange:', timerange)
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     expect(timerange).toBeDefined()
@@ -496,7 +506,7 @@ describe('Private user reports', () => {
     expect(store.getState().location.type).toBe(REPORT)
   })
 
-  it.only('should correctly display others points reports data', async () => {
+  it('should correctly display others points reports data', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
