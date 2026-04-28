@@ -5,29 +5,6 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Action } from '@dnd-kit/core/dist/store'
 import { Outlet, useSearch } from '@tanstack/react-router'
-import { ConfirmLeave } from 'router/ConfirmLeave'
-import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
-import {
-  REPORT,
-  SEARCH,
-  USER,
-  VESSEL,
-  WORKSPACE_SEARCH,
-  WORKSPACE_VESSEL,
-  WORKSPACES_LIST,
-} from 'router/routes'
-import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsAnySearchLocation,
-  selectIsMapDrawing,
-  selectIsRouteWithWorkspace,
-  selectIsVesselLocation,
-  selectIsWorkspaceLocation,
-  selectLocationType,
-  selectReportId,
-  selectWorkspaceId,
-} from 'router/routes.selectors'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -55,6 +32,29 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
+import {
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
+} from 'router/routes'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnySearchLocation,
+  selectIsMapDrawing,
+  selectIsRouteWithWorkspace,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectLocationType,
+  selectReportId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -254,7 +254,7 @@ function App() {
         </div>
         {sidePanelContent && (
           <ErrorBoundary>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={null}>
               <ContentPanel />
             </Suspense>
           </ErrorBoundary>

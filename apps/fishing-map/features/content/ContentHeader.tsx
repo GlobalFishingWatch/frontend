@@ -4,7 +4,6 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useSidePanel } from 'features/content/contentPanel.hooks'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './ContentHeader.module.css'
 

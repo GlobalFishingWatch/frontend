@@ -211,6 +211,8 @@ module "strapi-integration" {
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
+    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
