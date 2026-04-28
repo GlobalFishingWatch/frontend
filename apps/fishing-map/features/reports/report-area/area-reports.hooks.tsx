@@ -24,6 +24,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
   fetchAreaDetailThunk,
@@ -112,11 +113,12 @@ const isClose = (a?: number, b?: number, tolerance = LAT_LON_TOLERANCE) => {
 }
 
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
+  const screenshotMode = useSelector(selectScreenshotMode)
   return useMemo(() => {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: window.innerWidth / 2,
+      mapWidth: screenshotMode ? window.innerWidth : window.innerWidth / 2,
       ...params,
     })
     return {

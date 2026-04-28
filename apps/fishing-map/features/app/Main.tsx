@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
+import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import Footer from 'features/footer/Footer'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import {
@@ -30,6 +31,7 @@ const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const screenshotMode = useSelector(selectScreenshotMode)
   const locationType = useSelector(selectLocationType)
   const reportLocation = useSelector(selectIsAnyAreaReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -63,7 +65,7 @@ const Main = () => {
         </div>
       )}
       {showTimebar && isWorkspaceReady && <Timebar />}
-      <Footer />
+      {!screenshotMode && <Footer />}
     </Fragment>
   )
 }

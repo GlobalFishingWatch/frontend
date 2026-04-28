@@ -199,6 +199,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                 className={cx(styles.tab, {
                   [styles.current]:
                     !isAnySearchLocation &&
+                    !isWorkspaceLocation &&
                     (locationCategory === (category as WorkspaceCategory) ||
                       (index === 0 && !locationCategory)),
                 })}
