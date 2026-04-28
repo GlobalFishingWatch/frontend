@@ -240,6 +240,7 @@ function MapDraw() {
         disabled={!!mapDrawEditDataset}
         onChange={onInputChange}
         className={styles.input}
+        testId='input-layer-name'
       />
       <div className={cx(styles.flex, styles.iconsWrapper)}>
         <IconButton

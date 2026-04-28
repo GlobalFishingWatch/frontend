@@ -34,6 +34,7 @@ import {
 } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,
@@ -63,6 +64,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchFilters } = useSearchFiltersConnect()
+  const sourceIsBrazilVMS = searchFilters?.sources?.every(
+    (s) => s === PRIVATE_SEARCH_DATASET_BY_GROUP.brazil[0]
+  )
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
@@ -99,7 +103,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t((t) => t.vessel.gfw_shiptypes),
+        header: sourceIsBrazilVMS ? t((t) => t.vessel.shiptype) : t((t) => t.vessel.gfw_shiptypes),
       },
       {
         id: 'gfw_geartypes',
@@ -116,7 +120,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t((t) => t.vessel.gfw_geartypes),
+        header: sourceIsBrazilVMS ? t((t) => t.vessel.gearType) : t((t) => t.vessel.gfw_geartypes),
       },
     ]
     const registryColumns: MRT_ColumnDef<any>[] = [
@@ -327,6 +331,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     onVesselClick,
     searchFilters,
     searchQuery,
+    sourceIsBrazilVMS,
     t,
     vesselDataviews,
   ])

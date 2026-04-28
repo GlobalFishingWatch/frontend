@@ -8,7 +8,7 @@ import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/reac
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectReadOnly, selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
@@ -34,6 +34,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
+  const screenshotMode = useSelector(selectScreenshotMode)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLogged = useSelector(selectIsUserLogged)
   const dataviewsResources = useSelector(selectDataviewsResources)
@@ -79,11 +80,12 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
     return children
   }, [userStatus, isUserLogged, isTrackCorrectionOpen, children, t])
 
-  const showTabs = !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen
+  const showTabs =
+    !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen && !screenshotMode
   return (
     <div className={cx(styles.container, { [styles.overlay]: isTrackCorrectionOpen })}>
       <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
-        <SidebarHeader />
+        {!screenshotMode && <SidebarHeader />}
         <div
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.scrollContainer)}

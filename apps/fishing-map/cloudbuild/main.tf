@@ -16,7 +16,7 @@ locals {
     pro = "frontend-pro@gfw-production.iam.gserviceaccount.com"
   }
   // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
-  secrets = [
+  next_secrets = [
     "BASIC_AUTH_PASS",
     "NEXT_DOWNLOAD_SURVEY_SPREADSHEET_ID",
     "NEXT_FEEDBACK_SPREADSHEET_ID",
@@ -33,7 +33,32 @@ locals {
     "NEXT_TURNING_TIDES_PERU_ID",
     "NEXT_WORKSPACES_AGENT_ID",
   ]
+  secrets = [
+    "BASIC_AUTH_PASS",
+    "VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID",
+    "VITE_FEEDBACK_SPREADSHEET_ID",
+    "VITE_GFW_API_KEY",
+    "VITE_IDENTITY_REVIEW_SPREADSHEET_ID",
+    "VITE_MAP_ERRORS_SPREADSHEET_ID",
+    "VITE_MASTRA_API_URL",
+    "VITE_SENTRY_AUTH_TOKEN",
+    "VITE_SPREADSHEET_CLIENT_EMAIL",
+    "VITE_SPREADSHEET_PRIVATE_KEY",
+    "VITE_STRAPI_TOKEN",
+    "VITE_STRAPI_URL",
+    "VITE_TURNING_TIDES_AIS_ID",
+    "VITE_TURNING_TIDES_BRAZIL_ID",
+    "VITE_TURNING_TIDES_CHILE_ID",
+    "VITE_TURNING_TIDES_PERU_ID",
+    "VITE_WORKSPACES_AGENT_ID",
+  ]
 
+  generate_next_secrets = {
+    for env, path in local.secrets_path : env => [
+      for secret in local.next_secrets :
+      "${secret}=${path}/FISHING_MAP_${secret}"
+    ]
+  }
   generate_secrets = {
     for env, path in local.secrets_path : env => [
       for secret in local.secrets :
@@ -66,7 +91,6 @@ module "develop" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW=true"
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
@@ -75,7 +99,7 @@ module "develop" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets  = local.generate_secrets.dev
+  set_secrets  = local.generate_next_secrets.dev
   machine_type = "E2_HIGHCPU_8"
 }
 
@@ -114,7 +138,7 @@ module "preview-dev" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets = local.generate_next_secrets.dev
 }
 
 module "router-refactor" {
@@ -123,7 +147,7 @@ module "router-refactor" {
   short_environment = "dev"
   app_name          = local.app_name
   app_suffix        = "-router-refactor"
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-random-forest-dev"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-router-refactor-dev"
   service_account   = local.service_account.dev
   machine_type      = "E2_HIGHCPU_8"
   labels = {
@@ -148,6 +172,47 @@ module "router-refactor" {
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+  }
+  set_env_vars = [
+    "BASIC_AUTH=Restricted",
+    "BASIC_AUTH_USER=gfw-fish",
+  ]
+  set_secrets = local.generate_secrets.dev
+}
+
+module "strapi-integration" {
+  source            = "../../../cloudbuild-template"
+  project_id        = "gfw-development"
+  short_environment = "dev"
+  app_name          = local.app_name
+  app_suffix        = "-strapi-integration"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-strapi-integration-dev"
+  service_account   = local.service_account.dev
+  machine_type      = "E2_HIGHCPU_8"
+  labels = {
+    environment      = "develop"
+    resource_creator = "engineering"
+    project          = "frontend"
+  }
+  push_config = {
+    branch  = "strapi-integration"
+    trigger = "branch"
+  }
+  set_env_vars_build = [
+    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=development",
+    "VITE_REPORT_DAYS_LIMIT=366",
+    "VITE_PIPE_DATASET_VERSION=4",
+  ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
+    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -191,7 +256,7 @@ module "random-forest" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets = local.generate_next_secrets.dev
 }
 
 module "staging" {
@@ -219,7 +284,6 @@ module "staging" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=staging",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
@@ -228,7 +292,7 @@ module "staging" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.sta
+  set_secrets = local.generate_next_secrets.sta
 }
 
 module "production" {
@@ -265,5 +329,5 @@ module "production" {
   set_env_vars = [
     "BASIC_AUTH=off"
   ]
-  set_secrets = local.generate_secrets.pro
+  set_secrets = local.generate_next_secrets.pro
 }

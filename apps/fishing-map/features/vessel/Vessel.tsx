@@ -1,16 +1,11 @@
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsWorkspaceVesselLocation,
-  selectVesselId,
-  selectWorkspaceId,
-} from 'router/routes.selectors'
 
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -37,11 +32,13 @@ import {
   selectIncludeRelatedIdentities,
   selectVesselAreaSubsection,
   selectVesselDatasetId,
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
-import { getVesselIdentities } from 'features/vessel/vessel.utils'
+import { getCurrentIdentityVessel, getVesselIdentities } from 'features/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
@@ -49,6 +46,12 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsWorkspaceVesselLocation,
+  selectVesselId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import VesselActivity from './activity/VesselActivity'
@@ -76,6 +79,8 @@ const Vessel = () => {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
+  const identityId = useSelector(selectVesselIdentityId)
+  const identitySource = useSelector(selectVesselIdentitySource)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -85,6 +90,22 @@ const Vessel = () => {
   useUpdateVesselEventsVisibility()
   useSetVesselProfileEvents()
   useFetchDataviewResources(infoStatus === AsyncReducerStatus.Finished)
+
+  const vesselIdentity = useMemo(() => {
+    if (!vesselData) {
+      return undefined
+    }
+    return getCurrentIdentityVessel(vesselData, {
+      identityId,
+      identitySource,
+    })
+  }, [identityId, identitySource, vesselData])
+
+  const isOnlyVMS = useMemo(() => {
+    return vesselIdentity?.sourceCode?.every((source) =>
+      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+    )
+  }, [vesselIdentity])
 
   const updateAreaLayersVisibility = useCallback(
     (id?: string) => {
@@ -128,11 +149,11 @@ const Vessel = () => {
         id: 'insights' as VesselSection,
         title: t((t) => t.vessel.sectionInsights),
         content: <Insights />,
-        disabled: !hasEventsDataset,
+        disabled: !hasEventsDataset || isOnlyVMS,
         testId: 'vv-insights-tab',
       },
     ],
-    [t, updateAreaLayersVisibility, hasEventsDataset]
+    [t, updateAreaLayersVisibility, hasEventsDataset, isOnlyVMS]
   )
 
   useEffect(() => {

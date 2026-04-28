@@ -10,7 +10,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
-import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectReportAreaId, selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import {
@@ -56,12 +56,14 @@ export default function ReportSummaryActivity({
   const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportRequestHash = useSelector(selectReportRequestHash)
+  const areaId = useSelector(selectReportAreaId)
   const reportOutdated =
     reportRequestHash !==
     getReportRequestHash({
       datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
       filters: (reportDataviews as any[]).map((d) => d.filter),
       dateRange: timerange,
+      areaId,
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
@@ -92,18 +94,18 @@ export default function ReportSummaryActivity({
       return t((t) => t.analysis.summary, {
         vessels: formatI18nNumber(reportVessels || 0, {
           locale: i18n.language as Locale,
-        }),
+        }).toString(),
 
         activityQuantity: formatI18nNumber(Math.floor(reportHours), {
           locale: i18n.language as Locale,
-        }),
+        }).toString(),
 
         activityUnit: t((t) => t.common[activityUnit], {
           defaultValue: 'hours',
           count: Math.floor(reportHours),
         }),
 
-        activityType: datasetTitle,
+        activityType: datasetTitle || '',
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
 
@@ -128,7 +130,7 @@ export default function ReportSummaryActivity({
       })
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
       const timeseriesMaxHours = sum(
-        formattedTimeseries?.map((t) => sum(t.range?.map((r) => r?.[1]) || [])) || []
+        formattedTimeseries?.map((t) => sum(t.range?.map((r) => r?.[1] || 0) || [])) || []
       )
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =

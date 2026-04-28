@@ -31,9 +31,7 @@ function TableOfContents({
         onChange={(e) => onSearchChange(e.target.value)}
         value={searchQuery || ''}
         type="search"
-        placeholder={t((t) => t.search.title, {
-          ns: 'translations',
-        })}
+        placeholder={t((t) => t.search.title)}
       />
       <ul>
         {listItems.map((item) => (

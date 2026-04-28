@@ -397,6 +397,56 @@ describe('api-client', () => {
         expect(fetchMock).toHaveBeenCalledTimes(3)
       })
 
+      it('should share one token refresh across concurrent auth retries', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
+        const pendingAuthErrors: ((response: Response) => void)[] = []
+
+        fetchMock.mockImplementation((url, options) => {
+          if (String(url).includes('/auth/tokens/reload')) {
+            return Promise.resolve(
+              new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+                status: 200,
+              })
+            )
+          }
+          if (options.headers.Authorization === 'Bearer old-token') {
+            return new Promise((resolve) => {
+              pendingAuthErrors.push(resolve)
+            })
+          }
+          return Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 }))
+        })
+
+        const request1 = client.fetch<{ ok: boolean }>('/datasets/1')
+        const request2 = client.fetch<{ ok: boolean }>('/datasets/2')
+
+        expect(pendingAuthErrors).toHaveLength(2)
+        pendingAuthErrors.forEach((resolve) => {
+          resolve(
+            new Response(JSON.stringify({ message: 'Unauthorized' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+        })
+
+        await expect(Promise.all([request1, request2])).resolves.toEqual([
+          { ok: true },
+          { ok: true },
+        ])
+        const refreshCalls = fetchMock.mock.calls.filter(([url]) =>
+          String(url).includes('/auth/tokens/reload')
+        )
+        const retriedCalls = fetchMock.mock.calls.filter(([, options]) => {
+          return options.headers.Authorization === 'Bearer new-token'
+        })
+        expect(refreshCalls).toHaveLength(1)
+        expect(retriedCalls).toHaveLength(2)
+      })
+
       it('should retry on 500', async () => {
         const client = createApiClient()
         fetchMock
@@ -557,7 +607,7 @@ describe('api-client', () => {
         await expect(client.refreshAPIToken()).rejects.toMatchObject({ status: 401 })
       })
 
-      it('should return undefined when already refreshing', async () => {
+      it('should return the active refresh when already refreshing', async () => {
         const client = createApiClient()
         const storage = (globalThis as any).localStorage as any
         storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
@@ -583,8 +633,43 @@ describe('api-client', () => {
           client.refreshAPIToken(),
         ])
 
-        expect(result1).toBeDefined()
-        expect(result2).toBeUndefined()
+        expect(result1).toEqual({ token: 'new-token', refreshToken: 'new-refresh' })
+        expect(result2).toEqual({ token: 'new-token', refreshToken: 'new-refresh' })
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+      })
+
+      it('should retry with the latest refresh token when storage changed in another tab', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'old-refresh')
+
+        fetchMock
+          .mockImplementationOnce((_url, options) => {
+            expect(options.headers['refresh-token']).toBe('old-refresh')
+            storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'latest-refresh')
+            return Promise.resolve(
+              new Response(JSON.stringify({ message: 'Invalid refresh' }), {
+                status: 401,
+                statusText: 'Unauthorized',
+              })
+            )
+          })
+          .mockImplementationOnce((_url, options) => {
+            expect(options.headers['refresh-token']).toBe('latest-refresh')
+            return Promise.resolve(
+              new Response(
+                JSON.stringify({ token: 'new-token', refreshToken: 'newest-refresh' }),
+                { status: 200 }
+              )
+            )
+          })
+
+        const result = await client.refreshAPIToken()
+
+        expect(result).toEqual({ token: 'new-token', refreshToken: 'newest-refresh' })
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBe('new-token')
+        expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBe('newest-refresh')
       })
     })
 
@@ -782,6 +867,38 @@ describe('api-client', () => {
               status: 200,
             })
           )
+          .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
+
+        const result = await client.login({})
+
+        expect(result).toEqual(user)
+      })
+
+      it('should use the latest storage refresh token after existing token fails', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'expired-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'old-refresh')
+        const user = { id: 1, type: 'user', permissions: [], groups: [] }
+
+        fetchMock
+          .mockImplementationOnce(() => {
+            storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'latest-refresh')
+            return Promise.resolve(
+              new Response(JSON.stringify({ message: 'Unauthorized' }), {
+                status: 401,
+                statusText: 'Unauthorized',
+              })
+            )
+          })
+          .mockImplementationOnce((_url, options) => {
+            expect(options.headers['refresh-token']).toBe('latest-refresh')
+            return Promise.resolve(
+              new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+                status: 200,
+              })
+            )
+          })
           .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
 
         const result = await client.login({})

@@ -20,7 +20,6 @@ import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getModalParent } from 'features/modals/Modals'
 import {
-  selectIsGFWAdminUser,
   selectIsGFWUser,
   selectIsUserLogged,
   selectUserData,
@@ -48,7 +47,6 @@ function UserInfo() {
   const router = useRouter()
   const userLogged = useSelector(selectIsUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const isGFWAdminUser = useSelector(selectIsGFWAdminUser)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)
   const hasAmbassadorBadge = useSelector(selectHasAmbassadorBadge)

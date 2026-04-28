@@ -56,6 +56,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   mapRulers?: RulerData[]
   mapRulersVisible?: boolean
   readOnly?: boolean
+  screenshotMode?: boolean
   reportLoadVessels?: boolean
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
@@ -73,6 +74,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
 
 type RedirectParam = {
+  isPopup?: boolean
   'access-token'?: string
   callbackUrlStorage?: boolean
 }

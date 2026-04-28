@@ -21,7 +21,7 @@ function createAppRouter() {
     trailingSlash: 'preserve',
     scrollRestoration: true,
     defaultPendingComponent: () => null,
-    defaultErrorComponent: ({ error }) => <ErrorBoundaryUI error={error} />,
+    defaultErrorComponent: ({ error }: any) => <ErrorBoundaryUI error={error} />,
     defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
     stringifySearch: (search: QueryParams) => {
       const str = stringifyWorkspace(search)

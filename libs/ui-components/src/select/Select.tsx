@@ -86,10 +86,17 @@ export function Select(props: SelectProps) {
     useSelect<SelectOption | null>({
       ...((id && { id }) || {}),
       items: options,
+      itemToString: (item) =>
+        item?.labelString ?? (typeof item?.label === 'string' ? item.label : ''),
       onSelectedItemChange: ({ selectedItem }) => {
         if (!disabled && selectedItem && !selectedItem.disabled) {
           handleChange(selectedItem)
           selectItem(null)
+        }
+      },
+      onHighlightedIndexChange: ({ highlightedIndex }) => {
+        if (highlightedIndex !== undefined && highlightedIndex >= 0) {
+          rowVirtualizer.scrollToIndex(highlightedIndex, { align: 'auto' })
         }
       },
     })

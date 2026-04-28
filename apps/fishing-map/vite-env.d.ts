@@ -10,6 +10,8 @@ interface ImportMetaEnv {
   readonly VITE_PIPE_DATASET_VERSION?: string
   readonly VITE_PIPE_DATASET_MINOR_VERSION?: string
   readonly VITE_REPORT_DAYS_LIMIT?: string
+  readonly VITE_STRAPI_URL?: string
+  readonly VITE_STRAPI_TOKEN?: string
   readonly VITE_SHOW_LEAVE_CONFIRMATION?: string
   readonly VITE_PUBLIC_URL?: string
   readonly VITE_USE_LOCAL_DATASETS?: string

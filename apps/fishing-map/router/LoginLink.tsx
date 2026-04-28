@@ -40,7 +40,7 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
     const top = window.screenY + (window.outerHeight - height) / 2
 
     window.open(
-      getLoginUrl(),
+      getLoginUrl(undefined, { isPopup: 'true' }),
       'SSO Login',
       `width=${width},height=${height},left=${left},top=${top}`
     )

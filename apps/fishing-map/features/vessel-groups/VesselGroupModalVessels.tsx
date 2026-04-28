@@ -15,7 +15,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
-import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
 import {
   getVesselGroupUniqVessels,
   groupVesselGroupVessels,
@@ -36,7 +36,7 @@ type VesselGroupVesselRowProps = {
   className?: string
   onRemoveClick: (vessel: VesselGroupVesselIdentity, isUnknownVessel: boolean) => void
   hiddenProperties?: VesselIdentityProperty[]
-  searchIdField?: IdField
+  searchIdField?: VesselPropertyApiSearch
 }
 const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
   vessel,
@@ -51,6 +51,7 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
     flag,
     ssvid,
     imo,
+    callsign,
     transmissionDateFrom,
     transmissionDateTo,
     geartypes,
@@ -80,6 +81,14 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
       <td className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('imo') })}>
         <span>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</span>
       </td>
+      <td
+        className={cx({ [styles.highlighted]: normalisedselectedCsvColumns?.includes('callsign') })}
+      >
+        <span>
+          {hiddenProperties.includes('callsign') ? '' : callsign || EMPTY_FIELD_PLACEHOLDER}
+        </span>
+      </td>
+
       <td>
         <span>{vesselName}</span>
       </td>
@@ -126,8 +135,12 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
   )
 })
 
-const GROUP_BY_PROPERTY = 'ssvid'
-function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField }) {
+const GROUP_BY_PROPERTY: VesselPropertyApiSearch = 'ssvid'
+function VesselGroupVesselsComponent({
+  searchIdField,
+}: {
+  searchIdField: VesselPropertyApiSearch
+}) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
@@ -135,8 +148,11 @@ function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField
 
   const uniqVesselGroupVesselsByProperty = useMemo(() => {
     const uniqVesselGroupVessels = getVesselGroupUniqVessels(vesselGroupVessels)
-    return groupVesselGroupVessels(uniqVesselGroupVessels, { property: GROUP_BY_PROPERTY })
-  }, [vesselGroupVessels])
+    const grouped = groupVesselGroupVessels(uniqVesselGroupVessels, {
+      property: searchIdField || GROUP_BY_PROPERTY,
+    })
+    return grouped
+  }, [searchIdField, vesselGroupVessels])
 
   const onVesselRemoveClick = useCallback(
     (vessel: VesselGroupVesselIdentity, isUnknownVessel: boolean) => {
@@ -179,6 +195,7 @@ function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField
         <tr>
           <th>{t((t) => t.vessel.mmsi)}</th>
           <th>{t((t) => t.vessel.imo)}</th>
+          <th>{t((t) => t.vessel.callsign)}</th>
           <th>{t((t) => t.common.name)}</th>
           <th>{t((t) => t.vessel.flag)}</th>
           <th>{t((t) => t.vessel.gearType_short)}</th>
@@ -206,7 +223,7 @@ function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField
                       [styles.noBorderBottom]: vesselIndex !== vessels.length - 1,
                     }
                   )}
-                  hiddenProperties={vesselIndex !== 0 ? [GROUP_BY_PROPERTY] : []}
+                  hiddenProperties={vesselIndex !== 0 ? [searchIdField || GROUP_BY_PROPERTY] : []}
                   searchIdField={searchIdField}
                 />
               ))}
