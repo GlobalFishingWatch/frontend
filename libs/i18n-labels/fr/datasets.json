@@ -461,7 +461,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -493,7 +493,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -644,7 +644,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -668,7 +668,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -700,7 +700,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -866,7 +866,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -898,7 +898,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1015,7 +1015,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1047,7 +1047,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1177,7 +1177,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1209,7 +1209,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1312,7 +1312,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1344,7 +1344,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1451,7 +1451,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1483,7 +1483,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1596,7 +1596,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1628,7 +1628,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1766,7 +1766,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1798,7 +1798,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1955,7 +1955,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -1987,7 +1987,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -2093,7 +2093,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -2125,7 +2125,7 @@
         "enum": {
           "FISHING": "FISHING",
           "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
+          "SUPPORT": "Navire de soutien",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
           "": ""
@@ -2520,7 +2520,7 @@
     "description": "Named ports v1"
   },
   "public-global-all-tracks": {
-    "name": "Tracks",
+    "name": "Tracés",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
     "schema": {
       "elevation": {
@@ -2620,7 +2620,7 @@
           "OTHER": "OTHER",
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
-          "SUPPORT": "SUPPORT"
+          "SUPPORT": "Navire de soutien"
         }
       }
     }
@@ -2651,7 +2651,7 @@
           "OTHER": "OTHER",
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
-          "SUPPORT": "SUPPORT"
+          "SUPPORT": "Navire de soutien"
         }
       }
     }
@@ -2694,7 +2694,7 @@
           "OTHER": "OTHER",
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
-          "SUPPORT": "SUPPORT"
+          "SUPPORT": "Navire de soutien"
         }
       }
     }
@@ -2781,7 +2781,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "carrier": "carrier",
+          "carrier": "Transporteur",
           "seismic_vessel": "seismic_vessel",
           "passenger": "passenger",
           "other": "other",
@@ -2826,7 +2826,7 @@
           "seismic_vessel": "seismic_vessel",
           "passenger": "passenger",
           "other": "other",
-          "support": "support",
+          "support": "Navire de soutien",
           "bunker": "bunker",
           "gear": "gear",
           "cargo": "cargo",
@@ -3019,7 +3019,7 @@
         "enum": {
           "unknown": "unknown",
           "fishing": "fishing",
-          "carrier": "carrier",
+          "carrier": "Transporteur",
           "support": "support"
         }
       }
@@ -3046,7 +3046,7 @@
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information."
   },
   "public-global-water-temperature-max": {
-    "name": "Sea surface temperature",
+    "name": "Température de la surface de la mer",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
   },
   "public-global-water-temperature-min": {
@@ -3054,7 +3054,7 @@
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
   },
   "public-global-water-temperature": {
-    "name": "Sea surface temperature",
+    "name": "Température de la surface de la mer",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
   },
   "public-global-winds-vo": {
@@ -3267,7 +3267,7 @@
     }
   },
   "public-mpa-all": {
-    "name": "MPAs",
+    "name": "AMP (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer."
   },
   "public-mpa-no-take": {
@@ -3575,7 +3575,7 @@
     "description": "Named ports v1"
   },
   "public-protectedseas": {
-    "name": "Protected Seas",
+    "name": "AMP (ProtectedSeas)",
     "description": "Protected seas (only category IUCN MPA)",
     "schema": {
       "removal_of": {
@@ -3623,7 +3623,7 @@
     }
   },
   "public-rfmo": {
-    "name": "RFMO",
+    "name": "ORGP",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer.",
     "schema": {
       "ID": {
