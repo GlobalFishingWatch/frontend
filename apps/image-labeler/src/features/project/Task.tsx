@@ -18,7 +18,9 @@ type TaskProps = {
   onClick?: () => void
   onFinishTask: (taskId: string) => void
   scale?: number
-  imageStyle?: React.CSSProperties
+  rangeMode?: 'compressed' | 'full'
+  normMode?: 'global' | 'per-channel'
+  showCrosshair?: boolean
 }
 
 export function Task({
@@ -28,7 +30,9 @@ export function Task({
   onClick,
   onFinishTask,
   scale,
-  imageStyle,
+  rangeMode,
+  normMode,
+  showCrosshair,
 }: TaskProps) {
   const options: ChoiceOption[] = useMemo(
     () =>
@@ -135,7 +139,9 @@ export function Task({
             key={index}
             scale={scale}
             open={open}
-            imageStyle={imageStyle}
+            rangeMode={rangeMode}
+            normMode={normMode}
+            showCrosshair={showCrosshair}
           />
         ))}
       </div>

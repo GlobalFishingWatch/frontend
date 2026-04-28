@@ -19,7 +19,7 @@ import {
 import { AVAILABLE_END, AVAILABLE_START, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
+import { selectVesselGroupSearchDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
@@ -71,6 +71,7 @@ import {
   calculateVMSVesselsPercentage,
   getVesselGroupUniqVessels,
   getVesselGroupVesselsCount,
+  normaliseCsvColumns,
 } from './vessel-groups.utils'
 import type { VesselGroupConfirmationMode, VesselGroupCsvData } from './vessel-groups-modal.slice'
 import {
@@ -87,6 +88,7 @@ import {
   selectVesselGroupModalOpen,
   selectVesselGroupModalSearchIdField,
   selectVesselGroupModalSources,
+  selectVesselGroupModalUnmatchedIDs,
   selectVesselGroupModalVessels,
   selectVesselGroupSearchStatus,
   setVesselGroupModalName,
@@ -105,7 +107,12 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const csvData = useSelector(selectVesselGroupModalCsvData)
+  const unmatchedIDs = useSelector(selectVesselGroupModalUnmatchedIDs)
   const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
+  const normalisedSelectedCsvColumns = useMemo(
+    () => normaliseCsvColumns(selectedCsvColumns),
+    [selectedCsvColumns]
+  )
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
@@ -150,13 +157,15 @@ function VesselGroupModal(): React.ReactElement<any> {
   const workspace = useSelector(selectWorkspace)
   const { dispatchLocation } = useLocationConnect()
 
-  const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
+  const vesselDatasets = useSelector(selectVesselGroupSearchDatasets)
 
   useEffect(() => {
     if (editingVesselGroup?.name) {
       dispatch(setVesselGroupModalName(editingVesselGroup?.name))
     }
-  }, [editingVesselGroup?.name])
+  }, [dispatch, editingVesselGroup?.name])
+
+  const vesselGroupModalSources = useSelector(selectVesselGroupModalSources)
 
   const sourceOptions = useMemo(
     () =>
@@ -166,7 +175,6 @@ function VesselGroupModal(): React.ReactElement<any> {
       })),
     [vesselDatasets]
   )
-  const vesselGroupModalSources = useSelector(selectVesselGroupModalSources)
 
   const sourcesSelected = useMemo(
     () => sourceOptions.filter((s) => vesselGroupModalSources?.includes(s.id)),
@@ -216,6 +224,18 @@ function VesselGroupModal(): React.ReactElement<any> {
       const datasets = sourcesSelected.length
         ? sourcesSelected.map(({ id }) => id)
         : sourceOptions.map(({ id }) => id)
+
+      trackEvent({
+        category: TrackCategory.VesselGroups,
+        action: `match vessels from ${ids ? 'IDs' : csvData && 'CSV'} to create a vessel group`,
+        label: getEventLabel([
+          transmissionDateFrom && `active after: ${transmissionDateFrom}`,
+          transmissionDateTo && `active before: ${transmissionDateTo}`,
+          datasets && `datasets: ${datasets.join(', ')}`,
+          searchIdField && `id field: ${searchIdField}`,
+        ]),
+      })
+
       searchVesselGroupsVesselsRef.current = dispatch(
         searchVesselGroupsVesselsThunk({
           ids,
@@ -239,7 +259,15 @@ function VesselGroupModal(): React.ReactElement<any> {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch, sourcesSelected, sourceOptions, t, transmissionDateFrom, transmissionDateTo]
+    [
+      sourcesSelected,
+      sourceOptions,
+      transmissionDateFrom,
+      transmissionDateTo,
+      searchIdField,
+      dispatch,
+      t,
+    ]
   )
 
   useEffect(() => {
@@ -303,11 +331,11 @@ function VesselGroupModal(): React.ReactElement<any> {
       dispatchSearchVesselsGroupsThunk({ csvData, csvColumns: selectedCsvColumns })
     }
   }, [
-    dispatchSearchVesselsGroupsThunk,
     vesselGroupModalSearchIds,
     searchIdField,
     csvData,
     selectedCsvColumns,
+    dispatchSearchVesselsGroupsThunk,
   ])
 
   const onCreateGroupClick = useCallback(
@@ -396,8 +424,6 @@ function VesselGroupModal(): React.ReactElement<any> {
           dispatch(resetVesselGroupReportData())
           dispatch(fetchVesselGroupReportThunk({ vesselGroupId: editingVesselGroupId }))
         }
-        close()
-        setButtonLoading('')
         trackEvent({
           category: TrackCategory.VesselGroups,
           action: `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group`,
@@ -407,6 +433,8 @@ function VesselGroupModal(): React.ReactElement<any> {
           ]),
           value: `number of vessels: ${vessels.length}`,
         })
+        close()
+        setButtonLoading('')
       }
     },
     [
@@ -486,7 +514,17 @@ function VesselGroupModal(): React.ReactElement<any> {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={t((t) => t.vesselGroup.vesselGroup)}
+      title={
+        <div className={styles.textAlign}>
+          {t((t) => t.vesselGroup.vesselGroup)}
+          <IconButton
+            size="small"
+            icon="info"
+            type="default"
+            tooltip={t((t) => t.vesselGroup.vesselGroupTooltip)}
+          />
+        </div>
+      }
       isOpen={isModalOpen}
       className={styles.modal}
       contentClassName={styles.modalContainer}
@@ -504,23 +542,28 @@ function VesselGroupModal(): React.ReactElement<any> {
           />
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
-              <MultiSelect
-                label={t((t) => t.layer.sources)}
-                placeholder={getPlaceholderBySelections({
-                  selection: sourcesSelected.map(({ id }) => id),
-                  options: sourceOptions,
-                })}
-                options={sourceOptions}
-                selectedOptions={sourcesSelected}
-                onSelect={onSelectSourceClick}
-                onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
-              />
+              <div>
+                {sourceOptions.length > 1 ? (
+                  <MultiSelect
+                    label={t((t) => t.layer.sources)}
+                    placeholder={getPlaceholderBySelections({
+                      selection: sourcesSelected.map(({ id }) => id),
+                      options: sourceOptions,
+                    })}
+                    options={sourceOptions}
+                    selectedOptions={sourcesSelected}
+                    onSelect={onSelectSourceClick}
+                    onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
+                  />
+                ) : null}
+              </div>
               <div>
                 <InputDate
                   value={transmissionDateTo || ''}
                   max={AVAILABLE_END.slice(0, 10) as string}
                   min={AVAILABLE_START.slice(0, 10) as string}
                   label={t((t) => t.common.active_after)}
+                  labelTooltip={t((t) => t.vesselGroup.activeAfterTooltip)}
                   onChange={(e) => {
                     setTransmissionDateTo(e.target.value)
                   }}
@@ -535,6 +578,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                   max={AVAILABLE_END.slice(0, 10) as string}
                   min={AVAILABLE_START.slice(0, 10) as string}
                   label={t((t) => t.common.active_before)}
+                  labelTooltip={t((t) => t.vesselGroup.activeBeforeTooltip)}
                   onChange={(e) => {
                     setTransmissionDateFrom(e.target.value)
                   }}
@@ -585,8 +629,25 @@ function VesselGroupModal(): React.ReactElement<any> {
                     } as VesselGroup),
                   })}
             </label>
+            {unmatchedIDs && unmatchedIDs.length > 0 && (
+              <label className={styles.textAlign}>
+                <Icon icon="warning" type="warning" />
+                {t((t) => t.vesselGroup.unmatchedIDs, {
+                  field: searchIdField,
+                  ids: unmatchedIDs.join(', '),
+                })}
+                <IconButton
+                  size="small"
+                  icon="copy"
+                  tooltip={t((t) => t.common.copy, { text: 'IDs' })}
+                  onClick={() => navigator.clipboard.writeText(unmatchedIDs.join(', '))}
+                />
+              </label>
+            )}
             <div className={styles.vesselsTableContainer}>
-              <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
+              <VesselGroupVessels
+                searchIdField={normalisedSelectedCsvColumns[0] || searchIdField}
+              />
             </div>
           </Fragment>
         ) : (
@@ -608,7 +669,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {datasetsWithoutRelatedEvents.length >= 1 && (
-            <div className={styles.disclaimerFooter}>
+            <div className={styles.textAlign}>
               <Icon icon="warning" type="warning" />
               {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
                 features: t((t) => t.vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix),

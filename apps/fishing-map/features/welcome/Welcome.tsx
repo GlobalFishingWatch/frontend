@@ -1,10 +1,12 @@
 import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Logo, Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { Locale } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -31,6 +33,7 @@ type WelcomeProps = {
 export type WelcomeLocalStorageKey = { visible: boolean; showAgain: boolean; version?: number }
 
 const Welcome = ({ contentKey }: WelcomeProps) => {
+  const screenshotMode = useSelector(selectScreenshotMode)
   const [welcomePopup, setWelcomePopup] = useLocalStorage<WelcomeLocalStorageKey>(
     DISABLE_WELCOME_POPUP_DICT[contentKey],
     { visible: true, showAgain: false }
@@ -64,7 +67,7 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
     }))
   }, [setWelcomePopup])
 
-  if (!welcomePopup?.visible || !welcomeModalContentTranslated) {
+  if (!welcomePopup?.visible || !welcomeModalContentTranslated || screenshotMode) {
     if (!welcomeModalContentTranslated) {
       console.warn('Missing every welcome modal content by languages')
     }

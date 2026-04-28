@@ -41,6 +41,7 @@ import {
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
+  selectIsAnyReportLocation,
   selectIsVesselGroupReportLocation,
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
@@ -169,10 +170,14 @@ export const selectReportActivityFlatten = createSelector(
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
         const activityDataset = datasets.find((d) => d.id === datasetId)
+        // TODO:REVIEW We are choosing the dataview by index,
+        // because doing it only by datasetId is not enough when there are filters
+        // and the report response is not including the dataviewId
         const dataview =
+          dataviews[index] ||
           dataviews.find((dataview) =>
             dataview.datasets?.some((dataset) => dataset.id === datasetId)
-          ) || dataviews[index]
+          )
         if (!dataview) {
           console.warn('Missing dataview for report dataset:', dataset)
           return EMPTY_ARRAY
@@ -384,9 +389,10 @@ export const selectReportArea = createSelector(
     selectHasReportBuffer,
     selectReportBufferArea,
     selectIsWorkspaceReady,
+    selectIsAnyReportLocation,
   ],
-  (reportArea, hasReportBuffer, bufferedArea, isWorkspaceReady) => {
-    if (!isWorkspaceReady) {
+  (reportArea, hasReportBuffer, bufferedArea, isWorkspaceReady, isAnyReportLocation) => {
+    if (!isWorkspaceReady || !isAnyReportLocation) {
       return undefined
     }
     if (hasReportBuffer) {

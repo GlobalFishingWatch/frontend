@@ -28,8 +28,6 @@ export const REGISTRY_SOURCES = [
   },
 ]
 
-const VMS_BRAZIL_IDENTITY_PREVIEW = process.env.NEXT_PUBLIC_VMS_BRAZIL_IDENTITY_PREVIEW === 'true'
-
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
   vesselRegistryId: undefined,
@@ -92,16 +90,13 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
-}
-
-if (VMS_BRAZIL_IDENTITY_PREVIEW) {
-  CUSTOM_VMS_IDENTITY_FIELD_GROUPS[`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`] = [
+  [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode' }],
     [{ key: 'fishingLicenseCode' }, { key: 'fishingLicenseStatus' }],
     [{ key: 'fishingLicenseStartDate' }, { key: 'fishingLicenseEndDate' }],
     [{ key: 'builtYear' }, { key: 'length' }],
     [{ key: 'grossTonnage' }, { key: 'horsePower' }],
-  ]
+  ],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [

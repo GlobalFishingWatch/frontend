@@ -44,6 +44,13 @@ export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
   local?: boolean
 }
 
+type InternalFetchOptions<Body = unknown> = {
+  url: string
+  options?: FetchOptions<Body>
+  refreshRetries?: number
+  waitLogin?: boolean
+}
+
 const isClientSide = typeof window !== 'undefined'
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
@@ -57,6 +64,7 @@ export class GFW_API_CLASS {
   }
   maxRefreshRetries = 1
   logging: Promise<UserData> | null
+  private refreshingToken: Promise<UserTokens> | null = null
   status: RequestStatus = 'idle'
 
   constructor({
@@ -171,26 +179,43 @@ export class GFW_API_CLASS {
       .then(parseJSON)
   }
 
-  async refreshAPIToken() {
-    if (this.status !== 'refreshingToken') {
-      this.status = 'refreshingToken'
-      try {
-        if (!this.refreshToken) {
-          throw new Error('No refresh token')
-        }
-        const refreshResponse = await this.getTokenWithRefreshToken(this.refreshToken)
-        const { token, refreshToken: newRefreshToken } = refreshResponse
-        this.token = token
-        this.refreshToken = newRefreshToken
-        this.status = 'idle'
-        return refreshResponse
-      } catch (e: any) {
-        this.status = 'idle'
-        e.status = 401
-        throw e
+  private async reloadAPIToken(refreshToken: string) {
+    const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
+    const { token, refreshToken: newRefreshToken } = refreshResponse
+    this.token = token
+    this.refreshToken = newRefreshToken
+    return refreshResponse
+  }
+
+  private async reloadAPITokenWithLatestRefreshToken(refreshToken: string) {
+    try {
+      return await this.reloadAPIToken(refreshToken)
+    } catch (e: any) {
+      const latestRefreshToken = this.refreshToken
+      if (latestRefreshToken && latestRefreshToken !== refreshToken) {
+        return await this.reloadAPIToken(latestRefreshToken)
       }
+      e.status = 401
+      throw e
     }
-    return
+  }
+
+  async refreshAPIToken() {
+    if (this.refreshingToken) {
+      return this.refreshingToken
+    }
+    const refreshToken = this.refreshToken
+    if (!refreshToken) {
+      const error: any = new Error('No refresh token')
+      error.status = 401
+      throw error
+    }
+    this.status = 'refreshingToken'
+    this.refreshingToken = this.reloadAPITokenWithLatestRefreshToken(refreshToken).finally(() => {
+      this.status = 'idle'
+      this.refreshingToken = null
+    })
+    return this.refreshingToken
   }
 
   generateUrl(
@@ -213,15 +238,15 @@ export class GFW_API_CLASS {
   }
 
   fetch<Response, Body = unknown>(url: string, options: FetchOptions<Body> = {}) {
-    return this._internalFetch<Response, Body>(
-      this.generateUrl(url, { version: options.version }),
-      options
-    )
+    return this._internalFetch<Response, Body>({
+      url: this.generateUrl(url, { version: options.version }),
+      options,
+    })
   }
 
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
     this.status = 'downloading'
-    return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
+    return this._internalFetch<Blob>({ url: downloadUrl, options: { responseType: 'blob' } })
       .then((blob) => {
         saveAs(blob, fileName)
         this.status = 'idle'
@@ -236,12 +261,12 @@ export class GFW_API_CLASS {
   private async _internalFetch<
     T = Record<string, unknown> | Blob | ArrayBuffer | Response,
     Body = unknown,
-  >(
-    url: string,
-    options: FetchOptions<Body> = {},
+  >({
+    url,
+    options = {},
     refreshRetries = 0,
-    waitLogin = true
-  ): Promise<T> {
+    waitLogin = true,
+  }: InternalFetchOptions<Body>): Promise<T> {
     const {
       method = 'GET',
       body = null,
@@ -349,15 +374,20 @@ export class GFW_API_CLASS {
                 console.warn(`GFWAPI: Error fetching ${url}`, err)
               }
               if (isClientSide) {
-                localStorage.removeItem(this.storageKeys.token)
-                localStorage.removeItem(this.storageKeys.refreshToken)
+                this.token = ''
+                this.refreshToken = ''
               }
               e.refreshError = true
               throw parseAPIError(e)
             }
           }
           if (authError || e.status >= 500) {
-            return this._internalFetch(url, options, ++refreshRetries, waitLogin)
+            return this._internalFetch<T, Body>({
+              url,
+              options,
+              refreshRetries: refreshRetries + 1,
+              waitLogin,
+            })
           }
           throw e
         } else {
@@ -387,16 +417,15 @@ export class GFW_API_CLASS {
 
   async fetchUser() {
     try {
-      const user = await this._internalFetch<UserData>(
-        this.generateUrl(`/${AUTH_PATH}/me`),
-        {},
-        0,
-        false
-      )
+      const user = await this._internalFetch<UserData>({
+        url: this.generateUrl(`/${AUTH_PATH}/me`),
+        refreshRetries: 0,
+        waitLogin: false,
+      })
       return user
     } catch (e: any) {
       console.warn(e)
-      throw new Error('Error trying to get user data')
+      throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
@@ -404,22 +433,22 @@ export class GFW_API_CLASS {
     try {
       const permissions: UserPermission[] = await this._internalFetch<
         APIPagination<UserPermission>
-      >(this.generateUrl(`/auth/acl/permissions/anonymous`)).then(
-        (response: APIPagination<UserPermission>) => {
-          return response.entries
-        }
-      )
+      >({
+        url: this.generateUrl(`/auth/acl/permissions/anonymous`),
+      }).then((response: APIPagination<UserPermission>) => {
+        return response.entries
+      })
       const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
 
       return user
     } catch (e: any) {
       console.warn(e)
-      throw new Error('Error trying to get user data')
+      throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
   async login(params: LoginParams): Promise<UserData> {
-    const { accessToken = null, refreshToken = this.refreshToken } = params
+    const { accessToken = null, refreshToken } = params
     this.status = 'logging'
     // eslint-disable-next-line no-async-promise-executor
     this.logging = new Promise(async (resolve, reject) => {
@@ -442,7 +471,7 @@ export class GFW_API_CLASS {
             if (this.debug) {
               console.warn(`GFWAPI: ${msg}`)
             }
-            reject(new Error(msg))
+            reject(new Error(msg, { cause: e }))
             this.status = 'idle'
             return null
           }
@@ -468,15 +497,13 @@ export class GFW_API_CLASS {
         }
       }
 
-      if (refreshToken) {
+      const refreshTokenToUse = refreshToken || this.refreshToken
+      if (refreshTokenToUse) {
         if (this.debug) {
           console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
         }
         try {
-          const { token, refreshToken: newRefreshToken } =
-            await this.getTokenWithRefreshToken(refreshToken)
-          this.token = token
-          this.refreshToken = newRefreshToken
+          await this.reloadAPITokenWithLatestRefreshToken(refreshTokenToUse)
           if (this.debug) {
             console.log(`GFWAPI: Refresh token OK, fetching user`)
           }
@@ -495,7 +522,7 @@ export class GFW_API_CLASS {
           if (this.debug) {
             console.warn(`GFWAPI: ${msg}`)
           }
-          reject(new Error(msg))
+          reject(new Error(msg, { cause: e }))
           this.status = 'idle'
           return null
         }
@@ -512,9 +539,12 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.log(`GFWAPI: Logout - tokens cleaned`)
       }
-      await this._internalFetch(`/${API_VERSION}/${AUTH_PATH}/logout`, {
-        headers: {
-          'refresh-token': this.refreshToken,
+      await this._internalFetch<void>({
+        url: this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/logout`),
+        options: {
+          headers: {
+            'refresh-token': this.refreshToken,
+          },
         },
       })
       this.token = ''
@@ -527,7 +557,7 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.warn(`GFWAPI: Logout invalid session fail`)
       }
-      throw new Error('Error on the logout proccess')
+      throw new Error('Error on the logout proccess', { cause: e })
     }
   }
 }

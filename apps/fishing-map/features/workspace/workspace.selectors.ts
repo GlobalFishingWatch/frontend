@@ -63,7 +63,7 @@ export const selectIsTurningTidesWorkspace = createSelector([selectWorkspace], (
 export const selectIsWorkspaceOwner = createSelector(
   [selectWorkspace, selectUserData],
   (workspace, userData) => {
-    return workspace?.ownerId === userData?.id
+    return userData?.type !== 'guest' && workspace?.ownerId === userData?.id
   }
 )
 
