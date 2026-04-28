@@ -8,7 +8,7 @@ async function buildBundle() {
     platform: 'node',
     format: 'iife', // IIFE format for BigQuery UDF compatibility
     globalName: 'UrlWorkspace', // Global namespace for BigQuery
-    outfile: 'dist/libs/url-workspace/url-workspace.js',
+    outfile: 'libs/dataviews-client/dist/url-workspace-bundle/url-workspace-bundle.js',
     external: ['util', 'buffer', 'process', 'path', 'fs', 'http', 'url'], // External Node.js built-ins
     packages: 'bundle', // Bundle all packages
     splitting: false,
@@ -42,7 +42,7 @@ async function buildBundle() {
   })
 
   console.log('✅ Built BigQuery UDF library bundle successfully!')
-  console.log('📦 Output: dist/libs/url-workspace/url-workspace.js')
+  console.log('📦 Output: libs/dataviews-client/dist/url-workspace-bundle/url-workspace-bundle.js')
   console.log('')
   console.log('Usage in BigQuery UDF:')
   console.log('1. Upload the bundle to Cloud Storage or use inline')
