@@ -167,6 +167,7 @@ export function UserSection(): React.ReactElement<any> {
             tooltip={t((t) => t.dataset.addUser)}
             tooltipPlacement="top"
             onClick={onAddClick}
+            data-testid="user-add-layer-button"
           />
         </Fragment>
       }
