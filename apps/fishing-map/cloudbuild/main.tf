@@ -16,7 +16,7 @@ locals {
     pro = "frontend-pro@gfw-production.iam.gserviceaccount.com"
   }
   // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
-  secrets = [
+  next_secrets = [
     "BASIC_AUTH_PASS",
     "NEXT_DOWNLOAD_SURVEY_SPREADSHEET_ID",
     "NEXT_FEEDBACK_SPREADSHEET_ID",
@@ -33,10 +33,29 @@ locals {
     "NEXT_TURNING_TIDES_PERU_ID",
     "NEXT_WORKSPACES_AGENT_ID",
   ]
+  vite_secrets = [
+    "BASIC_AUTH_PASS",
+    "VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID",
+    "VITE_FEEDBACK_SPREADSHEET_ID",
+    "VITE_GFW_API_KEY",
+    "VITE_IDENTITY_REVIEW_SPREADSHEET_ID",
+    "VITE_MAP_ERRORS_SPREADSHEET_ID",
+    "VITE_MASTRA_API_URL",
+    "VITE_SENTRY_AUTH_TOKEN",
+    "VITE_SPREADSHEET_CLIENT_EMAIL",
+    "VITE_SPREADSHEET_PRIVATE_KEY",
+    "VITE_STRAPI_TOKEN",
+    "VITE_STRAPI_URL",
+    "VITE_TURNING_TIDES_AIS_ID",
+    "VITE_TURNING_TIDES_BRAZIL_ID",
+    "VITE_TURNING_TIDES_CHILE_ID",
+    "VITE_TURNING_TIDES_PERU_ID",
+    "VITE_WORKSPACES_AGENT_ID",
+  ]
 
   generate_secrets = {
     for env, path in local.secrets_path : env => [
-      for secret in local.secrets :
+      for secret in local.vite_secrets :
       "${secret}=${path}/FISHING_MAP_${secret}"
     ]
   }
