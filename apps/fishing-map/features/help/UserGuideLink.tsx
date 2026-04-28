@@ -4,65 +4,11 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useSidePanel } from 'features/content/contentPanel.hooks'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './UserGuideLink.module.css'
 
-export type UserGuideSection =
-  | 'uploadData'
-  | 'uploadPolygons'
-  | 'uploadTracks'
-  | 'uploadPoints'
-  | 'analysis'
-  | 'downloadActivity'
-  | 'vesselSearch'
-  | 'vesselGroups'
-  | 'activityFishing'
-  | 'activityPresence'
-  | 'activityFilters'
-  | 'detectionsSAR'
-  | 'detectionsVIIRS'
-
-const USER_GUIDE_LINK_EN: string = 'https://globalfishingwatch.org/user-guide/'
-const USER_GUIDE_LINK_ES: string = 'https://globalfishingwatch.org/es/guia-de-usuario/'
-
-const USER_GUIDE_SECTIONS_EN: Record<UserGuideSection, string> = {
-  uploadData: '#Uploading data',
-  // TODO update sections by categoreies
-  uploadPolygons: '#Uploading data',
-  uploadTracks: '#Uploading data',
-  uploadPoints: '#Uploading data',
-  analysis: '#Analysis and dynamic reports',
-  downloadActivity: '#Downloading data',
-  vesselSearch: '#Vessel search',
-  vesselGroups: '#Vessel groups',
-  activityFishing: '#Activity - Fishing',
-  activityPresence: '#Activity - Presence',
-  activityFilters: '#Filtering activity layers',
-  detectionsSAR: '#Radar detections - Synthetic aperture radar',
-  detectionsVIIRS: '#Night light detections - Visible Infrared Imaging Radiometer Suite',
-}
-
-const USER_GUIDE_SECTIONS_ES: Record<UserGuideSection, string> = {
-  uploadData: '#Carga de datos',
-  // TODO update sections by categoreies
-  uploadPolygons: '#Carga de datos',
-  uploadTracks: '#Carga de datos',
-  uploadPoints: '#Carga de datos',
-  analysis: '#Análisis y reportes dinámicos',
-  downloadActivity: '#Descarga de datos',
-  vesselSearch: '#Búsqueda de embarcaciones',
-  vesselGroups: '#Grupos de embarcaciones',
-  activityFishing: '#Actividad - Pesca',
-  activityPresence: '#Actividad - Presencia',
-  activityFilters: '#Filtrar capas de actividad',
-  detectionsSAR: '#Detecciones de radar - Radar de apertura sintética',
-  detectionsVIIRS:
-    '#Detecciones de luz nocturna - Suite de Radiómetros para Imágenes Infrarrojas Visibles',
-}
-
 type UserGuideLinkProps = {
-  section: UserGuideSection | string
+  section: string
   className?: string
 }
 
@@ -73,14 +19,15 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
   const handleClick = () => {
     openSidePanel({ type: 'userGuide', id: section })
   }
+
   return (
-    <button className={cx(styles.link, className)} onClick={handleClick} type="button">
-      <IconButton size="small" icon="help" className={styles.icon} />{' '}
+    <div className={cx(styles.link, className)} onClick={handleClick} role="button" tabIndex={0}>
+      <IconButton size="small" icon="help" className={styles.icon} />
       <div>
-        <label className={styles.label}>{t((t) => t.userGuide.title)}</label>
+        <span className={styles.label}>{t((t) => t.userGuide.title)}</span>
         <span>{t((t) => t.userGuide[section])}</span>
       </div>
-    </button>
+    </div>
   )
 }
 
