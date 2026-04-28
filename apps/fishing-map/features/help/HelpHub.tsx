@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSidePanel } from 'features/content/contentPanel.hooks'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
@@ -32,8 +32,8 @@ function HelpHub() {
   const onHelpClick = () => {
     trackEvent({
       category: TrackCategory.HelpHints,
-      action: `Pressing the '?' on the left of the screen to restore help hints after they've been dismissed`,
-      label: percentageOfHintsSeen.toString(),
+      action: `restore help hints after they've been dismissed`,
+      label: `percentage of hints seen: ${percentageOfHintsSeen.toString()}%`,
     })
     dispatch(resetHints())
   }
@@ -46,6 +46,14 @@ function HelpHub() {
   const getVideoTutorialsLink = () => {
     if (i18n.language === 'es') return 'https://globalfishingwatch.org/tutoriales'
     return 'https://globalfishingwatch.org/tutorials'
+  }
+
+  const redirectEvent = (destination: string) => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: `redirect to ${destination}`,
+      label: i18n.language,
+    })
   }
 
   return (
@@ -101,12 +109,19 @@ function HelpHub() {
             target="_blank"
             rel="noreferrer"
             className={cx(styles.link)}
+            onClick={() => redirectEvent('video tutorials')}
           >
             {t((t) => t.common.tutorials)}
           </a>
         </li>
         <li>
-          <a href={getFAQsLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
+          <a
+            href={getFAQsLink()}
+            target="_blank"
+            rel="noreferrer"
+            className={cx(styles.link)}
+            onClick={() => redirectEvent('faqs')}
+          >
             {t((t) => t.common.faq)}
           </a>
         </li>

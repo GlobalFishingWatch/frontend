@@ -5,6 +5,29 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Action } from '@dnd-kit/core/dist/store'
 import { Outlet, useSearch } from '@tanstack/react-router'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
+import {
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
+} from 'router/routes'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnySearchLocation,
+  selectIsMapDrawing,
+  selectIsRouteWithWorkspace,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectLocationType,
+  selectReportId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -32,33 +55,10 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { ConfirmLeave } from 'router/ConfirmLeave'
-import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
-import {
-  REPORT,
-  SEARCH,
-  USER,
-  VESSEL,
-  WORKSPACE_SEARCH,
-  WORKSPACE_VESSEL,
-  WORKSPACES_LIST,
-} from 'router/routes'
-import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsAnySearchLocation,
-  selectIsMapDrawing,
-  selectIsRouteWithWorkspace,
-  selectIsVesselLocation,
-  selectIsWorkspaceLocation,
-  selectLocationType,
-  selectReportId,
-  selectWorkspaceId,
-} from 'router/routes.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
+import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
 import { useAppDispatch } from './app.hooks'
 import Main from './Main'
@@ -85,6 +85,7 @@ function App() {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
+  const screenshotMode = useSelector(selectScreenshotMode)
   const i18n = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -175,7 +176,9 @@ function App() {
   }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
-  if (readOnly) {
+  if (screenshotMode) {
+    asideWidth = '0'
+  } else if (readOnly) {
     asideWidth = isAreaReportLocation ? '45%' : '34rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
@@ -198,8 +201,11 @@ function App() {
       {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
       <ConfirmVesselProfileLeave />
-      <a href="https://globalfishingwatch.org" className="print-only">
-        <Logo className={styles.logo} />
+      <a
+        href="https://globalfishingwatch.org"
+        className={screenshotMode ? styles.logo : 'print-only'}
+      >
+        <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
       <div style={{ position: 'fixed', zIndex: 1 }}>
         {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
@@ -211,7 +217,7 @@ function App() {
           <ErrorBoundary>
             <SplitView
               isOpen={sidebarOpen && !isMapDrawing}
-              showToggle={isWorkspaceLocation || vesselLocation}
+              showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
               onToggle={onToggle}
               aside={
                 <Sidebar onMenuClick={onMenuClick}>

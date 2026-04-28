@@ -194,10 +194,27 @@ function VesselsTable({
                             >
                               <IconButton
                                 icon="search"
-                                size="small"
+                                size="tiny"
                                 tooltip={t((t) => t.vessel.skylightSearch)}
                               />
                             </Link>
+                            {!vessel.id && vessel.skylight_id && (
+                              <a
+                                href={getSkylightLink({
+                                  skylightId: vessel.skylight_id,
+                                  start,
+                                  end,
+                                })}
+                                target="_blank"
+                                className={styles.link}
+                              >
+                                <IconButton
+                                  icon="external-link"
+                                  size="tiny"
+                                  tooltip={t((t) => t.vessel.skylightLink)}
+                                />
+                              </a>
+                            )}
                             {vesselName}
                           </span>
                         ) : (
@@ -215,19 +232,7 @@ function VesselsTable({
                             {vesselName}
                           </VesselLink>
                         )}
-                        {!vessel.id && vessel.skylight_id && (
-                          <a
-                            href={getSkylightLink({ skylightId: vessel.skylight_id, start, end })}
-                            target="_blank"
-                            className={styles.link}
-                          >
-                            <IconButton
-                              icon="external-link"
-                              size="tiny"
-                              tooltip={t((t) => t.vessel.skylightLink)}
-                            />
-                          </a>
-                        )}
+
                         {otherVesselsLabel && (
                           <span className={styles.secondary}>{otherVesselsLabel}</span>
                         )}
