@@ -74,6 +74,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
 
 type RedirectParam = {
+  isPopup?: boolean
   'access-token'?: string
   callbackUrlStorage?: boolean
 }

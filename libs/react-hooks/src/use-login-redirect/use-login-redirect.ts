@@ -33,12 +33,17 @@ export const getHistoryNavigation = (
   return []
 }
 
-export const getLoginUrl = (callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARAM) => {
+export const getLoginUrl = (
+  callbackUrlParam: string = DEFAULT_CALLBACK_URL_PARAM,
+  customParams: Record<string, string> = {}
+) => {
   if (typeof window !== 'undefined') {
     const { origin, pathname } = window.location
-    return GFWAPI.getLoginUrl(
-      `${origin}${pathname}?isPopup=true${callbackUrlParam ? `&${callbackUrlParam}=true` : ''}`
-    )
+    const params = new URLSearchParams({
+      ...(callbackUrlParam ? { [callbackUrlParam]: 'true' } : {}),
+      ...(customParams || {}),
+    })
+    return GFWAPI.getLoginUrl(`${origin}${pathname}?${params.toString()}`)
   }
   return ''
 }

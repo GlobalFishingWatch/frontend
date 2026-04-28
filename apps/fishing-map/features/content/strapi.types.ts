@@ -58,18 +58,3 @@ export type SidePanelContentTypeMap = {
   userGuide: TUserGuideSection
   datasets: TDataset
 }
-
-export function castSidePanelData<K extends keyof SidePanelContentTypeMap>(
-  _content: K,
-  data: TUserGuideSection | TDataset
-): SidePanelContentTypeMap[K] {
-  return data as SidePanelContentTypeMap[K]
-}
-
-export function isTUserGuideSection(item: unknown): item is TUserGuideSection {
-  return typeof item === 'object' && item !== null && 'contentBlocks' in item
-}
-
-export function isTDataset(item: unknown): item is TDataset {
-  return typeof item === 'object' && item !== null && 'dataset_id' in item
-}
