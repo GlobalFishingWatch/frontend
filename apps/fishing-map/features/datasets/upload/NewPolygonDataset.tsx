@@ -305,7 +305,7 @@ function NewPolygonDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink section="uploadPolygons" />
+          <UserGuideLink section="upload-polygons" />
         </div>
         <Button
           className={styles.saveBtn}

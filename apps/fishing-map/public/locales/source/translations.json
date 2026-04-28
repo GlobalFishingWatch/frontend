@@ -969,20 +969,20 @@
     "title": "User"
   },
   "userGuide": {
-    "activityFilters": "Filter activity layers",
-    "activityFishing": "Activity - Fishing",
-    "activityPresence": "Activity - Presence",
+    "activityFilters": "",
+    "activityFishing": "",
+    "activityPresence": "",
     "analysis": "Analyze activity",
-    "detectionsSAR": "Detections - SAR",
-    "detectionsVIIRS": "Detections - VIIRS",
-    "downloadActivity": "Download data",
+    "detectionsSAR": "",
+    "detectionsVIIRS": "",
+    "downloadActivity": "",
     "title": "User Guide",
-    "uploadData": "Upload datasets",
-    "uploadPoints": "Upload point datasets",
-    "uploadPolygons": "Upload polygon datasets",
-    "uploadTracks": "Upload track datasets",
-    "vesselGroups": "Vessel groups",
-    "vesselSearch": "Vessel Search"
+    "uploadData": "",
+    "uploadPoints": "",
+    "uploadPolygons": "",
+    "uploadTracks": "",
+    "vesselGroups": "",
+    "vesselSearch": ""
   },
   "vessel": {
     "activityByType": "Activity by type",

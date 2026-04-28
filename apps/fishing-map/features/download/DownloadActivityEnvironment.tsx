@@ -246,7 +246,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
-        <UserGuideLink section="downloadActivity" />
+        <UserGuideLink section="download-activity" />
         <div className={styles.footer}>
           {!isDownloadReportSupported && (
             <p className={cx(styles.footerLabel, styles.error)}>

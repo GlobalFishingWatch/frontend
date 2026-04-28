@@ -27,15 +27,11 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
   const filteredSections = useMemo(() => {
     if (!searchQuery.trim()) return data
     const q = searchQuery.toLowerCase()
-    return data.filter(
-      (s) =>
-        s.title.toLowerCase().includes(q) ||
-        s.contentBlocks.some((block) => block.body.toLowerCase().includes(q))
-    )
+    return data.filter((s) => s.title.toLowerCase().includes(q) || s.body.toLowerCase().includes(q))
   }, [data, searchQuery])
 
   const listItems = useMemo(
-    () => filteredSections.map((s) => ({ id: s.id, label: s.title })),
+    () => filteredSections.map((s) => ({ id: s.slug || s.id.toString(), label: s.title })),
     [filteredSections]
   )
 
@@ -43,7 +39,9 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
     return sidePanelId
       ? (data.find(
           (s) =>
-            s.id.toString() === sidePanelId.toString() || s.title.includes(sidePanelId.toString())
+            s.slug === sidePanelId ||
+            s.id.toString() === sidePanelId.toString() ||
+            s.title.includes(sidePanelId.toString())
         ) ?? data[0])
       : data[0]
   }, [data, sidePanelId])
@@ -71,11 +69,9 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
         ) : (
           <div className={cx(styles.content)}>
             <h2>{selectedSection.title}</h2>
-            {selectedSection.contentBlocks.map((block, i) => (
-              <Markdown key={i} rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
-                {block.body}
-              </Markdown>
-            ))}
+            <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+              {selectedSection.body}
+            </Markdown>
           </div>
         )}
       </div>
@@ -131,8 +127,7 @@ function ContentPanel() {
   if (status === 'error') return null
   if (!isDatasets && !data) return null
 
-  const isEmpty =
-    !isDatasets && (status === 'empty' || (Array.isArray(data) && data.length === 0))
+  const isEmpty = !isDatasets && (status === 'empty' || (Array.isArray(data) && data.length === 0))
 
   return (
     <div className={styles.panel} style={{ width: `${panelWidth}px` }}>

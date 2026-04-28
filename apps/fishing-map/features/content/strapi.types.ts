@@ -14,22 +14,17 @@ export type StrapiBaseAttributes = {
   publishedAt: string
   locale: string
   localizations: string[]
+
+  title: string
+  body: string
 }
 
 export type TUserGuideSection = StrapiBaseAttributes & {
-  title: string
-  contentBlocks: ContentBlocks[]
-}
-
-export type ContentBlocks = {
-  id: string
-  body: string
+  slug: string
 }
 
 export type TDataset = StrapiBaseAttributes & {
   dataset_id: string
-  name: string
-  description: string
   schema: object
 }
 

@@ -103,16 +103,16 @@ const InfoContainer = () => {
 
   let userGuideLink: UserGuideSection | undefined
   if (dataview.category === DataviewCategory.Activity) {
-    userGuideLink = dataview.id.includes('presence') ? 'activityPresence' : 'activityFishing'
+    userGuideLink = dataview.id.includes('presence') ? 'activity-presence' : 'activity-fishing'
   } else if (dataview.category === DataviewCategory.Detections) {
-    if (dataview.id.includes('viirs')) userGuideLink = 'detectionsVIIRS'
-    else if (dataview.id.includes('sar')) userGuideLink = 'detectionsSAR'
+    if (dataview.id.includes('viirs')) userGuideLink = 'detections'
+    else if (dataview.id.includes('sar')) userGuideLink = 'detections'
   }
 
   return (
     <div className={cx(styles.container)}>
       <div className={cx(styles.header)}>
-        <ContentHeader title={strapiDataset?.name ?? dataview.name} />
+        <ContentHeader title={(strapiDataset?.title ?? activeTab?.labelString) || dataview.name} />
       </div>
       <div className={cx(styles.scrollContainer)}>
         {!isSingleTab && options.length > 0 && (
@@ -137,8 +137,8 @@ const InfoContainer = () => {
           {userGuideLink && <UserGuideLink section={userGuideLink} />}
           {loading ? (
             <Spinner size="small" />
-          ) : strapiDataset?.description ? (
-            htmlSafeParse(strapiDataset.description)
+          ) : strapiDataset?.body ? (
+            htmlSafeParse(strapiDataset.body)
           ) : null}
         </div>
       </div>

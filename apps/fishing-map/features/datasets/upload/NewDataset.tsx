@@ -235,7 +235,7 @@ function NewDataset() {
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
           </div>
           {style !== 'transparent' && (
-            <UserGuideLink section="uploadData" className={styles.userGuideLink} />
+            <UserGuideLink section="upload-data" className={styles.userGuideLink} />
           )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>
