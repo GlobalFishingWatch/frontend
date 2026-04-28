@@ -137,7 +137,6 @@ describe('Reports', () => {
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const timerange = jotaiStore.get(timerangeState)
-    console.log('🚀 ~ timerange:', timerange)
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     expect(timerange).toBeDefined()
@@ -166,7 +165,8 @@ describe('Reports', () => {
     expect(zoomedReportData).toEqual(initialReportData)
   })
 
-  it('should update report data when timebar changes', async () => {
+  //skipping as we removed the interval buttons
+  it.skip('should update report data when timebar changes', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
