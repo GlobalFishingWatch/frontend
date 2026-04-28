@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import papaparse from 'papaparse'
 
 import { useDebounce } from '@globalfishingwatch/react-hooks'
@@ -159,7 +160,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               csvName
                 ? csvName
                 : t((t) => t.vesselGroup.csvPlaceholder, {
-                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or'),
+                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or') as string,
                   })
             }
           />
