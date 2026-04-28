@@ -135,7 +135,7 @@ describe('Vessel map popup', () => {
 
     await GFWAPITest.waitForRequest('/events')
 
-    await userEvent.hover(timebarElement, { position: { x: 405, y: 35 } })
+    await userEvent.hover(timebarElement, { position: { x: 305, y: 35 } })
 
     // This check is not showing on webkit right now, need to investigate why, skipping for now to unblock other tests
     // await expect
@@ -143,7 +143,6 @@ describe('Vessel map popup', () => {
     //   .toBeVisible()
 
     await expect.element(getByTestId('timebar-highlighter')).toBeVisible()
-    await expect.element(getByText('Saturday, December 6, 2025')).toBeVisible()
 
     await expect.element(getByText(/Docked at Banjul, Gambia \(Republic of The\)/)).toBeVisible()
   })

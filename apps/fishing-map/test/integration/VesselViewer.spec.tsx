@@ -22,7 +22,7 @@ describe('Vessel viewer', async () => {
     await expect.element(getByText('Flag', { exact: true })).toBeVisible()
     await expect.element(getByText('Registry sources')).toBeVisible()
     await expect.element(getByText('Dates')).toBeVisible()
-    await expect.element(getByText('Gear Types')).toBeVisible()
+    await expect.element(getByText('Gear Type')).toBeVisible()
     await expect.element(getByText('Year Built')).toBeVisible()
     await expect.element(getByText('MMSI')).toBeVisible()
     await expect.element(getByText('IMO', { exact: true })).toBeVisible()

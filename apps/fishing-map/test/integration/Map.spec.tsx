@@ -151,7 +151,8 @@ describe('Map', () => {
     fetchSpy.mockRestore()
   })
 
-  it('should reflect period changes on the state and map', async () => {
+  //skipping as we removed the interval buttons
+  it.skip('should reflect period changes on the state and map', async () => {
     const store = makeStore(defaultState, [], true)
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
 
@@ -179,7 +180,8 @@ describe('Map', () => {
     )
   })
 
-  it('should preserve map state when changing period', async () => {
+  //skipping as we removed the interval buttons
+  it.skip('should preserve map state when changing period', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
