@@ -172,7 +172,7 @@
   "rfmo": {
     "description": "As organizações regionais de gestão de pesca (ORGPs) são órgãos internacionais formados por países com um interesse em comum na gestão ou conservação dos estoques de peixes em uma determinada região. Alguns gerenciam todos os estoques de peixes existentes em uma determinada área, enquanto outros se concentram em espécies específicas altamente migratórias, especialmente o atum. A organização regional de gestão de pesca do mapa do Global Fishing Watch inclui atualmente as cinco organizações regionais de gestão de pesca do atum.",
     "moreInfoLink": "",
-    "name": "ORGPs"
+    "name": "OROP"
   },
   "salinity": {
     "description": "A salinidade da superfície do mar é a medição da concentração de sal na superfície do oceano. Ela determina a densidade da água do oceano juntamente com a temperatura e é um parâmetro-chave para estimar a influência do oceano no clima. A salinidade deste conjunto de dados é exibida com uma resolução horizontal de 1/12 grau.",
