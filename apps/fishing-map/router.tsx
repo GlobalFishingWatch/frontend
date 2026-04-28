@@ -10,8 +10,20 @@ import type { QueryParams } from 'types'
 
 import { routeTree } from './routeTree.gen'
 
-const parseAppWorkspace = (searchStr: string): QueryParams =>
-  parseWorkspace(searchStr) as QueryParams
+const parseAppWorkspace = (searchStr: string): QueryParams => {
+  return parseWorkspace(searchStr) as QueryParams
+}
+
+const normalizeSearchString = (searchStr: string): string => {
+  // This is needed to match how TanStack Router normalizes the search string for SSR requests.
+  // https://github.com/TanStack/router/blob/b0024d6310f123736ea18a7f8692b45265cdee74/packages/router-core/src/ssr/ssr-server.ts#L570C1-L570C58
+  return new URLSearchParams(searchStr).toString()
+}
+
+const stringifyAppWorkspace = (search: QueryParams): string => {
+  const str = normalizeSearchString(stringifyWorkspace(search))
+  return str ? `?${str}` : ''
+}
 
 function createAppRouter() {
   const router = createRouter({
@@ -23,10 +35,7 @@ function createAppRouter() {
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <ErrorBoundaryUI error={error} />,
     defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
-    stringifySearch: (search: QueryParams) => {
-      const str = stringifyWorkspace(search)
-      return str ? `?${str}` : ''
-    },
+    stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
   })
 
