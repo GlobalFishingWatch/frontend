@@ -180,7 +180,7 @@ export abstract class UserBaseLayer<
       const geometryType = first.geometry?.type
       if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
         const geoms = group.map((g) => (g.geometry as Polygon | MultiPolygon).coordinates as Geom)
-        const unioned = union(geoms[0], ...geoms.slice(1))
+        const unioned = union(geoms[0], ...geoms)
         renderedFeatures.push({
           ...first,
           geometry: { type: 'MultiPolygon', coordinates: unioned } as MultiPolygon,

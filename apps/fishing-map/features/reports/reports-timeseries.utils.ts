@@ -100,7 +100,7 @@ export const getPolygonsTimeseriesStats = ({
     let intersectionM2 = 0
     if (allPolygons.length > 0) {
       const coords = allPolygons.map((p) => p.geometry.coordinates as Geom)
-      const unionCoords = union(coords[0], ...coords.slice(1))
+      const unionCoords = union(coords[0], ...coords)
       intersectionM2 = area({
         type: 'Feature',
         geometry: { type: 'MultiPolygon', coordinates: unionCoords },

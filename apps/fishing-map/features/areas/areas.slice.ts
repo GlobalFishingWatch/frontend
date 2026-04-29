@@ -117,7 +117,7 @@ async function fetchAreaDetail({
     const geoms = flatten(area.geometry)
       .features.filter((f) => f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')
       .map((f) => f.geometry.coordinates as Geom)
-    const unioned = union(geoms[0], ...geoms.slice(1))
+    const unioned = union(geoms[0], ...geoms)
     geometry = { type: 'MultiPolygon', coordinates: unioned }
   } else {
     geometry = area.geometry as AreaGeometry
@@ -196,7 +196,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           })
           const mergedGeometry: MultiPolygon = {
             type: 'MultiPolygon',
-            coordinates: union(geoms[0], ...geoms.slice(1)),
+            coordinates: union(geoms[0], ...geoms),
           }
           const bounds = wrapGeometryBbox(mergedGeometry)
           return {

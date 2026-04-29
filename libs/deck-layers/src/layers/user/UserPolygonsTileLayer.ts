@@ -245,10 +245,11 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)
+            const sublayerPrefix = `${props.id}-${sublayer.dataviewId}`
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-fills-${filtersHash}`,
+                id: `${sublayerPrefix}-highlight-fills-${filtersHash}`,
                 stroked: false,
                 pickable: layer?.pickable ?? pickable,
                 ...extensionFilterProps,
@@ -264,7 +265,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-lines-${filtersHash}`,
+                id: `${sublayerPrefix}-lines-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
@@ -279,7 +280,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-lines-bg-${filtersHash}`,
+                id: `${sublayerPrefix}-highlight-lines-bg-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
@@ -298,7 +299,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-lines-fg-${filtersHash}`,
+                id: `${sublayerPrefix}-highlight-lines-fg-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
