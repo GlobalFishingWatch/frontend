@@ -1,10 +1,3 @@
-.imageWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-XS);
-  width: 100%;
-}
-
 .imgContainer {
   position: relative;
   display: block;
@@ -39,62 +32,4 @@
   filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
   height: 2px;
   background: white;
-}
-
-.histogram {
-  display: block;
-  width: 100%;
-  height: 40px;
-}
-
-.crosshair {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.levelsSlider {
-  padding: var(--space-S);
-  padding-top: 0;
-  display: flex;
-}
-
-.levelsTrackOuter {
-  display: flex;
-  height: 28px;
-  align-items: center;
-  width: 100%;
-  cursor: pointer;
-}
-
-.levelsTrack {
-  height: 3px;
-  width: 100%;
-  align-self: center;
-}
-
-.levelsThumb {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  outline: none;
-  cursor: grab;
-  position: relative;
-}
-
-.levelsThumb:active {
-  cursor: grabbing;
-}
-
-.levelsThumbLabel {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  white-space: nowrap;
-  color: rgba(0, 0, 0, 0.5);
-  pointer-events: none;
 }

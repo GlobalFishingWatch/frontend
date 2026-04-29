@@ -20,9 +20,9 @@
     "name": "Recifes de coral"
   },
   "currents": {
-    "description": "Correntes oceânicas são o movimento da água do mar impulsionada pelo vento, temperatura, salinidade, marés e pela rotação da Terra. As correntes oceânicas regulam o aquecimento climático, os nutrientes e as espécies marinhas. Este conjunto de dados mostra correntes superficiais oceânicas globais, incluindo velocidade e direcção, fornecendo informações sobre padrões de circulação em grande escala.",
+    "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
-    "name": "Correntes Marítimas"
+    "name": "Currents"
   },
   "dsm-isa-leasing-areas": {
     "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
@@ -32,7 +32,7 @@
   "ebsas": {
     "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
     "moreInfoLink": "",
-    "name": "Áreas Marinhas Ecologicamente ou Biologicamente significativas (EBSA)"
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
   },
   "eez": {
     "description": "As zonas econômicas exclusivas (ZEEs) estendem-se até 200 milhas náuticas da costa de um país. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
@@ -112,7 +112,7 @@
   "mpatlas": {
     "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
     "moreInfoLink": "https://mpatlas.org",
-    "name": "APAs (MPAtlas)"
+    "name": "MPAs (MPAtlas)"
   },
   "nitrate": {
     "description": "O nitrato é necessário para as plantas marinhas para a fotossíntese e é um nutriente importante para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo nitrato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.   ",
@@ -150,9 +150,9 @@
     "name": "Ports (AIS)"
   },
   "port-locations-vms": {
-    "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Portos (VMS)"
+    "name": "Ports (VMS)"
   },
   "port-visits": {
     "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",
@@ -215,12 +215,12 @@
     "name": "Anomalias na temperatura da superfície do mar"
   },
   "sst-anomalies-max": {
-    "description": "A anomalia da temperatura da superfície do mar é a diferença entre a temperatura diária da superfície do mar e a média climatológica de 30 anos. As anomalias da temperatura da superfície do mar podem impactar a variedade e os habitats das espécies e podem representar eventos transitórios ou ciclos climáticos específicos, como o El Niño e o La Niña, que afetam os padrões climáticos a nível global. No mapa, um número positivo representa uma temperatura mais quente que a média. ",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
     "name": "Anomalias na temperatura da superfície do mar (máx.)"
   },
   "sst-anomalies-min": {
-    "description": "A anomalia da temperatura da superfície do mar é a diferença entre a temperatura diária da superfície do mar e a média climatológica de 30 anos. As anomalias da temperatura da superfície do mar podem impactar a variedade e os habitats das espécies e podem representar eventos transitórios ou ciclos climáticos específicos, como o El Niño e o La Niña, que afetam os padrões climáticos a nível global. No mapa, um número positivo representa uma temperatura mais quente que a média. ",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
     "name": "Anomalias na temperatura da superfície do mar (mín.)"
   },
@@ -240,8 +240,8 @@
     "name": "Night light detections (Skylight)"
   },
   "winds": {
-    "description": "O vento é o movimento do ar através da superfície da Terra e desempenha um papel importante na configuração do clima e das condições dos oceanos. Ventos das superfícies ajudam a impulsionar a circulação dos oceanos e a influenciar a mistura na superfície oceânica. Este conjunto de dados mostra a velocidade e direção globais do vento no oceano.",
+    "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
     "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
-    "name": "Ventos"
+    "name": "Wind"
   }
 }

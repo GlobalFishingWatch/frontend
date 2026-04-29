@@ -10,7 +10,7 @@ import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -26,7 +26,6 @@ const VesselIdentityCombinedSourceField = ({
 }: VesselIdentityCombinedSourceFieldProps) => {
   const { t } = useTranslation()
   const isGFWUser = useSelector(selectIsGFWUser)
-  const isJACUser = useSelector(selectIsJACUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
@@ -69,7 +68,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if ((isGFWUser || isJACUser) && property === 'geartypes') {
+          if (isGFWUser && property === 'geartypes') {
             const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
               ?.value
               ? t((t) => t.vessel.gearTypes.fishing)
@@ -91,35 +90,25 @@ const VesselIdentityCombinedSourceField = ({
                 </li>
                 {geartypesExpanded === index && (
                   <ul className={styles.extendedInfo}>
-                    {isGFWUser && (
-                      <>
-                        <li>
-                          <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
-                        </li>
-                        <li>
-                          <Tooltip content="Vessel class inferred by the machine learning model.">
-                            <span className={cx(styles.secondary, styles.help)}>
-                              Machine learning estimate:{' '}
-                            </span>
-                          </Tooltip>
-                          {formatInfoField(neuralNetGearType, property) as string}
-                        </li>
-                        <li>
-                          <Tooltip content="Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the “Registry” tab gear, which aggregates at the hull level.">
-                            <span className={cx(styles.secondary, styles.help)}>
-                              Aggregated registry:{' '}
-                            </span>
-                          </Tooltip>
-                          {formatInfoField(registryGearType, property) as string}
-                        </li>
-                        <li>
-                          <Tooltip content="Data table and specific field the GFW gear type value is populated from">
-                            <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
-                          </Tooltip>
-                          {bqSource?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
-                        </li>
-                      </>
-                    )}
+                    <li>
+                      <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
+                    </li>
+                    <li>
+                      <Tooltip content="Vessel class inferred by the machine learning model.">
+                        <span className={cx(styles.secondary, styles.help)}>
+                          Machine learning estimate:{' '}
+                        </span>
+                      </Tooltip>
+                      {formatInfoField(neuralNetGearType, property) as string}
+                    </li>
+                    <li>
+                      <Tooltip content="Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the “Registry” tab gear, which aggregates at the hull level.">
+                        <span className={cx(styles.secondary, styles.help)}>
+                          Aggregated registry:{' '}
+                        </span>
+                      </Tooltip>
+                      {formatInfoField(registryGearType, property) as string}
+                    </li>
                     <li>
                       <Tooltip content="Vessel self-reports as a fishing vessel in AIS messages 98% or more of the time.">
                         <span className={cx(styles.secondary, styles.help)}>
@@ -128,6 +117,12 @@ const VesselIdentityCombinedSourceField = ({
                         </span>
                       </Tooltip>
                       {selfReportedGearType || EMPTY_FIELD_PLACEHOLDER}
+                    </li>
+                    <li>
+                      <Tooltip content="Data table and specific field the GFW gear type value is populated from">
+                        <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
+                      </Tooltip>
+                      {bqSource?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
                     </li>
                   </ul>
                 )}

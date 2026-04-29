@@ -18,7 +18,7 @@ describe('Vessel map popup', () => {
     vi.clearAllMocks()
   })
 
-  it.skip('should open vessel popup on vessel click and show tile related info', async () => {
+  it('should open vessel popup on vessel click and show tile related info', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -31,17 +31,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
 
     // hover first to select the hover info more consistently, then click to open the popup
@@ -69,17 +60,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
 
     // hover first to select the hover info more consistently, then click to open the popup
@@ -90,7 +72,7 @@ describe('Vessel map popup', () => {
     await expect.element(mapPopup).not.toBeInTheDocument()
   })
 
-  it.skip('should be able to navigate to vessel viewer inside the vessel popup', async () => {
+  it('should be able to navigate to vessel viewer inside the vessel popup', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -102,17 +84,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-15, 28]) || [0, 0]
 
     await userEvent.click(mapElement, { position: { x, y } })
@@ -123,7 +96,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   })
 
-  it.skip('should display the vessel track on the timebar', async () => {
+  it('should display the vessel track on the timebar', async () => {
     const GFWAPITest = new GFWAPITestUtils()
     const store = makeStore(defaultState, [], true)
 
@@ -135,7 +108,7 @@ describe('Vessel map popup', () => {
 
     await GFWAPITest.waitForRequest('/events')
 
-    await userEvent.hover(timebarElement, { position: { x: 305, y: 35 } })
+    await userEvent.hover(timebarElement, { position: { x: 405, y: 35 } })
 
     // This check is not showing on webkit right now, need to investigate why, skipping for now to unblock other tests
     // await expect
@@ -143,6 +116,7 @@ describe('Vessel map popup', () => {
     //   .toBeVisible()
 
     await expect.element(getByTestId('timebar-highlighter')).toBeVisible()
+    await expect.element(getByText('Saturday, December 6, 2025')).toBeVisible()
 
     await expect.element(getByText(/Docked at Banjul, Gambia \(Republic of The\)/)).toBeVisible()
   })
@@ -163,17 +137,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([8.5, -48]) || [0, 0]
 
     await userEvent.click(mapElement, { position: { x, y } })
@@ -241,7 +206,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByText(/Ibsa Quinto - \(Spain\)/)).toBeVisible()
   })
 
-  it.skip('should show vessel info on vessel hover', async () => {
+  it('should show vessel info on vessel hover', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -252,17 +217,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-15, 28]) || [0, 0]
 
     await userEvent.hover(mapElement, { position: { x, y } })
@@ -313,17 +269,8 @@ describe('Vessel map popup', () => {
     await userEvent.tab()
     await userEvent.click(getByText('Confirm'))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-15, 28]) || [0, 0]
 
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
@@ -331,7 +278,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByText('ESP')).toHaveLength(6)
   })
 
-  it.skip('should be able to interact with vessels after filtering by flag', async () => {
+  it('should be able to interact with vessels after filtering by flag', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     store.dispatch(addVesselToWorkspaceAction)
@@ -359,17 +306,8 @@ describe('Vessel map popup', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
 
     await userEvent.hover(getByTestId('app-main'), { position: { x, y } })

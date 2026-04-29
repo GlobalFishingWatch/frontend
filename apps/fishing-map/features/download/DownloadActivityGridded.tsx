@@ -57,10 +57,11 @@ import {
   getSupportedGroupByOptions,
   getSupportedTemporalResolutions,
 } from './download.utils'
-import type { GroupBy, TemporalResolution } from './downloadActivity.config'
+import type { TemporalResolution } from './downloadActivity.config'
 import {
   getGriddedGroupOptions,
   GRIDDED_FORMAT_OPTIONS,
+  GroupBy,
   HeatmapDownloadFormat,
   MAX_AREA_FOR_HIGH_SPATIAL_RESOLUTION,
   SPATIAL_RESOLUTION_OPTIONS,
@@ -199,7 +200,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
       areaName: downloadAreaName as string,
       dataviews: downloadDataviews,
       format,
-      groupBy,
+      ...(groupBy !== GroupBy.None && { groupBy }),
       spatialResolution,
       spatialAggregation: false,
       temporalResolution,

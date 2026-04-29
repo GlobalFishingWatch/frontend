@@ -8,13 +8,6 @@
   height: 100%;
 }
 
-.logo {
-  position: fixed;
-  top: 0;
-  left: 1rem;
-  z-index: 1;
-}
-
 :global(#__next:not(.printing)) .withTimebar {
   height: 100%;
 }
@@ -66,7 +59,7 @@
     overflow: visible;
     height: auto;
     background: none;
-    break-before: always;
+    page-break-before: always;
   }
 
   .main {

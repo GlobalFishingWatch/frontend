@@ -22,10 +22,7 @@ import {
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  selectLatestAvailableDataDate,
-  selectScreenshotMode,
-} from 'features/app/selectors/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/app/selectors/app.selectors'
 import {
   selectTimebarGraph,
   selectTimebarVisualisation,
@@ -187,7 +184,6 @@ const TimebarWrapper = () => {
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
   const { isMapDrawing } = useMapDrawConnect()
-  const screenshotMode = useSelector(selectScreenshotMode)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const hasVectorDataviews = useSelector(selectHasVectorDataviews)
@@ -473,7 +469,6 @@ const TimebarWrapper = () => {
               : undefined
         }
         showPlayback={!isReportLocation}
-        showButtons={!screenshotMode}
         labels={labels}
         start={start}
         end={end}
@@ -498,7 +493,7 @@ const TimebarWrapper = () => {
       >
         {!isSmallScreen ? timebarChildren : null}
       </Timebar>
-      {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
+      {!isSmallScreen && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />
     </div>
   )

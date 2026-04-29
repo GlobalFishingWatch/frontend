@@ -12,7 +12,7 @@ import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 describe('Vessel search', async () => {
-  it.skip('can search for a vessel and see it on the map', async () => {
+  it('can search for a vessel and see it on the map', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
 
@@ -28,17 +28,8 @@ describe('Vessel search', async () => {
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
     const [x, y] = viewport?.project([-15, 28]) || [0, 0]
 
     await userEvent.hover(getByTestId('app-main'), { position: { x, y } })

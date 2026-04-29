@@ -22,8 +22,7 @@ describe('Timebar', () => {
     expect(selectTimebarVisualisation(store.getState())).toBe(TimebarVisualisations.HeatmapActivity)
   })
 
-  //skipping as we removed the interval buttons
-  it.skip('should call onTimebarChange with new time interval on yearly data button click', async () => {
+  it('should call onTimebarChange with new time interval on yearly data button click', async () => {
     const store = makeStore()
 
     const onTimebarChangeSpy = vi.fn()

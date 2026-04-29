@@ -6,33 +6,20 @@ export const GFW_DEV_GROUP_ID = 'development-group'
 export const GFW_TEST_GROUP_ID = 'testing-fishing-map'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
-export const PRIVATE_BELIZE_GROUP_ID = 'Belize'
-export const PRIVATE_BRAZIL_GROUP_ID = 'Brazil'
-export const PRIVATE_CHILE_GROUP_ID = 'Chile'
-export const PRIVATE_COSTA_RICA_GROUP_ID = 'Costa Rica'
-export const PRIVATE_ECUADOR_GROUP_ID = 'Ecuador'
-export const PRIVATE_INDONESIA_GROUP_ID = 'Indonesia'
-export const PRIVATE_MEXICO_GROUP_ID = 'Mexico'
-export const PRIVATE_MONTENEGRO_GROUP_ID = 'Montenegro'
-export const PRIVATE_NORWAY_GROUP_ID = 'Norway'
-export const PRIVATE_PALAU_GROUP_ID = 'Palau'
-export const PRIVATE_PANAMA_GROUP_ID = 'Panama'
-export const PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID = 'Papua New Guinea'
-export const PRIVATE_PERU_GROUP_ID = 'Peru'
 export const PRIVATE_SUPPORTED_GROUPS = [
-  PRIVATE_BELIZE_GROUP_ID,
-  PRIVATE_BRAZIL_GROUP_ID,
-  PRIVATE_CHILE_GROUP_ID,
-  PRIVATE_COSTA_RICA_GROUP_ID,
-  PRIVATE_ECUADOR_GROUP_ID,
-  PRIVATE_INDONESIA_GROUP_ID,
-  PRIVATE_MEXICO_GROUP_ID,
-  PRIVATE_MONTENEGRO_GROUP_ID,
-  PRIVATE_NORWAY_GROUP_ID,
-  PRIVATE_PALAU_GROUP_ID,
-  PRIVATE_PANAMA_GROUP_ID,
-  PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID,
-  PRIVATE_PERU_GROUP_ID,
+  'Belize',
+  'Brazil',
+  'Chile',
+  'Costa Rica',
+  'Ecuador',
+  'Indonesia',
+  'Mexico',
+  'Montenegro',
+  'Norway',
+  'Palau',
+  'Panama',
+  'Papua New Guinea',
+  'Peru',
   'SSF-Aruna',
   'SSF-Ipnlf',
   'SSF-Rare',

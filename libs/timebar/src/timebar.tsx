@@ -115,7 +115,6 @@ export type TimebarProps = {
   absoluteEnd: string
   latestAvailableDataDate?: string
   showPlayback?: boolean
-  showButtons?: boolean
   disablePlayback?: boolean
   disabledPlaybackTooltip?: string
   onTogglePlay?: (isPlaying: boolean) => void
@@ -394,7 +393,6 @@ export class Timebar extends Component<TimebarProps> {
       disablePlayback,
       disabledPlaybackTooltip,
       showPlayback,
-      showButtons = true,
       locale,
       minimumRange,
       minimumRangeUnit,
@@ -436,7 +434,7 @@ export class Timebar extends Component<TimebarProps> {
             onMouseDown={this.handleMouseDown}
           />
         )}
-        {showPlayback && showButtons && (
+        {showPlayback && (
           <Playback
             labels={labels.playback}
             start={start}
@@ -452,42 +450,39 @@ export class Timebar extends Component<TimebarProps> {
           />
         )}
 
-        {showButtons && (
-          <div className={cx('print-hidden', styles.timeActions)}>
-            {this.state.showTimeRangeSelector && (
-              <TimeRangeSelector
-                labels={labels.timerange}
-                start={start}
-                end={end}
-                absoluteStart={absoluteStart}
-                absoluteEnd={this.state.absoluteEnd as string}
-                onSubmit={this.onTimeRangeSelectorSubmit}
-                onDiscard={this.toggleTimeRangeSelector}
-                latestAvailableDataDate={this.props.latestAvailableDataDate}
-              />
-            )}
-
-            <button
-              type="button"
-              title={labels.timerange?.title}
-              className={cx(styles.uiButton)}
-              onClick={this.toggleTimeRangeSelector}
-            >
-              <Icon icon="time-range" />
-            </button>
-            <button
-              type="button"
-              title={labels.setBookmark}
-              className={cx('print-hidden', styles.uiButton, styles.bookmark)}
-              onClick={this.setBookmark}
-              disabled={bookmarkDisabled === true}
-            >
-              {hasBookmark ? <Icon icon="bookmark-filled" /> : <Icon icon="bookmark" />}
-            </button>
-          </div>
-        )}
-        {/* <div className={cx('print-hidden', styles.timeActions)}>
-          {intervals && getCurrentInterval && showButtons ? (
+        <div className={cx('print-hidden', styles.timeActions)}>
+          {this.state.showTimeRangeSelector && (
+            <TimeRangeSelector
+              labels={labels.timerange}
+              start={start}
+              end={end}
+              absoluteStart={absoluteStart}
+              absoluteEnd={this.state.absoluteEnd as string}
+              onSubmit={this.onTimeRangeSelectorSubmit}
+              onDiscard={this.toggleTimeRangeSelector}
+              latestAvailableDataDate={this.props.latestAvailableDataDate}
+            />
+          )}
+          <button
+            type="button"
+            title={labels.timerange?.title}
+            className={cx(styles.uiButton)}
+            onClick={this.toggleTimeRangeSelector}
+          >
+            <Icon icon="time-range" />
+          </button>
+          <button
+            type="button"
+            title={labels.setBookmark}
+            className={cx('print-hidden', styles.uiButton, styles.bookmark)}
+            onClick={this.setBookmark}
+            disabled={bookmarkDisabled === true}
+          >
+            {hasBookmark ? <Icon icon="bookmark-filled" /> : <Icon icon="bookmark" />}
+          </button>
+        </div>
+        <div className={cx('print-hidden', styles.timeActions)}>
+          {intervals && getCurrentInterval ? (
             <IntervalSelector
               intervals={intervals}
               getCurrentInterval={getCurrentInterval}
@@ -497,14 +492,13 @@ export class Timebar extends Component<TimebarProps> {
               onIntervalClick={this.onIntervalClick}
             />
           ) : null}
-        </div> */}
+        </div>
 
         <Timeline
           children={this.props.children}
           start={start}
           end={end}
           labels={labels}
-          fullWidth={!showButtons}
           showLast30DaysBtn={showLast30DaysBtn}
           onChange={this.notifyChange}
           onMouseLeave={this.props.onMouseLeave}

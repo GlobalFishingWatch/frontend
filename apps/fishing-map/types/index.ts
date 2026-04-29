@@ -54,7 +54,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   mapRulers?: RulerData[]
   mapRulersVisible?: boolean
   readOnly?: boolean
-  screenshotMode?: boolean
   reportLoadVessels?: boolean
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs

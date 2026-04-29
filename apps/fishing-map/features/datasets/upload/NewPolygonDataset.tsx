@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { FeatureCollection, Polygon } from 'geojson'
 
@@ -34,7 +33,6 @@ import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import { TimeFieldsGroup } from 'features/datasets/upload/TimeFieldsGroup'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import type { FileType, FileTypeResult } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
@@ -53,8 +51,6 @@ function NewPolygonDataset({
   onDatasetParseError,
 }: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
-  const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
-  const [devMode, setDevMode] = useState(false)
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
@@ -153,13 +149,10 @@ function NewPolygonDataset({
       const file = geojson
         ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
         : undefined
-      if (devMode) {
-        console.log('Dataset metadata:', datasetMetadata)
-        console.log('Context layers on map:', file)
-      } else await onConfirm(datasetMetadata, { file, isEditing })
+      await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }
-  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing])
+  }, [datasetMetadata, onConfirm, geojson, isEditing])
 
   if (processingData) {
     return (
@@ -254,7 +247,7 @@ function NewPolygonDataset({
             setDatasetMetadata({
               filters: {
                 userContextLayers: filters.map((f) => {
-                  return { ...f, enabled: f.enabled || f.id === newFilter.id }
+                  return { ...f, enabled: f.id === newFilter.id }
                 }),
               },
             })
@@ -292,15 +285,6 @@ function NewPolygonDataset({
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
         />
-        {isGFWDeveloper && (
-          <SwitchRow
-            className={styles.saveAsPublic}
-            // not translated to not use crowdin strings for a developer only feature
-            label={'Print context layer info to console (developer only)'}
-            active={devMode}
-            onClick={() => setDevMode(!devMode)}
-          />
-        )}
       </Collapsable>
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>

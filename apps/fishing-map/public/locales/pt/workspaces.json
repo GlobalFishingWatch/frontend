@@ -56,10 +56,6 @@
       "description": "Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.",
       "name": "Panama"
     },
-    "rapanui-public": {
-      "description": "The Marine Protected Areas system of Rapa Nui is located on the western edge of the Sala y Gómez Ridge and covers a total surface area of approximately 729,371 km². The Multiple-Use Marine Protected Area (MPA) of Rapa Nui protects 579,368 km² and surrounds the Motu Motiro Hiva Marine Park, which spans 150,000 km². The Rapa Nui Multiple-Use MPA also includes three previously designated small coastal Multiple-Use Conservation Areas: Coral Nui Nui, Motu Tautara, and Hanga Oteo.",
-      "name": "*NEW* Rapa Nui"
-    },
     "reserva_de_la_biosfera_cmar-public": {
       "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems.",
       "name": "CMAR core MPAs"
@@ -84,7 +80,7 @@
       "name": "Carrier Vessel Portal"
     },
     "deep-sea-mining-public": {
-      "cta": "Explore no portal",
+      "cta": "Explore the portal",
       "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
       "name": "Deep Sea Mining Watch"
     },

@@ -7,7 +7,6 @@ import cx from 'classnames'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, Popover } from '@globalfishingwatch/ui-components'
 
-import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import { selectIsMapLoaded } from 'features/map/map.slice'
 import { Locale } from 'types'
 
@@ -29,7 +28,6 @@ const HighlightPanel = ({
 }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
   const mapReady = useSelector(selectIsMapLoaded)
-  const screenshotMode = useSelector(selectScreenshotMode)
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
   const [dataviewIdDismissed, setDataviewIdDismissed] = useLocalStorage(config.localStorageKey, '')
@@ -62,7 +60,7 @@ const HighlightPanel = ({
     setDataviewIdDismissed(config.dataviewInstanceId)
   }
 
-  if (!matchDataviewInstance || screenshotMode) {
+  if (!matchDataviewInstance) {
     return null
   }
 

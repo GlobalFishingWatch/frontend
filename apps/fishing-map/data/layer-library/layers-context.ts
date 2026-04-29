@@ -197,20 +197,4 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       },
     ],
   },
-  // {
-  //   id: 'imma_test',
-  //   dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-  //   previewImageUrl: `${PATH_BASENAME}/images/layer-library/ebsas.jpg`,
-  //   category: DataviewCategory.Context,
-  //   config: {
-  //     color: '#00EEFF',
-  //   },
-  //   datasetsConfig: [
-  //     {
-  //       params: [],
-  //       endpoint: 'context-tiles',
-  //       datasetId: 'imma_test',
-  //     },
-  //   ],
-  // },
 ]

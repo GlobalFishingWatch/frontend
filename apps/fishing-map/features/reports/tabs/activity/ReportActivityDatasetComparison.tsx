@@ -31,7 +31,6 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
       {label}
     </span>
   ),
-  labelString: label,
 })
 
 const ReportActivityDatasetComparison = () => {

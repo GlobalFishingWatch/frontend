@@ -148,7 +148,6 @@ export function UserSection(): React.ReactElement<any> {
             tooltipPlacement="top"
             onClick={() => onDrawClick('polygons')}
             loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-            testId="draw-polygon-button"
           />
           <UserLoggedIconButton
             icon="draw-points"
@@ -158,7 +157,6 @@ export function UserSection(): React.ReactElement<any> {
             tooltipPlacement="top"
             onClick={() => onDrawClick('points')}
             loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-            testId="draw-points-button"
           />
           <IconButton
             icon="plus"
@@ -167,7 +165,6 @@ export function UserSection(): React.ReactElement<any> {
             tooltip={t((t) => t.dataset.addUser)}
             tooltipPlacement="top"
             onClick={onAddClick}
-            data-testid="user-add-layer-button"
           />
         </Fragment>
       }

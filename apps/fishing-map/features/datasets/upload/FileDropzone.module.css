@@ -1,5 +1,4 @@
 .dropFiles {
-  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -15,12 +14,6 @@
   border-radius: 3px;
   margin-bottom: var(--space-S);
   cursor: pointer;
-}
-
-.clearButton {
-  position: absolute;
-  bottom: var(--space-M);
-  right: var(--space-M);
 }
 
 .dropFiles:hover {

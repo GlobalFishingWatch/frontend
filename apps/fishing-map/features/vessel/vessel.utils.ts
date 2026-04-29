@@ -24,7 +24,6 @@ import type { TimeRange } from 'features/timebar/timebar.slice'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
-import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 type VesselsParamsSupported = IdentityVessel | IdentityVesselData | ExtendedFeatureVessel
@@ -258,7 +257,7 @@ export function getRelatedIdentityVesselIds(vessel: VesselsParamsSupported): str
 }
 
 type SearchIdentityResolvedParams = {
-  prioritizedProperty?: IdField | VesselPropertyApiSearch
+  prioritizedProperty?: IdField
 }
 export function getSearchIdentityResolved(
   vessel: VesselsParamsSupported,

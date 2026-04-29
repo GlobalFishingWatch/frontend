@@ -1,10 +1,9 @@
-import type { JSX, Ref } from 'react'
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import type { JSX,Ref } from 'react'
+import React, { forwardRef, useImperativeHandle,useRef } from 'react'
 import cx from 'classnames'
 
 import { IconButton } from '../icon-button'
 import type { InputSize } from '../input-text/InputText'
-import { Tooltip } from '../tooltip'
 
 import baseStyles from '../input-text/InputText.module.css'
 import styles from './InputDate.module.css'
@@ -15,7 +14,6 @@ export type InputDateProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string
   invalid?: boolean
   label?: string
-  labelTooltip?: string
   htmlLabel?: JSX.Element
   max?: string
   min?: string
@@ -33,7 +31,6 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
     className,
     value,
     label,
-    labelTooltip,
     htmlLabel,
     max,
     min,
@@ -46,13 +43,12 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
   } = props
   const inputRef = useRef<HTMLInputElement>(null)
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
-  const [isNativelyInvalid, setIsNativelyInvalid] = useState(false)
 
   const yymmddDate = value?.toString().slice(0, 10)
 
   const labelContent = htmlLabel || label
 
-  const isInvalid = props.invalid === true || isNativelyInvalid
+  const isInvalid = props.invalid === true || inputRef.current?.validity.valid === false
 
   const inputProps = {
     id: id ?? label,
@@ -64,27 +60,13 @@ function InputDateComponent(props: InputDateProps, forwardedRef: Ref<HTMLInputEl
   }
   return (
     <div className={cx(baseStyles.container, styles.container, styles[inputSize], className)}>
-      {labelContent && labelTooltip ? (
-        <Tooltip content={labelTooltip}>
-          <label htmlFor={inputProps.id}>{labelContent}</label>
-        </Tooltip>
-      ) : (
-        <label htmlFor={inputProps.id}>{labelContent}</label>
-      )}
+      {labelContent && <label htmlFor={inputProps.id}>{labelContent}</label>}
       <input
         type={type}
         value={yymmddDate}
         className={cx(styles.input, { [styles.invalid]: isInvalid })}
         ref={inputRef}
         {...inputProps}
-        onInput={(e) => {
-          setIsNativelyInvalid(e.currentTarget.validity.valid === false)
-          inputProps.onInput?.(e)
-        }}
-        onInvalid={(e) => {
-          setIsNativelyInvalid(true)
-          inputProps.onInvalid?.(e)
-        }}
         key={label || defaultKey}
       />
       <div className={styles.actionsContainer}>

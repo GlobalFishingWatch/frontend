@@ -60,7 +60,7 @@ import {
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
+import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
 import { useAppDispatch } from './app.hooks'
 import Main from './Main'
@@ -87,7 +87,6 @@ function App() {
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
-  const screenshotMode = useSelector(selectScreenshotMode)
   const i18n = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -189,9 +188,7 @@ function App() {
   }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
-  if (screenshotMode) {
-    asideWidth = '0'
-  } else if (readOnly) {
+  if (readOnly) {
     asideWidth = isAreaReportLocation ? '45%' : '34rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
@@ -205,11 +202,8 @@ function App() {
 
   return (
     <Fragment>
-      <a
-        href="https://globalfishingwatch.org"
-        className={screenshotMode ? styles.logo : 'print-only'}
-      >
-        <Logo type={screenshotMode ? 'invert' : 'default'} />
+      <a href="https://globalfishingwatch.org" className="print-only">
+        <Logo className={styles.logo} />
       </a>
       <div style={{ position: 'fixed', zIndex: 1 }}>
         {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
@@ -219,7 +213,7 @@ function App() {
       <ErrorBoundary>
         <SplitView
           isOpen={sidebarOpen && !isMapDrawing}
-          showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
+          showToggle={isWorkspaceLocation || vesselLocation}
           onToggle={onToggle}
           aside={<Sidebar onMenuClick={onMenuClick} />}
           main={<Main />}

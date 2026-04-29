@@ -14,21 +14,18 @@ import type {
   VesselGroup,
   VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
-import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
-import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 
-import type { VesselPropertyApiSearch } from './vessel-groups.utils'
 import {
   flatVesselGroupSearchVessels,
   mergeVesselGroupVesselIdentities,
@@ -56,7 +53,6 @@ interface VesselGroupModalState {
     error: ParsedAPIError | null
     csvColumns: string[] | null
     csvData: VesselGroupCsvData[] | null
-    unmatchedIDs?: string[]
   }
 }
 
@@ -135,10 +131,6 @@ type SearchVesselsInVGParams = {
   transmissionDateTo?: string
 }
 
-type ParsedSearchInput =
-  | { type: 'ids'; property: VesselPropertyApiSearch; values: string[] }
-  | { type: 'csv'; rows: { property: VesselPropertyApiSearch; value: string }[][] }
-
 const searchVesselsInVesselGroup = async ({
   datasets,
   signal,
@@ -148,10 +140,7 @@ const searchVesselsInVesselGroup = async ({
   csvColumns,
   transmissionDateFrom,
   transmissionDateTo,
-}: SearchVesselsInVGParams): Promise<{
-  vessels: VesselGroupVesselIdentity[]
-  input?: ParsedSearchInput
-}> => {
+}: SearchVesselsInVGParams) => {
   if (!datasets) {
     throw new Error('No datasets provided')
   } else if (!ids?.length && !csvData?.length) {
@@ -165,29 +154,32 @@ const searchVesselsInVesselGroup = async ({
     throw new Error('Missing search url')
   }
   let whereClauses: string[] = []
-  let input: ParsedSearchInput | undefined
   if (ids && idField) {
-    const property = vesselPropertyToApiSearch(idField as VesselPropertyGuessColumn)
-    const values = uniq(ids)
-    input = { type: 'ids', property, values }
-    whereClauses = [`(${values.map((id) => `${property} = "${id}"`).join(' OR ')})`]
-  } else if (csvData && csvColumns) {
-    const rows = csvData.flatMap((row) => {
-      const rowValues = csvColumns.flatMap((column) => {
-        const value = row[column]?.trim().replace(/[\\%_]/g, '') || ''
-        if (!value) return []
-        const resolved = resolveVesselPropertyColumn(column)
-        if (!resolved) return []
-        return [{ property: vesselPropertyToApiSearch(resolved), value }]
-      })
-      return rowValues.length ? [rowValues] : []
-    })
-    input = { type: 'csv', rows }
+    const searchKey = vesselPropertyToApiSearch(idField)
     whereClauses = [
-      `(${rows
-        .map((rowValues) =>
-          rowValues.map(({ property, value }) => `${property} = "${value}"`).join(' AND ')
-        )
+      `(${uniq(ids)
+        .map((id) => `${searchKey} = "${id}"`)
+        .join(' OR ')})`,
+    ]
+  } else if (csvData && csvColumns) {
+    whereClauses = [
+      `(${csvData
+        .flatMap((row) => {
+          const rowClauses = csvColumns
+            .flatMap((column) => {
+              const value = row[column]?.trim().replace(/[\\%_]/g, '') || ''
+              if (!value) {
+                return []
+              }
+              const resolved = resolveVesselPropertyColumn(column)
+              if (!resolved) {
+                return []
+              }
+              return `${vesselPropertyToApiSearch(resolved)} = "${value}"`
+            })
+            .join(' AND ')
+          return rowClauses || []
+        })
         .join(' OR ')})`,
     ]
   }
@@ -205,30 +197,10 @@ const searchVesselsInVesselGroup = async ({
       },
       signal,
     })
-    return { vessels: flatVesselGroupSearchVessels(searchResults), input }
+    const vesselGroupVessels = flatVesselGroupSearchVessels(searchResults)
+    return vesselGroupVessels
   }
-  return { vessels: [], input }
-}
-
-const getUnmatchedInputs = (
-  vessels: VesselGroupVesselIdentity[],
-  input: ParsedSearchInput
-): string[] => {
-  const identities = vessels.flatMap((v) =>
-    v.identity
-      ? getVesselIdentities(v.identity, { identitySource: VesselIdentitySourceEnum.SelfReported })
-      : []
-  )
-  if (input.type === 'ids') {
-    const matched = new Set(identities.map((i) => (i as any)[input.property]).filter(Boolean))
-    return input.values.filter((v) => !matched.has(v))
-  }
-  return input.rows.flatMap((row) => {
-    const matched = identities.some((i) =>
-      row.every(({ property, value }) => (i as any)[property] === value)
-    )
-    return matched ? [] : row[0].value
-  })
+  return []
 }
 
 type GetVesselsInVGParams = {
@@ -312,7 +284,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
       transmissionDateFrom?: string
       transmissionDateTo?: string
     },
-    { signal, rejectWithValue, getState, dispatch }
+    { signal, rejectWithValue, getState }
   ) => {
     try {
       const state = getState() as any
@@ -320,9 +292,9 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         return datasets?.length ? datasets.includes(d.id) : true
         /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
       })
-      let vesselGroupVessels: VesselGroupVesselIdentity[] | undefined
+      let vesselGroupVessels
       if ((ids && idField) || (csvData && csvColumns)) {
-        const { vessels, input } = await searchVesselsInVesselGroup({
+        vesselGroupVessels = await searchVesselsInVesselGroup({
           datasets: searchDatasets,
           signal,
           ids,
@@ -332,13 +304,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
           transmissionDateFrom,
           transmissionDateTo,
         })
-        vesselGroupVessels = vessels
-        if (input) {
-          const unmatchedIDs = getUnmatchedInputs(vessels, input)
-          dispatch(setVesselGroupModalUnmatchedIDs(unmatchedIDs))
-        }
       }
-
       return vesselGroupVessels
     } catch (e: any) {
       console.warn(e)
@@ -372,15 +338,18 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
     }
     try {
       // Vessel groups with outdated datasets doesn't support get by vesselGroupId so need to search by its ids
-      if (hasOutdatedDatasets) {
-        const { vessels } = await searchVesselsInVesselGroup({
-          datasets,
-          signal,
-          ids: vesselGroup.vessels.map((v) => v.vesselId),
-        })
-        return vessels
-      }
-      return await getVesselsInVesselGroup({ datasets, signal, vesselGroup })
+      const vessels = hasOutdatedDatasets
+        ? await searchVesselsInVesselGroup({
+            datasets,
+            signal,
+            ids: vesselGroup.vessels.map((v) => v.vesselId),
+          })
+        : await getVesselsInVesselGroup({
+            datasets,
+            signal,
+            vesselGroup,
+          })
+      return vessels
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -423,14 +392,11 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupModalSearchText: (state, action: PayloadAction<string>) => {
       state.search.text = action.payload
     },
-    setVesselGroupModalCsvColumns: (state, action: PayloadAction<VesselPropertyApiSearch[]>) => {
+    setVesselGroupModalCsvColumns: (state, action: PayloadAction<string[]>) => {
       state.search.csvColumns = action.payload
     },
     setVesselGroupModalCsvData: (state, action: PayloadAction<VesselGroupCsvData[]>) => {
       state.search.csvData = action.payload
-    },
-    setVesselGroupModalUnmatchedIDs: (state, action: PayloadAction<string[]>) => {
-      state.search.unmatchedIDs = action.payload
     },
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
@@ -488,7 +454,6 @@ export const {
   setVesselGroupModalSearchText,
   setVesselGroupModalCsvColumns,
   setVesselGroupModalCsvData,
-  setVesselGroupModalUnmatchedIDs,
   setVesselGroupEditId,
   setVesselGroupConfirmationMode,
   resetVesselGroupModal,
@@ -501,8 +466,6 @@ export const selectVesselGroupModalCsvColumns = (state: RootState) =>
   state.vesselGroupModal.search.csvColumns
 export const selectVesselGroupModalCsvData = (state: RootState) =>
   state.vesselGroupModal.search.csvData
-export const selectVesselGroupModalUnmatchedIDs = (state: RootState) =>
-  state.vesselGroupModal.search.unmatchedIDs
 export const selectVesselGroupSearchStatus = (state: RootState) =>
   state.vesselGroupModal.search.status
 export const selectVesselGroupModalSources = (state: RootState) => state.vesselGroupModal.sources

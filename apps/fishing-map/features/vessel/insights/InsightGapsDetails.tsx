@@ -59,9 +59,12 @@ const InsightGapsDetails = ({
       />
       {visible && data && data?.length > 0 && (
         <ul className={styles.eventDetailsList}>
-          {[...data].map(removeNonTunaRFMO).map((event: VesselEvent) => (
-            <Event key={event.id} event={event} className={styles.event} />
-          ))}
+          {[...data]
+            .reverse()
+            .map(removeNonTunaRFMO)
+            .map((event: VesselEvent) => (
+              <Event key={event.id} event={event} className={styles.event} />
+            ))}
         </ul>
       )}
     </Fragment>

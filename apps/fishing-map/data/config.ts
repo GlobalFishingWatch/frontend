@@ -118,7 +118,6 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
-  screenshotMode: false,
   reportLoadVessels: false,
   sidebarOpen: true,
   timebarGraph: TimebarGraphs.None,

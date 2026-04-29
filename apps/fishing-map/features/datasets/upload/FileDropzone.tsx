@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
 
 import FilesCsvIcon from 'assets/icons/file-csv.svg'
 import FilesJsonIcon from 'assets/icons/file-json.svg'
@@ -32,9 +31,7 @@ interface FileDropzoneProps {
   label?: string
   fileTypes: FileType[]
   className?: string
-  error?: string
   onFileLoaded: (fileInfo: File, type?: DatasetGeometryType) => void
-  onFileCleared?: () => void
 }
 
 const FileDropzone: React.FC<FileDropzoneProps> = ({
@@ -42,8 +39,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   fileTypes,
   className = '',
   label,
-  error,
-  onFileCleared,
 }) => {
   const fileTypesConfigs = fileTypes.map((fileType) => FILE_TYPES_CONFIG[fileType])
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(
@@ -63,15 +58,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
     accept: fileAcceptedByMime,
     onDropAccepted,
   })
-
-  const onClearClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation()
-      e.preventDefault()
-      onFileCleared?.()
-    },
-    [onFileCleared]
-  )
 
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
@@ -106,17 +92,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
             formats: joinTranslatedList(filesAcceptedExtensions),
           })}
         </p>
-      )}
-      {error && <p className={cx(styles.fileText, styles.warning)}>{error}</p>}
-      {onFileCleared && (
-        <IconButton
-          icon="delete"
-          size="medium"
-          type="warning-border"
-          className={styles.clearButton}
-          tooltip={t((t) => t.vesselGroup.clearFile)}
-          onClick={onClearClick}
-        />
       )}
     </div>
   )

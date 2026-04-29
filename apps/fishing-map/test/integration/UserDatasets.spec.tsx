@@ -2,10 +2,7 @@ import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { defaultState } from 'test/utils/store/redux-store-test'
-import {
-  USER_POLYGON_DATASET_ID,
-  USER_POLYGON_LAYER_ID,
-} from 'test/utils/store/redux-store-test.data'
+import { USER_POLYGON_DATASET_ID } from 'test/utils/store/redux-store-test.data'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -94,7 +91,7 @@ describe('User Datasets', () => {
     await expect
       .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' }))
       .toBeVisible()
-    expect(addLayerAction?.query).toMatchObject({
+    expect(addLayerAction?.query).toEqual({
       longitude: 26,
       latitude: 19,
       zoom: 1.49,
@@ -137,7 +134,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it.skip('should add a polygon user dataset and see it on the map', async () => {
+  it('should add a polygon user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
@@ -197,7 +194,7 @@ describe('User Datasets', () => {
             },
           ],
           dataviewId: 'default-context-layer',
-          id: `${USER_POLYGON_LAYER_ID}-1771416000000`,
+          id: 'user-polygons-1771416000000-1771416000000',
         },
         {
           config: {

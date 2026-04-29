@@ -78,6 +78,11 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   }, [])
 
   const onUploadClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.ReferenceLayer,
+      action: `Open panel to upload new reference layer`,
+      value: datasets.length,
+    })
     onAddNewClick()
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
   }, [datasets.length, onAddNewClick, dispatch])

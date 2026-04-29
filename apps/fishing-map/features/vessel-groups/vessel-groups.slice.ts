@@ -15,7 +15,7 @@ import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/a
 
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
-export type IdField = 'vesselId' | 'mmsi' | 'imo' | 'ssvid' | 'callsign'
+export type IdField = 'vesselId' | 'mmsi' | 'imo'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   workspace: {

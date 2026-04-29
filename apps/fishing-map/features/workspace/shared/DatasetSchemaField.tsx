@@ -53,23 +53,22 @@ function DatasetSchemaField({
     isGuestUser,
   })
   const { filtersAllowed } = useMemo(() => getFiltersInDataview(dataview), [dataview])
-  const filterConfig = filtersAllowed.find((filter) => filter.id === field)
 
   let valuesSelected = Array.isArray(schemaFieldSelected)
     ? schemaFieldSelected.sort((a, b) => a.label - b.label)
     : schemaFieldSelected
 
   const valuesAreRangeOfNumbers =
-    (filterConfig?.type === 'range' || filterConfig?.type === 'number') &&
     valuesSelected.length > 1 &&
     valuesSelected.every((value: any) => {
       const label = Array.isArray(value) ? (value[0]?.label as string) : value.label
       return !isNaN(label) && !isNaN(parseFloat(label))
     })
 
-  const valuesIsNumber = filterConfig?.type === 'number' && Number(valuesSelected[0]?.label)
+  const valuesIsNumber = Number(valuesSelected[0]?.label)
 
   if (valuesAreRangeOfNumbers) {
+    const filterConfig = filtersAllowed.find((filter) => filter.id === field)
     const dataviewWithHistogramFilter = isHistogramDataviewSupported(dataview)
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
     const { max, min } = getDatasetConfiguration(dataset)
@@ -80,7 +79,7 @@ function DatasetSchemaField({
     const maxLabel = Array.isArray(valuesSelected[valuesSelected.length - 1])
       ? valuesSelected[valuesSelected.length - 1][0]?.label
       : valuesSelected[valuesSelected.length - 1]?.label
-    let range: string
+    let range = ''
     const minToCompare = dataviewWithHistogramFilter ? min : filterConfig?.options[0].label
     const maxToCompare = dataviewWithHistogramFilter ? max : filterConfig?.options[1].label
     if (minLabel.toString() === minToCompare?.toString()) {

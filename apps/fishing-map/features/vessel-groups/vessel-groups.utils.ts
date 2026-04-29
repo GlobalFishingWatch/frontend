@@ -2,10 +2,7 @@ import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
 import type { IdentityVessel, VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import {
-  resolveVesselPropertyColumn,
-  type VesselPropertyGuessColumn,
-} from '@globalfishingwatch/data-transforms'
+import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 
 import { PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -20,7 +17,7 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   return `${isPrivate ? `${PRIVATE_ICON} ` : ''}${vesselGroup.name}`
 }
 
-export type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign'
+type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign'
 
 export const vesselPropertyToApiSearch = (
   col: VesselPropertyGuessColumn
@@ -33,14 +30,6 @@ export const vesselPropertyToApiSearch = (
     callsign: 'callsign',
   }
   return map[col]
-}
-
-export const normaliseCsvColumns = (columns: string[] | null): VesselPropertyApiSearch[] => {
-  if (!columns) return []
-  return columns.flatMap((column) => {
-    const resolved = resolveVesselPropertyColumn(column)
-    return resolved ? [vesselPropertyToApiSearch(resolved)] : []
-  })
 }
 
 export const isOutdatedVesselGroup = (vesselGroup: VesselGroup) => {
@@ -93,7 +82,7 @@ export const getVesselGroupUniqVessels = (
 
 export const groupVesselGroupVessels = (
   vessels: VesselGroupVesselIdentity[],
-  { property = 'ssvid' } = {} as { property: VesselPropertyApiSearch }
+  { property = 'ssvid' } = {} as { property: 'imo' | 'ssvid' }
 ): Record<string, VesselGroupVesselIdentity[]> => {
   if (!vessels) {
     return {} as Record<string, VesselGroupVesselIdentity[]>

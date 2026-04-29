@@ -1,4 +1,4 @@
-import type { ReactEventHandler } from 'react'
+import type { ReactEventHandler } from 'react';
 import React from 'react'
 import cx from 'classnames'
 

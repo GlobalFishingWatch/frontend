@@ -200,35 +200,13 @@
     "description": "<h2>Overview</h2> <p> This layer shows vessels detected using optical satellite imagery collected by the European Space Agency's Planet satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths. This type of imagery provides high-resolution detail that allows us to spot small vessels, identify wake patterns, and better understand activity near shore. </p> <p> Global Fishing Watch uses a machine learning model that processes each image to identify vessels and estimate their length, orientation, and speed based on wake features. The detections are then filtered using a secondary classifier to remove objects that are not vessels, such as clouds, rocks or icebergs. Each detection is linked to a cropped image (a thumbnail) so users can visually inspect what the model identified. </p> <p> Because optical satellites rely on sunlight and clear skies, detections are only possible during the day and when the area is not obscured by clouds or haze. Despite these limitations, detections with optical imagery are especially helpful in identifying small untracked vessels that may not appear in other tracking systems. </p> <h2>Use cases</h2> <ul> <li> Monitor vessel presence (both fishing and non-fishing) in areas of interest such as marine protected areas (MPAs), exclusive economic zones (EEZs), inshore exclusion zones (IEZs) and Regional Fisheries Management Organisations (RFMOs). In some cases, activity like bottom trawling can be seen through disturbance to seabed sediment. </li> <li> Assess presence of vessels that don't show up on cooperative tracking systems—including automatic identification system (AIS) and vessel monitoring system (VMS)—near vulnerable marine ecosystems and essential fish habitats. </li> <li> Goes beyond vessel detection in other satellite remote sensors like Sentinel-1 SAR and VIIRS which simply detect the presence of an object, with Planet users can often infer the object's activity based on the wake of a detection, and in some cases, the dataset can be used to identify fishing activity e.g. sediment plumes of trawlers, net encircling fish in purse seine vessels. </li> <li> Support analyses on small-scale fishing. While the 10m resolution is still too coarse to comprehensively map small-scale fishing, Planet detections have been integrated into multiple analyses related to regional small-scale fishery and demonstrated the potential as a valuable addition to the limited vessel tracking data. </li> </ul> <h2>Limitations</h2> <ul> <li> Vessel detection with optical imagery requires daylight and clear skies <ul> <li> Unlike radar, optical satellites cannot see through clouds, fog, or haze. Detections are only possible during daylight hours when the view is unobstructed. </li> </ul> </li> <li> Not all geographies are covered equally <ul> <li> Planet coverage is mostly limited to coastal waters. It revisits most areas every five days, but the image availability depends on the weather. Cloudy or hazy regions have lower effective revisit frequencies than regions with better weather conditions. </li> </ul> </li> <li> The detections may include false positives <ul> <li> Despite post-processing, the model may still produce occasional false detections—e.g., picking up buoys, debris, fixed infrastructure, or image artifacts. These false positives are reduced using a secondary classifier, but not completely eliminated. </li> </ul> </li> <li> Uncertainty in some vessel features <ul> <li> Smaller or slower-moving vessels may not produce visible wakes, making it more difficult to estimate their speed or heading. Therefore, these values may be inaccurate for small boats. </li> </ul> </li> <li> Not all detections unmatched to AIS are untracked vessels <ul> <li> The detections include both vessels on AIS and untracked vessels. We try to match detections to AIS tracks, but sometimes matching is not feasible due to large time gaps between AIS positions and in areas with high density of detections. </li> </ul> </li> </ul> <h2>Methods</h2> <h3>Optical imagery</h3> <p> This layer is based on images from the Planet satellites operated by the European Space Agency (ESA). These satellites capture medium-resolution images (10 m per pixel) of the ocean using visible and near-infrared light (among several other bands). Combined, the satellites acquire images of most coastal waters and dedicated areas in the open ocean roughly every five days, and the imagery is made freely available by the ESA. </p> <h3>Image processing and selection</h3> <p> We use pre-processed Planet images that have been corrected for geometric distortions and aligned to the Earth's surface. These images are split into manageable tiles, and we selected the tiles that cover only ocean areas (image tiles over land are excluded). We use four image bands: red, green, blue (RGB), and near-infrared (NIR), all at 10-meter resolution. These bands give us the detail and contrast needed to detect and classify vessels. </p> <h3>Vessel detection</h3> <p> Our machine learning model scans each image tile to detect vessels. It is trained to look for features such as the shape, brightness, and wake of a vessel. When it finds a likely candidate, the model predicts a score for vessel presence alongside estimates of the vessel's location, size, orientation, and speed. </p> <p> The detection model was trained on over 11,000 manually reviewed vessel examples across thousands of Planet scenes. This training process included many small vessels and scenes from around the world, helping the model to perform well across different environments and vessel types. </p> <h3>Image thumbnails</h3> <p> Each detection includes a small visual \"chip\" showing the detected vessel at the center. These thumbnails come in two formats: a color version from the RGB bands, and a grayscale version from the near-infrared band. Each chip covers an area of 1 km². These thumbnails are helpful for visually confirming a detection or understanding its context. For very small vessels (under 15 meters), it may still be difficult to see them clearly. </p> <h3>Reducing false positives</h3> <p> Not everything that looks like a vessel in satellite imagery actually is one. To help remove false detections (like buoys, offshore platforms, sea ice, or clouds), we run each detection through a secondary classifier. This classifier is a machine learning model that uses both the image thumbnail and additional information about the detection (such as distance from shore, local depth, and vessel density nearby, among others) to decide whether the object is likely to be a vessel. We also flag detections that are close to known fixed infrastructure or in areas with substantial sea ice or iceberg presence. </p> <p> If a detection is classified as likely non-vessel or flagged as potential infrastructure or ice, we remove it from the map layer so only high-confidence detections are included. We also clip the satellite footprints (displayed on the map layer) to exclude the areas under the icy-region mask. However, we provide all the false positives with labels through the data download portal for stakeholders who require a more complete dataset. </p> <h3>AIS matching and vessel identity</h3> <p> AIS data can reveal the identity of vessels, their owners and corporations, and fishing activity. Not all vessels, however, are required to use AIS devices, as regulations vary by country, vessel size, and activity. Vessels engaged in illicit activities can also turn off their AIS transponders or manipulate the locations they broadcast. Also, large \"blind spots\" along coastal waters arise from nations that restrict access to AIS data that are captured by terrestrial receptors instead of satellites or from poor reception due to high vessel density and low-quality AIS devices. Unmatched imagery detections therefore provide the missing information about vessel traffic in the ocean. </p> <p> Matching imagery detections to vessels' GPS coordinates from AIS is challenging because the timestamps of the images and AIS records do not coincide, and a single AIS identity can potentially match to multiple vessels appearing in the image, and vice versa. To determine the likelihood that a vessel broadcasting AIS corresponded to a specific detection, we developed a matching approach based on probability rasters of where a vessel is likely to be minutes before and after an AIS position was recorded. These rasters were produced from one year of global AIS data from the Global Fishing Watch pipeline, which sources satellite data from Spire Global and Orbcomm. The probability rasters are based on roughly 10 billion vessel positions and are computed for six different vessel classes, considering six different speeds and 36 time intervals. So we obtain the likely position of a vessel that could match a detection based on the vessel class, speed and time interval. In addition to the spatiotemporal matching, we factor in the similarity between the model-inferred vessel length and the length from AIS identity data to avoid (likely incorrect) matches with large discrepancies in size, e.g., AIS of a tugboat and the detection of a large vessel behind it. </p> <h3>Detection footprints</h3> <p> To help users understand where detections were possible, we show the detection \"footprints\" on the map. These polygons are the portions of the satellite images that cover the ocean and that were used for detection. Thus, if you see a footprint but no detections, it means no vessels were detected in that area. If there is no footprint, no image was processed for that location and time. </p> <h3>Automation and updates</h3> <p> Our detection and matching system runs automatically each day. It checks for new Planet images published to Google Cloud and processes those that meet our quality criteria. New detections are typically available within 1–2 days of the satellite capturing the image. The automated pipeline also re-checks any images published late to ensure any data gaps are filled. </p> <h2>Source data and citations</h2> <p> All vessel data are freely available through the Global Fishing Watch data portal at <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\" >https://globalfishingwatch.org/data-download/</a >. </p> <h2>License</h2> <p> Non-Commercial Use Only. The Site and the Services are provided for Non-Commercial use only in accordance with the CC BY-NC 4.0 license. If you would like to use the Site and/or the Services for commercial purposes, please contact us. </p>",
     "schema": {
       "length": {
-        "keyword": "length",
-        "enum": {
-          "<20": "<20",
-          "20-60": "20-60",
-          "60-100": "60-100",
-          ">100": ">100"
-        }
+        "keyword": "length"
       },
       "matched": {
-        "keyword": "matched",
-        "enum": {
-          "true": "true",
-          "false": "false"
-        }
+        "keyword": "matched"
       },
       "shiptype": {
-        "keyword": "shiptype",
-        "enum": {
-          "": "",
-          "other": "other",
-          "fishing": "fishing",
-          "passenger": "passenger",
-          "cargo": "cargo",
-          "bunker": "bunker",
-          "carrier": "carrier",
-          "seismic_vessel": "seismic_vessel",
-          "gear": "gear",
-          "support": "support"
-        }
+        "keyword": "shiptype"
       }
     }
   },
@@ -575,6 +553,120 @@
           "5": "5"
         }
       },
+      "license_category": {
+        "keyword": "license_category",
+        "enum": {
+          "": "",
+          "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
+          "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
+          "1.11 - Espinhel vertical": "1.11 - Espinhel vertical",
+          "1.12 - Linha de mão (fundo)": "1.12 - Linha de mão (fundo)",
+          "1.13 - Linha/vara - com isca viva": "1.13 - Linha/vara - com isca viva",
+          "1.14 - Linha de mão (fundo)": "1.14 - Linha de mão (fundo)",
+          "1.15 - Linha de mão (superfície)": "1.15 - Linha de mão (superfície)",
+          "1.17 - Cardume associado": "1.17 - Cardume associado",
+          "1.18 - Cardume associado": "1.18 - Cardume associado",
+          "1.2 - Espinhel horizontal (superfície)": "1.2 - Espinhel horizontal (superfície)",
+          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "1.3 - Espinhel horizontal (superfície) - com isca-viva",
+          "1.4 - Espinhel horizontal (superfície)": "1.4 - Espinhel horizontal (superfície)",
+          "1.5 - Espinhel horizontal (fundo)": "1.5 - Espinhel horizontal (fundo)",
+          "1.6 - Espinhel horizontal (fundo)": "1.6 - Espinhel horizontal (fundo)",
+          "1.7 - Espinhel horizontal (fundo)": "1.7 - Espinhel horizontal (fundo)",
+          "1.8 - Espinhel vertical/covos": "1.8 - Espinhel vertical/covos",
+          "1.9 - Espinhel vertical/Covos": "1.9 - Espinhel vertical/Covos",
+          "2.10 - Emalhe costeiro (fundo)": "2.10 - Emalhe costeiro (fundo)",
+          "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
+          "2.12 - Emalhe costeiro (fundo)": "2.12 - Emalhe costeiro (fundo)",
+          "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
+          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
+          "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
+          "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
+          "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
+          "2.6 - Emalhe costeiro (superfície)": "2.6 - Emalhe costeiro (superfície)",
+          "2.7 - Emalhe costeiro (superfície)": "2.7 - Emalhe costeiro (superfície)",
+          "2.8 - Emalhe costeiro (superfície)": "2.8 - Emalhe costeiro (superfície)",
+          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
+          "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
+          "3.12 - Arrasto oceânico (fundo) – simples e duplo": "3.12 - Arrasto oceânico (fundo) – simples e duplo",
+          "3.13 - Arrasto oceânico (fundo) – simples e duplo": "3.13 - Arrasto oceânico (fundo) – simples e duplo",
+          "3.14 - Arrasto (meia água)": "3.14 - Arrasto (meia água)",
+          "3.2 - Arrasto (fundo) – Simples ou parelha": "3.2 - Arrasto (fundo) – Simples ou parelha",
+          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "3.3 - Arrasto (fundo) - duplo ou simples (**)",
+          "3.4 - Arrasto (fundo) - duplo ou simples": "3.4 - Arrasto (fundo) - duplo ou simples",
+          "3.5 - Arrasto (fundo) - duplo ou simples": "3.5 - Arrasto (fundo) - duplo ou simples",
+          "3.6 - Arrasto (fundo) - duplo": "3.6 - Arrasto (fundo) - duplo",
+          "3.7 - Arrasto (fundo)– duplo": "3.7 - Arrasto (fundo)– duplo",
+          "3.8 - Arrasto (fundo) - duplo ou simples": "3.8 - Arrasto (fundo) - duplo ou simples",
+          "3.9 - Arrasto (fundo) - duplo ou simples": "3.9 - Arrasto (fundo) - duplo ou simples",
+          "4.1 - Cerco": "4.1 - Cerco",
+          "4.2 - Cerco": "4.2 - Cerco",
+          "4.3 - Cerco": "4.3 - Cerco",
+          "4.4 - Cerco": "4.4 - Cerco",
+          "4.6 - Cerco": "4.6 - Cerco",
+          "5.1 - Covos": "5.1 - Covos",
+          "5.10 - Potes": "5.10 - Potes",
+          "5.11 - Potes": "5.11 - Potes",
+          "5.12 - Potes": "5.12 - Potes",
+          "5.2 - Covos": "5.2 - Covos",
+          "5.3 - Covos": "5.3 - Covos",
+          "5.4 - Covos": "5.4 - Covos",
+          "5.5 - Covos": "5.5 - Covos",
+          "5.6 - Covos": "5.6 - Covos",
+          "5.9 - Covos": "5.9 - Covos",
+          "Sem código IN - Covos": "Sem código IN - Covos"
+        }
+      },
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "": "",
+          "Agulha": "Agulha",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
+          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
+          "Anchoíta, galo, calamar": "Anchoíta, galo, calamar",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
+          "Bonito listrado": "Bonito listrado",
+          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
+          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
+          "Camarão santana e barba ruça": "Camarão santana e barba ruça",
+          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
+          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
+          "Camarões de profundidade": "Camarões de profundidade",
+          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
+          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
+          "Cavalas, Albacorinhas": "Cavalas, Albacorinhas",
+          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
+          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
+          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
+          "Dourado": "Dourado",
+          "Espadarte": "Espadarte",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
+          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
+          "Pargo": "Pargo",
+          "Pargo rosa": "Pargo rosa",
+          "Peixe sapo": "Peixe sapo",
+          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
+          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
+          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
+          "Piramutaba": "Piramutaba",
+          "Piramutaba e dourada": "Piramutaba e dourada",
+          "Polvo": "Polvo",
+          "Saramunete": "Saramunete",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
+          "Sardinha verdadeira": "Sardinha verdadeira",
+          "Sardinha-lage": "Sardinha-lage",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
+          "Serra": "Serra",
+          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
+          "Tainha": "Tainha",
+          "Vermelhos (especificar)": "Vermelhos (especificar)"
+        }
+      },
       "fleet_code": {
         "keyword": "fleet_code",
         "enum": {
@@ -749,7 +841,7 @@
         "keyword": "fishingLicenseCode"
       },
       "selfReportedInfo.fleetCode": {
-        "keyword": "CÓDIGO IN",
+        "keyword": "fleetCode",
         "enum": {
           "1.1": "1.1",
           "1.10": "1.10",
@@ -1864,8 +1956,8 @@
       "selfReportedInfo.origin": {
         "keyword": "origin",
         "enum": {
-          "PER": "PER",
-          "Foreign": "Foreign"
+          "PERU": "PERU",
+          "FOREIGN": "FOREIGN"
         }
       },
       "selfReportedInfo.sourceFleet": {
@@ -2516,7 +2608,7 @@
     "description": "Anchorages footprint using the convex hull grouped by portId"
   },
   "public-global-ais-ports": {
-    "name": "Visitas portuárias (AIS)",
+    "name": "Ports v1 for AIS v4",
     "description": "Named ports v1"
   },
   "public-global-all-tracks": {
@@ -3030,7 +3122,7 @@
     "description": "Anchorages footprint using the convex hull grouped by portId"
   },
   "public-global-vms-ports": {
-    "name": "Visitas portuárias (AIS)",
+    "name": "Ports v1 for AIS v4",
     "description": "Named ports v1"
   },
   "public-global-water-salinity-max": {
@@ -3189,7 +3281,7 @@
     }
   },
   "public-location-labels": {
-    "name": "Legendas",
+    "name": "Location Labels",
     "description": "Combination of countries, places and seas dataset labels"
   },
   "public-mangroves": {
@@ -3634,6 +3726,7 @@
           "CCAMLR": "CCAMLR",
           "CCBSP": "CCBSP",
           "CCSBT": "CCSBT",
+          "CCSBT Primary Area": "CCSBT Primary Area",
           "COREP": "COREP",
           "CPPS": "CPPS",
           "CRFM": "CRFM",
@@ -3767,8 +3860,8 @@
           "5": "5"
         }
       },
-      "fleet_code": {
-        "keyword": "fleet_code",
+      "license_category": {
+        "keyword": "license_category",
         "enum": {
           "": "",
           "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
@@ -3801,7 +3894,7 @@
           "2.8 - Emalhe costeiro (superfície)": "2.8 - Emalhe costeiro (superfície)",
           "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
           "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
-          "3.11 - Arrasto costeiro (fundo simples e parelha)": "3.11 - Arrasto costeiro (fundo simples e parelha)",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
           "3.12 - Arrasto oceânico (fundo) – simples e duplo": "3.12 - Arrasto oceânico (fundo) – simples e duplo",
           "3.13 - Arrasto oceânico (fundo) – simples e duplo": "3.13 - Arrasto oceânico (fundo) – simples e duplo",
           "3.14 - Arrasto (meia água)": "3.14 - Arrasto (meia água)",
@@ -3829,6 +3922,56 @@
           "5.6 - Covos": "5.6 - Covos",
           "5.9 - Covos": "5.9 - Covos",
           "Sem código IN - Covos": "Sem código IN - Covos"
+        }
+      },
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "": "",
+          "Agulha": "Agulha",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
+          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
+          "Anchoíta, galo, calamar": "Anchoíta, galo, calamar",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
+          "Bonito listrado": "Bonito listrado",
+          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
+          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
+          "Camarão santana e barba ruça": "Camarão santana e barba ruça",
+          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
+          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
+          "Camarões de profundidade": "Camarões de profundidade",
+          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
+          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
+          "Cavalas, Albacorinhas": "Cavalas, Albacorinhas",
+          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
+          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
+          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
+          "Dourado": "Dourado",
+          "Espadarte": "Espadarte",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
+          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
+          "Pargo": "Pargo",
+          "Pargo rosa": "Pargo rosa",
+          "Peixe sapo": "Peixe sapo",
+          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
+          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
+          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
+          "Piramutaba": "Piramutaba",
+          "Piramutaba e dourada": "Piramutaba e dourada",
+          "Polvo": "Polvo",
+          "Saramunete": "Saramunete",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
+          "Sardinha verdadeira": "Sardinha verdadeira",
+          "Sardinha-lage": "Sardinha-lage",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
+          "Serra": "Serra",
+          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
+          "Tainha": "Tainha",
+          "Vermelhos (especificar)": "Vermelhos (especificar)"
         }
       }
     }
@@ -4078,7 +4221,7 @@
     }
   },
   "public-vms-nor-fishing-effort": {
-    "name": "VMS Noruega",
+    "name": "VMS Norway",
     "description": "<h2>Overview</h2> <p> Vessel Monitoring System (VMS) data for Norway is provided by the Norwegian Directorate of Fisheries. The data is collected via satellite and includes information on vessels' identity, location, speed, course, and movement. It is published with a 3-day delay, and historical data is available from 2015 onward. </p> <p> Please note that given the lower polling rates of VMS compared to AIS, estimates for apparent fishing activity may be less accurate. We are currently improving our fishing models to be better suited to VMS data. </p> <h2>Access & Availability</h2> <p> Vessel names and tracks are visible to public users, but tracks cannot be downloaded. If you require data access beyond what is publicly available, please contact our support team at support@globalfishingwatch.org. </p> <p> If you notice missing data on the map, it may be due to a VMS data outage. We are currently working on better ways to communicate these outages clearly within the platform. If you have any questions regarding gaps in data, please do not hesitate to reach out to our support email. </p>",
     "schema": {
       "distance_from_port_km": {
@@ -4301,8 +4444,8 @@
       "selfReportedInfo.origin": {
         "keyword": "origin",
         "enum": {
-          "PER": "PER",
-          "Foreign": "Foreign"
+          "PERU": "PERU",
+          "FOREIGN": "FOREIGN"
         }
       },
       "selfReportedInfo.sourceFleet": {

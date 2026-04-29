@@ -111,11 +111,7 @@ function UserVesselGroups() {
                           <span className={cx(styles.secondary, styles.marginLeft)}>
                             ({getVesselGroupVesselsCount(vesselGroup)})
                           </span>
-                          <IconButton
-                            icon="analysis"
-                            className={styles.right}
-                            tooltip={t((t) => t.vesselGroupReport.clickToSee)}
-                          />
+                          <IconButton icon="analysis" className={styles.right} />
                         </span>
                       </VesselGroupReportLink>
                     )}

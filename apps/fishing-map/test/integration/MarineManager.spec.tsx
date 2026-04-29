@@ -1,7 +1,10 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { navigateToFijiWorkspaceWithAllLayersAction } from 'test/utils/actions/navigateToFijiWorkspace'
+import {
+  navigateToFijiWorkspaceAction,
+  navigateToFijiWorkspaceWithAllLayersAction,
+} from 'test/utils/actions/navigateToFijiWorkspace'
 import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
@@ -12,7 +15,7 @@ import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Marine Manager', () => {
-  it.skip('should be able to navigate to marine manager workspace through sidebar', async () => {
+  it('should be able to navigate to marine manager workspace through sidebar', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
 
@@ -25,22 +28,12 @@ describe('Marine Manager', () => {
     const action = testingMiddleware.getLastActionByType('WORKSPACE')
 
     expect(action).toMatchObject({
-      type: 'WORKSPACE',
-      payload: {
-        category: 'marine-manager',
-        workspaceId: 'fiji-public',
-      },
-      replaceQuery: true,
+      ...navigateToFijiWorkspaceAction,
       meta: {
+        ...navigateToFijiWorkspaceAction.meta,
         location: {
+          ...navigateToFijiWorkspaceAction.meta.location,
           kind: expect.stringMatching(/redirect|push/),
-          current: {
-            pathname: '/marine-manager/fiji-public',
-            payload: {
-              category: 'marine-manager',
-              workspaceId: 'fiji-public',
-            },
-          },
           prev: expect.any(Object),
         },
       },
@@ -48,18 +41,18 @@ describe('Marine Manager', () => {
     await expect.element(getByText('Fiji')).toBeInTheDocument()
   })
 
-  it.skip('should show workspace layers matching the workspace configuration', async () => {
+  it('should show workspace layers matching the workspace configuration', async () => {
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [], true)
     store.dispatch(navigateToFijiWorkspaceWithAllLayersAction)
 
     await render(<App />, { store, jotaiStore })
 
-    // const state = store.getState()
+    const state = store.getState()
 
-    // const fijiWorkspace = state.workspaces.entities['fiji-public']
+    const fijiWorkspace = state.workspaces.entities['fiji-public']
 
-    // expect(fijiWorkspace).toBeDefined()
+    expect(fijiWorkspace).toBeDefined()
 
     const expectedLayerProps = {
       loaded: expect.any(Boolean),

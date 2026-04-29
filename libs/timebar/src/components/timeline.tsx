@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react'
+import React, { PureComponent } from 'react'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
 import { scaleTime } from 'd3-scale'
@@ -64,7 +64,6 @@ type TimelineProps = {
   absoluteEnd: string
   latestAvailableDataDate: string
   showLast30DaysBtn?: boolean
-  fullWidth?: boolean
   onBookmarkChange?: (start: string, end: string) => void
   bookmarkStart?: string
   bookmarkEnd?: string
@@ -477,23 +476,18 @@ class Timeline extends PureComponent<TimelineProps> {
       latestAvailableDataDate,
       displayWarningWhenInFuture,
       showLast30DaysBtn = true,
-      fullWidth = false,
       locale,
     } = this.props
     const {
       dragging,
       handlerMouseX,
-      innerStartPx: stateInnerStartPx,
-      innerEndPx: stateInnerEndPx,
-      innerWidth: stateInnerWidth,
+      innerStartPx,
+      innerEndPx,
+      innerWidth,
       relativeOffsetX,
       outerWidth,
       outerHeight,
     } = this.state
-
-    const innerWidth = fullWidth ? outerWidth : stateInnerWidth
-    const innerStartPx = fullWidth ? 1 : stateInnerStartPx
-    const innerEndPx = fullWidth ? outerWidth : stateInnerEndPx
 
     this.innerScale = scaleTime()
       .domain([getUTCDate(start), getUTCDate(end)])
@@ -541,9 +535,7 @@ class Timeline extends PureComponent<TimelineProps> {
           ref={(node: any) => {
             this.node = node
           }}
-          className={cx(styles.Timeline, {
-            [styles.fullWidth]: fullWidth,
-          })}
+          className={cx(styles.Timeline)}
         >
           {bookmarkStart && bookmarkEnd && (
             <Bookmark
@@ -605,56 +597,51 @@ class Timeline extends PureComponent<TimelineProps> {
               this.tooltipContainer = el
             }}
           />
-          {!fullWidth && (
-            <Fragment>
-              <div
-                className={cx(styles.veilLeft, styles.veil, {
-                  [styles._immediate]: dragging === DRAG_START,
-                })}
-                style={{
-                  width: dragging === DRAG_START ? handlerMouseX : innerStartPx,
+          <div
+            className={cx(styles.veilLeft, styles.veil, {
+              [styles._immediate]: dragging === DRAG_START,
+            })}
+            style={{
+              width: dragging === DRAG_START ? handlerMouseX : innerStartPx,
+            }}
+          />
+          <Handler
+            dragLabel={labels.dragLabel}
+            onMouseDown={(event) => {
+              this.onMouseDown(event, DRAG_START)
+            }}
+            dragging={this.state.dragging === DRAG_START}
+            x={innerStartPx}
+            mouseX={this.state.handlerMouseX}
+          />
+          <Handler
+            dragLabel={labels.dragLabel}
+            onMouseDown={(event) => {
+              this.onMouseDown(event, DRAG_END)
+            }}
+            dragging={this.state.dragging === DRAG_END}
+            x={innerEndPx}
+            mouseX={this.state.handlerMouseX}
+          />
+          <div
+            className={cx(styles.veilRight, styles.veil, {
+              [styles._immediate]: dragging === DRAG_END,
+            })}
+            style={{
+              left: dragging === DRAG_END ? handlerMouseX : innerEndPx,
+              width: dragging === DRAG_END ? outerWidth - handlerMouseX : outerWidth - innerEndPx,
+            }}
+          />
+          {isInTheFuture && showLast30DaysBtn && (
+            <div className={styles.last30Days}>
+              <button
+                onClick={() => {
+                  this.onLast30DaysClick()
                 }}
-              />
-              <Handler
-                dragLabel={labels.dragLabel}
-                onMouseDown={(event) => {
-                  this.onMouseDown(event, DRAG_START)
-                }}
-                dragging={this.state.dragging === DRAG_START}
-                x={innerStartPx}
-                mouseX={this.state.handlerMouseX}
-              />
-              <Handler
-                dragLabel={labels.dragLabel}
-                onMouseDown={(event) => {
-                  this.onMouseDown(event, DRAG_END)
-                }}
-                dragging={this.state.dragging === DRAG_END}
-                x={innerEndPx}
-                mouseX={this.state.handlerMouseX}
-              />
-              <div
-                className={cx(styles.veilRight, styles.veil, {
-                  [styles._immediate]: dragging === DRAG_END,
-                })}
-                style={{
-                  left: dragging === DRAG_END ? handlerMouseX : innerEndPx,
-                  width:
-                    dragging === DRAG_END ? outerWidth - handlerMouseX : outerWidth - innerEndPx,
-                }}
-              />
-              {isInTheFuture && showLast30DaysBtn && (
-                <div className={styles.last30Days}>
-                  <button
-                    onClick={() => {
-                      this.onLast30DaysClick()
-                    }}
-                  >
-                    ↩︎ {labels.timerange?.last30days}
-                  </button>
-                </div>
-              )}
-            </Fragment>
+              >
+                ↩︎ {labels.timerange?.last30days}
+              </button>
+            </div>
           )}
         </div>
       </TimelineContext.Provider>

@@ -8,7 +8,7 @@ import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReadOnly, selectScreenshotMode } from 'features/app/selectors/app.selectors'
+import { selectReadOnly } from 'features/app/selectors/app.selectors'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
@@ -25,7 +25,6 @@ function Hint({ id, className }: HintProps) {
   const { t, ready } = useTranslation(['translations', 'help-hints'])
   const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
   const isReadOnly = useSelector(selectReadOnly)
-  const screenshotMode = useSelector(selectScreenshotMode)
   const dispatch = useAppDispatch()
   const [visible, setVisible] = useState(openedByDefault || false)
   const hintsDismissed = useSelector(selectHintsDismissed)
@@ -62,15 +61,10 @@ function Hint({ id, className }: HintProps) {
   }, [id])
 
   const onOpenChange: PopoverProps['onOpenChange'] = (nextOpen: boolean) => {
-    trackEvent({
-      category: TrackCategory.HelpHints,
-      action: 'clicked on help hint popup',
-      label: id,
-    })
     setVisible(nextOpen)
   }
 
-  if (hintsDismissed?.[id] === true || isReadOnly || !ready || screenshotMode) return null
+  if (hintsDismissed?.[id] === true || isReadOnly || !ready) return null
 
   return (
     <Popover

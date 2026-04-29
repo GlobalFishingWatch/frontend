@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import uniqBy from 'lodash/uniqBy'
 
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Choice, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button, Choice, IconButton, Slider, Spinner } from '@globalfishingwatch/ui-components'
 
 import {
   useGetLabellingProjectTasksByIdQuery,
@@ -19,20 +19,14 @@ const routePath = '/project/$projectId'
 const route = getRouteApi(routePath)
 
 export function Project() {
-  const [rangeMode, setRangeMode] = useState<'compressed' | 'full'>('compressed')
-  const rangeModeOptions: ChoiceOption[] = [
-    { id: 'compressed', label: 'Compressed' },
-    { id: 'full', label: 'Full' },
-  ]
-  const [normMode, setNormMode] = useState<'global' | 'per-channel'>('global')
-  const [showCrosshair, setShowCrosshair] = useState(false)
-  const normModeOptions: ChoiceOption[] = [
-    { id: 'global', label: 'Global' },
-    { id: 'per-channel', label: 'Per channel' },
-  ]
   const { projectId } = route.useParams()
   const { activeTaskId } = route.useSearch()
   const navigate = useNavigate({ from: routePath })
+  const [imageStyleEditorOpen, setImageStyleOpen] = useLocalStorage('imageStyleEditorOpen', true)
+  const [imageStyleSaturation, setImageStyleSaturation] = useLocalStorage('saturation', 1)
+  const [imageStyleContrast, setImageStyleContrast] = useLocalStorage('contrast', 1)
+  const [showEnhancedImage, setShowEnhancedImage] = useLocalStorage('showEnhancedImage', true)
+
   const initialActiveTaskId = useMemo(() => activeTaskId as string | undefined, [])
 
   const { data: taskData, isLoading: areTasksLoading } = useGetLabellingProjectTasksQuery({
@@ -117,36 +111,6 @@ export function Project() {
       </div>
 
       <h2 className={styles.tasksTitle}>Tasks</h2>
-      <div className={styles.imageSettings}>
-        <div>
-          <label>Range</label>
-          <Choice
-            options={rangeModeOptions}
-            activeOption={rangeMode}
-            size="tiny"
-            onSelect={(o) => setRangeMode(o.id as 'compressed' | 'full')}
-          />
-        </div>
-        <div>
-          <label>Normalization</label>
-          <Choice
-            options={normModeOptions}
-            activeOption={normMode}
-            size="tiny"
-            onSelect={(o) => setNormMode(o.id as 'global' | 'per-channel')}
-          />
-        </div>
-        <div>
-          <IconButton
-            icon="target"
-            size="small"
-            type={showCrosshair ? 'warning-border' : 'border'}
-            tooltip="Toggle crosshair"
-            onClick={() => setShowCrosshair((v) => !v)}
-            style={{ display: 'flex' }}
-          />
-        </div>
-      </div>
       {data.map((task, index) => (
         <Task
           projectId={projectId}
@@ -156,11 +120,75 @@ export function Project() {
           onClick={() => setActiveTaskId(task.id)}
           onFinishTask={setNextTask}
           scale={taskData.metadata.scale}
-          rangeMode={rangeMode}
-          normMode={normMode}
-          showCrosshair={showCrosshair}
+          imageStyle={{
+            filter: ` saturate(${imageStyleSaturation}) contrast(${imageStyleContrast})`,
+          }}
         />
       ))}
+      <div
+        className={styles.imageStyleEditor}
+        style={{
+          borderRadius: imageStyleEditorOpen ? '1rem' : '4rem',
+        }}
+      >
+        {imageStyleEditorOpen && (
+          <div className={styles.editorContent}>
+            <div className={styles.switch}>
+              <Choice
+                label="image style"
+                activeOption={showEnhancedImage ? 'normalized' : 'original'}
+                options={[
+                  {
+                    id: 'original',
+                    label: 'original',
+                  },
+                  {
+                    id: 'normalized',
+                    label: 'normalized',
+                  },
+                ]}
+                onSelect={(selected) => {
+                  setShowEnhancedImage(selected.id === 'normalized')
+                }}
+                size="small"
+              />
+            </div>
+            {!showEnhancedImage && (
+              <Fragment>
+                <Slider
+                  label="Saturation"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleSaturation}
+                  onChange={(value) => setImageStyleSaturation(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+                <Slider
+                  label="Contrast"
+                  config={{
+                    min: 0,
+                    max: 4,
+                    steps: [0, 4],
+                  }}
+                  initialValue={imageStyleContrast}
+                  onChange={(value) => setImageStyleContrast(value)}
+                  thumbsSize="small"
+                  className={styles.slider}
+                />
+              </Fragment>
+            )}
+          </div>
+        )}
+        <IconButton
+          onClick={() => setImageStyleOpen(!imageStyleEditorOpen)}
+          icon={imageStyleEditorOpen ? 'close' : 'photo-edit'}
+          type="border"
+        />
+      </div>
       <Button onClick={handleLoadMoreTasks} className={styles.loadMoreButton} type="secondary">
         Load more tasks
       </Button>

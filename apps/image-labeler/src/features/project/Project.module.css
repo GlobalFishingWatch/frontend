@@ -35,20 +35,31 @@
   margin-bottom: var(--space-S);
 }
 
-.imageSettings {
-  position: fixed;
-  bottom: var(--space-S);
-  right: var(--space-S);
-  z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-S);
-  padding: var(--space-S);
-  background: var(--color-white);
-  border-radius: 10px;
+.imageStyleEditor {
   box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  background-color: white;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
 }
 
-.imageSettings label {
-  font-size: 1.3rem;
+.editorContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.slider {
+  width: 20rem;
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

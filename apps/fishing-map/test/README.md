@@ -242,4 +242,3 @@ it('should clear user data when logging out', async () => {
   expect(getByTestId('login-prompt')).toBeVisible()
 })
 ```
-

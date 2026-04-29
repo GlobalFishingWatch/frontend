@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -32,13 +31,11 @@ import {
   selectIncludeRelatedIdentities,
   selectVesselAreaSubsection,
   selectVesselDatasetId,
-  selectVesselIdentityId,
-  selectVesselIdentitySource,
   selectVesselSection,
 } from 'features/vessel/vessel.config.selectors'
 import { useUpdateVesselEventsVisibility } from 'features/vessel/vessel.hooks'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
-import { getCurrentIdentityVessel, getVesselIdentities } from 'features/vessel/vessel.utils'
+import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
@@ -79,8 +76,6 @@ const Vessel = () => {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
-  const identityId = useSelector(selectVesselIdentityId)
-  const identitySource = useSelector(selectVesselIdentitySource)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -90,22 +85,6 @@ const Vessel = () => {
   useUpdateVesselEventsVisibility()
   useSetVesselProfileEvents()
   useFetchDataviewResources(infoStatus === AsyncReducerStatus.Finished)
-
-  const vesselIdentity = useMemo(() => {
-    if (!vesselData) {
-      return undefined
-    }
-    return getCurrentIdentityVessel(vesselData, {
-      identityId,
-      identitySource,
-    })
-  }, [identityId, identitySource, vesselData])
-
-  const isOnlyVMS = useMemo(() => {
-    return vesselIdentity?.sourceCode?.every((source) =>
-      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
-    )
-  }, [vesselIdentity])
 
   const updateAreaLayersVisibility = useCallback(
     (id?: string) => {
@@ -149,11 +128,11 @@ const Vessel = () => {
         id: 'insights' as VesselSection,
         title: t((t) => t.vessel.sectionInsights),
         content: <Insights />,
-        disabled: !hasEventsDataset || isOnlyVMS,
+        disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
       },
     ],
-    [t, updateAreaLayersVisibility, hasEventsDataset, isOnlyVMS]
+    [t, updateAreaLayersVisibility, hasEventsDataset]
   )
 
   useEffect(() => {

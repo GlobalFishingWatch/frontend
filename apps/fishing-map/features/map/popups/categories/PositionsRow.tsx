@@ -38,24 +38,15 @@ type PositionsRowProps = {
 function DetectionThumbnails({
   thumbnails,
   scale,
-  datasetId,
 }: {
   thumbnails: DetectionThumbnail[]
   scale?: number
-  datasetId?: string
 }) {
   const detection = thumbnails.find((thumbnail) => thumbnail.name.endsWith('RGB.png'))
   if (!detection) {
     return null
   }
-  return (
-    <DetectionThumbnailImage
-      id={detection.name}
-      data={detection.data}
-      scale={scale}
-      datasetId={datasetId}
-    />
-  )
+  return <DetectionThumbnailImage id={detection.name} data={detection.data} scale={scale} />
 }
 
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
@@ -95,7 +86,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
   })
 
   const vesselId = feature.properties.vessel_id || feature.properties.id
-  const datasetId = feature.sublayers?.[0]?.datasets?.[0]
+
   return (
     <Fragment>
       <Icon
@@ -146,7 +137,6 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
             <DetectionThumbnails
               thumbnails={feature.properties.thumbnails}
               scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
-              datasetId={datasetId}
             />
           )}
       </div>

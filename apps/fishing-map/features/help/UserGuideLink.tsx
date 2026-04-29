@@ -3,8 +3,6 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-
 import styles from './UserGuideLink.module.css'
 
 export type UserGuideSection =
@@ -72,13 +70,6 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
   return (
     <a
       className={cx(styles.link, className)}
-      onClick={() =>
-        trackEvent({
-          category: TrackCategory.HelpHints,
-          action: `redirect to user guide to specific section`,
-          label: `${i18n.language} - ${section}`,
-        })
-      }
       href={`${userGuideLink}${userGuideSections[section]}`}
       target="_blank"
       rel="noreferrer"

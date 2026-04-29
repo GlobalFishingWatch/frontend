@@ -6,48 +6,19 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
-const DATE_FORMATS = [
-  // American formats (Month first)
-  'MM/dd/yyyy',
-  'M/d/yyyy',
-  'MM-dd-yyyy',
-  'M-d-yyyy',
-  // Rest of world (Day first)
-  'dd/MM/yyyy',
-  'd/M/yyyy',
-  'dd-MM-yyyy',
-  'd-M-yyyy',
-]
-
-const TIME_FORMATS = [
-  ' HH:mm:ss.SSS',
-  ' HH:mm:ss',
-  ' HH:mm',
-  ' hh:mm:ss a',
-  ' hh:mm a',
-  ' h:mm:ss a',
-  ' h:mm a',
-  '',
-]
-
 const DATE_PARSE_METHODS: DateTimeParseFunction[] = [
   DateTime.fromISO,
   DateTime.fromSQL,
   DateTime.fromRFC2822,
-  ...DATE_FORMATS.flatMap((dateFormat) =>
-    TIME_FORMATS.map((timeFormat) => {
-      const formatString = `${dateFormat}${timeFormat}`
-      return (s: string, opts: any) => DateTime.fromFormat(s, formatString, opts)
-    })
-  ),
+  (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
+  (s: string, opts: any) => DateTime.fromFormat(s, 'd/M/yyyy', opts),
 ]
 
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
   // it could receive a timestamp as a string
   const millis = toNumber(timestamp)
-  if (typeof timestamp === 'number' || !isNaN(millis)) {
+  if (typeof timestamp === 'number' || !isNaN(millis))
     return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
-  }
   let result
   for (let index = 0; index < DATE_PARSE_METHODS.length; index++) {
     const parse = DATE_PARSE_METHODS[index]
@@ -64,11 +35,6 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
 }
 export type SupportedDateType = string | number | Date
 export const getUTCDateTime = (d: SupportedDateType): DateTime => {
-  // it could receive a timestamp as a string
-  const millis = toNumber(d)
-  if (typeof d === 'number' || !isNaN(millis)) {
-    return DateTime.fromMillis(millis, { zone: 'UTC' })
-  }
   if (!d || (typeof d !== 'string' && typeof d !== 'number' && typeof d !== 'object')) {
     console.warn('Not a valid date', typeof d, d)
     return DateTime.utc()

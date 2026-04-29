@@ -201,23 +201,6 @@ function VesselsTable({
                                 tooltip={t((t) => t.vessel.skylightSearch)}
                               />
                             </Link>
-                            {!vessel.id && vessel.skylight_id && (
-                              <a
-                                href={getSkylightLink({
-                                  skylightId: vessel.skylight_id,
-                                  start,
-                                  end,
-                                })}
-                                target="_blank"
-                                className={styles.link}
-                              >
-                                <IconButton
-                                  icon="external-link"
-                                  size="tiny"
-                                  tooltip={t((t) => t.vessel.skylightLink)}
-                                />
-                              </a>
-                            )}
                             {vesselName}
                           </span>
                         ) : (

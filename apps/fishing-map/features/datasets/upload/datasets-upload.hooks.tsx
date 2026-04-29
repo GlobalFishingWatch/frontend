@@ -89,7 +89,6 @@ export function useDatasetMetadataOptions(
         id: filter.id,
         type: filter.type,
         label: <DatasetFieldLabel field={filter.id} fieldFilter={filter} />,
-        labelString: filter.id,
       }
     })
 

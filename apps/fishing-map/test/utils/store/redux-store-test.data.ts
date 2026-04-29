@@ -7,10 +7,7 @@ import {
   DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 
-export const USER_POLYGON_DATASET_ID = 'public-hawaii-1774533835094'
-export const USER_NEW_POLYGON_DATASET_ID = 'public-polygon-drawing-test'
-export const USER_POLYGON_LAYER_ID = `user-polygons-1771416000000`
-
+export const USER_POLYGON_DATASET_ID = 'public-hawaii-1771993699463'
 export const USER_POLYGON_DATASET: Dataset = {
   alias: null,
   id: USER_POLYGON_DATASET_ID,

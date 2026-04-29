@@ -4,10 +4,6 @@ import { uniqBy } from 'es-toolkit'
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
-import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/vessel-groups/vessel-groups.config'
 
 import { selectAllDatasets, selectDeprecatedDatasets } from './datasets.slice'
@@ -44,19 +40,6 @@ export const selectVesselGroupCompatibleDatasets = createSelector(
         d.configuration?.apiSupportedVersions?.includes(VESSEL_GROUPS_MIN_API_VERSION) &&
         !deprecatedDatasets[d.id]
     )
-  }
-)
-
-export const selectVesselGroupSearchDatasets = createSelector(
-  [selectVesselGroupCompatibleDatasets, selectPrivateUserGroups],
-  (datasets, privateUserGroups) => {
-    const usersDatasetIds = [
-      ...privateUserGroups.flatMap((group) => {
-        return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
-      }),
-      DEFAULT_VESSEL_IDENTITY_ID,
-    ]
-    return [...datasets.filter((d) => usersDatasetIds.includes(d.id))]
   }
 )
 
