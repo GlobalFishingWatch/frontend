@@ -1,10 +1,8 @@
 import area from '@turf/area'
-import { featureCollection } from '@turf/helpers'
-import intersect from '@turf/intersect'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import polygonClipping from 'polygon-clipping'
+import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
@@ -25,6 +23,8 @@ import {
   getPointsTimeseriesStats,
 } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 import { getPolygonsTimeseries } from 'features/reports/tabs/others/reports-polygons-timeseries.utils'
+
+const { intersection, union } = polygonClipping
 
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
@@ -79,23 +79,28 @@ export const getPolygonsTimeseriesStats = ({
       properties: {},
     } as Feature<Polygon | MultiPolygon>
     const reportAreaM2 = area(reportAreaFeature)
-    console.log('🚀 ~ getPolygonsTimeseriesStats ~ reportAreaFeature:', reportAreaFeature)
 
     // Clip overlapping polygons to the report area first so all geometries stay small.
     // Contained polygons are already fully inside, no clipping needed.
     const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
     const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
-      .map((p) => intersect(featureCollection<Polygon | MultiPolygon>([p, reportAreaFeature])))
-      .filter((p): p is Feature<Polygon | MultiPolygon> => p !== null)
+      .map((p) => {
+        const clipped = intersection(p.geometry.coordinates as Geom, reportArea.coordinates as Geom)
+        if (!clipped.length) return null
+        return {
+          type: 'Feature' as const,
+          geometry: { type: 'MultiPolygon' as const, coordinates: clipped },
+          properties: {},
+        } as Feature<MultiPolygon>
+      })
+      .filter((p): p is Feature<MultiPolygon> => p !== null)
 
     // Single-pass batch union via polygon-clipping sweep-line algorithm
     const allPolygons = [...containedPolygons, ...clippedOverlapping]
     let intersectionM2 = 0
     if (allPolygons.length > 0) {
-      const coords = allPolygons.map((p) => p.geometry.coordinates) as [
-        polygonClipping.Polygon | polygonClipping.MultiPolygon,
-      ]
-      const unionCoords = polygonClipping.union(...coords)
+      const coords = allPolygons.map((p) => p.geometry.coordinates as Geom)
+      const unionCoords = union(coords[0], ...coords.slice(1))
       intersectionM2 = area({
         type: 'Feature',
         geometry: { type: 'MultiPolygon', coordinates: unionCoords },

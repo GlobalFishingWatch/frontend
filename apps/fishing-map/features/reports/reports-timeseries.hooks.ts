@@ -38,7 +38,11 @@ import {
   selectTimeComparisonHash,
 } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
-import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
+import {
+  selectReportCategory,
+  selectReportDatasetId,
+  selectReportSubCategory,
+} from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { FilterByPolygonMode, FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -135,6 +139,7 @@ export const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const reportComparisonDataviews = useSelector(selectReportComparisonDataviews)
+  const reportDatasetId = useSelector(selectReportDatasetId)
   let ids = ['']
 
   if (currentCategoryDataviews?.length > 0) {
@@ -144,7 +149,11 @@ export const useReportInstances = () => {
     ) {
       ids = [getMergedDataviewId(currentCategoryDataviews)]
     } else if (currentCategory === ReportCategory.Others) {
-      ids = Object.values(groupContextDataviews(currentCategoryDataviews)).map((dataviews) =>
+      const reportDatasetIds = reportDatasetId?.split(',') ?? []
+      const othersDataviews = currentCategoryDataviews.filter((d) =>
+        d.datasets?.every((ds) => !reportDatasetIds.includes(ds.id))
+      )
+      ids = Object.values(groupContextDataviews(othersDataviews)).map((dataviews) =>
         getMergedDataviewId(dataviews)
       )
     } else {

@@ -1,5 +1,4 @@
 import { flatten } from '@turf/flatten'
-import union from '@turf/union'
 import type {
   Feature,
   FeatureCollection,
@@ -9,6 +8,7 @@ import type {
   Point,
   Polygon,
 } from 'geojson'
+import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type {
   Dataset,
@@ -38,6 +38,8 @@ import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
 import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 import type { FileType } from 'utils/files'
+
+const { union } = polygonClipping
 
 export const MIN_NAME_LENGTH = 3
 
@@ -243,7 +245,15 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
         properties: getPropertiesIdClean(cleanedProperties),
         geometry:
           (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'
-            ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)
+            ? ({
+                type: 'MultiPolygon' as const,
+                coordinates: union(
+                  ...(flatten(feature.geometry).features.map((f) => f.geometry.coordinates) as [
+                    Geom,
+                    ...Geom[],
+                  ])
+                ),
+              } as AreaGeometry)
             : (feature.geometry as AreaGeometry),
       }
     }) as Feature<T, GeoJsonProperties>[],

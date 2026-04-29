@@ -8,7 +8,7 @@ import type {
   TileLayerProps,
 } from '@deck.gl/geo-layers'
 import type { GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
-import polygonClipping from 'polygon-clipping'
+import polygonClipping, { type Geom } from 'polygon-clipping'
 import type { Entries } from 'type-fest'
 
 import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
@@ -35,6 +35,8 @@ import type {
   UserTrackLayerProps,
 } from './user.types'
 import { getFilterExtensionSize, getPropertiesList } from './user.utils'
+
+const { union } = polygonClipping
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
@@ -177,10 +179,8 @@ export abstract class UserBaseLayer<
       const first = group[0]
       const geometryType = first.geometry?.type
       if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
-        const geoms = group.map(
-          (g) => (g.geometry as Polygon | MultiPolygon).coordinates as polygonClipping.Geom
-        )
-        const unioned = polygonClipping.union(geoms[0], ...geoms.slice(1))
+        const geoms = group.map((g) => (g.geometry as Polygon | MultiPolygon).coordinates as Geom)
+        const unioned = union(geoms[0], ...geoms.slice(1))
         renderedFeatures.push({
           ...first,
           geometry: { type: 'MultiPolygon', coordinates: unioned } as MultiPolygon,

@@ -15,6 +15,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { isUserContextPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
+import { selectReportDatasetId } from 'features/reports/reports.selectors'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
@@ -41,7 +42,13 @@ function ReportOthers() {
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const reportDatasetId = useSelector(selectReportDatasetId)
+  const otherDataviewsGrouped = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const otherDataviews = Object.fromEntries(
+    Object.entries(otherDataviewsGrouped).filter(([, dataviews]) =>
+      dataviews.every((d) => !d.datasets?.some((ds) => reportDatasetId?.split(',').includes(ds.id)))
+    )
+  )
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   if (!Object.keys(otherDataviews)?.length) return null
@@ -209,15 +216,16 @@ function ReportOthers() {
                     <ReportSummaryTags key={d.id} dataview={d} />
                   ))}
                 </div>
-                {(selectedProperty || (selectOptions.length > 0 && statsCounts !== 0)) && (
-                  <Select
-                    options={selectOptions}
-                    selectedOption={selectedProperty}
-                    onSelect={onSelectAggregatedProperty}
-                    placeholder={t((t) => t.analysis.selectAggregationProperty)}
-                    onCleanClick={onClearSelection}
-                  />
-                )}
+                {!isPolygonsDataview &&
+                  (selectedProperty || (selectOptions.length > 0 && statsCounts !== 0)) && (
+                    <Select
+                      options={selectOptions}
+                      selectedOption={selectedProperty}
+                      onSelect={onSelectAggregatedProperty}
+                      placeholder={t((t) => t.analysis.selectAggregationProperty)}
+                      onCleanClick={onClearSelection}
+                    />
+                  )}
               </div>
             )}
             {hasTimeFilter &&
