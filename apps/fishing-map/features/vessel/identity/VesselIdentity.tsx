@@ -263,7 +263,7 @@ const VesselIdentity = () => {
                           // For registry data the builtYear is a RegistryExtraFieldValue<number>
                           (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
                           // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
-                          (builtYear as string) ||
+                          (typeof builtYear === 'string' ? builtYear : '') ||
                           EMPTY_FIELD_PLACEHOLDER
                       }
                     }
