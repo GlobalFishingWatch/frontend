@@ -486,7 +486,7 @@ export class Timebar extends Component<TimebarProps> {
             </button>
           </div>
         )}
-        <div className={cx('print-hidden', styles.timeActions)}>
+        {/* <div className={cx('print-hidden', styles.timeActions)}>
           {intervals && getCurrentInterval && showButtons ? (
             <IntervalSelector
               intervals={intervals}
@@ -497,7 +497,7 @@ export class Timebar extends Component<TimebarProps> {
               onIntervalClick={this.onIntervalClick}
             />
           ) : null}
-        </div>
+        </div> */}
 
         <Timeline
           children={this.props.children}
