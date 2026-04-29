@@ -2,7 +2,9 @@ import { Suspense, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
+import { HINTS } from 'data/config'
 import App from 'features/app/App'
+import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
 import type { AppStore } from 'store'
@@ -25,6 +27,11 @@ function AppLayout() {
   useEffect(() => {
     setupRouterSync(router, store)
   }, [router, store])
+
+  useEffect(() => {
+    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
+    store.dispatch(hydrateHintsDismissed(hintsDismissed))
+  }, [store])
 
   return (
     <Provider store={store}>
