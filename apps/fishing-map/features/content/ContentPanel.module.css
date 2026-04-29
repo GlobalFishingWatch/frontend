@@ -95,7 +95,7 @@
   margin-bottom: var(--space-M);
 }
 
-.content > *:nth-last-child(1) {
+.content > *p:nth-last-child(1) {
   padding-bottom: var(--space-XL);
 }
 
@@ -177,4 +177,10 @@
 .highlighted {
   display: inline-block;
   background: var(--color-highlight-blue);
+}
+
+@media only screen and (width <= 720px) {
+  .panelResizer {
+    display: none;
+  }
 }

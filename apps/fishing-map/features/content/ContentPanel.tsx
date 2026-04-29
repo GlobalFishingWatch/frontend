@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
 import rehypeRaw from 'rehype-raw'
@@ -25,6 +26,7 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [searchQuery, setSearchQuery] = useState('')
   const { openSidePanel } = useSidePanel()
+  const { t } = useTranslation()
 
   const filteredSections = useMemo(() => {
     if (!searchQuery.trim()) return data
@@ -59,6 +61,7 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
     <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
       <div className={cx(styles.header)}>
         <ContentHeader
+          title={t((t) => t.common.userGuide)}
           openTableOfContents={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
         />
       </div>
