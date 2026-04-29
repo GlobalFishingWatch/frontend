@@ -13,6 +13,7 @@ import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-componen
 import { Choice, IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { UserGuideSection } from 'features/help/UserGuideLink'
@@ -87,8 +88,13 @@ const InfoModal = ({
       if (onClick) {
         onClick(e)
       }
+      trackEvent({
+        category: TrackCategory.HelpHints,
+        action: 'clicked on info popup',
+        label: `${dataview.name} - ${dataset?.name}`,
+      })
     },
-    [onClick, onModalStateChange]
+    [onClick, onModalStateChange, dataview.name, dataset?.name]
   )
   const onModalClose = useCallback(() => {
     setModalInfoOpen(false)

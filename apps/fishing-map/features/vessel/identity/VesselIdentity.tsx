@@ -152,6 +152,7 @@ const VesselIdentity = () => {
 
   const isChileanVMSVessel =
     source?.includes(SelfReportedSource.Chile) || vesselIdentity?.flag === 'CHL'
+  const isVMSBrazilVessel = source?.includes(SelfReportedSource.Brazil)
   const hasMoreInfo =
     vesselIdentity?.hasComplianceInfo ||
     vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
@@ -264,7 +265,7 @@ const VesselIdentity = () => {
                           // For registry data the builtYear is a RegistryExtraFieldValue<number>
                           (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
                           // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
-                          (builtYear as string) ||
+                          (typeof builtYear === 'string' ? builtYear : '') ||
                           EMPTY_FIELD_PLACEHOLDER
                       }
                     }
@@ -273,7 +274,7 @@ const VesselIdentity = () => {
                       <div key={field.key}>
                         <div className={styles.labelContainer}>
                           <label>{labelTranslation}</label>
-                          {field.terminologyKey && (
+                          {field.terminologyKey && !isVMSBrazilVessel && (
                             <DataTerminology
                               title={labelTranslation}
                               terminologyKey={field.terminologyKey}
@@ -362,7 +363,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={`https://app.triton.fish/search?${vesselIdentity?.imo ? `imo=${vesselIdentity.imo}` : `name=${vesselIdentity?.ssvid}`}`}
+              href={`https://app.triton.fish/search?name=${vesselIdentity?.imo || vesselIdentity?.ssvid || vesselIdentity?.callsign || vesselIdentity?.shipname}`}
               target="_blank"
               onClick={() => {
                 trackEvent({

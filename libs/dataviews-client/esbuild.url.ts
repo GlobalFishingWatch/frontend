@@ -1,6 +1,4 @@
-const { build } = require('esbuild')
-const path = require('path')
-const fs = require('fs')
+import { build } from 'esbuild'
 
 async function buildBundle() {
   // Build the UDF library bundle
@@ -10,7 +8,7 @@ async function buildBundle() {
     platform: 'node',
     format: 'iife', // IIFE format for BigQuery UDF compatibility
     globalName: 'UrlWorkspace', // Global namespace for BigQuery
-    outfile: 'dist/libs/url-workspace/url-workspace.js',
+    outfile: 'libs/dataviews-client/dist/url-workspace-bundle/url-workspace-bundle.js',
     external: ['util', 'buffer', 'process', 'path', 'fs', 'http', 'url'], // External Node.js built-ins
     packages: 'bundle', // Bundle all packages
     splitting: false,
@@ -19,6 +17,10 @@ async function buildBundle() {
     target: 'es2017',
     tsconfig: 'libs/dataviews-client/tsconfig.url.json',
     resolveExtensions: ['.ts', '.js'],
+    alias: {
+      '@globalfishingwatch/datasets-client':
+        './libs/datasets-client/src/migrations/datasets.migrations-v2.ts',
+    },
     logLevel: 'info',
     banner: {
       js: `// Shim for require in browser/BigQuery environment
@@ -40,7 +42,7 @@ async function buildBundle() {
   })
 
   console.log('✅ Built BigQuery UDF library bundle successfully!')
-  console.log('📦 Output: dist/libs/url-workspace/url-workspace.js')
+  console.log('📦 Output: libs/dataviews-client/dist/url-workspace-bundle/url-workspace-bundle.js')
   console.log('')
   console.log('Usage in BigQuery UDF:')
   console.log('1. Upload the bundle to Cloud Storage or use inline')
@@ -61,4 +63,7 @@ async function buildBundle() {
     `)
 }
 
-buildBundle().catch(console.error)
+buildBundle().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})
