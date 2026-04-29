@@ -42,6 +42,24 @@ const ssrState: I18nServerState | undefined =
         ?.i18nState
     : undefined
 
+export function getLoadedI18nState(): I18nServerState | undefined {
+  if (!i18n.isInitialized) {
+    return undefined
+  }
+
+  const initialLanguage = i18n.resolvedLanguage || i18n.language
+  const initialI18nStore = i18n.services.resourceStore.data as I18nServerState['initialI18nStore']
+
+  if (!initialLanguage || !initialI18nStore?.[initialLanguage]) {
+    return undefined
+  }
+
+  return {
+    initialI18nStore,
+    initialLanguage,
+  }
+}
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -90,7 +108,6 @@ i18n
     },
   })
 
-// @ts-ignore - avoids loop error
 const t = i18n.t.bind(i18n)
 
 export { t }

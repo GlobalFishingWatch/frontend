@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { getI18nState } from 'features/i18n/getI18nState'
+import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getTFuntion } from 'router/router.meta'
 
@@ -19,18 +20,29 @@ const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as stri
 const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
 
+async function loadI18nState(): Promise<I18nServerState> {
+  if (!import.meta.env.SSR) {
+    const { getLoadedI18nState } = await import('features/i18n/i18n')
+    const clientI18nState = getLoadedI18nState()
+    if (clientI18nState) {
+      return clientI18nState
+    }
+  }
+
+  return (await getI18nState()) as I18nServerState
+}
+
 export const Route = createRootRoute({
-  loader: async (_ctx) => {
-    const i18nState = await getI18nState()
+  loader: async () => {
+    const i18nState = await loadI18nState()
     return {
       i18nState,
-    } as {
-      i18nState: {
-        initialI18nStore: Record<string, Record<string, Record<string, object>>>
-        initialLanguage: string
-      }
     }
   },
+  staleTime: Number.POSITIVE_INFINITY,
+  preloadStaleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+  shouldReload: false,
   head: ({ matches }) => {
     const t = getTFuntion(matches)
     const title = `GFW | ${t('common.map')}`
@@ -118,6 +130,7 @@ export const Route = createRootRoute({
       ],
     }
   },
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   component: RootComponent,
 })
 
