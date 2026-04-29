@@ -124,10 +124,19 @@
   background-color: var(--color-off-white-0);
 }
 
-.listItem {
+.listItem,
+.searchPreview {
   cursor: pointer;
-  padding: var(--space-S) 0;
   color: rgba(var(--primary-blue-rgb), 0.65);
+}
+
+.listItem {
+  padding: var(--space-S) 0;
+}
+
+.searchPreview {
+  padding-bottom: var(--space-S);
+  font-size: var(--font-size-XS);
 }
 
 .listItem:hover,
@@ -163,4 +172,9 @@
 
 .title {
   flex: 1;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
 }

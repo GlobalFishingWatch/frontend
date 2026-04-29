@@ -5,6 +5,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import ContentHeader from 'features/content/ContentHeader'
+import { useSidePanel } from 'features/content/contentPanel.hooks'
 import EmptyContent from 'features/content/EmptyContent'
 import InfoContainer from 'features/content/InfoContainer'
 import type { TUserGuideSection } from 'features/content/strapi.types'
@@ -23,16 +24,24 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
   const { sidePanelId } = Route.useSearch()
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [searchQuery, setSearchQuery] = useState('')
+  const { openSidePanel } = useSidePanel()
 
   const filteredSections = useMemo(() => {
     if (!searchQuery.trim()) return data
     const q = searchQuery.toLowerCase()
-    return data.filter((s) => s.title.toLowerCase().includes(q) || s.body.toLowerCase().includes(q))
+    return data.filter(
+      (s) => s.title.toLowerCase().includes(q) || s.body?.toLowerCase().includes(q)
+    )
   }, [data, searchQuery])
 
   const listItems = useMemo(
-    () => filteredSections.map((s) => ({ id: s.slug || s.id.toString(), label: s.title })),
-    [filteredSections]
+    () =>
+      filteredSections.map((s) => ({
+        id: s.slug || s.id.toString(),
+        label: s.title,
+        ...(searchQuery && { searchPreview: s.body }),
+      })) || [],
+    [filteredSections, searchQuery]
   )
 
   const selectedSection = useMemo(() => {
@@ -62,7 +71,10 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
           <TableOfContents
             listItems={listItems}
             activeId={sidePanelId}
-            onClick={setIsTableOfContentsOpen}
+            onClick={(id) => {
+              openSidePanel({ type: 'userGuide', id: id })
+              setIsTableOfContentsOpen(false)
+            }}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />

@@ -21,9 +21,7 @@ export const Route = createFileRoute('/_app')({
   loaderDeps: ({ search }) => ({
     sidePanelContent: search.sidePanelContent,
   }),
-  // Only userGuide content is loaded server-side; dataset info is fetched
-  // client-side in InfoContainer so the user can switch between a dataview's
-  // datasets without round-tripping through the URL.
+  // Only userGuide content is loaded server-side; dataset info is fetched client-side
   loader: async ({ deps }) => {
     const { sidePanelContent } = deps
     if (sidePanelContent !== 'userGuide') {

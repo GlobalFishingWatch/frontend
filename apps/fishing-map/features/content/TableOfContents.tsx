@@ -3,16 +3,16 @@ import cx from 'classnames'
 
 import { InputText } from '@globalfishingwatch/ui-components'
 
-import { useReplaceQueryParams } from 'router/routes.hook'
+import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from './ContentPanel.module.css'
 
 type TableOfContentsProps = {
-  listItems: { id: string; label: string }[]
+  listItems: { id: string; label: string; searchPreview?: string }[]
   activeId?: string
   searchQuery: string
   onSearchChange: (value: string) => void
-  onClick?: (isOpen: boolean) => void
+  onClick?: (id: string) => void
 }
 
 function TableOfContents({
@@ -23,7 +23,6 @@ function TableOfContents({
   onClick,
 }: TableOfContentsProps) {
   const { t } = useTranslation()
-  const { replaceQueryParams } = useReplaceQueryParams()
 
   return (
     <div className={styles.tableOfContentsContainer}>
@@ -35,19 +34,26 @@ function TableOfContents({
       />
       <ul>
         {listItems.map((item) => (
-          <li
-            key={item.id}
-            className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
-          >
+          <li key={item.id}>
             <button
               type="button"
               onClick={() => {
-                replaceQueryParams({ sidePanelId: item.id })
-                onClick?.(false)
+                onClick?.(item.id)
               }}
+              className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
             >
-              {item.label}
+              <h3> {item.label}</h3>
             </button>
+            {item.searchPreview &&
+              (() => {
+                const searchPreview = getSearchPreview(item.searchPreview as string, searchQuery)
+
+                return (
+                  <p className={styles.searchPreview}>
+                    {getHighlightedText(searchPreview, searchQuery, styles)}
+                  </p>
+                )
+              })()}
           </li>
         ))}
       </ul>
