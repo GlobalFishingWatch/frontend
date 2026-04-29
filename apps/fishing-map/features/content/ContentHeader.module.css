@@ -15,4 +15,6 @@
 .title {
   display: flex;
   align-items: center;
+  gap: var(--space-S);
+  text-transform: uppercase;
 }

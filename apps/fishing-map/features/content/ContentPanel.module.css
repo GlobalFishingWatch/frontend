@@ -124,6 +124,12 @@
   background-color: var(--color-off-white-0);
 }
 
+.subTopic {
+  padding-left: var(--space-M);
+  font-size: var(--font-size-S);
+  color: rgba(var(--primary-blue-rgb), 0.65);
+}
+
 .listItem,
 .searchPreview {
   cursor: pointer;

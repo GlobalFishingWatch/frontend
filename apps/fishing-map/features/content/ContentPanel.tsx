@@ -43,6 +43,13 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
       filteredSections.map((s) => ({
         id: s.slug || s.id.toString(),
         label: s.title,
+        subTopics: s.body
+          ?.match(/^#{1,6}\s+(.+)$/gm)
+          ?.map((heading) => {
+            const label = heading.replace(/^#{1,6}\s+/, '')
+            const id = label.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
+            return { id, label }
+          }),
         ...(searchQuery && { searchPreview: s.body }),
       })) || [],
     [filteredSections, searchQuery]

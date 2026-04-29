@@ -21,7 +21,7 @@ function ContentHeader({ title, openTableOfContents }: ContentHeaderProps) {
       <div className={cx(styles.sidebarHeader)}>
         <h2 className={cx(styles.title)}>
           {openTableOfContents && <IconButton icon="list" onClick={() => openTableOfContents()} />}
-          {(title || t((t) => t.common.content)).toUpperCase()}
+          {title || t((t) => t.common.content)}
         </h2>
         <div>
           <IconButton

@@ -50,24 +50,14 @@ function TableOfContents({
               <h3>{item.label}</h3>
             </button>
             {item.subTopics &&
+              activeId == item.id &&
               item.subTopics.map((sub) => {
-                return (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onClick?.(sub.id)
-                    }}
-                    className={cx(styles.listItem, { [styles.listItemActive]: activeId == sub.id })}
-                  >
-                    <h4>{sub.label}</h4>
-                  </button>
-                )
+                return <h4 className={styles.subTopic}>{sub.label}</h4>
               })}
 
             {item.searchPreview &&
               (() => {
                 const searchPreview = getSearchPreview(item.searchPreview as string, searchQuery)
-
                 return (
                   <p className={styles.searchPreview}>
                     {getHighlightedText(searchPreview, searchQuery, styles)}
