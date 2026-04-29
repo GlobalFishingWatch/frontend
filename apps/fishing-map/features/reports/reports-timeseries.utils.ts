@@ -79,6 +79,7 @@ export const getPolygonsTimeseriesStats = ({
       properties: {},
     } as Feature<Polygon | MultiPolygon>
     const reportAreaM2 = area(reportAreaFeature)
+    console.log('🚀 ~ getPolygonsTimeseriesStats ~ reportAreaFeature:', reportAreaFeature)
 
     // Clip overlapping polygons to the report area first so all geometries stay small.
     // Contained polygons are already fully inside, no clipping needed.

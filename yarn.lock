@@ -3149,6 +3149,7 @@ __metadata:
     papaparse: "npm:5.5.3"
     pbf: "npm:4.0.1"
     playwright: "npm:1.57.0"
+    polygon-clipping: "npm:^0.15.7"
     prettier: "npm:3.8.1"
     prettier-eslint: "npm:16.4.2"
     protobufjs: "npm:^8.0.1"
@@ -31060,7 +31061,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"polygon-clipping@npm:^0.15.3":
+"polygon-clipping@npm:^0.15.3, polygon-clipping@npm:^0.15.7":
   version: 0.15.7
   resolution: "polygon-clipping@npm:0.15.7"
   dependencies:

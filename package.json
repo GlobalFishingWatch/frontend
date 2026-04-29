@@ -141,6 +141,7 @@
     "nitro": "npm:nitro-nightly@latest",
     "papaparse": "5.5.3",
     "pbf": "4.0.1",
+    "polygon-clipping": "^0.15.7",
     "protobufjs": "^8.0.1",
     "qs": "6.15.0",
     "rc-slider": "11.1.9",
