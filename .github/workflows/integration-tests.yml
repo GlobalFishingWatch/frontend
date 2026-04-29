@@ -1,0 +1,136 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Notify the developer about integration tests running
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          message: |
+            ## ⏳ Integration tests are running...
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 100
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=100
+
+
+      # --- Setting up dependencies and cache ---------------------------------
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Cache Yarn dependencies
+        id: yarn-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+            node_modules
+          key: yarn-${{ github.base_ref }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-${{ github.base_ref }}-
+            yarn-
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --immutable --inline-builds
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-1.58.2
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Cache Build Data
+        uses: actions/cache@v4
+        with:
+          path: |
+            .nx/cache
+            node_modules/.vite
+            node_modules/.cache/esbuild
+            **/*.tsbuildinfo
+          # Using run_id and run_attempt forces a unique primary key so the cache always saves new test results
+          key: build-cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            build-cache-${{ runner.os }}-
+
+      
+      # --- Running tests -----------------------------------------------------
+
+      - name: Run affected tests
+        id: run-tests
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          yarn nx affected \
+            --target=test \
+            --parallel=4 \
+            --base=origin/${{ github.event.pull_request.base.ref }} \
+            --head=HEAD
+            | tee test-output.txt
+        env:
+          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
+          NEXT_PUBLIC_WORKSPACE_ENV: development
+          CI: '1'
+          NX_DAEMON: 'false'
+          NODE_OPTIONS: --trace-warnings
+          TEST_CHROME_ONLY: 'true'
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Parse test results
+        if: always()
+        run: |
+          sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
+            function flush() {
+              if (target != "" && is_test) {
+                status = (failed ? "❌" : "✅")
+                printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
+                if (failed) fail_count++; else pass_count++
+              }
+            }
+            BEGIN { print "## Test Results\n" }
+            /^> nx run /{
+              flush()
+              target = $4
+              is_test = ($4 ~ /:test$/)
+              output = ""
+              failed = 1
+            }
+            is_test {
+              output = (output == "" ? $0 : output "\n" $0)
+              if (/Tests +[0-9]+ passed/ && !/failed/) failed = 0
+            }
+            END {
+              flush()
+              if (pass_count == 0 && fail_count == 0) {
+                printf "---\n**Summary:** No tests were run\n"
+              } else {
+                printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
+              }
+            }
+          ' >> summary.md
+
+      - name: Comment on PR with test results
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          path: summary.md
