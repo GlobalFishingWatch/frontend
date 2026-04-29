@@ -183,4 +183,8 @@
   .panelResizer {
     display: none;
   }
+
+  .panel {
+    width: 100vw;
+  }
 }

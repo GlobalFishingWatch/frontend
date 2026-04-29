@@ -5,6 +5,8 @@ import cx from 'classnames'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+
 import ContentHeader from 'features/content/ContentHeader'
 import { useSidePanel } from 'features/content/contentPanel.hooks'
 import EmptyContent from 'features/content/EmptyContent'
@@ -98,6 +100,7 @@ function ContentPanel() {
   const { status, data } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
   const isDatasets = sidePanelContent === 'datasets'
+  const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(540)
@@ -145,7 +148,7 @@ function ContentPanel() {
   const isEmpty = !isDatasets && (status === 'empty' || (Array.isArray(data) && data.length === 0))
 
   return (
-    <div className={styles.panel} style={{ width: `${panelWidth}px` }}>
+    <div className={styles.panel} style={isSmallScreen ? undefined : { width: `${panelWidth}px` }}>
       <div
         role="button"
         tabIndex={0}
