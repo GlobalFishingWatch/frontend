@@ -62,6 +62,11 @@ function Hint({ id, className }: HintProps) {
   }, [id])
 
   const onOpenChange: PopoverProps['onOpenChange'] = (nextOpen: boolean) => {
+    trackEvent({
+      category: TrackCategory.HelpHints,
+      action: 'clicked on help hint popup',
+      label: id,
+    })
     setVisible(nextOpen)
   }
 

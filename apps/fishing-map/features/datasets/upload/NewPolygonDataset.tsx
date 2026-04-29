@@ -254,7 +254,7 @@ function NewPolygonDataset({
             setDatasetMetadata({
               filters: {
                 userContextLayers: filters.map((f) => {
-                  return { ...f, enabled: f.id === newFilter.id }
+                  return { ...f, enabled: f.enabled || f.id === newFilter.id }
                 }),
               },
             })
