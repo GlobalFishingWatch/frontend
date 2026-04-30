@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import ContentHeader from 'features/content/ContentHeader'
+import ContentHeader from 'features/content-panel/ContentHeader'
 
 import styles from './ContentPanel.module.css'
 

@@ -5,7 +5,7 @@ import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useSidePanel } from 'features/content/contentPanel.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 type InfoButtonProps = {
   dataview: UrlDataviewInstance

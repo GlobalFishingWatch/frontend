@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useSidePanel } from 'features/content/contentPanel.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './UserGuideLink.module.css'
 

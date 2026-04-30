@@ -7,7 +7,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useSidePanel } from 'features/content/contentPanel.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import hintsConfig from './hints.content'

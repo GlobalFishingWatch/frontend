@@ -3,7 +3,7 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useSidePanel } from 'features/content/contentPanel.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './ContentHeader.module.css'
 

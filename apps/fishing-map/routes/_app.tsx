@@ -4,7 +4,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
-import { fetchSidePanelContent } from 'features/content/content.queries'
+import { fetchSidePanelContent } from 'features/cms/content.queries'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import i18n from 'features/i18n/i18n'
 import { setupRouterSync } from 'router/router-sync'

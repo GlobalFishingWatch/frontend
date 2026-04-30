@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { TDataset, TStrapiResponse } from 'features/content/strapi.types'
+import type { TDataset, TStrapiResponse } from 'features/cms/strapi.types'
 
 import { sdk } from '../strapi-sdk'
 

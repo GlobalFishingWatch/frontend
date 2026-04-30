@@ -7,12 +7,12 @@ import remarkGfm from 'remark-gfm'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import ContentHeader from 'features/content/ContentHeader'
-import { useSidePanel } from 'features/content/contentPanel.hooks'
-import EmptyContent from 'features/content/EmptyContent'
-import InfoContainer from 'features/content/InfoContainer'
-import type { TUserGuideSection } from 'features/content/strapi.types'
-import TableOfContents from 'features/content/TableOfContents'
+import type { TUserGuideSection } from 'features/cms/strapi.types'
+import ContentHeader from 'features/content-panel/ContentHeader'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import EmptyContent from 'features/content-panel/EmptyContent'
+import InfoContainer from 'features/content-panel/InfoContainer'
+import TableOfContents from 'features/content-panel/TableOfContents'
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'
@@ -43,13 +43,14 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
       filteredSections.map((s) => ({
         id: s.slug || s.id.toString(),
         label: s.title,
-        subTopics: s.body
-          ?.match(/^#{1,6}\s+(.+)$/gm)
-          ?.map((heading) => {
-            const label = heading.replace(/^#{1,6}\s+/, '')
-            const id = label.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '')
-            return { id, label }
-          }),
+        subTopics: s.body?.match(/^#{1,6}\s+(.+)$/gm)?.map((heading) => {
+          const label = heading.replace(/^#{1,6}\s+/, '')
+          const id = label
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w-]/g, '')
+          return { id, label }
+        }),
         ...(searchQuery && { searchPreview: s.body }),
       })) || [],
     [filteredSections, searchQuery]
