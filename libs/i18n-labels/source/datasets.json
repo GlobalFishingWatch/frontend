@@ -567,9 +567,9 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
-          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
-          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
+          "FISHING-OTHER": "FISHING-OTHER",
+          "OTHER-FISHING": "OTHER-FISHING",
+          "OTHER-OTHER": "OTHER-OTHER"
         }
       }
     }
@@ -637,7 +637,8 @@
           "5.4": "5.4",
           "5.6": "5.6",
           "5.9": "5.9",
-          "Sem código IN": "Sem código IN"
+          "Sem código IN": "Sem código IN",
+          "nan": "nan"
         }
       }
     }
@@ -742,11 +743,7 @@
         "keyword": "vessel_type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -3826,7 +3823,7 @@
           "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
           "2.12 - Emalhe costeiro (fundo)": "2.12 - Emalhe costeiro (fundo)",
           "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
-          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
+          "2.2 - Emalhe costeiro (superfície)": "2.2 - Emalhe costeiro (superfície)",
           "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
           "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
           "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
@@ -3905,7 +3902,7 @@
           "Piramutaba e dourada": "Piramutaba e dourada",
           "Polvo": "Polvo",
           "Saramunete": "Saramunete",
-          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha",
           "Sardinha verdadeira": "Sardinha verdadeira",
           "Sardinha-lage": "Sardinha-lage",
           "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
