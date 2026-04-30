@@ -59,6 +59,17 @@
   background-color: var(--color-terthiary-blue);
 }
 
+.helpHubButton {
+  background: linear-gradient(
+      to top,
+      var(--color-help-yellow) 0%,
+      var(--color-help-yellow) var(--hints-seen, 0%),
+      rgba(0, 0, 0, 0) var(--hints-seen, 0%),
+      rgba(0, 0, 0, 0) 100%
+    )
+    no-repeat;
+}
+
 .hintsTooltip {
   display: block;
   position: relative;

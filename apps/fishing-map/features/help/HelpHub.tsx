@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,23 +8,20 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSidePanel } from 'features/content/contentPanel.hooks'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
 
 import styles from './Hint.module.css'
 
-const HELP_COLOR =
-  (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-help-yellow')) ||
-  '#fff8cd'
-
 function HelpHub() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
+  const isClientHydrated = useIsClientHydrated()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const hintsDismissedArray = Object.keys(hintsDismissed || {})
+  const hintsDismissedArray = isClientHydrated ? Object.keys(hintsDismissed || {}) : []
   const percentageOfHintsSeen = (hintsDismissedArray.length / hintsConfigArray.length) * 100
   const noHelpHintsSeen = percentageOfHintsSeen === 0
   const { openSidePanel } = useSidePanel()
@@ -62,12 +60,14 @@ function HelpHub() {
           icon="help"
           testId="help-hub-button"
           type="border"
-          className={cx({
+          className={cx(styles.helpHubButton, {
             [styles.pulseDarkOnce]: hintsDismissedArray.length === 1,
           })}
-          style={{
-            background: `linear-gradient(to top, ${HELP_COLOR} 0%, ${HELP_COLOR} ${percentageOfHintsSeen}%, rgba(0,0,0,0) ${percentageOfHintsSeen}%, rgba(0,0,0,0) 100%) no-repeat`,
-          }}
+          style={
+            {
+              '--hints-seen': `${percentageOfHintsSeen}%`,
+            } as CSSProperties
+          }
         />
       </div>
       <ul className={styles.links}>
