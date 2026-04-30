@@ -11,7 +11,7 @@ concurrency:
 jobs:
   integration-tests:
     name: Run Integration Tests
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && github.event.pull_request.merged == false
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
