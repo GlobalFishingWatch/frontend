@@ -658,11 +658,7 @@
         "keyword": "crwdns125906:0crwdne125906:0",
         "enum": {
           "FISHING": "crwdns125908:0crwdne125908:0",
-          "NON_FISHING": "crwdns125910:0crwdne125910:0",
-          "SUPPORT": "crwdns125912:0crwdne125912:0",
-          "CARRIER": "crwdns125914:0crwdne125914:0",
-          "RESEARCH": "crwdns125916:0crwdne125916:0",
-          "": "crwdns125918:0crwdne125918:0"
+          "OTHER": "crwdns129990:0crwdne129990:0"
         }
       }
     }
@@ -682,11 +678,7 @@
         "keyword": "crwdns125930:0crwdne125930:0",
         "enum": {
           "FISHING": "crwdns125932:0crwdne125932:0",
-          "NON_FISHING": "crwdns125934:0crwdne125934:0",
-          "SUPPORT": "crwdns125936:0crwdne125936:0",
-          "CARRIER": "crwdns125938:0crwdne125938:0",
-          "RESEARCH": "crwdns125940:0crwdne125940:0",
-          "": "crwdns125942:0crwdne125942:0"
+          "OTHER": "crwdns129992:0crwdne129992:0"
         }
       }
     }
@@ -714,11 +706,7 @@
         "keyword": "crwdns125962:0crwdne125962:0",
         "enum": {
           "FISHING": "crwdns125964:0crwdne125964:0",
-          "NON_FISHING": "crwdns125966:0crwdne125966:0",
-          "SUPPORT": "crwdns125968:0crwdne125968:0",
-          "CARRIER": "crwdns125970:0crwdne125970:0",
-          "RESEARCH": "crwdns125972:0crwdne125972:0",
-          "": "crwdns125974:0crwdne125974:0"
+          "OTHER": "crwdns129994:0crwdne129994:0"
         }
       }
     }
