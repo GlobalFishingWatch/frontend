@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -9,12 +8,13 @@ import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
-  isContextDataviewReportSupported,
+  isPointsDataviewReportSupported,
+  isPolygonsDataviewReportSupported,
   isUserContextDataviewReportSupported,
-  isUserContextPolygonsDataviewReportSupported,
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
+import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import { dataviewHasUserTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
 
@@ -145,15 +145,12 @@ export const selectVGReportActivityDataviews = createSelector(
 export const selectPointsActiveReportDataviews = createSelector(
   [selectContextAreasDataviews, selectCustomUserDataviews],
   (contextDataviews = [], userDataviews = []) => {
-    const otherDataviews = [...contextDataviews, ...userDataviews]?.filter((dataview) => {
-      if (!dataview.config?.visible) {
-        return false
-      }
+    return [...contextDataviews, ...userDataviews].filter((dataview) => {
+      if (!dataview.config?.visible) return false
       return (
-        isUserContextDataviewReportSupported(dataview) || isContextDataviewReportSupported(dataview)
+        isUserContextDataviewReportSupported(dataview) || isPointsDataviewReportSupported(dataview)
       )
     })
-    return otherDataviews
   }
 )
 
@@ -165,11 +162,11 @@ export const selectPointsActiveReportDataviewsGrouped = createSelector(
 )
 
 export const selectPolygonsActiveReportDataviews = createSelector(
-  [selectCustomUserDataviews],
-  (userDataviews = []) => {
-    return userDataviews.filter((dataview) => {
+  [selectContextAreasDataviews, selectCustomUserDataviews],
+  (contextDataviews = [], userDataviews = []) => {
+    return [...contextDataviews, ...userDataviews].filter((dataview) => {
       if (!dataview.config?.visible) return false
-      return isUserContextPolygonsDataviewReportSupported(dataview)
+      return isPolygonsDataviewReportSupported(dataview)
     })
   }
 )

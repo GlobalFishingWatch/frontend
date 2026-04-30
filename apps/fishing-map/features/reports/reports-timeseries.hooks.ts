@@ -15,6 +15,7 @@ import {
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
+  ContextLayer,
   FourwingsLayer,
   UserContextTileLayer,
   UserPointsTileLayer,
@@ -295,7 +296,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
-          const isPolygonLayer = instance instanceof UserContextTileLayer
+          const isPolygonLayer =
+            instance instanceof UserContextTileLayer || instance instanceof ContextLayer
           const viewportLoaded =
             instance instanceof FourwingsLayer
               ? instance?.getLayer()?.viewportLoaded

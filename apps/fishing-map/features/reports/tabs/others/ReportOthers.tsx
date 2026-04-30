@@ -14,7 +14,7 @@ import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/sel
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import { isUserContextPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
+import { isPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
 import { selectReportDatasetId } from 'features/reports/reports.selectors'
 import {
   useComputeReportTimeSeries,
@@ -52,7 +52,6 @@ function ReportOthers() {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   if (!Object.keys(otherDataviews)?.length) return null
-
   return (
     <div className={reportStyles.section}>
       {Object.values(otherDataviews).map((dataviews) => {
@@ -85,7 +84,7 @@ function ReportOthers() {
         )
         const hasAggregateByProperty = Boolean(dataview.config?.aggregateByProperty)
 
-        const isPolygonsDataview = isUserContextPolygonsDataviewReportSupported(dataview)
+        const isPolygonsDataview = isPolygonsDataviewReportSupported(dataview)
         const mergedDataviewId = getMergedDataviewId(dataviews)
 
         const layerTimeseries = layersTimeseriesFiltered?.find((ts) => ts.id === mergedDataviewId)

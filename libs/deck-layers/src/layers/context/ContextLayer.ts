@@ -8,7 +8,8 @@ import type {
 } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import type { GeoJsonProperties } from 'geojson'
+import type { GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
+import polygonClipping from 'polygon-clipping'
 
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -47,6 +48,8 @@ type _ContextLayerProps = TileLayerProps & ContextLayerProps
 type ContextLayerState = {
   highlightedFeatures?: ContextPickingObject[]
 }
+
+const { union } = polygonClipping
 
 const defaultProps: DefaultProps<_ContextLayerProps> = {
   pickable: true,
@@ -151,32 +154,54 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const height = viewport.height
     const x = viewport.x
     const y = viewport.y
-    const features = deck!.pickObjects({
-      x,
-      y,
-      width,
-      height,
-      layerIds: [this.id],
-      maxObjects,
-    })
+    const layerIds = this.props.layers.map((l) => l.id)
+    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
     return features.filter((f) => f.object)
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
     const features = this._pickObjects(maxFeatures)
-    const featureCache = new Set()
-    const renderedFeatures: ContextFeature[] = []
+    const featureGroups = new Map<string, ContextFeature[]>()
+    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
 
     for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, this.props.layers?.[0]?.idProperty)
+      const layerId = this.props.layers.find((l) => f.layer?.id.startsWith(l.id))?.id
+      const obj = layerId
+        ? {
+            ...(f.object as ContextFeature),
+            properties: { ...(f.object as ContextFeature)?.properties, layerId },
+          }
+        : (f.object as ContextFeature)
+      const featureId = getContextId(f.object as ContextFeature, idProperty)
+      const cacheKey = layerId !== undefined ? `${layerId}:${featureId}` : `${featureId}`
 
-      if (featureId === undefined) {
-        // we have no id for the feature, we just add to the list
-        renderedFeatures.push(f.object as ContextFeature)
-      } else if (!featureCache.has(featureId)) {
-        // Add removing duplicates
-        featureCache.add(featureId)
-        renderedFeatures.push(f.object as ContextFeature)
+      if (!featureGroups.has(cacheKey)) {
+        featureGroups.set(cacheKey, [])
+      }
+      featureGroups.get(cacheKey)!.push(obj)
+    }
+
+    const renderedFeatures: ContextFeature[] = []
+
+    for (const group of featureGroups.values()) {
+      if (group.length === 1) {
+        renderedFeatures.push(group[0])
+        continue
+      }
+
+      const first = group[0]
+      const geometryType = first.geometry?.type
+      if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+        const geoms = group.map(
+          (feat) => (feat.geometry as Polygon | MultiPolygon).coordinates as polygonClipping.Geom
+        )
+        const unioned = union(geoms[0], ...geoms)
+        renderedFeatures.push({
+          ...first,
+          geometry: { type: 'MultiPolygon', coordinates: unioned } as MultiPolygon,
+        })
+      } else {
+        renderedFeatures.push(first)
       }
     }
 

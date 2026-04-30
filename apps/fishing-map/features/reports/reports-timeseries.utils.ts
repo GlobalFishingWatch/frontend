@@ -6,7 +6,7 @@ import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
-import { UserContextTileLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { ContextLayer, UserContextTileLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type {
@@ -44,7 +44,7 @@ export const isInstanceOfPointsLayer = (instance: ReportDeckLayer) => {
 }
 
 export const isInstanceOfPolygonLayer = (instance: ReportDeckLayer) => {
-  return instance instanceof UserContextTileLayer
+  return instance instanceof UserContextTileLayer || instance instanceof ContextLayer
 }
 
 export type GetPolygonsStatsParams = {

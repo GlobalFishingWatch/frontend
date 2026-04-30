@@ -52,7 +52,14 @@ export function filterByPolygon({
         if (mode === 'polygon') {
           const feature = cell as Feature<Geometry>
           if (!feature?.geometry) return acc
-          if (booleanContains(polygon, feature)) {
+          const subPolygons: Feature<Polygon>[] =
+            feature.geometry.type === 'MultiPolygon'
+              ? feature.geometry.coordinates.map((coords) => ({
+                  ...feature,
+                  geometry: { type: 'Polygon' as const, coordinates: coords },
+                }))
+              : ([feature] as Feature<Polygon>[])
+          if (subPolygons.every((p) => booleanContains(polygon, p))) {
             acc.contained.push(feature)
           } else {
             const [fx1, fy1, fx2, fy2] = bbox(feature)
