@@ -658,11 +658,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -682,11 +678,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -714,11 +706,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
