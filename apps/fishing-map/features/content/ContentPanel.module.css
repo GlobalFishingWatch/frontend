@@ -95,7 +95,7 @@
   margin-bottom: var(--space-M);
 }
 
-.content > *p:nth-last-child(1) {
+.content > p:nth-last-child(1) {
   padding-bottom: var(--space-XL);
 }
 
