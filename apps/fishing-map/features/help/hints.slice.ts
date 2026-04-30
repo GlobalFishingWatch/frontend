@@ -18,26 +18,32 @@ const initialState: HintsState = {
 
 const hintsSlice = createSlice({
   name: 'hints',
-  initialState: () => {
-    if (typeof window === 'undefined') return initialState
-    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
-    return { ...initialState, hintsDismissed }
-  },
+  initialState,
   reducers: {
+    hydrateHintsDismissed: (state, action: PayloadAction<HintsDismissed>) => {
+      state.hintsDismissed = action.payload
+    },
     resetHints: (state) => {
       state.hintsDismissed = undefined
-      localStorage.setItem(HINTS, '{}')
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(HINTS, '{}')
+      }
     },
     setHintDismissed: (state, action: PayloadAction<HintId>) => {
-      const currentHintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
+      const currentHintsDismissed =
+        typeof window === 'undefined'
+          ? state.hintsDismissed || {}
+          : JSON.parse(localStorage.getItem(HINTS) || '{}')
       const allHintsDismissed = { ...currentHintsDismissed, ...{ [action.payload]: true } }
       state.hintsDismissed = allHintsDismissed
-      localStorage.setItem(HINTS, JSON.stringify(allHintsDismissed))
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(HINTS, JSON.stringify(allHintsDismissed))
+      }
     },
   },
 })
 
-export const { resetHints, setHintDismissed } = hintsSlice.actions
+export const { hydrateHintsDismissed, resetHints, setHintDismissed } = hintsSlice.actions
 
 export const selectHintsDismissed = (state: RootState) => state.hints.hintsDismissed
 
