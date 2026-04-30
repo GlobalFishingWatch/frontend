@@ -567,9 +567,9 @@
         "keyword": "crwdns125774:0crwdne125774:0",
         "enum": {
           "FISHING-FISHING": "crwdns125776:0crwdne125776:0",
-          "FISHING-NON_FISHING": "crwdns125778:0crwdne125778:0",
-          "NON_FISHING-FISHING": "crwdns125780:0crwdne125780:0",
-          "NON_FISHING-NON_FISHING": "crwdns125782:0crwdne125782:0"
+          "FISHING-OTHER": "crwdns129974:0crwdne129974:0",
+          "OTHER-FISHING": "crwdns129976:0crwdne129976:0",
+          "OTHER-OTHER": "crwdns129978:0crwdne129978:0"
         }
       }
     }
@@ -637,7 +637,8 @@
           "5.4": "crwdns125888:0crwdne125888:0",
           "5.6": "crwdns125890:0crwdne125890:0",
           "5.9": "crwdns125892:0crwdne125892:0",
-          "Sem código IN": "crwdns125894:0crwdne125894:0"
+          "Sem código IN": "crwdns125894:0crwdne125894:0",
+          "nan": "crwdns129980:0crwdne129980:0"
         }
       }
     }
@@ -742,11 +743,7 @@
         "keyword": "crwdns125996:0crwdne125996:0",
         "enum": {
           "FISHING": "crwdns125998:0crwdne125998:0",
-          "NON_FISHING": "crwdns126000:0crwdne126000:0",
-          "SUPPORT": "crwdns126002:0crwdne126002:0",
-          "CARRIER": "crwdns126004:0crwdne126004:0",
-          "RESEARCH": "crwdns126006:0crwdne126006:0",
-          "": "crwdns126008:0crwdne126008:0"
+          "OTHER": "crwdns129982:0crwdne129982:0"
         }
       }
     }
@@ -3826,7 +3823,7 @@
           "2.11 - Emalhe costeiro (fundo)": "crwdns129234:0crwdne129234:0",
           "2.12 - Emalhe costeiro (fundo)": "crwdns129236:0crwdne129236:0",
           "2.13 - Emalhe Costeiro Diversificado": "crwdns129238:0crwdne129238:0",
-          "2.2 - Emalhe costeiro (superfície) ": "crwdns129240:0crwdne129240:0",
+          "2.2 - Emalhe costeiro (superfície)": "crwdns129984:0crwdne129984:0",
           "2.3 - Emalhe oceânico (fundo)": "crwdns129242:0crwdne129242:0",
           "2.4 - Emalhe costeiro (fundo)": "crwdns129244:0crwdne129244:0",
           "2.5 - Emalhe costeiro (superfície)": "crwdns129246:0crwdne129246:0",
@@ -3905,7 +3902,7 @@
           "Piramutaba e dourada": "crwdns129384:0crwdne129384:0",
           "Polvo": "crwdns129386:0crwdne129386:0",
           "Saramunete": "crwdns129388:0crwdne129388:0",
-          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns129390:0crwdne129390:0",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha": "crwdns129986:0crwdne129986:0",
           "Sardinha verdadeira": "crwdns129392:0crwdne129392:0",
           "Sardinha-lage": "crwdns129394:0crwdne129394:0",
           "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns129396:0crwdne129396:0",
