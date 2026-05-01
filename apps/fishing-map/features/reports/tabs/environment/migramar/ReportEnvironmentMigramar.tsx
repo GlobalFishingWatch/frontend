@@ -15,7 +15,7 @@ import ReportEnvironmentMigramarGraph from './ReportEnvironmentMigramarGraph'
 import styles from '../ReportEnvironment.module.css'
 
 // TODO:Migramar make id dynamic
-const AREA_ID = 'coco_island_national_park'
+const AREA_ID = 'cocos_island'
 
 function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance<DataviewType> }) {
   const { t, i18n } = useTranslation()

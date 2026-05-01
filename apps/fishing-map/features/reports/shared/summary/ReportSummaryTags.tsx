@@ -36,9 +36,16 @@ import styles from './ReportSummaryTags.module.css'
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
   allowDelete?: boolean
+  showColor?: boolean
+  showFilters?: boolean
 }
 
-export default function ReportSummaryTags({ dataview, allowDelete = false }: LayerPanelProps) {
+export default function ReportSummaryTags({
+  dataview,
+  allowDelete = false,
+  showColor = true,
+  showFilters = true,
+}: LayerPanelProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -91,42 +98,44 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
-  if (
-    reportCategory === ReportCategory.Environment &&
-    !dataview.config?.minVisibleValue &&
-    !dataview.config?.maxVisibleValue
-  ) {
-    return null
-  }
+  // if (
+  //   reportCategory === ReportCategory.Environment &&
+  //   !dataview.config?.minVisibleValue &&
+  //   !dataview.config?.maxVisibleValue
+  // ) {
+  //   return null
+  // }
 
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
-        <ExpandedContainer
-          visible={colorOpen}
-          onClickOutside={onToggleColorOpen}
-          className={styles.expandedContainer}
-          referenceClassName={styles.dotReference}
-          component={
-            <div>
-              {<label>{t((t) => t.layer.properties.color)}</label>}
-              <ColorBar
-                colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
-                selectedColor={dataview.config?.color}
-                onColorClick={onColorClick}
-                swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
-                hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
-              />
-            </div>
-          }
-        >
-          <button
-            onClick={onToggleColorOpen}
-            className={cx(styles.dot, styles.pointer)}
-            style={{ color: dataview.config?.color }}
-          />
-        </ExpandedContainer>
-        {showSchemaFilters && (
+        {showColor && (
+          <ExpandedContainer
+            visible={colorOpen}
+            onClickOutside={onToggleColorOpen}
+            className={styles.expandedContainer}
+            referenceClassName={styles.dotReference}
+            component={
+              <div>
+                {<label>{t((t) => t.layer.properties.color)}</label>}
+                <ColorBar
+                  colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
+                  selectedColor={dataview.config?.color}
+                  onColorClick={onColorClick}
+                  swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
+                  hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
+                />
+              </div>
+            }
+          >
+            <button
+              onClick={onToggleColorOpen}
+              className={cx(styles.dot, styles.pointer)}
+              style={{ color: dataview.config?.color }}
+            />
+          </ExpandedContainer>
+        )}
+        {showFilters && showSchemaFilters && (
           <ExpandedContainer
             onClickOutside={onToggleFiltersUIOpen}
             visible={filtersUIOpen}
@@ -155,33 +164,34 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
         )}
       </div>
       <Fragment>
-        {(reportCategory === ReportCategory.Activity ||
-          reportCategory === ReportCategory.Detections ||
-          reportCategory === ReportCategory.Events ||
-          reportCategory === ReportCategory.Others) && (
-          <Fragment>
-            <DatasetFilterSource
-              dataview={dataview}
-              className={styles.tag}
-              allowDelete={allowDelete}
-              showDeprecatedWarning={showDeprecatedWarning}
-            />
-            {hasFilterSelected ? (
-              filtersAllowed.map(({ id, label }) => (
-                <DatasetSchemaField
-                  key={id}
-                  dataview={dataview}
-                  field={id}
-                  label={label}
-                  className={styles.tag}
-                  onRemove={onTagRemoveClick}
-                />
-              ))
-            ) : hasSourceSelected ? null : (
-              <label>{t((t) => t.selects.allSelected)}</label>
-            )}
-          </Fragment>
-        )}
+        {showFilters && showSchemaFilters &&
+          (reportCategory === ReportCategory.Activity ||
+            reportCategory === ReportCategory.Detections ||
+            reportCategory === ReportCategory.Events ||
+            reportCategory === ReportCategory.Others) && (
+            <Fragment>
+              <DatasetFilterSource
+                dataview={dataview}
+                className={styles.tag}
+                allowDelete={allowDelete}
+                showDeprecatedWarning={showDeprecatedWarning}
+              />
+              {hasFilterSelected ? (
+                filtersAllowed.map(({ id, label }) => (
+                  <DatasetSchemaField
+                    key={id}
+                    dataview={dataview}
+                    field={id}
+                    label={label}
+                    className={styles.tag}
+                    onRemove={onTagRemoveClick}
+                  />
+                ))
+              ) : hasSourceSelected ? null : (
+                <label>{t((t) => t.selects.allSelected)}</label>
+              )}
+            </Fragment>
+          )}
         {reportCategory === ReportCategory.Environment ? (
           dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue ? (
             <DatasetSchemaField

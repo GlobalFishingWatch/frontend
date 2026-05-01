@@ -13,17 +13,22 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { dataviewHasUserTimeRange } from 'features/dataviews/dataviews.utils'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { isPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { categoryToDataviewMap, ReportCategory } from 'features/reports/reports.types'
 import {
+  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportPolygonsGraph from 'features/reports/tabs/others/ReportPolygonsGraph'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
@@ -37,7 +42,9 @@ import styles from './ReportEnvironment.module.css'
 function ReportEnvironment() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  useComputeReportTimeSeries()
 
+  const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const comparisonDataviews = useSelector(selectReportComparisonDataviews)
@@ -69,6 +76,20 @@ function ReportEnvironment() {
         {reportGraphType !== REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
           <>
             {environmentalDataviews.map((dataview, index) => {
+              if (isPolygonsDataviewReportSupported(dataview)) {
+                return (
+                  <ReportPolygonsGraph
+                    key={dataview.id}
+                    dataview={dataview}
+                    data={layersTimeseriesFiltered?.[index]}
+                    loading={loading}
+                    start={start}
+                    end={end}
+                    showEvolution={dataviewHasUserTimeRange(dataview)}
+                  />
+                )
+              }
+
               return (
                 <ReportEnvironmentGraph
                   key={dataview.id}

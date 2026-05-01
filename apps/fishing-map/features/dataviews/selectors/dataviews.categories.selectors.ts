@@ -14,6 +14,7 @@ import {
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
+import { selectReportDatasetId } from 'features/reports/reports.selectors'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import { dataviewHasUserTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
@@ -177,8 +178,11 @@ export const selectPolygonsActiveReportDataviewsGrouped = createSelector(
 )
 
 export const selectOthersActiveReportDataviews = createSelector(
-  [selectPointsActiveReportDataviews, selectPolygonsActiveReportDataviews],
-  (points = [], polygons = []) => [...points, ...polygons]
+  [selectPointsActiveReportDataviews, selectPolygonsActiveReportDataviews, selectReportDatasetId],
+  (points = [], polygons = [], reportDatasetId) =>
+    [...points, ...polygons].filter(
+      (d) => !d.datasets?.some((ds) => reportDatasetId?.split(',').includes(ds.id))
+    )
 )
 
 export const selectOthersActiveReportDataviewsGrouped = createSelector(

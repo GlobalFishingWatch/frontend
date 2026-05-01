@@ -176,9 +176,10 @@ export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
   if (
-    isContextDataviewReportSupported(dataview) ||
-    isUserContextDataviewReportSupported(dataview) ||
-    isPolygonsDataviewReportSupported(dataview)
+    (isContextDataviewReportSupported(dataview) ||
+      isUserContextDataviewReportSupported(dataview) ||
+      isPolygonsDataviewReportSupported(dataview)) &&
+    dataview.category !== DataviewCategory.Environment
   ) {
     return ReportCategory.Others
   }

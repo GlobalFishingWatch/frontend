@@ -14,6 +14,7 @@ export default {
     'selector-id-pattern': '.*',
     'custom-property-pattern': '.*',
     'keyframes-name-pattern': '.*',
+    'declaration-property-value-no-unknown': [true, { ignoreProperties: { cursor: ['/./'] } }],
   },
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
 }

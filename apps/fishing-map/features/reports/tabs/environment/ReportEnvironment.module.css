@@ -32,12 +32,24 @@
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
-  padding-bottom: var(--space-S);
+  padding-block: var(--space-S);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-XS);
 }
 
 .summary strong {
   font-weight: 400;
   color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+  padding-bottom: var(--space-S);
 }
 
 .marginTop {

@@ -1,8 +1,6 @@
 .row {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
-  padding-left: var(--space-M);
   max-width: 100%;
 }
 
@@ -11,21 +9,19 @@
 }
 
 .actionsContainer {
-  position: absolute;
-  left: -0.7rem;
-  top: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  width: 3rem;
+  width: 2rem;
 }
 
 .dot {
   width: 1rem;
   height: 1rem;
   border-radius: 0.5rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.6rem;
   border: var(--border);
   display: inline-flex;
   background-color: currentcolor;
