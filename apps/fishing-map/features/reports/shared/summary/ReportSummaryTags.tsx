@@ -130,8 +130,8 @@ export default function ReportSummaryTags({
           >
             <button
               onClick={onToggleColorOpen}
-              className={cx(styles.dot, styles.pointer)}
-              style={{ color: dataview.config?.color }}
+              className={styles.dot}
+              style={{ cursor: 'pointer', color: dataview.config?.color }}
             />
           </ExpandedContainer>
         )}
