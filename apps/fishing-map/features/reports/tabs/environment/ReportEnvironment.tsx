@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   isEnvironmentalDataview,
   isHeatmapVectorsDataview,
@@ -13,7 +12,6 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { dataviewHasUserTimeRange } from 'features/dataviews/dataviews.utils'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -85,7 +83,6 @@ function ReportEnvironment() {
                     loading={loading}
                     start={start}
                     end={end}
-                    showEvolution={dataviewHasUserTimeRange(dataview)}
                   />
                 )
               }
@@ -98,7 +95,6 @@ function ReportEnvironment() {
                   data={layersTimeseriesFiltered?.[index]}
                   isLoading={loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'}
                   index={index}
-                  removeEmptyValues={dataview.category === DataviewCategory.Environment}
                 />
               )
             })}

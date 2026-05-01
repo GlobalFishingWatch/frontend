@@ -164,7 +164,8 @@ export default function ReportSummaryTags({
         )}
       </div>
       <Fragment>
-        {showFilters && showSchemaFilters &&
+        {showFilters &&
+          showSchemaFilters &&
           (reportCategory === ReportCategory.Activity ||
             reportCategory === ReportCategory.Detections ||
             reportCategory === ReportCategory.Events ||

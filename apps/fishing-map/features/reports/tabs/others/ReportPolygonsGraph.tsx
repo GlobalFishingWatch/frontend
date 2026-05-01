@@ -69,19 +69,23 @@ function ReportPolygonsGraph({
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
       </p>
-      {loading ? (
+      {loading || !layerStats ? (
         <ReportStatsPlaceholder />
       ) : containedCount || overlappingCount ? (
         <p className={styles.summary}>
           {containedCount !== 0 && (
             <Fragment>
-              <strong>{containedCount}</strong> {t((t) => t.analysis.polygonsFullyContained)}{' '}
-              {t((t) => t.common.and)}{' '}
+              <strong>
+                {containedCount} {t((t) => t.analysis.polygonsFullyContained)}
+              </strong>{' '}
             </Fragment>
           )}
           {overlappingCount !== 0 && (
             <Fragment>
-              <strong>{overlappingCount}</strong> {t((t) => t.analysis.polygonsOverlapping)}
+              {t((t) => t.common.and)}{' '}
+              <strong>
+                {overlappingCount} {t((t) => t.analysis.polygonsOverlapping)}
+              </strong>
             </Fragment>
           )}{' '}
           {t((t) => t.analysis.polygons, {
@@ -97,7 +101,9 @@ function ReportPolygonsGraph({
             }).toString(),
           })}
         </p>
-      ) : null}
+      ) : (
+        <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
+      )}
 
       {hasFilters && (
         <div className={styles.tagsContainer}>
