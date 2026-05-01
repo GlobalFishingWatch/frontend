@@ -72,6 +72,20 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     }
   }
 
+  get filtersHash(): string {
+    return (
+      this.props.layers
+        ?.flatMap((layer) =>
+          layer.sublayers.map((sublayer) => getContextFiltersHash(sublayer.filters))
+        )
+        .join('-') ?? ''
+    )
+  }
+
+  get cacheHash(): string {
+    return `${this.props.id}${this.filtersHash}-${this.isLoaded}`
+  }
+
   _getHighlightedFeatures() {
     return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }

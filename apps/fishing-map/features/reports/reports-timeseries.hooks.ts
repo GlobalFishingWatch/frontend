@@ -105,6 +105,8 @@ export type PolygonsReportGraphStats = {
   type: 'polygons'
   contained: number
   overlapping: number
+  containedValues: number[]
+  overlappingValues: number[]
   areaCoverageRatio: number
   areaCoverageKm2: number
 }

@@ -46,6 +46,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
+  const [forceClosed, setForceClosed] = useState(false)
 
   const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
 
@@ -68,10 +69,15 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
       })
     }
     setIsLanguageMenuOpen(false)
+    setForceClosed(true)
   }
 
   return (
-    <div className={cx(styles.languageToggle, className)} ref={expandedContainerRef}>
+    <div
+      className={cx(styles.languageToggle, className)}
+      ref={expandedContainerRef}
+      onMouseLeave={() => setForceClosed(false)}
+    >
       <div className={styles.languageBtn}>
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
@@ -83,7 +89,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           }}
         />
       </div>
-      <ul className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}>
+      <ul className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen, [styles.forceClosed]: forceClosed })}>
         {IS_DEVELOPMENT_ENV && (
           <li>
             <button

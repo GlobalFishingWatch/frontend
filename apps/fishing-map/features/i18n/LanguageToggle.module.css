@@ -61,6 +61,10 @@
   display: flex;
 }
 
+.forceClosed {
+  display: none !important;
+}
+
 .language {
   width: calc(100%);
   color: var(--color-secondary-blue);

@@ -5,8 +5,13 @@ import { DateTime } from 'luxon'
 import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  ContextSubLayerConfig,
+  FourwingsLayer,
+  FourwingsVectorsTileLayer,
+} from '@globalfishingwatch/deck-layers'
 import { ContextLayer, UserContextTileLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type {
@@ -50,23 +55,38 @@ export const isInstanceOfPolygonLayer = (instance: ReportDeckLayer) => {
 export type GetPolygonsStatsParams = {
   features: FilteredPolygons[]
   reportArea?: Polygon | MultiPolygon
+  sublayers?: ContextSubLayerConfig[]
+}
+
+function getCountsBySublayer(
+  features: FilteredPolygons['contained' | 'overlapping'],
+  sublayers: ContextSubLayerConfig[]
+): number[] {
+  return sublayers.map((sublayer) =>
+    features.filter((f) => isFeatureInFilters(f, sublayer.filters, sublayer.filterOperators)).length
+  )
 }
 
 export const getPolygonsTimeseriesStats = ({
   features,
   reportArea,
+  sublayers,
 }: GetPolygonsStatsParams): PolygonsReportGraphStats | undefined => {
   const featureGroup = features?.[0]
   if (!featureGroup) return undefined
 
   const containedCount = featureGroup.contained.length
   const overlappingCount = featureGroup.overlapping.length
+  const containedValues = sublayers ? getCountsBySublayer(featureGroup.contained, sublayers) : []
+  const overlappingValues = sublayers ? getCountsBySublayer(featureGroup.overlapping, sublayers) : []
 
   if (!reportArea || (containedCount === 0 && overlappingCount === 0)) {
     return {
       type: 'polygons',
       contained: containedCount,
       overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
       areaCoverageRatio: 0,
       areaCoverageKm2: 0,
     }
@@ -112,6 +132,8 @@ export const getPolygonsTimeseriesStats = ({
       type: 'polygons',
       contained: containedCount,
       overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
       areaCoverageRatio: intersectionM2 / reportAreaM2,
       areaCoverageKm2: intersectionM2 / 1_000_000,
     }
@@ -120,6 +142,8 @@ export const getPolygonsTimeseriesStats = ({
       type: 'polygons',
       contained: containedCount,
       overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
       areaCoverageRatio: 0,
       areaCoverageKm2: 0,
     }
@@ -165,7 +189,8 @@ export const getTimeseriesStats = <T extends ReportDeckLayer>({
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPolygonLayer(instance)) {
-      const stats = getPolygonsTimeseriesStats({ features, reportArea })
+      const sublayers = instance.props.layers?.[0]?.sublayers as ContextSubLayerConfig[] | undefined
+      const stats = getPolygonsTimeseriesStats({ features, reportArea, sublayers })
       if (stats) {
         timeseriesStats[instance.id] = stats
       }

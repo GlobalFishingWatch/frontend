@@ -23,6 +23,8 @@ import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivi
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
+import ReportSublayerValues from './ReportSublayerValues'
+
 import styles from './ReportPointsGraph.module.css'
 
 function ReportPointsGraph({
@@ -106,22 +108,7 @@ function ReportPointsGraph({
               </>
             )}
           </span>
-          {statsValues && (statsValues as number[])?.length > 1 && (
-            <Fragment>
-              (
-              {(statsValues as number[]).map((value, index) => (
-                <Fragment key={index}>
-                  <span
-                    className={styles.dot}
-                    style={{ color: tags[index]?.config?.color }}
-                  />
-                  {value}
-                  {index < (statsValues as number[]).length - 1 ? ', ' : ''}
-                </Fragment>
-              ))}
-              ){' '}
-            </Fragment>
-          )}
+          {statsValues && <ReportSublayerValues values={statsValues as number[]} tags={tags} />}
         </Fragment>
       </p>
     ) : null

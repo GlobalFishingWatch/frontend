@@ -18,6 +18,7 @@ import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 
 import ReportPolygonsEvolution from './ReportPolygonsEvolution'
+import ReportSublayerValues from './ReportSublayerValues'
 
 import styles from './ReportPolygonsGraph.module.css'
 
@@ -54,6 +55,12 @@ function ReportPolygonsGraph({
   const layerStats = timeseriesStats?.[statsId ?? dataview.id]
   const containedCount = layerStats ? getStatsValue(layerStats, 'contained') : 0
   const overlappingCount = layerStats ? getStatsValue(layerStats, 'overlapping') : 0
+  const containedValues = layerStats
+    ? (getStatsValue(layerStats, 'containedValues') as number[])
+    : []
+  const overlappingValues = layerStats
+    ? (getStatsValue(layerStats, 'overlappingValues') as number[])
+    : []
   const areaCoverageRatio = layerStats ? getStatsValue(layerStats, 'areaCoverageRatio') : undefined
   const areaCoverageKm2 = layerStats ? getStatsValue(layerStats, 'areaCoverageKm2') : undefined
 
@@ -77,15 +84,17 @@ function ReportPolygonsGraph({
             <Fragment>
               <strong>
                 {containedCount} {t((t) => t.analysis.polygonsFullyContained)}
-              </strong>{' '}
+              </strong>
+              <ReportSublayerValues values={containedValues} tags={tags} />
             </Fragment>
-          )}
+          )}{' '}
+          {containedCount !== 0 && overlappingCount !== 0 && `${t((t) => t.common.and)} `}
           {overlappingCount !== 0 && (
             <Fragment>
-              {t((t) => t.common.and)}{' '}
               <strong>
                 {overlappingCount} {t((t) => t.analysis.polygonsOverlapping)}
               </strong>
+              <ReportSublayerValues values={overlappingValues} tags={tags} />
             </Fragment>
           )}{' '}
           {t((t) => t.analysis.polygons, {
@@ -107,7 +116,7 @@ function ReportPolygonsGraph({
 
       {hasFilters && (
         <div className={styles.tagsContainer}>
-          <ReportSummaryTags dataview={tags[0]} showColor={tags.length !== 1} />
+          {tags.length > 1 && tags.map((d) => <ReportSummaryTags dataview={d} />)}
         </div>
       )}
       {showEvolution &&
