@@ -37,16 +37,12 @@ const DeckGLWrapper = () => {
       if (params.interactionState.isZooming || !params.interactionState.inTransition) {
         // https://github.com/visgl/deck.gl/issues/7158#issuecomment-2305388963
         // add transitionDuration: 0 to avoid unresponsive zoom
-        setViewState({
-          ...viewState,
-          ...params.viewState,
-          transitionDuration: 0,
-        })
+        setViewState({ ...params.viewState, transitionDuration: 0 })
       } else {
-        setViewState({ ...viewState, ...params.viewState })
+        setViewState(params.viewState)
       }
     },
-    [setViewState, viewState]
+    [setViewState]
   )
 
   const onMapClick = useMapMouseClick()

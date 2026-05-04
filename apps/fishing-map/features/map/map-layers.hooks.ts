@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useAtomValue } from 'jotai'
 import { extent } from 'simple-statistics'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -10,13 +11,19 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import {
+  deckLayerInstancesAtom,
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  DeckLayerPickingObject,
+  FourwingsLayer,
+  VesselLayer,
+} from '@globalfishingwatch/deck-layers'
 import { generateVesselGraphSteps, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import { getVesselGraphExtentClamped } from '@globalfishingwatch/deck-loaders'
+import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
 import {
@@ -143,7 +150,7 @@ export const useGlobalConfigConnect = () => {
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
-  const hoverFeatures = useMapHoverInteraction()?.features
+  // const hoverFeatures = useMapHoverInteraction()?.features
   const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -165,8 +172,15 @@ export const useGlobalConfigConnect = () => {
   ])
 
   const highlightedFeatures = useMemo(() => {
-    return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
-  }, [clickedFeatures?.features, hoverFeatures])
+    return [...(clickedFeatures?.features || [])]
+  }, [clickedFeatures?.features])
+
+  // This was the way we managed highlighted features in "@deck.gl/core": "9.1.15"
+  // but after upgrading to 9.3 the performance was terrible so had to create the
+  // useSyncMapHoverHighlightedFeatures workaround
+  // const highlightedFeatures = useMemo(() => {
+  //   return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
+  // }, [clickedFeatures?.features, hoverFeatures])
 
   const onPositionsMaxPointsError = useCallback(
     (layer: FourwingsLayer) => {
@@ -246,7 +260,7 @@ export const useGlobalConfigConnect = () => {
   ])
 }
 
-const useMapDataviewsLayers = () => {
+export const useMapDataviewsLayers = () => {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceDataviews = useSelector(selectDataviewInstancesResolvedVisible)
   const bufferDataviews = useSelector(selectMapReportBufferDataviews)
@@ -288,6 +302,58 @@ const useMapDataviewsLayers = () => {
   return layers
 }
 
+type HighlightableLayer = {
+  id: string
+  state?: unknown
+  setHighlightedFeatures?: (features: DeckLayerPickingObject[]) => void
+}
+const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
+
+function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
+  return features
+    .map((feature) => {
+      const interactionType = 'interactionType' in feature ? feature.interactionType : ''
+      const coordinates = 'coordinates' in feature ? JSON.stringify(feature.coordinates) : ''
+      const geometry = 'geometry' in feature ? JSON.stringify(feature.geometry) : ''
+      const tile = 'tile' in feature ? JSON.stringify(feature.tile) : ''
+      return `${feature.category}-${feature.layerId}-${feature.id}-${interactionType}-${tile}-${coordinates}-${geometry}`
+    })
+    .join('|')
+}
+
+function getLayerHoverFeatures(layer: HighlightableLayer, features: DeckLayerPickingObject[] = []) {
+  return features.filter((feature) => {
+    return layer.id.includes(feature.layerId) || feature.layerId.includes(layer.id)
+  })
+}
+
+export const useSyncMapHoverHighlightedFeatures = () => {
+  const layers = useAtomValue(deckLayerInstancesAtom) as HighlightableLayer[]
+  const hoverFeatures = useMemoCompare(
+    useMapHoverInteraction()?.features ?? EMPTY_HOVER_FEATURES,
+    (previousFeatures, nextFeatures) => {
+      return getHoverFeaturesHash(previousFeatures) === getHoverFeaturesHash(nextFeatures)
+    }
+  )
+  const hoverFeaturesHash = getHoverFeaturesHash(hoverFeatures)
+  const layerHighlightsHashRef = useRef<Record<string, string>>({})
+
+  useEffect(() => {
+    layers.forEach((layer) => {
+      if (typeof layer.setHighlightedFeatures !== 'function' || !layer.state) {
+        return
+      }
+      const layerHoverFeatures = getLayerHoverFeatures(layer, hoverFeatures)
+      const layerHoverFeaturesHash = getHoverFeaturesHash(layerHoverFeatures)
+      if (layerHighlightsHashRef.current[layer.id] === layerHoverFeaturesHash) {
+        return
+      }
+      layerHighlightsHashRef.current[layer.id] = layerHoverFeaturesHash
+      layer.setHighlightedFeatures(layerHoverFeatures)
+    })
+  }, [hoverFeatures, hoverFeaturesHash, layers])
+}
+
 const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
@@ -297,7 +363,9 @@ const useMapOverlayLayers = () => {
 }
 
 export const useMapLayers = () => {
-  const dataviewsLayers = useMapDataviewsLayers()
+  // Read from the atom directly — layer composition runs in LayersComposer (a sibling of DeckGLWrapper)
+  // so hover changes do not recompose the expensive data/tile layers.
+  const dataviewsLayers = useAtomValue(deckLayerInstancesAtom)
   const overlays = useMapOverlayLayers()
   return useMemo(() => [...dataviewsLayers, ...overlays], [dataviewsLayers, overlays])
 }

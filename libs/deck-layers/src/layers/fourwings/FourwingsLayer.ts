@@ -28,6 +28,10 @@ import type {
   GetViewportDataParams,
 } from './fourwings.types'
 
+type FourwingsLayerState = {
+  highlightedFeatures?: FourwingsPickingObject[]
+}
+
 export type FourwingsColorRamp = {
   colorDomain: number[]
   colorRange: Color[]
@@ -61,6 +65,14 @@ const defaultProps: DefaultProps<FourwingsLayerProps> = {
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
   static defaultProps = defaultProps
+  declare state: FourwingsLayerState
+
+  initializeState() {
+    super.initializeState(this.context)
+    this.state = {
+      highlightedFeatures: [],
+    }
+  }
 
   get cacheHash(): string {
     return (this.getSubLayers() as AnyFourwingsLayer[])?.map((layer) => layer.cacheHash).join('-')
@@ -78,13 +90,21 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.getLayer()?.debounceTime || 0
   }
 
+  _getHighlightedFeatures() {
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+  }
+
   renderLayers(): AnyFourwingsLayer {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
+    const props = {
+      ...this.props,
+      highlightedFeatures: this._getHighlightedFeatures(),
+    }
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
       return new PositionsLayerClass(
-        this.props,
+        props,
         this.getSubLayerProps({
           id: POSITIONS_ID,
           onViewportLoad: this.props.onViewportLoad,
@@ -94,7 +114,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     if (visualizationMode === FOOTPRINT_ID || visualizationMode === FOOTPRINT_HIGH_RES_ID) {
       const FootprintLayerClass = this.getSubLayerClass('footprint', FourwingsFootprintTileLayer)
       return new FootprintLayerClass(
-        this.props,
+        props,
         this.getSubLayerProps({
           id: visualizationMode,
           resolution,
@@ -107,7 +127,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       : this.getSubLayerClass(resolution, FourwingsHeatmapTileLayer)
 
     return new HeatmapLayerClass(
-      this.props,
+      props,
       this.getSubLayerProps({
         id: resolution,
         resolution,
@@ -122,6 +142,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     if (layer instanceof FourwingsPositionsTileLayer) {
       return layer?.setHighlightedVessel(vesselId)
     }
+  }
+
+  setHighlightedFeatures(highlightedFeatures: FourwingsPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
   }
 
   getData() {
