@@ -3372,7 +3372,6 @@ __metadata:
     react-aria-components: "npm:1.16.0"
     react-dom: "npm:19.2.4"
     react-dropzone: "npm:15.0.0"
-    react-fps: "npm:1.0.6"
     react-ga4: "npm:2.1.0"
     react-hot-keys: "npm:2.7.3"
     react-i18next: "npm:16.5.8"
@@ -31733,16 +31732,6 @@ __metadata:
   peerDependencies:
     react: ">= 16.8 || 18.0.0"
   checksum: 10/1c465e16af658ea73002fffddd164ddc85ef745daac620c378eda8a938e2d28a558348831fdcfcf20dfed8a6c4579894adf6a5adc6165ce20cdc25f036d1c3ca
-  languageName: node
-  linkType: hard
-
-"react-fps@npm:1.0.6":
-  version: 1.0.6
-  resolution: "react-fps@npm:1.0.6"
-  peerDependencies:
-    react: ">=16.8.1"
-    react-dom: ">=16.8.1"
-  checksum: 10/c1927f68dc0ff4a87a8ede9598e77efc26bbf3c5117a1491ca46ccb7e287fff58e405691d951ca9440fc9fa21e50d97638dde8196ff09038ffc1785467d7036f
   languageName: node
   linkType: hard
 
