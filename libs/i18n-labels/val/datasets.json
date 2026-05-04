@@ -2182,26 +2182,6 @@
       }
     }
   },
-  "proto-global-skylight-viirs": {
-    "name": "crwdns127546:0crwdne127546:0",
-    "description": "crwdns127548:0crwdne127548:0",
-    "schema": {
-      "matched": {
-        "keyword": "crwdns127550:0crwdne127550:0",
-        "enum": {
-          "true": "crwdns127552:0crwdne127552:0",
-          "false": "crwdns127554:0crwdne127554:0"
-        }
-      },
-      "radiance": {
-        "keyword": "crwdns127556:0crwdne127556:0",
-        "enum": {
-          "0": "crwdns127558:0crwdne127558:0",
-          "1000": "crwdns127560:0crwdne127560:0"
-        }
-      }
-    }
-  },
   "public-areas-to-be-avoided-1618836788619": {
     "name": "crwdns127562:0crwdne127562:0",
     "description": "crwdns127564:0crwdne127564:0"
