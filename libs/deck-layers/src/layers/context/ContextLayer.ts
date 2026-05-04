@@ -191,7 +191,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
-        return new TileLayer<TileLayerProps>({
+        return new TileLayer<ContextFeature>({
           id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
           loaders: [GFWMVTLoader],
@@ -225,7 +225,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         })
       }
 
-      return new TileLayer<TileLayerProps<ContextFeature>>({
+      return new TileLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
