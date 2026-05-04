@@ -19,7 +19,7 @@ function createI18nFromState(state: I18nServerState) {
     lng: state.initialLanguage,
     defaultNS: DEFAULT_NAMESPACE,
     ns: namespaces.length > 0 ? namespaces : [DEFAULT_NAMESPACE],
-    initAsync: true,
+    initAsync: false,
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
   })
@@ -38,7 +38,7 @@ export function I18nSSRProvider({ children, serverState }: I18nSSRProviderProps)
       //   no Backend plugin needed, safe from cross-request contamination.
       // Client: reuse the global instance from i18n.ts — it has the Backend plugin
       //   (for on-demand language loading) and was already seeded with the SSR
-      //   translations by getSsrI18nState() before React hydrated.
+      //   translations by getI18nState() before React hydrated.
       isServer && serverState ? createI18nFromState(serverState) : globalI18n,
     [serverState]
   )
