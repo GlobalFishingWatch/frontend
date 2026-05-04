@@ -98,8 +98,8 @@ function ReportEnvironment() {
                 />
               )
             })}
-            {/* TODO:Migramar only show when migramar dataview is present */}
-            <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
+            {/* TODO:Migramar show this instead of ReportEnvironmentGraph when dataview is migramar */}
+            {/* <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} /> */}
           </>
         ) : (
           <Fragment>
