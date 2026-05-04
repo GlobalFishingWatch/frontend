@@ -1,10 +1,9 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
-  useIsDeckLayersLoading,
   useSetDeckLayerComposer,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
@@ -16,14 +15,11 @@ import { selectScreenshotAreaId } from 'features/map/controls/screenshot.slice'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import MapPopups from 'features/map/popups/MapPopups'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
 import {
-  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import MapInfo from './controls/MapInfo'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -64,20 +60,11 @@ const MapWrapper = () => {
     }
   }, [setDeckLayers])
 
-  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const reportAreaStatus = useSelector(selectReportAreaStatus)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
-
-  const mapLoading = useIsDeckLayersLoading()
-  const isReportAreaLoading = useMemo(
-    () => isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading,
-    [isAreaReportLocation, reportAreaStatus]
-  )
 
   return (
     <div
@@ -100,7 +87,7 @@ const MapWrapper = () => {
       <MapPopups />
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
-      <MapControls mapLoading={mapLoading || isReportAreaLoading} />
+      <MapControls />
       {isWorkspaceLocation && !isAnyReportLocation && (
         <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
       )}

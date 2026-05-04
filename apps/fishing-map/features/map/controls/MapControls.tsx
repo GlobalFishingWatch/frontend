@@ -5,6 +5,7 @@ import cx from 'classnames'
 import dynamic from 'next/dynamic'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
@@ -15,14 +16,17 @@ import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl
 import ReportControls from 'features/map/controls/ReportControl'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
+  selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsMapDrawing,
   selectIsWorkspaceLocation,
 } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './MapControls.module.css'
 
@@ -41,17 +45,19 @@ const MapAnnotations = dynamic(
     import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
 )
 
-const MapControls = ({
-  mapLoading = false,
-  onMouseEnter,
-}: {
-  mapLoading?: boolean
-  onMouseEnter?: () => void
-}): React.ReactElement<any> => {
+const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const gfwUser = useSelector(selectIsGFWUser)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const isDeckLayersLoading = useIsDeckLayersLoading()
+  const isReportAreaLoading = useMemo(
+    () => isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading,
+    [isAreaReportLocation, reportAreaStatus]
+  )
+  const mapLoading = isDeckLayersLoading || isReportAreaLoading
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
