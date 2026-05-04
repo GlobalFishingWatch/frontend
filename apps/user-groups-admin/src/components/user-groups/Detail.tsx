@@ -75,6 +75,22 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     }
   }
 
+  const onDownloadCsvClick = () => {
+    const rows = [['Email', 'First Name', 'Last Name', 'Status']]
+    group?.users?.forEach((u) =>
+      rows.push([u.email ?? '', u.firstName ?? '', u.lastName ?? '', 'active'])
+    )
+    futureUsers?.forEach((u) => rows.push([u.email, '', '', 'invited']))
+    const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${group?.name ?? 'group'}-users.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const onRemoveFutureUserClick = async (futureUserId: number) => {
     const confirmation = window.confirm(
       'Are you sure you want to permanently delete this invitation?'
@@ -88,13 +104,20 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
       fetchGroup(groupId)
     }
   }
+  if (!group || loading) {
+    return <Spinner />
+  }
 
   return (
-    <Fragment>
-      <h2 className={[styles.title, styles.content].join(' ')}>
-        Users {group ? `in the ${group.name} group` : ''}
-      </h2>
-      {!group && loading && <Spinner />}
+    <div>
+      <div className={styles.header}>
+        <div>
+          <h1 className={styles.title}>{group.name}</h1>
+          <p className={styles.description}>{group.description}</p>
+        </div>
+        <IconButton tooltip="Download CSV" icon="download" onClick={onDownloadCsvClick} />
+      </div>
+      <h2 className={[styles.subTitle, styles.content].join(' ')}>Users</h2>
       {group && (
         <div className={styles.content}>
           {group?.users && group?.users?.length > 0 ? (
@@ -139,18 +162,21 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
               </ul>
             </Fragment>
           )}
-          <InputText
-            className={styles.input}
-            label="User email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Button className={styles.button} onClick={onAddUserClick}>
-            Add user
-          </Button>
         </div>
       )}
-    </Fragment>
+      <div className={styles.content}>
+        <h2 className={styles.subTitle}>Invitations</h2>
+        <InputText
+          className={styles.input}
+          label="User email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button className={styles.button} onClick={onAddUserClick}>
+          Add user
+        </Button>
+      </div>
+    </div>
   )
 }
 
