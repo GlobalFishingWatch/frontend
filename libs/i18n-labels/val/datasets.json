@@ -487,14 +487,6 @@
     "name": "crwdns125690:0crwdne125690:0",
     "description": "crwdns125692:0crwdne125692:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns125694:0crwdne125694:0",
-        "enum": {
-          "2": "crwdns125696:0crwdne125696:0",
-          "3": "crwdns125698:0crwdne125698:0",
-          "4": "crwdns125700:0crwdne125700:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns125702:0crwdne125702:0",
         "enum": {
@@ -687,14 +679,6 @@
     "name": "crwdns125944:0crwdne125944:0",
     "description": "crwdns125946:0crwdne125946:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns125948:0crwdne125948:0",
-        "enum": {
-          "2": "crwdns125950:0crwdne125950:0",
-          "3": "crwdns125952:0crwdne125952:0",
-          "4": "crwdns125954:0crwdne125954:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns125956:0crwdne125956:0",
         "enum": {
@@ -877,14 +861,6 @@
     "name": "crwdns126184:0crwdne126184:0",
     "description": "crwdns126186:0crwdne126186:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126188:0crwdne126188:0",
-        "enum": {
-          "2": "crwdns126190:0crwdne126190:0",
-          "3": "crwdns126192:0crwdne126192:0",
-          "4": "crwdns126194:0crwdne126194:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126196:0crwdne126196:0",
         "enum": {
@@ -1026,14 +1002,6 @@
     "name": "crwdns126338:0crwdne126338:0",
     "description": "crwdns126340:0crwdne126340:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126342:0crwdne126342:0",
-        "enum": {
-          "2": "crwdns126344:0crwdne126344:0",
-          "3": "crwdns126346:0crwdne126346:0",
-          "4": "crwdns126348:0crwdne126348:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126350:0crwdne126350:0",
         "enum": {
@@ -1188,14 +1156,6 @@
     "name": "crwdns126514:0crwdne126514:0",
     "description": "crwdns126516:0crwdne126516:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126518:0crwdne126518:0",
-        "enum": {
-          "2": "crwdns126520:0crwdne126520:0",
-          "3": "crwdns126522:0crwdne126522:0",
-          "4": "crwdns126524:0crwdne126524:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126526:0crwdne126526:0",
         "enum": {
@@ -1323,14 +1283,6 @@
     "name": "crwdns126648:0crwdne126648:0",
     "description": "crwdns126650:0crwdne126650:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126652:0crwdne126652:0",
-        "enum": {
-          "2": "crwdns126654:0crwdne126654:0",
-          "3": "crwdns126656:0crwdne126656:0",
-          "4": "crwdns126658:0crwdne126658:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126660:0crwdne126660:0",
         "enum": {
@@ -1462,14 +1414,6 @@
     "name": "crwdns126786:0crwdne126786:0",
     "description": "crwdns126788:0crwdne126788:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126790:0crwdne126790:0",
-        "enum": {
-          "2": "crwdns126792:0crwdne126792:0",
-          "3": "crwdns126794:0crwdne126794:0",
-          "4": "crwdns126796:0crwdne126796:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126798:0crwdne126798:0",
         "enum": {
@@ -1607,14 +1551,6 @@
     "name": "crwdns126940:0crwdne126940:0",
     "description": "crwdns126942:0crwdne126942:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns126944:0crwdne126944:0",
-        "enum": {
-          "2": "crwdns126946:0crwdne126946:0",
-          "3": "crwdns126948:0crwdne126948:0",
-          "4": "crwdns126950:0crwdne126950:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns126952:0crwdne126952:0",
         "enum": {
@@ -1777,14 +1713,6 @@
     "name": "crwdns127112:0crwdne127112:0",
     "description": "crwdns127114:0crwdne127114:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns127116:0crwdne127116:0",
-        "enum": {
-          "2": "crwdns127118:0crwdne127118:0",
-          "3": "crwdns127120:0crwdne127120:0",
-          "4": "crwdns127122:0crwdne127122:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns127124:0crwdne127124:0",
         "enum": {
@@ -1966,14 +1894,6 @@
     "name": "crwdns127322:0crwdne127322:0",
     "description": "crwdns127324:0crwdne127324:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns127326:0crwdne127326:0",
-        "enum": {
-          "2": "crwdns127328:0crwdne127328:0",
-          "3": "crwdns127330:0crwdne127330:0",
-          "4": "crwdns127332:0crwdne127332:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns127334:0crwdne127334:0",
         "enum": {
@@ -2104,14 +2024,6 @@
     "name": "crwdns127462:0crwdne127462:0",
     "description": "crwdns127464:0crwdne127464:0",
     "schema": {
-      "confidences": {
-        "keyword": "crwdns127466:0crwdne127466:0",
-        "enum": {
-          "2": "crwdns127468:0crwdne127468:0",
-          "3": "crwdns127470:0crwdne127470:0",
-          "4": "crwdns127472:0crwdne127472:0"
-        }
-      },
       "duration": {
         "keyword": "crwdns127474:0crwdne127474:0",
         "enum": {
