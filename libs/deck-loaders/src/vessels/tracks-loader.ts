@@ -1,4 +1,4 @@
-import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
+import type { Loader, LoaderWithParser, StrictLoaderOptions } from '@loaders.gl/loader-utils'
 
 import { PATH_BASENAME } from '../loaders.config'
 import { VERSION } from '../version'
@@ -11,7 +11,7 @@ import type { VesselTrackData } from './lib/types'
  * Worker loader for the Vessel Track DECKGL format
  */
 
-export type VesselTrackLoaderOptions = LoaderOptions & {
+export type VesselTrackLoaderOptions = StrictLoaderOptions & {
   'vessel-tracks'?: VesselTrackLoaderParams & {
     workerUrl?: string
   }
@@ -40,7 +40,7 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
  * Loader for the Vessel Track DECKGL format
  */
 
-export const VesselTrackLoader: LoaderWithParser = {
+export const VesselTrackLoader: LoaderWithParser<VesselTrackData, any, VesselTrackLoaderOptions> = {
   ...VesselTrackWorkerLoader,
   parse: async (arrayBuffer, options?: VesselTrackLoaderOptions) =>
     parseTrack(arrayBuffer, options?.['vessel-tracks']),

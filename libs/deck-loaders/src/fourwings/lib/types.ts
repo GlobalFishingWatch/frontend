@@ -1,5 +1,5 @@
 import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
-import type { LoaderOptions } from '@loaders.gl/loader-utils'
+import type { StrictLoaderOptions } from '@loaders.gl/loader-utils'
 import type { Feature, Point, Polygon } from 'geojson'
 
 export type FourwingsRawData = number[]
@@ -50,15 +50,15 @@ export type ParseFourwingsVectorsOptions = Omit<
   'aggregationOperation' | 'sublayers' | 'buffersLength'
 > & { unit?: FourwingsVectorsUnit; temporalAggregation?: boolean }
 
-export type FourwingsLoaderOptions = LoaderOptions & {
+export type FourwingsLoaderOptions = StrictLoaderOptions & {
   fourwings?: ParseFourwingsOptions
 }
 
-export type FourwingsClustersLoaderOptions = LoaderOptions & {
+export type FourwingsClustersLoaderOptions = StrictLoaderOptions & {
   fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
-export type FourwingsVectorsLoaderOptions = LoaderOptions & {
+export type FourwingsVectorsLoaderOptions = StrictLoaderOptions & {
   fourwingsVectors?: ParseFourwingsVectorsOptions
 }
 
