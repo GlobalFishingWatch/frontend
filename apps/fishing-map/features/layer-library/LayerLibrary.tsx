@@ -13,7 +13,7 @@ import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG } from 'data/workspaces'
-import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -26,6 +26,7 @@ import {
 } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import { getNextColor } from 'features/workspace/workspace.utils'
 import { upperFirst } from 'utils/info'
 
@@ -114,6 +115,7 @@ const LayerLibrary: FC = () => {
   const [currentSubcategory, setCurrentSubcategory] = useState<UserSubcategory | null>(null)
   const categoryElementsRef = useRef<HTMLElement[]>([])
   const userDatasets = useSelector(selectUserDatasets)
+  const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
   }, [userDatasets])
@@ -208,6 +210,7 @@ const LayerLibrary: FC = () => {
     () =>
       layersResolved
         .filter((layer) => {
+          if (searchQuery.length < 3) return true
           return (
             layer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             layer.description?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -232,6 +235,27 @@ const LayerLibrary: FC = () => {
         )
       ),
     [filteredLayers, uniqCategories]
+  )
+  const activeSearchQuery = searchQuery.length >= 3 ? searchQuery : ''
+
+  const vesselGroupsMatchCount = useMemo(
+    () =>
+      activeSearchQuery
+        ? allVesselGroups.filter((vg) =>
+            getDatasetLabel(vg).toLowerCase().includes(activeSearchQuery.toLowerCase())
+          ).length
+        : allVesselGroups.length,
+    [allVesselGroups, activeSearchQuery]
+  )
+
+  const userDatasetsMatchCount = useMemo(
+    () =>
+      activeSearchQuery
+        ? userDatasets.filter((d) =>
+            getDatasetLabel(d).toLowerCase().includes(activeSearchQuery.toLowerCase())
+          ).length
+        : userDatasets.length,
+    [userDatasets, activeSearchQuery]
   )
 
   const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -306,79 +330,98 @@ const LayerLibrary: FC = () => {
         </div>
         <div className={styles.categories}>
           {i18nReady &&
-            extendedCategories.map(({ category, subcategories }) => (
-              <div key={category}>
-                <button
-                  className={cx(styles.category, {
-                    [styles.currentCategory]: currentCategory === category,
-                  })}
-                  disabled={
-                    category !== DataviewCategory.User &&
-                    category !== DataviewCategory.VesselGroups &&
-                    layersByCategory[category].length === 0
-                  }
-                  data-category={category}
-                  onClick={onCategoryClick}
-                >
-                  {t((t: any) => t.common[category as DataviewCategory], {
-                    defaultValue: category,
-                  })}
-                </button>
-                {currentCategory === category &&
-                  subcategories.length > 0 &&
-                  !guestUser &&
-                  subcategories.map((subcategory) => (
-                    <button
-                      key={subcategory}
-                      className={cx(styles.subcategory, {
-                        [styles.currentCategory]: currentSubcategory === subcategory,
-                      })}
-                      data-category={category}
-                      data-subcategory={subcategory}
-                      onClick={onCategoryClick}
-                    >
-                      {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
-                        defaultValue: upperFirst(subcategory),
-                      })}
-                    </button>
-                  ))}
-              </div>
-            ))}
+            extendedCategories
+              .filter(
+                ({ category }) =>
+                  searchQuery.length < 3 ||
+                  (category === DataviewCategory.User && userDatasetsMatchCount > 0) ||
+                  (category === DataviewCategory.VesselGroups && vesselGroupsMatchCount > 0) ||
+                  layersByCategory[category]?.length > 0
+              )
+              .map(({ category, subcategories }) => (
+                <div key={category}>
+                  <button
+                    className={cx(styles.category, {
+                      [styles.currentCategory]: currentCategory === category,
+                    })}
+                    disabled={
+                      category !== DataviewCategory.User &&
+                      category !== DataviewCategory.VesselGroups &&
+                      layersByCategory[category].length === 0
+                    }
+                    data-category={category}
+                    onClick={onCategoryClick}
+                  >
+                    {t((t: any) => t.common[category as DataviewCategory], {
+                      defaultValue: category,
+                    })}
+                  </button>
+                  {currentCategory === category &&
+                    subcategories.length > 0 &&
+                    !guestUser &&
+                    subcategories.map((subcategory) => (
+                      <button
+                        key={subcategory}
+                        className={cx(styles.subcategory, {
+                          [styles.currentCategory]: currentSubcategory === subcategory,
+                        })}
+                        data-category={category}
+                        data-subcategory={subcategory}
+                        onClick={onCategoryClick}
+                      >
+                        {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
+                          defaultValue: upperFirst(subcategory),
+                        })}
+                      </button>
+                    ))}
+                </div>
+              ))}
         </div>
       </div>
       {i18nReady ? (
         <ul className={styles.layerList} onScroll={onLayerListScroll}>
-          {uniqCategories.map((category) =>
-            category === DataviewCategory.VesselGroups ? (
-              <div key={DataviewCategory.VesselGroups} className={styles.categoryContainer}>
-                <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
-              </div>
-            ) : (
-              <div key={category} className={styles.categoryContainer}>
-                <label
-                  id={category}
-                  className={cx(styles.categoryLabel, {
-                    [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
-                  })}
-                >
-                  {t((t: any) => t.common[category as DataviewCategory], {
-                    defaultValue: category,
-                  })}
-                </label>
-                {layersByCategory[category].map((layer) => {
-                  if (layer.onlyGFWUser && !isGFWUser) {
-                    return null
-                  }
-                  return (
-                    <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
-                  )
-                })}
-              </div>
+          {uniqCategories
+            .filter(
+              (category) =>
+                searchQuery.length < 3 ||
+                (category === DataviewCategory.VesselGroups && vesselGroupsMatchCount > 0) ||
+                layersByCategory[category]?.length > 0
             )
-          )}
-          {allCategories.includes(DataviewCategory.User) && (
+            .map((category) =>
+              category === DataviewCategory.VesselGroups ? (
+                <div key={DataviewCategory.VesselGroups} className={styles.categoryContainer}>
+                  <LayerLibraryVesselGroupPanel searchQuery={activeSearchQuery} />
+                </div>
+              ) : (
+                <div key={category} className={styles.categoryContainer}>
+                  <label
+                    id={category}
+                    className={cx(styles.categoryLabel, {
+                      [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+                    })}
+                  >
+                    {t((t: any) => t.common[category as DataviewCategory], {
+                      defaultValue: category,
+                    })}
+                  </label>
+                  {layersByCategory[category].map((layer) => {
+                    if (layer.onlyGFWUser && !isGFWUser) {
+                      return null
+                    }
+                    return (
+                      <LayerLibraryItem
+                        key={layer.id}
+                        layer={layer}
+                        highlightedText={activeSearchQuery}
+                      />
+                    )
+                  })}
+                </div>
+              )
+            )}
+          {allCategories.includes(DataviewCategory.User) && (searchQuery.length < 3 || userDatasetsMatchCount > 0) && (
             <div className={styles.categoryContainer}>
-              <LayerLibraryUserPanel searchQuery={searchQuery} />
+              <LayerLibraryUserPanel searchQuery={activeSearchQuery} />
             </div>
           )}
         </ul>
