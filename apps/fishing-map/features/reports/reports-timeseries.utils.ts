@@ -166,7 +166,7 @@ export const getTimeseries = <T extends ReportDeckLayer>({
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPolygonLayer(instance)) {
-      const polygonsTimeseries = getPolygonsTimeseries({ features, instance })
+      const polygonsTimeseries = getPolygonsTimeseries({ features, instance: instance as ReportPolygonsDeckLayer })
       timeseries.push({ ...polygonsTimeseries, id: instance.id })
     } else if (isInstanceOfPointsLayer(instance)) {
       const pointsTimeseries = getPointsTimeseries({ instance, features })

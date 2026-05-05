@@ -10,7 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 
-import type { MigramarRow } from 'routes/api/migramar/$areaId'
+import type { MigramarRow, MigramarRowYear } from 'routes/api/migramar/$areaId'
 
 import styles from '../ReportEnvironment.module.css'
 
@@ -95,7 +95,7 @@ function ReportEnvironmentMigramarGraph({ row }: { row: MigramarRow }) {
   const data = useMemo<ChartPoint[]>(
     () =>
       getYearsFromRow(row).map((year) => {
-        const raw = row[String(year)]
+        const raw = row[String(year) as MigramarRowYear]
         const value = raw !== undefined && raw !== '' ? parseFloat(raw) : null
         return {
           year,

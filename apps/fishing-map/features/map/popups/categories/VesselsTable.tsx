@@ -183,13 +183,13 @@ function VesselsTable({
                               }}
                               search={{
                                 searchOption: 'advanced',
-                                query: vesselName,
+                                query: vesselName as string,
                                 ...(vessel.skylight_id
                                   ? { ssvid: vessel.skylight_id }
-                                  : { query: vesselName }),
+                                  : { query: vesselName as string }),
                                 transmissionDateFrom: end,
                                 transmissionDateTo: start,
-                                flag: [vessel.flag],
+                                flag: vessel.flag ? [vessel.flag] : undefined,
                               }}
                             >
                               <IconButton

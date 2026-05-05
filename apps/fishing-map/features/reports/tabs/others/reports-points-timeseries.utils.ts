@@ -6,7 +6,7 @@ import {
   type FourwingsDeckSublayer,
   isFeatureInRange,
 } from '@globalfishingwatch/deck-layers'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature, FourwingsInterval, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -116,7 +116,7 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
       const filteredPoints =
         startTime && endTime && (startTimeProperty || endTimeProperty)
           ? contained.filter((feature) => {
-              return isFeatureInRange(feature, {
+              return isFeatureInRange(feature as FourwingsFeature | FourwingsStaticFeature | Feature<Point>, {
                 startTime: startTime!,
                 endTime: endTime!,
                 startTimeProperty: startTimeProperty!,
