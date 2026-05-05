@@ -98,9 +98,9 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       tooltip={t((t) => t.trackCorrection.mapTooltip, {
-        vesselName: issue.vesselName,
+        vesselName: issue.vesselName ?? '',
         date: formatI18nDate(issue.lastUpdated),
-        type: t((t) => t.trackCorrection[issue.type]).toLocaleLowerCase(),
+        type: t((t) => t.trackCorrection[issue.type as keyof typeof t.trackCorrection]).toLocaleLowerCase(),
       })}
     />
   )

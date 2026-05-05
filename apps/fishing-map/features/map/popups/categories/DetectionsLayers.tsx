@@ -74,10 +74,10 @@ function DetectionsTooltipRow({
                 <I18nNumber number={feature.value} />{' '}
               </Fragment>
             )}
-            {t((t: any) => t.common[feature?.unit ?? 'detections'], {
+            {t((t) => (t.common as any)[feature?.unit ?? 'detections'], {
               defaultValue: 'detections',
               count: feature.value, // neded to select the plural automatically
-            })}{' '}
+            } as any)}{' '}
             {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
                 {' - '}

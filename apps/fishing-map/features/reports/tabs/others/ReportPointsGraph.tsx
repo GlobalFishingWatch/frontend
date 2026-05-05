@@ -96,8 +96,8 @@ function ReportPointsGraph({
             {hasAggregateByProperty &&
               ' ' +
                 t((t) => t.common.aggregatedBy, {
-                  total: formatI18nNumber(totalValue as number),
-                  property: dataview.config?.aggregateByProperty,
+                  total: formatI18nNumber(totalValue as number) as string,
+                  property: dataview.config?.aggregateByProperty ?? '',
                 })}{' '}
             {t((t) => t.analysis.insideYourArea)}
             {hasTimeFilter && (

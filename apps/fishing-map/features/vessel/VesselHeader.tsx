@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -193,7 +192,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
                   onClick={() => setCurrentImageIndex(index)}
                   className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
                   aria-label={t((t) => t.vessel.goToImage, {
-                    number: index + 1,
+                    number: String(index + 1),
                   })}
                 />
               ))}

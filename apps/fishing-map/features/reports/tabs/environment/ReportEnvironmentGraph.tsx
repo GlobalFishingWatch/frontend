@@ -137,19 +137,21 @@ function ReportEnvironmentGraph({
         <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
           {isDynamic
             ? t((t) => t.analysis.statsDisclaimerDynamic, {
-                interval: t((t: any) => t.common[interval.toLowerCase() + 's'], {
-                  count: 1,
-                }).toLowerCase(),
+                interval: String(
+                  t((t) => (t.common as any)[interval.toLowerCase() + 's'], {
+                    count: 1,
+                  } as any)
+                ).toLowerCase(),
 
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                unit,
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
+                unit: unit ?? '',
               })
             : t((t) => t.analysis.statsDisclaimerStatic, {
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
-                unit,
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
+                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
+                unit: unit ?? '',
               })}{' '}
           {dataset?.source && (
             <span>

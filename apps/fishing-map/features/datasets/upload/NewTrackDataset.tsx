@@ -204,7 +204,7 @@ function NewTrackDataset({
             t((t) => t.common[f], { defaultValue: f })
           )
           error = t((t) => t.dataset.requiredFields, {
-            fields,
+            fields: fields.join(', '),
           })
         } else {
           const errors = checkRecordValidity({

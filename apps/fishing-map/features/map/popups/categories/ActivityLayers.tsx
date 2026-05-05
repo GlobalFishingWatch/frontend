@@ -44,10 +44,10 @@ function ActivityTooltipRow({
           <div className={popupStyles.row}>
             <span className={popupStyles.rowText} data-testid="activity-tooltip-row-value">
               <I18nNumber number={value} />{' '}
-              {t((t: any) => t.common[feature?.unit ?? 'hours'], {
+              {t((t) => (t.common as any)[feature?.unit ?? 'hours'], {
                 defaultValue: 'hours',
                 count: value, // neded to select the plural automatically
-              })}
+              } as any)}
             </span>
           </div>
           {loading && (

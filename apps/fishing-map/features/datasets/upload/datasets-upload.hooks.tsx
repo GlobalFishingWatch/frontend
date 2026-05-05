@@ -137,7 +137,7 @@ export function useDatasetMetadataOptions(
                         filter.id +
                         (isMaxValuesExceeded
                           ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
-                              max: MAX_FILTERS_ENUM_VALUES,
+                              max: String(MAX_FILTERS_ENUM_VALUES),
                             })}`
                           : '')
                       }
@@ -148,7 +148,7 @@ export function useDatasetMetadataOptions(
                   disableSelection: isMaxValuesExceeded,
                   tooltip: isMaxValuesExceeded
                     ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
-                        max: MAX_FILTERS_ENUM_VALUES,
+                        max: String(MAX_FILTERS_ENUM_VALUES),
                       })
                     : undefined,
                 }

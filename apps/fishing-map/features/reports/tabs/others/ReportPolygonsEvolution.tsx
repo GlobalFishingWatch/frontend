@@ -55,7 +55,7 @@ function PolygonsEvolutionTooltip({
         {overlapping.map(({ value, color }: any, i: number) => (
           <li key={`o-${i}`} className={styles.tooltipRow}>
             <span className={styles.tooltipValueDot} style={{ color }} />
-            {t((t) => t.analysis.polygonsOverlapping, { count: value as number } as any)}:{' '}
+            {t((t) => t.analysis.polygonsOverlapping, { count: value as number })}:{' '}
             <strong>{value}</strong>
           </li>
         ))}

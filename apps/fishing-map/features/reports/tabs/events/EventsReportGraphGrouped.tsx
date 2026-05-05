@@ -202,7 +202,7 @@ const ReportGraphTick = (props: any) => {
     graphType === 'byFlag'
       ? `${t((t) => t.analysis.clickToFilterBy)} ${label}`
       : `${t((t) => t.analysis.clickToSeeAreaReport, {
-          area: getReportAreaLabel(payload.value),
+          area: getReportAreaLabel(payload.value) ?? '',
         })}`
 
   return (

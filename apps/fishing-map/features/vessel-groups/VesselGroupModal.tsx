@@ -609,7 +609,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                     vessels: vesselGroupVessels,
                   } as VesselGroup)}`
                 : t((t) => t.vesselGroup.searchResultsTable, {
-                    field: selectedCsvColumns ? listAsSentence(selectedCsvColumns) : searchIdField,
+                    field: selectedCsvColumns ? (listAsSentence(selectedCsvColumns) ?? '') : searchIdField,
                     timeRange:
                       transmissionDateFrom && transmissionDateTo
                         ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
@@ -621,9 +621,9 @@ function VesselGroupModal(): React.ReactElement<any> {
                           : transmissionDateTo
                             ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
                             : '',
-                    number: getVesselGroupVesselsCount({
+                    number: String(getVesselGroupVesselsCount({
                       vessels: vesselGroupVessels,
-                    } as VesselGroup),
+                    } as VesselGroup)),
                   })}
             </label>
             {unmatchedIDs && unmatchedIDs.length > 0 && (
@@ -679,7 +679,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
               {t((t) => t.vesselGroup.searchLimit, {
-                limit: MAX_VESSEL_GROUP_VESSELS,
+                limit: String(MAX_VESSEL_GROUP_VESSELS),
               })}
             </span>
           )}

@@ -81,7 +81,7 @@ const InsightFishing = ({
           {eventsInNoTakeMpas?.length !== 0 ? (
             <p>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpas, {
-                count: eventsInNoTakeMpas?.length,
+                count: eventsInNoTakeMpas?.length ?? 0,
               })}
               <InsightEventDetails
                 events={eventsInNoTakeMpasDetails}
@@ -97,7 +97,7 @@ const InsightFishing = ({
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
             <p>
               {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization, {
-                count: eventsInRfmoWithoutKnownAuthorization?.length,
+                count: eventsInRfmoWithoutKnownAuthorization?.length ?? 0,
               })}
               <InsightEventDetails
                 events={eventsInRfmoWithoutKnownAuthorizationDetails}

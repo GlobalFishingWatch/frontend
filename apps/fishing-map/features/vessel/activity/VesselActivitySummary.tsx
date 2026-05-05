@@ -139,7 +139,7 @@ export const VesselActivitySummary = () => {
                     <Tooltip key={regionType} content={tooltipContent}>
                       <span className={styles.help}>
                         {activityRegions[regionType].length}{' '}
-                        {t((t: any) => t.layer.areas[regionType], {
+                        {t((t) => t.layer.areas[regionType as keyof typeof t.layer.areas], {
                           defaultvalue: regionType,
                           count: activityRegions[regionType].length,
                         })}

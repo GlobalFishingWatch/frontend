@@ -48,7 +48,7 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
     name:
       datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
         ? t((t) => t.datasetUpload.errors.name, {
-            min: MIN_NAME_LENGTH,
+            min: String(MIN_NAME_LENGTH),
           })
         : null,
   }

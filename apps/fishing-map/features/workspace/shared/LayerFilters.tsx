@@ -486,7 +486,7 @@ function LayerFilters({
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>
           {t((t) => t.layer.filtersDisabled, {
-            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
+            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)) ?? '',
           })}
         </p>
       )}

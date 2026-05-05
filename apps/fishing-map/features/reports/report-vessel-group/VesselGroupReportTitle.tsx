@@ -99,8 +99,8 @@ export default function VesselGroupReportTitle() {
           <h2 className={styles.summary}>
             {htmlSafeParse(
               t((t) => t.vesselGroup.summary, {
-                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
-                flags: flags?.size,
+                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)) as string,
+                flags: String(flags?.size ?? 0),
 
                 start: formatI18nDate(timeRange.start, {
                   format: DateTime.DATE_MED,

@@ -194,9 +194,9 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
             <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
               <label className={styles.pointer}>
                 {t((t) => t.analysis.resultsPerPage, {
-                  results: isShowingMore
+                  results: String(isShowingMore
                     ? REPORT_VESSELS_PER_PAGE
-                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+                    : REPORT_SHOW_MORE_VESSELS_PER_PAGE),
                 })}
               </label>
             </button>

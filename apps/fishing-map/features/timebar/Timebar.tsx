@@ -386,7 +386,7 @@ const TimebarWrapper = () => {
           <label className={styles.disclaimerLabel}>
             {upperFirst(
               t((t) => t.timebar.maxTracksNumber, {
-                number: MAX_TIMEBAR_VESSELS,
+                number: String(MAX_TIMEBAR_VESSELS),
               })
             )}
           </label>

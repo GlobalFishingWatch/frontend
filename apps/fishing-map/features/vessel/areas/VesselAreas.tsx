@@ -91,7 +91,7 @@ const AreaTooltip = ({ payload }: any) => {
             <li key={name} className={styles.tooltipValue}>
               <span className={styles.tooltipValueDot} style={{ color }} />
               <I18nNumber number={value} />{' '}
-              {t((t: any) => t.event[name], {
+              {t((t) => (t.event as any)[name], {
                 defaultValue: name,
                 count: value,
               })}
@@ -196,7 +196,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       />
       {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id as any) && (
         <div className={styles.dataWarning}>
-          {t((t: any) => t.dataview[areaDataview?.id]?.dataWarning)}{' '}
+          {t((t) => (t.dataview as any)[areaDataview?.id]?.dataWarning)}{' '}
           <span className={'print-hidden'}>
             <button
               className={styles.dataWarningLink}
@@ -211,7 +211,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               onClose={onDataWarningModalClose}
               contentClassName={styles.modalContent}
             >
-              {htmlSafeParse(t((t: any) => t.dataview[areaDataview?.id]?.dataWarningDetail))}
+              {htmlSafeParse(t((t) => (t.dataview as any)[areaDataview?.id]?.dataWarningDetail))}
             </Modal>
           </span>
         </div>
@@ -261,7 +261,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               <p className={styles.unknownRegionEvents}>
                 <span className={styles.unknownRegionEventsTitle}>
                   {t((t) => t.vessel.unknownRegionEvents, {
-                    regionType: t((t: any) => t.layer.areas[vesselArea], {
+                    regionType: t((t) => t.layer.areas[vesselArea as keyof typeof t.layer.areas], {
                       defalutValue: vesselArea,
                     }),
                   })}
@@ -273,10 +273,10 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                       if (key === 'total' || key === 'region') return ''
                       return (
                         <p key={key}>
-                          {t((t: any) => t.event[key], {
+                          {t((t) => (t.event as any)[key], {
                             defaultValue: key,
                             count: value as number,
-                          })}
+                          } as any)}
                           : <I18nNumber number={value} />
                         </p>
                       )
@@ -294,7 +294,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         ) : (
           <span className={styles.enptyState}>
             {t((t) => t.vessel.noEventsIn, {
-              regionType: t((t: any) => t.layer.areas[vesselArea], { defalutValue: vesselArea }),
+              regionType: t((t) => t.layer.areas[vesselArea], { defalutValue: vesselArea }),
             })}
           </span>
         )}
