@@ -4,7 +4,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/VesselCorrection.types'
 
-const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.NEXT_IDENTITY_REVIEW_SPREADSHEET_ID || ''
+const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.VITE_IDENTITY_REVIEW_SPREADSHEET_ID || ''
 
 const REGISTRY_CORRECTIONS_SHEET_TITLE = 'Vessel Registry Corrections'
 const GFW_SOURCE_CORRECTIONS_SHEET_TITLE = 'Vessel GFW Source Corrections'
