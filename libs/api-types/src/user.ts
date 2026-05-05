@@ -90,6 +90,7 @@ export type FutureUserData = {
   id: number
   email: string
   groups: UserGroup[]
+  invitationNotes: string | null
 }
 
 export type UserData = {
@@ -111,4 +112,5 @@ export type UserData = {
   problemToResolve?: string
   pullingDataOtherAPIS?: string
   apiTerms?: string
+  invitationNotes: string | null
 }

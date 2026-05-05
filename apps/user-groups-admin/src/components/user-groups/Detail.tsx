@@ -7,10 +7,11 @@ import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-c
 
 import styles from './user-groups.module.css'
 
-export function UserGroupDetail({ groupId }: { groupId: number }) {
+export function UserGroupDetail({ groupId, user }: { groupId: number; user: UserData }) {
   const [userLoading, setUserLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [invitationNotes, setInvitationNotes] = useState('')
   const [group, setGroup] = useState<UserGroup>()
   const [futureUsers, setFutureUsers] = useState<FutureUserData[]>()
 
@@ -34,11 +35,17 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   }, [])
 
   const onAddUserClick = async () => {
+    const inviterName = [user?.firstName, user?.lastName].filter(Boolean).join(' ')
+    const date = new Date().toISOString().slice(0, 10)
+    const formattedNotes = invitationNotes
+      ? `${inviterName}: ${invitationNotes} (${date})`
+      : undefined
     const users = await GFWAPI.fetch<UserData[]>(`/auth/users?email=${encodeURIComponent(email)}`)
     if (users.length === 1) {
       const userId = users[0]?.id
       await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}/user/${userId}`, {
         method: 'POST',
+        body: formattedNotes ? ({ invitationNotes: formattedNotes } as any) : undefined,
       })
     } else {
       await GFWAPI.fetch<UserGroup>(`/auth/future-users?merge=true`, {
@@ -46,10 +53,12 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
         body: {
           email,
           userGroupIds: [groupId],
+          ...(formattedNotes && { invitationNotes: formattedNotes }),
         } as any,
       })
     }
     setEmail('')
+    setInvitationNotes('')
     fetchGroup(groupId)
   }
 
@@ -58,6 +67,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     fetchGroup(groupId)
     return () => {
       setEmail('')
+      setInvitationNotes('')
       setGroup(undefined)
       setFutureUsers(undefined)
     }
@@ -75,6 +85,22 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     }
   }
 
+  const onDownloadCsvClick = () => {
+    const rows = [['Email', 'First Name', 'Last Name', 'Status']]
+    group?.users?.forEach((u) =>
+      rows.push([u.email ?? '', u.firstName ?? '', u.lastName ?? '', 'active'])
+    )
+    futureUsers?.forEach((u) => rows.push([u.email, '', '', 'invited']))
+    const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${group?.name ?? 'group'}-users.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const onRemoveFutureUserClick = async (futureUserId: number) => {
     const confirmation = window.confirm(
       'Are you sure you want to permanently delete this invitation?'
@@ -88,13 +114,20 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
       fetchGroup(groupId)
     }
   }
+  if (!group || loading) {
+    return <Spinner />
+  }
 
   return (
-    <Fragment>
-      <h2 className={[styles.title, styles.content].join(' ')}>
-        Users {group ? `in the ${group.name} group` : ''}
-      </h2>
-      {!group && loading && <Spinner />}
+    <div>
+      <div className={styles.header}>
+        <div>
+          <h1 className={styles.title}>{group.name}</h1>
+          <p className={styles.description}>{group.description}</p>
+        </div>
+        <IconButton tooltip="Download CSV" icon="download" onClick={onDownloadCsvClick} />
+      </div>
+      <h2 className={[styles.subTitle, styles.content].join(' ')}>Users</h2>
       {group && (
         <div className={styles.content}>
           {group?.users && group?.users?.length > 0 ? (
@@ -103,6 +136,9 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
                 return (
                   <li key={user.id}>
                     {user.firstName} {user.lastName} ({user.email})
+                    {user.invitationNotes && (
+                      <span className={styles.invitationNotes}>{user.invitationNotes}</span>
+                    )}
                     <IconButton
                       disabled={userLoading}
                       icon="delete"
@@ -123,6 +159,9 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
                   return (
                     <li key={futureUser.id}>
                       {futureUser.email}
+                      {futureUser.invitationNotes && (
+                        <span className={styles.invitationNotes}>{futureUser.invitationNotes}</span>
+                      )}
                       {futureUser.groups?.length > 1 && (
                         <span>
                           (already invited in {futureUser.groups.map((g) => g.name).join(',')})
@@ -139,18 +178,29 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
               </ul>
             </Fragment>
           )}
+        </div>
+      )}
+      <div className={styles.content}>
+        <h2 className={styles.subTitle}>Invitations</h2>
+        <div className={styles.inputsContainer}>
           <InputText
             className={styles.input}
             label="User email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Button className={styles.button} onClick={onAddUserClick}>
-            Add user
-          </Button>
+          <InputText
+            className={styles.input}
+            label="Invitation notes"
+            value={invitationNotes}
+            onChange={(e) => setInvitationNotes(e.target.value)}
+          />
         </div>
-      )}
-    </Fragment>
+        <Button className={styles.button} onClick={onAddUserClick}>
+          Add user
+        </Button>
+      </div>
+    </div>
   )
 }
 
