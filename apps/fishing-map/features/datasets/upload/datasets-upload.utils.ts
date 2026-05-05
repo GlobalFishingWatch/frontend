@@ -248,10 +248,11 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
             ? ({
                 type: 'MultiPolygon' as const,
                 coordinates: union(
-                  ...(flatten(feature.geometry).features.map((f) => f.geometry.coordinates) as [
-                    Geom,
-                    ...Geom[],
-                  ])
+                  ...(flatten(feature.geometry).features.flatMap((f) =>
+                    f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
+                      ? [f.geometry.coordinates as Geom]
+                      : []
+                  ) as [Geom, ...Geom[]])
                 ),
               } as AreaGeometry)
             : (feature.geometry as AreaGeometry),
