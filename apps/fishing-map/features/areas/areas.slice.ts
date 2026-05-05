@@ -114,9 +114,11 @@ async function fetchAreaDetail({
   }
   let geometry: AreaGeometry
   if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
-    const geoms = flatten(area.geometry)
-      .features.filter((f) => f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon')
-      .map((f) => f.geometry.coordinates as Geom)
+    const geoms = flatten(area.geometry).features.flatMap((f) =>
+      f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
+        ? [f.geometry.coordinates as Geom]
+        : []
+    )
     const unioned = union(geoms[0], ...geoms)
     geometry = { type: 'MultiPolygon', coordinates: unioned }
   } else {
