@@ -10,7 +10,11 @@ import type {
   FourwingsLayer,
   FourwingsVectorsTileLayer,
 } from '@globalfishingwatch/deck-layers'
-import { ContextLayer, UserContextTileLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import {
+  ContextLayer,
+  UserContextTileLayer,
+  UserPointsTileLayer,
+} from '@globalfishingwatch/deck-layers'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -62,8 +66,10 @@ function getCountsBySublayer(
   features: FilteredPolygons['contained' | 'overlapping'],
   sublayers: ContextSubLayerConfig[]
 ): number[] {
-  return sublayers.map((sublayer) =>
-    features.filter((f) => isFeatureInFilters(f, sublayer.filters, sublayer.filterOperators)).length
+  return sublayers.map(
+    (sublayer) =>
+      features.filter((f) => isFeatureInFilters(f, sublayer.filters, sublayer.filterOperators))
+        .length
   )
 }
 
@@ -78,7 +84,9 @@ export const getPolygonsTimeseriesStats = ({
   const containedCount = featureGroup.contained.length
   const overlappingCount = featureGroup.overlapping.length
   const containedValues = sublayers ? getCountsBySublayer(featureGroup.contained, sublayers) : []
-  const overlappingValues = sublayers ? getCountsBySublayer(featureGroup.overlapping, sublayers) : []
+  const overlappingValues = sublayers
+    ? getCountsBySublayer(featureGroup.overlapping, sublayers)
+    : []
 
   if (!reportArea || (containedCount === 0 && overlappingCount === 0)) {
     return {
@@ -134,7 +142,7 @@ export const getPolygonsTimeseriesStats = ({
       overlapping: overlappingCount,
       containedValues,
       overlappingValues,
-      areaCoverageRatio: intersectionM2 / reportAreaM2,
+      areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
       areaCoverageKm2: intersectionM2 / 1_000_000,
     }
   } catch {
