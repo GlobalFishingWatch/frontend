@@ -1,7 +1,11 @@
 import type { LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import type { EditAction, FeatureCollection } from '@deck.gl-community/editable-layers'
+import type {
+  EditAction,
+  FeatureCollection,
+  SimpleFeatureCollection,
+} from '@deck.gl-community/editable-layers'
 import {
   CompositeMode,
   EditableGeoJsonLayer,
@@ -63,20 +67,20 @@ function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
   }))
 }
 
-function getDrawDataParsed(data: FeatureCollection) {
+function getDrawDataParsed(data: SimpleFeatureCollection): SimpleFeatureCollection {
   return {
     ...data,
     features: getFeaturesWithOverlapping(data.features),
   }
 }
 
-const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
+const INITIAL_FEATURE_COLLECTION: SimpleFeatureCollection = {
   type: 'FeatureCollection',
   features: [],
 }
 export type DrawLayerState = {
-  data: FeatureCollection
-  tentativeData?: FeatureCollection
+  data: SimpleFeatureCollection
+  tentativeData?: SimpleFeatureCollection
   mode: DrawLayerMode
   selectedFeatureIndexes?: number[]
   selectedPositionIndexes?: number[]
@@ -117,7 +121,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  setData = (data: FeatureCollection) => {
+  setData = (data: SimpleFeatureCollection) => {
     if (data && this.state) {
       return this._setState({ data })
     }
@@ -304,7 +308,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       case 'addPosition':
       case 'addFeature': {
         this._setState({
-          data: getDrawDataParsed(updatedData),
+          data: getDrawDataParsed(updatedData as SimpleFeatureCollection),
           tentativeData: undefined,
           mode: this._getModifyMode(),
           selectedFeatureIndexes: editContext.featureIndexes,
@@ -315,14 +319,14 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       }
       case 'customUpdateSelectedFeaturesIndexes': {
         this._setState({
-          data: getDrawDataParsed(updatedData),
+          data: getDrawDataParsed(updatedData as SimpleFeatureCollection),
           selectedFeatureIndexes: editContext.featureIndexes,
         })
         break
       }
       case 'customUpdateSelectedPositionIndexes': {
         this._setState({
-          data: getDrawDataParsed(updatedData),
+          data: getDrawDataParsed(updatedData as SimpleFeatureCollection),
           selectedPositionIndexes: editContext.positionIndexes,
         })
         break
@@ -368,7 +372,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         this.isTranslating = !this.isMoving
         if (!this.isMoving) {
           this._setState({
-            data: getDrawDataParsed(updatedData),
+            data: getDrawDataParsed(updatedData as SimpleFeatureCollection),
           })
         }
         break
@@ -377,7 +381,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
         this.isMoving = true
         if (!this.isTranslating) {
           this._setState({
-            data: getDrawDataParsed(updatedData),
+            data: getDrawDataParsed(updatedData as SimpleFeatureCollection),
           })
         }
         break

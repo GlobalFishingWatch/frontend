@@ -67,6 +67,7 @@ type FourwingsClustersTileLayerState = {
   clusterIndex: Supercluster
   viewportLoaded: boolean
   data: FourwingsPointFeature[]
+  highlightedFeatures?: FourwingsClustersLayerProps['highlightedFeatures']
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
   radiusScale?: ScalePower<number, number>
@@ -158,6 +159,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     this.state = {
       error: '',
       data: [],
+      highlightedFeatures: [],
       viewportLoaded: this.props.tilesUrl ? false : true,
       currentClustersZoom: Math.round(context.viewport.zoom),
       clusterIndex: new Supercluster({
@@ -168,6 +170,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
         },
       }),
     }
+  }
+
+  _getHighlightedFeatures() {
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }
 
   _isIndividualPoints = (data: FourwingsPointFeature[]) => {
@@ -478,14 +484,14 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getLineColor = (d: FourwingsClusterFeature) => {
-    const isHighlighted = this.props.highlightedFeatures?.some(
+    const isHighlighted = this._getHighlightedFeatures()?.some(
       (feature) => feature.id === this.getClusterId(d)
     )
     return isHighlighted ? COLOR_HIGHLIGHT_LINE : DEFAULT_LINE_COLOR
   }
 
   _getColor = (d: FourwingsClusterFeature) => {
-    const isHighlighted = this.props.highlightedFeatures?.some(
+    const isHighlighted = this._getHighlightedFeatures()?.some(
       (feature) => feature.id === this.getClusterId(d)
     )
     return isHighlighted ? COLOR_HIGHLIGHT_LINE : hexToDeckColor(this.props.color)
@@ -502,8 +508,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { visible, color, tilesUrl, eventType = 'encounter', highlightedFeatures } = this.props
+    const { visible, color, tilesUrl, eventType = 'encounter' } = this.props
     const { clusters, points, radiusScale } = this.state
+    const highlightedFeatures = this._getHighlightedFeatures()
 
     if (!visible || !tilesUrl) {
       return []
@@ -578,6 +585,13 @@ export class FourwingsClustersLayer extends CompositeLayer<
 
   getData() {
     return this.state.data as FourwingsPointFeature[]
+  }
+
+  setHighlightedFeatures(highlightedFeatures: FourwingsClustersLayerProps['highlightedFeatures']) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
   }
 
   getViewportData() {
