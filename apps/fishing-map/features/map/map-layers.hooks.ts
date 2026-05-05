@@ -318,7 +318,9 @@ function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
       const propertyId =
         'properties' in feature
           ? (feature.properties as FourwingsFeatureProperties)?.cellId || ''
-          : ''
+          : 'timestamp' in feature
+            ? (feature.timestamp as number) || ''
+            : ''
       return `${feature.category}-${feature.layerId}-${feature.id}-${propertyId}`
     })
     .join('|')
