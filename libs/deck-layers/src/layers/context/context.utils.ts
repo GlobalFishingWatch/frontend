@@ -1,3 +1,7 @@
+import type { PickingInfo } from '@deck.gl/core'
+import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import polygonClipping from 'polygon-clipping'
+
 import { DEFAULT_ID_PROPERTY } from '../../utils'
 import type { FilterExtensionProps } from '../user/user.types'
 import { getFilterExtensionSize } from '../user/user.utils'
@@ -9,6 +13,8 @@ import type {
   ContextSubLayerConfig,
 } from './context.types'
 import { ContextLayerId } from './context.types'
+
+const { union } = polygonClipping
 
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
@@ -134,4 +140,56 @@ export const getContextLink = (feature: ContextPickingObject) => {
     default:
       return undefined
   }
+}
+
+export function mergePickedFeatures<T extends Feature>(
+  { pickedFeatures, idProperty = DEFAULT_ID_PROPERTY, layers } = {} as {
+    pickedFeatures: PickingInfo[]
+    idProperty: string
+    layers: { id: string }[]
+  }
+): T[] {
+  const featureGroups = new Map<string, T[]>()
+
+  for (const f of pickedFeatures) {
+    if (!f.object) continue
+    const layerId = layers.find((l) => f.layer?.id.startsWith(l.id))?.id
+    const obj = layerId
+      ? {
+          ...(f.object as T),
+          properties: { ...((f.object as T).properties || {}), layerId },
+        }
+      : (f.object as T)
+    const featureId = getContextId(f.object as ContextFeature, idProperty)
+    // Include layerId in cache key so features from different layers aren't deduplicated against each other
+    const cacheKey = layerId !== undefined ? `${layerId}:${featureId}` : featureId
+
+    if (!featureGroups.has(cacheKey)) featureGroups.set(cacheKey, [])
+    featureGroups.get(cacheKey)!.push(obj)
+  }
+
+  const merged: T[] = []
+  for (const group of featureGroups.values()) {
+    if (group.length === 1) {
+      merged.push(group[0])
+      continue
+    }
+    const first = group[0]
+    const geometryType = first.geometry?.type
+    if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
+      const geoms = group.map(
+        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as polygonClipping.Geom
+      )
+      merged.push({
+        ...first,
+        geometry: {
+          type: 'MultiPolygon',
+          coordinates: union(geoms[0], ...geoms.slice(1)),
+        } as MultiPolygon,
+      })
+    } else {
+      merged.push(first)
+    }
+  }
+  return merged
 }

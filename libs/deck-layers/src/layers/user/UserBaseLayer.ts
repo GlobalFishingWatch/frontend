@@ -7,8 +7,7 @@ import type {
   GeoBoundingBox,
   TileLayerProps,
 } from '@deck.gl/geo-layers'
-import type { GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
-import polygonClipping, { type Geom } from 'polygon-clipping'
+import type { GeoJsonProperties } from 'geojson'
 import type { Entries } from 'type-fest'
 
 import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
@@ -21,6 +20,7 @@ import {
   getContextId,
   getValidSublayerFilters,
   hasSublayerFilters,
+  mergePickedFeatures,
   supportDataFilterExtension,
 } from '../context/context.utils'
 
@@ -35,8 +35,6 @@ import type {
   UserTrackLayerProps,
 } from './user.types'
 import { getFilterExtensionSize, getPropertiesList } from './user.utils'
-
-const { union } = polygonClipping
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
@@ -150,50 +148,12 @@ export abstract class UserBaseLayer<
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): UserLayerFeature[] {
-    const features = this._pickObjects(maxFeatures)
-    const featureGroups = new Map<string, UserLayerFeature[]>()
     const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
-
-    for (const f of features) {
-      const layerId = this.props.layers.find((l) => f.layer?.id.startsWith(l.id))?.id
-      const obj = layerId
-        ? {
-            ...(f.object as ContextFeature),
-            properties: { ...(f.object as ContextFeature)?.properties, layerId },
-          }
-        : (f.object as UserLayerFeature)
-      const featureId = getContextId(f.object as ContextFeature, idProperty)
-      // Include layerId in cache key so features from different layers aren't deduplicated against each other
-      const cacheKey = layerId !== undefined ? `${layerId}:${featureId}` : `${featureId}`
-
-      if (!featureGroups.has(cacheKey)) {
-        featureGroups.set(cacheKey, [])
-      }
-      featureGroups.get(cacheKey)!.push(obj as UserLayerFeature)
-    }
-
-    const renderedFeatures: UserLayerFeature[] = []
-
-    for (const group of featureGroups.values()) {
-      if (group.length === 1) {
-        renderedFeatures.push(group[0])
-        continue
-      }
-      const first = group[0]
-      const geometryType = first.geometry?.type
-      if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
-        const geoms = group.map((g) => (g.geometry as Polygon | MultiPolygon).coordinates as Geom)
-        const unioned = union(geoms[0], ...geoms)
-        renderedFeatures.push({
-          ...first,
-          geometry: { type: 'MultiPolygon', coordinates: unioned } as MultiPolygon,
-        })
-      } else {
-        renderedFeatures.push(first)
-      }
-    }
-
-    return renderedFeatures
+    return mergePickedFeatures<UserLayerFeature>({
+      pickedFeatures: this._pickObjects(maxFeatures),
+      idProperty,
+      layers: this.props.layers,
+    })
   }
 
   _getTilesUrl(tilesUrl: string) {
