@@ -104,11 +104,10 @@ export default function ReportPolygonsEvolution({
         timeseriesInterval: interval,
       })
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, start, end]
+    [data, start, end, interval, domain]
   )
 
-  if (!dataFormatted || !domain) return null
+  if (!data || !dataFormatted || !domain) return null
 
   // Flatten all range values across all sublayers to get accurate y-axis domain
   const allValues = dataFormatted.flatMap(({ range }) =>

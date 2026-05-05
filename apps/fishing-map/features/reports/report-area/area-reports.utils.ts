@@ -1,7 +1,6 @@
 import { difference } from '@turf/difference'
 import { dissolve } from '@turf/dissolve'
 import { featureCollection, multiPolygon } from '@turf/helpers'
-import { format } from 'd3-format'
 import { uniq } from 'es-toolkit'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
@@ -99,8 +98,6 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
   DataviewType.FourwingsVector,
-  DataviewType.UserPoints,
-  DataviewType.UserContext,
   DataviewType.Context,
   DataviewType.Polygons,
 ]
@@ -256,7 +253,7 @@ export const getBufferedFeature = ({
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
     label: t((t) => t.analysis.bufferedArea, {
-      value,
+      value: String(value),
       unit,
     }),
   }
