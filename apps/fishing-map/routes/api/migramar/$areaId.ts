@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const MIGRAMAR_SPREADSHEET_ID = process.env.NEXT_MIGRAMAR_SPREADSHEET_ID || ''
+const MIGRAMAR_SPREADSHEET_ID = process.env.MIGRAMAR_SPREADSHEET_ID || ''
 
 export type MigramarRow = {
   species: string
@@ -26,12 +26,7 @@ export type MigramarApiResponse = MigramarRow[] | { success: false; message: str
 export const Route = createFileRoute('/api/migramar/$areaId')({
   server: {
     handlers: {
-      GET: async ({
-        params,
-      }: {
-        request: Request
-        params: { areaId: string }
-      }) => {
+      GET: async ({ params }: { request: Request; params: { areaId: string } }) => {
         const { areaId } = params
 
         try {

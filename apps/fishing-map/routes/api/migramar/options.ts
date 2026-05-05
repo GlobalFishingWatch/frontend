@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const MIGRAMAR_SPREADSHEET_ID = process.env.NEXT_MIGRAMAR_SPREADSHEET_ID || ''
+const MIGRAMAR_SPREADSHEET_ID = process.env.MIGRAMAR_SPREADSHEET_ID || ''
 
 export type MigramarSpecies = {
   id: string
