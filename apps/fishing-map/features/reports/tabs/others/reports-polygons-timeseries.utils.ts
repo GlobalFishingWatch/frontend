@@ -17,13 +17,12 @@ function generateTimeBins(
 ): { date: string; startMs: number; endMs: number }[] {
   const bins = []
   const now = DateTime.now().toUTC().toMillis()
-  let current = getUTCDateTime(start)
-    .startOf(interval.toLowerCase() as DateTimeUnit)
-    .toMillis()
+  const intervalUnit = interval.toLowerCase() as DateTimeUnit
+  let current = getUTCDateTime(start).startOf(intervalUnit).toMillis()
 
   while (current <= end) {
     const next = getUTCDateTime(current)
-      .plus({ [interval]: 1 })
+      .plus({ [intervalUnit]: 1 })
       .toMillis()
     const binStart = current > now ? now : current
     bins.push({
@@ -38,7 +37,7 @@ function generateTimeBins(
 
 function toMs(value: unknown): number {
   if (value === undefined || value === null || value === '') return NaN
-  return typeof value === 'string' ? parseInt(value) : (value as number)
+  return typeof value === 'string' ? Number(value) : (value as number)
 }
 
 function isPolygonInBin(
@@ -53,6 +52,29 @@ function isPolygonInBin(
   const rawEnd = endTimeProperty ? toMs(props[endTimeProperty]) : NaN
   const featureEnd = isNaN(rawEnd) ? Infinity : rawEnd
   return featureStart < binEnd && featureEnd >= binStart
+}
+
+function countBySublayer(
+  features: Feature<Geometry>[],
+  sublayerConfigs: NonNullable<
+    NonNullable<ReportPolygonsDeckLayer['props']['layers']>[number]['sublayers']
+  >,
+  binStart: number,
+  binEnd: number,
+  startTimeProperty?: string,
+  endTimeProperty?: string
+): number[] {
+  const counts = new Array(sublayerConfigs.length).fill(0)
+  for (const f of features) {
+    if (!isPolygonInBin(f, binStart, binEnd, startTimeProperty, endTimeProperty)) continue
+    for (let i = 0; i < sublayerConfigs.length; i++) {
+      const sublayerConfig = sublayerConfigs[i]
+      if (isFeatureInFilters(f, sublayerConfig?.filters, sublayerConfig?.filterOperators)) {
+        counts[i]++
+      }
+    }
+  }
+  return counts
 }
 
 export type GetPolygonsTimeseriesParams = {
@@ -90,35 +112,25 @@ export const getPolygonsTimeseries = ({
   const interval = getFourwingsInterval(startTime, endTime)
   const bins = generateTimeBins(startTime, endTime, interval)
 
-  const timeseries = bins.map(({ date, startMs, endMs }) => {
-    const containedCounts = new Array(sublayers.length).fill(0)
-    const overlappingCounts = new Array(sublayers.length).fill(0)
-
-    for (const f of contained as Feature<Geometry>[]) {
-      if (!isPolygonInBin(f, startMs, endMs, startTimeProperty, endTimeProperty)) continue
-      for (let i = 0; i < sublayerConfigs.length; i++) {
-        const sublayerConfig = sublayerConfigs[i]
-        if (isFeatureInFilters(f, sublayerConfig?.filters, sublayerConfig?.filterOperators)) {
-          containedCounts[i]++
-        }
-      }
-    }
-    for (const f of overlapping as Feature<Geometry>[]) {
-      if (!isPolygonInBin(f, startMs, endMs, startTimeProperty, endTimeProperty)) continue
-      for (let i = 0; i < sublayerConfigs.length; i++) {
-        const sublayerConfig = sublayerConfigs[i]
-        if (isFeatureInFilters(f, sublayerConfig?.filters, sublayerConfig?.filterOperators)) {
-          overlappingCounts[i]++
-        }
-      }
-    }
-
-    return {
-      date,
-      min: containedCounts,
-      max: overlappingCounts,
-    }
-  })
+  const timeseries = bins.map(({ date, startMs, endMs }) => ({
+    date,
+    min: countBySublayer(
+      contained as Feature<Geometry>[],
+      sublayerConfigs,
+      startMs,
+      endMs,
+      startTimeProperty,
+      endTimeProperty
+    ),
+    max: countBySublayer(
+      overlapping as Feature<Geometry>[],
+      sublayerConfigs,
+      startMs,
+      endMs,
+      startTimeProperty,
+      endTimeProperty
+    ),
+  }))
 
   return { interval, sublayers, timeseries }
 }
