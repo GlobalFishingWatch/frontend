@@ -10,7 +10,6 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/da
 import {
   isPointsDataviewReportSupported,
   isPolygonsDataviewReportSupported,
-  isUserContextDataviewReportSupported,
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
@@ -148,9 +147,7 @@ export const selectPointsActiveReportDataviews = createSelector(
   (contextDataviews = [], userDataviews = []) => {
     return [...contextDataviews, ...userDataviews].filter((dataview) => {
       if (!dataview.config?.visible) return false
-      return (
-        isUserContextDataviewReportSupported(dataview) || isPointsDataviewReportSupported(dataview)
-      )
+      return isPointsDataviewReportSupported(dataview)
     })
   }
 )
