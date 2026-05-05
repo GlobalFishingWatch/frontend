@@ -56,9 +56,8 @@ const ReportActivityEvolution = ({
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
-  if (!data) return null
   const fourwingsInterval = getFourwingsInterval(start, end)
-  let interval: FourwingsInterval = data.interval
+  let interval: FourwingsInterval | undefined = data?.interval
   if (interval === 'MONTH' && (fourwingsInterval === 'DAY' || fourwingsInterval === 'HOUR')) {
     interval = 'DAY'
   }
@@ -79,6 +78,9 @@ const ReportActivityEvolution = ({
 
   const dataFormated = useMemo(
     () => {
+      if (!data || !interval) {
+        return []
+      }
       return formatEvolutionData(data, {
         start: domain ? new Date(domain[0]).toISOString() : start,
         end: domain ? new Date(domain[1]).toISOString() : end,
@@ -149,7 +151,7 @@ const ReportActivityEvolution = ({
     }
   }, [fixedTooltip, handleClickOutside])
 
-  if (!dataFormated || !domain) {
+  if (!dataFormated || !domain || !interval) {
     return null
   }
 
