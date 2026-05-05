@@ -150,7 +150,7 @@ module "router-refactor" {
   short_environment = "dev"
   app_name          = local.app_name
   app_suffix        = "-router-refactor"
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-random-forest-dev"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-router-refactor-dev"
   service_account   = local.service_account.dev
   machine_type      = "E2_HIGHCPU_8"
   labels = {
