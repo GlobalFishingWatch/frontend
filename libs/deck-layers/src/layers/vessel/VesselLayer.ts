@@ -186,6 +186,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   _getVesselChunks = () => {
     const { startTime, endTime, strictTimeRange } = this.props
+    if (!startTime || !endTime) {
+      return []
+    }
 
     const chunks = strictTimeRange
       ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
@@ -406,6 +409,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers() {
+    const { startTime, endTime } = this.props
+    if (!startTime || !endTime) {
+      return []
+    }
     return [
       ...this._getVesselTrackLayers(),
       ...this._getVesselEventLayers(),

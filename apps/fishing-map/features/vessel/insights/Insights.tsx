@@ -41,7 +41,7 @@ const Insights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
-          year: MIN_INSIGHTS_YEAR,
+          year: String(MIN_INSIGHTS_YEAR),
         })}
       </div>
     )

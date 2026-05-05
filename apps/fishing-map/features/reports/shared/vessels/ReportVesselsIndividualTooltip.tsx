@@ -22,10 +22,12 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
           <p className={styles.value}>
             <I18nNumber number={data.value} />{' '}
             {reportUnit &&
-              t((t: any) => t.common[reportUnit], {
-                count: data.value,
-                defaultValue: reportUnit,
-              }).toLowerCase()}
+              String(
+                t((t) => (t.common as any)[reportUnit], {
+                  count: data.value,
+                  defaultValue: reportUnit,
+                } as any)
+              ).toLowerCase()}
           </p>
         )}
       </div>

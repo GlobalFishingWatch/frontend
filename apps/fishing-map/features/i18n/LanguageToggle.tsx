@@ -71,7 +71,12 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   }
 
   return (
-    <div className={cx(styles.languageToggle, className)} ref={expandedContainerRef}>
+    <div
+      className={cx(styles.languageToggle, className)}
+      ref={expandedContainerRef}
+      onMouseEnter={() => setIsLanguageMenuOpen(true)}
+      onMouseLeave={() => setIsLanguageMenuOpen(false)}
+    >
       <div className={styles.languageBtn}>
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}

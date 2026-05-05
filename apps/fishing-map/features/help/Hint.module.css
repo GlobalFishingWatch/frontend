@@ -10,6 +10,13 @@
   z-index: 2;
 }
 
+.linksToggle:hover::before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
 .links {
   display: none;
   position: absolute;
@@ -22,7 +29,7 @@
   width: max-content;
   transform: translateY(50%);
   bottom: 50%;
-  left: var(--space-L);
+  left: var(--sidebar-tabs-width);
   border-radius: var(--border-radius-1);
 }
 

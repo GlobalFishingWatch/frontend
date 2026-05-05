@@ -91,7 +91,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
                 0
               ),
 
-              vessels: vesselsWithGaps.length,
+              vessels: String(vesselsWithGaps.length),
             })}
             onToggle={onInsightToggle}
           >

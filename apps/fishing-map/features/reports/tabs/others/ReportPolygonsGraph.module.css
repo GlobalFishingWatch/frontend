@@ -1,0 +1,33 @@
+.container {
+  padding: var(--space-SM);
+}
+
+.title {
+  font: var(--font-L);
+  color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.title strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.summary {
+  color: var(--color-secondary-blue);
+  padding-block: var(--space-S);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+}

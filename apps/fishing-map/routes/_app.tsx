@@ -17,6 +17,28 @@ import 'utils/polyfills'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 import '@globalfishingwatch/ui-components/base.css'
 
+function AppLayout() {
+  const [store] = useState<AppStore>(() => makeStore())
+  const router = useRouter()
+
+  useEffect(() => {
+    setupRouterSync(router, store)
+  }, [router, store])
+
+  useEffect(() => {
+    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
+    store.dispatch(hydrateHintsDismissed(hintsDismissed))
+  }, [store])
+
+  return (
+    <Provider store={store}>
+      <Suspense fallback={null}>
+        <App />
+      </Suspense>
+    </Provider>
+  )
+}
+
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
   validateSearch: validateRootSearchParams,
@@ -55,25 +77,3 @@ export const Route = createFileRoute('/_app')({
     }
   },
 })
-
-function AppLayout() {
-  const [store] = useState<AppStore>(() => makeStore())
-  const router = useRouter()
-
-  useEffect(() => {
-    setupRouterSync(router, store)
-  }, [router, store])
-
-  useEffect(() => {
-    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
-    store.dispatch(hydrateHintsDismissed(hintsDismissed))
-  }, [store])
-
-  return (
-    <Provider store={store}>
-      <Suspense fallback={null}>
-        <App />
-      </Suspense>
-    </Provider>
-  )
-}

@@ -50,7 +50,7 @@ function WorkspaceLayout() {
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { replaceQueryParams } = useReplaceQueryParams()
-  const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const { fitWorkspaceBounds } = useFitWorkspaceBounds()
 
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID

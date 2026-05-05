@@ -72,7 +72,7 @@ function EventDescription({
             i18nKey={(t) => t.event.encounterActionWithVesselsPin}
             defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
             values={{
-              encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
+              encounterVessel: formatInfoField(encounterVesselName, 'shipname') as string,
               ...time,
             }}
             components={{

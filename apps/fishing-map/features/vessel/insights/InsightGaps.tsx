@@ -47,7 +47,7 @@ const InsightGaps = ({
             <Fragment>
               <span>
                 {t((t) => t.vessel.insights.gapsEvents, {
-                  count: aisOff?.length,
+                  count: aisOff?.length ?? 0,
                 })}
               </span>
               <InsightGapsDetails

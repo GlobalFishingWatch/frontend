@@ -3145,6 +3145,7 @@ __metadata:
     papaparse: "npm:5.5.3"
     pbf: "npm:4.0.1"
     playwright: "npm:1.57.0"
+    polygon-clipping: "npm:^0.15.7"
     prettier: "npm:3.8.1"
     prettier-eslint: "npm:16.4.2"
     protobufjs: "npm:^8.0.1"
@@ -31489,6 +31490,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"polygon-clipping@npm:^0.15.7":
+  version: 0.15.7
+  resolution: "polygon-clipping@npm:0.15.7"
+  dependencies:
+    robust-predicates: "npm:^3.0.2"
+    splaytree: "npm:^3.1.0"
+  checksum: 10/0210e6f6621510a1e216a39db0c72c5886782244ddf6149417ae54ce3efc4b3d27cad43f9f53224b85c08881255749477e2337c483a957329a29a87d6e79b306
+  languageName: node
+  linkType: hard
+
 "portfinder@npm:^1.0.28":
   version: 1.0.38
   resolution: "portfinder@npm:1.0.38"
@@ -35311,6 +35322,13 @@ __metadata:
   version: 1.0.2
   resolution: "splaytree-ts@npm:1.0.2"
   checksum: 10/4fb74236f1d8d7d30904c4c6bf7de69ccf7a60af199aadabe149b51254491b25750bd356cdfe01f0fb60514a7153dd60cea3ff29ea06c70ec328a46d6b19e33d
+  languageName: node
+  linkType: hard
+
+"splaytree@npm:^3.1.0":
+  version: 3.2.3
+  resolution: "splaytree@npm:3.2.3"
+  checksum: 10/8c5ff49a1eb2e4797e22a15f3cf10d7be22c2313ec5f0e8e5d7e5d7c5c1aacd29db1714a9f5ef6e4c4bf433783ddbb90756b565193024af00853226598ef8575
   languageName: node
   linkType: hard
 

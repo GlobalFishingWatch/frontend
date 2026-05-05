@@ -66,7 +66,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t((t) => t.vesselGroupReport.insights.IUUBlackListsCount, {
-              vessels: vesselsWithIIU.length,
+              vessels: String(vesselsWithIIU.length),
             })}
             onToggle={onInsightToggle}
           >

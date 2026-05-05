@@ -12,6 +12,13 @@
   z-index: 2;
 }
 
+.languageToggle:hover::before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
 .languageBtn {
   display: flex;
   align-items: center;
@@ -44,10 +51,6 @@
 
 .languages > li {
   width: 100%;
-}
-
-.languageToggle:hover .languages {
-  display: flex;
 }
 
 .open {

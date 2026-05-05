@@ -122,7 +122,7 @@ function DownloadTrackModal() {
           <p className={cx({ [styles.error]: isDownloadRatioExceeded })}>
             {isDownloadRatioExceeded
               ? (t((t) => t.download.trackLimitExceeded, {
-                  limit: rateLimit?.limit,
+                  limit: String(rateLimit?.limit ?? ''),
                 }) as string)
               : rateLimit?.remaining
                 ? (t((t) => t.download.trackRemaining, {

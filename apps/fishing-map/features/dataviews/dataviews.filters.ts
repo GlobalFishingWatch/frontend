@@ -80,7 +80,7 @@ export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: strin
   }
   const vesselField = filter === 'ssvid' ? 'mmsi' : filter
   if (i18n.exists(`vessel.${vesselField}`)) {
-    const label = t((t: any) => t.vessel[vesselField], {
+    const label = t((t) => (t.vessel as any)[vesselField] as string, {
       defaultValue: filter.toString(),
       count: 2,
     })
@@ -88,7 +88,7 @@ export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: strin
       return label
     }
   }
-  return t((t: any) => t.layer[filter], { defaultValue: filter.toString() })
+  return t((t) => (t.layer as any)[filter] as string, { defaultValue: filter.toString() })
 }
 
 const getSupportedFilterDatasets = (
@@ -221,7 +221,7 @@ export const getCommonFiltersInDataview = (
         let label =
           filterType === 'range' || filterType === 'number'
             ? field
-            : t((t: any) => t[datasetId]?.schema?.[filter]?.enum?.[field as string], {
+            : t((t) => t[datasetId]?.schema?.[filter]?.enum?.[field as string], {
                 ns: 'datasets',
                 defaultValue: field?.toString(),
               })
@@ -241,7 +241,7 @@ export const getCommonFiltersInDataview = (
             filter !== 'encounter_type'
           ) {
             const fallbackValue = typeof field === 'string' ? field : (field || '').toString()
-            label = t((t: any) => t.vessel?.[filter]?.[field as string], {
+            label = t((t) => (t.vessel as any)?.[filter]?.[field as string], {
               defaultValue: fallbackValue,
             })
           }

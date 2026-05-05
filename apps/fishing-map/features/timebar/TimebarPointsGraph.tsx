@@ -27,8 +27,8 @@ const TimebarPointsGraph = () => {
         t((t) => t.common.points, { count: value?.count }).toLocaleLowerCase(),
         aggregatedPropertyLabel && value?.value
           ? t((t) => t.common.aggregatedBy, {
-              total: formatI18nNumber(value?.value),
-              property: aggregatedPropertyLabel,
+              total: formatI18nNumber(value?.value) as string,
+              property: aggregatedPropertyLabel ?? '',
             })
           : t((t) => t.common.onScreen),
       ]

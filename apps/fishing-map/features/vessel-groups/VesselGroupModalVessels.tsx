@@ -170,7 +170,7 @@ function VesselGroupVesselsComponent({
 
             if (unknownVesselsCount > 0) {
               const confirmation = window.confirm(
-                t((t) => t.vesselGroup.removeUnknownVessels, { param: unknownVesselsCount })
+                t((t) => t.vesselGroup.removeUnknownVessels, { param: String(unknownVesselsCount) })
               )
               if (confirmation) {
                 filteredVessels = vesselsWithShipname

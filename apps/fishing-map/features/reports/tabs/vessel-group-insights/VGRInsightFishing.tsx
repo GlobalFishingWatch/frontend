@@ -185,7 +185,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
                   0
                 ),
 
-                vessels: vesselsWithNoTakeMpas?.length,
+                vessels: String(vesselsWithNoTakeMpas?.length),
               })}
               onToggle={onMPAToggle}
             >
@@ -212,7 +212,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
                   0
                 ),
 
-                vessels: vesselsInRfmoWithoutKnownAuthorization.length,
+                vessels: String(vesselsInRfmoWithoutKnownAuthorization.length),
               })}
               onToggle={onRFMOToggle}
             >

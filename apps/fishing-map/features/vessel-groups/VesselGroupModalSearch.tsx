@@ -160,7 +160,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               csvName
                 ? csvName
                 : t((t) => t.vesselGroup.csvPlaceholder, {
-                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or') as string,
+                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or') ?? '',
                   })
             }
           />

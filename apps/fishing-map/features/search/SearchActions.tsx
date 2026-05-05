@@ -120,7 +120,7 @@ function SearchActions() {
         testId="search-vessels-add-vessel"
         tooltip={!hasVesselsSelected ? t((t) => t.search.selectVesselResults) : ''}
       >
-        {t((t) => t.search.seeVesselsOnMap, { count: vesselsSelected?.length || undefined })}
+        {t((t) => t.search.seeVesselsOnMap, { count: vesselsSelected?.length ?? 0 })}
       </Button>
     </Fragment>
   )

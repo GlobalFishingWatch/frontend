@@ -120,7 +120,7 @@
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output"],
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output", "typecheck"],
       "options": {
         "command": "vite build",
         "cwd": "apps/fishing-map"

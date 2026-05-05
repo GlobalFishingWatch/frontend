@@ -1,3 +1,7 @@
+.section {
+  padding-block: var(--space-XS);
+}
+
 .container {
   padding: var(--space-SM);
 }
@@ -28,12 +32,24 @@
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
-  padding-bottom: var(--space-S);
+  padding-block: var(--space-S);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-XS);
 }
 
 .summary strong {
   font-weight: 400;
   color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+  padding-bottom: var(--space-S);
 }
 
 .marginTop {
@@ -64,4 +80,28 @@
   opacity: var(--opacity-secondary);
   font: var(--font-S);
   width: 100%;
+}
+
+.migramarSelectors {
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.migramarSelectors > div {
+  flex: 1;
+}
+
+.migramarTooltip {
+  background: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.migramarDot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  margin-right: var(--space-XS);
 }

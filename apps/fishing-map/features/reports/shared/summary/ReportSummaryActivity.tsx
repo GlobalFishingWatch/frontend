@@ -167,9 +167,9 @@ export default function ReportSummaryActivity({
           : ''
 
       return t((t) => t.analysis.summaryNoVessels, {
-        activityQuantity,
+        activityQuantity: activityQuantity as string,
         activityUnit: activityUnitLabel,
-        activityType: datasetTitle,
+        activityType: datasetTitle ?? '',
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
       })
