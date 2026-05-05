@@ -11,20 +11,22 @@ type ReportSublayerValuesProps = {
 
 function ReportSublayerValues({ values, tags }: ReportSublayerValuesProps) {
   if (values.length <= 1) return null
+  const nonZeroEntries = values
+    .map((value, index) => ({ value, index }))
+    .filter(({ value }) => value !== 0)
+
+  if (nonZeroEntries.length === 0) return null
   return (
     <Fragment>
       {' '}
       (
-      {values.map(
-        (value, index) =>
-          value !== 0 && (
-            <Fragment key={index}>
-              <span className={styles.dot} style={{ color: tags[index]?.config?.color }} />
-              {value}
-              {index < values.length - 1 ? ', ' : ''}
-            </Fragment>
-          )
-      )}
+      {nonZeroEntries.map(({ value, index }, i) => (
+        <Fragment key={index}>
+          <span className={styles.dot} style={{ color: tags[index]?.config?.color }} />
+          {value}
+          {i < nonZeroEntries.length - 1 ? ', ' : ''}
+        </Fragment>
+      ))}
       ){' '}
     </Fragment>
   )
