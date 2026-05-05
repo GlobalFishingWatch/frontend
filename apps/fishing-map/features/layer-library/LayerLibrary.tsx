@@ -34,6 +34,8 @@ import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
 
 import styles from './LayerLibrary.module.css'
 
+const SEARCH_MIN_CHARS = 3
+
 type UserSubcategory = DataviewCategory | 'bigQuery'
 
 export const resolveLibraryLayers = (
@@ -210,7 +212,7 @@ const LayerLibrary: FC = () => {
     () =>
       layersResolved
         .filter((layer) => {
-          if (searchQuery.length < 3) return true
+          if (searchQuery.length < SEARCH_MIN_CHARS) return true
           return (
             layer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             layer.description?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -236,7 +238,7 @@ const LayerLibrary: FC = () => {
       ),
     [filteredLayers, uniqCategories]
   )
-  const activeSearchQuery = searchQuery.length >= 3 ? searchQuery : ''
+  const activeSearchQuery = searchQuery.length >= SEARCH_MIN_CHARS ? searchQuery : ''
 
   const vesselGroupsMatchCount = useMemo(
     () =>
@@ -333,7 +335,7 @@ const LayerLibrary: FC = () => {
             extendedCategories
               .filter(
                 ({ category }) =>
-                  searchQuery.length < 3 ||
+                  searchQuery.length < SEARCH_MIN_CHARS ||
                   (category === DataviewCategory.User && userDatasetsMatchCount > 0) ||
                   (category === DataviewCategory.VesselGroups && vesselGroupsMatchCount > 0) ||
                   layersByCategory[category]?.length > 0
@@ -383,7 +385,7 @@ const LayerLibrary: FC = () => {
           {uniqCategories
             .filter(
               (category) =>
-                searchQuery.length < 3 ||
+                searchQuery.length < SEARCH_MIN_CHARS ||
                 (category === DataviewCategory.VesselGroups && vesselGroupsMatchCount > 0) ||
                 layersByCategory[category]?.length > 0
             )
@@ -419,11 +421,12 @@ const LayerLibrary: FC = () => {
                 </div>
               )
             )}
-          {allCategories.includes(DataviewCategory.User) && (searchQuery.length < 3 || userDatasetsMatchCount > 0) && (
-            <div className={styles.categoryContainer}>
-              <LayerLibraryUserPanel searchQuery={activeSearchQuery} />
-            </div>
-          )}
+          {allCategories.includes(DataviewCategory.User) &&
+            (searchQuery.length < SEARCH_MIN_CHARS || userDatasetsMatchCount > 0) && (
+              <div className={styles.categoryContainer}>
+                <LayerLibraryUserPanel searchQuery={activeSearchQuery} />
+              </div>
+            )}
         </ul>
       ) : (
         <div className={styles.spinnerContainer}>
