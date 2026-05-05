@@ -21,7 +21,10 @@ import type {
   VesselLayer,
 } from '@globalfishingwatch/deck-layers'
 import { generateVesselGraphSteps, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+import type {
+  FourwingsFeatureProperties,
+  VesselTrackGraphExtent,
+} from '@globalfishingwatch/deck-loaders'
 import { getVesselGraphExtentClamped } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
@@ -312,11 +315,11 @@ const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
 function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
   return features
     .map((feature) => {
-      const interactionType = 'interactionType' in feature ? feature.interactionType : ''
-      const coordinates = 'coordinates' in feature ? JSON.stringify(feature.coordinates) : ''
-      const geometry = 'geometry' in feature ? JSON.stringify(feature.geometry) : ''
-      const tile = 'tile' in feature ? JSON.stringify(feature.tile) : ''
-      return `${feature.category}-${feature.layerId}-${feature.id}-${interactionType}-${tile}-${coordinates}-${geometry}`
+      const propertyId =
+        'properties' in feature
+          ? (feature.properties as FourwingsFeatureProperties)?.cellId || ''
+          : ''
+      return `${feature.category}-${feature.layerId}-${feature.id}-${propertyId}`
     })
     .join('|')
 }
