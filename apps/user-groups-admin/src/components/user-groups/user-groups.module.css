@@ -50,10 +50,23 @@
   font-weight: bold;
 }
 
+.inputsContainer {
+  display: flex;
+  gap: var(--space-S);
+}
+
 .input {
   flex: 1;
 }
 
 .button {
   margin-top: var(--space-S);
+}
+
+.invitationNotes {
+  margin-left: var(--space-S);
+  padding-inline: var(--space-S);
+  border-radius: var(--border-radius);
+  background: var(--color-terthiary-blue);
+  opacity: var(--opacity-secondary);
 }

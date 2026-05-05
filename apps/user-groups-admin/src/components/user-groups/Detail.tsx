@@ -7,10 +7,11 @@ import { Button, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-c
 
 import styles from './user-groups.module.css'
 
-export function UserGroupDetail({ groupId }: { groupId: number }) {
+export function UserGroupDetail({ groupId, user }: { groupId: number; user: UserData }) {
   const [userLoading, setUserLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [invitationNotes, setInvitationNotes] = useState('')
   const [group, setGroup] = useState<UserGroup>()
   const [futureUsers, setFutureUsers] = useState<FutureUserData[]>()
 
@@ -34,11 +35,17 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
   }, [])
 
   const onAddUserClick = async () => {
+    const inviterName = [user?.firstName, user?.lastName].filter(Boolean).join(' ')
+    const date = new Date().toISOString().slice(0, 10)
+    const formattedNotes = invitationNotes
+      ? `${inviterName}: ${invitationNotes} (${date})`
+      : undefined
     const users = await GFWAPI.fetch<UserData[]>(`/auth/users?email=${encodeURIComponent(email)}`)
     if (users.length === 1) {
       const userId = users[0]?.id
       await GFWAPI.fetch<UserGroup>(`/auth/user-groups/${groupId}/user/${userId}`, {
         method: 'POST',
+        body: formattedNotes ? ({ invitationNotes: formattedNotes } as any) : undefined,
       })
     } else {
       await GFWAPI.fetch<UserGroup>(`/auth/future-users?merge=true`, {
@@ -46,10 +53,12 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
         body: {
           email,
           userGroupIds: [groupId],
+          ...(formattedNotes && { invitationNotes: formattedNotes }),
         } as any,
       })
     }
     setEmail('')
+    setInvitationNotes('')
     fetchGroup(groupId)
   }
 
@@ -58,6 +67,7 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
     fetchGroup(groupId)
     return () => {
       setEmail('')
+      setInvitationNotes('')
       setGroup(undefined)
       setFutureUsers(undefined)
     }
@@ -126,6 +136,9 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
                 return (
                   <li key={user.id}>
                     {user.firstName} {user.lastName} ({user.email})
+                    {user.invitationNotes && (
+                      <span className={styles.invitationNotes}>{user.invitationNotes}</span>
+                    )}
                     <IconButton
                       disabled={userLoading}
                       icon="delete"
@@ -146,6 +159,9 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
                   return (
                     <li key={futureUser.id}>
                       {futureUser.email}
+                      {futureUser.invitationNotes && (
+                        <span className={styles.invitationNotes}>{futureUser.invitationNotes}</span>
+                      )}
                       {futureUser.groups?.length > 1 && (
                         <span>
                           (already invited in {futureUser.groups.map((g) => g.name).join(',')})
@@ -166,12 +182,20 @@ export function UserGroupDetail({ groupId }: { groupId: number }) {
       )}
       <div className={styles.content}>
         <h2 className={styles.subTitle}>Invitations</h2>
-        <InputText
-          className={styles.input}
-          label="User email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className={styles.inputsContainer}>
+          <InputText
+            className={styles.input}
+            label="User email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <InputText
+            className={styles.input}
+            label="Invitation notes"
+            value={invitationNotes}
+            onChange={(e) => setInvitationNotes(e.target.value)}
+          />
+        </div>
         <Button className={styles.button} onClick={onAddUserClick}>
           Add user
         </Button>
