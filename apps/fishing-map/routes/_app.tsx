@@ -1,8 +1,9 @@
-import { lazy, Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
 import { HINTS } from 'data/config'
+import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
@@ -13,8 +14,6 @@ import 'utils/polyfills'
 
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
-
-const App = lazy(() => import('features/app/App'))º
 
 function AppLayout() {
   const router = useRouter()
