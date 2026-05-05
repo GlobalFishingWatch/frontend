@@ -285,6 +285,7 @@ export class VesselTrackPathLayer<
     const hasGapAttribute = this.props.maxTimeGapHours
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
+      ...(shaders.inject || {}),
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         ${hasSpeedAttribute ? 'in float instanceSpeeds;' : ''}

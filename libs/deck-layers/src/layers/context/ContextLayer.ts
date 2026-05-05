@@ -230,41 +230,44 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
-        return new TileLayer<TileLayerProps>({
+        return new TileLayer<ContextFeature>({
           id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
           loaders: [GFWMVTLoader],
           maxZoom: 8,
           renderSubLayers: (props: any) => {
             const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
-            return layer.sublayers.map((sublayer) => [
-              new GeoJsonLayer(mvtSublayerProps, {
-                id: `${props.id}-${sublayer.dataviewId}-boundaries`,
-                onViewportLoad: this.props.onViewportLoad,
-                lineWidthMinPixels: 1,
-                filled: false,
-                getPolygonOffset: (params: { layerIndex: number }) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                getLineColor: hexToDeckColor(sublayer.color),
-                getLineWidth: sublayer.thickness,
-                lineWidthUnits: 'pixels',
-                lineJointRounded: true,
-                lineCapRounded: true,
-                extensions: [
-                  ...mvtSublayerProps.extensions,
-                  new PathStyleExtension({ dash: true, highPrecisionDash: true }),
-                ],
-                getDashArray: (d: ContextFeature) => this.getDashArray(d),
-                updateTriggers: {
-                  getLineWidth: sublayer.thickness,
-                },
-              } as any),
-            ])
+            return layer.sublayers.map((sublayer) => {
+              const thickness = sublayer.thickness ?? 1
+              return [
+                new GeoJsonLayer(mvtSublayerProps, {
+                  id: `${props.id}-${sublayer.dataviewId}-boundaries`,
+                  onViewportLoad: this.props.onViewportLoad,
+                  lineWidthMinPixels: 1,
+                  filled: false,
+                  getPolygonOffset: (params: { layerIndex: number }) =>
+                    getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
+                  getLineColor: hexToDeckColor(sublayer.color),
+                  getLineWidth: thickness,
+                  lineWidthUnits: 'pixels',
+                  lineJointRounded: true,
+                  lineCapRounded: true,
+                  extensions: [
+                    ...mvtSublayerProps.extensions,
+                    new PathStyleExtension({ dash: true }),
+                  ],
+                  getDashArray: (d: ContextFeature) => this.getDashArray(d),
+                  updateTriggers: {
+                    getLineWidth: thickness,
+                  },
+                } as any),
+              ]
+            })
           },
         })
       }
 
-      return new TileLayer<TileLayerProps<ContextFeature>>({
+      return new TileLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
@@ -394,6 +397,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
+    if (!this.state) {
+      return
+    }
     this.setState({ highlightedFeatures })
   }
 }

@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux'
 import type { FilterContext, MapView, ViewStateChangeParameters } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
+import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { DebugOption, selectDebugOptions, setDebugOption } from 'features/debug/debug.slice'
 import { MAP_CANVAS_ID } from 'features/map/map.config'
 import { setMapLoaded } from 'features/map/map.slice'
 import { useSetMapInstance } from 'features/map/map-context.hooks'
@@ -30,6 +32,7 @@ const DeckGLWrapper = () => {
   const setViewState = useMapSetViewState()
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()
+  const showMapStats = useSelector(selectDebugOptions)?.mapStats
   const areReportFeaturesLoading = useReportFeaturesLoading()
 
   const onViewStateChange = useCallback(
@@ -37,16 +40,12 @@ const DeckGLWrapper = () => {
       if (params.interactionState.isZooming || !params.interactionState.inTransition) {
         // https://github.com/visgl/deck.gl/issues/7158#issuecomment-2305388963
         // add transitionDuration: 0 to avoid unresponsive zoom
-        setViewState({
-          ...viewState,
-          ...params.viewState,
-          transitionDuration: 0,
-        })
+        setViewState({ ...params.viewState, transitionDuration: 0 })
       } else {
-        setViewState({ ...viewState, ...params.viewState })
+        setViewState(params.viewState)
       }
     },
-    [setViewState, viewState]
+    [setViewState]
   )
 
   const onMapClick = useMapMouseClick()
@@ -56,6 +55,15 @@ const DeckGLWrapper = () => {
   const layers = useMapLayers()
   const reportCategory = useSelector(selectReportCategory)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+
+  const onExpandedStatsChange = useCallback(
+    (expanded: boolean) => {
+      if (!expanded) {
+        dispatch(setDebugOption({ option: DebugOption.MapStats, value: false }))
+      }
+    },
+    [dispatch]
+  )
 
   const onMapLoad = useCallback(() => {
     dispatch(setMapLoaded(true))
@@ -115,6 +123,16 @@ const DeckGLWrapper = () => {
       onDrag={onMapDrag}
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
+      widgets={
+        showMapStats
+          ? [
+              new StatsWidget({
+                initialExpanded: true,
+                onExpandedChange: onExpandedStatsChange,
+              }),
+            ]
+          : []
+      }
     >
       <MapAnnotations />
       <TrackCorrectionsOverlay />
