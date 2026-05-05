@@ -12,7 +12,7 @@
   z-index: 2;
 }
 
-.languageToggle:hover:before {
+.languageToggle:hover::before {
   content: '';
   position: absolute;
   width: 6rem;
@@ -53,16 +53,8 @@
   width: 100%;
 }
 
-.languageToggle:hover .languages {
-  display: flex;
-}
-
 .open {
   display: flex;
-}
-
-.forceClosed {
-  display: none !important;
 }
 
 .language {
