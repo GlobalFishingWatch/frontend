@@ -1,6 +1,18 @@
+.header {
+  padding-inline: var(--space-M);
+  padding-block: var(--space-S);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .title {
   font: var(--font-L);
-  border-bottom: var(--border);
+}
+
+.description {
+  opacity: var(--opacity-secondary);
 }
 
 .subTitle {
@@ -9,7 +21,7 @@
 }
 
 .content {
-  padding-left: var(--space-M);
+  padding-inline: var(--space-M);
 }
 
 .content:last-child {
@@ -38,11 +50,23 @@
   font-weight: bold;
 }
 
+.inputsContainer {
+  display: flex;
+  gap: var(--space-S);
+}
+
 .input {
   flex: 1;
-  margin-top: var(--space-L);
 }
 
 .button {
   margin-top: var(--space-S);
+}
+
+.invitationNotes {
+  margin-left: var(--space-S);
+  padding-inline: var(--space-S);
+  border-radius: var(--border-radius);
+  background: var(--color-terthiary-blue);
+  opacity: var(--opacity-secondary);
 }

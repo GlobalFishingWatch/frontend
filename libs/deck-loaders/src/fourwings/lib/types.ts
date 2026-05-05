@@ -1,5 +1,5 @@
 import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
-import type { LoaderOptions } from '@loaders.gl/loader-utils'
+import type { StrictLoaderOptions } from '@loaders.gl/loader-utils'
 import type { Feature, Point, Polygon } from 'geojson'
 
 export type FourwingsRawData = number[]
@@ -50,15 +50,15 @@ export type ParseFourwingsVectorsOptions = Omit<
   'aggregationOperation' | 'sublayers' | 'buffersLength'
 > & { unit?: FourwingsVectorsUnit; temporalAggregation?: boolean }
 
-export type FourwingsLoaderOptions = LoaderOptions & {
+export type FourwingsLoaderOptions = StrictLoaderOptions & {
   fourwings?: ParseFourwingsOptions
 }
 
-export type FourwingsClustersLoaderOptions = LoaderOptions & {
+export type FourwingsClustersLoaderOptions = StrictLoaderOptions & {
   fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
-export type FourwingsVectorsLoaderOptions = LoaderOptions & {
+export type FourwingsVectorsLoaderOptions = StrictLoaderOptions & {
   fourwingsVectors?: ParseFourwingsVectorsOptions
 }
 
@@ -92,9 +92,15 @@ export type FourwingsPointFeatureProperties = {
   [key: string]: any
 }
 
-export type FourwingsStaticFeatureProperties = {
+export type FourwingsMVTStaticFeatureProperties = {
+  cell: number
   count: number
   values: number[][]
+}
+
+// Used to re-map the MVT property from cell to cellId and match the rest of the fourwings properties layers
+export type FourwingsStaticFeatureProperties = Omit<FourwingsMVTStaticFeatureProperties, 'cell'> & {
+  cellId: number
 }
 
 export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
@@ -105,6 +111,9 @@ export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
 }
 
 export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
+export type FourwingsMVTStaticFeature = FourwingsFeature<FourwingsMVTStaticFeatureProperties> & {
+  geometry: Polygon
+}
 export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties> & {
   geometry: Polygon
 }

@@ -25,7 +25,7 @@ import { VesselTrackPathLayer } from './VesselTrackPathLayer'
 export type VesselTrackLayerProps = Omit<_VesselTrackPathLayerProps, 'hoveredTime'> &
   LayerProps & {
     visualizationMode?: VesselTrackVisualizationMode
-    hoveredFeature?: VesselTrackPickingObject
+    hoveredTime?: number
   }
 
 export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
@@ -187,7 +187,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         id: `${id}-${props.colorBy}-${props.maxTimeGapHours}-track`,
         data: data as VesselTrackData,
         getWidth: 1.5,
-        hoveredTime: props.hoveredFeature?.timestamp,
+        hoveredTime: props.hoveredTime,
       }),
     ] as LayersList
 
