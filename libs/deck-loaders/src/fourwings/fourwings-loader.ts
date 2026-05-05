@@ -6,7 +6,7 @@ import { VERSION } from '../version'
 import { NO_DATA_VALUE, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
-export const baseFourwingsLoaderOptions: FourwingsLoaderOptions = {
+export const baseFourwingsLoaderOptions: ParseFourwingsOptions = {
   sublayers: 1,
   cols: [113],
   rows: [53],

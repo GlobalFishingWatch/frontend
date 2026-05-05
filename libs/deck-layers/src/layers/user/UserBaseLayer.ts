@@ -79,6 +79,9 @@ export abstract class UserBaseLayer<
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
+    if (!this.state) {
+      return
+    }
     this.setState({ highlightedFeatures })
   }
 

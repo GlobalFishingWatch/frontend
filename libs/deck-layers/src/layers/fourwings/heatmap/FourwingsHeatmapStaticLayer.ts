@@ -20,6 +20,7 @@ import { stringify } from 'qs'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
+  FourwingsMVTStaticFeature,
   FourwingsStaticFeature,
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
@@ -160,19 +161,23 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<FourwingsHeatmapStaticPickingObject>
+    info: PickingInfo<FourwingsMVTStaticFeature>
   }): FourwingsHeatmapStaticPickingInfo => {
     if (!info.object) {
-      info.object = {} as FourwingsHeatmapStaticPickingObject
+      info.object = {} as FourwingsMVTStaticFeature
     }
-    const object = {
+    const { cell, ...properties } = info.object?.properties || {}
+    const object: FourwingsHeatmapStaticPickingObject = {
       ...info.object,
+      id: this.props.id,
       properties: {
-        ...info.object?.properties,
+        ...properties,
+        cellId: cell,
       },
       layerId: this.root.id,
       category: this.props.category,
       subcategory: this.props.subcategory,
+      sublayers: this.props.sublayers,
     }
     const { minVisibleValue, maxVisibleValue } = this.props
     if (object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
@@ -184,7 +189,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       }
       object.properties.values = [[object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
     }
-    return { ...info, object } as FourwingsHeatmapStaticPickingInfo
+    return { ...info, object }
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {

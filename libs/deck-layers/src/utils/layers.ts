@@ -1,4 +1,4 @@
-import { COORDINATE_SYSTEM } from '@deck.gl/core'
+import type { CoordinateSystem } from '@deck.gl/core'
 import { ClipExtension } from '@deck.gl/extensions'
 import type { _Tile2DHeader as Tile2DHeader, TileLayerProps } from '@deck.gl/geo-layers'
 import { Matrix4 } from '@math.gl/core'
@@ -46,7 +46,7 @@ export function getMVTSublayerProps({
 }): {
   modelMatrix: Matrix4
   coordinateOrigin: [number, number, number]
-  coordinateSystem: 0 | 3 | 1 | -1 | 2 | undefined
+  coordinateSystem: CoordinateSystem
   extensions: any[]
 } {
   const { x, y, z } = tile.index
@@ -59,7 +59,7 @@ export function getMVTSublayerProps({
   return {
     modelMatrix: modelMatrix,
     coordinateOrigin: [xOffset, yOffset, 0],
-    coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+    coordinateSystem: 'cartesian',
     extensions: [...(extensions || []), new ClipExtension()],
   }
 }

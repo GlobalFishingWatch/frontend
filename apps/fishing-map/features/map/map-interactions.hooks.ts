@@ -2,7 +2,7 @@ import { startTransition, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
@@ -11,8 +11,8 @@ import type {
   InteractionEventType,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
-  useGetDeckLayers,
-  useMapHoverInteraction,
+  deckHoverInteractionAtom,
+  deckLayersAtom,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type {
@@ -22,7 +22,6 @@ import type {
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
-  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 import { trackEvent } from 'features/app/analytics.hooks'
@@ -73,13 +72,18 @@ export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Events,
 ]
 
-const useMapClusterTilesLoading = () => {
-  const eventsDataviews = useSelector(selectEventsDataviews)
-  const eventsDeckLayers = useGetDeckLayers(eventsDataviews?.map((d) => d.id))
-  if (!eventsDeckLayers?.length) {
-    return false
-  }
-  return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
+function useGetAreClusterTilesLoading() {
+  const store = useStore()
+  return useCallback(
+    (eventsDataviews: { id: string }[] | undefined) => {
+      const deckLayers = store.get(deckLayersAtom)
+      const eventsLayerIds = eventsDataviews?.map((d) => d.id) || []
+      return eventsLayerIds
+        .flatMap((id) => deckLayers.find((l) => l.id === id) || [])
+        .some((layer) => !layer.instance.isLoaded)
+    },
+    [store]
+  )
 }
 
 type InteractionPromise = Promise<unknown> & { abort: () => void }
@@ -133,9 +137,9 @@ export const useClickedEventConnect = () => {
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
   const { rulersEditing, onRulerMapClick } = useRulers()
-  const areTilesClusterLoading = useMapClusterTilesLoading()
+  const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
   const scrollToEvent = useVesselProfileScrollToEvent()
-  const [_, setEventGroup] = useEventActivityToggle()
+  const setEventGroup = useEventActivityToggle()[1]
 
   const handleHeatmapInteraction = useCallback(
     (event: InteractionEvent) => {
@@ -222,19 +226,21 @@ export const useClickedEventConnect = () => {
         (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
       ) as SliceExtendedClusterPickingObject
 
-      if (tileClusterFeature && !areTilesClusterLoading) {
-        const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
-          ?.datasets?.[0]
-        if (!getIsBQEditorDataset(dataset!)) {
-          const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
-          setInteractionPromises((prev) => ({
-            ...prev,
-            events: eventsPromise as InteractionPromise,
-          }))
+      if (tileClusterFeature) {
+        if (!getAreClusterTilesLoading(eventsDataviews)) {
+          const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
+            ?.datasets?.[0]
+          if (!getIsBQEditorDataset(dataset!)) {
+            const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
+            setInteractionPromises((prev) => ({
+              ...prev,
+              events: eventsPromise as InteractionPromise,
+            }))
+          }
         }
       }
     },
-    [dispatch, eventsDataviews, setInteractionPromises, areTilesClusterLoading]
+    [dispatch, eventsDataviews, setInteractionPromises, getAreClusterTilesLoading]
   )
 
   const handleVesselEventInteraction = useCallback(
@@ -303,7 +309,7 @@ export const useClickedEventConnect = () => {
       ) as FourwingsClusterPickingObject
 
       if (clusterFeature) {
-        if (areTilesClusterLoading) {
+        if (getAreClusterTilesLoading(eventsDataviews)) {
           return
         }
         if (clusterFeature.clusterMode === 'country') {
@@ -326,7 +332,7 @@ export const useClickedEventConnect = () => {
           } else {
             const { expansionZoom: legacyExpansionZoom } = clusterFeature.properties as any
             const expansionZoomValue = expansionZoom || legacyExpansionZoom
-            if (!areTilesClusterLoading && expansionZoomValue) {
+            if (expansionZoomValue) {
               setMapCoordinates({
                 latitude: event.latitude,
                 longitude: event.longitude,
@@ -365,10 +371,10 @@ export const useClickedEventConnect = () => {
       addMapAnnotation,
       addErrorNotification,
       onRulerMapClick,
+      getAreClusterTilesLoading,
       eventsDataviews,
       setMapCoordinates,
       fitMapBounds,
-      areTilesClusterLoading,
       clickedEvent,
     ]
   )
@@ -444,7 +450,7 @@ export const useMapMouseHover = () => {
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { onRulerMapHover, rulersEditing } = useRulers()
 
-  const [hoveredCoordinates, setHoveredCoordinates] = useAtom(hoverCoordinatesAtom)
+  const setHoveredCoordinates = useSetAtom(hoverCoordinatesAtom)
 
   const onMouseMove: DeckProps['onHover'] = useMemo(
     () =>
@@ -480,13 +486,12 @@ export const useMapMouseHover = () => {
     ]
   )
 
-  return useMemo(
-    () => ({
-      onMouseMove,
-      hoveredCoordinates,
-    }),
-    [hoveredCoordinates, onMouseMove]
-  )
+  return useMemo(() => ({ onMouseMove }), [onMouseMove])
+}
+
+export const useMapHoverCoordinates = () => {
+  const hoverCoordinates = useAtomValue(hoverCoordinatesAtom)
+  return useMemo(() => hoverCoordinates, [hoverCoordinates])
 }
 
 export const useMapMouseClick = () => {
@@ -519,34 +524,34 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
+  const store = useStore()
   const overlaysCursor = useAtomValue(overlaysCursorAtom)
-  const areClusterTilesLoading = useMapClusterTilesLoading()
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
-  const hoverFeatures = useMapHoverInteraction()?.features
-  const hoverFeaturesHash = hoverFeatures
-    ?.map((f) => `${f.id}-${(f as VesselTrackPickingObject).interactionType ?? ''}`)
-    .join()
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
+      // Read hover features and loading state on-demand — no render subscriptions
+      const features = store.get(deckHoverInteractionAtom)?.features
       if (overlaysCursor) {
         return overlaysCursor
       }
-      if (hoverFeatures?.some(isRulerLayerPoint)) {
+      if (features?.some(isRulerLayerPoint)) {
         return 'move'
       }
-      if (hoverFeatures?.some(isTilesClusterLayer)) {
-        const isCluster = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+      if (features?.some(isTilesClusterLayer)) {
+        const isCluster = (features as FourwingsClusterPickingObject[]).some(
           (f) =>
             isTilesClusterLayerCluster(f) &&
             (f.expansionBounds !== undefined || f.expansionZoom !== undefined)
         )
-        const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
+        const isCountryClusterMode = (features as FourwingsClusterPickingObject[]).some(
           (f) => f.clusterMode === 'country'
         )
-        if (areClusterTilesLoading) {
+        if (getAreClusterTilesLoading(eventsDataviews)) {
           return 'wait'
         }
         return !isCluster && !isCountryClusterMode ? 'pointer' : 'zoom-in'
@@ -557,22 +562,22 @@ export const useMapCursor = () => {
       if (isDragging) {
         return 'grabbing'
       }
-      if (hoverFeatures?.length) {
-        if (hoverFeatures?.some((f) => !isTrackSegment(f))) {
+      if (features?.length) {
+        if (features?.some((f) => !isTrackSegment(f))) {
           return 'pointer'
         }
         return 'grab'
       }
       return 'grab'
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
+      store,
+      eventsDataviews,
+      getAreClusterTilesLoading,
       overlaysCursor,
-      hoverFeaturesHash,
       isMapAnnotating,
       isErrorNotificationEditing,
       rulersEditing,
-      areClusterTilesLoading,
     ]
   )
 
@@ -607,7 +612,7 @@ export const useMapDrag = () => {
   )
 
   const onMapDragEnd = useCallback(
-    (info: PickingInfo, event: any) => {
+    (info: PickingInfo) => {
       if (!info.coordinate || !info.object) return
       const isRulerPoint = isRulerLayerPoint(info.object)
       if (isRulerPoint) {
@@ -634,6 +639,6 @@ export const useDebouncedDispatchHighlightedEvent = () => {
         }
         dispatch(setHighlightedEvents(ids))
       }, 100),
-    []
+    [dispatch]
   )
 }

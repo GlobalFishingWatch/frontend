@@ -90,6 +90,7 @@ export class UserTracksPathLayer<
     const shaders = super.getShaders()
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
+      ...(shaders.inject || {}),
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         out float vTime;
