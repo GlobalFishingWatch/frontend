@@ -16,12 +16,12 @@ import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
 function AppLayout() {
+  const [store] = useState<AppStore>(() => makeStore())
   const router = useRouter()
-  const [store] = useState<AppStore>(() => {
-    const s = makeStore()
-    setupRouterSync(router, s)
-    return s
-  })
+
+  useEffect(() => {
+    setupRouterSync(router, store)
+  }, [router, store])
 
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
