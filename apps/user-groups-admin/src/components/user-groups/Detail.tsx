@@ -86,11 +86,17 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
   }
 
   const onDownloadCsvClick = () => {
-    const rows = [['Email', 'First Name', 'Last Name', 'Status']]
+    const rows = [['Email', 'First Name', 'Last Name', 'Status', 'Notes']]
     group?.users?.forEach((u) =>
-      rows.push([u.email ?? '', u.firstName ?? '', u.lastName ?? '', 'active'])
+      rows.push([
+        u.email ?? '',
+        u.firstName ?? '',
+        u.lastName ?? '',
+        'active',
+        u.invitationNotes ?? '',
+      ])
     )
-    futureUsers?.forEach((u) => rows.push([u.email, '', '', 'invited']))
+    futureUsers?.forEach((u) => rows.push([u.email, '', '', 'invited', u.invitationNotes ?? '']))
     const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
