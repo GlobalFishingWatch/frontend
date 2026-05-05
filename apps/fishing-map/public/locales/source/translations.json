@@ -1100,13 +1100,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw_callsign": "Call sign",
-    "gfw_flag": "Flag",
     "gfw_geartypes": "GFW Gear type",
-    "gfw_imo": "IMO",
-    "gfw_shipname": "Ship name",
     "gfw_shiptypes": "GFW Vessel type",
-    "gfw_ssvid": "SSVID (MMSI)",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
