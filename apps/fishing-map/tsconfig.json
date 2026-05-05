@@ -52,5 +52,5 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
-  "exclude": ["node_modules", "jest.config.ts", "exported", "**/resources.d.ts", "**/__traces__/**"]
+  "exclude": ["node_modules", "jest.config.ts", "exported", "**/resources.d.ts", "**/__traces__/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
 }

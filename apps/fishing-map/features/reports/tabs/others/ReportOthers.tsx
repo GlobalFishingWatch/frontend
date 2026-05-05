@@ -1,186 +1,81 @@
-import { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { Select } from '@globalfishingwatch/ui-components'
 
-import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
-import { selectPointsActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { isPolygonsDataviewReportSupported } from 'features/reports/report-area/area-reports.utils'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
-  useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
-import { getStatsValue } from 'features/reports/reports-timeseries-shared.utils'
-import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
-import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
-import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportPointsGraph from 'features/reports/tabs/others/ReportPointsGraph'
+import ReportPolygonsGraph from 'features/reports/tabs/others/ReportPolygonsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ReportOthers.module.css'
+import reportStyles from 'features/reports/report-area/AreaReport.module.css'
 
 function ReportOthers() {
   useComputeReportTimeSeries()
-  const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
-  const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectPointsActiveReportDataviewsGrouped)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const otherDataviewsGrouped = useSelector(selectOthersActiveReportDataviewsGrouped)
 
-  if (!Object.keys(otherDataviews)?.length) return null
-
+  if (!Object.keys(otherDataviewsGrouped)?.length) return null
   return (
-    <Fragment>
-      {Object.values(otherDataviews).map((dataviews, index) => {
+    <div className={reportStyles.section}>
+      {Object.values(otherDataviewsGrouped).map((dataviews) => {
         const dataview = dataviews[0]
-        const dataset = dataview.datasets?.find(
-          (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
-        )
-
-        const selectOptions = getFlattenDatasetFilters(dataset?.filters)
-          .filter((f) => f.type === 'range' || f.type === 'number')
-          .map((f) => ({ id: f.id, label: f.id }))
-        const onSelectAggregatedProperty = (option: SelectOption) => {
-          const newDataviewConfig = {
-            aggregateByProperty: option.id.toString(),
-          }
-          const newDataview = { id: dataview.id, config: newDataviewConfig }
-          upsertDataviewInstance(newDataview)
-        }
-
-        const onClearSelection = () => {
-          const newDataviewConfig = {
-            aggregateByProperty: undefined,
-          }
-          const newDataview = { id: dataview.id, config: newDataviewConfig }
-          upsertDataviewInstance(newDataview)
-        }
-
-        const selectedProperty = selectOptions.find(
-          (option) => option.id === dataview.config?.aggregateByProperty
-        )
-        const hasAggregateByProperty = Boolean(dataview.config?.aggregateByProperty)
-
         const mergedDataviewId = getMergedDataviewId(dataviews)
-        const hasTimeFilter = dataviewHasUserPointsTimeRange(dataview)
-        const title = getDatasetNameTranslated(dataset)
-        const unit =
-          dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA'
-            ? dataset.unit
-            : undefined
-        const totalValue = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'total')
-          : undefined
-        const statsValues = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'values')
-          : undefined
-        const statsCounts = timeseriesStats?.[mergedDataviewId]
-          ? getStatsValue(timeseriesStats[mergedDataviewId], 'count')
+
+        const layerTimeseries = layersTimeseriesFiltered?.find((ts) => ts.id === mergedDataviewId)
+        const layerTimeseriesWithCurrentColors = layerTimeseries
+          ? {
+              ...layerTimeseries,
+              sublayers: layerTimeseries.sublayers.map((sublayer, i) => ({
+                ...sublayer,
+                legend: {
+                  ...sublayer.legend,
+                  color: dataviews[i]?.config?.color || sublayer.legend.color,
+                },
+              })),
+            }
           : undefined
 
-        const StatsComponent =
-          totalValue !== undefined ? (
-            <p className={cx(styles.summary)}>
-              <Fragment>
-                <span>
-                  <strong>
-                    {statsCounts}
-                    {' ' +
-                      t((t) => t.common.points, {
-                        count: statsCounts,
-                      })}
-                  </strong>
-                  {hasAggregateByProperty &&
-                    ' ' +
-                      t((t) => t.common.aggregatedBy, {
-                        total: formatI18nNumber(totalValue),
-                        property: dataview.config?.aggregateByProperty,
-                      })}{' '}
-                  {t((t) => t.analysis.insideYourArea)}
-                  {hasTimeFilter && (
-                    <>
-                      {' '}
-                      {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
-                      {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
-                    </>
-                  )}
-                </span>
-                {statsValues && statsValues?.length > 1 && (
-                  <Fragment>
-                    (
-                    {statsValues.map((value, index) => (
-                      <Fragment key={index}>
-                        <span
-                          className={styles.dot}
-                          style={{ color: dataviews[index]?.config?.color }}
-                        ></span>
-                        {value}
-                        {index < statsValues.length - 1 ? ', ' : ''}
-                      </Fragment>
-                    ))}
-                    ){' '}
-                  </Fragment>
-                )}
-              </Fragment>
-            </p>
-          ) : null
+        if (isPolygonsDataviewReportSupported(dataview)) {
+          return (
+            <ReportPolygonsGraph
+              key={mergedDataviewId}
+              dataview={dataview}
+              dataviews={dataviews}
+              statsId={mergedDataviewId}
+              data={layerTimeseriesWithCurrentColors}
+              loading={loading}
+              start={start}
+              end={end}
+              className={styles.subsection}
+            />
+          )
+        }
 
         return (
-          <div key={mergedDataviewId} className={styles.container}>
-            <h2 className={styles.title}>
-              <strong>{title}</strong> {unit && <span>({unit})</span>}
-            </h2>
-            {hasTimeFilter && loading ? <ReportStatsPlaceholder /> : StatsComponent}
-            {dataviews?.length > 0 && (
-              <div className={styles.selectContainer}>
-                <div className={styles.tagsContainer}>
-                  {dataviews?.map((d) => (
-                    <ReportSummaryTags key={d.id} dataview={d} />
-                  ))}
-                </div>
-                {(selectedProperty || (selectOptions.length > 0 && statsCounts !== 0)) && (
-                  <Select
-                    options={selectOptions}
-                    selectedOption={selectedProperty}
-                    onSelect={onSelectAggregatedProperty}
-                    placeholder={t((t) => t.analysis.selectAggregationProperty)}
-                    onCleanClick={onClearSelection}
-                  />
-                )}
-              </div>
-            )}
-            {hasTimeFilter &&
-              (loading ? (
-                <ReportActivityPlaceholder showHeader={false} loading />
-              ) : statsCounts === 0 ? (
-                <ReportActivityPlaceholder showHeader={false}>
-                  {t((t) => t.analysis.noDataByArea)}
-                </ReportActivityPlaceholder>
-              ) : (
-                <ReportActivityEvolution
-                  start={start}
-                  end={end}
-                  data={layersTimeseriesFiltered?.[index]}
-                />
-              ))}
-          </div>
+          <ReportPointsGraph
+            key={mergedDataviewId}
+            dataview={dataview}
+            dataviews={dataviews}
+            statsId={mergedDataviewId}
+            data={layerTimeseriesWithCurrentColors}
+            loading={loading}
+            start={start}
+            end={end}
+            className={styles.subsection}
+          />
         )
       })}
-    </Fragment>
+    </div>
   )
 }
 

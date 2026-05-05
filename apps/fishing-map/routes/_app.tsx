@@ -15,11 +15,6 @@ import 'utils/polyfills'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
-export const Route = createFileRoute('/_app')({
-  component: AppLayout,
-  validateSearch: validateRootSearchParams,
-})
-
 function AppLayout() {
   const [store] = useState<AppStore>(() => makeStore())
   const router = useRouter()
@@ -41,3 +36,8 @@ function AppLayout() {
     </Provider>
   )
 }
+
+export const Route = createFileRoute('/_app')({
+  component: AppLayout,
+  validateSearch: validateRootSearchParams,
+})

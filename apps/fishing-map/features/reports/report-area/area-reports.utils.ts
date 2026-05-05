@@ -1,7 +1,6 @@
 import { difference } from '@turf/difference'
 import { dissolve } from '@turf/dissolve'
 import { featureCollection, multiPolygon } from '@turf/helpers'
-import { format } from 'd3-format'
 import { uniq } from 'es-toolkit'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import { DateTime } from 'luxon'
@@ -36,7 +35,6 @@ import type { Bbox, BufferOperation, BufferUnit } from 'types'
 import { formatInfoField } from 'utils/info'
 
 import {
-  CONTEXT_DATAVIEWS_WITH_REPORTS,
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_UNIT,
   OTHERS_CATEGORY_LABEL,
@@ -93,12 +91,15 @@ const SUPPORTED_REPORT_CATEGORIES = [
   DataviewCategory.Environment,
   DataviewCategory.VesselGroups,
   DataviewCategory.Events,
+  DataviewCategory.Context,
 ]
 const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
   DataviewType.FourwingsVector,
+  DataviewType.Context,
+  DataviewType.Polygons,
 ]
 const SUPPORTED_COMPARISON_CATEGORIES = [
   DataviewCategory.Activity,
@@ -112,12 +113,11 @@ const SUPPORTED_COMPARISON_TYPES = [
 ]
 
 export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
-  if (dataview.category !== DataviewCategory.Context) {
-    return false
-  }
-  return (CONTEXT_DATAVIEWS_WITH_REPORTS as readonly string[]).includes(
-    String((dataview as UrlDataviewInstance).dataviewId || dataview.slug)
-  )
+  return dataview.category === DataviewCategory.Context
+}
+
+export const isPointsDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  return dataview.config?.type === DataviewType.UserPoints
 }
 
 export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
@@ -131,16 +131,27 @@ export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDat
   return getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) === 'points'
 }
 
+export const isPolygonsDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  const dataset = dataview.datasets?.[0]
+  if (!dataset) {
+    return false
+  }
+  return (
+    dataview.config?.type === DataviewType.Polygons ||
+    dataview.config?.type === DataviewType.UserContext ||
+    dataview.config?.type === DataviewType.Context
+  )
+}
+
 export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
     return false
   }
   if (category === DataviewCategory.User) {
-    return isUserContextDataviewReportSupported(dataview)
-  }
-  if (category === DataviewCategory.Context) {
-    return isContextDataviewReportSupported(dataview)
+    return (
+      isUserContextDataviewReportSupported(dataview) || isPolygonsDataviewReportSupported(dataview)
+    )
   }
   return (
     SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
@@ -162,8 +173,10 @@ export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
   if (
-    isContextDataviewReportSupported(dataview) ||
-    isUserContextDataviewReportSupported(dataview)
+    (isContextDataviewReportSupported(dataview) ||
+      isUserContextDataviewReportSupported(dataview) ||
+      isPolygonsDataviewReportSupported(dataview)) &&
+    dataview.category !== DataviewCategory.Environment
   ) {
     return ReportCategory.Others
   }
@@ -240,7 +253,7 @@ export const getBufferedFeature = ({
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
     label: t((t) => t.analysis.bufferedArea, {
-      value,
+      value: String(value),
       unit,
     }),
   }

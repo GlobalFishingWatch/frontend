@@ -1,12 +1,28 @@
+import area from '@turf/area'
+import type { Feature, MultiPolygon, Polygon } from 'geojson'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
+import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
-import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  ContextSubLayerConfig,
+  FourwingsLayer,
+  FourwingsVectorsTileLayer,
+} from '@globalfishingwatch/deck-layers'
+import {
+  ContextLayer,
+  UserContextTileLayer,
+  UserPointsTileLayer,
+} from '@globalfishingwatch/deck-layers'
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
-import type { ReportGraphProps, ReportGraphStats } from 'features/reports/reports-timeseries.hooks'
+import type {
+  PolygonsReportGraphStats,
+  ReportGraphProps,
+  ReportGraphStats,
+} from 'features/reports/reports-timeseries.hooks'
 import {
   getFourwingsTimeseries,
   getFourwingsTimeseriesStats,
@@ -15,10 +31,17 @@ import {
   getPointsTimeseries,
   getPointsTimeseriesStats,
 } from 'features/reports/tabs/others/reports-points-timeseries.utils'
+import { getPolygonsTimeseries } from 'features/reports/tabs/others/reports-polygons-timeseries.utils'
+
+const { intersection, union } = polygonClipping
 
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
-export type ReportDeckLayer = ReportFourwingsDeckLayer | ReportPointsDeckLayer
+export type ReportPolygonsDeckLayer = UserContextTileLayer
+export type ReportDeckLayer =
+  | ReportFourwingsDeckLayer
+  | ReportPointsDeckLayer
+  | ReportPolygonsDeckLayer
 
 export type GetTimeseriesParams<T extends ReportDeckLayer> = {
   featuresFiltered: FilteredPolygons[][]
@@ -29,6 +52,112 @@ export const isInstanceOfPointsLayer = (instance: ReportDeckLayer) => {
   return instance instanceof UserPointsTileLayer
 }
 
+export const isInstanceOfPolygonLayer = (instance: ReportDeckLayer) => {
+  return instance instanceof UserContextTileLayer || instance instanceof ContextLayer
+}
+
+export type GetPolygonsStatsParams = {
+  features: FilteredPolygons[]
+  reportArea?: Polygon | MultiPolygon
+  sublayers?: ContextSubLayerConfig[]
+}
+
+function getCountsBySublayer(
+  features: FilteredPolygons['contained' | 'overlapping'],
+  sublayers: ContextSubLayerConfig[]
+): number[] {
+  return sublayers.map(
+    (sublayer) =>
+      features.filter((f) => isFeatureInFilters(f, sublayer.filters, sublayer.filterOperators))
+        .length
+  )
+}
+
+export const getPolygonsTimeseriesStats = ({
+  features,
+  reportArea,
+  sublayers,
+}: GetPolygonsStatsParams): PolygonsReportGraphStats | undefined => {
+  const featureGroup = features?.[0]
+  if (!featureGroup) return undefined
+
+  const containedCount = featureGroup.contained.length
+  const overlappingCount = featureGroup.overlapping.length
+  const containedValues = sublayers ? getCountsBySublayer(featureGroup.contained, sublayers) : []
+  const overlappingValues = sublayers
+    ? getCountsBySublayer(featureGroup.overlapping, sublayers)
+    : []
+
+  if (!reportArea || (containedCount === 0 && overlappingCount === 0)) {
+    return {
+      type: 'polygons',
+      contained: containedCount,
+      overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
+      areaCoverageRatio: 0,
+      areaCoverageKm2: 0,
+    }
+  }
+
+  try {
+    const reportAreaFeature = {
+      type: 'Feature' as const,
+      geometry: reportArea,
+      properties: {},
+    } as Feature<Polygon | MultiPolygon>
+    const reportAreaM2 = area(reportAreaFeature)
+
+    // Clip overlapping polygons to the report area first so all geometries stay small.
+    // Contained polygons are already fully inside, no clipping needed.
+    const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
+    const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
+      .map((p) => {
+        const clipped = intersection(p.geometry.coordinates as Geom, reportArea.coordinates as Geom)
+        if (!clipped.length) return null
+        return {
+          type: 'Feature' as const,
+          geometry: { type: 'MultiPolygon' as const, coordinates: clipped },
+          properties: {},
+        } as Feature<MultiPolygon>
+      })
+      .filter((p): p is Feature<MultiPolygon> => p !== null)
+
+    // Single-pass batch union via polygon-clipping sweep-line algorithm
+    const allPolygons = [...containedPolygons, ...clippedOverlapping]
+    let intersectionM2 = 0
+    if (allPolygons.length > 0) {
+      const coords = allPolygons.map((p) => p.geometry.coordinates as Geom)
+      const unionCoords = union(coords[0], ...coords)
+      intersectionM2 = area({
+        type: 'Feature',
+        geometry: { type: 'MultiPolygon', coordinates: unionCoords },
+        properties: {},
+      })
+    }
+
+    return {
+      type: 'polygons',
+      contained: containedCount,
+      overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
+      areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
+      areaCoverageKm2: intersectionM2 / 1_000_000,
+    }
+  } catch {
+    return {
+      type: 'polygons',
+      contained: containedCount,
+      overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
+      areaCoverageRatio: 0,
+      areaCoverageKm2: 0,
+    }
+  }
+}
+
 export const getTimeseries = <T extends ReportDeckLayer>({
   featuresFiltered,
   instances,
@@ -36,37 +165,44 @@ export const getTimeseries = <T extends ReportDeckLayer>({
   const timeseries: ReportGraphProps[] = []
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
-    if (isInstanceOfPointsLayer(instance)) {
-      const pointsTimeseries = getPointsTimeseries({
-        instance,
-        features,
-      })
+    if (isInstanceOfPolygonLayer(instance)) {
+      const polygonsTimeseries = getPolygonsTimeseries({ features, instance })
+      timeseries.push({ ...polygonsTimeseries, id: instance.id })
+    } else if (isInstanceOfPointsLayer(instance)) {
+      const pointsTimeseries = getPointsTimeseries({ instance, features })
       if (pointsTimeseries) {
-        timeseries.push(pointsTimeseries)
+        timeseries.push({ ...pointsTimeseries, id: instance.id })
       }
     } else {
-      const fourwingsTimeseries = getFourwingsTimeseries({
-        instance: instance,
-        features,
-      })
+      const fourwingsTimeseries = getFourwingsTimeseries({ instance: instance, features })
       if (fourwingsTimeseries) {
-        timeseries.push(fourwingsTimeseries)
+        timeseries.push({ ...fourwingsTimeseries, id: instance.id })
       }
     }
   })
   return timeseries
 }
 
+export type GetTimeseriesStatsParams<T extends ReportDeckLayer> = GetTimeseriesParams<T> &
+  TimeRange & { reportArea?: Polygon | MultiPolygon }
+
 export const getTimeseriesStats = <T extends ReportDeckLayer>({
   featuresFiltered,
   instances,
   start,
   end,
-}: GetTimeseriesParams<T> & TimeRange) => {
+  reportArea,
+}: GetTimeseriesStatsParams<T>) => {
   const timeseriesStats = {} as ReportGraphStats
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
-    if (isInstanceOfPointsLayer(instance)) {
+    if (isInstanceOfPolygonLayer(instance)) {
+      const sublayers = instance.props.layers?.[0]?.sublayers as ContextSubLayerConfig[] | undefined
+      const stats = getPolygonsTimeseriesStats({ features, reportArea, sublayers })
+      if (stats) {
+        timeseriesStats[instance.id] = stats
+      }
+    } else if (isInstanceOfPointsLayer(instance)) {
       const stats = getPointsTimeseriesStats({
         instance,
         features,

@@ -31,7 +31,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
-  selectPointsActiveReportDataviews,
+  selectOthersActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -44,7 +44,7 @@ import {
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
-import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectReportCategory, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { selectIsVesselGroupReportLocation, selectVesselId } from 'router/routes.selectors'
@@ -112,12 +112,12 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectReportCategory,
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
-    selectActiveHeatmapEnvironmentalDataviews,
+    selectActiveEnvironmentalDataviews,
     selectVGRFootprintDataview,
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
-    selectPointsActiveReportDataviews,
+    selectOthersActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -130,7 +130,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    let dataviews: UrlDataviewInstance<DataviewType>[]
     switch (reportCategory) {
       case ReportCategory.Activity:
         dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
@@ -246,14 +246,20 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (allDataviewInstancesResolved) => {
+  [selectAllDataviewInstancesResolved, selectReportDatasetId],
+  (allDataviewInstancesResolved, reportDatasetId) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
         return false
       }
       if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
+        return false
+      }
+      const dataviewIsSameAsReportArea = dataview.datasets?.some((ds) =>
+        reportDatasetId?.split(',').includes(ds.id)
+      )
+      if (dataviewIsSameAsReportArea) {
         return false
       }
       return isSupportedReportDataview(dataview)

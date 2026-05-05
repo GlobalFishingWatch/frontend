@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
+import type { MultiPolygon, Polygon } from 'geojson'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
@@ -13,7 +14,12 @@ import {
   groupContextDataviews,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import {
+  ContextLayer,
+  FourwingsLayer,
+  UserContextTileLayer,
+  UserPointsTileLayer,
+} from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
@@ -33,7 +39,11 @@ import {
   selectTimeComparisonHash,
 } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
-import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
+import {
+  selectReportCategory,
+  selectReportDatasetId,
+  selectReportSubCategory,
+} from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import type { FilterByPolygonMode, FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -70,6 +80,7 @@ export function getReportGraphMode(reportActivityGraph: ReportActivityGraph): Re
 }
 
 export interface ReportGraphProps {
+  id?: string
   timeseries: (EvolutionGraphData & { mode?: ReportGraphMode })[]
   sublayers: ReportSublayerGraph[]
   interval: FourwingsInterval
@@ -90,7 +101,20 @@ export type PointsReportGraphStats = {
   count: number
 }
 
-export type ReportGraphStats = Record<string, FourwingsReportGraphStats | PointsReportGraphStats>
+export type PolygonsReportGraphStats = {
+  type: 'polygons'
+  contained: number
+  overlapping: number
+  containedValues: number[]
+  overlappingValues: number[]
+  areaCoverageRatio: number
+  areaCoverageKm2: number
+}
+
+export type ReportGraphStats = Record<
+  string,
+  FourwingsReportGraphStats | PointsReportGraphStats | PolygonsReportGraphStats
+>
 
 interface ReportState {
   isLoading: boolean
@@ -118,6 +142,7 @@ export const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   const reportComparisonDataviews = useSelector(selectReportComparisonDataviews)
+  const reportDatasetId = useSelector(selectReportDatasetId)
   let ids = ['']
 
   if (currentCategoryDataviews?.length > 0) {
@@ -127,7 +152,11 @@ export const useReportInstances = () => {
     ) {
       ids = [getMergedDataviewId(currentCategoryDataviews)]
     } else if (currentCategory === ReportCategory.Others) {
-      ids = Object.values(groupContextDataviews(currentCategoryDataviews)).map((dataviews) =>
+      const reportDatasetIds = reportDatasetId?.split(',') ?? []
+      const othersDataviews = currentCategoryDataviews.filter((d) =>
+        d.datasets?.every((ds) => !reportDatasetIds.includes(ds.id))
+      )
+      ids = Object.values(groupContextDataviews(othersDataviews)).map((dataviews) =>
         getMergedDataviewId(dataviews)
       )
     } else {
@@ -189,7 +218,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     [reportLayers, layersStateHash]
   )
   const debouncedTime = Math.max(
-    ...reportLayers.map(({ instance }) => instance.debounceTime || 0),
+    ...reportLayers.map(({ instance }) =>
+      'debounceTime' in instance ? (instance.debounceTime as number) || 0 : 0
+    ),
     1
   )
   const debouncedAreaId = useDebounce(area?.id, debouncedTime)
@@ -267,10 +298,14 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
+          const isPolygonLayer =
+            instance instanceof UserContextTileLayer || instance instanceof ContextLayer
           const viewportLoaded =
             instance instanceof FourwingsLayer
               ? instance?.getLayer()?.viewportLoaded
-              : instance?.viewportLoaded
+              : isPolygonLayer
+                ? instance.isLoaded
+                : instance?.viewportLoaded
           if (instance.isLoaded === false || !viewportLoaded) {
             // Layer is in transitional state - abort and let the effect re-run
             // when the layer state updates
@@ -280,14 +315,16 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
           const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
           const hasTimeFilter = instance.props.startTime || instance.props.endTime
 
-          const features = instance?.getData?.(
-            isUserPointsTileLayer
-              ? {
-                  includeNonTemporalFeatures: true,
-                  skipTemporalFilter: !hasTimeFilter,
-                }
-              : {}
-          ) as FourwingsFeature[]
+          const features = isPolygonLayer
+            ? instance.getRenderedFeatures()
+            : (instance?.getData?.(
+                isUserPointsTileLayer
+                  ? {
+                      includeNonTemporalFeatures: true,
+                      skipTemporalFilter: !hasTimeFilter,
+                    }
+                  : {}
+              ) as FourwingsFeature[])
 
           const error = instance?.getError?.()
           if (error || !features?.length) {
@@ -296,7 +333,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
             ])
           } else {
             let mode: FilterByPolygonMode = 'cell'
-            if (instance.props.category === 'environment') {
+            if (isPolygonLayer) {
+              mode = 'polygon'
+            } else if (instance.props.category === 'environment') {
               mode = 'cellCenter'
             } else if (
               instance.props.category === 'user' ||
@@ -369,6 +408,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         featuresFiltered: prev.featuresFiltered,
         start,
         end,
+        reportArea: area?.geometry as Polygon | MultiPolygon | undefined,
       })
       return { ...prev, stats }
     })
