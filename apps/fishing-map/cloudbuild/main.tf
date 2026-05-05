@@ -40,6 +40,7 @@ locals {
     "VITE_GFW_API_KEY",
     "VITE_IDENTITY_REVIEW_SPREADSHEET_ID",
     "VITE_MAP_ERRORS_SPREADSHEET_ID",
+    "VITE_MIGRAMAR_SPREADSHEET_ID",
     "VITE_MASTRA_API_URL",
     "VITE_SENTRY_AUTH_TOKEN",
     "VITE_SPREADSHEET_CLIENT_EMAIL",
@@ -93,7 +94,7 @@ module "develop" {
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",

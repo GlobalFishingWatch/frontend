@@ -52,8 +52,8 @@ export default defineConfig(({ mode }) => {
     },
 
     define: {
-      'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(env.NEXT_PUBLIC_API_GATEWAY),
-      'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.NEXT_PUBLIC_WORKSPACE_ENV),
+      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
+      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
       'process.env.NODE_ENV': JSON.stringify('test'),
       'process.env.VITEST': JSON.stringify('true'),
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),

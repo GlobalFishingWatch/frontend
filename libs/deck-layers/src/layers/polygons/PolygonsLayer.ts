@@ -38,6 +38,7 @@ const defaultProps: DefaultProps<PolygonsLayerProps> = {
 
 type PolygonsLayerState = {
   error: string
+  highlightedFeatures?: PolygonPickingObject[]
   debouncedDataUrl?: string
   _dataDebounceId?: ReturnType<typeof setTimeout>
 }
@@ -57,7 +58,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       this.setState({ error: error.message })
     }
     super(props as any)
-    this.state = { error: '' }
+    this.state = { error: '', highlightedFeatures: [] }
   }
 
   initializeState(context: LayerContext): void {
@@ -128,8 +129,9 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
     if (!this.props.pickable) {
       return COLOR_TRANSPARENT
     }
+    const highlightedFeatures = this._getHighlightedFeatures()
     return d.properties?.highlighted ||
-      getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
+      getPickedFeatureToHighlight(d, highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
@@ -138,10 +140,15 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
     if (!this.props.pickable) {
       return 0
     }
+    const highlightedFeatures = this._getHighlightedFeatures()
     return d.properties?.highlighted ||
-      getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
+      getPickedFeatureToHighlight(d, highlightedFeatures)
       ? lineWidth
       : 0
+  }
+
+  _getHighlightedFeatures() {
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }
 
   renderLayers() {
@@ -152,8 +159,8 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       dataUrl,
       pickable,
       group = LayerGroup.OutlinePolygonsBackground,
-      highlightedFeatures = [],
     } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
 
     const dataToRender =
       dataUrl && typeof dataUrl === 'string'
@@ -166,7 +173,22 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       ) ||
       (highlightedFeatures && highlightedFeatures?.length > 0)
 
+    const baseLineWidth = id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1
+
     return [
+      new GeoJsonLayer<GeoJsonProperties, { data: any }>({
+        id: `${id}-lines`,
+        data: dataToRender,
+        loadOptions: getFetchLoadOptions(),
+        lineWidthUnits: 'pixels',
+        lineWidthMinPixels: baseLineWidth,
+        lineWidthMaxPixels: 2,
+        stroked: true,
+        filled: false,
+        getPolygonOffset: (params) => getLayerGroupOffset(group, params),
+        getLineWidth: baseLineWidth,
+        getLineColor: hexToDeckColor(color),
+      }),
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-fills`,
         stroked: false,
@@ -178,18 +200,6 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         updateTriggers: {
           getFillColor: [highlightedFeatures],
         },
-      }),
-      new GeoJsonLayer<GeoJsonProperties, { data: any }>({
-        id: `${id}-lines`,
-        data: dataToRender,
-        loadOptions: getFetchLoadOptions(),
-        lineWidthUnits: 'pixels',
-        lineWidthMinPixels: 0,
-        lineWidthMaxPixels: 2,
-        filled: false,
-        getPolygonOffset: (params) => getLayerGroupOffset(group, params),
-        getLineWidth: id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1,
-        getLineColor: hexToDeckColor(color),
       }),
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-lines-bg`,
@@ -228,5 +238,12 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         },
       }),
     ]
+  }
+
+  setHighlightedFeatures(highlightedFeatures: PolygonPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
   }
 }

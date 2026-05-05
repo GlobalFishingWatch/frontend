@@ -1,5 +1,4 @@
 import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
-import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
@@ -14,7 +13,6 @@ import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content-panel/ContentPanel'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
@@ -158,11 +156,6 @@ function App() {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })
   }, [sidebarOpen])
 
-  const debugOptions = useSelector(selectDebugOptions)
-  const [isReady, setReady] = useState(false)
-  useEffect(() => setReady(true), [])
-  const showStats = isReady && debugOptions.mapStats === true
-
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t((t) => t.user.title)
     if (locationType === WORKSPACES_LIST) return t((t) => t.workspace.titlePlural)
@@ -206,11 +199,6 @@ function App() {
       >
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
-      <div style={{ position: 'fixed', zIndex: 1 }}>
-        {showStats && <FpsView top="0" right="8rem" bottom="auto" left="auto" />}
-        {/* If we need a memory plot we need to find a new one, this one no longer works  */}
-        {/* {showStats && <MemoryStatsComponent corner="topRight" />} */}
-      </div>
       <div className={styles.appLayout}>
         <div id="app-layout-content" className={styles.appLayoutContent}>
           <ErrorBoundary>
