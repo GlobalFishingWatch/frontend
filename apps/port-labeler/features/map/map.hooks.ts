@@ -118,9 +118,12 @@ export function useSelectorConnect(): UseSelector {
   const onMouseUp = useCallback(
     (e: MapLayerMouseEvent) => {
       if (map && box && box.endPosition && box.startPosition) {
-        const features = map.queryRenderedFeatures([box.startPosition, box.endPosition], {
-          layers: ['portPoints'],
-        })
+        const features = map.queryRenderedFeatures(
+          [box.startPosition as any, box.endPosition as any],
+          {
+            layers: ['portPoints'],
+          }
+        )
         dispatch(setSelectedPoints(selected.concat(features.map((point) => point.properties.id))))
       }
       if (map) {

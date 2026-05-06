@@ -239,9 +239,6 @@ importers:
       immer:
         specifier: ^11.1.6
         version: 11.1.6
-      intersection-observer:
-        specifier: 0.12.2
-        version: 0.12.2
       jest-canvas-mock:
         specifier: 2.5.2
         version: 2.5.2
@@ -431,6 +428,9 @@ importers:
       usehooks-ts:
         specifier: 3.1.1
         version: 3.1.1(react@19.2.4)
+      uuid:
+        specifier: ^14.0.0
+        version: 14.0.0
       vite-plugin-svgr:
         specifier: 4.5.0
         version: 4.5.0(rollup@4.60.3)(typescript@5.9.3)(vite@8.0.5)
@@ -10970,10 +10970,6 @@ packages:
     resolution: {integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==}
     engines: {node: '>= 0.10'}
 
-  intersection-observer@0.12.2:
-    resolution: {integrity: sha512-7m1vEcPCxXYI8HqnL8CKI6siDyD+eIWSwgB3DZA+ZTogxk9I4CDnj4wilt9x/+/QbHI4YG5YZNmC6458/e9Ktg==}
-    deprecated: The Intersection Observer polyfill is no longer needed and can safely be removed. Intersection Observer has been Baseline since 2019.
-
   intl-messageformat@10.7.18:
     resolution: {integrity: sha512-m3Ofv/X/tV8Y3tHXLohcuVuhWKo7BBq62cqY15etqmLxg2DZ34AGGgQDeR+SCta2+zICb1NX83af0GJmbQ1++g==}
 
@@ -15503,6 +15499,10 @@ packages:
 
   uuid@11.1.1:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
+    hasBin: true
+
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   uuid@8.3.2:
@@ -29357,8 +29357,6 @@ snapshots:
 
   interpret@1.4.0: {}
 
-  intersection-observer@0.12.2: {}
-
   intl-messageformat@10.7.18:
     dependencies:
       '@formatjs/ecma402-abstract': 2.3.6
@@ -34908,6 +34906,8 @@ snapshots:
       base64-arraybuffer: 1.0.2
 
   uuid@11.1.1: {}
+
+  uuid@14.0.0: {}
 
   uuid@8.3.2: {}
 

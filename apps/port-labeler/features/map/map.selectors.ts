@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import concave from '@turf/concave'
-import { buffer, featureCollection, point } from '@turf/turf'
+import { buffer, concave, featureCollection, point } from '@turf/turf'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
 
