@@ -17,7 +17,7 @@ The library includes a base CSS file (`base.css`) that defines the base styles f
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/ui-components
+yarn|pnpm add @globalfishingwatch/ui-components
 ```
 
 ## Usage example

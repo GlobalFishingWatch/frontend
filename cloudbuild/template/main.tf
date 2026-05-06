@@ -36,8 +36,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       id     = "Install Dependencies"
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = <<-EOF
-        cp -R /app/node_modules /app/.yarn ./
-        yarn install --immutable --inline-builds
+        cp -R /app/node_modules ./
+        pnpm install --frozen-lockfile
       EOF
     }
 

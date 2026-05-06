@@ -1,4 +1,4 @@
-import type { LayerContext } from '@deck.gl/core'
+import type { LayerContext, LayersList } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
@@ -63,7 +63,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
     })
   }
 
-  _getSatelliteLayers() {
+  _getSatelliteLayers(): LayersList {
     return [
       new PMTilesLayer({
         id: 'basemap-satellite-pmtiles',
@@ -107,14 +107,14 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
     ]
   }
 
-  _getBasemap() {
+  _getBasemap(): LayersList {
     if (!this.props.visible) return []
     return !this.props.basemap || this.props.basemap === BasemapType.Default
       ? [this._getBathimetryLayer(), this._getLandMassLayer()]
       : [this._getSatelliteLayers()]
   }
 
-  renderLayers() {
+  renderLayers(): LayersList {
     return this._getBasemap()
   }
 }

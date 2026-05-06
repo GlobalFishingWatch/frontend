@@ -31,9 +31,9 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
 
   included_files = [
     "package.json",
-    "yarn.lock",
-    ".yarnrc.yml",
-    ".yarn/releases/**",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    ".npmrc",
     "Dockerfile"
   ]
 

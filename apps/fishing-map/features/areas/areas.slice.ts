@@ -1,9 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { circle } from '@turf/circle'
-import { flatten } from '@turf/flatten'
-import { featureCollection } from '@turf/helpers'
-import union from '@turf/union'
+import { circle, featureCollection, flatten, union } from '@turf/turf'
 import { kebabCase, memoize, uniqBy } from 'es-toolkit'
 import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
 

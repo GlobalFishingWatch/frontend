@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import bbox from '@turf/bbox'
+import { bbox } from '@turf/turf'
 import cx from 'classnames'
 import type { Feature, Polygon } from 'geojson'
 

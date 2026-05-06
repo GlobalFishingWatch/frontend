@@ -166,7 +166,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
     return layers
   }
 
-  getData() {
-    return this.props.data
+  getData(): FourwingsFeature[] {
+    return this.props.data as FourwingsFeature[]
   }
 }

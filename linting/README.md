@@ -11,7 +11,7 @@ Monorepo eslint config with some custom rules and prettier integration
 npx install-peerdeps --dev @globalfishingwatch/linting
 
 # or
-yarn add @globalfishingwatch/linting -D --peer
+yarn|pnpm add @globalfishingwatch/linting -D --peer
 ```
 
 ## Usage

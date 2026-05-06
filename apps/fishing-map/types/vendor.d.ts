@@ -1,4 +1,3 @@
-declare module 'intersection-observer'
 declare module 'formatcoords'
 
 declare module 'workerize-loader!*' {
