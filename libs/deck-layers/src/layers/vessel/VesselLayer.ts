@@ -18,7 +18,7 @@ import {
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckLayerProps } from '../../types'
+import type { DeckLayerPickingObject, DeckLayerProps } from '../../types'
 import { fetchWithGFWAPI, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { deckToHexColor } from '../../utils/colors'
 
@@ -59,6 +59,7 @@ type VesselLayerState = {
   errors: {
     [key in EventTypes | 'track']?: string
   }
+  highlightedFeatures: DeckLayerPickingObject[]
 }
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -69,6 +70,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     super.initializeState(this.context)
     this.state = {
       errors: {},
+      highlightedFeatures: [],
     }
   }
 
@@ -212,6 +214,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackVisualizationMode,
       maxTimeGapHours,
     } = this.props
+    const hoveredFeature = this.state.highlightedFeatures.find(
+      (f): f is VesselTrackPickingObject =>
+        (f as VesselTrackPickingObject).subcategory === DataviewType.Track
+    )
 
     if (!trackUrl || !visible) {
       if (!trackUrl) console.warn('trackUrl needed for vessel layer')
@@ -264,6 +270,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           maxSpeedFilter,
           minElevationFilter,
           maxElevationFilter,
+          hoveredTime: hoveredFeature?.timestamp,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: (e: any) => this.onSublayerError('track', e),
         } as VesselTrackLayerProps)
@@ -304,16 +311,20 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     })
   }
 
+  setHighlightedFeatures(highlightedFeatures: DeckLayerPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
+  }
+
   _getVesselPositionLayer() {
-    const {
-      visible,
-      highlightStartTime,
-      highlightEndTime,
-      hoveredFeature,
-      color,
-      name,
-      showVesselIcon,
-    } = this.props
+    const { visible, highlightStartTime, highlightEndTime, color, name, showVesselIcon } =
+      this.props
+    const hoveredFeature = this.state.highlightedFeatures.find(
+      (f): f is VesselTrackPickingObject =>
+        (f as VesselTrackPickingObject).subcategory === DataviewType.Track
+    )
     const trackData = this.getVesselTrackData()
 
     if (hoveredFeature?.interactionType === 'point') {

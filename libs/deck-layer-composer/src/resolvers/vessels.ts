@@ -7,7 +7,7 @@ import {
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
-import type { VesselLayerProps, VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
+import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
 import type { DeckResolverFunction } from '../types/resolvers'
@@ -69,9 +69,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     events,
     visibleEvents: visibleEvents,
     highlightEventIds,
-    hoveredFeature: globalConfig.highlightedFeatures?.find(
-      (f) => f.layerId === dataview.id
-    ) as VesselTrackPickingObject,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),

@@ -188,6 +188,20 @@
           "4": "4",
           "5": "5"
         }
+      },
+      "vessel_type": {
+        "keyword": "vessel_type",
+        "enum": {
+          "fishing": "fishing",
+          "cargo": "cargo",
+          "passenger": "passenger",
+          "other": "other",
+          "carrier": "carrier",
+          "gear": "gear",
+          "bunker": "bunker",
+          "discrepancy": "discrepancy",
+          "support": "support"
+        }
       }
     }
   },
@@ -473,14 +487,6 @@
     "name": "Port Visits Events (BLZ)",
     "description": "The dataset contains port visits events for BLZ",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -553,9 +559,9 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
-          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
-          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
+          "FISHING-OTHER": "FISHING-OTHER",
+          "OTHER-FISHING": "OTHER-FISHING",
+          "OTHER-OTHER": "OTHER-OTHER"
         }
       }
     }
@@ -579,12 +585,6 @@
         "keyword": "fleet_code",
         "enum": {
           "1.1": "1.1",
-          "1.10": "1.10",
-          "1.12": "1.12",
-          "1.13": "1.13",
-          "1.14": "1.14",
-          "1.17": "1.17",
-          "1.18": "1.18",
           "1.2": "1.2",
           "1.3": "1.3",
           "1.4": "1.4",
@@ -593,37 +593,69 @@
           "1.7": "1.7",
           "1.8": "1.8",
           "1.9": "1.9",
-          "2.10": "2.10",
-          "2.11": "2.11",
-          "2.13": "2.13",
+          "1.10": "1.10",
+          "1.11": "1.11",
+          "1.12": "1.12",
+          "1.13": "1.13",
+          "1.14": "1.14",
+          "1.15": "1.15",
+          "1.16": "1.16",
+          "1.17": "1.17",
+          "1.18": "1.18",
+          "2.1": "2.1",
           "2.2": "2.2",
           "2.3": "2.3",
           "2.4": "2.4",
           "2.5": "2.5",
+          "2.6": "2.6",
+          "2.7": "2.7",
+          "2.8": "2.8",
+          "2.9": "2.9",
+          "2.10": "2.10",
+          "2.11": "2.11",
+          "2.12": "2.12",
+          "2.13": "2.13",
           "3.1": "3.1",
+          "3.2": "3.2",
+          "3.3": "3.3",
+          "3.4": "3.4",
+          "3.5": "3.5",
+          "3.6": "3.6",
+          "3.7": "3.7",
+          "3.8": "3.8",
+          "3.9": "3.9",
           "3.10": "3.10",
           "3.11": "3.11",
           "3.12": "3.12",
           "3.13": "3.13",
-          "3.2": "3.2",
-          "3.3": "3.3",
-          "3.5": "3.5",
-          "3.6": "3.6",
-          "3.9": "3.9",
+          "3.14": "3.14",
           "4.1": "4.1",
           "4.2": "4.2",
           "4.3": "4.3",
           "4.4": "4.4",
+          "4.5": "4.5",
           "4.6": "4.6",
           "5.1": "5.1",
-          "5.10": "5.10",
-          "5.11": "5.11",
           "5.2": "5.2",
           "5.3": "5.3",
           "5.4": "5.4",
+          "5.5": "5.5",
           "5.6": "5.6",
+          "5.7": "5.7",
+          "5.8": "5.8",
           "5.9": "5.9",
-          "Sem código IN": "Sem código IN"
+          "5.10": "5.10",
+          "5.11": "5.11",
+          "5.12": "5.12",
+          "6.1": "6.1",
+          "6.2": "6.2",
+          "6.3": "6.3",
+          "6.4": "6.4",
+          "6.5": "6.5",
+          "6.6": "6.6",
+          "6.7": "6.7",
+          "Sem código IN": "Sem código IN",
+          "nan": "nan"
         }
       }
     }
@@ -643,11 +675,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -667,11 +695,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -680,14 +704,6 @@
     "name": "Port Visits Events (BRA)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -699,11 +715,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -728,11 +740,7 @@
         "keyword": "vessel_type",
         "enum": {
           "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
+          "OTHER": "OTHER"
         }
       }
     }
@@ -752,12 +760,6 @@
         "keyword": "fleetCode",
         "enum": {
           "1.1": "1.1",
-          "1.10": "1.10",
-          "1.12": "1.12",
-          "1.13": "1.13",
-          "1.14": "1.14",
-          "1.17": "1.17",
-          "1.18": "1.18",
           "1.2": "1.2",
           "1.3": "1.3",
           "1.4": "1.4",
@@ -766,37 +768,69 @@
           "1.7": "1.7",
           "1.8": "1.8",
           "1.9": "1.9",
-          "2.10": "2.10",
-          "2.11": "2.11",
-          "2.13": "2.13",
+          "1.10": "1.10",
+          "1.11": "1.11",
+          "1.12": "1.12",
+          "1.13": "1.13",
+          "1.14": "1.14",
+          "1.15": "1.15",
+          "1.16": "1.16",
+          "1.17": "1.17",
+          "1.18": "1.18",
+          "2.1": "2.1",
           "2.2": "2.2",
           "2.3": "2.3",
           "2.4": "2.4",
           "2.5": "2.5",
+          "2.6": "2.6",
+          "2.7": "2.7",
+          "2.8": "2.8",
+          "2.9": "2.9",
+          "2.10": "2.10",
+          "2.11": "2.11",
+          "2.12": "2.12",
+          "2.13": "2.13",
           "3.1": "3.1",
+          "3.2": "3.2",
+          "3.3": "3.3",
+          "3.4": "3.4",
+          "3.5": "3.5",
+          "3.6": "3.6",
+          "3.7": "3.7",
+          "3.8": "3.8",
+          "3.9": "3.9",
           "3.10": "3.10",
           "3.11": "3.11",
           "3.12": "3.12",
           "3.13": "3.13",
-          "3.2": "3.2",
-          "3.3": "3.3",
-          "3.5": "3.5",
-          "3.6": "3.6",
-          "3.9": "3.9",
+          "3.14": "3.14",
           "4.1": "4.1",
           "4.2": "4.2",
           "4.3": "4.3",
           "4.4": "4.4",
+          "4.5": "4.5",
           "4.6": "4.6",
           "5.1": "5.1",
-          "5.10": "5.10",
-          "5.11": "5.11",
           "5.2": "5.2",
           "5.3": "5.3",
           "5.4": "5.4",
+          "5.5": "5.5",
           "5.6": "5.6",
+          "5.7": "5.7",
+          "5.8": "5.8",
           "5.9": "5.9",
-          "Sem código IN": "Sem código IN"
+          "5.10": "5.10",
+          "5.11": "5.11",
+          "5.12": "5.12",
+          "6.1": "6.1",
+          "6.2": "6.2",
+          "6.3": "6.3",
+          "6.4": "6.4",
+          "6.5": "6.5",
+          "6.6": "6.6",
+          "6.7": "6.7",
+          "Sem código IN": "Sem código IN",
+          "nan": "nan"
         }
       },
       "selfReportedInfo.vesselRegistrationCode": {
@@ -878,14 +912,6 @@
     "name": "Port Visits Events (CHL)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1027,14 +1053,6 @@
     "name": "Port Visits Events (CRI)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1189,14 +1207,6 @@
     "name": "Port Visits Events (ECU)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1324,14 +1334,6 @@
     "name": "Port Visits Events (MNE)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1463,14 +1465,6 @@
     "name": "Port Visits Events (NOR)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1608,14 +1602,6 @@
     "name": "Port Visits Events (PAN)",
     "description": "The dataset contains port visits events for PAN",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1778,14 +1764,6 @@
     "name": "Port Visits Events (PER)",
     "description": "The dataset contains port visits events for PER",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -1967,14 +1945,6 @@
     "name": "Port Visits Events (PLW)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -2105,14 +2075,6 @@
     "name": "Port Visits Events (PNG)",
     "description": "<h2>Overview</h2> <p> The Port Visits VMS dataset detects vessel movements in and out of ports. To identify these, we use a combined anchorage list derived from our AIS dataset, supplemented by smaller ports - not captured in AIS - that were shared by our country partners. If you believe a port in your country is missing from this dataset, please do not hesitate to reach out to our support team at <a href=\"mailto:support@globalfishingwatch.org\" >support@globalfishingwatch.org</a >. </p> <p>A port visit is shown on the map when VMS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li> Exiting within 4 kilometers of an anchorage point designated as the port exit <ul> <li> Experiencing a port gap (i.e. no VMS transmissions for 4 hours or more, which may indicate VMS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel's speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </li> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> In our VMS port events, residual positions within port can sometimes persist after a vessel has departed, causing events to appear extended beyond the vessel's actual time in port. This is a result of the limited filtering currently applied to our VMS data, as we are still working on adapting filters that effectively remove noisy positions without discarding valid ones. We aim to address this in future releases. </li> <li> Lower-confidence port visits - often caused by noisy, sparse, or incomplete VMS transmissions - are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
-      "confidences": {
-        "keyword": "confidences",
-        "enum": {
-          "2": "2",
-          "3": "3",
-          "4": "4"
-        }
-      },
       "duration": {
         "keyword": "duration",
         "enum": {
@@ -3767,8 +3729,8 @@
           "5": "5"
         }
       },
-      "fleet_code": {
-        "keyword": "fleet_code",
+      "license_category": {
+        "keyword": "license_category",
         "enum": {
           "": "",
           "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
@@ -3792,7 +3754,7 @@
           "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
           "2.12 - Emalhe costeiro (fundo)": "2.12 - Emalhe costeiro (fundo)",
           "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
-          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
+          "2.2 - Emalhe costeiro (superfície)": "2.2 - Emalhe costeiro (superfície)",
           "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
           "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
           "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
@@ -3801,7 +3763,7 @@
           "2.8 - Emalhe costeiro (superfície)": "2.8 - Emalhe costeiro (superfície)",
           "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
           "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
-          "3.11 - Arrasto costeiro (fundo simples e parelha)": "3.11 - Arrasto costeiro (fundo simples e parelha)",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
           "3.12 - Arrasto oceânico (fundo) – simples e duplo": "3.12 - Arrasto oceânico (fundo) – simples e duplo",
           "3.13 - Arrasto oceânico (fundo) – simples e duplo": "3.13 - Arrasto oceânico (fundo) – simples e duplo",
           "3.14 - Arrasto (meia água)": "3.14 - Arrasto (meia água)",
@@ -3830,34 +3792,55 @@
           "5.9 - Covos": "5.9 - Covos",
           "Sem código IN - Covos": "Sem código IN - Covos"
         }
-      }
-    }
-  },
-  "public-vms-bra-presence": {
-    "name": "VMS Brazil Presence",
-    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
-    "schema": {
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "<2": "<2",
-          "2-4": "2-4",
-          "4-6": "4-6",
-          "6-10": "6-10",
-          "10-15": "10-15",
-          "15-25": "15-25",
-          ">25": ">25"
-        }
       },
-      "vessel_type": {
-        "keyword": "vessel_type",
+      "target_species": {
+        "keyword": "target_species",
         "enum": {
-          "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "<nil>": "<nil>"
+          "": "",
+          "Agulha": "Agulha",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
+          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
+          "Anchoíta, galo, calamar": "Anchoíta, galo, calamar",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
+          "Bonito listrado": "Bonito listrado",
+          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
+          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
+          "Camarão santana e barba ruça": "Camarão santana e barba ruça",
+          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
+          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
+          "Camarões de profundidade": "Camarões de profundidade",
+          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
+          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
+          "Cavalas, Albacorinhas": "Cavalas, Albacorinhas",
+          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
+          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
+          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
+          "Dourado": "Dourado",
+          "Espadarte": "Espadarte",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
+          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
+          "Pargo": "Pargo",
+          "Pargo rosa": "Pargo rosa",
+          "Peixe sapo": "Peixe sapo",
+          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
+          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
+          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
+          "Piramutaba": "Piramutaba",
+          "Piramutaba e dourada": "Piramutaba e dourada",
+          "Polvo": "Polvo",
+          "Saramunete": "Saramunete",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha",
+          "Sardinha verdadeira": "Sardinha verdadeira",
+          "Sardinha-lage": "Sardinha-lage",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
+          "Serra": "Serra",
+          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
+          "Tainha": "Tainha",
+          "Vermelhos (especificar)": "Vermelhos (especificar)"
         }
       }
     }
@@ -4033,33 +4016,6 @@
           "3": "3",
           "4": "4",
           "5": "5"
-        }
-      }
-    }
-  },
-  "public-vms-ecu-presence": {
-    "name": "VMS Ecuador Presence",
-    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
-    "schema": {
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "<2": "<2",
-          "2-4": "2-4",
-          "4-6": "4-6",
-          "6-10": "6-10",
-          "10-15": "10-15",
-          "15-25": "15-25",
-          ">25": ">25"
-        }
-      },
-      "vessel_type": {
-        "keyword": "vessel_type",
-        "enum": {
-          "": "",
-          "SUPPORT": "SUPPORT",
-          "NON-FISHING": "NON-FISHING",
-          "FISHING": "FISHING"
         }
       }
     }
