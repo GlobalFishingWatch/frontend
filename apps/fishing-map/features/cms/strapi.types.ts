@@ -17,10 +17,11 @@ export type StrapiBaseAttributes = {
 
   title: string
   body: string
+  slug?: string
 }
 
 export type TUserGuideSection = StrapiBaseAttributes & {
-  slug: string
+  subsections: StrapiBaseAttributes[]
 }
 
 export type TDataset = StrapiBaseAttributes & {

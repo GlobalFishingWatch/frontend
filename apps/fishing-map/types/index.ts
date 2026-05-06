@@ -99,6 +99,7 @@ export type AppState = {
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
   sidePanelId?: string
+  sidePanelSubcontentId?: string
   sidePanelContent?: 'userGuide' | 'datasets'
 }
 

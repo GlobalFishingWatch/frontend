@@ -24,7 +24,7 @@ const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 type UserGuideContentProps = { data: TUserGuideSection[] }
 
 const UserGuideContent = ({ data }: UserGuideContentProps) => {
-  const { sidePanelId } = Route.useSearch()
+  const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [searchQuery, setSearchQuery] = useState('')
   const { openSidePanel } = useSidePanel()
@@ -43,14 +43,10 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
       filteredSections.map((s) => ({
         id: s.slug || s.id.toString(),
         label: s.title,
-        subTopics: s.body?.match(/^#{1,6}\s+(.+)$/gm)?.map((heading) => {
-          const label = heading.replace(/^#{1,6}\s+/, '')
-          const id = label
-            .toLowerCase()
-            .replace(/\s+/g, '-')
-            .replace(/[^\w-]/g, '')
-          return { id, label }
-        }),
+        subTopics: s.subsections?.map((sub) => ({
+          id: sub.slug || sub.id,
+          label: sub.title,
+        })),
         ...(searchQuery && { searchPreview: s.body }),
       })) || [],
     [filteredSections, searchQuery]
@@ -66,6 +62,12 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
         ) ?? data[0])
       : data[0]
   }, [data, sidePanelId])
+
+  useEffect(() => {
+    if (!sidePanelSubcontentId || isTableOfContentsOpen) return
+    const el = document.getElementById(sidePanelSubcontentId)
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [sidePanelSubcontentId, isTableOfContentsOpen, selectedSection])
 
   return (
     <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
@@ -97,6 +99,14 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
             <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
               {selectedSection.body}
             </Markdown>
+            {selectedSection.subsections?.map((subsection) => (
+              <div key={subsection.id} id={subsection.slug || subsection.id}>
+                <h3>{subsection.title}</h3>
+                <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+                  {subsection.body}
+                </Markdown>
+              </div>
+            ))}
           </div>
         )}
       </div>
