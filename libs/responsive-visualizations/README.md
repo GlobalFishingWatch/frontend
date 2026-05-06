@@ -11,7 +11,7 @@ A library for creating responsive visualizations in Global Fishing Watch applica
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/responsive-visualizations
+yarn|pnpm add @globalfishingwatch/responsive-visualizations
 ```
 
 ## Components

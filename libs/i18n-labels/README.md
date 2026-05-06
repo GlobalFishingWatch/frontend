@@ -32,7 +32,7 @@ i18n-labels/
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/i18n-labels
+yarn|pnpm add @globalfishingwatch/i18n-labels
 ```
 
 ## Available Resources

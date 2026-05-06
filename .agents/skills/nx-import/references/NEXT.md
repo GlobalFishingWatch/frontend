@@ -33,7 +33,7 @@ Beyond the generic root deps issue (see SKILL.md), Next.js projects typically ne
 
 ### Next.js Auto-Installing Dependencies via Wrong Package Manager
 
-Next.js detects missing `@types/react` during `next build` and tries to install it using `yarn add` regardless of the actual package manager. In a pnpm workspace, this fails with a "nearest package directory isn't part of the project" error.
+Next.js detects missing `@types/react` during `next build` and tries to install it using `pnpm add` regardless of the actual package manager. In a pnpm workspace, this fails with a "nearest package directory isn't part of the project" error.
 
 **Root cause**: `@types/react` is missing from root devDependencies.
 **Fix**: Install deps at the root before building: `pnpm add -wD @types/react @types/react-dom`
@@ -169,7 +169,7 @@ No naming conflicts between frameworks.
   2. Root tsconfig: `nodenext` → `bundler`, add `dom`/`dom.iterable` to `lib`, add `jsx: react-jsx`
   3. Missing `@nx/react` (for CSS module/image type defs in lib)
   4. Missing `@types/react`, `@types/react-dom`, `@types/node`
-  5. Next.js trying `yarn add @types/react` — fixed by installing at root
+  5. Next.js trying `yarn|pnpm add @types/react` — fixed by installing at root
   6. Missing `@nx/eslint`, root `eslint.config.mjs`, ESLint plugins
   7. Missing `@nx/jest`, `jest.preset.js`, `jest-environment-jsdom`, `ts-jest`
 - All targets green: typecheck, build, test, lint

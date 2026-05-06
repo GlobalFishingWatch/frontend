@@ -5,7 +5,7 @@ A collection of React hooks used across Global Fishing Watch applications.
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/react-hooks
+yarn|pnpm add @globalfishingwatch/react-hooks
 ```
 
 ## Available Hooks
