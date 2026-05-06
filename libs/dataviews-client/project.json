@@ -39,7 +39,7 @@
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "../../coverage/libs/dataviews-client"
+        "reportsDirectory": "{projectRoot}/../../coverage/libs/dataviews-client"
       }
     },
     "test:watch": {
