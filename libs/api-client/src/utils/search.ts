@@ -25,7 +25,6 @@ export const ADVANCED_SEARCH_QUERY_FIELDS = [
   'owner' as const,
   // VMS pipe 3
   'origin' as const,
-  'fleet' as const,
   'externalId' as const,
   'nationalId' as const,
   'codMarinha' as const,

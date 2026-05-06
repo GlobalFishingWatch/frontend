@@ -125,7 +125,8 @@ export const formatInfoField = (
     | 'fleet'
     | 'builtYear'
     | 'transmissionDateFrom'
-    | 'transmissionDateTo',
+    | 'transmissionDateTo'
+    | 'fleetCode',
   {
     translationFn = t,
     fallbackValue,
@@ -146,6 +147,14 @@ export const formatInfoField = (
     }
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
+    }
+    // fleetcode only exists in VMS Brazil
+    if (type === 'fleetCode') {
+      return (
+        translationFn((t: any) => t.vessel.fleetCodes[fieldValue.replaceAll('.', '_')], {
+          defaultValue: fieldValue,
+        }) || fallbackValue
+      )
     }
     if (
       type === 'shipname' ||
