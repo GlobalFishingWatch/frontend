@@ -1,5 +1,4 @@
-import bbox from '@turf/bbox'
-import { feature, geometry, polygon } from '@turf/helpers'
+import { bbox, feature, geometry, polygon } from '@turf/turf'
 import type { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
 export type Bbox = [number, number, number, number]

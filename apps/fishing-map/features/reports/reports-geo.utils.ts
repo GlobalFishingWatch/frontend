@@ -1,4 +1,4 @@
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { booleanPointInPolygon } from '@turf/turf'
 import type { Feature, MultiPolygon, Point, Polygon } from 'geojson'
 
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'

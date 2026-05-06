@@ -12,7 +12,7 @@ import {
   ImmutableFeatureCollection,
   TranslateMode,
 } from '@deck.gl-community/editable-layers'
-import kinks from '@turf/kinks'
+import { kinks } from '@turf/turf'
 import type { Feature, Point, Polygon, Position } from 'geojson'
 
 import type { DeckLayerCategory } from '../../types'

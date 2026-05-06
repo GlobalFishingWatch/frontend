@@ -1,4 +1,4 @@
-import { point } from '@turf/helpers'
+import { point } from '@turf/turf'
 import type { Position } from 'geojson'
 
 import type { ApiEvent } from '@globalfishingwatch/api-types'

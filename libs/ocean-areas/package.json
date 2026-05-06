@@ -21,18 +21,10 @@
     "rfmos": "ts-node -P tsconfig.json src/scripts/rfmos.ts",
     "locales": "ts-node -P tsconfig.json src/scripts/locales.ts",
     "ports": "ts-node -P tsconfig.json src/scripts/ports.ts",
-    "prepare": "yarn mpas && yarn eezs && yarn rfmos && yarn fao && yarn locales"
+    "prepare": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
   "dependencies": {
-    "@turf/bbox": "7.x",
-    "@turf/bbox-polygon": "7.x",
-    "@turf/boolean-point-in-polygon": "7.x",
-    "@turf/distance": "7.x",
-    "@turf/explode": "7.x",
-    "@turf/helpers": "7.x",
-    "@turf/nearest-point": "7.x",
-    "@turf/simplify": "7.x",
-    "@turf/truncate": "7.x",
+    "@turf/turf": "7.x",
     "dotenv": "17.x",
     "es-toolkit": "1.x",
     "geojson": "0.x",

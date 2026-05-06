@@ -23,8 +23,8 @@ ENV API_GATEWAY=$API_GATEWAY
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run data-download-portal:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run data-download-portal:build
 
 # Using stable version that uses alpine 3.14 to fix build errors
 # https://github.com/alpinelinux/docker-alpine/issues/182

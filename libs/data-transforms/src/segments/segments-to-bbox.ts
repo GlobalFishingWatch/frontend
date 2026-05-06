@@ -1,5 +1,4 @@
-import bbox from '@turf/bbox'
-import { featureCollection, point } from '@turf/helpers'
+import { bbox, featureCollection, point } from '@turf/turf'
 import type { Feature, Point, Position } from 'geojson'
 
 import type { TrackSegment } from '@globalfishingwatch/api-types'
