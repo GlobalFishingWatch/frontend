@@ -1,6 +1,6 @@
 import nxPlugin from '@nx/eslint-plugin'
 import { defineConfig } from 'eslint/config'
-import jsoncParser from 'jsonc-eslint-parser'
+import * as jsoncParser from 'jsonc-eslint-parser'
 
 import { repoConfig } from '@globalfishingwatch/linting'
 

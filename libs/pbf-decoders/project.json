@@ -5,6 +5,21 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
+    "prepare": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/pbf-decoders",
+        "commands": [
+          "make-dir decoders",
+          "pbjs proto/vessels.proto -t static-module -w es6 -o decoders/vessels.js",
+          "pbts decoders/vessels.js -o decoders/vessels.d.ts",
+          "pbjs proto/4wings-tile.proto -t static-module -w es6 -o decoders/4wings-tile.js",
+          "pbts decoders/4wings-tile.js -o decoders/4wings-tile.d.ts",
+          "prettier --write \"./decoders/**.*\" -c ../../.prettierrc"
+        ],
+        "parallel": false
+      }
+    },
     "dist": {
       "executor": "@nx/js:tsc",
       "options": {

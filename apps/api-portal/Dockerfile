@@ -23,8 +23,8 @@ ENV NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run api-portal:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run api-portal:build
 
 
 # Production image, copy all the files and run next

@@ -21,8 +21,8 @@ ENV API_GATEWAY=$API_GATEWAY
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run track-labeler:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run track-labeler:build
 
 
 #################################################################################
