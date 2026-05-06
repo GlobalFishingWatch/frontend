@@ -52,6 +52,12 @@ export default defineConfig(({ command }) => ({
   //  plugins: [ nxViteTsPaths() ],
   // },
 
+  resolve: {
+    alias: {
+      jimp: new URL('../../node_modules/jimp/dist/esm/index.js', import.meta.url).pathname,
+    },
+  },
+
   build: {
     outDir: '../../dist/apps/image-labeler',
     reportCompressedSize: true,

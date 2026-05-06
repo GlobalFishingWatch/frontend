@@ -19,7 +19,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "target": "es6",
-    "baseUrl": ".",
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "module": "esnext",
@@ -55,7 +54,15 @@
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
-      "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"]
+      "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"],
+      "assets/*": ["./assets/*"],
+      "data/*": ["./data/*"],
+      "features/*": ["./features/*"],
+      "routes/*": ["./routes/*"],
+      "store": ["./store"],
+      "types": ["./types"],
+      "types/*": ["./types/*"],
+      "utils/*": ["./utils/*"]
     }
   },
   "include": [
