@@ -86,6 +86,9 @@ importers:
       '@mapbox/geojson-area':
         specifier: 0.2.2
         version: 0.2.2
+      '@mapbox/point-geometry':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@mapbox/vector-tile':
         specifier: 2.0.4
         version: 2.0.4
@@ -137,79 +140,7 @@ importers:
       '@tmcw/togeojson':
         specifier: 7.1.2
         version: 7.1.2
-      '@turf/area':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/bbox':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/bbox-polygon':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/boolean-overlap':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/boolean-point-in-polygon':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/buffer':
-        specifier: ^7.3.4
-        version: 7.3.5
-      '@turf/center':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/center-of-mass':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/circle':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/difference':
-        specifier: ^7.3.4
-        version: 7.3.5
-      '@turf/dissolve':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/distance':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/explode':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/flatten':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/great-circle':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/helpers':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/kinks':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/length':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/line-to-polygon':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/nearest-point':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/rhumb-bearing':
-        specifier: ^7.3.5
-        version: 7.3.5
-      '@turf/simplify':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/truncate':
-        specifier: 7.3.4
-        version: 7.3.4
       '@turf/turf':
-        specifier: 7.3.4
-        version: 7.3.4
-      '@turf/union':
         specifier: 7.3.4
         version: 7.3.4
       '@types/mdast':
@@ -6551,9 +6482,6 @@ packages:
   '@turf/center-of-mass@7.3.4':
     resolution: {integrity: sha512-mOSupDF5qxQTA/kOWYletHcBJQ3S2gVl/IRgrBH/YY9yiFq6UGRpZ0sNcIML4H06u/1DY/jqqG+d1nc/1yIA6Q==}
 
-  '@turf/center-of-mass@7.3.5':
-    resolution: {integrity: sha512-eEzx4YKxUP55Apdjt7XXuQ906KKx4uSQWLxJw5OHE0rKOSN/qYTSdu0s7nQBAmGgAqeSC2538vuN7wEqMfYMvQ==}
-
   '@turf/center@7.3.4':
     resolution: {integrity: sha512-4SsLMDHWthXbyIHsczgFCo4fx+8tC8w2+B5HdEuY+P+cSOOL4T+6QQzd7WWjuN/Y3ndowFssUmwRrvXuwVRxQA==}
 
@@ -6605,9 +6533,6 @@ packages:
   '@turf/convex@7.3.4':
     resolution: {integrity: sha512-zeNv0fFdOoHuOQB7nl6OLb0DyjvzDvm0e3zlFkph50GF9pEKOmkCSmlniw681aWL2aRBdWZBnON3rRzOS+9C7Q==}
 
-  '@turf/convex@7.3.5':
-    resolution: {integrity: sha512-d/pq86he+/GB/2ObuBHapeT15QFsCPhhGab3uE4YjogLMbD8qtu0sRGF+cvvPRDNuCLycOBL/xgFLnf9SteYlA==}
-
   '@turf/destination@7.3.4':
     resolution: {integrity: sha512-YxoUJwkKmTHiRFQxMQOP0tz8Vy+ga5EXl+C+F/WubjDLwT1AJu5y8CNIjLvWyjPWckj/vZG4u/1js5bx6MLADA==}
 
@@ -6622,9 +6547,6 @@ packages:
 
   '@turf/dissolve@7.3.4':
     resolution: {integrity: sha512-xjGY1gQ4icWhDgsW0YfU2KQtij1+ru34AfvtkVMQEgI86O9EwjW2r9Jq5DJY2PMKPbor3kz9yM/RTOiDP7f3Jg==}
-
-  '@turf/dissolve@7.3.5':
-    resolution: {integrity: sha512-6kZTc8rbGuBqxWW8iK1sJZC8r7vr5uWdv7nsMJ0eX8/g0mTKNgSGXo14hYqp2GN4bE7JzpAgpFeSX8Xu1psxlQ==}
 
   '@turf/distance-weight@7.3.4':
     resolution: {integrity: sha512-dVMNEmIluKgn7iQTmzJJOe0UASRNmmSdFX1boAev5MISaW3AvPiURCCOV+lTIeoaQbWRpEAESbAp6JIimXFr8Q==}
@@ -6647,14 +6569,8 @@ packages:
   '@turf/explode@7.3.4':
     resolution: {integrity: sha512-7QWhp3f8jhrWjvArhJ74hXBFHMaiJr/2Y1PzHCWue2/pC5MbbTV0o7peehwrrrJC/1uD6CVb3hlcb77IxtMQkw==}
 
-  '@turf/explode@7.3.5':
-    resolution: {integrity: sha512-Qdd7ehX5AF0DdpJl+JJyxws7jEmsZBRV35wTm+Lyhapuc3yLHU7tN5EqJ+2lVV7RkUgBXEFQV+34pmPLPGQn+w==}
-
   '@turf/flatten@7.3.4':
     resolution: {integrity: sha512-Yt3HCh/qeNaXS4LYhXczFhBfTeaKlTBoxEw1OICb9RT3SiGU0XCxuK7H0W26OLo7XxB0qP7GPs2L3FZbiri6wQ==}
-
-  '@turf/flatten@7.3.5':
-    resolution: {integrity: sha512-4dDAyoY8wf4UCIJ2lH3JbypmEeqyuRFExHEPu6eJeaOybdpOV9kn3LqB0lsWArizFjJWQNS+0qpv08jD85jSPg==}
 
   '@turf/flip@7.3.4':
     resolution: {integrity: sha512-HME+kVMTyvcsYVY6dC6DTvuzq8vvDpw+C7PviEqpuT3KcVlBCoGPAqlWRdyWYOb9MDciOqNxvvJF/okpb/GQcg==}
@@ -23331,16 +23247,6 @@ snapshots:
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/center-of-mass@7.3.5':
-    dependencies:
-      '@turf/centroid': 7.3.5
-      '@turf/convex': 7.3.5
-      '@turf/helpers': 7.3.5
-      '@turf/invariant': 7.3.5
-      '@turf/meta': 7.3.5
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
   '@turf/center@7.3.4':
     dependencies:
       '@turf/bbox': 7.3.4
@@ -23472,14 +23378,6 @@ snapshots:
       concaveman: 1.2.1
       tslib: 2.8.1
 
-  '@turf/convex@7.3.5':
-    dependencies:
-      '@turf/helpers': 7.3.5
-      '@turf/meta': 7.3.5
-      '@types/geojson': 7946.0.16
-      concaveman: 1.2.1
-      tslib: 2.8.1
-
   '@turf/destination@7.3.4':
     dependencies:
       '@turf/helpers': 7.3.4
@@ -23516,16 +23414,6 @@ snapshots:
       '@turf/helpers': 7.3.4
       '@turf/invariant': 7.3.4
       '@turf/meta': 7.3.4
-      '@types/geojson': 7946.0.16
-      polyclip-ts: 0.16.8
-      tslib: 2.8.1
-
-  '@turf/dissolve@7.3.5':
-    dependencies:
-      '@turf/flatten': 7.3.5
-      '@turf/helpers': 7.3.5
-      '@turf/invariant': 7.3.5
-      '@turf/meta': 7.3.5
       '@types/geojson': 7946.0.16
       polyclip-ts: 0.16.8
       tslib: 2.8.1
@@ -23588,24 +23476,10 @@ snapshots:
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 
-  '@turf/explode@7.3.5':
-    dependencies:
-      '@turf/helpers': 7.3.5
-      '@turf/meta': 7.3.5
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
   '@turf/flatten@7.3.4':
     dependencies:
       '@turf/helpers': 7.3.4
       '@turf/meta': 7.3.4
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
-  '@turf/flatten@7.3.5':
-    dependencies:
-      '@turf/helpers': 7.3.5
-      '@turf/meta': 7.3.5
       '@types/geojson': 7946.0.16
       tslib: 2.8.1
 

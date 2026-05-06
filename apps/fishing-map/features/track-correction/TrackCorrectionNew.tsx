@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { centerOfMass } from '@turf/center-of-mass'
+import { centerOfMass } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
