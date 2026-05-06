@@ -5,7 +5,7 @@ A React-based timeline visualization library that provides interactive time-base
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/timebar
+yarn|pnpm add @globalfishingwatch/timebar
 ```
 
 ## Usage example

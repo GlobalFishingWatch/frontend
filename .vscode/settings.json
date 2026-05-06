@@ -1,12 +1,4 @@
 {
-  // https://github.com/microsoft/vscode-eslint/issues/784
-  // "eslint.workingDirectories": [
-  //   { "directory": "./applications/dataviews-editor", "changeProcessCWD": true },
-  //   { "directory": "./apps/fishing-map", "changeProcessCWD": true },
-  //   { "directory": "./applications/sandbox", "changeProcessCWD": true },
-  //   { "directory": "./applications/temporalgrid-demo", "changeProcessCWD": true }
-  // ],
-  // Autoformat with prettier
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -31,24 +23,19 @@
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  // ----------------------------------------------
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsserver.maxTsServerMemory": 8192,
-  "typescript.tsserver.useSyntaxServer": "auto",
-  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
-  "typescript.tsserver.log": "off",
-  "typescript.tsserver.trace": "off",
-  "typescript.tsserver.watchOptions": {
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.tsserver.maxMemory": 8192,
+  "js/ts.tsserver.enableProjectDiagnostics": false,
+  "js/ts.tsserver.watchOptions": {
     "watchFile": "useFsEventsOnParentDirectory",
     "watchDirectory": "useFsEvents",
-    "fallbackPolling": "dynamicPriority",
+    "fallbackPolling": "dynamicPriorityPolling",
     "excludeDirectories": [
       "**/node_modules",
       "**/.next",
       "**/dist",
       "**/.nx",
-      "**/.yarn",
       "**/coverage",
       "**/.turbo",
       "**/build",
@@ -67,17 +54,17 @@
       "**/i18n.types.d.ts"
     ]
   },
-  "typescript.preferences.includePackageJsonAutoImports": "off",
-  "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.suggest.completeFunctionCalls": true,
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.disableAutomaticTypeAcquisition": true,
+  "js/ts.preferences.includePackageJsonAutoImports": "off",
+  "js/ts.suggest.autoImports": true,
+  "js/ts.updateImportsOnFileMove.enabled": "always",
+  "js/ts.suggest.completeFunctionCalls": true,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.disableAutomaticTypeAcquisition": true,
   "editor.rulers": [140],
-  "editor.formatOnSave": true, // auto format the file on each save
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "json"],
+  "editor.formatOnSave": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
+  "eslint.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
@@ -99,7 +86,6 @@
     "**/build/**": true,
     "**/dist/**": true,
     "**/.nx/**": true,
-    "**/.yarn/**": true,
     "**/.turbo/**": true,
     "**/coverage/**": true,
     "**/*.tsbuildinfo": true,
@@ -110,7 +96,6 @@
     "**/e2e/**": true
   },
   "search.exclude": {
-    ".yarn": true,
     "**/.git": true,
     "**/node_modules": true,
     "**/dist": true,
@@ -121,8 +106,8 @@
     "**/.turbo": true,
     "**/coverage": true,
     "**/workers": true,
-    "**/*.tsbuildinfo": true
+    "**/*.tsbuildinfo": true,
+    "**/.pnpm-store": true
   },
-  "eslint.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
 }
