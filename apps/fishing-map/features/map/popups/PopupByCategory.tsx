@@ -56,6 +56,7 @@ import {
   selectDetectionPositionsInteractionStatus,
 } from '../map.slice'
 
+import HotspotTooltipSection from './categories/HotspotTooltip'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
 import UserContextTooltipSection from './categories/UserContextLayers'
 import VectorsTooltipRow from './categories/VectorsLayers'
@@ -82,11 +83,18 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
+  const hotspotFeature = interaction?.features.find(
+    (f) => (f as any).properties?.areaKm2 !== undefined
+  )
+  const hotspotProperties = hotspotFeature ? (hotspotFeature as any).properties : null
+
   const visibleFeatures = interaction?.features.filter(
-    (feature) => !OMITED_CATEGORIES.includes(feature.category)
+    (feature) =>
+      !OMITED_CATEGORIES.includes(feature.category) &&
+      (feature as any).properties?.areaKm2 === undefined
   )
 
-  if (!visibleFeatures.length) return null
+  if (!visibleFeatures.length && !hotspotFeature) return null
   const featureByCategory = groupBy(
     visibleFeatures
       // Needed to create a new array and not muting with sort
@@ -393,6 +401,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             return null
         }
       })}
+      {hotspotProperties && <HotspotTooltipSection properties={hotspotProperties} />}
     </div>
   )
 }

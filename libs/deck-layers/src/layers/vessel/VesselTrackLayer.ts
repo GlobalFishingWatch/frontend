@@ -2,7 +2,7 @@ import type { Layer, LayerProps, LayersList, PickingInfo, UpdateParameters } fro
 import { CompositeLayer } from '@deck.gl/core'
 import { rhumbBearing } from '@turf/turf'
 import type { Position } from 'geojson'
-import * as geokdbush from 'geokdbush'
+import { around } from 'geokdbush'
 import KDBush from 'kdbush'
 
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
@@ -52,7 +52,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         nextPoint = this.state.points[info.index + 2]
         object.interactionType = 'point'
       } else {
-        const nearestIds = geokdbush.around(
+        const nearestIds = around(
           this.state.pointIndex,
           info.coordinate[0]!,
           info.coordinate[1]!,
