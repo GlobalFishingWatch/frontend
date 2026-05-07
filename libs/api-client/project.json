@@ -30,7 +30,7 @@
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "../../coverage/libs/api-client"
+        "reportsDirectory": "{projectRoot}/../../coverage/libs/api-client"
       }
     },
     "test:watch": {

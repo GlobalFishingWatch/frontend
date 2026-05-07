@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "tsBuildInfoFile": "../../.nx/tsbuildinfo/dataviews-client-url.tsbuildinfo",
     "declaration": false,
     "emitDecoratorMetadata": true,
@@ -11,7 +10,7 @@
     "lib": ["es2020", "dom", "esnext"],
     "module": "es2022",
     "target": "es6",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
     "rootDir": "../../",

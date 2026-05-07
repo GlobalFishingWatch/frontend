@@ -6,7 +6,7 @@ This library provides utilities for handling dataview configurations, URL worksp
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/dataviews-client
+yarn|pnpm add @globalfishingwatch/dataviews-client
 ```
 
 ## Key Features

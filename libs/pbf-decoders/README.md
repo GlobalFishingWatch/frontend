@@ -12,7 +12,7 @@ This library provides Protocol Buffer decoders for working with GFW's binary dat
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/pbf-decoders
+yarn|pnpm add @globalfishingwatch/pbf-decoders
 ```
 
 ## Usage

@@ -21,8 +21,8 @@ ENV API_GATEWAY=$API_GATEWAY
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run track-labeler:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run track-labeler:build
 
 
 #################################################################################
@@ -35,7 +35,7 @@ RUN apk update && apk upgrade libxml2 libexpat
 COPY --from=builder /app/dist/apps/track-labeler/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/track-labeler/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/track-labeler/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/track-labeler/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 

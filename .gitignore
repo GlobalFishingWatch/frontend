@@ -107,6 +107,9 @@ dist
 build
 /server
 
+# Tanstack build / generate output
+**/.output
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js
@@ -168,3 +171,6 @@ playwright-report/
 # SSL certificates
 local.globalfishingwatch.org-key.pem
 local.globalfishingwatch.org.pem
+
+.nx/polygraph
+.nx/self-healing

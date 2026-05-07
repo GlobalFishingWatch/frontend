@@ -5,7 +5,7 @@ A TypeScript library for handling Global Fishing Watch datasets configuration an
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/datasets-client
+yarn|pnpm add @globalfishingwatch/datasets-client
 ```
 
 ## Usage example

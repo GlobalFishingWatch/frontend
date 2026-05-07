@@ -1,0 +1,15 @@
+packages:
+  - 'linting'
+  - 'apps/fishing-map'
+
+allowBuilds:
+  '@parcel/watcher': true
+  '@sentry/cli': true
+  '@swc/core': true
+  core-js: true
+  esbuild: true
+  less: true
+  nx: true
+  protobufjs: true
+  sharp: true
+  unrs-resolver: true

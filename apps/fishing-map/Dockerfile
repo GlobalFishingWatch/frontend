@@ -38,9 +38,9 @@ ENV COMMIT_SHA=$COMMIT_SHA
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx reset && \
-  NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' yarn nx run fishing-map:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx reset && \
+  NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' pnpm exec nx run fishing-map:build
 
 FROM node:24-alpine AS production
 

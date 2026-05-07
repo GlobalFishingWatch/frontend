@@ -93,6 +93,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       feature.aggregatedValues = []
     }
 
+    // eslint-disable-next-line no-useless-assignment
     let value = 0
     if (temporalAggregation) {
       value = feature.properties.velocities?.[0] ?? 0
@@ -138,6 +139,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       feature.aggregatedValues = []
     }
 
+    // eslint-disable-next-line no-useless-assignment
     let value = 0
     if (temporalAggregation) {
       value = feature.properties.directions?.[0] ?? 0
@@ -294,7 +296,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
     ] as LayersList
   }
 
-  getData() {
-    return this.props.data
+  getData(): FourwingsFeature[] {
+    return this.props.data as FourwingsFeature[]
   }
 }

@@ -1,4 +1,4 @@
-name: i18n-labels 🚀 to dev|latest
+name: i18n-labels publish
 
 on:
   push:
@@ -6,96 +6,51 @@ on:
       - develop
     paths:
       - 'libs/i18n-labels/**'
-      # Exclude to prevent infinite loop
       - '!libs/i18n-labels/package.json'
       - '!libs/i18n-labels/CHANGELOG.md'
   workflow_dispatch:
 
+concurrency:
+  group: i18n-labels-publish
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           token: ${{ secrets.GH_PA_TOKEN }}
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
         with:
-          node-version: '21'
-          registry-url: https://registry.npmjs.org/
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
 
       - name: Setup Git
         run: |
-          git config user.name "Github Action"
-          git config user.email "action@github.com"
-      - name: Install yarn
-        run: npm install -g yarn
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PA_TOKEN }}@github.com/${{ github.repository }}.git
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: |
-          DIR=$(yarn cache dir 2>/dev/null | head -n 1)
-          echo "dir=$DIR" >> $GITHUB_OUTPUT
-
-      - name: Cache yarn dependencies
-        uses: actions/cache@v4
-        id: yarn-cache
-        with:
-          path: |
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            **\node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --immutable
-
-      - name: Lib Changes
-        shell: bash
-        run: |
-          yarn affected:libs
-          LIB_AFFECTED=$(cat affected-libs.txt)
-          echo LIB_AFFECTED: $LIB_AFFECTED
-          if [[ $LIB_AFFECTED == 'i18n-labels' ]]; then
-            I18N_LABELS_AFFECTED="true"
-          else
-            I18N_LABELS_AFFECTED="false"
-          fi
-          echo "i18n-labels-affected=$I18N_LABELS_AFFECTED" >> $GITHUB_OUTPUT
-        id: lib-changes
+      - run: pnpm install --frozen-lockfile
 
       - name: Bump version
-        if: ${{ steps.lib-changes.outputs.i18n-labels-affected == 'true' }}
-        shell: bash
-        run: yarn nx version i18n-labels
-
-      - name: Tag i18n-labels@latest
-        if: steps.lib-changes.outputs.i18n-labels-affected == 'true'
-        shell: bash
-        run: git tag -f i18n-labels@latest
-
-      - name: Push changes
-        if: steps.lib-changes.outputs.i18n-labels-affected == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GH_PA_TOKEN }}
-          branch: ${{ github.ref }}
-          force: true
-          tags: true
+        run: |
+          pnpm nx run i18n-labels:version
+          git push origin HEAD:${{ github.ref_name }}
 
       - name: Publish to NPM
-        if: steps.lib-changes.outputs.i18n-labels-affected == 'true'
-        shell: bash
-        run: npx nx publish i18n-labels
+        run: pnpm nx run i18n-labels:publish:npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Purge jsdelivr cache
-        if: steps.lib-changes.outputs.i18n-labels-affected == 'true'
-        shell: bash
-        run: yarn nx purge i18n-labels
+        run: pnpm nx run i18n-labels:purge

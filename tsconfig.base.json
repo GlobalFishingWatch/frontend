@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": ".",
     "incremental": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
@@ -21,33 +20,33 @@
     "sourceMap": true,
     "target": "es2022",
     "paths": {
-      "@globalfishingwatch/api-client": ["libs/api-client/dist/index.d.ts"],
-      "@globalfishingwatch/api-types": ["libs/api-types/dist/index.d.ts"],
-      "@globalfishingwatch/data-transforms": ["libs/data-transforms/dist/index.d.ts"],
-      "@globalfishingwatch/data-transforms/*": ["libs/data-transforms/dist/*"],
-      "@globalfishingwatch/datasets-client": ["libs/datasets-client/dist/index.d.ts"],
-      "@globalfishingwatch/dataviews-client": ["libs/dataviews-client/dist/index.d.ts"],
-      "@globalfishingwatch/deck-layer-composer": ["libs/deck-layer-composer/dist/index.d.ts"],
-      "@globalfishingwatch/deck-layers": ["libs/deck-layers/dist/index.d.ts"],
-      "@globalfishingwatch/deck-loaders": ["libs/deck-loaders/dist/index.d.ts"],
-      "@globalfishingwatch/i18n-labels": ["libs/i18n-labels/dist/index.d.ts"],
-      "@globalfishingwatch/i18n-labels/*": ["libs/i18n-labels/dist/*"],
-      "@globalfishingwatch/linting": ["linting/index.js"],
-      "@globalfishingwatch/ocean-areas": ["libs/ocean-areas/dist/index.d.ts"],
-      "@globalfishingwatch/pbf-decoders": ["libs/pbf-decoders/dist/index.d.ts"],
-      "@globalfishingwatch/react-hooks": ["libs/react-hooks/dist/index.d.ts"],
-      "@globalfishingwatch/react-hooks/*": ["libs/react-hooks/dist/*"],
+      "@globalfishingwatch/api-client": ["./libs/api-client/dist/index.d.ts"],
+      "@globalfishingwatch/api-types": ["./libs/api-types/dist/index.d.ts"],
+      "@globalfishingwatch/data-transforms": ["./libs/data-transforms/dist/index.d.ts"],
+      "@globalfishingwatch/data-transforms/*": ["./libs/data-transforms/dist/*"],
+      "@globalfishingwatch/datasets-client": ["./libs/datasets-client/dist/index.d.ts"],
+      "@globalfishingwatch/dataviews-client": ["./libs/dataviews-client/dist/index.d.ts"],
+      "@globalfishingwatch/deck-layer-composer": ["./libs/deck-layer-composer/dist/index.d.ts"],
+      "@globalfishingwatch/deck-layers": ["./libs/deck-layers/dist/index.d.ts"],
+      "@globalfishingwatch/deck-loaders": ["./libs/deck-loaders/dist/index.d.ts"],
+      "@globalfishingwatch/i18n-labels": ["./libs/i18n-labels/dist/index.d.ts"],
+      "@globalfishingwatch/i18n-labels/*": ["./libs/i18n-labels/dist/*"],
+      "@globalfishingwatch/linting": ["./linting/index.js"],
+      "@globalfishingwatch/ocean-areas": ["./libs/ocean-areas/dist/index.d.ts"],
+      "@globalfishingwatch/pbf-decoders": ["./libs/pbf-decoders/dist/index.d.ts"],
+      "@globalfishingwatch/react-hooks": ["./libs/react-hooks/dist/index.d.ts"],
+      "@globalfishingwatch/react-hooks/*": ["./libs/react-hooks/dist/*"],
       "@globalfishingwatch/responsive-visualizations": [
-        "libs/responsive-visualizations/dist/index.d.ts"
+        "./libs/responsive-visualizations/dist/index.d.ts"
       ],
-      "@globalfishingwatch/timebar": ["libs/timebar/dist/index.d.ts"],
-      "@globalfishingwatch/ui-components": ["libs/ui-components/dist/index.d.ts"],
-      "@globalfishingwatch/ui-components/*": ["libs/ui-components/dist/*"]
+      "@globalfishingwatch/timebar": ["./libs/timebar/dist/index.d.ts"],
+      "@globalfishingwatch/ui-components": ["./libs/ui-components/dist/index.d.ts"],
+      "@globalfishingwatch/ui-components/*": ["./libs/ui-components/dist/*"]
     }
   },
   "files": [],
   "exclude": [
-    ".yarn",
+    ".pnpm",
     ".nx",
     "node_modules",
     "tmp",
@@ -57,20 +56,11 @@
     "**/dist/**/*",
     "**/.next/**/*",
     "**/exported/**/*",
-    // "**/*.spec.ts",
-    // "**/*.spec.tsx",
-    // "**/*.test.ts",
-    // "**/*.test.tsx",
-    // "**/*.spec.js",
-    // "**/*.spec.jsx",
-    // "**/*.test.js",
-    // "**/*.test.jsx",
     "**/cypress/**/*",
     "**/e2e/**/*",
     "**/*.cy.ts",
     "**/*.cy.tsx",
     "**/jest.config.*",
-    // "**/tsconfig.spec.json",
     "**/coverage/**/*",
     "**/.turbo/**/*",
     "**/build/**/*",
@@ -84,7 +74,7 @@
     "**/nginx.conf",
     "**/*.md",
     "**/package-lock.json",
-    "**/yarn.lock",
+    "**/pnpm-lock.yaml",
     "**/*.yaml",
     "**/*.yml",
     "**/*.tf",
@@ -104,7 +94,7 @@
       "**/.next",
       "**/dist",
       "**/.nx",
-      "**/.yarn",
+      "**/.pnpm",
       "**/coverage",
       "**/.turbo",
       "**/build",
@@ -114,13 +104,6 @@
       "**/cypress",
       "**/e2e"
     ],
-    "excludeFiles": [
-      // "**/*.spec.ts",
-      // "**/*.spec.tsx",
-      // "**/*.test.ts",
-      // "**/*.test.tsx",
-      "**/*.cy.ts",
-      "**/*.cy.tsx"
-    ]
+    "excludeFiles": ["**/*.cy.ts", "**/*.cy.tsx"]
   }
 }

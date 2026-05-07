@@ -36,7 +36,7 @@ export class PMTilesLayer<DataT = any> extends TileLayer<DataT, PMTileLayerProps
 
   createTileSource(url: string): TileSource {
     const dataSource = createDataSource(url, [PMTilesSource], {
-      type: 'pmtiles',
+      core: { type: 'pmtiles' },
     })
     return dataSource as unknown as TileSource
   }

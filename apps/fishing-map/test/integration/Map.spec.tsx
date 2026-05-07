@@ -151,7 +151,8 @@ describe('Map', () => {
     fetchSpy.mockRestore()
   })
 
-  it('should reflect period changes on the state and map', async () => {
+  //skipping as we removed the interval buttons
+  it.skip('should reflect period changes on the state and map', async () => {
     const store = makeStore(defaultState, [], true)
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
 
@@ -179,7 +180,8 @@ describe('Map', () => {
     )
   })
 
-  it('should preserve map state when changing period', async () => {
+  //skipping as we removed the interval buttons
+  it.skip('should preserve map state when changing period', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
@@ -225,10 +227,21 @@ describe('Map', () => {
 
     await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
 
+    await expect
+      .poll(() => jotaiStore.get(mapInstanceAtom), {
+        timeout: 10000,
+        interval: 500,
+      })
+      .toBeDefined()
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    if (!viewport) {
+      throw new Error('Map viewport not found - cannot project coordinates')
+    }
     const [x, y] = viewport?.project([-37.0458, 19.0776]) || [0, 0]
 
+    await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
 
     await expect.element(getByTestId('map-popup-wrapper').getByText(/No.805 Oryong/i)).toBeVisible()

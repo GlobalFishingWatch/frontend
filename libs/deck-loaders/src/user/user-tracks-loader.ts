@@ -1,4 +1,4 @@
-import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
+import type { Loader, LoaderWithParser, StrictLoaderOptions } from '@loaders.gl/loader-utils'
 
 import { PATH_BASENAME } from '../loaders.config'
 import { VERSION } from '../version'
@@ -10,7 +10,7 @@ import type { UserTrackData } from './lib/types'
 /**
  * Worker loader for the User Track data
  */
-export type UserTracksLoaderOptions = LoaderOptions & {
+export type UserTracksLoaderOptions = StrictLoaderOptions & {
   userTracks?: ParseUserTrackParams & { workerUrl?: string }
 }
 

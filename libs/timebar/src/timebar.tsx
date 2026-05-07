@@ -498,7 +498,6 @@ export class Timebar extends Component<TimebarProps> {
             />
           ) : null}
         </div>
-
         <Timeline
           children={this.props.children}
           start={start}

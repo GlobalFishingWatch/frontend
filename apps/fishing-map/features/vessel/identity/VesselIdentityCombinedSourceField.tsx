@@ -8,7 +8,8 @@ import { type VesselInfo } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import GFWOnly from 'features/user/GFWOnly'
+import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import VesselIdentityGFWExtendedGeartype from 'features/vessel/identity/VesselIdentityGFWExtendedGeartype'
 import VesselIdentityGFWExtendedVesseltype from 'features/vessel/identity/VesselIdentityGFWExtendedVesseltype'
@@ -26,6 +27,7 @@ const VesselIdentityCombinedSourceField = ({
 }: VesselIdentityCombinedSourceFieldProps) => {
   const { t } = useTranslation()
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isJACUser = useSelector(selectIsJACUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const [vesseltypesExpanded, setVesseltypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]

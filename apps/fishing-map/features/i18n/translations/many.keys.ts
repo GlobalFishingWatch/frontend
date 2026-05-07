@@ -6,6 +6,7 @@ const translations = 'workaround_for_different_plural_rules'
 // t('common.date_many')
 // t('common.days_many')
 // t('common.detection_many')
+// t('common.detections_many')
 // t('common.events_many')
 // t('common.hour_many')
 // t('common.latestDays_many')
