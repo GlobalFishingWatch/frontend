@@ -34,7 +34,7 @@ RUN apk update && apk upgrade libxml2 libexpat
 COPY --from=builder /app/dist/apps/image-labeler/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/image-labeler/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/image-labeler/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/image-labeler/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 
