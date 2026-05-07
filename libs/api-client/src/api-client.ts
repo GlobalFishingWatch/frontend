@@ -448,11 +448,14 @@ export class GFW_API_CLASS {
   }
 
   async login(params: LoginParams): Promise<UserData> {
+    if (this.logging) {
+      return this.logging
+    }
     const { accessToken = null, refreshToken } = params
     this.status = 'logging'
     // eslint-disable-next-line no-async-promise-executor
-    this.logging = new Promise(async (resolve, reject) => {
-      if (accessToken) {
+    this.logging = new Promise<UserData>(async (resolve, reject) => {
+      if (accessToken && !this.token && !this.refreshToken) {
         if (this.debug) {
           console.log(`GFWAPI: Trying to get tokens using access-token`)
         }
@@ -530,8 +533,10 @@ export class GFW_API_CLASS {
       this.status = 'idle'
       reject(new Error('No login token provided'))
       return
+    }).finally(() => {
+      this.logging = null
     })
-    return await this.logging
+    return this.logging
   }
 
   async logout() {

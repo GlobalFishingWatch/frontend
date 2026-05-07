@@ -10,7 +10,7 @@ import {
 import type { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
-const fetchUser = async (accessToken: string) => {
+const fetchUser = async (accessToken: string | null) => {
   if (accessToken) {
     removeAccessTokenFromUrl()
   }
@@ -33,14 +33,13 @@ const logoutUser = async () => {
 }
 
 export const useUser = () => {
-  const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
   const queryResult = useQuery(
     ['user'],
     () => {
-      if (!accessToken) return null
+      const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
       return fetchUser(accessToken)
     },
-    {}
+    { staleTime: 5 * 60 * 1000 }
   )
   const token = GFWAPI.token
   const refreshToken = GFWAPI.refreshToken
