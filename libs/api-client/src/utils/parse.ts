@@ -6,7 +6,7 @@ export const processStatus = (
 ): Promise<Response> => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
-    const { status, statusText } = response
+    const { status, statusText } = response || {}
     try {
       if (response.status >= 200 && response.status < 400) {
         return resolve(response)
