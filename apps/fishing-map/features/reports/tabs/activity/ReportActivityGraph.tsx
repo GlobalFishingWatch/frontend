@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { DebugOption, selectDebugOptions } from 'features/debug/debug.slice'
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -79,6 +80,7 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const debugOptions = useSelector(selectDebugOptions)
 
   const SelectorsComponent = SELECTORS_BY_TYPE[reportActivityGraph]
 
@@ -137,7 +139,9 @@ export default function ReportActivity() {
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t((t) => t.common.activity)}</label>
-          {!isEmptyData && !hasError && <ReportHotspotControls />}
+          {!isEmptyData && !hasError && debugOptions[DebugOption.HotspotButton] && (
+            <ReportHotspotControls />
+          )}
           <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}
