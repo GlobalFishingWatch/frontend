@@ -39,9 +39,10 @@ import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
-import { getRouterRef } from 'router'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
+
+import { getRouterRef } from '../../router'
 
 import styles from './Modals.module.css'
 

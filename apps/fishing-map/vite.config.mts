@@ -38,9 +38,11 @@ export default defineConfig(({ command }) => ({
     }),
     command === 'build' &&
       nitro({
-        baseURL: basePath,
-        rollupConfig: {
-          external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+        config: {
+          baseURL: basePath,
+          rollupConfig: {
+            external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+          },
         },
       }),
     process.env.ANALYZE === 'true' &&
@@ -62,6 +64,7 @@ export default defineConfig(({ command }) => ({
     // Prevent browser-only packages from being bundled into the SSR output.
     external: [
       'html2canvas',
+      'papaparse',
       '@deck.gl/core',
       '@deck.gl/layers',
       '@deck.gl/extensions',

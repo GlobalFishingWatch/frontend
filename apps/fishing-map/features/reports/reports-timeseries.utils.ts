@@ -1,4 +1,4 @@
-import area from '@turf/area'
+import { area } from '@turf/turf'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
@@ -166,7 +166,10 @@ export const getTimeseries = <T extends ReportDeckLayer>({
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPolygonLayer(instance)) {
-      const polygonsTimeseries = getPolygonsTimeseries({ features, instance: instance as ReportPolygonsDeckLayer })
+      const polygonsTimeseries = getPolygonsTimeseries({
+        features,
+        instance: instance as ReportPolygonsDeckLayer,
+      })
       timeseries.push({ ...polygonsTimeseries, id: instance.id })
     } else if (isInstanceOfPointsLayer(instance)) {
       const pointsTimeseries = getPointsTimeseries({ instance, features })
