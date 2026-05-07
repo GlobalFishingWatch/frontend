@@ -37,6 +37,6 @@ export const selectVesselFitBoundsOnLoad = (state: RootState) =>
 export const selectCurrentVesselEvent = createSelector(
   [selectVesselEventsData, selectVesselEventId, selectVesselEventType],
   (eventsList, eventId, eventType) => {
-    return eventsList?.find((e) => eventId && e.id.includes(eventId) && e.type === eventType)
+    return eventsList?.find((e) => eventId && e?.id?.includes(eventId) && e.type === eventType)
   }
 )
