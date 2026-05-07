@@ -33,7 +33,7 @@ RUN apk update && apk upgrade libxml2 libexpat
 COPY --from=builder /app/dist/apps/data-download-portal/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/data-download-portal/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/data-download-portal/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/data-download-portal/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 

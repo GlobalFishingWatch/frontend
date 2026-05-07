@@ -1,8 +1,12 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.3.2",
+  "version": "1.3.7",
   "description": "i18n label translations for Global Fishing Watch applications",
   "author": "satellitestudio <contact@satellitestud.io>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GlobalFishingWatch/frontend"
+  },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "type": "module",
   "exports": {

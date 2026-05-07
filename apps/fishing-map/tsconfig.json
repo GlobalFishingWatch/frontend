@@ -64,6 +64,7 @@
       "queries": ["./queries"],
       "queries/*": ["./queries/*"],
       "reducers": ["./reducers"],
+      "router/*": ["./router/*"],
       "routes/*": ["./routes/*"],
       "server/*": ["./server/*"],
       "store": ["./store"],
@@ -73,13 +74,16 @@
       "utils/*": ["./utils/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
   "exclude": [
     "node_modules",
     "jest.config.ts",
-    ".next",
     "exported",
     "**/resources.d.ts",
-    "**/__traces__/**"
+    "**/__traces__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ]
 }

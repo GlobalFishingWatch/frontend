@@ -747,7 +747,7 @@
       "color": "Color",
       "thickness": "Thickness"
     },
-    "propertiesChange": "Change properties",
+    "propertiesChange": "Editar propriedades",
     "radiance": "Radiância",
     "REALM": "ÂMBITO",
     "remove": "Remover camada",
@@ -1463,7 +1463,7 @@
     "passwordProtected": "Este espaço de trabalho é protegido por senha",
     "passwordRequired": "A senha é obrigatória",
     "privateEditAcessInfo": "Suas permissões de acesso de visualização atuais não permitem que outras pessoas editem este espaço de trabalho",
-    "privateTitle": "Private workspaces",
+    "privateTitle": "Áreas de trabalho privados",
     "remove": "Remover espaço de trabalho",
     "save": "Salvar visualização atual",
     "saveAs": "Salvar como um novo espaço de trabalho",
@@ -1478,7 +1478,7 @@
       "search": "Pesquisa por nome ou código de identificação (IMO, MMSI, VMS ID, etc…). Você pode restringir sua pesquisa pressionando o ícone de filtro na barra superior"
     },
     "title": "Área de trabalho",
-    "titlePlural": "Workspaces",
+    "titlePlural": "Área de trabalho",
     "uploadPublicDisabled": "Este espaço de trabalho não pode ser compartilhado publicamente porque contém dados privados",
     "user": "Espaço de trabalho do usuário",
     "viewAccess": "Visualizar acesso",
