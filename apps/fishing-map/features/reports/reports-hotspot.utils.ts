@@ -2,9 +2,8 @@ import { area } from '@turf/turf'
 import type { Feature, Polygon } from 'geojson'
 import { around } from 'geokdbush'
 import KDBush from 'kdbush'
-import { DateTime } from 'luxon'
 
-import { FourwingsLayer, getIntervalFrames, sliceCellValues } from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -154,8 +153,6 @@ export type HotspotProperties = {
 export function computeHotspotGeometry(
   filteredFeatures: FilteredPolygons[][],
   instances: ReportDeckLayer[],
-  start: string,
-  end: string,
   maxAreaKm2: number
 ): Feature<Polygon, HotspotProperties> | null {
   const cellTotals: CellEntry[] = []
@@ -168,25 +165,9 @@ export function computeHotspotGeometry(
     const features = filteredFeatures[i]?.[0]
     if (!features?.contained?.length) continue
 
-    const chunk = instance.getChunk?.()
-    if (!chunk) continue
-
-    const { startFrame, endFrame } = getIntervalFrames({
-      startTime: DateTime.fromISO(start).toUTC().toMillis(),
-      endTime: DateTime.fromISO(end).toUTC().toMillis(),
-      availableIntervals: [chunk.interval],
-      bufferedStart: chunk.bufferedStart,
-    })
-
     for (const f of features.contained as FourwingsFeature[]) {
       if (!f.coordinates) continue
-      const values = sliceCellValues({
-        values: f.properties.values?.[0] || [0],
-        startFrame,
-        endFrame,
-        startOffset: f.properties.startOffsets?.[0] || 0,
-      })
-      const total = values.reduce((acc, v) => acc + v, 0)
+      const total = f.aggregatedValues?.reduce((acc: number, v: number) => acc + v, 0) ?? 0
       if (total > 0) {
         cellTotals.push({ cell: f, total })
       }

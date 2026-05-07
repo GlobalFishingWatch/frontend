@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
-import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import type { Feature, Polygon } from 'geojson'
 import { atom, useAtom, useAtomValue } from 'jotai'
-
-import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 
 import { computeHotspotGeometry } from './reports-hotspot.utils'
 import {
@@ -27,14 +24,15 @@ export function useComputeReportHotspot() {
   const filteredFeatures = useReportFilteredFeatures()
   const instanceLayers = useReportInstances()
   const isLoading = useReportFeaturesLoading()
-  const { start, end } = useSelector(selectTimeRange)
 
   // Use a ref to access instanceLayers without including it in effect deps.
   // Adding instanceLayers to deps causes an infinite loop: setGeometry triggers a
   // map re-render which adds the hotspot PolygonsLayer, causing deckLayerInstancesAtom
   // to update and useReportInstances to return a new array ref on every cycle.
   const instanceLayersRef = useRef(instanceLayers)
-  instanceLayersRef.current = instanceLayers
+  useEffect(() => {
+    instanceLayersRef.current = instanceLayers
+  })
 
   const [, setSettings] = useAtom(hotspotSettingsAtom)
 
@@ -52,15 +50,9 @@ export function useComputeReportHotspot() {
       return
     }
     const instances = instanceLayersRef.current.map((l) => l.instance)
-    const geometry = computeHotspotGeometry(
-      filteredFeatures,
-      instances,
-      start,
-      end,
-      settings.maxAreaKm2
-    )
+    const geometry = computeHotspotGeometry(filteredFeatures, instances, settings.maxAreaKm2)
     setGeometry(geometry)
-  }, [filteredFeatures, start, end, settings.enabled, settings.maxAreaKm2, isLoading, setGeometry])
+  }, [filteredFeatures, settings.enabled, settings.maxAreaKm2, isLoading, setGeometry])
 }
 
 // Used in UI components to read/write hotspot settings
