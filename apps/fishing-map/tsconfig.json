@@ -57,6 +57,7 @@
       "queries": ["./queries"],
       "queries/*": ["./queries/*"],
       "reducers": ["./reducers"],
+      "router/*": ["./router/*"],
       "routes/*": ["./routes/*"],
       "server/*": ["./server/*"],
       "store": ["./store"],
@@ -67,5 +68,15 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
-  "exclude": ["node_modules", "jest.config.ts", "exported", "**/resources.d.ts", "**/__traces__/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    "exported",
+    "**/resources.d.ts",
+    "**/__traces__/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

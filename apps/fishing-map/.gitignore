@@ -11,6 +11,7 @@
 # production
 /.dist
 /.output
+/.nitro
 /build
 .build.env
 bundle-analysis.html
