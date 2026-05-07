@@ -34,10 +34,11 @@
       }
     },
     "publish:npm": {
-      "executor": "@nx/js:release-publish",
+      "executor": "nx:run-commands",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/i18n-labels"
+        "commands": ["pnpm publish --no-git-checks --access public"],
+        "cwd": "libs/i18n-labels"
       }
     },
     "publish:stable": {
