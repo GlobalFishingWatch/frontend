@@ -9,6 +9,9 @@
 /coverage
 
 # production
+/.dist
+/.output
+/.nitro
 /build
 .build.env
 
