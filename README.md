@@ -62,14 +62,14 @@ The repo is using yarn workspaces so npm is not suported yet, to install yarn [f
 For all packages:
 
 ```bash
-yarn add [package] -W
+yarn|pnpm add [package] -W
 ```
 
 Only for a specific package
 
 ```bash
 cd apps/[you-app]
-yarn add [package]
+yarn|pnpm add [package]
 ```
 
 ### Installation

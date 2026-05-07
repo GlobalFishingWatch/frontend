@@ -6,7 +6,7 @@ This library provides functionality for searching, localizing, and determining g
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/ocean-areas
+yarn|pnpm add @globalfishingwatch/ocean-areas
 ```
 
 ## Features

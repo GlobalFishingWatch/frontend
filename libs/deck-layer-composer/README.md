@@ -8,7 +8,7 @@ See whimsical schema for an explanation from dataview to deck.gl layer: https://
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/deck-layer-composer
+yarn|pnpm add @globalfishingwatch/deck-layer-composer
 ```
 
 ## Usage example

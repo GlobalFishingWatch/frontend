@@ -16,14 +16,7 @@
     "decoders"
   ],
   "scripts": {
-    "decoders": "yarn build:prepare && yarn build:pb:vessels:js && yarn build:pb:vessels:ts && yarn build:pb:4wings-tile:js && yarn build:pb:4wings-tile:ts && yarn lint",
-    "lint": "prettier --write ./decoders/**.* -c ../../.prettierrc",
-    "build:prepare": "make-dir decoders",
-    "build:pb:vessels:js": "yarn pbjs proto/vessels.proto -t static-module -w es6 -o decoders/vessels.js",
-    "build:pb:vessels:ts": "yarn pbts decoders/vessels.js -o decoders/vessels.d.ts",
-    "build:pb:4wings-tile:js": "yarn pbjs proto/4wings-tile.proto -t static-module -w es6 -o decoders/4wings-tile.js",
-    "build:pb:4wings-tile:ts": "yarn pbts decoders/4wings-tile.js -o decoders/4wings-tile.d.ts",
-    "prepublish": "yarn decoders"
+    "prepublish": "nx run pbf-decoders:prepare"
   },
   "dependencies": {
     "long": "5.x",

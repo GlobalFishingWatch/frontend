@@ -74,7 +74,7 @@
     "i18n:watch": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["yarn i18n:extract:watch", "yarn i18n:types:watch"],
+        "commands": ["nx run fishing-map:i18n:extract:watch", "nx run fishing-map:i18n:types:watch"],
         "parallel": true
       },
       "continuous": true

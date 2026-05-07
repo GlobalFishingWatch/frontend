@@ -20,6 +20,7 @@ import type { VesselsColorByProperty } from './VesselTrackPathLayer'
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
 export const getVesselResourceChunks = (start: number, end: number) => {
+  if (isNaN(start) || isNaN(end)) return []
   const startDT = getUTCDateTime(start)
   const startYear = startDT.year
   const startDTBuffered = startYear > FIRST_YEAR_OF_DATA ? startDT.minus({ months: 2 }) : startDT

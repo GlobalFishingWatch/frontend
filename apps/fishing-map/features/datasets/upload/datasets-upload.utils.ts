@@ -1,4 +1,4 @@
-import { flatten } from '@turf/flatten'
+import { flatten } from '@turf/turf'
 import type {
   Feature,
   FeatureCollection,

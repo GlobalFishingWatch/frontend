@@ -312,7 +312,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     ]
   }
 
-  getData() {
-    return this.props.data
+  getData(): FourwingsFeature[] {
+    return this.props.data as FourwingsFeature[]
   }
 }

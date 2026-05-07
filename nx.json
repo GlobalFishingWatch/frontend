@@ -49,7 +49,13 @@
   "targetDefaults": {
     "@nx/eslint:lint": {
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs", "{projectRoot}/eslint.config.mjs"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{projectRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*"
+      ],
       "options": {
         "eslintConfig": "eslint.config.mjs"
       }
@@ -119,25 +125,41 @@
     }
   },
   "release": {
-    "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
-    "changelog": {
-      "projectChangelogs": {
-        "createRelease": "github",
-        "file": false
-      }
-    },
     "version": {
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk",
-      "preserveLocalDependencyProtocols": false
-    },
-    "git": {
-      "commit": false,
-      "tag": false
+      "git": {
+        "commit": false,
+        "tag": false
+      }
     },
     "releaseTag": {
       "pattern": "@gfw/{projectName}@{version}"
+    },
+    "groups": {
+      "libs": {
+        "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
+        "changelog": {
+          "projectChangelogs": {
+            "createRelease": "github",
+            "file": false
+          }
+        },
+        "version": {
+          "generatorOptions": {
+            "currentVersionResolver": "git-tag",
+            "fallbackCurrentVersionResolver": "disk",
+            "preserveLocalDependencyProtocols": false
+          }
+        }
+      },
+      "i18n-labels": {
+        "projects": ["i18n-labels"],
+        "version": {
+          "generatorOptions": {
+            "currentVersionResolver": "disk"
+          }
+        }
+      }
     }
   },
   "namedInputs": {
@@ -158,5 +180,6 @@
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": ""
+  "nxCloudId": "",
+  "analytics": false
 }

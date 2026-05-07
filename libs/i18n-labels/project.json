@@ -34,10 +34,11 @@
       }
     },
     "publish:npm": {
-      "executor": "@nx/js:release-publish",
+      "executor": "nx:run-commands",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/i18n-labels"
+        "commands": ["pnpm publish --no-git-checks --access public"],
+        "cwd": "libs/i18n-labels"
       }
     },
     "publish:stable": {
@@ -72,11 +73,13 @@
       }
     },
     "version": {
-      "executor": "@jscutlery/semver:version",
+      "executor": "nx:run-commands",
       "options": {
-        "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
-        "releaseAs": "patch",
-        "tagPrefix": "{projectName}@"
+        "commands": [
+          "nx release version patch --projects=i18n-labels --no-git-commit --no-git-tag",
+          "VERSION=$(node -p \"require('./libs/i18n-labels/package.json').version\") && git add libs/i18n-labels/package.json && git commit -m \"release: bump i18n-labels to $VERSION [skip ci]\""
+        ],
+        "parallel": false
       }
     }
   }

@@ -2,7 +2,7 @@ import type { Accessor, Color, LayerProps } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { CollisionFilterExtension } from '@deck.gl/extensions'
 import { IconLayer } from '@deck.gl/layers'
-import { bearingToAzimuth } from '@turf/helpers'
+import { bearingToAzimuth } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
 import type { DeckLayerProps } from '../../types'
