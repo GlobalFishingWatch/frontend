@@ -37,7 +37,7 @@ See the rest of the features in the [source code](https://github.com/GlobalFishi
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/data-transforms
+yarn|pnpm add @globalfishingwatch/data-transforms
 ```
 
 ## Usage example

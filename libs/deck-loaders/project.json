@@ -22,7 +22,7 @@
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "../../coverage/libs/deck-loaders"
+        "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-loaders"
       }
     },
     "test:watch": {

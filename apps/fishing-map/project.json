@@ -74,7 +74,10 @@
     "i18n:watch": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["yarn i18n:extract:watch", "yarn i18n:types:watch"],
+        "commands": [
+          "nx run fishing-map:i18n:extract:watch",
+          "nx run fishing-map:i18n:types:watch"
+        ],
         "parallel": true
       },
       "continuous": true
@@ -116,11 +119,10 @@
       },
       "continuous": true
     },
-    "build": {
+    "build:app": {
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output", "typecheck"],
       "options": {
         "command": "vite build",
         "cwd": "apps/fishing-map"
@@ -135,6 +137,16 @@
         "analyze": {
           "command": "ANALYZE=true vite build"
         }
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output"],
+      "options": {
+        "commands": ["nx run fishing-map:build:app", "nx run fishing-map:typecheck"],
+        "parallel": true
       }
     },
     "test": {

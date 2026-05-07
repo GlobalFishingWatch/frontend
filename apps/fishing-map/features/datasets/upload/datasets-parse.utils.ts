@@ -1,5 +1,4 @@
-import { lineToPolygon } from '@turf/line-to-polygon'
-import { truncate } from '@turf/truncate'
+import { lineToPolygon, truncate } from '@turf/turf'
 import type { Feature, FeatureCollection, Position } from 'geojson'
 import papaparse from 'papaparse'
 

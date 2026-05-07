@@ -1,6 +1,5 @@
 import type { Viewport } from '@deck.gl/core'
-import bboxPolygon from '@turf/bbox-polygon'
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { bboxPolygon, booleanPointInPolygon } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'

@@ -20,8 +20,8 @@ ENV API_GATEWAY=$API_GATEWAY
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run image-labeler:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run image-labeler:build
 
 
 #################################################################################
@@ -34,7 +34,7 @@ RUN apk update && apk upgrade libxml2 libexpat
 COPY --from=builder /app/dist/apps/image-labeler/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/image-labeler/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/image-labeler/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/image-labeler/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 

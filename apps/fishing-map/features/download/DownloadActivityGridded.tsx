@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import area from '@turf/area'
+import { area } from '@turf/turf'
 import cx from 'classnames'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'

@@ -16,8 +16,8 @@ ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run port-labeler:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run port-labeler:build
 
 
 #################################################################################

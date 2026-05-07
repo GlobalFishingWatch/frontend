@@ -1,7 +1,4 @@
-import bbox from '@turf/bbox'
-import booleanContains from '@turf/boolean-contains'
-import booleanIntersects from '@turf/boolean-intersects'
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
 import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
 
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'

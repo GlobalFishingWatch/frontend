@@ -56,9 +56,8 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       id     = "Install Dependencies"
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = <<-EOF
-        cp -R /app/node_modules /app/.yarn ./
-        yarn set version 4.12.0
-        yarn install --immutable --inline-builds
+        cp -R /app/node_modules ./
+        pnpm install --frozen-lockfile
       EOF
     }
 
@@ -66,8 +65,8 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       id     = "Run end-to-end tests"
       name   = "mcr.microsoft.com/playwright:v1.57.0-noble"
       script = <<EOF
-        yarn install
-        yarn nx e2e fishing-map-e2e -- --project="chromium" --no-cache
+        pnpm install --frozen-lockfile
+        pnpm exec nx e2e fishing-map-e2e -- --project="chromium" --no-cache
       EOF
       env = [
         "PLAYWRIGHT_BASE_URL=${each.value.env.PLAYWRIGHT_BASE_URL}",

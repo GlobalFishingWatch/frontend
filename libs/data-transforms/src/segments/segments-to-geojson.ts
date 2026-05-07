@@ -1,4 +1,4 @@
-import { lineString } from '@turf/helpers'
+import { lineString } from '@turf/turf'
 import type { Feature, FeatureCollection, LineString, MultiLineString, Position } from 'geojson'
 
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'

@@ -19,54 +19,37 @@ steps:
       #!/usr/bin/env bash
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock )
+        --key=node_modules-$( checksum pnpm-lock.yaml )
       restore_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock )
-      restore_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock )
+        --key=pnpm-store-$( checksum pnpm-lock.yaml )
 
-  - id: 'install-yarn'
+  - id: 'install'
     waitFor: ['restore_cache']
     name: node:24
     script: |
-      yarn set version 4.13.0
-      yarn -v
-      yarn install --immutable
+      corepack enable && corepack prepare pnpm@11.0.6 --activate
+      pnpm install --frozen-lockfile
 
   - id: 'save_cache'
-    waitFor: ['install-yarn']
+    waitFor: ['install']
     name: 'gcr.io/$PROJECT_ID/restore_cache'
     script: |
       #!/usr/bin/env bash
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=node_modules-$( checksum yarn.lock ) \
+        --key=node_modules-$( checksum pnpm-lock.yaml ) \
         --path=./node_modules \
         --no-clobber
       save_cache \
         --bucket=gs://frontend-cache-dependencies \
-        --key=cypress-cache-$( checksum yarn.lock ) \
-        --path=/builder/home/.cache \
-        --no-clobber
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-$( checksum yarn.lock ) \
-        --path=.yarn/cache \
-        --no-clobber
-      save_cache \
-        --bucket=gs://frontend-cache-dependencies \
-        --key=yarn-install-state-$( checksum yarn.lock ) \
-        --path=.yarn/install-state.gz \
+        --key=pnpm-store-$( checksum pnpm-lock.yaml ) \
+        --path=/root/.local/share/pnpm/store \
         --no-clobber
 
   - id: 'smoke-test-e2e-live'
     name: cypress/included:13.7.3
-    waitFor: ['install-yarn']
+    waitFor: ['install']
     allowFailure: true
     entrypoint: 'bash'
     env:
@@ -87,7 +70,7 @@ steps:
       - 'pipefail'
       - '-c'
       - |-
-        yarn nx run fishing-map-e2e:test-env --parallel
+        pnpm exec nx run fishing-map-e2e:test-env --parallel
 
   - id: 'save-test-videos'
     name: gcr.io/cloud-builders/gcloud

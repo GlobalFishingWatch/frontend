@@ -5,7 +5,7 @@ A library of custom deck.gl layers used by Global Fishing Watch.
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/deck-layers
+yarn|pnpm add @globalfishingwatch/deck-layers
 ```
 
 ## Available Layers

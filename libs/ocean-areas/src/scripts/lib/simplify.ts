@@ -1,7 +1,4 @@
-import bbox from '@turf/bbox'
-import bboxPolygon from '@turf/bbox-polygon'
-import simplify from '@turf/simplify'
-import truncate from '@turf/truncate'
+import { bbox, bboxPolygon, simplify, truncate } from '@turf/turf'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
 import type { AreaGeometryMode } from './types'

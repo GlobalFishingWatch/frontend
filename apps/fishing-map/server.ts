@@ -1,5 +1,6 @@
 import server, { createServerEntry } from '@tanstack/react-start/server-entry'
-import { proxy } from 'proxy'
+
+import { proxy } from './proxy'
 
 export default createServerEntry({
   fetch(request, opts?) {

@@ -1,5 +1,5 @@
 import { kml } from '@tmcw/togeojson'
-import { featureCollection } from '@turf/helpers'
+import { featureCollection } from '@turf/turf'
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'

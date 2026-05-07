@@ -140,8 +140,6 @@ affected
 
 # local parquet files
 *.parquet
-.nx/cache
-.nx/workspace-data
 
 **/vite.config.{js,ts,mjs,mts,cjs,cts}.timestamp*
 vite.config.*.timestamp*
@@ -153,8 +151,6 @@ terraform.tfstate.backup
 **/*/.terraform
 **/*.terraform.lock.hcl
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
 
 
 # Vitest traces
@@ -174,3 +170,11 @@ local.globalfishingwatch.org.pem
 
 # Claude
 .claude
+
+# NX
+.nx/cache
+.nx/workspace-data
+.nx/polygraph
+.nx/self-healing
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

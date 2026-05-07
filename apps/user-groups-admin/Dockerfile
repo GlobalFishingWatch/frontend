@@ -20,8 +20,8 @@ ENV API_GATEWAY=$API_GATEWAY
 
 COPY . .
 
-RUN yarn install --immutable --inline-builds && \
-  yarn nx run user-groups-admin:build
+RUN pnpm install --frozen-lockfile && \
+  pnpm exec nx run user-groups-admin:build
 
 #################################################################################
 # Actual application to run
@@ -33,7 +33,7 @@ RUN apk update && apk upgrade libxml2 libexpat
 COPY --from=builder /app/dist/apps/user-groups-admin/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY --from=builder /app/dist/apps/user-groups-admin/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/user-groups-admin/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/user-groups-admin/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 

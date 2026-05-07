@@ -14,7 +14,7 @@ A TypeScript client library for interacting with the Global Fishing Watch API.
 ## Installation
 
 ```bash
-yarn add @globalfishingwatch/api-client
+yarn|pnpm add @globalfishingwatch/api-client
 ```
 
 ## Usage
