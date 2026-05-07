@@ -65,6 +65,7 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       id     = "Run end-to-end tests"
       name   = "mcr.microsoft.com/playwright:v1.57.0-noble"
       script = <<EOF
+        npm install -g pnpm
         pnpm install --frozen-lockfile
         pnpm exec nx e2e fishing-map-e2e -- --project="chromium" --no-cache
       EOF
