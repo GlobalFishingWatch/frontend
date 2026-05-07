@@ -1,5 +1,5 @@
-import turfArea from '@turf/area'
-import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import { area } from '@turf/turf'
+import type { Feature, Polygon } from 'geojson'
 import { around } from 'geokdbush'
 import KDBush from 'kdbush'
 import { DateTime } from 'luxon'
@@ -216,7 +216,7 @@ export function computeHotspotGeometry(
     type: 'Feature',
     geometry: ellipse,
     properties: {
-      areaKm2: Math.round(turfArea(ellipse) / 1e6),
+      areaKm2: Math.round(area(ellipse) / 1e6),
       totalHours: regionTotal,
       percentOfTotal: grandTotal > 0 ? (regionTotal / grandTotal) * 100 : 0,
     },
