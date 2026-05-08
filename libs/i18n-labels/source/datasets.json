@@ -538,23 +538,7 @@
   },
   "private-vms-blz-tracks": {
     "name": "Belize VMS",
-    "description": "Tracks dataset for VMS Belize (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Belize (Private)"
   },
   "private-vms-blz-vessel-identity": {
     "name": "VMS Belize",
@@ -763,23 +747,7 @@
   },
   "private-vms-bra-tracks": {
     "name": "Brazil VMS",
-    "description": "Tracks dataset for VMS Brazil (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Brazil (Private)"
   },
   "private-vms-bra-vessel-identity": {
     "name": "VMS Brazil",
@@ -1004,23 +972,7 @@
   },
   "private-vms-chl-tracks": {
     "name": "CHILE VMS",
-    "description": "Tracks dataset for VMS CHILE (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS CHILE (Private)"
   },
   "private-vms-chl-vessel-identity": {
     "name": "VMS Chile",
@@ -1160,23 +1112,7 @@
   },
   "private-vms-cri-tracks": {
     "name": "Costa Rica VMS",
-    "description": "Tracks dataset for VMS Costa Rica (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Costa Rica (Private)"
   },
   "private-vms-cri-vessel-identity": {
     "name": "VMS Costa Rica",
@@ -1322,23 +1258,7 @@
   },
   "private-vms-ecu-tracks": {
     "name": "Ecuador VMS",
-    "description": "Tracks dataset for VMS Ecuador (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Ecuador (Private)"
   },
   "private-vms-ecu-vessel-identity": {
     "name": "VMS Ecuador",
@@ -1465,23 +1385,7 @@
   },
   "private-vms-mne-tracks": {
     "name": "Montenegro VMS",
-    "description": "Tracks dataset for VMS Montenegro (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Montenegro (Private)"
   },
   "private-vms-mne-vessel-identity": {
     "name": "VMS Montenegro",
@@ -1612,23 +1516,7 @@
   },
   "private-vms-nor-tracks": {
     "name": "Norway VMS",
-    "description": "Tracks dataset for VMS Norway (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Norway (Private)"
   },
   "private-vms-nor-vessel-identity": {
     "name": "VMS Norway",
@@ -1773,23 +1661,7 @@
   },
   "private-vms-pan-tracks": {
     "name": "PANAMA VMS",
-    "description": "Tracks dataset for VMS PANAMA (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS PANAMA (Private)"
   },
   "private-vms-pan-vessel-identity": {
     "name": "VMS Panama",
@@ -1948,23 +1820,7 @@
   },
   "private-vms-per-tracks": {
     "name": "PERU VMS",
-    "description": "Tracks dataset for VMS PERU (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS PERU (Private)"
   },
   "private-vms-per-vessel-identity": {
     "name": "VMS Peru",
@@ -2140,23 +1996,7 @@
   },
   "private-vms-plw-tracks": {
     "name": "Palau VMS",
-    "description": "Tracks dataset for VMS Palau (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Palau (Private)"
   },
   "private-vms-plw-vessel-identity": {
     "name": "VMS Palau",
@@ -2286,23 +2126,7 @@
   },
   "private-vms-png-tracks": {
     "name": "Papua New Guinea VMS",
-    "description": "Tracks dataset for VMS Papua New Guinea (Private)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Papua New Guinea (Private)"
   },
   "private-vms-png-vessel-identity": {
     "name": "VMS Papua New Guinea",
@@ -3884,23 +3708,7 @@
   },
   "public-vms-blz-tracks": {
     "name": "Belize VMS",
-    "description": "Tracks dataset for VMS Belize (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Belize (Public)"
   },
   "public-vms-blz-vessel-identity": {
     "name": "VMS Belize",
@@ -4039,23 +3847,7 @@
   },
   "public-vms-bra-tracks": {
     "name": "Brazil VMS",
-    "description": "Tracks dataset for VMS Brazil (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Brazil (Public)"
   },
   "public-vms-bra-vessel-identity": {
     "name": "VMS Brazil",
@@ -4125,23 +3917,7 @@
   },
   "public-vms-chl-tracks": {
     "name": "CHILE VMS",
-    "description": "Tracks dataset for VMS CHILE (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS CHILE (Public)"
   },
   "public-vms-chl-vessel-identity": {
     "name": "VMS Chile",
@@ -4211,23 +3987,7 @@
   },
   "public-vms-cri-tracks": {
     "name": "Costa Rica VMS",
-    "description": "Tracks dataset for VMS Costa Rica (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Costa Rica (Public)"
   },
   "public-vms-cri-vessel-identity": {
     "name": "VMS Costa Rica",
@@ -4262,23 +4022,7 @@
   },
   "public-vms-ecu-tracks": {
     "name": "Ecuador VMS",
-    "description": "Tracks dataset for VMS Ecuador (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Ecuador (Public)"
   },
   "public-vms-ecu-vessel-identity": {
     "name": "VMS Ecuador",
@@ -4337,23 +4081,7 @@
   },
   "public-vms-nor-tracks": {
     "name": "Norway VMS",
-    "description": "Tracks dataset for VMS Norway (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Norway (Public)"
   },
   "public-vms-nor-vessel-identity": {
     "name": "VMS Norway",
@@ -4419,23 +4147,7 @@
   },
   "public-vms-pan-tracks": {
     "name": "PANAMA VMS",
-    "description": "Tracks dataset for VMS PANAMA (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS PANAMA (Public)"
   },
   "public-vms-pan-vessel-identity": {
     "name": "VMS Panama",
@@ -4523,23 +4235,7 @@
   },
   "public-vms-per-tracks": {
     "name": "PERU VMS",
-    "description": "Tracks dataset for VMS PERU (public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS PERU (public)"
   },
   "public-vms-per-vessel-identity": {
     "name": "VMS Peru",
@@ -4624,23 +4320,7 @@
   },
   "public-vms-plw-tracks": {
     "name": "Palau VMS",
-    "description": "Tracks dataset for VMS Palau (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Palau (Public)"
   },
   "public-vms-plw-vessel-identity": {
     "name": "VMS Palau",
@@ -4699,23 +4379,7 @@
   },
   "public-vms-png-tracks": {
     "name": "Papua New Guinea VMS",
-    "description": "Tracks dataset for VMS Papua New Guinea (Public)",
-    "schema": {
-      "elevation": {
-        "keyword": "elevation",
-        "enum": {
-          "0": "0",
-          "-2000": "-2000"
-        }
-      },
-      "speed": {
-        "keyword": "speed",
-        "enum": {
-          "0": "0",
-          "20": "20"
-        }
-      }
-    }
+    "description": "Tracks dataset for VMS Papua New Guinea (Public)"
   },
   "public-vms-png-vessel-identity": {
     "name": "VMS Papua New Guinea",
