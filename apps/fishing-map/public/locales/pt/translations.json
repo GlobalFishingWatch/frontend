@@ -1305,7 +1305,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
-    "vesselRegistrationCode": "Vessel registration code",
+    "vesselRegistrationCode": "TIE",
     "vesselType": "Tipos de embarcação",
     "vesselTypes": {
       "": "Unknown",
