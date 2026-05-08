@@ -34,7 +34,7 @@ import styles from '../vessel-groups/VesselGroupModal.module.css'
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
 
 const EXPERIMENTAL_FIELDS_BY_FILTER: { [key in SupportedDatasetFilter]?: string[] } = {
-  encounter_type: ['FISHING-BUNKER', 'FISHING-FISHING', 'CARRIER-BUNKER'],
+  // encounter_type: ['FISHING-BUNKER', 'FISHING-FISHING', 'CARRIER-BUNKER'],
 }
 
 type FilterCompatibilityOperation = 'every' | 'some'
@@ -78,8 +78,7 @@ export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: strin
       return label
     }
   }
-  const vesselField =
-    filter === 'ssvid' ? 'mmsi' : filter.replace(/^selfReportedInfo\./, '')
+  const vesselField = filter === 'ssvid' ? 'mmsi' : filter.replace(/^selfReportedInfo\./, '')
   if (i18n.exists(`vessel.${vesselField}`)) {
     const label = t((t: any) => t.vessel[vesselField], {
       defaultValue: filter.toString(),
