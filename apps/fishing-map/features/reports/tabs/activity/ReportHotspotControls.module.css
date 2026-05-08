@@ -27,3 +27,9 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}

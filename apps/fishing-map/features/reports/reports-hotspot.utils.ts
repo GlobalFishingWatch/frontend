@@ -1,4 +1,3 @@
-import { area } from '@turf/turf'
 import type { Feature, Polygon } from 'geojson'
 import { around } from 'geokdbush'
 import KDBush from 'kdbush'
@@ -6,8 +5,13 @@ import KDBush from 'kdbush'
 import { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
+import { REPORT_HOTSPOT_ID } from 'features/map/map.config'
+import { NAUTICAL_MILES } from 'features/reports/report-area/area-reports.config'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportDeckLayer } from 'features/reports/reports-timeseries.utils'
+import type { BufferUnit } from 'types'
+
+const NM2_TO_KM2 = 1.852 * 1.852
 
 type CellEntry = { cell: FourwingsFeature; total: number }
 
@@ -145,7 +149,8 @@ function cellsInsideEllipse(cells: CellEntry[], params: EllipseParams): CellEntr
 }
 
 export type HotspotProperties = {
-  areaKm2: number
+  area: number
+  unit: BufferUnit
   totalHours: number
   percentOfTotal: number
 }
@@ -153,7 +158,8 @@ export type HotspotProperties = {
 export function computeHotspotGeometry(
   filteredFeatures: FilteredPolygons[][],
   instances: ReportDeckLayer[],
-  maxAreaKm2: number
+  area: number,
+  unit: BufferUnit
 ): Feature<Polygon, HotspotProperties> | null {
   const cellTotals: CellEntry[] = []
 
@@ -181,23 +187,19 @@ export function computeHotspotGeometry(
   // Step 1: circular sweep finds the densest area — gives correct center regardless of background activity
   // Step 2: Principal Component Analysis (PCA) on those cells only — fits ellipse orientation to the local shape (strip vs blob)
   // Step 3: activity inside final ellipse reported (may include cells outside the original circle)
-  const t0 = performance.now()
+  const maxAreaKm2 = unit === NAUTICAL_MILES ? area * NM2_TO_KM2 : area
   const denseCells = circularWindowSweep(cellTotals, maxAreaKm2)
-  const t1 = performance.now()
   const params = computeEllipseParams(denseCells, maxAreaKm2)
-  const t2 = performance.now()
   const ellipse = buildEllipsePolygon(params)
   const regionTotal = cellsInsideEllipse(cellTotals, params).reduce((acc, e) => acc + e.total, 0)
-  const t3 = performance.now()
-  console.debug(
-    `[hotspot] sweep=${(t1 - t0).toFixed(1)}ms pca=${(t2 - t1).toFixed(1)}ms ellipse+filter=${(t3 - t2).toFixed(1)}ms total=${(t3 - t0).toFixed(1)}ms`
-  )
 
   return {
     type: 'Feature',
     geometry: ellipse,
+    id: REPORT_HOTSPOT_ID,
     properties: {
-      areaKm2: Math.round(area(ellipse) / 1e6),
+      area,
+      unit,
       totalHours: regionTotal,
       percentOfTotal: grandTotal > 0 ? (regionTotal / grandTotal) * 100 : 0,
     },

@@ -24,7 +24,7 @@ import {
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { PORTS_LAYER_ID } from 'features/map/map.config'
+import { PORTS_LAYER_ID, REPORT_HOTSPOT_ID } from 'features/map/map.config'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
@@ -83,15 +83,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
-  const hotspotFeature = interaction?.features.find(
-    (f) => (f as any).properties?.areaKm2 !== undefined
-  )
+  const hotspotFeature = interaction?.features.find((f) => (f as any).id === REPORT_HOTSPOT_ID)
   const hotspotProperties = hotspotFeature ? (hotspotFeature as any).properties : null
 
   const visibleFeatures = interaction?.features.filter(
     (feature) =>
-      !OMITED_CATEGORIES.includes(feature.category) &&
-      (feature as any).properties?.areaKm2 === undefined
+      !OMITED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
   )
 
   if (!visibleFeatures.length && !hotspotFeature) return null

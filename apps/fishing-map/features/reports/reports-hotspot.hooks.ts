@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef } from 'react'
 import type { Feature, Polygon } from 'geojson'
 import { atom, useAtom, useAtomValue } from 'jotai'
 
+import { KILOMETERS } from 'features/reports/report-area/area-reports.config'
+import type { BufferUnit } from 'types'
+
 import { computeHotspotGeometry } from './reports-hotspot.utils'
 import {
   useReportFeaturesLoading,
@@ -11,24 +14,25 @@ import {
 
 type HotspotSettings = {
   enabled: boolean
-  maxAreaKm2: number
+  area: number
+  unit: BufferUnit
 }
 
-export const hotspotSettingsAtom = atom<HotspotSettings>({ enabled: false, maxAreaKm2: 50000 })
+export const hotspotSettingsAtom = atom<HotspotSettings>({
+  enabled: false,
+  area: 50000,
+  unit: KILOMETERS,
+})
 export const hotspotGeometryAtom = atom<Feature<Polygon> | null>(null)
 
 // Called once in ReportActivityGraph to drive the computation side-effect
 export function useComputeReportHotspot() {
-  const settings = useAtomValue(hotspotSettingsAtom)
+  const { enabled, area, unit } = useAtomValue(hotspotSettingsAtom)
   const [, setGeometry] = useAtom(hotspotGeometryAtom)
   const filteredFeatures = useReportFilteredFeatures()
   const instanceLayers = useReportInstances()
   const isLoading = useReportFeaturesLoading()
 
-  // Use a ref to access instanceLayers without including it in effect deps.
-  // Adding instanceLayers to deps causes an infinite loop: setGeometry triggers a
-  // map re-render which adds the hotspot PolygonsLayer, causing deckLayerInstancesAtom
-  // to update and useReportInstances to return a new array ref on every cycle.
   const instanceLayersRef = useRef(instanceLayers)
   useEffect(() => {
     instanceLayersRef.current = instanceLayers
@@ -45,14 +49,14 @@ export function useComputeReportHotspot() {
   }, [])
 
   useEffect(() => {
-    if (!settings.enabled || !filteredFeatures || isLoading) {
+    if (!enabled || !filteredFeatures || isLoading) {
       setGeometry(null)
       return
     }
     const instances = instanceLayersRef.current.map((l) => l.instance)
-    const geometry = computeHotspotGeometry(filteredFeatures, instances, settings.maxAreaKm2)
+    const geometry = computeHotspotGeometry(filteredFeatures, instances, area, unit)
     setGeometry(geometry)
-  }, [filteredFeatures, settings.enabled, settings.maxAreaKm2, isLoading, setGeometry])
+  }, [filteredFeatures, enabled, area, unit, isLoading, setGeometry])
 }
 
 // Used in UI components to read/write hotspot settings
@@ -64,15 +68,22 @@ export function useHotspotSettings() {
     [setSettings]
   )
 
-  const setMaxAreaKm2 = useCallback(
-    (maxAreaKm2: number) => setSettings((prev) => ({ ...prev, maxAreaKm2 })),
+  const setArea = useCallback(
+    (area: number) => setSettings((prev) => ({ ...prev, area })),
+    [setSettings]
+  )
+
+  const setUnit = useCallback(
+    (unit: BufferUnit) => setSettings((prev) => ({ ...prev, unit })),
     [setSettings]
   )
 
   return {
     enabled: settings.enabled,
-    maxAreaKm2: settings.maxAreaKm2,
+    area: settings.area,
+    unit: settings.unit,
     toggle,
-    setMaxAreaKm2,
+    setArea,
+    setUnit,
   }
 }

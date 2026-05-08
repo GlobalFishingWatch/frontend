@@ -72,7 +72,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
-import { HOTSPOT_COLOR, HOTSPOT_FILL, REPORT_HOTSPOT_GENERATOR_ID } from './map.config'
+import { HOTSPOT_COLOR, HOTSPOT_FILL, REPORT_HOTSPOT_ID } from './map.config'
 import {
   selectMapReportBufferDataviews,
   selectShowWorkspaceDetail,
@@ -369,7 +369,7 @@ const useHotspotOverlayLayer = () => {
   return useMemo(() => {
     if (!settings.enabled || !geometry) return null
     return new PolygonLayer({
-      id: REPORT_HOTSPOT_GENERATOR_ID,
+      id: REPORT_HOTSPOT_ID,
       data: [geometry],
       getPolygon: (f) => f.geometry.coordinates,
       filled: true,

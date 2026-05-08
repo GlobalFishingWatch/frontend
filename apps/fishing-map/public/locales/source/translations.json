@@ -44,8 +44,9 @@
     "groupBySource": "by source",
     "groupByVesseltype": "by vessel type",
     "hotspot": {
+      "datasetName": "{{areaSize}} {{unit}} hotspot zone of {{activitySubCategory}} in {{areaName}} between {{start}} and {{end}}",
       "title": "Hotspot zone",
-      "tooltip": "This is the portion of {{areaKm2}} km² with the most activity in your area",
+      "tooltip": "This is the portion of {{area}} {{unit}} with the most activity in your area",
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
     "insideYourArea": "inside your area",
@@ -140,7 +141,6 @@
     "anyoneWithThePassword": "Anyone with the password",
     "apparentFishing": "Apparent fishing effort",
     "applyToAll": "Apply to all",
-    "area": "",
     "area_one": "area",
     "area_many": "areas",
     "area_other": "areas",
@@ -478,6 +478,7 @@
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
+  "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -714,6 +715,7 @@
     "convenedBy": "Founding partners",
     "supportBy": "Supported by"
   },
+  "hours": "",
   "layer": {
     "activityFitBounds": "Center view on activity",
     "add": "Add layer",
@@ -842,6 +844,8 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
+  "mmsi_one": "",
+  "mmsi_other": "",
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
@@ -1181,8 +1185,13 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
+    "gfw_callsign": "",
+    "gfw_flag": "",
     "gfw_geartypes": "GFW Gear type",
+    "gfw_imo": "",
+    "gfw_shipname": "",
     "gfw_shiptypes": "GFW Vessel type",
+    "gfw_ssvid": "",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",

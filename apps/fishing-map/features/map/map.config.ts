@@ -7,7 +7,7 @@ export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'
 export const REPORT_BUFFER_GENERATOR_ID = 'report-area-buffer'
 export const PREVIEW_BUFFER_GENERATOR_ID = 'report-area-preview-buffer'
-export const REPORT_HOTSPOT_GENERATOR_ID = 'report-area-hotspot'
+export const REPORT_HOTSPOT_ID = 'report-area-hotspot'
 export const OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID = 'offshore-fixed-infrastructure'
 export const PORTS_LAYER_ID = 'port-locations'
 
