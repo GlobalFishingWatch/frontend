@@ -2,7 +2,10 @@
   "authorization": "crwdns83976:0crwdne83976:0",
   "encounter": "crwdns68717:0crwdne68717:0",
   "fishing": "crwdns68721:0crwdne68721:0",
+  "fishingLicenseStatus": "crwdns130275:0crwdne130275:0",
+  "fleetCode": "crwdns130277:0crwdne130277:0",
   "geartype": "crwdns70120:0crwdne70120:0",
+  "geartypeBRA": "crwdns130279:0crwdne130279:0",
   "insights": "crwdns83894:0crwdne83894:0",
   "insightsCoverage": "crwdns83954:0crwdne83954:0",
   "insightsFishing": "crwdns83956:0crwdne83956:0",
@@ -20,6 +23,7 @@
   "registrySources": "crwdns84242:0crwdne84242:0",
   "selfReported": "crwdns68711:0crwdne68711:0",
   "shiptype": "crwdns70122:0crwdne70122:0",
+  "shiptypeBRA": "crwdns130281:0crwdne130281:0",
   "sources": "crwdns83962:0crwdne83962:0",
   "vessels": "crwdns83992:0crwdne83992:0"
 }
