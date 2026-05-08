@@ -178,7 +178,7 @@
       "port_visit": "visita a porto"
     },
     "events": "Eventos",
-    "events_one": "Event",
+    "events_one": "Evento",
     "events_many": "Events",
     "events_other": "Events",
     "exclude": "Excluir",
@@ -1016,7 +1016,7 @@
     "extraInfo": "Solicite informações adicionais em",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Primeira data de transmissão",
-    "fishingLicenseCode": "Fishing license code",
+    "fishingLicenseCode": "Código RGP",
     "fishingLicenseEndDate": "TERMINO DA LICENSA",
     "fishingLicenseStartDate": "INICIO DA LICENSA",
     "fishingLicenseStatus": "Status da licença",
@@ -1024,7 +1024,7 @@
     "flag": "Bandeira",
     "flag_other": "Estados de Bandeira",
     "fleet": "Frota",
-    "fleetCode": "CÓDIGO IN",
+    "fleetCode": "CÓDIGO INI 10/2011",
     "fleetCodes": {
       "1_1": "1.1 - Espinhel horizontal (superfície) Espinhel boiado e Long-line",
       "1_10": "1.10 - Espinhel vertical/Covos Linha Pargueira, Caico e Bicic",
@@ -1170,9 +1170,9 @@
     "gfw_shiptypes": "GFW Vessel type",
     "gfw_ssvid": "SSVID (MMSI)",
     "goToImage": "Go to image {{number}}",
-    "grossTonnage": "Tonelagem bruta",
+    "grossTonnage": "AB",
     "grossTonnageRange": "Intervalo de arqueação bruta",
-    "horsePower": "Horse power",
+    "horsePower": "HP",
     "identityDatesOutOfRange": "As datas desta identidade não se sobrepõem ao seu período atual",
     "imo": "IMO",
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
@@ -1305,7 +1305,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
-    "vesselRegistrationCode": "TIE",
+    "vesselRegistrationCode": "\nNúmero de Inscrição na Marinha do Brasil (TIE)",
     "vesselType": "Tipos de embarcação",
     "vesselTypes": {
       "": "Unknown",
