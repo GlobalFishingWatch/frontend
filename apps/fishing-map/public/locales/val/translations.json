@@ -774,7 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "crwdns60339:0crwdne60339:0",
     "vessel_group_fit_bounds": "crwdns83708:0crwdne83708:0",
     "vessel_info_correction": "crwdns84566:0crwdne84566:0",
-    "vesselGroup": "crwdns84568:0crwdne84568:0"
+    "vesselGroup": "crwdns84568:0crwdne84568:0",
+    "vessel-groups": "crwdns130535:0crwdne130535:0"
   },
   "map": {
     "annotationPlaceholder": "crwdns70392:0crwdne70392:0",
