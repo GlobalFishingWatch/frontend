@@ -545,7 +545,7 @@
     "description": "Vessels (VMS Belize)"
   },
   "private-vms-bra-encounters-events": {
-    "name": "Encontro de Embarcações (BRA)",
+    "name": "Eventos de Encontro (BRA)",
     "description": "<h2>Overview</h2> <p> Encounter events identify instances where two vessels appear to meet at sea. Our VMS Encounter dataset is currently experimental, and we calculate these events across all VMS sources. Because VMS predominantly tracks fishing vessels, encounters in this dataset are more likely to reflect fishing-related activity - such as pair fishing - than transshipment-related activity, which is more commonly observed in AIS data. </p> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <ul> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage </li> </ul> <h2>Caveats</h2> <ul> <li> When encounter events involve a vessel in a foreign VMS source, the foreign vessel will appear as anonymous due to MOU restrictions. Specifically, we only display the flag and vessel type for the foreign vessel and hide the rest of its identity fields, so the vessel name appears as “Unknown” on the map. </li> <li> Because VMS datasets consist predominantly of fishing vessels - unlike AIS, which captures a broader range of vessel types - encounter events are more likely to represent pair fishing activity than transshipment. As with all Global Fishing Watch encounter data, these events are derived from rule-based algorithms and may reflect a wide range of at-sea interactions, so they should not be taken as evidence of any specific activity without further investigation. </li> <li> Some vessels appear in multiple VMS sources simultaneously due to country regulations, which can cause a vessel to appear to encounter itself. To reduce this noise, we have applied a filter that removes encounters between vessels sharing the same name across different VMS sources, though this is not a perfect solution and we are continuing to work on improvements. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. Note that the 10 km anchorage-distance filter is applied before this merging step, so in rare cases a merged encounter’s average location may fall within 10 km of an anchorage even though each underlying (pre-merge) encounter was more than 10 km from the nearest anchorage. </li> <li> It is a known issue that the encounter detection algorithm does not evaluate continuity across the day boundary (midnight UTC). As a result, encounters that span midnight are not detected and will be missing from the dataset. Specifically those that start after ~22:00 UTC or end before ~02:00 UTC. </li> <li> Encounter detection relies on first creating a regular 10-minute timeline of a vessel’s positions. This timeline is created by interpolating between consecutive positions only when they are less than 60 minutes apart. If a vessel’s polling rate is 60 minutes or longer, no interpolation is performed, so encounters for that vessel are less likely to be detected and may be missed. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. </li> <li> Global Fishing Watch recommends visually inspecting vessel tracks, always referring to additional data sources and/or information, and requesting records from a vessel to confirm any findings, as part of the users' due diligence process. </li> </ul>",
     "schema": {
       "duration": {
@@ -757,7 +757,7 @@
         "keyword": "Código RGP"
       },
       "selfReportedInfo.fleetCode": {
-        "keyword": "CÓDIGO IN",
+        "keyword": "CÓDIGO IN 10/2011",
         "enum": {
           "1.1": "1.1 - Espinhel horizontal (superfície) Espinhel boiado e Long-line",
           "1.2": "1.2 - Espinhel horizontal (superfície) Espinhel boiado e Long-line",
@@ -834,7 +834,7 @@
         }
       },
       "selfReportedInfo.vesselRegistrationCode": {
-        "keyword": "vesselRegistrationCode"
+        "keyword": "TIE"
       }
     }
   },
