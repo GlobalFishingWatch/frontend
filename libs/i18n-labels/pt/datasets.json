@@ -582,7 +582,7 @@
         }
       },
       "fleet_code": {
-        "keyword": "Frota INI",
+        "keyword": "CÓDIGO INI 10/2011",
         "enum": {
           "1.1": "1.1 - Espinhel horizontal (superfície) Espinhel boiado e Long-line",
           "1.2": "1.2 - Espinhel horizontal (superfície) Espinhel boiado e Long-line",
