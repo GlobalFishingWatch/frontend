@@ -126,7 +126,8 @@ export const formatInfoField = (
     | 'builtYear'
     | 'transmissionDateFrom'
     | 'transmissionDateTo'
-    | 'fleetCode',
+    | 'fleetCode'
+    | 'fishingLicenseStatus',
   {
     translationFn = t,
     fallbackValue,
@@ -154,6 +155,14 @@ export const formatInfoField = (
         translationFn((t: any) => t.vessel.fleetCodes[fieldValue.replaceAll('.', '_')], {
           defaultValue: fieldValue,
         }) || fallbackValue
+      )
+    }
+    if (type === 'fishingLicenseStatus') {
+      return translationFn(
+        (t) => t.vessel.licenseStatus[fieldValue as keyof typeof t.vessel.licenseStatus],
+        {
+          defaultValue: fieldValue,
+        }
       )
     }
     if (

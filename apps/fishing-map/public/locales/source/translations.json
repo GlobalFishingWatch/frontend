@@ -774,7 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected time range. Change the time range to fit this track?",
     "vessel_group_fit_bounds": "Center map on vessel group",
     "vessel_info_correction": "Suggest a correction",
-    "vesselGroup": "Vessel Group"
+    "vesselGroup": "Vessel Group",
+    "vessel-groups": "Vessel Group"
   },
   "map": {
     "annotationPlaceholder": "Type something here",
@@ -1235,6 +1236,11 @@
     "lengthRange": "Length range",
     "license_category": "License category",
     "licenseCode": "License code",
+    "licenseStatus": {
+      "cancelled": "cancelled",
+      "suspended": "suspended",
+      "valid": "valid"
+    },
     "linkToVessel": "Check the vessel profile here",
     "loadingInfo": "Loading vessel info",
     "mainGear": "Main gear",
