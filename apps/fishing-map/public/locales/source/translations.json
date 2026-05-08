@@ -1236,11 +1236,6 @@
     "lengthRange": "Length range",
     "license_category": "License category",
     "licenseCode": "License code",
-    "licenseStatus": {
-      "cancelled": "cancelled",
-      "suspended": "suspended",
-      "valid": "valid"
-    },
     "linkToVessel": "Check the vessel profile here",
     "loadingInfo": "Loading vessel info",
     "mainGear": "Main gear",
