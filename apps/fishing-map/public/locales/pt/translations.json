@@ -741,7 +741,7 @@
     "nameLengthError_many": "Layer name requires at least {{count}} characters",
     "nameLengthError_other": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameRequired": "É necessário informar o nome da camada",
-    "next_port_id": "Próxima entrada em porto ",
+    "next_port_id": "Próximo porto ",
     "period": "Período",
     "properties": {
       "color": "Color",
@@ -1236,6 +1236,11 @@
     "lengthRange": "Intervalo do comprimento",
     "license_category": "Categoria da licença",
     "licenseCode": "Código da licença",
+    "licenseStatus": {
+      "cancelled": "cancelled",
+      "suspended": "suspended",
+      "valid": "valid"
+    },
     "linkToVessel": "Veja o perfil da embarcação aqui",
     "loadingInfo": "Carregando informações da embarcação",
     "mainGear": "Petrecho principal",
