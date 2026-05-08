@@ -46,7 +46,7 @@ export const debugInitialState: DebugState = {
     vesselsAsPositions: false,
     vesselsMaxTimeGapHours: false,
     hideVesselNames: false,
-    hotspotButton: true,
+    hotspotButton: false,
   },
 }
 
