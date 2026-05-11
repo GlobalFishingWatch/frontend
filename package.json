@@ -121,7 +121,7 @@
     "material-react-table": "3.2.1",
     "memoize-one": "6.0.0",
     "mjolnir.js": "3.0.0",
-    "next": "16.2.4",
+    "next": "16.2.6",
     "nitro": "npm:nitro-nightly@latest",
     "papaparse": "5.5.3",
     "pbf": "4.0.1",
@@ -301,7 +301,7 @@
     "typescript-eslint": "8.59.2",
     "vite": "8.0.10",
     "vite-plugin-static-copy": "4.1.0",
-    "vitest": "4.1.5",
+    "vitest": "4.1.0",
     "vitest-browser-react": "2.2.0"
   },
   "lint-staged": {
@@ -316,5 +316,5 @@
       "bash -c 'terraform -chdir=apps/fishing-map/cloudbuild apply'"
     ]
   },
-  "packageManager": "pnpm@11.0.6"
+  "packageManager": "pnpm@11.0.9+sha512.34ce82e6780233cf9cad8685029a8f81d2e06196c5a9bad98879f7424940c6817c4e4524fb7d38b8553ceed48b9758b8ebaf1abd3600c232c4c8cf7366086f38"
 }
