@@ -133,7 +133,7 @@ export default function ReportHotspotControls() {
       content={
         <div className={styles.popoverContent}>
           <div className={styles.popoverHeader}>
-            <label className={styles.sliderLabel}>{t((t) => t.common.area_one)}</label>
+            <label className={styles.sliderLabel}>{t((t) => t.common.area, { count: 1 })}</label>
             {enabled && (
               <div className={styles.headerButtons}>
                 <IconButton
