@@ -52,7 +52,8 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
-import { hotspotGeometryAtom, hotspotSettingsAtom } from 'features/reports/reports-hotspot.hooks'
+import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
+import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
@@ -364,7 +365,7 @@ export const useSyncMapHoverHighlightedFeatures = () => {
 }
 
 const useHotspotOverlayLayer = () => {
-  const settings = useAtomValue(hotspotSettingsAtom)
+  const settings = useSelector(selectReportHotspotSettings)
   const geometry = useAtomValue(hotspotGeometryAtom)
   return useMemo(() => {
     if (!settings.enabled || !geometry) return null

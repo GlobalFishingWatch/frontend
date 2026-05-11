@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { Feature, Polygon } from 'geojson'
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom } from 'jotai'
 
-import { KILOMETERS } from 'features/reports/report-area/area-reports.config'
+import { useAppDispatch, useAppSelector } from 'features/app/app.hooks'
+import {
+  selectReportHotspotSettings,
+  setReportHotspotSettings,
+} from 'features/reports/tabs/activity/reports-activity.slice'
 import type { BufferUnit } from 'types'
 
 import { computeHotspotGeometry } from './reports-hotspot.utils'
@@ -12,22 +16,11 @@ import {
   useReportInstances,
 } from './reports-timeseries.hooks'
 
-type HotspotSettings = {
-  enabled: boolean
-  area: number
-  unit: BufferUnit
-}
-
-export const hotspotSettingsAtom = atom<HotspotSettings>({
-  enabled: false,
-  area: 50000,
-  unit: KILOMETERS,
-})
 export const hotspotGeometryAtom = atom<Feature<Polygon> | null>(null)
 
 // Called once in ReportActivityGraph to drive the computation side-effect
 export function useComputeReportHotspot() {
-  const { enabled, area, unit } = useAtomValue(hotspotSettingsAtom)
+  const { enabled, area, unit } = useAppSelector(selectReportHotspotSettings)
   const [, setGeometry] = useAtom(hotspotGeometryAtom)
   const filteredFeatures = useReportFilteredFeatures()
   const instanceLayers = useReportInstances()
@@ -38,12 +31,9 @@ export function useComputeReportHotspot() {
     instanceLayersRef.current = instanceLayers
   })
 
-  const [, setSettings] = useAtom(hotspotSettingsAtom)
-
   useEffect(() => {
     return () => {
       setGeometry(null)
-      setSettings((prev) => ({ ...prev, enabled: false }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -61,21 +51,22 @@ export function useComputeReportHotspot() {
 
 // Used in UI components to read/write hotspot settings
 export function useHotspotSettings() {
-  const [settings, setSettings] = useAtom(hotspotSettingsAtom)
+  const settings = useAppSelector(selectReportHotspotSettings)
+  const dispatch = useAppDispatch()
 
   const toggle = useCallback(
-    (enabled: boolean) => setSettings((prev) => ({ ...prev, enabled })),
-    [setSettings]
+    (enabled: boolean) => dispatch(setReportHotspotSettings({ enabled })),
+    [dispatch]
   )
 
   const setArea = useCallback(
-    (area: number) => setSettings((prev) => ({ ...prev, area })),
-    [setSettings]
+    (area: number) => dispatch(setReportHotspotSettings({ area })),
+    [dispatch]
   )
 
   const setUnit = useCallback(
-    (unit: BufferUnit) => setSettings((prev) => ({ ...prev, unit })),
-    [setSettings]
+    (unit: BufferUnit) => dispatch(setReportHotspotSettings({ unit })),
+    [dispatch]
   )
 
   return {
