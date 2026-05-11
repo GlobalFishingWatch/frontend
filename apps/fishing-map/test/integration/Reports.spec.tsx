@@ -126,7 +126,7 @@ describe('Reports', () => {
     expect(store.getState().location.type).toBe(WORKSPACE_REPORT)
   })
 
-  it('should display the date chosen in the timebar in the report description', async () => {
+  it('should display the date chosen in the timebar with the imprecision tolerance in the report description', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -142,10 +142,11 @@ describe('Reports', () => {
     expect(timerange).toBeDefined()
     const start = formatI18nDate(timerange?.start)
     const end = formatI18nDate(timerange?.end)
-    const description = getByText(/hours of activity in the area between/i)
+    const description = await getByTestId('report-summary')
     const text = description.element().textContent || ''
     expect(text).toContain(start)
     expect(text).toContain(end)
+    expect(text).toMatch(/± \d+%/)
   })
 
   it('should show same report data at different zoom levels', async () => {
