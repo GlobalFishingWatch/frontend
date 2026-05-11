@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getTrackBackground, Range } from 'react-range'
 import { useSelector } from 'react-redux'
+import { area as turfArea } from '@turf/turf'
 import { useAtomValue } from 'jotai'
 
 import { deckToHexColor } from '@globalfishingwatch/deck-layers'
@@ -20,16 +21,14 @@ import {
   getFileWithFeatures,
 } from 'features/map/overlays/draw/draw.utils'
 import { KILOMETERS, NAUTICAL_MILES } from 'features/reports/report-area/area-reports.config'
-import { selectReportAreaName } from 'features/reports/report-area/area-reports.selectors'
+import { selectReportArea } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivitySubCategory } from 'features/reports/reports.selectors'
 import { hotspotGeometryAtom, useHotspotSettings } from 'features/reports/reports-hotspot.hooks'
-import { formatArea } from 'features/reports/reports-hotspot.utils'
+import { formatArea, NM2_TO_KM2 } from 'features/reports/reports-hotspot.utils'
 
 import { getReportSubCategoryLabel } from './reports-activity.config'
 
 import styles from './ReportHotspotControls.module.css'
-
-const AREA_CONFIG = { min: 1000, max: 500000, step: 1000 }
 
 export default function ReportHotspotControls() {
   const { t } = useTranslation()
@@ -37,7 +36,7 @@ export default function ReportHotspotControls() {
   const hotspotGeometry = useAtomValue(hotspotGeometryAtom)
   const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
-  const areaName = useSelector(selectReportAreaName)
+  const reportArea = useSelector(selectReportArea)
   const activitySubCategory = useSelector(selectReportActivitySubCategory)
   const timeRange = useSelector(selectTimeRange)
   const rangeRef = useRef<HTMLDivElement>(null)
@@ -65,9 +64,20 @@ export default function ReportHotspotControls() {
     [setUnit]
   )
 
-  const { min, max, step } = AREA_CONFIG
+  const { min, max, step } = useMemo(() => {
+    const geometry = reportArea?.geometry
+    if (!geometry) return { min: 1000, max: 500000, step: 1000 }
+    const m2 = turfArea(geometry)
+    const km2 = m2 / 1_000_000
+    const totalArea = unit === NAUTICAL_MILES ? km2 / NM2_TO_KM2 : km2
+    const step = Math.max(1, Math.pow(10, Math.floor(Math.log10(totalArea / 100))))
+    const onePercent = Math.max(step, Math.ceil((totalArea * 0.01) / step) * step)
+    const eightyPercent = Math.max(onePercent + step, Math.floor((totalArea * 0.8) / step) * step)
+    return { min: onePercent, max: eightyPercent, step }
+  }, [reportArea?.geometry, unit])
 
   const unitLabel = unit === NAUTICAL_MILES ? 'nm²' : 'km²'
+  const displayValues = [Math.min(max, Math.max(min, values[0]))]
 
   const datasetName = useMemo(
     () =>
@@ -75,11 +85,11 @@ export default function ReportHotspotControls() {
         areaSize: formatArea(Math.round(values[0])),
         unit: unitLabel,
         activitySubCategory: getReportSubCategoryLabel(activitySubCategory, t),
-        areaName: areaName || '',
+        areaName: reportArea?.name || '',
         start: formatI18nDate(timeRange?.start),
         end: formatI18nDate(timeRange?.end),
       }),
-    [activitySubCategory, areaName, t, timeRange?.end, timeRange?.start, unitLabel, values]
+    [activitySubCategory, reportArea?.name, t, timeRange?.end, timeRange?.start, unitLabel, values]
   )
 
   const handleSave = useCallback(async () => {
@@ -148,7 +158,7 @@ export default function ReportHotspotControls() {
             options={unitOptions}
           />
           <Range
-            values={values}
+            values={displayValues}
             step={step}
             min={min}
             max={max}
@@ -166,7 +176,7 @@ export default function ReportHotspotControls() {
                     width: '100%',
                     borderRadius: '2px',
                     background: getTrackBackground({
-                      values,
+                      values: displayValues,
                       colors: [deckToHexColor(HOTSPOT_COLOR), 'var(--color-terthiary-blue)'],
                       min,
                       max,
@@ -184,22 +194,12 @@ export default function ReportHotspotControls() {
                 <div
                   key={key}
                   {...rest}
+                  className={styles.thumb}
                   style={{
                     ...props.style,
-                    height: '30px',
-                    width: '30px',
-                    borderRadius: '50%',
-                    backgroundColor: '#fff',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    color: deckToHexColor(HOTSPOT_COLOR),
-                    boxShadow: '0px 2px 6px #AAA',
                   }}
                 >
-                  {formatArea(values[0])}
+                  {formatArea(displayValues[0])}
                 </div>
               )
             }}
@@ -216,7 +216,11 @@ export default function ReportHotspotControls() {
         >
           {t((t) => t.analysis.hotspot.title)}
 
-          <Icon icon="target" type="default" />
+          <Icon
+            icon="target"
+            type="default"
+            style={{ color: enabled ? deckToHexColor(HOTSPOT_COLOR) : undefined }}
+          />
         </Button>
       </div>
     </Popover>

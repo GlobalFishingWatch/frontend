@@ -25,7 +25,18 @@
   font: var(--font-S);
   color: var(--color-secondary-blue);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+}
+
+.thumb {
+  height: var(--size-SM);
+  width: var(--size-SM);
+  border-radius: 50%;
+  background-color: var(--color-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: var(--font-S);
+  box-shadow: var(--box-shadow-1);
 }
 
 .headerButtons {

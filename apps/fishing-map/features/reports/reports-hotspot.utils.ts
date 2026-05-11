@@ -11,7 +11,7 @@ import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportDeckLayer } from 'features/reports/reports-timeseries.utils'
 import type { BufferUnit } from 'types'
 
-const NM2_TO_KM2 = 1.852 * 1.852
+export const NM2_TO_KM2 = 1.852 * 1.852
 
 type CellEntry = { cell: FourwingsFeature; total: number }
 
@@ -29,7 +29,8 @@ type EllipseParams = {
 }
 
 export function formatArea(km2: number): string {
-  if (km2 >= 1000) return `${(km2 / 1000).toFixed(0)}k`
+  if (km2 >= 10_000) return `${(km2 / 1000).toFixed(0)}k`
+  if (km2 >= 1_000) return `${parseFloat((km2 / 1000).toFixed(1))}k`
   return `${km2}`
 }
 
