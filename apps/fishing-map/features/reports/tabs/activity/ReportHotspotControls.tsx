@@ -81,7 +81,6 @@ export default function ReportHotspotControls() {
       }),
     [activitySubCategory, areaName, t, timeRange?.end, timeRange?.start, unitLabel, values]
   )
-  console.log('🚀 ~ ReportHotspotControls ~ datasetName:', datasetName)
 
   const handleSave = useCallback(async () => {
     if (!hotspotGeometry) return
