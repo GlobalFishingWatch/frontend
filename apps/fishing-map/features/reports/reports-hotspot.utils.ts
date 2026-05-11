@@ -132,6 +132,7 @@ function buildEllipsePolygon(params: EllipseParams, steps = 36): Polygon {
     const ry = lx * Math.sin(angle) + ly * Math.cos(angle)
     coords.push([cx + rx / kmPerDegLng, cy + ry / kmPerDegLat])
   }
+  coords.push(coords[0])
 
   return { type: 'Polygon', coordinates: [coords] }
 }
