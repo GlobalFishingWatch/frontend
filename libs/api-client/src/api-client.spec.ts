@@ -297,7 +297,7 @@ describe('api-client', () => {
 
         const result = await client.fetch<Blob>('/file', { responseType: 'blob' })
 
-        expect(result).toBeInstanceOf(Blob)
+        expect(result?.constructor?.name).toBe('Blob')
       })
 
       it('should return text for responseType text', async () => {
@@ -548,7 +548,10 @@ describe('api-client', () => {
         const result = await client.download('https://example.com/file.pdf', 'file.pdf')
 
         expect(result).toBe(true)
-        expect(saveAs).toHaveBeenCalledWith(blob, 'file.pdf')
+        expect(saveAs).toHaveBeenCalledTimes(1)
+        const [[actualBlob, actualFileName]] = vi.mocked(saveAs).mock.calls
+        expect(actualBlob?.constructor?.name).toBe('Blob')
+        expect(actualFileName).toBe('file.pdf')
       })
 
       it('should return false when download fails', async () => {
