@@ -24,12 +24,11 @@ import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.ho
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
-import { getReportSubCategoryLabel } from './reports-activity.config'
+import { getReportSubCategoryLabel } from './reports-activity.utils'
 
 import styles from './ReportActivity.module.css'
 
 function ReportActivitySubsectionSelector() {
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
@@ -47,12 +46,12 @@ function ReportActivitySubsectionSelector() {
       ? ([
           {
             id: 'fishing',
-            label: getReportSubCategoryLabel('fishing', t),
+            label: getReportSubCategoryLabel('fishing'),
             disabled: loading || !hasFishingDataviews,
           },
           {
             id: 'presence',
-            label: getReportSubCategoryLabel('presence', t),
+            label: getReportSubCategoryLabel('presence'),
             disabled: loading || !hasPresenceDataviews,
           },
         ] as ChoiceOption<ReportActivitySubCategory>[])
@@ -61,7 +60,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'viirs',
-                  label: getReportSubCategoryLabel('viirs', t),
+                  label: getReportSubCategoryLabel('viirs'),
                   disabled: loading,
                 },
               ]
@@ -70,7 +69,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sar',
-                  label: getReportSubCategoryLabel('sar', t),
+                  label: getReportSubCategoryLabel('sar'),
                   disabled: loading,
                 },
               ]
@@ -79,7 +78,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sentinel-2',
-                  label: getReportSubCategoryLabel('sentinel-2', t),
+                  label: getReportSubCategoryLabel('sentinel-2'),
                   disabled: loading,
                 },
               ]

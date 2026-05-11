@@ -26,7 +26,7 @@ import { selectReportActivitySubCategory } from 'features/reports/reports.select
 import { hotspotGeometryAtom, useHotspotSettings } from 'features/reports/reports-hotspot.hooks'
 import { formatArea, NM2_TO_KM2 } from 'features/reports/reports-hotspot.utils'
 
-import { getReportSubCategoryLabel } from './reports-activity.config'
+import { getReportSubCategoryLabel } from './reports-activity.utils'
 
 import styles from './ReportHotspotControls.module.css'
 
@@ -84,7 +84,7 @@ export default function ReportHotspotControls() {
       t((t) => t.analysis.hotspot.datasetName, {
         areaSize: formatArea(Math.round(values[0])),
         unit: unitLabel,
-        activitySubCategory: getReportSubCategoryLabel(activitySubCategory, t),
+        activitySubCategory: getReportSubCategoryLabel(activitySubCategory),
         areaName: reportArea?.name || '',
         start: formatI18nDate(timeRange?.start),
         end: formatI18nDate(timeRange?.end),
