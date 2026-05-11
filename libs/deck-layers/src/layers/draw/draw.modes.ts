@@ -4,6 +4,7 @@ import {
   DrawPointMode,
   DrawPolygonMode,
   ModifyMode,
+  TranslateMode,
   ViewMode
 } from '@deck.gl-community/editable-layers'
 import uniqBy from 'lodash/uniqBy'
@@ -15,6 +16,7 @@ export type DrawLayerMode =
   | CustomDrawPointMode
   | CustomViewMode
   | CustomModifyMode
+  | CustomTranslateMode
 
 export class CustomDrawPolygonMode extends DrawPolygonMode {
   handleClick(
@@ -68,6 +70,51 @@ export class CustomViewMode extends ViewMode {
           featureIndexes: event.picks.map((pick) => pick.index),
         },
       })
+    }
+  }
+}
+
+function hasValidSelection(props: { selectedIndexes?: number[]; data: { features: any[] } }) {
+  return (
+    (props.selectedIndexes?.length ?? 0) > 0 &&
+    props.selectedIndexes!.every((i) => Boolean(props.data.features[i]?.geometry))
+  )
+}
+
+export class CustomTranslateMode extends TranslateMode {
+  handleStartDragging(
+    event: Parameters<TranslateMode['handleStartDragging']>[0],
+    props: Parameters<TranslateMode['handleStartDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleStartDragging(event, props)
+    } catch {
+      // ignore
+    }
+  }
+
+  handleDragging(
+    event: Parameters<TranslateMode['handleDragging']>[0],
+    props: Parameters<TranslateMode['handleDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleDragging(event, props)
+    } catch {
+      // ignore
+    }
+  }
+
+  handleStopDragging(
+    event: Parameters<TranslateMode['handleStopDragging']>[0],
+    props: Parameters<TranslateMode['handleStopDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleStopDragging(event, props)
+    } catch {
+      // ignore
     }
   }
 }
