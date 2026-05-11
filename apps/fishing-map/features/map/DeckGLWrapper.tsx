@@ -109,6 +109,7 @@ const DeckGLWrapper = () => {
       id={MAP_CANVAS_ID}
       ref={deckRef}
       views={MAP_VIEW}
+      deviceProps={{ debug: process.env.NODE_ENV === 'development' }}
       layers={deckRef ? layers : []}
       onAfterRender={onAfterRenderHandler}
       style={mapStyles}
