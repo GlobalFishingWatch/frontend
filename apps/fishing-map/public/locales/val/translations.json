@@ -1236,6 +1236,11 @@
     "lengthRange": "crwdns60597:0crwdne60597:0",
     "license_category": "crwdns60599:0crwdne60599:0",
     "licenseCode": "crwdns60601:0crwdne60601:0",
+    "licenseStatus": {
+      "cancelled": "crwdns130537:0crwdne130537:0",
+      "suspended": "crwdns130539:0crwdne130539:0",
+      "valid": "crwdns130541:0crwdne130541:0"
+    },
     "linkToVessel": "crwdns69530:0crwdne69530:0",
     "loadingInfo": "crwdns60605:0crwdne60605:0",
     "mainGear": "crwdns60609:0crwdne60609:0",
