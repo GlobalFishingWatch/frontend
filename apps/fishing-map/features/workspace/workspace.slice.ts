@@ -33,6 +33,7 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   WorkspaceCategory,
 } from 'data/workspaces'
+import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import {
   getDatasetsInDataviews,
@@ -200,6 +201,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
+      } else if (privateUserGroups.length) {
+        const vmsDataviewSlugs = privateUserGroups
+          .map((group) => VMS_VESSEL_DATAVIEW_SLUGS[group])
+          .filter(Boolean) as string[]
+        if (vmsDataviewSlugs.length) {
+          dataviewIds.push(...vmsDataviewSlugs)
+        }
       }
 
       const uniqDataviewIds = uniq(dataviewIds)
