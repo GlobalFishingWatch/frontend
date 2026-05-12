@@ -439,7 +439,8 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
       }
 
       const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID
-      const hasNumericFilterValues = filterValues.every((v: any) => isNumeric(v))
+      const hasNumericFilterValues =
+        datasetSchema?.type !== 'string' && filterValues.every((v: any) => isNumeric(v))
       if (hasNumericFilterValues && datasetSchema?.type === 'number' && datasetSchema?.operation) {
         const operator = getOperationOperator(datasetSchema.operation)
         return `${queryFilterKey} ${operator} ${filterValues[0]}`

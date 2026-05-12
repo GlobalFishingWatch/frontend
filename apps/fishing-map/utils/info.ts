@@ -149,7 +149,7 @@ export const formatInfoField = (
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
-    // fleetcode only exists in VMS Brazil
+    // fleetcode & fishingLicenseStatus only exists in VMS Brazil
     if (type === 'fleetCode') {
       return (
         translationFn((t: any) => t.vessel.fleetCodes[fieldValue.replaceAll('.', '_')], {
