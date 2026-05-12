@@ -1,3 +1,5 @@
+import { parse } from '@loaders.gl/core'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 type FetchWithGFWAPIContext = {
@@ -5,6 +7,7 @@ type FetchWithGFWAPIContext = {
   layer?: {
     props?: {
       loaders?: unknown
+      loadOptions?: unknown
     }
   }
 }
@@ -32,9 +35,9 @@ export async function fetchWithGFWAPI(
 
   const loaders = Array.isArray(layer?.props?.loaders) ? (layer.props.loaders as any[]) : []
   const loader = loaders[0]
-  if (loader?.parseSync || loader?.parse) {
+  if (loader) {
     const buffer = await response.arrayBuffer()
-    return loader.parseSync ? loader.parseSync(buffer) : await loader.parse(buffer)
+    return parse(buffer, loader, layer?.props?.loadOptions as any)
   }
 
   return response

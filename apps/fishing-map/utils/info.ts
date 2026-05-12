@@ -158,12 +158,13 @@ export const formatInfoField = (
       )
     }
     if (type === 'fishingLicenseStatus') {
+      const normalized = fieldValue.trim().toLowerCase()
       return translationFn(
-        (t) => t.vessel.licenseStatus[fieldValue as keyof typeof t.vessel.licenseStatus],
+        (t) => t.vessel.licenseStatus[normalized as keyof typeof t.vessel.licenseStatus],
         {
           defaultValue: fieldValue,
         }
-      )
+      ).toUpperCase()
     }
     if (
       type === 'shipname' ||

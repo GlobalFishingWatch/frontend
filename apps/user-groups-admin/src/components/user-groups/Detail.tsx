@@ -198,6 +198,7 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
           <InputText
             className={styles.input}
             label="Invitation notes"
+            placeholder="Note event name, date, type and user access purpose"
             value={invitationNotes}
             onChange={(e) => setInvitationNotes(e.target.value)}
           />

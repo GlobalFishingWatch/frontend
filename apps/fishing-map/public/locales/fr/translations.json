@@ -1236,6 +1236,11 @@
     "lengthRange": "Plage de longueur",
     "license_category": "Catégorie de la licence",
     "licenseCode": "Code licence",
+    "licenseStatus": {
+      "cancelled": "cancelled",
+      "suspended": "suspended",
+      "valid": "valid"
+    },
     "linkToVessel": "Consultez le profil du navire ici",
     "loadingInfo": "Chargement des informations du navire",
     "mainGear": "Engin principal",
