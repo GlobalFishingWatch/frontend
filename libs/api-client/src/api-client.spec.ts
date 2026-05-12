@@ -293,11 +293,13 @@ describe('api-client', () => {
       it('should return blob for responseType blob', async () => {
         const client = createApiClient()
         const blob = new Blob(['data'])
-        fetchMock.mockResolvedValue(new Response(blob, { status: 200 }))
+        const response = new Response(null, { status: 200 })
+        vi.spyOn(response, 'blob').mockResolvedValue(blob)
+        fetchMock.mockResolvedValue(response)
 
         const result = await client.fetch<Blob>('/file', { responseType: 'blob' })
 
-        expect(result).toBeInstanceOf(Blob)
+        expect(result).toBe(blob)
       })
 
       it('should return text for responseType text', async () => {
@@ -543,7 +545,9 @@ describe('api-client', () => {
         const { saveAs } = await import('file-saver')
         const client = createApiClient()
         const blob = new Blob(['content'])
-        fetchMock.mockResolvedValue(new Response(blob, { status: 200 }))
+        const response = new Response(null, { status: 200 })
+        vi.spyOn(response, 'blob').mockResolvedValue(blob)
+        fetchMock.mockResolvedValue(response)
 
         const result = await client.download('https://example.com/file.pdf', 'file.pdf')
 

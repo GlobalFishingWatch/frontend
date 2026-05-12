@@ -860,7 +860,7 @@ const slice = createSlice({
       state.apiEventStatus = AsyncReducerStatus.Finished
       if (!state.clicked || !state.clicked.features || !action.payload) return
       const feature = state.clicked?.features?.find(
-        (feature) => feature.id && action.meta.arg.id
+        (feature) => feature.id === action.meta.arg.id
       ) as any
       if (feature) {
         feature.event = action.payload

@@ -110,7 +110,7 @@
     "active_before": "Ativo antes de",
     "activity": "Atividade",
     "aggregatedBy": "with a total sum of {{total}} {{property}}",
-    "ais": "AIS",
+    "ais": "VMS",
     "aka": "également appelé",
     "analysis": "Criar uma análise para esta área",
     "analysisAddArea": "Adicionar área à análise",
@@ -576,7 +576,7 @@
     "gap_other": "{{source}} Off events",
     "gapAction": "{{source}} Off event started at {{start}} for {{duration}}",
     "gapActionIn": "Provavelmente desativando em {{regionName}}",
-    "gaps": "{{source}} Off event",
+    "gaps": "{{source}} Falhas de transmissão",
     "gaps_many": "{{source}} Off events",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
@@ -741,7 +741,7 @@
     "nameLengthError_many": "Layer name requires at least {{count}} characters",
     "nameLengthError_other": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameRequired": "É necessário informar o nome da camada",
-    "next_port_id": "Próxima entrada em porto ",
+    "next_port_id": "Próximo porto ",
     "period": "Período",
     "properties": {
       "color": "Color",
@@ -1236,6 +1236,11 @@
     "lengthRange": "Intervalo do comprimento",
     "license_category": "Categoria da licença",
     "licenseCode": "Código da licença",
+    "licenseStatus": {
+      "cancelled": "cancelado",
+      "suspended": "suspendido",
+      "valid": "válido"
+    },
     "linkToVessel": "Veja o perfil da embarcação aqui",
     "loadingInfo": "Carregando informações da embarcação",
     "mainGear": "Petrecho principal",

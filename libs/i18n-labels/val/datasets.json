@@ -423,6 +423,49 @@
     "name": "crwdns125630:0crwdne125630:0",
     "description": "crwdns125632:0crwdne125632:0"
   },
+  "private-senegal-planet-footprints": {
+    "name": "crwdns130543:0crwdne130543:0",
+    "description": "crwdns130545:0crwdne130545:0"
+  },
+  "private-senegal-planet-presence": {
+    "name": "crwdns130547:0crwdne130547:0",
+    "description": "crwdns130549:0crwdne130549:0",
+    "schema": {
+      "length": {
+        "keyword": "crwdns130551:0crwdne130551:0",
+        "enum": {
+          "<15": "crwdns130553:0crwdne130553:0",
+          "15-20": "crwdns130555:0crwdne130555:0",
+          "20-35": "crwdns130557:0crwdne130557:0",
+          "35-50": "crwdns130559:0crwdne130559:0",
+          "50-65": "crwdns130561:0crwdne130561:0",
+          ">65": "crwdns130563:0crwdne130563:0"
+        }
+      },
+      "matched": {
+        "keyword": "crwdns130565:0crwdne130565:0",
+        "enum": {
+          "true": "crwdns130567:0crwdne130567:0",
+          "false": "crwdns130569:0crwdne130569:0"
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns130571:0crwdne130571:0",
+        "enum": {
+          "<nil>": "crwdns130573:0crwdne130573:0",
+          "other": "crwdns130575:0crwdne130575:0",
+          "fishing": "crwdns130577:0crwdne130577:0",
+          "passenger": "crwdns130579:0crwdne130579:0",
+          "cargo": "crwdns130581:0crwdne130581:0",
+          "bunker": "crwdns130583:0crwdne130583:0",
+          "carrier": "crwdns130585:0crwdne130585:0",
+          "seismic_vessel": "crwdns130587:0crwdne130587:0",
+          "gear": "crwdns130589:0crwdne130589:0",
+          "support": "crwdns130591:0crwdne130591:0"
+        }
+      }
+    }
+  },
   "private-vms-blz-encounters-events": {
     "name": "crwdns125634:0crwdne125634:0",
     "description": "crwdns125636:0crwdne125636:0",
@@ -538,7 +581,23 @@
   },
   "private-vms-blz-tracks": {
     "name": "crwdns125756:0crwdne125756:0",
-    "description": "crwdns125758:0crwdne125758:0"
+    "description": "crwdns125758:0crwdne125758:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130593:0crwdne130593:0",
+        "enum": {
+          "0": "crwdns130595:0crwdne130595:0",
+          "-2000": "crwdns130597:0crwdne130597:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130599:0crwdne130599:0",
+        "enum": {
+          "0": "crwdns130601:0crwdne130601:0",
+          "20": "crwdns130603:0crwdne130603:0"
+        }
+      }
+    }
   },
   "private-vms-blz-vessel-identity": {
     "name": "crwdns125760:0crwdne125760:0",
@@ -747,7 +806,23 @@
   },
   "private-vms-bra-tracks": {
     "name": "crwdns126010:0crwdne126010:0",
-    "description": "crwdns126012:0crwdne126012:0"
+    "description": "crwdns126012:0crwdne126012:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130605:0crwdne130605:0",
+        "enum": {
+          "0": "crwdns130607:0crwdne130607:0",
+          "-2000": "crwdns130609:0crwdne130609:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130611:0crwdne130611:0",
+        "enum": {
+          "0": "crwdns130613:0crwdne130613:0",
+          "20": "crwdns130615:0crwdne130615:0"
+        }
+      }
+    }
   },
   "private-vms-bra-vessel-identity": {
     "name": "crwdns126014:0crwdne126014:0",
@@ -972,7 +1047,23 @@
   },
   "private-vms-chl-tracks": {
     "name": "crwdns126260:0crwdne126260:0",
-    "description": "crwdns126262:0crwdne126262:0"
+    "description": "crwdns126262:0crwdne126262:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130617:0crwdne130617:0",
+        "enum": {
+          "0": "crwdns130619:0crwdne130619:0",
+          "-2000": "crwdns130621:0crwdne130621:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130623:0crwdne130623:0",
+        "enum": {
+          "0": "crwdns130625:0crwdne130625:0",
+          "20": "crwdns130627:0crwdne130627:0"
+        }
+      }
+    }
   },
   "private-vms-chl-vessel-identity": {
     "name": "crwdns126264:0crwdne126264:0",
@@ -1112,7 +1203,23 @@
   },
   "private-vms-cri-tracks": {
     "name": "crwdns126412:0crwdne126412:0",
-    "description": "crwdns126414:0crwdne126414:0"
+    "description": "crwdns126414:0crwdne126414:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130629:0crwdne130629:0",
+        "enum": {
+          "0": "crwdns130631:0crwdne130631:0",
+          "-2000": "crwdns130633:0crwdne130633:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130635:0crwdne130635:0",
+        "enum": {
+          "0": "crwdns130637:0crwdne130637:0",
+          "20": "crwdns130639:0crwdne130639:0"
+        }
+      }
+    }
   },
   "private-vms-cri-vessel-identity": {
     "name": "crwdns126416:0crwdne126416:0",
@@ -1258,7 +1365,23 @@
   },
   "private-vms-ecu-tracks": {
     "name": "crwdns126580:0crwdne126580:0",
-    "description": "crwdns126582:0crwdne126582:0"
+    "description": "crwdns126582:0crwdne126582:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130641:0crwdne130641:0",
+        "enum": {
+          "0": "crwdns130643:0crwdne130643:0",
+          "-2000": "crwdns130645:0crwdne130645:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130647:0crwdne130647:0",
+        "enum": {
+          "0": "crwdns130649:0crwdne130649:0",
+          "20": "crwdns130651:0crwdne130651:0"
+        }
+      }
+    }
   },
   "private-vms-ecu-vessel-identity": {
     "name": "crwdns126584:0crwdne126584:0",
@@ -1385,7 +1508,23 @@
   },
   "private-vms-mne-tracks": {
     "name": "crwdns126714:0crwdne126714:0",
-    "description": "crwdns126716:0crwdne126716:0"
+    "description": "crwdns126716:0crwdne126716:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130653:0crwdne130653:0",
+        "enum": {
+          "0": "crwdns130655:0crwdne130655:0",
+          "-2000": "crwdns130657:0crwdne130657:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130659:0crwdne130659:0",
+        "enum": {
+          "0": "crwdns130661:0crwdne130661:0",
+          "20": "crwdns130663:0crwdne130663:0"
+        }
+      }
+    }
   },
   "private-vms-mne-vessel-identity": {
     "name": "crwdns126718:0crwdne126718:0",
@@ -1516,7 +1655,23 @@
   },
   "private-vms-nor-tracks": {
     "name": "crwdns126852:0crwdne126852:0",
-    "description": "crwdns126854:0crwdne126854:0"
+    "description": "crwdns126854:0crwdne126854:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130665:0crwdne130665:0",
+        "enum": {
+          "0": "crwdns130667:0crwdne130667:0",
+          "-2000": "crwdns130669:0crwdne130669:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130671:0crwdne130671:0",
+        "enum": {
+          "0": "crwdns130673:0crwdne130673:0",
+          "20": "crwdns130675:0crwdne130675:0"
+        }
+      }
+    }
   },
   "private-vms-nor-vessel-identity": {
     "name": "crwdns126856:0crwdne126856:0",
@@ -1661,7 +1816,23 @@
   },
   "private-vms-pan-tracks": {
     "name": "crwdns127014:0crwdne127014:0",
-    "description": "crwdns127016:0crwdne127016:0"
+    "description": "crwdns127016:0crwdne127016:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130677:0crwdne130677:0",
+        "enum": {
+          "0": "crwdns130679:0crwdne130679:0",
+          "-2000": "crwdns130681:0crwdne130681:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130683:0crwdne130683:0",
+        "enum": {
+          "0": "crwdns130685:0crwdne130685:0",
+          "20": "crwdns130687:0crwdne130687:0"
+        }
+      }
+    }
   },
   "private-vms-pan-vessel-identity": {
     "name": "crwdns127018:0crwdne127018:0",
@@ -1820,7 +1991,23 @@
   },
   "private-vms-per-tracks": {
     "name": "crwdns127180:0crwdne127180:0",
-    "description": "crwdns127182:0crwdne127182:0"
+    "description": "crwdns127182:0crwdne127182:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130689:0crwdne130689:0",
+        "enum": {
+          "0": "crwdns130691:0crwdne130691:0",
+          "-2000": "crwdns130693:0crwdne130693:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130695:0crwdne130695:0",
+        "enum": {
+          "0": "crwdns130697:0crwdne130697:0",
+          "20": "crwdns130699:0crwdne130699:0"
+        }
+      }
+    }
   },
   "private-vms-per-vessel-identity": {
     "name": "crwdns127184:0crwdne127184:0",
@@ -1996,7 +2183,23 @@
   },
   "private-vms-plw-tracks": {
     "name": "crwdns127388:0crwdne127388:0",
-    "description": "crwdns127390:0crwdne127390:0"
+    "description": "crwdns127390:0crwdne127390:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130701:0crwdne130701:0",
+        "enum": {
+          "0": "crwdns130703:0crwdne130703:0",
+          "-2000": "crwdns130705:0crwdne130705:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130707:0crwdne130707:0",
+        "enum": {
+          "0": "crwdns130709:0crwdne130709:0",
+          "20": "crwdns130711:0crwdne130711:0"
+        }
+      }
+    }
   },
   "private-vms-plw-vessel-identity": {
     "name": "crwdns127392:0crwdne127392:0",
@@ -2126,7 +2329,23 @@
   },
   "private-vms-png-tracks": {
     "name": "crwdns127528:0crwdne127528:0",
-    "description": "crwdns127530:0crwdne127530:0"
+    "description": "crwdns127530:0crwdne127530:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130713:0crwdne130713:0",
+        "enum": {
+          "0": "crwdns130715:0crwdne130715:0",
+          "-2000": "crwdns130717:0crwdne130717:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130719:0crwdne130719:0",
+        "enum": {
+          "0": "crwdns130721:0crwdne130721:0",
+          "20": "crwdns130723:0crwdne130723:0"
+        }
+      }
+    }
   },
   "private-vms-png-vessel-identity": {
     "name": "crwdns127532:0crwdne127532:0",
@@ -3708,7 +3927,23 @@
   },
   "public-vms-blz-tracks": {
     "name": "crwdns129168:0crwdne129168:0",
-    "description": "crwdns129170:0crwdne129170:0"
+    "description": "crwdns129170:0crwdne129170:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130725:0crwdne130725:0",
+        "enum": {
+          "0": "crwdns130727:0crwdne130727:0",
+          "-2000": "crwdns130729:0crwdne130729:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130731:0crwdne130731:0",
+        "enum": {
+          "0": "crwdns130733:0crwdne130733:0",
+          "20": "crwdns130735:0crwdne130735:0"
+        }
+      }
+    }
   },
   "public-vms-blz-vessel-identity": {
     "name": "crwdns129172:0crwdne129172:0",
@@ -3847,7 +4082,23 @@
   },
   "public-vms-bra-tracks": {
     "name": "crwdns129406:0crwdne129406:0",
-    "description": "crwdns129408:0crwdne129408:0"
+    "description": "crwdns129408:0crwdne129408:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130737:0crwdne130737:0",
+        "enum": {
+          "0": "crwdns130739:0crwdne130739:0",
+          "-2000": "crwdns130741:0crwdne130741:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130743:0crwdne130743:0",
+        "enum": {
+          "0": "crwdns130745:0crwdne130745:0",
+          "20": "crwdns130747:0crwdne130747:0"
+        }
+      }
+    }
   },
   "public-vms-bra-vessel-identity": {
     "name": "crwdns129410:0crwdne129410:0",
@@ -3917,7 +4168,23 @@
   },
   "public-vms-chl-tracks": {
     "name": "crwdns129482:0crwdne129482:0",
-    "description": "crwdns129484:0crwdne129484:0"
+    "description": "crwdns129484:0crwdne129484:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130749:0crwdne130749:0",
+        "enum": {
+          "0": "crwdns130751:0crwdne130751:0",
+          "-2000": "crwdns130753:0crwdne130753:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130755:0crwdne130755:0",
+        "enum": {
+          "0": "crwdns130757:0crwdne130757:0",
+          "20": "crwdns130759:0crwdne130759:0"
+        }
+      }
+    }
   },
   "public-vms-chl-vessel-identity": {
     "name": "crwdns129486:0crwdne129486:0",
@@ -3987,7 +4254,23 @@
   },
   "public-vms-cri-tracks": {
     "name": "crwdns129558:0crwdne129558:0",
-    "description": "crwdns129560:0crwdne129560:0"
+    "description": "crwdns129560:0crwdne129560:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130761:0crwdne130761:0",
+        "enum": {
+          "0": "crwdns130763:0crwdne130763:0",
+          "-2000": "crwdns130765:0crwdne130765:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130767:0crwdne130767:0",
+        "enum": {
+          "0": "crwdns130769:0crwdne130769:0",
+          "20": "crwdns130771:0crwdne130771:0"
+        }
+      }
+    }
   },
   "public-vms-cri-vessel-identity": {
     "name": "crwdns129562:0crwdne129562:0",
@@ -4022,7 +4305,23 @@
   },
   "public-vms-ecu-tracks": {
     "name": "crwdns129592:0crwdne129592:0",
-    "description": "crwdns129594:0crwdne129594:0"
+    "description": "crwdns129594:0crwdne129594:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130773:0crwdne130773:0",
+        "enum": {
+          "0": "crwdns130775:0crwdne130775:0",
+          "-2000": "crwdns130777:0crwdne130777:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130779:0crwdne130779:0",
+        "enum": {
+          "0": "crwdns130781:0crwdne130781:0",
+          "20": "crwdns130783:0crwdne130783:0"
+        }
+      }
+    }
   },
   "public-vms-ecu-vessel-identity": {
     "name": "crwdns129596:0crwdne129596:0",
@@ -4081,7 +4380,23 @@
   },
   "public-vms-nor-tracks": {
     "name": "crwdns129654:0crwdne129654:0",
-    "description": "crwdns129656:0crwdne129656:0"
+    "description": "crwdns129656:0crwdne129656:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130785:0crwdne130785:0",
+        "enum": {
+          "0": "crwdns130787:0crwdne130787:0",
+          "-2000": "crwdns130789:0crwdne130789:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130791:0crwdne130791:0",
+        "enum": {
+          "0": "crwdns130793:0crwdne130793:0",
+          "20": "crwdns130795:0crwdne130795:0"
+        }
+      }
+    }
   },
   "public-vms-nor-vessel-identity": {
     "name": "crwdns129658:0crwdne129658:0",
@@ -4147,7 +4462,23 @@
   },
   "public-vms-pan-tracks": {
     "name": "crwdns129722:0crwdne129722:0",
-    "description": "crwdns129724:0crwdne129724:0"
+    "description": "crwdns129724:0crwdne129724:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130797:0crwdne130797:0",
+        "enum": {
+          "0": "crwdns130799:0crwdne130799:0",
+          "-2000": "crwdns130801:0crwdne130801:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130803:0crwdne130803:0",
+        "enum": {
+          "0": "crwdns130805:0crwdne130805:0",
+          "20": "crwdns130807:0crwdne130807:0"
+        }
+      }
+    }
   },
   "public-vms-pan-vessel-identity": {
     "name": "crwdns129726:0crwdne129726:0",
@@ -4235,7 +4566,23 @@
   },
   "public-vms-per-tracks": {
     "name": "crwdns129810:0crwdne129810:0",
-    "description": "crwdns129812:0crwdne129812:0"
+    "description": "crwdns129812:0crwdne129812:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130809:0crwdne130809:0",
+        "enum": {
+          "0": "crwdns130811:0crwdne130811:0",
+          "-2000": "crwdns130813:0crwdne130813:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130815:0crwdne130815:0",
+        "enum": {
+          "0": "crwdns130817:0crwdne130817:0",
+          "20": "crwdns130819:0crwdne130819:0"
+        }
+      }
+    }
   },
   "public-vms-per-vessel-identity": {
     "name": "crwdns129814:0crwdne129814:0",
@@ -4320,7 +4667,23 @@
   },
   "public-vms-plw-tracks": {
     "name": "crwdns129900:0crwdne129900:0",
-    "description": "crwdns129902:0crwdne129902:0"
+    "description": "crwdns129902:0crwdne129902:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130821:0crwdne130821:0",
+        "enum": {
+          "0": "crwdns130823:0crwdne130823:0",
+          "-2000": "crwdns130825:0crwdne130825:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130827:0crwdne130827:0",
+        "enum": {
+          "0": "crwdns130829:0crwdne130829:0",
+          "20": "crwdns130831:0crwdne130831:0"
+        }
+      }
+    }
   },
   "public-vms-plw-vessel-identity": {
     "name": "crwdns129904:0crwdne129904:0",
@@ -4379,7 +4742,23 @@
   },
   "public-vms-png-tracks": {
     "name": "crwdns129962:0crwdne129962:0",
-    "description": "crwdns129964:0crwdne129964:0"
+    "description": "crwdns129964:0crwdne129964:0",
+    "schema": {
+      "elevation": {
+        "keyword": "crwdns130833:0crwdne130833:0",
+        "enum": {
+          "0": "crwdns130835:0crwdne130835:0",
+          "-2000": "crwdns130837:0crwdne130837:0"
+        }
+      },
+      "speed": {
+        "keyword": "crwdns130839:0crwdne130839:0",
+        "enum": {
+          "0": "crwdns130841:0crwdne130841:0",
+          "20": "crwdns130843:0crwdne130843:0"
+        }
+      }
+    }
   },
   "public-vms-png-vessel-identity": {
     "name": "crwdns129966:0crwdne129966:0",
