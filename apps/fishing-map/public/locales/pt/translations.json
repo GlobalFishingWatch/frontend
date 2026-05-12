@@ -1237,9 +1237,9 @@
     "license_category": "Categoria da licença",
     "licenseCode": "Código da licença",
     "licenseStatus": {
-      "cancelled": "cancelled",
-      "suspended": "suspended",
-      "valid": "valid"
+      "cancelled": "cancelado",
+      "suspended": "suspendido",
+      "valid": "válido"
     },
     "linkToVessel": "Veja o perfil da embarcação aqui",
     "loadingInfo": "Carregando informações da embarcação",
