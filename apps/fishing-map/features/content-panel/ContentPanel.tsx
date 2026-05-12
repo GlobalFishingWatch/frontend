@@ -90,6 +90,10 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
               openSidePanel({ type: 'userGuide', id: id })
               setIsTableOfContentsOpen(false)
             }}
+            onSubTopicClick={(sectionId, subId) => {
+              openSidePanel({ type: 'userGuide', id: sectionId, subcontentId: subId })
+              setIsTableOfContentsOpen(false)
+            }}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
