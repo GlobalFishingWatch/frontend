@@ -145,8 +145,8 @@
       "defaultConfiguration": "production",
       "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output"],
       "options": {
-        "commands": ["nx run fishing-map:build:app", "nx run fishing-map:typecheck"],
-        "parallel": true
+        "commands": ["nx run fishing-map:typecheck", "nx run fishing-map:build:app"],
+        "parallel": false
       }
     },
     "test": {
@@ -211,7 +211,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["i18n"],
       "options": {
-        "command": "tsc --noEmit --project apps/fishing-map/tsconfig.typecheck.json"
+        "command": "tsc --noEmit --project apps/fishing-map/tsconfig.json"
       }
     },
     "typecheck-watch": {

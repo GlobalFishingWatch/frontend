@@ -3,8 +3,8 @@ FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:lat
 WORKDIR /app
 
 # Install CA certificates for SSL verification (needed for Sentry source map upload)
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || \
-    apk add --no-cache ca-certificates || \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps && rm -rf /var/lib/apt/lists/* || \
+    apk add --no-cache ca-certificates procps || \
     true
 
 ENV NODE_ENV=production
