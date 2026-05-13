@@ -73,7 +73,7 @@ jobs:
             --target=test \
             --parallel=4 \
             --base=origin/${{ github.event.pull_request.base.ref }} \
-            --head=HEAD
+            --head=HEAD \
             | tee test-output.txt
         env:
           NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
