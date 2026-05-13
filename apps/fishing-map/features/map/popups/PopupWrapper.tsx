@@ -91,7 +91,8 @@ function PopupWrapper({
       // eslint-disable-next-line react-hooks/refs
       ref={refs.setReference}
       style={{ position: 'absolute', top, left, zIndex: 2 }}
-      className={cx(styles.popup, className)}
+      className={cx(styles.popup, className, 'notranslate')}
+      translate="no"
     >
       <div
         // eslint-disable-next-line react-hooks/refs
