@@ -32,6 +32,21 @@ export class CustomDrawPolygonMode extends DrawPolygonMode {
     }
     return super.finishDrawing(props)
   }
+
+  getGuides(
+    props: Parameters<DrawPolygonMode['getGuides']>[0]
+  ): ReturnType<DrawPolygonMode['getGuides']> {
+    const guides = super.getGuides(props)
+    return {
+      ...guides,
+      features: guides.features.filter((f: any) => {
+        const coords = f?.geometry?.coordinates
+        if (!Array.isArray(coords)) return true
+        if (f.geometry.type === 'LineString') return coords.length >= 2
+        return true
+      }),
+    }
+  }
 }
 export class CustomDrawPointMode extends DrawPointMode {
   handleClick(
