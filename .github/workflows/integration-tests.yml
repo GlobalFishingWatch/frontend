@@ -72,6 +72,7 @@ jobs:
           pnpm exec nx affected \
             --target=test \
             --parallel=4 \
+            --output-style=stream \
             --base=origin/${{ github.event.pull_request.base.ref }} \
             --head=HEAD \
             | tee test-output.txt
