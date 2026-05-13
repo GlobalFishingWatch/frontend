@@ -1,11 +1,10 @@
-import type {
-  Pick} from '@deck.gl-community/editable-layers';
+import type { Pick } from '@deck.gl-community/editable-layers'
 import {
   DrawPointMode,
   DrawPolygonMode,
   ModifyMode,
   TranslateMode,
-  ViewMode
+  ViewMode,
 } from '@deck.gl-community/editable-layers'
 import uniqBy from 'lodash/uniqBy'
 
@@ -127,6 +126,25 @@ export class CustomTranslateMode extends TranslateMode {
 }
 
 export class CustomModifyMode extends ModifyMode {
+  getGuides(props: Parameters<ModifyMode['getGuides']>[0]) {
+    const sanitized = props.lastPointerMoveEvent
+      ? {
+          ...props,
+          lastPointerMoveEvent: {
+            ...props.lastPointerMoveEvent,
+            picks: (props.lastPointerMoveEvent.picks || []).filter(
+              (pick: any) => !pick.isGuide || pick.object?.properties
+            ),
+          },
+        }
+      : props
+    try {
+      return super.getGuides(sanitized)
+    } catch {
+      return { type: 'FeatureCollection' as const, features: [] }
+    }
+  }
+
   handleClick(
     event: Parameters<ModifyMode['handleClick']>[0],
     props: Parameters<ModifyMode['handleClick']>[1]
