@@ -96,7 +96,9 @@ function Search() {
         emailSubject={`Requesting access for searching vessels`}
       />
     ) : (
-      <SearchNotAllowed />
+      <SearchPlaceholder>
+        <p>{t((t) => t.search.workspaceError)}</p>
+      </SearchPlaceholder>
     )
   }
 
