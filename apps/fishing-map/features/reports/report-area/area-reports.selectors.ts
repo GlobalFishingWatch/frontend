@@ -167,8 +167,9 @@ export const selectReportActivityFlatten = createSelector(
   (reportDatasets, datasets, dataviews) => {
     if (!dataviews?.length || !reportDatasets?.length) return null
 
-    return reportDatasets.flatMap((dataset, index) =>
-      Object.entries(dataset).flatMap(([datasetId, vessels]) => {
+    return reportDatasets.flatMap((dataset, index) => {
+      if (!dataset) return EMPTY_ARRAY
+      return Object.entries(dataset).flatMap(([datasetId, vessels]) => {
         const activityDataset = datasets.find((d) => d.id === datasetId)
         // TODO:REVIEW We are choosing the dataview by index,
         // because doing it only by datasetId is not enough when there are filters
@@ -197,7 +198,7 @@ export const selectReportActivityFlatten = createSelector(
           } as ReportVesselWithMeta
         })
       })
-    ) as ReportVesselWithMeta[]
+    }) as ReportVesselWithMeta[]
   }
 )
 
