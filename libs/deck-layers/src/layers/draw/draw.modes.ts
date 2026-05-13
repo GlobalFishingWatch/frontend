@@ -26,6 +26,13 @@ export class CustomDrawPolygonMode extends DrawPolygonMode {
     event.sourceEvent.preventDefault()
     return super.handleClick(event, props)
   }
+
+  finishDrawing(props: Parameters<DrawPolygonMode['finishDrawing']>[0]) {
+    if (this.getClickSequence().length < 3) {
+      return
+    }
+    return super.finishDrawing(props)
+  }
 }
 export class CustomDrawPointMode extends DrawPointMode {
   handleClick(
