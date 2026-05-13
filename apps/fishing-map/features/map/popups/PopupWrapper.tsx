@@ -1,14 +1,5 @@
 import { useRef } from 'react'
-import type { Middleware } from '@floating-ui/react'
-import {
-  arrow,
-  autoPlacement,
-  autoUpdate,
-  detectOverflow,
-  FloatingArrow,
-  offset,
-  useFloating,
-} from '@floating-ui/react'
+import { arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating } from '@floating-ui/react'
 import cx from 'classnames'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -21,24 +12,7 @@ import { MAP_WRAPPER_ID } from '../map.config'
 
 import styles from './Popup.module.css'
 
-const overflowMiddlware: Middleware = {
-  name: 'overflow',
-  async fn(state) {
-    const boundary = document.getElementById(MAP_WRAPPER_ID)
-    if (!state || !boundary) {
-      return {}
-    }
-
-    const overflow = await detectOverflow(state, { boundary })
-    const { x, y } = state
-
-    return {
-      ...state,
-      x: overflow.left > 0 ? x + overflow.left : overflow.right > 0 ? x - overflow.right : x,
-      y: overflow.top > 0 ? y + overflow.top : overflow.bottom > 0 ? y - overflow.bottom : y,
-    }
-  },
-}
+const getBoundary = () => document.getElementById(MAP_WRAPPER_ID) ?? undefined
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null
@@ -71,11 +45,15 @@ function PopupWrapper({
     placement: 'top',
     middleware: [
       offset(15),
-      autoPlacement({
-        allowedPlacements: ['top', 'bottom'],
+      flip({
+        fallbackPlacements: ['bottom'],
+        boundary: getBoundary(),
         padding: 10,
       }),
-      overflowMiddlware,
+      shift({
+        boundary: getBoundary(),
+        padding: 10,
+      }),
       // eslint-disable-next-line react-hooks/refs
       arrow({
         element: arrowRef,
