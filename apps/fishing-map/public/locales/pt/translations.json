@@ -774,8 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "A rota não tem nenhuma atividade no intervalo de tempo selecionado. Mude o intervalo de tempo para se adequar a esta rota?",
     "vessel_group_fit_bounds": "Centralizar mapa no grupo de embarcações",
     "vessel_info_correction": "Sugerir uma correção",
-    "vesselGroup": "Grupo de embarcações",
-    "vessel-groups": "Grupo de embarcações"
+    "vessel-groups": "Grupo de embarcações",
+    "vesselGroup": "Grupo de embarcações"
   },
   "map": {
     "annotationPlaceholder": "Digite algo aqui",
