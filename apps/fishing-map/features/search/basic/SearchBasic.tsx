@@ -12,7 +12,7 @@ import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchConnect } from 'features/search/search.hook'
-import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import { isBasicSearchAllowed, selectBasicSearchDatasets } from 'features/search/search.selectors'
 import {
   selectSearchResults,
   selectSearchStatus,
@@ -61,11 +61,11 @@ function SearchBasic({
   const searchStatus = useSelector(selectSearchStatus)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const { dispatchQueryParams } = useLocationConnect()
-  const userGroups = useSelector(selectUserGroupsClean)
-  const userFromBrazilGroup =
-    userGroups !== undefined &&
-    userGroups.length > 0 &&
-    userGroups.every((g: string) => g === PRIVATE_BRAZIL_GROUP_ID)
+  const basicSearchDatasets = useSelector(selectBasicSearchDatasets)
+  const isBrazilVMSWorkspace =
+    basicSearchDatasets !== undefined &&
+    basicSearchDatasets.length > 0 &&
+    basicSearchDatasets.some((d) => d.id.includes('vms-bra'))
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
@@ -98,7 +98,7 @@ function SearchBasic({
   )
   const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
-  const placeholderFieldsLabel = userFromBrazilGroup
+  const placeholderFieldsLabel = isBrazilVMSWorkspace
     ? t((t) => t.search.mainQueryLabelPrivateVMSBrazil)
     : t((t) => t.search.mainQueryLabel)
 
