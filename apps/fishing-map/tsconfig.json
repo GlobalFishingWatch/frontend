@@ -24,15 +24,10 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
     "strictNullChecks": true,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
@@ -81,6 +76,8 @@
     "exported",
     "**/resources.d.ts",
     "**/__traces__/**",
+    "**/test/*.ts",
+    "**/test/*.tsx",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",
