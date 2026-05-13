@@ -118,7 +118,7 @@
 
 - **`layer-library/LayerLibraryItem.tsx:96`**
   - Action: `` `add ${category} layer to workspace` ``
-  - Label: `` getEventLabel([`layer_id: ${id}`]) ``
+  - Label: ``getEventLabel([`layer_id: ${id}`])``
 
 - **`map/overlays/draw/DrawDialog.tsx:118`**
   - Action: `'Draw a custom reference layer - Click dismiss'`
@@ -306,11 +306,11 @@
 
 - **`vessel-groups/VesselGroupModal.tsx:228`**
   - Action: `` `match vessels from ${ids ? 'IDs' : csvData && 'CSV'} to create a vessel group` ``
-  - Label: `` getEventLabel([transmissionDateFrom && `active after: ${transmissionDateFrom}`, transmissionDateTo && `active before: ${transmissionDateTo}`, datasets && `datasets: ${datasets.join(', ')}`, searchIdField && `id field: ${searchIdField}`]) ``
+  - Label: ``getEventLabel([transmissionDateFrom && `active after: ${transmissionDateFrom}`, transmissionDateTo && `active before: ${transmissionDateTo}`, datasets && `datasets: ${datasets.join(', ')}`, searchIdField && `id field: ${searchIdField}`])``
 
 - **`vessel-groups/VesselGroupModal.tsx:427`**
   - Action: `` `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group` ``
-  - Label: `` getEventLabel([`vessel_id: ${vesselGroupId}`, calculateVMSVesselsPercentage(vesselGroupVessels)]) `` _(value: number of vessels)_
+  - Label: ``getEventLabel([`vessel_id: ${vesselGroupId}`, calculateVMSVesselsPercentage(vesselGroupVessels)])`` _(value: number of vessels)_
 
 - **`vessel-groups/VesselGroupModalSearch.tsx:140`**
   - Action: `'click see csv format link in vessel group modal'`
@@ -345,7 +345,7 @@
 
 - **`map/popups/categories/VesselsTable.tsx:83`**
   - Action: `` `Clicked see vessel from ${feature?.category}` ``
-  - Label: `` getEventLabel([`source: ${source}`]) ``
+  - Label: ``getEventLabel([`source: ${source}`])``
 
 - **`map/popups/categories/ContextLayers.tsx:30`**
   - Action: `'Click on polygon, click on download icon'`
@@ -356,19 +356,19 @@
 
 - **`map/popups/categories/EventsPortVisitTooltipRow.tsx:46`**
   - Action: `'Clicked see port report'`
-  - Label: `` getEventLabel([` dataset: ${port?.datasetId} `, ` port_id: ${port?.id} `].filter(Boolean)) ``
+  - Label: ``getEventLabel([` dataset: ${port?.datasetId} `, ` port_id: ${port?.id} `].filter(Boolean))``
 
 - **`map/popups/categories/EventsGapTooltipRow.tsx:50`**
   - Action: `'Clicked see gap event'`
-  - Label: `` getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean)) ``
+  - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
 - **`map/popups/categories/EventsEncounterTooltipRow.tsx:64`**
   - Action: `'Clicked see encounter event'`
-  - Label: `` getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean)) ``
+  - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
 - **`map/popups/categories/EventsClusterRow.tsx:48`**
   - Action: `'Clicked see loitering event'`
-  - Label: `` getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean)) ``
+  - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
 - **`map/map-interactions.hooks.ts` (~line 305)**
   - Action: _dynamic_ — dispatches `getAnalyticsEvent(feature)` result (not a static literal)
@@ -395,7 +395,7 @@
 
 - **`timebar/TimebarSettings.tsx:94`**
   - Action: `'Open timebar settings'`
-  - Label: `` getEventLabel([`visualization: ${timebarVisualisation}`]) ``
+  - Label: ``getEventLabel([`visualization: ${timebarVisualisation}`])``
 
 - **`timebar/TimebarSettings.tsx:107`**
   - Action: `'select_timebar_settings'`
@@ -510,7 +510,7 @@
 
 - **`reports/shared/vessels/ReportVesselsTableFooter.tsx:109`**
   - Action: `'vessel_report_download_csv'`
-  - Label: `` getEventLabel([`Groupd id: ${vesselGroup?.id}`, `start date: ${start}`, `end date: ${end}`]) `` _(value: number of vessel identities)_
+  - Label: ``getEventLabel([`Groupd id: ${vesselGroup?.id}`, `start date: ${start}`, `end date: ${end}`])`` _(value: number of vessel identities)_
 
 - **`reports/shared/vessels/ReportVesselsTableFooter.tsx:133`**
   - Action: `'Click on show more vessels'`
