@@ -865,7 +865,8 @@
     "title": "Cari",
     "vesselAlreadyInWorkspace": "Kapal ini sudah ada di ruang kerja Anda",
     "vessels": "Cari kapal",
-    "vesselSelected": "Kapal dipilih"
+    "vesselSelected": "Kapal dipilih",
+    "workspaceError": "Your workspace couldn't be loaded, try searching in a different workspace in order to add vessels to the map."
   },
   "selects": {
     "allSelected": "Semua",
