@@ -39,13 +39,13 @@
   "lastUpdate": "Última atualização",
   "setBookmark": "Marcar intervalo de tempo atual",
   "intervals": {
-    "hour": "hour",
-    "hourTooltip": "See hourly data",
-    "day": "day",
-    "dayTooltip": "See daily data",
+    "hour": "hora",
+    "hourTooltip": "Ver dados por hora",
+    "day": "dia",
+    "dayTooltip": "Ver dados diários",
     "month": "mês",
-    "monthTooltip": "See monthly data",
-    "year": "year",
+    "monthTooltip": "Ver dados por mês",
+    "year": "ano",
     "yearTooltip": "See yearly data"
   },
   "zoomTo": "Ampliar para"
