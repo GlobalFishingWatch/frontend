@@ -865,7 +865,8 @@
     "title": "crwdns60395:0crwdne60395:0",
     "vesselAlreadyInWorkspace": "crwdns60397:0crwdne60397:0",
     "vessels": "crwdns60399:0crwdne60399:0",
-    "vesselSelected": "crwdns60401:0crwdne60401:0"
+    "vesselSelected": "crwdns60401:0crwdne60401:0",
+    "workspaceError": "crwdns130845:0crwdne130845:0"
   },
   "selects": {
     "allSelected": "crwdns60403:0crwdne60403:0",
