@@ -452,7 +452,7 @@
       "shiptype": {
         "keyword": "crwdns130571:0crwdne130571:0",
         "enum": {
-          "<nil>": "crwdns130573:0crwdne130573:0",
+          "": "crwdns130847:0crwdne130847:0",
           "other": "crwdns130575:0crwdne130575:0",
           "fishing": "crwdns130577:0crwdne130577:0",
           "passenger": "crwdns130579:0crwdne130579:0",
