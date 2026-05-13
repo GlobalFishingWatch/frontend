@@ -75,7 +75,10 @@
     "i18n:watch": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx run fishing-map:i18n:extract:watch", "nx run fishing-map:i18n:types:watch"],
+        "commands": [
+          "nx run fishing-map:i18n:extract:watch",
+          "nx run fishing-map:i18n:types:watch"
+        ],
         "parallel": true
       },
       "continuous": true
@@ -126,11 +129,26 @@
     "test": {
       "executor": "@nx/vitest:test",
       "cache": true,
-      "inputs": ["default", "^production"],
+      "inputs": [
+        "default",
+        "^production",
+        "!{projectRoot}/.vitest-attachments/**/*",
+        "!{projectRoot}/test/integration/__screenshots__/**/*",
+        "!{projectRoot}/test/integration/__traces__/**/*",
+        "!{projectRoot}/test/__traces__/**/*"
+      ],
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "configFile": "apps/fishing-map/vitest.config.mts"
+      }
+    },
+    "test:changed": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "configFile": "apps/fishing-map/vitest.config.mts",
+        "changed": true
       }
     },
     "test:ci": {

@@ -1,5 +1,5 @@
 export const DATASET_FILTERS = [
-  'constLayers',
+  'contextLayers',
   'events',
   'fourwings',
   'tracks',

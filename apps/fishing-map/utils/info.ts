@@ -126,7 +126,8 @@ export const formatInfoField = (
     | 'builtYear'
     | 'transmissionDateFrom'
     | 'transmissionDateTo'
-    | 'fleetCode',
+    | 'fleetCode'
+    | 'fishingLicenseStatus',
   {
     translationFn = t,
     fallbackValue,
@@ -148,13 +149,22 @@ export const formatInfoField = (
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
-    // fleetcode only exists in VMS Brazil
+    // fleetcode & fishingLicenseStatus only exists in VMS Brazil
     if (type === 'fleetCode') {
       return (
         translationFn((t: any) => t.vessel.fleetCodes[fieldValue.replaceAll('.', '_')], {
           defaultValue: fieldValue,
         }) || fallbackValue
       )
+    }
+    if (type === 'fishingLicenseStatus') {
+      const normalized = fieldValue.trim().toLowerCase()
+      return translationFn(
+        (t) => t.vessel.licenseStatus[normalized as keyof typeof t.vessel.licenseStatus],
+        {
+          defaultValue: fieldValue,
+        }
+      ).toUpperCase()
     }
     if (
       type === 'shipname' ||

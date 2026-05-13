@@ -97,6 +97,7 @@ export type UserData = {
   id: number
   type: string
   groups: string[]
+  cohort?: string
   permissions: UserPermission[]
   email?: string
   firstName?: string
