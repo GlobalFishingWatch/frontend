@@ -91,8 +91,11 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
   [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
-    [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode' }],
-    [{ key: 'fishingLicenseCode' }, { key: 'fishingLicenseStatus' }],
+    [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
+    [
+      { key: 'fishingLicenseCode' },
+      { key: 'fishingLicenseStatus', terminologyKey: 'fishingLicenseStatus' },
+    ],
     [{ key: 'fishingLicenseStartDate' }, { key: 'fishingLicenseEndDate' }],
     [{ key: 'builtYear' }, { key: 'length' }],
     [{ key: 'grossTonnage' }, { key: 'horsePower' }],

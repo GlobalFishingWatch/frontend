@@ -136,6 +136,7 @@ function DetectionsSection(): React.ReactElement<any> {
               tooltip={t((t) => t.layer.add)}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
+              data-testid="detections-add-layer-button"
             />
           </div>
         ) : null
