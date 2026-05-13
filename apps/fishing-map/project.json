@@ -211,7 +211,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["i18n"],
       "options": {
-        "command": "tsc --noEmit --project apps/fishing-map/tsconfig.json"
+        "command": "tsc --noEmit --project  apps/fishing-map/tsconfig.typecheck.json"
       }
     },
     "typecheck-watch": {
