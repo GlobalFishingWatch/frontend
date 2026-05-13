@@ -865,7 +865,8 @@
     "title": "Pesquisar",
     "vesselAlreadyInWorkspace": "Esta embarcação já está em seu espaço de trabalho",
     "vessels": "Procurar embarcação",
-    "vesselSelected": "Embarcação selecionada"
+    "vesselSelected": "Embarcação selecionada",
+    "workspaceError": "Your workspace couldn't be loaded, try searching in a different workspace in order to add vessels to the map."
   },
   "selects": {
     "allSelected": "Todos",
