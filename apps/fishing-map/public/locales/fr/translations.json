@@ -774,8 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "La piste n'a aucune activité dans la plage temporelle sélectionnée. Changer la plage temporelle pour l'ajuster à cette trajectoire ?",
     "vessel_group_fit_bounds": "Centrer la carte sur le groupe de navires",
     "vessel_info_correction": "Suggest a correction",
-    "vesselGroup": "Vessel Group",
-    "vessel-groups": "Vessel Group"
+    "vessel-groups": "Vessel Group",
+    "vesselGroup": "Vessel Group"
   },
   "map": {
     "annotationPlaceholder": "Saisissez quelque chose ici",
