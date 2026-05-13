@@ -774,8 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "La trayectoria de la embarcación no tiene actividad en el periodo seleccionado. ¿Desea cambiar el periodo para que se ajuste a esta trayectoria?",
     "vessel_group_fit_bounds": "Centrar mapa en el grupo de buques",
     "vessel_info_correction": "Sugerir una corrección",
-    "vesselGroup": "Grupo de embarcaciones",
-    "vessel-groups": "Vessel Group"
+    "vessel-groups": "Vessel Group",
+    "vesselGroup": "Grupo de embarcaciones"
   },
   "map": {
     "annotationPlaceholder": "Escriba algo aquí",
@@ -865,7 +865,8 @@
     "title": "Búsqueda",
     "vesselAlreadyInWorkspace": "La embarcación ya está agregada en su espacio de trabajo.",
     "vessels": "Buscar embarcaciones",
-    "vesselSelected": "Embarcación seleccionada"
+    "vesselSelected": "Embarcación seleccionada",
+    "workspaceError": "Your workspace couldn't be loaded, try searching in a different workspace in order to add vessels to the map."
   },
   "selects": {
     "allSelected": "Todos",

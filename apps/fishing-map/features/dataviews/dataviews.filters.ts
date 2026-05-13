@@ -82,7 +82,6 @@ export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: strin
   if (i18n.exists(`vessel.${vesselField}`)) {
     const label = t((t) => (t.vessel as any)[vesselField] as string, {
       defaultValue: filter.toString(),
-      count: 2,
     })
     if (label !== filter) {
       return label
