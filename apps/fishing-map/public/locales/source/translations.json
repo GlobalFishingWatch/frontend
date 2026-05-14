@@ -845,8 +845,9 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "mmsi_one": "",
-  "mmsi_other": "",
+  "mmsi": "MMSI",
+  "mmsi_one": "MMSI",
+  "mmsi_other": "MMSIs",
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
