@@ -62,6 +62,7 @@ import {
   selectPortReportFootprintDatasetId,
 } from 'features/reports/report-port/ports-report.selectors'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { selectReportsStatus } from 'features/reports/reports.slice'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -439,11 +440,17 @@ export function useReportTitle() {
   const reportId = useSelector(selectReportId)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const reportsStatus = useSelector(selectReportsStatus)
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const reportTitle = useMemo(() => {
-    if (reportId && !report) {
+    if (
+      reportId &&
+      !report &&
+      (reportsStatus === AsyncReducerStatus.Finished ||
+        reportsStatus === AsyncReducerStatus.Error)
+    ) {
       return ''
     }
     if (isGlobalReport && !report?.name) {
@@ -533,6 +540,7 @@ export function useReportTitle() {
   }, [
     reportId,
     report,
+    reportsStatus,
     i18n.language,
     isGlobalReport,
     urlBufferValue,

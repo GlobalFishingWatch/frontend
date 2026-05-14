@@ -50,6 +50,9 @@ export const fetchReportsThunk = createAsyncThunk(
   },
   {
     condition: (ids, { getState }) => {
+      if (ids?.length) {
+        return true
+      }
       const status = (getState() as ReportsSliceState).reports.status
       return status !== AsyncReducerStatus.Loading
     },
