@@ -13,3 +13,6 @@ allowBuilds:
   protobufjs: true
   sharp: true
   unrs-resolver: true
+
+patchedDependencies:
+  '@tanstack/start-server-core@1.167.30': patches/@tanstack__start-server-core@1.167.30.patch

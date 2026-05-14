@@ -124,18 +124,37 @@
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "options": {
-        "command": "vite build",
+        "commands": [
+          "vite build",
+          "node ./scripts/write-tanstack-router-entry-shim.mjs"
+        ],
+        "parallel": false,
         "cwd": "apps/fishing-map"
       },
       "configurations": {
         "development": {
-          "command": "vite build --mode development"
+          "commands": [
+            "vite build --mode development",
+            "node ./scripts/write-tanstack-router-entry-shim.mjs"
+          ],
+          "parallel": false,
+          "cwd": "apps/fishing-map"
         },
         "production": {
-          "command": "vite build --mode production"
+          "commands": [
+            "vite build --mode production",
+            "node ./scripts/write-tanstack-router-entry-shim.mjs"
+          ],
+          "parallel": false,
+          "cwd": "apps/fishing-map"
         },
         "analyze": {
-          "command": "ANALYZE=true vite build"
+          "commands": [
+            "ANALYZE=true vite build",
+            "node ./scripts/write-tanstack-router-entry-shim.mjs"
+          ],
+          "parallel": false,
+          "cwd": "apps/fishing-map"
         }
       }
     },

@@ -1,0 +1,41 @@
+diff --git a/dist/esm/tanstack-router-entry-shim.js b/dist/esm/tanstack-router-entry-shim.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..5dede018ef55b4d18a9a1a37708dfdfa4fadb85e
+--- /dev/null
++++ b/dist/esm/tanstack-router-entry-shim.js
+@@ -0,0 +1 @@
++export * from "../../../start-client-core/dist/esm/fake-entries/router.js";
+diff --git a/dist/esm/tanstack-start-entry-shim.js b/dist/esm/tanstack-start-entry-shim.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..6547daa3ad6848c11395361b3893e013de84ea29
+--- /dev/null
++++ b/dist/esm/tanstack-start-entry-shim.js
+@@ -0,0 +1 @@
++export * from "../../../start-client-core/dist/esm/fake-entries/start.js";
+diff --git a/dist/esm/tanstack-start-plugin-adapters-shim.js b/dist/esm/tanstack-start-plugin-adapters-shim.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..1193438f32138f27aa858f21270463a63a6e3bcd
+--- /dev/null
++++ b/dist/esm/tanstack-start-plugin-adapters-shim.js
+@@ -0,0 +1 @@
++export * from "../../../start-client-core/dist/esm/fake-entries/plugin-adapters.js";
+diff --git a/package.json b/package.json
+index f8103bb4c6abfc63aa223b7dfdf468bb581ce6c1..34edd9db12572ef5b85ba02949ac6a75f28d1fae 100644
+--- a/package.json
++++ b/package.json
+@@ -49,6 +49,15 @@
+   "imports": {
+     "#tanstack-start-server-fn-resolver": {
+       "default": "./dist/esm/fake-start-server-fn-resolver.js"
++    },
++    "#tanstack-router-entry": {
++      "default": "./dist/esm/tanstack-router-entry-shim.js"
++    },
++    "#tanstack-start-entry": {
++      "default": "./dist/esm/tanstack-start-entry-shim.js"
++    },
++    "#tanstack-start-plugin-adapters": {
++      "default": "./dist/esm/tanstack-start-plugin-adapters-shim.js"
+     }
+   },
+   "sideEffects": false,
