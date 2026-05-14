@@ -4,18 +4,24 @@ import type { DatasetFilter, DatasetFilters } from '@globalfishingwatch/api-type
 import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
-import { getUTCDate } from '../dates'
+import { createCachedDateParser, getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
 import type { PointColumns } from '../types'
 
-export const cleanProperties = (object: GeoJsonProperties, filters: DatasetFilters | undefined) => {
-  const result = normalizePropertiesKeys(object)
+const buildFilterLookup = (filters: DatasetFilters | undefined): Record<string, DatasetFilter> => {
   const flatFilters = getFlattenDatasetFilters(filters)
-  const flatFiltersById = Object.fromEntries(
-    flatFilters.map((filter) => [filter.id, filter])
-  ) as Record<string, DatasetFilter>
+  return Object.fromEntries(flatFilters.map((filter) => [filter.id, filter])) as Record<
+    string,
+    DatasetFilter
+  >
+}
+
+const applyFilterCoercions = (
+  result: Record<string, any>,
+  filterLookup: Record<string, DatasetFilter>
+): Record<string, any> => {
   for (const property in result) {
-    const propertySchema = flatFiltersById[property]
+    const propertySchema = filterLookup[property]
     if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
         result[property] = String(result[property])
@@ -30,46 +36,54 @@ export const cleanProperties = (object: GeoJsonProperties, filters: DatasetFilte
   return result
 }
 
+export const cleanProperties = (object: GeoJsonProperties, filters: DatasetFilters | undefined) => {
+  const result = normalizePropertiesKeys(object)
+  return applyFilterCoercions(result, buildFilterLookup(filters))
+}
+
 export const pointsListToGeojson = (
   data: Record<string, any>[],
-  { latitude, longitude, id, startTime, endTime, filters }: PointColumns
+  { latitude, longitude, id, startTime, endTime, filters, dateFormat }: PointColumns
 ) => {
+  const parseDate = createCachedDateParser({ dateFormat })
+  const filterLookup = buildFilterLookup(filters)
   let hasDatesError = false
-  const features: Feature<Point>[] = data.flatMap((point, index) => {
-    const cleanedPoint = normalizePropertiesKeys(point)
-    if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) return []
+  const features: Feature<Point>[] = []
+  for (let index = 0; index < data.length; index++) {
+    const cleanedPoint = normalizePropertiesKeys(data[index])
+    if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) continue
     const coords = parseCoords(cleanedPoint[latitude] as number, cleanedPoint[longitude] as number)
-    if (coords) {
-      const cleanedProperties = cleanProperties(cleanedPoint, filters)
-      const startTimeMs = startTime
-        ? getUTCDate(cleanedPoint[startTime] as string).getTime()
-        : undefined
-      if (startTimeMs !== undefined && isNaN(startTimeMs)) {
-        hasDatesError = true
-      }
-      const endTimeMs = endTime ? getUTCDate(cleanedPoint[endTime] as string).getTime() : undefined
-      if (endTimeMs !== undefined && isNaN(endTimeMs)) {
-        hasDatesError = true
-      }
-      return {
-        type: 'Feature',
-        properties: {
-          ...cleanedProperties,
-          ...(startTime && {
-            [startTime]: startTimeMs,
-          }),
-          ...(endTime && { [endTime]: endTimeMs }),
-          id: id && cleanedPoint[id] ? cleanedPoint[id] : index,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: [coords.longitude, coords.latitude],
-        },
-      }
-    } else {
-      return []
+    if (!coords) continue
+
+    const cleanedProperties = applyFilterCoercions(cleanedPoint, filterLookup)
+    const startTimeMs = startTime
+      ? parseDate(cleanedPoint[startTime] as string).getTime()
+      : undefined
+    if (startTimeMs !== undefined && isNaN(startTimeMs)) {
+      hasDatesError = true
     }
-  })
+    const endTimeMs = endTime ? parseDate(cleanedPoint[endTime] as string).getTime() : undefined
+    if (endTimeMs !== undefined && isNaN(endTimeMs)) {
+      hasDatesError = true
+    }
+
+    cleanedProperties.id = id && cleanedPoint[id] ? cleanedPoint[id] : index
+    if (startTime) {
+      cleanedProperties[startTime] = startTimeMs
+    }
+    if (endTime) {
+      cleanedProperties[endTime] = endTimeMs
+    }
+
+    features.push({
+      type: 'Feature',
+      properties: cleanedProperties,
+      geometry: {
+        type: 'Point',
+        coordinates: [coords.longitude, coords.latitude],
+      },
+    })
+  }
   return {
     type: 'FeatureCollection',
     features,

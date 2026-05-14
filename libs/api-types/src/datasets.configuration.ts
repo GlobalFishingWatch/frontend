@@ -109,6 +109,7 @@ export type DatasetGeometryToGeoJSONGeometry = {
   [Property in DatasetGeometryType]: string[]
 }
 export type FrontendConfiguration = {
+  dateFormat?: 'MDY' | 'DMY'
   endTime?: string | number
   geometryType?: DatasetGeometryType
   latitude?: string

@@ -110,6 +110,11 @@ function NewPointDataset({
     dataset: datasetMetadata,
     property: 'endTime',
   })
+  const dateFormat = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'dateFormat',
+  })
+  const isAmericanDateFormat = dateFormat === 'MDY'
 
   const handleRawData = useCallback(
     async (file: File, fileTypeResult: FileTypeResult) => {
@@ -290,6 +295,16 @@ function NewPointDataset({
           disabled={loading}
         />
       </div>
+      {isCSVFile && (startTimeProperty || endTimeProperty) && (
+        <SwitchRow
+          label={t((t) => t.datasetUpload.americanDateFormat)}
+          active={isAmericanDateFormat}
+          onClick={() =>
+            setDatasetMetadataConfig({ dateFormat: isAmericanDateFormat ? 'DMY' : 'MDY' })
+          }
+          disabled={loading}
+        />
+      )}
       <span className={styles.errorMsg}>{timeFilterError}</span>
       <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
         <InputText

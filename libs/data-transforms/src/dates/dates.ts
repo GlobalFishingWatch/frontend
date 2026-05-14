@@ -6,17 +6,28 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
-const DATE_FORMATS = [
-  // American formats (Month first)
-  'MM/dd/yyyy',
-  'M/d/yyyy',
-  'MM-dd-yyyy',
-  'M-d-yyyy',
-  // Rest of world (Day first)
+// Day first (Rest of world)
+const DMY_DATE_FORMATS = [
   'dd/MM/yyyy',
   'd/M/yyyy',
   'dd-MM-yyyy',
   'd-M-yyyy',
+  'dd/MM/yy',
+  'd/M/yy',
+  'dd-MM-yy',
+  'd-M-yy',
+]
+
+// Month first (American)
+const MDY_DATE_FORMATS = [
+  'MM/dd/yyyy',
+  'M/d/yyyy',
+  'MM-dd-yyyy',
+  'M-d-yyyy',
+  'MM/dd/yy',
+  'M/d/yy',
+  'MM-dd-yy',
+  'M-d-yy',
 ]
 
 const TIME_FORMATS = [
@@ -30,17 +41,33 @@ const TIME_FORMATS = [
   '',
 ]
 
-const DATE_PARSE_METHODS: DateTimeParseFunction[] = [
-  DateTime.fromISO,
-  DateTime.fromSQL,
-  DateTime.fromRFC2822,
-  ...DATE_FORMATS.flatMap((dateFormat) =>
+export type DateFormatPreference = 'MDY' | 'DMY'
+
+const buildFormatParsers = (dateFormats: string[]): DateTimeParseFunction[] =>
+  dateFormats.flatMap((dateFormat) =>
     TIME_FORMATS.map((timeFormat) => {
       const formatString = `${dateFormat}${timeFormat}`
       return (s: string, opts: any) => DateTime.fromFormat(s, formatString, opts)
     })
-  ),
+  )
+
+const ISO_PARSE_METHODS: DateTimeParseFunction[] = [
+  DateTime.fromISO,
+  DateTime.fromSQL,
+  DateTime.fromRFC2822,
 ]
+
+const DMY_PARSE_METHODS = buildFormatParsers(DMY_DATE_FORMATS)
+const MDY_PARSE_METHODS = buildFormatParsers(MDY_DATE_FORMATS)
+
+const getDateParseMethods = (preference?: DateFormatPreference): DateTimeParseFunction[] => {
+  if (preference === 'MDY') {
+    return [...ISO_PARSE_METHODS, ...MDY_PARSE_METHODS, ...DMY_PARSE_METHODS]
+  }
+  return [...ISO_PARSE_METHODS, ...DMY_PARSE_METHODS, ...MDY_PARSE_METHODS]
+}
+
+const DATE_PARSE_METHODS: DateTimeParseFunction[] = getDateParseMethods()
 
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
   // it could receive a timestamp as a string
@@ -61,6 +88,42 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
     }
   }
   return new Date('Invalid Date')
+}
+
+/* caches the successful parse method index.
+ * to avoid re-trying all date parse methods for every value. */
+export const createCachedDateParser = (options?: { dateFormat?: DateFormatPreference }) => {
+  const parseMethods = getDateParseMethods(options?.dateFormat)
+  let cachedParseIndex: number | null = null
+  return (timestamp: string | number = Date.now()): Date => {
+    const millis = toNumber(timestamp)
+    if (typeof timestamp === 'number' || !isNaN(millis)) {
+      return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
+    }
+    if (cachedParseIndex !== null) {
+      try {
+        const result = parseMethods[cachedParseIndex](timestamp, { zone: 'UTC' })
+        if (result.isValid) return result.toJSDate()
+      } catch {
+        // cached format no longer works, fall through to full search
+      }
+      cachedParseIndex = null
+    }
+    for (let index = 0; index < parseMethods.length; index++) {
+      const parse = parseMethods[index]
+      try {
+        const result = parse(timestamp, { zone: 'UTC' })
+        if (result.isValid) {
+          cachedParseIndex = index
+          return result.toJSDate()
+        }
+      } catch (e) {
+        // ignore and try next parse method
+      }
+    }
+
+    return new Date('Invalid Date')
+  }
 }
 export type SupportedDateType = string | number | Date
 export const getUTCDateTime = (d: SupportedDateType): DateTime => {

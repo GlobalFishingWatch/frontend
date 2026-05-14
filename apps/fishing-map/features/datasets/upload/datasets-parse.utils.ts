@@ -190,6 +190,7 @@ export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: D
       ? getDatasetConfigurationProperty({ dataset, property: 'endTime' })
       : undefined,
     id: idProperty,
+    dateFormat: getDatasetConfigurationProperty({ dataset, property: 'dateFormat' }),
     filters: dataset.filters,
   })
 }

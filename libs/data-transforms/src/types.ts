@@ -1,5 +1,7 @@
 import type { DatasetFilters } from '@globalfishingwatch/api-types'
 
+import type { DateFormatPreference } from './dates'
+
 export type BBox = [number, number, number, number]
 
 export type SegmentColumns = {
@@ -19,4 +21,5 @@ export type PointColumns = {
   endTime?: string | number
   id?: string | number
   filters: DatasetFilters | undefined
+  dateFormat?: DateFormatPreference
 }

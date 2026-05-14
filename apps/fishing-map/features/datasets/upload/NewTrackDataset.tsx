@@ -60,11 +60,15 @@ function NewTrackDataset({
   const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
-  const numericFiltersFieldsOptions = filtersFieldsOptions.filter((f) => f.type === 'range')
   const isEditing = dataset?.id !== undefined
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
   const [isCSVFile, setIsCSVFile] = useState<boolean>(false)
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
+  const dateFormat = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'dateFormat',
+  })
+  const isAmericanDateFormat = dateFormat === 'MDY'
 
   useEffect(() => {
     const updateFileType = async () => {
@@ -159,7 +163,7 @@ function NewTrackDataset({
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file, fileTypeResult])
+  }, [dataset, file, fileTypeResult, handleRawData, loading, setDatasetMetadata])
 
   useEffect(() => {
     if (sourceData) {
@@ -192,6 +196,9 @@ function NewTrackDataset({
     longitudeProperty,
     startTimeProperty,
     segmentIdProperty,
+    sourceData,
+    datasetMetadata,
+    t,
   ])
 
   const onConfirmClick = useCallback(async () => {
@@ -302,6 +309,16 @@ function NewTrackDataset({
             disabled={loading || isEditing}
           />
         </div>
+        {isCSVFile && (startTimeProperty || endTimeProperty) && (
+          <SwitchRow
+            label={t((t) => t.datasetUpload.americanDateFormat)}
+            active={isAmericanDateFormat}
+            onClick={() =>
+              setDatasetMetadataConfig({ dateFormat: isAmericanDateFormat ? 'DMY' : 'MDY' })
+            }
+            disabled={loading}
+          />
+        )}
         <p className={cx(styles.errorMsg, styles.errorMargin)}>{timeFilterError}</p>
         {isCSVFile && (
           <div className={styles.row}>
