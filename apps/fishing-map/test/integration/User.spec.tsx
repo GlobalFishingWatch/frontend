@@ -13,7 +13,7 @@ describe('Help hints', () => {
   })
   // TODO: improve this to really detect a logout event
   it('should show expired session warning toast', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     store.dispatch(setLoginExpired(true))
 
     const { getByText, getByTestId } = await render(<App />, { store })

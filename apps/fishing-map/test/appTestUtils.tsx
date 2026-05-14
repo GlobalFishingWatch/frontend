@@ -1,5 +1,6 @@
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { Provider } from 'react-redux'
+import { RouterContextProvider } from '@tanstack/react-router'
 import { createStore as createJotaiStore, Provider as JotaiProvider } from 'jotai'
 import type { Store as JotaiStore } from 'jotai/vanilla/store'
 import { vi } from 'vitest'
@@ -10,14 +11,22 @@ import { render as vitestRender } from 'vitest-browser-react'
 import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 import { fetchUserThunk } from 'features/user/user.slice'
+import { setupRouterSync } from 'router/router-sync'
 
 import type { AppStore } from '../store'
 import { makeStore } from '../store'
+
+import type { CreateTestRouterOptions, TestRouter } from './utils/router/createTestRouter'
+import { createTestRouter } from './utils/router/createTestRouter'
 
 interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore
   jotaiStore?: JotaiStore
   authenticated?: boolean
+  /** Override the TanStack Router used by the test wrapper. */
+  router?: TestRouter
+  /** Forwarded to `createTestRouter` when no `router` is provided. */
+  routerOptions?: CreateTestRouterOptions
 }
 
 export async function withGuestUser(store: AppStore) {
@@ -30,7 +39,8 @@ export async function withGuestUser(store: AppStore) {
 }
 
 export async function render(ui: ReactElement, options?: AppRenderOptions) {
-  const { store, jotaiStore, authenticated, ...renderOptions } = options || {}
+  const { store, jotaiStore, authenticated, router, routerOptions, ...renderOptions } =
+    options || {}
 
   return page.mark('render app', async () => {
     // Load authentication tokens if requested
@@ -65,6 +75,16 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
 
     const storeToUse = store || makeStore()
     const jotaiStoreToUse = jotaiStore || createJotaiStore()
+    // Production wires routing in `routes/_app.tsx` via `setupRouterSync(router, store)`;
+    // tests mirror that here so hooks like `useSearch`, `useRouter`, and
+    // `useReplaceQueryParams` resolve against a real router, and so Redux
+    // `state.location` stays in sync via `location/setLocation`.
+    const routerToUse = router || createTestRouter(routerOptions)
+    // Populate `router.state.matches` so route-aware hooks and `setupRouterSync`
+    // see a loaded router. `App` reads search via `useSearch({ from: '/_app' })`
+    // so tests do not need `<Matches />` / `matchContext` from `RouterProvider`.
+    await routerToUse.load()
+    setupRouterSync(routerToUse, storeToUse)
 
     // Ensure __next element exists for modals
     let rootElement = document.getElementById('__next')
@@ -74,15 +94,24 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
       document.body.appendChild(rootElement)
     }
 
-    function Wrapper({ children }: { children: React.ReactNode }) {
+    function Wrapper({ children }: { children: ReactNode }) {
       return (
-        <Provider store={storeToUse}>
-          <JotaiProvider store={jotaiStoreToUse}>{children}</JotaiProvider>
-        </Provider>
+        // Order: router outside Redux so hooks can read both contexts.
+        <RouterContextProvider router={routerToUse as any}>
+          <Provider store={storeToUse}>
+            <JotaiProvider store={jotaiStoreToUse}>{children}</JotaiProvider>
+          </Provider>
+        </RouterContextProvider>
       )
     }
 
-    return vitestRender(ui, { wrapper: Wrapper, container: rootElement, ...renderOptions })
+    const rendered = vitestRender(ui, {
+      wrapper: Wrapper,
+      container: rootElement,
+      ...renderOptions,
+    })
+
+    return { ...rendered, router: routerToUse }
   })
 }
 

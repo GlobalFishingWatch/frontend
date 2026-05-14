@@ -16,7 +16,7 @@ import { makeStore } from 'store'
 
 describe('Map', () => {
   it('should render a map element and it should be loaded and with the default state', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     const mapElement = getByTestId('map-container')
@@ -33,7 +33,7 @@ describe('Map', () => {
   })
 
   it('should pass zoom, latitude and longitude changes of query params to map state', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
@@ -61,7 +61,7 @@ describe('Map', () => {
   })
 
   it('should preserve map state when adding a new layer', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
@@ -85,7 +85,7 @@ describe('Map', () => {
   })
 
   it('should preserve map state when removing a layer', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
@@ -105,7 +105,7 @@ describe('Map', () => {
 
   it('should update layers when interacting with the map', async () => {
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
@@ -153,7 +153,7 @@ describe('Map', () => {
 
   //skipping as we removed the interval buttons
   it.skip('should reflect period changes on the state and map', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
 
     const jotaiStore = createJotaiStore()
@@ -182,7 +182,7 @@ describe('Map', () => {
 
   //skipping as we removed the interval buttons
   it.skip('should preserve map state when changing period', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
@@ -203,7 +203,7 @@ describe('Map', () => {
   })
 
   it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore, authenticated: true })
 

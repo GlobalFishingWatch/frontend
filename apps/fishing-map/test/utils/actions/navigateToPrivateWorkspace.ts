@@ -1,47 +1,21 @@
-export const navigateToPrivateWorkspace = {
+import { setLocation } from 'router/location.slice'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
+
+/**
+ * Pre-built `location/setLocation` action that seeds Redux state to match a
+ * navigation to a private report.
+ */
+export const navigateToPrivateWorkspace = setLocation({
   type: 'REPORT',
   payload: {
-    reportId: 'report_02-user'
+    reportId: 'report_02-user',
   },
-  meta: {
-    query: {
-      longitude: 0,
-      latitude: 0,
-      zoom: 0.39767463
-    },
-    location: {
-      current: {
-        pathname: '/report/report_02-user',
-        type: 'REPORT',
-        payload: {
-          reportId: 'report_02-user'
-        },
-        query: {
-          longitude: 0,
-          latitude: 0,
-          zoom: 0.39767463
-        },
-        search: 'longitude=0&latitude=0&zoom=0.39767463'
-      },
-      prev: {
-        pathname: '/report/report_02-user',
-        type: 'REPORT',
-        payload: {
-          reportId: 'report_02-user'
-        },
-        query: {
-          longitude: 0,
-          latitude: 0,
-          zoom: 0.39767463
-        },
-        search: 'longitude=0&latitude=0&zoom=0.39767463'
-      },
-      kind: 'load'
-    }
-  },
+  pathname: '/report/report_02-user',
+  to: ROUTE_PATHS.REPORT,
   query: {
     longitude: 0,
     latitude: 0,
-    zoom: 0.39767463
-  }
-}
+    zoom: 0.39767463,
+  } as QueryParams,
+})

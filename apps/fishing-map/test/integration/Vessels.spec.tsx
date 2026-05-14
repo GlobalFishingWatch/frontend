@@ -19,7 +19,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should open vessel popup on vessel click and show tile related info', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -57,7 +57,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to close an opened popup', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -91,7 +91,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to navigate to vessel viewer inside the vessel popup', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -125,7 +125,7 @@ describe('Vessel map popup', () => {
 
   it('should display the vessel track on the timebar', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(addVesselToWorkspaceAction)
 
@@ -149,7 +149,7 @@ describe('Vessel map popup', () => {
 
   it('should be able to see vessel info on hover and pin a vessel to the map to see it on the sidebar', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
 
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
@@ -181,10 +181,9 @@ describe('Vessel map popup', () => {
     await expect.element(getByTestId('vessel-pin-button-ibsa-quinto')).toBeVisible()
     await getByTestId('vessel-pin-button-ibsa-quinto').click()
 
-    const actions = testingMiddleware.getActions()
-    const pinAction = actions.findLast((action) => action.type === 'HOME')
+    const pinAction = testingMiddleware.getLastLocationActionByType('HOME')
 
-    expect(pinAction?.query).toStrictEqual({
+    expect(pinAction?.payload.query).toStrictEqual({
       dataviewInstances: [
         {
           id: 'vessel-9375434a0-0b91-7247-5a95-57a10d2b08df:v4.0',
@@ -242,7 +241,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should show vessel info on vessel hover', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -272,7 +271,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should show vessel name, flag and date on vessel name hover on sidebar', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(addVesselToWorkspaceAction)
 
@@ -292,7 +291,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to filter vessels by flag', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
@@ -332,7 +331,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to interact with vessels after filtering by flag', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     store.dispatch(addVesselToWorkspaceAction)
 

@@ -13,7 +13,7 @@ import { makeStore } from 'store'
 
 describe('Vessel search', async () => {
   it('can search for a vessel and see it on the map', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(navigateToVesselSearchAction)
@@ -48,7 +48,7 @@ describe('Vessel search', async () => {
   })
 
   it('preserves vessel search value when navigating away and back', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId } = await render(<App />, {
       store,
@@ -63,7 +63,7 @@ describe('Vessel search', async () => {
   })
 
   it('reacts to clearing the search input', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId } = await render(<App />, {
       store,

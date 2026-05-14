@@ -119,9 +119,10 @@ describe('TestingStoreMiddleware Example Usage', () => {
     store.dispatch({ type: 'ACTION_1' })
     store.dispatch({ type: 'ACTION_2' })
 
-    expect(actionLog).toHaveLength(2)
-    expect(actionLog[0].action).toBe('ACTION_1')
-    expect(actionLog[1].action).toBe('ACTION_2')
+    const sampled = actionLog.filter((e) => e.action === 'ACTION_1' || e.action === 'ACTION_2')
+    expect(sampled).toHaveLength(2)
+    expect(sampled[0].action).toBe('ACTION_1')
+    expect(sampled[1].action).toBe('ACTION_2')
   })
 
   it('should validate state with custom assertions', () => {
@@ -156,5 +157,74 @@ describe('TestingStoreMiddleware Example Usage', () => {
     expect(trackedAction).toBeDefined()
     expect(trackedAction?.payload).toEqual(action.payload)
     expect(trackedAction?.meta).toEqual(action.meta)
+  })
+
+  describe('TanStack Router location helpers', () => {
+    it('getLastLocationActionByType returns the most recent location/setLocation matching payload.type', () => {
+      store.dispatch({
+        type: 'location/setLocation',
+        payload: { type: 'HOME', payload: {}, query: {}, pathname: '/', to: '/' },
+      })
+      store.dispatch({
+        type: 'location/setLocation',
+        payload: {
+          type: 'WORKSPACE',
+          payload: { workspaceId: 'workspace_01-user' },
+          query: { latitude: 1 },
+          pathname: '/fishing-activity/workspace_01-user',
+          to: '/$category/$workspaceId',
+        },
+      })
+      store.dispatch({
+        type: 'location/setLocation',
+        payload: {
+          type: 'WORKSPACE',
+          payload: { workspaceId: 'workspace_02-user' },
+          query: { latitude: 2 },
+          pathname: '/fishing-activity/workspace_02-user',
+          to: '/$category/$workspaceId',
+        },
+      })
+
+      const lastWorkspace = testingMiddleware.getLastLocationActionByType('WORKSPACE' as any)
+      expect(lastWorkspace).toBeDefined()
+      expect(lastWorkspace?.payload?.payload?.workspaceId).toBe('workspace_02-user')
+      expect(lastWorkspace?.payload?.query?.latitude).toBe(2)
+
+      const home = testingMiddleware.getLastLocationActionByType('HOME' as any)
+      expect(home).toBeDefined()
+      expect(home?.payload?.type).toBe('HOME')
+    })
+
+    it('getLastLocationActionByType returns undefined when no matching action was dispatched', () => {
+      store.dispatch({ type: 'SOME_OTHER_ACTION' })
+      expect(testingMiddleware.getLastLocationActionByType('WORKSPACE' as any)).toBeUndefined()
+    })
+
+    it('waitForLocationType resolves when a matching location/setLocation arrives', async () => {
+      setTimeout(() => {
+        store.dispatch({
+          type: 'location/setLocation',
+          payload: {
+            type: 'WORKSPACE_REPORT',
+            payload: { reportId: 'report_01' },
+            query: {},
+            pathname: '/fishing-activity/workspace_01-user/report/report_01',
+            to: '/$category/$workspaceId/report/$reportId',
+          },
+        })
+      }, 50)
+
+      const action = await testingMiddleware.waitForLocationType('WORKSPACE_REPORT' as any)
+      expect(action.type).toBe('location/setLocation')
+      expect(action.payload?.type).toBe('WORKSPACE_REPORT')
+      expect(action.payload?.payload?.reportId).toBe('report_01')
+    })
+
+    it('waitForLocationType rejects when no matching location/setLocation arrives in time', async () => {
+      await expect(
+        testingMiddleware.waitForLocationType('SEARCH' as any, 100)
+      ).rejects.toThrow(/location\/setLocation with payload\.type=SEARCH not dispatched within 100ms/)
+    })
   })
 })

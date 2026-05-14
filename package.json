@@ -70,6 +70,7 @@
     "@tanstack/react-router-devtools": "1.166.13",
     "@tanstack/react-router-ssr-query": "1.166.12",
     "@tanstack/react-start": "1.167.65",
+    "@tanstack/react-start-server": "^1.166.52",
     "@tanstack/react-virtual": "^3.13.23",
     "@tanstack/router-plugin": "^1.167.35",
     "@tanstack/zod-adapter": "1.166.9",

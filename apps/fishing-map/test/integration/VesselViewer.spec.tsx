@@ -10,7 +10,7 @@ import { makeStore } from 'store'
 
 describe('Vessel viewer', async () => {
   it('should renders tabs and vessel basic info', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId, getByText } = await render(<App />, { store })
 
@@ -50,7 +50,7 @@ describe('Vessel viewer', async () => {
   })
 
   it('should change tab when clicking on a tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByText, getByTestId } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)
@@ -73,7 +73,7 @@ describe('Vessel viewer', async () => {
 
   it('should render summary tab by type', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)
@@ -86,7 +86,7 @@ describe('Vessel viewer', async () => {
 
   it('should render summary tab by timeline', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId, getByText } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)
@@ -100,7 +100,7 @@ describe('Vessel viewer', async () => {
   })
 
   it('should render areas tab and its tabs', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)
@@ -113,7 +113,7 @@ describe('Vessel viewer', async () => {
   })
 
   it('should render related vessels tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId, getByText } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)
@@ -128,7 +128,7 @@ describe('Vessel viewer', async () => {
   })
 
   it('should render insights tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     const { getByTestId, getByText } = await render(<App />, { store })
     store.dispatch(navigateToVesselViewerAction)

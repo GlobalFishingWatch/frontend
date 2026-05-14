@@ -23,7 +23,7 @@ const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 describe('Polygon', () => {
   it.only('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
     // await render(<App />, { authenticated: true, store })
 
@@ -45,14 +45,14 @@ describe('Polygon', () => {
     await new Promise((resolve) => setTimeout(resolve, 300))
     await userEvent.click(getByTestId(`user-layer-edit-${USER_POLYGON_DATASET_ID}`))
 
-    const navigateAction = testingMiddleware.getLastActionByType('HOME')
+    const navigateAction = testingMiddleware.getLastLocationActionByType('HOME')
 
-    expect(navigateAction.query).toMatchObject(navigateToPolygonEditorAction.query)
+    expect(navigateAction?.payload.query).toMatchObject(navigateToPolygonEditorAction.payload.query)
   })
 
   it('should load the polygon in the map', async () => {
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(navigateToPolygonEditorAction)
 
@@ -89,7 +89,7 @@ describe('Polygon', () => {
 
     try {
       const jotaiStore = createJotaiStore()
-      const store = makeStore(defaultState, [], true)
+      const store = makeStore(defaultState, [])
       const { getByTestId, getByText } = await render(<App />, {
         store,
         jotaiStore,

@@ -6,7 +6,7 @@ import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
 
 import { TEST_END_DATE } from '../test.config'
 
-import '../../pages/styles.css'
+import '../../routes/styles.css'
 import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'

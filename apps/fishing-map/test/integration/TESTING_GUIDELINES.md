@@ -10,9 +10,13 @@ Integration tests verify that different parts of the Fishing Map application wor
 
 - **Test Framework:** Vitest with Browser Mode
 - **Rendering:** React Testing Library (vitest-browser-react)
+- **Routing:** TanStack Router (via `createTestRouter` + `RouterContextProvider`)
 - **State Management:** Redux + Jotai
 - **User Interactions:** @vitest/browser userEvent API
 - **Artifacts:** Screenshots and Playwright traces
+
+> Routing reference: [TanStack Router — How to test file-based routing](https://tanstack.com/router/latest/docs/how-to/test-file-based-routing).
+> The test shell mirrors that pattern: same `routeTree` + `parseSearch` / `stringifySearch` as production via `getCreateRouterOptions()` in [`router.tsx`](../../router.tsx), but with `createMemoryHistory` so each test starts in a deterministic URL. `setupRouterSync(router, store)` runs in the wrapper so TanStack Router → Redux `state.location` stays in sync exactly like production (see [`router/router-sync.ts`](../../router/router-sync.ts)).
 
 ## Test Structure
 
@@ -60,11 +64,14 @@ describe('Feature Name', () => {
 
   it('should describe expected behavior', async () => {
     // WHY: makeStore creates a Redux store with initial state and optional middleware
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     // WHY: Jotai store needed to access map-specific atoms (mapInstanceAtom, viewStateAtom)
     // Map viewport state (lat/lng/zoom) is managed in Jotai, not Redux
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    // `render` also returns `router` (a TanStack Router instance with a memory
+    // history). Use it to navigate (`router.navigate({ to, search, params })`)
+    // or assert on `router.state.location` when you want to test URL-driven behavior.
+    const { getByTestId, router } = await render(<App />, { store, jotaiStore })
 
     // Your test logic here
   })
@@ -84,24 +91,32 @@ it('should reflect store changes on layer toggle', async () => {
   // WHY: Testing middleware captures all Redux actions for verification
   // This allows us to inspect the action history and verify state changes
   const testingMiddleware = createTestingMiddleware()
-  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
   const { getByTestId } = await render(<App />, { store })
 
   await getByTestId('activity-layer-panel-switch-ais').click()
 
-  // WHY: Get all dispatched actions to find the one we're testing
-  // filtering out 'middlewareRegistered' actions automatically
-  const actions = testingMiddleware.getActions()
-  // WHY: findLast gets the most recent HOME action (navigation action)
-  // HOME actions contain the full URL state including dataviewInstances
-  const toggleAction = actions.findLast((action) => action.type === 'HOME')
+  // WHY: After the TanStack Router migration, every URL update arrives as a
+  // single `location/setLocation` action whose `payload.type` is the legacy
+  // ROUTE_TYPES constant (here, 'HOME'). See router/router-sync.ts.
+  //
+  // `getLastLocationActionByType(type)` is a thin wrapper around
+  // `getActions().filter(...)` that returns the latest matching action.
+  const toggleAction = testingMiddleware.getLastLocationActionByType('HOME')
 
   // WHY: Verify both the action payload AND the resulting store state
   // This ensures the UI interaction → action → reducer → state flow works correctly
-  expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
+  expect(toggleAction?.payload.query.dataviewInstances).toMatchObject(expectedResult)
   expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
 })
 ```
+
+> Older guides referenced `actions.findLast((a) => a.type === 'HOME')` and read
+> `action.query` / `action.payload`. That shape was Redux First Router; after
+> the TanStack Router migration the same data lives under `action.payload.query`
+> and `action.payload.payload` on a `location/setLocation` action. Use
+> `testingMiddleware.getLastLocationActionByType('HOME' | 'WORKSPACE' | ...)`
+> and `testingMiddleware.waitForLocationType('WORKSPACE_REPORT')` instead.
 
 **Use Cases:**
 
@@ -170,7 +185,7 @@ Testing adding, removing, and configuring data layers.
 it('should add reference data layer', async () => {
   // WHY: Testing middleware captures Redux actions so we can verify state changes
   const testingMiddleware = createTestingMiddleware()
-  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
   const { getByTestId } = await render(<App />, { store })
 
   await getByTestId('activity-add-layer-button').click()
@@ -183,14 +198,17 @@ it('should add reference data layer', async () => {
   // If we're only checking the Redux action, this wait might not be necessary!
   await new Promise((resolve) => setTimeout(resolve, 2000))
 
-  const actions = testingMiddleware.getActions()
-  const addLayerAction = actions.findLast((action) => action.type === 'HOME')
+  // WHY: After the TanStack Router migration, URL updates arrive as a single
+  // `location/setLocation` action whose `payload.type` is the legacy ROUTE_TYPES
+  // constant ('HOME', 'WORKSPACE', ...). The helper hides that nesting so
+  // assertions stay close to what they used to be.
+  const addLayerAction = testingMiddleware.getLastLocationActionByType('HOME')
 
   // WHY: Use expect.stringContaining for IDs because they include timestamps
   // Layer IDs are generated as 'eez__1771416000000' (dataviewId + timestamp)
   // ℹ️ NOTE: This assertion doesn't need a wait because we're checking the Redux action,
   // not the rendered map. The action is dispatched immediately when the button is clicked.
-  expect(addLayerAction?.query).toMatchObject({
+  expect(addLayerAction?.payload.query).toMatchObject({
     dataviewInstances: [{ id: expect.stringContaining('eez'), category: 'context' }]
   })
 })
@@ -631,12 +649,17 @@ Track Redux actions using the custom testing middleware.
 
 ```typescript
 const testingMiddleware = createTestingMiddleware()
-const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
 // ... perform actions ...
 
+// Generic action history:
 const actions = testingMiddleware.getActions()
 const targetAction = actions.findLast((action) => action.type === 'TARGET_TYPE')
+
+// Navigation/URL assertions (post TanStack-Router migration):
+const lastHome = testingMiddleware.getLastLocationActionByType('HOME')
+expect(lastHome?.payload.query).toMatchObject({ ... })
 ```
 
 ### 5. **Mock Time-Dependent Values**
@@ -791,7 +814,7 @@ Provides a consistent starting state for all tests.
 ```typescript
 import { defaultState } from 'test/utils/store/redux-store-test'
 
-const store = makeStore(defaultState, [], true)
+const store = makeStore(defaultState, [])
 ```
 
 ### Testing Middleware
@@ -809,7 +832,7 @@ const testingMiddleware = createTestingMiddleware()
 
 // WHY: Pass middleware array to makeStore to intercept all Redux actions
 // The middleware records every action that flows through the store
-const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
 // ... perform actions ...
 
@@ -826,9 +849,16 @@ const lastAction = actions.findLast((action) => action.type === 'TARGET_TYPE')
 
 - `getActions()` - Returns all dispatched actions (filters out internal Redux Toolkit actions)
 - `getActionsByType(type)` - Returns only actions matching a specific type
+- `getLastActionByType(type)` - Returns the most recent action matching `type`
+- `getLastLocationActionByType(routeType)` - Returns the most recent `location/setLocation`
+  whose `payload.type` is a `ROUTE_TYPES` constant. Use this for navigation /
+  URL-update assertions after the TanStack Router migration.
 - `waitForAction(type, timeout)` - Async wait for a specific action to be dispatched
   - WHY: Useful for testing async workflows and side effects
   - WHY: Timeout prevents tests from hanging if the action never occurs
+- `waitForLocationType(routeType, timeout)` - Async variant of
+  `getLastLocationActionByType`. Use instead of `waitForAction('WORKSPACE_REPORT')`
+  to wait for a `location/setLocation` action with `payload.type` matching.
 - `createMiddleware()` - Creates the Redux middleware instance
   - Intercepts every action that flows through the store
   - Records actions for later assertions
@@ -883,6 +913,14 @@ Located in `test/utils/actions/`
 Pre-built actions for setting up application state programmatically.
 
 > **Important:** These actions are NOT for testing navigation itself. They are for **setting up test preconditions** by dispatching Redux actions directly, bypassing the UI. This makes tests faster and more focused on the specific feature being tested.
+
+Each file exports a ready-to-dispatch `location/setLocation` action (built with
+`setLocation(<LocationState>)`). Dispatching one seeds `state.location` to the
+shape `setupRouterSync` would produce in production, without actually moving the
+TanStack Router. When a test also needs the router to know it is "at" that URL
+(for example, to assert on `router.state.location` afterwards), call
+`router.navigate(...)` from the value returned by `render` — the router-sync
+subscription will then dispatch its own `setLocation`.
 
 ```typescript
 import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
@@ -1073,7 +1111,7 @@ describe('New Feature', () => {
     // WHY: Testing middleware captures all Redux actions for verification
     const testingMiddleware = createTestingMiddleware()
     // WHY: Create store with testing middleware to intercept actions
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId } = await render(<App />, { store })
 
     // 2. Act

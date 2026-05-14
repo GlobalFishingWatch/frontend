@@ -21,8 +21,11 @@ import { reportStateAtom } from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectFetchEventsStatsParams } from 'features/reports/tabs/events/events-report.selectors'
 import { timerangeState } from 'features/timebar/timebar.hooks'
+import { setLocation } from 'router/location.slice'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { makeStore } from 'store'
+import type { QueryParams } from 'types'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
@@ -93,7 +96,7 @@ describe('Reports', () => {
 
   it('should navigate to a report from eez', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
 
     const { getByTestId } = await render(<App />, { store, jotaiStore })
@@ -122,13 +125,15 @@ describe('Reports', () => {
 
     await userEvent.click(getByTestId('open-analysis-link'))
 
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    // Navigations now arrive as `location/setLocation` actions with payload.type
+    // set to the legacy ROUTE_TYPES constant (here, WORKSPACE_REPORT).
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
     expect(store.getState().location.type).toBe(WORKSPACE_REPORT)
   })
 
   it('should display the date chosen in the timebar with the imprecision tolerance in the report description', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(mpaReportAction)
@@ -151,7 +156,7 @@ describe('Reports', () => {
 
   it('should show same report data at different zoom levels', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     store.dispatch(mpaReportAction)
     const { getByTestId } = await render(<App />, { store, jotaiStore })
@@ -169,11 +174,11 @@ describe('Reports', () => {
   //skipping as we removed the interval buttons
   it.skip('should update report data when timebar changes', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(mpaReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
 
     await waitForReportFeaturesLoaded(jotaiStore)
 
@@ -203,11 +208,11 @@ describe('Reports', () => {
 
   it('should update report data when filter changes', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
     store.dispatch(eezReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const initialHours = getCalculatedReportHours(jotaiStore)
@@ -239,7 +244,7 @@ describe('Reports', () => {
 
   it('should show no data message when no data', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
@@ -247,34 +252,38 @@ describe('Reports', () => {
       start: '2025-12-17T00:00:00.000Z',
       end: '2025-12-18T00:00:00.000Z',
     })
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: 8402,
-      },
-      query: {
-        longitude: -64.8109861,
-        latitude: 32.42313903,
-        zoom: 5.44564202,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
+    store.dispatch(
+      setLocation({
+        type: WORKSPACE_REPORT,
+        payload: {
+          category: 'fishing-activity',
+          workspaceId: 'default-public',
+          datasetId: 'public-eez-areas',
+          areaId: '8402',
+        },
+        pathname: '/fishing-activity/default-public/report/public-eez-areas/8402',
+        to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+        query: {
+          longitude: -64.8109861,
+          latitude: 32.42313903,
+          zoom: 5.44564202,
+          dataviewInstances: [
+            {
+              id: 'context-layer-eez',
+              config: {
+                visible: true,
+              },
             },
-          },
-          {
-            id: 'vms',
-            deleted: true,
-          },
-        ],
-        activityVisualizationMode: 'heatmap-low-res',
-        bivariateDataviews: null,
-      },
-    })
+            {
+              id: 'vms',
+              deleted: true,
+            },
+          ],
+          activityVisualizationMode: 'heatmap-low-res',
+          bivariateDataviews: null,
+        } as unknown as QueryParams,
+      })
+    )
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect.element(getByText(/No data available for the selected area/)).toBeVisible()
@@ -282,11 +291,11 @@ describe('Reports', () => {
 
   it('should add new subcategory option when new layer is added from layer library', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(mpaReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
 
     await getByTestId('report-summary-add-layer-button').click()
     await getByTestId('add-layer-presence-button').click()
@@ -332,7 +341,7 @@ describe('Global reports', () => {
 
   it('should open global report when clicking on highlighted workspace in reports category', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const rendered = await render(<App />, { store })
     const getByTestId = rendered.getByTestId
     await getByTestId('link-category-reports').click()
@@ -345,10 +354,10 @@ describe('Global reports', () => {
 
   it('should have activity, events and detections tabs', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByText } = await render(<App />, { store })
     store.dispatch(openGlobalReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
 
     expect(getByText('Activity')).toBeDefined()
     expect(getByText('Events')).toBeDefined()
@@ -357,11 +366,11 @@ describe('Global reports', () => {
 
   it('should display the same number in the graph as in the timeseries', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
     await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
 
     const statsQueryState = await waitForStatsQueryLoaded(store)
@@ -391,11 +400,11 @@ describe('Global reports', () => {
 
   it('should change dataviews when changing tabs', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
 
     await userEvent.click(getByText('Activity'))
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -430,11 +439,11 @@ describe('Global reports', () => {
 
   it('should show detections in detections tab', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByText, getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
-    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await testingMiddleware.waitForLocationType(WORKSPACE_REPORT)
 
     const detectionsTab = getByText('Detections')
     await userEvent.click(detectionsTab)
@@ -453,7 +462,7 @@ describe('Global reports', () => {
 describe('Private user reports', () => {
   it('should show correct access message for private reports', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(undefined, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(undefined, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByText } = await render(<App />, {
       store,
@@ -461,22 +470,26 @@ describe('Private user reports', () => {
       authenticated: false,
     })
 
-    store.dispatch({
-      type: 'REPORT',
-      payload: {
-        reportId: 'report_02-user',
-      },
-      query: {
-        latitude: 18.96145885,
-        longitude: -92.26889933,
-        zoom: 11.39497648,
-        userTab: 'reports',
-        start: '2025-01-01T00:00:00.000Z',
-        end: '2026-01-01T00:00:00.000Z',
-        reportCategory: 'others',
-        reportVesselPage: 0,
-      },
-    })
+    store.dispatch(
+      setLocation({
+        type: REPORT,
+        payload: {
+          reportId: 'report_02-user',
+        },
+        pathname: '/report/report_02-user',
+        to: ROUTE_PATHS.REPORT,
+        query: {
+          latitude: 18.96145885,
+          longitude: -92.26889933,
+          zoom: 11.39497648,
+          userTab: 'reports',
+          start: '2025-01-01T00:00:00.000Z',
+          end: '2026-01-01T00:00:00.000Z',
+          reportCategory: 'others',
+          reportVesselPage: 0,
+        } as unknown as QueryParams,
+      })
+    )
 
     await testingMiddleware.waitForAction('reports/fetch/rejected')
 
@@ -490,7 +503,7 @@ describe('Private user reports', () => {
 
   it('should show user reports when user is logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, {
       store,
@@ -504,13 +517,13 @@ describe('Private user reports', () => {
 
     const reportLink = getByText(/Report01/i)
     await userEvent.click(reportLink)
-    await testingMiddleware.waitForAction(REPORT)
+    await testingMiddleware.waitForLocationType(REPORT)
     expect(store.getState().location.type).toBe(REPORT)
   })
 
   it('should correctly display others points reports data', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId, getByText } = await render(<App />, {
       store,
@@ -524,7 +537,7 @@ describe('Private user reports', () => {
 
     const reportLink = getByText(/Report02/i)
     await userEvent.click(reportLink)
-    await testingMiddleware.waitForAction(REPORT)
+    await testingMiddleware.waitForLocationType(REPORT)
     expect(store.getState().location.type).toBe(REPORT)
 
     await userEvent.click(getByText(/Others/i))
@@ -536,7 +549,7 @@ describe('Private user reports', () => {
 describe('Data Comparison', () => {
   it('should show second selector when choose data comparison mode', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     store.dispatch(mpaReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
@@ -556,7 +569,7 @@ describe('Data Comparison', () => {
 
   it('should show both dataviews in map when compared data is selected', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     store.dispatch(mpaReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
@@ -572,10 +585,9 @@ describe('Data Comparison', () => {
     await userEvent.click(dataComparisonSelect)
     await userEvent.click(getByText(/imagery detections/i))
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'WORKSPACE_REPORT')
+    const addLayerAction = testingMiddleware.getLastLocationActionByType('WORKSPACE_REPORT')
 
-    expect(addLayerAction?.query).toMatchObject({
+    expect(addLayerAction?.payload.query).toMatchObject({
       reportComparisonDataviewIds: {
         compare: 'sentinel2__dataset-comparison',
         main: 'ais',
@@ -585,7 +597,7 @@ describe('Data Comparison', () => {
 
   it('should show both dataviews in graph when compared data is selected', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openComparisonReport)

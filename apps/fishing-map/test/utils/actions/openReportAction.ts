@@ -5,8 +5,12 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
 } from 'data/workspaces'
+import type { LocationState } from 'router/location.slice'
+import { setLocation } from 'router/location.slice'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
 
-export const OPEN_REPORT_ACTION = {
+const BASE_REPORT_LOCATION: LocationState = {
   type: 'WORKSPACE_REPORT',
   payload: {
     category: 'fishing-activity',
@@ -14,6 +18,8 @@ export const OPEN_REPORT_ACTION = {
     datasetId: 'public-eez-areas',
     areaId: '8361',
   },
+  pathname: '/fishing-activity/default-public/report/public-eez-areas/8361',
+  to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
   query: {
     longitude: -28.09249823,
     latitude: 38.48103761,
@@ -27,8 +33,14 @@ export const OPEN_REPORT_ACTION = {
       },
     ],
     bivariateDataviews: null,
-  },
+  } as unknown as QueryParams,
 }
+
+/**
+ * Pre-built `location/setLocation` action that seeds Redux state to match a
+ * navigation to the Azores EEZ report.
+ */
+export const OPEN_REPORT_ACTION = setLocation(BASE_REPORT_LOCATION)
 
 type DatasetId = 'public-eez-areas' | 'public-mpa-all' | 'public-rfmo'
 const dataviewInstancesByDatasetId: Record<DatasetId, UrlDataviewInstance[]> = {
@@ -78,18 +90,19 @@ const getOpenReportActionByDatasetAndAreaName = (
   if (!areaId) {
     throw new Error(`Area ID not found for ${areaName}`)
   }
-  return {
-    ...OPEN_REPORT_ACTION,
+  return setLocation({
+    ...BASE_REPORT_LOCATION,
     payload: {
-      ...OPEN_REPORT_ACTION.payload,
+      ...BASE_REPORT_LOCATION.payload,
       datasetId,
       areaId,
     },
+    pathname: `/fishing-activity/default-public/report/${datasetId}/${areaId}`,
     query: {
-      ...OPEN_REPORT_ACTION.query,
+      ...BASE_REPORT_LOCATION.query,
       dataviewInstances: dataviewInstancesByDatasetId[datasetId] || [],
-    },
-  }
+    } as unknown as QueryParams,
+  })
 }
 
 type ReportArea = 'eez' | 'mpa' | 'rfmo'

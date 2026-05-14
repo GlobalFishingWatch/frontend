@@ -14,7 +14,7 @@ import { makeStore } from 'store'
 describe('Marine Manager', () => {
   it('should be able to navigate to marine manager workspace through sidebar', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
     const { getByTestId, getByText, getByRole } = await render(<App />, { store })
 
@@ -22,35 +22,29 @@ describe('Marine Manager', () => {
 
     await userEvent.click(getByRole('link', { name: 'Fiji' }).first())
 
-    const action = testingMiddleware.getLastActionByType('WORKSPACE')
+    // After the TanStack Router migration, the WORKSPACE navigation is
+    // captured as a `location/setLocation` action; payload mirrors LocationState.
+    const action = testingMiddleware.getLastLocationActionByType('WORKSPACE')
 
-    expect(action).toMatchObject({
+    expect(action).toBeDefined()
+    expect(action?.payload).toMatchObject({
       type: 'WORKSPACE',
       payload: {
         category: 'marine-manager',
         workspaceId: 'fiji-public',
       },
-      replaceQuery: true,
-      meta: {
-        location: {
-          kind: expect.stringMatching(/redirect|push/),
-          current: {
-            pathname: '/marine-manager/fiji-public',
-            payload: {
-              category: 'marine-manager',
-              workspaceId: 'fiji-public',
-            },
-          },
-          prev: expect.any(Object),
-        },
-      },
+      pathname: '/marine-manager/fiji-public',
+    })
+    expect(store.getState().location.payload).toMatchObject({
+      category: 'marine-manager',
+      workspaceId: 'fiji-public',
     })
     await expect.element(getByText('Fiji')).toBeInTheDocument()
   })
 
   it('should show workspace layers matching the workspace configuration', async () => {
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     store.dispatch(navigateToFijiWorkspaceWithAllLayersAction)
 
     await render(<App />, { store, jotaiStore })

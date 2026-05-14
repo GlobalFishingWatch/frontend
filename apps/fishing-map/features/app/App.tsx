@@ -179,7 +179,7 @@ function App() {
   //   return null
   // }
 
-  const searchParams = useSearch({ strict: false })
+  const searchParams = useSearch({ from: '/_app', strict: false })
   if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
     return null
   }

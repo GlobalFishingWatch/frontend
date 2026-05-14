@@ -1,5 +1,31 @@
 # Integration Tests
 
+## Routing in tests
+
+The fishing-map app routes through [TanStack Router](https://tanstack.com/router/latest).
+Integration tests mirror production routing inside a Vitest browser:
+
+- `test/utils/router/createTestRouter.ts` calls `createRouter` with the same
+  options as production (routeTree, basepath, parse/stringify search) via
+  `getCreateRouterOptions()` from [`router.tsx`](../router.tsx), but swaps the
+  default browser history for `createMemoryHistory` so each test gets a clean,
+  deterministic URL.
+- `test/appTestUtils.tsx` builds the wrapper used by the `render` helper:
+  `RouterContextProvider router={router}` → Redux `Provider` → Jotai `Provider`.
+  Before rendering it calls `await router.load()` (so route-aware hooks like
+  `useSearch`, `useParams`, and `useReplaceQueryParams` have data) and
+  `setupRouterSync(router, store)` (so TanStack Router → Redux `state.location`
+  stays in sync exactly like production via `location/setLocation`).
+- `render(...)` returns the `router` alongside the usual vitest-browser-react
+  query helpers. Tests can call `router.navigate({ to, search, params })` or
+  assert on `router.state.location` per the
+  [TanStack file-based routing test guide](https://tanstack.com/router/latest/docs/how-to/test-file-based-routing).
+
+After this migration there is no separate "RFR action" navigation indirection:
+the helpers under `test/utils/actions/` now export `location/setLocation` actions
+(built with `setLocation(...)`), so `store.dispatch(navigateToVesselSearchAction)`
+seeds `state.location` with the same shape as the router-sync flow.
+
 ## Running tests locally
 
 ```bash

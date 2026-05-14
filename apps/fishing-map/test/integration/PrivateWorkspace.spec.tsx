@@ -10,7 +10,7 @@ import { makeStore } from 'store'
 
 describe('PrivateWorkspace', async () => {
   it('should not be able to navigate to the private workspace if not authenticated', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(navigateToWorkspace01Action)
 
@@ -21,7 +21,7 @@ describe('PrivateWorkspace', async () => {
   })
 
   it('should be able to navigate to the private workspace if authenticated', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(navigateToWorkspace01Action)
 
@@ -31,7 +31,7 @@ describe('PrivateWorkspace', async () => {
   })
 
   it('should be able to navigate to a password-protected workspace if correct password is used', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(navigateToWorkspace02Action)
 
@@ -47,7 +47,7 @@ describe('PrivateWorkspace', async () => {
   })
 
   it('should not be able to navigate to a password-protected workspace if incorrect password is used', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(navigateToWorkspace02Action)
 

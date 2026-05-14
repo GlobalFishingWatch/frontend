@@ -15,7 +15,7 @@ describe('Sidebar tools', () => {
   })
 
   it('should open feedback modal', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByTestId, getByRole } = await render(<App />, { store })
 
     await userEvent.hover(getByTestId('feedback-button'))
@@ -24,7 +24,7 @@ describe('Sidebar tools', () => {
   })
 
   it('should change language from selector', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByTestId } = await render(<App />, { store })
     const activitySection = getByTestId('activity-section')
 
@@ -43,7 +43,7 @@ describe('Sidebar tools', () => {
   })
 
   it('should toggle sidebar', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByLabelText } = await render(<App />, { store })
     const previousSidebarOpen = store.getState()?.location?.query?.sidebarOpen
 
@@ -63,8 +63,7 @@ describe('Sidebar tools', () => {
           hintsDismissed: {},
         },
       },
-      [],
-      true
+      []
     )
     const { getByText } = await render(<App />, { store })
 
@@ -76,7 +75,7 @@ describe('Sidebar tools', () => {
   })
 
   it('should restore help hints when requested', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByTestId } = await render(<App />, { store })
 
     await userEvent.hover(getByTestId('help-hub-button'))

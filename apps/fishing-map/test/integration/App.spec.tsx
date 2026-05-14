@@ -21,9 +21,10 @@ describe('Fishing Map App', () => {
 
     await button.click()
 
-    const actions = testingMiddleware.getActions()
-
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    // After the TanStack Router migration, layer toggles surface as
+    // `location/setLocation` actions whose payload.type is the legacy ROUTE_TYPES
+    // constant (here, 'HOME'). See router/router-sync.ts.
+    const toggleAction = testingMiddleware.getLastLocationActionByType('HOME')
 
     const expectedResult = [
       {
@@ -34,7 +35,7 @@ describe('Fishing Map App', () => {
       },
     ]
     expect(toggleAction).toBeDefined()
-    expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
+    expect(toggleAction?.payload.query.dataviewInstances).toMatchObject(expectedResult)
     expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
   })
 
@@ -48,8 +49,7 @@ describe('Fishing Map App', () => {
     await new Promise((resolve) => setTimeout(resolve, 1100))
 
     await getByTestId('activity-layer-panel-switch-ais').click()
-    const actions = testingMiddleware.getActions()
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    const toggleAction = testingMiddleware.getLastLocationActionByType('HOME')
 
     const expectedResult = {
       dataviewInstances: [
@@ -64,7 +64,7 @@ describe('Fishing Map App', () => {
       longitude: 26,
       zoom: 2.49,
     }
-    expect(toggleAction?.query).toMatchObject(expectedResult)
+    expect(toggleAction?.payload.query).toMatchObject(expectedResult)
     expect(store.getState().location.query).toMatchObject(expectedResult)
   })
 })

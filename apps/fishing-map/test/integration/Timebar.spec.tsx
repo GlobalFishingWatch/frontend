@@ -18,7 +18,7 @@ describe('App Timebar Integration', () => {
 
   it('the map should be interactive after timebar interaction', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, {
       store,
@@ -63,7 +63,7 @@ describe('App Timebar Integration', () => {
   })
 
   it('events should be visible on timebar', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByTestId, getByText } = await render(<App />, {
       store,
     })
@@ -82,7 +82,7 @@ describe('App Timebar Integration', () => {
   })
 
   it('detections should be visible on timebar', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const { getByTestId, getByText } = await render(<App />, {
       store,
     })

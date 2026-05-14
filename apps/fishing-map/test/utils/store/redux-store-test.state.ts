@@ -8485,8 +8485,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
       vesselsMaxTimeGapHours: false,
     },
   },
-  description:
-    'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.',
   downloadActivity: {
     activeTabId: 'byVessel',
     fileName: '',
@@ -8507,11 +8505,20 @@ export const REDUX_STORE_DEFAULT_STATE = {
     },
   },
   location: {
-    kind: 'redirect',
-    pathname: '/index',
+    type: 'HOME',
+    pathname: '/',
+    to: '/',
     payload: {},
+    query: {
+      dataviewInstances: [{ config: { locale: 'en' }, id: 'basemap-labels' }],
+      latitude: 19,
+      longitude: 26,
+      zoom: 1.49,
+    },
     prev: {
-      pathname: '/index',
+      type: 'HOME',
+      pathname: '/',
+      to: '/',
       payload: {},
       query: {
         dataviewInstances: [{ config: { locale: 'en' }, id: 'basemap-labels' }],
@@ -8519,33 +8526,7 @@ export const REDUX_STORE_DEFAULT_STATE = {
         longitude: 26,
         zoom: 1.49,
       },
-      search:
-        'longitude=26&latitude=19&zoom=1.49&dvIn[0][id]=basemap-labels&dvIn[0][cfg][locale]=en',
-      type: 'HOME',
     },
-    query: {
-      dataviewInstances: [{ config: { locale: 'en' }, id: 'basemap-labels' }],
-      latitude: 19,
-      longitude: 26,
-      zoom: 1.49,
-    },
-    routesMap: {
-      '@@redux-first-router/NOT_FOUND': { path: '' },
-      HOME: { path: '/index' },
-      PORT_REPORT: { path: '/:category/:workspaceId/ports-report/:portId' },
-      REPORT: { path: '/report/:reportId' },
-      SEARCH: { path: '/vessel-search' },
-      USER: { path: '/user' },
-      VESSEL: { path: '/vessel/:vesselId' },
-      VESSEL_GROUP_REPORT: { path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId' },
-      WORKSPACE: { path: '/:category/:workspaceId?' },
-      WORKSPACES_LIST: { path: '/:category' },
-      WORKSPACE_REPORT: { path: '/:category/:workspaceId/report/:datasetId?/:areaId?' },
-      WORKSPACE_SEARCH: { path: '/:category/:workspaceId/vessel-search' },
-      WORKSPACE_VESSEL: { path: '/:category/:workspaceId/vessel/:vesselId' },
-    },
-    search: 'longitude=26&latitude=19&zoom=1.49&dvIn[0][id]=basemap-labels&dvIn[0][cfg][locale]=en',
-    type: 'HOME',
   },
   map: {
     apiActivityError: '',
@@ -8620,7 +8601,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
     suggestionClicked: false,
   },
   timebar: { hasChangedSettingsOnce: false, highlightedEvents: [] },
-  title: 'GFW | Map',
   trackCorrection: {
     comment: '',
     newIssue: { timerange: { end: '', start: '' }, type: 'falsePositive', vesselDataviewId: '' },

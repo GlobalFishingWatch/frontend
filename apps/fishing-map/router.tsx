@@ -25,19 +25,28 @@ const stringifyAppWorkspace = (search: QueryParams): string => {
   return str ? `?${str}` : ''
 }
 
-function createAppRouter() {
-  const router = createRouter({
+/**
+ * Shared router configuration without `history`.
+ * Production uses the default browser history; tests swap in `createMemoryHistory`.
+ * Keep this as the single source of truth so test routers do not drift from prod.
+ */
+export function getCreateRouterOptions() {
+  return {
     routeTree,
     basepath: PATH_BASENAME,
-    defaultPreload: 'intent',
-    trailingSlash: 'never',
+    defaultPreload: 'intent' as const,
+    trailingSlash: 'never' as const,
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <ErrorBoundaryUI error={error} />,
     defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
-  })
+  }
+}
+
+function createAppRouter() {
+  const router = createRouter(getCreateRouterOptions())
 
   return router
 }
