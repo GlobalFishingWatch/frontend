@@ -32,22 +32,20 @@ function normalizeRouteId(routeId: string): RoutePathValues {
 
 /**
  * Sets up the one-way sync from TanStack Router → Redux state.location.
- * Also handles the workspace history tracking logic that was previously
- * in routerWorkspaceMiddleware.
+ * Also handles workspace history tracking
+ *
+ * Two subscribers:
+ *  - onBeforeNavigate: location sync + history tracking, runs before the new
+ *    route renders so layout components never see a stale location state.
+ *  - onResolved: single cleanup — clears the isHistoryNavigation flag from the
+ *    committed history entry (requires the entry to exist in browser history first).
  */
 export function setupRouterSync(router: AnyRouter, store: AppStore) {
-  // Sync the initial router state to Redux immediately.
-  // The 'onResolved' event only fires on pending→resolved transitions,
-  // which may not happen on initial load when routes have no loaders.
-  // We use router.matchRoutes() because router.state.matches is still
-  // empty at this point (matches are populated by router.load() later).
-  // Strip basepath from pathname: with Next.js basepath /map, browser pathname
-  // is /map or /map/..., while router expects paths relative to basepath.
-  const pathname =
-    router.latestLocation.pathname.replace(
-      new RegExp(`^${PATH_BASENAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
-      ''
-    ) || '/'
+  const basenameRegex = new RegExp(`^${PATH_BASENAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+
+  // Sync the initial route to Redux immediately — onBeforeNavigate only fires
+  // for navigations that happen after this setup runs (inside a useEffect).
+  const pathname = router.latestLocation.pathname.replace(basenameRegex, '') || '/'
   const initialMatches = router.matchRoutes(pathname, router.latestLocation.search)
   const initialMatch = initialMatches[initialMatches.length - 1]
   if (initialMatch) {
@@ -56,59 +54,45 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
     const search = router.latestLocation.search as unknown as QueryParams
     store.dispatch(
       setLocation({
-        // Legacy format (backward compatibility)
         type: routeType,
         payload: params,
         query: search,
         pathname: router.latestLocation.pathname,
-        // TanStack Router format (direct usage)
         to: normalizeRouteId(initialMatch.routeId),
       })
     )
   }
 
-  // Track last synced href to skip redundant dispatches.
-  // Multiple navigations can fire onResolved in quick succession
-  // (e.g., layer toggle + viewport rAF + timebar rAF).
-  let lastSyncedHref = ''
+  // Deduplicate rapid-fire events for the same URL (viewport rAF, timebar rAF, etc.)
+  let lastDispatchedHref = router.latestLocation.href
 
-  router.subscribe('onResolved', (event: RouterEvents['onResolved']) => {
-    const { toLocation, fromLocation } = event
+  // onBeforeNavigate: location sync + history tracking.
+  // Runs before TanStack Router renders the new route, so layout components
+  // uses the new location state and avoids intermediate UI flash.
+  router.subscribe('onBeforeNavigate', (event: RouterEvents['onBeforeNavigate']) => {
+    const { toLocation } = event
 
-    // Skip if the URL hasn't changed since the last sync
-    if (toLocation.href === lastSyncedHref) {
+    if (toLocation.href === lastDispatchedHref) return
+    lastDispatchedHref = toLocation.href
+
+    const toPathname = toLocation.pathname.replace(basenameRegex, '') || '/'
+    const toMatches = router.matchRoutes(toPathname, toLocation.search)
+    const toMatch = toMatches[toMatches.length - 1]
+    if (!toMatch) {
       return
     }
-    lastSyncedHref = toLocation.href
 
-    const matches = router.state.matches
-    const lastMatch = matches[matches.length - 1]
-
-    if (!lastMatch) {
-      return
-    }
-
-    const routeType = mapRouteIdToType(lastMatch.routeId)
-    const params = lastMatch.params as unknown as LinkToPayload
+    const routeType = mapRouteIdToType(toMatch.routeId)
+    const params = toMatch.params as unknown as LinkToPayload
     const search = toLocation.search as unknown as QueryParams
     const navState = (toLocation.state || {}) as NavigationState
-
     const state = store.getState()
     const prevLocation = state.location
 
-    // --- Workspace middleware logic: history navigation tracking ---
+    // --- Workspace history tracking ---
     const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
     if (isNotInitialLoad) {
       const isHistoryNavigation = navState.isHistoryNavigation ?? false
-      // Reset the flag immediately via replace so it doesn't bleed into subsequent navigations.
-      // Same-href replace → lastSyncedHref guard catches the resulting onResolved → no re-processing.
-      if (isHistoryNavigation) {
-        router.navigate({
-          replace: true,
-          resetScroll: false,
-          state: (prev) => ({ ...prev, isHistoryNavigation: undefined }),
-        })
-      }
       const allHistoryNavigation = state.workspace?.historyNavigation || []
       const currentHistoryNavigation = isHistoryNavigation
         ? allHistoryNavigation.slice(0, -1)
@@ -125,7 +109,6 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
         !isHistoryNavigation &&
         (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
       ) {
-        // Store history in TanStack Router format - copy directly from location state
         const newHistoryNavigation: LastWorkspaceVisited = {
           pathname: prevLocation.pathname,
           to: prevLocation.to || ROUTE_PATHS.HOME,
@@ -138,7 +121,6 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
       } else if (lastHistoryNavigation) {
         const updatedHistoryNavigation = currentHistoryNavigation.map(
           (navigation: LastWorkspaceVisited) => {
-            // Determine route type from path pattern to check if we should update dataviewInstances
             const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
             if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(navRouteType)) {
               const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(navRouteType)
@@ -161,17 +143,14 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
       }
     }
 
-    // --- Sync to Redux ---
     store.dispatch(
       setLocation({
-        // Legacy format (backward compatibility)
         type: routeType,
         payload: params,
         query: search,
         pathname: toLocation.pathname,
-        // TanStack Router format (direct usage)
-        to: normalizeRouteId(lastMatch.routeId),
-        prev: fromLocation
+        to: normalizeRouteId(toMatch.routeId),
+        prev: prevLocation.type
           ? {
               type: prevLocation.type,
               payload: prevLocation.payload,
@@ -182,5 +161,16 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
           : undefined,
       })
     )
+  })
+
+  // onResolved: only clear the isHistoryNavigation flag from the committed history.
+  router.subscribe('onResolved', (event: RouterEvents['onResolved']) => {
+    const navState = (event.toLocation.state || {}) as NavigationState
+    if (navState.isHistoryNavigation) {
+      router.history.replace(event.toLocation.href, {
+        ...event.toLocation.state,
+        isHistoryNavigation: undefined,
+      })
+    }
   })
 }
