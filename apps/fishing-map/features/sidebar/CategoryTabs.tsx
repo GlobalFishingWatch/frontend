@@ -36,7 +36,6 @@ import {
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
@@ -56,7 +55,6 @@ type CategoryTabsProps = {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const { dispatchClickedEvent } = useClickedEventConnect()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
@@ -97,14 +95,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onWorkspaceClick = useCallback(() => {
     resetSidebarScroll()
-    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
     dispatch(resetReportData())
     dispatch(resetVesselGroupReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
     dispatch(resetWorkspaceHistoryNavigation())
-  }, [dispatch, replaceQueryParams])
+  }, [dispatch])
 
   return (
     <Fragment>

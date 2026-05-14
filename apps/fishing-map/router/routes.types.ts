@@ -24,6 +24,4 @@ export type LinkTo = {
   params?: LinkToPayload
   /** Query/search params */
   search: QueryParams
-  /** Flag indicating if this is a history navigation */
-  isHistoryNavigation?: boolean
 }

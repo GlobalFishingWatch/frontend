@@ -14,7 +14,6 @@ import { mapRouteIdToType, ROUTE_PATHS } from './routes.utils'
 
 export interface NavigationState {
   isHistoryNavigation?: boolean
-  skipHistoryNavigation?: boolean
 }
 
 /**
@@ -99,9 +98,22 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
 
     // --- Workspace middleware logic: history navigation tracking ---
     const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
-    if (isNotInitialLoad && !navState.skipHistoryNavigation) {
-      const currentHistoryNavigation = state.workspace?.historyNavigation || []
-      const lastHistoryNavigation = currentHistoryNavigation[currentHistoryNavigation.length - 1]
+    if (isNotInitialLoad) {
+      const isHistoryNavigation = navState.isHistoryNavigation ?? false
+      // Reset the flag immediately via replace so it doesn't bleed into subsequent navigations.
+      // Same-href replace → lastSyncedHref guard catches the resulting onResolved → no re-processing.
+      if (isHistoryNavigation) {
+        router.navigate({
+          replace: true,
+          resetScroll: false,
+          state: (prev) => ({ ...prev, isHistoryNavigation: undefined }),
+        })
+      }
+      const allHistoryNavigation = state.workspace?.historyNavigation || []
+      const currentHistoryNavigation = isHistoryNavigation
+        ? allHistoryNavigation.slice(0, -1)
+        : allHistoryNavigation
+      const lastHistoryNavigation = allHistoryNavigation[allHistoryNavigation.length - 1]
       const isDifferentRoute =
         routeType !== prevLocation.type ||
         Object.entries(params).some(([key, value]) => value !== prevLocation.payload?.[key])
@@ -110,7 +122,7 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
 
       if (
         (isDifferentRoute || isDifferentTrackCorrection) &&
-        !navState.isHistoryNavigation &&
+        !isHistoryNavigation &&
         (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
       ) {
         // Store history in TanStack Router format - copy directly from location state
@@ -124,10 +136,7 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
           setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
         )
       } else if (lastHistoryNavigation) {
-        const historyNavigation = navState.isHistoryNavigation
-          ? currentHistoryNavigation.slice(0, -1)
-          : currentHistoryNavigation
-        const updatedHistoryNavigation = historyNavigation.map(
+        const updatedHistoryNavigation = currentHistoryNavigation.map(
           (navigation: LastWorkspaceVisited) => {
             // Determine route type from path pattern to check if we should update dataviewInstances
             const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
