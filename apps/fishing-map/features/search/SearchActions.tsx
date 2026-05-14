@@ -79,12 +79,18 @@ function SearchActions() {
       router.navigate({
         to: ROUTE_PATHS.WORKSPACE,
         params: { category, workspaceId },
-        search: { timebarVisualisation: TimebarVisualisations.Vessel },
+        search: (prev) => ({
+          ...prev,
+          timebarVisualisation: TimebarVisualisations.Vessel,
+        }),
       })
     } else {
       router.navigate({
         to: ROUTE_PATHS.HOME,
-        search: { timebarVisualisation: TimebarVisualisations.Vessel },
+        search: (prev) => ({
+          ...prev,
+          timebarVisualisation: TimebarVisualisations.Vessel,
+        }),
       })
     }
   }
