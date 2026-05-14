@@ -103,7 +103,7 @@ function WorkspaceWizard() {
     const highlightedArea = areasMatching[highlightedIndex as number]
     const bounds = highlightedArea?.properties.bounds
     if (bounds) {
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
     }
   }
 
@@ -208,6 +208,7 @@ function WorkspaceWizard() {
         <label>{t((t) => t.workspace.wizard.title)}</label>
         <div className={styles.comboContainer}>
           <InputText
+            // eslint-disable-next-line react-hooks/refs
             {...getInputProps({ ref: inputRef })}
             className={styles.input}
             placeholder={t((t) => t.map.search)}
