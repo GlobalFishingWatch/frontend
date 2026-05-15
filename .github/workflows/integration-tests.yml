@@ -95,11 +95,13 @@ jobs:
             # We track which targets are :test targets, accumulate output per-project
             # using the prefix, and detect pass/fail per project.
             /^> nx run / {
-              proj = $4
-              # Strip trailing colon if present
-              sub(/:$/, "", proj)
-              is_test_target[proj] = ($4 ~ /:test$/)
-              failed[proj] = 1
+              # $4 is e.g. "fishing-map:test" — split to get just the project name
+              split($4, parts, ":")
+              proj = parts[1]
+              if (parts[2] == "test") {
+                is_test_target[proj] = 1
+                failed[proj] = 1
+              }
             }
             {
               # Match lines prefixed by a known project: "proj-name: ..."
