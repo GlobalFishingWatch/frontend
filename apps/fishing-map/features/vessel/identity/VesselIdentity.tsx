@@ -43,6 +43,7 @@ import { parseVesselToCSV } from 'features/vessel/vessel.download'
 import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
+  getLatestIdentityPrioritised,
   getSkylightLink,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
@@ -68,7 +69,7 @@ const VesselIdentity = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { dispatchQueryParams } = useLocationConnect()
-  const { start, end, setTimerange } = useTimerangeConnect()
+  const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
@@ -77,6 +78,7 @@ const VesselIdentity = () => {
     identityId,
     identitySource,
   })
+  const latestVesselIdentity = getLatestIdentityPrioritised(vesselData)
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     dispatchQueryParams({ vesselIdentitySource: tab.id })
@@ -356,7 +358,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={getSkylightLink({ skylightId: vesselIdentity?.ssvid, start, end })}
+              href={getSkylightLink({ skylightId: latestVesselIdentity?.ssvid })}
               target="_blank"
               onClick={() => {
                 trackEvent({

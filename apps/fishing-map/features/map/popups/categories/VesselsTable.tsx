@@ -205,8 +205,6 @@ function VesselsTable({
                               <a
                                 href={getSkylightLink({
                                   skylightId: vessel.skylight_id,
-                                  start,
-                                  end,
                                 })}
                                 target="_blank"
                                 className={styles.link}
