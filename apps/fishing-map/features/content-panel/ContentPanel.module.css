@@ -50,10 +50,6 @@
   padding: var(--space-SM) var(--space-M);
 }
 
-.content {
-  font: var(--font-S);
-}
-
 .content a,
 .content a:visited {
   color: var(--color-highlight-orange-rgb);
@@ -65,8 +61,12 @@
   font-weight: bold;
 }
 
-.content p {
-  margin-bottom: var(--space-M);
+.subsection p {
+  margin-top: var(--space-SM);
+}
+
+.subsection {
+  padding-top: var(--space-L);
 }
 
 .content img {
@@ -75,12 +75,12 @@
 
 .content h2 {
   color: var(--color-primary-blue) !important;
-  font: var(--font-L);
+  font: var(--font-L-bold);
   padding: var(--space-S) 0;
 }
 
 .content h3 {
-  font: var(--font-M);
+  font: var(--font-L);
 }
 
 .content ol,
