@@ -343,9 +343,13 @@
 
 ## Map Popups
 
-- **`map/popups/categories/VesselsTable.tsx:83`**
+- **`map/popups/categories/VesselsTable.tsx`**
   - Action: `` `Clicked see vessel from ${feature?.category}` ``
   - Label: ``getEventLabel([`source: ${source}`])``
+
+  - Action: `click_skylight_search_from_popup`
+
+  - Action: `click_skylight_link_from_popup`
 
 - **`map/popups/categories/ContextLayers.tsx:30`**
   - Action: `'Click on polygon, click on download icon'`
