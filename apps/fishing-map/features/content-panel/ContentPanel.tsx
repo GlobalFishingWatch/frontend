@@ -12,6 +12,7 @@ import ContentHeader from 'features/content-panel/ContentHeader'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import InfoContainer from 'features/content-panel/InfoContainer'
+import MarkdownLink from 'features/content-panel/MarkdownLink'
 import TableOfContents from 'features/content-panel/TableOfContents'
 import { Route } from 'routes/_app'
 
@@ -51,6 +52,8 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
       })) || [],
     [filteredSections, searchQuery]
   )
+
+  const markdownComponents = useMemo(() => ({ a: MarkdownLink }), [])
 
   const selectedSection = useMemo(() => {
     return sidePanelId
@@ -100,13 +103,25 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
         ) : (
           <div className={cx(styles.content)}>
             <h2>{selectedSection.title}</h2>
-            <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+            <Markdown
+              rehypePlugins={[rehypeRaw]}
+              remarkPlugins={[remarkGfm]}
+              components={markdownComponents}
+            >
               {selectedSection.body}
             </Markdown>
             {selectedSection.subsections?.map((subsection) => (
-              <div key={subsection.id} id={subsection.slug || subsection.id}>
+              <div
+                key={subsection.id}
+                id={subsection.slug || subsection.id}
+                className={styles.subsection}
+              >
                 <h3>{subsection.title}</h3>
-                <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>
+                <Markdown
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={[remarkGfm]}
+                  components={markdownComponents}
+                >
                   {subsection.body}
                 </Markdown>
               </div>
