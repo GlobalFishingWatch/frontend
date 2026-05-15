@@ -362,6 +362,7 @@
     "VIIRSDelayDisclaimer": "Los datos de luz nocturna de VIIRS están disponibles con un retraso de ingestión de aproximadamente 3 meses."
   },
   "datasetUpload": {
+    "americanDateFormat": "Parse dates as Month-Day-Year format (MM/DD/YYYY)",
     "datasetDescription": "Descripción del conjunto de datos",
     "datasetName": "Nombre del conjunto de datos",
     "date": "Fecha",
