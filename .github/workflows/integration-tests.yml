@@ -90,27 +90,38 @@ jobs:
         if: always()
         run: |
           sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
-            function flush() {
-              if (target != "" && is_test) {
-                status = (failed ? "❌" : "✅")
-                printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
-                if (failed) fail_count++; else pass_count++
+            # With --parallel and --output-style=stream, Nx prefixes each line as:
+            #   "project-name: <log line>"
+            # We track which targets are :test targets, accumulate output per-project
+            # using the prefix, and detect pass/fail per project.
+            /^> nx run / {
+              proj = $4
+              # Strip trailing colon if present
+              sub(/:$/, "", proj)
+              is_test_target[proj] = ($4 ~ /:test$/)
+              failed[proj] = 1
+            }
+            {
+              # Match lines prefixed by a known project: "proj-name: ..."
+              if (match($0, /^([a-zA-Z0-9_-]+): /, arr)) {
+                proj = arr[1]
+                if (is_test_target[proj]) {
+                  line = substr($0, length(proj) + 3)
+                  output[proj] = (output[proj] == "" ? line : output[proj] "\n" line)
+                  if (/Tests +[0-9]+ passed/ && !/failed/) failed[proj] = 0
+                }
               }
             }
-            BEGIN { print "## Test Results\n" }
-            /^> nx run /{
-              flush()
-              target = $4
-              is_test = ($4 ~ /:test$/)
-              output = ""
-              failed = 1
-            }
-            is_test {
-              output = (output == "" ? $0 : output "\n" $0)
-              if (/Tests +[0-9]+ passed/ && !/failed/) failed = 0
-            }
             END {
-              flush()
+              print "## Test Results\n"
+              pass_count = 0
+              fail_count = 0
+              for (proj in is_test_target) {
+                if (!is_test_target[proj]) continue
+                status = (failed[proj] ? "❌" : "✅")
+                printf "<details>\n<summary>%s %s:test</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, proj, output[proj]
+                if (failed[proj]) fail_count++; else pass_count++
+              }
               if (pass_count == 0 && fail_count == 0) {
                 printf "---\n**Summary:** No tests were run\n"
               } else {
