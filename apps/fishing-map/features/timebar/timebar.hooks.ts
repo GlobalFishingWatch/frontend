@@ -43,13 +43,19 @@ import {
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
 
+const isValidISODate = (value: string) => !isNaN(Date.parse(value))
+
 const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
   try {
     const url = new URL(locationUrl)
     const start = url.searchParams.get('start')
     const end = url.searchParams.get('end')
     if (start && end) {
-      return { start: decodeURIComponent(start), end: decodeURIComponent(end) }
+      const decodedStart = decodeURIComponent(start)
+      const decodedEnd = decodeURIComponent(end)
+      if (isValidISODate(decodedStart) && isValidISODate(decodedEnd)) {
+        return { start: decodedStart, end: decodedEnd }
+      }
     }
   } catch (e) {
     console.warn(e)
