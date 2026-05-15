@@ -10,6 +10,34 @@
     "js/ts.tsserver.maxMemory": 16384,
     "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
     "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
+    "js/ts.tsserver.watchOptions": {
+      "watchFile": "useFsEventsOnParentDirectory",
+      "watchDirectory": "useFsEvents",
+      "fallbackPolling": "dynamicPriorityPolling",
+      "excludeDirectories": [
+        "**/node_modules",
+        "**/.next",
+        "**/dist",
+        "**/.nx",
+        "**/coverage",
+        "**/.turbo",
+        "**/build",
+        "**/out",
+        "**/exported",
+        "**/tmp",
+        "**/cypress",
+        "**/e2e",
+      ],
+      "excludeFiles": [
+        "**/*.spec.ts",
+        "**/*.spec.tsx",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.tsbuildinfo",
+        "**/i18n.types.d.ts",
+      ],
+    },
+    "js/ts.preferences.includePackageJsonAutoImports": "off",
     "js/ts.preferences.autoImportFileExcludePatterns": [
       "apps/api-portal/**",
       "apps/data-download-portal/**",
@@ -54,33 +82,6 @@
       "**/out/**": true,
       "**/exported/**": true,
       "**/tmp/**": true,
-    },
-    "js/ts.tsserver.watchOptions": {
-      "watchFile": "useFsEventsOnParentDirectory",
-      "watchDirectory": "useFsEvents",
-      "fallbackPolling": "dynamicPriorityPolling",
-      "excludeDirectories": [
-        "**/node_modules",
-        "**/.next",
-        "**/dist",
-        "**/.nx",
-        "**/coverage",
-        "**/.turbo",
-        "**/build",
-        "**/out",
-        "**/exported",
-        "**/tmp",
-        "**/cypress",
-        "**/e2e"
-      ],
-      "excludeFiles": [
-        "**/*.spec.ts",
-        "**/*.spec.tsx",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "**/*.tsbuildinfo",
-        "**/i18n.types.d.ts"
-      ]
     },
   },
 }
