@@ -452,7 +452,7 @@
       "shiptype": {
         "keyword": "shiptype",
         "enum": {
-          "<nil>": "<nil>",
+          "": "",
           "other": "other",
           "fishing": "fishing",
           "passenger": "passenger",

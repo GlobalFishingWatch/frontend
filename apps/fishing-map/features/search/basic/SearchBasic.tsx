@@ -26,8 +26,7 @@ import {
   SearchNoResultsState,
   SearchNotAllowed,
 } from 'features/search/SearchPlaceholders'
-import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { PRIVATE_BRAZIL_GROUP_ID } from 'features/user/user.config'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
@@ -63,7 +62,7 @@ function SearchBasic({
   const isBrazilVMSWorkspace =
     basicSearchDatasets !== undefined &&
     basicSearchDatasets.length > 0 &&
-    basicSearchDatasets.some((d) => d.id.includes('vms-bra'))
+    basicSearchDatasets.some((d) => d.id === PRIVATE_SEARCH_DATASET_BY_GROUP.brazil[0])
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&

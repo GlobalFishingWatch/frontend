@@ -16,13 +16,12 @@
     "declarationMap": true,
     "inlineSources": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/data/**/*.json",
-    "src/locales/**/*.json"
-  ]
+  "ts-node": {
+    "esm": true,
+    "experimentalEsm": true,
+    "transpileOnly": true
+  },
+  "include": ["src/**/*.ts", "src/data/**/*.json", "src/locales/**/*.json"]
 }
