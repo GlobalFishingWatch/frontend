@@ -362,6 +362,7 @@
     "VIIRSDelayDisclaimer": "crwdns108864:0crwdne108864:0"
   },
   "datasetUpload": {
+    "americanDateFormat": "crwdns130849:0crwdne130849:0",
     "datasetDescription": "crwdns82682:0crwdne82682:0",
     "datasetName": "crwdns82684:0crwdne82684:0",
     "date": "crwdns82702:0crwdne82702:0",
