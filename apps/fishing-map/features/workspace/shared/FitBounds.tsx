@@ -25,20 +25,14 @@ export const useTrackLayerFitBounds = () => {
   const { setTimerange, start, end } = useTimerangeConnect()
 
   const onFitBoundsClick = useCallback(
-    async ({
+    ({
       layer,
       infoResource,
     }: {
-      layer: VesselLayer | UserTracksLayer | UserPointsTileLayer
+      layer: VesselLayer | UserTracksLayer //| UserPointsTileLayer
       infoResource?: Resource<IdentityVessel>
     }) => {
       if (layer && start && end) {
-        if (layer instanceof UserPointsTileLayer) {
-          const bbox = await layer.getFullBbox()
-          if (bbox) fitBounds(bbox, { padding: 60, fitZoom: true, flyTo: true })
-          return
-        }
-
         if (layer instanceof UserTracksLayer) {
           let bbox = layer.getBbox({ startDate: start, endDate: end })
           if (!bbox) {

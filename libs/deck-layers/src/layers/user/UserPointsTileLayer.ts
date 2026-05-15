@@ -12,12 +12,10 @@ import type {
 } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
-import { load } from '@loaders.gl/core'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
-import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import {
@@ -212,40 +210,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       return 0
     }
     return this._getPointRadiusValue(d)
-  }
-
-  private _fullBboxPromise?: Promise<Bbox | undefined>
-
-  getFullBbox = (): Promise<Bbox | undefined> => {
-    if (this._fullBboxPromise) return this._fullBboxPromise
-
-    const baseUrl = this.props.layers?.[0]?.tilesUrl
-    if (!baseUrl) return Promise.resolve(undefined)
-
-    const url = this._getTilesUrl(baseUrl).replace(/\{[zxy]\}/g, '0')
-
-    this._fullBboxPromise = load(url, GFWMVTLoader, {
-      ...getFetchLoadOptions(),
-      mvt: { coordinates: 'wgs84', tileIndex: { x: 0, y: 0, z: 0 } },
-    })
-      .then((features: Feature<Point>[]) => {
-        if (!features?.length) return undefined
-        let w = Infinity,
-          s = Infinity,
-          e = -Infinity,
-          n = -Infinity
-        for (const f of features) {
-          const [lng, lat] = f.geometry.coordinates
-          if (lng < w) w = lng
-          if (lat < s) s = lat
-          if (lng > e) e = lng
-          if (lat > n) n = lat
-        }
-        return [w, s, e, n] as Bbox
-      })
-      .catch(() => undefined)
-
-    return this._fullBboxPromise
   }
 
   getLayerInstance() {
