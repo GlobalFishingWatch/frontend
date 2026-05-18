@@ -25,12 +25,12 @@
     "name": "Correntes Marítimas"
   },
   "dsm-isa-leasing-areas": {
-    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
+    "description": "Estas representam as áreas actualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nodulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela AIS. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer actividade relacionada com recursos minerais na região.",
     "moreInfoLink": "",
-    "name": "ISA License Areas"
+    "name": "Áreas de Licença ISA"
   },
   "ebsas": {
-    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "description": "EBSAs são áreas do oceano reconhecidas por suas características ecológicas e/ou biológicas únicas, tais como habitats essenciais, fontes de alimentos ou locais de criação para espécies específicas.",
     "moreInfoLink": "",
     "name": "Áreas Marinhas Ecologicamente ou Biologicamente significativas (EBSA)"
   },
@@ -40,9 +40,9 @@
     "name": "ZEE"
   },
   "eez-areas-12nm": {
-    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "description": "Os mares territoriais são um cinto de águas costeiras que se estende a 12 milhas náuticas no máximo (22. km; 13,8 mil) da linha de base (geralmente a média de baixa água) de um estado costeiro.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
-    "name": "Territorial Seas (12 nautical miles)"
+    "name": "Mar Territorial (12 milhas náuticas)"
   },
   "encounters": {
     "description": "Identificados a partir de dados AIS como localizações onde duas embarcações, uma transportadora e uma embarcação de pesca, estiveram a uma distância de 500 metros durante pelo menos 2 horas e viajaram a uma velocidade média inferior a 2 nós, enquanto estavam a pelo menos 10 km de um ancoradouro costeiro.",
@@ -85,9 +85,9 @@
     "name": "High seas pockets"
   },
   "immas": {
-    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "description": "Áreas Importantes para Mamíferos Marinhos (IMMA) são definidas como partes discretas do habitat, importante para as espécies de mamíferos marinhos, que têm potencial para serem delineadas e geridas para fins de conservação.",
     "moreInfoLink": "",
-    "name": "Important Marine Mammal Areas (IMMA)"
+    "name": "IMMA - Áreas Importantes para Mamíferos Marinhos"
   },
   "loitering": {
     "description": "Um episódio de deriva é quando uma única embarcação exibe um comportamento indicativo de um evento de encontro potencial. Um episódio de deriva é estimado usando dados do sistema de identificação automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Deriva ocorre quando uma embarcação viaja a uma velocidade média inferior a dois nós, estando, em média, a pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal da embarcação transportadora, apenas eventos de deriva maiores que uma hora são mostrados.",
@@ -130,9 +130,9 @@
     "name": "Concentração de oxigênio (O2)"
   },
   "paa-duke": {
-    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
+    "description": "Esta base de dados global de Áreas de Acesso Preferencial (PAA) foi construída com dados de 44 países identificados pela iniciativa Illuminating Hidden Harvests (IHH) após Basurto et al. (2023) e o banco de dados FAOLEX.",
     "moreInfoLink": "https://doi.org/10.7924/R40S01H5J",
-    "name": "Preferential Access Areas for Small-Scale Fishing"
+    "name": "Áreas de Acesso Preferencial à Pesca em Pequena Escala"
   },
   "ph": {
     "description": "A acidez dos oceanos é medida pelo pH. O aumento da absorção de dióxido de carbono reduziu o pH dos oceanos, resultando na acidificação dos oceanos, que pode ter um amplo impacto nos organismos marinhos. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o pH, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
@@ -145,9 +145,9 @@
     "name": "Concentração de fosfato (PO4)"
   },
   "port-locations": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
     "moreInfoLink": "",
-    "name": "Ports (AIS)"
+    "name": "Portos (AIS)"
   },
   "port-locations-vms": {
     "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
@@ -195,9 +195,9 @@
     "name": "Montes marinhos"
   },
   "sentinel2": {
-    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "description": "Esta camada mostra as embarcações detectadas utilizando imagens ópticas de satélite recolhidas pelos satélites Sentinel-2 da Agência Espacial Europeia. Imagens ópticas são semelhantes à fotografia aérea de alta qualidade do espaço, usando a luz solar reflectida em comprimentos de onda visíveis e quase infravermelhos.",
     "moreInfoLink": "",
-    "name": "Imagery detections (Optical)"
+    "name": "Detecções por imagens (Ópticas)"
   },
   "species": {
     "description": "Tarefas pendentes",
@@ -235,9 +235,9 @@
     "name": "Detecção de luz noturna (VIIRS)"
   },
   "viirs-skylight": {
-    "description": "This layer shows vessels detected at night using the Visible Infrared Imaging Radiometer Suite (VIIRS) on board several satellites. These sensors are uniquely sensitive to low-level light, allowing them to detect vessels by the light they emit at sea, such as deck lights or high-intensity fishing lamps.",
+    "description": "Esta camada mostra os navios detectados à noite usando a Suite de Radiómetro Infravermelho Visível (VIIRS) a bordo de vários satélites. Estes sensores são excepcionalmente sensíveis à luz de baixo nível. permitir que detectem navios pela luz que emitem no mar, como luzes de barco ou lâmpadas de pesca de alta intensidade.",
     "moreInfoLink": "",
-    "name": "Night light detections (Skylight)"
+    "name": "Detecções de luz noturna (Skylight)"
   },
   "winds": {
     "description": "O vento é o movimento do ar através da superfície da Terra e desempenha um papel importante na configuração do clima e das condições dos oceanos. Ventos das superfícies ajudam a impulsionar a circulação dos oceanos e a influenciar a mistura na superfície oceânica. Este conjunto de dados mostra a velocidade e direção globais do vento no oceano.",

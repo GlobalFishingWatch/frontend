@@ -3,10 +3,15 @@
   height: var(--size-M);
   display: flex;
   background: var(--color-terthiary-blue);
+  border-bottom: 1px solid transparent;
   border-radius: var(--border-radius-0);
   border: 1px solid transparent;
-  border-bottom: var(--border);
   line-height: var(--size-M);
+  transition: var(--transition-spring);
+}
+
+.container:not(.disabled, .isOpen):hover {
+  border-bottom: var(--border);
 }
 
 .container.isOpen {
@@ -134,6 +139,7 @@
   border-bottom: var(--border);
 }
 
+.optionItem:not(.notAllowed):hover,
 .highlight {
   color: var(--color-primary-blue);
   background-color: var(--color-terthiary-blue);

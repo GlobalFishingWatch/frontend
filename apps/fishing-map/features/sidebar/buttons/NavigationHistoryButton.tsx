@@ -158,6 +158,7 @@ function NavigationHistoryButton() {
         ...search,
         dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
       }}
+      state={(state) => ({ ...state, isHistoryNavigation: true })}
       onClick={() => {
         resetQueryParams()
         onCloseClick()

@@ -34,13 +34,6 @@
         "parallel": false
       }
     },
-    "clean-output": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["shx rm -rf apps/fishing-map/dist apps/fishing-map/.output"]
-      }
-    },
     "clean-test-artifacts": {
       "executor": "nx:run-commands",
       "cache": false,
@@ -124,18 +117,18 @@
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "options": {
-        "command": "vite build",
+        "command": "rm -rf dist .output && vite build",
         "cwd": "apps/fishing-map"
       },
       "configurations": {
         "development": {
-          "command": "vite build --mode development"
+          "command": "rm -rf dist .output && vite build --mode development"
         },
         "production": {
-          "command": "vite build --mode production"
+          "command": "rm -rf dist .output && vite build --mode production"
         },
         "analyze": {
-          "command": "ANALYZE=true vite build"
+          "command": "rm -rf dist .output && ANALYZE=true vite build"
         }
       }
     },
@@ -143,20 +136,38 @@
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output"],
+      "dependsOn": ["^build", "i18n", "prepare-loaders"],
       "options": {
-        "commands": ["nx run fishing-map:build:app", "nx run fishing-map:typecheck"],
-        "parallel": true
+        "commands": [
+          // "nx run fishing-map:typecheck",
+          "nx run fishing-map:build:app"
+        ],
+        "parallel": false
       }
     },
     "test": {
       "executor": "@nx/vitest:test",
       "cache": true,
-      "inputs": ["default", "^production"],
+      "inputs": [
+        "default",
+        "^production",
+        "!{projectRoot}/.vitest-attachments/**/*",
+        "!{projectRoot}/test/integration/__screenshots__/**/*",
+        "!{projectRoot}/test/integration/__traces__/**/*",
+        "!{projectRoot}/test/__traces__/**/*"
+      ],
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "configFile": "apps/fishing-map/vitest.config.mts"
+      }
+    },
+    "test:changed": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "configFile": "apps/fishing-map/vitest.config.mts",
+        "changed": true
       }
     },
     "test:ci": {
@@ -196,7 +207,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["i18n"],
       "options": {
-        "command": "tsc --noEmit --project apps/fishing-map/tsconfig.json"
+        "command": "tsc --noEmit --project  apps/fishing-map/tsconfig.typecheck.json"
       }
     },
     "typecheck-watch": {

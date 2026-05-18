@@ -460,7 +460,7 @@ export class GFW_API_CLASS {
     this.status = 'logging'
     // eslint-disable-next-line no-async-promise-executor
     this.logging = new Promise<UserData>(async (resolve, reject) => {
-      if (accessToken && !this.token && !this.refreshToken) {
+      if (accessToken) {
         if (this.debug) {
           console.log(`GFWAPI: Trying to get tokens using access-token`)
         }

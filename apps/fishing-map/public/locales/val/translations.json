@@ -774,6 +774,7 @@
     "vessel_fit_bounds_out_of_timerange": "crwdns60339:0crwdne60339:0",
     "vessel_group_fit_bounds": "crwdns83708:0crwdne83708:0",
     "vessel_info_correction": "crwdns84566:0crwdne84566:0",
+    "vessel-groups": "crwdns130535:0crwdne130535:0",
     "vesselGroup": "crwdns84568:0crwdne84568:0"
   },
   "map": {
@@ -864,7 +865,8 @@
     "title": "crwdns60395:0crwdne60395:0",
     "vesselAlreadyInWorkspace": "crwdns60397:0crwdne60397:0",
     "vessels": "crwdns60399:0crwdne60399:0",
-    "vesselSelected": "crwdns60401:0crwdne60401:0"
+    "vesselSelected": "crwdns60401:0crwdne60401:0",
+    "workspaceError": "crwdns130845:0crwdne130845:0"
   },
   "selects": {
     "allSelected": "crwdns60403:0crwdne60403:0",
@@ -1235,6 +1237,11 @@
     "lengthRange": "crwdns60597:0crwdne60597:0",
     "license_category": "crwdns60599:0crwdne60599:0",
     "licenseCode": "crwdns60601:0crwdne60601:0",
+    "licenseStatus": {
+      "cancelled": "crwdns130537:0crwdne130537:0",
+      "suspended": "crwdns130539:0crwdne130539:0",
+      "valid": "crwdns130541:0crwdne130541:0"
+    },
     "linkToVessel": "crwdns69530:0crwdne69530:0",
     "loadingInfo": "crwdns60605:0crwdne60605:0",
     "mainGear": "crwdns60609:0crwdne60609:0",

@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { DebugOption, selectDebugOptions } from 'features/debug/debug.slice'
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -14,6 +15,7 @@ import {
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
+import { useComputeReportHotspot } from 'features/reports/reports-hotspot.hooks'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
@@ -26,6 +28,7 @@ import { isTimeComparisonGraph } from 'features/reports/shared/utils/reports.uti
 import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
 import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
+import ReportHotspotControls from 'features/reports/tabs/activity/ReportHotspotControls'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -59,6 +62,7 @@ const SHARED_GRAPHS: Record<SharedGraphType, React.FC<ReportActivityProps>> = {
 
 export default function ReportActivity() {
   useComputeReportTimeSeries()
+  useComputeReportHotspot()
 
   const fitAreaInViewport = useFitAreaInViewport()
   const { loaded, bbox } = useReportAreaBounds()
@@ -76,6 +80,7 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const debugOptions = useSelector(selectDebugOptions)
 
   const SelectorsComponent = SELECTORS_BY_TYPE[reportActivityGraph]
 
@@ -134,6 +139,9 @@ export default function ReportActivity() {
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t((t) => t.common.activity)}</label>
+          {!isEmptyData && !hasError && debugOptions[DebugOption.HotspotButton] && (
+            <ReportHotspotControls />
+          )}
           <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}

@@ -45,6 +45,7 @@
     }
   },
   "files": [],
+  "include": [],
   "exclude": [
     ".pnpm",
     ".nx",

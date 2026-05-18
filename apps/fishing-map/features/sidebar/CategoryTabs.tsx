@@ -28,19 +28,20 @@ import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectLastVisitedWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
+  cleanReportPayload,
+  cleanReportQuery,
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
 } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from './CategoryTabs.module.css'
@@ -54,10 +55,10 @@ type CategoryTabsProps = {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const { dispatchClickedEvent } = useClickedEventConnect()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
@@ -94,14 +95,13 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onWorkspaceClick = useCallback(() => {
     resetSidebarScroll()
-    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
     dispatch(resetReportData())
     dispatch(resetVesselGroupReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
     dispatch(resetWorkspaceHistoryNavigation())
-  }, [dispatch, replaceQueryParams])
+  }, [dispatch])
 
   return (
     <Fragment>
@@ -123,12 +123,28 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}
         >
           <Link
-            to={ROUTE_PATHS.WORKSPACE}
-            params={{
-              category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-              workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-            }}
-            search={{}}
+            to={
+              lastVisitedWorkspace
+                ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
+                : ROUTE_PATHS.WORKSPACE
+            }
+            params={
+              lastVisitedWorkspace
+                ? cleanReportPayload(lastVisitedWorkspace.params || {})
+                : {
+                    category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                    workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                  }
+            }
+            search={
+              lastVisitedWorkspace
+                ? {
+                    ...cleanReportQuery(lastVisitedWorkspace.search || {}),
+                    ...EMPTY_SEARCH_FILTERS,
+                    userTab: undefined,
+                  }
+                : (prev: QueryParams) => ({ ...prev, ...EMPTY_SEARCH_FILTERS, userTab: undefined })
+            }
             replace
             className={styles.tabContent}
             onClick={onWorkspaceClick}

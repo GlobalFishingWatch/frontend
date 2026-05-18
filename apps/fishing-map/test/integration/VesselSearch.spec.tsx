@@ -44,7 +44,7 @@ describe('Vessel search', async () => {
     await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
 
-    await expect.element(getByTestId('map-popup-wrapper').getByText('Gabu Reefer')).toBeVisible()
+    await expect.element(getByTestId('map-popup-wrapper').getByText('Gabu Reefer').first()).toBeVisible()
   })
 
   it('preserves vessel search value when navigating away and back', async () => {

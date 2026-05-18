@@ -22,7 +22,6 @@ import { t as trans } from 'features/i18n/i18n'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { selectLocationQuery } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -50,7 +49,6 @@ function AreaReportSearch({ className }: { className?: string }) {
   const workspace = useSelector(selectWorkspace)
   const contextAreasDataviews = useSelector(selectContextAreasDataviews)
   const allDataviews = useSelector(selectAllDataviews)
-  const query = useSelector(selectLocationQuery)
   const { searchOceanAreas } = useOceanAreas()
 
   const updateMatchingAreas = async (inputValue: string) => {
@@ -88,32 +86,35 @@ function AreaReportSearch({ className }: { className?: string }) {
     if (dataview) {
       const datasetId = dataview.datasetsConfig?.[0]?.datasetId
       if (datasetId) {
-        const dataviewInstance = (query.dataviewInstances || []).find(
-          (d: UrlDataviewInstance) => d.id === dataview?.id
-        )
-        let dataviewInstances: UrlDataviewInstance[] = []
-        if (dataviewInstance) {
-          dataviewInstances = (query.dataviewInstances || []).map((d: UrlDataviewInstance) => {
-            if (d.id === dataviewInstance.id) {
-              return {
-                ...d,
-                config: {
-                  ...d.config,
-                  visible: true,
-                },
-              }
-            }
-            return d
-          })
-        } else {
-          const newDataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
-          dataviewInstances = [
-            ...(query.dataviewInstances || []),
-            { ...newDataviewInstance, config: { visible: true } },
-          ]
-        }
         const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
         const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
+        const newDataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
+
+        const mergeDataviewInstances = (
+          dataviewInstances: QueryParams['dataviewInstances'],
+          newDataviewInstance: UrlDataviewInstance
+        ): UrlDataviewInstance[] => {
+          const prevInstances = dataviewInstances || []
+          const dataviewInstance = prevInstances.find(
+            (d: UrlDataviewInstance) => d.id === dataview?.id
+          )
+          if (dataviewInstance) {
+            return prevInstances.map((d: UrlDataviewInstance) => {
+              if (d.id === dataviewInstance.id) {
+                return {
+                  ...d,
+                  config: {
+                    ...d.config,
+                    visible: true,
+                  },
+                }
+              }
+              return d
+            })
+          }
+          return [...prevInstances, { ...newDataviewInstance, config: { visible: true } }]
+        }
+
         if (area.properties?.type === 'port') {
           const portId = area.properties.area != null ? String(area.properties.area) : undefined
           router.navigate({
@@ -125,7 +126,10 @@ function AreaReportSearch({ className }: { className?: string }) {
               portsReportName: area.properties.name,
               portsReportCountry: area.properties.area?.toString().split('-')[0]?.toUpperCase(),
               portsReportDatasetId: datasetId,
-              dataviewInstances,
+              dataviewInstances: mergeDataviewInstances(
+                prev.dataviewInstances,
+                newDataviewInstance
+              ),
             }),
           })
         } else {
@@ -135,7 +139,10 @@ function AreaReportSearch({ className }: { className?: string }) {
             params: { category, workspaceId, datasetId, areaId: areaId! },
             search: (prev: QueryParams) => ({
               ...prev,
-              dataviewInstances,
+              dataviewInstances: mergeDataviewInstances(
+                prev.dataviewInstances,
+                newDataviewInstance
+              ),
             }),
           })
         }
