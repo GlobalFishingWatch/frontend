@@ -38,7 +38,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["shx rm -rf apps/fishing-map/dist apps/fishing-map/.output"]
+        "commands": ["rimraf apps/fishing-map/dist apps/fishing-map/.output"]
       }
     },
     "clean-test-artifacts": {
