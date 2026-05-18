@@ -101,9 +101,6 @@
       "cache": true,
       "inputs": ["production", "^production"]
     },
-    "clean-output": {
-      "cache": false
-    },
     "@nx/vitest:test": {
       "cache": true,
       "inputs": ["default", "^production"]
