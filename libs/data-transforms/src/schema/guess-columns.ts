@@ -85,7 +85,7 @@ export const guessColumnsFromFilters = (
     return emptyGuessedColumns
   }
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
-    const exactGuess = columns?.find((column) => candidates.includes(column))
+    const exactGuess = candidates?.find((candidate) => columns.includes(candidate))
     const longEnoughCandidates = candidates.filter((c) => c.length >= 3)
     const approximateGuess =
       !exactGuess &&
