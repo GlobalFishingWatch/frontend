@@ -12,7 +12,7 @@ import SearchBasicResultList from 'features/search/basic/SearchBasicResultList'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchConnect } from 'features/search/search.hook'
-import { isBasicSearchAllowed } from 'features/search/search.selectors'
+import { isBasicSearchAllowed, selectBasicSearchDatasets } from 'features/search/search.selectors'
 import {
   selectSearchResults,
   selectSearchStatus,
@@ -26,8 +26,7 @@ import {
   SearchNoResultsState,
   SearchNotAllowed,
 } from 'features/search/SearchPlaceholders'
-import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
-import { PRIVATE_BRAZIL_GROUP_ID } from 'features/user/user.config'
+import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
@@ -59,11 +58,11 @@ function SearchBasic({
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const userGroups = useSelector(selectUserGroupsClean)
-  const userFromBrazilGroup =
-    userGroups !== undefined &&
-    userGroups.length > 0 &&
-    userGroups.every((g: string) => g === PRIVATE_BRAZIL_GROUP_ID)
+  const basicSearchDatasets = useSelector(selectBasicSearchDatasets)
+  const isBrazilVMSWorkspace =
+    basicSearchDatasets !== undefined &&
+    basicSearchDatasets.length > 0 &&
+    basicSearchDatasets.some((d) => d.id === PRIVATE_SEARCH_DATASET_BY_GROUP.brazil[0])
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&
@@ -90,7 +89,7 @@ function SearchBasic({
   )
   const [spinnerRef] = useIntersectionObserver(handleIntersection, { rootMargin: '100px' })
 
-  const placeholderFieldsLabel = userFromBrazilGroup
+  const placeholderFieldsLabel = isBrazilVMSWorkspace
     ? t((t) => t.search.mainQueryLabelPrivateVMSBrazil)
     : t((t) => t.search.mainQueryLabel)
 

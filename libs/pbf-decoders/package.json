@@ -30,6 +30,6 @@
     "pbts-cli": "1.0.3",
     "prettier": "3.8.0",
     "protobufjs": "^8.0.0",
-    "protobufjs-cli": "2.0.0"
+    "protobufjs-cli": "2.0.2"
   }
 }

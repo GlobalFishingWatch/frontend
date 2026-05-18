@@ -13,13 +13,40 @@ import {
   TemporalResolution,
 } from 'features/download/downloadActivity.config'
 import type { DateRange } from 'features/download/downloadActivity.slice'
-import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
+import {
+  ENTIRE_WORLD_REPORT_AREA_ID,
+  KILOMETERS,
+} from 'features/reports/report-area/area-reports.config'
 import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
 import type { ReportTimeComparisonValues } from './reports-activity.types'
+
+export type HotspotSettings = {
+  enabled: boolean
+  area: number
+  unit: BufferUnit
+}
+
+const initialHotspotSettings: HotspotSettings = {
+  enabled: false,
+  area: 50000,
+  unit: KILOMETERS,
+}
+
+type PreviewBuffer = {
+  value: number | null
+  unit: BufferUnit | null
+  operation: BufferOperation | null
+}
+
+const previewBufferInitialState: PreviewBuffer = {
+  value: null,
+  unit: null,
+  operation: null,
+}
 
 type ReportStateError = AsyncError<{ currentReportUrl: string }>
 interface ReportState {
@@ -29,21 +56,19 @@ interface ReportState {
   isPinningVessels: boolean
   reportRequestHash: string
   previewBuffer: PreviewBuffer
+  hotspotSettings: HotspotSettings
 }
 
 type ReportSliceState = { report: ReportState }
-type PreviewBuffer = {
-  value: number | null
-  unit: BufferUnit | null
-  operation: BufferOperation | null
-}
+
 const initialState: ReportState = {
   status: AsyncReducerStatus.Idle,
   error: null,
   data: null,
   isPinningVessels: false,
   reportRequestHash: '',
-  previewBuffer: { value: null, unit: null, operation: null },
+  previewBuffer: { ...previewBufferInitialState },
+  hotspotSettings: { ...initialHotspotSettings },
 }
 type ReportRegion = {
   dataset: string
@@ -186,7 +211,8 @@ const reportSlice = createSlice({
       state.data = null
       state.error = null
       state.reportRequestHash = ''
-      state.previewBuffer = { value: null, unit: null, operation: null }
+      state.previewBuffer = { ...previewBufferInitialState }
+      state.hotspotSettings = { ...initialHotspotSettings }
     },
     setReportRequestHash: (state, action: PayloadAction<string>) => {
       state.reportRequestHash = action.payload
@@ -196,6 +222,9 @@ const reportSlice = createSlice({
     },
     setPinningVessels: (state, action: PayloadAction<boolean>) => {
       state.isPinningVessels = action.payload
+    },
+    setReportHotspotSettings: (state, action: PayloadAction<Partial<HotspotSettings>>) => {
+      state.hotspotSettings = { ...state.hotspotSettings, ...action.payload }
     },
   },
   extraReducers: (builder) => {
@@ -220,8 +249,13 @@ const reportSlice = createSlice({
   },
 })
 
-export const { resetReportData, setReportRequestHash, setPreviewBuffer, setPinningVessels } =
-  reportSlice.actions
+export const {
+  resetReportData,
+  setReportRequestHash,
+  setPreviewBuffer,
+  setPinningVessels,
+  setReportHotspotSettings,
+} = reportSlice.actions
 
 export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
 export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
@@ -231,5 +265,6 @@ export const selectReportPreviewBuffer = (state: ReportSliceState) => state.repo
 export const selectReportIsPinningVessels = (state: ReportSliceState) =>
   state.report.isPinningVessels
 export const selectReportRequestHash = (state: ReportSliceState) => state.report.reportRequestHash
+export const selectReportHotspotSettings = (state: ReportSliceState) => state.report.hotspotSettings
 
 export default reportSlice.reducer

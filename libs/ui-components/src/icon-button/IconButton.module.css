@@ -3,7 +3,7 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: none;
+  border-bottom: 1px solid transparent;
   transition: var(--transition-spring);
   border-radius: 50%;
   background-repeat: no-repeat;
@@ -60,6 +60,7 @@
 .border:focus:not(:disabled) {
   opacity: 1;
   background-color: var(--color-terthiary-blue);
+  border-bottom: var(--border);
 }
 
 .invert {

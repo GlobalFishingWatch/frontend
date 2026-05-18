@@ -24,10 +24,11 @@ import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.ho
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
+import { getReportSubCategoryLabel } from './reports-activity.utils'
+
 import styles from './ReportActivity.module.css'
 
 function ReportActivitySubsectionSelector() {
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
@@ -45,12 +46,12 @@ function ReportActivitySubsectionSelector() {
       ? ([
           {
             id: 'fishing',
-            label: t((t) => t.common.apparentFishing),
+            label: getReportSubCategoryLabel('fishing'),
             disabled: loading || !hasFishingDataviews,
           },
           {
             id: 'presence',
-            label: t((t) => t.common.vesselPresence),
+            label: getReportSubCategoryLabel('presence'),
             disabled: loading || !hasPresenceDataviews,
           },
         ] as ChoiceOption<ReportActivitySubCategory>[])
@@ -59,7 +60,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'viirs',
-                  label: t((t) => t.common.viirs),
+                  label: getReportSubCategoryLabel('viirs'),
                   disabled: loading,
                 },
               ]
@@ -68,7 +69,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sar',
-                  label: t((t) => t.common.sar),
+                  label: getReportSubCategoryLabel('sar'),
                   disabled: loading,
                 },
               ]
@@ -77,7 +78,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sentinel-2',
-                  label: t((t) => t.common.sentinel2),
+                  label: getReportSubCategoryLabel('sentinel-2'),
                   disabled: loading,
                 },
               ]

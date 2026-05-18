@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-XS);
-  border: none;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   transition: var(--transition-spring);
   background-repeat: no-repeat;
@@ -41,6 +41,7 @@ a.button:visited,
 .default:not(.disabled):hover,
 .default:not(.disabled):focus {
   background-color: var(--color-primary-blue-hover);
+  border-bottom: var(--border);
 }
 
 .secondary {
@@ -58,6 +59,7 @@ a.button:visited,
 .secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
+  border-bottom: var(--border);
 }
 
 .border-secondary {
@@ -70,6 +72,7 @@ a.button:visited,
 .border-secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
+  border-bottom: var(--border);
 }
 
 .tiny {

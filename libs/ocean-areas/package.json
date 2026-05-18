@@ -15,12 +15,12 @@
     "dist"
   ],
   "scripts": {
-    "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
-    "fao": "ts-node -P tsconfig.json src/scripts/fao.ts",
-    "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
-    "rfmos": "ts-node -P tsconfig.json src/scripts/rfmos.ts",
-    "locales": "ts-node -P tsconfig.json src/scripts/locales.ts",
-    "ports": "ts-node -P tsconfig.json src/scripts/ports.ts",
+    "mpas": "node --loader ts-node/esm src/scripts/mpas.ts",
+    "fao": "node --loader ts-node/esm src/scripts/fao.ts",
+    "eezs": "node --loader ts-node/esm src/scripts/eezs.ts",
+    "rfmos": "node --loader ts-node/esm src/scripts/rfmos.ts",
+    "locales": "node --loader ts-node/esm src/scripts/locales.ts",
+    "ports": "node --loader ts-node/esm src/scripts/ports.ts",
     "prepare": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
   "dependencies": {

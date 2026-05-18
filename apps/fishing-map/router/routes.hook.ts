@@ -21,7 +21,6 @@ import {
 } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
-import type { NavigationState } from './router-sync'
 import { cleanAccessTokenQueryParams } from './routes.utils'
 
 // TanStack Router's navigate() without a `to` param resolves search to `never`
@@ -35,13 +34,11 @@ export function useReplaceQueryParams() {
   const router = useRouter()
 
   const replaceQueryParams = useCallback(
-    (search: Partial<QueryParams>, { skipHistoryNavigation = true } = {}) => {
-      const navState: NavigationState = { skipHistoryNavigation }
+    (search: Partial<QueryParams>) => {
       const opts: AppNavigateOptions = {
         replace: true,
         resetScroll: false,
         search: (prev: QueryParams) => ({ ...prev, ...search }),
-        state: (prev) => ({ ...prev, ...navState }),
       }
       router.navigate(opts)
     },

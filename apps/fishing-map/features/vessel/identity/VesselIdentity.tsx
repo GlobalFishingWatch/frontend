@@ -271,10 +271,16 @@ const VesselIdentity = () => {
                       <div key={field.key}>
                         <div className={styles.labelContainer}>
                           <label>{labelTranslation}</label>
-                          {field.terminologyKey && !isVMSBrazilVessel && (
+                          {field.terminologyKey && (
                             <DataTerminology
                               title={labelTranslation}
-                              terminologyKey={field.terminologyKey}
+                              terminologyKey={
+                                isVMSBrazilVessel &&
+                                (field.terminologyKey === 'shiptype' ||
+                                  field.terminologyKey === 'geartype')
+                                  ? `${field.terminologyKey}BRA`
+                                  : field.terminologyKey
+                              }
                             />
                           )}
                         </div>

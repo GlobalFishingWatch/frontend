@@ -78,9 +78,8 @@ function PositionsTooltipSection({
 
   return features.map((feature, i) => {
     return (
-      <div className={styles.popupSection}>
+      <div key={`${feature.id}-${i}`} className={styles.popupSection}>
         <PositionsRow
-          key={`${feature.id}-${i}`}
           loading={loading}
           error={error}
           feature={feature as any as FourwingsPositionsPickingObject}

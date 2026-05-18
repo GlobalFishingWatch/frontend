@@ -38,8 +38,6 @@ export const addVesselToWorkspaceAction = {
   },
   replaceQuery: false,
   replaceUrl: false,
-  isHistoryNavigation: false,
-  skipHistoryNavigation: true,
   meta: {
     location: {
       current: {
