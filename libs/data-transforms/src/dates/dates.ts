@@ -65,9 +65,9 @@ const MDY_PARSE_METHODS = buildFormatParsers(MDY_DATE_FORMATS)
 
 const getDateParseMethods = (preference?: DateFormatPreference): DateTimeParseFunction[] => {
   if (preference === 'MDY') {
-    return [...ISO_PARSE_METHODS, ...MDY_PARSE_METHODS, ...DMY_PARSE_METHODS]
+    return [...ISO_PARSE_METHODS, ...MDY_PARSE_METHODS]
   }
-  return [...ISO_PARSE_METHODS, ...DMY_PARSE_METHODS, ...MDY_PARSE_METHODS]
+  return [...ISO_PARSE_METHODS, ...DMY_PARSE_METHODS]
 }
 
 const DATE_PARSE_METHODS: DateTimeParseFunction[] = getDateParseMethods()

@@ -14,6 +14,7 @@ import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Collapsable,
+  IconButton,
   InputText,
   MultiSelect,
   Spinner,
@@ -295,15 +296,25 @@ function NewPointDataset({
           disabled={loading}
         />
       </div>
-      {isCSVFile && (startTimeProperty || endTimeProperty) && (
-        <SwitchRow
-          label={t((t) => t.datasetUpload.americanDateFormat)}
-          active={isAmericanDateFormat}
-          onClick={() =>
-            setDatasetMetadataConfig({ dateFormat: isAmericanDateFormat ? 'DMY' : 'MDY' })
+      <span className={styles.errorMsg}>{timeFilterError}</span>
+      {isCSVFile && (startTimeProperty || endTimeProperty) && geojson?.metadata?.hasDatesError && (
+        <p>
+          <IconButton
+            icon="loop"
+            onClick={() => {
+              const nextDateFormat = isAmericanDateFormat ? 'DMY' : 'MDY'
+              setDatasetMetadataConfig({ dateFormat: nextDateFormat })
+              if (file && fileTypeResult) {
+                handleRawData(file, fileTypeResult, {
+                  ...getDatasetConfiguration(datasetMetadata),
+                  dateFormat: nextDateFormat,
+                })
           }
+            }}
           disabled={loading}
         />
+          {t((t) => t.datasetUpload.americanDateFormat)}
+        </p>
       )}
       <span className={styles.errorMsg}>{timeFilterError}</span>
       <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
