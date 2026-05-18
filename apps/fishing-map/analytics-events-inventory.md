@@ -343,9 +343,13 @@
 
 ## Map Popups
 
-- **`map/popups/categories/VesselsTable.tsx:83`**
+- **`map/popups/categories/VesselsTable.tsx`**
   - Action: `` `Clicked see vessel from ${feature?.category}` ``
   - Label: ``getEventLabel([`source: ${source}`])``
+
+  - Action: `click_skylight_search_from_popup`
+
+  - Action: `click_skylight_link_from_popup`
 
 - **`map/popups/categories/ContextLayers.tsx:30`**
   - Action: `'Click on polygon, click on download icon'`
@@ -370,8 +374,16 @@
   - Action: `'Clicked see loitering event'`
   - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
-- **`map/map-interactions.hooks.ts` (~line 305)**
-  - Action: _dynamic_ — dispatches `getAnalyticsEvent(feature)` result (not a static literal)
+- **`map/map-interactions.hooks.ts:305`** — fires one event per clicked feature, built by `getAnalyticsEvent(feature)` in [`map/map-interaction.utils.ts:29`](apps/fishing-map/features/map/map-interaction.utils.ts#L29). For every event:
+  - Action: `'map_interaction'` _(constant — `TrackCategory.MapInteraction`)_
+  - Category: `` `Map click on ${feature.category}` `` _(e.g. `Map click on activity`, `Map click on vessels`, `Map click on events`, `Map click on context`, `Map click on user`, `Map click on workspaces`, `Map click on detections`)_
+  - Label _(varies by `feature.category`)_:
+    - **Activity / Detections** (positions mode): `` `visualization_mode: positions | vessel_name: ${feature.title} | vessel_id: ${feature.properties.id}` ``
+    - **Activity / Detections** (other modes): `` `visualization_mode: ${feature.visualizationMode} | time_interval: ${feature.interval}` ``
+    - **Vessels**: `` `event_type: ${feature.type} | vessel_id: ${feature.vesselId}` ``
+    - **Events**: `` `event_type: ${feature.eventType} | datasetId : ${feature.datasetId}` ``
+    - **Context / User**: `` `${feature.value}` ``
+    - **Workspaces**: `` `${feature.properties.category} | ${feature.properties.label}` ``
 
 ---
 

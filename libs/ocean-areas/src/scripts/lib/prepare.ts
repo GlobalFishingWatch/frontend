@@ -2,10 +2,10 @@ import fs from 'fs/promises'
 
 import type { Feature } from 'geojson'
 
-import { simplifyArea } from './simplify'
-import { downloadFolder } from './storage'
-import type { AreaConfig } from './types'
-import { renderBar } from './utils'
+import { simplifyArea } from './simplify.ts'
+import { downloadFolder } from './storage.ts'
+import type { AreaConfig } from './types.ts'
+import { renderBar } from './utils.ts'
 
 const sourcePathPrefix = 'src/source'
 const dataPathPrefix = 'src/data'
