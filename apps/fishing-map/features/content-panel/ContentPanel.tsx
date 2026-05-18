@@ -69,8 +69,41 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
 
   useEffect(() => {
     if (!sidePanelSubcontentId || isTableOfContentsOpen) return
-    const el = document.getElementById(sidePanelSubcontentId)
-    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    let cancelled = false
+
+    requestAnimationFrame(() => {
+      const subcontentElement = document.getElementById(sidePanelSubcontentId)
+      if (cancelled || !subcontentElement) return
+
+      const performScroll = () => {
+        if (!cancelled) {
+          subcontentElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
+
+      const unloadedImages = Array.from(
+        (subcontentElement.parentElement || document).querySelectorAll<HTMLImageElement>('img')
+      ).filter((img) => !img.complete)
+
+      if (unloadedImages.length === 0) {
+        performScroll()
+        return
+      }
+
+      let pendingImages = unloadedImages.length
+      const onImgLoad = () => {
+        if (--pendingImages === 0) {
+          performScroll()
+        }
+      }
+      unloadedImages.forEach((img) => {
+        img.addEventListener('load', onImgLoad, { once: true })
+      })
+    })
+
+    return () => {
+      cancelled = true
+    }
   }, [sidePanelSubcontentId, isTableOfContentsOpen, selectedSection])
 
   return (
