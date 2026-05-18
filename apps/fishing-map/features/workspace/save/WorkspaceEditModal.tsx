@@ -5,6 +5,7 @@ import { Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
+import { getModalParent } from 'features/modals/Modals'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'
@@ -36,6 +37,7 @@ function EditWorkspaceModal({ title }: EditWorkspaceModalProps) {
       shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       <EditWorkspace workspace={workspace} onFinish={onClose} />
     </Modal>

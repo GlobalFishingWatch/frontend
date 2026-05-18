@@ -425,7 +425,7 @@ function NewPointDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink section="uploadPoints" />
+          <UserGuideLink section="upload-points" />
         </div>
         <Button
           className={styles.saveBtn}

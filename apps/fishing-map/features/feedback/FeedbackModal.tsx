@@ -21,13 +21,13 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/Modals'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk } from 'features/reports/reports.slice'
-import { getWorkspaceReport } from 'features/workspace/workspace.utils'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
+import { getWorkspaceReport, parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
@@ -257,6 +257,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.form}>

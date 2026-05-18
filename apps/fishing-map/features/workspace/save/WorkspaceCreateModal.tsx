@@ -24,16 +24,13 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/Modals'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { HOME, REPORT, WORKSPACE } from 'router/routes'
-import {
-  selectLocationCategory,
-  selectLocationType,
-  selectReportId,
-} from 'router/routes.selectors'
+import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
@@ -248,6 +245,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
       className={styles.modalContentWrapper}
       contentClassName={styles.modal}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       <form onSubmit={handleSubmit}>
         <div className={styles.row}>

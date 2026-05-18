@@ -74,9 +74,9 @@ export interface WorkspaceState extends BaseUrlWorkspace {
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
 
 type RedirectParam = {
+  isPopup?: boolean
   'access-token'?: string
   callbackUrlStorage?: boolean
-  isPopup?: boolean
 }
 
 export enum UserTab {
@@ -98,6 +98,9 @@ export type AppState = {
   mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
+  sidePanelId?: string
+  sidePanelSubcontentId?: string
+  sidePanelContent?: 'userGuide' | 'datasets'
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

@@ -33,6 +33,7 @@ import {
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
 import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
+import { getModalParent } from 'features/modals/Modals'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
 import InfoModalContent from 'features/workspace/shared/InfoModalContent'
@@ -216,6 +217,7 @@ function UserDatasets() {
           title={<DatasetLabel dataset={infoDataset} />}
           isOpen={infoDataset !== undefined}
           onClose={() => setInfoDataset(undefined)}
+          parentSelector={getModalParent}
         >
           {infoDataset && <InfoModalContent dataset={infoDataset} />}
         </Modal>

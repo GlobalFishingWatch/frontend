@@ -156,11 +156,13 @@
     "cardinalSouth": "S",
     "cardinalWest": "W",
     "category": "Category",
+    "close": "Close",
     "collapseSection": "Collapse section",
     "comingSoon": "Coming soon",
     "confidence": "confidence",
     "confirm": "Confirm",
     "confirmLeave": "Are you sure you want to leave without saving your workspace?",
+    "content": "Content",
     "context": "Reference",
     "context_areas": "Reference layers",
     "continue": "Continue",
@@ -258,6 +260,7 @@
     "name": "Name",
     "navigateBackTo": "Go back to {{section}}",
     "newTimerange": "New Time Range",
+    "noData": "No data",
     "none": "None",
     "numEvents": "number of events",
     "of": "of",
@@ -267,7 +270,7 @@
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
     "or": "or",
-    "others": "",
+    "others": "otheres",
     "partnerSites": "Partner sites",
     "password": "password",
     "permissions": "permissions required",
@@ -536,8 +539,8 @@
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
-    "areaLoad": "",
-    "areaOutOfTime": "",
+    "areaLoad": "There was an error loading the report area",
+    "areaOutOfTime": "The report area is out of the current time range",
     "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset not found",
     "fields": "Errors with fields {{fields}}",
@@ -668,7 +671,7 @@
     "type": "shiptype"
   },
   "eventsReport": {
-    "newTimeRange": "",
+    "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "newTimeRangePorts": "Click the button to see the ports visited after events",
     "seePorts": "See ports"
   },
@@ -882,7 +885,7 @@
     "seeing": "Seeing",
     "seeVesselsOnMap": "See vessels on map",
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
-    "seeVesselsOnMap_many": "",
+    "seeVesselsOnMap_many": "See {{count}} vessels on map",
     "seeVesselsOnMap_other": "See {{count}} vessels on map",
     "selectVessel": "Select vessel",
     "selectVesselResults": "Select results to see vessels on map",
@@ -1004,20 +1007,20 @@
     "title": "User"
   },
   "userGuide": {
-    "activityFilters": "Filter activity layers",
-    "activityFishing": "Activity - Fishing",
-    "activityPresence": "Activity - Presence",
+    "activity-filters": "Filter activity layers",
+    "activity-fishing": "Activity - Fishing",
+    "activity-presence": "Activity - Presence",
     "analysis": "Analyze activity",
-    "detectionsSAR": "Detections - SAR",
-    "detectionsVIIRS": "Detections - VIIRS",
-    "downloadActivity": "Download data",
+    "detections-sar": "Detections - SAR",
+    "detections-viirs": "Detections - VIIRS",
+    "download-activity": "Download data",
     "title": "User Guide",
-    "uploadData": "Upload datasets",
-    "uploadPoints": "Upload point datasets",
-    "uploadPolygons": "Upload polygon datasets",
-    "uploadTracks": "Upload track datasets",
-    "vesselGroups": "Vessel groups",
-    "vesselSearch": "Vessel Search"
+    "upload-data": "Upload datasets",
+    "upload-points": "Upload point datasets",
+    "upload-polygons": "Upload polygon datasets",
+    "upload-tracks": "Upload track datasets",
+    "vessel-groups": "Vessel groups",
+    "vessel-search": "Vessel Search"
   },
   "vessel": {
     "activityByType": "Activity by type",
@@ -1255,7 +1258,7 @@
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
       "sectionTitle": "Vessel insights between {{start}} and {{end}}"
     },
-    "inWorkspace": "",
+    "inWorkspace": "In workspace",
     "lastTransmissionDate": "Last transmission date",
     "length": "Length",
     "lengthM": "Length (m)",
@@ -1515,10 +1518,10 @@
     "user": "User workspace",
     "viewAccess": "View access",
     "wizard": {
-      "exploreArea": "",
-      "exploreGlobal": "",
-      "help": "",
-      "title": ""
+      "exploreArea": "See area",
+      "exploreGlobal": "See global",
+      "help": "You can move the map and update your workspace later",
+      "title": "Setup a marine manager workspace for any area globally"
     }
   }
 }

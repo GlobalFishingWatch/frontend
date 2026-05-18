@@ -32,7 +32,7 @@ export const selectIsJACUser = createSelector([selectUserData], (userData) => {
 })
 
 export const selectIsGFWAdminUser = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(ADMIN_GROUP_ID)
+  return userData?.groups.some((g) => g.toLowerCase() === ADMIN_GROUP_ID.toLowerCase())
 })
 export const selectIsGFWDeveloper = createSelector([selectUserData], (userData) => {
   return userData?.groups.includes(GFW_DEV_GROUP_ID)

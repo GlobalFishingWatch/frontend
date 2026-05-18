@@ -1,0 +1,20 @@
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-M);
+  height: var(--header-height);
+  justify-content: space-between;
+}
+
+.sticky {
+  background-color: var(--color-white);
+  z-index: 3;
+  box-shadow: var(--box-shadow-2);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+  text-transform: uppercase;
+}

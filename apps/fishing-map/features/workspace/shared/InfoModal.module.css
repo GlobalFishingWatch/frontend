@@ -1,6 +1,6 @@
 .sourceSelector {
   padding-top: var(--space-M);
-  padding-inline: var(--space-M);
+  padding-inline: var(--space-L);
   padding-bottom: 0;
 }
 
@@ -9,7 +9,8 @@ div.modalContent {
 }
 
 .content {
-  padding: var(--space-M);
+  padding: var(--space-L);
+  padding-top: var(--space-M);
   font: var(--font-S);
 }
 
@@ -65,7 +66,7 @@ div.modalContent {
 .content table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: var(--box-shadow-1);
+  box-shadow: var(--box-shadow);
   margin-top: var(--space-M);
   margin-bottom: var(--space-S);
   background-color: var(--color-white);
@@ -84,7 +85,7 @@ div.modalContent {
 }
 
 .content tr:hover {
-  background-color: var(--color-off-white-0);
+  background-color: var(--color-off-white);
 }
 
 .subtitle {

@@ -37,7 +37,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import DatasetFilterSource from '../shared/DatasetSourceField'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import LayerFilters from '../shared/LayerFilters'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -252,7 +252,7 @@ function ActivityLayerPanel({
               </ExpandedContainer>
             )}
             {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
-            <InfoModal
+            <InfoButton
               dataview={dataview}
               // Workaround to always show the auxiliar dataset too
               showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}

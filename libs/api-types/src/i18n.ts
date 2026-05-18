@@ -2,6 +2,6 @@ export enum Locale {
   en = 'en',
   es = 'es',
   fr = 'fr',
-  id = 'id',
+  // id = 'id',
   pt = 'pt',
 }

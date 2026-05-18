@@ -9,6 +9,7 @@ import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getModalParent } from 'features/modals/Modals'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
@@ -142,6 +143,7 @@ const MapControlScreenshot = ({
         isOpen={modalOpen}
         onClose={handleModalClose}
         contentClassName={styles.previewContainer}
+        parentSelector={getModalParent}
       >
         <div className={styles.previewPlaceholder}>
           {previewImageLoading || !previewImage ? (

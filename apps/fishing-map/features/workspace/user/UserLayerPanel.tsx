@@ -42,7 +42,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
 import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
@@ -290,7 +290,7 @@ function UserPanel({
                 )}
             </>
           )}
-          <InfoModal dataview={dataview} />
+          <InfoButton dataview={dataview} />
           <Remove
             testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}
