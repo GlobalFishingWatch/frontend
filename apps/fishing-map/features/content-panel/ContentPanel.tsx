@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
+import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
@@ -134,10 +135,37 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
 }
 
 function ContentPanel() {
-  const { status, data } = Route.useLoaderData()
+  const { status: loaderStatus, data: loaderData } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
+  const { i18n } = useTranslation()
   const isDatasets = sidePanelContent === 'datasets'
   const isSmallScreen = useSmallScreen()
+
+  const [langData, setLangData] = useState<{
+    status: string
+    data: TUserGuideSection[]
+  } | null>(null)
+
+  useEffect(() => {
+    if (sidePanelContent !== 'userGuide') return
+    const refetch = async (lang: string) => {
+      try {
+        const response = await fetchSidePanelContent('userGuide', undefined, lang)
+        if (!response?.data?.length) {
+          setLangData({ status: 'empty', data: [] })
+        } else {
+          setLangData({ status: 'success', data: response.data as TUserGuideSection[] })
+        }
+      } catch {
+        setLangData(null)
+      }
+    }
+    i18n.on('languageChanged', refetch)
+    return () => i18n.off('languageChanged', refetch)
+  }, [i18n, sidePanelContent])
+
+  const status = langData?.status ?? loaderStatus
+  const data = langData?.data ?? loaderData
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(540)
