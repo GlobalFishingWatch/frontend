@@ -1,0 +1,76 @@
+.wrapper {
+  position: relative;
+}
+
+.savePopIcon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.savePopBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-M);
+  height: var(--size-M);
+  border-radius: 50%;
+  background-color: var(--color-white);
+}
+
+.animating {
+  animation: savePop 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes savePop {
+  0% {
+    transform: translate(2rem, -2rem) scale(0.4);
+    opacity: 0;
+  }
+
+  15% {
+    transform: translate(2rem, -2rem) scale(1);
+    opacity: 1;
+  }
+
+  55% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  60% {
+    transform: translate(0, 0) rotate(12deg) scale(1);
+  }
+
+  68% {
+    transform: translate(0, 0) rotate(-10deg) scale(1);
+  }
+
+  76% {
+    transform: translate(0, 0) rotate(8deg) scale(1);
+  }
+
+  84% {
+    transform: translate(0, 0) rotate(-4deg) scale(1);
+  }
+
+  90% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animating {
+    animation: none;
+  }
+}
