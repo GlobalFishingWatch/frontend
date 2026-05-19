@@ -280,10 +280,11 @@ class Timeline extends PureComponent<TimelineProps> {
           ? (innerStartPx - handlerMouseX) / innerStartPx
           : (handlerMouseX - innerEndPx) / (outerWidth - innerEndPx)
 
-      const offsetMs =
+      const rawOffsetMs =
         (this.innerScale.invert(0.6).getTime() - this.innerScale.invert(0).getTime()) *
         progress *
         deltaPxRatio
+      const offsetMs = isNaN(rawOffsetMs) ? 0 : rawOffsetMs
       let newStart = start
       let newEnd = end
 
@@ -375,15 +376,17 @@ class Timeline extends PureComponent<TimelineProps> {
       const movementX = clientX - this.lastX
       this.lastX = (event as MouseEvent).clientX || (event as TouchEvent).changedTouches[0].clientX
       const newStart = this.innerScale.invert(-movementX)
-      const newEnd = getUTCDate(newStart.getTime() + currentDeltaMs)
-      const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
-        newStart.toISOString(),
-        newEnd.toISOString(),
-        currentDeltaMs,
-        absoluteStart,
-        absoluteEnd
-      )
-      onChange(newStartClamped, newEndClamped, EVENT_SOURCE.SEEK_MOVE, dragging === DRAG_END)
+      if (!isNaN(newStart.getTime())) {
+        const newEnd = getUTCDate(newStart.getTime() + currentDeltaMs)
+        const { newStartClamped, newEndClamped } = clampToAbsoluteBoundaries(
+          newStart.toISOString(),
+          newEnd.toISOString(),
+          currentDeltaMs,
+          absoluteStart,
+          absoluteEnd
+        )
+        onChange(newStartClamped, newEndClamped, EVENT_SOURCE.SEEK_MOVE, dragging === DRAG_END)
+      }
     } else if (isDraggingZoomIn) {
       this.setState({
         handlerMouseX: x,
@@ -416,12 +419,13 @@ class Timeline extends PureComponent<TimelineProps> {
     let newEnd: string | null = end
 
     if (isHandlerZoomInValid.isZoomIn) {
-      if (dragging === DRAG_START) {
-        newStart = this.innerScale
-          .invert(isHandlerZoomInValid.clampedX - innerStartPx)
-          .toISOString()
-      } else if (dragging === DRAG_END) {
-        newEnd = this.innerScale.invert(isHandlerZoomInValid.clampedX - innerStartPx).toISOString()
+      const invertedDate = this.innerScale.invert(isHandlerZoomInValid.clampedX - innerStartPx)
+      if (!isNaN(invertedDate.getTime())) {
+        if (dragging === DRAG_START) {
+          newStart = invertedDate.toISOString()
+        } else if (dragging === DRAG_END) {
+          newEnd = invertedDate.toISOString()
+        }
       }
     }
     // on release, "stick" to day/hour
@@ -498,18 +502,10 @@ class Timeline extends PureComponent<TimelineProps> {
     this.innerScale = scaleTime()
       .domain([getUTCDate(start), getUTCDate(end)])
       .range([0, innerWidth])
-    let outerStart
-    try {
-      outerStart = this.innerScale.invert(-innerStartPx).toISOString()
-    } catch (e) {
-      console.warn(e)
-    }
-    let outerEnd
-    try {
-      outerEnd = this.innerScale.invert(outerWidth - innerStartPx).toISOString()
-    } catch (e) {
-      console.warn(e)
-    }
+    const outerStartDate = this.innerScale.invert(-innerStartPx)
+    const outerEndDate = this.innerScale.invert(outerWidth - innerStartPx)
+    const outerStart = isNaN(outerStartDate.getTime()) ? start : outerStartDate.toISOString()
+    const outerEnd = isNaN(outerEndDate.getTime()) ? end : outerEndDate.toISOString()
     this.outerScale = this.getOuterScale(outerStart, outerEnd, this.state.outerWidth)
     const overallScale = this.getOverallScale(absoluteStart, absoluteEnd, innerWidth)
     const svgTransform = this.getSvgTransform(overallScale, start, end, innerWidth, innerStartPx)

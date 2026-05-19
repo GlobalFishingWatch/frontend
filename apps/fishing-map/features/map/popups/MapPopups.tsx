@@ -41,7 +41,7 @@ function MapPopups() {
   )
 
   return (
-    <Fragment>
+    <div translate="no" className="notranslate">
       {hoverInteraction &&
         !clickInteraction?.features?.length &&
         debouncedHoverLatitude === hoverInteraction.latitude &&
@@ -67,7 +67,7 @@ function MapPopups() {
           <PopupByCategory interaction={clickInteraction} type="click" />
         </PopupWrapper>
       )}
-    </Fragment>
+    </div>
   )
 }
 

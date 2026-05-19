@@ -1,4 +1,4 @@
-import { prepare } from './lib/prepare'
+import { prepare } from './lib/prepare.ts'
 
 prepare({
   type: 'eez',
