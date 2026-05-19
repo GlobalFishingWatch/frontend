@@ -111,22 +111,27 @@ function NewPointDataset({
     dataset: datasetMetadata,
     property: 'endTime',
   })
-  const dateFormat = getDatasetConfigurationProperty({
-    dataset: datasetMetadata,
-    property: 'dateFormat',
-  })
-  const isAmericanDateFormat = dateFormat === 'MDY'
 
   const handleRawData = useCallback(
-    async (file: File, fileTypeResult: FileTypeResult) => {
+    async (file: File, fileTypeResult: FileTypeResult, isAmericanDateFormat?: boolean) => {
       setProcessingData(true)
       try {
         const data = await getDatasetParsed(file, 'points', fileTypeResult)
-        const datasetMetadata = getPointsDatasetMetadata({
+        const baseMetadata = getPointsDatasetMetadata({
           data,
           name: getFileName(file),
           sourceFormat: fileTypeResult.fileType,
         })
+        const datasetMetadata = {
+          ...baseMetadata,
+          configuration: {
+            ...baseMetadata.configuration,
+            frontend: {
+              ...baseMetadata.configuration?.frontend,
+              ...(isAmericanDateFormat && { dateFormat: 'MDY' as const }),
+            },
+          },
+        }
         setDatasetMetadata(datasetMetadata)
         if (fileTypeResult.fileType === 'CSV') {
           setSourceData(data as DataList)
@@ -302,21 +307,15 @@ function NewPointDataset({
           <IconButton
             icon="loop"
             onClick={() => {
-              const nextDateFormat = isAmericanDateFormat ? 'DMY' : 'MDY'
-              setDatasetMetadataConfig({ dateFormat: nextDateFormat })
               if (file && fileTypeResult) {
-                handleRawData(file, fileTypeResult, {
-                  ...getDatasetConfiguration(datasetMetadata),
-                  dateFormat: nextDateFormat,
-                })
-          }
+                handleRawData(file, fileTypeResult, true)
+              }
             }}
-          disabled={loading}
-        />
+            disabled={loading}
+          />
           {t((t) => t.datasetUpload.americanDateFormat)}
         </p>
       )}
-      <span className={styles.errorMsg}>{timeFilterError}</span>
       <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
         <InputText
           value={datasetMetadata?.description}
