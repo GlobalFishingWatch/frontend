@@ -9,8 +9,18 @@ const DatasetFieldLabel = ({
 }) => {
   return (
     <span>
-      <label style={{ display: 'inline', marginRight: 'var(--space-XS)' }}>
-        {fieldFilter.type === 'range' || fieldFilter.type === 'coordinate' ? '123' : 'ABC'}
+      <label
+        style={{
+          display: 'inline',
+          marginRight: 'var(--space-XS)',
+          marginLeft: fieldFilter.type === 'timestamp' ? 'var(--space-XS)' : '',
+        }}
+      >
+        {fieldFilter.type === 'range' || fieldFilter.type === 'coordinate'
+          ? '123'
+          : fieldFilter.type === 'timestamp'
+            ? ' 🗓️ '
+            : 'ABC'}
       </label>
       {field}
     </span>
