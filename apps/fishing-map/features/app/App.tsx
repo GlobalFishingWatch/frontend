@@ -81,7 +81,6 @@ function App() {
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
-  const i18n = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
@@ -150,7 +149,7 @@ function App() {
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })
-  }, [sidebarOpen])
+  }, [replaceQueryParams, sidebarOpen])
 
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t((t) => t.user.title)
@@ -164,6 +163,7 @@ function App() {
   }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
+
   if (screenshotMode) {
     asideWidth = '0'
   } else if (readOnly) {
@@ -173,11 +173,6 @@ function App() {
   } else if (isWorkspaceLocation) {
     asideWidth = isPrinting ? '34rem' : '40rem'
   }
-
-  /* TODO:RR test if we can remove this */
-  // if (!i18n.ready) {
-  //   return null
-  // }
 
   const searchParams = useSearch({ strict: false })
   if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
