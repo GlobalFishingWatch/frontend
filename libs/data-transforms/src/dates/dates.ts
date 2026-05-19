@@ -28,9 +28,9 @@ const makeFormatParsers = (dateFormats: string[]): DateTimeParseFunction[] =>
     })
   )
 
-const SLASH_PARSE_METHODS = makeFormatParsers(['MM/dd/yyyy', 'M/d/yyyy', 'dd/MM/yyyy', 'd/M/yyyy'])
+const SLASH_PARSE_METHODS = makeFormatParsers(['dd/MM/yyyy', 'd/M/yyyy', 'MM/dd/yyyy', 'M/d/yyyy'])
 
-const DASH_PARSE_METHODS = makeFormatParsers(['MM-dd-yyyy', 'M-d-yyyy', 'dd-MM-yyyy', 'd-M-yyyy'])
+const DASH_PARSE_METHODS = makeFormatParsers(['dd-MM-yyyy', 'd-M-yyyy', 'MM-dd-yyyy', 'M-d-yyyy'])
 
 const THROWING_PARSERS = new Set<DateTimeParseFunction>([
   DateTime.fromISO,
