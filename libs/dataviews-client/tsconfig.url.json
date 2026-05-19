@@ -21,7 +21,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noImplicitAny": false,
-    "outDir": "./dist/url-workspace-bundle",
+    "outDir": "./src/url-workspace",
     "paths": {
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"]
     }
