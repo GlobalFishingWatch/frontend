@@ -1,11 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 import { Fragment, ReactNode, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import filesaver from 'file-saver'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsVesselLocation } from 'router/routes.selectors'
 
 import type { RegistryExtraFieldValue, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
@@ -45,9 +42,12 @@ import { parseVesselToCSV } from 'features/vessel/vessel.download'
 import {
   filterRegistryInfoByDateAndSSVID,
   getCurrentIdentityVessel,
+  getLatestIdentityPrioritised,
   getSkylightLink,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -68,7 +68,7 @@ const VesselIdentity = () => {
   const vesselDatasetId = useSelector(selectVesselDatasetId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const { start, end, setTimerange } = useTimerangeConnect()
+  const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
@@ -77,6 +77,7 @@ const VesselIdentity = () => {
     identityId,
     identitySource,
   })
+  const latestVesselIdentity = getLatestIdentityPrioritised(vesselData)
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
     replaceQueryParams({ vesselIdentitySource: tab.id })
@@ -367,7 +368,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={getSkylightLink({ skylightId: vesselIdentity?.ssvid, start, end })}
+              href={getSkylightLink({ skylightId: latestVesselIdentity?.ssvid })}
               target="_blank"
               onClick={() => {
                 trackEvent({

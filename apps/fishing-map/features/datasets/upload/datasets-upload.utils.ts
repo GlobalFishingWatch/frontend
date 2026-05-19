@@ -225,16 +225,24 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
     ...geojson,
     features: geojson.features.map((feature) => {
       const cleanedProperties = cleanProperties(feature.properties, datasetMetadata.filters)
-      const propertiesToDateMillis: DatasetConfigurationProperty[] = [
-        'timestamp',
-        'startTime',
-        'endTime',
-      ]
-      propertiesToDateMillis.forEach((property: DatasetConfigurationProperty) => {
+      const propertiesToDateMillis = (
+        ['timestamp', 'startTime', 'endTime'] as DatasetConfigurationProperty[]
+      ).flatMap((property) => {
         const propertyKey = getDatasetConfigurationProperty({
           dataset: { configuration: datasetMetadata.configuration } as Dataset,
           property,
         }) as string
+        return propertyKey ? propertyKey : []
+      })
+
+      const filters = getFlattenDatasetFilters(datasetMetadata.filters)
+      const timestampFilters = filters.flatMap((filter) =>
+        filter.type === 'timestamp' ? (filter.id as DatasetConfigurationProperty) : []
+      )
+      if (timestampFilters.length > 0) {
+        propertiesToDateMillis.push(...timestampFilters)
+      }
+      propertiesToDateMillis.forEach((propertyKey) => {
         if (cleanedProperties[propertyKey]) {
           const value = cleanedProperties[propertyKey]
           cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
