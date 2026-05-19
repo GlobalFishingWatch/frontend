@@ -41,6 +41,7 @@ export type ContextLayerConfig<Id = string> = {
   id: Id
   datasetId: string
   tilesUrl: string
+  boundsUrl?: string
   pickable?: boolean
   idProperty?: string
   valueProperties?: string[]

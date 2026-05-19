@@ -16,6 +16,8 @@ import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import {
@@ -44,6 +46,14 @@ import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
+
+export type BoundsResponse = {
+  bbox: Bbox
+  minStartTime?: string
+  maxEndTime?: string
+}
+
+const BOUNDS_CACHE_TTL_MS = 20 * 60 * 1000
 
 export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
@@ -276,6 +286,31 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       }
     })
     return data
+  }
+
+  _boundsCache = new Map<string, { value: BoundsResponse; expires: number }>()
+  _boundsAbort?: AbortController
+
+  async getBbox(): Promise<BoundsResponse | null> {
+    const boundsUrl = this.props.layers?.[0]?.boundsUrl
+    if (!boundsUrl) return null
+
+    const cached = this._boundsCache.get(boundsUrl)
+    if (cached && cached.expires > Date.now()) return cached.value
+
+    this._boundsAbort?.abort()
+    const controller = new AbortController()
+    this._boundsAbort = controller
+
+    try {
+      const data = await GFWAPI.fetch<BoundsResponse>(boundsUrl, { signal: controller.signal })
+      this._boundsCache.set(boundsUrl, { value: data, expires: Date.now() + BOUNDS_CACHE_TTL_MS })
+      return data
+    } catch (error) {
+      if ((error as Error).name === 'AbortError') return null
+      this.setState({ error: (error as Error).message })
+      return null
+    }
   }
 
   getViewportData = (params: GetUserPointsDataParams = {}) => {
