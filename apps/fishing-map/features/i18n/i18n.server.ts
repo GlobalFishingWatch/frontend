@@ -25,6 +25,14 @@ const FALLBACK_LNG = import.meta.env.DEV ? 'source' : Locale.en
 const NAMESPACES = ['translations'] as const
 
 function detectLanguageFromRequest(request: Request): string {
+  const cookieHeader = request.headers.get('cookie')
+  if (cookieHeader) {
+    const match = cookieHeader.match(/(?:^|;\s*)i18next=([^;]+)/)
+    const cookieLng = match?.[1] ? decodeURIComponent(match[1]) : null
+    if (cookieLng && SUPPORTED_LANGUAGES.includes(cookieLng)) {
+      return cookieLng
+    }
+  }
   const acceptLanguage = request.headers.get('accept-language')
   if (acceptLanguage) {
     const preferred = acceptLanguage.split(',')[0]?.split('-')[0]?.toLowerCase()
