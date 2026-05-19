@@ -23,8 +23,6 @@ function AppLayout() {
     return store as AppStore
   }, [router])
 
-  useEffect(() => {}, [router, store])
-
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
     store.dispatch(hydrateHintsDismissed(hintsDismissed))
