@@ -1,17 +1,15 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
-import { debounce, throttle } from 'es-toolkit'
+import { throttle } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { updateUrlViewport } from 'routes/routes.actions'
-
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+import { useReplaceQueryParams } from 'router/routes.hook'
+import type { WorkspaceViewport } from 'types'
 
 export const useMapViewState = () => {
   return useAtomValue(viewStateAtom)
@@ -56,22 +54,26 @@ export function useSetMapCoordinates() {
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
-  const dispatch = useAppDispatch()
-
-  const updateUrlViewportDebounced = useMemo(
-    () => debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
-    [dispatch]
-  )
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const pendingRef = useRef<WorkspaceViewport | null>(null)
+  const rafRef = useRef<number>(0)
 
   useEffect(() => {
     if (isWorkspaceReady) {
       const { longitude, latitude, zoom } = viewState
-      updateUrlViewportDebounced({ longitude, latitude, zoom })
+      pendingRef.current = { longitude, latitude, zoom }
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(() => {
+        if (pendingRef.current) {
+          replaceQueryParams(pendingRef.current)
+          pendingRef.current = null
+        }
+      })
     }
     return () => {
-      updateUrlViewportDebounced.cancel()
+      cancelAnimationFrame(rafRef.current)
     }
-  }, [viewState, updateUrlViewportDebounced, isWorkspaceReady])
+  }, [viewState, isWorkspaceReady])
 }
 
 export const MAP_CONTAINER_ID = 'map-container'

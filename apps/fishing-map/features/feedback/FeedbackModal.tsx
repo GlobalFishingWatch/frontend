@@ -23,13 +23,14 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk } from 'features/reports/reports.slice'
-import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/NewAreaReportModal'
+import { getWorkspaceReport } from 'features/workspace/workspace.utils'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 
 import styles from './FeedbackModal.module.css'
 
@@ -174,7 +175,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     e.stopPropagation()
     setLoading(true)
     try {
-      let url = window.location.href
+      let url = getCurrentAppUrl()
       const name = `${AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX}-${Date.now()}`
       if (!guestUser) {
         let createDispatchedAction

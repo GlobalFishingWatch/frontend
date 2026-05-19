@@ -1,10 +1,6 @@
 .container {
-  padding-block: var(--space-XS);
   position: relative;
-}
-
-.container:not(:last-of-type) {
-  border-bottom: var(--border-thick);
+  padding-block: var(--space-XS);
 }
 
 .header {
@@ -140,6 +136,11 @@
 
 .vesselsOnScreen summary span {
   padding: 0;
+}
+
+.vesselsOnScreenList {
+  padding: var(--space-S);
+  padding-top: var(--space-XS);
 }
 
 .vesselOnScreen {

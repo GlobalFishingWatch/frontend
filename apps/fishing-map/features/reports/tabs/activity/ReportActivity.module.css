@@ -1,6 +1,5 @@
 .container {
-  padding: var(--space-SM) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-SM);
   min-height: 37rem;
 }
 
@@ -13,11 +12,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-XS);
 }
 
 .blockTitle {
   color: var(--color-primary-blue);
   line-height: 2.8rem;
+  flex: 1;
 }
 
 .disclaimer {

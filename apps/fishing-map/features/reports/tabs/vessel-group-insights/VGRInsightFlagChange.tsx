@@ -86,7 +86,7 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t((t) => t.vesselGroupReport.insights.flagChangesCount, {
-              vessels: vesselsWithFlagChanges.length,
+              vessels: String(vesselsWithFlagChanges.length),
             })}
             onToggle={onInsightToggle}
           >

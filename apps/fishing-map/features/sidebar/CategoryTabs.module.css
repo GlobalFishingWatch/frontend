@@ -1,27 +1,28 @@
 .CategoryTabs {
   display: flex;
   flex-direction: column;
-}
-
-.tab {
-  width: var(--sidebar-tabs-width);
-  height: var(--sidebar-tabs-width);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab:not(.current) {
-  background-color: var(--color-terthiary-blue);
   border-right: var(--border);
 }
 
-.tab:not(:last-child) {
-  border-bottom: var(--border);
+.tab {
+  width: var(--size-M);
+  height: var(--size-M);
+  margin: var(--space-XS);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--sidebar-tabs-width) / 2);
+  transition: var(--transition-spring);
 }
 
+.tab:active:not(:has(:active)) {
+  transform: scale(0.86);
+  transition: var(--transition-press);
+}
+
+.tab.current,
 .tab:not(.current):hover {
-  background-color: var(--color-border);
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
 }
 
 .tab.secondary {
@@ -37,18 +38,16 @@
   justify-content: center;
   line-height: 0;
   opacity: var(--opacity-secondary);
+  transition: var(--transition-spring);
 }
 
 .tab.current .tabContent,
 .tab:hover > .tabContent {
-  background-color: transparent !important;
-  opacity: var(--opacity-primary);
+  opacity: 1;
 }
 
 .separator {
   flex: 1;
-  background-color: var(--color-terthiary-blue);
-  border-right: var(--border);
 }
 
 .userButton,
@@ -73,6 +72,13 @@
   z-index: 2;
 }
 
+.linksToggle:hover:before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
 .links {
   display: none;
   position: absolute;
@@ -81,12 +87,12 @@
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--color-white);
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-2);
   width: max-content;
   transform: translateY(50%);
   bottom: 50%;
-  left: 5.1rem;
-  border: var(--border);
+  left: var(--sidebar-tabs-width);
+  border-radius: var(--border-radius-1);
 }
 
 .links > li {

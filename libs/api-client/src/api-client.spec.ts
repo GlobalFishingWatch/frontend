@@ -387,10 +387,9 @@ describe('api-client', () => {
             })
           )
           .mockResolvedValueOnce(
-            new Response(
-              JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }),
-              { status: 200 }
-            )
+            new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+              status: 200,
+            })
           )
           .mockResolvedValueOnce(new Response(JSON.stringify({ id: 1 }), { status: 200 }))
 
@@ -503,9 +502,9 @@ describe('api-client', () => {
         })
         fetchMock.mockResolvedValue(errorResponse)
 
-        await expect(
-          client.fetch('/datasets', { responseType: 'default' })
-        ).rejects.toBe(errorResponse)
+        await expect(client.fetch('/datasets', { responseType: 'default' })).rejects.toBe(
+          errorResponse
+        )
       })
 
       it('should continue fetch after login rejects when logging is in progress', async () => {
@@ -542,7 +541,7 @@ describe('api-client', () => {
       })
 
       it('should download file and return true', async () => {
-        const { saveAs } = await import('file-saver')
+        const fileSave = await import('file-saver')
         const client = createApiClient()
         const blob = new Blob(['content'])
         const response = new Response(null, { status: 200 })
@@ -552,7 +551,7 @@ describe('api-client', () => {
         const result = await client.download('https://example.com/file.pdf', 'file.pdf')
 
         expect(result).toBe(true)
-        expect(saveAs).toHaveBeenCalledWith(blob, 'file.pdf')
+        expect(fileSave.saveAs).toHaveBeenCalledWith(blob, 'file.pdf')
       })
 
       it('should return false when download fails', async () => {
@@ -584,13 +583,11 @@ describe('api-client', () => {
         const storage = (globalThis as any).localStorage as any
         storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'old-refresh')
 
-        fetchMock
-          .mockResolvedValueOnce(
-            new Response(
-              JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }),
-              { status: 200 }
-            )
-          )
+        fetchMock.mockResolvedValueOnce(
+          new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+            status: 200,
+          })
+        )
 
         const result = await client.refreshAPIToken()
 
@@ -723,10 +720,7 @@ describe('api-client', () => {
         const client = createApiClient()
         const permissions = [{ id: 'perm1', name: 'read' }]
         fetchMock.mockResolvedValue(
-          new Response(
-            JSON.stringify({ entries: permissions }),
-            { status: 200 }
-          )
+          new Response(JSON.stringify({ entries: permissions }), { status: 200 })
         )
 
         const result = await client.fetchGuestUser()
@@ -748,9 +742,7 @@ describe('api-client', () => {
           })
         )
 
-        await expect(client.fetchGuestUser()).rejects.toThrow(
-          'Error trying to get user data'
-        )
+        await expect(client.fetchGuestUser()).rejects.toThrow('Error trying to get user data')
       })
     })
 
@@ -767,10 +759,7 @@ describe('api-client', () => {
         const user = { id: 1, type: 'user', permissions: [], groups: [] }
         fetchMock
           .mockResolvedValueOnce(
-            new Response(
-              JSON.stringify({ token: 'jwt', refreshToken: 'refresh' }),
-              { status: 200 }
-            )
+            new Response(JSON.stringify({ token: 'jwt', refreshToken: 'refresh' }), { status: 200 })
           )
           .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
 
@@ -784,10 +773,7 @@ describe('api-client', () => {
         const user = { id: 1, type: 'user', permissions: [], groups: [] }
         fetchMock
           .mockResolvedValueOnce(
-            new Response(
-              JSON.stringify({ token: 'jwt', refreshToken: 'refresh' }),
-              { status: 200 }
-            )
+            new Response(JSON.stringify({ token: 'jwt', refreshToken: 'refresh' }), { status: 200 })
           )
           .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
 
@@ -881,10 +867,9 @@ describe('api-client', () => {
             })
           )
           .mockResolvedValueOnce(
-            new Response(
-              JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }),
-              { status: 200 }
-            )
+            new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+              status: 200,
+            })
           )
           .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
 

@@ -25,9 +25,10 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
+import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryVesselGroupPanel.module.css'
 
@@ -113,8 +114,12 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                 <li className={styles.dataset} key={vesselGroup?.id}>
                   <span className={styles.datasetLabel}>
                     <Icon icon="vessel-group" />
-                    {formatInfoField(vesselGroup?.name, 'shipname')} (
-                    {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
+                    {getHighlightedText(
+                      formatInfoField(vesselGroup?.name, 'shipname') as string,
+                      searchQuery,
+                      styles
+                    )}{' '}
+                    ({vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
                   </span>
                   <div>
                     {isOutdated ? (

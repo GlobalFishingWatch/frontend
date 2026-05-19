@@ -289,11 +289,13 @@ export const useClickedEventConnect = () => {
       }
       // TODO: identify if clicked on a track correction overlay and return to stop propagation from opening events popup
       const event = {
-        features: deckEvent.features,
-        //   .map((feature) => {
-        //   const { geometry, ...rest } = feature as any
-        //   return rest
-        // }),
+        features: deckEvent.features?.map((feature: any) => {
+          if (feature.tile) {
+            const { x, y, z } = feature.tile
+            return { ...feature, tile: { x, y, z } }
+          }
+          return feature
+        }),
         latitude: deckEvent.latitude,
         longitude: deckEvent.longitude,
         zoom: deckEvent.viewport?.zoom,

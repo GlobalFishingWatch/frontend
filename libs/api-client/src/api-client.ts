@@ -1,5 +1,3 @@
-import { saveAs } from 'file-saver'
-
 import type {
   APIPagination,
   ResourceRequestType,
@@ -160,6 +158,11 @@ export class GFW_API_CLASS {
   }
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+    // We need to avoid requesting tokens from the Login window because the accessToken
+    // needs to be used for the first time in the main window
+    if (typeof window === 'undefined' || window.opener) {
+      return { token: '', refreshToken: '' }
+    }
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )
@@ -247,7 +250,9 @@ export class GFW_API_CLASS {
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
     this.status = 'downloading'
     return this._internalFetch<Blob>({ url: downloadUrl, options: { responseType: 'blob' } })
-      .then((blob) => {
+      .then(async (blob) => {
+        const fileSaverModule = await import('file-saver')
+        const saveAs = fileSaverModule.saveAs ?? fileSaverModule.default?.saveAs
         saveAs(blob, fileName)
         this.status = 'idle'
         return true

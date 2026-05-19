@@ -60,7 +60,7 @@ import {
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectLocationCategory } from 'router/routes.selectors'
 
 const selectWorkspaceReportState = createSelector(
   [

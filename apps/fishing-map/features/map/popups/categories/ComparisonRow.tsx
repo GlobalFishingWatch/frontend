@@ -31,10 +31,10 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
             {value > 0 ? '+' : ''}
             <I18nNumber number={value} />{' '}
             {/* sad little hack because i18n key is not plural while unit is */}
-            {t((t: any) => t.common[unit?.replace(/s$/, '') ?? 'hours'], {
+            {t((t) => (t.common as any)[unit?.replace(/s$/, '') ?? 'hours'], {
               defaultValue: 'hours',
               count: value, // neded to select the plural automatically
-            })}
+            } as any)}
           </span>
         </div>
       </div>

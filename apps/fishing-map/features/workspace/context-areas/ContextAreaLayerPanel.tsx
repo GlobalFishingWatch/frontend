@@ -18,14 +18,7 @@ import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
-import {
-  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
-  HIDDEN_DATAVIEW_FILTERS,
-  MPA_DATAVIEW_INSTANCE_ID,
-  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-} from 'data/workspaces'
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -38,6 +31,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   CONTEXT_FEATURES_LIMIT,
+  DATAVIEWS_WARNING,
   filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
@@ -66,12 +60,6 @@ type LayerPanelProps = {
   mergedDataviewId?: string
 }
 
-export const DATAVIEWS_WARNING = [
-  EEZ_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-]
 const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10

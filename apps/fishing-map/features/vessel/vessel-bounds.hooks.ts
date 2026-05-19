@@ -13,8 +13,8 @@ import {
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
 export const useVesselProfileBbox = () => {
@@ -91,10 +91,10 @@ const useVesselFitBoundsOnLoad = () => {
 const useVesselFitTranmissionsBounds = () => {
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const { setVesselBounds } = useVesselProfileBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const urlTimerange = useSelector(selectUrlTimeRange)
   const vessel = useSelector(selectVesselInfoData)
   const { setTimerange } = useTimerangeConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const [timerangeBoundsUpdated, seTimerangeBoundsUpdated] = useState(false)
   const [trackBoundsUpdated, setTrackBoundsUpdated] = useState(false)
   const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
@@ -111,7 +111,7 @@ const useVesselFitTranmissionsBounds = () => {
     if (isVesselLocation && needsTimerangeUpdate) {
       // This is needed to update the url instantly instead of waiting for the debounced
       // update in setTimerange fn as the resource needs to be generated asap
-      dispatchQueryParams({ start: transmissionDateFrom, end: transmissionDateTo })
+      replaceQueryParams({ start: transmissionDateFrom, end: transmissionDateTo })
       setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       requestAnimationFrame(() => {
         seTimerangeBoundsUpdated(true)

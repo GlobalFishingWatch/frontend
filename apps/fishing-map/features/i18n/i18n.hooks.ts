@@ -11,7 +11,7 @@ export function useUserLanguageUpdate() {
 
   useEffect(() => {
     i18n.on('languageChanged', (lng) => {
-      if (process.browser) {
+      if (typeof window !== 'undefined') {
         document.documentElement.setAttribute('lang', lng)
       }
       dispatch(setUserLanguage(lng as Locale))

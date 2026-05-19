@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -9,30 +9,12 @@ import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.
 import type { ReportCategory } from 'features/reports/reports.types'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { WORKSPACE_REPORT } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 
 const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }) => {
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
-  const query = useSelector(selectLocationQuery)
   const fitAreaInViewport = useFitAreaInViewport()
-
-  const reportLinkTo = {
-    type: WORKSPACE_REPORT,
-    payload: {
-      category: workspace?.category,
-      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-    },
-    query: {
-      ...query,
-      reportCategory,
-      latitude: 0,
-      longitude: 0,
-      zoom: 0,
-      bivariateDataviews: null,
-    },
-  }
 
   const handleOnClick = () => {
     fitAreaInViewport()
@@ -40,7 +22,22 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   }
 
   return (
-    <Link to={reportLinkTo} onClick={handleOnClick}>
+    <Link
+      to="/$category/$workspaceId/report"
+      params={{
+        category: workspace?.category || '',
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      }}
+      search={(prev: QueryParams) => ({
+        ...prev,
+        reportCategory,
+        latitude: 0,
+        longitude: 0,
+        zoom: 0,
+        bivariateDataviews: null,
+      })}
+      onClick={handleOnClick}
+    >
       <IconButton
         icon="analysis"
         type="border"

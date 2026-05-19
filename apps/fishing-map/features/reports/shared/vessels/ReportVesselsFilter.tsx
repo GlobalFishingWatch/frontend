@@ -7,8 +7,8 @@ import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { ReportState } from 'features/reports/reports.types'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectLocationType } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLocationType } from 'router/routes.selectors'
 
 import styles from './ReportVesselsFilter.module.css'
 
@@ -24,7 +24,7 @@ export default function ReportVesselsFilter({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsFilterProps) {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [query, setQuery] = useState(filter || '')
   const [debouncedQuery] = useDebounce(query, 200)
   const locationType = useSelector(selectLocationType)
@@ -44,7 +44,7 @@ export default function ReportVesselsFilter({
       prevDebouncedQueryRef.current !== null &&
       debouncedQuery !== prevDebouncedQueryRef.current
     ) {
-      dispatchQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
+      replaceQueryParams({ [filterQueryParam]: debouncedQuery, [pageQueryParam]: 0 })
 
       trackEvent({
         category: TrackCategory.Analysis,
@@ -53,7 +53,7 @@ export default function ReportVesselsFilter({
       })
     }
     prevDebouncedQueryRef.current = debouncedQuery
-  }, [debouncedQuery, dispatchQueryParams, filterQueryParam, pageQueryParam, locationType])
+  }, [debouncedQuery, filterQueryParam, pageQueryParam, locationType])
 
   return (
     <div className={styles.inputContainer}>

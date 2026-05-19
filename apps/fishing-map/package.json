@@ -2,17 +2,14 @@
   "name": "@globalfishingwatchapp/fishing-map",
   "version": "3.4.20",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
     "i18n": "nx i18n:extract fishing-map && nx i18n:ts fishing-map",
     "i18n:status": "i18next-cli status",
     "i18n:extract": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract",
     "i18n:extract:watch": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract --watch",
     "i18n:types": "i18next-cli types",
     "i18n:types:watch": "i18next-cli types --watch",
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "npx vitest",
     "test:e2e": "npx playwright test"
   },

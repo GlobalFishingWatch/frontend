@@ -12,6 +12,13 @@
   z-index: 2;
 }
 
+.languageToggle:hover::before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
 .languageBtn {
   display: flex;
   align-items: center;
@@ -27,9 +34,9 @@
   z-index: 1;
   flex-direction: column;
   background-color: var(--color-white);
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-2);
   width: max-content;
-  border: var(--border);
+  border-radius: var(--border-radius-1);
 }
 
 .bottomRight {
@@ -44,10 +51,6 @@
 
 .languages > li {
   width: 100%;
-}
-
-.languageToggle:hover .languages {
-  display: flex;
 }
 
 .open {

@@ -20,7 +20,7 @@
 .textarea {
   color: var(--color-primary-blue);
   padding: var(--space-XS) var(--space-S);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   border: var(--border);
   flex: 1;
   resize: none;

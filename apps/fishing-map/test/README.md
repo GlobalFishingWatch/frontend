@@ -145,7 +145,7 @@ TEST_USER_EMAIL=your-test-user@email.com
 TEST_USER_PASSWORD=your-test-password
 
 # API gateway
-NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+VITE_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
 ```
 
 ### Writing Authenticated Tests

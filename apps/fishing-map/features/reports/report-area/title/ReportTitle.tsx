@@ -36,8 +36,9 @@ import {
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsStandaloneReportLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { BufferOperation, BufferUnit } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -49,11 +50,11 @@ import styles from './ReportTitle.module.css'
 
 export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const { t, i18n } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const [longDescription, setLongDescription] = useState(false)
   const [expandedDescription, setExpandedDescription] = useState(false)
   const descriptionRef = useRef<HTMLSpanElement>(null)
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
@@ -145,7 +146,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const handleConfirmBuffer = useCallback(() => {
     setShowBufferTooltip(false)
     highlightArea(undefined)
-    dispatchQueryParams({
+    replaceQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
       reportBufferOperation: previewBuffer.operation!,
@@ -158,7 +159,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     })
   }, [
     highlightArea,
-    dispatchQueryParams,
+    replaceQueryParams,
     previewBuffer.value,
     previewBuffer.unit,
     previewBuffer.operation,
@@ -170,14 +171,14 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     if (reportArea) {
       highlightArea(reportArea as ContextFeature)
     }
-    dispatchQueryParams({
+    replaceQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
       reportBufferOperation: undefined,
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, dispatchQueryParams, highlightArea, reportArea])
+  }, [dispatch, highlightArea, replaceQueryParams, reportArea])
 
   const reportDescription =
     report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
@@ -225,64 +226,66 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             [styles.actionsContainerColumn]: isSticky || hasLongTitle,
           })}
         >
-          <a className={styles.reportLink} href={window.location.href}>
+          <a className={styles.reportLink} href={getCurrentAppUrl()}>
             {t((t) => t.analysis.linkToReport)}
           </a>
-          {showAreaReportSearch && (
+          {!isSticky && showAreaReportSearch && (
             <AreaReportSearch
               className={cx(styles.areaReportSearch, {
                 [styles.areaReportSearchColumn]: hasLongTitle,
               })}
             />
           )}
-          <div className={styles.actions}>
-            {!isGlobalReport && (
-              <Popover
-                open={showBufferTooltip}
-                onClickOutside={handleTooltipHide}
-                className={cx(styles.highlightPanel, 'print-hidden')}
-                placement="bottom"
-                content={
-                  <div className={styles.filterButtonWrapper}>
-                    <BufferButtonTooltip
-                      areaType={reportArea?.properties?.originalGeometryType}
-                      activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                      defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                      activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                      handleRemoveBuffer={handleRemoveBuffer}
-                      handleConfirmBuffer={handleConfirmBuffer}
-                      handleBufferUnitChange={handleBufferUnitChange}
-                      handleBufferValueChange={handleBufferValueChange}
-                      handleBufferOperationChange={handleBufferOperationChange}
-                    />
+          {!isSticky && (
+            <div className={styles.actions}>
+              {!isGlobalReport && (
+                <Popover
+                  open={showBufferTooltip}
+                  onClickOutside={handleTooltipHide}
+                  className={cx(styles.highlightPanel, styles.bufferContainer, 'print-hidden')}
+                  placement="bottom"
+                  content={
+                    <div className={styles.filterButtonWrapper}>
+                      <BufferButtonTooltip
+                        areaType={reportArea?.properties?.originalGeometryType}
+                        activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                        defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                        activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                        handleRemoveBuffer={handleRemoveBuffer}
+                        handleConfirmBuffer={handleConfirmBuffer}
+                        handleBufferUnitChange={handleBufferUnitChange}
+                        handleBufferValueChange={handleBufferValueChange}
+                        handleBufferOperationChange={handleBufferOperationChange}
+                      />
+                    </div>
+                  }
+                >
+                  <div>
+                    <Button
+                      onClick={handleTooltipShow}
+                      // onHide: handleTooltipHide,
+                      type="border-secondary"
+                      size="medium"
+                      className={styles.actionButton}
+                    >
+                      {t((t) => t.analysis.buffer)}
+                      <Icon icon="expand" type="default" />
+                    </Button>
                   </div>
-                }
-              >
-                <div>
-                  <Button
-                    onClick={handleTooltipShow}
-                    // onHide: handleTooltipHide,
-                    type="border-secondary"
-                    size="small"
-                    className={styles.actionButton}
-                  >
-                    {t((t) => t.analysis.buffer)}
-                    <Icon icon="expand" type="default" />
-                  </Button>
-                </div>
-              </Popover>
-            )}
-            <IconButton
-              className={styles.actionButton}
-              type="border"
-              icon="print"
-              tooltip={t((t) => t.analysis.print)}
-              size="small"
-              tooltipPlacement="bottom"
-              onClick={onPrintClick}
-              disabled={loading}
-            />
-          </div>
+                </Popover>
+              )}
+              <IconButton
+                className={styles.actionButton}
+                type="border"
+                icon="print"
+                tooltip={t((t) => t.analysis.print)}
+                size="medium"
+                tooltipPlacement="bottom"
+                onClick={onPrintClick}
+                disabled={loading}
+              />
+            </div>
+          )}
         </div>
       </div>
       {reportDescription && !isSticky && (

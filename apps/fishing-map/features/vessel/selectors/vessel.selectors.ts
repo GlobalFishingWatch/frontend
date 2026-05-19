@@ -8,7 +8,7 @@ import {
   selectVesselEventType,
   selectVesselSlice,
 } from 'features/vessel/vessel.slice'
-import { selectVesselId } from 'routes/routes.selectors'
+import { selectVesselId } from 'router/routes.selectors'
 import type { RootState } from 'store'
 
 export const selectVessel = createSelector(

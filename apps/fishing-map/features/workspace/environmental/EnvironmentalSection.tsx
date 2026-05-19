@@ -24,7 +24,7 @@ import { selectUserEnvironmentDatasets } from 'features/user/selectors/user.perm
 import { useVisualizationsOptions } from 'features/workspace/activity/activity.hooks'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectLocationCategory } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'

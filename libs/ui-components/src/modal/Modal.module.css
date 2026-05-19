@@ -1,5 +1,6 @@
 .modalOverlay {
-  background: rgba(var(--primary-blue-rgb), 0.85);
+  background: rgba(var(--primary-blue-rgb), 0.75);
+  backdrop-filter: blur(8px);
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -15,13 +16,14 @@
 }
 
 .modalContentWrapper {
-  background: var(--gradient);
+  background: var(--color-background);
   padding: 0;
   position: relative;
   width: 100%;
   max-width: 78rem;
   overflow-y: auto;
   max-height: 100dvh;
+  border-radius: var(--border-radius-1);
 }
 
 .auto {

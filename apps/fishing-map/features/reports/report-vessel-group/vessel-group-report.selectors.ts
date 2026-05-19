@@ -11,7 +11,7 @@ import type { InsightType } from '@globalfishingwatch/api-types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
 export const GAP_INSIGHT_ID = 'GAP' as InsightType

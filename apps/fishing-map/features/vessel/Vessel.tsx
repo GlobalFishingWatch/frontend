@@ -1,6 +1,12 @@
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsWorkspaceVesselLocation,
+  selectVesselId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Dataview } from '@globalfishingwatch/api-types'
@@ -46,12 +52,6 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectIsWorkspaceVesselLocation,
-  selectVesselId,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import VesselActivity from './activity/VesselActivity'
@@ -64,7 +64,7 @@ const Vessel = () => {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -175,7 +175,7 @@ const Vessel = () => {
 
   useEffect(() => {
     if (isWorkspaceVesselLocation) {
-      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
+      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
     }
     if (
       !infoStatus ||
@@ -193,25 +193,24 @@ const Vessel = () => {
 
   const changeTab = useCallback(
     (tab: Tab<VesselSection>) => {
-      dispatchQueryParams({ vesselSection: tab.id })
+      replaceQueryParams({ vesselSection: tab.id })
       updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: `click_${tab.id}_tab`,
       })
     },
-    [dispatchQueryParams, updateAreaLayersVisibility, vesselArea]
+    [updateAreaLayersVisibility, vesselArea]
   )
 
   const handleFullProfileClick = useCallback(() => {
-    dispatchQueryParams({
+    replaceQueryParams({
       includeRelatedIdentities: true,
       start: undefined,
       end: undefined,
       vesselSelfReportedId: undefined,
     })
-    window.location.reload()
-  }, [dispatchQueryParams])
+  }, [])
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />
@@ -249,12 +248,16 @@ const Vessel = () => {
         </Fragment>
       )}
       {hasSelfReportedData ? (
-        <Tabs
-          tabs={sectionTabs}
-          activeTab={vesselSection}
-          onTabClick={changeTab}
-          mountAllTabsOnLoad
-        />
+        <Fragment>
+          <Tabs
+            tabs={sectionTabs}
+            activeTab={vesselSection}
+            onTabClick={changeTab}
+            mountAllTabsOnLoad
+            className={styles.tabsContainer}
+          />
+          {vesselSection === 'activity' && <div style={{ height: '48vh' }}></div>}
+        </Fragment>
       ) : (
         <div className={styles.placeholder}>
           <p className={styles.secondary}>{t((t) => t.vessel.noActivityData)}</p>

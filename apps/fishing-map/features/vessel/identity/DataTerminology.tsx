@@ -6,6 +6,7 @@ import cx from 'classnames'
 import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
 import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import type I18nNamespaces from 'features/i18n/i18n.types'
@@ -59,7 +60,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         </span>
       </Tooltip>
       <Modal
-        appSelector="__next"
+        appSelector={ROOT_DOM_ELEMENT}
         isOpen={showModal}
         onClose={closeModal}
         shouldCloseOnEsc

@@ -17,6 +17,7 @@ export enum DebugOption {
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
   VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
+  HotspotButton = 'hotspotButton',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -45,6 +46,7 @@ export const debugInitialState: DebugState = {
     vesselsAsPositions: false,
     vesselsMaxTimeGapHours: false,
     hideVesselNames: false,
+    hotspotButton: false,
   },
 }
 

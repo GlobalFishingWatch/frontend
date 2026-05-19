@@ -20,6 +20,7 @@ import {
   getContextId,
   getValidSublayerFilters,
   hasSublayerFilters,
+  mergePickedFeatures,
   supportDataFilterExtension,
 } from '../context/context.utils'
 
@@ -147,26 +148,12 @@ export abstract class UserBaseLayer<
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): UserLayerFeature[] {
-    const features = this._pickObjects(maxFeatures)
-    const featureCache = new Set()
-    const renderedFeatures: UserLayerFeature[] = []
-    // TODO: support multiple sublayers
     const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
-
-    for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, idProperty)
-
-      if (featureId === undefined) {
-        // we have no id for the feature, we just add to the list
-        renderedFeatures.push(f.object as UserLayerFeature)
-      } else if (!featureCache.has(featureId)) {
-        // Add removing duplicates
-        featureCache.add(featureId)
-        renderedFeatures.push(f.object as UserLayerFeature)
-      }
-    }
-
-    return renderedFeatures
+    return mergePickedFeatures<UserLayerFeature>({
+      pickedFeatures: this._pickObjects(maxFeatures),
+      idProperty,
+      layers: this.props.layers,
+    })
   }
 
   _getTilesUrl(tilesUrl: string) {

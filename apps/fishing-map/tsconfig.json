@@ -1,17 +1,17 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
       "node",
-      "@vitest/browser/matchers",
-      "next",
-      "@vitest/browser-playwright",
+      "vite/client",
+      "vitest",
       "vitest-browser-react",
-      "vitest"
+      "@vitest/browser/matchers",
+      "@vitest/browser-playwright"
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -72,6 +72,7 @@
   "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
   "exclude": [
     "node_modules",
+    ".next",
     "jest.config.ts",
     "exported",
     "**/resources.d.ts",

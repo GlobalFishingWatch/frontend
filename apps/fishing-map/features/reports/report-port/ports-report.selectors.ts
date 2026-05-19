@@ -8,7 +8,7 @@ import {
 } from 'data/workspaces'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectReportPortId } from 'routes/routes.selectors'
+import { selectReportPortId } from 'router/routes.selectors'
 
 export const selectPortReportFootprintDatasetId = createSelector(
   [selectAllDataviewInstancesResolved],

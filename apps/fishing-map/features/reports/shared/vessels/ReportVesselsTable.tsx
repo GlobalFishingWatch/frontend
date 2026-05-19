@@ -30,8 +30,8 @@ import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinClickProps } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -52,7 +52,7 @@ export default function ReportVesselsTable({
   allowSorting = true,
 }: ReportVesselTableProps) {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isPinningVessels = useSelector(selectReportIsPinningVessels)
   const userData = useSelector(selectUserData)
   const dataviews = useSelector(selectActiveReportDataviews)
@@ -76,14 +76,14 @@ export default function ReportVesselsTable({
   }, [])
 
   const onFilterClick = (reportVesselFilter: any) => {
-    dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
+    replaceQueryParams({ reportVesselFilter, reportVesselPage: 0 })
   }
 
   const handleSortClick = (
     property: ReportVesselOrderProperty,
     direction: ReportVesselOrderDirection
   ) => {
-    dispatchQueryParams({
+    replaceQueryParams({
       reportVesselOrderProperty: property,
       reportVesselOrderDirection: direction,
     })

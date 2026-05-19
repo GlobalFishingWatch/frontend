@@ -11,7 +11,7 @@ import {
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
 
 type ContextLayerDownloadPopupButtonProps = {
   feature: ContextPickingObject | UserLayerPickingObject

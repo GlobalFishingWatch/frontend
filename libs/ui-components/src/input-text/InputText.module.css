@@ -6,7 +6,7 @@
   width: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background-color: var(--color-terthiary-blue);
   border: var(--border);
   padding: 0 var(--space-XS);
@@ -14,6 +14,10 @@
 
 .default input {
   height: var(--size-M);
+}
+
+.medium input {
+  height: var(--size-SM);
 }
 
 .small input {
@@ -42,6 +46,10 @@
 
 .default .icon {
   margin-bottom: var(--space-S);
+}
+
+.medium .icon {
+  margin-bottom: 0.6rem;
 }
 
 .small .icon {

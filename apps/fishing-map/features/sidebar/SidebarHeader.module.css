@@ -2,7 +2,6 @@
   display: flex;
   align-items: center;
   padding: 0 var(--space-S);
-  border-bottom: var(--border);
   height: var(--header-height);
 }
 
@@ -59,8 +58,8 @@
 }
 
 .sticky {
-  background-color: var(--color-white);
   z-index: 3;
+  border-bottom: var(--border);
 }
 
 @media print {

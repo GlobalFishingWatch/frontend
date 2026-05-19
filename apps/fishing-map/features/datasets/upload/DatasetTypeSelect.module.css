@@ -12,7 +12,7 @@
   justify-content: center;
   cursor: pointer;
   border: 0.2rem dotted var(--color-secondary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background-color: rgba(var(--primary-blue-rgb), 0.05);
   padding: var(--space-S);
   transition: var(--transition);

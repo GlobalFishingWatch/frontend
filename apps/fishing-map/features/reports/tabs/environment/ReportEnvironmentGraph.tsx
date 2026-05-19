@@ -13,6 +13,7 @@ import {
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -30,6 +31,7 @@ import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportS
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
 import { htmlSafeParse } from 'utils/html-parser'
 import { upperFirst } from 'utils/info'
@@ -73,19 +75,33 @@ function ReportEnvironmentGraph({
     data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const { function: aggregationFunction } = getDatasetConfiguration(dataset, 'fourwingsV1')
+
+  const { filtersAllowed } = getFiltersInDataview(dataview)
+  const hasVisibleValues = Boolean(
+    dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue
+  )
+  const hasFilters = filtersAllowed.some(showSchemaFilter) || hasVisibleValues
+
   return (
-    <div className={styles.container}>
+    <div className={cx('card', styles.container)}>
       <p className={styles.summary}>
-        {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
-        <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-        {isDynamic && (
-          <Fragment>
-            {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
-            {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
-          </Fragment>
-        )}
-        <ReportSummaryTags key={dataview.id} dataview={dataview} />
+        <ReportSummaryTags dataview={dataview} showFilters={false} />
+        <span>
+          {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
+          <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
+          {isDynamic && (
+            <Fragment>
+              {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
+              {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
+            </Fragment>
+          )}
+        </span>
       </p>
+      {hasFilters && (
+        <div className={styles.tagsContainer}>
+          <ReportSummaryTags dataview={dataview} showColor={false} />
+        </div>
+      )}
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
           <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
@@ -121,19 +137,21 @@ function ReportEnvironmentGraph({
         <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
           {isDynamic
             ? t((t) => t.analysis.statsDisclaimerDynamic, {
-                interval: t((t: any) => t.common[interval.toLowerCase() + 's'], {
-                  count: 1,
-                }).toLowerCase(),
+                interval: String(
+                  t((t) => (t.common as any)[interval.toLowerCase() + 's'], {
+                    count: 1,
+                  } as any)
+                ).toLowerCase(),
 
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                unit,
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
+                unit: unit ?? '',
               })
             : t((t) => t.analysis.statsDisclaimerStatic, {
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
-                unit,
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
+                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
+                unit: unit ?? '',
               })}{' '}
           {dataset?.source && (
             <span>

@@ -23,7 +23,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import Section from 'features/workspace/shared/Section'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanel from '../UserLayerPanel'

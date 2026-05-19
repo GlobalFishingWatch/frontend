@@ -38,7 +38,7 @@ import {
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -46,6 +46,7 @@ import styles from './EventsReport.module.css'
 
 function EventsReport() {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
@@ -59,7 +60,6 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
@@ -79,9 +79,9 @@ function EventsReport() {
   useEffect(() => {
     if (reportLoadVessels && eventsDataview) {
       updateReportHash()
-      dispatchQueryParams({ reportLoadVessels: false })
+      replaceQueryParams({ reportLoadVessels: false })
     }
-  }, [reportLoadVessels, eventsDataview, dispatchQueryParams, updateReportHash])
+  }, [reportLoadVessels, eventsDataview, updateReportHash])
 
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
@@ -104,10 +104,8 @@ function EventsReport() {
         <div className={styles.emptyState}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={EventsEmptyState.src}
+            src={EventsEmptyState}
             alt=""
-            width={EventsEmptyState.width / 2}
-            height={EventsEmptyState.height / 2}
           />
           {t((t) => t.vessel.noEventsinTimeRange)}
         </div>
@@ -145,67 +143,76 @@ function EventsReport() {
   }
 
   return (
-    <Fragment>
+    <div className={styles.section}>
       {showSubsectionSelector && (
         <div className={styles.selector}>
           <EventsReportSubsectionSelector />
         </div>
       )}
       <Fragment>
-        <ReportSummary />
-        <div className={styles.container}>
-          <div className={styles.headerContainer}>
-            <label>{t((t) => t.common.events)}</label>
-            <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />
-          </div>
-          {graph}
+        <div className={cx('card', styles.subsection)}>
+          <ReportSummary />
         </div>
-        {!timerangeSupported ? (
-          <ReportVesselsPlaceholder animate={false}>
-            <div className={cx(styles.cover, styles.error)}>
-              <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
-            </div>
-          </ReportVesselsPlaceholder>
-        ) : reportOutdated ? (
-          <ReportVesselsPlaceholder animate={false}>
-            <div className={cx(styles.cover, styles.center, styles.top)}>
-              <p>
-                {htmlSafeParse(
-                  t((t) => t.eventsReport.newTimeRange, {
-                    start: formatI18nDate(start),
-                    end: formatI18nDate(end),
-                  })
-                )}
-              </p>
-              <Button
-                testId="see-vessel-table-events-report"
-                onClick={() => {
-                  updateReportHash()
-                  trackEvent({
-                    category: TrackCategory.Analysis,
-                    action: 'Click on see vessels button in events activity',
-                  })
-                }}
-              >
-                {t((t) => t.analysis.seeVessels)}
-              </Button>
-            </div>
-          </ReportVesselsPlaceholder>
-        ) : hasEvents ? (
-          <ReportVessels
-            color={eventsDataview?.config?.color}
-            activityUnit="numEvents"
-            title={t((t) => t.common.vessels)}
-            loading={isLoadingVessels}
-          />
-        ) : null}
-        {showPortsTable && (
+        <div className={cx('card', styles.subsection)}>
           <div className={styles.container}>
-            <EventReportPorts />
+            <div className={styles.headerContainer}>
+              <label>{t((t) => t.common.events)}</label>
+              <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />
+            </div>
+            {graph}
+          </div>
+        </div>
+        <div className={cx('card', styles.subsection)}>
+          {!hasEvents ? null : !timerangeSupported ? (
+            <ReportVesselsPlaceholder animate={false}>
+              <div className={cx(styles.cover, styles.error)}>
+                <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
+              </div>
+            </ReportVesselsPlaceholder>
+          ) : reportOutdated ? (
+            <ReportVesselsPlaceholder animate={false}>
+              <div className={cx(styles.cover, styles.center, styles.top)}>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: t((t) => t.eventsReport.newTimeRange, {
+                      start: formatI18nDate(start),
+                      end: formatI18nDate(end),
+                    }),
+                  }}
+                />
+                <Button
+                  testId="see-vessel-table-events-report"
+                  onClick={() => {
+                    updateReportHash()
+                    trackEvent({
+                      category: TrackCategory.Analysis,
+                      action: 'Click on see vessels button in events activity',
+                    })
+                  }}
+                >
+                  {t((t) => t.analysis.seeVessels)}
+                </Button>
+              </div>
+            </ReportVesselsPlaceholder>
+          ) : (
+            <ReportVessels
+              color={eventsDataview?.config?.color}
+              activityUnit="numEvents"
+              title={t((t) => t.common.vessels)}
+              loading={isLoadingVessels}
+            />
+          )}
+        </div>
+
+        {showPortsTable && (
+          <div className={cx('card', styles.subsection)}>
+            <div className={styles.container}>
+              <EventReportPorts />
+            </div>
           </div>
         )}
       </Fragment>
-    </Fragment>
+    </div>
   )
 }
 

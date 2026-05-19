@@ -19,7 +19,7 @@ import {
   selectTotalEventsVessels,
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 export default function ReportSummaryEvents() {
@@ -46,10 +46,12 @@ export default function ReportSummaryEvents() {
     const activityQuantity = formatI18nNumber(totalStatsEvents || 0)
 
     const activityUnit = eventType
-      ? t((t: any) => t.event[eventType.toLowerCase()], {
-          defaultValue: lowerCase(eventType || ''),
-          count: totalStatsEvents,
-        }).toLowerCase()
+      ? String(
+          t((t) => (t.event as any)[eventType.toLowerCase()], {
+            defaultValue: lowerCase(eventType || ''),
+            count: totalStatsEvents,
+          } as any)
+        ).toLowerCase()
       : ''
 
     if (!totalEventsVessels) {
@@ -57,7 +59,7 @@ export default function ReportSummaryEvents() {
         return ''
       }
       return t((t) => t.analysis.summaryEventsNoVessels, {
-        activityQuantity,
+        activityQuantity: activityQuantity as string,
         activityUnit,
         area: reportAreaId ? '' : t((t) => t.analysis.globally),
         start: startDate,
@@ -67,17 +69,17 @@ export default function ReportSummaryEvents() {
     const vessels = formatI18nNumber(totalEventsVessels || 0)
     if (isPortReportLocation) {
       return t((t) => t.portsReport.summaryEvents, {
-        vessels,
-        flags: reportVesselsFlags?.size || 0,
-        activityQuantity,
+        vessels: vessels as string,
+        flags: String(reportVesselsFlags?.size || 0),
+        activityQuantity: activityQuantity as string,
         start: startDate,
         end: endDate,
       })
     }
     return t((t) => t.analysis.summaryEvents, {
-      vessels,
-      flags: reportVesselsFlags?.size || 0,
-      activityQuantity,
+      vessels: vessels as string,
+      flags: String(reportVesselsFlags?.size || 0),
+      activityQuantity: activityQuantity as string,
       activityUnit,
       start: startDate,
       end: endDate,

@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
@@ -18,7 +18,6 @@ import {
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
-import { REPORT } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -101,11 +100,9 @@ function UserReports() {
                 <li className={styles.dataset} key={report.id}>
                   <Link
                     className={styles.workspaceLink}
-                    to={{
-                      type: REPORT,
-                      payload: { reportId: report.id },
-                      query: {},
-                    }}
+                    to="/report/$reportId"
+                    params={{ reportId: report.id }}
+                    search={{}}
                     onClick={() => onReportClick(report)}
                   >
                     <span className={styles.workspaceTitle}>

@@ -10,6 +10,13 @@
   z-index: 2;
 }
 
+.linksToggle:hover:before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
 .links {
   display: none;
   position: absolute;
@@ -18,12 +25,12 @@
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--color-white);
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-2);
   width: max-content;
   transform: translateY(50%);
   bottom: 50%;
-  left: 5.1rem;
-  border: var(--border);
+  left: var(--sidebar-tabs-width);
+  border-radius: var(--border-radius-1);
 }
 
 .links > li {
@@ -57,6 +64,17 @@
 .link:hover {
   color: var(--color-primary-blue);
   background-color: var(--color-terthiary-blue);
+}
+
+.helpHubButton {
+  background: linear-gradient(
+      to top,
+      var(--color-help-yellow) 0%,
+      var(--color-help-yellow) var(--hints-seen, 0%),
+      rgba(0, 0, 0, 0) var(--hints-seen, 0%),
+      rgba(0, 0, 0, 0) 100%
+    )
+    no-repeat;
 }
 
 .hintsTooltip {

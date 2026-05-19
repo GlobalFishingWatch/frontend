@@ -1,10 +1,11 @@
 import { initReactI18next } from 'react-i18next'
-import i18n from 'i18next'
+import i18n, { type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import { WORKSPACE_ENV } from 'data/workspaces'
+import type { I18nServerState } from 'features/i18n/i18n.server'
 import { Locale } from 'types'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
@@ -21,7 +22,7 @@ export const DEFAULT_NAMESPACE = 'translations'
 export const FALLBACK_LNG = IS_DEVELOPMENT_ENV ? 'source' : Locale.en
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
-const UNIQUE_BUILD_ID = process.env.NEXT_PUBLIC_UNIQUE_BUILD_ID || Date.now()
+const UNIQUE_BUILD_ID = Date.now()
 
 const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
   ? 'http://localhost:8000'
@@ -31,6 +32,33 @@ const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
 const SUPPORTED_LANGUAGES = [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG]
 if (IS_DEVELOPMENT_ENV) {
   SUPPORTED_LANGUAGES.push('source')
+}
+
+// Read TanStack Router's dehydrated root-loader data before React hydrates.
+// $_TSR.router.matches holds each route's loader result (l); the root match id starts with '__root__'.
+const ssrState: I18nServerState | undefined =
+  typeof window !== 'undefined'
+    ? (window as any)?.$_TSR?.router?.matches?.find((m: any) => m.i?.startsWith('__root__'))?.l
+        ?.i18nState
+    : undefined
+
+
+export function getLoadedI18nState(): I18nServerState | undefined {
+  if (!i18n.isInitialized) {
+    return undefined
+  }
+
+  const initialLanguage = i18n.resolvedLanguage || i18n.language
+  const initialI18nStore = i18n.services.resourceStore.data as I18nServerState['initialI18nStore']
+
+  if (!initialLanguage || !initialI18nStore?.[initialLanguage]) {
+    return undefined
+  }
+
+  return {
+    initialI18nStore,
+    initialLanguage,
+  }
 }
 
 i18n
@@ -45,7 +73,12 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    showSupportNotice: false,
+    ...(ssrState && {
+      resources: ssrState.initialI18nStore as Resource,
+      lng: ssrState.initialLanguage,
+      // Resources only contain the SSR language — let the backend load others on demand
+      partialBundledLanguages: true,
+    }),
     backend: {
       loadPath: (lngs: string[], namespaces: string[]) => {
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
@@ -56,11 +89,16 @@ i18n
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json?v=${UNIQUE_BUILD_ID}`
       },
     },
+    detection: {
+      order: ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+      caches: ['cookie', 'localStorage'],
+      cookieOptions: { path: '/', sameSite: 'lax' },
+    },
     ns: ['translations', 'flags', 'datasets', 'timebar', 'workspaces'],
     defaultNS: DEFAULT_NAMESPACE,
     fallbackLng: FALLBACK_LNG,
     supportedLngs: SUPPORTED_LANGUAGES,
-    debug: process.env.i18n_DEBUG === 'true',
+    debug: import.meta.env.VITE_I18N_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
       // format: (value, format, lng) => {
@@ -76,7 +114,6 @@ i18n
     },
   })
 
-// @ts-ignore - avoids loop error
 const t = i18n.t.bind(i18n)
 
 export { t }

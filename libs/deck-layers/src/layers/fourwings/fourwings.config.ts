@@ -28,6 +28,14 @@ export const POSITIONS_ID = 'positions'
 export const HEATMAP_STATIC_PROPERTY_ID = 'count'
 export const FOOTPRINT_ID = 'footprint'
 export const FOOTPRINT_HIGH_RES_ID = `${FOOTPRINT_ID}-high-res`
+export const FOURWINGS_VISUALIZATION_MODES = [
+  HEATMAP_ID,
+  HEATMAP_HIGH_RES_ID,
+  HEATMAP_LOW_RES_ID,
+  POSITIONS_ID,
+  FOOTPRINT_ID,
+  FOOTPRINT_HIGH_RES_ID,
+] as const
 
 export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname', 'vessel_id']
 

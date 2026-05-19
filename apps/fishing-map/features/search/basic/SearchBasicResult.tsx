@@ -40,7 +40,7 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -191,7 +191,7 @@ function SearchBasicResult({
       {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
       onBlur={() => setHighlightedIndex(-1)}
-      className={cx(styles.searchResult, {
+      className={cx('card', styles.searchResult, {
         [styles.highlighted]: highlightedIndex === index,
         [styles.inWorkspace]: isInWorkspace,
         [styles.selected]: isSelected,

@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 
 import { selectIsUserExpired } from './selectors/user.selectors'
 

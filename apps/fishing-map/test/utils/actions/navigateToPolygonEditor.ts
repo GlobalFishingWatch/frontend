@@ -41,8 +41,6 @@ export const navigateToPolygonEditorAction = {
   payload: {},
   replaceQuery: false,
   replaceUrl: false,
-  isHistoryNavigation: false,
-  skipHistoryNavigation: false,
   meta: {
     location: {
       current: {

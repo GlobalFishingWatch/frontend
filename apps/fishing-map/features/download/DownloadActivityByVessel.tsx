@@ -40,7 +40,7 @@ import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 

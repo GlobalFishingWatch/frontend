@@ -27,8 +27,8 @@ import {
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { WORKSPACE } from 'routes/routes'
-import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectLocationQuery, selectUrlDataviewInstances } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
@@ -83,12 +83,12 @@ export const selectVesselGroupWorkspaceToNavigate = createSelector(
       return lastVisitedWorkspace
     }
     return {
-      type: WORKSPACE,
-      payload: {
+      to: ROUTE_PATHS.WORKSPACE,
+      params: {
         category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
       },
-      query: query,
+      search: query,
     }
   }
 )

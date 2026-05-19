@@ -1,7 +1,4 @@
 :root {
-  /* BASE COLORS */
-  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
-
   /* COLORS */
   --timebar-main-background-color: #021236;
   --timebar-main-background-color-faded: rgba(2, 18, 54, 0.5);
@@ -41,11 +38,6 @@
   /* --timebar-hover-transition: all 150ms linear; */
   --timebar-hover-transition: 'none';
   --timebar-size: 7.2rem;
-
-  /* UTILS */
-  --opacity-border: 0.15;
-  --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
-  --border: 1px solid var(--color-border);
 }
 
 @media only screen and (width <= 800px) {

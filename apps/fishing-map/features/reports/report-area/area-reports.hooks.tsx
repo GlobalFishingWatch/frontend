@@ -62,6 +62,7 @@ import {
   selectPortReportFootprintDatasetId,
 } from 'features/reports/report-port/ports-report.selectors'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { selectReportsStatus } from 'features/reports/reports.slice'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -74,7 +75,8 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -332,7 +334,7 @@ export function useFetchReportVessel() {
       setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
-          workspaceUrl: window.location.href,
+          workspaceUrl: getCurrentAppUrl(),
         }
         if (!lastReportUrls?.length) {
           return [newReportUrl]
@@ -427,7 +429,6 @@ export function usePortsReportAreaFootprintFitBounds() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
 }
 
@@ -439,17 +440,26 @@ export function useReportTitle() {
   const reportId = useSelector(selectReportId)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const reportsStatus = useSelector(selectReportsStatus)
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const reportTitle = useMemo(() => {
-    if (reportId && !report) {
+    if (
+      reportId &&
+      !report &&
+      (reportsStatus === AsyncReducerStatus.Finished ||
+        reportsStatus === AsyncReducerStatus.Error)
+    ) {
       return ''
     }
     if (isGlobalReport && !report?.name) {
       return t((t) => t.common.globalReport)
     }
-    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(
+      report?.name || '',
+      i18n.language
+    )
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])
@@ -530,6 +540,7 @@ export function useReportTitle() {
   }, [
     reportId,
     report,
+    reportsStatus,
     i18n.language,
     isGlobalReport,
     urlBufferValue,

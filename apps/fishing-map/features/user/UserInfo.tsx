@@ -2,6 +2,7 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -23,8 +24,7 @@ import {
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import {
   selectHasAmbassadorBadge,
@@ -44,6 +44,7 @@ type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 function UserInfo() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const userLogged = useSelector(selectIsUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
   const userData = useSelector(selectUserData)
@@ -61,10 +62,10 @@ function UserInfo() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk({ loginRedirect: false }))
-    dispatch(updateLocation(HOME, { query: {}, replaceQuery: true }))
+    router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
-  }, [dispatch])
+  }, [dispatch, router])
 
   const onBadgeClick = (badge: Badge) => {
     setBadgeSelected(badge)
@@ -76,28 +77,28 @@ function UserInfo() {
   const BADGES: Record<Badge, BadgeInfo> = useMemo(
     () => ({
       presenter: {
-        image: presenterImg.src,
-        placeholder: presenterPlaceholderImg.src,
+        image: presenterImg,
+        placeholder: presenterPlaceholderImg,
         userHasIt: hasPresenterBadge,
       },
       teacher: {
-        image: teacherImg.src,
-        placeholder: teacherPlaceholderImg.src,
+        image: teacherImg,
+        placeholder: teacherPlaceholderImg,
         userHasIt: hasTeacherBadge,
       },
       fixer: {
-        image: fixerImg.src,
-        placeholder: fixerPlaceholderImg.src,
+        image: fixerImg,
+        placeholder: fixerPlaceholderImg,
         userHasIt: hasFeedbackProviderBadge,
       },
       ambassador: {
-        image: ambassadorImg.src,
-        placeholder: ambassadorPlaceholderImg.src,
+        image: ambassadorImg,
+        placeholder: ambassadorPlaceholderImg,
         userHasIt: hasAmbassadorBadge,
       },
       impactReporter: {
-        image: impactReporterImg.src,
-        placeholder: impactReporterPlaceholderImg.src,
+        image: impactReporterImg,
+        placeholder: impactReporterPlaceholderImg,
         userHasIt: hasImpactReporterBadge,
       },
     }),
@@ -121,7 +122,7 @@ function UserInfo() {
   }
 
   return (
-    <div className={styles.userInfo}>
+    <div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
           <div>

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { Report, Workspace, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
+import type { Report, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
@@ -28,17 +28,10 @@ import {
   DAYS_FROM_LATEST_MIN,
   getViewAccessOptions,
 } from 'features/workspace/save/workspace-save.utils'
-import type { WorkspaceState } from 'types'
+import { getWorkspaceReport } from 'features/workspace/workspace.utils'
 import type { AsyncError } from 'utils/async-slice'
 
 import styles from './NewAreaReportModal.module.css'
-
-export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
-  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
-    workspace
-
-  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
-}
 
 type NewReportModalProps = {
   title?: string

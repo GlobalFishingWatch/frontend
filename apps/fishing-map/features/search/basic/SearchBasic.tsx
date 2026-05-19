@@ -29,8 +29,7 @@ import {
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from './SearchError'
@@ -52,14 +51,13 @@ function SearchBasic({
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
-  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const { dispatchQueryParams } = useLocationConnect()
   const basicSearchDatasets = useSelector(selectBasicSearchDatasets)
   const isBrazilVMSWorkspace =
     basicSearchDatasets !== undefined &&
@@ -73,18 +71,12 @@ function SearchBasic({
 
   const onInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
+      replaceQueryParams({ query: e.target.value })
       if (e.target.value !== searchQuery && searchSuggestionClicked) {
         dispatch(setSuggestionClicked(false))
       }
     },
-    [
-      dispatch,
-      dispatchQueryParams,
-      isStandaloneSearchLocation,
-      searchQuery,
-      searchSuggestionClicked,
-    ]
+    [dispatch, searchQuery, searchSuggestionClicked]
   )
 
   const handleIntersection = useCallback(

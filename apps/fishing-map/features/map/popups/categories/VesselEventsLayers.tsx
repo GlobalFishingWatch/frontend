@@ -21,7 +21,7 @@ import { getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinOnClickCb } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { getEventDescription, getTimeLabels } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
@@ -72,7 +72,7 @@ function EventDescription({
             i18nKey={(t) => t.event.encounterActionWithVesselsPin}
             defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
             values={{
-              encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
+              encounterVessel: formatInfoField(encounterVesselName, 'shipname') as string,
               ...time,
             }}
             components={{

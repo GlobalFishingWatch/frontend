@@ -142,8 +142,8 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             expanded={insightsExpanded.includes(`${country}-${list}`)}
             onToggle={(isOpen) => onToggle(isOpen, list)}
             label={t((t) => t.vesselGroupReport.insights.MOUListsCount, {
-              vessels: uniqVessels.length,
-              list: t((t: any) => t.insights.lists[list], { defaultValue: list }),
+              vessels: String(uniqVessels.length),
+              list: t((t) => (t as any).insights.lists[list as string], { defaultValue: list }),
             })}
           />
         </div>

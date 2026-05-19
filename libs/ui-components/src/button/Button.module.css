@@ -4,19 +4,25 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-XS);
-  border: none;
+  border-bottom: 1px solid transparent;
   cursor: pointer;
-  transition: var(--transition);
+  transition: var(--transition-spring);
   background-repeat: no-repeat;
   background-position: center center;
   padding: 0 var(--space-S);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
   line-height: 1;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .button:focus {
   box-shadow: var(--box-shadow-highlight);
+}
+
+.button:active:not(.disabled) {
+  transform: scale(0.96);
+  transition: var(--transition-press);
 }
 
 a.button,
@@ -35,6 +41,7 @@ a.button:visited,
 .default:not(.disabled):hover,
 .default:not(.disabled):focus {
   background-color: var(--color-primary-blue-hover);
+  border-bottom: var(--border);
 }
 
 .secondary {
@@ -52,19 +59,20 @@ a.button:visited,
 .secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
+  border-bottom: var(--border);
 }
 
 .border-secondary {
-  border: var(--border);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   color: var(--color-secondary-blue);
-  background-color: transparent;
+  background-color: var(--color-terthiary-blue);
 }
 
 .border-secondary:not(.disabled):hover,
 .border-secondary:not(.disabled):focus {
   color: var(--color-primary-blue);
   background-color: var(--color-border);
+  border-bottom: var(--border);
 }
 
 .tiny {

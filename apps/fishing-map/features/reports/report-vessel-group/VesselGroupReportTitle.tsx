@@ -28,7 +28,8 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -98,8 +99,8 @@ export default function VesselGroupReportTitle() {
           <h2 className={styles.summary}>
             {htmlSafeParse(
               t((t) => t.vesselGroup.summary, {
-                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
-                flags: flags?.size,
+                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)) as string,
+                flags: String(flags?.size ?? 0),
 
                 start: formatI18nDate(timeRange.start, {
                   format: DateTime.DATE_MED,
@@ -116,7 +117,7 @@ export default function VesselGroupReportTitle() {
             />
           </h2>
         </div>
-        <a className={styles.reportLink} href={window.location.href}>
+        <a className={styles.reportLink} href={getCurrentAppUrl()}>
           {t((t) => t.vesselGroupReport.linkToReport)}
         </a>
         <div className={styles.actions}>
@@ -136,7 +137,7 @@ export default function VesselGroupReportTitle() {
           <LoginButtonWrapper tooltip="">
             <Button
               type="border-secondary"
-              size="small"
+              size="medium"
               className={styles.actionButton}
               onClick={onEditClick}
               disabled={loading}

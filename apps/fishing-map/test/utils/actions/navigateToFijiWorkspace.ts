@@ -133,8 +133,6 @@ export const navigateToFijiWorkspaceWithAllLayersAction = {
   },
   replaceQuery: false,
   replaceUrl: false,
-  isHistoryNavigation: false,
-  skipHistoryNavigation: false,
   meta: {
     location: {
       current: {

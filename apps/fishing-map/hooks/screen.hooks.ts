@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
@@ -70,7 +70,7 @@ export const useDownloadDomElementAsImage = () => {
           const canvas = await getCanvas(domId)
           canvas.toBlob((blob: any) => {
             if (blob) {
-              saveAs(blob, fileName)
+              filesaver.saveAs(blob, fileName)
               setLoading(false)
               setFinished(true)
               return true

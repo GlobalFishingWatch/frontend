@@ -3,36 +3,39 @@ FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:lat
 WORKDIR /app
 
 # Install CA certificates for SSL verification (needed for Sentry source map upload)
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/* || \
-    apk add --no-cache ca-certificates || \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps && rm -rf /var/lib/apt/lists/* || \
+    apk add --no-cache ca-certificates procps || \
     true
 
 ENV NODE_ENV=production
 ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
-ENV NEXT_TELEMETRY_DISABLED=1
 ENV CI=true
 
-ARG NEXT_PUBLIC_API_GATEWAY
-ARG NEXT_PUBLIC_API_VERSION
-ARG NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
-ARG NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-ARG NEXT_PUBLIC_USE_LOCAL_DATASETS
-ARG NEXT_PUBLIC_USE_LOCAL_DATAVIEWS
-ARG NEXT_PUBLIC_WORKSPACE_ENV
-ARG NEXT_PUBLIC_REPORT_DAYS_LIMIT
+ARG VITE_API_GATEWAY
+ARG VITE_API_VERSION
+ARG VITE_GOOGLE_MEASUREMENT_ID
+ARG VITE_GOOGLE_TAG_MANAGER_ID
+ARG VITE_USE_LOCAL_DATASETS
+ARG VITE_USE_LOCAL_DATAVIEWS
+ARG VITE_WORKSPACE_ENV
+ARG VITE_REPORT_DAYS_LIMIT
+ARG VITE_STRAPI_URL
+ARG VITE_STRAPI_TOKEN
 ARG SENTRY_AUTH_TOKEN
 ARG COMMIT_SHA
 
-ENV NEXT_PUBLIC_API_GATEWAY=$NEXT_PUBLIC_API_GATEWAY
-ENV NEXT_PUBLIC_API_VERSION=$NEXT_PUBLIC_API_VERSION
-ENV NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=$NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
-ENV NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-ENV NEXT_PUBLIC_USE_LOCAL_DATASETS=$NEXT_PUBLIC_USE_LOCAL_DATASETS
-ENV NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=$NEXT_PUBLIC_USE_LOCAL_DATAVIEWS
-ENV NEXT_PUBLIC_WORKSPACE_ENV=$NEXT_PUBLIC_WORKSPACE_ENV
-ENV NEXT_PUBLIC_REPORT_DAYS_LIMIT=$NEXT_PUBLIC_REPORT_DAYS_LIMIT
+ENV VITE_API_GATEWAY=$VITE_API_GATEWAY
+ENV VITE_API_VERSION=$VITE_API_VERSION
+ENV VITE_GOOGLE_MEASUREMENT_ID=$VITE_GOOGLE_MEASUREMENT_ID
+ENV VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID
+ENV VITE_USE_LOCAL_DATASETS=$VITE_USE_LOCAL_DATASETS
+ENV VITE_USE_LOCAL_DATAVIEWS=$VITE_USE_LOCAL_DATAVIEWS
+ENV VITE_WORKSPACE_ENV=$VITE_WORKSPACE_ENV
+ENV VITE_REPORT_DAYS_LIMIT=$VITE_REPORT_DAYS_LIMIT
+ENV VITE_STRAPI_URL=$VITE_STRAPI_URL
+ENV VITE_STRAPI_TOKEN=$VITE_STRAPI_TOKEN
 ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 ENV COMMIT_SHA=$COMMIT_SHA
 
@@ -40,20 +43,14 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile && \
   pnpm exec nx reset && \
-  NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' pnpm exec nx run fishing-map:build
+  NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run fishing-map:build
 
 FROM node:24-alpine AS production
 
 WORKDIR /app
 
-ENV NEXT_TELEMETRY_DISABLED=1
 ARG APP_NAME=fishing-map
 
-COPY --from=builder /app/apps/$APP_NAME/public ./apps/$APP_NAME/public
-COPY --from=builder /app/dist/apps/fishing-map/.next/standalone ./
-COPY --from=builder /app/dist/apps/fishing-map/.next/static ./dist/apps/$APP_NAME/.next/static
+COPY --from=builder /app/apps/$APP_NAME/.output ./output
 
-# Where Next Server Files are palced
-WORKDIR /app/apps/$APP_NAME
-
-CMD ["node", "--max-http-header-size=40000", "server.js"]
+CMD ["node", "--max-http-header-size=40000", "output/server/index.mjs"]

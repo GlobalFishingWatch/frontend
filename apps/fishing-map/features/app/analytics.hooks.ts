@@ -6,10 +6,10 @@ import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwa
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { selectLocationCategory, selectLocationType } from 'router/routes.selectors'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =
-  (process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
+  (import.meta.env.VITE_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
 
 export enum TrackCategory {
   General = 'general',

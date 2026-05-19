@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 import { stringify } from 'qs'
 import type { RootState } from 'reducers'
 
@@ -90,7 +90,7 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
-      saveAs(blob as any, fileName)
+      filesaver.saveAs(blob as any, fileName)
 
       return rateLimit
     })

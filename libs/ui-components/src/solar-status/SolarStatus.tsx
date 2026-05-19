@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import cx from 'classnames'
-import { getTimes } from 'suncalc'
+import suncalc from 'suncalc'
 
 import { Locale } from '@globalfishingwatch/api-types'
 
@@ -8,6 +8,8 @@ import { Icon, type IconType } from '../icon'
 import { Tooltip } from '../tooltip'
 
 import styles from './SolarStatus.module.css'
+
+const { getTimes } = suncalc
 
 interface SolarStatusProps {
   lat: number

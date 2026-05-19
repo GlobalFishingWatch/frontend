@@ -2,7 +2,8 @@ import type { VesselSearchState } from 'features/search/search.types'
 
 export const MIN_SEARCH_CHARACTERS = 3
 
-export type SearchType = 'basic' | 'advanced'
+export const SEARCH_TYPES = ['basic', 'advanced'] as const
+export type SearchType = (typeof SEARCH_TYPES)[number]
 
 export const RESULTS_PER_PAGE = 20
 export const SSVID_LENGTH = 9

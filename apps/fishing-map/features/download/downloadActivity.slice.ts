@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 import { stringify } from 'qs'
 import type { RootState } from 'reducers'
 
@@ -84,7 +84,7 @@ export const downloadActivityLastReportThunk = createAsyncThunk(
           return data.status
         } else {
           const data = await response.blob()
-          saveAs(data as any, fileName)
+          filesaver.saveAs(data as any, fileName)
           return 'finished'
         }
       }
@@ -159,7 +159,7 @@ export const downloadActivityThunk = createAsyncThunk<
       const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(downloadUrl, {
         responseType: 'blob',
       }).then((blob) => {
-        saveAs(blob as any, fileName)
+        filesaver.saveAs(blob as any, fileName)
       })
 
       return createdDownload

@@ -43,12 +43,24 @@
     "groupByRFMO": "By RFMO",
     "groupBySource": "by source",
     "groupByVesseltype": "by vessel type",
+    "hotspot": {
+      "datasetName": "{{areaSize}} {{unit}} hotspot zone of {{activitySubCategory}} in {{areaName}} between {{start}} and {{end}}",
+      "title": "Hotspot zone",
+      "tooltip": "This is the portion of {{area}} {{unit}} with the most activity in your area",
+      "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
+    },
     "insideYourArea": "inside your area",
     "kilometers": "kilometers",
     "linkToReport": "Check the dynamic report here",
+    "migramar": {
+      "indicator": "indicator",
+      "species": "species",
+      "title": "Species Monitoring Plan CMAR"
+    },
     "nauticalmiles": "nautical miles",
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
+    "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
@@ -60,6 +72,14 @@
     "periodComparisonRange": "in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}",
     "pinVessels": "Add to workspace",
     "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
+    "polygons_one": "polygon",
+    "polygons_other": "polygons",
+    "polygonsAreaCoverage": "covering {{areakm2}}km² ({{coverage}}%) of the report area",
+    "polygonsContained": "fully contained",
+    "polygonsFullyContained": "fully contained",
+    "polygonsOverlapping": "partially overlapping",
+    "polygonsOverlapping_one": "partially overlapping polygon",
+    "polygonsOverlapping_other": "partially overlapping polygons",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -247,7 +267,7 @@
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
     "or": "or",
-    "others": "Others",
+    "others": "",
     "partnerSites": "Partner sites",
     "password": "password",
     "permissions": "permissions required",
@@ -267,7 +287,7 @@
     "seeMore": "See more",
     "seeWorkspace": "See your workspace",
     "send": "Send",
-    "sentinel2": "Sentinel 2",
+    "sentinel2": "Imagery detections (Optical)",
     "setNewPassword": "Set a new password",
     "share": "Share map",
     "since": "since",
@@ -458,6 +478,7 @@
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
+  "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -515,8 +536,8 @@
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
-    "areaLoad": "There was an error loading the report area",
-    "areaOutOfTime": "The report area is out of the current time range",
+    "areaLoad": "",
+    "areaOutOfTime": "",
     "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset not found",
     "fields": "Errors with fields {{fields}}",
@@ -647,7 +668,7 @@
     "type": "shiptype"
   },
   "eventsReport": {
-    "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "newTimeRange": "",
     "newTimeRangePorts": "Click the button to see the ports visited after events",
     "seePorts": "See ports"
   },
@@ -694,6 +715,7 @@
     "convenedBy": "Founding partners",
     "supportBy": "Supported by"
   },
+  "hours": "",
   "layer": {
     "activityFitBounds": "Center view on activity",
     "add": "Add layer",
@@ -823,6 +845,9 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
+  "mmsi": "MMSI",
+  "mmsi_one": "MMSI",
+  "mmsi_other": "MMSIs",
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
@@ -975,7 +1000,6 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "info": "User Info",
-    "profile": "Profile",
     "seeDataset": "See on map",
     "title": "User"
   },
@@ -1164,13 +1188,13 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw_callsign": "Call sign",
-    "gfw_flag": "Flag",
+    "gfw_callsign": "",
+    "gfw_flag": "",
     "gfw_geartypes": "GFW Gear type",
-    "gfw_imo": "IMO",
-    "gfw_shipname": "Ship name",
+    "gfw_imo": "",
+    "gfw_shipname": "",
     "gfw_shiptypes": "GFW Vessel type",
-    "gfw_ssvid": "SSVID (MMSI)",
+    "gfw_ssvid": "",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
@@ -1231,6 +1255,7 @@
       "MOUTokyoListsPreviousAppearance": "Previously flew under another flag on the Tokyo MOU black or grey lists",
       "sectionTitle": "Vessel insights between {{start}} and {{end}}"
     },
+    "inWorkspace": "",
     "lastTransmissionDate": "Last transmission date",
     "length": "Length",
     "lengthM": "Length (m)",
@@ -1490,10 +1515,10 @@
     "user": "User workspace",
     "viewAccess": "View access",
     "wizard": {
-      "exploreArea": "See area",
-      "exploreGlobal": "See global",
-      "help": "You can move the map and update your workspace later",
-      "title": "Setup a marine manager workspace for any area globally"
+      "exploreArea": "",
+      "exploreGlobal": "",
+      "help": "",
+      "title": ""
     }
   }
 }
