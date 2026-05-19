@@ -66,7 +66,7 @@ export const useAnalytics = () => {
             organization_type: user?.organizationType,
             organization_type_hashed: user?.organizationType ? btoa(user.organizationType) : '',
             country: user?.country,
-            user_cohort: user?.cohort,
+            user_cohort: Array.isArray(user?.cohort) ? user.cohort.join(',') : user?.cohort,
             user_group: user?.groups.join(','),
           }),
         },
