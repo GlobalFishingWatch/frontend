@@ -27,7 +27,7 @@ import {
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
-import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
+import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/context.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
