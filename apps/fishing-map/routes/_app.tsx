@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
@@ -18,12 +18,12 @@ import '@globalfishingwatch/timebar/timebar-settings.css'
 import '@globalfishingwatch/ui-components/base.css'
 
 function AppLayout() {
-  const [store] = useState<AppStore>(() => makeStore())
   const router = useRouter()
-
-  useEffect(() => {
+  const store = useMemo(() => {
+    const store = makeStore()
     setupRouterSync(router, store)
-  }, [router, store])
+    return store as AppStore
+  }, [router])
 
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
