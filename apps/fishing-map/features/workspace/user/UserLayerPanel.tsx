@@ -259,7 +259,7 @@ function UserPanel({
                   }
                 />
               </Fragment>
-              {datasetGeometryType === 'tracks' && (
+              {(datasetGeometryType === 'tracks' || datasetGeometryType === 'points') && (
                 <FitBounds
                   hasError={error !== undefined}
                   layer={instance as UserTracksLayer}

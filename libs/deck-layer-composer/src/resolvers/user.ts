@@ -1,5 +1,5 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DRAW_DATASET_SOURCE, EndpointId } from '@globalfishingwatch/api-types'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -166,6 +166,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     const datasetConfig = dataview.datasetsConfig?.find(
       (datasetConfig) => datasetConfig.datasetId === layer.dataset
     )
+
     if (!dataset || dataset?.status !== 'done' || !datasetConfig) {
       return []
     }
@@ -180,6 +181,23 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       tilesUrl = `${tilesUrl}?cache=${datasetContextConfig.filePath}`
     }
 
+    let boundsUrl: string | undefined
+    if (dataset.type === DatasetTypes.UserContext) {
+      const filtersQuery = datasetConfig.query?.find((q) => q.id === 'filters')
+      const startField = timeFilters?.startTimeProperty
+      const endField = timeFilters?.endTimeProperty || startField
+      const boundsDatasetConfig = {
+        ...datasetConfig,
+        endpoint: EndpointId.ContextBounds,
+        query: [
+          ...(filtersQuery ? [filtersQuery] : []),
+          ...(startField ? [{ id: 'start-field', value: startField }] : []),
+          ...(endField ? [{ id: 'end-field', value: endField }] : []),
+        ],
+      }
+      boundsUrl = resolveEndpoint(dataset, boundsDatasetConfig, { absolute: true }) ?? undefined
+    }
+
     const { valueProperties } = getDatasetConfiguration(dataset) || {}
     const { idProperty } =
       getDatasetConfiguration(dataset, 'contextLayerV1') ||
@@ -191,6 +209,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       id: `${dataview.id}-${dataset.id}`,
       datasetId: dataset.id,
       tilesUrl,
+      boundsUrl,
       idProperty,
       valueProperties,
       pickable: dataview.config?.pickable ?? true,

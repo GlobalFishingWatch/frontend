@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import { UserPointsTileLayer, UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -25,14 +25,27 @@ export const useTrackLayerFitBounds = () => {
   const { setTimerange, start, end } = useTimerangeConnect()
 
   const onFitBoundsClick = useCallback(
-    ({
+    async ({
       layer,
       infoResource,
     }: {
-      layer: VesselLayer | UserTracksLayer
+      layer: VesselLayer | UserTracksLayer | UserPointsTileLayer
       infoResource?: Resource<IdentityVessel>
     }) => {
       if (layer && start && end) {
+        if (layer instanceof UserPointsTileLayer) {
+          const bounds = await layer.getBbox()
+          if (bounds?.bbox) {
+            fitBounds(bounds.bbox as Bbox, { padding: 60, fitZoom: true, flyTo: true })
+          }
+          if (bounds?.minStartTime && bounds?.maxEndTime) {
+            setTimerange({
+              start: getUTCDate(bounds.minStartTime).toISOString() as string,
+              end: getUTCDate(bounds.maxEndTime).toISOString() as string,
+            })
+          }
+          return
+        }
         if (layer instanceof UserTracksLayer) {
           let bbox = layer.getBbox({ startDate: start, endDate: end })
           if (!bbox) {
@@ -114,7 +127,7 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
   const { t } = useTranslation()
   const trackLayerFitBounds = useTrackLayerFitBounds()
 
-  let tooltip = ''
+  let tooltip: string
   if (hasError) {
     tooltip = t((t) => t.errors.trackLoading)
   } else if (layer instanceof VesselLayer) {
