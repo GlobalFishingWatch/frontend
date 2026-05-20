@@ -53,8 +53,6 @@ export type BoundsResponse = {
   maxEndTime?: string
 }
 
-const BOUNDS_CACHE_TTL_MS = 20 * 60 * 1000
-
 export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   pickable: true,
@@ -288,7 +286,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return data
   }
 
-  _boundsCache = new Map<string, { value: BoundsResponse; expires: number }>()
+  // TODO remove this
   _boundsAbort?: AbortController
 
   async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
@@ -306,21 +304,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
       : boundsUrl
 
-    const cached = this._boundsCache.get(urlWithFilters)
-    if (cached && cached.expires > Date.now()) {
-      return cached.value
-    }
-
     this._boundsAbort?.abort()
     const controller = new AbortController()
     this._boundsAbort = controller
 
     try {
       const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters, { signal: controller.signal })
-      this._boundsCache.set(urlWithFilters, {
-        value: data,
-        expires: Date.now() + BOUNDS_CACHE_TTL_MS,
-      })
       return data
     } catch (error) {
       if ((error as Error).name === 'AbortError') {
