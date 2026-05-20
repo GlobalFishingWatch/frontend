@@ -1007,18 +1007,18 @@
     "title": "User"
   },
   "userGuide": {
-    "activity-filters": "Filter activity layers",
     "activity-fishing": "Activity - Fishing",
-    "activity-presence": "Activity - Presence",
-    "analysis": "Analyze activity",
+    "activity-vessel-presence": "Activity - Presence",
+    "analysis-and-dynamic-reports": "Analyze activity",
     "detections-sar": "Detections - SAR",
     "detections-viirs": "Detections - VIIRS",
-    "download-activity": "Download data",
+    "downloading-data": "Download data",
+    "filtering-activity-layers": "Filter activity layers",
     "title": "User Guide",
-    "upload-data": "Upload datasets",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
+    "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
     "vessel-search": "Vessel Search"
   },

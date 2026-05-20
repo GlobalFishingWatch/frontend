@@ -103,10 +103,12 @@ const InfoContainer = () => {
 
   let userGuideLink: UserGuideSection | undefined
   if (dataview.category === DataviewCategory.Activity) {
-    userGuideLink = dataview.id.includes('presence') ? 'activity-presence' : 'activity-fishing'
+    userGuideLink = dataview.id.includes('presence')
+      ? 'activity-vessel-presence'
+      : 'activity-fishing'
   } else if (dataview.category === DataviewCategory.Detections) {
-    if (dataview.id.includes('viirs')) userGuideLink = 'detections'
-    else if (dataview.id.includes('sar')) userGuideLink = 'detections'
+    if (dataview.id.includes('viirs')) userGuideLink = 'detections-viirs'
+    else if (dataview.id.includes('sar')) userGuideLink = 'detections-sar'
   }
 
   return (

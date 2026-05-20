@@ -211,7 +211,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
         </div>
-        <UserGuideLink section="download-activity" />
+        <UserGuideLink section="downloading-data" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>

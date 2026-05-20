@@ -66,3 +66,21 @@ export const getById = createServerFn({
         locale
       )
   )
+
+export const getContentFromSubcontentId = createServerFn({
+  method: 'GET',
+})
+  .inputValidator((params: { slug: string; locale?: string }) => params)
+  .handler(({ data: { slug, locale } }): Promise<TStrapiResponse<TUserGuideSection>> => {
+    return findWithLocaleFallback(
+      {
+        filters: {
+          subsections: {
+            slug: { $eqi: slug },
+          },
+        },
+        populate: 'subsections',
+      },
+      locale
+    )
+  })

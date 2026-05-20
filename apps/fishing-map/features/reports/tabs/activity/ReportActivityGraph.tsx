@@ -162,7 +162,7 @@ export default function ReportActivity() {
       {!isInitialLoad && (
         <Fragment>
           <div className={styles.disclaimer}>
-            <UserGuideLink section="analysis" />
+            <UserGuideLink section="analysis-and-dynamic-reports" />
             <p className={styles.disclaimerText}>
               {t((t) => t.analysis.disclaimer)}{' '}
               <a

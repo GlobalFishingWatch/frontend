@@ -17,6 +17,12 @@
   white-space: nowrap;
 }
 
+.labelContainer {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
 .link:hover {
   color: var(--color-primary-blue);
   border-bottom: var(--border-thick);
@@ -30,7 +36,7 @@
   opacity: 1;
 }
 
-.label {
+.span {
   font: var(--font-XS);
   cursor: pointer;
 }

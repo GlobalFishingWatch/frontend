@@ -4,18 +4,19 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 
 type SidePanelTarget =
   | { type: 'userGuide'; id?: string; subcontentId?: string }
-  | { type: 'datasets'; id: string }
+  | { type: 'datasets'; id: string; subcontentId?: string }
 
 export function useSidePanel() {
   const { replaceQueryParams } = useReplaceQueryParams()
 
   const openSidePanel = useCallback(
-    (panel: SidePanelTarget) =>
+    async (panel: SidePanelTarget) => {
       replaceQueryParams({
         sidePanelContent: panel.type,
         sidePanelId: panel.id,
-        sidePanelSubcontentId: panel.type === 'userGuide' ? panel.subcontentId : undefined,
-      }),
+        sidePanelSubcontentId: panel.subcontentId,
+      })
+    },
     [replaceQueryParams]
   )
 
@@ -29,8 +30,5 @@ export function useSidePanel() {
     [replaceQueryParams]
   )
 
-  return useMemo(
-    () => ({ openSidePanel, closeSidePanel }),
-    [openSidePanel, closeSidePanel]
-  )
+  return useMemo(() => ({ openSidePanel, closeSidePanel }), [openSidePanel, closeSidePanel])
 }

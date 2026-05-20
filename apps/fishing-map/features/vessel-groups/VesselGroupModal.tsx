@@ -611,7 +611,9 @@ function VesselGroupModal(): React.ReactElement<any> {
                     vessels: vesselGroupVessels,
                   } as VesselGroup)}`
                 : t((t) => t.vesselGroup.searchResultsTable, {
-                    field: selectedCsvColumns ? (listAsSentence(selectedCsvColumns) ?? '') : searchIdField,
+                    field: selectedCsvColumns
+                      ? (listAsSentence(selectedCsvColumns) ?? '')
+                      : searchIdField,
                     timeRange:
                       transmissionDateFrom && transmissionDateTo
                         ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
@@ -623,9 +625,11 @@ function VesselGroupModal(): React.ReactElement<any> {
                           : transmissionDateTo
                             ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
                             : '',
-                    number: String(getVesselGroupVesselsCount({
-                      vessels: vesselGroupVessels,
-                    } as VesselGroup)),
+                    number: String(
+                      getVesselGroupVesselsCount({
+                        vessels: vesselGroupVessels,
+                      } as VesselGroup)
+                    ),
                   })}
             </label>
             {unmatchedIDs && unmatchedIDs.length > 0 && (
@@ -664,7 +668,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         )}
       </div>
       <div className={styles.modalFooter}>
-        <UserGuideLink section="vesselGroups" />
+        <UserGuideLink section="vessel-groups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {datasetsWithoutRelatedEvents.length >= 1 && (
