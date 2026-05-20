@@ -29,7 +29,7 @@ import styles from './ContentPanel.module.css'
 
 const InfoContainer = () => {
   const { i18n, ready: i18nReady } = useTranslation()
-  const { sidePanelId } = Route.useSearch()
+  const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const dataview = useMemo(
     () => dataviews.find((d) => d.id === sidePanelId),
@@ -70,7 +70,7 @@ const InfoContainer = () => {
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
   }, [dataview, isHeatmapVector, i18nReady])
 
-  const [selectedId, setSelectedId] = useState<string | undefined>()
+  const [selectedId, setSelectedId] = useState<string | undefined>(sidePanelSubcontentId)
   const activeTab = useMemo(() => {
     const match = selectedId ? options.find((o) => o.id === selectedId) : undefined
     return match ?? options[0]
@@ -114,12 +114,19 @@ const InfoContainer = () => {
   return (
     <div className={cx(styles.container)}>
       <div className={cx(styles.header)}>
-        <ContentHeader title={(strapiDataset?.title ?? activeTab?.labelString) || dataview.name} />
+        <ContentHeader
+          title={
+            <div className={styles.labelContainer}>
+              {(strapiDataset?.title ?? activeTab?.labelString) || dataview.name}{' '}
+              {userGuideLink && <UserGuideLink section={userGuideLink} />}
+            </div>
+          }
+        />
       </div>
       <div className={cx(styles.scrollContainer)}>
         {!isSingleTab && options.length > 0 && (
           <div className={cx(styles.sourceSelector)}>
-            {options.length <= 3 ? (
+            {options.length <= 2 ? (
               <Choice
                 options={options}
                 activeOption={activeTab?.id}
@@ -136,7 +143,6 @@ const InfoContainer = () => {
           </div>
         )}
         <div className={cx(styles.content)}>
-          {userGuideLink && <UserGuideLink section={userGuideLink} />}
           {loading ? (
             <Spinner size="small" />
           ) : strapiDataset?.body ? (

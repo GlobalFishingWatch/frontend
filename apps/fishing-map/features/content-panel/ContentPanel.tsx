@@ -6,6 +6,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TUserGuideSection } from 'features/cms/strapi.types'
@@ -110,8 +111,15 @@ const UserGuideContent = ({ data }: UserGuideContentProps) => {
     <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
       <div className={cx(styles.header)}>
         <ContentHeader
-          title={t((t) => t.common.userGuide)}
-          openTableOfContents={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
+          title={
+            <div className={styles.titleContainer}>
+              <IconButton
+                icon="list"
+                onClick={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
+              />
+              {t((t) => t.common.userGuide)}
+            </div>
+          }
         />
       </div>
       <div

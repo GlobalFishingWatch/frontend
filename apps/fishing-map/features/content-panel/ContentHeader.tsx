@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -8,21 +9,17 @@ import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import styles from './ContentHeader.module.css'
 
 type ContentHeaderProps = {
-  title?: string
-  openTableOfContents?: () => void
+  title?: string | JSX.Element
 }
 
-function ContentHeader({ title, openTableOfContents }: ContentHeaderProps) {
+function ContentHeader({ title }: ContentHeaderProps) {
   const { t } = useTranslation()
   const { closeSidePanel } = useSidePanel()
 
   return (
     <div className={cx(styles.sticky)}>
       <div className={cx(styles.sidebarHeader)}>
-        <h2 className={cx(styles.title)}>
-          {openTableOfContents && <IconButton icon="list" onClick={() => openTableOfContents()} />}
-          {title || t((t) => t.common.content)}
-        </h2>
+        <h2 className={cx(styles.title)}>{title || t((t) => t.common.content)}</h2>
         <div>
           <IconButton
             icon="close"

@@ -189,6 +189,13 @@
   text-transform: uppercase;
 }
 
+.labelContainer {
+  display: flex;
+  align-items: center;
+  width: -webkit-fill-available;
+  justify-content: space-between;
+}
+
 .titleContainer {
   display: flex;
   align-items: center;
