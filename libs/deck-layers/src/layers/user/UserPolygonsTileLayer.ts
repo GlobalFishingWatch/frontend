@@ -189,8 +189,9 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     return layers.map((layer) => {
-      return new TileLayer<TileLayerProps<UserLayerFeature>>({
+      return new TileLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
         id: `${layer.id}-base-layer`,
+        layerId: layer.id,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         maxZoom: maxZoom || DEFAULT_USER_TILES_MAX_ZOOM,
@@ -208,22 +209,26 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             const filtersHash = getContextFiltersHash(sublayer.filters)
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
-              new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-fills-${filtersHash}`,
-                stroked: false,
-                pickable: layer?.pickable ?? pickable,
-                ...extensionFilterProps,
-                getPolygonOffset: (params) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
-                getFillColor: (d) =>
-                  hasColorSteps
-                    ? this._getFillStepsColor(d, { layer, sublayer })
-                    : this._getFillColor(d, { layer, sublayer }),
-                updateTriggers: {
-                  getFillColor: [highlightedFeatures, filtersHash, sublayer.color],
-                  ...updateTrigger,
-                },
-              }),
+              new GeoJsonLayer<GeoJsonProperties, { data: any; dataviewId: string }>(
+                mvtSublayerProps,
+                {
+                  id: `${props.id}-highlight-fills-${filtersHash}`,
+                  dataviewId: sublayer.dataviewId,
+                  stroked: false,
+                  pickable: layer?.pickable ?? pickable,
+                  ...extensionFilterProps,
+                  getPolygonOffset: (params) =>
+                    getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
+                  getFillColor: (d) =>
+                    hasColorSteps
+                      ? this._getFillStepsColor(d, { layer, sublayer })
+                      : this._getFillColor(d, { layer, sublayer }),
+                  updateTriggers: {
+                    getFillColor: [highlightedFeatures, filtersHash, sublayer.color],
+                    ...updateTrigger,
+                  },
+                }
+              ),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-lines-${filtersHash}`,
                 lineWidthMinPixels: 0,

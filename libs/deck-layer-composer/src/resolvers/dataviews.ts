@@ -279,6 +279,7 @@ export function getContextDataviewsResolved(
               unit: dataview.datasets?.find((d) => d.id === layer.dataset)?.unit,
               dataviewId: dataview.id,
               thickness: dataview.config?.thickness,
+              filter: dataview.config?.filter,
               filters: dataview.config?.filters,
               filterOperators: dataview.config?.filterOperators,
               aggregateByProperty: dataview.config?.aggregateByProperty,
