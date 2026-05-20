@@ -203,8 +203,8 @@
 }
 
 .sourceSelector {
-  padding-top: var(--space-M);
-  padding-bottom: 0;
+  padding-top: var(--space-S);
+  padding-bottom: var(--space-M);
 }
 
 .title {

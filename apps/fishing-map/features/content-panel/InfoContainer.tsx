@@ -16,6 +16,7 @@ import { Choice, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TDataset } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -30,6 +31,8 @@ import styles from './ContentPanel.module.css'
 const InfoContainer = () => {
   const { i18n, ready: i18nReady } = useTranslation()
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
+  const { openSidePanel } = useSidePanel()
+
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const dataview = useMemo(
     () => dataviews.find((d) => d.id === sidePanelId),
@@ -111,6 +114,11 @@ const InfoContainer = () => {
     else if (dataview.id.includes('sar')) userGuideLink = 'detections-sar'
   }
 
+  const updateSubsectionId = (subcontentId?: string) => {
+    setSelectedId(subcontentId)
+    openSidePanel({ type: 'datasets', id: dataview.id, subcontentId: subcontentId })
+  }
+
   return (
     <div className={cx(styles.container)}>
       <div className={cx(styles.header)}>
@@ -125,19 +133,19 @@ const InfoContainer = () => {
       </div>
       <div className={cx(styles.scrollContainer)}>
         {!isSingleTab && options.length > 0 && (
-          <div className={cx(styles.sourceSelector)}>
+          <div className={styles.sourceSelector}>
             {options.length <= 2 ? (
               <Choice
                 options={options}
                 activeOption={activeTab?.id}
-                onSelect={(option) => setSelectedId((option as ChoiceOption).id as string)}
+                onSelect={(option) => updateSubsectionId((option as ChoiceOption).id as string)}
                 size="medium"
               />
             ) : (
               <Select
                 options={options}
                 selectedOption={activeTab as SelectOption}
-                onSelect={(option) => setSelectedId((option as SelectOption).id as string)}
+                onSelect={(option) => updateSubsectionId((option as SelectOption).id as string)}
               />
             )}
           </div>
