@@ -42,6 +42,7 @@ const ssrState: I18nServerState | undefined =
         ?.i18nState
     : undefined
 
+
 export function getLoadedI18nState(): I18nServerState | undefined {
   if (!i18n.isInitialized) {
     return undefined
@@ -87,6 +88,11 @@ i18n
         }
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json?v=${UNIQUE_BUILD_ID}`
       },
+    },
+    detection: {
+      order: ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+      caches: ['cookie', 'localStorage'],
+      cookieOptions: { path: '/', sameSite: 'lax' },
     },
     ns: ['translations', 'flags', 'datasets', 'timebar', 'workspaces'],
     defaultNS: DEFAULT_NAMESPACE,

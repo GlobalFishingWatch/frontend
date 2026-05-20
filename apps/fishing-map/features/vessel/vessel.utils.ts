@@ -419,14 +419,6 @@ export function getIdentitySourceLabel(
   return EMPTY_FIELD_PLACEHOLDER
 }
 
-export function getSkylightLink({
-  skylightId,
-  start,
-  end,
-}: {
-  skylightId: string
-  start: string
-  end: string
-}): string {
-  return `https://app.skylight.earth/vesseldetails/${skylightId}?startTime=${start}&endTime=${end}&timesliderStart=${start}&timesliderEnd=${end}`
+export function getSkylightLink({ skylightId }: { skylightId: string }): string {
+  return `https://app.skylight.earth/vesseldetails/${skylightId}`
 }

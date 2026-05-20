@@ -80,7 +80,7 @@ function VesselsTable({
   const seeVesselClick = useCallback(
     (source: string) => {
       trackEvent({
-        category: TrackCategory.VesselProfile,
+        category: TrackCategory.MapInteraction,
         action: `Clicked see vessel from ${feature?.category}`,
         label: getEventLabel([`source: ${source}`]),
       })
@@ -196,16 +196,26 @@ function VesselsTable({
                                 icon="search"
                                 size="tiny"
                                 tooltip={t((t) => t.vessel.skylightSearch)}
+                                onClick={() => {
+                                  trackEvent({
+                                    category: TrackCategory.MapInteraction,
+                                    action: 'click_skylight_search_from_popup',
+                                  })
+                                }}
                               />
                             </Link>
                             {!vessel.id && vessel.skylight_id && (
                               <a
                                 href={getSkylightLink({
                                   skylightId: vessel.skylight_id,
-                                  start,
-                                  end,
                                 })}
                                 target="_blank"
+                                onClick={() => {
+                                  trackEvent({
+                                    category: TrackCategory.MapInteraction,
+                                    action: 'click_skylight_link_from_popup',
+                                  })
+                                }}
                                 className={styles.link}
                               >
                                 <IconButton

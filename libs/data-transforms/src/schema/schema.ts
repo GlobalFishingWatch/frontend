@@ -69,6 +69,7 @@ export const getFieldFilter = (
         id: field,
         label: field,
         type: 'timestamp',
+        enabled: false,
       }
       if (includeEnum && values.length > 1) {
         filter.enum = getTimestampEnum(values)
@@ -94,6 +95,7 @@ export const getFieldFilter = (
       id: field,
       label: field,
       type: filterType,
+      enabled: false,
     }
     if (includeEnum && values?.length > 1) {
       if (filter.type === 'string') {

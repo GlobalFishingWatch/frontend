@@ -10,6 +10,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 import type I18nNamespaces from 'features/i18n/i18n.types'
+import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 import type { VesselProfileState } from './vessel.types'
@@ -90,6 +91,7 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  ...(VMS_PANAMA_V4_1_PREVIEW ? { [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]] } : {}),
   [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
     [
