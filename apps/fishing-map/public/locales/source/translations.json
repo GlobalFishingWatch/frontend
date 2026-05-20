@@ -362,7 +362,6 @@
     "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
   },
   "datasetUpload": {
-    "americanDateFormat": "Parse dates as Month-Day-Year format (MM/DD/YYYY)",
     "datasetDescription": "Dataset description",
     "datasetName": "Dataset name",
     "date": "Date",
