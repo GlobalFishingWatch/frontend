@@ -102,6 +102,7 @@ export enum SelfReportedSource {
   Indonesia = 'VMS Indonesia',
   Montenegro = 'VMS-MNE',
   Norway = 'VMS Norway',
+  Panama = 'VMS-PAN',
   Papua = 'VMS PNG',
   Peru = 'VMS-PER',
   Peru_Pipe3 = 'VMS Peru',

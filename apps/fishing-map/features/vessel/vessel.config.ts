@@ -27,6 +27,7 @@ export const REGISTRY_SOURCES = [
     contact: 'jac-coord@tm-tracking.org',
   },
 ]
+const VMS_PANAMA_V4_1_PREVIEW = process.env.NEXT_PUBLIC_VMS_PANAMA_V4_1_PREVIEW === 'true'
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
@@ -90,6 +91,7 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  ...(VMS_PANAMA_V4_1_PREVIEW ? { [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]] } : {}),
   [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
     [
