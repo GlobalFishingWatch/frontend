@@ -88,15 +88,24 @@ export abstract class UserBaseLayer<
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
+    info: PickingInfo<
+      UserLayerFeature,
+      {
+        tile?: Tile2DHeader
+        sourceLayer?: any
+        sourceTileSubLayer?: any
+      }
+    >
   }): UserLayerPickingInfo => {
-    // TODO: support multiple sublayers
-    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
-    const valueProperties = this.props.layers[0].valueProperties || []
-    // TODO: once filtered with the filter extension this works as expected
-    const sublayers = this.props.layers[0].sublayers
-    const filters = sublayers?.flatMap((s) => Object.keys(s.filters || {}))
-    const color = sublayers?.[0]?.color
+    const layerId = info.sourceLayer.props.layerId
+    const layer = this.props.layers.find((l) => l.id === layerId) || this.props.layers[0]
+    const sublayerDataviewId = info.sourceTileSubLayer?.props.dataviewId
+    const sublayer =
+      layer?.sublayers.find((sublayer) => sublayer.dataviewId === sublayerDataviewId) ||
+      (layer?.sublayers?.[0] as ContextSubLayerConfig)
+    const idProperty = layer.idProperty || DEFAULT_ID_PROPERTY
+    const valueProperties = layer.valueProperties || []
+
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -108,17 +117,18 @@ export abstract class UserBaseLayer<
       id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
       title: this.props.id,
-      color: color,
+      color: sublayer?.color,
       layerId: this.props.id,
-      datasetId: this.props.layers[0].datasetId,
+      datasetId: layer.datasetId,
+      dataviewId: sublayer?.dataviewId,
       category: this.props.category,
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
 
-    if (hasSublayerFilters(sublayers?.[0])) {
+    if (sublayer && hasSublayerFilters(sublayer)) {
       if (
-        !supportDataFilterExtension(sublayers?.[0], this._getTimeFilterProps()) &&
-        !isFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
+        !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
+        !isFeatureInFilters(object, Object.keys(sublayer.filters || {}), sublayer?.filterOperators)
       ) {
         return { ...info, object: undefined }
       }

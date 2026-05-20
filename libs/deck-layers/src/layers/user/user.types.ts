@@ -89,6 +89,7 @@ export type UserLayerFeatureProperties = {
   color: string
   value: string | number
   datasetId: string
+  dataviewId: string
 }
 
 export type UserLayerFeature = Feature<Geometry, Record<string, any>>

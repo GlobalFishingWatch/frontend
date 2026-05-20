@@ -334,8 +334,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
     const pointsLayers = layers.map((layer) => {
-      return new TileLayer<TileLayerProps<UserLayerFeature>>({
+      return new TileLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
         id: `${layer.id}-base-layer`,
+        layerId: layer.id,
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         maxZoom,
@@ -353,29 +354,33 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             const filtersHash = getContextFiltersHash(sublayer.filters)
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
-              new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-${sublayer.dataviewId}-points-${filtersHash}`,
-                pickable: pickable,
-                radiusMinPixels: 0,
-                radiusMaxPixels: maxPointSize,
-                filled: true,
-                stroked: true,
-                radiusUnits: 'pixels',
-                getPosition: this._getPosition,
-                ...extensionFilterProps,
-                getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
-                getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
-                lineWidthUnits: 'pixels',
-                lineWidthMinPixels: 1,
-                getLineWidth: 1,
-                getLineColor: DEFAULT_LINE_COLOR,
-                getFillColor: hexToDeckColor(sublayer.color, 0.7),
-                updateTriggers: {
-                  getFillColor: [sublayer.color],
-                  getRadius: [filtersHash, zoom],
-                  ...updateTrigger,
-                },
-              }),
+              new ScatterplotLayer<GeoJsonProperties, { data: any; dataviewId: string }>(
+                mvtSublayerProps,
+                {
+                  id: `${props.id}-${sublayer.dataviewId}-points-${filtersHash}`,
+                  dataviewId: sublayer.dataviewId,
+                  pickable: pickable,
+                  radiusMinPixels: 0,
+                  radiusMaxPixels: maxPointSize,
+                  filled: true,
+                  stroked: true,
+                  radiusUnits: 'pixels',
+                  getPosition: this._getPosition,
+                  ...extensionFilterProps,
+                  getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+                  getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
+                  lineWidthUnits: 'pixels',
+                  lineWidthMinPixels: 1,
+                  getLineWidth: 1,
+                  getLineColor: DEFAULT_LINE_COLOR,
+                  getFillColor: hexToDeckColor(sublayer.color, 0.7),
+                  updateTriggers: {
+                    getFillColor: [sublayer.color],
+                    getRadius: [filtersHash, zoom],
+                    ...updateTrigger,
+                  },
+                }
+              ),
             ]
           })
         },

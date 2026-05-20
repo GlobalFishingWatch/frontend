@@ -33,6 +33,7 @@ export type ContextSubLayerConfig = {
   color: string
   unit?: string
   thickness?: number
+  filter?: string // Filters object parsed to SQL syntax
   filters?: ContextLayerConfigFilter
   filterOperators?: FilterOperators
   aggregateByProperty?: string
@@ -62,6 +63,7 @@ export type ContextFeatureProperties = {
   value: string | number
   layerId: ContextLayerId
   datasetId: string
+  dataviewId: string
   link?: string
 }
 
