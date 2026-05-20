@@ -33,7 +33,7 @@ import type {
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from './user.types'
-import { getFilterExtensionSize, getPropertiesList } from './user.utils'
+import { getFilterExtensionSize } from './user.utils'
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
@@ -116,7 +116,7 @@ export abstract class UserBaseLayer<
       }),
       id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
-      title: this.props.id,
+      valueProperties,
       color: sublayer?.color,
       layerId: this.props.id,
       datasetId: layer.datasetId,
@@ -132,15 +132,6 @@ export abstract class UserBaseLayer<
       ) {
         return { ...info, object: undefined }
       }
-    }
-
-    if (!this.props.subcategory?.includes('draw')) {
-      const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
-
-      object.value =
-        valueProperties?.length === 1
-          ? properties[valueProperties[0]]
-          : getPropertiesList(properties)
     }
     return { ...info, object }
   }

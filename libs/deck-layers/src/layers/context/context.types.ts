@@ -56,14 +56,17 @@ export type ContextLayerProps<Id = ContextLayerId> = DeckLayerProps<{
   highlightedFeatures?: ContextPickingObject[]
 }>
 
-export type ContextFeatureProperties = {
-  id: string
-  title: string
+export type ContextFeatureBaseProperties = {
   color: string
-  value: string | number
-  layerId: ContextLayerId
   datasetId: string
   dataviewId: string
+  id: string
+  layerId: ContextLayerId
+  value: string | number
+  valueProperties: string[]
+}
+
+export type ContextFeatureProperties = ContextFeatureBaseProperties & {
   link?: string
 }
 
