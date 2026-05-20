@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
@@ -20,7 +20,7 @@ type FitBoundsProps = {
   dataviewId?: string
 }
 
-export const useUserLayerFitBounds = () => {
+export const useLayerFitBounds = () => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
@@ -38,9 +38,14 @@ export const useUserLayerFitBounds = () => {
     }) => {
       if (layer && start && end) {
         if (layer instanceof UserPointsTileLayer) {
-          const bounds = await layer.getBbox()
+          const bounds = await layer.getBbox(dataviewId!)
           if (bounds?.bbox) {
-            fitBounds(bounds.bbox as Bbox, { padding: 60, fitZoom: true, flyTo: true })
+            fitBounds(bounds.bbox as Bbox, {
+              padding: 60,
+              fitZoom: true,
+              flyTo: true,
+              maxZoom: 12,
+            })
           }
           if (bounds?.minStartTime && bounds?.maxEndTime) {
             setTimerange({
@@ -49,9 +54,7 @@ export const useUserLayerFitBounds = () => {
             })
             if (dataviewId) dispatchTimebarSelectedUserId(dataviewId)
           }
-          return
-        }
-        if (layer instanceof UserTracksLayer) {
+        } else if (layer instanceof UserTracksLayer) {
           let bbox = layer.getBbox({ startDate: start, endDate: end })
           if (!bbox) {
             bbox = layer.getBbox() // try again to get the bbox without the time filter
@@ -137,7 +140,14 @@ const FitBounds = ({
   dataviewId,
 }: FitBoundsProps) => {
   const { t } = useTranslation()
-  const userLayerFitBounds = useUserLayerFitBounds()
+  const userLayerFitBounds = useLayerFitBounds()
+  const [loading, setLoading] = useState(false)
+
+  const onFitBoundsClick = useCallback(async () => {
+    setLoading(true)
+    await userLayerFitBounds({ layer, infoResource, dataviewId })
+    setLoading(false)
+  }, [userLayerFitBounds, layer, infoResource, dataviewId])
 
   let tooltip: string
   if (hasError) {
@@ -153,9 +163,10 @@ const FitBounds = ({
       disabled={hasError || disabled}
       icon={hasError ? 'warning' : 'target'}
       type={hasError ? 'warning' : 'default'}
+      loading={loading}
       className={className}
       tooltip={tooltip}
-      onClick={() => userLayerFitBounds({ layer, infoResource, dataviewId })}
+      onClick={onFitBoundsClick}
       tooltipPlacement="top"
     />
   )
