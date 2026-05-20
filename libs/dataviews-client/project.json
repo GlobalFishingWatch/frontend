@@ -19,7 +19,7 @@
     },
     "bundle-url-workspace": {
       "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/dist/libs/dataviews-client/url-workspace-bundle"],
+      "outputs": ["{workspaceRoot}libs/dataviews-client/src/url-workspace"],
       "dependsOn": [],
       "options": {
         "commands": ["node libs/dataviews-client/esbuild.url.ts"],
