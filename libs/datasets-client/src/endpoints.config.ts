@@ -839,9 +839,9 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
         array: true,
       },
       {
-        id: 'filters',
+        id: 'filter',
         type: 'sql',
-        array: true,
+        array: false,
         required: false,
       },
     ],

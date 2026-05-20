@@ -183,14 +183,12 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
 
     let boundsUrl: string | undefined
     if (dataset.type === DatasetTypes.UserContext) {
-      const filtersQuery = datasetConfig.query?.find((q) => q.id === 'filters')
       const startField = timeFilters?.startTimeProperty
       const endField = timeFilters?.endTimeProperty || startField
       const boundsDatasetConfig = {
         ...datasetConfig,
         endpoint: EndpointId.ContextBounds,
         query: [
-          ...(filtersQuery ? [filtersQuery] : []),
           ...(startField ? [{ id: 'start-field', value: startField }] : []),
           ...(endField ? [{ id: 'end-field', value: endField }] : []),
         ],

@@ -1,7 +1,6 @@
 import type {
   Accessor,
   DefaultProps,
-  Layer,
   LayerContext,
   Position,
   UpdateParameters,
@@ -292,23 +291,41 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _boundsCache = new Map<string, { value: BoundsResponse; expires: number }>()
   _boundsAbort?: AbortController
 
-  async getBbox(): Promise<BoundsResponse | null> {
-    const boundsUrl = this.props.layers?.[0]?.boundsUrl
-    if (!boundsUrl) return null
+  async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
+    const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
 
-    const cached = this._boundsCache.get(boundsUrl)
-    if (cached && cached.expires > Date.now()) return cached.value
+    if (!boundsUrl) {
+      return null
+    }
+
+    const boundsFilter = this.props.layers?.flatMap((l) =>
+      (l.sublayers || [])?.flatMap((sl) => (sl.dataviewId === sublayerDataviewId ? sl.filter : []))
+    )?.[0]
+
+    const urlWithFilters = boundsFilter
+      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
+      : boundsUrl
+
+    const cached = this._boundsCache.get(urlWithFilters)
+    if (cached && cached.expires > Date.now()) {
+      return cached.value
+    }
 
     this._boundsAbort?.abort()
     const controller = new AbortController()
     this._boundsAbort = controller
 
     try {
-      const data = await GFWAPI.fetch<BoundsResponse>(boundsUrl, { signal: controller.signal })
-      this._boundsCache.set(boundsUrl, { value: data, expires: Date.now() + BOUNDS_CACHE_TTL_MS })
+      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters, { signal: controller.signal })
+      this._boundsCache.set(urlWithFilters, {
+        value: data,
+        expires: Date.now() + BOUNDS_CACHE_TTL_MS,
+      })
       return data
     } catch (error) {
-      if ((error as Error).name === 'AbortError') return null
+      if ((error as Error).name === 'AbortError') {
+        return null
+      }
       this.setState({ error: (error as Error).message })
       return null
     }
