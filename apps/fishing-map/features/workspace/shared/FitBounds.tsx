@@ -7,7 +7,7 @@ import { UserPointsTileLayer, UserTracksLayer, VesselLayer } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useTimebarUserPointsConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import type { Bbox } from 'types'
 
@@ -17,20 +17,24 @@ type FitBoundsProps = {
   infoResource?: Resource<IdentityVessel>
   className?: string
   disabled?: boolean
+  dataviewId?: string
 }
 
-export const useTrackLayerFitBounds = () => {
+export const useUserLayerFitBounds = () => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
+  const { dispatchTimebarSelectedUserId } = useTimebarUserPointsConnect()
 
   const onFitBoundsClick = useCallback(
     async ({
       layer,
       infoResource,
+      dataviewId,
     }: {
       layer: VesselLayer | UserTracksLayer | UserPointsTileLayer
       infoResource?: Resource<IdentityVessel>
+      dataviewId?: string
     }) => {
       if (layer && start && end) {
         if (layer instanceof UserPointsTileLayer) {
@@ -43,6 +47,7 @@ export const useTrackLayerFitBounds = () => {
               start: getUTCDate(bounds.minStartTime).toISOString() as string,
               end: getUTCDate(bounds.maxEndTime).toISOString() as string,
             })
+            if (dataviewId) dispatchTimebarSelectedUserId(dataviewId)
           }
           return
         }
@@ -117,15 +122,22 @@ export const useTrackLayerFitBounds = () => {
         }
       }
     },
-    [start, end, fitBounds, t, setTimerange]
+    [start, end, fitBounds, setTimerange, dispatchTimebarSelectedUserId, t]
   )
 
   return onFitBoundsClick
 }
 
-const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBoundsProps) => {
+const FitBounds = ({
+  className,
+  layer,
+  hasError,
+  infoResource,
+  disabled,
+  dataviewId,
+}: FitBoundsProps) => {
   const { t } = useTranslation()
-  const trackLayerFitBounds = useTrackLayerFitBounds()
+  const userLayerFitBounds = useUserLayerFitBounds()
 
   let tooltip: string
   if (hasError) {
@@ -145,7 +157,7 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
       type={hasError ? 'warning' : 'default'}
       className={className}
       tooltip={tooltip}
-      onClick={() => trackLayerFitBounds({ layer, infoResource })}
+      onClick={() => userLayerFitBounds({ layer, infoResource, dataviewId })}
       tooltipPlacement="top"
     />
   )
