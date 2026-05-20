@@ -10,6 +10,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 import type I18nNamespaces from 'features/i18n/i18n.types'
+import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 import type { VesselProfileState } from './vessel.types'
@@ -27,7 +28,6 @@ export const REGISTRY_SOURCES = [
     contact: 'jac-coord@tm-tracking.org',
   },
 ]
-const VMS_PANAMA_V4_1_PREVIEW = process.env.NEXT_PUBLIC_VMS_PANAMA_V4_1_PREVIEW === 'true'
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
