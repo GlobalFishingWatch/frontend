@@ -1,36 +1,24 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
+import type { TUserGuideSection } from 'features/cms/strapi.types'
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from './ContentPanel.module.css'
 
 type TableOfContentsProps = {
-  listItems: {
-    id: string
-    label: string
-    subTopics?: { id: string; label: string }[]
-    searchPreview?: string
-  }[]
+  data: TUserGuideSection[]
   activeId?: string
-  searchQuery: string
-  onSearchChange: (value: string) => void
   onClick?: (id: string) => void
   onSubTopicClick?: (sectionId: string, subId: string) => void
 }
 
-function TableOfContents({
-  listItems,
-  activeId,
-  searchQuery,
-  onSearchChange,
-  onClick,
-  onSubTopicClick,
-}: TableOfContentsProps) {
+function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfContentsProps) {
   const { t } = useTranslation()
+  const [searchQuery, setSearchQuery] = useState('')
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
 
   const toggleCollapsed = (id: string) => {
@@ -45,11 +33,32 @@ function TableOfContents({
     })
   }
 
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return data
+    const q = searchQuery.toLowerCase()
+    return data.filter(
+      (s) => s.title.toLowerCase().includes(q) || s.body?.toLowerCase().includes(q)
+    )
+  }, [data, searchQuery])
+
+  const listItems = useMemo(
+    () =>
+      filteredSections.map((s) => ({
+        id: s.slug || s.id.toString(),
+        label: s.title,
+        subTopics: s.subsections?.map((sub) => ({
+          id: sub.slug || sub.id,
+          label: sub.title,
+        })),
+        ...(searchQuery && { searchPreview: s.body }),
+      })) || [],
+    [filteredSections, searchQuery]
+  )
   return (
     <div className={styles.tableOfContentsContainer}>
       <InputText
-        onChange={(e) => onSearchChange(e.target.value)}
-        value={searchQuery || ''}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        value={searchQuery}
         type="search"
         placeholder={t((t) => t.search.title)}
       />

@@ -1,21 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
 import cx from 'classnames'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TUserGuideSection } from 'features/cms/strapi.types'
-import ContentHeader from 'features/content-panel/ContentHeader'
-import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
-import EmptyContent from 'features/content-panel/EmptyContent'
 import InfoContainer from 'features/content-panel/InfoContainer'
-import MarkdownLink from 'features/content-panel/MarkdownLink'
-import TableOfContents from 'features/content-panel/TableOfContents'
+import { UserGuideContent } from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'
@@ -24,162 +16,10 @@ const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
 const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 
-type UserGuideContentProps = { data: TUserGuideSection[] }
-
-const UserGuideContent = ({ data }: UserGuideContentProps) => {
-  const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
-  const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
-  const [searchQuery, setSearchQuery] = useState('')
-  const { openSidePanel } = useSidePanel()
-  const { t } = useTranslation()
-
-  const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return data
-    const q = searchQuery.toLowerCase()
-    return data.filter(
-      (s) => s.title.toLowerCase().includes(q) || s.body?.toLowerCase().includes(q)
-    )
-  }, [data, searchQuery])
-
-  const listItems = useMemo(
-    () =>
-      filteredSections.map((s) => ({
-        id: s.slug || s.id.toString(),
-        label: s.title,
-        subTopics: s.subsections?.map((sub) => ({
-          id: sub.slug || sub.id,
-          label: sub.title,
-        })),
-        ...(searchQuery && { searchPreview: s.body }),
-      })) || [],
-    [filteredSections, searchQuery]
-  )
-
-  const markdownComponents = useMemo(() => ({ a: MarkdownLink }), [])
-
-  const selectedSection = useMemo(() => {
-    return sidePanelId
-      ? (data.find(
-          (s) =>
-            s.slug === sidePanelId ||
-            s.id.toString() === sidePanelId.toString() ||
-            s.title.includes(sidePanelId.toString())
-        ) ?? data[0])
-      : data[0]
-  }, [data, sidePanelId])
-
-  useEffect(() => {
-    if (!sidePanelSubcontentId || isTableOfContentsOpen) return
-    let cancelled = false
-
-    requestAnimationFrame(() => {
-      const subcontentElement = document.getElementById(sidePanelSubcontentId)
-      if (cancelled || !subcontentElement) return
-
-      const performScroll = () => {
-        if (!cancelled) {
-          subcontentElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-      }
-
-      const unloadedImages = Array.from(
-        (subcontentElement.parentElement || document).querySelectorAll<HTMLImageElement>('img')
-      ).filter((img) => !img.complete)
-
-      if (unloadedImages.length === 0) {
-        performScroll()
-        return
-      }
-
-      let pendingImages = unloadedImages.length
-      const onImgLoad = () => {
-        if (--pendingImages === 0) {
-          performScroll()
-        }
-      }
-      unloadedImages.forEach((img) => {
-        img.addEventListener('load', onImgLoad, { once: true })
-      })
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [sidePanelSubcontentId, isTableOfContentsOpen, selectedSection])
-
-  return (
-    <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
-      <div className={cx(styles.header)}>
-        <ContentHeader
-          title={
-            <div className={styles.titleContainer}>
-              <IconButton
-                icon="list"
-                onClick={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
-              />
-              {t((t) => t.common.userGuide)}
-            </div>
-          }
-        />
-      </div>
-      <div
-        className={cx(styles.scrollContainer, {
-          [styles.tableOfContentsOpen]: isTableOfContentsOpen,
-        })}
-      >
-        {isTableOfContentsOpen ? (
-          <TableOfContents
-            listItems={listItems}
-            activeId={sidePanelId}
-            onClick={(id) => {
-              openSidePanel({ type: 'userGuide', id: id })
-              setIsTableOfContentsOpen(false)
-            }}
-            onSubTopicClick={(sectionId, subId) => {
-              openSidePanel({ type: 'userGuide', id: sectionId, subcontentId: subId })
-              setIsTableOfContentsOpen(false)
-            }}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-          />
-        ) : (
-          <div className={cx(styles.content)}>
-            <h2>{selectedSection.title}</h2>
-            <Markdown
-              rehypePlugins={[rehypeRaw]}
-              remarkPlugins={[remarkGfm]}
-              components={markdownComponents}
-            >
-              {selectedSection.body}
-            </Markdown>
-            {selectedSection.subsections?.map((subsection) => (
-              <div
-                key={subsection.id}
-                id={subsection.slug || subsection.id}
-                className={styles.subsection}
-              >
-                <h3>{subsection.title}</h3>
-                <Markdown
-                  rehypePlugins={[rehypeRaw]}
-                  remarkPlugins={[remarkGfm]}
-                  components={markdownComponents}
-                >
-                  {subsection.body}
-                </Markdown>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
 function ContentPanel() {
   const { status: loaderStatus, data: loaderData } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
   const { i18n } = useTranslation()
-  const isDatasets = sidePanelContent === 'datasets'
   const isSmallScreen = useSmallScreen()
 
   const [langData, setLangData] = useState<{
@@ -249,9 +89,6 @@ function ContentPanel() {
   }
 
   if (status === 'error') return null
-  if (!isDatasets && !data) return null
-
-  const isEmpty = !isDatasets && (status === 'empty' || (Array.isArray(data) && data.length === 0))
 
   return (
     <div className={styles.panel} style={isSmallScreen ? undefined : { width: `${panelWidth}px` }}>
@@ -261,13 +98,8 @@ function ContentPanel() {
         className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
         onMouseDown={handleMouseDown}
       />
-      {isDatasets ? (
-        <InfoContainer />
-      ) : isEmpty ? (
-        <EmptyContent />
-      ) : (
-        <UserGuideContent data={data as TUserGuideSection[]} />
-      )}
+      {sidePanelContent === 'userGuide' && <UserGuideContent data={data as TUserGuideSection[]} />}
+      {sidePanelContent === 'datasets' && <InfoContainer />}
     </div>
   )
 }
