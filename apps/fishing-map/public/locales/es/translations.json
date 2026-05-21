@@ -1293,7 +1293,7 @@
     "sortDesc": "Ordenar las embarcaciones alfabéticamente (descendiendo)",
     "source": "Fuente",
     "source_short": "Fuente",
-    "sourceFleet": "Source fleet",
+    "sourceFleet": "Flota de origen",
     "ssvid": "Ssvid (MMSI)",
     "summary": "{{events}} {{voyages}} entre <strong>{{timerangeStart}}</strong> y <strong>{{timerangeEnd}}</strong>",
     "target_species": "Especies objetivo",
