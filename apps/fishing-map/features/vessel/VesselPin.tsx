@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -231,7 +232,7 @@ export function VesselPin({
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}
-      className={className}
+      className={cx(className, 'print-hidden')}
       style={{
         color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
         ...(style || {}),

@@ -12,12 +12,10 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { categoryToDataviewMap, ReportCategory } from 'features/reports/reports.types'
-import { useReportFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummaryActivity'
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
-import { selectEventsStatsDataGrouped } from 'features/reports/tabs/events/events-report.selectors'
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
