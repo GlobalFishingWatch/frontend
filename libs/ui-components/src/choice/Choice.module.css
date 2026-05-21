@@ -54,10 +54,7 @@
 @media print {
   .list {
     border: none;
-  }
-
-  .activeChip {
-    display: none;
+    background-color: transparent;
   }
 
   .option {
@@ -71,5 +68,9 @@
 
   .option:not([aria-checked='true']) {
     display: none;
+  }
+
+  .Choice .optionActive {
+    background-color: transparent;
   }
 }

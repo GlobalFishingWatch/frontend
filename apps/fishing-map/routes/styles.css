@@ -68,6 +68,11 @@ body:has(.printing) {
     color-adjust: exact !important;
   }
 
+  .card,
+  .cardContainer .card {
+    background: transparent;
+  }
+
   .print-hidden {
     display: none !important;
   }
