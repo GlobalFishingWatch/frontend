@@ -1,6 +1,6 @@
 .wrapper {
   position: relative;
-  background-color: var(--color-terthiary-blue);
+  background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, white);
   z-index: 5;
 }
 
@@ -31,17 +31,17 @@
 }
 
 .animating {
-  animation: save 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: save 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards 0.6s;
 }
 
 @keyframes save {
   0% {
-    transform: translate(2rem, -2rem) scale(0.4);
+    transform: translate(5rem, -5rem) scale(0.4);
     opacity: 0;
   }
 
   15% {
-    transform: translate(2rem, -2rem) scale(1);
+    transform: translate(5rem, -5rem) scale(1);
     opacity: 1;
   }
 

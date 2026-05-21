@@ -26,7 +26,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const userData = useSelector(selectUserData)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
   const prevStatusRef = useRef(customStatus)
-  const [isAnimating, setIsAnimating] = useState(true)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     if (
