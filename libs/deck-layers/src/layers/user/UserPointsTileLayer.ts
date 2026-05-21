@@ -286,9 +286,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return data
   }
 
-  // TODO remove this
-  _boundsAbort?: AbortController
-
   async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
     const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
 
@@ -304,17 +301,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
       : boundsUrl
 
-    this._boundsAbort?.abort()
-    const controller = new AbortController()
-    this._boundsAbort = controller
-
     try {
-      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters, { signal: controller.signal })
+      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters)
       return data
     } catch (error) {
-      if ((error as Error).name === 'AbortError') {
-        return null
-      }
       this.setState({ error: (error as Error).message })
       return null
     }
