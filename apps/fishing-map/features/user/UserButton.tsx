@@ -42,39 +42,35 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
   return (
-    <>
-      <div className={cx(className, styles.wrapper)}>
-        {guestUser || isUserExpired ? (
-          <Tooltip content={t((t) => t.common.login)}>
-            <LocalStorageLoginLink>
-              <Icon icon="user" testId={testId} />
-            </LocalStorageLoginLink>
-          </Tooltip>
-        ) : (
-          <Link
-            to={{
-              type: USER,
-              payload: {},
-              query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-              replaceQuery: true,
-            }}
-            data-testid={testId}
-            className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
-          >
-            {userData ? initials : <Icon icon="user" className="print-hidden" />}
-          </Link>
-        )}
-        <span
-          aria-hidden
-          className={cx(styles.saveIcon, { [styles.animating]: isAnimating })}
-          onAnimationEnd={() => setIsAnimating(false)}
+    <div className={cx(className, styles.wrapper)}>
+      {guestUser || isUserExpired ? (
+        <Tooltip content={t((t) => t.common.login)}>
+          <LocalStorageLoginLink>
+            <Icon icon="user" testId={testId} />
+          </LocalStorageLoginLink>
+        </Tooltip>
+      ) : (
+        <Link
+          to={{
+            type: USER,
+            payload: {},
+            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+            replaceQuery: true,
+          }}
+          data-testid={testId}
+          className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
         >
-          <span className={styles.saveBadge}>
-            <IconButton icon="save" type="map-tool" />
-          </span>
-        </span>
-      </div>
-    </>
+          {userData ? initials : <Icon icon="user" className="print-hidden" />}
+        </Link>
+      )}
+      <span
+        aria-hidden
+        className={cx(styles.saveIcon, { [styles.animating]: isAnimating })}
+        onAnimationEnd={() => setIsAnimating(false)}
+      >
+        <IconButton icon="workspace" type="map-tool" />
+      </span>
+    </div>
   )
 }
 
