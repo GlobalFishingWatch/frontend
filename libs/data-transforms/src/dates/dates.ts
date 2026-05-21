@@ -6,23 +6,13 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
-const DATE_FORMATS = [
-  // American formats (Month first)
-  'MM/dd/yyyy',
-  'M/d/yyyy',
-  'MM-dd-yyyy',
-  'M-d-yyyy',
-  // Rest of world (Day first)
-  'dd/MM/yyyy',
-  'd/M/yyyy',
-  'dd-MM-yyyy',
-  'd-M-yyyy',
-]
-
 const TIME_FORMATS = [
   ' HH:mm:ss.SSS',
   ' HH:mm:ss',
   ' HH:mm',
+  ' H:mm:ss.SSS',
+  ' H:mm:ss',
+  ' H:mm',
   ' hh:mm:ss a',
   ' hh:mm a',
   ' h:mm:ss a',
@@ -30,34 +20,59 @@ const TIME_FORMATS = [
   '',
 ]
 
-const DATE_PARSE_METHODS: DateTimeParseFunction[] = [
+const makeFormatParsers = (dateFormats: string[]): DateTimeParseFunction[] =>
+  dateFormats.flatMap((dateFormat) =>
+    TIME_FORMATS.map((timeFormat) => {
+      const fmt = `${dateFormat}${timeFormat}`
+      return (s: string, opts: any) => DateTime.fromFormat(s, fmt, opts)
+    })
+  )
+
+const SLASH_PARSE_METHODS = makeFormatParsers(['dd/MM/yyyy', 'd/M/yyyy', 'MM/dd/yyyy', 'M/d/yyyy'])
+
+const DASH_PARSE_METHODS = makeFormatParsers(['dd-MM-yyyy', 'd-M-yyyy', 'MM-dd-yyyy', 'M-d-yyyy'])
+
+const THROWING_PARSERS = new Set<DateTimeParseFunction>([
   DateTime.fromISO,
   DateTime.fromSQL,
   DateTime.fromRFC2822,
-  ...DATE_FORMATS.flatMap((dateFormat) =>
-    TIME_FORMATS.map((timeFormat) => {
-      const formatString = `${dateFormat}${timeFormat}`
-      return (s: string, opts: any) => DateTime.fromFormat(s, formatString, opts)
-    })
-  ),
-]
+])
+
+const ISO_SQL_RE = /^\d{4}-\d{2}-\d{2}/
+const RFC_RE = /^[a-z]{3},?\s/i
+const SLASH_RE = /^\d{1,2}\/\d{1,2}\/\d{4}/
+const DASH_RE = /^\d{1,2}-\d{1,2}-\d{4}/
+
+const detectCandidates = (s: string): DateTimeParseFunction[] | null => {
+  if (ISO_SQL_RE.test(s)) return [DateTime.fromISO, DateTime.fromSQL]
+  if (RFC_RE.test(s)) return [DateTime.fromRFC2822]
+  if (SLASH_RE.test(s)) return SLASH_PARSE_METHODS
+  if (DASH_RE.test(s)) return DASH_PARSE_METHODS
+  return null
+}
 
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
-  // it could receive a timestamp as a string
   const millis = toNumber(timestamp)
   if (typeof timestamp === 'number' || !isNaN(millis)) {
     return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
   }
-  let result
-  for (let index = 0; index < DATE_PARSE_METHODS.length; index++) {
-    const parse = DATE_PARSE_METHODS[index]
-    try {
-      result = parse(timestamp, { zone: 'UTC' })
-      if (result.isValid) {
-        return result.toJSDate()
+  const candidates = detectCandidates(timestamp)
+  if (!candidates) {
+    return new Date('Invalid Date')
+  }
+  for (const parse of candidates) {
+    let result: DateTime
+    if (THROWING_PARSERS.has(parse)) {
+      try {
+        result = parse(timestamp, { zone: 'UTC' })
+      } catch {
+        return new Date('Invalid Date')
       }
-    } catch (e) {
-      return new Date('Invalid Date')
+    } else {
+      result = parse(timestamp, { zone: 'UTC' })
+    }
+    if (result!.isValid) {
+      return result!.toJSDate()
     }
   }
   return new Date('Invalid Date')
@@ -89,17 +104,24 @@ export const getUTCDateTime = (d: SupportedDateType): DateTime => {
     }
     return DateTime.fromMillis(millis, { zone: 'UTC' })
   }
-  let result
-  for (let index = 0; index < DATE_PARSE_METHODS.length; index++) {
-    const parse = DATE_PARSE_METHODS[index]
-    try {
-      result = parse(d, { zone: 'UTC' })
-      if (result.isValid) {
-        return result
+  const candidates = detectCandidates(d)
+  if (!candidates) {
+    return DateTime.utc()
+  }
+  for (const parse of candidates) {
+    let result: DateTime
+    if (THROWING_PARSERS.has(parse)) {
+      try {
+        result = parse(d, { zone: 'UTC' })
+      } catch {
+        console.warn('Not a valid date', typeof d, d)
+        return DateTime.utc()
       }
-    } catch (e) {
-      console.warn('Not a valid date', typeof d, d)
-      return DateTime.utc()
+    } else {
+      result = parse(d, { zone: 'UTC' })
+    }
+    if (result!.isValid) {
+      return result!
     }
   }
   return DateTime.utc()
