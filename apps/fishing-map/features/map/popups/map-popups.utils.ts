@@ -90,5 +90,9 @@ export function getUserContextLayerLabel(
   }
 
   const cleanValueProperties = getCleanPropertiesList(feature.properties)
-  return parsePropertiesList(cleanValueProperties, dataset!)
+  if (Object.keys(cleanValueProperties).length >= 1) {
+    return parsePropertiesList(cleanValueProperties, dataset)
+  }
+
+  return dataset ? getDatasetLabel(dataset) : feature.layerId
 }
