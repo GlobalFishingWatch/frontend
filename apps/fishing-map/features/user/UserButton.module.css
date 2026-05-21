@@ -1,8 +1,10 @@
 .wrapper {
   position: relative;
+  background-color: var(--color-terthiary-blue);
+  z-index: 5;
 }
 
-.savePopIcon {
+.saveIcon {
   position: absolute;
   inset: 0;
   display: flex;
@@ -10,9 +12,10 @@
   justify-content: center;
   pointer-events: none;
   opacity: 0;
+  z-index: 1;
 }
 
-.savePopBadge {
+.saveBadge {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,11 +25,16 @@
   background-color: var(--color-white);
 }
 
-.animating {
-  animation: savePop 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.openFileAnimation {
+  animation: openFile 3.4s ease-in-out;
+  transform-origin: bottom center;
 }
 
-@keyframes savePop {
+.animating {
+  animation: save 3.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes save {
   0% {
     transform: translate(2rem, -2rem) scale(0.4);
     opacity: 0;
@@ -42,30 +50,24 @@
     opacity: 1;
   }
 
-  60% {
-    transform: translate(0, 0) rotate(12deg) scale(1);
-  }
-
-  68% {
-    transform: translate(0, 0) rotate(-10deg) scale(1);
-  }
-
-  76% {
-    transform: translate(0, 0) rotate(8deg) scale(1);
-  }
-
-  84% {
-    transform: translate(0, 0) rotate(-4deg) scale(1);
-  }
-
-  90% {
-    transform: translate(0, 0) rotate(0) scale(1);
-    opacity: 1;
-  }
-
   100% {
     transform: translate(0, 0) scale(0);
     opacity: 0;
+  }
+}
+
+@keyframes openFile {
+  0%,
+  100% {
+    transform: skew(0, 0) scaleY(1);
+    filter: none;
+    box-shadow: none;
+  }
+
+  50% {
+    transform: skew(-15deg, 0) scaleY(0.85);
+    box-shadow: -4px -4px 12px rgba(0, 0, 0, 0.25);
+    filter: drop-shadow(-4px -4px 12px rgba(0, 0, 0, 0.25));
   }
 }
 

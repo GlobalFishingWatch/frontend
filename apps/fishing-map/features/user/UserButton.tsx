@@ -26,7 +26,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const userData = useSelector(selectUserData)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
   const prevStatusRef = useRef(customStatus)
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(true)
 
   useEffect(() => {
     if (
@@ -42,36 +42,39 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
   return (
-    <div className={cx(className, styles.wrapper)}>
-      {guestUser || isUserExpired ? (
-        <Tooltip content={t((t) => t.common.login)}>
-          <LocalStorageLoginLink>
-            <Icon icon="user" testId={testId} />
-          </LocalStorageLoginLink>
-        </Tooltip>
-      ) : (
-        <Link
-          to={{
-            type: USER,
-            payload: {},
-            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-            replaceQuery: true,
-          }}
-          data-testid={testId}
+    <>
+      <div className={cx(className, styles.wrapper)}>
+        {guestUser || isUserExpired ? (
+          <Tooltip content={t((t) => t.common.login)}>
+            <LocalStorageLoginLink>
+              <Icon icon="user" testId={testId} />
+            </LocalStorageLoginLink>
+          </Tooltip>
+        ) : (
+          <Link
+            to={{
+              type: USER,
+              payload: {},
+              query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
+              replaceQuery: true,
+            }}
+            data-testid={testId}
+            className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+          >
+            {userData ? initials : <Icon icon="user" className="print-hidden" />}
+          </Link>
+        )}
+        <span
+          aria-hidden
+          className={cx(styles.saveIcon, { [styles.animating]: isAnimating })}
+          onAnimationEnd={() => setIsAnimating(false)}
         >
-          {userData ? initials : <Icon icon="user" className="print-hidden" />}
-        </Link>
-      )}
-      <span
-        aria-hidden
-        className={cx(styles.savePopIcon, { [styles.animating]: isAnimating })}
-        onAnimationEnd={() => setIsAnimating(false)}
-      >
-        <span className={styles.savePopBadge}>
-          <IconButton icon="save" type="solid" />
+          <span className={styles.saveBadge}>
+            <IconButton icon="save" type="map-tool" />
+          </span>
         </span>
-      </span>
-    </div>
+      </div>
+    </>
   )
 }
 
