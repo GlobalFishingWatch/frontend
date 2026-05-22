@@ -70,6 +70,8 @@ export function Tabs<TabID = string>({
               <Button
                 className={cx(styles.tabButton, {
                   [styles.tabActive]: tabSelected,
+                  [styles.tabFirst]: index === 0,
+                  [styles.tabLast]: index === tabs.length - 1,
                   [styles.border]: showBorder,
                 })}
                 type="secondary"
@@ -101,6 +103,8 @@ export function Tabs<TabID = string>({
               aria-expanded={tabSelected}
               className={cx(styles.content, tabClassName, {
                 [styles.contentActive]: tabSelected,
+                [styles.firstTabSelected]: activeTabId === tabs[0].id,
+                [styles.lastTabSelected]: activeTabId === tabs[tabs.length - 1].id,
               })}
             >
               {tab.content}
