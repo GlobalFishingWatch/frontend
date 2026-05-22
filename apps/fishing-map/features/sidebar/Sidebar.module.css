@@ -34,3 +34,15 @@
   background-color: var(--color-white);
   z-index: 3;
 }
+
+@media print {
+  .container {
+    flex-direction: unset;
+    height: auto;
+  }
+
+  .scrollContainer {
+    overflow: visible;
+    height: auto;
+  }
+}

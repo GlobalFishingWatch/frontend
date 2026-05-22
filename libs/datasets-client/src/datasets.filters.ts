@@ -2,6 +2,7 @@ import type {
   Dataset,
   DatasetFilter,
   DatasetFilters,
+  DatasetTypes,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 
@@ -25,10 +26,13 @@ export const getDatasetFiltersAllowed = (dataset: Dataset) => {
   return flattenFilters.flatMap((filter) => (filter.enabled ? filter.id : []))
 }
 
-export const getDatasetFilterItem = (
-  dataset: Dataset,
+export const getDatasetFilterItem = <T extends DatasetTypes = DatasetTypes>(
+  dataset: Dataset<T>,
   filter: SupportedDatasetFilter
 ): DatasetFilter | null => {
+  if (!dataset?.filters) {
+    return null
+  }
   const filters = getFlattenDatasetFilters(dataset.filters)
   const filterItem = filters.find((f) => f.id === filter)
   if (filterItem) {

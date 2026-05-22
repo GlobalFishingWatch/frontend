@@ -3,7 +3,6 @@
 }
 
 .activityTitleContainer {
-  page-break-before: always;
   padding: var(--space-SM);
   flex: 1;
 }

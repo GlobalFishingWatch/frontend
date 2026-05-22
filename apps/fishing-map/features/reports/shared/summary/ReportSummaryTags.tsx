@@ -148,7 +148,7 @@ export default function ReportSummaryTags({
               icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
               size="small"
               onClick={!disabledFilters ? onToggleFiltersUIOpen : undefined}
-              className={cx(styles.printHidden, styles.filterButton)}
+              className={cx('print-hidden', styles.filterButton)}
               tooltip={
                 disabledFilters
                   ? t((t) => t.layer.timeGraphFiltersDisabled)

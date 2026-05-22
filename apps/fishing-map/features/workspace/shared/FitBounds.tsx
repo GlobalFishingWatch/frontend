@@ -1,13 +1,18 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import {
+  UserContextTileLayer,
+  UserPointsTileLayer,
+  UserTracksLayer,
+  VesselLayer,
+} from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useTimebarUserPointsConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import type { Bbox } from 'types'
 
@@ -17,23 +22,44 @@ type FitBoundsProps = {
   infoResource?: Resource<IdentityVessel>
   className?: string
   disabled?: boolean
+  dataviewId?: string
 }
 
-export const useTrackLayerFitBounds = () => {
+export const useLayerFitBounds = () => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()
+  const { dispatchTimebarSelectedUserId } = useTimebarUserPointsConnect()
 
   const onFitBoundsClick = useCallback(
-    ({
+    async ({
       layer,
       infoResource,
+      dataviewId,
     }: {
-      layer: VesselLayer | UserTracksLayer
+      layer: VesselLayer | UserTracksLayer | UserPointsTileLayer | UserContextTileLayer
       infoResource?: Resource<IdentityVessel>
+      dataviewId?: string
     }) => {
       if (layer && start && end) {
-        if (layer instanceof UserTracksLayer) {
+        if (layer instanceof UserPointsTileLayer || layer instanceof UserContextTileLayer) {
+          const bounds = await layer.getBbox(dataviewId!)
+          if (bounds?.bbox) {
+            fitBounds(bounds.bbox as Bbox, {
+              padding: 60,
+              fitZoom: true,
+              flyTo: true,
+              maxZoom: 12,
+            })
+          }
+          if (bounds?.minStartTime && bounds?.maxEndTime) {
+            setTimerange({
+              start: getUTCDate(bounds.minStartTime).toISOString() as string,
+              end: getUTCDate(bounds.maxEndTime).toISOString() as string,
+            })
+            if (dataviewId) dispatchTimebarSelectedUserId(dataviewId)
+          }
+        } else if (layer instanceof UserTracksLayer) {
           let bbox = layer.getBbox({ startDate: start, endDate: end })
           if (!bbox) {
             bbox = layer.getBbox() // try again to get the bbox without the time filter
@@ -104,17 +130,31 @@ export const useTrackLayerFitBounds = () => {
         }
       }
     },
-    [start, end, fitBounds, t, setTimerange]
+    [start, end, fitBounds, setTimerange, dispatchTimebarSelectedUserId, t]
   )
 
   return onFitBoundsClick
 }
 
-const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBoundsProps) => {
+const FitBounds = ({
+  className,
+  layer,
+  hasError,
+  infoResource,
+  disabled,
+  dataviewId,
+}: FitBoundsProps) => {
   const { t } = useTranslation()
-  const trackLayerFitBounds = useTrackLayerFitBounds()
+  const userLayerFitBounds = useLayerFitBounds()
+  const [loading, setLoading] = useState(false)
 
-  let tooltip = ''
+  const onFitBoundsClick = useCallback(async () => {
+    setLoading(true)
+    await userLayerFitBounds({ layer, infoResource, dataviewId })
+    setLoading(false)
+  }, [userLayerFitBounds, layer, infoResource, dataviewId])
+
+  let tooltip: string
   if (hasError) {
     tooltip = t((t) => t.errors.trackLoading)
   } else if (layer instanceof VesselLayer) {
@@ -128,9 +168,10 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
       disabled={hasError || disabled}
       icon={hasError ? 'warning' : 'target'}
       type={hasError ? 'warning' : 'default'}
+      loading={loading}
       className={className}
       tooltip={tooltip}
-      onClick={() => trackLayerFitBounds({ layer, infoResource })}
+      onClick={onFitBoundsClick}
       tooltipPlacement="top"
     />
   )

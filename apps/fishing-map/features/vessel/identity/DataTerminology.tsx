@@ -57,7 +57,7 @@ const DataTerminology: React.FC<ModalProps> = ({
     <Fragment>
       <Tooltip content={tooltip}>
         <span role="button" onClick={onClick} tabIndex={0}>
-          <Icon icon="info" className={cx(styles.infoButton, className)} />
+          <Icon icon="info" className={cx(styles.infoButton, className, 'print-hidden')} />
         </span>
       </Tooltip>
       <Modal

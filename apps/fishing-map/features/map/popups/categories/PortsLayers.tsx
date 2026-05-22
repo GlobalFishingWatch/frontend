@@ -22,9 +22,9 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
-        const { color } = featureByType[0]
+        const { dataviewId, color } = featureByType[0]
         return (
-          <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
+          <div key={`${dataviewId}-${index}`} className={styles.popupSection}>
             <Icon icon="dots" className={styles.layerIcon} style={{ color }} />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && (

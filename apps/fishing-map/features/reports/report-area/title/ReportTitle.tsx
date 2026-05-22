@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
@@ -11,6 +11,7 @@ import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-compon
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { setPrintMode } from 'features/app/print.slice'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import {
   DEFAULT_BUFFER_VALUE,
@@ -109,15 +110,20 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     [previewBuffer, dispatch]
   )
 
+  useEffect(() => {
+    const onAfterPrint = () => dispatch(setPrintMode(false))
+    window.addEventListener('afterprint', onAfterPrint)
+    return () => window.removeEventListener('afterprint', onAfterPrint)
+  }, [dispatch])
+
   const onPrintClick = () => {
     fitAreaInViewport()
     trackEvent({
       category: TrackCategory.Analysis,
       action: `Click print/save as pdf`,
     })
-    setTimeout(() => {
-      window.print()
-    }, 100)
+    dispatch(setPrintMode(true))
+    requestAnimationFrame(window.print)
   }
 
   const handleTooltipHide = useCallback(() => {

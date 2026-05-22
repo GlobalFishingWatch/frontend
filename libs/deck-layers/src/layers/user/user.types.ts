@@ -6,7 +6,7 @@ import type { Feature, Geometry } from 'geojson'
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
-import type { ContextLayerConfig } from '../context'
+import type { ContextFeatureBaseProperties, ContextLayerConfig } from '../context'
 
 export type FilterExtensionProps = {
   extensions: LayerExtension<unknown>[]
@@ -82,19 +82,10 @@ export type UserTrackLayerProps = DeckLayerProps<
 
 export type AnyUserLayerProps = UserPolygonsLayerProps | UserPointsLayerProps | UserTrackLayerProps
 
-export type UserLayerFeatureProperties = {
-  id: string
-  layerId: string
-  title: string
-  color: string
-  value: string | number
-  datasetId: string
-}
-
 export type UserLayerFeature = Feature<Geometry, Record<string, any>>
 
 export type UserLayerPickingObject = DeckPickingObject<
-  UserLayerFeature & UserLayerFeatureProperties
+  UserLayerFeature & ContextFeatureBaseProperties
 >
 
 export type UserLayerPickingInfo = PickingInfo<UserLayerPickingObject, { tile?: Tile2DHeader }>
