@@ -35,12 +35,7 @@ import type {
   ContextSublayerCallbackParams,
 } from './context.types'
 import { ContextLayerId } from './context.types'
-import {
-  getContextFiltersHash,
-  getContextId,
-  getContextLink,
-  getContextValue,
-} from './context.utils'
+import { getContextFiltersHash, getContextId, getContextLink } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
 
@@ -130,13 +125,14 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         info.tile!.bbox as GeoBoundingBox,
         this.context.viewport
       ),
-      title: sublayer.dataviewId,
       color: sublayer.color,
       layerId: sublayer.dataviewId,
       datasetId: this.props.layers[0].datasetId,
+      dataviewId: sublayer.dataviewId,
       category: this.props.category,
       id: getContextId(info.object as ContextFeature, idProperty),
-      value: getContextValue(info.object as ContextFeature, valueProperties),
+      value: info.object?.properties?.value,
+      valueProperties,
       link: getContextLink({
         ...info.object,
         layerId: this.props.layers[0].id,

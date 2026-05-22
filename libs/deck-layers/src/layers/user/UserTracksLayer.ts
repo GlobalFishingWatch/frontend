@@ -186,6 +186,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         color,
         layerId: this.props.id,
         datasetId: this.props.layers[0].datasetId,
+        dataviewId: this.props.layers[0].sublayers?.[0].dataviewId,
+        valueProperties: layer.valueProperties,
         category: this.props.category,
         subcategory: this.props.subcategory,
       } as UserLayerPickingObject
@@ -289,12 +291,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     const segments = this.getSegments({ includeMiddlePoints: true })
     if (!segments.length) return null
 
-    const startDate = params?.startDate
-      ? getUTCDateTime(params.startDate).toMillis()
-      : undefined
-    const endDate = params?.endDate
-      ? getUTCDateTime(params.endDate).toMillis()
-      : undefined
+    const startDate = params?.startDate ? getUTCDateTime(params.startDate).toMillis() : undefined
+    const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : undefined
 
     const bbox = segments.reduce(
       (acc, segment) =>

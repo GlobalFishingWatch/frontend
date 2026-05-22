@@ -8,10 +8,10 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getContextLayerId, getUserContextLayerLabel } from 'features/map/popups/map-popups.utils'
 
 import { useContextInteractions } from './ContextLayers.hooks'
 import ContextLayersRow from './ContextLayersRow'
-import { getContextLayerId, getUserContextLayerLabel } from './UserContextLayers'
 
 import styles from '../Popup.module.css'
 
@@ -30,12 +30,12 @@ function UserPointsTooltipSection({
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
-        const { color, datasetId, title } = featureByType[0]
-        const dataview = dataviews.find((d) => d.id === title)
+        const { color, dataviewId, datasetId } = featureByType[0]
+        const dataview = dataviews.find((d) => d.id === dataviewId)
         const dataset = dataview?.datasets?.find((d) => d.id === datasetId)
-        const rowTitle = dataset ? getDatasetLabel(dataset) : title
+        const rowTitle = dataset ? getDatasetLabel(dataset) : datasetId
         return (
-          <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
+          <div key={`${dataviewId}-${index}`} className={styles.popupSection}>
             <Icon icon="dots" className={styles.layerIcon} style={{ color }} />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}

@@ -10,6 +10,8 @@ import type {
 import type { GeoJsonProperties } from 'geojson'
 import type { Entries } from 'type-fest'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
@@ -33,7 +35,7 @@ import type {
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from './user.types'
-import { getFilterExtensionSize, getPropertiesList } from './user.utils'
+import { getFilterExtensionSize } from './user.utils'
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
@@ -50,6 +52,12 @@ const defaultProps: DefaultProps<_UserBaseLayerProps> = {
 
 // update this in Sat Nov 20 2286 as deck gl does not support Infinity
 const INFINITY_TIMERANGE_LIMIT = 9999999999999
+
+export type BoundsResponse = {
+  bbox: Bbox
+  minStartTime?: string
+  maxEndTime?: string
+}
 
 export type UserBaseLayerState = {
   highlightedFeatures?: UserLayerPickingObject[]
@@ -71,6 +79,30 @@ export abstract class UserBaseLayer<
     }
   }
 
+  async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
+    const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
+
+    if (!boundsUrl) {
+      return null
+    }
+
+    const boundsFilter = this.props.layers?.flatMap((l) =>
+      (l.sublayers || [])?.flatMap((sl) => (sl.dataviewId === sublayerDataviewId ? sl.filter : []))
+    )?.[0]
+
+    const urlWithFilters = boundsFilter
+      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
+      : boundsUrl
+
+    try {
+      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters)
+      return data
+    } catch (error) {
+      this.setState({ error: (error as Error).message })
+      return null
+    }
+  }
+
   _getHighlightedFeatures() {
     return [
       ...(this.props.highlightedFeatures || []),
@@ -88,15 +120,24 @@ export abstract class UserBaseLayer<
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
+    info: PickingInfo<
+      UserLayerFeature,
+      {
+        tile?: Tile2DHeader
+        sourceLayer?: any
+        sourceTileSubLayer?: any
+      }
+    >
   }): UserLayerPickingInfo => {
-    // TODO: support multiple sublayers
-    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
-    const valueProperties = this.props.layers[0].valueProperties || []
-    // TODO: once filtered with the filter extension this works as expected
-    const sublayers = this.props.layers[0].sublayers
-    const filters = sublayers?.flatMap((s) => Object.keys(s.filters || {}))
-    const color = sublayers?.[0]?.color
+    const layerId = info.sourceLayer.props.layerId
+    const layer = this.props.layers.find((l) => l.id === layerId) || this.props.layers[0]
+    const sublayerDataviewId = info.sourceTileSubLayer?.props.dataviewId
+    const sublayer =
+      layer?.sublayers.find((sublayer) => sublayer.dataviewId === sublayerDataviewId) ||
+      (layer?.sublayers?.[0] as ContextSubLayerConfig)
+    const idProperty = layer.idProperty || DEFAULT_ID_PROPERTY
+    const valueProperties = layer.valueProperties || []
+
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -107,30 +148,22 @@ export abstract class UserBaseLayer<
       }),
       id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
-      title: this.props.id,
-      color: color,
+      valueProperties,
+      color: sublayer?.color,
       layerId: this.props.id,
-      datasetId: this.props.layers[0].datasetId,
+      datasetId: layer.datasetId,
+      dataviewId: sublayer?.dataviewId,
       category: this.props.category,
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
 
-    if (hasSublayerFilters(sublayers?.[0])) {
+    if (sublayer && hasSublayerFilters(sublayer)) {
       if (
-        !supportDataFilterExtension(sublayers?.[0], this._getTimeFilterProps()) &&
-        !isFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
+        !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
+        !isFeatureInFilters(object, Object.keys(sublayer.filters || {}), sublayer?.filterOperators)
       ) {
         return { ...info, object: undefined }
       }
-    }
-
-    if (!this.props.subcategory?.includes('draw')) {
-      const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
-
-      object.value =
-        valueProperties?.length === 1
-          ? properties[valueProperties[0]]
-          : getPropertiesList(properties)
     }
     return { ...info, object }
   }
