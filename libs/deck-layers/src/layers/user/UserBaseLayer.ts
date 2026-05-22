@@ -278,7 +278,7 @@ export abstract class UserBaseLayer<
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[startTimeProperty as string]),
-          filterRange: [startTime!, endTime!],
+          filterRange: [startTime!, endTime! - offsetPrecision],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       }
