@@ -122,7 +122,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const state = getState() as any
       // TODO: skip dataset fetch if already loaded in the
       // const dataset = selectAllDatasets(state).find((d: Dataset) => d.id === datasetId)
-      const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+      const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
       const guestUser = selectIsGuestUser(state)
       const resources = selectResources(state)
       const vesselTemplateDataviews = selectVesselTemplateDataviews(state)
