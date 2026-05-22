@@ -32,7 +32,6 @@ jobs:
 
       - name: Tag latest as stable
         run: |
-          npm whoami
           LATEST=$(npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed 's/latest: //')
           npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable
         env:
