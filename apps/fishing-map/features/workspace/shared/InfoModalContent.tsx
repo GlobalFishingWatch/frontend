@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 
-import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -27,7 +26,6 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
   if (!dataset) {
     return null
   }
-  const description = getDatasetDescriptionTranslated(dataset)
   const queries = getDatasetQueriesArray(dataset)
   return (
     <div>
@@ -36,7 +34,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          * For security reasons, we are only parsing html
          * coming from translated descriptions
          **/}
-        {description.length > 0 ? htmlSafeParse(description) : dataset.description}
+        {dataset.description.length > 0 ? htmlSafeParse(dataset.description) : dataset.description}
       </div>
       {gfwUser && queries && queries?.length > 0 && (
         <div className={styles.content}>

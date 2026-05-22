@@ -8,7 +8,6 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { dataviewHasUserTimeRange } from 'features/dataviews/dataviews.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { useTimeseriesStats } from 'features/reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/reports/reports-timeseries-shared.utils'
@@ -48,7 +47,7 @@ function ReportPolygonsGraph({
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
   )
-  const title = getDatasetNameTranslated(dataset)
+  const title = dataset?.name
   const unit =
     dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA' ? dataset.unit : undefined
 

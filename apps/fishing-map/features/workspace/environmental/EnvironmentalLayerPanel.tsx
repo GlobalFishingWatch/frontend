@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import type { SupportedEnvDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -15,7 +15,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
@@ -128,7 +127,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     return <DatasetNotFound dataview={dataview} />
   }
 
-  const title = getDatasetNameTranslated(dataset)
+  const title = dataset?.name
   const showFilters =
     isHistogramDataviewSupported(dataview) ||
     getFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)

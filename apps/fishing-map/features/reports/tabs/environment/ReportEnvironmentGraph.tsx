@@ -16,7 +16,6 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import type {
   FourwingsReportGraphStats,
   ReportGraphProps,
@@ -65,7 +64,7 @@ function ReportEnvironmentGraph({
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const title = getDatasetNameTranslated(dataset)
+  const title = dataset?.name
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
   const unit = dataset?.unit
