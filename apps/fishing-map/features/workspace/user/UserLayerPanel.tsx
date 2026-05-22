@@ -12,7 +12,12 @@ import {
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import {
+  type DrawFeatureType,
+  UserContextTileLayer,
+  UserPointsTileLayer,
+  type UserTracksLayer,
+} from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -84,6 +89,8 @@ function UserPanel({
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const isBaseUserLayer =
+    instance instanceof UserPointsTileLayer || instance instanceof UserContextTileLayer
 
   useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
@@ -259,14 +266,12 @@ function UserPanel({
                   }
                 />
               </Fragment>
-              {(datasetGeometryType === 'tracks' || datasetGeometryType === 'points') && (
-                <FitBounds
-                  hasError={error !== undefined}
-                  layer={instance as UserTracksLayer}
-                  disabled={layerLoading}
-                  dataviewId={dataview.id}
-                />
-              )}
+              <FitBounds
+                hasError={error !== undefined}
+                layer={instance as UserTracksLayer}
+                disabled={isBaseUserLayer ? false : layerLoading}
+                dataviewId={dataview.id}
+              />
               {hasSchemaFilters &&
                 !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
                   <ExpandedContainer

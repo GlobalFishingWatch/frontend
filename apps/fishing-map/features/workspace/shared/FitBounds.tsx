@@ -3,7 +3,12 @@ import { useTranslation } from 'react-i18next'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
-import { UserPointsTileLayer, UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
+import {
+  UserContextTileLayer,
+  UserPointsTileLayer,
+  UserTracksLayer,
+  VesselLayer,
+} from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -32,12 +37,12 @@ export const useLayerFitBounds = () => {
       infoResource,
       dataviewId,
     }: {
-      layer: VesselLayer | UserTracksLayer | UserPointsTileLayer
+      layer: VesselLayer | UserTracksLayer | UserPointsTileLayer | UserContextTileLayer
       infoResource?: Resource<IdentityVessel>
       dataviewId?: string
     }) => {
       if (layer && start && end) {
-        if (layer instanceof UserPointsTileLayer) {
+        if (layer instanceof UserPointsTileLayer || layer instanceof UserContextTileLayer) {
           const bounds = await layer.getBbox(dataviewId!)
           if (bounds?.bbox) {
             fitBounds(bounds.bbox as Bbox, {
