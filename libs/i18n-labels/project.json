@@ -45,7 +45,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "export LATEST=`pnpm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;pnpm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
+          "export LATEST=`npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed -n 's/latest: //p'`;npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable"
         ],
         "parallel": false
       }

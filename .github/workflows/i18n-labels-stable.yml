@@ -27,15 +27,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
+          registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Authenticate pnpm with npm registry
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
-
       - name: Publish stable to NPM
         run: pnpm nx run i18n-labels:publish:stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Purge jsdelivr cache
         run: pnpm nx run i18n-labels:purge:stable
