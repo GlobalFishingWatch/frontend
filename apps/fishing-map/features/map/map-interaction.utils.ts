@@ -2,7 +2,6 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type {
   ContextPickingObject,
   DeckLayerPickingObject,
-  FourwingsClusterFeature,
   FourwingsClusterPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
@@ -10,6 +9,7 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
+import { getContextValue } from 'features/map/popups/map-popups.utils'
 
 import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
@@ -52,7 +52,7 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       break
     case DataviewCategory.Context:
     case DataviewCategory.User:
-      eventLabel = `${(feature as ContextPickingObject).value}`
+      eventLabel = `${getContextValue(feature as ContextPickingObject)}`
       break
     case DataviewCategory.Workspaces:
       eventLabel = `${(feature as ContextPickingObject).properties.category} | ${

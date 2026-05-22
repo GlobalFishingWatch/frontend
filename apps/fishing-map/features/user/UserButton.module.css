@@ -1,0 +1,74 @@
+.wrapper {
+  position: relative;
+  background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, white);
+  z-index: 5;
+}
+
+.saveIcon {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  left: 60px;
+  bottom: 8px;
+}
+
+.openFileAnimation {
+  animation: openFile 2s ease-in-out;
+  transform-origin: bottom center;
+}
+
+.animating {
+  animation:
+    opacity 2s ease-in,
+    x 2s linear,
+    y 2s cubic-bezier(0, 100, 1, 100);
+}
+
+@keyframes x {
+  50%,
+  100% {
+    left: 8px;
+  }
+}
+
+@keyframes y {
+  50%,
+  100% {
+    bottom: 9px;
+  }
+}
+
+@keyframes opacity {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes openFile {
+  20%,
+  100% {
+    transform: skew(0, 0) scaleY(1);
+    filter: none;
+    box-shadow: none;
+  }
+
+  40%,
+  60% {
+    transform: skew(-15deg, 0) scaleY(0.85);
+    filter: drop-shadow(-4px -4px 4px var(--color-terthiary-blue));
+    box-shadow: -4px -4px 4px var(--color-terthiary-blue);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animating {
+    animation: none;
+  }
+}
