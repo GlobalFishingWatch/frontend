@@ -10,6 +10,8 @@ import type {
 import type { GeoJsonProperties } from 'geojson'
 import type { Entries } from 'type-fest'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
@@ -51,6 +53,12 @@ const defaultProps: DefaultProps<_UserBaseLayerProps> = {
 // update this in Sat Nov 20 2286 as deck gl does not support Infinity
 const INFINITY_TIMERANGE_LIMIT = 9999999999999
 
+export type BoundsResponse = {
+  bbox: Bbox
+  minStartTime?: string
+  maxEndTime?: string
+}
+
 export type UserBaseLayerState = {
   highlightedFeatures?: UserLayerPickingObject[]
 }
@@ -68,6 +76,30 @@ export abstract class UserBaseLayer<
     super.initializeState(context)
     this.state = {
       highlightedFeatures: [],
+    }
+  }
+
+  async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
+    const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
+
+    if (!boundsUrl) {
+      return null
+    }
+
+    const boundsFilter = this.props.layers?.flatMap((l) =>
+      (l.sublayers || [])?.flatMap((sl) => (sl.dataviewId === sublayerDataviewId ? sl.filter : []))
+    )?.[0]
+
+    const urlWithFilters = boundsFilter
+      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
+      : boundsUrl
+
+    try {
+      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters)
+      return data
+    } catch (error) {
+      this.setState({ error: (error as Error).message })
+      return null
     }
   }
 

@@ -16,8 +16,6 @@ import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import {
@@ -46,12 +44,6 @@ import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
 type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
-
-export type BoundsResponse = {
-  bbox: Bbox
-  minStartTime?: string
-  maxEndTime?: string
-}
 
 export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
@@ -284,30 +276,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       }
     })
     return data
-  }
-
-  async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
-    const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
-
-    if (!boundsUrl) {
-      return null
-    }
-
-    const boundsFilter = this.props.layers?.flatMap((l) =>
-      (l.sublayers || [])?.flatMap((sl) => (sl.dataviewId === sublayerDataviewId ? sl.filter : []))
-    )?.[0]
-
-    const urlWithFilters = boundsFilter
-      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
-      : boundsUrl
-
-    try {
-      const data = await GFWAPI.fetch<BoundsResponse>(urlWithFilters)
-      return data
-    } catch (error) {
-      this.setState({ error: (error as Error).message })
-      return null
-    }
   }
 
   getViewportData = (params: GetUserPointsDataParams = {}) => {
