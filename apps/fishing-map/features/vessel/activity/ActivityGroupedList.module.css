@@ -84,14 +84,6 @@
   border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
-.lastEvent::after {
-  display: none;
-}
-
-.lastEventFromLastGroup {
-  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
-}
-
 .header {
   padding: 0 1.4rem 0 var(--space-M);
   display: flex;
@@ -126,4 +118,24 @@
   flex-direction: column;
   padding-left: var(--space-M);
   background: var(--color-white);
+}
+
+@media print {
+  .activityContainer {
+    border: none;
+  }
+
+  .event,
+  .eventGroup,
+  .eventGroup.expanded {
+    background: transparent;
+  }
+
+  .eventGroup:not(:first-child) {
+    break-before: page;
+  }
+
+  .eventExpanded {
+    box-shadow: none;
+  }
 }

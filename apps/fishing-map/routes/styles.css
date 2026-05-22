@@ -66,6 +66,12 @@ body:has(.printing) {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
+    filter: none !important;
+  }
+
+  .card,
+  .cardContainer .card {
+    background: transparent;
   }
 
   .print-hidden {

@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import { queriesApiReducers } from 'queries'
 
+import printReducer from 'features/app/print.slice'
 import areasReducer from 'features/areas/areas.slice'
 import bigQueryReducer from 'features/bigquery/bigquery.slice'
 import datasetsReducer from 'features/datasets/datasets.slice'
@@ -45,6 +46,7 @@ export const rootReducer = combineReducers({
   map: mapReducer,
   mapControls: mapControlsReducer,
   modals: modalsReducer,
+  print: printReducer,
   regions: regionsReducer,
   report: reportReducer,
   reports: reportsReducer,

@@ -42,11 +42,12 @@ const UserLoggedIconButton = ({
           onClick={undefined}
           onMouseEnter={() => setIsLoginHover(true)}
           onMouseLeave={() => setIsLoginHover(false)}
+          className="print-hidden"
         />
       </LocalStorageLoginLink>
     )
   }
-  return <IconButton {...props} testId={testId} />
+  return <IconButton {...props} testId={testId} className="print-hidden" />
 }
 
 export default UserLoggedIconButton

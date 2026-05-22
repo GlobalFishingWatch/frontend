@@ -256,7 +256,9 @@ const Vessel = () => {
             mountAllTabsOnLoad
             className={styles.tabsContainer}
           />
-          {vesselSection === 'activity' && <div style={{ height: '48vh' }}></div>}
+          {vesselSection === 'activity' && (
+            <div className="print-hidden" style={{ height: '48vh' }}></div>
+          )}
         </Fragment>
       ) : (
         <div className={styles.placeholder}>

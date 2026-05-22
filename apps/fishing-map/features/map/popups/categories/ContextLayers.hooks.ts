@@ -12,6 +12,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectPointsActiveReportDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
+import { getContextValue } from 'features/map/popups/map-popups.utils'
 import { selectLocationAreaId } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
@@ -52,7 +53,7 @@ export const useContextInteractions = () => {
         const areaName =
           dataview?.config?.type === DataviewType.UserContext
             ? dataview?.datasets?.[0]?.name
-            : feature?.value?.toString() || feature.title || ''
+            : getContextValue(feature) || ''
         dispatch(setDownloadActivityAreaKey({ datasetId, areaId, areaName }))
         dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
         dispatchClickedEvent(null)

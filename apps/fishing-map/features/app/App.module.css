@@ -93,6 +93,7 @@
   .mapContainer,
   .withTimebar {
     height: 28.5cm;
+    background-color: var(--color-map-background);
   }
 
   .mapContainer ~ * {
