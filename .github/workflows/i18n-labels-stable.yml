@@ -19,24 +19,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.GH_PA_TOKEN }}
 
       - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
+          registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Publish stable to NPM
+      - name: Tag latest as stable
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > /tmp/.npmrc
-          pnpm nx run i18n-labels:publish:stable
+          LATEST=$(npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed 's/latest: //')
+          npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable
         env:
-          NPM_CONFIG_USERCONFIG: /tmp/.npmrc
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Purge jsdelivr cache
         run: pnpm nx run i18n-labels:purge:stable
