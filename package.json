@@ -119,7 +119,7 @@
     "papaparse": "5.5.3",
     "pbf": "4.0.1",
     "protobufjs": "^8.0.1",
-    "qs": "6.15.1",
+    "qs": "6.15.2",
     "rc-slider": "11.1.9",
     "react": "19.2.5",
     "react-aria-components": "1.17.0",
