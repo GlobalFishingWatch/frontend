@@ -7,7 +7,6 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-r
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { getI18nState } from 'features/i18n/getI18nState'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getTFuntion } from 'router/router.meta'
@@ -29,6 +28,8 @@ async function loadI18nState(): Promise<I18nServerState> {
     }
   }
 
+  // needs to be loaded dinamycally to avoid createServerFn errors on serve
+  const { getI18nState } = await import('features/i18n/getI18nState')
   return (await getI18nState()) as I18nServerState
 }
 
