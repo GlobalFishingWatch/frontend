@@ -10,6 +10,7 @@ import ErrorBoundaryUI from 'features/app/ErrorBoundaryUI'
 import { makeStore } from 'store'
 import type { QueryParams } from 'types'
 
+import { setRouterRef } from './router/router-ref'
 import { routeTree } from './routeTree.gen'
 
 function RouterErrorBoundary({ error }: { error: Error }) {
@@ -61,9 +62,6 @@ export function getRouter() {
     return router
   }
   router = createAppRouter()
-  return router
-}
-
-export function getRouterRef() {
+  setRouterRef(router)
   return router
 }
