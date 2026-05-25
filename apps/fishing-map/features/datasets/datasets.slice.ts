@@ -240,7 +240,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return uniqBy([...existingRequestedDatasets, ...datasets], (dataset) => dataset.id)
+      return uniqBy([...datasets, ...existingRequestedDatasets], (dataset) => dataset.id)
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
