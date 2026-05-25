@@ -326,7 +326,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     colorDomain: FourwingsTileLayerColorDomain,
     colorRanges: FourwingsTileLayerColorRange
   ): FourwinsTileLayerScale[] => {
-    if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
+    if (
+      this.props.comparisonMode === FourwingsComparisonMode.Bivariate &&
+      Array.isArray(colorDomain[0])
+    ) {
       return (colorDomain as number[][]).map((cd, i) => {
         return scaleLinear(cd, colorRanges[i] as FourwingsColorObject[]).clamp(true)
       })
