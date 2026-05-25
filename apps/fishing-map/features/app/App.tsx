@@ -1,5 +1,4 @@
 import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Outlet, useSearch } from '@tanstack/react-router'

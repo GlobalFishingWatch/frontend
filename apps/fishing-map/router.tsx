@@ -7,7 +7,6 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import ErrorBoundaryUI from 'features/app/ErrorBoundaryUI'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
 import type { QueryParams } from 'types'
 
@@ -46,7 +45,7 @@ function createAppRouter() {
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
-    defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
+    defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
   })
