@@ -26,28 +26,6 @@ export type TUserGuideSection = TUserGuideSubSection & {
   subsections: TUserGuideSubSection[]
 }
 
-export type TDataset = StrapiBaseAttributes & {
-  dataset_id: string
-  name: string
-  description: string
-  slug?: string
-  filters: Filters
-  filters_i18n?: FiltersI18n
-}
-export type FilterField = {
-  enum: string[]
-  label: string
-}
-
-export type Filters = Record<string, FilterField>
-
-export type FilterTranslation = {
-  label?: string
-  enum?: Record<string, string>
-}
-
-export type FiltersI18n = Record<string, FilterTranslation>
-
 // Base image type from Strapi media library
 export type TImage = {
   id: number
@@ -67,9 +45,4 @@ export type TStrapiError = {
   name: string
   message: string
   details?: Record<string, string[]>
-}
-
-export type SidePanelContentTypeMap = {
-  userGuide: TUserGuideSection
-  datasets: TDataset
 }

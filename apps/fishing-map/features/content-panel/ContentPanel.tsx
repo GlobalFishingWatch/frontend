@@ -4,11 +4,12 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { fetchSidePanelContent } from 'features/cms/content.queries'
+import { fetchUserGuideContent } from 'features/cms/content.queries'
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import InfoContainer from 'features/content-panel/InfoContainer'
 import { UserGuideContent } from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
+import type { Locale } from 'types'
 
 import styles from './ContentPanel.module.css'
 
@@ -29,9 +30,9 @@ function ContentPanel() {
 
   useEffect(() => {
     if (sidePanelContent !== 'userGuide') return
-    const refetch = async (lang: string) => {
+    const refetch = async (locale: Locale) => {
       try {
-        const response = await fetchSidePanelContent('userGuide', undefined, lang)
+        const response = await fetchUserGuideContent({ locale })
         if (!response?.data?.length) {
           setLangData({ status: 'empty', data: [] })
         } else {
