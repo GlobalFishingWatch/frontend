@@ -58,26 +58,30 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
 
   const toggleLanguage = async (lang: Locale | 'source') => {
-    trackEvent({
-      category: TrackCategory.I18n,
-      action: `Change language`,
-      label: lang,
-    })
-
-    setIsLanguageMenuOpen(false)
-    setIsLoading(true)
-    const locale = lang === 'source' ? Locale.en : (lang as Locale)
-    await dispatch(refreshDatasetsLocaleThunk(locale))
-    i18n.changeLanguage(lang)
-    if (basemapDataviewInstance?.id) {
-      upsertDataviewInstance({
-        id: basemapDataviewInstance.id as string,
-        config: {
-          locale,
-        },
+    if (lang === i18n.language) {
+      setIsLanguageMenuOpen(false)
+    } else {
+      trackEvent({
+        category: TrackCategory.I18n,
+        action: `Change language`,
+        label: lang,
       })
+
+      setIsLanguageMenuOpen(false)
+      setIsLoading(true)
+      const locale = lang === 'source' ? Locale.en : (lang as Locale)
+      await dispatch(refreshDatasetsLocaleThunk(locale))
+      i18n.changeLanguage(lang)
+      if (basemapDataviewInstance?.id) {
+        upsertDataviewInstance({
+          id: basemapDataviewInstance.id as string,
+          config: {
+            locale,
+          },
+        })
+      }
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
