@@ -9,25 +9,27 @@ import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './UserGuideLink.module.css'
 
-export const USER_GUIDE_SECTIONS = [
-  'uploading-data',
-  'analysis-and-dynamic-reports',
-  'activity-fishing',
-  'activity-vessel-presence',
-] as const
+export const USER_GUIDE_SECTIONS = {
+  'uploading-data': 'uploading-data',
+  'analysis-and-dynamic-reports': 'analysis-and-dynamic-reports',
+  'activity-fishing': 'activity-fishing',
+  'activity-vessel-presence': 'activity-vessel-presence',
+} as const
 
-export const USER_GUIDE_SUB_SECTIONS = [
-  'downloading-data',
-  'vessel-search',
-  'vessel-groups',
-  'filtering-activity-layers',
-  'detections-sar',
-  'detections-viirs',
-] as const
+export const USER_GUIDE_SUB_SECTIONS = {
+  'downloading-data': 'downloading-data',
+  'vessel-search': 'vessel-search',
+  'vessel-groups': 'vessel-groups',
+  'filtering-activity-layers': 'filtering-activity-layers',
+  'detections-sar': 'radar-detections-synthetic-aperture-radar',
+  'detections-viirs': 'night-light-detections-visible-infrared-imaging-radiometer-suite',
+} as const
 
-export type UserGuideSection =
-  | (typeof USER_GUIDE_SECTIONS)[number]
-  | (typeof USER_GUIDE_SUB_SECTIONS)[number]
+export type UserGuideSubSection = keyof typeof USER_GUIDE_SUB_SECTIONS
+export type UserGuideSection = keyof typeof USER_GUIDE_SECTIONS | UserGuideSubSection
+
+const isSubSection = (section: UserGuideSection): section is UserGuideSubSection =>
+  section in USER_GUIDE_SUB_SECTIONS
 
 type UserGuideLinkProps = {
   section: UserGuideSection
@@ -39,17 +41,13 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
   const { openSidePanel } = useSidePanel()
 
   const handleClick = async () => {
-    const subSection = USER_GUIDE_SUB_SECTIONS.includes(
-      section as (typeof USER_GUIDE_SUB_SECTIONS)[number]
-    )
-      ? section
-      : undefined
+    const subSectionSlug = isSubSection(section) ? USER_GUIDE_SUB_SECTIONS[section] : undefined
 
     let contentId: string
-    if (subSection) {
+    if (subSectionSlug) {
       contentId = await strapiApi.userGuide
         .getContentFromSubcontentId({
-          data: { slug: subSection, locale: i18n.language },
+          data: { slug: subSectionSlug, locale: i18n.language },
         })
         .then((res) => {
           return res.data?.[0]?.slug || ''
@@ -60,7 +58,7 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
     openSidePanel({
       type: 'userGuide',
       id: contentId,
-      subcontentId: subSection,
+      subcontentId: subSectionSlug,
     })
     trackEvent({
       category: TrackCategory.HelpHints,

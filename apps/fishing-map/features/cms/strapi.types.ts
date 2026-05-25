@@ -16,11 +16,14 @@ export type StrapiBaseAttributes = {
   localizations: string[]
 }
 
-export type TUserGuideSection = StrapiBaseAttributes & {
+export type TUserGuideSubSection = StrapiBaseAttributes & {
   title: string
   body: string
   slug?: string
-  subsections: StrapiBaseAttributes[]
+}
+
+export type TUserGuideSection = TUserGuideSubSection & {
+  subsections: TUserGuideSubSection[]
 }
 
 export type TDataset = StrapiBaseAttributes & {
