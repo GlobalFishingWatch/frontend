@@ -7,6 +7,8 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { IS_DEVELOPMENT_ENV } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { refreshDatasetsLocaleThunk } from 'features/datasets/datasets.slice'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
@@ -45,6 +47,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   className = '',
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
+  const dispatch = useAppDispatch()
+  const [isLoading, setIsLoading] = useState(false)
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
 
   const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
@@ -52,22 +56,28 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
-  const toggleLanguage = (lang: Locale | 'source') => {
+
+  const toggleLanguage = async (lang: Locale | 'source') => {
     trackEvent({
       category: TrackCategory.I18n,
       action: `Change language`,
       label: lang,
     })
+
+    setIsLanguageMenuOpen(false)
+    setIsLoading(true)
+    const locale = lang === 'source' ? Locale.en : (lang as Locale)
+    await dispatch(refreshDatasetsLocaleThunk(locale))
     i18n.changeLanguage(lang)
     if (basemapDataviewInstance?.id) {
       upsertDataviewInstance({
         id: basemapDataviewInstance.id as string,
         config: {
-          locale: lang === 'source' ? Locale.en : (lang as Locale),
+          locale,
         },
       })
     }
-    setIsLanguageMenuOpen(false)
+    setIsLoading(false)
   }
 
   return (
@@ -81,6 +91,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
           type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          loading={isLoading}
+          disabled={isLoading}
           testId="language-toggle-button"
           onClick={(e) => {
             e.stopPropagation()

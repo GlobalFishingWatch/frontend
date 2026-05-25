@@ -13,10 +13,9 @@ import type {
   APIPagination,
   Dataset,
   DatasetsMigration,
-  Locale,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   ALL_LEGACY_V2_VESSELS_DATASETS_DICT,
   getDatasetConfiguration,
@@ -101,7 +100,7 @@ type FetchDatasetsFromApiParams = {
   forceRefresh?: boolean
   ids: string[]
   includeRelated?: boolean
-  locale: Locale
+  locale: Locale | 'source'
   maxDepth?: number
   signal: AbortSignal
 }
@@ -135,7 +134,7 @@ const fetchDatasetsFromApi = async (
       ? { ids: uniqIds }
       : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
     cache: false,
-    locale: locale.toUpperCase(),
+    locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
     ...DEFAULT_PAGINATION_PARAMS,
   }
   const includesParam = stringify(
@@ -388,6 +387,21 @@ export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration
 }
 
+export type DatasetsSliceState = { datasets: DatasetsState }
+
+export const refreshDatasetsLocaleThunk = createAsyncThunk<
+  void,
+  Locale,
+  { rejectValue: AsyncError }
+>('datasets/refreshLocale', async (locale, { getState, dispatch }) => {
+  const state = getState() as DatasetsSliceState
+  const ids = (state.datasets.ids as string[]) || []
+  if (!ids.length) {
+    return
+  }
+  await dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
+})
+
 const initialState: DatasetsState = {
   ...asyncInitialState,
   deprecatedDatasets: {},
@@ -416,23 +430,11 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDeprecatedDatasets } = datasetSlice.actions
 
-export type DatasetsSliceState = { datasets: DatasetsState }
 export const {
   selectAll: selectAllDatasets,
   selectById,
   selectIds,
 } = entityAdapter.getSelectors((state: DatasetsSliceState) => state.datasets)
-
-export const refreshDatasetsLocaleThunk = createAsyncThunk<
-  void,
-  Locale,
-  { rejectValue: AsyncError }
->('datasets/refreshLocale', async (locale, { getState, dispatch }) => {
-  const state = getState() as DatasetsSliceState
-  const ids = selectIds(state) as string[]
-  if (!ids.length) return
-  dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
-})
 
 export const selectDatasetById = memoize((id: string) =>
   createSelector([(state: DatasetsSliceState) => state], (state) => selectById(state, id))

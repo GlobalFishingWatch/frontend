@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { refreshDatasetsLocaleThunk } from 'features/datasets/datasets.slice'
 import { setUserLanguage } from 'features/user/user.slice'
 import type { Locale } from 'types'
 
@@ -16,7 +15,6 @@ export function useUserLanguageUpdate() {
         document.documentElement.setAttribute('lang', lng)
       }
       dispatch(setUserLanguage(lng as Locale))
-      dispatch(refreshDatasetsLocaleThunk(lng as Locale))
     })
     return () => {
       i18n.off('languageChanged')
