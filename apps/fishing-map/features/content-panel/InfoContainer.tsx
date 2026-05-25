@@ -125,7 +125,7 @@ const InfoContainer = () => {
         <ContentHeader
           title={
             <div className={styles.labelContainer}>
-              {(strapiDataset?.title ?? activeTab?.labelString) || dataview.name}{' '}
+              {(strapiDataset?.name ?? activeTab?.labelString) || dataview.name}{' '}
               {userGuideLink && <UserGuideLink section={userGuideLink} />}
             </div>
           }
@@ -153,8 +153,8 @@ const InfoContainer = () => {
         <div className={cx(styles.content)}>
           {loading ? (
             <Spinner size="small" />
-          ) : strapiDataset?.body ? (
-            htmlSafeParse(strapiDataset.body)
+          ) : strapiDataset?.description ? (
+            htmlSafeParse(strapiDataset.description)
           ) : null}
         </div>
       </div>
