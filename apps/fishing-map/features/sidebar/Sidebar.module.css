@@ -4,6 +4,10 @@
   height: 100%;
 }
 
+:global(.printing) .container {
+  background: var(--color-white);
+}
+
 .content {
   width: calc(100% - var(--sidebar-tabs-width));
   display: flex;

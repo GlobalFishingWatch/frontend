@@ -166,7 +166,7 @@ function SidebarHeader() {
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>
       <div className={cx(styles.sidebarHeader)}>
-        <a href="https://globalfishingwatch.org" className={cx(styles.logoLink, 'print-hidden')}>
+        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
         {!readOnly && (

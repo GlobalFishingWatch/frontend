@@ -1,9 +1,9 @@
 import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import type { Entries } from 'type-fest'
 
-import { isPrintSupported } from '@globalfishingwatch/react-hooks'
 import type { MAIN_DOM_ID, SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -99,11 +99,6 @@ const MapControlScreenshot = ({
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
   }, [dispatch, resetPreviewImage, rootElement])
 
-  const onPDFDownloadClick = useCallback(() => {
-    handleModalClose()
-    setTimeout(window.print, 200)
-  }, [handleModalClose])
-
   const onImageDownloadClick = useCallback(async () => {
     if (screenshotAreaId) {
       await downloadImage(screenshotAreaId)
@@ -141,6 +136,7 @@ const MapControlScreenshot = ({
         title={t((t) => t.map.screenshotPreview)}
         isOpen={modalOpen}
         onClose={handleModalClose}
+        className={cx({ [styles.screenshotModal]: !previewImageLoading && previewImage })}
         contentClassName={styles.previewContainer}
       >
         <div className={styles.previewPlaceholder}>
@@ -150,33 +146,15 @@ const MapControlScreenshot = ({
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
           )}
         </div>
-        <div className={styles.screenshotArea}>
+        <div className={styles.previewFooter}>
           <Choice
             options={SCREENSHOT_AREA_OPTIONS}
-            size="medium"
             onSelect={(option) => onSelectScreenshotArea(option.id)}
-            className={styles.select}
             activeOption={screenshotAreaId}
           />
-        </div>
-        <div className={styles.previewFooter}>
-          <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            {t((t) => t.common.dismiss)}
+          <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
+            {t((t) => t.map.screenshotDownload)}
           </Button>
-          <div>
-            {isPrintSupported && (
-              <Button
-                id="pdf-preview-download"
-                onClick={onPDFDownloadClick}
-                className={styles.printBtn}
-              >
-                Print PDF
-              </Button>
-            )}
-            <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              {t((t) => t.map.screenshotDownload)}
-            </Button>
-          </div>
         </div>
       </Modal>
     </Fragment>
