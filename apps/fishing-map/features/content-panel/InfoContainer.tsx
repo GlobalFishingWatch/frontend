@@ -16,6 +16,7 @@ import { Choice, Select, Spinner } from '@globalfishingwatch/ui-components'
 import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TDataset } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
+import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import DatasetLabel from 'features/datasets/DatasetLabel'
@@ -24,7 +25,6 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/da
 import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { Route } from 'routes/_app'
-import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './ContentPanel.module.css'
 
@@ -153,9 +153,9 @@ const InfoContainer = () => {
         <div className={cx(styles.content)}>
           {loading ? (
             <Spinner size="small" />
-          ) : strapiDataset?.description ? (
-            htmlSafeParse(strapiDataset.description)
-          ) : null}
+          ) : (
+            <ContentMarkdown>{strapiDataset?.description}</ContentMarkdown>
+          )}
         </div>
       </div>
     </div>

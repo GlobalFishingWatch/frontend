@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import Markdown from 'react-markdown'
 import cx from 'classnames'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
 
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
+import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
-import MarkdownLink from 'features/content-panel/MarkdownLink'
 import TableOfContents from 'features/content-panel/TableOfContents'
 import { Route } from 'routes/_app'
 
@@ -23,8 +20,6 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const { openSidePanel } = useSidePanel()
   const { t } = useTranslation()
-
-  const markdownComponents = useMemo(() => ({ a: MarkdownLink }), [])
 
   useEffect(() => {
     const el = scrollContainerRef.current
@@ -137,13 +132,7 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
         ) : (
           <div className={cx(styles.content)}>
             <h2>{selectedSection.title}</h2>
-            <Markdown
-              rehypePlugins={[rehypeRaw]}
-              remarkPlugins={[remarkGfm]}
-              components={markdownComponents}
-            >
-              {selectedSection.body}
-            </Markdown>
+            <ContentMarkdown>{selectedSection.body}</ContentMarkdown>
             {selectedSection.subsections?.map((subsection) => (
               <div
                 key={subsection.id}
@@ -151,13 +140,7 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
                 className={styles.subsection}
               >
                 <h3>{subsection.title}</h3>
-                <Markdown
-                  rehypePlugins={[rehypeRaw]}
-                  remarkPlugins={[remarkGfm]}
-                  components={markdownComponents}
-                >
-                  {subsection.body}
-                </Markdown>
+                <ContentMarkdown>{subsection.body}</ContentMarkdown>
               </div>
             ))}
           </div>
