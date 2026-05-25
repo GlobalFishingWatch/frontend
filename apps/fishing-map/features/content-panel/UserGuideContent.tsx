@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Markdown from 'react-markdown'
 import cx from 'classnames'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
-
-import { IconButton } from '@globalfishingwatch/ui-components'
 
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
@@ -21,10 +19,20 @@ type UserGuideContentProps = { data: TUserGuideSection[] }
 export const UserGuideContent = ({ data }: UserGuideContentProps) => {
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const { openSidePanel } = useSidePanel()
   const { t } = useTranslation()
 
   const markdownComponents = useMemo(() => ({ a: MarkdownLink }), [])
+
+  useEffect(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const onScroll = () => setIsScrolled(el.scrollTop > 50)
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
 
   const selectedSection = useMemo(() => {
     return sidePanelId
@@ -81,17 +89,34 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
-            <div className={styles.titleContainer}>
-              <IconButton
-                icon="list"
-                onClick={() => setIsTableOfContentsOpen(!isTableOfContentsOpen)}
-              />
-              {t((t) => t.common.userGuide)}
-            </div>
+            <span className={styles.titleText}>
+              <span
+                className={cx({ [styles.pointer]: !isTableOfContentsOpen })}
+                role="button"
+                tabIndex={0}
+                onClick={() => setIsTableOfContentsOpen(true)}
+              >
+                {t((t) => t.common.userGuide)}
+              </span>
+              {isScrolled && !isTableOfContentsOpen && selectedSection && (
+                <>
+                  <span className={cx(styles.separator, styles.secondary)}>|</span>
+                  <span
+                    className={cx(styles.pointer, styles.secondary)}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                    }
+                  >{`${selectedSection.title}`}</span>
+                </>
+              )}
+            </span>
           }
         />
       </div>
       <div
+        ref={scrollContainerRef}
         className={cx(styles.scrollContainer, {
           [styles.tableOfContentsOpen]: isTableOfContentsOpen,
         })}

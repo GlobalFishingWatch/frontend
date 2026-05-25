@@ -199,7 +199,30 @@
 .titleContainer {
   display: flex;
   align-items: center;
-  margin-right: var(--space-S);
+  min-width: 0;
+}
+
+.titleText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.secondary:hover {
+  color: var(--color-primary-blue);
+}
+
+.separator {
+  margin-inline: var(--space-S);
 }
 
 .sourceSelector {
