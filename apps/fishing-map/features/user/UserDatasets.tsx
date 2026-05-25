@@ -9,18 +9,10 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import {
-  Button,
-  Icon,
-  IconButton,
-  InputText,
-  Modal,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import DatasetLabel from 'features/datasets/DatasetLabel'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   getDataviewInstanceByDataset,
   useDatasetModalConfigConnect,
@@ -33,10 +25,8 @@ import {
   selectDatasetsStatusId,
 } from 'features/datasets/datasets.slice'
 import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
-import { getModalParent } from 'features/modals/Modals'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
-import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
 import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -46,7 +36,7 @@ import { getHighlightedText } from 'utils/text'
 import styles from './User.module.css'
 
 function UserDatasets() {
-  const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
+  const { openSidePanel } = useSidePanel()
   const datasets = useSelector(selectUserDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
@@ -94,9 +84,15 @@ function UserDatasets() {
     [lastVisitedWorkspace, router]
   )
 
-  const onInfoClick = useCallback((dataset: Dataset) => {
-    setInfoDataset(dataset)
-  }, [])
+  const onInfoClick = useCallback(
+    (dataset: Dataset) => {
+      openSidePanel({
+        type: 'datasets',
+        id: dataset.id,
+      })
+    },
+    [openSidePanel]
+  )
 
   const onEditClick = useCallback(
     (dataset: Dataset) => {
@@ -212,15 +208,6 @@ function UserDatasets() {
             )}
           </ul>
         )}
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={<DatasetLabel dataset={infoDataset} />}
-          isOpen={infoDataset !== undefined}
-          onClose={() => setInfoDataset(undefined)}
-          parentSelector={getModalParent}
-        >
-          {infoDataset && <InfoModalContent dataset={infoDataset} />}
-        </Modal>
       </div>
     </Fragment>
   )
