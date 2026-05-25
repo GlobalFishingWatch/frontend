@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
-import { getUTCDate, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { getUTCDate, getUTCDateTime, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import {
   UserContextTileLayer,
   UserPointsTileLayer,
@@ -18,7 +18,7 @@ import type { Bbox } from 'types'
 
 type FitBoundsProps = {
   hasError?: boolean
-  layer: VesselLayer | UserTracksLayer
+  layer: VesselLayer | UserTracksLayer | UserContextTileLayer | UserPointsTileLayer
   infoResource?: Resource<IdentityVessel>
   className?: string
   disabled?: boolean
@@ -43,21 +43,54 @@ export const useLayerFitBounds = () => {
     }) => {
       if (layer && start && end) {
         if (layer instanceof UserPointsTileLayer || layer instanceof UserContextTileLayer) {
-          const bounds = await layer.getBbox(dataviewId!)
-          if (bounds?.bbox) {
-            fitBounds(bounds.bbox as Bbox, {
+          const startMs = getUTCDateTime(start).toMillis()
+          const endMs = getUTCDateTime(end).toMillis()
+          const boundsWithTime = await layer.getBbox(dataviewId!, {
+            startDate: startMs,
+            endDate: endMs,
+          })
+          const responseStartMs = boundsWithTime?.minStartTime
+            ? getUTCDateTime(boundsWithTime.minStartTime).toMillis()
+            : null
+          const responseEndMs = boundsWithTime?.maxEndTime
+            ? getUTCDateTime(boundsWithTime.maxEndTime).toMillis()
+            : null
+          const overlapsTimerange =
+            boundsWithTime?.bbox &&
+            (responseStartMs === null ||
+              responseEndMs === null ||
+              (responseEndMs >= startMs && responseStartMs <= endMs))
+
+          const confirmMessage =
+            layer instanceof UserContextTileLayer
+              ? t((t) => t.layer.user_polygons_fit_bounds_out_of_timerange)
+              : t((t) => t.layer.user_points_fit_bounds_out_of_timerange)
+
+          if (overlapsTimerange) {
+            fitBounds(boundsWithTime.bbox, {
               padding: 60,
               fitZoom: true,
               flyTo: true,
-              maxZoom: 12,
-            })
-          }
-          if (bounds?.minStartTime && bounds?.maxEndTime) {
-            setTimerange({
-              start: getUTCDate(bounds.minStartTime).toISOString() as string,
-              end: getUTCDate(bounds.maxEndTime).toISOString() as string,
+              maxZoom: 8,
             })
             if (dataviewId) dispatchTimebarSelectedUserId(dataviewId)
+          } else if (window.confirm(confirmMessage)) {
+            const bounds = await layer.getBbox(dataviewId!)
+            if (bounds?.bbox) {
+              fitBounds(bounds.bbox, {
+                padding: 60,
+                fitZoom: true,
+                flyTo: true,
+                maxZoom: 8,
+              })
+              if (bounds.minStartTime && bounds.maxEndTime) {
+                setTimerange({
+                  start: getUTCDate(bounds.minStartTime).toISOString(),
+                  end: getUTCDate(bounds.maxEndTime).toISOString(),
+                })
+              }
+              if (dataviewId) dispatchTimebarSelectedUserId(dataviewId)
+            }
           }
         } else if (layer instanceof UserTracksLayer) {
           let bbox = layer.getBbox({ startDate: start, endDate: end })
@@ -75,8 +108,8 @@ export const useLayerFitBounds = () => {
               })
               if (maxTimestamp > minTimestamp)
                 setTimerange({
-                  start: getUTCDate(minTimestamp).toISOString() as string,
-                  end: getUTCDate(maxTimestamp).toISOString() as string,
+                  start: getUTCDate(minTimestamp).toISOString(),
+                  end: getUTCDate(maxTimestamp).toISOString(),
                 })
             }
           }
@@ -159,6 +192,10 @@ const FitBounds = ({
     tooltip = t((t) => t.errors.trackLoading)
   } else if (layer instanceof VesselLayer) {
     tooltip = t((t) => t.layer.vessel_fit_bounds)
+  } else if (layer instanceof UserContextTileLayer) {
+    tooltip = t((t) => t.layer.user_context_fit_bounds)
+  } else if (layer instanceof UserPointsTileLayer) {
+    tooltip = t((t) => t.layer.user_points_fit_bounds)
   } else {
     tooltip = t((t) => t.layer.user_track_fit_bounds)
   }

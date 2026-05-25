@@ -1,6 +1,5 @@
 import type { JSX } from 'react'
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -17,17 +16,13 @@ function ContentHeader({ title }: ContentHeaderProps) {
   const { closeSidePanel } = useSidePanel()
 
   return (
-    <div className={cx(styles.sticky)}>
-      <div className={cx(styles.sidebarHeader)}>
-        <h2 className={cx(styles.title)}>{title || t((t) => t.common.content)}</h2>
-        <div>
-          <IconButton
-            icon="close"
-            aria-label={t((t) => t.common.close)}
-            onClick={() => closeSidePanel()}
-          />
-        </div>
-      </div>
+    <div className={styles.sidebarHeader}>
+      {title || t((t) => t.common.content)}
+      <IconButton
+        icon="close"
+        aria-label={t((t) => t.common.close)}
+        onClick={() => closeSidePanel()}
+      />
     </div>
   )
 }

@@ -80,7 +80,10 @@ export abstract class UserBaseLayer<
     }
   }
 
-  async getBbox(sublayerDataviewId: string): Promise<BoundsResponse | null> {
+  async getBbox(
+    sublayerDataviewId: string,
+    options?: { startDate?: number; endDate?: number }
+  ): Promise<BoundsResponse | null> {
     const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
 
     if (!boundsUrl) {
@@ -91,8 +94,36 @@ export abstract class UserBaseLayer<
       (l.sublayers || [])?.flatMap((sl) => (sl.dataviewId === sublayerDataviewId ? sl.filter : []))
     )?.[0]
 
-    const urlWithFilters = boundsFilter
-      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(boundsFilter)}`
+    const { startTimeProperty, endTimeProperty, timeFilterType } = this.props
+    const timeFilterParts: string[] = []
+    if (options !== undefined) {
+      if (timeFilterType === 'date') {
+        if (startTimeProperty) {
+          if (options.startDate !== undefined)
+            timeFilterParts.push(`${startTimeProperty} >= ${options.startDate}`)
+          if (options.endDate !== undefined)
+            timeFilterParts.push(`${startTimeProperty} < ${options.endDate}`)
+        }
+      } else if (timeFilterType === 'dateRange') {
+        if (startTimeProperty && endTimeProperty) {
+          if (options.startDate !== undefined)
+            timeFilterParts.push(`${endTimeProperty} >= ${options.startDate}`)
+          if (options.endDate !== undefined)
+            timeFilterParts.push(`${startTimeProperty} < ${options.endDate}`)
+        } else if (endTimeProperty) {
+          if (options.startDate !== undefined)
+            timeFilterParts.push(`${endTimeProperty} >= ${options.startDate}`)
+        } else if (startTimeProperty) {
+          if (options.endDate !== undefined)
+            timeFilterParts.push(`${startTimeProperty} < ${options.endDate}`)
+        }
+      }
+    }
+    const timeFilter = timeFilterParts.join(' AND ')
+    const combinedFilter = [boundsFilter, timeFilter].filter(Boolean).join(' AND ')
+
+    const urlWithFilters = combinedFilter
+      ? `${boundsUrl}${boundsUrl.includes('?') ? '&' : '?'}filter=${encodeURIComponent(combinedFilter)}`
       : boundsUrl
 
     try {

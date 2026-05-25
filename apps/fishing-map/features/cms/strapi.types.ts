@@ -14,18 +14,23 @@ export type StrapiBaseAttributes = {
   publishedAt: string
   locale: string
   localizations: string[]
+}
 
+export type TUserGuideSubSection = StrapiBaseAttributes & {
   title: string
   body: string
   slug?: string
 }
 
-export type TUserGuideSection = StrapiBaseAttributes & {
-  subsections: StrapiBaseAttributes[]
+export type TUserGuideSection = TUserGuideSubSection & {
+  subsections: TUserGuideSubSection[]
 }
 
 export type TDataset = StrapiBaseAttributes & {
   dataset_id: string
+  name: string
+  description: string
+  slug?: string
   filters: Filters
   filters_i18n?: FiltersI18n
 }
