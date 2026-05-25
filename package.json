@@ -127,7 +127,7 @@
     "pbf": "4.0.1",
     "polygon-clipping": "^0.15.7",
     "protobufjs": "^8.2.0",
-    "qs": "6.15.1",
+    "qs": "6.15.2",
     "rc-slider": "11.1.9",
     "react": "19.2.6",
     "react-aria-components": "1.17.0",

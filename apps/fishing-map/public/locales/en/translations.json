@@ -1293,7 +1293,7 @@
     "sortDesc": "Sort vessels alphabetically (descending)",
     "source": "Source",
     "source_short": "Source",
-    "sourceFleet": "Source fleet",
+    "sourceFleet": "Fleet",
     "ssvid": "Ssvid (MMSI)",
     "summary": "{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>",
     "target_species": "Target species",
