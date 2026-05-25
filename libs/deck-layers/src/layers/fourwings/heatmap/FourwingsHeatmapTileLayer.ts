@@ -276,6 +276,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       const { comparisonMode } = this.props
       const { colorDomain: oldColorDomain } = this.state
       const newColorDomain = this._calculateColorDomain()
+      if (this.props.comparisonMode !== comparisonMode) return
       let avgChange = Infinity
       let change: number[] = []
       if (oldColorDomain.length) {
@@ -505,7 +506,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       aggregationOperation,
       availableIntervals,
       tilesUrl,
-      comparisonMode,
       extentStart,
     } = this.props
     const { colorDomain, colorRanges } = this.state
@@ -526,7 +526,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         tilesUrl,
         extentStart,
       }) as string
-      const response = await GFWAPI.fetch<Response>(url!, {
+      const response = await GFWAPI.fetch<Response>(url, {
         signal: tile.signal,
         responseType: 'default',
       })
@@ -554,7 +554,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (
         !colorDomain?.length &&
         !this.initialBinsLoad &&
-        comparisonMode === FourwingsComparisonMode.Compare &&
+        this.props.comparisonMode === FourwingsComparisonMode.Compare &&
         bins?.length === COLOR_RAMP_DEFAULT_NUM_STEPS
       ) {
         const scales = this._getColorScales(bins, colorRanges)
@@ -662,6 +662,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
     const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
     if (needsColorUpdate) {
+      // Cancel any pending debounced updateColorDomain queued under the previous mode/colors —
+      // it would fire later and overwrite state with values computed against stale props.
+      this.updateColorDomain.cancel()
       // Set rampDirty immediately to prevent rendering with stale colors
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
       const newColorDomain =

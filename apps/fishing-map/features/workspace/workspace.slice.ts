@@ -477,6 +477,7 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
 export function cleanReportQuery(query: QueryParams) {
   return {
     ...query,
+    bivariateDataviews: undefined,
     ...Object.keys(DEFAULT_REPORT_STATE).reduce(
       (acc, key) => {
         acc[key] = undefined
