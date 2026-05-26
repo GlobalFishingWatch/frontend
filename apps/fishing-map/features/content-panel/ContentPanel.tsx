@@ -7,6 +7,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { fetchSidePanelContent } from 'features/cms/content.queries'
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import InfoContainer from 'features/content-panel/InfoContainer'
+import UserDatasetContent from 'features/content-panel/UserDatasetContent'
 import { UserGuideContent } from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
 
@@ -100,6 +101,7 @@ function ContentPanel() {
       />
       {sidePanelContent === 'userGuide' && <UserGuideContent data={data as TUserGuideSection[]} />}
       {sidePanelContent === 'datasets' && <InfoContainer />}
+      {sidePanelContent === 'userDataset' && <UserDatasetContent />}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 type SidePanelTarget =
   | { type: 'userGuide'; id?: string; subcontentId?: string }
   | { type: 'datasets'; id: string; subcontentId?: string }
+  | { type: 'userDataset'; id: string; subcontentId?: string }
 
 export function useSidePanel() {
   const { replaceQueryParams } = useReplaceQueryParams()
