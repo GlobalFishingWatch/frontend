@@ -4,61 +4,48 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { strapiApi } from 'features/cms/loaders'
+import type {
+  UserGuideSectionSlug,
+  UserGuideSlug,
+  UserGuideSubSectionSlug,
+} from 'features/cms/loaders/user-guide.types'
+import { CATEGORIES_CONFIG } from 'features/cms/loaders/user-guide.types'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './UserGuideLink.module.css'
 
-export const USER_GUIDE_SECTIONS = {
-  'uploading-data': 'uploading-data',
-  'analysis-and-dynamic-reports': 'analysis-and-dynamic-reports',
-  'activity-fishing': 'activity-fishing',
-  'activity-vessel-presence': 'activity-vessel-presence',
-} as const
-
-export const USER_GUIDE_SUB_SECTIONS = {
-  'downloading-data': 'downloading-data',
-  'vessel-search': 'vessel-search',
-  'vessel-groups': 'vessel-groups',
-  'filtering-activity-layers': 'filtering-activity-layers',
-  'detections-sar': 'radar-detections-synthetic-aperture-radar',
-  'detections-viirs': 'night-light-detections-visible-infrared-imaging-radiometer-suite',
-} as const
-
-export type UserGuideSubSection = keyof typeof USER_GUIDE_SUB_SECTIONS
-export type UserGuideSection = keyof typeof USER_GUIDE_SECTIONS | UserGuideSubSection
-
-const isSubSection = (section: UserGuideSection): section is UserGuideSubSection =>
-  section in USER_GUIDE_SUB_SECTIONS
-
 type UserGuideLinkProps = {
-  section: UserGuideSection
+  slug: UserGuideSlug
   className?: string
 }
 
-function UserGuideLink({ section, className }: UserGuideLinkProps) {
+export function findSectionForSlug(slug: UserGuideSlug): {
+  section: UserGuideSectionSlug
+  subSection?: UserGuideSubSectionSlug
+} {
+  if (slug in CATEGORIES_CONFIG) {
+    return { section: slug as UserGuideSectionSlug }
+  }
+  for (const [section, subsections] of Object.entries(CATEGORIES_CONFIG) as [
+    UserGuideSectionSlug,
+    readonly string[],
+  ][]) {
+    if (subsections.includes(slug)) {
+      return { section, subSection: slug as UserGuideSubSectionSlug }
+    }
+  }
+  return { section: 'introduction' }
+}
+
+function UserGuideLink({ slug, className }: UserGuideLinkProps) {
   const { t, i18n } = useTranslation()
   const { openSidePanel } = useSidePanel()
-
+  const { section, subSection } = findSectionForSlug(slug)
   const handleClick = async () => {
-    const subSectionSlug = isSubSection(section) ? USER_GUIDE_SUB_SECTIONS[section] : undefined
-
-    let contentId: string
-    if (subSectionSlug) {
-      contentId = await strapiApi.userGuide
-        .getContentFromSubcontentId({
-          data: { slug: subSectionSlug, locale: i18n.language },
-        })
-        .then((res) => {
-          return res.data?.[0]?.slug || ''
-        })
-    } else {
-      contentId = section
-    }
     openSidePanel({
       type: 'userGuide',
-      id: contentId,
-      subcontentId: subSectionSlug,
+      id: section,
+      subcontentId: subSection,
     })
     trackEvent({
       category: TrackCategory.HelpHints,
@@ -72,7 +59,8 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
       <IconButton size="small" icon="help" className={styles.icon} />
       <div className={styles.labelContainer}>
         <span className={styles.label}>{t((t) => t.userGuide.title)}</span>
-        <span>{t((t) => t.userGuide[section])}</span>
+        {/* // TODO: review if all of this translations exists */}
+        <span>{t((t) => t.userGuide[section as keyof typeof t.userGuide])}</span>
       </div>
     </div>
   )
