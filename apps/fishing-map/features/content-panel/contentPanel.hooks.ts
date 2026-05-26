@@ -12,6 +12,9 @@ export function useSidePanel() {
 
   const openSidePanel = useCallback(
     async (panel: SidePanelTarget) => {
+      if (!panel) {
+        return
+      }
       replaceQueryParams({
         sidePanelContent: panel.type,
         sidePanelId: panel.id,

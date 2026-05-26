@@ -1,50 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+import { useGetUserGuideQuery } from 'queries/user-guide-api'
 
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import type { Locale } from '@globalfishingwatch/api-types'
+import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
-import { fetchUserGuideContent } from 'features/cms/content.queries'
-import type { TUserGuideSection } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import TableOfContents from 'features/content-panel/TableOfContents'
 import { Route } from 'routes/_app'
-import type { Locale } from 'types'
 
 import styles from './ContentPanel.module.css'
 
-export const UserGuideContent = () => {
-  const { status: loaderStatus, data: loaderData } = Route.useLoaderData()
+export const UserGuideContentComponent = () => {
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const { i18n, t } = useTranslation()
 
-  const [langData, setLangData] = useState<{
-    status: string
-    data: TUserGuideSection[]
-  } | null>(null)
-
-  useEffect(() => {
-    const refetch = async (locale: Locale) => {
-      try {
-        const response = await fetchUserGuideContent({ locale })
-        if (!response?.data?.length) {
-          setLangData({ status: 'empty', data: [] })
-        } else {
-          setLangData({ status: 'success', data: response.data as TUserGuideSection[] })
-        }
-      } catch {
-        setLangData(null)
-      }
-    }
-    i18n.on('languageChanged', refetch)
-    return () => i18n.off('languageChanged', refetch)
-  }, [i18n])
-
-  const status = langData?.status ?? loaderStatus
-  const data = (langData?.data ?? loaderData) as TUserGuideSection[]
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useGetUserGuideQuery({
+    locale: i18n.language as Locale,
+  })
 
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -113,7 +94,12 @@ export const UserGuideContent = () => {
     }
   }, [sidePanelSubcontentId, isTableOfContentsOpen, selectedSection])
 
-  if (status === 'error' || status === 'empty' || !data?.length) return <EmptyContent />
+  if (isLoading) {
+    return <Spinner />
+  }
+  if (isError || !data.length) {
+    return <EmptyContent />
+  }
 
   return (
     <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
@@ -228,3 +214,5 @@ export const UserGuideContent = () => {
     </div>
   )
 }
+
+export default UserGuideContentComponent
