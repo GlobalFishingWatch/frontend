@@ -1,16 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import { fetchUserGuideContent } from 'features/cms/content.queries'
-import type { TUserGuideSection } from 'features/cms/strapi.types'
 import InfoContainer from 'features/content-panel/InfoContainer'
 import UserDatasetContent from 'features/content-panel/UserDatasetContent'
 import { UserGuideContent } from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
-import type { Locale } from 'types'
 
 import styles from './ContentPanel.module.css'
 
@@ -19,36 +15,8 @@ const MAX_PANEL_WIDTH = 800
 const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
 
 function ContentPanel() {
-  const { status: loaderStatus, data: loaderData } = Route.useLoaderData()
   const { sidePanelContent } = Route.useSearch()
-  const { i18n } = useTranslation()
   const isSmallScreen = useSmallScreen()
-
-  const [langData, setLangData] = useState<{
-    status: string
-    data: TUserGuideSection[]
-  } | null>(null)
-
-  useEffect(() => {
-    if (sidePanelContent !== 'userGuide') return
-    const refetch = async (locale: Locale) => {
-      try {
-        const response = await fetchUserGuideContent({ locale })
-        if (!response?.data?.length) {
-          setLangData({ status: 'empty', data: [] })
-        } else {
-          setLangData({ status: 'success', data: response.data as TUserGuideSection[] })
-        }
-      } catch {
-        setLangData(null)
-      }
-    }
-    i18n.on('languageChanged', refetch)
-    return () => i18n.off('languageChanged', refetch)
-  }, [i18n, sidePanelContent])
-
-  const status = langData?.status ?? loaderStatus
-  const data = langData?.data ?? loaderData
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(540)
@@ -90,8 +58,6 @@ function ContentPanel() {
     setIsDragging(true)
   }
 
-  if (status === 'error') return null
-
   return (
     <div className={styles.panel} style={isSmallScreen ? undefined : { width: `${panelWidth}px` }}>
       <div
@@ -100,7 +66,7 @@ function ContentPanel() {
         className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
         onMouseDown={handleMouseDown}
       />
-      {sidePanelContent === 'userGuide' && <UserGuideContent data={data as TUserGuideSection[]} />}
+      {sidePanelContent === 'userGuide' && <UserGuideContent />}
       {sidePanelContent === 'datasets' && <InfoContainer />}
       {sidePanelContent === 'userDataset' && <UserDatasetContent />}
     </div>

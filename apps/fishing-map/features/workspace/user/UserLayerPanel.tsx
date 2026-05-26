@@ -24,6 +24,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   useAutoRefreshImportingDataset,
   useDatasetModalConfigConnect,
@@ -41,13 +42,13 @@ import { selectUserId } from 'features/user/selectors/user.permissions.selectors
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import FitBounds from 'features/workspace/shared/FitBounds'
+import InfoError from 'features/workspace/shared/InfoError'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
-import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
 import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter'
@@ -71,6 +72,8 @@ function UserPanel({
   onToggle,
 }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
+  const { openSidePanel } = useSidePanel()
+
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
@@ -180,6 +183,8 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
+  const datasetError = dataset.status === DatasetStatus.Error
+  const datasetDescription = dataset.description !== dataset.name
 
   const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
@@ -296,7 +301,21 @@ function UserPanel({
                 )}
             </>
           )}
-          <InfoButton dataview={dataview} />
+          {(datasetError || datasetDescription) && (
+            <InfoError
+              error={datasetError}
+              loading={dataset.status === DatasetStatus.Importing}
+              tooltip={error || t((t) => t.layer.seeDescription)}
+              size="small"
+              onClick={() =>
+                !datasetError &&
+                openSidePanel({
+                  type: 'userDataset',
+                  id: dataset.id,
+                })
+              }
+            />
+          )}
           <Remove
             testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}
