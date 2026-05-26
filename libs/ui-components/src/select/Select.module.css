@@ -89,7 +89,6 @@
   background: var(--color-off-white-0);
   box-shadow: var(--box-shadow-1);
   max-height: 24rem;
-  overflow: auto;
   z-index: 10;
   border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
 }

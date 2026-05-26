@@ -87,7 +87,7 @@ function UserDatasets() {
   const onInfoClick = useCallback(
     (dataset: Dataset) => {
       openSidePanel({
-        type: 'datasets',
+        type: 'userDataset',
         id: dataset.id,
       })
     },
