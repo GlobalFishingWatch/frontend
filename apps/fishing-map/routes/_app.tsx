@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
@@ -12,8 +12,8 @@ import { makeStore } from 'store'
 
 import 'utils/polyfills'
 
-import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
+import '@globalfishingwatch/ui-components/base.css'
 
 function AppLayout() {
   const router = useRouter()
@@ -40,4 +40,6 @@ function AppLayout() {
 export const Route = createFileRoute('/_app')({
   component: AppLayout,
   validateSearch: validateRootSearchParams,
+  // loaderDeps: ({ search }) => ({}),
+  // loader: async ({ deps }) => { },
 })

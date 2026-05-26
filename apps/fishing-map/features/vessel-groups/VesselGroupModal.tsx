@@ -26,6 +26,7 @@ import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.s
 import UserGuideLink from 'features/help/UserGuideLink'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { getModalParent } from 'features/modals/Modals'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,
@@ -527,6 +528,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       contentClassName={styles.modalContainer}
       onClose={() => onBackClick('close')}
       size="fullscreen"
+      parentSelector={getModalParent}
     >
       <div className={styles.modalContent}>
         <div className={styles.parameters}>
@@ -609,7 +611,9 @@ function VesselGroupModal(): React.ReactElement<any> {
                     vessels: vesselGroupVessels,
                   } as VesselGroup)}`
                 : t((t) => t.vesselGroup.searchResultsTable, {
-                    field: selectedCsvColumns ? (listAsSentence(selectedCsvColumns) ?? '') : searchIdField,
+                    field: selectedCsvColumns
+                      ? (listAsSentence(selectedCsvColumns) ?? '')
+                      : searchIdField,
                     timeRange:
                       transmissionDateFrom && transmissionDateTo
                         ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
@@ -621,9 +625,11 @@ function VesselGroupModal(): React.ReactElement<any> {
                           : transmissionDateTo
                             ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
                             : '',
-                    number: String(getVesselGroupVesselsCount({
-                      vessels: vesselGroupVessels,
-                    } as VesselGroup)),
+                    number: String(
+                      getVesselGroupVesselsCount({
+                        vessels: vesselGroupVessels,
+                      } as VesselGroup)
+                    ),
                   })}
             </label>
             {unmatchedIDs && unmatchedIDs.length > 0 && (
@@ -662,7 +668,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         )}
       </div>
       <div className={styles.modalFooter}>
-        <UserGuideLink section="vesselGroups" />
+        <UserGuideLink slug="vessel-groups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {datasetsWithoutRelatedEvents.length >= 1 && (

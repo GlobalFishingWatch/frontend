@@ -6,7 +6,7 @@ import {
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 
-import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.selectors'
+import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.utils'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,

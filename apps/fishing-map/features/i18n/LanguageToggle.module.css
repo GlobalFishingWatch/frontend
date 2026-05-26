@@ -24,7 +24,6 @@
   align-items: center;
   justify-content: center;
   line-height: 0;
-  opacity: var(--opacity-secondary);
 }
 
 .languages {

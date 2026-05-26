@@ -15,7 +15,7 @@ import type {
   DatasetsMigration,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   ALL_LEGACY_V2_VESSELS_DATASETS_DICT,
   getDatasetConfiguration,
@@ -23,6 +23,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
+import i18n from 'features/i18n/i18n'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
@@ -33,7 +34,11 @@ export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
 export const getDatasetByIdsThunk = createAsyncThunk(
   'datasets/getByIds',
   async (
-    { ids, includeRelated = true }: { ids: string[]; includeRelated?: boolean },
+    {
+      ids,
+      includeRelated = true,
+      locale = i18n.language as Locale,
+    }: { ids: string[]; includeRelated?: boolean; locale?: Locale },
     { rejectWithValue, getState, dispatch }
   ) => {
     try {
@@ -49,7 +54,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
       if (datasetsToRequest.length) {
         const action = await dispatch(
-          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated })
+          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated, locale })
         )
         if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
           datasets = datasets.concat(
@@ -70,13 +75,18 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
-  string,
+  { id: string; locale?: Locale },
   {
     rejectValue: AsyncError
   }
->('datasets/fetchById', async (id: string, { rejectWithValue }) => {
+>('datasets/fetchById', async ({ id, locale = i18n.language as Locale }, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?cache=false`)
+    const includesParam = stringify({
+      includes: ['DESCRIPTION'],
+    })
+    const dataset = await GFWAPI.fetch<Dataset>(
+      `/datasets/${id}?cache=false&locale=${locale.toUpperCase()}&${includesParam}`
+    )
     return dataset
   } catch (e: any) {
     console.warn(e)
@@ -88,12 +98,14 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
 })
 
 type FetchDatasetsFromApiParams = {
-  ids: string[]
   existingIds: string[]
-  signal: AbortSignal
-  maxDepth?: number
-  includeRelated?: boolean
   fetchUserDatasetsMode?: FetchUserDatasetsMode
+  forceRefresh?: boolean
+  ids: string[]
+  includeRelated?: boolean
+  locale: Locale | 'source'
+  maxDepth?: number
+  signal: AbortSignal
 }
 const fetchDatasetsFromApi = async (
   {
@@ -102,7 +114,9 @@ const fetchDatasetsFromApi = async (
     signal,
     maxDepth = 5,
     includeRelated = true,
+    locale = i18n.language as Locale,
     fetchUserDatasetsMode,
+    forceRefresh = false,
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length
@@ -112,7 +126,7 @@ const fetchDatasetsFromApi = async (
           console.warn(`Skipping request for deprecated V2 dataset: ${id}`)
           return false
         }
-        return !existingIds.includes(id)
+        return forceRefresh || !existingIds.includes(id)
       })
     : []
   if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
@@ -123,10 +137,17 @@ const fetchDatasetsFromApi = async (
       ? { ids: uniqIds }
       : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
     cache: false,
+    locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
     ...DEFAULT_PAGINATION_PARAMS,
   }
+  const includesParam = stringify(
+    {
+      includes: ['I18N', 'DESCRIPTION'],
+    },
+    { arrayFormat: 'indices' }
+  )
   const initialDatasetsResponse = await GFWAPI.fetch<Response>(
-    `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}`,
+    `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}&${includesParam}`,
     { signal, responseType: 'default' }
   )
 
@@ -160,6 +181,7 @@ const fetchDatasetsFromApi = async (
       existingIds: currentIds,
       signal,
       maxDepth: maxDepth - 1,
+      locale,
     })
     datasets = uniqBy([...datasets, ...relatedDatasets], (d) => d.id)
     datasetsDeprecatedDict = { ...datasetsDeprecatedDict, ...datasetsDeprecated }
@@ -171,14 +193,26 @@ const fetchDatasetsFromApi = async (
 type FetchUserDatasetsMode = 'all' | 'user-only'
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
   Dataset[],
-  { ids: string[]; fetchUserDatasetsMode?: FetchUserDatasetsMode; includeRelated?: boolean },
+  {
+    ids: string[]
+    fetchUserDatasetsMode?: FetchUserDatasetsMode
+    forceRefresh?: boolean
+    includeRelated?: boolean
+    locale?: Locale
+  },
   {
     rejectValue: AsyncError
   }
 >(
   'datasets/fetch',
   async (
-    { ids, fetchUserDatasetsMode = 'user-only', includeRelated = true },
+    {
+      ids,
+      fetchUserDatasetsMode = 'user-only',
+      forceRefresh = false,
+      includeRelated = true,
+      locale = i18n.language as Locale,
+    },
     { signal, rejectWithValue, getState, dispatch }
   ) => {
     const state = getState() as DatasetsSliceState
@@ -188,6 +222,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       return dataset ? [dataset] : []
     })
     if (
+      !forceRefresh &&
       ids.length > 0 &&
       ids.length === existingRequestedDatasets.length &&
       fetchUserDatasetsMode === 'user-only'
@@ -200,12 +235,14 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         existingIds,
         signal,
         fetchUserDatasetsMode,
+        forceRefresh,
         includeRelated,
+        locale,
       })
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return uniqBy([...existingRequestedDatasets, ...datasets], (dataset) => dataset.id)
+      return uniqBy([...datasets, ...existingRequestedDatasets], (dataset) => dataset.id)
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -215,13 +252,16 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
 
 export const fetchAllDatasetsThunk = createAsyncThunk<
   any,
-  { fetchUserDatasetsMode?: FetchUserDatasetsMode } | undefined,
+  { fetchUserDatasetsMode?: FetchUserDatasetsMode; locale?: Locale } | undefined,
   {
     rejectValue: AsyncError
   }
->('datasets/all', ({ fetchUserDatasetsMode } = {}, { dispatch }) => {
-  return dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode }))
-})
+>(
+  'datasets/all',
+  ({ fetchUserDatasetsMode, locale = i18n.language as Locale } = {}, { dispatch }) => {
+    return dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode, locale }))
+  }
+)
 
 export type UpsertDataset = {
   dataset: Partial<Dataset>
@@ -350,6 +390,21 @@ export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration
 }
 
+export type DatasetsSliceState = { datasets: DatasetsState }
+
+export const refreshDatasetsLocaleThunk = createAsyncThunk<
+  void,
+  Locale,
+  { rejectValue: AsyncError }
+>('datasets/refreshLocale', async (locale, { getState, dispatch }) => {
+  const state = getState() as DatasetsSliceState
+  const ids = (state.datasets.ids as string[]) || []
+  if (!ids.length) {
+    return
+  }
+  await dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
+})
+
 const initialState: DatasetsState = {
   ...asyncInitialState,
   deprecatedDatasets: {},
@@ -378,7 +433,6 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
 
 export const { setDeprecatedDatasets } = datasetSlice.actions
 
-export type DatasetsSliceState = { datasets: DatasetsState }
 export const {
   selectAll: selectAllDatasets,
   selectById,

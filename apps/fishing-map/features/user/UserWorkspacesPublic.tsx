@@ -9,6 +9,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { getModalParent } from 'features/modals/Modals'
 import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -77,6 +78,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
           shouldCloseOnEsc
           contentClassName={styles.modal}
           onClose={onClose}
+          parentSelector={getModalParent}
         >
           <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
         </Modal>

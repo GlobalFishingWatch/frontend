@@ -250,8 +250,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={styles.tab}>
           <LanguageToggle />
         </li>
-        <li className={cx(styles.tab, { [styles.current]: isUserLocation })}>
-          <UserButton className={styles.userButton} testId="sidebar-login-icon" />
+        <li className={cx(styles.tab, styles.user, { [styles.current]: isUserLocation })}>
+          <UserButton className={styles.tabContent} testId="sidebar-login-icon" />
         </li>
       </ul>
       {modalFeedbackOpen && (

@@ -39,10 +39,9 @@ import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
+import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
-
-import { getRouterRef } from '../../router'
 
 import styles from './Modals.module.css'
 
@@ -86,9 +85,11 @@ const TurningTidesMenuConfig = {
 const ResetWorkspaceConfig = {
   key: 'w',
   dispatchToggle: () => {
-    getRouterRef().navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
+    getRouterRef()?.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
   },
 }
+
+export const getModalParent = () => document.getElementById('app-layout-content') as HTMLElement
 
 const AppModals = () => {
   const { t } = useTranslation()
@@ -146,6 +147,7 @@ const AppModals = () => {
         onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
         contentClassName={styles.layerLibraryModal}
         size="fullscreen"
+        parentSelector={getModalParent}
       >
         <Suspense fallback={null}>
           <LayerLibrary />
@@ -163,6 +165,7 @@ const AppModals = () => {
         shouldCloseOnEsc
         onClose={dispatchToggleDebugMenu}
         contentClassName={styles.debugMenuModal}
+        parentSelector={getModalParent}
       >
         <Suspense fallback={null}>
           <DebugMenu />
@@ -180,6 +183,7 @@ const AppModals = () => {
           isOpen={editorActive && !anyAppModalOpen}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
+          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <EditorMenu />
@@ -199,6 +203,7 @@ const AppModals = () => {
             isOpen={bigqueryActive}
             onClose={dispatchBigQueryMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <BigQueryModal />
@@ -215,6 +220,7 @@ const AppModals = () => {
             isOpen={turningTidesActive}
             onClose={dispatchTurningTidesMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <TurningTidesModal />
@@ -230,6 +236,7 @@ const AppModals = () => {
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
           contentClassName={styles.workspaceGeneratorModal}
           header={false}
+          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <WorkspaceGenerator />

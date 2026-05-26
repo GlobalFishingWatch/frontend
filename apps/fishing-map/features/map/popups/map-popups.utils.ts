@@ -41,7 +41,7 @@ export const getContextValue = (
 ): string => {
   const valueProperties = feature?.valueProperties || ([] as string[])
   if (!valueProperties || !valueProperties.length) {
-    return feature.properties.value
+    return feature.properties?.value
   }
   if (valueProperties.length === 1) {
     return feature.properties?.[valueProperties[0]]

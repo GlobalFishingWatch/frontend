@@ -13,6 +13,15 @@
   justify-content: center;
   border-radius: calc(var(--sidebar-tabs-width) / 2);
   transition: var(--transition-spring);
+  color: var(--color-secondary-blue);
+}
+
+.user {
+  width: var(--sidebar-tabs-width);
+  height: var(--sidebar-tabs-width);
+  margin: 0;
+  border-radius: 0;
+  border-top: var(--border);
 }
 
 .tab:active:not(:has(:active)) {
@@ -37,13 +46,12 @@
   align-items: center;
   justify-content: center;
   line-height: 0;
-  opacity: var(--opacity-secondary);
   transition: var(--transition-spring);
 }
 
 .tab.current .tabContent,
 .tab:hover > .tabContent {
-  opacity: 1;
+  color: var(--color-primary-blue);
 }
 
 .separator {
@@ -72,7 +80,7 @@
   z-index: 2;
 }
 
-.linksToggle:hover:before {
+.linksToggle:hover::before {
   content: '';
   position: absolute;
   width: 6rem;

@@ -1,4 +1,4 @@
-// import type { datasets, flags, timebar } from '@globalfishingwatch/i18n-labels/types'
+// import type { flags, timebar } from '@globalfishingwatch/i18n-labels/types'
 
 import 'i18next'
 
@@ -6,7 +6,6 @@ import type { DEFAULT_NAMESPACE, FALLBACK_LNG } from './i18n'
 import type AppResources from './i18n.types'
 
 type LibraryResources = {
-  datasets: any // datasets
   flags: any // flags
   timebar: any // timebar
 }

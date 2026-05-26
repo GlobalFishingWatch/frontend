@@ -4,8 +4,7 @@ import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
 import { PATH_BASENAME } from 'data/config'
 import type { QueryParams } from 'types'
 
-import { getRouterRef } from '../router'
-
+import { getRouterRef } from './router-ref'
 import type { ROUTE_TYPES } from './routes'
 import {
   HOME,

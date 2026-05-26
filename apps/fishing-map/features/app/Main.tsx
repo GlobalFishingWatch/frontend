@@ -61,7 +61,7 @@ const Main = () => {
           })}
         >
           {isWorkspaceReady && (
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={null}>
               <Map />
             </Suspense>
           )}

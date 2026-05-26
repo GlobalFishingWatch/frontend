@@ -96,7 +96,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
           } as any,
         }
       )
-      const dataset = await dispatch(fetchDatasetByIdThunk(id))
+      const dataset = await dispatch(fetchDatasetByIdThunk({ id }))
       return dataset
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))

@@ -25,7 +25,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
 import LayerProperties from '../shared/LayerProperties'
 import LayerSwitch from '../shared/LayerSwitch'
@@ -167,7 +167,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
               </div>
             </ExpandedContainer>
           )}
-          <InfoModal dataview={dataview} />
+          <InfoButton dataview={dataview} />
           <Remove
             dataview={dataview}
             loading={layerActive && !layerLoaded}

@@ -12,6 +12,7 @@
 .spinner {
   flex: 1;
 }
+
 .secondary {
   opacity: var(--opacity-secondary);
 }
@@ -103,6 +104,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.dataset > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dataset > div {
+  flex-shrink: 0;
 }
 
 .placeholder {

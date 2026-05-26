@@ -12,7 +12,7 @@ import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/cont
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectReportAreaDataviews } from 'features/reports/report-area/area-reports.selectors'
-import InfoModal from 'features/workspace/shared/InfoModal'
+import InfoButton from 'features/workspace/shared/InfoButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ReferenceLayersControl.module.css'
@@ -107,7 +107,7 @@ const ReferenceLayersControl = () => {
                 >
                   {layer.label}
                 </p>
-                <InfoModal dataview={layer.dataview} />
+                <InfoButton dataview={layer.dataview} />
               </div>
             )
           })}

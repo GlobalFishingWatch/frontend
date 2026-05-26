@@ -23,6 +23,7 @@ import {
   selectDownloadTrackStatus,
 } from 'features/download/downloadTrack.slice'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
+import { getModalParent } from 'features/modals/Modals'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -94,6 +95,7 @@ function DownloadTrackModal() {
       isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.info}>

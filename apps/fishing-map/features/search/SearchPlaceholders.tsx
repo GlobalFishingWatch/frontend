@@ -89,7 +89,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
             </p>
           )}
           <p className={styles.highlighted}>{htmlSafeParse(t((t) => t.search.learnMore))}</p>
-          <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
+          <UserGuideLink slug="vessel-search" className={cx(styles.userGuide, styles.center)} />
         </div>
       </div>
     </SearchPlaceholder>

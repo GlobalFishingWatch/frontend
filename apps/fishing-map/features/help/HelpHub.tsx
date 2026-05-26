@@ -7,6 +7,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import hintsConfig from './hints.content'
@@ -23,6 +24,7 @@ function HelpHub() {
   const hintsDismissedArray = isClientHydrated ? Object.keys(hintsDismissed || {}) : []
   const percentageOfHintsSeen = (hintsDismissedArray.length / hintsConfigArray.length) * 100
   const noHelpHintsSeen = percentageOfHintsSeen === 0
+  const { openSidePanel } = useSidePanel()
 
   const onHelpClick = () => {
     trackEvent({
@@ -31,13 +33,6 @@ function HelpHub() {
       label: `percentage of hints seen: ${percentageOfHintsSeen.toString()}%`,
     })
     dispatch(resetHints())
-  }
-
-  const getUserGuideLink = () => {
-    if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
-    if (i18n.language === 'fr') return 'https://globalfishingwatch.org/user-guide-french/'
-    if (i18n.language === 'pt') return 'https://globalfishingwatch.org/user-guide-portuguese/'
-    return 'https://globalfishingwatch.org/user-guide/'
   }
 
   const getFAQsLink = () => {
@@ -93,15 +88,19 @@ function HelpHub() {
           )}
         </li>
         <li>
-          <a
-            href={getUserGuideLink()}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
             className={cx(styles.link)}
-            onClick={() => redirectEvent('user guide')}
+            onClick={() => {
+              trackEvent({
+                category: TrackCategory.HelpHints,
+                action: 'Open user guide modal',
+              })
+              openSidePanel({ type: 'userGuide' })
+            }}
           >
             {t((t) => t.common.userGuide)}
-          </a>
+          </button>
         </li>
         <li>
           <a

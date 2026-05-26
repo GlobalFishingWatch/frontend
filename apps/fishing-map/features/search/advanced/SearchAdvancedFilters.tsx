@@ -2,14 +2,16 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputDate, MultiSelect, Select } from '@globalfishingwatch/ui-components'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview, getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { getDataviewFilterConfig, getFilterLabel } from 'features/dataviews/dataviews.filters'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -115,6 +117,8 @@ function SearchAdvancedFilters() {
     return getSearchDataview(datasets, searchFilters, sources)
   }, [datasets, searchFilters, sources])
 
+  const activeDataset = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)?.[0] as Dataset
+
   const schemaFilters = useMemo(
     () =>
       schemaFilterIds.map((id) => {
@@ -169,7 +173,7 @@ function SearchAdvancedFilters() {
           key={field}
           field={field}
           onChange={onInputChange}
-          label={getFilterLabel(field)}
+          label={getFilterLabel(activeDataset, field)}
         />
       ))}
       <Select
@@ -258,7 +262,10 @@ function SearchAdvancedFilters() {
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={schemaFilter.label || getFilterLabel(translationKey as SupportedDatasetFilter)}
+            label={
+              schemaFilter.label ||
+              getFilterLabel(activeDataset, translationKey as SupportedDatasetFilter)
+            }
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,

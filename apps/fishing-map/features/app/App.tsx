@@ -10,6 +10,7 @@ import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import ContentPanel from 'features/content-panel/ContentPanel'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
 import { t } from 'features/i18n/i18n'
@@ -50,6 +51,7 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
@@ -85,6 +87,8 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+
+  const { sidePanelContent } = Route.useSearch()
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -189,42 +193,54 @@ function App() {
       >
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
-      <ErrorBoundary>
-        <SplitView
-          isOpen={sidebarOpen && !isMapDrawing}
-          showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
-          onToggle={onToggle}
-          aside={
-            <Sidebar onMenuClick={onMenuClick}>
-              <Suspense fallback={null}>
-                <Outlet />
-              </Suspense>
-            </Sidebar>
-          }
-          main={<Main />}
-          asideWidth={asideWidth}
-          showAsideLabel={getSidebarName()}
-          showMainLabel={t((t) => t.common.map)}
-          className={styles.splitContainer}
-          asideClassName={styles.aside}
-          mainClassName={styles.main}
-        />
-        {!readOnly && (
-          <Menu
-            appSelector={ROOT_DOM_ELEMENT}
-            bgImage={menuBgImage}
-            isOpen={menuOpen}
-            onClose={() => setMenuOpen(false)}
-            activeLinkId="map-data"
-          />
+      <div className={styles.appLayout}>
+        <div id="app-layout-content" className={styles.appLayoutContent}>
+          <ErrorBoundary>
+            <SplitView
+              isOpen={sidebarOpen && !isMapDrawing}
+              showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
+              onToggle={onToggle}
+              aside={
+                <Sidebar onMenuClick={onMenuClick}>
+                  <Suspense fallback={null}>
+                    <Outlet />
+                  </Suspense>
+                </Sidebar>
+              }
+              main={<Main />}
+              asideWidth={asideWidth}
+              showAsideLabel={getSidebarName()}
+              showMainLabel={t((t) => t.common.map)}
+              className={styles.splitContainer}
+              asideClassName={styles.aside}
+              mainClassName={styles.main}
+            />
+
+            {!readOnly && (
+              <Menu
+                appSelector={ROOT_DOM_ELEMENT}
+                bgImage={menuBgImage.src}
+                isOpen={menuOpen}
+                onClose={() => setMenuOpen(false)}
+                activeLinkId="map-data"
+              />
+            )}
+            <AppModals />
+            <ToastContainer
+              position="top-center"
+              className={styles.toastContainer}
+              closeButton={false}
+            />
+          </ErrorBoundary>
+        </div>
+        {sidePanelContent && (
+          <ErrorBoundary>
+            <Suspense fallback={null}>
+              <ContentPanel />
+            </Suspense>
+          </ErrorBoundary>
         )}
-        <AppModals />
-        <ToastContainer
-          position="top-center"
-          className={styles.toastContainer}
-          closeButton={false}
-        />
-      </ErrorBoundary>
+      </div>
     </Fragment>
   )
 }

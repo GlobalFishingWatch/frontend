@@ -92,7 +92,7 @@ export const Route = createFileRoute('/api/corrections')({
           }
 
           try {
-            await sheet.loadHeaderRow(3)
+            await sheet.loadHeaderRow(4)
             const headers = sheet.headerValues
 
             const rowToAdd: Record<string, any> = {}

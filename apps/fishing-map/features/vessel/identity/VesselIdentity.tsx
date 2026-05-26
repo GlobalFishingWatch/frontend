@@ -1,8 +1,10 @@
-import { Fragment, ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import filesaver from 'file-saver'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 
 import type { RegistryExtraFieldValue, VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
@@ -46,8 +48,6 @@ import {
   getSkylightLink,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,

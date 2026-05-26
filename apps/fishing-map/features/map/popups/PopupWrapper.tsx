@@ -1,5 +1,13 @@
 import { useRef } from 'react'
-import { arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating } from '@floating-ui/react'
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  FloatingArrow,
+  offset,
+  shift,
+  useFloating,
+} from '@floating-ui/react'
 import cx from 'classnames'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -12,7 +20,10 @@ import { MAP_WRAPPER_ID } from '../map.config'
 
 import styles from './Popup.module.css'
 
-const getBoundary = () => document.getElementById(MAP_WRAPPER_ID) ?? undefined
+const getBoundary = () =>
+  typeof document !== 'undefined'
+    ? (document.getElementById(MAP_WRAPPER_ID) ?? undefined)
+    : undefined
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null

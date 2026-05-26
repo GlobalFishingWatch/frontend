@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'

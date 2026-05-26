@@ -129,7 +129,7 @@ export const useDatasetsAPI = () => {
 
   const dispatchFetchDataset = useCallback(
     async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const action = await dispatch(fetchDatasetByIdThunk(id))
+      const action = await dispatch(fetchDatasetByIdThunk({ id }))
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {

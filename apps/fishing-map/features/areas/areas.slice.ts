@@ -163,7 +163,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
             let dataset = selectDatasetById(datasetId)(getState() as RootState)
             if (!dataset) {
               // It needs to be request when it hasn't been loaded yet
-              const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+              const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
               if (fetchDatasetByIdThunk.fulfilled.match(action)) {
                 dataset = action.payload
               }
@@ -215,7 +215,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       }
       let dataset = selectDatasetById(datasetId)(getState() as RootState)
       if (!dataset) {
-        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+        const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
         if (fetchDatasetByIdThunk.fulfilled.match(action)) {
           dataset = action.payload
         }
