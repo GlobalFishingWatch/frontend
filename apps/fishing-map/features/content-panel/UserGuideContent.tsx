@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
+import { Button, Icon } from '@globalfishingwatch/ui-components'
+
 import type { TUserGuideSection } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
@@ -29,16 +31,20 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
-  const selectedSection = useMemo(() => {
-    return sidePanelId
-      ? (data.find(
-          (s) =>
-            s.slug === sidePanelId ||
-            s.id.toString() === sidePanelId.toString() ||
-            s.title.includes(sidePanelId.toString())
-        ) ?? data[0])
-      : data[0]
+  const selectedSectionIndex = useMemo(() => {
+    if (!sidePanelId) return 0
+    const idx = data.findIndex(
+      (s) =>
+        s.slug === sidePanelId ||
+        s.id.toString() === sidePanelId.toString() ||
+        s.title.includes(sidePanelId.toString())
+    )
+    return idx >= 0 ? idx : 0
   }, [data, sidePanelId])
+
+  const selectedSection = data[selectedSectionIndex]
+  const prevSection = data[selectedSectionIndex - 1] ?? null
+  const nextSection = data[selectedSectionIndex + 1] ?? null
 
   useEffect(() => {
     if (!sidePanelSubcontentId || isTableOfContentsOpen) return
@@ -89,7 +95,10 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
                 className={cx({ [styles.pointer]: !isTableOfContentsOpen })}
                 role="button"
                 tabIndex={0}
-                onClick={() => setIsTableOfContentsOpen(true)}
+                onClick={() => {
+                  setIsTableOfContentsOpen(true)
+                  openSidePanel({ type: 'userGuide', id: undefined, subcontentId: undefined })
+                }}
               >
                 {t((t) => t.common.userGuide)}
               </span>
@@ -143,6 +152,46 @@ export const UserGuideContent = ({ data }: UserGuideContentProps) => {
                 <ContentMarkdown>{subsection.body}</ContentMarkdown>
               </div>
             ))}
+            {(prevSection || nextSection) && (
+              <div className={styles.sectionsNav}>
+                {prevSection && (
+                  <Button
+                    type="border-secondary"
+                    size="medium"
+                    className={styles.nextSectionLink}
+                    onClick={() => {
+                      openSidePanel({
+                        type: 'userGuide',
+                        id: prevSection.slug || prevSection.id.toString(),
+                      })
+                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                    }}
+                  >
+                    <Icon icon="arrow-left" type="default" />
+                    <span className={styles.sectionLinkLabel}>{prevSection.title}</span>
+                  </Button>
+                )}
+                {nextSection && (
+                  <Button
+                    type="border-secondary"
+                    size="medium"
+                    className={cx(styles.nextSectionLink, {
+                      [styles.nextSectionLinkAlignRight]: !prevSection,
+                    })}
+                    onClick={() => {
+                      openSidePanel({
+                        type: 'userGuide',
+                        id: nextSection.slug || nextSection.id.toString(),
+                      })
+                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                    }}
+                  >
+                    <span className={styles.sectionLinkLabel}>{nextSection.title}</span>
+                    <Icon icon="arrow-right" type="default" />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

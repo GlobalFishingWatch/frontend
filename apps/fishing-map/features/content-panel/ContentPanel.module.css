@@ -26,21 +26,18 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, rgba(229, 240, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);
-  background-size: 100% 518px;
-  background-repeat: no-repeat;
 }
 
 .userGuideBackground {
-  background-color: var(--color-white);
-  background-image: linear-gradient(180deg, rgba(249, 245, 214, 1) 0%, rgba(255, 255, 255, 1) 100%);
-  background-size: 100% 518px;
+  background-image: linear-gradient(180deg, var(--color-help-yellow) 0%, var(--color-white) 100%);
+  background-size: 100% 70rem;
   background-repeat: no-repeat;
 }
 
 .tableOfContentsOpen {
-  background: rgba(255, 255, 255);
-  border-top: 1px solid var(--color-border-thick);
+  background-image: linear-gradient(180deg, var(--color-help-yellow) 0%, var(--color-white) 100%);
+  background-size: 100% 70rem;
+  background-repeat: no-repeat;
 }
 
 .scrollContainer {
@@ -237,6 +234,30 @@
 .highlighted {
   display: inline-block;
   background: var(--color-highlight-blue);
+}
+
+.sectionsNav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-S);
+}
+
+.nextSectionLink {
+  margin-top: var(--space-L);
+  margin-bottom: var(--space-M);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.sectionLinkLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nextSectionLinkAlignRight {
+  margin-left: auto;
 }
 
 @media only screen and (width <= 720px) {
