@@ -173,7 +173,6 @@ function SearchAdvancedFilters() {
           key={field}
           field={field}
           onChange={onInputChange}
-          // TODO:DatasetsRefactor to review if this works
           label={getFilterLabel(activeDataset, field)}
         />
       ))}
@@ -265,7 +264,6 @@ function SearchAdvancedFilters() {
             disabled={disabled}
             label={
               schemaFilter.label ||
-              // TODO:DatasetsRefactor to review if this works
               getFilterLabel(activeDataset, translationKey as SupportedDatasetFilter)
             }
             placeholder={getPlaceholderBySelections({

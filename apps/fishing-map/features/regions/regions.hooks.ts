@@ -17,10 +17,6 @@ export function useRegionTranslationsById() {
       if (!id) return ''
       let translation = ''
       for (const key of Object.values(regionsDatasets)) {
-        // const schemaTranslation: string = t((t) => t[key].schema.ID.enum[id as any], {
-        //   ns: 'datasets',
-        // })
-        // TODO:DatasetsRefactor check if this works
         const schemaTranslation = allDatasets.find((d) => key === d.id)?.i18n?.filters?.ID?.enum?.[
           id as any
         ]
