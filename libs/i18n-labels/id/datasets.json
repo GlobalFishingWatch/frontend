@@ -272,7 +272,7 @@
   },
   "private-indonesia-ipnlf-vessel-identity": {
     "name": "Indonesia AP2HI-IPNLF (Vessels)\n",
-    "description": "Vessels (Indonesia AP2HI-IPNLF)\n"
+    "description": "Vessels (Indonesia IPNLF)"
   },
   "private-indonesia-pelagic-fishing-effort": {
     "name": "Indonesia Pelagic (Pilot)",
@@ -288,7 +288,7 @@
   },
   "private-indonesia-presence": {
     "name": "VMS Indonesia (Presence)",
-    "description": "Kehadiran"
+    "description": "Presence"
   },
   "private-indonesia-rare-fishing-effort": {
     "name": "Rare: Indonesia Pelagic",
@@ -304,11 +304,11 @@
   },
   "private-indonesia-zebrax-presence": {
     "name": "Indonesia Zebrax (Private)",
-    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal."
+    "description": "Zebra X Presence"
   },
   "private-indonesia-zebrax-vessel-identity": {
     "name": "Kapal Perikanan Pesisir",
-    "description": "Kapal Perikanan Pesisir menggunakan perangkat ZebraX"
+    "description": "Vessels (Indonesia ZebraX)"
   },
   "private-panama-fishing-effort": {
     "name": "Apparent Fishing Effort Panama VMS",
@@ -3256,7 +3256,7 @@
   },
   "public-high-seas": {
     "name": "High seas",
-    "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki layer yang menyorotinya."
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them."
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
@@ -3284,7 +3284,7 @@
   },
   "public-indonesia-zebrax-presence": {
     "name": "Indonesia Zebrax",
-    "description": "Lapisan Global Fishing Watch ini menggunakan data yang disediakan oleh Rare, Aruna dan AP2HI. Data dikumpulkan menggunakan perangkat ZebraX yang melacak lokasi dan kecepatan. Informasi yang ditampilkan mewakili keberadaan kapal."
+    "description": "Zebra X Presence"
   },
   "public-inshore-fishing-zone-1618837176535": {
     "name": "Inshore Fishing Zone",
@@ -3453,7 +3453,7 @@
   },
   "public-mpa-no-take": {
     "name": "MPAs - No take",
-    "description": "MPA berarti sebagai kawasan perlindungan laut. Kawasan lindung laut larang tangkap adalah kawasan lautan yang dilarang mengekstraksi atau merusak secara signifikan sumber daya alam dan budaya, termasuk ikan.Sumber: World Database on Protected Areas. Terakhir diperbarui: May 2021."
+    "description": "The term Marine Protected Areas include marine reserves, fully protected marine areas, no-take zones, marine sanctuaries, ocean sanctuaries, marine parks, locally managed marine areas, to name a few. Many of these have quite different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably too. No Take layer was created using the data available from the Marine Protected Planet WDPA using the filter NO_TAKE = 'All'. Source: World Database on Protected Areas (WDPA)"
   },
   "public-mpa-no-take-partial": {
     "name": "MPAs - No take Partial",
@@ -3757,7 +3757,7 @@
   },
   "public-protectedseas": {
     "name": "KKP (ProtectedSeas)",
-    "description": "Marine Protected Areas (MPA) adalah kawasan laut yang dilindungi untuk konservasi jangka panjang. Kawasan Ini dapat memiliki tingkat perlindungan yang berbeda, dan rentang kegiatan yang diperbolehkan atau dilarang dalam batas-batasnya bervariasi. Sumber: ProtectedSeas Navigator. ProtectedSeas menetapkan skor Level of Fishing Protection (LFP) untuk setiap area berdasarkan analisis pembatasan ekstraksi biota laut. Anda dapat menggunakan ikon filter untuk menjelajahi skor LFP yang berbeda, yaitu, Tidak ada batasan: Tidak ada batasan untuk kegiatan penangkapan i; Kurang membatasi: Beberapa pembatasan khusus spesies atau alat tangkap berlaku; Cukup membatasi: Beberapa pembatasan khusus spesies atau alat tangkap berlaku; Sangat membatasi: Penangkapan ikan sebagian besar dilarang, dengan sedikit pengecualian; Paling membatasi: Pelarangan kegiatan penangkapan ikan. Lihat <a href='https://protectedseas.net/mpa-methods/' target='_blank' rel=noopener'>informasi</a> lebih rinci untuk lapisan ini.",
+    "description": "Protected seas (only category IUCN MPA)",
     "schema": {
       "removal_of": {
         "keyword": "Tingkat Perlindungan Penangkapan Ikan",
