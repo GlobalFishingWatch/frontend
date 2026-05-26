@@ -81,8 +81,11 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async ({ id, locale = i18n.language as Locale }, { rejectWithValue }) => {
   try {
+    const includesParam = stringify({
+      includes: ['DESCRIPTION'],
+    })
     const dataset = await GFWAPI.fetch<Dataset>(
-      `/datasets/${id}?cache=false&locale=${locale.toUpperCase()}`
+      `/datasets/${id}?cache=false&locale=${locale.toUpperCase()}&${includesParam}`
     )
     return dataset
   } catch (e: any) {
