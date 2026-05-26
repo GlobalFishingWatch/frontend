@@ -35,7 +35,7 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
     return [sign, diffValue].join('')
   }
   const date = dtTick.setLocale(i18n.language)
-  let formattedTick = ''
+  let formattedTick: string
   switch (timeComparison.durationType) {
     case 'months':
       formattedTick = date.toFormat('LLL y')

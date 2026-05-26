@@ -32,10 +32,11 @@ export const useHideLegacyActivityCategoryDataviews = () => {
               dataviewInstance.dataviewId === VIIRS_MATCH_DATAVIEW_SLUG
             )
           })
+        } else {
+          dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
+            return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG_ALL
+          })
         }
-        dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
-          return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG_ALL
-        })
       }
       if (dataviewInstancesToUpdate.length) {
         upsertDataviewInstance(

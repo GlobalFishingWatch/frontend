@@ -84,6 +84,7 @@ function ExpandedContainer({
       offset(5),
       ...(overflowDOMId ? [overflowMiddlware] : []),
       shift({ padding: 8 }),
+      // eslint-disable-next-line react-hooks/refs
       arrow({
         element: arrowRef,
       }),
@@ -106,6 +107,7 @@ function ExpandedContainer({
   const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
 
   return (
+    /* eslint-disable react-hooks/refs */
     <Fragment>
       <div ref={refs.setReference} {...getReferenceProps()} className={referenceClassName}>
         {children}

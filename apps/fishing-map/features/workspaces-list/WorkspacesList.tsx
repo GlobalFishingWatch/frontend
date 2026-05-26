@@ -89,7 +89,7 @@ function WorkspacesList() {
           // Compute link props based on workspace type
           let linkPath: string
           let linkParams: Record<string, string> = {}
-          let linkSearch: Record<string, any> = {}
+          let linkSearch: Record<string, any>
           let linkReplace = false
 
           if (id === DEFAULT_WORKSPACE_ID) {

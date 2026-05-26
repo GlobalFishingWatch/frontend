@@ -152,9 +152,9 @@ export async function getDatasetParsed(
   } catch (e: any) {
     console.error(e)
     if (e.message === NOT_VALID_GEOJSON_FEATURES_ERROR) {
-      throw new Error('datasetUpload.errors.geoJSON.noValidFeatures')
+      throw new Error('datasetUpload.errors.geoJSON.noValidFeatures', { cause: e })
     }
-    throw new Error('datasetUpload.errors.default')
+    throw new Error('datasetUpload.errors.default', { cause: e })
   }
 }
 

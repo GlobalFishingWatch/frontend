@@ -1,13 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 
 export const useDOMElement = (id = ROOT_DOM_ELEMENT) => {
-  const domElement = useRef<HTMLElement>(undefined)
+  const [element, setElement] = useState<HTMLElement | undefined>(undefined)
 
   useEffect(() => {
-    domElement.current = document.getElementById(id) as HTMLElement
+    setElement(document.getElementById(id) as HTMLElement)
   }, [id])
 
-  return domElement.current
+  return element
 }

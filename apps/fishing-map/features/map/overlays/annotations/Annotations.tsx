@@ -85,6 +85,7 @@ const MapAnnotations = (): React.ReactNode | null => {
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
       <HtmlOverlay viewport={viewport} key="1">
+        {/* eslint-disable-next-line react-hooks/refs */}
         {mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}

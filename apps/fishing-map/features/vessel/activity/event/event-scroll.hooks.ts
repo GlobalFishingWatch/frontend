@@ -36,6 +36,7 @@ export function useVirtuosoScroll(debouncedTime = 150) {
   const scrollToIndex = useMemo(
     () =>
       debounce(
+        // eslint-disable-next-line react-hooks/refs
         ({ index, behavior = 'smooth' }: { index: number; behavior?: 'auto' | 'smooth' }) => {
           if (!virtuosoRef?.current) {
             return

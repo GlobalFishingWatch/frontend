@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 
 import styles from './placeholders.module.css'
@@ -23,7 +23,7 @@ export default function ReportActivityPlaceholder({
   children?: React.ReactNode
 }) {
   // Randomize the delay indices for each path
-  const delayIndices = useMemo(() => {
+  const [delayIndices] = useState(() => {
     const indices = [0, 1, 2, 3, 4]
     // Fisher-Yates shuffle
     for (let i = indices.length - 1; i > 0; i--) {
@@ -31,7 +31,7 @@ export default function ReportActivityPlaceholder({
       ;[indices[i], indices[j]] = [indices[j], indices[i]]
     }
     return indices
-  }, [])
+  })
 
   return (
     <div style={{ height: showHeader ? '34rem' : '32rem' }} className={styles.relative}>

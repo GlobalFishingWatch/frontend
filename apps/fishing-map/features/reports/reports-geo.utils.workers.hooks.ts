@@ -32,10 +32,7 @@ function getWorker() {
 }
 
 export function useFilterCellsByPolygonWorker() {
-  const workerRef = useRef<Worker>(undefined)
-  if (!workerRef.current) {
-    workerRef.current = getWorker()
-  }
+  const workerRef = useRef<Worker>(getWorker()!)
 
   useEffect(() => {
     const workerInstance = workerRef.current
