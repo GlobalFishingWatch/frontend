@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DownloadDataset } from '@globalfishingwatch/api-types'
@@ -16,6 +17,11 @@ import { Route as DatasetsDatasetIdRoute } from './../../../src/routes/datasets.
 
 import styles from './home.module.css'
 
+const includesParam = stringify({
+  //TODO: include readme into
+  includes: ['DESCRIPTION', 'README'],
+})
+
 function HomePage() {
   const [datasets, setDatasets] = useState<DownloadDataset[]>([])
   const [loading, setLoading] = useState(false)
@@ -29,9 +35,8 @@ function HomePage() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
-    GFWAPI.fetch<DownloadDataset[]>(`/download/datasets`)
+    GFWAPI.fetch<DownloadDataset[]>(`/download/datasets?locale=EN&${includesParam}`)
       .then((data) => {
         const sortedData = sortByLastUpdated(data)
         setDatasets(sortedData)
@@ -45,12 +50,11 @@ function HomePage() {
   }, [])
 
   const filteredDatasets = useMemo(() => {
+    const query = searchQuery.toLowerCase()
     const filtered = datasets.filter((dataset) => {
-      const name = dataset.name.toLowerCase()
-      const description = dataset.description.toLowerCase()
-      return (
-        name.includes(searchQuery.toLowerCase()) || description.includes(searchQuery.toLowerCase())
-      )
+      const name = dataset.name?.toLowerCase() ?? ''
+      const description = dataset.description?.toLowerCase() ?? ''
+      return name.includes(query) || description.includes(query)
     })
 
     return sortDatasets(filtered, sortBy, 'asc')
