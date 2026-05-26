@@ -279,7 +279,7 @@ const TimebarWrapper = () => {
             label: getEventLabel([e.start, e.end]),
           })
         }
-        onTimebarChange(e.start, e.end)
+        onTimebarChange(e.start, e.end, e.source)
         if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
           setMouseClicked(false)
         }

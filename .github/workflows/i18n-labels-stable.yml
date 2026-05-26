@@ -3,7 +3,7 @@ name: i18n-labels stable
 on:
   push:
     tags:
-      - '@gfw/fishing-map@*'
+      - "@gfw/fishing-map@*"
   workflow_dispatch:
 
 concurrency:
@@ -19,21 +19,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.GH_PA_TOKEN }}
 
       - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Publish stable to NPM
-        run: pnpm nx run i18n-labels:publish:stable
+      - name: Tag latest as stable
+        run: |
+          LATEST=$(npm dist-tag ls @globalfishingwatch/i18n-labels | grep -Ew 'latest: (.*)' | sed 's/latest: //')
+          npm dist-tag add @globalfishingwatch/i18n-labels@$LATEST stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Purge jsdelivr cache
         run: pnpm nx run i18n-labels:purge:stable
