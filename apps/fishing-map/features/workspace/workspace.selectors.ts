@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
@@ -18,6 +17,7 @@ import type { TurningTidesWorkspaceId } from 'features/track-correction/track-co
 import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
+import type { RootState } from 'reducers'
 import { WORKSPACE_ROUTES } from 'router/routes'
 import { selectIsRouteWithWorkspace, selectLocationQuery } from 'router/routes.selectors'
 import { mapRouteIdToType } from 'router/routes.utils'

@@ -1,11 +1,11 @@
 import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { isRejectedWithValue } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 import type { Middleware } from 'redux'
 
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { setLoginExpired } from 'features/user/user.slice'
 import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
+import type { RootState } from 'reducers'
 import type { AsyncError } from 'utils/async-slice'
 
 export const logoutUserMiddleware: Middleware =

@@ -1,8 +1,9 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import type { RulerData } from '@globalfishingwatch/deck-layers'
+
+import type { RootState } from 'reducers'
 
 import type { MapAnnotation } from '../overlays/annotations/annotations.types'
 

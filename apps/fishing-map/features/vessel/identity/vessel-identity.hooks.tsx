@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
@@ -10,6 +9,7 @@ import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './VesselIdentity.module.css'
 

@@ -1,10 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import { parseAPIError } from '@globalfishingwatch/api-client'
 
 import { PATH_BASENAME } from 'data/config'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type IssueType = 'falsePositive' | 'falseNegative' | 'other'

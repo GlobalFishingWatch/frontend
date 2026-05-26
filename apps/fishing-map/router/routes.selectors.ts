@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import { WorkspaceCategory } from 'data/workspaces'
+import type { RootState } from 'reducers'
 import type { QueryParams, WorkspaceParam } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 

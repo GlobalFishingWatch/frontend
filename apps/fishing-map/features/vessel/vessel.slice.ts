@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { castDraft } from 'immer'
-import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -44,6 +43,7 @@ import { selectResources } from 'features/resources/resources.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
