@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 
+import { useAppDispatch } from 'features/app/app.hooks'
 import { setUserLanguage } from 'features/user/user.slice'
 import type { Locale } from 'types'
 
 export function useUserLanguageUpdate() {
   const { i18n } = useTranslation()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     i18n.on('languageChanged', (lng) => {

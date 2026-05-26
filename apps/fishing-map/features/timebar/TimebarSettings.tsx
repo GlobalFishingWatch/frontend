@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 
 import AreaIcon from 'assets/icons/timebar-area.svg'
@@ -333,15 +332,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
-              const title = t(
-                (t) => {
-                  return t[removeDatasetVersion(dataset?.id as string) ?? ''].name
-                },
-                {
-                  defalutValue: dataset?.name || dataset?.id || '',
-                  ns: 'datasets',
-                }
-              )
+              const title = dataset?.name || dataset?.id || ''
               return (
                 <Radio
                   key={envDataview.id}

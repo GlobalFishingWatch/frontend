@@ -111,6 +111,18 @@ export type DatasetFile = {
   lastUpdate: string
 }
 
+export type DatasetI18nFilter = {
+  label?: string
+  enum?: Record<string, string>
+}
+export type DatasetI18nFilters = Record<string, DatasetI18nFilter>
+
+export type DatasetI18n = {
+  name?: string
+  description?: string
+  filters: DatasetI18nFilters
+}
+
 export type Dataset<T extends DatasetTypes = DatasetTypes> = {
   id: string
   type: T
@@ -128,6 +140,7 @@ export type Dataset<T extends DatasetTypes = DatasetTypes> = {
   source?: string
   status: DatasetStatus
   unit?: string
+  i18n?: DatasetI18n
   ownerType: string
   ownerId: number
   startDate?: string

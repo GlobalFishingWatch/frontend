@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import {
@@ -7,14 +6,15 @@ import {
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 
-import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.selectors'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.utils'
+import {
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const EMPTY_ARRAY: [] = []
-
-const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
 
 // To avoid circular dependencies this needs to be a different file
 // as dataviews.resolver and dataview.injected selectors needs it

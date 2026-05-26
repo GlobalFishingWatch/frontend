@@ -126,7 +126,7 @@ export function usePinVessel({
       if (!infoDatasetResolved && infoDatasetIdResolved) {
         setLoading(true)
         // Fetch the info dataset when no available in the store
-        const action = await dispatch(fetchDatasetByIdThunk(infoDatasetIdResolved))
+        const action = await dispatch(fetchDatasetByIdThunk({ id: infoDatasetIdResolved }))
         if (fetchDatasetByIdThunk.fulfilled.match(action)) {
           infoDatasetResolved = action.payload as Dataset
         } else {

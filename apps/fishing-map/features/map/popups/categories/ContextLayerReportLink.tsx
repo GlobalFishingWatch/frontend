@@ -13,7 +13,6 @@ import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
@@ -72,7 +71,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
 
   const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
     const layerSources = (reportLayersVisible ?? [])
-      .map((layer) => (layer.datasets ?? []).map((d) => getDatasetNameTranslated(d)))
+      .map((layer) => (layer.datasets ?? []).map((d) => d.name))
       .flat()
       .join(', ')
     resetSidebarScroll()

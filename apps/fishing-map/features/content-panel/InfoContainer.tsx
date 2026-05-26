@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -13,27 +13,28 @@ import {
 import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
 import { Choice, Select, Spinner } from '@globalfishingwatch/ui-components'
 
-import { fetchSidePanelContent } from 'features/cms/content.queries'
-import type { TDataset } from 'features/cms/strapi.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import type { UserGuideSection } from 'features/help/UserGuideLink'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { Route } from 'routes/_app'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ContentPanel.module.css'
 
 const InfoContainer = () => {
-  const { i18n, ready: i18nReady } = useTranslation()
+  const { ready: i18nReady } = useTranslation()
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const { openSidePanel } = useSidePanel()
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
   const dataview = useMemo(
     () => dataviews.find((d) => d.id === sidePanelId),
     [dataviews, sidePanelId]
@@ -79,26 +80,7 @@ const InfoContainer = () => {
     return match ?? options[0]
   }, [options, selectedId])
 
-  const fetchKey = activeTab?.id ? `${activeTab.id}|${i18n.language}` : undefined
-  const [fetched, setFetched] = useState<{ key: string; data: TDataset | null } | null>(null)
-  const loading = fetchKey ? fetched?.key !== fetchKey : false
-  const strapiDataset = fetched && fetched.key === fetchKey ? fetched.data : null
-
-  useEffect(() => {
-    if (!fetchKey || !activeTab?.id) return
-    let cancelled = false
-    fetchSidePanelContent('datasets', activeTab.id as string, i18n.language)
-      ?.then((response) => {
-        if (cancelled) return
-        setFetched({ key: fetchKey, data: (response?.data?.[0] as TDataset) ?? null })
-      })
-      .catch((e) => {
-        if (!cancelled) console.error('Strapi dataset fetch error:', e)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [fetchKey, activeTab?.id, i18n.language])
+  const loading = datasetsStatus === AsyncReducerStatus.Loading
 
   if (!dataview) return <EmptyContent />
 
@@ -119,13 +101,15 @@ const InfoContainer = () => {
     openSidePanel({ type: 'datasets', id: dataview.id, subcontentId: subcontentId })
   }
 
+  const dataset = dataview.datasets?.find((d) => d.id === activeTab?.id)
+
   return (
     <div className={cx(styles.container)}>
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
             <div className={styles.labelContainer}>
-              {(strapiDataset?.name ?? activeTab?.labelString) || dataview.name}{' '}
+              {(dataset?.name ?? activeTab?.labelString) || dataview.name}{' '}
               {userGuideLink && <UserGuideLink section={userGuideLink} />}
             </div>
           }
@@ -154,7 +138,7 @@ const InfoContainer = () => {
           {loading ? (
             <Spinner size="small" />
           ) : (
-            <ContentMarkdown>{strapiDataset?.description}</ContentMarkdown>
+            <ContentMarkdown>{dataset?.description}</ContentMarkdown>
           )}
         </div>
       </div>

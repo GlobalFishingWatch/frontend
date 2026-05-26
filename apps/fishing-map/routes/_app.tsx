@@ -1,16 +1,17 @@
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
-import { fetchSidePanelContent } from 'features/cms/content.queries'
+import { fetchUserGuideContent } from 'features/cms/content.queries'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import i18n from 'features/i18n/i18n'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
 import type { AppStore } from 'store'
 import { makeStore } from 'store'
+import type { Locale } from 'types'
 
 import 'utils/polyfills'
 
@@ -52,7 +53,7 @@ export const Route = createFileRoute('/_app')({
       return { status: 'success' as const, data: [], meta: undefined }
     }
     try {
-      const response = await fetchSidePanelContent(sidePanelContent, undefined, i18n.language)
+      const response = await fetchUserGuideContent({ locale: i18n.language as Locale })
 
       if (!response || !response.data || response.data.length === 0) {
         return {

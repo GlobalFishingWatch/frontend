@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { Provider } from 'react-redux'
 import { createRouter, Navigate } from '@tanstack/react-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -5,10 +7,20 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import ErrorBoundaryUI from 'features/app/ErrorBoundaryUI'
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { makeStore } from 'store'
 import type { QueryParams } from 'types'
 
+import { setRouterRef } from './router/router-ref'
 import { routeTree } from './routeTree.gen'
+
+function RouterErrorBoundary({ error }: { error: Error }) {
+  const store = useMemo(() => makeStore(), [])
+  return (
+    <Provider store={store}>
+      <ErrorBoundaryUI error={error} />
+    </Provider>
+  )
+}
 
 const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr) as QueryParams
@@ -33,8 +45,8 @@ function createAppRouter() {
     trailingSlash: 'never',
     scrollRestoration: true,
     defaultPendingComponent: () => null,
-    defaultErrorComponent: ({ error }: any) => <ErrorBoundaryUI error={error} />,
-    defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
+    defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
+    defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
   })
@@ -50,9 +62,6 @@ export function getRouter() {
     return router
   }
   router = createAppRouter()
-  return router
-}
-
-export function getRouterRef() {
+  setRouterRef(router)
   return router
 }

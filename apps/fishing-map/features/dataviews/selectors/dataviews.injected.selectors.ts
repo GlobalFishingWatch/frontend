@@ -73,31 +73,6 @@ const EVENTS_REPORT_SUBCATEGORIES: ReportEventsSubCategory[] = [
   EventTypes.Port,
 ]
 
-export function getIsInjectedDataview(dataview?: UrlDataviewInstance) {
-  if (!dataview) {
-    return false
-  }
-  if (dataview.injected) {
-    return true
-  }
-  const isVesselGroupEventsInjectedDataview = EVENTS_REPORT_SUBCATEGORIES.some((category) => {
-    return dataview.id === getVesselGroupEventsDataviewInstance('test-is-injected', category)?.id
-  })
-  const isPortReportDataview =
-    dataview.id === PORT_VISITS_REPORT_DATAVIEW_ID ||
-    dataview.id === PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG ||
-    dataview.id === PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
-  const isAreaReportDataview = dataview.id === REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID
-  const isComparisonDataview = dataview.origin === COMPARISON_INJECTED_DATAVIEW_ORIGIN
-
-  return (
-    isVesselGroupEventsInjectedDataview ||
-    isPortReportDataview ||
-    isAreaReportDataview ||
-    isComparisonDataview
-  )
-}
-
 export const selectVesselProfileDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
