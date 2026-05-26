@@ -491,7 +491,7 @@ function LayerFilters({
         </p>
       )}
       {dataview.category === DataviewCategory.Activity && (
-        <UserGuideLink section="filtering-activity-layers" className={styles.userGuideLink} />
+        <UserGuideLink slug="filtering-activity-layers" className={styles.userGuideLink} />
       )}
     </Fragment>
   )

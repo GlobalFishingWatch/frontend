@@ -5,7 +5,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import InfoContainer from 'features/content-panel/InfoContainer'
 import UserDatasetContent from 'features/content-panel/UserDatasetContent'
-import { UserGuideContent } from 'features/content-panel/UserGuideContent'
+import UserGuideContent from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'

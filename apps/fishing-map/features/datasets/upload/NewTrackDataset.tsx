@@ -432,7 +432,7 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink section="uploading-data" />
+          <UserGuideLink slug="uploading-data" />
         </div>
         <Button
           className={styles.saveBtn}

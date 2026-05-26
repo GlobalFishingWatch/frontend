@@ -4,13 +4,13 @@ import cx from 'classnames'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import type { TUserGuideSection } from 'features/cms/strapi.types'
+import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from './ContentPanel.module.css'
 
 type TableOfContentsProps = {
-  data: TUserGuideSection[]
+  data: UserGuideContent
   activeId?: string
   onClick?: (id: string) => void
   onSubTopicClick?: (sectionId: string, subId: string) => void

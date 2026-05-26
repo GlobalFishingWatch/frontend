@@ -668,7 +668,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         )}
       </div>
       <div className={styles.modalFooter}>
-        <UserGuideLink section="vessel-groups" />
+        <UserGuideLink slug="vessel-groups" />
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
           {datasetsWithoutRelatedEvents.length >= 1 && (
