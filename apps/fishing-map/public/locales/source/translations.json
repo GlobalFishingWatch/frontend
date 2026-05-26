@@ -774,8 +774,8 @@
     "vessel_fit_bounds_out_of_timerange": "The track has no activity in your selected time range. Change the time range to fit this track?",
     "vessel_group_fit_bounds": "Center map on vessel group",
     "vessel_info_correction": "Suggest a correction",
-    "vesselGroup": "Vessel Group",
-    "vessel-groups": "Vessel Group"
+    "vessel-groups": "Vessel Group",
+    "vesselGroup": "Vessel Group"
   },
   "map": {
     "annotationPlaceholder": "Type something here",
@@ -865,7 +865,8 @@
     "title": "Search",
     "vesselAlreadyInWorkspace": "This vessel is already in your workspace",
     "vessels": "Search vessels",
-    "vesselSelected": "Vessel selected"
+    "vesselSelected": "Vessel selected",
+    "workspaceError": "Your workspace couldn't be loaded, try searching in a different workspace in order to add vessels to the map."
   },
   "selects": {
     "allSelected": "All",

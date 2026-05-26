@@ -10,7 +10,6 @@ import {
   CompositeMode,
   EditableGeoJsonLayer,
   ImmutableFeatureCollection,
-  TranslateMode,
 } from '@deck.gl-community/editable-layers'
 import { kinks } from '@turf/turf'
 import type { Feature, Point, Polygon, Position } from 'geojson'
@@ -23,6 +22,7 @@ import {
   CustomDrawPointMode,
   CustomDrawPolygonMode,
   CustomModifyMode,
+  CustomTranslateMode,
   CustomViewMode,
 } from './draw.modes'
 import type { DrawPickingInfo, DrawPickingObject } from './draw.types'
@@ -101,7 +101,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
 
   _getModifyMode = () => {
     // return new CustomModifyMode()
-    return new CompositeMode([new CustomModifyMode() as any, new TranslateMode()])
+    return new CompositeMode([new CustomModifyMode() as any, new CustomTranslateMode()])
   }
 
   _getDrawingMode = () => {

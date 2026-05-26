@@ -23,7 +23,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(highlightedFeatures || []).map((feature) => feature.id),
   ])
   const strictTimeRange =
-    dataview.config?.startDate !== undefined && dataview.config?.endDate !== undefined
+    dataview.config?.startDate != null &&
+    dataview.config?.startDate != undefined &&
+    dataview.config?.endDate != null &&
+    dataview.config?.endDate != undefined
   const startTime = getUTCDateTime(
     strictTimeRange ? (dataview.config?.startDate as string) : start
   ).toMillis()

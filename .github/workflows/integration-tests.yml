@@ -49,18 +49,7 @@ jobs:
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
-      - name: Cache Build Data
-        uses: actions/cache@v4
-        with:
-          path: |
-            .nx/cache
-            node_modules/.vite
-            node_modules/.cache/esbuild
-            **/*.tsbuildinfo
-          # Using run_id and run_attempt forces a unique primary key so the cache always saves new test results
-          key: build-cache-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            build-cache-${{ runner.os }}-
+
 
       # --- Running tests -----------------------------------------------------
 
@@ -72,8 +61,9 @@ jobs:
           pnpm exec nx affected \
             --target=test \
             --parallel=4 \
+            --output-style=stream \
             --base=origin/${{ github.event.pull_request.base.ref }} \
-            --head=HEAD
+            --head=HEAD 2>&1 \
             | tee test-output.txt
         env:
           NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
@@ -89,27 +79,40 @@ jobs:
         if: always()
         run: |
           sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
-            function flush() {
-              if (target != "" && is_test) {
-                status = (failed ? "❌" : "✅")
-                printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
-                if (failed) fail_count++; else pass_count++
+            # With --parallel and --output-style=stream, Nx prefixes each line as:
+            #   "project-name: <log line>"
+            # We track which targets are :test targets, accumulate output per-project
+            # using the prefix, and detect pass/fail per project.
+            /^> nx run / {
+              # $4 is e.g. "fishing-map:test" — split to get just the project name
+              split($4, parts, ":")
+              proj = parts[1]
+              if (parts[2] == "test") {
+                is_test_target[proj] = 1
+                failed[proj] = 1
               }
             }
-            BEGIN { print "## Test Results\n" }
-            /^> nx run /{
-              flush()
-              target = $4
-              is_test = ($4 ~ /:test$/)
-              output = ""
-              failed = 1
-            }
-            is_test {
-              output = (output == "" ? $0 : output "\n" $0)
-              if (/Tests +[0-9]+ passed/ && !/failed/) failed = 0
+            {
+              # Match lines prefixed by a known project: "proj-name: ..."
+              if (match($0, /^([a-zA-Z0-9_-]+): /, arr)) {
+                proj = arr[1]
+                if (is_test_target[proj]) {
+                  line = substr($0, length(proj) + 3)
+                  output[proj] = (output[proj] == "" ? line : output[proj] "\n" line)
+                  if (/Tests +[0-9]+ passed/ && !/failed/) failed[proj] = 0
+                }
+              }
             }
             END {
-              flush()
+              print "## Test Results\n"
+              pass_count = 0
+              fail_count = 0
+              for (proj in is_test_target) {
+                if (!is_test_target[proj]) continue
+                status = (failed[proj] ? "❌" : "✅")
+                printf "<details>\n<summary>%s %s:test</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, proj, output[proj]
+                if (failed[proj]) fail_count++; else pass_count++
+              }
               if (pass_count == 0 && fail_count == 0) {
                 printf "---\n**Summary:** No tests were run\n"
               } else {

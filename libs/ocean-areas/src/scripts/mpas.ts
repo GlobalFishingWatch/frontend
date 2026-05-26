@@ -1,6 +1,6 @@
 import type { Feature } from 'geojson'
 
-import { prepare } from './lib/prepare'
+import { prepare } from './lib/prepare.ts'
 
 prepare({
   type: 'mpa',

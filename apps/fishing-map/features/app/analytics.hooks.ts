@@ -66,6 +66,7 @@ export const useAnalytics = () => {
             organization_type: user?.organizationType,
             organization_type_hashed: user?.organizationType ? btoa(user.organizationType) : '',
             country: user?.country,
+            user_cohort: Array.isArray(user?.cohort) ? user.cohort.join(',') : user?.cohort,
             user_group: user?.groups.join(','),
           }),
         },
@@ -79,6 +80,7 @@ export const useAnalytics = () => {
       setConfig({
         user_id: user.id ?? '',
         user_country: user.country ?? '',
+        user_cohort: user?.cohort,
         user_group: user.groups?.join(',') ?? '',
         user_org_type: user.organizationType ?? '',
         user_organization: user.organization ?? '',

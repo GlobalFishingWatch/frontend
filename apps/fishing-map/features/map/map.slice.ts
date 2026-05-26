@@ -695,7 +695,7 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
   }
 >(
   'map/fetchDetectionThumbnails',
-  async ({ detectionFeatures }, { signal, getState, rejectWithValue }) => {
+  async ({ detectionFeatures }, { signal, getState, rejectWithValue, dispatch }) => {
     try {
       const state = getState() as any
       const detectionsDataviews = selectActiveDetectionsDataviews(state) || []
@@ -710,7 +710,12 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
             detectionsDataset,
             DatasetTypes.Thumbnails
           )?.id
-          const thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
+          let thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
+          if (!thumbnailDataset) {
+            thumbnailDataset = await dispatch(
+              fetchDatasetByIdThunk(thumbnailDatasetId as string)
+            ).unwrap()
+          }
           if (thumbnailDataset) {
             const detectionId = detectionFeature.properties?.id
 

@@ -1,10 +1,10 @@
-import type {
-  Pick} from '@deck.gl-community/editable-layers';
+import type { Pick } from '@deck.gl-community/editable-layers'
 import {
   DrawPointMode,
   DrawPolygonMode,
   ModifyMode,
-  ViewMode
+  TranslateMode,
+  ViewMode,
 } from '@deck.gl-community/editable-layers'
 import uniqBy from 'lodash/uniqBy'
 
@@ -15,6 +15,7 @@ export type DrawLayerMode =
   | CustomDrawPointMode
   | CustomViewMode
   | CustomModifyMode
+  | CustomTranslateMode
 
 export class CustomDrawPolygonMode extends DrawPolygonMode {
   handleClick(
@@ -23,6 +24,28 @@ export class CustomDrawPolygonMode extends DrawPolygonMode {
   ) {
     event.sourceEvent.preventDefault()
     return super.handleClick(event, props)
+  }
+
+  finishDrawing(props: Parameters<DrawPolygonMode['finishDrawing']>[0]) {
+    if (this.getClickSequence().length < 3) {
+      return
+    }
+    return super.finishDrawing(props)
+  }
+
+  getGuides(
+    props: Parameters<DrawPolygonMode['getGuides']>[0]
+  ): ReturnType<DrawPolygonMode['getGuides']> {
+    const guides = super.getGuides(props)
+    return {
+      ...guides,
+      features: guides.features.filter((f: any) => {
+        const coords = f?.geometry?.coordinates
+        if (!Array.isArray(coords)) return true
+        if (f.geometry.type === 'LineString') return coords.length >= 2
+        return true
+      }),
+    }
   }
 }
 export class CustomDrawPointMode extends DrawPointMode {
@@ -72,7 +95,71 @@ export class CustomViewMode extends ViewMode {
   }
 }
 
+function hasValidSelection(props: { selectedIndexes?: number[]; data: { features: any[] } }) {
+  return (
+    (props.selectedIndexes?.length ?? 0) > 0 &&
+    props.selectedIndexes!.every((i) => Boolean(props.data.features[i]?.geometry))
+  )
+}
+
+export class CustomTranslateMode extends TranslateMode {
+  handleStartDragging(
+    event: Parameters<TranslateMode['handleStartDragging']>[0],
+    props: Parameters<TranslateMode['handleStartDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleStartDragging(event, props)
+    } catch {
+      // ignore
+    }
+  }
+
+  handleDragging(
+    event: Parameters<TranslateMode['handleDragging']>[0],
+    props: Parameters<TranslateMode['handleDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleDragging(event, props)
+    } catch {
+      // ignore
+    }
+  }
+
+  handleStopDragging(
+    event: Parameters<TranslateMode['handleStopDragging']>[0],
+    props: Parameters<TranslateMode['handleStopDragging']>[1]
+  ) {
+    if (!hasValidSelection(props)) return
+    try {
+      return super.handleStopDragging(event, props)
+    } catch {
+      // ignore
+    }
+  }
+}
+
 export class CustomModifyMode extends ModifyMode {
+  getGuides(props: Parameters<ModifyMode['getGuides']>[0]) {
+    const sanitized = props.lastPointerMoveEvent
+      ? {
+          ...props,
+          lastPointerMoveEvent: {
+            ...props.lastPointerMoveEvent,
+            picks: (props.lastPointerMoveEvent.picks || []).filter(
+              (pick: any) => !pick.isGuide || pick.object?.properties
+            ),
+          },
+        }
+      : props
+    try {
+      return super.getGuides(sanitized)
+    } catch {
+      return { type: 'FeatureCollection' as const, features: [] }
+    }
+  }
+
   handleClick(
     event: Parameters<ModifyMode['handleClick']>[0],
     props: Parameters<ModifyMode['handleClick']>[1]
