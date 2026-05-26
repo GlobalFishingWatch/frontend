@@ -1,8 +1,8 @@
-export type TStrapiResponse<T = null> = {
+export type StrapiResponse<T = null> = {
   data?: T[]
-  error?: TStrapiError
+  error?: StrapiError
   meta?: {
-    pagination?: TStrapiPagination
+    pagination?: StrapiPagination
   }
 }
 
@@ -16,31 +16,20 @@ export type StrapiBaseAttributes = {
   localizations: string[]
 }
 
-export type TUserGuideSubSection = StrapiBaseAttributes & {
-  title: string
-  body: string
-  slug?: string
-}
-
-export type TUserGuideSection = TUserGuideSubSection & {
-  subsections: TUserGuideSubSection[]
-}
-
-// Base image type from Strapi media library
-export type TImage = {
+export type StrapiImage = {
   id: number
   documentId: string
   alternativeText: string | null
   url: string
 }
-export type TStrapiPagination = {
+export type StrapiPagination = {
   page: number
   pageSize: number
   pageCount: number
   total: number
 }
 
-export type TStrapiError = {
+export type StrapiError = {
   status: number
   name: string
   message: string
