@@ -38,7 +38,7 @@ export const UserGuideContentComponent = () => {
     const onScroll = () => setIsScrolled(el.scrollTop > 50)
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [isLoading])
 
   const selectedSectionIndex = useMemo(() => {
     if (!sidePanelId) return 0

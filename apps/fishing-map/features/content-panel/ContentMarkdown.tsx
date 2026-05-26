@@ -3,13 +3,17 @@ import Markdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
+import MarkdownIframe from 'features/content-panel/MarkdownIframe'
 import MarkdownImage from 'features/content-panel/MarkdownImage'
 import MarkdownLink from 'features/content-panel/MarkdownLink'
 
 type ContentMarkdownProps = { children?: string | null }
 
 const ContentMarkdown = ({ children }: ContentMarkdownProps) => {
-  const components = useMemo(() => ({ a: MarkdownLink, img: MarkdownImage }), [])
+  const components = useMemo(
+    () => ({ a: MarkdownLink, img: MarkdownImage, iframe: MarkdownIframe }),
+    []
+  )
 
   if (!children) return null
 
