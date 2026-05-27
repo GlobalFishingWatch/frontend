@@ -276,7 +276,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       const { comparisonMode } = this.props
       const { colorDomain: oldColorDomain } = this.state
       const newColorDomain = this._calculateColorDomain()
-      if (this.props.comparisonMode !== comparisonMode) return
       let avgChange = Infinity
       let change: number[] = []
       if (oldColorDomain.length) {
