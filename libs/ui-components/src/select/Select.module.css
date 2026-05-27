@@ -91,6 +91,7 @@
   max-height: 24rem;
   z-index: 10;
   border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
+  overflow: hidden;
 }
 
 .secondary .optionsContainer {
@@ -141,11 +142,15 @@
 .optionItem:not(.notAllowed):hover,
 .highlight {
   color: var(--color-primary-blue);
-  background-color: var(--color-terthiary-blue);
+  background-color: rgba(var(--primary-blue-rgb), 0.05);
 }
 
-.selected {
-  background-color: var(--color-terthiary-blue);
+.optionItem:not(.notAllowed).selected {
+  background-color: rgba(var(--primary-blue-rgb), 0.05);
+}
+
+.optionItem:not(.notAllowed).selected:hover {
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
 }
 
 .notAllowed {

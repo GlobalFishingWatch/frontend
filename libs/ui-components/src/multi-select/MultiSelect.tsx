@@ -373,6 +373,7 @@ export function MultiSelect(props: MultiSelectProps) {
                         data-testid={`${testId}-option-${item.id}`}
                         className={cx(styles.optionItem, {
                           [styles.highlight]: highlight,
+                          [styles.selected]: isSelected,
                           [item.className || '']: item.className,
                           [styles.notAllowed]: item.disableSelection,
                         })}
