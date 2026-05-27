@@ -86,7 +86,7 @@
   position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
   top: var(--size-M);
   left: -1px;
-  background: var(--color-off-white-0);
+  background: var(--color-off-white-1);
   box-shadow: var(--box-shadow-1);
   max-height: 24rem;
   z-index: 10;
