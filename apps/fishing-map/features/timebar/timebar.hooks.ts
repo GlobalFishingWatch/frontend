@@ -40,6 +40,7 @@ import {
   selectHasChangedSettingsOnce,
   selectHighlightedEvents,
   selectHighlightedTime,
+  selectHoveredHighlightedEvents,
   setHasChangedSettings,
   setHighlightedEvents,
 } from './timebar.slice'
@@ -197,14 +198,21 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
+  const hoveredEvents = useSelector(selectHoveredHighlightedEvents)
   const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
   const dispatchHighlightedEvents = useCallback(
     (eventIds: string[] | undefined) => {
-      dispatch(setHighlightedEvents(eventIds))
+      const current = hoveredEvents || []
+      const next = eventIds || []
+      const hasChanged =
+        current.length !== next.length || current.some((id, index) => id !== next[index])
+      if (hasChanged) {
+        dispatch(setHighlightedEvents(eventIds))
+      }
     },
-    [dispatch]
+    [dispatch, hoveredEvents]
   )
 
   const highlightedEventIds = [
