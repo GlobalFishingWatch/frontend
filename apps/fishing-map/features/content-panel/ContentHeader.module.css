@@ -8,3 +8,14 @@
   text-transform: uppercase;
   border-bottom: var(--border);
 }
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+  width: -webkit-fill-available;
+  justify-content: space-between;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

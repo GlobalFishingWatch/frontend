@@ -17,7 +17,7 @@ function ContentHeader({ title }: ContentHeaderProps) {
 
   return (
     <div className={styles.sidebarHeader}>
-      {title || t((t) => t.common.content)}
+      <div className={styles.labelContainer}>{title || t((t) => t.common.content)}</div>
       <IconButton
         icon="close"
         aria-label={t((t) => t.common.close)}

@@ -63,6 +63,10 @@
 }
 
 .subsection {
+  padding-top: var(--space-S);
+}
+
+.subsection h4 {
   padding-top: var(--space-M);
 }
 
@@ -72,11 +76,15 @@
 
 .content h2 {
   color: var(--color-primary-blue) !important;
-  font: var(--font-L-bold);
+  font: var(--font-XL);
   padding: var(--space-S) 0;
 }
 
 .content h3 {
+  font: var(--font-L-bold);
+}
+
+.content h4 {
   font: var(--font-L);
 }
 
@@ -184,13 +192,6 @@
 .subtitle {
   font: var(--font-S);
   text-transform: uppercase;
-}
-
-.labelContainer {
-  display: flex;
-  align-items: center;
-  width: -webkit-fill-available;
-  justify-content: space-between;
 }
 
 .titleContainer {
