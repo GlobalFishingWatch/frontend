@@ -77,8 +77,6 @@
     "exported",
     "**/resources.d.ts",
     "**/__traces__/**",
-    "**/test/*.ts",
-    "**/test/*.tsx",
     "**/*.test.ts",
     "**/*.test.tsx",
     "**/*.spec.ts",

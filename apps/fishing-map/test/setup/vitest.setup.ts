@@ -6,7 +6,7 @@ import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
 
 import { TEST_END_DATE } from '../test.config'
 
-import '../../pages/styles.css'
+import '../../routes/styles.css'
 import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
@@ -52,6 +52,12 @@ vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
 beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
+
+  // Preload lazy modal chunks used in integration tests
+  await Promise.all([
+    import('features/layer-library/LayerLibrary'),
+    import('features/feedback/FeedbackModal'),
+  ])
 
   // Browser mode cannot handle native confirm dialogs without explicit mocking.
   vi.spyOn(window, 'confirm').mockReturnValue(false)

@@ -19,6 +19,7 @@ interface ImportMetaEnv {
   readonly VITE_WORKSPACE_ENV?: string
   readonly VITE_I18N_DEBUG?: string
   readonly i18n_DEBUG?: string
+  readonly VITEST?: boolean
 }
 
 interface ImportMeta {

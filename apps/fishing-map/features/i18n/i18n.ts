@@ -19,18 +19,21 @@ export const LocaleLabels = [
 ]
 
 export const DEFAULT_NAMESPACE = 'translations'
-export const FALLBACK_LNG = IS_DEVELOPMENT_ENV ? 'source' : Locale.en
+export const IS_TEST_ENV = Boolean(import.meta.env.VITEST)
+export const FALLBACK_LNG = IS_DEVELOPMENT_ENV && !IS_TEST_ENV ? 'source' : Locale.en
+
+const USE_LOCAL_SHARED_LABELS = IS_DEVELOPMENT_ENV && !IS_TEST_ENV
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
 const UNIQUE_BUILD_ID = Date.now()
 
-const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
+const SHARED_LABELS_PATH = USE_LOCAL_SHARED_LABELS
   ? 'http://localhost:8000'
   : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
 const PACKAGE_NAMESPACES = ['flags', 'timebar']
 const SUPPORTED_LANGUAGES = [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG]
-if (IS_DEVELOPMENT_ENV) {
+if (IS_DEVELOPMENT_ENV && !IS_TEST_ENV) {
   SUPPORTED_LANGUAGES.push('source')
 }
 

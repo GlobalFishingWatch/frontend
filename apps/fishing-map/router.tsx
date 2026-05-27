@@ -37,19 +37,26 @@ const stringifyAppWorkspace = (search: QueryParams): string => {
   return str ? `?${str}` : ''
 }
 
-function createAppRouter() {
-  const router = createRouter({
+/**
+ * Shared router configuration between production and integration tests.
+ */
+export function getCreateRouterOptions() {
+  return {
     routeTree,
     basepath: PATH_BASENAME,
-    defaultPreload: 'intent',
-    trailingSlash: 'never',
+    defaultPreload: 'intent' as const,
+    trailingSlash: 'never' as const,
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
     defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
-  })
+  }
+}
+
+export function createAppRouter() {
+  const router = createRouter(getCreateRouterOptions())
 
   return router
 }

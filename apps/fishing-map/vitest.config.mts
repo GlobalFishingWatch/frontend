@@ -1,10 +1,8 @@
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
-import path from 'path'
 import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
-import { publicAssetsPlugin, authTokensPlugin, svgMockPlugin } from './test/utils/vitest/plugins'
+import { publicAssetsPlugin, authTokensPlugin } from './test/utils/vitest/plugins'
+import { basePath, plugins } from './vite.config'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
@@ -29,35 +27,23 @@ export default defineConfig(({ mode }) => {
 
   return {
     root: __dirname,
+    base: basePath,
     cacheDir: '../../node_modules/.vite/apps/fishing-map',
-    plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin(), authTokensPlugin()],
+    plugins: [...plugins, publicAssetsPlugin(), authTokensPlugin()],
     resolve: {
       // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
       dedupe: ['react', 'react-dom'],
-      alias: {
-        data: path.resolve(__dirname, './data'),
-        features: path.resolve(__dirname, './features'),
-        routes: path.resolve(__dirname, './routes'),
-        services: path.resolve(__dirname, './services'),
-        utils: path.resolve(__dirname, './utils'),
-        'data/config': path.resolve(__dirname, './data/config'),
-        types: path.resolve(__dirname, './types'),
-        queries: path.resolve(__dirname, './queries'),
-        middlewares: path.resolve(__dirname, './middlewares'),
-        store: path.resolve(__dirname, './store'),
-        appTestUtils: path.resolve(__dirname, './appTestUtils'),
-        test: path.resolve(__dirname, './test'),
-        hooks: path.resolve(__dirname, './hooks'),
-      },
     },
 
     define: {
-      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
-      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
+      'import.meta.env.VITE_PUBLIC_URL': JSON.stringify(basePath),
+      'import.meta.env.VITEST': JSON.stringify(true),
       'process.env.NODE_ENV': JSON.stringify('test'),
-      'process.env.VITEST': JSON.stringify('true'),
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
       'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
+      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
+      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
+      'process.env.VITEST': JSON.stringify('true'),
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
@@ -79,7 +65,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: './test/setup/vitest.setup.ts',
       globalSetup: './test/setup/vitest.setup-global.ts',
       browser: {
-        retry: 1,
+        retry: isUiMode ? 1 : 0,
         enabled: true,
         provider: defaultPlaywrightProvider,
         ui: isUiMode,

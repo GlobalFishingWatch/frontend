@@ -63,7 +63,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedEnvId?: string
   timebarSelectedUserId?: string
   timebarSelectedVGId?: string
-  timebarVisualisation?: TimebarVisualisations
+  timebarVisualisation?: TimebarVisualisation
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   vesselsColorBy?: VesselsColorByProperty
   vesselsMaxTimeGapHours?: number
@@ -123,6 +123,7 @@ export enum TimebarVisualisations {
   Environment = 'environment',
   Points = 'points',
 }
+export type TimebarVisualisation = `${TimebarVisualisations}`
 
 type VisibleEvents = EventType[] | 'all' | 'none'
 

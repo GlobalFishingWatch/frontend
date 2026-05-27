@@ -161,6 +161,17 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
 
 function RootComponent() {
   const { i18nState } = Route.useLoaderData() ?? {}
+
+  if (import.meta.env.VITEST) {
+    return (
+      <Suspense fallback={null}>
+        <I18nSSRProvider serverState={i18nState}>
+          <Outlet />
+        </I18nSSRProvider>
+      </Suspense>
+    )
+  }
+
   return (
     <RootDocument lang={i18nState?.initialLanguage}>
       <Suspense fallback={null}>

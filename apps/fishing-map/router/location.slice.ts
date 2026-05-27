@@ -42,7 +42,7 @@ export interface LocationState {
   }
 }
 
-const initialState: LocationState = {
+export const locationInitialState: LocationState = {
   type: HOME,
   payload: {},
   query: {} as QueryParams,
@@ -51,7 +51,7 @@ const initialState: LocationState = {
 
 const locationSlice = createSlice({
   name: 'location',
-  initialState,
+  initialState: locationInitialState,
   reducers: {
     setLocation: (_state, action: PayloadAction<LocationState>) => {
       return action.payload

@@ -28,7 +28,7 @@ export enum ReportCategory {
   VesselGroupInsights = 'vessel-groups-insights',
 }
 export type ReportCategoryState = {
-  reportCategory: ReportCategory | undefined
+  reportCategory: `${ReportCategory}` | undefined
 }
 
 export const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCategory>> = {
