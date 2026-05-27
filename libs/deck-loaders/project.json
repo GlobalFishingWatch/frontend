@@ -35,13 +35,11 @@
       "continuous": true
     },
     "dist:workers": {
+      "dependsOn": ["build:workers"],
       "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist/workers"],
       "options": {
-        "commands": [
-          "nx build:workers deck-loaders",
-          "node libs/deck-loaders/scripts/clean-workers-output.mjs"
-        ],
-        "parallel": false
+        "command": "node libs/deck-loaders/scripts/clean-workers-output.mjs"
       }
     },
     "build:workers": {
