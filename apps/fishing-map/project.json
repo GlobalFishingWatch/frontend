@@ -27,7 +27,7 @@
       "outputs": ["{projectRoot}/public/workers"],
       "options": {
         "commands": [
-          "shx rm -rf apps/fishing-map/public/workers/*.js",
+          "shx rm -rf apps/fishing-map/public/workers",
           "shx mkdir -p apps/fishing-map/public/workers",
           "shx cp libs/deck-loaders/dist/workers/*.js apps/fishing-map/public/workers/"
         ],
