@@ -1,7 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { getRouteToFijiWorkspaceWithAllLayers } from 'test/utils/navigation/navigateToFijiWorkspace'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -9,7 +9,7 @@ import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
 import { makeStore } from 'store'
 
-import { createTestingMiddleware } from '../testingStoreMiddeware'
+import { createTestingMiddleware } from '../utils/store/testing-store-middleware'
 
 describe('Marine Manager', () => {
   it('should be able to navigate to marine manager workspace through sidebar', async () => {

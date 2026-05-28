@@ -1,6 +1,6 @@
 import { ROUTE_PATHS } from 'router/routes.utils'
 
-import { USER_POLYGON_DATASET_ID } from '../store/redux-store-test.data'
+import { USER_POLYGON_DATASET_ID } from '../fixtures'
 
 import type { NavigationConfig } from './navigation-config'
 

@@ -6,7 +6,7 @@ import {
   waitForVesselTrackReady,
 } from 'test/utils/map'
 import { navigateToVesselSearch } from 'test/utils/navigation/navigateToVesselSearch'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -62,7 +62,9 @@ describe('Vessel search', async () => {
     await router.navigate(navigateToVesselSearch({ query: 'Gabu Reefer' }))
 
     await expect
-      .poll(() => (getByTestId('search-vessels-basic-input').element() as HTMLInputElement).value, { timeout: 10000 })
+      .poll(() => (getByTestId('search-vessels-basic-input').element() as HTMLInputElement).value, {
+        timeout: 10000,
+      })
       .toBe('Gabu Reefer')
   })
 

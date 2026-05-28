@@ -2,16 +2,16 @@ import { sum } from 'es-toolkit'
 import { createStore as createJotaiStore } from 'jotai'
 import { selectReportEventsStats } from 'queries/report-events-stats-api'
 import { render } from 'test/appTestUtils'
+import { navigateToComparisonReport } from 'test/utils/navigation/navigateToComparisonReport'
+import { navigateToGlobalReport } from 'test/utils/navigation/navigateToGlobalReport'
+import { navigateToNoDataReport } from 'test/utils/navigation/navigateToNoDataReport'
+import { navigateToReportByArea } from 'test/utils/navigation/navigateToReportByArea'
 import {
   navigateToUserReport,
   navigateToUserReportsTab,
 } from 'test/utils/navigation/navigateToUserReport'
 import { navigateToWorkspace01 } from 'test/utils/navigation/navigateToWorkspace01'
-import { navigateToComparisonReport } from 'test/utils/navigation/openComparisonReport'
-import { navigateToGlobalReport } from 'test/utils/navigation/openGlobalReportAction'
-import { navigateToNoDataReport } from 'test/utils/navigation/openNoDataReport'
-import { navigateToReportByArea } from 'test/utils/navigation/openReportAction'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

@@ -1,7 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState, defaultViewport } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/config'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -34,7 +34,7 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 6, y: 400 } })
 
@@ -70,7 +70,7 @@ describe('Datasets', () => {
     await expect.element(getByText('Layer Library')).toBeVisible()
 
     await addLayerButton.click()
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
     await userEvent.click(mapElement, { position: { x: 200, y: 200 } })
 
     const actions = testingMiddleware.getActions()
@@ -106,7 +106,7 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.hover(mapElement, { position: { x: 40, y: 350 } })
 
@@ -212,7 +212,7 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
 
@@ -267,7 +267,7 @@ describe('Datasets', () => {
     await userEvent.hover(getByTestId('activity-layer-panel-switch-vms'))
     await removeVMSLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 5, y: 402 } })
 

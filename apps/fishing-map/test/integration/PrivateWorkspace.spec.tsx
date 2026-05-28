@@ -1,7 +1,7 @@
 import { render } from 'test/appTestUtils'
 import { navigateToWorkspace01 } from 'test/utils/navigation/navigateToWorkspace01'
 import { navigateToWorkspace02 } from 'test/utils/navigation/navigateToWorkspace02'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

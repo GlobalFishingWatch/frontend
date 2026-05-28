@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/config'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -28,7 +28,7 @@ describe('App Timebar Integration', () => {
     const mapElement = getByTestId('app-main')
     expect(mapElement).toBeDefined()
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
 
     await userEvent.dragAndDrop(timebarWrapper, timebarWrapper, {
       sourcePosition: { x: 400, y: 35 },

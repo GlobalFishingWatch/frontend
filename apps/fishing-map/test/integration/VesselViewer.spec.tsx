@@ -1,7 +1,7 @@
 import { render } from 'test/appTestUtils'
 import { navigateToVesselViewer } from 'test/utils/navigation/navigateToVesselViewer'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -92,9 +92,7 @@ describe('Vessel viewer', async () => {
     await GFWAPITest.waitForRequest('/events')
     await userEvent.click(getByTestId('vv-summary-tab'))
     await userEvent.click(getByText('Timeline by voyages'))
-    await expect
-      .element(getByText(/\d+ Events? between .+ and .+/).first())
-      .toBeVisible()
+    await expect.element(getByText(/\d+ Events? between .+ and .+/).first()).toBeVisible()
   })
 
   it('should render areas tab and its tabs', async () => {

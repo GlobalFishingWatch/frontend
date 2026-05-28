@@ -4,9 +4,9 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 
 import type { QueryParams } from 'types'
 
-import { TEST_END_DATE } from '../../test.config'
+import { TEST_END_DATE } from '../../setup/config'
 
-import { REDUX_STORE_DEFAULT_STATE } from './redux-store-test.state'
+import { REDUX_STORE_DEFAULT_STATE } from './state'
 
 type DefaultState = typeof REDUX_STORE_DEFAULT_STATE
 type DatasetsState = DefaultState['datasets']

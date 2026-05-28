@@ -1,6 +1,5 @@
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState, defaultViewport } from 'test/utils/store/redux-store-test'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { makeStore } from 'store'

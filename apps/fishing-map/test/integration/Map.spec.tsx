@@ -1,6 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState, defaultViewport } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/config'
+import { defaultState, defaultViewport } from 'test/utils/store'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -44,7 +45,7 @@ describe('Map', () => {
     await userEvent.click(getByTestId('map-control-zoom-in'))
 
     // Wait for the debounced URL update (1000ms debounce time)
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE))
 
     const viewState = jotaiStore.get(viewStateAtom)
     const urlState = store.getState().location.query
@@ -67,7 +68,7 @@ describe('Map', () => {
     await openLayerModalButton.click()
     await expect.element(getByText('Layer Library')).toBeVisible()
     await addLayerButton.click()
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     const viewState = jotaiStore.get(viewStateAtom)
 

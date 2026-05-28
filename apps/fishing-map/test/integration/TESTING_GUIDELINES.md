@@ -43,7 +43,8 @@ test/integration/
 ```typescript
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/constants'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -63,6 +64,42 @@ describe('Feature Name', () => {
   })
 })
 ```
+
+## Test Utilities Reference
+
+### `test/setup/constants.ts`
+
+Shared constants for all specs:
+
+```typescript
+import { WAIT, TEST_END_DATE } from 'test/setup/constants'
+
+// System clock is frozen at TEST_END_DATE in vitest.setup.ts
+// Use WAIT constants instead of magic numbers:
+await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT)) // 3000ms – full map bootstrap
+await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD)) // 2000ms – layer + tile fetch
+await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE)) // 1500ms – debounced URL update
+```
+
+### `test/utils/store/`
+
+| File                          | Exports                                                                                 | Use                                      |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `factory.ts`                  | `defaultState`, `defaultViewport`, `getDefaultState()`, `getDefaultStateWithDatasets()` | Build Redux initial state for tests      |
+| `state.ts`                    | `REDUX_STORE_DEFAULT_STATE`                                                             | Internal — imported only by `factory.ts` |
+| `fixtures.ts`                 | `USER_POLYGON_DATASET`, `USER_POLYGON_DATASET_ID`, etc.                                 | Test fixture data                        |
+| `testing-store-middleware.ts` | `TestingStoreMiddleware`, `createTestingMiddleware()`                                   | Track dispatched Redux actions           |
+| `index.ts`                    | re-exports `factory` + `fixtures` + `testing-store-middleware`                          | Barrel for convenience                   |
+
+### `test/utils/navigation/`
+
+Naming convention:
+
+| Prefix             | Meaning                              | Example                            |
+| ------------------ | ------------------------------------ | ---------------------------------- |
+| `navigateToX`      | Route change (URL/router state)      | `navigateToVesselViewer`           |
+| `openX`            | UI interaction opening a panel/modal | _(reserved for future UI helpers)_ |
+| `addX` / `removeX` | Workspace mutations                  | `addVesselToWorkspace`             |
 
 ## Common Test Casuistics
 
@@ -107,12 +144,12 @@ it('should open vessel popup on vessel click', async () => {
   const jotaiStore = createJotaiStore()
   const { getByTestId } = await render({ store, jotaiStore })
 
-  // WHY: Wait 3000ms for map initialization and vessel data to fully load
+  // WHY: Wait WAIT.MAP_INIT (3000ms) for map initialization and vessel data to fully load
   // Map must: initialize deck.gl, fetch tiles, render layers, and position vessels
-  // This is longer than layer loading (2000ms) because it includes full map bootstrap
+  // This is longer than layer loading (WAIT.LAYER_LOAD) because it includes full map bootstrap
   // ⚠️ IMPORTANT: This wait is REQUIRED because we're about to interact with map features
   // that depend on tiles being loaded. Without it, the click coordinates won't find any vessels.
-  await new Promise((resolve) => setTimeout(resolve, 3000))
+  await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
 
   const mapInstance = jotaiStore.get(mapInstanceAtom)
   const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
@@ -158,11 +195,11 @@ it('should add reference data layer', async () => {
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-eez-button').click()
 
-  // WHY: Wait 2000ms for layer data to load and tiles to be fetched from the API
+  // WHY: Wait WAIT.LAYER_LOAD (2000ms) for layer data to load and tiles to be fetched from the API
   // Layer addition triggers async operations: API calls, tile loading, and deck.gl layer creation
   // ⚠️ IMPORTANT: This wait is ONLY needed if we're going to interact with the map after this
   // (e.g., clicking on a feature that depends on the loaded tiles)
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
   await expect
     .poll(() => store.getState().location.query)
@@ -774,7 +811,7 @@ Located in [defaultState.ts](../defaultState.ts)
 Provides a consistent starting state for all tests.
 
 ```typescript
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 
 const store = makeStore(defaultState, [])
 ```
@@ -1039,7 +1076,7 @@ await userEvent.dragAndDrop(source, target, { steps: 1 })
 
 ```typescript
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

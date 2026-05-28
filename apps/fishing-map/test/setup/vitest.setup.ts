@@ -4,7 +4,7 @@ import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
 
-import { TEST_END_DATE } from '../test.config'
+import { TEST_END_DATE } from './config'
 
 import '../../routes/styles.css'
 import '../test-styles.css'

@@ -1,11 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState } from 'test/utils/store/redux-store-test'
-import {
-  USER_POLYGON_DATASET_ID,
-  USER_POLYGON_LAYER_ID,
-} from 'test/utils/store/redux-store-test.data'
+import { USER_POLYGON_DATASET_ID, USER_POLYGON_LAYER_ID } from 'test/utils/fixtures'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

@@ -1,13 +1,13 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
-import { getDefaultStateWithDatasets } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/config'
 import {
   USER_POLYGON_DATASET,
   USER_POLYGON_DATASET_ID,
   USER_POLYGON_LAYER_ID,
-} from 'test/utils/store/redux-store-test.data'
+} from 'test/utils/fixtures'
+import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
+import { createTestingMiddleware, getDefaultStateWithDatasets } from 'test/utils/store'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -59,7 +59,7 @@ describe('Polygon', () => {
 
     await router.navigate(navigateToPolygonEditor())
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await expect
       .poll(

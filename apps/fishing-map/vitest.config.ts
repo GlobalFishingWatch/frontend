@@ -63,6 +63,7 @@ export default defineConfig(({ mode }) => {
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       fileParallelism: false,
+      // maxWorkers: '50%',
       reporters: ['default'],
       coverage: {
         enabled: isCoverageMode,
@@ -72,8 +73,8 @@ export default defineConfig(({ mode }) => {
       testTimeout: 30000,
       setupFiles: './test/setup/vitest.setup.ts',
       globalSetup: './test/setup/vitest.setup-global.ts',
+      retry: 0,
       browser: {
-        retry: isUiMode ? 1 : 0,
         enabled: true,
         provider: defaultPlaywrightProvider,
         ui: isUiMode,

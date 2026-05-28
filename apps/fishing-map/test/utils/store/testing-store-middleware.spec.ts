@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { RootState } from 'store'
 import { makeStore } from 'store'
 
-import { createTestingMiddleware } from './testingStoreMiddeware'
+import { createTestingMiddleware } from './testing-store-middleware'
 
 describe('TestingStoreMiddleware', () => {
   let testingMiddleware: ReturnType<typeof createTestingMiddleware>

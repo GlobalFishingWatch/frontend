@@ -1,6 +1,5 @@
-import React from 'react'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { setLoginExpired } from 'features/user/user.slice'
