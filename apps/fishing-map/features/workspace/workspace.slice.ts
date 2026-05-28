@@ -48,11 +48,7 @@ import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import {
-  selectIsGFWUser,
-  selectIsGuestUser,
-  selectUserGroups,
-} from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'

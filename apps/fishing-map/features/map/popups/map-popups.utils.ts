@@ -44,7 +44,7 @@ export const getContextValue = (
     return feature.properties.value
   }
   if (valueProperties.length === 1) {
-    return feature.properties?.[valueProperties[0]]
+    return feature.properties?.[valueProperties[0]] ?? (feature.value as string)
   }
   const selectedProperties = Object.fromEntries(
     valueProperties.map((prop) => [prop, feature.properties?.[prop]])
