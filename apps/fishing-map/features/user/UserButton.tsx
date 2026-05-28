@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
@@ -25,18 +26,20 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
+  const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     if (
+      !isSmallScreen &&
       prevStatusRef.current === AsyncReducerStatus.Loading &&
       customStatus === AsyncReducerStatus.Finished
     ) {
       setIsAnimating(true)
     }
     prevStatusRef.current = customStatus
-  }, [customStatus])
+  }, [customStatus, isSmallScreen])
 
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
