@@ -149,11 +149,10 @@ const visibleEventsSelector = selectWorkspaceStateProperty('visibleEvents')
 export const selectWorkspaceVisibleEventsArray = createSelector(
   [visibleEventsSelector],
   (visibleEvents) => {
-    return typeof visibleEvents === 'string'
-      ? visibleEvents === 'all'
-        ? Object.values(EventTypes)
-        : []
-      : [...(visibleEvents as EventTypes[])]
+    if (visibleEvents === 'all') {
+      return Object.values(EventTypes)
+    }
+    return Array.isArray(visibleEvents) ? [...visibleEvents] : []
   }
 )
 
