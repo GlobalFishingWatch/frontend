@@ -1,9 +1,8 @@
-import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { SelfReportedSource } from '@globalfishingwatch/api-types'
 import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
 
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 export type VesselRenderField<Key = string> = {
   key: Key
@@ -38,51 +37,47 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
 
 export const SELF_REPORTED_SECTION_SPLIT = 2
 
-export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
-  [VesselIdentitySourceEnum.SelfReported]: [
-    [
-      { key: 'shipname' },
-      { key: 'shiptypes', renderPlain: true, label: 'vesselType' },
-      { key: 'flag' },
-    ],
-    IDENTIFIER_FIELDS,
-    [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
-    [{ key: 'tonnageGt', label: 'grossTonnage' }],
+export const AIS_SELF_REPORTED_FIELDS: VesselRenderField[][] = [
+  [
+    { key: 'shipname' },
+    { key: 'shiptypes', renderPlain: true, label: 'vesselType' },
+    { key: 'flag' },
   ],
-  [VesselIdentitySourceEnum.Registry]: [
-    COMMON_FIELD_GROUPS,
-    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
-    IDENTIFIER_FIELDS,
-    VESSEL_FISICAL_FEATURES_FIELDS,
-  ],
-}
-
-export const REGISTRY_FIELD_GROUPS: VesselRenderField<
-  keyof Pick<
-    IdentityVesselData,
-    'registryOwners' | 'registryPublicAuthorizations' | 'operator' | 'recordId'
-  >
->[] = [
-  {
-    key: 'registryOwners',
-    label: 'owner',
-    terminologyKey: 'owner',
-  },
-  {
-    key: 'operator',
-    label: 'operator',
-  },
-  {
-    key: 'registryPublicAuthorizations',
-    label: 'authorization',
-    terminologyKey: 'authorization',
-  },
-  {
-    key: 'recordId',
-    label: 'recordId',
-  },
+  IDENTIFIER_FIELDS,
 ]
 
+export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
+  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
+  [{ key: 'tonnageGt', label: 'grossTonnage' }],
+]
+
+export const REGISTRY_FIELDS: VesselRenderField[][] = [
+  COMMON_FIELD_GROUPS,
+  [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
+  IDENTIFIER_FIELDS,
+  VESSEL_FISICAL_FEATURES_FIELDS,
+]
+
+export { COMMON_FIELD_GROUPS as VMS_COMMON_FIELDS }
+
+const REGISTRY_OWNER_FIELD: VesselRenderField = {
+  key: 'registryOwners',
+  label: 'owner',
+  terminologyKey: 'owner',
+}
+const REGISTRY_OPERATOR_FIELD: VesselRenderField = {
+  key: 'operator',
+  label: 'operator',
+}
+const REGISTRY_AUTHORIZATIONS_FIELD: VesselRenderField = {
+  key: 'registryPublicAuthorizations',
+  label: 'authorization',
+  terminologyKey: 'authorization',
+}
+const REGISTRY_RECORDID_FIELD: VesselRenderField = {
+  key: 'recordId',
+  label: 'recordId',
+}
 type CustomVMSGroup = Partial<
   Record<
     SelfReportedSource | `${SelfReportedSource}-${typeof DATASET_PRIVATE_PREFIX}`,
@@ -138,136 +133,48 @@ export const REGISTRY_SOURCES = [
   },
 ]
 
-// Context passed to condition() callbacks in IdentitySection
-export type VesselRenderContext = {
-  identitySource: VesselIdentitySourceEnum
-  isVMS: boolean
-  isChileanVMS: boolean
-  isBrazilVMS: boolean
-  isGFWUser: boolean
-  isJACUser: boolean
-  hasTMTPermission: boolean
-  isPrivateDataset: boolean
-  hasMoreInfo: boolean
-  hasSsvid: boolean
-}
-
-export type IdentityFieldSection = {
-  type: 'fields'
+export type IdentitySection = {
+  type: 'fields' | 'registryFields'
   key: string
   terminologyKey?: keyof I18nNamespaces['data-terminology']
   sectionLabel?: string
-  fields: VesselRenderField[][]
-  condition?: (ctx: VesselRenderContext) => boolean
+  field?: VesselRenderField
+  fields?: VesselRenderField[][]
 }
 
-export type RegistryGroupSection = {
-  type: 'registry'
-  key: string
-  registryField: (typeof REGISTRY_FIELD_GROUPS)[number]
-  condition?: (ctx: VesselRenderContext) => boolean
-}
+export const REGISTRY_IDENTITY_LAYOUT: IdentitySection[] = [
+  { type: 'fields', key: 'registryFields', fields: REGISTRY_FIELDS },
+  { type: 'registryFields', key: 'registryOwners', field: REGISTRY_OWNER_FIELD },
+  { type: 'registryFields', key: 'operator', field: REGISTRY_OPERATOR_FIELD },
+  {
+    type: 'registryFields',
+    key: 'registryPublicAuthorizations',
+    field: REGISTRY_AUTHORIZATIONS_FIELD,
+  },
+  { type: 'registryFields', key: 'recordId', field: REGISTRY_RECORDID_FIELD },
+]
 
-export type RegistryContactSection = {
-  type: 'registryContact'
-  key: string
-  condition?: (ctx: VesselRenderContext) => boolean
-}
-
-export type ExternalLinksSection = {
-  type: 'externalLinks'
-  key: string
-  condition?: (ctx: VesselRenderContext) => boolean
-}
-
-export type IdentitySection =
-  | IdentityFieldSection
-  | RegistryGroupSection
-  | RegistryContactSection
-  | ExternalLinksSection
-
-// t('vessel.selfReportedByVessel')
-// t('vessel.gfwPredictions')
-
-export const FULL_IDENTITY_LAYOUT: IdentitySection[] = [
-  // AIS: Self-reported by vessel
+export const AIS_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedByVessel',
     sectionLabel: 'selfReportedByVessel',
     terminologyKey: 'selfReported',
-    fields: IDENTITY_FIELD_GROUPS[VesselIdentitySourceEnum.SelfReported].slice(
-      0,
-      SELF_REPORTED_SECTION_SPLIT
-    ),
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.SelfReported && !ctx.isVMS,
+    fields: AIS_SELF_REPORTED_FIELDS,
   },
-  // AIS: GFW predictions
   {
     type: 'fields',
     key: 'gfwPredictions',
     sectionLabel: 'gfwPredictions',
     terminologyKey: 'shiptype',
-    fields: IDENTITY_FIELD_GROUPS[VesselIdentitySourceEnum.SelfReported].slice(
-      SELF_REPORTED_SECTION_SPLIT
-    ),
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.SelfReported && !ctx.isVMS,
+    fields: GFW_PREDICTION_FIELDS,
   },
-  // VMS
+]
+
+export const VMS_BASE_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedVMS',
-    fields: IDENTITY_FIELD_GROUPS[VesselIdentitySourceEnum.SelfReported],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.SelfReported && ctx.isVMS,
-  },
-  // Registry: base fields
-  {
-    type: 'fields',
-    key: 'registryFields',
-    fields: IDENTITY_FIELD_GROUPS[VesselIdentitySourceEnum.Registry],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.Registry,
-  },
-  // Registry: owners
-  {
-    type: 'registry',
-    key: 'registryOwners',
-    registryField: REGISTRY_FIELD_GROUPS[0],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.Registry,
-  },
-  // Registry: operator
-  {
-    type: 'registry',
-    key: 'operator',
-    registryField: REGISTRY_FIELD_GROUPS[1],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.Registry,
-  },
-  // Registry: authorizations
-  {
-    type: 'registry',
-    key: 'registryPublicAuthorizations',
-    registryField: REGISTRY_FIELD_GROUPS[2],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.Registry,
-  },
-  // Registry: recordId (GFW only)
-  {
-    type: 'registry',
-    key: 'recordId',
-    registryField: REGISTRY_FIELD_GROUPS[3],
-    condition: (ctx) => ctx.identitySource === VesselIdentitySourceEnum.Registry,
-  },
-  // Registry: TMT card
-  {
-    type: 'registryContact',
-    key: 'registryContact',
-    condition: (ctx) =>
-      ctx.identitySource === VesselIdentitySourceEnum.Registry &&
-      ctx.hasMoreInfo &&
-      ctx.hasTMTPermission,
-  },
-  // External tool links (all modes with SSVID)
-  {
-    type: 'externalLinks',
-    key: 'externalLinks',
-    condition: (ctx) => ctx.hasSsvid,
+    fields: [COMMON_FIELD_GROUPS],
   },
 ]

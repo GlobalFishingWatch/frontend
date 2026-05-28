@@ -27,6 +27,7 @@
   border-radius: var(--border-radius-1);
   border: var(--border);
   margin-block: var(--space-S);
+  margin-inline: calc(-1 * var(--space-S));
   background: var(--color-off-white-1);
 }
 
@@ -43,13 +44,10 @@
 
 .fieldGroupContainer {
   padding-block: var(--space-S);
-}
-
-.fieldGroupContainer:not(:last-child) {
   border-bottom: var(--border);
 }
 
-.sectionContent .fieldGroupContainer:not(:last-child) {
+.sectionContent .fieldGroupContainer {
   border-bottom: none;
 }
 
@@ -113,6 +111,10 @@
 .registrySourceLogo {
   width: 98px;
   height: 26px;
+}
+
+.externalToolLinksWrapper {
+  margin-top: var(--space-S);
 }
 
 .externalToolLinks {

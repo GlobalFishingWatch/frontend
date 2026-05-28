@@ -9,13 +9,18 @@ import DataTerminology from 'features/data-terminology/DataTerminology'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import VesselTypesField from 'features/vessel/identity/fields/VesselTypesField'
-import type { IdentityFieldSection } from 'features/vessel/identity/vessel-identity.config'
+import type {
+  IdentitySection,
+  VesselRenderField,
+} from 'features/vessel/identity/vessel-identity.config'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from '../VesselIdentity.module.css'
 
 type VesselIdentityFieldsProps = {
-  section: IdentityFieldSection
+  fields: IdentitySection['fields']
+  label: IdentitySection['sectionLabel']
+  terminologyKey: IdentitySection['terminologyKey']
   vesselIdentity: VesselLastIdentity
   identitySource: VesselIdentitySourceEnum
   isVMS?: boolean
@@ -24,7 +29,7 @@ type VesselIdentityFieldsProps = {
 }
 
 const resolveFieldValue = (
-  field: IdentityFieldSection['fields'][number][number],
+  field: VesselRenderField,
   vesselIdentity: VesselLastIdentity,
   isChileanVMS?: boolean
 ): string => {
@@ -43,7 +48,9 @@ const resolveFieldValue = (
 }
 
 const VesselIdentityFields = ({
-  section,
+  fields,
+  label,
+  terminologyKey,
   vesselIdentity,
   identitySource,
   isVMS,
@@ -52,7 +59,7 @@ const VesselIdentityFields = ({
 }: VesselIdentityFieldsProps) => {
   const { t } = useTranslation()
 
-  const fieldGroups = section.fields?.map((fieldGroup, index) => (
+  const fieldGroups = fields?.map((fieldGroup, index) => (
     <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
       {fieldGroup.map((field) => {
         let label = field.label || field.key
@@ -98,15 +105,15 @@ const VesselIdentityFields = ({
     </div>
   ))
 
-  if (section.sectionLabel) {
+  if (label) {
     return (
       <div className={styles.identitySection}>
         <div className={styles.sectionHeader}>
-          <label>{t((t: any) => t.vessel[section.sectionLabel!])}</label>
-          {section.terminologyKey && (
+          <label>{t((t: any) => t.vessel[label!])}</label>
+          {terminologyKey && (
             <DataTerminology
-              title={t((t: any) => t.vessel[section.sectionLabel!])}
-              terminologyKey={section.terminologyKey}
+              title={t((t: any) => t.vessel[label!])}
+              terminologyKey={terminologyKey}
             />
           )}
         </div>

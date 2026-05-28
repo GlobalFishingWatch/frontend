@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -5,8 +6,7 @@ import cx from 'classnames'
 import filesaver from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -16,11 +16,6 @@ import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
-import {
-  type IdentityFieldSection,
-  REGISTRY_SOURCES,
-} from 'features/vessel/identity/vessel-identity.config'
-import { useVesselIdentityLayout } from 'features/vessel/identity/vessel-identity.hooks'
 import VesselExternalToolLinks from 'features/vessel/identity/VesselExternalToolLinks'
 import VesselIdentitySelector from 'features/vessel/identity/VesselIdentitySelector'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -43,13 +38,9 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 
-import VesselIdentityFields from './fields/VesselIdentityFields'
-import VesselRegistryContact from './fields/VesselRegistryContact'
-import VesselRegistryField from './fields/VesselRegistryField'
+import styles from '../VesselIdentity.module.css'
 
-import styles from './VesselIdentity.module.css'
-
-const VesselIdentityTab = () => {
+const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
@@ -58,24 +49,13 @@ const VesselIdentityTab = () => {
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
   const { setTimerange } = useTimerangeConnect()
-  const activeSections = useVesselIdentityLayout()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
   const latestVesselIdentity = getLatestIdentityPrioritised(vesselData)
 
   const source = useMemo(() => vesselIdentity?.sourceCode, [vesselIdentity])
 
-  const isVMS = vesselIdentity?.sourceCode?.some((s) =>
-    s.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
-  )
-  const isChileanVMS = source?.includes(SelfReportedSource.Chile) || vesselIdentity?.flag === 'CHL'
-  const isBrazilVMS = source?.includes(SelfReportedSource.Brazil)
-  const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
-
-  const showSections = activeSections.some(
-    (s): s is IdentityFieldSection =>
-      s.type === 'fields' && !!('sectionLabel' in s && s.sectionLabel)
-  )
+  const hasSsvid = !!vesselIdentity?.ssvid
 
   const onTimeRangeClick = () => {
     setTimerange({
@@ -97,20 +77,20 @@ const VesselIdentityTab = () => {
       flag: t((t) => t[flag], { defaultValue: flag, ns: 'flags' }) as string,
       shiptypes: getVesselShipTypeLabel(vesselIdentity, { joinCharacter: ' -' }),
       geartypes: getVesselGearTypeLabel(vesselIdentity, { joinCharacter: ' -' }),
-      ...(identitySource === VesselIdentitySourceEnum.Registry
-        ? {
-            registryPublicAuthorizations:
-              registryPublicAuthorizations &&
-              filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid),
-            registryOwners:
-              registryOwners &&
-              (filterRegistryInfoByDateAndSSVID(
-                registryOwners,
-                timerange,
-                ssvid
-              ) as VesselRegistryOwner[]),
-          }
-        : { registryPublicAuthorizations: undefined, registryOwners: undefined }),
+      registryPublicAuthorizations:
+        identitySource === VesselIdentitySourceEnum.Registry
+          ? registryPublicAuthorizations &&
+            filterRegistryInfoByDateAndSSVID(registryPublicAuthorizations, timerange, ssvid)
+          : undefined,
+      registryOwners:
+        identitySource === VesselIdentitySourceEnum.Registry
+          ? registryOwners &&
+            (filterRegistryInfoByDateAndSSVID(
+              registryOwners,
+              timerange,
+              ssvid
+            ) as VesselRegistryOwner[])
+          : undefined,
     }
     const data = parseVesselToCSV(filteredVesselIdentity)
     const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
@@ -118,12 +98,12 @@ const VesselIdentityTab = () => {
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: 'vessel_identity_download',
-      label: identitySource,
+      label: VesselIdentitySourceEnum.Registry,
     })
   }
 
   return (
-    <div className={cx(styles.container, { [styles.tightPadding]: showSections })}>
+    <div className={styles.container}>
       <div className={cx(styles.fieldGroup)}>
         {identitySource === VesselIdentitySourceEnum.Registry && (
           <div>
@@ -145,12 +125,7 @@ const VesselIdentityTab = () => {
             )}
           </div>
         )}
-        <div
-          className={cx(styles.twoCells, {
-            [styles.sectionContent]: showSections,
-            [styles.fieldGroupContainer]: showSections,
-          })}
-        >
+        <div className={styles.twoCells}>
           <label>{t((t) => t.common.date, { count: 2 })}</label>
           <div className={styles.timerange}>
             <VesselIdentityField
@@ -170,7 +145,7 @@ const VesselIdentityTab = () => {
           </div>
         </div>
         <div className={styles.actionsContainer}>
-          {(isJACUser || isGFWUser) && !source?.[0].includes('VMS') && <VesselInfoCorrection />}
+          {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
           <UserLoggedIconButton
             type="border"
             icon="download"
@@ -183,53 +158,19 @@ const VesselIdentityTab = () => {
           />
         </div>
       </div>
-      {vesselIdentity && (
-        <div className={styles.fields}>
-          {activeSections.map((section) => {
-            if (section.type === 'fields') {
-              return (
-                <VesselIdentityFields
-                  key={section.key}
-                  section={section}
-                  vesselIdentity={vesselIdentity}
-                  identitySource={identitySource}
-                  isVMS={isVMS}
-                  isChileanVMS={isChileanVMS}
-                  isBrazilVMS={isBrazilVMS}
-                />
-              )
-            }
-            if (section.type === 'registry') {
-              return (
-                <VesselRegistryField
-                  key={section.key}
-                  registryField={section.registryField}
-                  vesselIdentity={vesselIdentity}
-                />
-              )
-            }
-            if (section.type === 'registryContact') {
-              return (
-                <VesselRegistryContact key="registryContact" registrySource={registrySourceData} />
-              )
-            }
-            if (section.type === 'externalLinks') {
-              return (
-                <VesselExternalToolLinks
-                  key="externalLinks"
-                  vesselIdentity={vesselIdentity}
-                  latestSsvid={latestVesselIdentity?.ssvid}
-                  showSections={showSections}
-                />
-              )
-            }
-            return null
-          })}
-        </div>
-      )}
+      <div className={styles.fields}>
+        {children}
+        {vesselIdentity && hasSsvid && (
+          <VesselExternalToolLinks
+            key="externalLinks"
+            vesselIdentity={vesselIdentity}
+            latestSsvid={latestVesselIdentity?.ssvid}
+          />
+        )}
+      </div>
       <VesselIdentitySelector />
     </div>
   )
 }
 
-export default VesselIdentityTab
+export default IdentityTabWrapper

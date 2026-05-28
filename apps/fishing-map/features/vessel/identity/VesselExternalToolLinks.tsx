@@ -12,26 +12,14 @@ import styles from './VesselIdentity.module.css'
 type VesselExternalToolLinksProps = {
   vesselIdentity: VesselLastIdentity
   latestSsvid?: string
-  showSections?: boolean
 }
 
-const VesselExternalToolLinks = ({
-  vesselIdentity,
-  latestSsvid,
-  showSections,
-}: VesselExternalToolLinksProps) => {
+const VesselExternalToolLinks = ({ vesselIdentity, latestSsvid }: VesselExternalToolLinksProps) => {
   const { t, i18n } = useTranslation()
   const { ssvid, imo, callsign, shipname, nShipname } = vesselIdentity
 
   return (
-    <div
-      className={cx(
-        { [styles.identitySection]: showSections },
-        { [styles.sectionContent]: showSections },
-        { [styles.fieldGroupContainer]: showSections },
-        'print-hidden'
-      )}
-    >
+    <div className={cx('print-hidden', styles.externalToolLinksWrapper)}>
       <label>{t((t) => t.common.viewIn)}</label>
       <div className={styles.externalToolLinks}>
         <a

@@ -3,37 +3,28 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { DATASET_PRIVATE_PREFIX, VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
-import { selectHasTMTPermission } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
-import type {
-  IdentitySection,
-  VesselRenderContext,
-} from 'features/vessel/identity/vessel-identity.config'
-import {
-  CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
-  FULL_IDENTITY_LAYOUT,
-  IDENTITY_FIELD_GROUPS,
-} from 'features/vessel/identity/vessel-identity.config'
+import AISIdentityTab from 'features/vessel/identity/tabs/IdentityTabAIS'
+import VMSIdentityTab from 'features/vessel/identity/tabs/IdentityTabVMS'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
-  selectVesselDatasetId,
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
+import IdentityTabRegistry from './tabs/IdentityTabRegistry'
+import IdentityTabWrapper from './tabs/IdentityTabWrapper'
+
 import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {
   const vesselData = useSelector(selectVesselInfoData)
-  const identitySource = useSelector(selectVesselIdentitySource)
   const registryDisabled = !vesselData.identities.some(
     (i) => i.identitySource === VesselIdentitySourceEnum.Registry
   )
@@ -41,13 +32,21 @@ export function useVesselIdentities() {
     (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
   )
 
-  return { identitySource, registryDisabled, selfReportedIdentities }
+  return { registryDisabled, selfReportedIdentities }
 }
 
 export function useVesselIdentityTabs() {
   const { t } = useTranslation()
-  const { identitySource, registryDisabled, selfReportedIdentities } = useVesselIdentities()
+  const identitySource = useSelector(selectVesselIdentitySource)
+  const { registryDisabled, selfReportedIdentities } = useVesselIdentities()
   const { replaceQueryParams } = useReplaceQueryParams()
+  const vesselData = useSelector(selectVesselInfoData)
+  const identityId = useSelector(selectVesselIdentityId)
+  const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
+
+  const isVMS = vesselIdentity?.sourceCode?.some((s) =>
+    s.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+  )
 
   const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
     () => [
@@ -65,6 +64,11 @@ export function useVesselIdentityTabs() {
           </span>
         ),
         disabled: registryDisabled,
+        content: (
+          <IdentityTabWrapper>
+            <IdentityTabRegistry />
+          </IdentityTabWrapper>
+        ),
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
@@ -80,9 +84,12 @@ export function useVesselIdentityTabs() {
           </span>
         ),
         disabled: selfReportedIdentities.length === 0,
+        content: (
+          <IdentityTabWrapper>{isVMS ? <VMSIdentityTab /> : <AISIdentityTab />}</IdentityTabWrapper>
+        ),
       },
     ],
-    [identitySource, registryDisabled, selfReportedIdentities, t]
+    [identitySource, isVMS, registryDisabled, selfReportedIdentities, t]
   )
 
   useEffect(() => {
@@ -97,74 +104,6 @@ export function useVesselIdentityTabs() {
     () => ({ identityTabs, selfReportedIdentities, registryDisabled }),
     [identityTabs, registryDisabled, selfReportedIdentities]
   )
-}
-
-export function useVesselIdentityLayout(): IdentitySection[] {
-  const vesselData = useSelector(selectVesselInfoData)
-  const identityId = useSelector(selectVesselIdentityId)
-  const vesselDatasetId = useSelector(selectVesselDatasetId)
-  const identitySource = useSelector(selectVesselIdentitySource)
-  const isGFWUser = useSelector(selectIsGFWUser)
-  const isJACUser = useSelector(selectIsJACUser)
-  const hasTMTPermission = useSelector(selectHasTMTPermission)
-
-  return useMemo(() => {
-    const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
-
-    const isVMS = !!vesselIdentity?.sourceCode?.some((s) =>
-      s.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
-    )
-    const isChileanVMS =
-      !!vesselIdentity?.sourceCode?.includes(SelfReportedSource.Chile) ||
-      vesselIdentity?.flag === 'CHL'
-    const isBrazilVMS = !!vesselIdentity?.sourceCode?.includes(SelfReportedSource.Brazil)
-    const hasMoreInfo =
-      !!vesselIdentity?.hasComplianceInfo ||
-      vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
-    const hasSsvid = !!vesselIdentity?.ssvid
-    const privateDs = isPrivateDataset({ id: vesselDatasetId })
-
-    const ctx: VesselRenderContext = {
-      identitySource,
-      isVMS,
-      isChileanVMS,
-      isBrazilVMS,
-      isGFWUser: isGFWUser ?? false,
-      isJACUser: isJACUser ?? false,
-      hasTMTPermission,
-      isPrivateDataset: privateDs,
-      hasMoreInfo,
-      hasSsvid,
-    }
-
-    const activeSections = FULL_IDENTITY_LAYOUT.filter(
-      (section) => !section.condition || section.condition(ctx)
-    )
-
-    // For VMS sections, replace the generic fields with country-specific ones when available
-    return activeSections.map((section) => {
-      if (section.type !== 'fields' || section.key !== 'selfReportedVMS') return section
-      const baseSource = vesselIdentity?.sourceCode?.[0] as SelfReportedSource
-      const privateSource = `${baseSource}-${DATASET_PRIVATE_PREFIX}` as SelfReportedSource
-      const customFields = privateDs
-        ? CUSTOM_VMS_IDENTITY_FIELD_GROUPS[privateSource] ||
-          CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
-        : CUSTOM_VMS_IDENTITY_FIELD_GROUPS[baseSource]
-      if (!customFields?.length) return section
-      return {
-        ...section,
-        fields: [...IDENTITY_FIELD_GROUPS[VesselIdentitySourceEnum.SelfReported], ...customFields],
-      }
-    })
-  }, [
-    vesselData,
-    identityId,
-    vesselDatasetId,
-    identitySource,
-    isGFWUser,
-    isJACUser,
-    hasTMTPermission,
-  ])
 }
 
 export function useVesselIdentityChoice() {
