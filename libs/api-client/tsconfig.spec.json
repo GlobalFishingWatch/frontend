@@ -5,5 +5,5 @@
     "tsBuildInfoFile": "./tsconfig.spec.tsbuildinfo",
     "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node", "vitest"]
   },
-  "include": ["vitest.config.mts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "include": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

@@ -156,14 +156,14 @@
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts"
+        "configFile": "apps/fishing-map/vitest.config.ts"
       }
     },
     "test:changed": {
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "changed": true
       }
     },
@@ -179,7 +179,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "mode": "coverage"
       }
     },
@@ -187,7 +187,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "watch": true
       }
     },
@@ -195,7 +195,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "mode": "ui",
         "watch": true
       }

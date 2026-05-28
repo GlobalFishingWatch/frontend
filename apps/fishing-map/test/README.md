@@ -98,7 +98,7 @@ Tests use **pre-authentication** to avoid navigating to external OAuth pages dur
 
 **Enable global setup:**
 
-In [vitest.config.mts](../vitest.config.mts), uncomment the `globalSetup` line:
+In [vitest.config.ts](../vitest.config.ts), uncomment the `globalSetup` line:
 
 ```typescript
 globalSetup: './test/auth-setup.ts',
