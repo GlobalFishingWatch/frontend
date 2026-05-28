@@ -75,7 +75,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
-  { id: string; locale?: Locale },
+  { id: string; locale?: Locale | 'source' },
   {
     rejectValue: AsyncError
   }
@@ -85,7 +85,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
       includes: ['DESCRIPTION'],
     })
     const dataset = await GFWAPI.fetch<Dataset>(
-      `/datasets/${id}?cache=false&locale=${locale.toUpperCase()}&${includesParam}`
+      `/datasets/${id}?cache=false&locale=${locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase()}&${includesParam}`
     )
     return dataset
   } catch (e: any) {
