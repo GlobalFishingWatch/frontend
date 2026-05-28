@@ -13,3 +13,6 @@ allowBuilds:
   protobufjs: true
   sharp: true
   unrs-resolver: true
+
+patchedDependencies:
+  '@nx/vitest@22.7.5': patches/@nx__vitest@22.7.5.patch
