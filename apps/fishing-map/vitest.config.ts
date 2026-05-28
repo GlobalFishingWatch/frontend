@@ -1,15 +1,19 @@
 import { playwright } from '@vitest/browser-playwright'
 import { loadEnv } from 'vite'
+import type { ViteUserConfig } from 'vitest/config'
 import { defineConfig } from 'vitest/config'
+import type { BrowserProviderOption } from 'vitest/node'
 
 import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins'
 import { basePath, plugins } from './vite.config'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
-const defaultPlaywrightProvider = playwright()
+const playwrightProvider: BrowserProviderOption = playwright({
+  persistentContext: true,
+})
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode }): ViteUserConfig => {
   const env = loadEnv(mode, process.cwd(), '')
 
   const isChromeOnly = env.TEST_CHROME_ONLY === 'true'
@@ -67,7 +71,7 @@ export default defineConfig(({ mode }) => {
       retry: 0,
       browser: {
         enabled: true,
-        provider: defaultPlaywrightProvider,
+        provider: playwrightProvider,
         ui: isUiMode,
         headless: !isUiMode,
         viewport: DEFAULT_VIEWPORT,
