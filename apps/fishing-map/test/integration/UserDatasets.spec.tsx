@@ -9,7 +9,6 @@ import {
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
@@ -17,8 +16,8 @@ import { makeStore } from 'store'
 describe('User Datasets', () => {
   it('should show login prompt when user is not logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
 
     await openLayerModalButton.click()
@@ -34,8 +33,8 @@ describe('User Datasets', () => {
 
   it('should show user dataset sections when user is logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole } = await render({
       store,
       authenticated: true,
     })
@@ -60,8 +59,8 @@ describe('User Datasets', () => {
   it('should be able to add a tracks user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole } = await render({
       store,
       authenticated: true,
       jotaiStore,
@@ -140,8 +139,8 @@ describe('User Datasets', () => {
   it('should add a polygon user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole } = await render({
       store,
       authenticated: true,
       jotaiStore,
@@ -218,8 +217,8 @@ describe('User Datasets', () => {
   it('should add a points user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole } = await render({
       store,
       authenticated: true,
       jotaiStore,
@@ -295,8 +294,8 @@ describe('User Datasets', () => {
   it('should be able to remove a user dataset and not see it on map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByRole, getByText } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByRole, getByText } = await render({
       store,
       authenticated: true,
       jotaiStore,
@@ -366,8 +365,8 @@ describe('User Datasets', () => {
 
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByText } = await render(<App />, {
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByText } = await render({
       store,
       authenticated: true,
       jotaiStore,

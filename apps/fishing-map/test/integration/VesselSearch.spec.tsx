@@ -1,75 +1,78 @@
-import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { navigateToVesselSearchAction } from 'test/utils/actions/navigateToVesselSearch'
+import {
+  clickMapAtCoordinates,
+  GABU_REEFER_VIEWER_COORDS,
+  waitForVesselTrackReady,
+} from 'test/utils/map'
+import { navigateToVesselSearch } from 'test/utils/navigation/navigateToVesselSearch'
 import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
-import { mapInstanceAtom } from 'features/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
 
 describe('Vessel search', async () => {
   it('can search for a vessel and see it on the map', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
 
-    store.dispatch(navigateToVesselSearchAction)
-
-    const { getByTestId } = await render(<App />, {
+    const { getByTestId, router } = await render({
       store,
       jotaiStore,
     })
+    await router.navigate(navigateToVesselSearch())
 
     await userEvent.type(getByTestId('search-vessels-basic-input'), 'Gabu Reefer')
     await userEvent.click(getByTestId('link-vessel-profile'))
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await waitForVesselTrackReady(jotaiStore, getByTestId)
+    await clickMapAtCoordinates({
+      jotaiStore,
+      getByTestId,
+      longitude: GABU_REEFER_VIEWER_COORDS[0],
+      latitude: GABU_REEFER_VIEWER_COORDS[1],
+    })
 
     await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
-    const mapInstance = jotaiStore.get(mapInstanceAtom)
-    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
-    const [x, y] = viewport?.project([-15, 28]) || [0, 0]
-
-    await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
-    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
-
-    await expect.element(getByTestId('map-popup-wrapper').getByText('Gabu Reefer').first()).toBeVisible()
+      .element(getByTestId('map-popup-wrapper').getByText('Gabu Reefer').first())
+      .toBeVisible()
   })
 
   it('preserves vessel search value when navigating away and back', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId } = await render(<App />, {
+    const { getByTestId, router } = await render({
       store,
     })
-
-    store.dispatch(navigateToVesselSearchAction)
+    await router.navigate(navigateToVesselSearch())
     await userEvent.type(getByTestId('search-vessels-basic-input'), 'Gabu Reefer')
-    await userEvent.click(getByTestId('link-search'))
-    await userEvent.click(getByTestId('link-search'))
+    await expect
+      .poll(() => store.getState().location.query.query, { timeout: 5000 })
+      .toBe('Gabu Reefer')
+    await router.navigate({
+      to: ROUTE_PATHS.WORKSPACE,
+      params: {
+        category: 'fishing-activity',
+        workspaceId: 'default-public',
+      },
+      search: store.getState().location.query,
+    })
+    await router.navigate(navigateToVesselSearch({ query: 'Gabu Reefer' }))
 
-    expect(getByTestId('search-vessels-basic-input')).toHaveValue('Gabu Reefer')
+    await expect
+      .poll(() => getByTestId('search-vessels-basic-input').element().value, { timeout: 10000 })
+      .toBe('Gabu Reefer')
   })
 
   it('reacts to clearing the search input', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId } = await render(<App />, {
+    const { getByTestId, router } = await render({
       store,
     })
-
-    store.dispatch(navigateToVesselSearchAction)
+    await router.navigate(navigateToVesselSearch())
     const searchVesselInput = getByTestId('search-vessels-basic-input')
     await userEvent.type(searchVesselInput, 'Gabu Reefer')
 

@@ -199,8 +199,13 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
       return
     }
 
-    await runLoginFlow(email, password)
-    logBanner('Authentication Setup Completed Successfully')
+    try {
+      await runLoginFlow(email, password)
+      logBanner('Authentication Setup Completed Successfully')
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      log(`⚠️  Authentication setup failed. Unauthenticated tests will still run. ${errorMessage}`)
+    }
   } finally {
     closeLogStream()
   }

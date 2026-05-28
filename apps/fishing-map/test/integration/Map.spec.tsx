@@ -1,14 +1,12 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState, defaultViewport } from 'test/utils/store/redux-store-test'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
-import { DEFAULT_VIEWPORT } from 'data/config'
-import App from 'features/app/App'
 import { mapInstanceAtom, viewStateAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
@@ -16,26 +14,22 @@ import { makeStore } from 'store'
 
 describe('Map', () => {
   it('should render a map element and it should be loaded and with the default state', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
     const mapElement = getByTestId('map-container')
 
     const viewState = jotaiStore.get(viewStateAtom)
 
     await expect.element(mapElement).toBeVisible()
 
-    expect(viewState).toMatchObject({
-      latitude: DEFAULT_VIEWPORT.latitude,
-      longitude: DEFAULT_VIEWPORT.longitude,
-      zoom: DEFAULT_VIEWPORT.zoom,
-    })
+    expect(viewState).toMatchObject(defaultViewport)
   })
 
   it('should pass zoom, latitude and longitude changes of query params to map state', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
 
@@ -61,9 +55,9 @@ describe('Map', () => {
   })
 
   it('should preserve map state when adding a new layer', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
 
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-eez-button')
@@ -77,17 +71,13 @@ describe('Map', () => {
 
     const viewState = jotaiStore.get(viewStateAtom)
 
-    expect(viewState).toMatchObject({
-      latitude: DEFAULT_VIEWPORT.latitude,
-      longitude: DEFAULT_VIEWPORT.longitude,
-      zoom: DEFAULT_VIEWPORT.zoom,
-    })
+    expect(viewState).toMatchObject(defaultViewport)
   })
 
   it('should preserve map state when removing a layer', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     const removeLayerButton = getByTestId('activity-layer-panel-remove-presence')
 
@@ -96,18 +86,14 @@ describe('Map', () => {
     await removeLayerButton.click()
 
     const viewState = jotaiStore.get(viewStateAtom)
-    expect(viewState).toMatchObject({
-      latitude: DEFAULT_VIEWPORT.latitude,
-      longitude: DEFAULT_VIEWPORT.longitude,
-      zoom: DEFAULT_VIEWPORT.zoom,
-    })
+    expect(viewState).toMatchObject(defaultViewport)
   })
 
   it('should update layers when interacting with the map', async () => {
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -130,7 +116,7 @@ describe('Map', () => {
 
     // Verify zoom increased in viewport
     const viewStateAfter = jotaiStore.get(viewStateAtom)
-    expect(viewStateAfter.zoom).toBe(DEFAULT_VIEWPORT.zoom + 1)
+    expect(viewStateAfter.zoom).toBe(defaultViewport.zoom + 1)
 
     // Get zoom levels from new tile requests
     const newTileZooms = fetchSpy.mock.calls
@@ -151,13 +137,11 @@ describe('Map', () => {
     fetchSpy.mockRestore()
   })
 
-  //skipping as we removed the interval buttons
-  it.skip('should reflect period changes on the state and map', async () => {
-    const store = makeStore(defaultState, [], true)
+  it('should reflect period changes on the state and map', async () => {
+    const store = makeStore(defaultState)
     const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
-
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -180,11 +164,10 @@ describe('Map', () => {
     )
   })
 
-  //skipping as we removed the interval buttons
-  it.skip('should preserve map state when changing period', async () => {
-    const store = makeStore(defaultState, [], true)
+  it('should preserve map state when changing period', async () => {
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -196,16 +179,15 @@ describe('Map', () => {
     const viewState = jotaiStore.get(viewStateAtom)
 
     expect(viewState).toMatchObject({
-      latitude: DEFAULT_VIEWPORT.latitude,
-      longitude: DEFAULT_VIEWPORT.longitude,
-      zoom: DEFAULT_VIEWPORT.zoom + 1,
+      ...defaultViewport,
+      zoom: defaultViewport.zoom + 1,
     })
   })
 
   it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore, authenticated: true })
+    const { getByTestId } = await render({ store, jotaiStore, authenticated: true })
 
     await userEvent.dragAndDrop(getByTestId('app-main'), getByTestId('app-main'), {
       sourcePosition: { x: 100, y: 35 },

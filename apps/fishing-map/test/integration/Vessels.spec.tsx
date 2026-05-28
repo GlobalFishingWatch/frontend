@@ -8,7 +8,6 @@ import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
@@ -19,12 +18,12 @@ describe('Vessel map popup', () => {
   })
 
   it('should open vessel popup on vessel click and show tile related info', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
     const mapPopup = getByTestId('map-popup-wrapper')
@@ -57,12 +56,12 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to close an opened popup', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
     const mapPopup = getByTestId('map-popup-wrapper')
@@ -91,12 +90,12 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to navigate to vessel viewer inside the vessel popup', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
 
@@ -125,11 +124,11 @@ describe('Vessel map popup', () => {
 
   it('should display the vessel track on the timebar', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const { getByTestId, getByText } = await render({ store })
 
     const timebarElement = getByTestId('timebar-wrapper')
 
@@ -152,7 +151,7 @@ describe('Vessel map popup', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
 
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
     const mapPopup = getByTestId('map-popup-wrapper')
@@ -242,12 +241,12 @@ describe('Vessel map popup', () => {
   })
 
   it('should show vessel info on vessel hover', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
     const mapElement = getByTestId('app-main')
 
     await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -272,11 +271,11 @@ describe('Vessel map popup', () => {
   })
 
   it('should show vessel name, flag and date on vessel name hover on sidebar', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
 
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const { getByTestId, getByText } = await render({ store })
 
     const vesselNameElement = getByTestId('vessel-layer-vessel-name')
 
@@ -292,10 +291,10 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to filter vessels by flag', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
 
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
 
     await userEvent.click(getByTestId('activity-layer-panel-switch-ais'))
     await userEvent.click(getByTestId('activity-layer-panel-switch-vms'))
@@ -332,11 +331,11 @@ describe('Vessel map popup', () => {
   })
 
   it('should be able to interact with vessels after filtering by flag', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
     store.dispatch(addVesselToWorkspaceAction)
 
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
 
     await userEvent.click(getByTestId('activity-layer-panel-switch-ais'))
     await userEvent.click(getByTestId('activity-layer-panel-switch-vms'))

@@ -6,7 +6,6 @@ import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
@@ -18,9 +17,9 @@ describe('App Timebar Integration', () => {
 
   it('the map should be interactive after timebar interaction', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, {
+    const { getByTestId } = await render({
       store,
       jotaiStore,
     })
@@ -37,10 +36,10 @@ describe('App Timebar Integration', () => {
       steps: 5, // This is needed to trigger the drag event, as a single step is not captured
     })
 
-    const actions = testingMiddleware.getActions()
-
-    const timebarAction = actions.findLast((action) => action.type === 'timebar/setHighlightedTime')
+    const timebarAction = testingMiddleware.getLastActionByType('timebar/setHighlightedTime')
     expect(timebarAction).toBeDefined()
+    expect(timebarAction?.payload?.start).toBeDefined()
+    expect(timebarAction?.payload?.end).toBeDefined()
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -63,8 +62,8 @@ describe('App Timebar Integration', () => {
   })
 
   it('events should be visible on timebar', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId, getByText } = await render(<App />, {
+    const store = makeStore(defaultState)
+    const { getByTestId, getByText } = await render({
       store,
     })
 
@@ -82,8 +81,8 @@ describe('App Timebar Integration', () => {
   })
 
   it('detections should be visible on timebar', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId, getByText } = await render(<App />, {
+    const store = makeStore(defaultState)
+    const { getByTestId, getByText } = await render({
       store,
     })
 

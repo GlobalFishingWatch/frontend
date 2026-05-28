@@ -1,10 +1,8 @@
-import React from 'react'
 import { render } from 'test/appTestUtils'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState, defaultViewport } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Fishing Map App', () => {
@@ -15,7 +13,7 @@ describe('Fishing Map App', () => {
   it('should reflect store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId } = await render(<App />, { store })
+    const { getByTestId } = await render({ store })
 
     const button = getByTestId('activity-layer-panel-switch-ais')
 
@@ -41,7 +39,7 @@ describe('Fishing Map App', () => {
   it('should preserve map previous state on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId } = await render(<App />, { store })
+    const { getByTestId } = await render({ store })
 
     await getByTestId('map-control-zoom-in').click()
 

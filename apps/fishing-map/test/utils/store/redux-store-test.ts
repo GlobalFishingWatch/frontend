@@ -51,8 +51,15 @@ export function getDefaultStateWithDatasets(
 
 export const defaultState = getDefaultState()
 
+const getDefaultViewportProperty = (property: 'latitude' | 'longitude' | 'zoom') => {
+  return (
+    ((defaultState.location.query as QueryParams)[property] as number) ||
+    (defaultState.workspace.data.viewport[property] as number)
+  )
+}
+
 export const defaultViewport = {
-  latitude: (defaultState.location.query as QueryParams).latitude as number,
-  longitude: (defaultState.location.query as QueryParams).longitude as number,
-  zoom: (defaultState.location.query as QueryParams).zoom as number,
+  latitude: getDefaultViewportProperty('latitude'),
+  longitude: getDefaultViewportProperty('longitude'),
+  zoom: getDefaultViewportProperty('zoom'),
 }

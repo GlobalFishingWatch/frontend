@@ -1,7 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { navigateToPolygonEditorAction } from 'test/utils/actions/navigateToPolygonEditor'
+import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
 import { getDefaultStateWithDatasets } from 'test/utils/store/redux-store-test'
 import {
   USER_POLYGON_DATASET,
@@ -13,9 +13,9 @@ import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
-import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
@@ -23,13 +23,13 @@ const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 describe('Polygon', () => {
   it.only('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
     // await render(<App />, { authenticated: true, store })
 
     // store.dispatch(navigateToPolygonEditorAction)
 
-    const { getByTestId, getByRole } = await render(<App />, { authenticated: true, store })
+    const { getByTestId, getByRole } = await render({ authenticated: true, store })
 
     await userEvent.click(getByTestId('activity-layer-panel-switch-ais'))
     await userEvent.click(getByTestId('activity-layer-panel-switch-vms'))
@@ -47,16 +47,16 @@ describe('Polygon', () => {
 
     const navigateAction = testingMiddleware.getLastActionByType('HOME')
 
-    expect(navigateAction.query).toMatchObject(navigateToPolygonEditorAction.query)
+    expect(navigateAction.query).toMatchObject(navigateToPolygonEditor().search)
   })
 
   it('should load the polygon in the map', async () => {
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    store.dispatch(navigateToPolygonEditorAction)
+    const { getByTestId, router } = await render({ store, jotaiStore })
 
-    await render(<App />, { store, jotaiStore })
+    await router.navigate(navigateToPolygonEditor())
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
@@ -74,7 +74,7 @@ describe('Polygon', () => {
         },
         'user-polygons-1771416000000-1771416000000': {
           loaded: true,
-          cacheHash: '',
+          cacheHash: expect.stringContaining('user-polygons-1771416000000-1771416000000'),
         },
         'draw-layer': {
           loaded: true,
@@ -89,8 +89,8 @@ describe('Polygon', () => {
 
     try {
       const jotaiStore = createJotaiStore()
-      const store = makeStore(defaultState, [], true)
-      const { getByTestId, getByText } = await render(<App />, {
+      const store = makeStore(defaultState)
+      const { getByTestId, getByText, router } = await render({
         store,
         jotaiStore,
         authenticated: true,
@@ -129,16 +129,27 @@ describe('Polygon', () => {
       //Delete layer after test
       // await cleanupExistingTestPolygon(store)
       window.confirm = () => true
-      await userEvent.click(getByTestId('sidebar-login-icon'))
-      await userEvent.click(getByText('Dataset'))
+      await router.navigate({
+        to: ROUTE_PATHS.USER,
+        search: {
+          ...store.getState().location.query,
+          userTab: 'dataset',
+        },
+      })
 
       await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
 
-      const deleteButtons = getByTestId(/polygon-drawing-test-/).all()
+      await expect
+        .poll(() => getByTestId(/delete-dataset-.*polygon-drawing-test/).all().length, {
+          timeout: 30000,
+        })
+        .toBeGreaterThan(0)
+
+      const deleteButtons = getByTestId(/delete-dataset-.*polygon-drawing-test/).all()
 
       for (const button of deleteButtons) {
+        await expect.element(button).toBeVisible()
         await userEvent.click(button)
-        await new Promise((resolve) => setTimeout(resolve, 1000))
       }
 
       expect(getByText('Polygon drawing test')).not.toBeInTheDocument()

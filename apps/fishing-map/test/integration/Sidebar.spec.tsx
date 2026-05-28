@@ -4,7 +4,7 @@ import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
+import { HINTS } from 'data/config'
 import i18n from 'features/i18n/i18n'
 import { makeStore } from 'store'
 
@@ -15,8 +15,8 @@ describe('Sidebar tools', () => {
   })
 
   it('should open feedback modal', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId, getByRole } = await render(<App />, { store })
+    const store = makeStore(defaultState)
+    const { getByTestId, getByRole } = await render({ store })
 
     await userEvent.hover(getByTestId('feedback-button'))
     await getByTestId('open-feedback-modal').click()
@@ -24,8 +24,8 @@ describe('Sidebar tools', () => {
   })
 
   it('should change language from selector', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId } = await render(<App />, { store })
+    const store = makeStore(defaultState)
+    const { getByTestId } = await render({ store })
     const activitySection = getByTestId('activity-section')
 
     await expect.element(activitySection.getByText(/activity/i)).toBeVisible()
@@ -43,8 +43,8 @@ describe('Sidebar tools', () => {
   })
 
   it('should toggle sidebar', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByLabelText } = await render(<App />, { store })
+    const store = makeStore(defaultState)
+    const { getByLabelText } = await render({ store })
     const previousSidebarOpen = store.getState()?.location?.query?.sidebarOpen
 
     await getByLabelText('Toggle sidebar').click()
@@ -55,6 +55,7 @@ describe('Sidebar tools', () => {
   })
 
   it('should show help hints and allow dismissing one', async () => {
+    localStorage.setItem(HINTS, '{}')
     const store = makeStore(
       {
         ...defaultState,
@@ -66,7 +67,7 @@ describe('Sidebar tools', () => {
       [],
       true
     )
-    const { getByText } = await render(<App />, { store })
+    const { getByText } = await render({ store })
 
     await expect.element(getByText('Dismiss').first()).toBeVisible()
     await userEvent.click(getByText('Dismiss').first())
@@ -76,8 +77,8 @@ describe('Sidebar tools', () => {
   })
 
   it('should restore help hints when requested', async () => {
-    const store = makeStore(defaultState, [], true)
-    const { getByTestId } = await render(<App />, { store })
+    const store = makeStore(defaultState)
+    const { getByTestId } = await render({ store })
 
     await userEvent.hover(getByTestId('help-hub-button'))
     await getByTestId('reset-help-hints').click()
