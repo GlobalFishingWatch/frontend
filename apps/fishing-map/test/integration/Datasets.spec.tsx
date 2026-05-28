@@ -1,12 +1,9 @@
-import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { WAIT } from 'test/setup/config'
 import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import { mapInstanceAtom } from 'features/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 // async function getViewport(jotaiStore: ReturnType<typeof createJotaiStore>) {
@@ -38,9 +35,7 @@ describe('Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x: 6, y: 400 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'eez__1771416000000',
@@ -73,9 +68,7 @@ describe('Datasets', () => {
     await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
     await userEvent.click(mapElement, { position: { x: 200, y: 200 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'bathymetry__1771416000000',
@@ -110,10 +103,7 @@ describe('Datasets', () => {
 
     await userEvent.hover(mapElement, { position: { x: 40, y: 350 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'port-visits__1771416000000',
@@ -216,10 +206,7 @@ describe('Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'presence__1771416000000',
@@ -271,9 +258,7 @@ describe('Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x: 5, y: 402 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'presence',

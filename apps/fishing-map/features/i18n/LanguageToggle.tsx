@@ -90,6 +90,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
       ref={expandedContainerRef}
       onMouseEnter={() => setIsLanguageMenuOpen(true)}
       onMouseLeave={() => setIsLanguageMenuOpen(false)}
+      data-testid="language-toggle-container"
     >
       <div className={styles.languageBtn}>
         <IconButton
@@ -98,13 +99,17 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           loading={isLoading}
           disabled={isLoading}
           testId="language-toggle-button"
+          aria-expanded={isLanguageMenuOpen}
           onClick={(e) => {
             e.stopPropagation()
             setIsLanguageMenuOpen(!isLanguageMenuOpen)
           }}
         />
       </div>
-      <ul className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}>
+      <ul
+        className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}
+        data-testid="language-menu"
+      >
         {IS_DEVELOPMENT_ENV && (
           <li>
             <button

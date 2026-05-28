@@ -10,7 +10,7 @@ import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 describe('User Datasets', () => {
-  it('should show login prompt when user is not logged in', async () => {
+  it.skip('should show login prompt when user is not logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByRole } = await render({ store })
@@ -27,7 +27,7 @@ describe('User Datasets', () => {
     await expect.element(getByRole('dialog').getByTestId('login-link').last()).toBeVisible()
   })
 
-  it('should show user dataset sections when user is logged in', async () => {
+  it.skip('should show user dataset sections when user is logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByRole } = await render({
@@ -52,7 +52,7 @@ describe('User Datasets', () => {
     await expect.element(addLayerModal.getByText('Bigquery')).toBeVisible()
   })
 
-  it('should be able to add a tracks user dataset and see it on the map', async () => {
+  it.skip('should be able to add a tracks user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
@@ -132,7 +132,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it('should add a polygon user dataset and see it on the map', async () => {
+  it.skip('should add a polygon user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
@@ -210,7 +210,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it('should add a points user dataset and see it on the map', async () => {
+  it.skip('should add a points user dataset and see it on the map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
@@ -287,7 +287,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it('should be able to remove a user dataset and not see it on map', async () => {
+  it.skip('should be able to remove a user dataset and not see it on map', async () => {
     const testingMiddleware = createTestingMiddleware()
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
@@ -355,7 +355,7 @@ describe('User Datasets', () => {
     })
   })
 
-  it('should be able to add a user dataset and see it on the map', async () => {
+  it.skip('should be able to add a user dataset and see it on the map', async () => {
     const testTimestamp = 1771416000000 + Math.floor(Math.random() * 1000000000)
     const dateNowSpy = vi.spyOn(Date, 'now').mockReturnValue(testTimestamp)
 

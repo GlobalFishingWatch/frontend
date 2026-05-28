@@ -259,7 +259,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       contentClassName={styles.modalContent}
       parentSelector={getModalParent}
     >
-      <div className={styles.container}>
+      <div className={styles.container} data-testid="feedback-modal">
         <div className={styles.form}>
           <div className={styles.column}>
             {guestUser && (
