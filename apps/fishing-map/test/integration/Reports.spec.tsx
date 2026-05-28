@@ -31,6 +31,7 @@ import { timerangeState } from 'features/timebar/timebar.hooks'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import type { ROUTE_TYPES } from 'router/routes'
 import { REPORT, WORKSPACE_REPORT } from 'router/routes'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import type { AppStore } from 'store'
 import { makeStore } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -521,6 +522,7 @@ describe('Private user reports', () => {
     await waitForLocationType(store, REPORT, 60000)
 
     await router.navigate({
+      from: ROUTE_PATHS.REPORT,
       replace: true,
       search: (prev) => ({
         ...prev,

@@ -94,7 +94,7 @@ describe('Vessel viewer', async () => {
     await userEvent.click(getByText('Timeline by voyages'))
     await expect
       .element(getByText(/\d+ Events? between .+ and .+/).first())
-      .toBeVisible({ timeout: 15000 })
+      .toBeVisible()
   })
 
   it('should render areas tab and its tabs', async () => {

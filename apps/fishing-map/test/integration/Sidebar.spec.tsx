@@ -64,8 +64,7 @@ describe('Sidebar tools', () => {
           hintsDismissed: {},
         },
       },
-      [],
-      true
+      []
     )
     const { getByText } = await render({ store })
 

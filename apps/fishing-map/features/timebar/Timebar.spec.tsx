@@ -1,5 +1,6 @@
-import { render } from 'test/appTestUtils'
+import { Provider } from 'react-redux'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render } from 'vitest-browser-react'
 
 import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { makeStore } from 'store'
@@ -17,7 +18,11 @@ describe('Timebar', () => {
 
   it('should render Timebar component with heatmap visualization by default', async () => {
     const store = makeStore()
-    await render(<Timebar />, { store })
+    await render(
+      <Provider store={store}>
+        <Timebar />
+      </Provider>
+    )
 
     expect(selectTimebarVisualisation(store.getState())).toBe(TimebarVisualisations.HeatmapActivity)
   })
@@ -36,9 +41,11 @@ describe('Timebar', () => {
       timerange: { start: '2025-01-01', end: '2025-01-02' },
     })
 
-    const { getByTestId } = await render(<Timebar />, {
-      store,
-    })
+    const { getByTestId } = await render(
+      <Provider store={store}>
+        <Timebar />
+      </Provider>
+    )
 
     const yearButton = getByTestId('interval-btn-year')
     await yearButton.click()

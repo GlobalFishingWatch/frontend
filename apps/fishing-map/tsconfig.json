@@ -78,8 +78,6 @@
     "**/resources.d.ts",
     "**/__traces__/**",
     "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
+    "**/*.test.tsx"
   ]
 }

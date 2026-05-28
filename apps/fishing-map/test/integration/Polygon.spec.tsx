@@ -17,6 +17,7 @@ import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
+import { UserTab } from 'types'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
@@ -47,7 +48,7 @@ describe('Polygon', () => {
 
     const navigateAction = testingMiddleware.getLastActionByType('HOME')
 
-    expect(navigateAction.query).toMatchObject(navigateToPolygonEditor().search)
+    expect(navigateAction.query).toMatchObject(navigateToPolygonEditor().search as object)
   })
 
   it('should load the polygon in the map', async () => {
@@ -133,7 +134,7 @@ describe('Polygon', () => {
         to: ROUTE_PATHS.USER,
         search: {
           ...store.getState().location.query,
-          userTab: 'dataset',
+          userTab: UserTab.Datasets,
         },
       })
 

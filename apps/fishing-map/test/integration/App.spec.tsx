@@ -21,7 +21,9 @@ describe('Fishing Map App', () => {
 
     const actions = testingMiddleware.getActions()
 
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    const toggleAction = actions.findLast(
+      (action) => action.type === 'location/setLocation' && action.payload?.type === 'HOME'
+    )
 
     const expectedResult = [
       {
@@ -32,7 +34,7 @@ describe('Fishing Map App', () => {
       },
     ]
     expect(toggleAction).toBeDefined()
-    expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
+    expect(toggleAction?.payload?.query?.dataviewInstances).toMatchObject(expectedResult)
     expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
   })
 
@@ -47,7 +49,9 @@ describe('Fishing Map App', () => {
 
     await getByTestId('activity-layer-panel-switch-ais').click()
     const actions = testingMiddleware.getActions()
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    const toggleAction = actions.findLast(
+      (action) => action.type === 'location/setLocation' && action.payload?.type === 'HOME'
+    )
 
     const expectedResult = {
       dataviewInstances: [
@@ -62,7 +66,7 @@ describe('Fishing Map App', () => {
       longitude: 26,
       zoom: 2.49,
     }
-    expect(toggleAction?.query).toMatchObject(expectedResult)
+    expect(toggleAction?.payload?.query).toMatchObject(expectedResult)
     expect(store.getState().location.query).toMatchObject(expectedResult)
   })
 })

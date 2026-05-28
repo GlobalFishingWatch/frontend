@@ -62,7 +62,7 @@ describe('Vessel search', async () => {
     await router.navigate(navigateToVesselSearch({ query: 'Gabu Reefer' }))
 
     await expect
-      .poll(() => getByTestId('search-vessels-basic-input').element().value, { timeout: 10000 })
+      .poll(() => (getByTestId('search-vessels-basic-input').element() as HTMLInputElement).value, { timeout: 10000 })
       .toBe('Gabu Reefer')
   })
 
