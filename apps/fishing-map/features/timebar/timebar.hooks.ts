@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
@@ -202,9 +202,13 @@ export const useHighlightedEventsConnect = () => {
   const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
+  const hoveredEventsRef = useRef(hoveredEvents)
+  // eslint-disable-next-line react-hooks/refs
+  hoveredEventsRef.current = hoveredEvents
+
   const dispatchHighlightedEvents = useCallback(
     (eventIds: string[] | undefined) => {
-      const current = hoveredEvents || []
+      const current = hoveredEventsRef.current || []
       const next = eventIds || []
       const hasChanged =
         current.length !== next.length || current.some((id, index) => id !== next[index])
@@ -212,7 +216,7 @@ export const useHighlightedEventsConnect = () => {
         dispatch(setHighlightedEvents(eventIds))
       }
     },
-    [dispatch, hoveredEvents]
+    [dispatch]
   )
 
   const highlightedEventIds = [
