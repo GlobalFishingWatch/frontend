@@ -43,6 +43,7 @@
       }
     },
     "build:workers": {
+      "dependsOn": ["^dist"],
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
