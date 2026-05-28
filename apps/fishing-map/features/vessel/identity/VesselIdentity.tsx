@@ -32,6 +32,7 @@ import {
   IDENTITY_FIELD_GROUPS,
   REGISTRY_FIELD_GROUPS,
   REGISTRY_SOURCES,
+  SELF_REPORTED_SECTION_SPLIT,
 } from 'features/vessel/vessel.config'
 import {
   selectVesselDatasetId,
@@ -160,8 +161,79 @@ const VesselIdentity = () => {
   const hasTMTPermission = useSelector(selectHasTMTPermission)
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
   const IdentityComponent = () => {
+    const isVMS = vesselIdentity?.sourceCode?.some((source) =>
+      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+    )
+    const showSections = identitySource === VesselIdentitySourceEnum.SelfReported && !isVMS
+
+    const renderFieldGroups = (groups: typeof identityFields) =>
+      groups?.map((fieldGroup, index) => {
+        return (
+          <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup, {})}>
+            {fieldGroup.map((field) => {
+              let label = field.label || field.key
+              if (
+                !field.renderPlain &&
+                !isVMS &&
+                identitySource === VesselIdentitySourceEnum.SelfReported &&
+                (label === 'geartypes' || label === 'shiptypes')
+              ) {
+                label = 'gfw_' + label
+              }
+              const key = field.key as keyof VesselLastIdentity
+              let value =
+                isChileanVMSVessel && key === 'ssvid'
+                  ? EMPTY_FIELD_PLACEHOLDER
+                  : (vesselIdentity[key] as string)
+              if (key === 'depthM' || key === 'builtYear') {
+                const builtYear = vesselIdentity[key] as RegistryExtraFieldValue<number> | string
+                if (builtYear === API_LOGIN_REQUIRED) {
+                  value = API_LOGIN_REQUIRED
+                } else {
+                  value =
+                    // For registry data the builtYear is a RegistryExtraFieldValue<number>
+                    (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
+                    // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
+                    (typeof builtYear === 'string' ? builtYear : '') ||
+                    EMPTY_FIELD_PLACEHOLDER
+                }
+              }
+              const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
+              return (
+                <div key={field.key}>
+                  <div className={styles.labelContainer}>
+                    <label>{labelTranslation}</label>
+                    {field.terminologyKey && !field.renderPlain && (
+                      <DataTerminology
+                        title={labelTranslation}
+                        terminologyKey={
+                          isVMSBrazilVessel &&
+                          (field.terminologyKey === 'shiptype' ||
+                            field.terminologyKey === 'geartype')
+                            ? `${field.terminologyKey}BRA`
+                            : field.terminologyKey
+                        }
+                      />
+                    )}
+                  </div>
+                  {(key === 'shiptypes' || key === 'geartypes') && !field.renderPlain ? (
+                    <VesselTypesField
+                      vesselIdentity={vesselIdentity}
+                      fieldKey={key}
+                      identitySource={identitySource}
+                    />
+                  ) : (
+                    <VesselIdentityField value={formatInfoField(value, label as any) as string} />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )
+      })
+
     return (
-      <div className={styles.container}>
+      <div className={cx(styles.container, { [styles.tightPadding]: showSections })}>
         <div className={cx(styles.fieldGroup)}>
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
@@ -183,7 +255,12 @@ const VesselIdentity = () => {
               )}
             </div>
           )}
-          <div className={styles.twoCells}>
+          <div
+            className={cx(styles.twoCells, {
+              [styles.sectionContent]: showSections,
+              [styles.fieldGroupContainer]: showSections,
+            })}
+          >
             <label>
               {t((t) => t.common.date, {
                 count: 2,
@@ -223,116 +300,134 @@ const VesselIdentity = () => {
         </div>
         {vesselIdentity && (
           <div className={styles.fields}>
-            {identityFields?.map((fieldGroup, index) => {
-              const showExpandableGearTypes =
-                isGFWUser &&
-                identitySource === VesselIdentitySourceEnum.SelfReported &&
-                fieldGroup.some((field) => field.key === 'shiptypes' || field.key === 'geartypes')
-              return (
-                <div
-                  key={index}
-                  className={cx(styles.fieldGroupContainer, styles.fieldGroup, {
-                    [styles.secondColumnLarger]: showExpandableGearTypes,
-                  })}
-                >
-                  {/* TODO: make fields more dynamic to account for VMS */}
-                  {fieldGroup.map((field) => {
-                    const isVMS = vesselIdentity.sourceCode?.some((source) =>
-                      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
-                    )
-                    let label = field.label || field.key
-                    if (
-                      !isVMS &&
-                      identitySource === VesselIdentitySourceEnum.SelfReported &&
-                      (label === 'geartypes' || label === 'shiptypes')
-                    ) {
-                      label = 'gfw_' + label
-                    }
-                    const key = field.key as keyof VesselLastIdentity
-                    let value =
-                      isChileanVMSVessel && key === 'ssvid'
-                        ? EMPTY_FIELD_PLACEHOLDER
-                        : (vesselIdentity[key] as string)
-                    if (key === 'depthM' || key === 'builtYear') {
-                      const builtYear = vesselIdentity[key] as
-                        | RegistryExtraFieldValue<number>
-                        | string
-                      if (builtYear === API_LOGIN_REQUIRED) {
-                        value = API_LOGIN_REQUIRED
-                      } else {
-                        value =
-                          // For registry data the builtYear is a RegistryExtraFieldValue<number>
-                          (builtYear as RegistryExtraFieldValue<number>)?.value?.toString() ||
-                          // but for VMS selfReported is a string 🤷‍♂️ so need to maintain both
-                          (typeof builtYear === 'string' ? builtYear : '') ||
-                          EMPTY_FIELD_PLACEHOLDER
-                      }
-                    }
-                    const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
+            {showSections ? (
+              <>
+                <div className={styles.identitySection}>
+                  <div className={styles.sectionHeader}>
+                    <label>{t((t: any) => t.vessel.selfReportedByVessel)}</label>
+                    <DataTerminology
+                      title={t((t: any) => t.vessel.selfReportedByVessel)}
+                      terminologyKey="selfReported"
+                    />
+                  </div>
+                  <div className={styles.sectionContent}>
+                    {renderFieldGroups(identityFields.slice(0, SELF_REPORTED_SECTION_SPLIT))}
+                  </div>
+                </div>
+                <div className={styles.identitySection}>
+                  <div className={styles.sectionHeader}>
+                    <label>{t((t: any) => t.vessel.gfwPredictions)}</label>
+                    <DataTerminology
+                      title={t((t: any) => t.vessel.gfwPredictions)}
+                      terminologyKey="shiptype"
+                    />
+                  </div>
+                  <div className={styles.sectionContent}>
+                    {renderFieldGroups(identityFields.slice(SELF_REPORTED_SECTION_SPLIT))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {renderFieldGroups(identityFields)}
+                {identitySource === VesselIdentitySourceEnum.Registry &&
+                  REGISTRY_FIELD_GROUPS.map((registryField) => {
                     return (
-                      <div key={field.key}>
-                        <div className={styles.labelContainer}>
-                          <label>{labelTranslation}</label>
-                          {field.terminologyKey && (
-                            <DataTerminology
-                              title={labelTranslation}
-                              terminologyKey={
-                                isVMSBrazilVessel &&
-                                (field.terminologyKey === 'shiptype' ||
-                                  field.terminologyKey === 'geartype')
-                                  ? `${field.terminologyKey}BRA`
-                                  : field.terminologyKey
-                              }
-                            />
-                          )}
-                        </div>
-                        {key === 'shiptypes' || key === 'geartypes' ? (
-                          <VesselTypesField
-                            vesselIdentity={vesselIdentity}
-                            fieldKey={key}
-                            identitySource={identitySource}
-                          />
-                        ) : (
-                          <VesselIdentityField
-                            value={formatInfoField(value, label as any) as string}
-                          />
-                        )}
-                      </div>
+                      <VesselRegistryField
+                        key={registryField.key}
+                        registryField={registryField}
+                        vesselIdentity={vesselIdentity}
+                      />
                     )
                   })}
-                </div>
-              )
-            })}
-            {identitySource === VesselIdentitySourceEnum.Registry &&
-              REGISTRY_FIELD_GROUPS.map((registryField) => {
-                return (
-                  <VesselRegistryField
-                    key={registryField.key}
-                    registryField={registryField}
-                    vesselIdentity={vesselIdentity}
-                  />
-                )
-              })}
-            {identitySource === VesselIdentitySourceEnum.Registry &&
-              hasMoreInfo &&
-              hasTMTPermission &&
-              registrySourceData && (
-                <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
-                  <img
-                    src={registrySourceData?.logo}
-                    alt={registrySourceData?.key}
-                    className={styles.registrySourceLogo}
-                  />
-                  <Tooltip content={t((t) => t.vessel.extraInfoTooltip)}>
-                    <div>
-                      <label>{t((t) => t.vessel.extraInfo)}</label>
-                      <a href={`mailto:${registrySourceData?.contact}`} target="_blank">
-                        {registrySourceData?.contact}
-                      </a>
+                {identitySource === VesselIdentitySourceEnum.Registry &&
+                  hasMoreInfo &&
+                  hasTMTPermission &&
+                  registrySourceData && (
+                    <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
+                      <img
+                        src={registrySourceData?.logo}
+                        alt={registrySourceData?.key}
+                        className={styles.registrySourceLogo}
+                      />
+                      <Tooltip content={t((t) => t.vessel.extraInfoTooltip)}>
+                        <div>
+                          <label>{t((t) => t.vessel.extraInfo)}</label>
+                          <a href={`mailto:${registrySourceData?.contact}`} target="_blank">
+                            {registrySourceData?.contact}
+                          </a>
+                        </div>
+                      </Tooltip>
                     </div>
-                  </Tooltip>
+                  )}
+              </>
+            )}
+            {vesselIdentity?.ssvid && (
+              <div
+                className={cx(
+                  { [styles.identitySection]: showSections },
+                  { [styles.sectionContent]: showSections },
+                  { [styles.fieldGroupContainer]: showSections },
+                  'print-hidden'
+                )}
+              >
+                <label>{t((t) => t.common.viewIn)}</label>
+                <div className={styles.externalToolLinks}>
+                  <a
+                    href={`https://www.marinetraffic.com/${i18n.language}/data/?asset_type=vessels&mmsi=${vesselIdentity?.ssvid}`}
+                    target="_blank"
+                    onClick={() => {
+                      trackEvent({
+                        category: TrackCategory.VesselProfile,
+                        action: 'click_marine_traffic_link',
+                      })
+                    }}
+                  >
+                    Marine Traffic
+                    <Icon icon="external-link" type="default" />
+                  </a>
+                  <a
+                    href={getSkylightLink({ skylightId: latestVesselIdentity?.ssvid })}
+                    target="_blank"
+                    onClick={() => {
+                      trackEvent({
+                        category: TrackCategory.VesselProfile,
+                        action: 'click_skylight_link',
+                      })
+                    }}
+                  >
+                    Skylight
+                    <Icon icon="external-link" type="default" />
+                  </a>
+                  <a
+                    href={`https://app.triton.fish/search?name=${vesselIdentity?.imo || vesselIdentity?.ssvid || vesselIdentity?.callsign || vesselIdentity?.shipname}`}
+                    target="_blank"
+                    onClick={() => {
+                      trackEvent({
+                        category: TrackCategory.VesselProfile,
+                        action: 'click_triton_link',
+                      })
+                    }}
+                  >
+                    Triton
+                    <Icon icon="external-link" type="default" />
+                  </a>
+                  <a
+                    href={`https://cravt.imcsnet.org/browse-vessels?keywords=${vesselIdentity?.imo || vesselIdentity?.callsign || vesselIdentity?.shipname || vesselIdentity?.nShipname}`}
+                    target="_blank"
+                    onClick={() => {
+                      trackEvent({
+                        category: TrackCategory.VesselProfile,
+                        action: 'click_cravt_link',
+                      })
+                    }}
+                  >
+                    CRAVT
+                    <Icon icon="external-link" type="default" />
+                  </a>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         )}
         <VesselIdentitySelector />
@@ -350,65 +445,6 @@ const VesselIdentity = () => {
         onTabClick={onTabClick}
         className={styles.tabsContainer}
       />
-      {vesselIdentity?.ssvid && (
-        <div className={cx('card', styles.externalToolsContainer)}>
-          <label>{t((t) => t.common.viewIn)}</label>
-          <div className={styles.externalToolLinks}>
-            <a
-              href={`https://www.marinetraffic.com/${i18n.language}/data/?asset_type=vessels&mmsi=${vesselIdentity?.ssvid}`}
-              target="_blank"
-              onClick={() => {
-                trackEvent({
-                  category: TrackCategory.VesselProfile,
-                  action: 'click_marine_traffic_link',
-                })
-              }}
-            >
-              Marine Traffic
-              <Icon icon="external-link" type="default" />
-            </a>
-            <a
-              href={getSkylightLink({ skylightId: latestVesselIdentity?.ssvid })}
-              target="_blank"
-              onClick={() => {
-                trackEvent({
-                  category: TrackCategory.VesselProfile,
-                  action: 'click_skylight_link',
-                })
-              }}
-            >
-              Skylight
-              <Icon icon="external-link" type="default" />
-            </a>
-            <a
-              href={`https://app.triton.fish/search?name=${vesselIdentity?.imo || vesselIdentity?.ssvid || vesselIdentity?.callsign || vesselIdentity?.shipname}`}
-              target="_blank"
-              onClick={() => {
-                trackEvent({
-                  category: TrackCategory.VesselProfile,
-                  action: 'click_triton_link',
-                })
-              }}
-            >
-              Triton
-              <Icon icon="external-link" type="default" />
-            </a>
-            <a
-              href={`https://cravt.imcsnet.org/browse-vessels?keywords=${vesselIdentity?.imo || vesselIdentity?.callsign || vesselIdentity?.shipname || vesselIdentity?.nShipname}`}
-              target="_blank"
-              onClick={() => {
-                trackEvent({
-                  category: TrackCategory.VesselProfile,
-                  action: 'click_cravt_link',
-                })
-              }}
-            >
-              CRAVT
-              <Icon icon="external-link" type="default" />
-            </a>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

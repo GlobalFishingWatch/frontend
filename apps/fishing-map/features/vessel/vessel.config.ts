@@ -45,6 +45,7 @@ export type VesselRenderField<Key = string> = {
   key: Key
   label?: string
   terminologyKey?: keyof I18nNamespaces['data-terminology']
+  renderPlain?: boolean
 }
 
 const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
@@ -120,16 +121,14 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   terminologyKey: 'geartype',
 }
 
-const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
-  VESSEL_SHIPTYPES_FIELD,
-  VESSEL_GEARTYPES_FIELD,
-]
+export const SELF_REPORTED_SECTION_SPLIT = 2
 
 export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
   [VesselIdentitySourceEnum.SelfReported]: [
-    COMMON_FIELD_GROUPS,
+    [{ key: 'shipname' }, { key: 'shiptypes', renderPlain: true, label: 'vesselType' }, { key: 'flag' }],
     IDENTIFIER_FIELDS,
-    VESSEL_CLASSIFICATION_FIELDS,
+    [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
+    [{ key: 'tonnageGt', label: 'grossTonnage' }],
   ],
   [VesselIdentitySourceEnum.Registry]: [
     COMMON_FIELD_GROUPS,
