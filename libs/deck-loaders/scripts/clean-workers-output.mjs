@@ -21,13 +21,28 @@ for (const d of dirs) {
   const workersDir = path.join(base, d, 'workers')
   if (fs.existsSync(workersDir)) {
     for (const f of fs.readdirSync(workersDir)) {
-      fs.renameSync(path.join(workersDir, f), path.join(base, f))
+      const sourcePath = path.join(workersDir, f)
+      const destinationPath = path.join(base, f)
+      if (!fs.existsSync(sourcePath)) {
+        continue
+      }
+      try {
+        if (fs.existsSync(destinationPath)) {
+          fs.rmSync(destinationPath, { recursive: true, force: true })
+        }
+        fs.renameSync(sourcePath, destinationPath)
+      } catch (error) {
+        if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+          continue
+        }
+        throw error
+      }
     }
   }
 }
 
 for (const d of dirs) {
-  fs.rmSync(path.join(base, d), { recursive: true })
+  fs.rmSync(path.join(base, d), { recursive: true, force: true })
 }
 
 // Remove build artifacts we don't want in the final output

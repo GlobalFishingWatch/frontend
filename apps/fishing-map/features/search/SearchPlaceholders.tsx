@@ -48,12 +48,13 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
   )
 }
 
+const searchOptionSelector = selectQueryParam('searchOption')
 export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   const searchStatus = useSelector(selectSearchStatus)
   const guestUser = useSelector(selectIsGuestUser)
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
-  const activeSearchOption = useSelector(selectQueryParam('searchOption')) || 'basic'
+  const activeSearchOption = useSelector(searchOptionSelector) || 'basic'
   const isSmallScreen = useSmallScreen()
 
   return (

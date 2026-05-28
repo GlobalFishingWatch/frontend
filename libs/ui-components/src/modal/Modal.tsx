@@ -32,7 +32,7 @@ export function Modal(props: ModalProps) {
   const {
     isOpen,
     onClose,
-    appSelector = 'root',
+    appSelector = '__root__',
     header = true,
     parentSelector,
     title,

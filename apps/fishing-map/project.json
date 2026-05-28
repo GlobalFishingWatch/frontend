@@ -27,7 +27,7 @@
       "outputs": ["{projectRoot}/public/workers"],
       "options": {
         "commands": [
-          "shx rm -rf apps/fishing-map/public/workers/*.js",
+          "shx rm -rf apps/fishing-map/public/workers",
           "shx mkdir -p apps/fishing-map/public/workers",
           "shx cp libs/deck-loaders/dist/workers/*.js apps/fishing-map/public/workers/"
         ],
@@ -156,14 +156,14 @@
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts"
+        "configFile": "apps/fishing-map/vitest.config.ts"
       }
     },
     "test:changed": {
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "changed": true
       }
     },
@@ -179,7 +179,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "mode": "coverage"
       }
     },
@@ -187,7 +187,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "watch": true
       }
     },
@@ -195,7 +195,7 @@
       "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/fishing-map/vitest.config.mts",
+        "configFile": "apps/fishing-map/vitest.config.ts",
         "mode": "ui",
         "watch": true
       }

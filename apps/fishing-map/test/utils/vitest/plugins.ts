@@ -8,19 +8,6 @@ import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TOKENS_PATH = path.resolve(__dirname, '../../.auth/tokens.json')
 
-// Plugin to transform SVG imports for testing
-export const svgMockPlugin = (): Plugin => ({
-  name: 'svg-mock',
-  transform(_code: string, id: string) {
-    if (id.endsWith('.svg')) {
-      return {
-        code: 'export default () => null',
-        map: null,
-      }
-    }
-  },
-})
-
 // Plugin to serve public assets from /map path, this is needed because not having events-color-sprite.png causes timebar to throw an error an not load any events
 export const publicAssetsPlugin = (): Plugin => ({
   name: 'public-assets',

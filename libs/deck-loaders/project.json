@@ -21,7 +21,7 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
+        "command": "vitest run --config=vitest.config.ts",
         "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-loaders"
       }
     },
@@ -29,19 +29,17 @@
       "executor": "@nx/vitest:test",
       "cache": false,
       "options": {
-        "configFile": "libs/deck-loaders/vitest.config.mts",
+        "configFile": "libs/deck-loaders/vitest.config.ts",
         "watch": true
       },
       "continuous": true
     },
     "dist:workers": {
+      "dependsOn": ["build:workers"],
       "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist/workers"],
       "options": {
-        "commands": [
-          "nx build:workers deck-loaders",
-          "node libs/deck-loaders/scripts/clean-workers-output.mjs"
-        ],
-        "parallel": false
+        "command": "node libs/deck-loaders/scripts/clean-workers-output.mjs"
       }
     },
     "build:workers": {

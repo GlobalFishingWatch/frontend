@@ -29,7 +29,7 @@
       "dependsOn": ["^dist"],
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
+        "command": "vitest run --config=vitest.config.ts",
         "reportsDirectory": "{projectRoot}/../../coverage/libs/api-client"
       }
     },
@@ -37,7 +37,7 @@
       "executor": "@nx/vitest:test",
       "cache": false,
       "options": {
-        "configFile": "libs/api-client/vitest.config.mts",
+        "configFile": "libs/api-client/vitest.config.ts",
         "watch": true
       },
       "continuous": true

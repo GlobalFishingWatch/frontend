@@ -1,22 +1,22 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { navigateToFijiWorkspaceWithAllLayersAction } from 'test/utils/actions/navigateToFijiWorkspace'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { getRouteToFijiWorkspaceWithAllLayers } from 'test/utils/navigation/navigateToFijiWorkspace'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
+
+import { createTestingMiddleware } from '../utils/store/testing-store-middleware'
 
 describe('Marine Manager', () => {
   it('should be able to navigate to marine manager workspace through sidebar', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
-    const { getByTestId, getByText, getByRole } = await render(<App />, { store })
+    const { getByTestId, getByText, getByRole } = await render({ store })
 
     await userEvent.click(getByTestId('link-category-marine-manager'))
 
@@ -50,22 +50,15 @@ describe('Marine Manager', () => {
 
   it('should show workspace layers matching the workspace configuration', async () => {
     const jotaiStore = createJotaiStore()
-    const store = makeStore(defaultState, [], true)
-    store.dispatch(navigateToFijiWorkspaceWithAllLayersAction)
+    const store = makeStore(defaultState)
 
-    await render(<App />, { store, jotaiStore })
-
-    // const state = store.getState()
-
-    // const fijiWorkspace = state.workspaces.entities['fiji-public']
-
-    // expect(fijiWorkspace).toBeDefined()
+    const { router } = await render({ store, jotaiStore })
+    await router.navigate(getRouteToFijiWorkspaceWithAllLayers())
 
     const expectedLayerProps = {
       loaded: expect.any(Boolean),
       cacheHash: expect.any(String),
     }
-    // Wait for layers to initialize
     await expect
       .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000, interval: 1000 })
       .toMatchObject({

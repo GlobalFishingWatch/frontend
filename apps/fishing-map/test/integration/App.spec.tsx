@@ -1,10 +1,7 @@
-import React from 'react'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Fishing Map App', () => {
@@ -15,7 +12,7 @@ describe('Fishing Map App', () => {
   it('should reflect store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId } = await render(<App />, { store })
+    const { getByTestId } = await render({ store })
 
     const button = getByTestId('activity-layer-panel-switch-ais')
 
@@ -23,7 +20,9 @@ describe('Fishing Map App', () => {
 
     const actions = testingMiddleware.getActions()
 
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    const toggleAction = actions.findLast(
+      (action) => action.type === 'location/setLocation' && action.payload?.type === 'HOME'
+    )
 
     const expectedResult = [
       {
@@ -34,14 +33,14 @@ describe('Fishing Map App', () => {
       },
     ]
     expect(toggleAction).toBeDefined()
-    expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
+    expect(toggleAction?.payload?.query?.dataviewInstances).toMatchObject(expectedResult)
     expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
   })
 
   it('should preserve map previous state on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId } = await render(<App />, { store })
+    const { getByTestId } = await render({ store })
 
     await getByTestId('map-control-zoom-in').click()
 
@@ -49,7 +48,9 @@ describe('Fishing Map App', () => {
 
     await getByTestId('activity-layer-panel-switch-ais').click()
     const actions = testingMiddleware.getActions()
-    const toggleAction = actions.findLast((action) => action.type === 'HOME')
+    const toggleAction = actions.findLast(
+      (action) => action.type === 'location/setLocation' && action.payload?.type === 'HOME'
+    )
 
     const expectedResult = {
       dataviewInstances: [
@@ -64,7 +65,7 @@ describe('Fishing Map App', () => {
       longitude: 26,
       zoom: 2.49,
     }
-    expect(toggleAction?.query).toMatchObject(expectedResult)
+    expect(toggleAction?.payload?.query).toMatchObject(expectedResult)
     expect(store.getState().location.query).toMatchObject(expectedResult)
   })
 })

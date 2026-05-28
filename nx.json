@@ -77,7 +77,7 @@
     },
     "dist:workers": {
       "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": ["{projectRoot}/dist/workers"],
       "cache": true
     },
     "@nx/js:tsc": {

@@ -83,6 +83,8 @@ Tests use **pre-authentication** to avoid navigating to external OAuth pages dur
    - Authentication tokens are loaded per-test via render options (see below)
 
 3. **Render Method** ([appTestUtils.tsx](./appTestUtils.tsx)):
+   - Renders through TanStack Router (`RouterProvider` + production route tree)
+   - Returns `router` alongside RTL queries for navigation helpers
    - Accepts `authenticated: true` option to load tokens before rendering
    - Fetches tokens from the `/.auth/tokens.json` endpoint
    - Loads tokens into localStorage for that specific test
@@ -96,7 +98,7 @@ Tests use **pre-authentication** to avoid navigating to external OAuth pages dur
 
 **Enable global setup:**
 
-In [vitest.config.mts](../vitest.config.mts), uncomment the `globalSetup` line:
+In [vitest.config.ts](../vitest.config.ts), uncomment the `globalSetup` line:
 
 ```typescript
 globalSetup: './test/auth-setup.ts',
@@ -156,10 +158,7 @@ To test features that require authentication, pass `authenticated: true` to the 
 import { render } from 'test/appTestUtils'
 
 it('should display user-specific data', async () => {
-  const { getByTestId } = await render(<App />, {
-    store,
-    authenticated: true // Loads auth tokens from /.auth/tokens.json
-  })
+  const { getByTestId } = await render({ store, authenticated: true })
 
   // Your assertions here - API calls will include auth tokens
   expect(getByTestId('user-profile')).toBeVisible()
@@ -203,7 +202,7 @@ The iframe architecture prevents external navigation. Clicking login links cause
 ```typescript
 // ✅ Good - verify login prompt exists (unauthenticated)
 it('should show login prompt when not logged in', async () => {
-  const { getByTestId, getByText } = await render(<App />, { store })
+  const { getByTestId, getByText } = await render({ store })
   await openLayerModal()
 
   expect(getByText('Register or login to upload datasets')).toBeVisible()
@@ -213,9 +212,9 @@ it('should show login prompt when not logged in', async () => {
 // ✅ Good - test authenticated functionality
 it('should show user datasets when logged in', async () => {
   // Pass authenticated: true to load tokens before rendering
-  const { getByTestId } = await render(<App />, {
+  const { getByTestId } = await render({
     store,
-    authenticated: true // Loads tokens from /.auth/tokens.json
+    authenticated: true,
   })
 })
 
@@ -227,9 +226,9 @@ it('should log in when clicking login link', async () => {
 
 // ✅ Good - test logout functionality
 it('should clear user data when logging out', async () => {
-  const { getByTestId } = await render(<App />, {
+  const { getByTestId } = await render({
     store,
-    authenticated: true // GFWAPI.logout() is automatically mocked
+    authenticated: true, // GFWAPI.logout() is automatically mocked
   })
 
   // User is logged in

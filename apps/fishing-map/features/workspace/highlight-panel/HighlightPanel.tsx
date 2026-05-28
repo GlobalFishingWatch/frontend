@@ -44,13 +44,14 @@ const HighlightPanel = ({
         ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
       }
       if (config.delayed) {
-        setTimeout(() => {
+        const timerId = setTimeout(() => {
           const container = document.querySelector('.scrollContainer')
           if (container) {
             container.scrollTop = 1
           }
           setVisible(true)
         }, config.delayed)
+        return () => clearTimeout(timerId)
       } else {
         setVisible(true)
       }

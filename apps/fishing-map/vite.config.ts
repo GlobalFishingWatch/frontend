@@ -1,12 +1,30 @@
-import svgr from 'vite-plugin-svgr'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
 import { nitro } from 'nitro/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite'
+import svgr from 'vite-plugin-svgr'
 
-const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
+export const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
+
+export const plugins = [
+  nxViteTsPaths(),
+  tanstackStart({
+    srcDirectory: '.',
+    router: {
+      routesDirectory: 'routes',
+      basepath: basePath,
+    },
+    spa: {
+      enabled: false,
+    },
+  }),
+  react(),
+  svgr({
+    include: ['**/*.svg', '**/*.svg?react'],
+  }),
+]
 
 export default defineConfig(({ command }) => ({
   root: __dirname,
@@ -21,21 +39,7 @@ export default defineConfig(({ command }) => ({
     allowedHosts: ['local.globalfishingwatch.org'],
   },
   plugins: [
-    nxViteTsPaths(),
-    tanstackStart({
-      srcDirectory: '.',
-      router: {
-        routesDirectory: 'routes',
-        basepath: basePath,
-      },
-      spa: {
-        enabled: false,
-      },
-    }),
-    react(),
-    svgr({
-      include: ['**/*.svg', '**/*.svg?react'],
-    }),
+    ...plugins,
     command === 'build' &&
       nitro({
         baseURL: basePath,
