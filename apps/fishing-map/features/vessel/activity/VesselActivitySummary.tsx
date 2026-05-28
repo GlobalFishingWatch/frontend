@@ -12,6 +12,7 @@ import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -23,7 +24,6 @@ import {
   selectEventsGroupedByType,
   selectVoyagesNumber,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { setVesselEventId } from 'features/vessel/vessel.slice'

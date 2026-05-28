@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EventTypes, type InsightResponse } from '@globalfishingwatch/api-types'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'

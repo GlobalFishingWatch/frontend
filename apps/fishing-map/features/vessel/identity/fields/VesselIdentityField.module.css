@@ -1,5 +1,6 @@
 .value {
   position: relative;
+  isolation: isolate;
 }
 
 .value::before {

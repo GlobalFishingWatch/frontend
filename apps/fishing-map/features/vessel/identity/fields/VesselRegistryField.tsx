@@ -9,20 +9,18 @@ import type {
   VesselRegistryProperty,
 } from '@globalfishingwatch/api-types'
 
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import I18nDate from 'features/i18n/i18nDate'
 import { useRegionTranslationsById } from 'features/regions/regions.hooks'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
+import type { VesselRenderField } from 'features/vessel/identity/vessel-identity.config'
+import { filterRegistryInfoByDateAndSSVID } from 'features/vessel/vessel.utils'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
-import type { VesselRenderField } from '../vessel.config'
-import { filterRegistryInfoByDateAndSSVID } from '../vessel.utils'
-
-import DataTerminology from './DataTerminology'
-import VesselIdentityField from './VesselIdentityField'
-
-import styles from './VesselIdentity.module.css'
+import styles from '../VesselIdentity.module.css'
 
 const RegistryOperatorField = ({
   registryField,

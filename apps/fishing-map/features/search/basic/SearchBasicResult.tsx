@@ -19,6 +19,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -28,8 +29,7 @@ import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,

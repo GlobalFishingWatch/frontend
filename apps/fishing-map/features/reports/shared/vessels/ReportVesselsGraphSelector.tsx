@@ -6,6 +6,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
@@ -18,7 +19,6 @@ import {
 } from 'features/reports/reports.selectors'
 import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './ReportVesselsGraph.module.css'
