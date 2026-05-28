@@ -504,6 +504,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       sublayers,
       aggregationOperation,
       availableIntervals,
+      comparisonMode,
       tilesUrl,
       extentStart,
     } = this.props
@@ -553,7 +554,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (
         !colorDomain?.length &&
         !this.initialBinsLoad &&
-        this.props.comparisonMode === FourwingsComparisonMode.Compare &&
+        comparisonMode === FourwingsComparisonMode.Compare &&
         bins?.length === COLOR_RAMP_DEFAULT_NUM_STEPS
       ) {
         const scales = this._getColorScales(bins, colorRanges)
@@ -661,9 +662,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
     const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
     if (needsColorUpdate) {
-      // Cancel any pending debounced updateColorDomain queued under the previous mode/colors —
-      // it would fire later and overwrite state with values computed against stale props.
-      this.updateColorDomain.cancel()
       // Set rampDirty immediately to prevent rendering with stale colors
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
       const newColorDomain =
@@ -833,8 +831,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 
-  getColorDomain = () => {
-    return this.state.colorDomain
+  getColorDomain = (): FourwingsTileLayerColorDomain => {
+    const { colorDomain } = this.state
+    const modeIsBivariate = this.props.comparisonMode === FourwingsComparisonMode.Bivariate
+    if (modeIsBivariate !== Array.isArray(colorDomain?.[0])) {
+      return modeIsBivariate ? [[], []] : []
+    }
+    return colorDomain
   }
 
   getColorRange = () => {
