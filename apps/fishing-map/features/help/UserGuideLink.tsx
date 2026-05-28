@@ -59,8 +59,7 @@ function UserGuideLink({ slug, className }: UserGuideLinkProps) {
       <IconButton size="small" icon="help" className={styles.icon} />
       <div className={styles.labelContainer}>
         <span className={styles.label}>{t((t) => t.userGuide.title)}</span>
-        {/* // TODO: review if all of this translations exists */}
-        <span>{t((t) => t.userGuide[section as keyof typeof t.userGuide])}</span>
+        <span>{t((t) => t.userGuide[(subSection || section) as keyof typeof t.userGuide])}</span>
       </div>
     </div>
   )

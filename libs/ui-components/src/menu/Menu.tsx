@@ -53,7 +53,7 @@ export function Menu(props: MenuProps) {
   const {
     isOpen,
     onClose,
-    appSelector = 'root',
+    appSelector = '__root__',
     links = defaultLinks,
     bgImage = 'https://globalfishingwatch.org/carrier-portal/static/media/juan-vilata.fc4bde7c.jpg',
     bgImageSource = '',

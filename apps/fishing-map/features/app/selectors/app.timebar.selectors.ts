@@ -30,7 +30,7 @@ export const selectTimebarVisualisation = createSelector(
   [selectTimebarVisualisationSelector, selectIsAnyVesselLocation],
   (timebarVisualisation, isAnyVesselLocation): TimebarVisualisations => {
     if (isAnyVesselLocation) return TimebarVisualisations.Vessel
-    return timebarVisualisation
+    return timebarVisualisation as TimebarVisualisations
   }
 )
 

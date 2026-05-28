@@ -110,10 +110,10 @@ const InfoContainer = () => {
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
-            <div className={styles.labelContainer}>
+            <>
               {(dataset?.name ?? activeTab?.labelString) || dataview.name}{' '}
               {userGuideLink && <UserGuideLink slug={userGuideLink} />}
-            </div>
+            </>
           }
         />
       </div>

@@ -1,25 +1,19 @@
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
-import path from 'path'
 import { loadEnv } from 'vite'
+import type { ViteUserConfig } from 'vitest/config'
 import { defineConfig } from 'vitest/config'
-import { publicAssetsPlugin, authTokensPlugin, svgMockPlugin } from './test/utils/vitest/plugins'
+import type { BrowserProviderOption } from 'vitest/node'
+
+import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins'
+import { basePath, plugins } from './vite.config'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
-const defaultPlaywrightProvider = playwright()
-// Not needed for Playwright 1.57.0 but will need in future versions
-// Not used as version 1.58.2 runs much much slower than 1.57.0 (keep an eye on this)
-// const chromiumPlaywrightProvider = playwright({
-//   launchOptions: {
-//     // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
-//     // so this is needed to fix Deck.gl context creation in headless mode.
-//     args: ['--enable-unsafe-swiftshader'],
-//   },
-// })
+const playwrightProvider: BrowserProviderOption = playwright({
+  persistentContext: true,
+})
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode }): ViteUserConfig => {
   const env = loadEnv(mode, process.cwd(), '')
 
   const isChromeOnly = env.TEST_CHROME_ONLY === 'true'
@@ -29,46 +23,42 @@ export default defineConfig(({ mode }) => {
 
   return {
     root: __dirname,
+    base: basePath,
     cacheDir: '../../node_modules/.vite/apps/fishing-map',
-    plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin(), authTokensPlugin()],
+    plugins: [...plugins, publicAssetsPlugin(), authTokensPlugin()],
     resolve: {
       // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
       dedupe: ['react', 'react-dom'],
-      alias: {
-        data: path.resolve(__dirname, './data'),
-        features: path.resolve(__dirname, './features'),
-        routes: path.resolve(__dirname, './routes'),
-        services: path.resolve(__dirname, './services'),
-        utils: path.resolve(__dirname, './utils'),
-        'data/config': path.resolve(__dirname, './data/config'),
-        types: path.resolve(__dirname, './types'),
-        queries: path.resolve(__dirname, './queries'),
-        middlewares: path.resolve(__dirname, './middlewares'),
-        store: path.resolve(__dirname, './store'),
-        appTestUtils: path.resolve(__dirname, './appTestUtils'),
-        test: path.resolve(__dirname, './test'),
-        hooks: path.resolve(__dirname, './hooks'),
-      },
     },
 
     define: {
-      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
-      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
+      'import.meta.env.VITE_PUBLIC_URL': JSON.stringify(basePath),
+      'import.meta.env.VITEST': JSON.stringify(true),
       'process.env.NODE_ENV': JSON.stringify('test'),
-      'process.env.VITEST': JSON.stringify('true'),
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
       'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
+      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
+      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
+      'process.env.VITEST': JSON.stringify('true'),
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
     },
     test: {
       watch: false,
+      deps: {
+        optimizer: {
+          client: {
+            enabled: true,
+          },
+        },
+      },
       include: [
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       fileParallelism: false,
+      // maxWorkers: '50%',
       reporters: ['default'],
       coverage: {
         enabled: isCoverageMode,
@@ -78,10 +68,10 @@ export default defineConfig(({ mode }) => {
       testTimeout: 30000,
       setupFiles: './test/setup/vitest.setup.ts',
       globalSetup: './test/setup/vitest.setup-global.ts',
+      retry: 0,
       browser: {
-        retry: 1,
         enabled: true,
-        provider: defaultPlaywrightProvider,
+        provider: playwrightProvider,
         ui: isUiMode,
         headless: !isUiMode,
         viewport: DEFAULT_VIEWPORT,
@@ -96,14 +86,12 @@ export default defineConfig(({ mode }) => {
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
                 },
               ]
             : [
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
                 },
                 {
                   browser: 'firefox',

@@ -18,7 +18,10 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-export const makeStore = (preloadedState?: RootState, middlewares?: Middleware[]) => {
+export const makeStore = (
+  preloadedState?: Partial<Record<keyof RootState, unknown>>,
+  middlewares?: Middleware[]
+) => {
   return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {
@@ -48,7 +51,7 @@ export const makeStore = (preloadedState?: RootState, middlewares?: Middleware[]
         logoutUserMiddleware,
         ...(middlewares || [])
       ),
-    preloadedState: { ...preloadedState },
+    preloadedState: preloadedState as RootState | undefined,
   })
 }
 

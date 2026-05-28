@@ -1,8 +1,7 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
-import { Slider, SliderOutput, SliderThumb, SliderTrack } from 'react-aria-components'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
+import { Slider, SliderOutput, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
-import { throttle } from 'es-toolkit'
 import { DateTime } from 'luxon'
 
 import type { TrackSegment } from '@globalfishingwatch/api-types'
