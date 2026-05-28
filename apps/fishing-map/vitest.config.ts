@@ -1,7 +1,8 @@
 import { playwright } from '@vitest/browser-playwright'
 import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
-import { publicAssetsPlugin, authTokensPlugin } from './test/utils/vitest/plugins'
+
+import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins'
 import { basePath, plugins } from './vite.config'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
@@ -50,6 +51,13 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       watch: false,
+      deps: {
+        optimizer: {
+          client: {
+            enabled: true,
+          },
+        },
+      },
       include: [
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',

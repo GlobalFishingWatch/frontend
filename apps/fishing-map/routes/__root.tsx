@@ -162,6 +162,7 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
 function RootComponent() {
   const { i18nState } = Route.useLoaderData() ?? {}
 
+  // Tests render RouterProvider inside a DOM container — skip <html>/<body> wrapper.
   if (import.meta.env.VITEST) {
     return (
       <Suspense fallback={null}>
