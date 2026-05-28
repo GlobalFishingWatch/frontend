@@ -98,7 +98,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: 'vessel_identity_download',
-      label: VesselIdentitySourceEnum.Registry,
+      label: identitySource,
     })
   }
 
@@ -145,7 +145,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
         <div className={styles.actionsContainer}>
-          {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
+          {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
           <UserLoggedIconButton
             type="border"
             icon="download"

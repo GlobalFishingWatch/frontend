@@ -56,7 +56,7 @@ const RegistryIdentityTab = () => {
         }
         return null
       })}
-      {(!hasTMTPermission || !hasMoreInfo) && (
+      {hasTMTPermission && hasMoreInfo && (
         <VesselRegistryContact key="registryContact" registrySource={registrySourceData} />
       )}
     </Fragment>
