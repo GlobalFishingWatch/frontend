@@ -326,7 +326,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     colorDomain: FourwingsTileLayerColorDomain,
     colorRanges: FourwingsTileLayerColorRange
   ): FourwinsTileLayerScale[] => {
-    if (this.props.comparisonMode === FourwingsComparisonMode.Bivariate) {
+    if (
+      this.props.comparisonMode === FourwingsComparisonMode.Bivariate &&
+      Array.isArray(colorDomain[0])
+    ) {
       return (colorDomain as number[][]).map((cd, i) => {
         return scaleLinear(cd, colorRanges[i] as FourwingsColorObject[]).clamp(true)
       })
@@ -501,8 +504,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       sublayers,
       aggregationOperation,
       availableIntervals,
-      tilesUrl,
       comparisonMode,
+      tilesUrl,
       extentStart,
     } = this.props
     const { colorDomain, colorRanges } = this.state
@@ -523,7 +526,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         tilesUrl,
         extentStart,
       }) as string
-      const response = await GFWAPI.fetch<Response>(url!, {
+      const response = await GFWAPI.fetch<Response>(url, {
         signal: tile.signal,
         responseType: 'default',
       })
@@ -828,8 +831,13 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 
-  getColorDomain = () => {
-    return this.state.colorDomain
+  getColorDomain = (): FourwingsTileLayerColorDomain => {
+    const { colorDomain } = this.state
+    const modeIsBivariate = this.props.comparisonMode === FourwingsComparisonMode.Bivariate
+    if (modeIsBivariate !== Array.isArray(colorDomain?.[0])) {
+      return modeIsBivariate ? [[], []] : []
+    }
+    return colorDomain
   }
 
   getColorRange = () => {

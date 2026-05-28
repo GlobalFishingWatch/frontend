@@ -56,22 +56,6 @@ export function supportDataFilterExtension(
   return true
 }
 
-export const getContextValue = (
-  feature: ContextFeature,
-  valueProperties = [] as string[]
-): string => {
-  if (!valueProperties || !valueProperties.length) {
-    return feature.properties.value
-  }
-  return valueProperties.length === 1
-    ? feature.properties?.[valueProperties[0]]
-    : valueProperties
-        .flatMap((prop) =>
-          feature.properties?.[prop] ? `${prop}: ${feature.properties?.[prop]}` : []
-        )
-        .join('<br/>')
-}
-
 const RFMO_LINKS: Record<string, string> = {
   'CCSBT Primary Area': 'https://www.ccsbt.org/',
   AIDCP: 'https://www.iattc.org/en-US/AIDCP/About-AIDCP',

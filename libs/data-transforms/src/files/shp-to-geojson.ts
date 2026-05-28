@@ -43,6 +43,6 @@ export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
       return expandedShp
     }
   } catch (e) {
-    throw new Error('datasetUpload.errors.shapefile.invalidData')
+    throw new Error('datasetUpload.errors.shapefile.invalidData', { cause: e })
   }
 }

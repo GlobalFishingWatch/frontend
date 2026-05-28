@@ -839,9 +839,9 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
         array: true,
       },
       {
-        id: 'filters',
+        id: 'filter',
         type: 'sql',
-        array: true,
+        array: false,
         required: false,
       },
     ],
@@ -866,6 +866,37 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
       {
         id: 'simplify',
         type: 'number',
+        required: false,
+      },
+    ],
+  },
+  {
+    id: EndpointId.ContextBounds,
+    description: 'Endpoint to retrieve a bbox from a context layer',
+    downloadable: true,
+    method: 'GET',
+    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/user-context-layers/get-bounds',
+    params: [
+      {
+        id: 'dataset',
+        type: 'string',
+      },
+    ],
+    query: [
+      {
+        id: 'start-field',
+        type: 'string',
+        required: false,
+      },
+      {
+        id: 'end-field',
+        type: 'string',
+        required: false,
+      },
+      {
+        id: 'filters',
+        type: 'sql',
+        array: true,
         required: false,
       },
     ],

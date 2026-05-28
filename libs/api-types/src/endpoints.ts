@@ -13,6 +13,7 @@ export type EndpointParam = {
 export enum EndpointId {
   ContextTiles = 'context-tiles',
   ContextFeature = 'context-feature',
+  ContextBounds = 'context-bounds',
   ClusterTiles = 'events-cluster-tiles',
   ClusterTilesInteraction = 'events-cluster-interaction',
   ContextGeojson = 'temporal-context-geojson',

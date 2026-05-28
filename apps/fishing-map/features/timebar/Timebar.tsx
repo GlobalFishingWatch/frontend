@@ -84,7 +84,7 @@ const TimebarHighlighterWrapper = ({
   fixed?: boolean
   onToggleFixedTooltip?: (toggle?: boolean) => void
 }) => {
-  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
@@ -93,14 +93,9 @@ const TimebarHighlighterWrapper = ({
 
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
-      if (chunks && chunks.tracksEvents && chunks.tracksEvents.length) {
-        dispatchHighlightedEvents(chunks.tracksEvents)
-      } else if (highlightedEventIds) {
-        // TODO review this as it is triggered on every timebar change
-        dispatchHighlightedEvents(undefined)
-      }
+      dispatchHighlightedEvents(chunks?.tracksEvents?.length ? chunks.tracksEvents : undefined)
     },
-    [dispatchHighlightedEvents, highlightedEventIds]
+    [dispatchHighlightedEvents]
   )
 
   // Return precise chunk frame extent
@@ -279,7 +274,7 @@ const TimebarWrapper = () => {
             label: getEventLabel([e.start, e.end]),
           })
         }
-        onTimebarChange(e.start, e.end)
+        onTimebarChange(e.start, e.end, e.source)
         if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
           setMouseClicked(false)
         }

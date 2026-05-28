@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
+import type { DateTimeUnit } from 'luxon'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
@@ -30,6 +32,7 @@ import { updateUrlTimerange } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
 
 import type { TimeRange } from './timebar.slice'
 import {
@@ -37,6 +40,7 @@ import {
   selectHasChangedSettingsOnce,
   selectHighlightedEvents,
   selectHighlightedTime,
+  selectHoveredHighlightedEvents,
   setHasChangedSettings,
   setHighlightedEvents,
 } from './timebar.slice'
@@ -96,18 +100,46 @@ export const useSetTimerange = () => {
   )
 
   const setTimerange = useCallback(
-    (timerange: TimeRange) => {
+    (timerange: TimeRange, stickToInterval = true) => {
+      let stuckTimerange = timerange
+      if (stickToInterval) {
+        const interval = getFourwingsInterval(
+          timerange.start,
+          timerange.end
+        ).toLowerCase() as DateTimeUnit
+        const stickToClosestInterval = (date: string, unit: DateTimeUnit) => {
+          const mDate = getUTCDateTime(date)
+          const mStartOf = mDate.startOf(unit)
+          const mEndOf = mDate.endOf(unit).plus({ millisecond: 1 })
+          const startDeltaMs = mDate.valueOf() - mStartOf.valueOf()
+          const endDeltaMs = mEndOf.valueOf() - mDate.valueOf()
+          return (startDeltaMs > endDeltaMs ? mEndOf : mStartOf).toISO() as string
+        }
+        const newStart = stickToClosestInterval(timerange.start, interval)
+        let newEnd = stickToClosestInterval(timerange.end, interval)
+        if (newStart === newEnd) {
+          newEnd = getUTCDateTime(newStart)
+            .plus({ [interval]: 1 })
+            .toISO() as string
+        }
+        const minEnd = getUTCDateTime(newStart).plus({ hours: 24 })
+        if (getUTCDateTime(newEnd) < minEnd) {
+          newEnd = minEnd.toISO() as string
+        }
+        stuckTimerange = { start: newStart, end: newEnd }
+      }
       setAtomTimerange((timerangeAtom) => {
         if (
-          (timerange.start !== timerangeAtom?.start || timerange.end !== timerangeAtom.end) &&
+          (stuckTimerange.start !== timerangeAtom?.start ||
+            stuckTimerange.end !== timerangeAtom.end) &&
           !hintsDismissed?.changingTheTimeRange
         ) {
           dispatch(setHintDismissed('changingTheTimeRange'))
         }
-        return timerange
+        return stuckTimerange
       })
       if (isWorkspaceMapReady) {
-        updateUrlTimerangeDebounced(timerange)
+        updateUrlTimerangeDebounced(stuckTimerange)
       }
     },
     [
@@ -127,8 +159,9 @@ export const useTimerangeConnect = () => {
   const setTimerange = useSetTimerange()
 
   const onTimebarChange = useCallback(
-    (start: string, end: string) => {
-      setTimerange({ start, end })
+    (start: string, end: string, source?: string) => {
+      const isMove = source === 'SEEK_MOVE'
+      setTimerange({ start, end }, !isMove)
     },
     [setTimerange]
   )
@@ -165,12 +198,23 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
+  const hoveredEvents = useSelector(selectHoveredHighlightedEvents)
   const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
+  const hoveredEventsRef = useRef(hoveredEvents)
+  // eslint-disable-next-line react-hooks/refs
+  hoveredEventsRef.current = hoveredEvents
+
   const dispatchHighlightedEvents = useCallback(
     (eventIds: string[] | undefined) => {
-      dispatch(setHighlightedEvents(eventIds))
+      const current = hoveredEventsRef.current || []
+      const next = eventIds || []
+      const hasChanged =
+        current.length !== next.length || current.some((id, index) => id !== next[index])
+      if (hasChanged) {
+        dispatch(setHighlightedEvents(eventIds))
+      }
     },
     [dispatch]
   )

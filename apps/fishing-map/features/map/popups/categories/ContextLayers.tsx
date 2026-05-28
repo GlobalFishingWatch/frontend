@@ -9,6 +9,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getContextValue } from 'features/map/popups/map-popups.utils'
 
 import { useContextInteractions } from './ContextLayers.hooks'
 import ContextLayersRow from './ContextLayersRow'
@@ -39,9 +40,10 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
-        const dataview = dataviews.find((d) => d.id === featureByType[0].title)
+        const { dataviewId, datasetId } = featureByType[0]
+        const dataview = dataviews.find((d) => d.id === featureByType[0].dataviewId)
         return (
-          <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
+          <div key={`${dataviewId}-${index}`} className={styles.popupSection}>
             <Icon
               icon="polygons"
               className={styles.layerIcon}
@@ -54,14 +56,14 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
               {showFeaturesDetails && (
                 // TODO translate this
                 <h3 className={styles.popupSectionTitle}>
-                  {dataview ? getDatasetTitleByDataview(dataview) : featureByType[0].title}
+                  {dataview ? getDatasetTitleByDataview(dataview) : datasetId}
                 </h3>
               )}
               {featureByType.map((feature, index) => {
                 const label =
-                  (feature.value as string) ||
+                  getContextValue(feature) ||
                   getDatasetTitleByDataview(dataview as UrlDataviewInstance) ||
-                  feature.title
+                  feature.layerId
                 if (!label) return null
                 const linkHref = (feature as ContextPickingObject).link
                 return (
