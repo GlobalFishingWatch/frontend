@@ -8,15 +8,6 @@ import { basePath, plugins } from './vite.config'
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
 const defaultPlaywrightProvider = playwright()
-// Not needed for Playwright 1.57.0 but will need in future versions
-// Not used as version 1.58.2 runs much much slower than 1.57.0 (keep an eye on this)
-// const chromiumPlaywrightProvider = playwright({
-//   launchOptions: {
-//     // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
-//     // so this is needed to fix Deck.gl context creation in headless mode.
-//     args: ['--enable-unsafe-swiftshader'],
-//   },
-// })
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -91,14 +82,12 @@ export default defineConfig(({ mode }) => {
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
                 },
               ]
             : [
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  // provider: chromiumPlaywrightProvider,
                 },
                 {
                   browser: 'firefox',
