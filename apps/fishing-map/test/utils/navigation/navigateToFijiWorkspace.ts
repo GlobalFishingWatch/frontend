@@ -9,7 +9,7 @@ const FIJI_WORKSPACE_SEARCH = {
   longitude: 179.26220362598707,
 } as QueryParams
 
-export function navigateToFijiWorkspace(): NavigationConfig {
+export function navigateToFijiWorkspace(): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE> {
   return {
     to: ROUTE_PATHS.WORKSPACE,
     params: {
@@ -21,7 +21,9 @@ export function navigateToFijiWorkspace(): NavigationConfig {
   }
 }
 
-export function getRouteToFijiWorkspaceWithAllLayers(): NavigationConfig {
+export function getRouteToFijiWorkspaceWithAllLayers(): NavigationConfig<
+  typeof ROUTE_PATHS.WORKSPACE
+> {
   return {
     to: ROUTE_PATHS.WORKSPACE,
     params: {

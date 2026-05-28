@@ -2,7 +2,9 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function navigateToComparisonReport(): NavigationConfig {
+export function navigateToComparisonReport(): NavigationConfig<
+  typeof ROUTE_PATHS.WORKSPACE_REPORT_FULL
+> {
   return {
     to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
     params: {

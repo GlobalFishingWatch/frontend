@@ -5,7 +5,7 @@ import type { NavigationConfig } from './navigation-config'
 
 export function navigateToVesselSearch(
   searchOverrides: Partial<QueryParams> = {}
-): NavigationConfig {
+): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_SEARCH> {
   return {
     to: ROUTE_PATHS.WORKSPACE_SEARCH,
     params: {

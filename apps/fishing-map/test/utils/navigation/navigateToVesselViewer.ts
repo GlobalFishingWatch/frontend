@@ -13,7 +13,7 @@ const VESSEL_VIEWER_SEARCH = {
   visibleEvents: ['loitering', 'encounter', 'port_visit', 'gaps'],
 } as QueryParams
 
-export function navigateToVesselViewer(): NavigationConfig {
+export function navigateToVesselViewer(): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_VESSEL> {
   return {
     to: ROUTE_PATHS.WORKSPACE_VESSEL,
     params: {

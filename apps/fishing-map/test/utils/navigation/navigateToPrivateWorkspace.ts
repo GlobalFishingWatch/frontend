@@ -2,7 +2,7 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function navigateToPrivateWorkspace(): NavigationConfig {
+export function navigateToPrivateWorkspace(): NavigationConfig<typeof ROUTE_PATHS.REPORT> {
   return {
     to: ROUTE_PATHS.REPORT,
     params: {

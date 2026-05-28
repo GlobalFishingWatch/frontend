@@ -2,7 +2,7 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function addVesselToWorkspace(): NavigationConfig {
+export function addVesselToWorkspace(): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE> {
   return {
     to: ROUTE_PATHS.WORKSPACE,
     params: {

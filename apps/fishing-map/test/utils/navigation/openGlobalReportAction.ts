@@ -2,7 +2,7 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function navigateToGlobalReport(): NavigationConfig {
+export function navigateToGlobalReport(): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_REPORT> {
   return {
     to: ROUTE_PATHS.WORKSPACE_REPORT,
     params: {

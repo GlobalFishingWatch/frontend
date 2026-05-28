@@ -1,3 +1,10 @@
-import type { AppRouter } from '../../../router'
+import type { NavigateOptions } from '@tanstack/react-router'
 
-export type NavigationConfig = Parameters<AppRouter['navigate']>[0]
+import type { AppRouter } from '../../../router'
+import type { RoutePathValues } from '../../../router/routes.utils'
+
+export type NavigationConfig<TTo extends RoutePathValues> = NavigateOptions<
+  AppRouter,
+  string,
+  TTo
+>

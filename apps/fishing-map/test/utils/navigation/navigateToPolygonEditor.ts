@@ -4,7 +4,7 @@ import { USER_POLYGON_DATASET_ID } from '../store/redux-store-test.data'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function navigateToPolygonEditor(): NavigationConfig {
+export function navigateToPolygonEditor(): NavigationConfig<typeof ROUTE_PATHS.HOME> {
   return {
     to: ROUTE_PATHS.HOME,
     search: {

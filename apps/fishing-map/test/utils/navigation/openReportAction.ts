@@ -36,7 +36,7 @@ function navigateToReport(
   datasetId: DatasetId,
   areaId: string,
   search: QueryParams = OPEN_REPORT_SEARCH
-): NavigationConfig {
+): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_REPORT_FULL> {
   return {
     to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
     params: {
@@ -53,7 +53,9 @@ function navigateToReport(
 }
 
 type ReportArea = 'eez' | 'mpa' | 'rfmo'
-export function navigateToReportByArea(reportArea: ReportArea): NavigationConfig {
+export function navigateToReportByArea(
+  reportArea: ReportArea
+): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_REPORT_FULL> {
   switch (reportArea) {
     case 'eez':
       return navigateToReport('public-eez-areas', eezAreaIdsByName.Azores)
