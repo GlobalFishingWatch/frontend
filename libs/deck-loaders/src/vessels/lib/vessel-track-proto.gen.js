@@ -1,4 +1,4 @@
-/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, default-case, jsdoc/require-param*/
+/*eslint-disable no-prototype-builtins, jsdoc/require-param*/
 import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
@@ -20,20 +20,31 @@ export const vessels = ($root.vessels = (() => {
   vessels.DeckTrackAttribute = (function () {
     /**
      * Properties of a DeckTrackAttribute.
-     * @memberof vessels
-     * @interface IDeckTrackAttribute
+     * @typedef {Object} vessels.DeckTrackAttribute.$Properties
      * @property {Array.<number>|null} [value] DeckTrackAttribute value
      * @property {number|null} [size] DeckTrackAttribute size
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
 
     /**
+     * Properties of a DeckTrackAttribute.
+     * @memberof vessels
+     * @interface IDeckTrackAttribute
+     * @augments vessels.DeckTrackAttribute.$Properties
+     * @deprecated Use vessels.DeckTrackAttribute.$Properties instead.
+     */
+
+    /**
+     * Shape of a DeckTrackAttribute.
+     * @typedef {vessels.DeckTrackAttribute.$Properties} vessels.DeckTrackAttribute.$Shape
+     */
+
+    /**
      * Constructs a new DeckTrackAttribute.
      * @memberof vessels
      * @classdesc Represents a DeckTrackAttribute.
-     * @implements IDeckTrackAttribute
      * @constructor
-     * @param {vessels.IDeckTrackAttribute=} [properties] Properties to set
+     * @param {vessels.DeckTrackAttribute.$Properties=} [properties] Properties to set
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DeckTrackAttribute(properties) {
@@ -65,8 +76,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DeckTrackAttribute
      * @static
-     * @param {vessels.IDeckTrackAttribute=} [properties] Properties to set
+     * @param {vessels.DeckTrackAttribute.$Properties=} [properties] Properties to set
      * @returns {vessels.DeckTrackAttribute} DeckTrackAttribute instance
+     * @type {{
+     *   (properties: vessels.DeckTrackAttribute.$Shape): vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape;
+     *   (properties?: vessels.DeckTrackAttribute.$Properties): vessels.DeckTrackAttribute;
+     * }}
      */
     DeckTrackAttribute.create = function create(properties) {
       return new DeckTrackAttribute(properties)
@@ -77,7 +92,7 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DeckTrackAttribute
      * @static
-     * @param {vessels.IDeckTrackAttribute} message DeckTrackAttribute message or plain object to encode
+     * @param {vessels.DeckTrackAttribute.$Properties} message DeckTrackAttribute message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
@@ -102,12 +117,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DeckTrackAttribute
      * @static
-     * @param {vessels.IDeckTrackAttribute} message DeckTrackAttribute message or plain object to encode
+     * @param {vessels.DeckTrackAttribute.$Properties} message DeckTrackAttribute message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DeckTrackAttribute.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -117,7 +132,7 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DeckTrackAttribute} DeckTrackAttribute
+     * @returns {vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape} DeckTrackAttribute
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -126,21 +141,21 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
       let end = length === undefined ? reader.len : reader.pos + length,
-        message = _target || new C(),
+        message = _target || new $root.vessels.DeckTrackAttribute(),
         value
       while (reader.pos < end) {
-        let start = reader.pos
+        const start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        let wireType = tag & 7
+        const wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType === 2) {
               if (!(message.value && message.value.length)) message.value = []
-              let end2 = reader.uint32() + reader.pos
+              const end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.value.push(reader.float())
               continue
             }
@@ -170,7 +185,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DeckTrackAttribute
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DeckTrackAttribute} DeckTrackAttribute
+     * @returns {vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape} DeckTrackAttribute
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -210,10 +225,10 @@ export const vessels = ($root.vessels = (() => {
      * @returns {vessels.DeckTrackAttribute} DeckTrackAttribute
      */
     DeckTrackAttribute.fromObject = function fromObject(object, _depth) {
-      if (object instanceof C) return object
+      if (object instanceof $root.vessels.DeckTrackAttribute) return object
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let message = new C()
+      const message = new $root.vessels.DeckTrackAttribute()
       if (object.value) {
         if (!Array.isArray(object.value))
           throw TypeError('.vessels.DeckTrackAttribute.value: array expected')
@@ -237,7 +252,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.value = []
       if (options.defaults) object.size = 0
       if (message.value && message.value.length) {
@@ -282,23 +297,34 @@ export const vessels = ($root.vessels = (() => {
   vessels.DeckTrackAttributeStruct = (function () {
     /**
      * Properties of a DeckTrackAttributeStruct.
+     * @typedef {Object} vessels.DeckTrackAttributeStruct.$Properties
+     * @property {vessels.DeckTrackAttribute.$Properties|null} [getPath] DeckTrackAttributeStruct getPath
+     * @property {vessels.DeckTrackAttribute.$Properties|null} [getTimestamp] DeckTrackAttributeStruct getTimestamp
+     * @property {vessels.DeckTrackAttribute.$Properties|null} [getSpeed] DeckTrackAttributeStruct getSpeed
+     * @property {vessels.DeckTrackAttribute.$Properties|null} [getElevation] DeckTrackAttributeStruct getElevation
+     * @property {vessels.DeckTrackAttribute.$Properties|null} [getCourse] DeckTrackAttributeStruct getCourse
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DeckTrackAttributeStruct.
      * @memberof vessels
      * @interface IDeckTrackAttributeStruct
-     * @property {vessels.IDeckTrackAttribute|null} [getPath] DeckTrackAttributeStruct getPath
-     * @property {vessels.IDeckTrackAttribute|null} [getTimestamp] DeckTrackAttributeStruct getTimestamp
-     * @property {vessels.IDeckTrackAttribute|null} [getSpeed] DeckTrackAttributeStruct getSpeed
-     * @property {vessels.IDeckTrackAttribute|null} [getElevation] DeckTrackAttributeStruct getElevation
-     * @property {vessels.IDeckTrackAttribute|null} [getCourse] DeckTrackAttributeStruct getCourse
-     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     * @augments vessels.DeckTrackAttributeStruct.$Properties
+     * @deprecated Use vessels.DeckTrackAttributeStruct.$Properties instead.
+     */
+
+    /**
+     * Shape of a DeckTrackAttributeStruct.
+     * @typedef {vessels.DeckTrackAttributeStruct.$Properties} vessels.DeckTrackAttributeStruct.$Shape
      */
 
     /**
      * Constructs a new DeckTrackAttributeStruct.
      * @memberof vessels
      * @classdesc Represents a DeckTrackAttributeStruct.
-     * @implements IDeckTrackAttributeStruct
      * @constructor
-     * @param {vessels.IDeckTrackAttributeStruct=} [properties] Properties to set
+     * @param {vessels.DeckTrackAttributeStruct.$Properties=} [properties] Properties to set
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DeckTrackAttributeStruct(properties) {
@@ -310,7 +336,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getPath.
-     * @member {vessels.IDeckTrackAttribute|null|undefined} getPath
+     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getPath
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -318,7 +344,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getTimestamp.
-     * @member {vessels.IDeckTrackAttribute|null|undefined} getTimestamp
+     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getTimestamp
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -326,7 +352,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getSpeed.
-     * @member {vessels.IDeckTrackAttribute|null|undefined} getSpeed
+     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getSpeed
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -334,7 +360,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getElevation.
-     * @member {vessels.IDeckTrackAttribute|null|undefined} getElevation
+     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getElevation
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -342,7 +368,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getCourse.
-     * @member {vessels.IDeckTrackAttribute|null|undefined} getCourse
+     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getCourse
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -353,8 +379,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DeckTrackAttributeStruct
      * @static
-     * @param {vessels.IDeckTrackAttributeStruct=} [properties] Properties to set
+     * @param {vessels.DeckTrackAttributeStruct.$Properties=} [properties] Properties to set
      * @returns {vessels.DeckTrackAttributeStruct} DeckTrackAttributeStruct instance
+     * @type {{
+     *   (properties: vessels.DeckTrackAttributeStruct.$Shape): vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape;
+     *   (properties?: vessels.DeckTrackAttributeStruct.$Properties): vessels.DeckTrackAttributeStruct;
+     * }}
      */
     DeckTrackAttributeStruct.create = function create(properties) {
       return new DeckTrackAttributeStruct(properties)
@@ -365,7 +395,7 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DeckTrackAttributeStruct
      * @static
-     * @param {vessels.IDeckTrackAttributeStruct} message DeckTrackAttributeStruct message or plain object to encode
+     * @param {vessels.DeckTrackAttributeStruct.$Properties} message DeckTrackAttributeStruct message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
@@ -413,12 +443,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DeckTrackAttributeStruct
      * @static
-     * @param {vessels.IDeckTrackAttributeStruct} message DeckTrackAttributeStruct message or plain object to encode
+     * @param {vessels.DeckTrackAttributeStruct.$Properties} message DeckTrackAttributeStruct message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DeckTrackAttributeStruct.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -428,7 +458,7 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DeckTrackAttributeStruct} DeckTrackAttributeStruct
+     * @returns {vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape} DeckTrackAttributeStruct
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -437,16 +467,16 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
       let end = length === undefined ? reader.len : reader.pos + length,
-        message = _target || new C(),
+        message = _target || new $root.vessels.DeckTrackAttributeStruct(),
         value
       while (reader.pos < end) {
-        let start = reader.pos
+        const start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        let wireType = tag & 7
+        const wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -518,7 +548,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DeckTrackAttributeStruct
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DeckTrackAttributeStruct} DeckTrackAttributeStruct
+     * @returns {vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape} DeckTrackAttributeStruct
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -540,23 +570,23 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.getPath != null && message.hasOwnProperty('getPath')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
+        const error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
         if (error) return 'getPath.' + error
       }
       if (message.getTimestamp != null && message.hasOwnProperty('getTimestamp')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
+        const error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
         if (error) return 'getTimestamp.' + error
       }
       if (message.getSpeed != null && message.hasOwnProperty('getSpeed')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
+        const error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
         if (error) return 'getSpeed.' + error
       }
       if (message.getElevation != null && message.hasOwnProperty('getElevation')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
+        const error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
         if (error) return 'getElevation.' + error
       }
       if (message.getCourse != null && message.hasOwnProperty('getCourse')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
+        const error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
         if (error) return 'getCourse.' + error
       }
       return null
@@ -571,10 +601,10 @@ export const vessels = ($root.vessels = (() => {
      * @returns {vessels.DeckTrackAttributeStruct} DeckTrackAttributeStruct
      */
     DeckTrackAttributeStruct.fromObject = function fromObject(object, _depth) {
-      if (object instanceof C) return object
+      if (object instanceof $root.vessels.DeckTrackAttributeStruct) return object
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let message = new C()
+      const message = new $root.vessels.DeckTrackAttributeStruct()
       if (object.getPath != null) {
         if (typeof object.getPath !== 'object')
           throw TypeError('.vessels.DeckTrackAttributeStruct.getPath: object expected')
@@ -625,7 +655,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let object = {}
+      const object = {}
       if (options.defaults) {
         object.getPath = null
         object.getTimestamp = null
@@ -696,21 +726,32 @@ export const vessels = ($root.vessels = (() => {
   vessels.DeckTrack = (function () {
     /**
      * Properties of a DeckTrack.
-     * @memberof vessels
-     * @interface IDeckTrack
+     * @typedef {Object} vessels.DeckTrack.$Properties
      * @property {number|null} [length] DeckTrack length
      * @property {Array.<number>|null} [startIndices] DeckTrack startIndices
-     * @property {vessels.IDeckTrackAttributeStruct|null} [attributes] DeckTrack attributes
+     * @property {vessels.DeckTrackAttributeStruct.$Properties|null} [attributes] DeckTrack attributes
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DeckTrack.
+     * @memberof vessels
+     * @interface IDeckTrack
+     * @augments vessels.DeckTrack.$Properties
+     * @deprecated Use vessels.DeckTrack.$Properties instead.
+     */
+
+    /**
+     * Shape of a DeckTrack.
+     * @typedef {vessels.DeckTrack.$Properties} vessels.DeckTrack.$Shape
      */
 
     /**
      * Constructs a new DeckTrack.
      * @memberof vessels
      * @classdesc Represents a DeckTrack.
-     * @implements IDeckTrack
      * @constructor
-     * @param {vessels.IDeckTrack=} [properties] Properties to set
+     * @param {vessels.DeckTrack.$Properties=} [properties] Properties to set
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DeckTrack(properties) {
@@ -739,7 +780,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrack attributes.
-     * @member {vessels.IDeckTrackAttributeStruct|null|undefined} attributes
+     * @member {vessels.DeckTrackAttributeStruct.$Properties|null|undefined} attributes
      * @memberof vessels.DeckTrack
      * @instance
      */
@@ -750,8 +791,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DeckTrack
      * @static
-     * @param {vessels.IDeckTrack=} [properties] Properties to set
+     * @param {vessels.DeckTrack.$Properties=} [properties] Properties to set
      * @returns {vessels.DeckTrack} DeckTrack instance
+     * @type {{
+     *   (properties: vessels.DeckTrack.$Shape): vessels.DeckTrack & vessels.DeckTrack.$Shape;
+     *   (properties?: vessels.DeckTrack.$Properties): vessels.DeckTrack;
+     * }}
      */
     DeckTrack.create = function create(properties) {
       return new DeckTrack(properties)
@@ -762,7 +807,7 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DeckTrack
      * @static
-     * @param {vessels.IDeckTrack} message DeckTrack message or plain object to encode
+     * @param {vessels.DeckTrack.$Properties} message DeckTrack message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
@@ -793,12 +838,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DeckTrack
      * @static
-     * @param {vessels.IDeckTrack} message DeckTrack message or plain object to encode
+     * @param {vessels.DeckTrack.$Properties} message DeckTrack message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DeckTrack.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -808,7 +853,7 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DeckTrack} DeckTrack
+     * @returns {vessels.DeckTrack & vessels.DeckTrack.$Shape} DeckTrack
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -817,16 +862,16 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
       let end = length === undefined ? reader.len : reader.pos + length,
-        message = _target || new C(),
+        message = _target || new $root.vessels.DeckTrack(),
         value
       while (reader.pos < end) {
-        let start = reader.pos
+        const start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        let wireType = tag & 7
+        const wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 0) break
@@ -837,7 +882,7 @@ export const vessels = ($root.vessels = (() => {
           case 2: {
             if (wireType === 2) {
               if (!(message.startIndices && message.startIndices.length)) message.startIndices = []
-              let end2 = reader.uint32() + reader.pos
+              const end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.startIndices.push(reader.uint32())
               continue
             }
@@ -872,7 +917,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DeckTrack
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DeckTrack} DeckTrack
+     * @returns {vessels.DeckTrack & vessels.DeckTrack.$Shape} DeckTrack
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -901,7 +946,7 @@ export const vessels = ($root.vessels = (() => {
           if (!$util.isInteger(message.startIndices[i])) return 'startIndices: integer[] expected'
       }
       if (message.attributes != null && message.hasOwnProperty('attributes')) {
-        let error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
+        const error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
         if (error) return 'attributes.' + error
       }
       return null
@@ -916,10 +961,10 @@ export const vessels = ($root.vessels = (() => {
      * @returns {vessels.DeckTrack} DeckTrack
      */
     DeckTrack.fromObject = function fromObject(object, _depth) {
-      if (object instanceof C) return object
+      if (object instanceof $root.vessels.DeckTrack) return object
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let message = new C()
+      const message = new $root.vessels.DeckTrack()
       if (object.length != null)
         if (Number(object.length) !== 0) message.length = object.length >>> 0
       if (object.startIndices) {
@@ -953,7 +998,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      let object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.startIndices = []
       if (options.defaults) {
         object.length = 0

@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "long": "5.x",
-    "protobufjs": "^8.0.0",
+    "protobufjs": "^8.4.2",
     "tslib": "2.x"
   },
   "devDependencies": {
@@ -29,7 +29,7 @@
     "pbjs": "0.0.14",
     "pbts-cli": "1.0.3",
     "prettier": "3.8.0",
-    "protobufjs": "^8.0.0",
+    "protobufjs": "^8.4.2",
     "protobufjs-cli": "2.0.2"
   }
 }
