@@ -24,7 +24,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 
 import type { VALID_PASSWORD } from 'data/config'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
+import { DEFAULT_TIME_RANGE, IS_RANDOM_FOREST_ENABLED, PRIVATE_SUFIX } from 'data/config'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   DEFAULT_DATAVIEW_SLUGS,
@@ -47,13 +47,9 @@ import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import {
-  selectIsGFWUser,
-  selectIsGuestUser,
-  selectUserGroups,
-} from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { RF_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -239,8 +235,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
-        // TODO:RandomForest remove this before merge
-        datasetsIds.push(DEFAULT_VESSEL_IDENTITY_ID)
+        if (IS_RANDOM_FOREST_ENABLED) {
+          datasetsIds.push(RF_VESSEL_IDENTITY_ID)
+        }
         const vesselGroupsIds = getVesselGroupsInDataviews(
           [...dataviews, ...dataviewInstances],
           guestUser

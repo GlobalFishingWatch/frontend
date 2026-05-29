@@ -198,28 +198,33 @@ module "random-forest" {
     project          = "frontend"
   }
   push_config = {
-    branch  = "fishing-map/random-forest"
+    branch  = "fishing-map/router-refactor-2"
     trigger = "branch"
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
-    "NEXT_PUBLIC_API_VERSION=v3",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-    "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
-    "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
-    "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=development",
+    "VITE_REPORT_DAYS_LIMIT=366",
+    "VITE_PIPE_DATASET_VERSION=4",
+    "VITE_RANDOM_FOREST_ENABLED=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
+    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_next_secrets.dev
+  set_secrets = local.generate_secrets.dev
 }
+
 
 module "staging" {
   source            = "../../../cloudbuild-template"

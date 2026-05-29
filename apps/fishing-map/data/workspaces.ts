@@ -5,7 +5,7 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 
-import { PUBLIC_SUFIX } from './config'
+import { IS_RANDOM_FOREST_ENABLED, PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV = (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) || (import.meta.env.MODE as WorkspaceEnv) || 'production'
@@ -76,8 +76,10 @@ export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-random-forest' // `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = IS_RANDOM_FOREST_ENABLED
+  ? ('fishing-map-vessel-track-random-forest' as const)
+  : (`fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const)
+console.log('🚀 ~ TEMPLATE_VESSEL_DATAVIEW_SLUG:', TEMPLATE_VESSEL_DATAVIEW_SLUG)
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const

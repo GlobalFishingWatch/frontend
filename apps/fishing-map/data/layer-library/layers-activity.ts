@@ -1,4 +1,4 @@
-import { PATH_BASENAME } from 'data/config'
+import { IS_RANDOM_FOREST_ENABLED, PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   FISHING_DATAVIEW_SLUG_AIS,
@@ -14,7 +14,9 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     config: {
       color: '#00FFBC',
       colorRamp: 'teal',
-      datasets: ['public-global-fishing-effort-vi-653:v1.0'],
+      ...(IS_RANDOM_FOREST_ENABLED && {
+        datasets: ['public-global-fishing-effort-vi-653:v1.0'],
+      }),
       filters: {
         distance_from_port_km: '3',
       },

@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
-import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { IS_RANDOM_FOREST_ENABLED, PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
@@ -64,16 +64,19 @@ const selectSearchDatasetsInWorkspace = createSelector(
       }
       return true
     })
-    const filteredDatasetsPrioritisedRF = filteredDatasetsPrioritised.map((d) => {
-      if (d.id === DEFAULT_IDENTITY_DATASET_ID) {
-        const datasetRF = allDatasets.find(
-          (d) => d.id === 'public-global-vessel-identity-vi-653:v1.0'
-        )
-        return datasetRF || d
-      }
-      return d
-    })
-    return filteredDatasetsPrioritisedRF
+    if (IS_RANDOM_FOREST_ENABLED) {
+      const filteredDatasetsPrioritisedRF = filteredDatasetsPrioritised.map((d) => {
+        if (d.id === DEFAULT_IDENTITY_DATASET_ID) {
+          const datasetRF = allDatasets.find(
+            (d) => d.id === 'public-global-vessel-identity-vi-653:v1.0'
+          )
+          return datasetRF || d
+        }
+        return d
+      })
+      return filteredDatasetsPrioritisedRF
+    }
+    return filteredDatasetsPrioritised
   }
 )
 
