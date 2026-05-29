@@ -50,19 +50,23 @@ describe('Vessel viewer', async () => {
   it('should change tab when clicking on a tab', async () => {
     const store = makeStore(defaultState)
 
-    const { getByText, getByTestId, router } = await render({ store })
+    const { getByText, getByTestId, getByRole, router } = await render({ store })
     await router.navigate(navigateToVesselViewer())
 
     await userEvent.click(getByText('AIS', { exact: true }))
 
-    await expect.element(getByText('Name').first()).toBeVisible()
-    await expect.element(getByText('Flag', { exact: true })).toBeVisible()
-    await expect.element(getByText('MMSI')).toBeVisible()
-    await expect.element(getByText('IMO', { exact: true })).toBeVisible()
-    await expect.element(getByText('Call Sign')).toBeVisible()
-    await expect.element(getByText('GFW Vessel type')).toBeVisible()
-    await expect.element(getByText('GFW Gear type')).toBeVisible()
-    await expect.element(getByText('View in')).toBeVisible()
+    const aisPanel = getByRole('tabpanel').filter({ hasText: 'GFW Predictions' })
+    await expect.element(aisPanel.getByText('Self reported by vessel', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Predictions', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Name', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Vessel type', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Flag', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('MMSI')).toBeVisible()
+    await expect.element(aisPanel.getByText('IMO', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Call Sign')).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Vessel type')).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Gear type')).toBeVisible()
+    await expect.element(aisPanel.getByText('View in')).toBeVisible()
     await expect.element(getByTestId('vv-summary-tab')).toBeVisible()
     await expect.element(getByTestId('vv-areas-tab')).toBeVisible()
     await expect.element(getByTestId('vv-related-tab')).toBeVisible()
@@ -79,7 +83,6 @@ describe('Vessel viewer', async () => {
     await GFWAPITest.waitForRequest('/events')
     await userEvent.click(getByTestId('vv-summary-tab'))
     await expect.element(getByTestId('vv-list-port_visit')).toBeVisible()
-    // await expect.element(getByTestId('vv-list-port_visit')).toBeVisible()
   })
 
   it('should render summary tab by timeline', async () => {
