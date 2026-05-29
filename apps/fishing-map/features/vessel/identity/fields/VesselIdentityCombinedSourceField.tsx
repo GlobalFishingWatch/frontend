@@ -1,18 +1,17 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { Fragment, useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 import { DateTime } from 'luxon'
 
-import { SelfReportedSource, type VesselInfo } from '@globalfishingwatch/api-types'
-import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
+import { type VesselInfo } from '@globalfishingwatch/api-types'
+import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
-import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
+import VesselIdentityGFWExtendedGeartype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedGeartype'
+import VesselIdentityGFWExtendedVesseltype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedVesseltype'
+import { formatInfoField } from 'utils/info'
 
 import styles from '../VesselIdentity.module.css'
 
@@ -24,10 +23,9 @@ const VesselIdentityCombinedSourceField = ({
   identity,
   property,
 }: VesselIdentityCombinedSourceFieldProps) => {
-  const { t } = useTranslation()
   const isGFWUser = useSelector(selectIsGFWUser)
-  const isJACUser = useSelector(selectIsJACUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
+  const [vesseltypesExpanded, setVesseltypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
   const toggleGearTypesExpanded = useCallback(
@@ -35,6 +33,13 @@ const VesselIdentityCombinedSourceField = ({
       setGeartypesExpanded(geartypesExpanded === index ? null : index)
     },
     [geartypesExpanded]
+  )
+
+  const toggleVesselTypesExpanded = useCallback(
+    (index: number) => {
+      setVesseltypesExpanded(vesseltypesExpanded === index ? null : index)
+    },
+    [vesseltypesExpanded]
   )
 
   if (!combinedSource) {
@@ -69,17 +74,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if ((isGFWUser || isJACUser) && property === 'geartypes') {
-            const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
-              ?.value
-              ? t((t) => t.vessel.gearTypes.fishing)
-              : t((t) => t.vessel.gearTypes.other)
-            const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
-              ?.value as string
-            const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]
-              ?.value as string
-            const registryGearType = identity?.combinedSourcesInfo?.registryVesselClass?.[index]
-              ?.value as string
+          if (isGFWUser && property === 'geartypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
@@ -90,37 +85,24 @@ const VesselIdentityCombinedSourceField = ({
                   />
                 </li>
                 {geartypesExpanded === index && (
-                  <ul className={styles.extendedInfo}>
-                    {isGFWUser && (
-                      <>
-                        <li>
-                          <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
-                        </li>
-                        <li>
-                          <Tooltip content="Vessel class inferred by the machine learning model.">
-                            <span className={cx(styles.secondary, styles.help)}>
-                              Machine learning estimate:{' '}
-                            </span>
-                          </Tooltip>
-                          {formatInfoField(neuralNetGearType, property) as string}
-                        </li>
-                        <li>
-                          <Tooltip content="Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the “Registry” tab gear, which aggregates at the hull level.">
-                            <span className={cx(styles.secondary, styles.help)}>
-                              Aggregated registry:{' '}
-                            </span>
-                          </Tooltip>
-                          {formatInfoField(registryGearType, property) as string}
-                        </li>
-                        <li>
-                          <Tooltip content="Data table and specific field the GFW gear type value is populated from">
-                            <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
-                          </Tooltip>
-                          {bqSource?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
-                        </li>
-                      </>
-                    )}
-                  </ul>
+                  <VesselIdentityGFWExtendedGeartype identity={identity} sourceIndex={index} />
+                )}
+              </Fragment>
+            )
+          }
+
+          if (isGFWUser && property === 'shiptypes') {
+            return (
+              <Fragment key={index}>
+                <li onClick={() => toggleVesselTypesExpanded(index)} className={styles.expandable}>
+                  {Component}
+                  <Icon
+                    className={styles.expandIcon}
+                    icon={vesseltypesExpanded === index ? 'arrow-top' : 'arrow-down'}
+                  />
+                </li>
+                {vesseltypesExpanded === index && (
+                  <VesselIdentityGFWExtendedVesseltype identity={identity} sourceIndex={index} />
                 )}
               </Fragment>
             )
