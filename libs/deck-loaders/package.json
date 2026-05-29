@@ -2,6 +2,9 @@
   "name": "@globalfishingwatch/deck-loaders",
   "version": "0.1.3",
   "type": "module",
+  "scripts": {
+    "proto:generate": "nx run deck-loaders:proto:generate"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
