@@ -7,6 +7,7 @@ import type { DateTimeUnit } from 'luxon'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+import { isValidISODate } from '@globalfishingwatch/timebar'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -46,8 +47,6 @@ import {
 } from './timebar.slice'
 
 const TIMERANGE_DEBOUNCED_TIME = 1000
-
-const isValidISODate = (value: string) => !isNaN(Date.parse(value))
 
 const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
   try {

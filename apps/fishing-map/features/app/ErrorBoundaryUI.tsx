@@ -32,11 +32,17 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
     }
   }, [dispatch, userData])
 
+  const goBackClick = useCallback(() => {
+    window.history.back()
+    window.location.reload()
+  }, [])
+
   return (
     <Fragment>
       <div className={styles.errorBoundary}>
         <h1 className={styles.title}>{t((t) => t.errors.genericShort)}</h1>
         <div>
+          <Button onClick={goBackClick}>{t((t) => t.common.back)}</Button>{' '}
           <Button type="secondary" onClick={onFeedbackClick}>
             {t((t) => t.errors.reportError)}
           </Button>{' '}
