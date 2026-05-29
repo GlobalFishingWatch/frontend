@@ -79,7 +79,6 @@ export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = IS_RANDOM_FOREST_ENABLED
   ? ('fishing-map-vessel-track-random-forest' as const)
   : (`fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const)
-console.log('🚀 ~ TEMPLATE_VESSEL_DATAVIEW_SLUG:', TEMPLATE_VESSEL_DATAVIEW_SLUG)
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const
