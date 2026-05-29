@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 
 import DataTerminology from 'features/data-terminology/DataTerminology'
@@ -44,9 +44,7 @@ export function useVesselIdentityTabs() {
   const identityId = useSelector(selectVesselIdentityId)
   const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
 
-  const isVMS = vesselIdentity?.sourceCode?.some((s) =>
-    s.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
-  )
+  const isVMS = vesselIdentity?.sourceCode?.some((s) => getIsVMSDataset(s))
 
   const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
     () => [

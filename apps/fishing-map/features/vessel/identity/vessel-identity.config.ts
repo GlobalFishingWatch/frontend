@@ -35,8 +35,6 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   terminologyKey: 'geartype',
 }
 
-export const SELF_REPORTED_SECTION_SPLIT = 2
-
 export const AIS_SELF_REPORTED_FIELDS: VesselRenderField[][] = [
   [
     { key: 'shipname' },

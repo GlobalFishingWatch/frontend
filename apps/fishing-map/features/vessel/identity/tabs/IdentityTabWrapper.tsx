@@ -57,6 +57,10 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
 
   const hasSsvid = !!vesselIdentity?.ssvid
 
+  if (!vesselIdentity) {
+    return null
+  }
+
   const onTimeRangeClick = () => {
     setTimerange({
       start: vesselIdentity.transmissionDateFrom,
@@ -65,7 +69,6 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   }
 
   const onDownloadClick = () => {
-    if (!vesselIdentity) return
     const timerange = {
       start: vesselIdentity.transmissionDateFrom,
       end: vesselIdentity.transmissionDateTo,
