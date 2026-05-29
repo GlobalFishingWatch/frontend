@@ -8,7 +8,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 
 import { selectFetchVesselGroupReportIUUParams } from '../../report-vessel-group/vessel-group-report.selectors'

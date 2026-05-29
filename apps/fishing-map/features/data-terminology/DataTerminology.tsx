@@ -13,7 +13,7 @@ import type I18nNamespaces from 'features/i18n/i18n.types'
 import { getModalParent } from 'features/modals/Modals'
 import { htmlSafeParse } from 'utils/html-parser'
 
-import { selectVesselSection } from '../vessel.config.selectors'
+import { selectVesselSection } from '../vessel/vessel.config.selectors'
 
 import styles from './DataTerminology.module.css'
 

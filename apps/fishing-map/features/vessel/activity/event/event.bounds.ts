@@ -40,7 +40,7 @@ export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
         replaceQueryParams({ sidebarOpen: false })
       }
     },
-    [fitMapBounds, isSmallScreen, replaceQueryParams, vesselLayer.instance]
+    [fitMapBounds, isSmallScreen, replaceQueryParams, vesselLayer?.instance]
   )
 
   return fitEventBounds

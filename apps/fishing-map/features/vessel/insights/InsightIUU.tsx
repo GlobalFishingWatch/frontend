@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 
 import styles from './Insights.module.css'

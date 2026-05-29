@@ -5,6 +5,19 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
+    "proto:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/deck-loaders",
+        "commands": [
+          "pbjs src/vessels/lib/vessel-track.proto -t static-module -w es6 -o src/vessels/lib/vessel-track-proto.gen.js",
+          "pbts src/vessels/lib/vessel-track-proto.gen.js -o src/vessels/lib/vessel-track-proto.gen.d.ts",
+          "prettier --write src/vessels/lib/vessel-track-proto.gen.js src/vessels/lib/vessel-track-proto.gen.d.ts --config ../../.prettierrc.js",
+          "tsc --noEmit -p tsconfig.lib.json"
+        ],
+        "parallel": false
+      }
+    },
     "dist": {
       "executor": "@nx/js:tsc"
     },

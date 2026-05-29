@@ -1,10 +1,10 @@
 import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
+import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import { formatInfoField } from 'utils/info'
 
 import VesselIdentityCombinedSourceField from './VesselIdentityCombinedSourceField'
-import VesselIdentityField from './VesselIdentityField'
 
 interface VesselTypesFieldProps {
   vesselIdentity: VesselLastIdentity

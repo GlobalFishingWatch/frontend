@@ -11,10 +11,10 @@ import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
-import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
+import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
-import styles from './VesselIdentity.module.css'
+import styles from '../VesselIdentity.module.css'
 
 type VesselIdentityCombinedSourceFieldProps = {
   identity: VesselLastIdentity
@@ -123,7 +123,9 @@ const VesselIdentityCombinedSourceField = ({
                     <li>
                       <Tooltip content="Vessel self-reports as a fishing vessel in AIS messages 98% or more of the time.">
                         <span className={cx(styles.secondary, styles.help)}>
-                          {identity.sourceCode.includes(SelfReportedSource.Ais) ? 'AIS' : 'VMS'}{' '}
+                          {identity.sourceCode.includes(SelfReportedSource.Ais)
+                            ? t((t) => t.common.ais)
+                            : t((t) => t.common.vms)}{' '}
                           self-reported:{' '}
                         </span>
                       </Tooltip>

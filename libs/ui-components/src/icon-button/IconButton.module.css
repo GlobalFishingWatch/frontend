@@ -78,7 +78,6 @@
   color: rgba(var(--white-rgb), 0.9);
   background-color: rgba(var(--primary-blue-rgb), 0.8);
   border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
-  backdrop-filter: blur(4px);
   box-shadow: 0 2px 8px rgba(1, 30, 66, 0.35);
 }
 

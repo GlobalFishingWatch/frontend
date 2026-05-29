@@ -7,6 +7,9 @@ import { DateTime } from 'luxon'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+// import { getEventLabel } from 'utils/analytics'
+// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -17,9 +20,6 @@ import {
   selectReportVesselGroupFlags,
   selectReportVesselGroupTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
-// import { getEventLabel } from 'utils/analytics'
-// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {

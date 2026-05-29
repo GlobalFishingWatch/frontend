@@ -6,8 +6,11 @@
 
 .container {
   padding: var(--space-SM);
-  padding-bottom: var(--space-SM);
   position: relative;
+}
+
+.tightPadding {
+  padding: var(--space-S);
 }
 
 .tabsContainer {
@@ -15,19 +18,37 @@
   margin-bottom: var(--space-XS);
 }
 
-.identityContainer .externalToolsContainer {
-  padding: var(--space-SM);
-  padding-bottom: var(--space-SM);
+.identityContainer {
   position: relative;
   margin-bottom: var(--space-SM);
 }
 
-.fieldGroupContainer {
-  padding: var(--space-S) 0;
+.identitySection {
+  border-radius: var(--border-radius-1);
+  border: var(--border);
+  margin-block: var(--space-S);
+  margin-inline: calc(-1 * var(--space-S));
+  background: var(--color-off-white-1);
 }
 
-.fieldGroupContainer:not(:last-child) {
+.sectionHeader {
+  display: flex;
+  align-items: center;
   border-bottom: var(--border);
+  padding: var(--space-S);
+}
+
+.sectionContent {
+  padding-inline: var(--space-S);
+}
+
+.fieldGroupContainer {
+  padding-block: var(--space-S);
+  border-bottom: var(--border);
+}
+
+.sectionContent .fieldGroupContainer {
+  border-bottom: none;
 }
 
 .fieldGroup {
@@ -38,10 +59,6 @@
 .twoColumns {
   grid-template-columns: repeat(2, 1fr);
   grid-auto-flow: column;
-}
-
-.secondColumnLarger {
-  grid-template-columns: 1fr 2fr;
 }
 
 .twoCells {
@@ -59,6 +76,7 @@
   gap: var(--space-S);
   position: absolute;
   right: var(--space-SM);
+  top: var(--space-SM);
 }
 
 .secondary {
@@ -95,6 +113,10 @@
   height: 26px;
 }
 
+.externalToolLinksWrapper {
+  margin-top: var(--space-S);
+}
+
 .externalToolLinks {
   display: flex;
   gap: var(--space-M);
@@ -104,20 +126,11 @@
   display: flex;
   align-self: center;
   height: 3rem;
-  text-decoration: underline;
 }
 
 .externalToolLinks a:not(:hover) {
-  /* filter: brightness(0) saturate(100%) invert(19%) sepia(25%) saturate(4893%) hue-rotate(206deg)
-    brightness(94%) contrast(98%); */
   opacity: var(--opacity-secondary);
   mix-blend-mode: multiply;
-}
-
-.externalToolLinks a img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 .disclaimer {

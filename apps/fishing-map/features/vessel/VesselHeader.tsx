@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Link, useRouterState } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniqBy, upperFirst } from 'es-toolkit'
 
@@ -37,6 +36,7 @@ import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
@@ -44,7 +44,6 @@ import styles from './VesselHeader.module.css'
 
 const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
-  const state = useRouterState()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const isSmallScreen = useSmallScreen()
@@ -212,11 +211,9 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           </svg>
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
-          <span className={styles.reportLink}>
-            <Link to={state.location.pathname} search={state.location.search}>
-              {t((t) => t.vessel.linkToVessel)}
-            </Link>
-          </span>
+          <a className={styles.reportLink} href={getCurrentAppUrl()}>
+            {t((t) => t.vessel.linkToVessel)}
+          </a>
         </h1>
 
         <div className={styles.actionsContainer}>

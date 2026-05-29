@@ -3,7 +3,6 @@
   padding: 0;
   margin: var(--space-S);
   border-radius: var(--border-radius-1);
-  box-shadow: var(--box-shadow-1);
 }
 
 .container {

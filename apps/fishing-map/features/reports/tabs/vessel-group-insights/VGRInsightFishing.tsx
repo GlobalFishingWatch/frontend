@@ -9,7 +9,7 @@ import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-ty
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'

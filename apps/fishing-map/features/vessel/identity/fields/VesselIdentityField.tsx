@@ -3,9 +3,8 @@ import cx from 'classnames'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
-
-import { isFieldLoginRequired } from '../vessel.utils'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
+import { isFieldLoginRequired } from 'features/vessel/vessel.utils'
 
 import styles from './VesselIdentityField.module.css'
 
