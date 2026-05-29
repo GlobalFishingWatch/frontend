@@ -1,5 +1,3 @@
-import importPlugin from 'eslint-plugin-import'
-
 import rootConfig from '../../eslint.config.js'
 
 export default [
@@ -11,7 +9,6 @@ export default [
   // Scoped to selectors only because import/no-cycle is slow (full graph traversal per file).
   {
     files: ['**/*.selectors.ts', '**/selectors/*.ts'],
-    plugins: { import: importPlugin },
     rules: {
       'import/no-cycle': ['error', { maxDepth: 10, ignoreExternal: true }],
     },

@@ -1,42 +1,40 @@
 import * as $protobuf from 'protobufjs'
 import Long = require('long')
+
 /** Namespace vessels. */
 export namespace vessels {
-  /** Properties of a DeckTrackAttribute. */
-  interface IDeckTrackAttribute {
-    /** DeckTrackAttribute value */
-    value?: number[] | null
-
-    /** DeckTrackAttribute size */
-    size?: number | null
-
-    /** Unknown fields preserved while decoding */
-    $unknowns?: Uint8Array[]
-  }
+  /**
+   * Properties of a DeckTrackAttribute.
+   * @deprecated Use vessels.DeckTrackAttribute.$Properties instead.
+   */
+  interface IDeckTrackAttribute extends vessels.DeckTrackAttribute.$Properties {}
 
   /** Represents a DeckTrackAttribute. */
-  class DeckTrackAttribute implements IDeckTrackAttribute {
+  class DeckTrackAttribute {
     /**
      * Constructs a new DeckTrackAttribute.
      * @param [properties] Properties to set
      */
-    constructor(properties?: vessels.IDeckTrackAttribute)
+    constructor(properties?: vessels.DeckTrackAttribute.$Properties)
 
     /** Unknown fields preserved while decoding */
-    public $unknowns?: Uint8Array[]
+    $unknowns?: Uint8Array[]
 
     /** DeckTrackAttribute value. */
-    public value: number[]
+    value: number[]
 
     /** DeckTrackAttribute size. */
-    public size: number
+    size: number
 
     /**
      * Creates a new DeckTrackAttribute instance using the specified properties.
      * @param [properties] Properties to set
      * @returns DeckTrackAttribute instance
      */
-    public static create(properties?: vessels.IDeckTrackAttribute): vessels.DeckTrackAttribute
+    static create(
+      properties: vessels.DeckTrackAttribute.$Shape
+    ): vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape
+    static create(properties?: vessels.DeckTrackAttribute.$Properties): vessels.DeckTrackAttribute
 
     /**
      * Encodes the specified DeckTrackAttribute message. Does not implicitly {@link vessels.DeckTrackAttribute.verify|verify} messages.
@@ -44,8 +42,8 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(
-      message: vessels.IDeckTrackAttribute,
+    static encode(
+      message: vessels.DeckTrackAttribute.$Properties,
       writer?: $protobuf.Writer
     ): $protobuf.Writer
 
@@ -55,8 +53,8 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encodeDelimited(
-      message: vessels.IDeckTrackAttribute,
+    static encodeDelimited(
+      message: vessels.DeckTrackAttribute.$Properties,
       writer?: $protobuf.Writer
     ): $protobuf.Writer
 
@@ -64,37 +62,39 @@ export namespace vessels {
      * Decodes a DeckTrackAttribute message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns DeckTrackAttribute
+     * @returns {vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape} DeckTrackAttribute
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(
+    static decode(
       reader: $protobuf.Reader | Uint8Array,
       length?: number
-    ): vessels.DeckTrackAttribute
+    ): vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape
 
     /**
      * Decodes a DeckTrackAttribute message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns DeckTrackAttribute
+     * @returns {vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape} DeckTrackAttribute
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): vessels.DeckTrackAttribute
+    static decodeDelimited(
+      reader: $protobuf.Reader | Uint8Array
+    ): vessels.DeckTrackAttribute & vessels.DeckTrackAttribute.$Shape
 
     /**
      * Verifies a DeckTrackAttribute message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
-    public static verify(message: { [k: string]: any }): string | null
+    static verify(message: { [k: string]: any }): string | null
 
     /**
      * Creates a DeckTrackAttribute message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
      * @returns DeckTrackAttribute
      */
-    public static fromObject(object: { [k: string]: any }): vessels.DeckTrackAttribute
+    static fromObject(object: { [k: string]: any }): vessels.DeckTrackAttribute
 
     /**
      * Creates a plain object from a DeckTrackAttribute message. Also converts values to other types if specified.
@@ -102,7 +102,7 @@ export namespace vessels {
      * @param [options] Conversion options
      * @returns Plain object
      */
-    public static toObject(
+    static toObject(
       message: vessels.DeckTrackAttribute,
       options?: $protobuf.IConversionOptions
     ): { [k: string]: any }
@@ -111,70 +111,75 @@ export namespace vessels {
      * Converts this DeckTrackAttribute to JSON.
      * @returns JSON object
      */
-    public toJSON(): { [k: string]: any }
+    toJSON(): { [k: string]: any }
 
     /**
      * Gets the type url for DeckTrackAttribute
      * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
      * @returns The type url
      */
-    public static getTypeUrl(prefix?: string): string
+    static getTypeUrl(prefix?: string): string
   }
 
-  /** Properties of a DeckTrackAttributeStruct. */
-  interface IDeckTrackAttributeStruct {
-    /** DeckTrackAttributeStruct getPath */
-    getPath?: vessels.IDeckTrackAttribute | null
+  namespace DeckTrackAttribute {
+    /** Properties of a DeckTrackAttribute. */
+    interface $Properties {
+      /** DeckTrackAttribute value */
+      value?: number[] | null
 
-    /** DeckTrackAttributeStruct getTimestamp */
-    getTimestamp?: vessels.IDeckTrackAttribute | null
+      /** DeckTrackAttribute size */
+      size?: number | null
 
-    /** DeckTrackAttributeStruct getSpeed */
-    getSpeed?: vessels.IDeckTrackAttribute | null
+      /** Unknown fields preserved while decoding */
+      $unknowns?: Uint8Array[]
+    }
 
-    /** DeckTrackAttributeStruct getElevation */
-    getElevation?: vessels.IDeckTrackAttribute | null
-
-    /** DeckTrackAttributeStruct getCourse */
-    getCourse?: vessels.IDeckTrackAttribute | null
-
-    /** Unknown fields preserved while decoding */
-    $unknowns?: Uint8Array[]
+    /** Shape of a DeckTrackAttribute. */
+    type $Shape = vessels.DeckTrackAttribute.$Properties
   }
+
+  /**
+   * Properties of a DeckTrackAttributeStruct.
+   * @deprecated Use vessels.DeckTrackAttributeStruct.$Properties instead.
+   */
+  interface IDeckTrackAttributeStruct extends vessels.DeckTrackAttributeStruct.$Properties {}
 
   /** Represents a DeckTrackAttributeStruct. */
-  class DeckTrackAttributeStruct implements IDeckTrackAttributeStruct {
+  class DeckTrackAttributeStruct {
     /**
      * Constructs a new DeckTrackAttributeStruct.
      * @param [properties] Properties to set
      */
-    constructor(properties?: vessels.IDeckTrackAttributeStruct)
+    constructor(properties?: vessels.DeckTrackAttributeStruct.$Properties)
 
     /** Unknown fields preserved while decoding */
-    public $unknowns?: Uint8Array[]
+    $unknowns?: Uint8Array[]
 
     /** DeckTrackAttributeStruct getPath. */
-    public getPath?: vessels.IDeckTrackAttribute | null
+    getPath?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getTimestamp. */
-    public getTimestamp?: vessels.IDeckTrackAttribute | null
+    getTimestamp?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getSpeed. */
-    public getSpeed?: vessels.IDeckTrackAttribute | null
+    getSpeed?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getElevation. */
-    public getElevation?: vessels.IDeckTrackAttribute | null
+    getElevation?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getCourse. */
-    public getCourse?: vessels.IDeckTrackAttribute | null
+    getCourse?: vessels.DeckTrackAttribute.$Properties | null
 
     /**
      * Creates a new DeckTrackAttributeStruct instance using the specified properties.
      * @param [properties] Properties to set
      * @returns DeckTrackAttributeStruct instance
      */
-    public static create(
-      properties?: vessels.IDeckTrackAttributeStruct
+    static create(
+      properties: vessels.DeckTrackAttributeStruct.$Shape
+    ): vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape
+    static create(
+      properties?: vessels.DeckTrackAttributeStruct.$Properties
     ): vessels.DeckTrackAttributeStruct
 
     /**
@@ -183,8 +188,8 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(
-      message: vessels.IDeckTrackAttributeStruct,
+    static encode(
+      message: vessels.DeckTrackAttributeStruct.$Properties,
       writer?: $protobuf.Writer
     ): $protobuf.Writer
 
@@ -194,8 +199,8 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encodeDelimited(
-      message: vessels.IDeckTrackAttributeStruct,
+    static encodeDelimited(
+      message: vessels.DeckTrackAttributeStruct.$Properties,
       writer?: $protobuf.Writer
     ): $protobuf.Writer
 
@@ -203,39 +208,39 @@ export namespace vessels {
      * Decodes a DeckTrackAttributeStruct message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns DeckTrackAttributeStruct
+     * @returns {vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape} DeckTrackAttributeStruct
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(
+    static decode(
       reader: $protobuf.Reader | Uint8Array,
       length?: number
-    ): vessels.DeckTrackAttributeStruct
+    ): vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape
 
     /**
      * Decodes a DeckTrackAttributeStruct message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns DeckTrackAttributeStruct
+     * @returns {vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape} DeckTrackAttributeStruct
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(
+    static decodeDelimited(
       reader: $protobuf.Reader | Uint8Array
-    ): vessels.DeckTrackAttributeStruct
+    ): vessels.DeckTrackAttributeStruct & vessels.DeckTrackAttributeStruct.$Shape
 
     /**
      * Verifies a DeckTrackAttributeStruct message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
-    public static verify(message: { [k: string]: any }): string | null
+    static verify(message: { [k: string]: any }): string | null
 
     /**
      * Creates a DeckTrackAttributeStruct message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
      * @returns DeckTrackAttributeStruct
      */
-    public static fromObject(object: { [k: string]: any }): vessels.DeckTrackAttributeStruct
+    static fromObject(object: { [k: string]: any }): vessels.DeckTrackAttributeStruct
 
     /**
      * Creates a plain object from a DeckTrackAttributeStruct message. Also converts values to other types if specified.
@@ -243,7 +248,7 @@ export namespace vessels {
      * @param [options] Conversion options
      * @returns Plain object
      */
-    public static toObject(
+    static toObject(
       message: vessels.DeckTrackAttributeStruct,
       options?: $protobuf.IConversionOptions
     ): { [k: string]: any }
@@ -252,57 +257,77 @@ export namespace vessels {
      * Converts this DeckTrackAttributeStruct to JSON.
      * @returns JSON object
      */
-    public toJSON(): { [k: string]: any }
+    toJSON(): { [k: string]: any }
 
     /**
      * Gets the type url for DeckTrackAttributeStruct
      * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
      * @returns The type url
      */
-    public static getTypeUrl(prefix?: string): string
+    static getTypeUrl(prefix?: string): string
   }
 
-  /** Properties of a DeckTrack. */
-  interface IDeckTrack {
-    /** DeckTrack length */
-    length?: number | null
+  namespace DeckTrackAttributeStruct {
+    /** Properties of a DeckTrackAttributeStruct. */
+    interface $Properties {
+      /** DeckTrackAttributeStruct getPath */
+      getPath?: vessels.DeckTrackAttribute.$Properties | null
 
-    /** DeckTrack startIndices */
-    startIndices?: number[] | null
+      /** DeckTrackAttributeStruct getTimestamp */
+      getTimestamp?: vessels.DeckTrackAttribute.$Properties | null
 
-    /** DeckTrack attributes */
-    attributes?: vessels.IDeckTrackAttributeStruct | null
+      /** DeckTrackAttributeStruct getSpeed */
+      getSpeed?: vessels.DeckTrackAttribute.$Properties | null
 
-    /** Unknown fields preserved while decoding */
-    $unknowns?: Uint8Array[]
+      /** DeckTrackAttributeStruct getElevation */
+      getElevation?: vessels.DeckTrackAttribute.$Properties | null
+
+      /** DeckTrackAttributeStruct getCourse */
+      getCourse?: vessels.DeckTrackAttribute.$Properties | null
+
+      /** Unknown fields preserved while decoding */
+      $unknowns?: Uint8Array[]
+    }
+
+    /** Shape of a DeckTrackAttributeStruct. */
+    type $Shape = vessels.DeckTrackAttributeStruct.$Properties
   }
+
+  /**
+   * Properties of a DeckTrack.
+   * @deprecated Use vessels.DeckTrack.$Properties instead.
+   */
+  interface IDeckTrack extends vessels.DeckTrack.$Properties {}
 
   /** Represents a DeckTrack. */
-  class DeckTrack implements IDeckTrack {
+  class DeckTrack {
     /**
      * Constructs a new DeckTrack.
      * @param [properties] Properties to set
      */
-    constructor(properties?: vessels.IDeckTrack)
+    constructor(properties?: vessels.DeckTrack.$Properties)
 
     /** Unknown fields preserved while decoding */
-    public $unknowns?: Uint8Array[]
+    $unknowns?: Uint8Array[]
 
     /** DeckTrack length. */
-    public length: number
+    length: number
 
     /** DeckTrack startIndices. */
-    public startIndices: number[]
+    startIndices: number[]
 
     /** DeckTrack attributes. */
-    public attributes?: vessels.IDeckTrackAttributeStruct | null
+    attributes?: vessels.DeckTrackAttributeStruct.$Properties | null
 
     /**
      * Creates a new DeckTrack instance using the specified properties.
      * @param [properties] Properties to set
      * @returns DeckTrack instance
      */
-    public static create(properties?: vessels.IDeckTrack): vessels.DeckTrack
+    static create(
+      properties: vessels.DeckTrack.$Shape
+    ): vessels.DeckTrack & vessels.DeckTrack.$Shape
+    static create(properties?: vessels.DeckTrack.$Properties): vessels.DeckTrack
 
     /**
      * Encodes the specified DeckTrack message. Does not implicitly {@link vessels.DeckTrack.verify|verify} messages.
@@ -310,7 +335,10 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: vessels.IDeckTrack, writer?: $protobuf.Writer): $protobuf.Writer
+    static encode(
+      message: vessels.DeckTrack.$Properties,
+      writer?: $protobuf.Writer
+    ): $protobuf.Writer
 
     /**
      * Encodes the specified DeckTrack message, length delimited. Does not implicitly {@link vessels.DeckTrack.verify|verify} messages.
@@ -318,8 +346,8 @@ export namespace vessels {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encodeDelimited(
-      message: vessels.IDeckTrack,
+    static encodeDelimited(
+      message: vessels.DeckTrack.$Properties,
       writer?: $protobuf.Writer
     ): $protobuf.Writer
 
@@ -327,34 +355,39 @@ export namespace vessels {
      * Decodes a DeckTrack message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns DeckTrack
+     * @returns {vessels.DeckTrack & vessels.DeckTrack.$Shape} DeckTrack
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: $protobuf.Reader | Uint8Array, length?: number): vessels.DeckTrack
+    static decode(
+      reader: $protobuf.Reader | Uint8Array,
+      length?: number
+    ): vessels.DeckTrack & vessels.DeckTrack.$Shape
 
     /**
      * Decodes a DeckTrack message from the specified reader or buffer, length delimited.
      * @param reader Reader or buffer to decode from
-     * @returns DeckTrack
+     * @returns {vessels.DeckTrack & vessels.DeckTrack.$Shape} DeckTrack
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): vessels.DeckTrack
+    static decodeDelimited(
+      reader: $protobuf.Reader | Uint8Array
+    ): vessels.DeckTrack & vessels.DeckTrack.$Shape
 
     /**
      * Verifies a DeckTrack message.
      * @param message Plain object to verify
      * @returns `null` if valid, otherwise the reason why it is not
      */
-    public static verify(message: { [k: string]: any }): string | null
+    static verify(message: { [k: string]: any }): string | null
 
     /**
      * Creates a DeckTrack message from a plain object. Also converts values to their respective internal types.
      * @param object Plain object
      * @returns DeckTrack
      */
-    public static fromObject(object: { [k: string]: any }): vessels.DeckTrack
+    static fromObject(object: { [k: string]: any }): vessels.DeckTrack
 
     /**
      * Creates a plain object from a DeckTrack message. Also converts values to other types if specified.
@@ -362,7 +395,7 @@ export namespace vessels {
      * @param [options] Conversion options
      * @returns Plain object
      */
-    public static toObject(
+    static toObject(
       message: vessels.DeckTrack,
       options?: $protobuf.IConversionOptions
     ): { [k: string]: any }
@@ -371,13 +404,33 @@ export namespace vessels {
      * Converts this DeckTrack to JSON.
      * @returns JSON object
      */
-    public toJSON(): { [k: string]: any }
+    toJSON(): { [k: string]: any }
 
     /**
      * Gets the type url for DeckTrack
      * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
      * @returns The type url
      */
-    public static getTypeUrl(prefix?: string): string
+    static getTypeUrl(prefix?: string): string
+  }
+
+  namespace DeckTrack {
+    /** Properties of a DeckTrack. */
+    interface $Properties {
+      /** DeckTrack length */
+      length?: number | null
+
+      /** DeckTrack startIndices */
+      startIndices?: number[] | null
+
+      /** DeckTrack attributes */
+      attributes?: vessels.DeckTrackAttributeStruct.$Properties | null
+
+      /** Unknown fields preserved while decoding */
+      $unknowns?: Uint8Array[]
+    }
+
+    /** Shape of a DeckTrack. */
+    type $Shape = vessels.DeckTrack.$Properties
   }
 }
