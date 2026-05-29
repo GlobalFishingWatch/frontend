@@ -44,6 +44,9 @@
 
 .fieldGroupContainer {
   padding-block: var(--space-S);
+}
+
+.fieldGroupContainer:not(:last-child) {
   border-bottom: var(--border);
 }
 

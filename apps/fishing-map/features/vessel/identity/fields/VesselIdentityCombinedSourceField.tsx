@@ -120,17 +120,6 @@ const VesselIdentityCombinedSourceField = ({
                         </li>
                       </>
                     )}
-                    <li>
-                      <Tooltip content="Vessel self-reports as a fishing vessel in AIS messages 98% or more of the time.">
-                        <span className={cx(styles.secondary, styles.help)}>
-                          {identity.sourceCode.includes(SelfReportedSource.Ais)
-                            ? t((t) => t.common.ais)
-                            : t((t) => t.common.vms)}{' '}
-                          self-reported:{' '}
-                        </span>
-                      </Tooltip>
-                      {selfReportedGearType || EMPTY_FIELD_PLACEHOLDER}
-                    </li>
                   </ul>
                 )}
               </Fragment>

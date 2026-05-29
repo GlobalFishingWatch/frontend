@@ -2,16 +2,20 @@ import { Fragment } from 'react/jsx-runtime'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import type { RegistryExtraFieldValue } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type {
+  RegistryExtraFieldValue,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 
 import DataTerminology from 'features/data-terminology/DataTerminology'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import VesselTypesField from 'features/vessel/identity/fields/VesselTypesField'
-import type {
-  IdentitySection,
-  VesselRenderField,
+import {
+  AIS_SELF_REPORTED_SHIPTYPE,
+  type IdentitySection,
+  type VesselRenderField,
 } from 'features/vessel/identity/vessel-identity.config'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -35,6 +39,9 @@ const resolveFieldValue = (
 ): string => {
   const key = field.key as keyof VesselLastIdentity
   if (isChileanVMS && key === 'ssvid') return EMPTY_FIELD_PLACEHOLDER
+  if (field.key === AIS_SELF_REPORTED_SHIPTYPE) {
+    return vesselIdentity?.combinedSourcesInfo?.onFishingListSr?.[0]?.value ? 'fishing' : 'other'
+  }
   if (key === 'depthM' || key === 'builtYear') {
     const raw = vesselIdentity[key] as RegistryExtraFieldValue<number> | string
     if (raw === API_LOGIN_REQUIRED) return API_LOGIN_REQUIRED
@@ -53,24 +60,20 @@ const VesselIdentityFields = ({
   terminologyKey,
   vesselIdentity,
   identitySource,
-  isVMS,
   isChileanVMS,
   isBrazilVMS,
 }: VesselIdentityFieldsProps) => {
   const { t } = useTranslation()
 
   const fieldGroups = fields?.map((fieldGroup, index) => (
-    <div key={index} className={cx(styles.fieldGroupContainer, styles.fieldGroup)}>
+    <div
+      key={index}
+      className={cx(styles.fieldGroupContainer, styles.fieldGroup, {
+        [styles.twoColumns]: fieldGroup.length === 2,
+      })}
+    >
       {fieldGroup.map((field) => {
-        let label = field.label || field.key
-        if (
-          !field.renderPlain &&
-          !isVMS &&
-          identitySource === VesselIdentitySourceEnum.SelfReported &&
-          (label === 'geartypes' || label === 'shiptypes')
-        ) {
-          label = 'gfw_' + label
-        }
+        const label = field.label || field.key
         const key = field.key as keyof VesselLastIdentity
         const value = resolveFieldValue(field, vesselIdentity, isChileanVMS)
         const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })

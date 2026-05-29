@@ -6,8 +6,8 @@ import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
 
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import {
-  AIS_SELF_REPORTED_FIELDS,
   CUSTOM_VMS_IDENTITY_FIELD_GROUPS,
+  OTHER_BASE_FIELDS,
   VMS_BASE_IDENTITY_LAYOUT,
 } from 'features/vessel/identity/vessel-identity.config'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -44,7 +44,7 @@ const VMSIdentityTab = () => {
     if (!customFields?.length) return VMS_BASE_IDENTITY_LAYOUT
     return VMS_BASE_IDENTITY_LAYOUT.map((s) =>
       s.type === 'fields' && s.key === 'selfReportedVMS'
-        ? { ...s, fields: [...AIS_SELF_REPORTED_FIELDS, ...customFields] }
+        ? { ...s, fields: [OTHER_BASE_FIELDS, ...customFields] }
         : s
     )
   }, [vesselIdentity, privateDs])

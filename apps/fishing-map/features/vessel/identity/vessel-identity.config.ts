@@ -11,7 +11,14 @@ export type VesselRenderField<Key = string> = {
   renderPlain?: boolean
 }
 
-const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
+export const AIS_SELF_REPORTED_SHIPTYPE = 'onFishingListSr'
+
+const AIS_BASE_FIELDS: VesselRenderField[] = [
+  { key: 'shipname' },
+  { key: AIS_SELF_REPORTED_SHIPTYPE, label: 'vesselType' },
+  { key: 'flag' },
+]
+export const OTHER_BASE_FIELDS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
 
 const IDENTIFIER_FIELDS: VesselRenderField[] = [
   { key: 'ssvid', label: 'mmsi' },
@@ -35,28 +42,18 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   terminologyKey: 'geartype',
 }
 
-export const AIS_SELF_REPORTED_FIELDS: VesselRenderField[][] = [
-  [
-    { key: 'shipname' },
-    { key: 'shiptypes', renderPlain: true, label: 'vesselType' },
-    { key: 'flag' },
-  ],
-  IDENTIFIER_FIELDS,
-]
-
 export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
-  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
-  [{ key: 'tonnageGt', label: 'grossTonnage' }],
+  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD],
+  // [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
+  // [{ key: 'tonnageGt', label: 'grossTonnage' }],
 ]
 
 export const REGISTRY_FIELDS: VesselRenderField[][] = [
-  COMMON_FIELD_GROUPS,
+  OTHER_BASE_FIELDS,
   [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
   IDENTIFIER_FIELDS,
   VESSEL_FISICAL_FEATURES_FIELDS,
 ]
-
-export { COMMON_FIELD_GROUPS as VMS_COMMON_FIELDS }
 
 const REGISTRY_OWNER_FIELD: VesselRenderField = {
   key: 'registryOwners',
@@ -158,7 +155,7 @@ export const AIS_IDENTITY_LAYOUT: IdentitySection[] = [
     key: 'selfReportedByVessel',
     sectionLabel: 'selfReportedByVessel',
     terminologyKey: 'selfReported',
-    fields: AIS_SELF_REPORTED_FIELDS,
+    fields: [AIS_BASE_FIELDS, IDENTIFIER_FIELDS],
   },
   {
     type: 'fields',
@@ -173,6 +170,6 @@ export const VMS_BASE_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedVMS',
-    fields: [COMMON_FIELD_GROUPS],
+    fields: [OTHER_BASE_FIELDS],
   },
 ]
