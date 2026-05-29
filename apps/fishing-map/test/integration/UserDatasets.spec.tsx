@@ -76,7 +76,11 @@ describe('User Datasets', () => {
 
     await userEvent.click(getByRole('button', { name: 'User' }))
 
-    await userEvent.click(getByTestId('user-tracks:v1-add-to-map-0'))
+    await userEvent.click(
+      getByRole('listitem')
+        .filter({ hasText: 'Turtle' })
+        .getByTestId(/user-tracks:v1-add-to-map-\d+/)
+    )
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
@@ -91,9 +95,7 @@ describe('User Datasets', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
-    await expect
-      .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'TURTLE_001' }))
-      .toBeVisible()
+    await expect.element(getByTestId('map-popup-wrapper').getByText('TURTLE_001')).toBeVisible()
     expect(addLayerAction?.query).toMatchObject({
       longitude: 26,
       latitude: 19,
@@ -155,7 +157,11 @@ describe('User Datasets', () => {
 
     await userEvent.click(getByRole('button', { name: 'User' }))
 
-    await userEvent.click(getByTestId('user-context-layer:v1-add-to-map-0').first())
+    await userEvent.click(
+      getByRole('listitem')
+        .filter({ hasText: 'Hawaii' })
+        .getByTestId(/user-context-layer:v1-add-to-map-\d+/)
+    )
 
     const addLayerAction = testingMiddleware
       .getActions()
