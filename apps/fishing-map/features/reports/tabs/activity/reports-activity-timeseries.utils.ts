@@ -240,18 +240,12 @@ export const formatEvolutionData = (
     const isMonthlyComparison =
       comparedData && comparedData.interval === 'MONTH' && data.interval !== comparedData.interval
     const emptyData = new Array(data.sublayers.length).fill(0)
-    const startMillis = getUTCDateTime(start)
-      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
-      .toMillis()
-    const endMillis = getUTCDateTime(end)
-      .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
-      .toMillis()
+    const unitLower = timeseriesInterval.toLowerCase() as DateTimeUnit & DurationUnit
+    const startDT = getUTCDateTime(start).startOf(unitLower)
+    const endDT = getUTCDateTime(end).startOf(unitLower)
+    const startMillis = startDT.toMillis()
 
-    const intervalDiff = Math.floor(
-      Duration.fromMillis(endMillis - startMillis).as(
-        timeseriesInterval.toLowerCase() as DurationUnit
-      )
-    )
+    const intervalDiff = Math.floor(endDT.diff(startDT, unitLower).as(unitLower))
 
     let lastKnownComparedValue: EvolutionGraphData | undefined = isMonthlyComparison
       ? comparedData?.timeseries[0]
