@@ -31,8 +31,6 @@ i18n-labels:
   - libs/i18n-labels/**/*
 ocean-areas:
   - libs/ocean-areas/**/*
-pbf-decoders:
-  - libs/pbf-decoders/**/*
 react-hooks:
   - libs/react-hooks/**/*
 responsive-visualizations:

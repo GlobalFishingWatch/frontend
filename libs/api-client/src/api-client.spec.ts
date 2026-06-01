@@ -6,14 +6,6 @@ vi.mock('file-saver', () => ({
   saveAs: vi.fn(),
 }))
 
-vi.mock('@globalfishingwatch/pbf-decoders', () => ({
-  vessels: {
-    Track: {
-      decode: () => ({ data: [] }),
-    },
-  },
-}))
-
 describe('api-client', () => {
   const createApiClient = (overrides: ConstructorParameters<typeof GFW_API_CLASS>[0] = {}) =>
     new GFW_API_CLASS({
@@ -662,10 +654,9 @@ describe('api-client', () => {
           .mockImplementationOnce((_url, options) => {
             expect(options.headers['refresh-token']).toBe('latest-refresh')
             return Promise.resolve(
-              new Response(
-                JSON.stringify({ token: 'new-token', refreshToken: 'newest-refresh' }),
-                { status: 200 }
-              )
+              new Response(JSON.stringify({ token: 'new-token', refreshToken: 'newest-refresh' }), {
+                status: 200,
+              })
             )
           })
 

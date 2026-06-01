@@ -16,7 +16,6 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | [deck-loaders](libs/deck-loaders)               | Deck loaders for GFW layers                                               |
 | [i18n-labels](libs/i18n-labels)                 | GFW shared translations                                                   |
 | [ocean-areas](libs/ocean-areas)                 | Small library to get ocean area / eez names by viewport or by text search |
-| [pbf-decoders](libs/pbf-decoders)               | PBF custom responses parsers                                              |
 | [react-hooks](libs/react-hooks)                 | Set of hooks to use libraries easily in react                             |
 | [timebar](libs/timebar)                         | Timebar component, not many more to say                                   |
 | [ui-components](libs/ui-components)             | Reusable atoms components kit                                             |
