@@ -1,9 +1,10 @@
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
+import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
 
 export const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
@@ -26,7 +27,9 @@ export const plugins = [
   }),
 ]
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  return ({
   root: __dirname,
   base: basePath,
   devtools: command === 'serve',
@@ -119,6 +122,11 @@ export default defineConfig(({ command }) => ({
         brotliSize: true,
         template: 'treemap',
       }),
+    sentryTanstackStart({
+      org: 'global-fishing-watch',
+      project: 'frontend',
+      authToken: env.SENTRY_AUTH_TOKEN,
+    }),
   ],
   envPrefix: ['VITE_', 'i18n_'],
   environments: {
@@ -138,4 +146,6 @@ export default defineConfig(({ command }) => ({
       '@deck.gl/mesh-layers',
     ],
   },
-}))
+})
+}
+)
