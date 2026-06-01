@@ -47,6 +47,8 @@ import {
   getSourcesSelectedInDataview,
 } from '../activity/activity.utils'
 
+import { isHistogramDataviewSupported } from './layer-filters.utils'
+
 import styles from './LayerFilters.module.css'
 
 type LayerFiltersProps = {
@@ -93,17 +95,7 @@ const cleanDataviewFiltersNotAllowed = (
   return filters
 }
 
-export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = getDatasetConfiguration(dataset)
-  return (
-    max !== undefined &&
-    min !== undefined &&
-    max !== null &&
-    min !== null &&
-    (max !== 0 || min !== 0)
-  )
-}
+
 
 export type OnSelectFilterArgs = {
   filterKey: string | SupportedDatasetFilter

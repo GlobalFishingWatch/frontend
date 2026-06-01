@@ -26,7 +26,7 @@ import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.s
 import UserGuideLink from 'features/help/UserGuideLink'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,

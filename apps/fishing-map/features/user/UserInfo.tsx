@@ -18,7 +18,7 @@ import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import {
   selectIsGFWUser,
   selectIsUserLogged,

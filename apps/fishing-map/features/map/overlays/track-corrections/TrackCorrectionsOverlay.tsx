@@ -22,7 +22,7 @@ import {
   selectCurrentTrackCorrectionIssue,
   selectTrackCorrectionIssues,
 } from 'features/track-correction/track-selection.selectors'
-import { usePinVessel } from 'features/vessel/VesselPin'
+import { usePinVessel } from 'features/vessel/vessel-pin.hooks'
 
 import styles from './TrackCorrectionsOverlay.module.css'
 
@@ -100,7 +100,9 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
       tooltip={t((t) => t.trackCorrection.mapTooltip, {
         vesselName: issue.vesselName ?? '',
         date: formatI18nDate(issue.lastUpdated),
-        type: t((t) => t.trackCorrection[issue.type as keyof typeof t.trackCorrection]).toLocaleLowerCase(),
+        type: t(
+          (t) => t.trackCorrection[issue.type as keyof typeof t.trackCorrection]
+        ).toLocaleLowerCase(),
       })}
     />
   )

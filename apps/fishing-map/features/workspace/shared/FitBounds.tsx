@@ -25,7 +25,7 @@ type FitBoundsProps = {
   dataviewId?: string
 }
 
-export const useLayerFitBounds = () => {
+const useLayerFitBounds = () => {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
   const { setTimerange, start, end } = useTimerangeConnect()

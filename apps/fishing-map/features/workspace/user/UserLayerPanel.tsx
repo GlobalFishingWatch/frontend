@@ -56,7 +56,8 @@ import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
-import UserLayerTrackPanel, { useUserLayerMetadata } from './UserLayerTrackPanel'
+import { useUserLayerMetadata } from './user-layer-track-panel.hooks'
+import UserLayerTrackPanel from './UserLayerTrackPanel'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 

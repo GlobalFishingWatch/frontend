@@ -34,7 +34,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
+import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/vessel-layer-panel.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {

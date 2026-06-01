@@ -16,7 +16,7 @@ import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { useFetchRegionsData } from 'features/vessel/activity/event/event.hook'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'

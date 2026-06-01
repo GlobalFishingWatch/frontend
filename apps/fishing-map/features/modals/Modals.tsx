@@ -43,6 +43,8 @@ import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
+import { getModalParent } from './modals.utils'
+
 import styles from './Modals.module.css'
 
 const NewDataset = lazy(() => import('features/datasets/upload/NewDataset'))
@@ -88,8 +90,6 @@ const ResetWorkspaceConfig = {
     getRouterRef()?.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
   },
 }
-
-export const getModalParent = () => document.getElementById('app-layout-content') as HTMLElement
 
 const AppModals = () => {
   const { t } = useTranslation()

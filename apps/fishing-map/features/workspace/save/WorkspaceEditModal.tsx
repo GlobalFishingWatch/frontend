@@ -5,7 +5,7 @@ import { Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 import { useSaveWorkspaceModalConnect } from './workspace-save.hooks'

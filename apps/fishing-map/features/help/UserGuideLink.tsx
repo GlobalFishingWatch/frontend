@@ -19,7 +19,7 @@ type UserGuideLinkProps = {
   className?: string
 }
 
-export function findSectionForSlug(slug: UserGuideSlug): {
+function findSectionForSlug(slug: UserGuideSlug): {
   section: UserGuideSectionSlug
   subSection?: UserGuideSubSectionSlug
 } {

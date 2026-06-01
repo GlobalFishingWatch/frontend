@@ -18,7 +18,7 @@ import {
 } from 'features/dataviews/dataviews.filters'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { isHistogramDataviewSupported } from 'features/workspace/shared/LayerFilters'
+import { isHistogramDataviewSupported } from 'features/workspace/shared/layer-filters.utils'
 import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'

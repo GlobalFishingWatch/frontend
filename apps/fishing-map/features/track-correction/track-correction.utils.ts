@@ -1,7 +1,7 @@
 import { type IdentityVessel, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
-import { isRegistryInTimerange } from 'features/vessel/identity/VesselIdentitySelector'
+import { isRegistryInTimerange } from 'features/vessel/identity/vessel-identity.utils'
 import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 
