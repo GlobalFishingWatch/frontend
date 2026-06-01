@@ -117,18 +117,39 @@
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "options": {
-        "command": "rm -rf dist .output && vite build",
+        "commands": [
+          "rimraf dist .output",
+          "vite build",
+          "shx cp instrument.server.mjs .output/server"
+        ],
+        "parallel": false,
         "cwd": "apps/fishing-map"
       },
       "configurations": {
         "development": {
-          "command": "rm -rf dist .output && vite build --mode development"
+          "commands": [
+            "rimraf dist .output",
+            "vite build --mode development",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false
         },
         "production": {
-          "command": "rm -rf dist .output && vite build --mode production"
+          "commands": [
+            "rimraf dist .output",
+            "vite build --mode production",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false
         },
         "analyze": {
-          "command": "rm -rf dist .output && ANALYZE=true vite build"
+          "commands": [
+            "rimraf dist .output",
+            "vite build",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false,
+          "env": { "ANALYZE": "true" }
         }
       }
     },
