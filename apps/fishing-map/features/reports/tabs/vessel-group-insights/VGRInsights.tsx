@@ -8,7 +8,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 

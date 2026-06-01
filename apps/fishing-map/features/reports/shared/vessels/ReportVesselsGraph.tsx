@@ -11,7 +11,8 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,

@@ -10,7 +10,7 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import type I18nNamespaces from 'features/i18n/i18n.types'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectVesselSection } from '../vessel/vessel.config.selectors'

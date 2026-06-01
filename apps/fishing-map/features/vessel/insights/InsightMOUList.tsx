@@ -6,7 +6,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
 
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'

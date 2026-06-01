@@ -11,7 +11,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'

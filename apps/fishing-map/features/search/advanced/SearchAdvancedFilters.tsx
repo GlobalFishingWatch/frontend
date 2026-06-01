@@ -30,7 +30,7 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
   IS_PIPE_4,
 } from 'features/vessel/vessel.config'
-import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 
 import styles from './SearchAdvancedFilters.module.css'
 

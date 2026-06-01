@@ -1,11 +1,11 @@
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatDate } from 'features/reports/report-area/area-reports.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 import styles from './ReportActivityEvolution.module.css'
 
-export const formatEvolutionTooltipValue = (value: number, payload: any, unit: string) => {
+const formatEvolutionTooltipValue = (value: number, payload: any, unit: string) => {
   if (value === undefined || !payload?.range) {
     return null
   }

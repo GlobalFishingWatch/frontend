@@ -66,7 +66,8 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   SpatialResolution,
 } from './downloadActivity.config'
-import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { useActivityDownloadTimeoutRefresh } from './downloadActivity.hooks'
+import ActivityDownloadError from './DownloadActivityError'
 
 import styles from './DownloadModal.module.css'
 

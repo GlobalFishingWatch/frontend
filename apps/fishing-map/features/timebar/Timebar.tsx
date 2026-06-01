@@ -32,7 +32,7 @@ import {
 } from 'features/app/selectors/app.timebar.selectors'
 import { selectHasVectorDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'

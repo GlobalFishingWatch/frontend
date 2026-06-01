@@ -8,7 +8,7 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 

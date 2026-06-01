@@ -7,7 +7,7 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'

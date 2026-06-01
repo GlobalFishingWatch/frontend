@@ -9,8 +9,8 @@ import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/Modals'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'

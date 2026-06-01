@@ -23,7 +23,7 @@ import {
   selectDownloadTrackStatus,
 } from 'features/download/downloadTrack.slice'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'

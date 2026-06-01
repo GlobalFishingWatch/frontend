@@ -1,4 +1,4 @@
-import Pbf from 'pbf'
+import { PbfReader as Pbf } from 'pbf'
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
 import {

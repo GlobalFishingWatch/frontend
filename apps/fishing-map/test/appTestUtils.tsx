@@ -111,5 +111,3 @@ export async function render(options: AppRenderOptions = {}) {
     return Object.assign(renderResult, { router, store: storeToUse })
   })
 }
-
-export * from 'vitest-browser-react'

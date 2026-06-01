@@ -24,9 +24,9 @@ import { selectVesselGroupSearchDatasets } from 'features/datasets/datasets.sele
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,

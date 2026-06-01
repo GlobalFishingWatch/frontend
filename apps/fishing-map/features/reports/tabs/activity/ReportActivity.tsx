@@ -22,7 +22,7 @@ import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permis
 import { getIsBQEditorDataset } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/reports/report-area/area-reports.config'
 import { useFetchReportVessel } from 'features/reports/report-area/area-reports.hooks'
