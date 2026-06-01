@@ -60,6 +60,7 @@
   .main {
     width: 100vw;
     height: calc(100% - 4.2rem);
+    transition: none;
   }
 
   .toggleChoice {
@@ -70,9 +71,11 @@
     transform: translateX(100vw);
     left: 0;
     bottom: -4.2rem;
+    height: 4.2rem;
+    padding-block: 0.7rem;
     z-index: 1;
-    transition: var(--transition);
     box-shadow: var(--box-shadow-1);
+    transition: none;
   }
 
   .isOpen .toggleChoice {
