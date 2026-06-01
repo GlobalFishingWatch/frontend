@@ -24,7 +24,7 @@
     "geojson": "0.x",
     "lodash": "4.x",
     "luxon": "3.x",
-    "pbf": "4.x",
+    "pbf": "5.x",
     "protobufjs": "^8.4.2",
     "tslib": "2.x"
   }
