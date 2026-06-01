@@ -44,14 +44,18 @@ import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired
 import FitBounds from 'features/workspace/shared/FitBounds'
 import InfoError from 'features/workspace/shared/InfoError'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import {
+  POINT_PROPERTIES,
+  POLYGON_PROPERTIES,
+} from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import Filters from '../shared/LayerFilters'
-import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
-import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerProperties from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'

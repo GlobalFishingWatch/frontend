@@ -9,7 +9,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { overlaysCursorAtom } from 'features/map/overlays/overlays-hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'

@@ -25,7 +25,7 @@ import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
 import styles from './ReportActivity.module.css'
 
-export const isEvolutionOrDatasetComparison = (id: ReportActivityGraph) =>
+const isEvolutionOrDatasetComparison = (id: ReportActivityGraph) =>
   !REPORT_ACTIVITY_GRAPH_TIME_OPTIONS.includes(id)
 
 type ReportActivityGraphSelectorProps = {

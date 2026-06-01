@@ -4,7 +4,7 @@ import { groupBy } from 'es-toolkit'
 import type { IdentityVessel } from '@globalfishingwatch/api-types'
 
 import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { formatInfoField } from 'utils/info'

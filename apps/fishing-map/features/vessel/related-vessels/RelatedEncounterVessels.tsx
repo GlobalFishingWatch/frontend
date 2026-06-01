@@ -8,7 +8,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectEventsGroupedByEncounteredVessel } from 'features/vessel/activity/vessels-activity.selectors'
 import RelatedVessel from 'features/vessel/related-vessels/RelatedVessel'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'

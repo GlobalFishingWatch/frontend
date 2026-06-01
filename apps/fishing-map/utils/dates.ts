@@ -1,7 +1,9 @@
 import type { TFunction } from 'i18next'
+import type { DateTimeFormatOptions } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
+import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
@@ -64,4 +66,10 @@ export const getDateLabel = (date: number, t: TFunction) => {
 export const isTimestampNumber = (value: number) => {
   // Consider timestamps from year 2000 (946684800000) to year 3000 (32503680000000)
   return value > 946684800000 && value < 32503680000000
+}
+
+export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
+  const A_DAY = 1000 * 60 * 60 * 24 * (LIMITS_BY_INTERVAL['HOUR']?.value || 3)
+  const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
+  return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
 }

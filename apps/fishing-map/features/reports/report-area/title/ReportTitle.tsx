@@ -12,7 +12,7 @@ import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setPrintMode } from 'features/app/print.slice'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import {
   DEFAULT_BUFFER_VALUE,
   ENTIRE_WORLD_REPORT_AREA_ID,

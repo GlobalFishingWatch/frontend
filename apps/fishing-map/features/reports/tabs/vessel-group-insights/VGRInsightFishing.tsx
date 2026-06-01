@@ -27,7 +27,7 @@ import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
 
 import styles from './VGRInsights.module.css'
 
-export const RFMO_REGIONS_PRIORITY: RegionType[] = [
+const RFMO_REGIONS_PRIORITY: RegionType[] = [
   RegionType.rfmo,
   RegionType.mpa,
   RegionType.eez,

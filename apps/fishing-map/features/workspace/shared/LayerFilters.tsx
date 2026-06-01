@@ -35,7 +35,8 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
-import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -47,7 +48,7 @@ import {
   getSourcesSelectedInDataview,
 } from '../activity/activity.utils'
 
-import { isHistogramDataviewSupported } from './layer-filters.utils'
+import { isHistogramDataviewSupported } from './layer-properties.utils'
 
 import styles from './LayerFilters.module.css'
 
@@ -94,8 +95,6 @@ const cleanDataviewFiltersNotAllowed = (
 
   return filters
 }
-
-
 
 export type OnSelectFilterArgs = {
   filterKey: string | SupportedDatasetFilter

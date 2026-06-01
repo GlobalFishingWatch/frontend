@@ -8,7 +8,7 @@ import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 
 import { EVENTS_COLORS } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 
 import { getUTCDateTime } from './dates'
 import { formatInfoField } from './info'

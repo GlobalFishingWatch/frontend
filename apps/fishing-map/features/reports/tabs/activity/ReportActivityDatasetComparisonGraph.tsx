@@ -72,7 +72,7 @@ const calculateXDomain = (start: string, end: string, interval?: string) => {
   return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
 }
 
-export const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
+const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
   const values = data.map((d) => d.avg?.[index]).filter((v) => v != null)
 
   if (values.length === 0) {

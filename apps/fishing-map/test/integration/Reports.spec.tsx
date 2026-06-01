@@ -18,7 +18,7 @@ import { userEvent } from 'vitest/browser'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'

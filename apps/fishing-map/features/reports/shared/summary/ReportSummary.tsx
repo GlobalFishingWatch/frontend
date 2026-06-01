@@ -29,8 +29,6 @@ type ReportSummaryProps = {
   reportStatus?: AsyncReducerStatus
 }
 
-export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
-
 export default function ReportSummary({
   activityUnit,
   reportStatus = AsyncReducerStatus.Finished,

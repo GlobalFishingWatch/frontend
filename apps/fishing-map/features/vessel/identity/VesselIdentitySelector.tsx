@@ -6,7 +6,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { isRegistryInTimerange } from 'features/vessel/identity/vessel-identity.utils'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
