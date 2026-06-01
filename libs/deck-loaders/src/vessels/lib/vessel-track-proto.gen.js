@@ -1,4 +1,4 @@
-/*eslint-disable no-prototype-builtins, jsdoc/require-param*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-mixed-operators, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, default-case, jsdoc/require-param*/
 import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
@@ -144,18 +144,18 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrackAttribute(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType === 2) {
               if (!(message.value && message.value.length)) message.value = []
-              const end2 = reader.uint32() + reader.pos
+              let end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.value.push(reader.float())
               continue
             }
@@ -172,8 +172,10 @@ export const vessels = ($root.vessels = (() => {
           }
         }
         reader.skipType(wireType, _depth, tag)
-        $util.makeProp(message, '$unknowns', false)
-        ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        }
       }
       if (_end !== undefined) throw Error('missing end group')
       return message
@@ -226,9 +228,10 @@ export const vessels = ($root.vessels = (() => {
      */
     DeckTrackAttribute.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DeckTrackAttribute) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.DeckTrackAttribute: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrackAttribute()
+      let message = new $root.vessels.DeckTrackAttribute()
       if (object.value) {
         if (!Array.isArray(object.value))
           throw TypeError('.vessels.DeckTrackAttribute.value: array expected')
@@ -252,7 +255,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.value = []
       if (options.defaults) object.size = 0
       if (message.value && message.value.length) {
@@ -470,13 +473,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrackAttributeStruct(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -535,8 +538,10 @@ export const vessels = ($root.vessels = (() => {
           }
         }
         reader.skipType(wireType, _depth, tag)
-        $util.makeProp(message, '$unknowns', false)
-        ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        }
       }
       if (_end !== undefined) throw Error('missing end group')
       return message
@@ -570,23 +575,23 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.getPath != null && message.hasOwnProperty('getPath')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
         if (error) return 'getPath.' + error
       }
       if (message.getTimestamp != null && message.hasOwnProperty('getTimestamp')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
         if (error) return 'getTimestamp.' + error
       }
       if (message.getSpeed != null && message.hasOwnProperty('getSpeed')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
         if (error) return 'getSpeed.' + error
       }
       if (message.getElevation != null && message.hasOwnProperty('getElevation')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
         if (error) return 'getElevation.' + error
       }
       if (message.getCourse != null && message.hasOwnProperty('getCourse')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
         if (error) return 'getCourse.' + error
       }
       return null
@@ -602,16 +607,18 @@ export const vessels = ($root.vessels = (() => {
      */
     DeckTrackAttributeStruct.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DeckTrackAttributeStruct) return object
+      if (!$util.isObject(object))
+        throw TypeError('.vessels.DeckTrackAttributeStruct: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrackAttributeStruct()
+      let message = new $root.vessels.DeckTrackAttributeStruct()
       if (object.getPath != null) {
-        if (typeof object.getPath !== 'object')
+        if (!$util.isObject(object.getPath))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getPath: object expected')
         message.getPath = $root.vessels.DeckTrackAttribute.fromObject(object.getPath, _depth + 1)
       }
       if (object.getTimestamp != null) {
-        if (typeof object.getTimestamp !== 'object')
+        if (!$util.isObject(object.getTimestamp))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getTimestamp: object expected')
         message.getTimestamp = $root.vessels.DeckTrackAttribute.fromObject(
           object.getTimestamp,
@@ -619,12 +626,12 @@ export const vessels = ($root.vessels = (() => {
         )
       }
       if (object.getSpeed != null) {
-        if (typeof object.getSpeed !== 'object')
+        if (!$util.isObject(object.getSpeed))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getSpeed: object expected')
         message.getSpeed = $root.vessels.DeckTrackAttribute.fromObject(object.getSpeed, _depth + 1)
       }
       if (object.getElevation != null) {
-        if (typeof object.getElevation !== 'object')
+        if (!$util.isObject(object.getElevation))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getElevation: object expected')
         message.getElevation = $root.vessels.DeckTrackAttribute.fromObject(
           object.getElevation,
@@ -632,7 +639,7 @@ export const vessels = ($root.vessels = (() => {
         )
       }
       if (object.getCourse != null) {
-        if (typeof object.getCourse !== 'object')
+        if (!$util.isObject(object.getCourse))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getCourse: object expected')
         message.getCourse = $root.vessels.DeckTrackAttribute.fromObject(
           object.getCourse,
@@ -655,7 +662,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.defaults) {
         object.getPath = null
         object.getTimestamp = null
@@ -865,13 +872,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrack(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 0) break
@@ -882,7 +889,7 @@ export const vessels = ($root.vessels = (() => {
           case 2: {
             if (wireType === 2) {
               if (!(message.startIndices && message.startIndices.length)) message.startIndices = []
-              const end2 = reader.uint32() + reader.pos
+              let end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.startIndices.push(reader.uint32())
               continue
             }
@@ -904,8 +911,10 @@ export const vessels = ($root.vessels = (() => {
           }
         }
         reader.skipType(wireType, _depth, tag)
-        $util.makeProp(message, '$unknowns', false)
-        ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        }
       }
       if (_end !== undefined) throw Error('missing end group')
       return message
@@ -946,7 +955,7 @@ export const vessels = ($root.vessels = (() => {
           if (!$util.isInteger(message.startIndices[i])) return 'startIndices: integer[] expected'
       }
       if (message.attributes != null && message.hasOwnProperty('attributes')) {
-        const error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
+        let error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
         if (error) return 'attributes.' + error
       }
       return null
@@ -962,9 +971,10 @@ export const vessels = ($root.vessels = (() => {
      */
     DeckTrack.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DeckTrack) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.DeckTrack: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrack()
+      let message = new $root.vessels.DeckTrack()
       if (object.length != null)
         if (Number(object.length) !== 0) message.length = object.length >>> 0
       if (object.startIndices) {
@@ -975,7 +985,7 @@ export const vessels = ($root.vessels = (() => {
           message.startIndices[i] = object.startIndices[i] >>> 0
       }
       if (object.attributes != null) {
-        if (typeof object.attributes !== 'object')
+        if (!$util.isObject(object.attributes))
           throw TypeError('.vessels.DeckTrack.attributes: object expected')
         message.attributes = $root.vessels.DeckTrackAttributeStruct.fromObject(
           object.attributes,
@@ -998,7 +1008,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.startIndices = []
       if (options.defaults) {
         object.length = 0
