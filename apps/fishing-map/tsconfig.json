@@ -41,7 +41,6 @@
       "@globalfishingwatch/i18n-labels": ["../../libs/i18n-labels/index.ts"],
       "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],
       "@globalfishingwatch/ocean-areas": ["../../libs/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf-decoders": ["../../libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/responsive-visualizations": [
         "../../libs/responsive-visualizations/src/index.ts"
