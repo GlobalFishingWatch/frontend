@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Provider } from 'react-redux'
+import * as Sentry from '@sentry/tanstackstart-react'
 import { createRouter, Navigate } from '@tanstack/react-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -70,5 +71,12 @@ export function getRouter() {
   }
   router = createAppRouter()
   setRouterRef(router)
+
+  if (!router.isServer) {
+    Sentry.addIntegration(
+      Sentry.tanstackRouterBrowserTracingIntegration(router)
+    )
+  }
+
   return router
 }

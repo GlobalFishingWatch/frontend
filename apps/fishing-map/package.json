@@ -21,5 +21,8 @@
     ">0.1%",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "dependencies": {
+    "@sentry/tanstackstart-react": "^10.55.0"
+  }
 }
