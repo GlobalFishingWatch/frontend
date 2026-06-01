@@ -9,6 +9,10 @@
   background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, var(--color-background));
 }
 
+.secondary {
+  opacity: var(--opacity-secondary);
+}
+
 .saveIcon {
   position: absolute;
   z-index: 1;

@@ -62,12 +62,15 @@ function ContentPanel() {
     <div
       className={cx(styles.panel, { [styles.hidden]: !sidePanelContent })}
       style={
-        isSmallScreen
-          ? undefined
-          : ({
+        (isSmallScreen
+          ? {
+              width: `100vw`,
+              '--panel-width': `100vw`,
+            }
+          : {
               width: `${panelWidth}px`,
               '--panel-width': `${panelWidth}px`,
-            } as React.CSSProperties)
+            }) as React.CSSProperties
       }
     >
       <div
