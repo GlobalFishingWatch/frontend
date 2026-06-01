@@ -8,6 +8,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import ErrorBoundaryUI from 'features/app/ErrorBoundaryUI'
+import { reportRouteError } from 'features/app/sentry'
 import { makeStore } from 'store'
 import type { QueryParams } from 'types'
 
@@ -50,6 +51,9 @@ export function getCreateRouterOptions() {
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
+    defaultOnCatch: (error: Error) => {
+      reportRouteError(error, 'router-render')
+    },
     defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
@@ -73,9 +77,7 @@ export function getRouter() {
   setRouterRef(router)
 
   if (!router.isServer) {
-    Sentry.addIntegration(
-      Sentry.tanstackRouterBrowserTracingIntegration(router)
-    )
+    Sentry.addIntegration(Sentry.tanstackRouterBrowserTracingIntegration(router))
   }
 
   return router
