@@ -27,3 +27,7 @@
 .linkTooltip {
   max-width: none;
 }
+
+.loginRequiered {
+  height: 32rem;
+}
