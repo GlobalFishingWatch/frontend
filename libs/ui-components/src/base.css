@@ -85,6 +85,8 @@
   --border-thick: 1px solid var(--color-border-thick);
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   --transition: all 120ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-spring: all 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-press: all 60ms ease;

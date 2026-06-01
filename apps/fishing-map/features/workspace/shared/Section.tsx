@@ -88,7 +88,11 @@ function Section({
         )}
         {headerOptions}
       </div>
-      {!collapsed && children}
+      <div className={styles.collapsibleContent}>
+        <div className={styles.collapsibleInner} inert={collapsed ? true : undefined}>
+          {children}
+        </div>
+      </div>
     </section>
   )
 }

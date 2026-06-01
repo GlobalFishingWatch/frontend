@@ -59,7 +59,17 @@ function ContentPanel() {
   }
 
   return (
-    <div className={styles.panel} style={isSmallScreen ? undefined : { width: `${panelWidth}px` }}>
+    <div
+      className={cx(styles.panel, { [styles.hidden]: !sidePanelContent })}
+      style={
+        isSmallScreen
+          ? undefined
+          : ({
+              width: `${panelWidth}px`,
+              '--panel-width': `${panelWidth}px`,
+            } as React.CSSProperties)
+      }
+    >
       <div
         role="button"
         tabIndex={0}

@@ -8,6 +8,7 @@
 }
 
 .list {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -16,6 +17,20 @@
   background-color: var(--color-terthiary-blue);
   padding: 0.2rem;
   min-width: min-content;
+}
+
+.activePill {
+  position: absolute;
+  top: 0.2rem;
+  left: 0;
+  height: calc(100% - 0.4rem);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-0);
+  filter: var(--filter-drop-shadow-0);
+  pointer-events: none;
+  transition:
+    transform 220ms var(--ease-out-strong),
+    width 220ms var(--ease-out-strong);
 }
 
 .option {
@@ -32,17 +47,20 @@
   background-color: transparent;
   color: var(--color-secondary-blue);
   min-height: var(--size-XS);
+
+  /* z-index keeps text above the sliding pill */
+  position: relative;
+  z-index: 1;
+  transition: color 180ms ease;
 }
 
 .optionActive {
   color: var(--color-primary-blue);
-  background-color: var(--color-off-white-0);
-  filter: var(--filter-drop-shadow-0);
 }
 
 .Choice .optionActive:hover,
 .Choice .optionActive:focus {
-  background-color: var(--color-off-white-1);
+  background-color: transparent;
   box-shadow: none;
 }
 
@@ -72,5 +90,11 @@
 
   .Choice .optionActive {
     background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activePill {
+    transition: none;
   }
 }

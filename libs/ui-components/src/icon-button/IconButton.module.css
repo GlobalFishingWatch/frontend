@@ -4,15 +4,20 @@
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid transparent;
-  transition: var(--transition-spring);
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center center;
   color: var(--color-primary-blue);
   background-color: transparent;
   cursor: pointer;
+  touch-action: manipulation;
   flex-shrink: 0;
   line-height: 1;
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms var(--ease-out-strong);
 }
 
 .disabled {
@@ -25,7 +30,11 @@
 
 .iconButton:active:not(:disabled) {
   transform: scale(0.88);
-  transition: var(--transition-press);
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 100ms ease-out;
 }
 
 .default,
@@ -91,7 +100,11 @@
 .map-tool:active {
   transform: scale(0.84);
   background-color: rgba(var(--primary-blue-rgb), 1);
-  transition: var(--transition-press);
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 100ms ease-out;
 }
 
 .solid {
@@ -123,4 +136,21 @@
 .tinySize {
   width: var(--size-XS);
   height: var(--size-XS);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconButton {
+    transition:
+      opacity 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .iconButton:active:not(:disabled) {
+    transform: none;
+    transition:
+      opacity 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
 }

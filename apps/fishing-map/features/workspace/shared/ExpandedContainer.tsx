@@ -3,10 +3,11 @@ import type { Middleware } from '@floating-ui/react'
 import {
   arrow,
   detectOverflow,
-  flip,
   FloatingArrow,
+  FloatingPortal,
   offset,
   shift,
+  size,
   useClick,
   useDismiss,
   useFloating,
@@ -73,6 +74,7 @@ function ExpandedContainer({
   }
   const { refs, floatingStyles, context } = useFloating({
     open: disabled ? false : isOpen,
+    strategy: 'fixed',
     onOpenChange: (nextOpen, event, reason) => {
       if (disabled) return
       setIsOpen(nextOpen)
@@ -83,7 +85,21 @@ function ExpandedContainer({
     middleware: [
       offset(5),
       ...(overflowDOMId ? [overflowMiddlware] : []),
-      shift({ padding: 8 }),
+      shift({
+        padding: 8,
+        ...(overflowDOMId && document.getElementById(overflowDOMId)
+          ? { boundary: document.getElementById(overflowDOMId)! }
+          : {}),
+      }),
+      size({
+        apply({ elements }) {
+          const ref = elements.reference as HTMLElement
+          const width = ref.offsetParent
+            ? ref.offsetParent.getBoundingClientRect().width
+            : ref.getBoundingClientRect().width
+          Object.assign(elements.floating.style, { width: `${width}px` })
+        },
+      }),
       // eslint-disable-next-line react-hooks/refs
       arrow({
         element: arrowRef,
@@ -113,16 +129,16 @@ function ExpandedContainer({
         {children}
       </div>
       {isOpen && (
-        <div
-          ref={refs.setFloating}
-          style={floatingStyles}
-          {...getFloatingProps()}
-          className={cx(styles.expandedContainer, className)}
-          data-testid={testId}
-        >
-          {component}
-          <FloatingArrow className={styles.tooltipArrow} ref={arrowRef} context={context} />
-        </div>
+        <FloatingPortal>
+          {/* outer: floating-ui owns transform:translate for positioning */}
+          <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            {/* inner: CSS animation owns transform:scale without conflicting */}
+            <div className={cx(styles.expandedContainer, className)} data-testid={testId}>
+              {component}
+              <FloatingArrow className={styles.tooltipArrow} ref={arrowRef} context={context} />
+            </div>
+          </div>
+        </FloatingPortal>
       )}
     </Fragment>
   )

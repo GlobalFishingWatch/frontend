@@ -42,6 +42,29 @@ export function Choice({
   const activeOptionId = activeOption
 
   const activeRef = useRef<HTMLLIElement | null>(null)
+  const listRef = useRef<HTMLUListElement | null>(null)
+  const [pill, setPill] = useState<{ width: number; left: number } | null>(null)
+
+  const measurePill = useCallback(() => {
+    if (activeRef.current) {
+      setPill({
+        width: activeRef.current.offsetWidth,
+        left: activeRef.current.offsetLeft,
+      })
+    }
+  }, [])
+
+  useLayoutEffect(() => {
+    measurePill()
+  }, [activeOption, measurePill])
+
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const observer = new ResizeObserver(measurePill)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [measurePill])
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     if (activeOptionId === option.id) return
@@ -69,10 +92,18 @@ export function Choice({
       )}
       <div className={cx(styles.Choice, className)}>
         <ul
+          ref={listRef}
           className={styles.list}
           role="radiogroup"
           {...(testId && { 'data-testid': `${testId}` })}
         >
+          {pill && (
+            <span
+              className={styles.activePill}
+              style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
+              aria-hidden="true"
+            />
+          )}
           {options.map((option) => {
             const optionSelected = activeOptionId === option.id
             return (

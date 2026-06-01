@@ -6,7 +6,11 @@
   gap: var(--space-XS);
   border-bottom: 1px solid transparent;
   cursor: pointer;
-  transition: var(--transition-spring);
+  touch-action: manipulation;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms var(--ease-out-strong);
   background-repeat: no-repeat;
   background-position: center center;
   padding: 0 var(--space-S);
@@ -22,7 +26,10 @@
 
 .button:active:not(.disabled) {
   transform: scale(0.96);
-  transition: var(--transition-press);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 100ms ease-out;
 }
 
 a.button,
@@ -93,4 +100,19 @@ a.button:visited,
 
 .verybig {
   height: var(--size-XL);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .button:active:not(.disabled) {
+    transform: none;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
 }

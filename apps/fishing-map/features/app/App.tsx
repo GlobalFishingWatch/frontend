@@ -51,7 +51,6 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
@@ -87,8 +86,6 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-
-  const { sidePanelContent } = Route.useSearch()
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -233,13 +230,11 @@ function App() {
             />
           </ErrorBoundary>
         </div>
-        {sidePanelContent && (
-          <ErrorBoundary>
-            <Suspense fallback={null}>
-              <ContentPanel />
-            </Suspense>
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <ContentPanel />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </Fragment>
   )

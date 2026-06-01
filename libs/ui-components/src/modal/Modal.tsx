@@ -78,6 +78,7 @@ export function Modal(props: ModalProps) {
       isOpen={isOpen}
       onRequestClose={onClose}
       parentSelector={parentSelector}
+      closeTimeoutMS={220}
     >
       {header ? (
         <div className={cx(styles.header, headerClassName, { [styles.withTitle]: title })}>
