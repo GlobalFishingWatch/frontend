@@ -124,39 +124,49 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           data-testid="link-workspace"
           className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}
         >
-          <Link
-            to={
-              lastVisitedWorkspace
-                ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
-                : ROUTE_PATHS.WORKSPACE
-            }
-            params={
-              lastVisitedWorkspace
-                ? cleanReportPayload(lastVisitedWorkspace.params || {})
-                : {
-                    category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                    workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                  }
-            }
-            search={
-              lastVisitedWorkspace
-                ? {
-                    ...cleanReportQuery(lastVisitedWorkspace.search || {}),
-                    ...EMPTY_SEARCH_FILTERS,
-                    userTab: undefined,
-                  }
-                : (prev: QueryParams) => ({ ...prev, ...EMPTY_SEARCH_FILTERS, userTab: undefined })
-            }
-            replace
-            className={styles.tabContent}
-            onClick={onWorkspaceClick}
-          >
-            <Tooltip content={t((t) => t.common.seeWorkspace)} placement="right">
-              <span className={styles.tabContent}>
-                <Icon icon="workspace" className={styles.searchIcon} />
-              </span>
-            </Tooltip>
-          </Link>
+          {isWorkspaceLocation ? (
+            <span className={styles.tabContent}>
+              <Icon icon="workspace" className={styles.searchIcon} />
+            </span>
+          ) : (
+            <Link
+              to={
+                lastVisitedWorkspace
+                  ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
+                  : ROUTE_PATHS.WORKSPACE
+              }
+              params={
+                lastVisitedWorkspace
+                  ? cleanReportPayload(lastVisitedWorkspace.params || {})
+                  : {
+                      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                    }
+              }
+              search={
+                lastVisitedWorkspace
+                  ? {
+                      ...cleanReportQuery(lastVisitedWorkspace.search || {}),
+                      ...EMPTY_SEARCH_FILTERS,
+                      userTab: undefined,
+                    }
+                  : (prev: QueryParams) => ({
+                      ...prev,
+                      ...EMPTY_SEARCH_FILTERS,
+                      userTab: undefined,
+                    })
+              }
+              replace
+              className={styles.tabContent}
+              onClick={onWorkspaceClick}
+            >
+              <Tooltip content={t((t) => t.common.seeWorkspace)} placement="right">
+                <span className={styles.tabContent}>
+                  <Icon icon="workspace" className={styles.searchIcon} />
+                </span>
+              </Tooltip>
+            </Link>
+          )}
         </li>
         <li
           data-testid="link-search"

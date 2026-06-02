@@ -14,7 +14,7 @@ import {
   useAddDataviewFromDatasetToWorkspace,
   useDatasetsAPI,
 } from 'features/datasets/datasets.hook'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { HOTSPOT_COLOR } from 'features/map/map.config'
 import {
   getDrawDatasetDefinition,

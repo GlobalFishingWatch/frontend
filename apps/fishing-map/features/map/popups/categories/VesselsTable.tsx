@@ -34,7 +34,7 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
+import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/vessel-layer-panel.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { getEventLabel } from 'utils/analytics'
 import {
@@ -46,18 +46,9 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 
-import styles from './VesselsTable.module.css'
+import { getVesselsInfoConfig } from './vessels-table.utils'
 
-export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
-  if (!vessels?.length) return {}
-  return {
-    numVessels: vessels.length,
-    overflow: vessels.length > MAX_TOOLTIP_LIST,
-    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
-    overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
-    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
-  }
-}
+import styles from './VesselsTable.module.css'
 
 function VesselsTable({
   feature,

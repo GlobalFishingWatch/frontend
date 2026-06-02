@@ -8,7 +8,7 @@ import { DateTime } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'

@@ -13,6 +13,12 @@ export default [
       'import/no-cycle': ['error', { maxDepth: 10, ignoreExternal: true }],
     },
   },
+  {
+    files: ['**/routes/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
   // Disable @nx/dependency-checks for fishing-map package.json
   {
     files: ['package.json'],

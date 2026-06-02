@@ -75,27 +75,30 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
-  { id: string; locale?: Locale | 'source' },
+  { id: string; locale?: Locale | 'source'; useApiCache?: boolean },
   {
     rejectValue: AsyncError
   }
->('datasets/fetchById', async ({ id, locale = i18n.language as Locale }, { rejectWithValue }) => {
-  try {
-    const includesParam = stringify({
-      includes: ['DESCRIPTION'],
-    })
-    const dataset = await GFWAPI.fetch<Dataset>(
-      `/datasets/${id}?cache=false&locale=${locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase()}&${includesParam}`
-    )
-    return dataset
-  } catch (e: any) {
-    console.warn(e)
-    return rejectWithValue({
-      status: parseAPIErrorStatus(e),
-      message: `${id} - ${parseAPIErrorMessage(e)}`,
-    })
+>(
+  'datasets/fetchById',
+  async ({ id, locale = i18n.language as Locale, useApiCache = false }, { rejectWithValue }) => {
+    try {
+      const includesParam = stringify({
+        cache: useApiCache,
+        locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
+        includes: ['DESCRIPTION'],
+      })
+      const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
+      return dataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
   }
-})
+)
 
 type FetchDatasetsFromApiParams = {
   existingIds: string[]
@@ -106,17 +109,19 @@ type FetchDatasetsFromApiParams = {
   locale: Locale | 'source'
   maxDepth?: number
   signal: AbortSignal
+  useApiCache?: boolean
 }
 const fetchDatasetsFromApi = async (
   {
-    ids,
     existingIds,
-    signal,
-    maxDepth = 5,
-    includeRelated = true,
-    locale = i18n.language as Locale,
     fetchUserDatasetsMode,
     forceRefresh = false,
+    ids,
+    includeRelated = true,
+    locale = i18n.language as Locale,
+    maxDepth = 5,
+    signal,
+    useApiCache = false,
   } = {} as FetchDatasetsFromApiParams
 ) => {
   const uniqIds = ids?.length
@@ -136,7 +141,7 @@ const fetchDatasetsFromApi = async (
     ...(uniqIds?.length
       ? { ids: uniqIds }
       : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
-    cache: false,
+    cache: useApiCache,
     locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
     ...DEFAULT_PAGINATION_PARAMS,
   }
@@ -182,6 +187,7 @@ const fetchDatasetsFromApi = async (
       signal,
       maxDepth: maxDepth - 1,
       locale,
+      useApiCache,
     })
     datasets = uniqBy([...datasets, ...relatedDatasets], (d) => d.id)
     datasetsDeprecatedDict = { ...datasetsDeprecatedDict, ...datasetsDeprecated }
@@ -199,6 +205,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
     forceRefresh?: boolean
     includeRelated?: boolean
     locale?: Locale
+    useApiCache?: boolean
   },
   {
     rejectValue: AsyncError
@@ -212,6 +219,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       forceRefresh = false,
       includeRelated = true,
       locale = i18n.language as Locale,
+      useApiCache = false,
     },
     { signal, rejectWithValue, getState, dispatch }
   ) => {
@@ -238,6 +246,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         forceRefresh,
         includeRelated,
         locale,
+        useApiCache,
       })
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))

@@ -14,6 +14,7 @@ import {
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'router/LoginLink'
+import { selectIsUserLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './UserButton.module.css'
@@ -21,6 +22,7 @@ import styles from './UserButton.module.css'
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
+  const isUserLocation = useSelector(selectIsUserLocation)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
@@ -49,15 +51,26 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
           </LocalStorageLoginLink>
         </Tooltip>
       ) : (
-        <Link
-          to="/user"
-          search={{ ...DEFAULT_WORKSPACE_LIST_VIEWPORT }}
-          replace
-          data-testid={testId}
-          className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+        <Tooltip
+          content={
+            isUserLocation ? undefined : (
+              <div>
+                {userData?.email && <p>{userData.email}</p>}
+                <p className={styles.secondary}>{t((t) => t.user.profileTooltip)}</p>
+              </div>
+            )
+          }
         >
-          {userData ? initials : <Icon icon="user" className="print-hidden" />}
-        </Link>
+          <Link
+            to="/user"
+            search={{ ...DEFAULT_WORKSPACE_LIST_VIEWPORT }}
+            replace
+            data-testid={testId}
+            className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+          >
+            {userData ? initials : <Icon icon="user" className="print-hidden" />}
+          </Link>
+        </Tooltip>
       )}
       <span
         aria-hidden

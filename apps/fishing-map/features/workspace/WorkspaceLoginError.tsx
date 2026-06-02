@@ -17,9 +17,14 @@ import styles from './Workspace.module.css'
 interface WorkspaceLoginErrorProps {
   title: string
   emailSubject?: string
+  className?: string
 }
 
-export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLoginErrorProps) {
+export default function WorkspaceLoginError({
+  title,
+  emailSubject,
+  className,
+}: WorkspaceLoginErrorProps) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
@@ -27,7 +32,7 @@ export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLo
   const dispatch = useAppDispatch()
 
   return (
-    <ErrorPlaceholder title={title}>
+    <ErrorPlaceholder title={title} className={className}>
       {guestUser ? (
         <LocalStorageLoginLink className={styles.button}>
           {t((t) => t.common.login) as string}

@@ -14,8 +14,8 @@ import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import type {
   FourwingsReportGraphStats,
   ReportGraphProps,
@@ -30,7 +30,7 @@ import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportS
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
 import { htmlSafeParse } from 'utils/html-parser'
 import { upperFirst } from 'utils/info'

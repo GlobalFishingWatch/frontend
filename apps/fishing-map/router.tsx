@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-import { Provider } from 'react-redux'
 import * as Sentry from '@sentry/tanstackstart-react'
 import { createRouter, Navigate } from '@tanstack/react-router'
 
@@ -7,22 +5,12 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
-import ErrorBoundaryUI from 'features/app/ErrorBoundaryUI'
+import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
-import { makeStore } from 'store'
 import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
 import { routeTree } from './routeTree.gen'
-
-function RouterErrorBoundary({ error }: { error: Error }) {
-  const store = useMemo(() => makeStore(), [])
-  return (
-    <Provider store={store}>
-      <ErrorBoundaryUI error={error} />
-    </Provider>
-  )
-}
 
 const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr) as QueryParams

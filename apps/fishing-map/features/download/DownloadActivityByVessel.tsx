@@ -51,7 +51,8 @@ import {
 } from './download.utils'
 import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
 import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
-import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { useActivityDownloadTimeoutRefresh } from './downloadActivity.hooks'
+import ActivityDownloadError from './DownloadActivityError'
 import { DownloadAreaLabel } from './DownloadAreaLabel'
 
 import styles from './DownloadModal.module.css'

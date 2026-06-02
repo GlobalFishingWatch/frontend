@@ -1,20 +1,19 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { DateTime } from 'luxon'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { isRegistryInTimerange } from 'features/vessel/identity/vessel-identity.utils'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
-import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import {
   getVesselIdentities,
   getVesselIdentity,
@@ -23,14 +22,6 @@ import {
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './VesselIdentitySelector.module.css'
-
-export function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {
-  const registryStart = DateTime.fromISO(registry.transmissionDateFrom).toMillis()
-  const registryEnd = DateTime.fromISO(registry.transmissionDateTo).toMillis()
-  const timerangeStart = DateTime.fromISO(start).toMillis()
-  const timerangeEnd = DateTime.fromISO(end).toMillis()
-  return Math.max(registryStart, timerangeStart) < Math.min(registryEnd, timerangeEnd)
-}
 
 const VesselIdentitySelector = () => {
   const { t } = useTranslation()

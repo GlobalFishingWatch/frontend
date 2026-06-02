@@ -570,6 +570,7 @@
     "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
     "uploadError": "There was an error uploading your dataset.",
     "userDataError": "There was an error loading your user data. Please try again or contact support.",
+    "vesselActivityLogin": "Register or log in to see vessel events and insights (free, 2 minutes)",
     "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "There was an error loading the vessel details.",
     "workspaceLoad": "There was an error loading the workspace. Please try again.",
@@ -1014,6 +1015,7 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "info": "User Info",
+    "profileTooltip": "Click to see your workspaces, vessel groups and datasets",
     "seeDataset": "See on map",
     "title": "User"
   },

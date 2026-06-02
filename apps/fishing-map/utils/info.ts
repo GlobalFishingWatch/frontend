@@ -10,8 +10,8 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'

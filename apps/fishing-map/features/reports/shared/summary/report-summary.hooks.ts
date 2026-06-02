@@ -6,7 +6,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { GetFiltersInDataviewParams } from 'features/dataviews/dataviews.filters'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 function getHasDataviewSchemaFilters(

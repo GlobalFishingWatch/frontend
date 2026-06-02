@@ -14,7 +14,8 @@ import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import {
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,

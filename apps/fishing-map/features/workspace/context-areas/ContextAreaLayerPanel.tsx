@@ -27,7 +27,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
@@ -38,6 +38,10 @@ import {
 } from 'features/workspace/context-areas/context.utils'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import {
+  POINT_PROPERTIES,
+  POLYGON_PROPERTIES,
+} from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -46,8 +50,8 @@ import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
 import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
-import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
-import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerProperties from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
 import Remove from '../shared/Remove'

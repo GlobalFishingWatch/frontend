@@ -1,7 +1,7 @@
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatDate } from 'features/reports/report-area/area-reports.utils'
 
 import styles from './ReportActivityEvolution.module.css'

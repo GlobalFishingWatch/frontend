@@ -9,7 +9,7 @@ import type { UILegend } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import MapLegendPlaceholder from 'features/workspace/shared/MapLegendPlaceholder'
 

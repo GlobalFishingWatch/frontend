@@ -20,10 +20,9 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
-import ActivityFilters, {
-  isHistogramDataviewSupported,
-} from 'features/workspace/shared/LayerFilters'
-import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { isHistogramDataviewSupported } from 'features/workspace/shared/layer-properties.utils'
+import ActivityFilters from 'features/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 

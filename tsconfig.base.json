@@ -33,7 +33,6 @@
       "@globalfishingwatch/i18n-labels/*": ["./libs/i18n-labels/dist/*"],
       "@globalfishingwatch/linting": ["./linting/index.js"],
       "@globalfishingwatch/ocean-areas": ["./libs/ocean-areas/dist/index.d.ts"],
-      "@globalfishingwatch/pbf-decoders": ["./libs/pbf-decoders/dist/index.d.ts"],
       "@globalfishingwatch/react-hooks": ["./libs/react-hooks/dist/index.d.ts"],
       "@globalfishingwatch/react-hooks/*": ["./libs/react-hooks/dist/*"],
       "@globalfishingwatch/responsive-visualizations": [

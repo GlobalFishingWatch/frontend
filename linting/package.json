@@ -51,6 +51,7 @@
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "7.x",
     "eslint-plugin-simple-import-sort": "12.x",
+    "eslint-plugin-react-refresh": "0.x",
     "prettier": "3.x",
     "prettier-eslint": "16.x",
     "stylelint": "^17.6.0",

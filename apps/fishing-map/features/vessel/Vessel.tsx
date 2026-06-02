@@ -247,7 +247,12 @@ const Vessel = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      {hasSelfReportedData ? (
+      {guestUser ? (
+        <WorkspaceLoginError
+          title={t((t) => t.errors.vesselActivityLogin)}
+          className={styles.loginRequiered}
+        />
+      ) : hasSelfReportedData ? (
         <Fragment>
           <Tabs
             tabs={sectionTabs}

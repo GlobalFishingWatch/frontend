@@ -7,8 +7,8 @@ import type { Locale } from '@globalfishingwatch/api-types'
 
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportAreaId, selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -36,7 +36,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
-export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 const HOUR_ROUNDING_THRESHOLD = 5
 
 export default function ReportSummaryActivity({

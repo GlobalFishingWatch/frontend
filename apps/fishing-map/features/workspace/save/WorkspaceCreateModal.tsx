@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
+import { HOME, REPORT, WORKSPACE } from 'router/routes'
+import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type {
   WorkspaceEditAccessType,
@@ -24,14 +27,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
-import { getModalParent } from 'features/modals/Modals'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { HOME, REPORT, WORKSPACE } from 'router/routes'
-import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 

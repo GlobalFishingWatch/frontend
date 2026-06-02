@@ -5,7 +5,7 @@ import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfi
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 
 import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatNumber } from 'utils/info'
 
 import { useTimebarPoints } from './timebar-points.hooks'
