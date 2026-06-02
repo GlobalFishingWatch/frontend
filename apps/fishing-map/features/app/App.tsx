@@ -174,6 +174,9 @@ function App() {
     asideWidth = isPrinting ? '34rem' : '40rem'
   }
 
+  const isAsideResizable =
+    !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
+
   const searchParams = useSearch({ strict: false })
   if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
     return null
@@ -206,6 +209,7 @@ function App() {
               }
               main={<Main />}
               asideWidth={asideWidth}
+              resizable={isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}
               className={styles.splitContainer}

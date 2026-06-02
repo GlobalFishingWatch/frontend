@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -12,14 +12,46 @@ import styles from './ContentPanel.module.css'
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
+const DEFAULT_PANEL_WIDTH = 540
 const PANEL_WIDTH_STORAGE_KEY = 'contentPanelWidth'
+
+const clampPanelWidth = (width: number) =>
+  Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, width))
+
+// localStorage-backed store read via useSyncExternalStore so it stays SSR-safe
+// (server falls back to the default) without a setState effect.
+const panelWidthListeners = new Set<() => void>()
+
+const subscribePanelWidth = (onChange: () => void) => {
+  panelWidthListeners.add(onChange)
+  window.addEventListener('storage', onChange)
+  return () => {
+    panelWidthListeners.delete(onChange)
+    window.removeEventListener('storage', onChange)
+  }
+}
+
+const getPanelWidthSnapshot = () => {
+  const stored = localStorage.getItem(PANEL_WIDTH_STORAGE_KEY)
+  const parsed = stored ? parseFloat(stored) : NaN
+  return Number.isNaN(parsed) ? DEFAULT_PANEL_WIDTH : clampPanelWidth(parsed)
+}
+
+const setStoredPanelWidth = (width: number) => {
+  localStorage.setItem(PANEL_WIDTH_STORAGE_KEY, width.toString())
+  panelWidthListeners.forEach((listener) => listener())
+}
 
 function ContentPanel() {
   const { sidePanelContent } = Route.useSearch()
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
-  const [panelWidth, setPanelWidth] = useState(540)
+  const panelWidth = useSyncExternalStore(
+    subscribePanelWidth,
+    getPanelWidthSnapshot,
+    () => DEFAULT_PANEL_WIDTH
+  )
 
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
@@ -27,10 +59,7 @@ function ContentPanel() {
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (startCursorX.current === null || startWidth.current === null) return
     const cursorXDelta = startCursorX.current - e.clientX
-    let newWidth = Math.min(startWidth.current + cursorXDelta, MAX_PANEL_WIDTH)
-    newWidth = Math.max(MIN_PANEL_WIDTH, newWidth)
-    setPanelWidth(newWidth)
-    localStorage.setItem(PANEL_WIDTH_STORAGE_KEY, newWidth.toString())
+    setStoredPanelWidth(clampPanelWidth(startWidth.current + cursorXDelta))
   }, [])
 
   const handleMouseUp = useCallback(() => {

@@ -38,7 +38,7 @@
 
 .panelResizer:hover,
 .resizing {
-  border-left: 2px solid var(--color-primary-blue);
+  border-left: 2px solid var(--color-white);
 }
 
 .container {
