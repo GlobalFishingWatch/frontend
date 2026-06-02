@@ -39,6 +39,7 @@ export function cleanPortClusterDataviewFromReport(dataview: UrlDataviewInstance
     return getPortClusterDataviewForReport(dataview, {
       portId: undefined,
       clusterMaxZoomLevels: undefined,
+      visible: dataview.config?.visible !== undefined ? dataview.config.visible : false,
     })
   }
   return dataview
