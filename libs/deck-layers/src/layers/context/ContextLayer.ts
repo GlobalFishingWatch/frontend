@@ -212,7 +212,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                   lineCapRounded: true,
                   extensions: [
                     ...mvtSublayerProps.extensions,
-                    new PathStyleExtension({ dash: true }),
+                    new PathStyleExtension({ dash: true, highPrecisionDash: true }),
                   ],
                   getDashArray: (d: ContextFeature) => this.getDashArray(d),
                   updateTriggers: {
