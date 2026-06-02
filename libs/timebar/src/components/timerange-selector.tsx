@@ -11,9 +11,9 @@ import {
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { Select, Tooltip } from '@globalfishingwatch/ui-components'
+import { FIRST_YEAR_OF_DATA, Select, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { getLastX } from '../utils'
+import { getLastX, isYearInBounds } from '../utils'
 
 import styles from './timerange-selector.module.css'
 
@@ -96,6 +96,8 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
       min: DateTime.fromISO(absoluteStart, { zone: 'utc' }).toISO()?.slice(0, 10) || '',
       max: DateTime.fromISO(absoluteEnd, { zone: 'utc' }).toISO()?.slice(0, 10) || '',
     }
+    const startYearValid = isYearInBounds(startDate.year, { absoluteStart, absoluteEnd })
+    const endYearValid = isYearInBounds(endDate.year, { absoluteStart, absoluteEnd })
     this.lastXOptions = [
       {
         id: 'last30days',
@@ -136,12 +138,12 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
         day: endDate.day,
       },
       startInputValids: {
-        year: true,
+        year: startYearValid,
         month: true,
         day: true,
       },
       endInputValids: {
-        year: true,
+        year: endYearValid,
         month: true,
         day: true,
       },
@@ -220,6 +222,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onStartChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
+    if (property === 'year' && e.target.value.length > 4) {
+      e.target.value = e.target.value.slice(0, 4)
+    }
     const eventValue = parseInt(e.target.value)
     const startDate = DateTime.fromObject(this.state.startInputValues, { zone: 'utc' })
     const currentMonthDays = eventValue
@@ -265,6 +270,9 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
   }
 
   onEndChange = (e: ChangeEvent<HTMLInputElement>, property: DateProperty) => {
+    if (property === 'year' && e.target.value.length > 4) {
+      e.target.value = e.target.value.slice(0, 4)
+    }
     const eventValue = parseInt(e.target.value)
     const endDate = DateTime.fromObject(this.state.endInputValues, { zone: 'utc' })
     const currentMonthDays = eventValue
@@ -445,8 +453,8 @@ class TimeRangeSelector extends Component<TimeRangeSelectorProps> {
                     <input
                       name="end year"
                       type="number"
-                      min={this.bounds.min.slice(0, 4)}
-                      max={this.bounds.max.slice(0, 4)}
+                      min={FIRST_YEAR_OF_DATA}
+                      max={(new Date().getUTCFullYear() + 1).toString()}
                       value={endInputValues.year}
                       onChange={(e) => this.onEndChange(e, 'year')}
                       onBlur={(e) => this.onEndBlur(e, 'year')}

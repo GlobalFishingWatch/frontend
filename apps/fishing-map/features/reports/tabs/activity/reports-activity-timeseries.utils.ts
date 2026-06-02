@@ -257,6 +257,7 @@ export const formatEvolutionData = (
       ? comparedData?.timeseries[0]
       : undefined
 
+    if (!Number.isFinite(intervalDiff) || intervalDiff < 0) return []
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
