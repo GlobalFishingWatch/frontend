@@ -69,6 +69,8 @@ import { getUTCDateTime } from 'utils/dates'
 import {
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
+  selectWorkspace,
+  selectWorkspaceRefreshStatus,
   selectWorkspaceStatus,
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
@@ -83,6 +85,7 @@ export type LastWorkspaceVisited = LinkTo & {
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  refreshStatus: AsyncReducerStatus
   suggestSave: boolean
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
@@ -95,6 +98,7 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  refreshStatus: AsyncReducerStatus.Idle,
   suggestSave: false,
   customStatus: AsyncReducerStatus.Idle,
   error: {} as AsyncError,
@@ -122,16 +126,22 @@ export const getDefaultWorkspace = async (): Promise<AppWorkspace> => {
   return mod.default
 }
 
-type FetchWorkspacesThunkParams = {
+export type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
   reportId?: string
+  isRefresh?: boolean
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (
-    { workspaceId, password, reportId: reportIdParam }: FetchWorkspacesThunkParams,
+    {
+      workspaceId,
+      password,
+      reportId: reportIdParam,
+      isRefresh = false,
+    }: FetchWorkspacesThunkParams,
     { signal, dispatch, getState, rejectWithValue }: any
   ) => {
     const state = getState() as any
@@ -139,59 +149,62 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const currentWorkspace = selectWorkspace(state)
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
     let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
 
     try {
-      let workspace: Workspace<any> | null = null
-      if (locationType === REPORT) {
-        const action = dispatch(fetchReportsThunk([reportId as string]))
-        const resolvedAction = await action
-        if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
-          workspace = resolvedAction.payload?.[0]?.workspace as Workspace
-          workspaceReportId = resolvedAction.payload?.[0]?.id
-          if (!workspace) {
-            return rejectWithValue({
-              error: {
-                status: 404,
-                message: 'Report workspace not found',
+      let workspace: Workspace<any> | null = isRefresh ? currentWorkspace : null
+      if (!workspace) {
+        if (locationType === REPORT) {
+          const action = dispatch(fetchReportsThunk([reportId as string]))
+          const resolvedAction = await action
+          if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
+            workspace = resolvedAction.payload?.[0]?.workspace as Workspace
+            workspaceReportId = resolvedAction.payload?.[0]?.id
+            if (!workspace) {
+              return rejectWithValue({
+                error: {
+                  status: 404,
+                  message: 'Report workspace not found',
+                },
+              })
+            }
+          } else {
+            if (resolvedAction.payload?.status === 401) {
+              return rejectWithValue({ error: { status: 401, message: 'Private report' } })
+            }
+            if (!isRejected(resolvedAction)) {
+              throw new Error('Error fetching report')
+            }
+          }
+          // TODO fetch report and use the workspace within it
+        } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
+          workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
+            signal,
+            ...(password && {
+              headers: {
+                'x-workspace-password': password,
               },
-            })
-          }
-        } else {
-          if (resolvedAction.payload?.status === 401) {
-            return rejectWithValue({ error: { status: 401, message: 'Private report' } })
-          }
-          if (!isRejected(resolvedAction)) {
-            throw new Error('Error fetching report')
+            }),
+          })
+        }
+        if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
+          workspace = await getDefaultWorkspace()
+          if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+            return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
           }
         }
-        // TODO fetch report and use the workspace within it
-      } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
-        workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
-          signal,
-          ...(password && {
-            headers: {
-              'x-workspace-password': password,
-            },
-          }),
-        })
-      }
-      if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
-        workspace = await getDefaultWorkspace()
-        if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
-          return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
-        }
-      }
 
-      if (workspace) {
-        workspace = {
-          ...workspace,
-          dataviewInstances: (workspace?.dataviewInstances || []).map(
-            (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
-          ),
+        if (workspace) {
+          workspace = {
+            ...workspace,
+            dataviewInstances: (workspace?.dataviewInstances || []).map(
+              (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
+            ),
+          }
         }
       }
 
@@ -339,10 +352,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ workspaceId }, { getState }) => {
+    condition: ({ workspaceId, isRefresh }, { getState }) => {
       const rootState = getState() as any
       const workspaceStatus = selectWorkspaceStatus(rootState)
-      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
+      const workspaceRefreshStatus = selectWorkspaceRefreshStatus(rootState)
+      const isLoading = isRefresh
+        ? workspaceRefreshStatus === AsyncReducerStatus.Loading
+        : workspaceStatus === AsyncReducerStatus.Loading
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
         return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading
@@ -560,11 +576,15 @@ const workspaceSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchWorkspaceThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
+    builder.addCase(fetchWorkspaceThunk.pending, (state, action) => {
+      state.status = action.meta.arg.isRefresh ? state.status : AsyncReducerStatus.Loading
+      state.refreshStatus = action.meta.arg.isRefresh
+        ? AsyncReducerStatus.Loading
+        : state.refreshStatus
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
+      state.refreshStatus = AsyncReducerStatus.Finished
       const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
       if (data) {
         state.data = data
@@ -575,6 +595,7 @@ const workspaceSlice = createSlice({
       if (action.payload) {
         const { workspace, error } = action.payload as RejectedActionPayload
         state.status = AsyncReducerStatus.Error
+        state.refreshStatus = AsyncReducerStatus.Finished
         if (workspace) {
           state.data = castDraft(workspace)
         }
