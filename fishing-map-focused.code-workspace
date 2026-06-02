@@ -17,6 +17,7 @@
       "excludeDirectories": [
         "**/node_modules",
         "**/.next",
+        "**/.nitro",
         "**/dist",
         "**/.nx",
         "**/coverage",
@@ -63,6 +64,7 @@
       "apps/track-labeler": true,
       "apps/user-groups-admin": true,
       "apps/fishing-map-e2e": true,
+      "**/.nitro": true,
     },
     "files.watcherExclude": {
       "apps/api-portal/**": true,
