@@ -159,7 +159,10 @@ export const useTimerangeConnect = () => {
 
   const onTimebarChange = useCallback(
     (start: string, end: string, source?: string) => {
-      const isMove = source === EVENT_SOURCE.SEEK_MOVE || source === EVENT_SOURCE.ZOOM_OUT_MOVE
+      const isMove =
+        source === EVENT_SOURCE.SEEK_MOVE ||
+        source === EVENT_SOURCE.ZOOM_OUT_MOVE ||
+        source === EVENT_SOURCE.PLAYBACK_FRAME
       setTimerange({ start, end }, !isMove)
     },
     [setTimerange]
