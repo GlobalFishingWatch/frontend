@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import cx from 'classnames'
 
 import { Choice } from '../choice'
@@ -87,6 +94,7 @@ export function SplitView(props: SplitViewProps) {
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   const widthPct = useSyncExternalStore(
     subscribeAsideWidth,
     getAsideWidthSnapshot,
@@ -94,7 +102,9 @@ export function SplitView(props: SplitViewProps) {
   )
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    const newPct = clampAsidePct((e.clientX / window.innerWidth) * 100)
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect || rect.width === 0) return
+    const newPct = clampAsidePct(((e.clientX - rect.left) / rect.width) * 100)
     setStoredAsideWidth(newPct)
   }, [])
 
@@ -139,7 +149,10 @@ export function SplitView(props: SplitViewProps) {
   }, [isOpen])
 
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}
+    >
       <aside
         className={cx(styles.aside, asideClassName)}
         style={isSmallScreen ? {} : { width: effectiveWidth }}
