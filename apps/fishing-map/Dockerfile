@@ -57,4 +57,4 @@ ARG APP_NAME=fishing-map
 
 COPY --from=builder /app/apps/$APP_NAME/.output ./output
 
-CMD ["node", "--max-http-header-size=40000", "output/server/index.mjs"]
+CMD ["node", "--import", "./output/server/instrument.server.mjs", "--max-http-header-size=40000", "output/server/index.mjs"]

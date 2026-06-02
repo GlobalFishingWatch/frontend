@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { debounce } from 'es-toolkit'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
   type UrlDataviewInstance,
@@ -38,7 +38,6 @@ import HistogramRangeFilter from 'features/workspace/environmental/HistogramRang
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { listAsSentence } from 'utils/shared'
 

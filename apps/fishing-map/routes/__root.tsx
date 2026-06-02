@@ -7,6 +7,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-r
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { reportRouteError } from 'features/app/sentry'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getTFuntion } from 'router/router.meta'
@@ -39,6 +40,9 @@ export const Route = createRootRoute({
     return {
       i18nState,
     }
+  },
+  onError: (err) => {
+    reportRouteError(err, 'router-loader')
   },
   staleTime: Number.POSITIVE_INFINITY,
   preloadStaleTime: Number.POSITIVE_INFINITY,

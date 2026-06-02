@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/tanstackstart-react'
 import { createRouter, Navigate } from '@tanstack/react-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -5,6 +6,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
+import { reportRouteError } from 'features/app/sentry'
 import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
@@ -37,6 +39,9 @@ export function getCreateRouterOptions() {
     scrollRestoration: true,
     defaultPendingComponent: () => null,
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
+    defaultOnCatch: (error: Error) => {
+      reportRouteError(error, 'router-render')
+    },
     defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
@@ -58,5 +63,10 @@ export function getRouter() {
   }
   router = createAppRouter()
   setRouterRef(router)
+
+  if (!router.isServer) {
+    Sentry.addIntegration(Sentry.tanstackRouterBrowserTracingIntegration(router))
+  }
+
   return router
 }
