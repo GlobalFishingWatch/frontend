@@ -8,11 +8,9 @@ import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,

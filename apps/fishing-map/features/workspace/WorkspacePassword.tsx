@@ -6,14 +6,13 @@ import { Button, InputText } from '@globalfishingwatch/ui-components'
 
 import { VALID_PASSWORD } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
+import { useFetchWorkspace } from 'features/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
   selectWorkspacePassword,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk, setWorkspacePassword } from 'features/workspace/workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from 'features/workspace/workspace.utils'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectWorkspaceId } from 'router/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
@@ -28,8 +27,7 @@ export default function WorkspacePassword() {
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
   const workspacePassword = useSelector(selectWorkspacePassword)
-  const { replaceQueryParams } = useReplaceQueryParams()
-  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
+  const { fetchWorkspace } = useFetchWorkspace()
 
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value)
@@ -40,17 +38,12 @@ export default function WorkspacePassword() {
     if (password.length >= MIN_WORKSPACE_PASSWORD_LENGTH) {
       setLoading(true)
       dispatch(setWorkspacePassword(password))
-      const action = await dispatch(fetchWorkspaceThunk({ workspaceId: workspaceId!, password }))
+      const action = await fetchWorkspace({ workspaceId: workspaceId!, password })
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
         const { dataviewInstancesToUpsert, ...workspace } = action.payload
-        if (dataviewInstancesToUpsert) {
-          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
-        }
         if (!isWorkspacePasswordProtected(workspace)) {
-          fitWorkspaceBounds(workspace)
           dispatch(setWorkspacePassword(VALID_PASSWORD))
         }
-        fitWorkspaceTimerange(workspace)
       }
       setLoading(false)
     } else {

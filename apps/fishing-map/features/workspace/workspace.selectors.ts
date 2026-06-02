@@ -18,8 +18,26 @@ import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-co
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
 import type { RootState } from 'reducers'
-import { WORKSPACE_ROUTES } from 'router/routes'
-import { selectIsRouteWithWorkspace, selectLocationQuery } from 'router/routes.selectors'
+import {
+  HOME,
+  PORT_REPORT,
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL_GROUP_REPORT,
+  WORKSPACE,
+  WORKSPACE_REPORT,
+  WORKSPACE_ROUTES,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+} from 'router/routes'
+import {
+  selectIsRouteWithWorkspace,
+  selectLocationQuery,
+  selectLocationType,
+  selectReportId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 import { mapRouteIdToType } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -30,6 +48,10 @@ export const selectWorkspacePassword = (state: RootState) => state.workspace?.pa
 export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
+export const selectWorkspaceRefreshStatus = (state: RootState) =>
+  state.workspace?.refreshStatus
+export const selectIsWorkspaceRefreshing = (state: RootState) =>
+  state.workspace?.refreshStatus === AsyncReducerStatus.Loading
 export const selectWorkspaceHistoryNavigation = (state: RootState) =>
   state.workspace?.historyNavigation
 export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace?.customStatus
@@ -163,3 +185,52 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
 export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSections')
+
+export type WorkspaceFetchParams = { workspaceId: string; reportId?: string }
+
+export const selectWorkspaceFetchParams = createSelector(
+  [
+    selectLocationType,
+    selectCurrentWorkspaceId,
+    selectWorkspaceReportId,
+    selectWorkspaceId,
+    selectReportId,
+  ],
+  (
+    locationType,
+    currentWorkspaceId,
+    currentReportId,
+    urlWorkspaceId,
+    reportId
+  ): WorkspaceFetchParams | null => {
+    switch (locationType) {
+      // Routes that need the default workspace (no workspaceId in the URL)
+      case HOME:
+      case USER:
+      case SEARCH: {
+        return currentWorkspaceId !== DEFAULT_WORKSPACE_ID ? { workspaceId: '' } : null
+      }
+
+      // Routes under /$category/$workspaceId/* — fetch the workspace named in the URL
+      case WORKSPACE:
+      case WORKSPACE_SEARCH:
+      case WORKSPACE_VESSEL:
+      case WORKSPACE_REPORT:
+      case VESSEL_GROUP_REPORT:
+      case PORT_REPORT: {
+        return urlWorkspaceId && currentWorkspaceId !== urlWorkspaceId
+          ? { workspaceId: urlWorkspaceId }
+          : null
+      }
+
+      // Standalone report (/report/$reportId) — workspace comes from the report
+      case REPORT: {
+        return currentReportId !== reportId
+          ? { workspaceId: urlWorkspaceId || '', reportId: reportId as string }
+          : null
+      }
+      default:
+        return null
+    }
+  }
+)
