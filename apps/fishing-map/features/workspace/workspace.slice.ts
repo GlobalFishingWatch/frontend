@@ -81,6 +81,8 @@ export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
 }
 
+const MAX_HISTORY_NAVIGATION = 20
+
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
   suggestSave: boolean
@@ -546,7 +548,10 @@ const workspaceSlice = createSlice({
       }
     },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
-      state.historyNavigation = castDraft(action.payload)
+      const next = action.payload
+      state.historyNavigation = castDraft(
+        next.length > MAX_HISTORY_NAVIGATION ? next.slice(-MAX_HISTORY_NAVIGATION) : next
+      )
     },
     resetWorkspaceHistoryNavigation: (state) => {
       state.historyNavigation = castDraft(initialState.historyNavigation)

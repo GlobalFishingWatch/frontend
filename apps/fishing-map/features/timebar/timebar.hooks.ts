@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 
@@ -84,16 +85,26 @@ timerangeState.onMount = (setAtom) => {
   }
 }
 
+const TIMERANGE_URL_DEBOUNCE = 300
+
 export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
-  const pendingRef = useRef<TimeRange | null>(null)
-  const rafRef = useRef<number>(0)
 
-  useEffect(() => () => cancelAnimationFrame(rafRef.current), [])
+  // Debounce the URL write so we only navigate once the user stops scrubbing the
+  // timebar, instead of firing a full router.navigate() on every frame (navigation storm).
+  const debouncedReplace = useMemo(
+    () =>
+      debounce((timerange: TimeRange) => {
+        replaceQueryParams(timerange)
+      }, TIMERANGE_URL_DEBOUNCE),
+    [replaceQueryParams]
+  )
+
+  useEffect(() => () => debouncedReplace.cancel(), [debouncedReplace])
 
   const setTimerange = useCallback(
     (timerange: TimeRange, stickToInterval = true) => {
@@ -135,17 +146,16 @@ export const useSetTimerange = () => {
         return stuckTimerange
       })
       if (isWorkspaceMapReady) {
-        pendingRef.current = stuckTimerange
-        cancelAnimationFrame(rafRef.current)
-        rafRef.current = requestAnimationFrame(() => {
-          if (pendingRef.current) {
-            replaceQueryParams(pendingRef.current)
-            pendingRef.current = null
-          }
-        })
+        debouncedReplace(stuckTimerange)
       }
     },
-    [dispatch, hintsDismissed?.changingTheTimeRange, isWorkspaceMapReady, setAtomTimerange]
+    [
+      debouncedReplace,
+      dispatch,
+      hintsDismissed?.changingTheTimeRange,
+      isWorkspaceMapReady,
+      setAtomTimerange,
+    ]
   )
 
   return setTimerange

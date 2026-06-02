@@ -177,8 +177,8 @@ function App() {
   const isAsideResizable =
     !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
 
-  const searchParams = useSearch({ strict: false })
-  if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
+  const isPopup = useSearch({ strict: false, select: (s) => s?.isPopup })
+  if ((typeof window !== 'undefined' && window.opener) || isPopup) {
     return null
   }
 
