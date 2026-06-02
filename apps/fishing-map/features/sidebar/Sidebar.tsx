@@ -15,7 +15,11 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import TrackCorrection from 'features/track-correction/TrackCorrection'
-import { selectIsUserLogged, selectUserStatus } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGuestUser,
+  selectIsUserLogged,
+  selectUserStatus,
+} from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -37,6 +41,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const screenshotMode = useSelector(selectScreenshotMode)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLogged = useSelector(selectIsUserLogged)
+  const isGuestUser = useSelector(selectIsGuestUser)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const userStatus = useSelector(selectUserStatus)
@@ -69,7 +74,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
       return <ErrorPlaceholder title={t((t) => t.errors.userDataError)} />
     }
 
-    if (!isUserLogged) {
+    if (!isUserLogged && !isGuestUser) {
       return <Spinner />
     }
 
@@ -78,7 +83,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
     }
 
     return children
-  }, [userStatus, isUserLogged, isTrackCorrectionOpen, children, t])
+  }, [userStatus, isUserLogged, isGuestUser, isTrackCorrectionOpen, children, t])
 
   const showTabs =
     !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen && !screenshotMode

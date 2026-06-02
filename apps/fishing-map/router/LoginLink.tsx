@@ -1,10 +1,11 @@
-import { forwardRef, useEffect } from 'react'
+import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { getLoginUrl, useLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchUserThunk } from 'features/user/user.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 
@@ -14,19 +15,10 @@ type LocalStorageLoginLinkProps = {
 }
 
 function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLinkProps, ref: any) {
-  const { saveRedirectUrl, saveHistoryNavigation } = useLoginRedirect()
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { saveRedirectUrl, saveHistoryNavigation } = useLoginRedirect()
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'LOGIN_SUCCESS') {
-        dispatch(fetchUserThunk({ accessToken: event.data.accessToken }))
-      }
-    }
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [dispatch])
 
   const onClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -47,16 +39,11 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
   }
 
   return (
-    <a
-      ref={ref}
-      href={getLoginUrl()}
-      onClick={onClick}
-      className={className}
-      title="Login"
-      data-testid="login-link"
-    >
-      {children}
-    </a>
+    <Tooltip content={t((t) => t.common.login)}>
+      <button ref={ref} onClick={onClick} className={className} data-testid="login-link">
+        {children}
+      </button>
+    </Tooltip>
   )
 }
 

@@ -43,6 +43,7 @@ import {
   POLYGON_PROPERTIES,
 } from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -81,6 +82,7 @@ function LayerPanel({
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
   const debugOptions = useSelector(selectDebugOptions)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
@@ -191,8 +193,8 @@ function LayerPanel({
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
-    return guestUser && dataviewHasPrivateDataset ? (
-      <DatasetLoginRequired dataview={dataview} />
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
     ) : (
       <DatasetNotFound dataview={dataview} />
     )

@@ -49,6 +49,7 @@ import {
   POLYGON_PROPERTIES,
 } from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -87,6 +88,7 @@ function UserPanel({
   const [propertiesOpen, setPropertiesOpen] = useState(false)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
@@ -176,8 +178,8 @@ function UserPanel({
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
-    return guestUser && dataviewHasPrivateDataset ? (
-      <DatasetLoginRequired dataview={dataview} />
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
     ) : (
       <DatasetNotFound dataview={dataview} />
     )

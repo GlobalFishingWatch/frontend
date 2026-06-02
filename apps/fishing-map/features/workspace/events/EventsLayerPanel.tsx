@@ -22,7 +22,10 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
+import {
+  selectIsWorkspaceOwnerOrDefault,
+  selectIsWorkspaceRefreshing,
+} from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoButton from '../shared/InfoButton'
@@ -46,6 +49,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const vesselGroupsOptions = useVesselGroupsOptions()
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
@@ -96,12 +100,11 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
-    return guestUser && dataviewHasPrivateDataset ? (
-      <DatasetLoginRequired dataview={dataview} />
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
     ) : (
       <DatasetNotFound dataview={dataview} />
     )
-    return <DatasetNotFound dataview={dataview} />
   }
 
   const title = getDatasetLabel(dataset)
