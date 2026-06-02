@@ -148,6 +148,7 @@ const AppModals = () => {
         contentClassName={styles.layerLibraryModal}
         size="fullscreen"
         parentSelector={getModalParent}
+        shouldCloseOnEsc
       >
         <Suspense fallback={null}>
           <LayerLibrary />
