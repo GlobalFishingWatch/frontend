@@ -64,6 +64,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: var(--transition);
 }
 
 .actions {
@@ -340,6 +341,22 @@
 .LayerPanel .areasOnScreen summary > span,
 .LayerPanel .areasOnScreen summary > svg {
   background: none;
+}
+
+.name:hover,
+.name:focus,
+.LayerPanel:has(.switch:hover) .name {
+  opacity: var(--opacity-primary);
+}
+
+.LayerPanel:has(.name:not(.active):hover) .switch,
+.LayerPanel:has(.name:not(.active):focus) .switch {
+  border: 1px solid var(--color-secondary-blue);
+}
+
+.LayerPanel:has(.name:not(.active):hover) .switch > span,
+.LayerPanel:has(.name:not(.active):focus) .switch > span {
+  background-color: var(--color-primary-blue);
 }
 
 @media print {

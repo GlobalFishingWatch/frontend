@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
@@ -19,10 +19,15 @@ function AppLayout() {
   const router = useRouter()
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
-    const store = getAppRouterStore(router.options.context) ?? makeStore()
-    setupRouterSync(router, store)
-    return store
+    return getAppRouterStore(router.options.context) ?? makeStore()
   }, [router])
+
+  // Register the router→Redux sync in an effect so the subscriptions are torn down
+  // on unmount. Doing it in useMemo leaked subscribers onto the router singleton
+  // (each remount/StrictMode pass stacked another pair) → unbounded memory / OOM.
+  useLayoutEffect(() => {
+    return setupRouterSync(router, store)
+  }, [router, store])
 
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')

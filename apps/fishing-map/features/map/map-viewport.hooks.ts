@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
-import { throttle } from 'es-toolkit'
+import { debounce, throttle } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
@@ -51,29 +51,30 @@ export function useSetMapCoordinates() {
   )
 }
 
+const VIEW_STATE_URL_DEBOUNCE = 300
+
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const { replaceQueryParams } = useReplaceQueryParams()
-  const pendingRef = useRef<WorkspaceViewport | null>(null)
-  const rafRef = useRef<number>(0)
+
+  const debouncedReplace = useMemo(
+    () =>
+      debounce((viewport: WorkspaceViewport) => {
+        replaceQueryParams(viewport)
+      }, VIEW_STATE_URL_DEBOUNCE),
+    [replaceQueryParams]
+  )
 
   useEffect(() => {
     if (isWorkspaceReady) {
       const { longitude, latitude, zoom } = viewState
-      pendingRef.current = { longitude, latitude, zoom }
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = requestAnimationFrame(() => {
-        if (pendingRef.current) {
-          replaceQueryParams(pendingRef.current)
-          pendingRef.current = null
-        }
-      })
+      debouncedReplace({ longitude, latitude, zoom })
     }
     return () => {
-      cancelAnimationFrame(rafRef.current)
+      debouncedReplace.cancel()
     }
-  }, [viewState, isWorkspaceReady])
+  }, [viewState, isWorkspaceReady, debouncedReplace])
 }
 
 export const MAP_CONTAINER_ID = 'map-container'

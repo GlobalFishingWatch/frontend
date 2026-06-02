@@ -121,7 +121,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           widthUnits: 'pixels',
           widthMinPixels: 1,
           pickable: false,
-          extensions: [new PathStyleExtension({ dash: true })],
+          extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
           getDashArray: [2, 6],
           dashJustified: true,
           updateTriggers: {

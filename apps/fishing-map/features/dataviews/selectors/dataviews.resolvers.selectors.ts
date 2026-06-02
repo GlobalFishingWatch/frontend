@@ -88,6 +88,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectHighlightedTime,
     selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
+    () => i18n.language,
   ],
   (
     dataviewInstances,
@@ -101,7 +102,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionId,
     highlightedTime,
     trackCorrectionTimerange,
-    deprecatedDatasets
+    deprecatedDatasets,
+    language
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
@@ -167,12 +169,12 @@ export const selectAllDataviewInstancesResolved = createSelector(
             },
           }
         }
-        if (dataview.slug === BASEMAP_LABELS_DATAVIEW_SLUG && i18n.language) {
+        if (dataview.slug === BASEMAP_LABELS_DATAVIEW_SLUG && language) {
           return {
             ...dataview,
             config: {
               ...(dataview.config || {}),
-              locale: i18n.language as Locale,
+              locale: language as Locale,
             },
           }
         }

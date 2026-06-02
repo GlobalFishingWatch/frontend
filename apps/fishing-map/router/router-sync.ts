@@ -69,108 +69,122 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
   // onBeforeNavigate: location sync + history tracking.
   // Runs before TanStack Router renders the new route, so layout components
   // uses the new location state and avoids intermediate UI flash.
-  router.subscribe('onBeforeNavigate', (event: RouterEvents['onBeforeNavigate']) => {
-    const { toLocation } = event
+  const unsubscribeBeforeNavigate = router.subscribe(
+    'onBeforeNavigate',
+    (event: RouterEvents['onBeforeNavigate']) => {
+      const { toLocation } = event
 
-    if (toLocation.href === lastDispatchedHref) return
-    lastDispatchedHref = toLocation.href
+      if (toLocation.href === lastDispatchedHref) return
+      lastDispatchedHref = toLocation.href
 
-    const toPathname = toLocation.pathname.replace(basenameRegex, '') || '/'
-    const toMatches = router.matchRoutes(toPathname, toLocation.search)
-    const toMatch = toMatches[toMatches.length - 1]
-    if (!toMatch) {
-      return
-    }
-
-    const routeType = mapRouteIdToType(toMatch.routeId)
-    const params = toMatch.params as unknown as LinkToPayload
-    const search = toLocation.search as unknown as QueryParams
-    const navState = (toLocation.state || {}) as NavigationState
-    const state = store.getState()
-    const prevLocation = state.location
-
-    // --- Workspace history tracking ---
-    const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
-    if (isNotInitialLoad) {
-      const isHistoryNavigation = navState.isHistoryNavigation ?? false
-      const allHistoryNavigation = state.workspace?.historyNavigation || []
-      const currentHistoryNavigation = isHistoryNavigation
-        ? allHistoryNavigation.slice(0, -1)
-        : allHistoryNavigation
-      const lastHistoryNavigation = allHistoryNavigation[allHistoryNavigation.length - 1]
-      const isDifferentRoute =
-        routeType !== prevLocation.type ||
-        Object.entries(params).some(([key, value]) => value !== prevLocation.payload?.[key])
-      const prevQuery = prevLocation.query || ({} as QueryParams)
-      const isDifferentTrackCorrection = search?.trackCorrectionId && !prevQuery?.trackCorrectionId
-
-      if (
-        (isDifferentRoute || isDifferentTrackCorrection) &&
-        !isHistoryNavigation &&
-        (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
-      ) {
-        const newHistoryNavigation: LastWorkspaceVisited = {
-          pathname: prevLocation.pathname,
-          to: prevLocation.to || ROUTE_PATHS.HOME,
-          params: prevLocation.payload,
-          search: { ...(prevQuery as QueryParams) } as QueryParams,
-        }
-        store.dispatch(
-          setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
-        )
-      } else if (lastHistoryNavigation) {
-        const updatedHistoryNavigation = currentHistoryNavigation.map(
-          (navigation: LastWorkspaceVisited) => {
-            const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
-            if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(navRouteType)) {
-              const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(navRouteType)
-                ? (search.dataviewInstances || []).filter(
-                    (dataviewInstance) => dataviewInstance.origin !== 'report'
-                  )
-                : search.dataviewInstances || []
-              return {
-                ...navigation,
-                search: {
-                  ...search,
-                  dataviewInstances: dataviewInstancesWithoutReport,
-                },
-              }
-            }
-            return navigation
-          }
-        )
-        store.dispatch(setWorkspaceHistoryNavigation(updatedHistoryNavigation))
+      const toPathname = toLocation.pathname.replace(basenameRegex, '') || '/'
+      const toMatches = router.matchRoutes(toPathname, toLocation.search)
+      const toMatch = toMatches[toMatches.length - 1]
+      if (!toMatch) {
+        return
       }
-    }
 
-    store.dispatch(
-      setLocation({
-        type: routeType,
-        payload: params,
-        query: search,
-        pathname: toLocation.pathname,
-        to: normalizeRouteId(toMatch.routeId),
-        prev: prevLocation.type
-          ? {
-              type: prevLocation.type,
-              payload: prevLocation.payload,
-              query: prevLocation.query as QueryParams,
-              pathname: prevLocation.pathname,
-              to: prevLocation.to,
+      const routeType = mapRouteIdToType(toMatch.routeId)
+      const params = toMatch.params as unknown as LinkToPayload
+      const search = toLocation.search as unknown as QueryParams
+      const navState = (toLocation.state || {}) as NavigationState
+      const state = store.getState()
+      const prevLocation = state.location
+
+      // --- Workspace history tracking ---
+      const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
+      if (isNotInitialLoad) {
+        const isHistoryNavigation = navState.isHistoryNavigation ?? false
+        const allHistoryNavigation = state.workspace?.historyNavigation || []
+        const currentHistoryNavigation = isHistoryNavigation
+          ? allHistoryNavigation.slice(0, -1)
+          : allHistoryNavigation
+        const lastHistoryNavigation = allHistoryNavigation[allHistoryNavigation.length - 1]
+        const isDifferentRoute =
+          routeType !== prevLocation.type ||
+          Object.entries(params).some(([key, value]) => value !== prevLocation.payload?.[key])
+        const prevQuery = prevLocation.query || ({} as QueryParams)
+        const isDifferentTrackCorrection =
+          search?.trackCorrectionId && !prevQuery?.trackCorrectionId
+
+        if (
+          (isDifferentRoute || isDifferentTrackCorrection) &&
+          !isHistoryNavigation &&
+          (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
+        ) {
+          const newHistoryNavigation: LastWorkspaceVisited = {
+            pathname: prevLocation.pathname,
+            to: prevLocation.to || ROUTE_PATHS.HOME,
+            params: prevLocation.payload,
+            search: { ...(prevQuery as QueryParams) } as QueryParams,
+          }
+          store.dispatch(
+            setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
+          )
+        } else if (lastHistoryNavigation) {
+          const updatedHistoryNavigation = currentHistoryNavigation.map(
+            (navigation: LastWorkspaceVisited) => {
+              const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
+              if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(navRouteType)) {
+                const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(navRouteType)
+                  ? (search.dataviewInstances || []).filter(
+                      (dataviewInstance) => dataviewInstance.origin !== 'report'
+                    )
+                  : search.dataviewInstances || []
+                return {
+                  ...navigation,
+                  search: {
+                    ...search,
+                    dataviewInstances: dataviewInstancesWithoutReport,
+                  },
+                }
+              }
+              return navigation
             }
-          : undefined,
-      })
-    )
-  })
+          )
+          store.dispatch(setWorkspaceHistoryNavigation(updatedHistoryNavigation))
+        }
+      }
+
+      store.dispatch(
+        setLocation({
+          type: routeType,
+          payload: params,
+          query: search,
+          pathname: toLocation.pathname,
+          to: normalizeRouteId(toMatch.routeId),
+          prev: prevLocation.type
+            ? {
+                type: prevLocation.type,
+                payload: prevLocation.payload,
+                query: prevLocation.query as QueryParams,
+                pathname: prevLocation.pathname,
+                to: prevLocation.to,
+              }
+            : undefined,
+        })
+      )
+    }
+  )
 
   // onResolved: only clear the isHistoryNavigation flag from the committed history.
-  router.subscribe('onResolved', (event: RouterEvents['onResolved']) => {
-    const navState = (event.toLocation.state || {}) as NavigationState
-    if (navState.isHistoryNavigation) {
-      router.history.replace(event.toLocation.href, {
-        ...event.toLocation.state,
-        isHistoryNavigation: undefined,
-      })
+  const unsubscribeResolved = router.subscribe(
+    'onResolved',
+    (event: RouterEvents['onResolved']) => {
+      const navState = (event.toLocation.state || {}) as NavigationState
+      if (navState.isHistoryNavigation) {
+        router.history.replace(event.toLocation.href, {
+          ...event.toLocation.state,
+          isHistoryNavigation: undefined,
+        })
+      }
     }
-  })
+  )
+
+  // Teardown — callers MUST invoke this on unmount to avoid stacking duplicate
+  // subscribers on the long-lived router singleton (memory leak / OOM).
+  return () => {
+    unsubscribeBeforeNavigate()
+    unsubscribeResolved()
+  }
 }

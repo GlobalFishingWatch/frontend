@@ -174,8 +174,11 @@ function App() {
     asideWidth = isPrinting ? '34rem' : '40rem'
   }
 
-  const searchParams = useSearch({ strict: false })
-  if ((typeof window !== 'undefined' && window.opener) || searchParams?.isPopup) {
+  const isAsideResizable =
+    !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
+
+  const isPopup = useSearch({ strict: false, select: (s) => s?.isPopup })
+  if ((typeof window !== 'undefined' && window.opener) || isPopup) {
     return null
   }
 
@@ -206,6 +209,7 @@ function App() {
               }
               main={<Main />}
               asideWidth={asideWidth}
+              resizable={isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}
               className={styles.splitContainer}
@@ -216,7 +220,7 @@ function App() {
             {!readOnly && (
               <Menu
                 appSelector={ROOT_DOM_ELEMENT}
-                bgImage={menuBgImage.src}
+                bgImage={menuBgImage}
                 isOpen={menuOpen}
                 onClose={() => setMenuOpen(false)}
                 activeLinkId="map-data"
