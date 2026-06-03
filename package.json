@@ -41,6 +41,7 @@
     "@floating-ui/react": "0.27.19",
     "@globalfishingwatch/auth-middleware": "1.0.0",
     "@loaders.gl/core": "4.4.2",
+    "@loaders.gl/schema-utils": "4.4.2",
     "@loaders.gl/json": "4.4.2",
     "@loaders.gl/loader-utils": "4.4.2",
     "@loaders.gl/mvt": "4.4.2",

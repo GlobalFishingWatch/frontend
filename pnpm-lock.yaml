@@ -80,6 +80,9 @@ importers:
       '@loaders.gl/schema':
         specifier: 4.4.2
         version: 4.4.2
+      '@loaders.gl/schema-utils':
+        specifier: 4.4.2
+        version: 4.4.2(@loaders.gl/core@4.4.2)
       '@loaders.gl/worker-utils':
         specifier: 4.4.2
         version: 4.4.2(@loaders.gl/core@4.4.2)
