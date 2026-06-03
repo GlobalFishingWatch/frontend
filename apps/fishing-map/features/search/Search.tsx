@@ -25,7 +25,10 @@ import SearchActions from 'features/search/SearchActions'
 import SearchDownload from 'features/search/SearchDownload'
 import SearchPlaceholder from 'features/search/SearchPlaceholders'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import {
+  selectIsWorkspaceRefreshing,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -48,6 +51,7 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const guestUser = useSelector(selectIsGuestUser)
   const datasetError = useSelector(selectDatasetsError)
 
@@ -95,10 +99,10 @@ function Search() {
     )
   }
 
-  const showWorkspaceSpinner = workspaceStatus !== AsyncReducerStatus.Finished
-  const showDatasetsSpinner = datasetsStatus !== AsyncReducerStatus.Finished
-
-  if (showWorkspaceSpinner || showDatasetsSpinner) {
+  const isWorkspaceLoading = workspaceStatus !== AsyncReducerStatus.Finished
+  const areDatasetsLoading = datasetsStatus !== AsyncReducerStatus.Finished
+  const showSpinner = isWorkspaceLoading || (areDatasetsLoading && !isWorkspaceRefreshing)
+  if (showSpinner) {
     return (
       <SearchPlaceholder>
         <Spinner />

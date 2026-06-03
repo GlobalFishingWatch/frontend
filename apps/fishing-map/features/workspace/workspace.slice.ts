@@ -278,7 +278,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
               return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
             })
 
-            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+            await dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
           } catch (e) {
             console.warn('Error fetching private datasets for search within user groups', e)
           }

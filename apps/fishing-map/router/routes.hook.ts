@@ -153,7 +153,6 @@ export const useReplaceLoginUrl = () => {
 export function useLoginMessage() {
   const dispatch = useAppDispatch()
   const { fetchWorkspace } = useFetchWorkspace()
-  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnyVesselProfileLocation = useSelector(selectIsAnyVesselLocation)
   const vesselId = useSelector(selectVesselId)
   const workspace = useSelector(selectWorkspace)
@@ -163,21 +162,18 @@ export function useLoginMessage() {
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
 
   const reloadDataAfterLogin = useCallback(() => {
-    if (isWorkspaceLocation) {
-      // TODO: test the search and reload the workspace too
-      fetchWorkspace({ workspaceId: workspaceId || '', isRefresh: workspace !== null })
-    } else if (isAnyVesselProfileLocation) {
+    if (isAnyVesselProfileLocation) {
       dispatch(
         fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities, isRefresh: true })
       )
     }
+    fetchWorkspace({ workspaceId: workspaceId || '', isRefresh: workspace !== null })
   }, [
     datasetId,
     dispatch,
     fetchWorkspace,
     includeRelatedIdentities,
     isAnyVesselProfileLocation,
-    isWorkspaceLocation,
     vesselId,
     workspaceId,
     workspace,
