@@ -1,4 +1,13 @@
-import { Fragment, lazy, memo, Suspense, useCallback, useMemo, useState } from 'react'
+import {
+  Fragment,
+  lazy,
+  memo,
+  Suspense,
+  useCallback,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -33,11 +42,20 @@ const MiniGlobeInfo = lazy(() => import('./MiniGlobeInfo'))
 const MapControlScreenshot = lazy(() => import('./MapControlScreenshot'))
 const MapSearch = lazy(() => import('./MapSearch'))
 const Rulers = lazy(() => import('features/map/controls/RulersControl'))
-const MapAnnotations = lazy(() => import('features/map/controls/AnnotationsControl'))
+const AnnotationsControl = lazy(() => import('features/map/controls/AnnotationsControl'))
 
-const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.ReactElement<any> => {
+const MapControls = ({
+  onMouseEnter,
+}: {
+  onMouseEnter?: () => void
+}): React.ReactElement<any> | null => {
   const { t } = useTranslation()
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true, // client
+    () => false // server
+  )
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const gfwUser = useSelector(selectIsGFWUser)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
@@ -104,6 +122,10 @@ const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.Rea
   const enterMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(true), [])
   const leaveMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(false), [])
 
+  if (!isClient) {
+    return null
+  }
+
   return (
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
@@ -150,7 +172,7 @@ const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.Rea
                   <Rulers />
                 </Suspense>
                 <Suspense fallback={null}>
-                  <MapAnnotations />
+                  <AnnotationsControl />
                 </Suspense>
                 {gfwUser && <ReportControls disabled={mapLoading} />}
                 <Suspense fallback={null}>
