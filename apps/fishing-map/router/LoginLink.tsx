@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { Children, cloneElement, forwardRef, isValidElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -35,6 +35,22 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
       getLoginUrl(undefined, { isPopup: 'true' }),
       'SSO Login',
       `width=${width},height=${height},left=${left},top=${top}`
+    )
+  }
+
+  const childArray = Children.toArray(children)
+  const singleElement =
+    childArray.length === 1 && isValidElement(childArray[0]) ? childArray[0] : null
+
+  if (singleElement && singleElement.type === 'button') {
+    return (
+      <Tooltip content={t((t) => t.common.login)}>
+        {cloneElement(singleElement as React.ReactElement<any>, {
+          ref,
+          onClick,
+          'data-testid': 'login-link',
+        })}
+      </Tooltip>
     )
   }
 
