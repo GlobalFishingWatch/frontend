@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import filesaver from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -68,7 +67,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const onDownloadClick = () => {
+  const onDownloadClick = async () => {
     const timerange = {
       start: vesselIdentity.transmissionDateFrom,
       end: vesselIdentity.transmissionDateTo,
@@ -97,7 +96,8 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
     }
     const data = parseVesselToCSV(filteredVesselIdentity)
     const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-    filesaver.saveAs(blob, `${shipname}-${flag}.csv`)
+    const { saveAs } = await import('file-saver')
+    saveAs(blob, `${shipname}-${flag}.csv`)
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: 'vessel_identity_download',

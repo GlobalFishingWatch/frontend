@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import filesaver from 'file-saver'
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 
 import { IconButton, Spinner, Tag } from '@globalfishingwatch/ui-components'
@@ -29,7 +28,7 @@ export const DownloadAreaLabel = ({ name }: { name?: string }) => {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
 
-  const onDownloadGeoJSON = useCallback(() => {
+  const onDownloadGeoJSON = useCallback(async () => {
     if (!area?.data?.geometry || (isAnyReportLocation && !reportArea)) return
     const featureCollection: FeatureCollection = {
       type: 'FeatureCollection',
@@ -45,7 +44,8 @@ export const DownloadAreaLabel = ({ name }: { name?: string }) => {
     }
     const file = getFileFromGeojson(featureCollection)
     if (file) {
-      filesaver.saveAs(file, `${name}.json`)
+      const { saveAs } = await import('file-saver')
+      saveAs(file, `${name}.json`)
     }
   }, [area?.data?.geometry, name])
 

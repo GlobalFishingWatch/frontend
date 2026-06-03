@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import filesaver from 'file-saver'
 import papaparse from 'papaparse'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
@@ -74,7 +73,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
 
   const extendedFields = reportCategory !== ReportCategory.Events
 
-  const onDownloadVesselsClick = () => {
+  const onDownloadVesselsClick = async () => {
     const vessels = allVessels
       ?.toSorted((a, b) => (b.value || 0) - (a.value || 0))
       .map((vessel) => {
@@ -105,7 +104,8 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
         : [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
             .filter(Boolean)
             .join('-')
-      filesaver.saveAs(blob, `${fileName}.csv`)
+      const { saveAs } = await import('file-saver')
+      saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_report_download_csv',

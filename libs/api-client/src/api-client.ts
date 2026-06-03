@@ -260,8 +260,7 @@ export class GFW_API_CLASS {
     this.status = 'downloading'
     return this._internalFetch<Blob>({ url: downloadUrl, options: { responseType: 'blob' } })
       .then(async (blob) => {
-        const fileSaverModule = await import('file-saver')
-        const saveAs = fileSaverModule.saveAs ?? fileSaverModule.default?.saveAs
+        const { saveAs } = await import('file-saver')
         saveAs(blob, fileName)
         this.status = 'idle'
         return true

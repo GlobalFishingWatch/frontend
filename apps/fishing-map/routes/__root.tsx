@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { reportRouteError } from 'features/app/sentry'
+import { getLoadedI18nState } from 'features/i18n/i18n'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getTFuntion } from 'router/router.meta'
@@ -22,7 +23,6 @@ const defaultDescription =
 
 async function loadI18nState(): Promise<I18nServerState> {
   if (!import.meta.env.SSR) {
-    const { getLoadedI18nState } = await import('features/i18n/i18n')
     const clientI18nState = getLoadedI18nState()
     if (clientI18nState) {
       return clientI18nState

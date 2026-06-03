@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import filesaver from 'file-saver'
 import { stringify } from 'qs'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -90,7 +89,8 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
-      filesaver.saveAs(blob as any, fileName)
+      const { saveAs } = await import('file-saver')
+      saveAs(blob as any, fileName)
 
       return rateLimit
     })

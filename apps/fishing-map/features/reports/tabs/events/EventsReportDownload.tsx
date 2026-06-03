@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import filesaver from 'file-saver'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -39,7 +38,8 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
       ]
         .filter(Boolean)
         .join('-')
-      filesaver.saveAs(blob, `${fileName}.csv`)
+      const { saveAs } = await import('file-saver')
+      saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.Analysis,
         action: 'events_report_download',
