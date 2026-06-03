@@ -7,6 +7,7 @@ import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   isPointsDataviewReportSupported,
   isPolygonsDataviewReportSupported,
@@ -175,16 +176,25 @@ export const selectPolygonsActiveReportDataviewsGrouped = createSelector(
 )
 
 export const selectOthersActiveReportDataviews = createSelector(
-  [selectPointsActiveReportDataviews, selectPolygonsActiveReportDataviews, selectReportDatasetId],
-  (points = [], polygons = [], reportDatasetId) =>
-    [...points, ...polygons].filter(
+  [
+    selectPointsActiveReportDataviews,
+    selectPolygonsActiveReportDataviews,
+    selectReportDatasetId,
+    selectDebugOptions,
+  ],
+  (points = [], polygons = [], reportDatasetId, { polygonsReport }) => {
+    const filteredDataviews = polygonsReport ? [...points, ...polygons] : points
+    return filteredDataviews.filter(
       (d) => !d.datasets?.some((ds) => reportDatasetId?.split(',').includes(ds.id))
     )
+  }
 )
 
 export const selectOthersActiveReportDataviewsGrouped = createSelector(
   [selectOthersActiveReportDataviews],
-  (dataviews = []) => groupContextDataviews(dataviews)
+  (dataviews = []) => {
+    return groupContextDataviews(dataviews)
+  }
 )
 
 export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(

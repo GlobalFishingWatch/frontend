@@ -132,6 +132,17 @@ const DebugFeatureFlags: React.FC = () => {
         <Fragment>
           <div className={styles.header}>
             <Switch
+              id="option_polygons_report"
+              active={debugOptions.polygonsReport}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.PolygonsReport))}
+            />
+            <label htmlFor="option_polygons_report">
+              <strong>Feature flag:</strong> Polygons report
+            </label>
+          </div>
+          <p>See reports of polygon areas</p>
+          <div className={styles.header}>
+            <Switch
               id="option_hotspot_button"
               active={debugOptions.hotspotButton}
               onClick={() => dispatch(toggleDebugOption(DebugOption.HotspotButton))}
