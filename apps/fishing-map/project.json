@@ -113,6 +113,8 @@
     },
     "build:app": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "options": {
