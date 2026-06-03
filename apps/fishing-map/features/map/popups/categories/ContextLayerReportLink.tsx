@@ -13,6 +13,7 @@ import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
@@ -39,8 +40,10 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportLayersVisible = useSelector(selectReportLayersVisible)
+  const featureFlags = useSelector(selectFeatureFlags)
   const isDataviewReportAnalysable = getIsDataviewReportSupported(
     reportLayersVisible!,
+    featureFlags,
     feature?.layerId
   )
   const workspace = useSelector(selectWorkspace)

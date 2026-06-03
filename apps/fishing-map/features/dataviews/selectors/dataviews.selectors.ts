@@ -41,6 +41,8 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import type { FeatureFlag } from 'features/debug/debug.slice'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
@@ -246,8 +248,8 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved, selectReportDatasetId],
-  (allDataviewInstancesResolved, reportDatasetId) => {
+  [selectAllDataviewInstancesResolved, selectReportDatasetId, selectFeatureFlags],
+  (allDataviewInstancesResolved, reportDatasetId, featureFlags) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
@@ -262,7 +264,7 @@ export const selectReportLayersVisible = createSelector(
       if (dataviewIsSameAsReportArea) {
         return false
       }
-      return isSupportedReportDataview(dataview)
+      return isSupportedReportDataview(dataview, featureFlags)
     })
   }
 )
@@ -276,13 +278,14 @@ export const selectEnvironmentReportLayersVisible = createSelector(
 
 export const getIsDataviewReportSupported = (
   reportLayers: (DataviewInstance | UrlDataviewInstance)[],
+  featureFlags: Record<FeatureFlag, boolean>,
   currentDataviewId?: string
 ) => {
   if (!reportLayers) {
     return false
   }
   return reportLayers
-    ?.filter((dataview) => isSupportedReportDataview(dataview))
+    ?.filter((dataview) => isSupportedReportDataview(dataview, featureFlags))
     .some((dataview) => dataview.id !== currentDataviewId)
 }
 

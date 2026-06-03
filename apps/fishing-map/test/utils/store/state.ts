@@ -10418,7 +10418,11 @@ export const REDUX_STORE_DEFAULT_STATE = {
   },
   debug: {
     active: false,
-    featureFlags: { workspaceGenerator: false },
+    featureFlags: {
+      workspaceGenerator: false,
+      hotspotButton: false,
+      polygonsReport: false,
+    },
     options: {
       addDatasetIdHash: true,
       areasOnScreen: false,
@@ -10426,7 +10430,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
       debugTiles: false,
       experimentalLayers: false,
       hideVesselNames: false,
-      hotspotButton: false,
       mapStats: false,
       thinning: true,
       vesselsAsPositions: false,

@@ -5,6 +5,8 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
+  HotspotButton = 'hotspotButton',
+  PolygonsReport = 'polygonsReport',
 }
 
 export enum DebugOption {
@@ -18,8 +20,6 @@ export enum DebugOption {
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
   VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
-  HotspotButton = 'hotspotButton',
-  PolygonsReport = 'polygonsReport',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -36,6 +36,8 @@ export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
+    hotspotButton: false,
+    polygonsReport: false,
   },
   options: {
     debugTiles: false,
@@ -48,8 +50,6 @@ export const debugInitialState: DebugState = {
     vesselsAsPositions: false,
     vesselsMaxTimeGapHours: false,
     hideVesselNames: false,
-    hotspotButton: false,
-    polygonsReport: false,
   },
 }
 

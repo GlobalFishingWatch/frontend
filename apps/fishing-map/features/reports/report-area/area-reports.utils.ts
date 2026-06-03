@@ -17,6 +17,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
+import type { FeatureFlag } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import type {
@@ -89,6 +90,7 @@ const SUPPORTED_REPORT_CATEGORIES = [
   DataviewCategory.VesselGroups,
   DataviewCategory.Events,
   DataviewCategory.Context,
+  DataviewCategory.User,
 ]
 const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
@@ -131,14 +133,22 @@ export const isContextDataviewReportSupported = (dataview: Dataview | UrlDatavie
   return isPointsDataviewReportSupported(dataview) || isPolygonsDataviewReportSupported(dataview)
 }
 
-export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
+export const isSupportedReportDataview = (
+  dataview: Dataview | UrlDataviewInstance,
+  featureFlags: Record<FeatureFlag, boolean>
+) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
     return false
   }
-  return (
-    SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
-  )
+  let reportTypes = SUPPORTED_REPORT_TYPES
+  if (!featureFlags.polygonsReport) {
+    reportTypes = reportTypes.filter(
+      (t) =>
+        t !== DataviewType.Polygons && t !== DataviewType.UserContext && t !== DataviewType.Context
+    )
+  }
+  return SUPPORTED_REPORT_CATEGORIES.includes(category) && reportTypes.includes(config?.type)
 }
 
 export const isSupportedComparisonDataview = (dataview: Dataview | UrlDataviewInstance) => {

@@ -13,9 +13,12 @@ import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 import {
   DebugOption,
   FAKE_VESSEL_NAME,
+  FeatureFlag,
   selectDebugOptions,
+  selectFeatureFlags,
   setDebugOption,
   toggleDebugOption,
+  toggleFeatureFlag,
 } from './debug.slice'
 
 import styles from './DebugMenu.module.css'
@@ -26,6 +29,7 @@ const DebugFeatureFlags: React.FC = () => {
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
+  const featureFlags = useSelector(selectFeatureFlags)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
@@ -133,8 +137,8 @@ const DebugFeatureFlags: React.FC = () => {
           <div className={styles.header}>
             <Switch
               id="option_polygons_report"
-              active={debugOptions.polygonsReport}
-              onClick={() => dispatch(toggleDebugOption(DebugOption.PolygonsReport))}
+              active={featureFlags.polygonsReport}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.PolygonsReport))}
             />
             <label htmlFor="option_polygons_report">
               <strong>Feature flag:</strong> Polygons report
@@ -144,8 +148,8 @@ const DebugFeatureFlags: React.FC = () => {
           <div className={styles.header}>
             <Switch
               id="option_hotspot_button"
-              active={debugOptions.hotspotButton}
-              onClick={() => dispatch(toggleDebugOption(DebugOption.HotspotButton))}
+              active={featureFlags.hotspotButton}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}
             />
             <label htmlFor="option_hotspot_button">
               <strong>Feature flag:</strong> Hotspot zone button
