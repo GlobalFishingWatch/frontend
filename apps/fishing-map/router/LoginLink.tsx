@@ -1,4 +1,4 @@
-import { Children, cloneElement, forwardRef, isValidElement } from 'react'
+import { forwardRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -22,6 +22,7 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
 
   const onClick = (e: React.MouseEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     dispatch(setWorkspaceSuggestSave(false))
     saveRedirectUrl()
     saveHistoryNavigation(workspaceHistoryNavigation)
@@ -30,7 +31,7 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
     const height = 750
     const left = window.screenX + (window.outerWidth - width) / 2
     const top = window.screenY + (window.outerHeight - height) / 2
-
+    // This works because we have useLoginMessage hook initialized in the app listening to messages
     window.open(
       getLoginUrl(undefined, { isPopup: 'true' }),
       'SSO Login',
@@ -38,27 +39,18 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
     )
   }
 
-  const childArray = Children.toArray(children)
-  const singleElement =
-    childArray.length === 1 && isValidElement(childArray[0]) ? childArray[0] : null
-
-  if (singleElement && singleElement.type === 'button') {
-    return (
-      <Tooltip content={t((t) => t.common.login)}>
-        {cloneElement(singleElement as React.ReactElement<any>, {
-          ref,
-          onClick,
-          'data-testid': 'login-link',
-        })}
-      </Tooltip>
-    )
-  }
-
   return (
     <Tooltip content={t((t) => t.common.login)}>
-      <button ref={ref} onClick={onClick} className={className} data-testid="login-link">
+      <span
+        ref={ref}
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        className={className}
+        data-testid="login-link"
+      >
         {children}
-      </button>
+      </span>
     </Tooltip>
   )
 }

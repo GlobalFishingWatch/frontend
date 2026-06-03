@@ -96,13 +96,13 @@ export const useFetchWorkspace = () => {
     ]
   )
 
-  return { fetchWorkspace }
+  return fetchWorkspace
 }
 
 export const useEnsureWorkspaceLoad = () => {
   const workspaceFetchParams = useSelector(selectWorkspaceFetchParams)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const { fetchWorkspace } = useFetchWorkspace()
+  const fetchWorkspace = useFetchWorkspace()
 
   const userLogged = useSelector(selectIsUserLogged)
   const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null

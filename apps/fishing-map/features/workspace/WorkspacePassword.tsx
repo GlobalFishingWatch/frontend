@@ -27,7 +27,7 @@ export default function WorkspacePassword() {
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
   const workspacePassword = useSelector(selectWorkspacePassword)
-  const { fetchWorkspace } = useFetchWorkspace()
+  const fetchWorkspace = useFetchWorkspace()
 
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value)

@@ -27,7 +27,7 @@ function DatasetLoginRequired({
           </h3>
         </Tooltip>
         {isLoading ? (
-          <Spinner size="small" />
+          <Spinner size="tiny" />
         ) : (
           <div className={styles.actions}>
             <LoginButtonWrapper>

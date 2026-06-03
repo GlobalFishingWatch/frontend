@@ -278,8 +278,11 @@ const vesselSlice = createSlice({
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
+      const isRefresh = action.meta?.arg?.isRefresh
       state.data[vesselId].status = AsyncReducerStatus.Finished
-      state.data[vesselId].refreshStatus = AsyncReducerStatus.Idle
+      state.data[vesselId].refreshStatus = isRefresh
+        ? AsyncReducerStatus.Finished
+        : AsyncReducerStatus.Idle
       state.data[vesselId].info = castDraft({
         ...action.payload,
         id: vesselId,

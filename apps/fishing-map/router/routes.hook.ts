@@ -24,7 +24,6 @@ import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slic
 import {
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
-  selectIsWorkspaceLocation,
   selectLocationPayload,
   selectLocationTo,
   selectVesselId,
@@ -150,13 +149,12 @@ export const useReplaceLoginUrl = () => {
   }, [])
 }
 
-export function useLoginMessage() {
+export function useLoginPopupListener() {
   const dispatch = useAppDispatch()
-  const { fetchWorkspace } = useFetchWorkspace()
+  const fetchWorkspace = useFetchWorkspace()
   const isAnyVesselProfileLocation = useSelector(selectIsAnyVesselLocation)
   const vesselId = useSelector(selectVesselId)
   const workspace = useSelector(selectWorkspace)
-  // const workspacePasswordProtected = useSelector(isWorkspacePasswordProtected)
   const workspaceId = useSelector(selectWorkspaceId)
   const datasetId = useSelector(selectVesselDatasetId)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)

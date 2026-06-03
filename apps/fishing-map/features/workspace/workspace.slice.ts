@@ -578,14 +578,14 @@ const workspaceSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchWorkspaceThunk.pending, (state, action) => {
-      state.status = action.meta.arg.isRefresh ? state.status : AsyncReducerStatus.Loading
-      state.refreshStatus = action.meta.arg.isRefresh
-        ? AsyncReducerStatus.Loading
-        : state.refreshStatus
+      const { isRefresh } = action.meta.arg
+      state.status = isRefresh ? state.status : AsyncReducerStatus.Loading
+      state.refreshStatus = isRefresh ? AsyncReducerStatus.Loading : state.refreshStatus
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
+      const { isRefresh } = action.meta.arg
       state.status = AsyncReducerStatus.Finished
-      state.refreshStatus = AsyncReducerStatus.Finished
+      state.refreshStatus = isRefresh ? AsyncReducerStatus.Finished : state.refreshStatus
       const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
       if (data) {
         state.data = data
@@ -593,10 +593,11 @@ const workspaceSlice = createSlice({
       state.reportId = workspaceReportId
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
+      const { isRefresh } = action.meta.arg
       if (action.payload) {
         const { workspace, error } = action.payload as RejectedActionPayload
         state.status = AsyncReducerStatus.Error
-        state.refreshStatus = AsyncReducerStatus.Error
+        state.refreshStatus = isRefresh ? AsyncReducerStatus.Error : state.refreshStatus
         if (workspace) {
           state.data = castDraft(workspace)
         }
@@ -606,7 +607,7 @@ const workspaceSlice = createSlice({
       } else {
         // This means action was cancelled
         state.status = AsyncReducerStatus.Idle
-        state.refreshStatus = AsyncReducerStatus.Idle
+        state.refreshStatus = isRefresh ? AsyncReducerStatus.Idle : state.refreshStatus
       }
     })
     builder.addCase(saveWorkspaceThunk.pending, (state) => {

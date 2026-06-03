@@ -32,7 +32,7 @@ import {
 } from 'router/routes'
 import {
   useBeforeUnload,
-  useLoginMessage,
+  useLoginPopupListener,
   useReplaceLoginUrl,
   useReplaceQueryParams,
 } from 'router/routes.hook'
@@ -68,7 +68,7 @@ function App() {
   useFetchTrackCorrections()
   useActivityDownloadTimeoutRefresh()
   useEnsureWorkspaceLoad()
-  useLoginMessage()
+  useLoginPopupListener()
 
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
@@ -127,7 +127,6 @@ function App() {
 
   return (
     <Fragment>
-      {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
       <ConfirmVesselProfileLeave />
       <a
