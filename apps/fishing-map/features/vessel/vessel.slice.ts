@@ -76,6 +76,7 @@ export type IdentityVesselData = {
 
 type VesselInfoEntry = {
   status: AsyncReducerStatus
+  refreshStatus: AsyncReducerStatus
   info: IdentityVesselData | null
   events: ApiEvent[] | null
   error: ParsedAPIError | null
@@ -107,6 +108,7 @@ type FetchVesselThunkParams = {
   vesselId: string
   datasetId: string
   includeRelatedIdentities?: boolean
+  isRefresh?: boolean
 }
 export const fetchVesselInfoThunk = createAsyncThunk(
   'vessel/fetchInfo',
@@ -204,7 +206,11 @@ export const fetchVesselInfoThunk = createAsyncThunk(
   {
     condition: (params, { getState }) => {
       const { vessel } = getState() as VesselSliceState
-      return vessel.data?.[params?.vesselId as string]?.status !== AsyncReducerStatus.Loading
+      const entry = vessel.data?.[params?.vesselId as string]
+      if (params?.isRefresh) {
+        return entry?.refreshStatus !== AsyncReducerStatus.Loading
+      }
+      return entry?.status !== AsyncReducerStatus.Loading
     },
   }
 )
@@ -228,7 +234,13 @@ const vesselSlice = createSlice({
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
       if (!state.data[vesselId]) {
-        state.data[vesselId] = castDraft({} as VesselInfoEntry)
+        state.data[vesselId] = castDraft({
+          status: AsyncReducerStatus.Idle,
+          refreshStatus: AsyncReducerStatus.Idle,
+          info: null,
+          error: null,
+          events: [],
+        })
       }
       state.data[vesselId].events = events
     },
@@ -242,16 +254,35 @@ const vesselSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchVesselInfoThunk.pending, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
-      state.data[vesselId] = {
-        status: AsyncReducerStatus.Loading,
-        info: null,
-        error: null,
-        events: state.data?.[vesselId]?.events || [],
+      const isRefresh = action.meta?.arg?.isRefresh
+      if (isRefresh) {
+        if (!state.data[vesselId]) {
+          state.data[vesselId] = castDraft({
+            status: AsyncReducerStatus.Idle,
+            refreshStatus: AsyncReducerStatus.Idle,
+            info: null,
+            error: null,
+            events: [],
+          })
+        }
+        state.data[vesselId].refreshStatus = AsyncReducerStatus.Loading
+      } else {
+        state.data[vesselId] = {
+          status: AsyncReducerStatus.Loading,
+          refreshStatus: AsyncReducerStatus.Idle,
+          info: null,
+          error: null,
+          events: state.data?.[vesselId]?.events || [],
+        }
       }
     })
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
+      const isRefresh = action.meta?.arg?.isRefresh
       state.data[vesselId].status = AsyncReducerStatus.Finished
+      state.data[vesselId].refreshStatus = isRefresh
+        ? AsyncReducerStatus.Finished
+        : AsyncReducerStatus.Idle
       state.data[vesselId].info = castDraft({
         ...action.payload,
         id: vesselId,
@@ -259,12 +290,18 @@ const vesselSlice = createSlice({
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
+      const isRefresh = action.meta?.arg?.isRefresh
       if (state.data[vesselId]) {
-        if (action.error.message === 'Aborted') {
-          state.data[vesselId].status = AsyncReducerStatus.Idle
+        if (isRefresh) {
+          state.data[vesselId].refreshStatus =
+            action.error.message === 'Aborted' ? AsyncReducerStatus.Idle : AsyncReducerStatus.Error
         } else {
-          state.data[vesselId].status = AsyncReducerStatus.Error
-          state.data[vesselId].error = action.payload as ParsedAPIError
+          if (action.error.message === 'Aborted') {
+            state.data[vesselId].status = AsyncReducerStatus.Idle
+          } else {
+            state.data[vesselId].status = AsyncReducerStatus.Error
+            state.data[vesselId].error = action.payload as ParsedAPIError
+          }
         }
       }
     })

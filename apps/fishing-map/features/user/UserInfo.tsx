@@ -61,7 +61,7 @@ function UserInfo() {
 
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
-    await dispatch(logoutUserThunk({ loginRedirect: false }))
+    await dispatch(logoutUserThunk())
     router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)

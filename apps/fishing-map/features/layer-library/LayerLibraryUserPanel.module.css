@@ -65,6 +65,7 @@
 
 .link {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .highlighted {

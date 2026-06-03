@@ -43,15 +43,10 @@ import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsWorkspaceVesselLocation,
-  selectVesselId,
-  selectWorkspaceId,
-} from 'router/routes.selectors'
+import { selectVesselId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import VesselActivity from './activity/VesselActivity'
@@ -72,11 +67,9 @@ const Vessel = () => {
   const vesselSection = useSelector(selectVesselSection)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
@@ -174,9 +167,6 @@ const Vessel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (isWorkspaceVesselLocation) {
-      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
-    }
     if (
       !infoStatus ||
       infoStatus === AsyncReducerStatus.Idle ||
@@ -184,7 +174,7 @@ const Vessel = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
     }
-  }, [datasetId, dispatch, vesselId, urlWorkspaceId])
+  }, [datasetId, dispatch, vesselId])
 
   useEffect(() => {
     dispatchClickedEvent(null)

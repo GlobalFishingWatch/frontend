@@ -1,12 +1,9 @@
-import { forwardRef, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { getLoginUrl, useLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchUserThunk } from 'features/user/user.slice'
-import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { usePopupLogin } from './LoginLink.hooks'
 
 type LocalStorageLoginLinkProps = {
   children: React.ReactNode
@@ -14,49 +11,22 @@ type LocalStorageLoginLinkProps = {
 }
 
 function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLinkProps, ref: any) {
-  const { saveRedirectUrl, saveHistoryNavigation } = useLoginRedirect()
-  const dispatch = useAppDispatch()
-  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'LOGIN_SUCCESS') {
-        dispatch(fetchUserThunk({ accessToken: event.data.accessToken }))
-      }
-    }
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [dispatch])
-
-  const onClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    dispatch(setWorkspaceSuggestSave(false))
-    saveRedirectUrl()
-    saveHistoryNavigation(workspaceHistoryNavigation)
-
-    const width = 500
-    const height = 750
-    const left = window.screenX + (window.outerWidth - width) / 2
-    const top = window.screenY + (window.outerHeight - height) / 2
-
-    window.open(
-      getLoginUrl(undefined, { isPopup: 'true' }),
-      'SSO Login',
-      `width=${width},height=${height},left=${left},top=${top}`
-    )
-  }
+  const { t } = useTranslation()
+  const onClick = usePopupLogin()
 
   return (
-    <a
-      ref={ref}
-      href={getLoginUrl()}
-      onClick={onClick}
-      className={className}
-      title="Login"
-      data-testid="login-link"
-    >
-      {children}
-    </a>
+    <Tooltip content={t((t) => t.common.login)}>
+      <span
+        ref={ref}
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        className={className}
+        data-testid="login-link"
+      >
+        {children}
+      </span>
+    </Tooltip>
   )
 }
 

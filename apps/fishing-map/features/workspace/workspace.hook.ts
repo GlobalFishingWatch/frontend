@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
@@ -6,18 +6,29 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
+  selectIsVesselGroupReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
 } from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+import {
+  isWorkspacePasswordProtected,
+  selectWorkspaceCustomStatus,
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceFetchParams,
+} from './workspace.selectors'
+import type { FetchWorkspacesThunkParams } from './workspace.slice'
+import { fetchWorkspaceThunk } from './workspace.slice'
 import { getNextColor } from './workspace.utils'
 
 export const useFitWorkspaceBounds = () => {
@@ -52,6 +63,64 @@ export const useFitWorkspaceBounds = () => {
     () => ({ fitWorkspaceBounds, fitWorkspaceTimerange }),
     [fitWorkspaceBounds, fitWorkspaceTimerange]
   )
+}
+
+export const useFetchWorkspace = () => {
+  const dispatch = useAppDispatch()
+  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+
+  const fetchWorkspace = useCallback(
+    (params: FetchWorkspacesThunkParams) => {
+      const action = dispatch(fetchWorkspaceThunk(params))
+      action.then((resolvedAction) => {
+        if (!fetchWorkspaceThunk.fulfilled.match(resolvedAction)) return
+        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace as Workspace)) {
+          fitWorkspaceBounds(workspace as Workspace)
+        }
+        fitWorkspaceTimerange(workspace as Workspace)
+      })
+      return action
+    },
+    [
+      dispatch,
+      fitWorkspaceBounds,
+      fitWorkspaceTimerange,
+      isVesselGroupReportLocation,
+      replaceQueryParams,
+    ]
+  )
+
+  return fetchWorkspace
+}
+
+export const useEnsureWorkspaceLoad = () => {
+  const workspaceFetchParams = useSelector(selectWorkspaceFetchParams)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const fetchWorkspace = useFetchWorkspace()
+
+  const userLogged = useSelector(selectIsUserLogged)
+  const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null
+
+  useEffect(() => {
+    if (
+      !userLogged ||
+      workspaceCustomStatus === AsyncReducerStatus.Loading ||
+      !workspaceFetchParams
+    ) {
+      return
+    }
+    const action = fetchWorkspace(workspaceFetchParams)
+    return () => {
+      action?.abort?.()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLogged, workspaceCustomStatus, fetchParamsKey])
 }
 
 const createDataviewsInstances = (

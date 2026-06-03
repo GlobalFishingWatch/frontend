@@ -120,7 +120,12 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: screenshotMode ? window.innerWidth : window.innerWidth / 2,
+      mapWidth:
+        typeof window !== 'undefined'
+          ? screenshotMode
+            ? window.innerWidth
+            : window.innerWidth / 2
+          : 800,
       ...params,
     })
     return {
@@ -448,8 +453,7 @@ export function useReportTitle() {
     if (
       reportId &&
       !report &&
-      (reportsStatus === AsyncReducerStatus.Finished ||
-        reportsStatus === AsyncReducerStatus.Error)
+      (reportsStatus === AsyncReducerStatus.Finished || reportsStatus === AsyncReducerStatus.Error)
     ) {
       return ''
     }

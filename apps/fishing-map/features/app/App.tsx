@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Outlet, useSearch } from '@tanstack/react-router'
 
-import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
@@ -19,19 +18,11 @@ import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
-import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
-import {
-  isWorkspacePasswordProtected,
-  selectWorkspaceCustomStatus,
-  selectWorkspaceReportId,
-} from 'features/workspace/workspace.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { useEnsureWorkspaceLoad } from 'features/workspace/workspace.hook'
 import { ConfirmLeave } from 'router/ConfirmLeave'
 import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
-  REPORT,
   SEARCH,
   USER,
   VESSEL,
@@ -39,19 +30,20 @@ import {
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
 } from 'router/routes'
-import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
+import {
+  useBeforeUnload,
+  useLoginPopupListener,
+  useReplaceLoginUrl,
+  useReplaceQueryParams,
+} from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
   selectIsMapDrawing,
-  selectIsRouteWithWorkspace,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
-  selectReportId,
-  selectWorkspaceId,
 } from 'router/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -75,6 +67,8 @@ function App() {
   useFeatureFlagsToast()
   useFetchTrackCorrections()
   useActivityDownloadTimeoutRefresh()
+  useEnsureWorkspaceLoad()
+  useLoginPopupListener()
 
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
@@ -92,60 +86,12 @@ function App() {
   }, [])
 
   const locationType = useSelector(selectLocationType)
-  const currentReportId = useSelector(selectWorkspaceReportId)
-  const reportId = useSelector(selectReportId)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const userLogged = useSelector(selectIsUserLogged)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const { replaceQueryParams } = useReplaceQueryParams()
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
   }, [dispatch])
-
-  // Workspace fetching for routes NOT under the workspace layout route:
-  // - HOME (/) needs the default workspace
-  // - Standalone REPORT (/report/$reportId) needs a workspace loaded
-
-  // TODO:RR This solves loading the app in non-home routes, check if it has unexpected consecuences
-  const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
-  const standaloneReportNeedsFetch = locationType === REPORT
-  const hasStandaloneReportIdChanged = locationType === REPORT && currentReportId !== reportId
-
-  useEffect(() => {
-    let action: any
-    let actionResolved = false
-    const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
-      const resolvedAction = await action
-      if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
-        if (dataviewInstancesToUpsert) {
-          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
-        }
-        if (!isWorkspacePasswordProtected(workspace as Workspace)) {
-          fitWorkspaceBounds(workspace as Workspace)
-        }
-        fitWorkspaceTimerange(workspace)
-      }
-      actionResolved = true
-    }
-    if (
-      userLogged &&
-      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (isRouteWithWorkspace || standaloneReportNeedsFetch || hasStandaloneReportIdChanged)
-    ) {
-      fetchWorkspace()
-    }
-    return () => {
-      if (action && action.abort !== undefined && !actionResolved) {
-        action.abort()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, isRouteWithWorkspace, standaloneReportNeedsFetch, hasStandaloneReportIdChanged])
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })
@@ -184,7 +130,6 @@ function App() {
 
   return (
     <Fragment>
-      {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
       <ConfirmVesselProfileLeave />
       <a

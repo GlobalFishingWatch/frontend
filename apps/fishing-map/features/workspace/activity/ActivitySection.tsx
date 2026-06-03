@@ -23,6 +23,7 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
@@ -40,6 +41,7 @@ function ActivitySection(): React.ReactElement<any> {
   const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -189,7 +191,7 @@ function ActivitySection(): React.ReactElement<any> {
             )}
           </Fragment>
         ) : dataviewHasPrivateDataset ? (
-          <DatasetLoginRequired dataview={dataview} />
+          <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
         ) : (
           <DatasetNotFound dataview={dataview} />
         )
