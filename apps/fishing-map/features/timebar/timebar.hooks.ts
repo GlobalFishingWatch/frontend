@@ -6,7 +6,7 @@ import type { DateTimeUnit } from 'luxon'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
+import { usePrevious } from '@globalfishingwatch/react-hooks'
 import { EVENT_SOURCE } from '@globalfishingwatch/timebar'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
@@ -68,20 +68,6 @@ timerangeState.onMount = (setAtom) => {
   const urlTimerange = getTimerangeFromUrl()
   if (urlTimerange) {
     return setAtom(urlTimerange)
-  }
-  const redirectUrl =
-    typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
-  // Workaround to get start and end date from redirect url as the
-  // location reducer isn't ready until initialDispatch
-  if (redirectUrl) {
-    try {
-      const redirectTimerange = getTimerangeFromUrl(JSON.parse(redirectUrl))
-      if (redirectTimerange) {
-        setAtom(redirectTimerange)
-      }
-    } catch (e: any) {
-      console.warn(e)
-    }
   }
 }
 

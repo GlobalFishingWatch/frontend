@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import {
   selectIsGuestUser,
   selectIsUserExpired,
   selectUserData,
+  selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'router/LoginLink'
@@ -25,6 +26,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const isUserLocation = useSelector(selectIsUserLocation)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
+  const userStatus = useSelector(selectUserStatus)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
   const prevStatusRef = useRef(customStatus)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -42,6 +44,15 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
+
+  if (userStatus !== AsyncReducerStatus.Finished) {
+    return (
+      <div className={cx(className, styles.wrapper)}>
+        <Spinner size="tiny" />
+      </div>
+    )
+  }
+
   return (
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (

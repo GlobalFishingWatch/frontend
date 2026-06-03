@@ -1,8 +1,4 @@
-import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
-import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
-
 import { PATH_BASENAME } from 'data/config'
-import type { QueryParams } from 'types'
 
 import { getRouterRef } from './router-ref'
 import type { ROUTE_TYPES } from './routes'
@@ -120,19 +116,6 @@ export function mapRouteIdToPath(routeId: string): string {
   // Find the matching ROUTE_PATHS value
   const matchingPath = Object.values(ROUTE_PATHS).find((path) => path === routeId)
   return matchingPath || ROUTE_PATHS.HOME
-}
-
-/**
- * Transient auth params that should never persist in the URL.
- * They are read from `window.location.search` on mount (before any router navigation)
- * by `useReplaceLoginUrl`, so stripping them here is safe.
- */
-const TRANSIENT_PARAMS = [ACCESS_TOKEN_STRING, DEFAULT_CALLBACK_URL_PARAM] as const
-export function cleanAccessTokenQueryParams(query: Partial<QueryParams>): Partial<QueryParams> {
-  for (const param of TRANSIENT_PARAMS) {
-    delete query[param]
-  }
-  return query
 }
 
 /**

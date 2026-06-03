@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -15,7 +14,6 @@ import {
   selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
@@ -42,7 +40,6 @@ function User() {
   const userData = useSelector(selectUserData)
   const userStatus = useSelector(selectUserStatus)
   const userTab = useSelector(selectUserTab)
-  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const userTabs = useMemo(() => {
     const tabs = [
       {
@@ -91,12 +88,6 @@ function User() {
   useEffect(() => {
     dispatch(fetchVesselGroupsThunk())
   }, [dispatch])
-
-  useEffect(() => {
-    if (userData?.type === GUEST_USER_TYPE) {
-      setHistoryNavigation(workspaceHistoryNavigation)
-    }
-  }, [userData?.type, workspaceHistoryNavigation])
 
   if (userStatus === AsyncReducerStatus.Loading) {
     return (

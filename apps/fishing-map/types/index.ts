@@ -76,7 +76,6 @@ export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselPro
 type RedirectParam = {
   isPopup?: boolean
   'access-token'?: string
-  callbackUrlStorage?: boolean
 }
 
 export enum UserTab {

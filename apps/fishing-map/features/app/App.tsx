@@ -18,6 +18,7 @@ import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
+import { useLoginPopupListener } from 'features/user/user.hooks'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { useEnsureWorkspaceLoad } from 'features/workspace/workspace.hook'
 import { ConfirmLeave } from 'router/ConfirmLeave'
@@ -30,12 +31,7 @@ import {
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
 } from 'router/routes'
-import {
-  useBeforeUnload,
-  useLoginPopupListener,
-  useReplaceLoginUrl,
-  useReplaceQueryParams,
-} from 'router/routes.hook'
+import { useBeforeUnload, useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -61,7 +57,6 @@ declare global {
 function App() {
   useAnalytics()
   useDatasetDrag()
-  useReplaceLoginUrl()
   useBeforeUnload()
   useUserLanguageUpdate()
   useFeatureFlagsToast()

@@ -126,7 +126,6 @@ export const rootSearchSchema = z
 
     // ── RedirectParam ─────────────────────────────────────────────────────
     'access-token': optionalString(),
-    callbackUrlStorage: optionalBoolean(),
   })
   .partial()
   .passthrough()

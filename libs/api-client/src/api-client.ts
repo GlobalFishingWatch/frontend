@@ -137,14 +137,23 @@ export class GFW_API_CLASS {
     )
   }
 
-  getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
+  getLoginUrl(
+    callbackUrl: string,
+    { client = 'gfw', locale = '', hideHeader = false } = {} satisfies {
+      client?: string
+      locale?: string
+      hideHeader?: boolean
+    }
+  ) {
     const fallbackLocale =
       locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
-    const callbackUrlEncoded = encodeURIComponent(callbackUrl)
-    return this.generateUrl(
-      `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
-      { absolute: true }
-    )
+    const params = new URLSearchParams({
+      client,
+      locale: fallbackLocale,
+      callback: callbackUrl,
+      ...(hideHeader && { hideHeader: 'true' }),
+    })
+    return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}?${params.toString()}`, { absolute: true })
   }
 
   getConfig() {
