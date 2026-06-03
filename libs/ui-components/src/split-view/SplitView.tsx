@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react'
 import cx from 'classnames'
 
@@ -21,37 +20,16 @@ export const SIDEBAR_DOM_ID = 'app-sidebar'
 const MIN_ASIDE_PCT = 33
 const MAX_ASIDE_PCT = 66
 const DEFAULT_ASIDE_PCT = 50
-const ASIDE_WIDTH_STORAGE_KEY = 'sidebarWidth'
 
 const clampAsidePct = (pct: number) => Math.min(MAX_ASIDE_PCT, Math.max(MIN_ASIDE_PCT, pct))
-
-const asideWidthListeners = new Set<() => void>()
-
-const subscribeAsideWidth = (onChange: () => void) => {
-  asideWidthListeners.add(onChange)
-  window.addEventListener('storage', onChange)
-  return () => {
-    asideWidthListeners.delete(onChange)
-    window.removeEventListener('storage', onChange)
-  }
-}
-
-const getAsideWidthSnapshot = () => {
-  const stored = localStorage.getItem(ASIDE_WIDTH_STORAGE_KEY)
-  const parsed = stored ? parseFloat(stored) : NaN
-  return Number.isNaN(parsed) ? DEFAULT_ASIDE_PCT : clampAsidePct(parsed)
-}
-
-const setStoredAsideWidth = (pct: number) => {
-  localStorage.setItem(ASIDE_WIDTH_STORAGE_KEY, pct.toString())
-  asideWidthListeners.forEach((listener) => listener())
-}
 
 interface SplitViewProps {
   isOpen?: boolean
   showToggle?: boolean
   onToggle?: (e: React.MouseEvent) => void
   asideWidth?: string
+  initialAsideWidthPct?: number
+  onAsideWidthChange?: (pct: number) => void
   resizable?: boolean
   aside: React.ReactNode
   main: React.ReactNode
@@ -70,6 +48,8 @@ export function SplitView(props: SplitViewProps) {
     aside = null,
     main = null,
     asideWidth = '32rem',
+    initialAsideWidthPct,
+    onAsideWidthChange,
     resizable = false,
     showAsideLabel = 'Show aside',
     showMainLabel = 'Show main',
@@ -94,19 +74,21 @@ export function SplitView(props: SplitViewProps) {
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const widthPct = useSyncExternalStore(
-    subscribeAsideWidth,
-    getAsideWidthSnapshot,
-    () => DEFAULT_ASIDE_PCT
+  const [widthPct, setWidthPct] = useState(() =>
+    clampAsidePct(initialAsideWidthPct ?? DEFAULT_ASIDE_PCT)
   )
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const rect = containerRef.current?.getBoundingClientRect()
-    if (!rect || rect.width === 0) return
-    const newPct = clampAsidePct(((e.clientX - rect.left) / rect.width) * 100)
-    setStoredAsideWidth(newPct)
-  }, [])
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect || rect.width === 0) return
+      const newPct = clampAsidePct(((e.clientX - rect.left) / rect.width) * 100)
+      setWidthPct(newPct)
+      onAsideWidthChange?.(newPct)
+    },
+    [onAsideWidthChange]
+  )
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)

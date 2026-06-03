@@ -10,3 +10,6 @@ export const COLOR_GRADIENT =
   (typeof window !== 'undefined' &&
     getComputedStyle(document.documentElement).getPropertyValue('--color-background')) ||
   'rgb(229, 240, 242)'
+
+export const SIDEBAR_WIDTH_COOKIE_KEY = 'sidebarWidth'
+export const CONTENT_PANEL_WIDTH_COOKIE_KEY = 'contentPanelWidth'

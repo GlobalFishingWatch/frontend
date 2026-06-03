@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { Locale } from 'types'
+import { readDocumentCookieString } from 'utils/cookies'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -27,8 +28,7 @@ const NAMESPACES = ['translations'] as const
 function detectLanguageFromRequest(request: Request): string {
   const cookieHeader = request.headers.get('cookie')
   if (cookieHeader) {
-    const match = cookieHeader.match(/(?:^|;\s*)i18next=([^;]+)/)
-    const cookieLng = match?.[1] ? decodeURIComponent(match[1]) : null
+    const cookieLng = readDocumentCookieString('i18next')
     if (cookieLng && SUPPORTED_LANGUAGES.includes(cookieLng)) {
       return cookieLng
     }
