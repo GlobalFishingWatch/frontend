@@ -7,8 +7,10 @@ export function reportRouteError(
   source: ErrorBoundaryTag,
   extra?: Record<string, unknown>
 ) {
-  Sentry.captureException(error, {
-    tags: { errorBoundary: source },
-    ...(extra ? { extra } : {}),
-  })
+  if (process.env.NODE_ENV === 'production') {
+    Sentry.captureException(error, {
+      tags: { errorBoundary: source },
+      ...(extra ? { extra } : {}),
+    })
+  }
 }

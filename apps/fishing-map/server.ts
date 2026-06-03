@@ -5,8 +5,8 @@ import server, { createServerEntry } from '@tanstack/react-start/server-entry'
 
 import { proxy } from './proxy'
 
-const sentryEntry = wrapFetchWithSentry({
-  fetch(request, opts) {
+const fetchHandler = {
+  fetch(request: Request, opts?: unknown) {
     const result = proxy(request)
 
     if (result.type === 'response') {
@@ -16,6 +16,9 @@ const sentryEntry = wrapFetchWithSentry({
     const requestToUse = result.type === 'request' ? result.request : request
     return server.fetch(requestToUse, opts as RequestOptions<Register> | undefined)
   },
-})
+}
+
+const sentryEntry =
+  process.env.NODE_ENV === 'production' ? wrapFetchWithSentry(fetchHandler) : fetchHandler
 
 export default createServerEntry(sentryEntry as Parameters<typeof createServerEntry>[0])

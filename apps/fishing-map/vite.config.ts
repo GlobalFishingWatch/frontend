@@ -123,11 +123,13 @@ export default defineConfig(({ command, mode }) => {
           brotliSize: true,
           template: 'treemap',
         }),
-      sentryTanstackStart({
-        org: 'global-fishing-watch',
-        project: 'frontend',
-        authToken: env.SENTRY_AUTH_TOKEN,
-      }),
+      !!process.env.CI &&
+        sentryTanstackStart({
+          org: 'global-fishing-watch',
+          project: 'frontend',
+          authToken: env.SENTRY_AUTH_TOKEN,
+          telemetry: false,
+        }),
     ],
     envPrefix: ['VITE_', 'i18n_'],
     environments: {

@@ -64,7 +64,7 @@ export function getRouter() {
   router = createAppRouter()
   setRouterRef(router)
 
-  if (!router.isServer) {
+  if (!router.isServer && import.meta.env.PROD) {
     Sentry.addIntegration(Sentry.tanstackRouterBrowserTracingIntegration(router))
   }
 
