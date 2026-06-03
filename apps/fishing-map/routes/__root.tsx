@@ -38,23 +38,23 @@ async function loadPanelWidths(): Promise<{
   asideWidthPct: number | null
   contentPanelWidth: number | null
 }> {
+  const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
   if (!import.meta.env.SSR) {
     return { asideWidthPct: null, contentPanelWidth: null }
   }
-  const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
   return getSidebarWidthState()
 }
 
 export const Route = createRootRoute({
   loader: async () => {
-    const [i18nState, { asideWidthPct, contentPanelWidth }] = await Promise.all([
+    const [i18nState, panelWidths] = await Promise.all([
       loadI18nState(),
-      loadPanelWidths(),
+      loadPanelWidths().catch(() => ({ asideWidthPct: null, contentPanelWidth: null })),
     ])
     return {
       i18nState,
-      asideWidthPct,
-      contentPanelWidth,
+      asideWidthPct: panelWidths.asideWidthPct,
+      contentPanelWidth: panelWidths.contentPanelWidth,
     }
   },
   onError: (err) => {
