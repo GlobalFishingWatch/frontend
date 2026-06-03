@@ -354,11 +354,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   {
     condition: ({ workspaceId, isRefresh }, { getState }) => {
       const rootState = getState() as any
-      const workspaceStatus = selectWorkspaceStatus(rootState)
       const workspaceRefreshStatus = selectWorkspaceRefreshStatus(rootState)
-      const isLoading = isRefresh
-        ? workspaceRefreshStatus === AsyncReducerStatus.Loading
-        : workspaceStatus === AsyncReducerStatus.Loading
+      if (isRefresh) {
+        return workspaceRefreshStatus !== AsyncReducerStatus.Loading
+      }
+      const workspaceStatus = selectWorkspaceStatus(rootState)
+      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
         return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading
@@ -595,7 +596,7 @@ const workspaceSlice = createSlice({
       if (action.payload) {
         const { workspace, error } = action.payload as RejectedActionPayload
         state.status = AsyncReducerStatus.Error
-        state.refreshStatus = AsyncReducerStatus.Finished
+        state.refreshStatus = AsyncReducerStatus.Error
         if (workspace) {
           state.data = castDraft(workspace)
         }
@@ -605,6 +606,7 @@ const workspaceSlice = createSlice({
       } else {
         // This means action was cancelled
         state.status = AsyncReducerStatus.Idle
+        state.refreshStatus = AsyncReducerStatus.Idle
       }
     })
     builder.addCase(saveWorkspaceThunk.pending, (state) => {
