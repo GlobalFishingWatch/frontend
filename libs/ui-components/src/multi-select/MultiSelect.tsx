@@ -1,4 +1,5 @@
-import React, { Fragment, type JSX, useCallback, useMemo, useRef, useState } from 'react'
+import type { JSX, ReactNode } from 'react'
+import React, { Fragment, useCallback, useMemo, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import cx from 'classnames'
 import type {
@@ -55,7 +56,7 @@ export type MultiSelectOnRemove = (event: React.MouseEvent) => void
 
 interface MultiSelectProps {
   id?: string
-  label?: string
+  label?: ReactNode
   placeholder?: string
   placeholderDisplayAll?: boolean
   options: MultiSelectOption[]
