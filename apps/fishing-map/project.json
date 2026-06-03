@@ -87,9 +87,8 @@
       }
     },
     "serve": {
-      "dependsOn": ["build"],
+      "dependsOn": ["build:app"],
       "executor": "nx:run-commands",
-      "continuous": true,
       "options": {
         "command": "node .output/server/index.mjs",
         "cwd": "apps/fishing-map"
