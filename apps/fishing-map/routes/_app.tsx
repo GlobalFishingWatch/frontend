@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo } from 'react'
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 
@@ -17,17 +17,19 @@ import '@globalfishingwatch/ui-components/base.css'
 
 function AppLayout() {
   const router = useRouter()
+  const routerUnsubcribeRef = useRef<(() => void) | null>(null)
+
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
-    return getAppRouterStore(router.options.context) ?? makeStore()
+    const s = getAppRouterStore(router.options.context) ?? makeStore()
+    // eslint-disable-next-line react-hooks/refs
+    routerUnsubcribeRef.current = setupRouterSync(router, s)
+    return s
   }, [router])
 
-  // Register the router→Redux sync in an effect so the subscriptions are torn down
-  // on unmount. Doing it in useMemo leaked subscribers onto the router singleton
-  // (each remount/StrictMode pass stacked another pair) → unbounded memory / OOM.
-  useLayoutEffect(() => {
-    return setupRouterSync(router, store)
-  }, [router, store])
+  useEffect(() => {
+    return () => routerUnsubcribeRef.current?.()
+  }, [store])
 
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
