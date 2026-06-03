@@ -23,7 +23,7 @@ export const makeStore = (
   middlewares?: Middleware[]
 ) => {
   return configureStore({
-    devTools: {
+    devTools: import.meta.env.DEV && {
       stateSanitizer: (state: any) => {
         if (!state.resources) return state
         const serializedResources = Object.entries(state.resources).map(([key, value]: any) => [
