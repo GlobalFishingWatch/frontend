@@ -5,6 +5,11 @@
   margin: var(--space-S);
 }
 
+.centered {
+  align-items: center;
+  justify-content: center;
+}
+
 .row {
   margin-top: var(--space-M);
 }
@@ -133,6 +138,7 @@
 
 .link {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .textSpaced {

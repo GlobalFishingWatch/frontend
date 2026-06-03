@@ -1,23 +1,30 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
+import { setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
+import {
+  selectIsUserLogged,
+  selectUserData,
+  selectUserStatus,
+} from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
@@ -33,6 +40,7 @@ function User() {
   const { replaceQueryParams } = useReplaceQueryParams()
   const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
+  const userStatus = useSelector(selectUserStatus)
   const userTab = useSelector(selectUserTab)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const userTabs = useMemo(() => {
@@ -67,9 +75,12 @@ function User() {
     return tabs
   }, [t])
 
-  const onTabClick = useCallback((tab: Tab<UserTab>) => {
-    replaceQueryParams({ userTab: tab.id })
-  }, [])
+  const onTabClick = useCallback(
+    (tab: Tab<UserTab>) => {
+      replaceQueryParams({ userTab: tab.id })
+    },
+    [replaceQueryParams]
+  )
 
   useEffect(() => {
     if (userLogged && userData?.id) {
@@ -84,16 +95,28 @@ function User() {
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {
       setHistoryNavigation(workspaceHistoryNavigation)
-      redirectToLogin()
     }
   }, [userData?.type, workspaceHistoryNavigation])
+
+  if (userStatus === AsyncReducerStatus.Loading) {
+    return (
+      <div className={styles.container}>
+        <Spinner />
+      </div>
+    )
+  }
 
   if (!userLogged || !userData) return null
 
   if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
     return (
-      <div className={styles.container}>
-        <Spinner />
+      <div className={cx(styles.container, styles.centered)}>
+        <span>
+          <Trans i18nKey={(t) => t.user.loginRequired}>
+            Register or <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>{' '}
+            to see your user panel
+          </Trans>
+        </span>
       </div>
     )
   }

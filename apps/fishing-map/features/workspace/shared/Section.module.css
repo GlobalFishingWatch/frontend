@@ -140,6 +140,7 @@
 
 .link {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .surveyLink {

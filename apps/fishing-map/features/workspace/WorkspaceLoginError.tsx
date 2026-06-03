@@ -5,10 +5,8 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { SUPPORT_EMAIL } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { logoutUserThunk } from 'features/user/user.slice'
-import LocalStorageLoginLink from 'router/LoginLink'
+import { usePopupLogin } from 'router/LoginLink.hooks'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 
@@ -29,14 +27,14 @@ export default function WorkspaceLoginError({
   const [logoutLoading, setLogoutLoading] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const dispatch = useAppDispatch()
+  const openPopupLogin = usePopupLogin()
 
   return (
     <ErrorPlaceholder title={title} className={className}>
       {guestUser ? (
-        <LocalStorageLoginLink className={styles.button}>
+        <Button className={styles.button} onClick={openPopupLogin}>
           {t((t) => t.common.login) as string}
-        </LocalStorageLoginLink>
+        </Button>
       ) : (
         <Fragment>
           {emailSubject && (
@@ -55,7 +53,7 @@ export default function WorkspaceLoginError({
             loading={logoutLoading}
             onClick={async () => {
               setLogoutLoading(true)
-              await dispatch(logoutUserThunk({ loginRedirect: true }))
+              openPopupLogin()
               setLogoutLoading(false)
             }}
           >

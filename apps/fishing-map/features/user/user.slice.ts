@@ -9,7 +9,6 @@ import {
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
@@ -91,27 +90,15 @@ export const fetchUserThunk = createAsyncThunk(
   }
 )
 
-export const logoutUserThunk = createAsyncThunk(
-  'user/logout',
-  async (
-    { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
-    { dispatch, getState }
-  ) => {
-    try {
-      await GFWAPI.logout()
-      dispatch(cleanCurrentWorkspaceData())
-      dispatch(removeGFWStaffOnlyDataviews())
-    } catch (e: any) {
-      console.warn(e)
-    }
-    if (loginRedirect) {
-      const state = getState() as any
-      const historyNavigation = state.workspace?.historyNavigation || []
-      setHistoryNavigation(historyNavigation)
-      redirectToLogin()
-    }
+export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
+  try {
+    await GFWAPI.logout()
+    dispatch(cleanCurrentWorkspaceData())
+    dispatch(removeGFWStaffOnlyDataviews())
+  } catch (e: any) {
+    console.warn(e)
   }
-)
+})
 
 const userSlice = createSlice({
   name: 'user',

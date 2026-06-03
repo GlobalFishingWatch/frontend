@@ -1015,6 +1015,7 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "info": "User Info",
+    "loginRequired": "Register or <1>log in</1> to see your user panel (free, 2 minutes)",
     "profileTooltip": "Click to see your workspaces, vessel groups and datasets",
     "seeDataset": "See on map",
     "title": "User"
