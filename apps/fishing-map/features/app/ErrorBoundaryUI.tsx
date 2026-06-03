@@ -24,8 +24,6 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
   const userData = useSelector(selectUserData)
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { message, stack } = error
-  const errorInfo = [message, stack, document.URL]
 
   const onFeedbackClick = useCallback(() => {
     if (userData) {
@@ -51,7 +49,26 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
         )}
       </div>
       <div className={styles.error}>
-        {showError && errorInfo.map((info, i) => <div key={i}>{info}</div>)}
+        {showError && error && (
+          <ul>
+            {error.message && (
+              <li>
+                <label>Message:</label> {error.message}
+              </li>
+            )}
+            {error.stack && (
+              <li>
+                <label>Stack:</label> {error.stack}
+              </li>
+            )}
+
+            {typeof document !== 'undefined' && (
+              <li>
+                <label>Url:</label> {document.URL}
+              </li>
+            )}
+          </ul>
+        )}
       </div>
       {modalFeedbackOpen && (
         <Suspense fallback={null}>

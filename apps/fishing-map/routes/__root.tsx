@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /// <reference types="vite/client" />
 
 import type { ReactNode } from 'react'
@@ -7,6 +8,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-r
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
 import { getLoadedI18nState } from 'features/i18n/i18n'
 import type { I18nServerState } from 'features/i18n/i18n.server'
@@ -46,6 +48,11 @@ async function loadPanelWidths(): Promise<{
 }
 
 export const Route = createRootRoute({
+  errorComponent: ({ error }) => (
+    <RootDocument lang="en">
+      <RouterErrorBoundary error={error as Error} />
+    </RootDocument>
+  ),
   loader: async () => {
     const [i18nState, panelWidths] = await Promise.all([
       loadI18nState(),
@@ -151,7 +158,7 @@ export const Route = createRootRoute({
       ],
     }
   },
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
   component: RootComponent,
 })
 
