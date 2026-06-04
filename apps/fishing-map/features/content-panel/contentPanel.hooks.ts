@@ -6,6 +6,7 @@ type SidePanelTarget =
   | { type: 'userGuide'; id?: string; subcontentId?: string }
   | { type: 'datasets'; id: string; subcontentId?: string }
   | { type: 'userDataset'; id: string; subcontentId?: string }
+  | { type: 'dataTerminology'; id: string; subcontentId?: string }
 
 export function useSidePanel() {
   const { replaceQueryParams } = useReplaceQueryParams()

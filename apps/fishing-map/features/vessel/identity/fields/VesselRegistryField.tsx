@@ -75,7 +75,7 @@ const VesselRegistryField = ({
         {showLabel && (
           <div className={styles.labelContainer}>
             <label>{t((t) => t.vessel.registryOperator)}</label>
-            <DataTerminology title={t((t) => t.vessel.operator)} terminologyKey="operator" />
+            <DataTerminology terminologyKey="operator" />
           </div>
         )}
         <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
@@ -127,12 +127,7 @@ const VesselRegistryField = ({
       {showLabel && (
         <div className={styles.labelContainer}>
           <label className={styles.twoCells}>{t((t: any) => t.vessel[label ?? ''])}</label>
-          {terminologyKey && (
-            <DataTerminology
-              title={t((t: any) => t.vessel[label ?? ''])}
-              terminologyKey={terminologyKey}
-            />
-          )}
+          {terminologyKey && <DataTerminology terminologyKey={terminologyKey} />}
         </div>
       )}
       {allRegistryInfo?.length > 0 ? (

@@ -1,105 +1,54 @@
-import { Fragment, useCallback, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useCallback } from 'react'
 import cx from 'classnames'
 
 import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
-import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectDebugOptions } from 'features/debug/debug.slice'
-import type I18nNamespaces from 'features/i18n/i18n.types'
-import { getModalParent } from 'features/modals/modals.utils'
-import { htmlSafeParse } from 'utils/html-parser'
-
-import { selectVesselSection } from '../vessel/vessel.config.selectors'
+import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './DataTerminology.module.css'
 
-interface ModalProps {
-  containerClassName?: string
+interface DataTerminologyProps {
   className?: string
-  title?: string | React.ReactNode
   size?: IconButtonSize
   type?: IconButtonType
-  terminologyKey: keyof I18nNamespaces['data-terminology']
+  title?: string | React.ReactNode
+  terminologyKey: DataTerminologySlugs
   tooltip?: string
 }
 
-const DataTerminology: React.FC<ModalProps> = ({
+const DataTerminology: React.FC<DataTerminologyProps> = ({
   terminologyKey,
   className,
-  containerClassName,
-  title,
   tooltip,
+  size,
+  type,
 }): React.ReactElement<any> => {
-  const { t } = useTranslation(['translations', 'data-terminology'])
-  const [showModal, setShowModal] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const closeModal = useCallback(() => setShowModal(false), [setShowModal])
-  const vesselSection = useSelector(selectVesselSection)
-  const debugOptions = useSelector(selectDebugOptions)
+  const { openSidePanel } = useSidePanel()
 
   const onClick = useCallback(() => {
-    setShowModal(true)
-    if (debugOptions.dataTerminologyIframe) {
-      setLoading(true)
-    }
+    openSidePanel({
+      type: 'dataTerminology',
+      id: terminologyKey,
+    })
     trackEvent({
-      category: TrackCategory.VesselProfile,
-      action: `open_vessel_info_${vesselSection}_tab`,
+      category: TrackCategory.HelpHints,
+      action: `open_data_terminology_${terminologyKey}`,
       label: terminologyKey,
     })
-  }, [debugOptions.dataTerminologyIframe, terminologyKey, vesselSection])
+  }, [openSidePanel, terminologyKey])
 
   return (
-    <Fragment>
-      <Tooltip content={tooltip}>
-        <span role="button" onClick={onClick} tabIndex={0}>
-          <Icon icon="info" className={cx(styles.infoButton, className, 'print-hidden')} />
-        </span>
-      </Tooltip>
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        isOpen={showModal}
-        onClose={closeModal}
-        shouldCloseOnEsc
-        title={title ?? t((t) => t.common.dataTerminology)}
-        className={cx(containerClassName, {
-          [styles.iFrameContainer]: debugOptions.dataTerminologyIframe,
-        })}
-        contentClassName={
-          debugOptions.dataTerminologyIframe ? styles.iFramecontent : styles.content
-        }
-        parentSelector={getModalParent}
-      >
-        {debugOptions.dataTerminologyIframe ? (
-          <Fragment>
-            {loading && <div className={styles.iFrameSpinnerContainer}>{<Spinner />}</div>}
-            <iframe
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-              title="info-iframe"
-              src={`https://globalfishingwatch.org/map-and-data/${terminologyKey.toLowerCase()}/`}
-              onLoad={(e) => {
-                e.preventDefault()
-                setLoading(false)
-              }}
-            />
-          </Fragment>
-        ) : (
-          htmlSafeParse(
-            t((t) => t[terminologyKey], {
-              defaultValue: terminologyKey,
-              ns: 'data-terminology',
-            })
-          )
-        )}
-      </Modal>
-    </Fragment>
+    <IconButton
+      icon="info"
+      className={cx(styles.infoButton, className, 'print-hidden')}
+      size={size}
+      type={type}
+      onClick={onClick}
+      tooltip={tooltip}
+    />
   )
 }
 

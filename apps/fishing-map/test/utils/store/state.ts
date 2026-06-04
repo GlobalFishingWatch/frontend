@@ -10426,7 +10426,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
     options: {
       addDatasetIdHash: true,
       areasOnScreen: false,
-      dataTerminologyIframe: false,
       debugTiles: false,
       experimentalLayers: false,
       hideVesselNames: false,

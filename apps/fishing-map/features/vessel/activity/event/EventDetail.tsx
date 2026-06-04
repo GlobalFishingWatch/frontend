@@ -173,10 +173,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                 <th>
                   <label>
                     {t((t) => t.eventInfo.authorization)}
-                    <DataTerminology
-                      title={t((t) => t.eventInfo.authorization)}
-                      terminologyKey="authorization"
-                    />
+                    <DataTerminology terminologyKey="authorization" />
                   </label>
                 </th>
                 {authAreas?.map((rfmo) => {

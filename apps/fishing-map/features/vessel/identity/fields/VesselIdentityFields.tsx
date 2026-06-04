@@ -83,7 +83,6 @@ const VesselIdentityFields = ({
               <label>{labelTranslation}</label>
               {field.terminologyKey && !field.renderPlain && (
                 <DataTerminology
-                  title={labelTranslation}
                   terminologyKey={
                     isBrazilVMS &&
                     (field.terminologyKey === 'shiptype' || field.terminologyKey === 'geartype')
@@ -113,12 +112,7 @@ const VesselIdentityFields = ({
       <div className={styles.identitySection}>
         <div className={styles.sectionHeader}>
           <label>{t((t: any) => t.vessel[label!])}</label>
-          {terminologyKey && (
-            <DataTerminology
-              title={t((t: any) => t.vessel[label!])}
-              terminologyKey={terminologyKey}
-            />
-          )}
+          {terminologyKey && <DataTerminology terminologyKey={terminologyKey} />}
         </div>
         <div className={styles.sectionContent}>{fieldGroups}</div>
       </div>

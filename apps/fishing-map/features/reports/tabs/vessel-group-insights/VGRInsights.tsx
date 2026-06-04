@@ -60,10 +60,7 @@ const VesselGroupReportInsights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology
-          title={t((t) => t.vesselGroupReport.insights.title)}
-          terminologyKey="insightsVesselGroups"
-        />
+        <DataTerminology terminologyKey="insightsVesselGroups" />
       </p>
       <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />

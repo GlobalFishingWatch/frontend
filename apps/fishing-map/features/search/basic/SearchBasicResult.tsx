@@ -312,10 +312,7 @@ function SearchBasicResult({
               <div className={styles.property}>
                 <label>
                   {t((t) => t.vessel.infoSource)}
-                  <DataTerminology
-                    title={t((t) => t.vessel.infoSource)}
-                    terminologyKey="registryInfo"
-                  />
+                  <DataTerminology terminologyKey="registryInfo" />
                 </label>
                 <span>{identitySource}</span>
               </div>

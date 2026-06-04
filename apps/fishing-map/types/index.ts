@@ -99,7 +99,7 @@ export type AppState = {
   trackCorrectionId?: TrackCorrectionId
   sidePanelId?: string
   sidePanelSubcontentId?: string
-  sidePanelContent?: 'userGuide' | 'datasets' | 'userDataset'
+  sidePanelContent?: 'userGuide' | 'datasets' | 'userDataset' | 'dataTerminology'
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

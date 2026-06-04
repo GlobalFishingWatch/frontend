@@ -112,10 +112,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
           <div>
             <div className={styles.labelContainer}>
               <label>{t((t) => t.vessel.registrySources)}</label>
-              <DataTerminology
-                title={t((t) => t.vessel.registrySources)}
-                terminologyKey="registrySources"
-              />
+              <DataTerminology terminologyKey="registrySources" />
             </div>
             {source ? (
               <VesselIdentityField

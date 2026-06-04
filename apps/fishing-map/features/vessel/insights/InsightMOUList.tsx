@@ -175,10 +175,7 @@ const InsightMOUList = ({
     <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.MOULists)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.MOULists)}
-          terminologyKey="insightsMOUList"
-        />
+        <DataTerminology terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

@@ -158,17 +158,6 @@ const DebugFeatureFlags: React.FC = () => {
           <p>Show the hotspot zone button in the report activity graph</p>
           <div className={styles.header}>
             <Switch
-              id="option_data_terminology_iframe"
-              active={debugOptions.dataTerminologyIframe}
-              onClick={() => dispatch(toggleDebugOption(DebugOption.DataTerminologyIframe))}
-            />
-            <label htmlFor="option_data_terminology_iframe">
-              <strong>Feature flag:</strong> Data terminology iframe
-            </label>
-          </div>
-          <p>Activates the data terminology iframe feature</p>
-          <div className={styles.header}>
-            <Switch
               id="option_areas_on_screen"
               active={debugOptions.areasOnScreen}
               onClick={() => dispatch(toggleDebugOption(DebugOption.AreasOnScreen))}
