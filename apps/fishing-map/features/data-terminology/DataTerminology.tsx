@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 
-import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
+import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
@@ -11,6 +12,8 @@ import styles from './DataTerminology.module.css'
 
 interface DataTerminologyProps {
   className?: string
+  size?: IconButtonSize
+  type?: IconButtonType
   title?: string | React.ReactNode
   terminologyKey: DataTerminologySlugs
   tooltip?: string
@@ -20,6 +23,8 @@ const DataTerminology: React.FC<DataTerminologyProps> = ({
   terminologyKey,
   className,
   tooltip,
+  size,
+  type,
 }): React.ReactElement<any> => {
   const { openSidePanel } = useSidePanel()
 
@@ -36,11 +41,14 @@ const DataTerminology: React.FC<DataTerminologyProps> = ({
   }, [openSidePanel, terminologyKey])
 
   return (
-    <Tooltip content={tooltip}>
-      <span role="button" onClick={onClick} tabIndex={0}>
-        <Icon icon="info" className={cx(styles.infoButton, className, 'print-hidden')} />
-      </span>
-    </Tooltip>
+    <IconButton
+      icon="info"
+      className={cx(styles.infoButton, className, 'print-hidden')}
+      size={size}
+      type={type}
+      onClick={onClick}
+      tooltip={tooltip}
+    />
   )
 }
 
