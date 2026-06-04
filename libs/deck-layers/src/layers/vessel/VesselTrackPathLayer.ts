@@ -25,20 +25,42 @@ export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
   elevation: 3,
 }
 
-function includeSpeedInTrackShader(props: _VesselTrackPathLayerProps) {
-  return (
-    props.colorBy === 'speed' ||
-    props.minSpeedFilter !== undefined ||
-    props.maxSpeedFilter !== undefined
-  )
+export type TrackShaderAttributeFlags = {
+  includeSpeed: boolean
+  includeElevation: boolean
+  includeGap: boolean
 }
 
-function includeElevationInTrackShader(props: _VesselTrackPathLayerProps) {
-  return (
-    props.colorBy === 'elevation' ||
-    props.minElevationFilter !== undefined ||
-    props.maxElevationFilter !== undefined
-  )
+export type TrackShaderLayoutProps = Pick<
+  _VesselTrackPathLayerProps,
+  | 'colorBy'
+  | 'minSpeedFilter'
+  | 'maxSpeedFilter'
+  | 'minElevationFilter'
+  | 'maxElevationFilter'
+  | 'maxTimeGapHours'
+>
+
+export function getTrackShaderAttributeFlags(
+  props: TrackShaderLayoutProps
+): TrackShaderAttributeFlags {
+  return {
+    includeSpeed:
+      props.colorBy === 'speed' ||
+      props.minSpeedFilter !== undefined ||
+      props.maxSpeedFilter !== undefined,
+    includeElevation:
+      props.colorBy === 'elevation' ||
+      props.minElevationFilter !== undefined ||
+      props.maxElevationFilter !== undefined,
+    includeGap: Boolean(props.maxTimeGapHours),
+  }
+}
+
+export function getTrackShaderLayoutKey(props: TrackShaderLayoutProps): string {
+  const { includeSpeed, includeElevation, includeGap } = getTrackShaderAttributeFlags(props)
+  const key = [includeSpeed ? 's' : '', includeElevation ? 'e' : '', includeGap ? 'g' : ''].join('')
+  return key || 'base'
 }
 
 /** Properties added by track. */
@@ -175,10 +197,6 @@ const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   highlightEndTime: { type: 'number', value: 0, min: 0 },
   highlightEventStartTime: { type: 'number', value: 0, min: 0 },
   highlightEventEndTime: { type: 'number', value: 0, min: 0 },
-  minSpeedFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
-  maxSpeedFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
-  minElevationFilter: { type: 'number', value: -MAX_FILTER_VALUE, min: 0 },
-  maxElevationFilter: { type: 'number', value: MAX_FILTER_VALUE, min: 0 },
   getPath: { type: 'accessor', value: () => [0, 0] },
   getTimestamp: { type: 'accessor', value: (d) => d },
   getSpeed: { type: 'accessor', value: (d) => d },
@@ -280,17 +298,15 @@ export class VesselTrackPathLayer<
 
   getShaders() {
     const shaders = super.getShaders()
-    const hasSpeedAttribute = includeSpeedInTrackShader(this.props)
-    const hasElevationAttribute = includeElevationInTrackShader(this.props)
-    const hasGapAttribute = this.props.maxTimeGapHours
+    const { includeSpeed, includeElevation, includeGap } = getTrackShaderAttributeFlags(this.props)
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
       ...(shaders.inject || {}),
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
-        ${hasSpeedAttribute ? 'in float instanceSpeeds;' : ''}
-        ${hasElevationAttribute ? 'in float instanceElevations;' : ''}
-        ${hasGapAttribute ? 'in float instanceGaps;' : ''}
+        ${includeSpeed ? 'in float instanceSpeeds;' : ''}
+        ${includeElevation ? 'in float instanceElevations;' : ''}
+        ${includeGap ? 'in float instanceGaps;' : ''}
         out float vTime;
         out float vSpeed;
         out float vElevation;
@@ -298,9 +314,9 @@ export class VesselTrackPathLayer<
         `,
       'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
         vTime = instanceTimestamps;
-        ${hasSpeedAttribute ? 'vSpeed = instanceSpeeds;' : 'vSpeed = 0.0;'}
-        ${hasElevationAttribute ? 'vElevation = instanceElevations;' : 'vElevation = 0.0;'}
-        ${hasGapAttribute ? 'vGap = instanceGaps;' : 'vGap = 0.0;'}
+        ${includeSpeed ? 'vSpeed = instanceSpeeds;' : 'vSpeed = 0.0;'}
+        ${includeElevation ? 'vElevation = instanceElevations;' : 'vElevation = 0.0;'}
+        ${includeGap ? 'vGap = instanceGaps;' : 'vGap = 0.0;'}
         if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
           size *= 4.0;
         }
@@ -366,8 +382,9 @@ export class VesselTrackPathLayer<
   }
 
   getPropsInstancedAttributes() {
+    const { includeSpeed, includeElevation, includeGap } = getTrackShaderAttributeFlags(this.props)
     return {
-      ...(includeElevationInTrackShader(this.props) && {
+      ...(includeElevation && {
         elevations: {
           size: 1,
           accessor: 'getElevation',
@@ -376,7 +393,7 @@ export class VesselTrackPathLayer<
           },
         },
       }),
-      ...(includeSpeedInTrackShader(this.props) && {
+      ...(includeSpeed && {
         speeds: {
           size: 1,
           accessor: 'getSpeed',
@@ -385,7 +402,7 @@ export class VesselTrackPathLayer<
           },
         },
       }),
-      ...(this.props.maxTimeGapHours && {
+      ...(includeGap && {
         gaps: {
           size: 1,
           accessor: 'getGap',
@@ -451,26 +468,29 @@ export class VesselTrackPathLayer<
       {} as Record<string, number[]>
     )
 
-    if (this.state.model) {
-      this.state.model.shaderInputs.setProps({
-        track: {
-          startTime,
-          endTime,
-          highlightStartTime,
-          highlightEndTime,
-          highlightEventStartTime,
-          highlightEventEndTime,
-          minSpeedFilter,
-          maxSpeedFilter,
-          minElevationFilter,
-          maxElevationFilter,
-          discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
-          colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
-          ...values,
-          ...colors,
-        },
-      })
+    const { model } = this.state
+    if (!model) {
+      return
     }
+
+    model.shaderInputs.setProps({
+      track: {
+        startTime,
+        endTime,
+        highlightStartTime,
+        highlightEndTime,
+        highlightEventStartTime,
+        highlightEventEndTime,
+        minSpeedFilter,
+        maxSpeedFilter,
+        minElevationFilter,
+        maxElevationFilter,
+        discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
+        colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
+        ...values,
+        ...colors,
+      },
+    })
 
     super.draw(params)
   }
