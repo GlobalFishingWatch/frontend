@@ -17,7 +17,7 @@ export const getDataTerminologyContent = createServerFn({
     return findWithLocaleFallback<DataTerminology>(
       dataTerminology,
       {
-        filters: { terminologyKey: { $eqi: id } },
+        filters: { slug: { $eqi: id } },
         sort: ['createdAt:asc'],
         populate: '*',
       },
