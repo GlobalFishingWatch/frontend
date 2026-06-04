@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
+import { LEGACY_DATASETS_TO_LATEST_VMS } from '@globalfishingwatch/datasets-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
@@ -39,7 +40,10 @@ export const useMigrateWorkspaceToast = () => {
 
   const onDeprecatedDataviewsChange = useEffectEvent(() => {
     console.warn('Deprecated datasets:')
-    console.log(deprecatedDatasets)
+    const newDeprecatedDatasets = Object.fromEntries(
+      Object.entries(deprecatedDatasets).filter(([id]) => !(id in LEGACY_DATASETS_TO_LATEST_VMS))
+    )
+    console.log(newDeprecatedDatasets)
   })
 
   useEffect(() => {
