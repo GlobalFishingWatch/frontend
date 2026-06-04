@@ -48,20 +48,9 @@ export default defineConfig(({ command, mode }) => {
           baseURL: basePath,
           sourcemap: true,
           rollupConfig: {
-            // i18next-fs-backend and protobufjs are CJS packages that use __dirname/__filename.
-            // Keeping them external lets Node.js require() them in their own CJS scope where
-            // those globals exist, avoiding the need to shim them in the bundled ESM output.
-            external: [
-              '@opentelemetry/api-logs',
-              'assert',
-              'chokidar',
-              'fsevents',
-              'i18next-fs-backend',
-              /^@deck.gl\//,
-              /^@deck.gl-community\//,
-              /^@vitejs\//,
-              /^protobufjs/,
-            ],
+            // Only Node.js built-ins — npm packages cannot be external because the
+            // production Docker image copies only .output/ with no node_modules.
+            external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
             output: {
               // Prevents Rolldown from reordering inlined SSR chunks in a way that places
               // __exportAll() calls before the var declaration runs.
@@ -95,17 +84,7 @@ export default defineConfig(({ command, mode }) => {
     ssr: {
       noExternal: ['@mastra/core', '@mastra/client-js'],
       // Prevent browser-only packages from being bundled into the SSR output.
-      external: [
-        '@deck.gl-community/editable-layers',
-        '@deck.gl/core',
-        '@deck.gl/extensions',
-        '@deck.gl/geo-layers',
-        '@deck.gl/layers',
-        '@deck.gl/mesh-layers',
-        '@deck.gl/react',
-        'html2canvas',
-        'papaparse',
-      ],
+      external: ['html2canvas', 'papaparse'],
     },
   }
 })

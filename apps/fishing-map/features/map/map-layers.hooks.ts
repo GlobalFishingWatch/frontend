@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { PolygonLayer } from '@deck.gl/layers'
 import { useAtomValue } from 'jotai'
-import { extent } from 'simple-statistics'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
@@ -16,17 +15,9 @@ import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import type {
-  DeckLayerPickingObject,
-  FourwingsLayer,
-  VesselLayer,
-} from '@globalfishingwatch/deck-layers'
-import { generateVesselGraphSteps, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import type {
-  FourwingsFeatureProperties,
-  VesselTrackGraphExtent,
-} from '@globalfishingwatch/deck-loaders'
-import { getVesselGraphExtentClamped } from '@globalfishingwatch/deck-loaders'
+import type { DeckLayerPickingObject, FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
@@ -48,6 +39,7 @@ import {
   selectDetectionsMergedDataviewId,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useTimebarTracksGraphExtent } from 'features/map/timebar-graph.hooks'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
@@ -56,7 +48,6 @@ import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
-import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
 import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
@@ -95,46 +86,6 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
     [activityMergedDataviewId, dataview.category, dataview.id, detectionsMergedDataviewId]
   )
   return dataviewId
-}
-
-// Used to generate the dynamic ramp for speed and elevation
-export const useTimebarTracksGraphExtent = () => {
-  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  const vessels = useVesselTracksLayers()
-  const areAllVesselsLoaded = vessels.every((vessel) => vessel.loaded)
-  const vesselsHash = vessels.map((v) => v.id).join()
-
-  return useMemo(() => {
-    if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
-      return
-    }
-    const vesselExtents = vessels.flatMap((v) =>
-      (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
-    )
-    if (!vesselExtents.length) {
-      return
-    }
-
-    return getVesselGraphExtentClamped(
-      extent(vesselExtents),
-      vesselsTimebarGraph
-    ) as VesselTrackGraphExtent
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllVesselsLoaded, vesselsHash, vesselsTimebarGraph])
-}
-
-export const useTimebarTracksGraphSteps = () => {
-  const extent = useTimebarTracksGraphExtent()
-  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  return useMemo(() => {
-    if (
-      !extent?.length ||
-      (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')
-    ) {
-      return []
-    }
-    return generateVesselGraphSteps(extent, vesselsTimebarGraph)
-  }, [extent, vesselsTimebarGraph])
 }
 
 export const useGlobalConfigConnect = () => {

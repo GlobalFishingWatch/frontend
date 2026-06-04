@@ -1,7 +1,6 @@
 import type { DataviewCategory, EventType } from '@globalfishingwatch/api-types'
 import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
-  DrawFeatureType,
   FOOTPRINT_HIGH_RES_ID,
   FOOTPRINT_ID,
   FourwingsVisualizationMode,
@@ -10,6 +9,7 @@ import type {
   RulerData,
   VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 import type { ReportState, ReportStateProperty } from 'features/reports/reports.types'
