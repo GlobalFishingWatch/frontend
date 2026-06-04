@@ -16,3 +16,4 @@ allowBuilds:
 
 patchedDependencies:
   '@nx/vitest@22.7.5': patches/@nx__vitest@22.7.5.patch
+  h3-js@4.4.0: patches/h3-js@4.4.0.patch

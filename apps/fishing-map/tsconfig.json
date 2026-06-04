@@ -37,6 +37,7 @@
       "@globalfishingwatch/dataviews-client": ["../../libs/dataviews-client/src/index.ts"],
       "@globalfishingwatch/deck-layer-composer": ["../../libs/deck-layer-composer/src/index.ts"],
       "@globalfishingwatch/deck-layers": ["../../libs/deck-layers/src/index.ts"],
+      "@globalfishingwatch/deck-layers/draw": ["../../libs/deck-layers/src/draw.ts"],
       "@globalfishingwatch/deck-loaders": ["../../libs/deck-loaders/src/index.ts"],
       "@globalfishingwatch/i18n-labels": ["../../libs/i18n-labels/index.ts"],
       "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],
@@ -44,6 +45,9 @@
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/responsive-visualizations": [
         "../../libs/responsive-visualizations/src/index.ts"
+      ],
+      "@globalfishingwatch/responsive-visualizations/*": [
+        "../../libs/responsive-visualizations/src/*"
       ],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],

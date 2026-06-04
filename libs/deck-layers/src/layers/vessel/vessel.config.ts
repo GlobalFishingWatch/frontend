@@ -58,3 +58,11 @@ export const VESSEL_GRAPH_COLORS = [
   '#FFE350',
   '#FDF9BD',
 ]
+
+export type VesselsColorByProperty = 'track' | 'speed' | 'elevation'
+export type VesselsColorByValue = 1 | 2 | 3
+export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
+  track: 1,
+  speed: 2,
+  elevation: 3,
+}

@@ -8,6 +8,7 @@ Sentry.init({
   enabled: import.meta.env.PROD,
   sendDefaultPii: true,
   tracesSampleRate: 1.0,
+  enableLogs: true,
 })
 
 startTransition(() => {

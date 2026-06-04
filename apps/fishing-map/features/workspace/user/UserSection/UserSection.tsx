@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 

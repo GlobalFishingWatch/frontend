@@ -1,4 +1,3 @@
-export const DEFAULT_LABEL_KEY = 'label'
 export const DEFAULT_DATE_KEY = 'date'
 export const DEFAULT_AGGREGATED_ITEM_KEY = 'value'
 export const DEFAULT_INDIVIDUAL_ITEM_KEY = 'values'

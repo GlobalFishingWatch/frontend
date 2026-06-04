@@ -1,9 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { debounce } from 'es-toolkit'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
@@ -34,11 +33,12 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
 import {
@@ -56,6 +56,10 @@ type LayerFiltersProps = {
   showApplyToAll?: boolean
   onConfirmCallback?: () => void
 }
+
+const HistogramRangeFilter = lazy(
+  () => import('features/workspace/environmental/HistogramRangeFilter')
+)
 
 const trackEventCb = debounce((filterKey: string, label: string) => {
   trackEvent({
@@ -152,6 +156,8 @@ function LayerFilters({
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
+
+  usePorts(filtersAllowed.some((f) => f.id === 'next_port_id'))
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -437,7 +443,9 @@ function LayerFilters({
         />
       )}
       {showHistogramFilter && (
-        <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+        <Suspense fallback={null}>
+          <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+        </Suspense>
       )}
       {filtersAllowed.map((schemaFilter) => {
         if (!showSchemaFilter(schemaFilter)) {

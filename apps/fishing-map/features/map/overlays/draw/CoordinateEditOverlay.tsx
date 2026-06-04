@@ -40,7 +40,7 @@ export const CoordinateEditOverlay = () => {
     drawingMode === 'polygons'
       ? drawData &&
         currentFeatureIndexes?.every(
-          (index) =>
+          (index: number) =>
             (drawData?.features as Feature<Polygon>[])?.[index]?.geometry?.coordinates?.[0].length >
             4
         )

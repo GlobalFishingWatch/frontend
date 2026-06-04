@@ -31,10 +31,9 @@ import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { selectLastVisitedWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
-  cleanReportPayload,
-  cleanReportQuery,
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
+import { cleanReportPayload, cleanReportQuery } from 'features/workspace/workspace.utils'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import {
   selectIsAnySearchLocation,
