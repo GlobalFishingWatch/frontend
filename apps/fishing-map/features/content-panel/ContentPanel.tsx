@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
+import DataTerminologyContent from 'features/content-panel/DataTerminologyContent'
 import InfoContainer from 'features/content-panel/InfoContainer'
 import UserDatasetContent from 'features/content-panel/UserDatasetContent'
 import UserGuideContent from 'features/content-panel/UserGuideContent'
@@ -95,6 +96,7 @@ function ContentPanel({
       {sidePanelContent === 'userGuide' && <UserGuideContent />}
       {sidePanelContent === 'datasets' && <InfoContainer />}
       {sidePanelContent === 'userDataset' && <UserDatasetContent />}
+      {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
     </div>
   )
 }
