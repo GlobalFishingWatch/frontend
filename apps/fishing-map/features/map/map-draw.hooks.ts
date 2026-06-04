@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsMapDrawing, selectMapDrawingMode } from 'router/routes.selectors'

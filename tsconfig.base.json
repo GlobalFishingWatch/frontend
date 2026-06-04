@@ -28,6 +28,7 @@
       "@globalfishingwatch/dataviews-client": ["./libs/dataviews-client/dist/index.d.ts"],
       "@globalfishingwatch/deck-layer-composer": ["./libs/deck-layer-composer/dist/index.d.ts"],
       "@globalfishingwatch/deck-layers": ["./libs/deck-layers/dist/index.d.ts"],
+      "@globalfishingwatch/deck-layers/draw": ["./libs/deck-layers/dist/draw.d.ts"],
       "@globalfishingwatch/deck-loaders": ["./libs/deck-loaders/dist/index.d.ts"],
       "@globalfishingwatch/i18n-labels": ["./libs/i18n-labels/dist/index.d.ts"],
       "@globalfishingwatch/i18n-labels/*": ["./libs/i18n-labels/dist/*"],

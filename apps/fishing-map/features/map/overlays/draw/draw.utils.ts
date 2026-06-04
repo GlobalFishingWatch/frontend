@@ -11,7 +11,7 @@ import {
   DatasetTypes,
   DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 export const getDrawDatasetDefinition = (
   name: string,

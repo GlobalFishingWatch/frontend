@@ -5,7 +5,7 @@ import { bbox } from '@turf/turf'
 import cx from 'classnames'
 import type { Feature, Polygon } from 'geojson'
 
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Button, IconButton, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -240,7 +240,7 @@ function MapDraw() {
         disabled={!!mapDrawEditDataset}
         onChange={onInputChange}
         className={styles.input}
-        testId='input-layer-name'
+        testId="input-layer-name"
       />
       <div className={cx(styles.flex, styles.iconsWrapper)}>
         <IconButton
