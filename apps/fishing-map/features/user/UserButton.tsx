@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
@@ -28,18 +29,20 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const userData = useSelector(selectUserData)
   const userStatus = useSelector(selectUserStatus)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
+  const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
     if (
+      !isSmallScreen &&
       prevStatusRef.current === AsyncReducerStatus.Loading &&
       customStatus === AsyncReducerStatus.Finished
     ) {
       setIsAnimating(true)
     }
     prevStatusRef.current = customStatus
-  }, [customStatus])
+  }, [customStatus, isSmallScreen])
 
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`

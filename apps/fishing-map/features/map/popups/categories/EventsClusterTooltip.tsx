@@ -1,7 +1,9 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import EventsClusterTooltipRow from 'features/map/popups/categories/EventsClusterTooltipRow'
 
@@ -22,13 +24,13 @@ export function EventsClusterTooltip({
   loading,
   error,
 }: EventsClusterTooltipProps) {
+  const datasets = useSelector(selectAllDatasets)
   const { t } = useTranslation()
   if (showFeaturesDetails && features.length > 1) {
+    const dataset = datasets.find((d) => d.id === features[0].datasetId)
     const feature = {
       ...features[0],
-      title: getDatasetLabel({
-        id: features[0].datasetId!,
-      }),
+      title: getDatasetLabel(dataset) || features[0].datasetId,
       count: features[0]?.properties?.value || 1,
     }
     const moreFeatures = features.slice(1)
@@ -51,9 +53,10 @@ export function EventsClusterTooltip({
   return (
     <Fragment>
       {features.map((f) => {
+        const dataset = datasets.find((d) => d.id === features[0].datasetId)
         const feature = {
           ...f,
-          title: getDatasetLabel({ id: f.datasetId! }),
+          title: getDatasetLabel(dataset) || features[0].datasetId,
           count: f?.properties?.value || 1,
         }
         return (

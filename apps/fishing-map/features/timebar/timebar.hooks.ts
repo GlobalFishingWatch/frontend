@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
@@ -40,6 +40,7 @@ import {
   selectHasChangedSettingsOnce,
   selectHighlightedEvents,
   selectHighlightedTime,
+  selectHoveredHighlightedEvents,
   setHasChangedSettings,
   setHighlightedEvents,
 } from './timebar.slice'
@@ -153,7 +154,10 @@ export const useTimerangeConnect = () => {
 
   const onTimebarChange = useCallback(
     (start: string, end: string, source?: string) => {
-      const isMove = source === EVENT_SOURCE.SEEK_MOVE || source === EVENT_SOURCE.ZOOM_OUT_MOVE
+      const isMove =
+        source === EVENT_SOURCE.SEEK_MOVE ||
+        source === EVENT_SOURCE.ZOOM_OUT_MOVE ||
+        source === EVENT_SOURCE.PLAYBACK_FRAME
       setTimerange({ start, end }, !isMove)
     },
     [setTimerange]
@@ -191,12 +195,24 @@ export const useDisableHighlightTimeConnect = () => {
 
 export const useHighlightedEventsConnect = () => {
   const highlightedEvents = useSelector(selectHighlightedEvents)
+  const hoveredEvents = useSelector(selectHoveredHighlightedEvents)
   const hoverEvent = useAtomValue(deckHoverInteractionAtom)
   const dispatch = useAppDispatch()
 
+  const hoveredEventsRef = useRef(hoveredEvents)
+
+  // eslint-disable-next-line react-hooks/refs
+  hoveredEventsRef.current = hoveredEvents
+
   const dispatchHighlightedEvents = useCallback(
     (eventIds: string[] | undefined) => {
-      dispatch(setHighlightedEvents(eventIds))
+      const current = hoveredEventsRef.current || []
+      const next = eventIds || []
+      const hasChanged =
+        current.length !== next.length || current.some((id, index) => id !== next[index])
+      if (hasChanged) {
+        dispatch(setHighlightedEvents(eventIds))
+      }
     },
     [dispatch]
   )
