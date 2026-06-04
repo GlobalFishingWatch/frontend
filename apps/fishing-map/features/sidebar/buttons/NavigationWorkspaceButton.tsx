@@ -14,7 +14,7 @@ import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-he
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
-import { cleanReportQuery } from 'features/workspace/workspace.slice'
+import { cleanReportQuery } from 'features/workspace/workspace.utils'
 import {
   selectIsAnySearchLocation,
   selectIsAnyWorkspaceReportLocation,

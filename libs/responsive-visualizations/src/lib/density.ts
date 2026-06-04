@@ -17,23 +17,9 @@ import type {
   ResponsiveVisualizationAggregatedValueKey,
   ResponsiveVisualizationIndividualValueKey,
 } from '../charts/types'
-import type {
-  ResponsiveVisualizationData,
-  ResponsiveVisualizationLabel,
-  ResponsiveVisualizationValue,
-} from '../types'
+import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 
-export const getResponsiveVisualizationItemValue = (
-  value: ResponsiveVisualizationValue | ResponsiveVisualizationLabel
-): number => {
-  if (typeof value === 'string') {
-    return parseFloat(value)
-  }
-  if (typeof value === 'number') {
-    return value
-  }
-  return value?.value
-}
+import { getResponsiveVisualizationItemValue } from './values'
 
 export const getBarProps = (
   data: ResponsiveVisualizationData,
@@ -59,6 +45,7 @@ export const getColumnsStats = (
   return data.reduce<ColumnsStats>(
     (acc, column) => {
       const useAggregatedValue = aggregatedValueKeys.every((key) => column[key] !== undefined)
+      // eslint-disable-next-line no-useless-assignment
       let value = 0
       if (useAggregatedValue) {
         value = aggregatedValueKeys.reduce((acc, key) => {

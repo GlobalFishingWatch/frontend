@@ -2,6 +2,7 @@ import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { WorkspaceEditAccessType } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
@@ -10,7 +11,6 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 import type {
   UpdateCurrentWorkspaceThunkParams,
@@ -22,7 +22,8 @@ import type {
   UpdateWorkspaceThunkParams,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLocationCategory } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 
@@ -46,7 +47,8 @@ type EditWorkspaceProps = {
 function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWorkspaceProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { cleanQueryParams } = useReplaceQueryParams()
+  const router = useRouter()
+  const locationCategory = useSelector(selectLocationCategory)
 
   const [name, setName] = useState(workspace?.name)
   const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(workspace?.editAccess)
@@ -92,10 +94,15 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         updateWorkspaceThunk.fulfilled.match(dispatchedAction) ||
         updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
       ) {
-        if (updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-          cleanQueryParams()
-        }
         const workspace = dispatchedAction.payload as AppWorkspace
+        if (updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+          router.navigate({
+            to: ROUTE_PATHS.WORKSPACE,
+            params: { category: locationCategory, workspaceId: workspace.id },
+            search: {},
+            replace: true,
+          })
+        }
         if (!workspace?.dataviewInstances.length) {
           setError(t((t) => t.workspace.passwordIncorrect))
         }

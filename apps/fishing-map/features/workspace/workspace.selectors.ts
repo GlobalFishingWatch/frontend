@@ -13,6 +13,8 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
+import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
 import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
@@ -22,6 +24,7 @@ import {
   HOME,
   PORT_REPORT,
   REPORT,
+  REPORT_ROUTES,
   SEARCH,
   USER,
   VESSEL_GROUP_REPORT,
@@ -38,9 +41,11 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { mapRouteIdToType } from 'router/routes.utils'
+import { mapRouteIdToType, toValidRoutePath } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { cleanReportPayload, cleanReportQuery } from './workspace.utils'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspaceReportId = (state: RootState) => state.workspace?.reportId
@@ -48,8 +53,7 @@ export const selectWorkspacePassword = (state: RootState) => state.workspace?.pa
 export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
 export const selectWorkspaceStatus = (state: RootState) => state.workspace?.status
-export const selectWorkspaceRefreshStatus = (state: RootState) =>
-  state.workspace?.refreshStatus
+export const selectWorkspaceRefreshStatus = (state: RootState) => state.workspace?.refreshStatus
 export const selectIsWorkspaceRefreshing = (state: RootState) =>
   state.workspace?.refreshStatus === AsyncReducerStatus.Loading
 export const selectWorkspaceHistoryNavigation = (state: RootState) =>
@@ -63,6 +67,38 @@ export const selectLastVisitedWorkspace = createSelector(
       const routeType = mapRouteIdToType(navigation.to)
       return WORKSPACE_ROUTES.includes(routeType)
     })
+  }
+)
+
+export const selectLastWorkspaceNavigationProps = createSelector(
+  [selectWorkspaceHistoryNavigation],
+  (historyNavigation) => {
+    const lastWorkspaceVisited = historyNavigation?.[historyNavigation.length - 1]
+    if (!historyNavigation?.length || !lastWorkspaceVisited) {
+      return null
+    }
+
+    const previousRouteType = mapRouteIdToType(lastWorkspaceVisited.to)
+    const isPreviousLocationReport = REPORT_ROUTES.includes(previousRouteType)
+    const baseSearch = !isPreviousLocationReport
+      ? { ...cleanReportQuery(lastWorkspaceVisited.search || {}), ...EMPTY_SEARCH_FILTERS }
+      : lastWorkspaceVisited.search
+    const search = {
+      ...baseSearch,
+      dataviewInstances: cleanVesselProfileDataviewInstances(baseSearch.dataviewInstances),
+    }
+    const params = !isPreviousLocationReport
+      ? cleanReportPayload(lastWorkspaceVisited.params || {})
+      : lastWorkspaceVisited.params
+
+    return {
+      to: toValidRoutePath(lastWorkspaceVisited.to, lastWorkspaceVisited.params),
+      params,
+      search,
+      previousRouteType,
+      isPreviousLocationReport,
+      lastWorkspaceVisited,
+    }
   }
 )
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {

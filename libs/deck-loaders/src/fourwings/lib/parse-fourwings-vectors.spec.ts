@@ -1,4 +1,4 @@
-import { PbfReader as Pbf } from 'pbf'
+import { PbfWriter as Pbf } from 'pbf'
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
 import { parseFourwingsVectors } from './parse-fourwings-vectors'

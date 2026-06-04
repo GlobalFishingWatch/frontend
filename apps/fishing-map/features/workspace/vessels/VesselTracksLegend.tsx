@@ -6,7 +6,7 @@ import type { UILegendColorRamp } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend } from '@globalfishingwatch/ui-components'
 
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
+import { useTimebarTracksGraphSteps } from 'features/map/timebar-graph.hooks'
 
 import MapLegendPlaceholder from '../shared/MapLegendPlaceholder'
 

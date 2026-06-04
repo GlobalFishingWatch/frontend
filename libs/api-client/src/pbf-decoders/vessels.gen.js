@@ -1,5 +1,5 @@
-/*eslint-disable no-prototype-builtins*/
-import * as $protobuf from 'protobufjs/minimal'
+/*eslint-disable no-prototype-builtins, jsdoc/require-param*/
+import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
 const $Reader = $protobuf.Reader,
@@ -20,24 +20,38 @@ export const vessels = ($root.vessels = (() => {
   vessels.Track = (function () {
     /**
      * Properties of a Track.
+     * @typedef {Object} vessels.Track.$Properties
+     * @property {Array.<number>|null} [data] Track data
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a Track.
      * @memberof vessels
      * @interface ITrack
-     * @property {Array.<number>|null} [data] Track data
+     * @augments vessels.Track.$Properties
+     * @deprecated Use vessels.Track.$Properties instead.
+     */
+
+    /**
+     * Shape of a Track.
+     * @typedef {vessels.Track.$Properties} vessels.Track.$Shape
      */
 
     /**
      * Constructs a new Track.
      * @memberof vessels
      * @classdesc Represents a Track.
-     * @implements ITrack
      * @constructor
-     * @param {vessels.ITrack=} [properties] Properties to set
+     * @param {vessels.Track.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function Track(properties) {
       this.data = []
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -53,8 +67,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.Track
      * @static
-     * @param {vessels.ITrack=} [properties] Properties to set
+     * @param {vessels.Track.$Properties=} [properties] Properties to set
      * @returns {vessels.Track} Track instance
+     * @type {{
+     *   (properties: vessels.Track.$Shape): vessels.Track & vessels.Track.$Shape;
+     *   (properties?: vessels.Track.$Properties): vessels.Track;
+     * }}
      */
     Track.create = function create(properties) {
       return new Track(properties)
@@ -65,17 +83,21 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.Track
      * @static
-     * @param {vessels.ITrack} message Track message or plain object to encode
+     * @param {vessels.Track.$Properties} message Track message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    Track.encode = function encode(message, writer) {
+    Track.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.data != null && message.data.length) {
         writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
         for (let i = 0; i < message.data.length; ++i) writer.sint32(message.data[i])
         writer.ldelim()
       }
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -84,12 +106,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.Track
      * @static
-     * @param {vessels.ITrack} message Track message or plain object to encode
+     * @param {vessels.Track.$Properties} message Track message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     Track.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -99,31 +121,45 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.Track} Track
+     * @returns {vessels.Track & vessels.Track.$Shape} Track
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Track.decode = function decode(reader, length, error) {
+    Track.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
       const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.Track()
+        message = _target || new $root.vessels.Track()
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            if (!(message.data && message.data.length)) message.data = []
-            if ((tag & 7) === 2) {
+            if (wireType === 2) {
+              if (!(message.data && message.data.length)) message.data = []
               const end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.data.push(reader.sint32())
-            } else message.data.push(reader.sint32())
-            break
+              continue
+            }
+            if (wireType !== 0) break
+            if (!(message.data && message.data.length)) message.data = []
+            message.data.push(reader.sint32())
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -133,7 +169,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.Track
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.Track} Track
+     * @returns {vessels.Track & vessels.Track.$Shape} Track
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -150,8 +186,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    Track.verify = function verify(message) {
+    Track.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.data != null && message.hasOwnProperty('data')) {
         if (!Array.isArray(message.data)) return 'data: array expected'
         for (let i = 0; i < message.data.length; ++i)
@@ -168,12 +206,15 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.Track} Track
      */
-    Track.fromObject = function fromObject(object) {
+    Track.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.Track) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.Track: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.Track()
       if (object.data) {
         if (!Array.isArray(object.data)) throw TypeError('.vessels.Track.data: array expected')
-        message.data = []
+        message.data = Array(object.data.length)
         for (let i = 0; i < object.data.length; ++i) message.data[i] = object.data[i] | 0
       }
       return message
@@ -188,12 +229,14 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    Track.toObject = function toObject(message, options) {
+    Track.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.arrays || options.defaults) object.data = []
       if (message.data && message.data.length) {
-        object.data = []
+        object.data = Array(message.data.length)
         for (let j = 0; j < message.data.length; ++j) object.data[j] = message.data[j]
       }
       return object
@@ -211,18 +254,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for Track
+     * Gets the type url for Track
      * @function getTypeUrl
      * @memberof vessels.Track
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    Track.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.Track'
+    Track.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.Track'
     }
 
     return Track
@@ -231,29 +272,43 @@ export const vessels = ($root.vessels = (() => {
   vessels.TilesetVesselQuery = (function () {
     /**
      * Properties of a TilesetVesselQuery.
-     * @memberof vessels
-     * @interface ITilesetVesselQuery
+     * @typedef {Object} vessels.TilesetVesselQuery.$Properties
      * @property {string|null} [query] TilesetVesselQuery query
      * @property {number|null} [total] TilesetVesselQuery total
      * @property {number|null} [limit] TilesetVesselQuery limit
      * @property {number|null} [offset] TilesetVesselQuery offset
      * @property {number|null} [nextOffset] TilesetVesselQuery nextOffset
-     * @property {Array.<vessels.ITilesetVesselInfo>|null} [entries] TilesetVesselQuery entries
+     * @property {Array.<vessels.TilesetVesselInfo.$Properties>|null} [entries] TilesetVesselQuery entries
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a TilesetVesselQuery.
+     * @memberof vessels
+     * @interface ITilesetVesselQuery
+     * @augments vessels.TilesetVesselQuery.$Properties
+     * @deprecated Use vessels.TilesetVesselQuery.$Properties instead.
+     */
+
+    /**
+     * Shape of a TilesetVesselQuery.
+     * @typedef {vessels.TilesetVesselQuery.$Properties} vessels.TilesetVesselQuery.$Shape
      */
 
     /**
      * Constructs a new TilesetVesselQuery.
      * @memberof vessels
      * @classdesc Represents a TilesetVesselQuery.
-     * @implements ITilesetVesselQuery
      * @constructor
-     * @param {vessels.ITilesetVesselQuery=} [properties] Properties to set
+     * @param {vessels.TilesetVesselQuery.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function TilesetVesselQuery(properties) {
       this.entries = []
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -298,7 +353,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * TilesetVesselQuery entries.
-     * @member {Array.<vessels.ITilesetVesselInfo>} entries
+     * @member {Array.<vessels.TilesetVesselInfo.$Properties>} entries
      * @memberof vessels.TilesetVesselQuery
      * @instance
      */
@@ -309,8 +364,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.TilesetVesselQuery
      * @static
-     * @param {vessels.ITilesetVesselQuery=} [properties] Properties to set
+     * @param {vessels.TilesetVesselQuery.$Properties=} [properties] Properties to set
      * @returns {vessels.TilesetVesselQuery} TilesetVesselQuery instance
+     * @type {{
+     *   (properties: vessels.TilesetVesselQuery.$Shape): vessels.TilesetVesselQuery & vessels.TilesetVesselQuery.$Shape;
+     *   (properties?: vessels.TilesetVesselQuery.$Properties): vessels.TilesetVesselQuery;
+     * }}
      */
     TilesetVesselQuery.create = function create(properties) {
       return new TilesetVesselQuery(properties)
@@ -321,12 +380,14 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.TilesetVesselQuery
      * @static
-     * @param {vessels.ITilesetVesselQuery} message TilesetVesselQuery message or plain object to encode
+     * @param {vessels.TilesetVesselQuery.$Properties} message TilesetVesselQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    TilesetVesselQuery.encode = function encode(message, writer) {
+    TilesetVesselQuery.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.query)
       if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
@@ -341,8 +402,11 @@ export const vessels = ($root.vessels = (() => {
         for (let i = 0; i < message.entries.length; ++i)
           $root.vessels.TilesetVesselInfo.encode(
             message.entries[i],
-            writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
+            writer.uint32(/* id 6, wireType 2 =*/ 50).fork(),
+            _depth + 1
           ).ldelim()
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -351,12 +415,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.TilesetVesselQuery
      * @static
-     * @param {vessels.ITilesetVesselQuery} message TilesetVesselQuery message or plain object to encode
+     * @param {vessels.TilesetVesselQuery.$Properties} message TilesetVesselQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     TilesetVesselQuery.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -366,48 +430,72 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.TilesetVesselQuery} TilesetVesselQuery
+     * @returns {vessels.TilesetVesselQuery & vessels.TilesetVesselQuery.$Shape} TilesetVesselQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TilesetVesselQuery.decode = function decode(reader, length, error) {
+    TilesetVesselQuery.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.TilesetVesselQuery()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.TilesetVesselQuery(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.query = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.query = value
+            else delete message.query
+            continue
           }
           case 2: {
-            message.total = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.total = value
+            else delete message.total
+            continue
           }
           case 3: {
-            message.limit = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.limit = value
+            else delete message.limit
+            continue
           }
           case 4: {
-            message.offset = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.offset = value
+            else delete message.offset
+            continue
           }
           case 5: {
-            message.nextOffset = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.nextOffset = value
+            else delete message.nextOffset
+            continue
           }
           case 6: {
+            if (wireType !== 2) break
             if (!(message.entries && message.entries.length)) message.entries = []
-            message.entries.push($root.vessels.TilesetVesselInfo.decode(reader, reader.uint32()))
-            break
+            message.entries.push(
+              $root.vessels.TilesetVesselInfo.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -417,7 +505,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.TilesetVesselQuery
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.TilesetVesselQuery} TilesetVesselQuery
+     * @returns {vessels.TilesetVesselQuery & vessels.TilesetVesselQuery.$Shape} TilesetVesselQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -434,8 +522,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    TilesetVesselQuery.verify = function verify(message) {
+    TilesetVesselQuery.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.query != null && message.hasOwnProperty('query'))
         if (!$util.isString(message.query)) return 'query: string expected'
       if (message.total != null && message.hasOwnProperty('total'))
@@ -449,7 +539,7 @@ export const vessels = ($root.vessels = (() => {
       if (message.entries != null && message.hasOwnProperty('entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
-          const error = $root.vessels.TilesetVesselInfo.verify(message.entries[i])
+          const error = $root.vessels.TilesetVesselInfo.verify(message.entries[i], _depth + 1)
           if (error) return 'entries.' + error
         }
       }
@@ -464,22 +554,32 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.TilesetVesselQuery} TilesetVesselQuery
      */
-    TilesetVesselQuery.fromObject = function fromObject(object) {
+    TilesetVesselQuery.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.TilesetVesselQuery) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.TilesetVesselQuery: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.TilesetVesselQuery()
-      if (object.query != null) message.query = String(object.query)
-      if (object.total != null) message.total = object.total >>> 0
-      if (object.limit != null) message.limit = object.limit >>> 0
-      if (object.offset != null) message.offset = object.offset >>> 0
-      if (object.nextOffset != null) message.nextOffset = object.nextOffset >>> 0
+      if (object.query != null)
+        if (typeof object.query !== 'string' || object.query.length)
+          message.query = String(object.query)
+      if (object.total != null) if (Number(object.total) !== 0) message.total = object.total >>> 0
+      if (object.limit != null) if (Number(object.limit) !== 0) message.limit = object.limit >>> 0
+      if (object.offset != null)
+        if (Number(object.offset) !== 0) message.offset = object.offset >>> 0
+      if (object.nextOffset != null)
+        if (Number(object.nextOffset) !== 0) message.nextOffset = object.nextOffset >>> 0
       if (object.entries) {
         if (!Array.isArray(object.entries))
           throw TypeError('.vessels.TilesetVesselQuery.entries: array expected')
-        message.entries = []
+        message.entries = Array(object.entries.length)
         for (let i = 0; i < object.entries.length; ++i) {
-          if (typeof object.entries[i] !== 'object')
+          if (!$util.isObject(object.entries[i]))
             throw TypeError('.vessels.TilesetVesselQuery.entries: object expected')
-          message.entries[i] = $root.vessels.TilesetVesselInfo.fromObject(object.entries[i])
+          message.entries[i] = $root.vessels.TilesetVesselInfo.fromObject(
+            object.entries[i],
+            _depth + 1
+          )
         }
       }
       return message
@@ -494,8 +594,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    TilesetVesselQuery.toObject = function toObject(message, options) {
+    TilesetVesselQuery.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
@@ -512,9 +614,13 @@ export const vessels = ($root.vessels = (() => {
       if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
-        object.entries = []
+        object.entries = Array(message.entries.length)
         for (let j = 0; j < message.entries.length; ++j)
-          object.entries[j] = $root.vessels.TilesetVesselInfo.toObject(message.entries[j], options)
+          object.entries[j] = $root.vessels.TilesetVesselInfo.toObject(
+            message.entries[j],
+            options,
+            _depth + 1
+          )
       }
       return object
     }
@@ -531,18 +637,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for TilesetVesselQuery
+     * Gets the type url for TilesetVesselQuery
      * @function getTypeUrl
      * @memberof vessels.TilesetVesselQuery
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    TilesetVesselQuery.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.TilesetVesselQuery'
+    TilesetVesselQuery.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.TilesetVesselQuery'
     }
 
     return TilesetVesselQuery
@@ -551,8 +655,7 @@ export const vessels = ($root.vessels = (() => {
   vessels.TilesetVesselInfo = (function () {
     /**
      * Properties of a TilesetVesselInfo.
-     * @memberof vessels
-     * @interface ITilesetVesselInfo
+     * @typedef {Object} vessels.TilesetVesselInfo.$Properties
      * @property {string|null} [id] TilesetVesselInfo id
      * @property {string|null} [name] TilesetVesselInfo name
      * @property {string|null} [end] TilesetVesselInfo end
@@ -561,20 +664,35 @@ export const vessels = ($root.vessels = (() => {
      * @property {string|null} [callsign] TilesetVesselInfo callsign
      * @property {string|null} [vesselId] TilesetVesselInfo vesselId
      * @property {string|null} [tilesetId] TilesetVesselInfo tilesetId
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a TilesetVesselInfo.
+     * @memberof vessels
+     * @interface ITilesetVesselInfo
+     * @augments vessels.TilesetVesselInfo.$Properties
+     * @deprecated Use vessels.TilesetVesselInfo.$Properties instead.
+     */
+
+    /**
+     * Shape of a TilesetVesselInfo.
+     * @typedef {vessels.TilesetVesselInfo.$Properties} vessels.TilesetVesselInfo.$Shape
      */
 
     /**
      * Constructs a new TilesetVesselInfo.
      * @memberof vessels
      * @classdesc Represents a TilesetVesselInfo.
-     * @implements ITilesetVesselInfo
      * @constructor
-     * @param {vessels.ITilesetVesselInfo=} [properties] Properties to set
+     * @param {vessels.TilesetVesselInfo.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function TilesetVesselInfo(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -646,8 +764,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.TilesetVesselInfo
      * @static
-     * @param {vessels.ITilesetVesselInfo=} [properties] Properties to set
+     * @param {vessels.TilesetVesselInfo.$Properties=} [properties] Properties to set
      * @returns {vessels.TilesetVesselInfo} TilesetVesselInfo instance
+     * @type {{
+     *   (properties: vessels.TilesetVesselInfo.$Shape): vessels.TilesetVesselInfo & vessels.TilesetVesselInfo.$Shape;
+     *   (properties?: vessels.TilesetVesselInfo.$Properties): vessels.TilesetVesselInfo;
+     * }}
      */
     TilesetVesselInfo.create = function create(properties) {
       return new TilesetVesselInfo(properties)
@@ -658,12 +780,14 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.TilesetVesselInfo
      * @static
-     * @param {vessels.ITilesetVesselInfo} message TilesetVesselInfo message or plain object to encode
+     * @param {vessels.TilesetVesselInfo.$Properties} message TilesetVesselInfo message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    TilesetVesselInfo.encode = function encode(message, writer) {
+    TilesetVesselInfo.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
       if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
@@ -680,6 +804,8 @@ export const vessels = ($root.vessels = (() => {
         writer.uint32(/* id 7, wireType 2 =*/ 58).string(message.vesselId)
       if (message.tilesetId != null && Object.hasOwnProperty.call(message, 'tilesetId'))
         writer.uint32(/* id 8, wireType 2 =*/ 66).string(message.tilesetId)
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -688,12 +814,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.TilesetVesselInfo
      * @static
-     * @param {vessels.ITilesetVesselInfo} message TilesetVesselInfo message or plain object to encode
+     * @param {vessels.TilesetVesselInfo.$Properties} message TilesetVesselInfo message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     TilesetVesselInfo.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -703,55 +829,82 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.TilesetVesselInfo} TilesetVesselInfo
+     * @returns {vessels.TilesetVesselInfo & vessels.TilesetVesselInfo.$Shape} TilesetVesselInfo
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TilesetVesselInfo.decode = function decode(reader, length, error) {
+    TilesetVesselInfo.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.TilesetVesselInfo()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.TilesetVesselInfo(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.id = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.id = value
+            else delete message.id
+            continue
           }
           case 2: {
-            message.name = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.name = value
+            else delete message.name
+            continue
           }
           case 3: {
-            message.end = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.end = value
+            else delete message.end
+            continue
           }
           case 4: {
-            message.start = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.start = value
+            else delete message.start
+            continue
           }
           case 5: {
-            message.ssvid = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.ssvid = value
+            else delete message.ssvid
+            continue
           }
           case 6: {
-            message.callsign = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.callsign = value
+            else delete message.callsign
+            continue
           }
           case 7: {
-            message.vesselId = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.vesselId = value
+            else delete message.vesselId
+            continue
           }
           case 8: {
-            message.tilesetId = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.tilesetId = value
+            else delete message.tilesetId
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -761,7 +914,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.TilesetVesselInfo
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.TilesetVesselInfo} TilesetVesselInfo
+     * @returns {vessels.TilesetVesselInfo & vessels.TilesetVesselInfo.$Shape} TilesetVesselInfo
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -778,8 +931,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    TilesetVesselInfo.verify = function verify(message) {
+    TilesetVesselInfo.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.id != null && message.hasOwnProperty('id'))
         if (!$util.isString(message.id)) return 'id: string expected'
       if (message.name != null && message.hasOwnProperty('name'))
@@ -807,17 +962,34 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.TilesetVesselInfo} TilesetVesselInfo
      */
-    TilesetVesselInfo.fromObject = function fromObject(object) {
+    TilesetVesselInfo.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.TilesetVesselInfo) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.TilesetVesselInfo: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.TilesetVesselInfo()
-      if (object.id != null) message.id = String(object.id)
-      if (object.name != null) message.name = String(object.name)
-      if (object.end != null) message.end = String(object.end)
-      if (object.start != null) message.start = String(object.start)
-      if (object.ssvid != null) message.ssvid = String(object.ssvid)
-      if (object.callsign != null) message.callsign = String(object.callsign)
-      if (object.vesselId != null) message.vesselId = String(object.vesselId)
-      if (object.tilesetId != null) message.tilesetId = String(object.tilesetId)
+      if (object.id != null)
+        if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
+      if (object.name != null)
+        if (typeof object.name !== 'string' || object.name.length)
+          message.name = String(object.name)
+      if (object.end != null)
+        if (typeof object.end !== 'string' || object.end.length) message.end = String(object.end)
+      if (object.start != null)
+        if (typeof object.start !== 'string' || object.start.length)
+          message.start = String(object.start)
+      if (object.ssvid != null)
+        if (typeof object.ssvid !== 'string' || object.ssvid.length)
+          message.ssvid = String(object.ssvid)
+      if (object.callsign != null)
+        if (typeof object.callsign !== 'string' || object.callsign.length)
+          message.callsign = String(object.callsign)
+      if (object.vesselId != null)
+        if (typeof object.vesselId !== 'string' || object.vesselId.length)
+          message.vesselId = String(object.vesselId)
+      if (object.tilesetId != null)
+        if (typeof object.tilesetId !== 'string' || object.tilesetId.length)
+          message.tilesetId = String(object.tilesetId)
       return message
     }
 
@@ -830,8 +1002,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    TilesetVesselInfo.toObject = function toObject(message, options) {
+    TilesetVesselInfo.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.defaults) {
         object.id = ''
@@ -869,18 +1043,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for TilesetVesselInfo
+     * Gets the type url for TilesetVesselInfo
      * @function getTypeUrl
      * @memberof vessels.TilesetVesselInfo
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    TilesetVesselInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.TilesetVesselInfo'
+    TilesetVesselInfo.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.TilesetVesselInfo'
     }
 
     return TilesetVesselInfo
@@ -889,25 +1061,39 @@ export const vessels = ($root.vessels = (() => {
   vessels.DatasetVesselV1Query = (function () {
     /**
      * Properties of a DatasetVesselV1Query.
+     * @typedef {Object} vessels.DatasetVesselV1Query.$Properties
+     * @property {string|null} [dataset] DatasetVesselV1Query dataset
+     * @property {Array.<vessels.DatasetVesselQuery.$Properties>|null} [results] DatasetVesselV1Query results
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DatasetVesselV1Query.
      * @memberof vessels
      * @interface IDatasetVesselV1Query
-     * @property {string|null} [dataset] DatasetVesselV1Query dataset
-     * @property {Array.<vessels.IDatasetVesselQuery>|null} [results] DatasetVesselV1Query results
+     * @augments vessels.DatasetVesselV1Query.$Properties
+     * @deprecated Use vessels.DatasetVesselV1Query.$Properties instead.
+     */
+
+    /**
+     * Shape of a DatasetVesselV1Query.
+     * @typedef {vessels.DatasetVesselV1Query.$Properties} vessels.DatasetVesselV1Query.$Shape
      */
 
     /**
      * Constructs a new DatasetVesselV1Query.
      * @memberof vessels
      * @classdesc Represents a DatasetVesselV1Query.
-     * @implements IDatasetVesselV1Query
      * @constructor
-     * @param {vessels.IDatasetVesselV1Query=} [properties] Properties to set
+     * @param {vessels.DatasetVesselV1Query.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DatasetVesselV1Query(properties) {
       this.results = []
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -920,7 +1106,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselV1Query results.
-     * @member {Array.<vessels.IDatasetVesselQuery>} results
+     * @member {Array.<vessels.DatasetVesselQuery.$Properties>} results
      * @memberof vessels.DatasetVesselV1Query
      * @instance
      */
@@ -931,8 +1117,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DatasetVesselV1Query
      * @static
-     * @param {vessels.IDatasetVesselV1Query=} [properties] Properties to set
+     * @param {vessels.DatasetVesselV1Query.$Properties=} [properties] Properties to set
      * @returns {vessels.DatasetVesselV1Query} DatasetVesselV1Query instance
+     * @type {{
+     *   (properties: vessels.DatasetVesselV1Query.$Shape): vessels.DatasetVesselV1Query & vessels.DatasetVesselV1Query.$Shape;
+     *   (properties?: vessels.DatasetVesselV1Query.$Properties): vessels.DatasetVesselV1Query;
+     * }}
      */
     DatasetVesselV1Query.create = function create(properties) {
       return new DatasetVesselV1Query(properties)
@@ -943,20 +1133,25 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DatasetVesselV1Query
      * @static
-     * @param {vessels.IDatasetVesselV1Query} message DatasetVesselV1Query message or plain object to encode
+     * @param {vessels.DatasetVesselV1Query.$Properties} message DatasetVesselV1Query message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    DatasetVesselV1Query.encode = function encode(message, writer) {
+    DatasetVesselV1Query.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         writer.uint32(/* id 10, wireType 2 =*/ 82).string(message.dataset)
       if (message.results != null && message.results.length)
         for (let i = 0; i < message.results.length; ++i)
           $root.vessels.DatasetVesselQuery.encode(
             message.results[i],
-            writer.uint32(/* id 11, wireType 2 =*/ 90).fork()
+            writer.uint32(/* id 11, wireType 2 =*/ 90).fork(),
+            _depth + 1
           ).ldelim()
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -965,12 +1160,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DatasetVesselV1Query
      * @static
-     * @param {vessels.IDatasetVesselV1Query} message DatasetVesselV1Query message or plain object to encode
+     * @param {vessels.DatasetVesselV1Query.$Properties} message DatasetVesselV1Query message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DatasetVesselV1Query.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -980,32 +1175,53 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DatasetVesselV1Query} DatasetVesselV1Query
+     * @returns {vessels.DatasetVesselV1Query & vessels.DatasetVesselV1Query.$Shape} DatasetVesselV1Query
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselV1Query.decode = function decode(reader, length, error) {
+    DatasetVesselV1Query.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.DatasetVesselV1Query()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.DatasetVesselV1Query(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 10: {
-            message.dataset = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.dataset = value
+            else delete message.dataset
+            continue
           }
           case 11: {
+            if (wireType !== 2) break
             if (!(message.results && message.results.length)) message.results = []
-            message.results.push($root.vessels.DatasetVesselQuery.decode(reader, reader.uint32()))
-            break
+            message.results.push(
+              $root.vessels.DatasetVesselQuery.decode(
+                reader,
+                reader.uint32(),
+                undefined,
+                _depth + 1
+              )
+            )
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -1015,7 +1231,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DatasetVesselV1Query
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DatasetVesselV1Query} DatasetVesselV1Query
+     * @returns {vessels.DatasetVesselV1Query & vessels.DatasetVesselV1Query.$Shape} DatasetVesselV1Query
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -1032,14 +1248,16 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    DatasetVesselV1Query.verify = function verify(message) {
+    DatasetVesselV1Query.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.dataset != null && message.hasOwnProperty('dataset'))
         if (!$util.isString(message.dataset)) return 'dataset: string expected'
       if (message.results != null && message.hasOwnProperty('results')) {
         if (!Array.isArray(message.results)) return 'results: array expected'
         for (let i = 0; i < message.results.length; ++i) {
-          const error = $root.vessels.DatasetVesselQuery.verify(message.results[i])
+          const error = $root.vessels.DatasetVesselQuery.verify(message.results[i], _depth + 1)
           if (error) return 'results.' + error
         }
       }
@@ -1054,18 +1272,26 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.DatasetVesselV1Query} DatasetVesselV1Query
      */
-    DatasetVesselV1Query.fromObject = function fromObject(object) {
+    DatasetVesselV1Query.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DatasetVesselV1Query) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselV1Query: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.DatasetVesselV1Query()
-      if (object.dataset != null) message.dataset = String(object.dataset)
+      if (object.dataset != null)
+        if (typeof object.dataset !== 'string' || object.dataset.length)
+          message.dataset = String(object.dataset)
       if (object.results) {
         if (!Array.isArray(object.results))
           throw TypeError('.vessels.DatasetVesselV1Query.results: array expected')
-        message.results = []
+        message.results = Array(object.results.length)
         for (let i = 0; i < object.results.length; ++i) {
-          if (typeof object.results[i] !== 'object')
+          if (!$util.isObject(object.results[i]))
             throw TypeError('.vessels.DatasetVesselV1Query.results: object expected')
-          message.results[i] = $root.vessels.DatasetVesselQuery.fromObject(object.results[i])
+          message.results[i] = $root.vessels.DatasetVesselQuery.fromObject(
+            object.results[i],
+            _depth + 1
+          )
         }
       }
       return message
@@ -1080,17 +1306,23 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    DatasetVesselV1Query.toObject = function toObject(message, options) {
+    DatasetVesselV1Query.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.arrays || options.defaults) object.results = []
       if (options.defaults) object.dataset = ''
       if (message.dataset != null && message.hasOwnProperty('dataset'))
         object.dataset = message.dataset
       if (message.results && message.results.length) {
-        object.results = []
+        object.results = Array(message.results.length)
         for (let j = 0; j < message.results.length; ++j)
-          object.results[j] = $root.vessels.DatasetVesselQuery.toObject(message.results[j], options)
+          object.results[j] = $root.vessels.DatasetVesselQuery.toObject(
+            message.results[j],
+            options,
+            _depth + 1
+          )
       }
       return object
     }
@@ -1107,18 +1339,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for DatasetVesselV1Query
+     * Gets the type url for DatasetVesselV1Query
      * @function getTypeUrl
      * @memberof vessels.DatasetVesselV1Query
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    DatasetVesselV1Query.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.DatasetVesselV1Query'
+    DatasetVesselV1Query.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.DatasetVesselV1Query'
     }
 
     return DatasetVesselV1Query
@@ -1127,29 +1357,43 @@ export const vessels = ($root.vessels = (() => {
   vessels.DatasetVesselQuery = (function () {
     /**
      * Properties of a DatasetVesselQuery.
-     * @memberof vessels
-     * @interface IDatasetVesselQuery
+     * @typedef {Object} vessels.DatasetVesselQuery.$Properties
      * @property {string|null} [query] DatasetVesselQuery query
      * @property {number|null} [total] DatasetVesselQuery total
      * @property {number|null} [limit] DatasetVesselQuery limit
      * @property {number|null} [offset] DatasetVesselQuery offset
      * @property {number|null} [nextOffset] DatasetVesselQuery nextOffset
-     * @property {Array.<vessels.IDatasetVesselInfo>|null} [entries] DatasetVesselQuery entries
+     * @property {Array.<vessels.DatasetVesselInfo.$Properties>|null} [entries] DatasetVesselQuery entries
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DatasetVesselQuery.
+     * @memberof vessels
+     * @interface IDatasetVesselQuery
+     * @augments vessels.DatasetVesselQuery.$Properties
+     * @deprecated Use vessels.DatasetVesselQuery.$Properties instead.
+     */
+
+    /**
+     * Shape of a DatasetVesselQuery.
+     * @typedef {vessels.DatasetVesselQuery.$Properties} vessels.DatasetVesselQuery.$Shape
      */
 
     /**
      * Constructs a new DatasetVesselQuery.
      * @memberof vessels
      * @classdesc Represents a DatasetVesselQuery.
-     * @implements IDatasetVesselQuery
      * @constructor
-     * @param {vessels.IDatasetVesselQuery=} [properties] Properties to set
+     * @param {vessels.DatasetVesselQuery.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DatasetVesselQuery(properties) {
       this.entries = []
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -1194,7 +1438,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselQuery entries.
-     * @member {Array.<vessels.IDatasetVesselInfo>} entries
+     * @member {Array.<vessels.DatasetVesselInfo.$Properties>} entries
      * @memberof vessels.DatasetVesselQuery
      * @instance
      */
@@ -1205,8 +1449,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DatasetVesselQuery
      * @static
-     * @param {vessels.IDatasetVesselQuery=} [properties] Properties to set
+     * @param {vessels.DatasetVesselQuery.$Properties=} [properties] Properties to set
      * @returns {vessels.DatasetVesselQuery} DatasetVesselQuery instance
+     * @type {{
+     *   (properties: vessels.DatasetVesselQuery.$Shape): vessels.DatasetVesselQuery & vessels.DatasetVesselQuery.$Shape;
+     *   (properties?: vessels.DatasetVesselQuery.$Properties): vessels.DatasetVesselQuery;
+     * }}
      */
     DatasetVesselQuery.create = function create(properties) {
       return new DatasetVesselQuery(properties)
@@ -1217,12 +1465,14 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DatasetVesselQuery
      * @static
-     * @param {vessels.IDatasetVesselQuery} message DatasetVesselQuery message or plain object to encode
+     * @param {vessels.DatasetVesselQuery.$Properties} message DatasetVesselQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    DatasetVesselQuery.encode = function encode(message, writer) {
+    DatasetVesselQuery.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.query)
       if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
@@ -1237,8 +1487,11 @@ export const vessels = ($root.vessels = (() => {
         for (let i = 0; i < message.entries.length; ++i)
           $root.vessels.DatasetVesselInfo.encode(
             message.entries[i],
-            writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
+            writer.uint32(/* id 6, wireType 2 =*/ 50).fork(),
+            _depth + 1
           ).ldelim()
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -1247,12 +1500,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DatasetVesselQuery
      * @static
-     * @param {vessels.IDatasetVesselQuery} message DatasetVesselQuery message or plain object to encode
+     * @param {vessels.DatasetVesselQuery.$Properties} message DatasetVesselQuery message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DatasetVesselQuery.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -1262,48 +1515,72 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DatasetVesselQuery} DatasetVesselQuery
+     * @returns {vessels.DatasetVesselQuery & vessels.DatasetVesselQuery.$Shape} DatasetVesselQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselQuery.decode = function decode(reader, length, error) {
+    DatasetVesselQuery.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.DatasetVesselQuery()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.DatasetVesselQuery(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.query = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.query = value
+            else delete message.query
+            continue
           }
           case 2: {
-            message.total = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.total = value
+            else delete message.total
+            continue
           }
           case 3: {
-            message.limit = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.limit = value
+            else delete message.limit
+            continue
           }
           case 4: {
-            message.offset = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.offset = value
+            else delete message.offset
+            continue
           }
           case 5: {
-            message.nextOffset = reader.uint32()
-            break
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.nextOffset = value
+            else delete message.nextOffset
+            continue
           }
           case 6: {
+            if (wireType !== 2) break
             if (!(message.entries && message.entries.length)) message.entries = []
-            message.entries.push($root.vessels.DatasetVesselInfo.decode(reader, reader.uint32()))
-            break
+            message.entries.push(
+              $root.vessels.DatasetVesselInfo.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -1313,7 +1590,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DatasetVesselQuery
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DatasetVesselQuery} DatasetVesselQuery
+     * @returns {vessels.DatasetVesselQuery & vessels.DatasetVesselQuery.$Shape} DatasetVesselQuery
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -1330,8 +1607,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    DatasetVesselQuery.verify = function verify(message) {
+    DatasetVesselQuery.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.query != null && message.hasOwnProperty('query'))
         if (!$util.isString(message.query)) return 'query: string expected'
       if (message.total != null && message.hasOwnProperty('total'))
@@ -1345,7 +1624,7 @@ export const vessels = ($root.vessels = (() => {
       if (message.entries != null && message.hasOwnProperty('entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
-          const error = $root.vessels.DatasetVesselInfo.verify(message.entries[i])
+          const error = $root.vessels.DatasetVesselInfo.verify(message.entries[i], _depth + 1)
           if (error) return 'entries.' + error
         }
       }
@@ -1360,22 +1639,32 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.DatasetVesselQuery} DatasetVesselQuery
      */
-    DatasetVesselQuery.fromObject = function fromObject(object) {
+    DatasetVesselQuery.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DatasetVesselQuery) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselQuery: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.DatasetVesselQuery()
-      if (object.query != null) message.query = String(object.query)
-      if (object.total != null) message.total = object.total >>> 0
-      if (object.limit != null) message.limit = object.limit >>> 0
-      if (object.offset != null) message.offset = object.offset >>> 0
-      if (object.nextOffset != null) message.nextOffset = object.nextOffset >>> 0
+      if (object.query != null)
+        if (typeof object.query !== 'string' || object.query.length)
+          message.query = String(object.query)
+      if (object.total != null) if (Number(object.total) !== 0) message.total = object.total >>> 0
+      if (object.limit != null) if (Number(object.limit) !== 0) message.limit = object.limit >>> 0
+      if (object.offset != null)
+        if (Number(object.offset) !== 0) message.offset = object.offset >>> 0
+      if (object.nextOffset != null)
+        if (Number(object.nextOffset) !== 0) message.nextOffset = object.nextOffset >>> 0
       if (object.entries) {
         if (!Array.isArray(object.entries))
           throw TypeError('.vessels.DatasetVesselQuery.entries: array expected')
-        message.entries = []
+        message.entries = Array(object.entries.length)
         for (let i = 0; i < object.entries.length; ++i) {
-          if (typeof object.entries[i] !== 'object')
+          if (!$util.isObject(object.entries[i]))
             throw TypeError('.vessels.DatasetVesselQuery.entries: object expected')
-          message.entries[i] = $root.vessels.DatasetVesselInfo.fromObject(object.entries[i])
+          message.entries[i] = $root.vessels.DatasetVesselInfo.fromObject(
+            object.entries[i],
+            _depth + 1
+          )
         }
       }
       return message
@@ -1390,8 +1679,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    DatasetVesselQuery.toObject = function toObject(message, options) {
+    DatasetVesselQuery.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
@@ -1408,9 +1699,13 @@ export const vessels = ($root.vessels = (() => {
       if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
-        object.entries = []
+        object.entries = Array(message.entries.length)
         for (let j = 0; j < message.entries.length; ++j)
-          object.entries[j] = $root.vessels.DatasetVesselInfo.toObject(message.entries[j], options)
+          object.entries[j] = $root.vessels.DatasetVesselInfo.toObject(
+            message.entries[j],
+            options,
+            _depth + 1
+          )
       }
       return object
     }
@@ -1427,18 +1722,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for DatasetVesselQuery
+     * Gets the type url for DatasetVesselQuery
      * @function getTypeUrl
      * @memberof vessels.DatasetVesselQuery
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    DatasetVesselQuery.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.DatasetVesselQuery'
+    DatasetVesselQuery.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.DatasetVesselQuery'
     }
 
     return DatasetVesselQuery
@@ -1447,8 +1740,7 @@ export const vessels = ($root.vessels = (() => {
   vessels.DatasetVesselInfo = (function () {
     /**
      * Properties of a DatasetVesselInfo.
-     * @memberof vessels
-     * @interface IDatasetVesselInfo
+     * @typedef {Object} vessels.DatasetVesselInfo.$Properties
      * @property {string|null} [id] DatasetVesselInfo id
      * @property {string|null} [name] DatasetVesselInfo name
      * @property {string|null} [imo] DatasetVesselInfo imo
@@ -1456,20 +1748,34 @@ export const vessels = ($root.vessels = (() => {
      * @property {string|null} [vesselId] DatasetVesselInfo vesselId
      * @property {string|null} [type] DatasetVesselInfo type
      * @property {string|null} [dataset] DatasetVesselInfo dataset
-     * @property {Array.<vessels.IStartEndValue>|null} [authorizations] DatasetVesselInfo authorizations
-     * @property {Array.<vessels.IExtra>|null} [extra] DatasetVesselInfo extra
-     * @property {Array.<vessels.IStartEndValue>|null} [mmsi] DatasetVesselInfo mmsi
-     * @property {Array.<vessels.IStartEndValue>|null} [callsign] DatasetVesselInfo callsign
-     * @property {Array.<vessels.IStartEndValue>|null} [flags] DatasetVesselInfo flags
+     * @property {Array.<vessels.StartEndValue.$Properties>|null} [authorizations] DatasetVesselInfo authorizations
+     * @property {Array.<vessels.Extra.$Properties>|null} [extra] DatasetVesselInfo extra
+     * @property {Array.<vessels.StartEndValue.$Properties>|null} [mmsi] DatasetVesselInfo mmsi
+     * @property {Array.<vessels.StartEndValue.$Properties>|null} [callsign] DatasetVesselInfo callsign
+     * @property {Array.<vessels.StartEndValue.$Properties>|null} [flags] DatasetVesselInfo flags
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DatasetVesselInfo.
+     * @memberof vessels
+     * @interface IDatasetVesselInfo
+     * @augments vessels.DatasetVesselInfo.$Properties
+     * @deprecated Use vessels.DatasetVesselInfo.$Properties instead.
+     */
+
+    /**
+     * Shape of a DatasetVesselInfo.
+     * @typedef {vessels.DatasetVesselInfo.$Properties} vessels.DatasetVesselInfo.$Shape
      */
 
     /**
      * Constructs a new DatasetVesselInfo.
      * @memberof vessels
      * @classdesc Represents a DatasetVesselInfo.
-     * @implements IDatasetVesselInfo
      * @constructor
-     * @param {vessels.IDatasetVesselInfo=} [properties] Properties to set
+     * @param {vessels.DatasetVesselInfo.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function DatasetVesselInfo(properties) {
       this.authorizations = []
@@ -1479,7 +1785,8 @@ export const vessels = ($root.vessels = (() => {
       this.flags = []
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -1540,7 +1847,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselInfo authorizations.
-     * @member {Array.<vessels.IStartEndValue>} authorizations
+     * @member {Array.<vessels.StartEndValue.$Properties>} authorizations
      * @memberof vessels.DatasetVesselInfo
      * @instance
      */
@@ -1548,7 +1855,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselInfo extra.
-     * @member {Array.<vessels.IExtra>} extra
+     * @member {Array.<vessels.Extra.$Properties>} extra
      * @memberof vessels.DatasetVesselInfo
      * @instance
      */
@@ -1556,7 +1863,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselInfo mmsi.
-     * @member {Array.<vessels.IStartEndValue>} mmsi
+     * @member {Array.<vessels.StartEndValue.$Properties>} mmsi
      * @memberof vessels.DatasetVesselInfo
      * @instance
      */
@@ -1564,7 +1871,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselInfo callsign.
-     * @member {Array.<vessels.IStartEndValue>} callsign
+     * @member {Array.<vessels.StartEndValue.$Properties>} callsign
      * @memberof vessels.DatasetVesselInfo
      * @instance
      */
@@ -1572,7 +1879,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DatasetVesselInfo flags.
-     * @member {Array.<vessels.IStartEndValue>} flags
+     * @member {Array.<vessels.StartEndValue.$Properties>} flags
      * @memberof vessels.DatasetVesselInfo
      * @instance
      */
@@ -1583,8 +1890,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.DatasetVesselInfo
      * @static
-     * @param {vessels.IDatasetVesselInfo=} [properties] Properties to set
+     * @param {vessels.DatasetVesselInfo.$Properties=} [properties] Properties to set
      * @returns {vessels.DatasetVesselInfo} DatasetVesselInfo instance
+     * @type {{
+     *   (properties: vessels.DatasetVesselInfo.$Shape): vessels.DatasetVesselInfo & vessels.DatasetVesselInfo.$Shape;
+     *   (properties?: vessels.DatasetVesselInfo.$Properties): vessels.DatasetVesselInfo;
+     * }}
      */
     DatasetVesselInfo.create = function create(properties) {
       return new DatasetVesselInfo(properties)
@@ -1595,12 +1906,14 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.DatasetVesselInfo
      * @static
-     * @param {vessels.IDatasetVesselInfo} message DatasetVesselInfo message or plain object to encode
+     * @param {vessels.DatasetVesselInfo.$Properties} message DatasetVesselInfo message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    DatasetVesselInfo.encode = function encode(message, writer) {
+    DatasetVesselInfo.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
       if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
@@ -1619,32 +1932,39 @@ export const vessels = ($root.vessels = (() => {
         for (let i = 0; i < message.authorizations.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.authorizations[i],
-            writer.uint32(/* id 8, wireType 2 =*/ 66).fork()
+            writer.uint32(/* id 8, wireType 2 =*/ 66).fork(),
+            _depth + 1
           ).ldelim()
       if (message.extra != null && message.extra.length)
         for (let i = 0; i < message.extra.length; ++i)
           $root.vessels.Extra.encode(
             message.extra[i],
-            writer.uint32(/* id 9, wireType 2 =*/ 74).fork()
+            writer.uint32(/* id 9, wireType 2 =*/ 74).fork(),
+            _depth + 1
           ).ldelim()
       if (message.mmsi != null && message.mmsi.length)
         for (let i = 0; i < message.mmsi.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.mmsi[i],
-            writer.uint32(/* id 10, wireType 2 =*/ 82).fork()
+            writer.uint32(/* id 10, wireType 2 =*/ 82).fork(),
+            _depth + 1
           ).ldelim()
       if (message.callsign != null && message.callsign.length)
         for (let i = 0; i < message.callsign.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.callsign[i],
-            writer.uint32(/* id 11, wireType 2 =*/ 90).fork()
+            writer.uint32(/* id 11, wireType 2 =*/ 90).fork(),
+            _depth + 1
           ).ldelim()
       if (message.flags != null && message.flags.length)
         for (let i = 0; i < message.flags.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.flags[i],
-            writer.uint32(/* id 12, wireType 2 =*/ 98).fork()
+            writer.uint32(/* id 12, wireType 2 =*/ 98).fork(),
+            _depth + 1
           ).ldelim()
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -1653,12 +1973,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.DatasetVesselInfo
      * @static
-     * @param {vessels.IDatasetVesselInfo} message DatasetVesselInfo message or plain object to encode
+     * @param {vessels.DatasetVesselInfo.$Properties} message DatasetVesselInfo message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     DatasetVesselInfo.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -1668,77 +1988,117 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.DatasetVesselInfo} DatasetVesselInfo
+     * @returns {vessels.DatasetVesselInfo & vessels.DatasetVesselInfo.$Shape} DatasetVesselInfo
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselInfo.decode = function decode(reader, length, error) {
+    DatasetVesselInfo.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.DatasetVesselInfo()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.DatasetVesselInfo(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.id = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.id = value
+            else delete message.id
+            continue
           }
           case 2: {
-            message.name = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.name = value
+            else delete message.name
+            continue
           }
           case 3: {
-            message.imo = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.imo = value
+            else delete message.imo
+            continue
           }
           case 4: {
-            message.ssvid = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.ssvid = value
+            else delete message.ssvid
+            continue
           }
           case 5: {
-            message.vesselId = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.vesselId = value
+            else delete message.vesselId
+            continue
           }
           case 6: {
-            message.type = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.type = value
+            else delete message.type
+            continue
           }
           case 7: {
-            message.dataset = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.dataset = value
+            else delete message.dataset
+            continue
           }
           case 8: {
+            if (wireType !== 2) break
             if (!(message.authorizations && message.authorizations.length))
               message.authorizations = []
-            message.authorizations.push($root.vessels.StartEndValue.decode(reader, reader.uint32()))
-            break
+            message.authorizations.push(
+              $root.vessels.StartEndValue.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
           case 9: {
+            if (wireType !== 2) break
             if (!(message.extra && message.extra.length)) message.extra = []
-            message.extra.push($root.vessels.Extra.decode(reader, reader.uint32()))
-            break
+            message.extra.push(
+              $root.vessels.Extra.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
           case 10: {
+            if (wireType !== 2) break
             if (!(message.mmsi && message.mmsi.length)) message.mmsi = []
-            message.mmsi.push($root.vessels.StartEndValue.decode(reader, reader.uint32()))
-            break
+            message.mmsi.push(
+              $root.vessels.StartEndValue.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
           case 11: {
+            if (wireType !== 2) break
             if (!(message.callsign && message.callsign.length)) message.callsign = []
-            message.callsign.push($root.vessels.StartEndValue.decode(reader, reader.uint32()))
-            break
+            message.callsign.push(
+              $root.vessels.StartEndValue.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
           case 12: {
+            if (wireType !== 2) break
             if (!(message.flags && message.flags.length)) message.flags = []
-            message.flags.push($root.vessels.StartEndValue.decode(reader, reader.uint32()))
-            break
+            message.flags.push(
+              $root.vessels.StartEndValue.decode(reader, reader.uint32(), undefined, _depth + 1)
+            )
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -1748,7 +2108,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.DatasetVesselInfo
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.DatasetVesselInfo} DatasetVesselInfo
+     * @returns {vessels.DatasetVesselInfo & vessels.DatasetVesselInfo.$Shape} DatasetVesselInfo
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -1765,8 +2125,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    DatasetVesselInfo.verify = function verify(message) {
+    DatasetVesselInfo.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.id != null && message.hasOwnProperty('id'))
         if (!$util.isString(message.id)) return 'id: string expected'
       if (message.name != null && message.hasOwnProperty('name'))
@@ -1784,35 +2146,35 @@ export const vessels = ($root.vessels = (() => {
       if (message.authorizations != null && message.hasOwnProperty('authorizations')) {
         if (!Array.isArray(message.authorizations)) return 'authorizations: array expected'
         for (let i = 0; i < message.authorizations.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.authorizations[i])
+          const error = $root.vessels.StartEndValue.verify(message.authorizations[i], _depth + 1)
           if (error) return 'authorizations.' + error
         }
       }
       if (message.extra != null && message.hasOwnProperty('extra')) {
         if (!Array.isArray(message.extra)) return 'extra: array expected'
         for (let i = 0; i < message.extra.length; ++i) {
-          const error = $root.vessels.Extra.verify(message.extra[i])
+          const error = $root.vessels.Extra.verify(message.extra[i], _depth + 1)
           if (error) return 'extra.' + error
         }
       }
       if (message.mmsi != null && message.hasOwnProperty('mmsi')) {
         if (!Array.isArray(message.mmsi)) return 'mmsi: array expected'
         for (let i = 0; i < message.mmsi.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.mmsi[i])
+          const error = $root.vessels.StartEndValue.verify(message.mmsi[i], _depth + 1)
           if (error) return 'mmsi.' + error
         }
       }
       if (message.callsign != null && message.hasOwnProperty('callsign')) {
         if (!Array.isArray(message.callsign)) return 'callsign: array expected'
         for (let i = 0; i < message.callsign.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.callsign[i])
+          const error = $root.vessels.StartEndValue.verify(message.callsign[i], _depth + 1)
           if (error) return 'callsign.' + error
         }
       }
       if (message.flags != null && message.hasOwnProperty('flags')) {
         if (!Array.isArray(message.flags)) return 'flags: array expected'
         for (let i = 0; i < message.flags.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.flags[i])
+          const error = $root.vessels.StartEndValue.verify(message.flags[i], _depth + 1)
           if (error) return 'flags.' + error
         }
       }
@@ -1827,66 +2189,85 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.DatasetVesselInfo} DatasetVesselInfo
      */
-    DatasetVesselInfo.fromObject = function fromObject(object) {
+    DatasetVesselInfo.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.DatasetVesselInfo) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselInfo: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.DatasetVesselInfo()
-      if (object.id != null) message.id = String(object.id)
-      if (object.name != null) message.name = String(object.name)
-      if (object.imo != null) message.imo = String(object.imo)
-      if (object.ssvid != null) message.ssvid = String(object.ssvid)
-      if (object.vesselId != null) message.vesselId = String(object.vesselId)
-      if (object.type != null) message.type = String(object.type)
-      if (object.dataset != null) message.dataset = String(object.dataset)
+      if (object.id != null)
+        if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
+      if (object.name != null)
+        if (typeof object.name !== 'string' || object.name.length)
+          message.name = String(object.name)
+      if (object.imo != null)
+        if (typeof object.imo !== 'string' || object.imo.length) message.imo = String(object.imo)
+      if (object.ssvid != null)
+        if (typeof object.ssvid !== 'string' || object.ssvid.length)
+          message.ssvid = String(object.ssvid)
+      if (object.vesselId != null)
+        if (typeof object.vesselId !== 'string' || object.vesselId.length)
+          message.vesselId = String(object.vesselId)
+      if (object.type != null)
+        if (typeof object.type !== 'string' || object.type.length)
+          message.type = String(object.type)
+      if (object.dataset != null)
+        if (typeof object.dataset !== 'string' || object.dataset.length)
+          message.dataset = String(object.dataset)
       if (object.authorizations) {
         if (!Array.isArray(object.authorizations))
           throw TypeError('.vessels.DatasetVesselInfo.authorizations: array expected')
-        message.authorizations = []
+        message.authorizations = Array(object.authorizations.length)
         for (let i = 0; i < object.authorizations.length; ++i) {
-          if (typeof object.authorizations[i] !== 'object')
+          if (!$util.isObject(object.authorizations[i]))
             throw TypeError('.vessels.DatasetVesselInfo.authorizations: object expected')
           message.authorizations[i] = $root.vessels.StartEndValue.fromObject(
-            object.authorizations[i]
+            object.authorizations[i],
+            _depth + 1
           )
         }
       }
       if (object.extra) {
         if (!Array.isArray(object.extra))
           throw TypeError('.vessels.DatasetVesselInfo.extra: array expected')
-        message.extra = []
+        message.extra = Array(object.extra.length)
         for (let i = 0; i < object.extra.length; ++i) {
-          if (typeof object.extra[i] !== 'object')
+          if (!$util.isObject(object.extra[i]))
             throw TypeError('.vessels.DatasetVesselInfo.extra: object expected')
-          message.extra[i] = $root.vessels.Extra.fromObject(object.extra[i])
+          message.extra[i] = $root.vessels.Extra.fromObject(object.extra[i], _depth + 1)
         }
       }
       if (object.mmsi) {
         if (!Array.isArray(object.mmsi))
           throw TypeError('.vessels.DatasetVesselInfo.mmsi: array expected')
-        message.mmsi = []
+        message.mmsi = Array(object.mmsi.length)
         for (let i = 0; i < object.mmsi.length; ++i) {
-          if (typeof object.mmsi[i] !== 'object')
+          if (!$util.isObject(object.mmsi[i]))
             throw TypeError('.vessels.DatasetVesselInfo.mmsi: object expected')
-          message.mmsi[i] = $root.vessels.StartEndValue.fromObject(object.mmsi[i])
+          message.mmsi[i] = $root.vessels.StartEndValue.fromObject(object.mmsi[i], _depth + 1)
         }
       }
       if (object.callsign) {
         if (!Array.isArray(object.callsign))
           throw TypeError('.vessels.DatasetVesselInfo.callsign: array expected')
-        message.callsign = []
+        message.callsign = Array(object.callsign.length)
         for (let i = 0; i < object.callsign.length; ++i) {
-          if (typeof object.callsign[i] !== 'object')
+          if (!$util.isObject(object.callsign[i]))
             throw TypeError('.vessels.DatasetVesselInfo.callsign: object expected')
-          message.callsign[i] = $root.vessels.StartEndValue.fromObject(object.callsign[i])
+          message.callsign[i] = $root.vessels.StartEndValue.fromObject(
+            object.callsign[i],
+            _depth + 1
+          )
         }
       }
       if (object.flags) {
         if (!Array.isArray(object.flags))
           throw TypeError('.vessels.DatasetVesselInfo.flags: array expected')
-        message.flags = []
+        message.flags = Array(object.flags.length)
         for (let i = 0; i < object.flags.length; ++i) {
-          if (typeof object.flags[i] !== 'object')
+          if (!$util.isObject(object.flags[i]))
             throw TypeError('.vessels.DatasetVesselInfo.flags: object expected')
-          message.flags[i] = $root.vessels.StartEndValue.fromObject(object.flags[i])
+          message.flags[i] = $root.vessels.StartEndValue.fromObject(object.flags[i], _depth + 1)
         }
       }
       return message
@@ -1901,8 +2282,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    DatasetVesselInfo.toObject = function toObject(message, options) {
+    DatasetVesselInfo.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.arrays || options.defaults) {
         object.authorizations = []
@@ -1930,32 +2313,45 @@ export const vessels = ($root.vessels = (() => {
       if (message.dataset != null && message.hasOwnProperty('dataset'))
         object.dataset = message.dataset
       if (message.authorizations && message.authorizations.length) {
-        object.authorizations = []
+        object.authorizations = Array(message.authorizations.length)
         for (let j = 0; j < message.authorizations.length; ++j)
           object.authorizations[j] = $root.vessels.StartEndValue.toObject(
             message.authorizations[j],
-            options
+            options,
+            _depth + 1
           )
       }
       if (message.extra && message.extra.length) {
-        object.extra = []
+        object.extra = Array(message.extra.length)
         for (let j = 0; j < message.extra.length; ++j)
-          object.extra[j] = $root.vessels.Extra.toObject(message.extra[j], options)
+          object.extra[j] = $root.vessels.Extra.toObject(message.extra[j], options, _depth + 1)
       }
       if (message.mmsi && message.mmsi.length) {
-        object.mmsi = []
+        object.mmsi = Array(message.mmsi.length)
         for (let j = 0; j < message.mmsi.length; ++j)
-          object.mmsi[j] = $root.vessels.StartEndValue.toObject(message.mmsi[j], options)
+          object.mmsi[j] = $root.vessels.StartEndValue.toObject(
+            message.mmsi[j],
+            options,
+            _depth + 1
+          )
       }
       if (message.callsign && message.callsign.length) {
-        object.callsign = []
+        object.callsign = Array(message.callsign.length)
         for (let j = 0; j < message.callsign.length; ++j)
-          object.callsign[j] = $root.vessels.StartEndValue.toObject(message.callsign[j], options)
+          object.callsign[j] = $root.vessels.StartEndValue.toObject(
+            message.callsign[j],
+            options,
+            _depth + 1
+          )
       }
       if (message.flags && message.flags.length) {
-        object.flags = []
+        object.flags = Array(message.flags.length)
         for (let j = 0; j < message.flags.length; ++j)
-          object.flags[j] = $root.vessels.StartEndValue.toObject(message.flags[j], options)
+          object.flags[j] = $root.vessels.StartEndValue.toObject(
+            message.flags[j],
+            options,
+            _depth + 1
+          )
       }
       return object
     }
@@ -1972,18 +2368,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for DatasetVesselInfo
+     * Gets the type url for DatasetVesselInfo
      * @function getTypeUrl
      * @memberof vessels.DatasetVesselInfo
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    DatasetVesselInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.DatasetVesselInfo'
+    DatasetVesselInfo.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.DatasetVesselInfo'
     }
 
     return DatasetVesselInfo
@@ -1992,25 +2386,39 @@ export const vessels = ($root.vessels = (() => {
   vessels.Extra = (function () {
     /**
      * Properties of an Extra.
-     * @memberof vessels
-     * @interface IExtra
+     * @typedef {Object} vessels.Extra.$Properties
      * @property {string|null} [id] Extra id
      * @property {string|null} [label] Extra label
      * @property {number|null} [value] Extra value
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of an Extra.
+     * @memberof vessels
+     * @interface IExtra
+     * @augments vessels.Extra.$Properties
+     * @deprecated Use vessels.Extra.$Properties instead.
+     */
+
+    /**
+     * Shape of an Extra.
+     * @typedef {vessels.Extra.$Properties} vessels.Extra.$Shape
      */
 
     /**
      * Constructs a new Extra.
      * @memberof vessels
      * @classdesc Represents an Extra.
-     * @implements IExtra
      * @constructor
-     * @param {vessels.IExtra=} [properties] Properties to set
+     * @param {vessels.Extra.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function Extra(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -2042,8 +2450,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.Extra
      * @static
-     * @param {vessels.IExtra=} [properties] Properties to set
+     * @param {vessels.Extra.$Properties=} [properties] Properties to set
      * @returns {vessels.Extra} Extra instance
+     * @type {{
+     *   (properties: vessels.Extra.$Shape): vessels.Extra & vessels.Extra.$Shape;
+     *   (properties?: vessels.Extra.$Properties): vessels.Extra;
+     * }}
      */
     Extra.create = function create(properties) {
       return new Extra(properties)
@@ -2054,18 +2466,22 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.Extra
      * @static
-     * @param {vessels.IExtra} message Extra message or plain object to encode
+     * @param {vessels.Extra.$Properties} message Extra message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    Extra.encode = function encode(message, writer) {
+    Extra.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
       if (message.label != null && Object.hasOwnProperty.call(message, 'label'))
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.label)
       if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
         writer.uint32(/* id 3, wireType 5 =*/ 29).float(message.value)
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -2074,12 +2490,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.Extra
      * @static
-     * @param {vessels.IExtra} message Extra message or plain object to encode
+     * @param {vessels.Extra.$Properties} message Extra message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     Extra.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -2089,35 +2505,52 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.Extra} Extra
+     * @returns {vessels.Extra & vessels.Extra.$Shape} Extra
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Extra.decode = function decode(reader, length, error) {
+    Extra.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.Extra()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.Extra(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.id = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.id = value
+            else delete message.id
+            continue
           }
           case 2: {
-            message.label = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.label = value
+            else delete message.label
+            continue
           }
           case 3: {
-            message.value = reader.float()
-            break
+            if (wireType !== 5) break
+            if ((value = reader.float()) !== 0) message.value = value
+            else delete message.value
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -2127,7 +2560,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.Extra
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.Extra} Extra
+     * @returns {vessels.Extra & vessels.Extra.$Shape} Extra
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -2144,8 +2577,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    Extra.verify = function verify(message) {
+    Extra.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.id != null && message.hasOwnProperty('id'))
         if (!$util.isString(message.id)) return 'id: string expected'
       if (message.label != null && message.hasOwnProperty('label'))
@@ -2163,12 +2598,18 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.Extra} Extra
      */
-    Extra.fromObject = function fromObject(object) {
+    Extra.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.Extra) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.Extra: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.Extra()
-      if (object.id != null) message.id = String(object.id)
-      if (object.label != null) message.label = String(object.label)
-      if (object.value != null) message.value = Number(object.value)
+      if (object.id != null)
+        if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
+      if (object.label != null)
+        if (typeof object.label !== 'string' || object.label.length)
+          message.label = String(object.label)
+      if (object.value != null) if (Number(object.value) !== 0) message.value = Number(object.value)
       return message
     }
 
@@ -2181,8 +2622,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    Extra.toObject = function toObject(message, options) {
+    Extra.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.defaults) {
         object.id = ''
@@ -2209,18 +2652,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for Extra
+     * Gets the type url for Extra
      * @function getTypeUrl
      * @memberof vessels.Extra
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    Extra.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.Extra'
+    Extra.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.Extra'
     }
 
     return Extra
@@ -2229,25 +2670,39 @@ export const vessels = ($root.vessels = (() => {
   vessels.StartEndValue = (function () {
     /**
      * Properties of a StartEndValue.
-     * @memberof vessels
-     * @interface IStartEndValue
+     * @typedef {Object} vessels.StartEndValue.$Properties
      * @property {string|null} [start] StartEndValue start
      * @property {string|null} [end] StartEndValue end
      * @property {string|null} [value] StartEndValue value
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a StartEndValue.
+     * @memberof vessels
+     * @interface IStartEndValue
+     * @augments vessels.StartEndValue.$Properties
+     * @deprecated Use vessels.StartEndValue.$Properties instead.
+     */
+
+    /**
+     * Shape of a StartEndValue.
+     * @typedef {vessels.StartEndValue.$Properties} vessels.StartEndValue.$Shape
      */
 
     /**
      * Constructs a new StartEndValue.
      * @memberof vessels
      * @classdesc Represents a StartEndValue.
-     * @implements IStartEndValue
      * @constructor
-     * @param {vessels.IStartEndValue=} [properties] Properties to set
+     * @param {vessels.StartEndValue.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
      */
     function StartEndValue(properties) {
       if (properties)
         for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
     }
 
     /**
@@ -2279,8 +2734,12 @@ export const vessels = ($root.vessels = (() => {
      * @function create
      * @memberof vessels.StartEndValue
      * @static
-     * @param {vessels.IStartEndValue=} [properties] Properties to set
+     * @param {vessels.StartEndValue.$Properties=} [properties] Properties to set
      * @returns {vessels.StartEndValue} StartEndValue instance
+     * @type {{
+     *   (properties: vessels.StartEndValue.$Shape): vessels.StartEndValue & vessels.StartEndValue.$Shape;
+     *   (properties?: vessels.StartEndValue.$Properties): vessels.StartEndValue;
+     * }}
      */
     StartEndValue.create = function create(properties) {
       return new StartEndValue(properties)
@@ -2291,18 +2750,22 @@ export const vessels = ($root.vessels = (() => {
      * @function encode
      * @memberof vessels.StartEndValue
      * @static
-     * @param {vessels.IStartEndValue} message StartEndValue message or plain object to encode
+     * @param {vessels.StartEndValue.$Properties} message StartEndValue message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    StartEndValue.encode = function encode(message, writer) {
+    StartEndValue.encode = function encode(message, writer, _depth) {
       if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.start)
       if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.end)
       if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
         writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.value)
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
     }
 
@@ -2311,12 +2774,12 @@ export const vessels = ($root.vessels = (() => {
      * @function encodeDelimited
      * @memberof vessels.StartEndValue
      * @static
-     * @param {vessels.IStartEndValue} message StartEndValue message or plain object to encode
+     * @param {vessels.StartEndValue.$Properties} message StartEndValue message or plain object to encode
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
     StartEndValue.encodeDelimited = function encodeDelimited(message, writer) {
-      return this.encode(message, writer).ldelim()
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
     }
 
     /**
@@ -2326,35 +2789,52 @@ export const vessels = ($root.vessels = (() => {
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
      * @param {number} [length] Message length if known beforehand
-     * @returns {vessels.StartEndValue} StartEndValue
+     * @returns {vessels.StartEndValue & vessels.StartEndValue.$Shape} StartEndValue
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    StartEndValue.decode = function decode(reader, length, error) {
+    StartEndValue.decode = function decode(reader, length, _end, _depth, _target) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      const end = length === undefined ? reader.len : reader.pos + length,
-        message = new $root.vessels.StartEndValue()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.StartEndValue(),
+        value
       while (reader.pos < end) {
-        const tag = reader.uint32()
-        if (tag === error) break
-        switch (tag >>> 3) {
+        const start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        const wireType = tag & 7
+        switch ((tag >>>= 3)) {
           case 1: {
-            message.start = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.start = value
+            else delete message.start
+            continue
           }
           case 2: {
-            message.end = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.end = value
+            else delete message.end
+            continue
           }
           case 3: {
-            message.value = reader.string()
-            break
+            if (wireType !== 2) break
+            if ((value = reader.string()).length) message.value = value
+            else delete message.value
+            continue
           }
-          default:
-            reader.skipType(tag & 7)
-            break
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
         }
       }
+      if (_end !== undefined) throw Error('missing end group')
       return message
     }
 
@@ -2364,7 +2844,7 @@ export const vessels = ($root.vessels = (() => {
      * @memberof vessels.StartEndValue
      * @static
      * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {vessels.StartEndValue} StartEndValue
+     * @returns {vessels.StartEndValue & vessels.StartEndValue.$Shape} StartEndValue
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
@@ -2381,8 +2861,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not
      */
-    StartEndValue.verify = function verify(message) {
+    StartEndValue.verify = function verify(message, _depth) {
       if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.start != null && message.hasOwnProperty('start'))
         if (!$util.isString(message.start)) return 'start: string expected'
       if (message.end != null && message.hasOwnProperty('end'))
@@ -2400,12 +2882,20 @@ export const vessels = ($root.vessels = (() => {
      * @param {Object.<string,*>} object Plain object
      * @returns {vessels.StartEndValue} StartEndValue
      */
-    StartEndValue.fromObject = function fromObject(object) {
+    StartEndValue.fromObject = function fromObject(object, _depth) {
       if (object instanceof $root.vessels.StartEndValue) return object
+      if (!$util.isObject(object)) throw TypeError('.vessels.StartEndValue: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const message = new $root.vessels.StartEndValue()
-      if (object.start != null) message.start = String(object.start)
-      if (object.end != null) message.end = String(object.end)
-      if (object.value != null) message.value = String(object.value)
+      if (object.start != null)
+        if (typeof object.start !== 'string' || object.start.length)
+          message.start = String(object.start)
+      if (object.end != null)
+        if (typeof object.end !== 'string' || object.end.length) message.end = String(object.end)
+      if (object.value != null)
+        if (typeof object.value !== 'string' || object.value.length)
+          message.value = String(object.value)
       return message
     }
 
@@ -2418,8 +2908,10 @@ export const vessels = ($root.vessels = (() => {
      * @param {$protobuf.IConversionOptions} [options] Conversion options
      * @returns {Object.<string,*>} Plain object
      */
-    StartEndValue.toObject = function toObject(message, options) {
+    StartEndValue.toObject = function toObject(message, options, _depth) {
       if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
       const object = {}
       if (options.defaults) {
         object.start = ''
@@ -2444,18 +2936,16 @@ export const vessels = ($root.vessels = (() => {
     }
 
     /**
-     * Gets the default type url for StartEndValue
+     * Gets the type url for StartEndValue
      * @function getTypeUrl
      * @memberof vessels.StartEndValue
      * @static
-     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-     * @returns {string} The default type url
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
      */
-    StartEndValue.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-      if (typeUrlPrefix === undefined) {
-        typeUrlPrefix = 'type.googleapis.com'
-      }
-      return typeUrlPrefix + '/vessels.StartEndValue'
+    StartEndValue.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.StartEndValue'
     }
 
     return StartEndValue

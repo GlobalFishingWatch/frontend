@@ -4,7 +4,7 @@
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -48,6 +48,11 @@ async function loadPanelWidths(): Promise<{
 }
 
 export const Route = createRootRoute({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === '/index') {
+      throw redirect({ to: '/' })
+    }
+  },
   errorComponent: ({ error }) => (
     <RootDocument lang="en">
       <RouterErrorBoundary error={error as Error} />
