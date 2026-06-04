@@ -23,7 +23,7 @@ const DataTerminology: React.FC<DataTerminologyProps> = ({
   terminologyKey,
   className,
   tooltip,
-  size,
+  size = 'small',
   type,
 }): React.ReactElement<any> => {
   const { openSidePanel } = useSidePanel()
