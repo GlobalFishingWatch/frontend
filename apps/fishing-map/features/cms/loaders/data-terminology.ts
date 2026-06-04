@@ -19,7 +19,6 @@ export const getDataTerminologyContent = createServerFn({
       {
         filters: { slug: { $eqi: id } },
         sort: ['createdAt:asc'],
-        populate: '*',
       },
       locale
     )
