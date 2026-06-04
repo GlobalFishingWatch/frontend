@@ -1,8 +1,7 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { atom, useAtom } from 'jotai'
 
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
-import { DrawLayer } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType, DrawLayer } from '@globalfishingwatch/deck-layers/draw'
 
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 
@@ -12,20 +11,39 @@ const drawLayerInstanceAtom = atom<{ instance: DrawLayer; timestamp: number } | 
 export const useDrawLayerInstance = () => {
   const { isMapDrawing, mapDrawingMode } = useMapDrawConnect()
   const [layerInstance, setLayerInstance] = useAtom(drawLayerInstanceAtom)
+  const DrawLayerRef = useRef<typeof DrawLayer>(undefined)
+
+  const importDrawLayer = useCallback(async () => {
+    if (DrawLayerRef.current) {
+      return DrawLayerRef.current
+    }
+    try {
+      // Dynamic import keeps @deck.gl-community/editable-layers out of the SSR bundle.
+      const { DrawLayer } = await import('@globalfishingwatch/deck-layers/draw')
+      DrawLayerRef.current = DrawLayer
+      return DrawLayerRef.current
+    } catch (e: any) {
+      console.warn(e)
+    }
+  }, [])
 
   useEffect(() => {
     if (isMapDrawing) {
-      const instance = new DrawLayer({
-        featureType: mapDrawingMode as DrawFeatureType,
-        onStateChange: (instance: DrawLayer) => {
+      importDrawLayer().then((DrawLayer) => {
+        if (DrawLayer) {
+          const instance = new DrawLayer({
+            featureType: mapDrawingMode as DrawFeatureType,
+            onStateChange: (instance: DrawLayer) => {
+              setLayerInstance({ instance, timestamp: Date.now() })
+            },
+          })
           setLayerInstance({ instance, timestamp: Date.now() })
-        },
+        }
       })
-      setLayerInstance({ instance, timestamp: Date.now() })
     } else {
       setLayerInstance(null)
     }
-  }, [isMapDrawing, mapDrawingMode, setLayerInstance])
+  }, [importDrawLayer, isMapDrawing, mapDrawingMode, setLayerInstance])
 
   return layerInstance?.instance
 }

@@ -16,6 +16,7 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
+import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import {
@@ -77,7 +78,7 @@ function NavigationHistoryButton() {
     return null
   }
 
-  const { to, params, previousRouteType, isPreviousLocationReport, lastWorkspaceVisited } =
+  const { to, params, search, previousRouteType, isPreviousLocationReport, lastWorkspaceVisited } =
     lastWorkspaceNavigationProps
   const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
 
@@ -138,6 +139,10 @@ function NavigationHistoryButton() {
       to={to}
       params={params}
       state={(state) => ({ ...state, isHistoryNavigation: true })}
+      search={{
+        ...search,
+        dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
+      }}
       onClick={() => {
         resetQueryParams()
         onCloseClick()
