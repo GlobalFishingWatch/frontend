@@ -175,7 +175,7 @@
     "country_many": "countries",
     "country_other": "countries",
     "coverage": "coverage",
-    "dataTerminology": "Terminology",
+    "dataTerminology": "Data Terminology",
     "date_one": "Date",
     "date_many": "Dates",
     "date_other": "Dates",
@@ -1308,7 +1308,6 @@
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
     "noVoyagesWithoutPorts": "Please turn on port visits visibility",
     "onScreen": "Vessels on screen",
-    "operator": "Operator",
     "origin": "Origin",
     "owner": "Owner",
     "owners": "Owners",
@@ -1471,9 +1470,7 @@
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
-    "sources": "Vessel group report sources",
-    "user": "User Vessel Group",
-    "vessels": "Vessel group report vessels"
+    "user": "User Vessel Group"
   },
   "vesselGroups": {
     "insights": {

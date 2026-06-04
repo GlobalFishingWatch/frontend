@@ -249,13 +249,7 @@ export const VesselActivitySummary = () => {
                       </span>
                     )}
                   </p>
-                  <DataTerminology
-                    title={t((t) => t.event[eventType], {
-                      defaultValue: eventType,
-                      source: t((t) => t.common.ais),
-                    })}
-                    terminologyKey={eventType as any}
-                  />
+                  <DataTerminology terminologyKey={eventType as any} />
                 </div>
               </li>
             )

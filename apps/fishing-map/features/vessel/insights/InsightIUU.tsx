@@ -23,7 +23,7 @@ const InsightIUU = ({
     <div id="IUU" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.IUU)}</label>
-        <DataTerminology title={t((t) => t.vessel.insights.IUU)} terminologyKey="insightsIUU" />
+        <DataTerminology terminologyKey="insightsIUU" />
       </div>
       {isLoading ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />

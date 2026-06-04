@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import cx from 'classnames'
 
-import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -9,17 +8,14 @@ import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './DataTerminology.module.css'
 
-interface ModalProps {
-  containerClassName?: string
+interface DataTerminologyProps {
   className?: string
   title?: string | React.ReactNode
-  size?: IconButtonSize
-  type?: IconButtonType
   terminologyKey: string
   tooltip?: string
 }
 
-const DataTerminology: React.FC<ModalProps> = ({
+const DataTerminology: React.FC<DataTerminologyProps> = ({
   terminologyKey,
   className,
   tooltip,

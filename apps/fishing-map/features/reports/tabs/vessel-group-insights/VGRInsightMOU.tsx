@@ -155,10 +155,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-mou" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vesselGroupReport.insights.MOULists)}</label>
-        <DataTerminology
-          title={t((t) => t.vesselGroupReport.insights.MOULists)}
-          terminologyKey="insightsMOUList"
-        />
+        <DataTerminology terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

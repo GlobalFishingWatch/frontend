@@ -48,7 +48,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-iuu" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.IUU)}</label>
-        <DataTerminology title={t((t) => t.vessel.insights.IUU)} terminologyKey="insightsIUU" />
+        <DataTerminology terminologyKey="insightsIUU" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />

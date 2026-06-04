@@ -55,7 +55,7 @@ const Insights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology title={t((t) => t.vessel.sectionInsights)} terminologyKey="insights" />
+        <DataTerminology terminologyKey="insights" />
       </p>
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />

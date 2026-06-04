@@ -61,13 +61,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
               <span>
                 {t((t) => t.analysis.groupBySource)}
                 {selectedOptionId === 'source' && (
-                  <DataTerminology
-                    size="tiny"
-                    type="default"
-                    title={t((t) => t.vesselGroupReport.sources)}
-                    terminologyKey="sources"
-                    className={styles.dataTerminology}
-                  />
+                  <DataTerminology terminologyKey="sources" className={styles.dataTerminology} />
                 )}
               </span>
             ),
@@ -80,14 +74,6 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
                 {t((t) => t.analysis.groupByCoverage)}
                 {selectedOptionId === 'coverage' && (
                   <DataTerminology
-                    size="tiny"
-                    type="default"
-                    title={
-                      <span>
-                        {t((t) => t.vessel.insights.coverage)}
-                        <span className={styles.experimental}>(Experimental)</span>
-                      </span>
-                    }
                     terminologyKey="insightsCoverage"
                     tooltip={t((t) => t.common.experimental)}
                     className={cx(styles.dataTerminology, styles.experimental)}

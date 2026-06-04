@@ -68,7 +68,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
         <Tooltip content={t((t) => t.common.experimentalTooltip)}>
           <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>
         </Tooltip>
-        <DataTerminology title={t((t) => t.vessel.insights.gaps)} terminologyKey="insightsGaps" />
+        <DataTerminology terminologyKey="insightsGaps" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />

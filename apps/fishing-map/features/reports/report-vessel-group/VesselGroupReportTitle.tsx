@@ -111,10 +111,7 @@ export default function VesselGroupReportTitle() {
                 }),
               })
             )}
-            <DataTerminology
-              title={t((t) => t.vesselGroupReport.vessels)}
-              terminologyKey="vessels"
-            />
+            <DataTerminology terminologyKey="vessels" />
           </h2>
         </div>
         <a className={styles.reportLink} href={getCurrentAppUrl()}>
