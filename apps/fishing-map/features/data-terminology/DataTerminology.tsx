@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 
 import styles from './DataTerminology.module.css'
@@ -11,7 +12,7 @@ import styles from './DataTerminology.module.css'
 interface DataTerminologyProps {
   className?: string
   title?: string | React.ReactNode
-  terminologyKey: string
+  terminologyKey: DataTerminologySlugs
   tooltip?: string
 }
 

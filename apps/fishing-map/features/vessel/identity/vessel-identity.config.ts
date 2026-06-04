@@ -1,12 +1,13 @@
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
 import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
 
+import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
 import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
 
 export type VesselRenderField<Key = string> = {
   key: Key
   label?: string
-  terminologyKey?: string
+  terminologyKey?: DataTerminologySlugs
   renderPlain?: boolean
 }
 
@@ -130,7 +131,7 @@ export const REGISTRY_SOURCES = [
 export type IdentitySection = {
   type: 'fields' | 'registryFields'
   key: string
-  terminologyKey?: string
+  terminologyKey?: DataTerminologySlugs
   sectionLabel?: string
   field?: VesselRenderField
   fields?: VesselRenderField[][]
