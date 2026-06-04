@@ -610,9 +610,9 @@ const workspaceSlice = createSlice({
           state.error = error
         }
       } else {
-        // This means action was cancelled
-        state.status = AsyncReducerStatus.Idle
-        state.refreshStatus = isRefresh ? AsyncReducerStatus.Idle : state.refreshStatus
+        const cancelledStatus = state.data ? AsyncReducerStatus.Finished : AsyncReducerStatus.Idle
+        state.status = cancelledStatus
+        state.refreshStatus = isRefresh ? cancelledStatus : state.refreshStatus
       }
     })
     builder.addCase(saveWorkspaceThunk.pending, (state) => {
