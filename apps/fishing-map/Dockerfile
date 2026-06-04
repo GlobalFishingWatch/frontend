@@ -47,7 +47,7 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile && \
   pnpm exec nx reset && \
-  NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run fishing-map:build:app
+  NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run fishing-map:build
 
 FROM node:24-alpine AS production
 
