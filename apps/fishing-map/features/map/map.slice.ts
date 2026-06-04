@@ -710,23 +710,25 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
             detectionsDataset,
             DatasetTypes.Thumbnails
           )?.id
-          let thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
-          if (!thumbnailDataset) {
-            thumbnailDataset = await dispatch(
-              fetchDatasetByIdThunk({ id: thumbnailDatasetId as string })
-            ).unwrap()
-          }
-          if (thumbnailDataset) {
-            const detectionId = detectionFeature.properties?.id
-
-            const datasetConfig = {
-              datasetId: thumbnailDataset.id,
-              endpoint: EndpointId.Thumbnails,
-              params: [{ id: 'id', value: detectionId }],
+          if (thumbnailDatasetId) {
+            let thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
+            if (!thumbnailDataset) {
+              thumbnailDataset = await dispatch(
+                fetchDatasetByIdThunk({ id: thumbnailDatasetId as string })
+              ).unwrap()
             }
-            const url = resolveEndpoint(thumbnailDataset, datasetConfig)
-            if (url) {
-              return await GFWAPI.fetch<DetectionThumbnails>(url, { signal })
+            if (thumbnailDataset) {
+              const detectionId = detectionFeature.properties?.id
+
+              const datasetConfig = {
+                datasetId: thumbnailDataset.id,
+                endpoint: EndpointId.Thumbnails,
+                params: [{ id: 'id', value: detectionId }],
+              }
+              const url = resolveEndpoint(thumbnailDataset, datasetConfig)
+              if (url) {
+                return await GFWAPI.fetch<DetectionThumbnails>(url, { signal })
+              }
             }
           }
           return undefined

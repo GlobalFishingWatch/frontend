@@ -45,7 +45,7 @@ export const DownloadAreaLabel = ({ name }: { name?: string }) => {
     const file = getFileFromGeojson(featureCollection)
     if (file) {
       const { saveAs } = await import('file-saver')
-      saveAs(file, `${name}.json`)
+      saveAs(file, `${name}.geojson`)
     }
   }, [area?.data?.geometry, name])
 

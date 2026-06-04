@@ -61,7 +61,7 @@ export function getPickedEditHandles(picks: Pick[] | null | undefined): EditHand
   const handles =
     (picks &&
       picks
-        .filter((pick) => pick.isGuide && pick.object.properties.guideType === 'editHandle')
+        .filter((pick) => pick.isGuide && pick.object?.properties?.guideType === 'editHandle')
         .map((pick) => pick.object)) ||
     []
 

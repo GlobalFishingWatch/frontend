@@ -41,10 +41,10 @@ export const getContextValue = (
 ): string => {
   const valueProperties = feature?.valueProperties || ([] as string[])
   if (!valueProperties || !valueProperties.length) {
-    return feature.properties?.value
+    return feature.properties?.value ?? (feature.value as string)
   }
   if (valueProperties.length === 1) {
-    return feature.properties?.[valueProperties[0]]
+    return feature.properties?.[valueProperties[0]] ?? (feature.value as string)
   }
   const selectedProperties = Object.fromEntries(
     valueProperties.map((prop) => [prop, feature.properties?.[prop]])
@@ -89,7 +89,7 @@ export function getUserContextLayerLabel(
     return label
   }
 
-  const cleanValueProperties = getCleanPropertiesList(feature.properties)
+  const cleanValueProperties = feature.properties ? getCleanPropertiesList(feature.properties) : {}
   if (Object.keys(cleanValueProperties).length >= 1) {
     return parsePropertiesList(cleanValueProperties, dataset)
   }

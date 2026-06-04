@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
@@ -21,12 +21,35 @@ export const useDeckLayerLoadedState = () => {
 
 export const useSetDeckLayerLoadedState = () => {
   const setDeckLayerLoadedState = useSetAtom(deckLayersStateAtom)
+  const frameRef = useRef<number | null>(null)
+  const latestLayersRef = useRef<AnyDeckLayer[] | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
+  }, [])
+
   return useCallback(
     (layers: AnyDeckLayer[]) => {
-      if (layers?.length) {
+      if (!layers?.length) {
+        return
+      }
+      latestLayersRef.current = layers
+      if (frameRef.current !== null) {
+        return
+      }
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = null
+        const currentLayers = latestLayersRef.current
+        if (!currentLayers?.length) {
+          return
+        }
         setDeckLayerLoadedState((loadedState) => {
           const newLoadedState = {} as DeckLayerState
-          layers.forEach((layer) => {
+          currentLayers.forEach((layer) => {
             newLoadedState[layer.id] = {
               loaded: layer.isLoaded,
               cacheHash: 'cacheHash' in layer && layer.cacheHash ? (layer.cacheHash as string) : '',
@@ -44,7 +67,7 @@ export const useSetDeckLayerLoadedState = () => {
           }
           return loadedState
         })
-      }
+      })
     },
     [setDeckLayerLoadedState]
   )
