@@ -16,7 +16,6 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import {
@@ -24,13 +23,9 @@ import {
   setTrackCorrectionTimerange,
 } from 'features/track-correction/track-correction.slice'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import {
-  cleanCurrentWorkspaceReportState,
-  cleanReportPayload,
-  cleanReportQuery,
-} from 'features/workspace/workspace.slice'
-import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
+import { selectLastWorkspaceNavigationProps } from 'features/workspace/workspace.selectors'
+import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
+import { VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
@@ -38,7 +33,6 @@ import {
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
 } from 'router/routes.selectors'
-import { mapRouteIdToType, toValidRoutePath } from 'router/routes.utils'
 
 import styles from '../SidebarHeader.module.css'
 
@@ -46,13 +40,12 @@ function NavigationHistoryButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const lastWorkspaceNavigationProps = useSelector(selectLastWorkspaceNavigationProps)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const reportAreaIds = useSelector(selectReportAreaIds)
-  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
   const setMapCoordinates = useSetMapCoordinates()
@@ -80,11 +73,14 @@ function NavigationHistoryButton() {
     replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
   }, [replaceQueryParams])
 
-  if (!workspaceHistoryNavigation.length || !lastWorkspaceVisited) {
+  if (!lastWorkspaceNavigationProps) {
     return null
   }
 
+  const { to, params, previousRouteType, isPreviousLocationReport, lastWorkspaceVisited } =
+    lastWorkspaceNavigationProps
   const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
+
   const onCloseClick = () => {
     resetSidebarScroll()
 
@@ -121,10 +117,6 @@ function NavigationHistoryButton() {
     trackAnalytics()
   }
 
-  // Determine route type from stored path pattern for display logic
-  const previousRouteType = mapRouteIdToType(lastWorkspaceVisited.to)
-  const isPreviousLocationReport = REPORT_ROUTES.includes(previousRouteType)
-
   const previousLocation =
     previousRouteType === VESSEL || previousRouteType === WORKSPACE_VESSEL
       ? t((t) => t.vessel.title)
@@ -140,24 +132,11 @@ function NavigationHistoryButton() {
     section: previousLocation.toLocaleLowerCase(),
   })
 
-  const search = {
-    ...(!isPreviousLocationReport
-      ? { ...cleanReportQuery(lastWorkspaceVisited.search || {}), ...EMPTY_SEARCH_FILTERS }
-      : lastWorkspaceVisited.search),
-  }
-  const params = !isPreviousLocationReport
-    ? cleanReportPayload(lastWorkspaceVisited.params || {})
-    : lastWorkspaceVisited.params
-
   return (
     <Link
       className={cx(styles.workspaceLink, 'print-hidden')}
-      to={toValidRoutePath(lastWorkspaceVisited.to, lastWorkspaceVisited.params)}
+      to={to}
       params={params}
-      search={{
-        ...search,
-        dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
-      }}
       state={(state) => ({ ...state, isHistoryNavigation: true })}
       onClick={() => {
         resetQueryParams()

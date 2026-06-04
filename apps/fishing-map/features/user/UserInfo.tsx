@@ -24,6 +24,7 @@ import {
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
+import { selectLastWorkspaceNavigationProps } from 'features/workspace/workspace.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
 import {
@@ -54,6 +55,7 @@ function UserInfo() {
   const hasPresenterBadge = useSelector(selectHasPresenterBadge)
   const hasTeacherBadge = useSelector(selectHasTeacherBadge)
   const hasImpactReporterBadge = useSelector(selectHasImpactReporterBadge)
+  const lastWorkspaceNavProps = useSelector(selectLastWorkspaceNavigationProps)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [badgeSelected, setBadgeSelected] = useState<Badge>()
 
@@ -62,10 +64,23 @@ function UserInfo() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk())
-    router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
+
+    if (lastWorkspaceNavProps) {
+      const { to, params, search } = lastWorkspaceNavProps
+      router.navigate({
+        to,
+        params,
+        search,
+        state: (state) => ({ ...state, isHistoryNavigation: true }),
+        replace: true,
+      })
+    } else {
+      router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
+    }
+
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
-  }, [dispatch, router])
+  }, [dispatch, router, lastWorkspaceNavProps])
 
   const onBadgeClick = (badge: Badge) => {
     setBadgeSelected(badge)

@@ -41,11 +41,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
-import { cleanAggregateByPropertyDataviewFromReport } from 'features/reports/report-area/area-reports.utils'
-import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
-import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
-import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
@@ -61,7 +57,7 @@ import {
 } from 'router/routes.selectors'
 import type { LinkTo } from 'router/routes.types'
 import type { AppDispatch } from 'store'
-import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
+import type { AnyWorkspaceState, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -73,7 +69,7 @@ import {
   selectWorkspaceRefreshStatus,
   selectWorkspaceStatus,
 } from './workspace.selectors'
-import { parseUpsertWorkspace } from './workspace.utils'
+import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
@@ -491,32 +487,6 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
     return rejectWithValue({ ...error, isWorkspaceWrongPassword: error.status === 401 })
   }
 })
-
-export function cleanReportQuery(query: QueryParams) {
-  return {
-    ...query,
-    ...Object.keys(DEFAULT_REPORT_STATE).reduce(
-      (acc, key) => {
-        acc[key] = undefined
-        return acc
-      },
-      {} as Record<string, undefined>
-    ),
-    ...(query?.dataviewInstances?.length && {
-      dataviewInstances: cleanDatasetComparisonDataviewInstances(
-        query?.dataviewInstances?.map((dI) =>
-          cleanPortClusterDataviewFromReport(cleanAggregateByPropertyDataviewFromReport(dI))
-        )
-      ),
-    }),
-  }
-}
-
-export function cleanReportPayload(payload: Record<string, any>) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { areaId, datasetId, reportId, ...rest } = payload || {}
-  return rest
-}
 
 const workspaceSlice = createSlice({
   name: 'workspace',
