@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -20,6 +20,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { isHistogramDataviewSupported } from 'features/workspace/shared/layer-properties.utils'
 import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter.utils'
+import { loadPorts } from 'utils/ports'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
@@ -46,6 +47,14 @@ function DatasetSchemaField({
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  const [, setPortsLoaded] = useState(false)
+  useEffect(() => {
+    if (field === 'next_port_id' && dataview.config?.filters?.[field]) {
+      loadPorts().then(() => setPortsLoaded(true))
+    }
+  }, [dataview.config?.filters, field])
+
   const filterOperation = getFilterOperationInDataview(dataview, field)
   const filterUnit = getFilterUnitInDataview(dataview, field)
   const schemaFieldSelected = getFiltersSelectedInDataview(dataview, field, {
