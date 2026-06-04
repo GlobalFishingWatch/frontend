@@ -1,3 +1,4 @@
+import { useEffect, useSyncExternalStore } from 'react'
 import memoizeOne from 'memoize-one'
 
 import i18n, { t } from 'features/i18n/i18n'
@@ -8,15 +9,38 @@ type PortData = { id: string; name: string; flag: string }
 
 let ports: PortData[] | null = null
 let portsPromise: Promise<void> | null = null
+const listeners = new Set<() => void>()
 
 export const loadPorts = (): Promise<void> => {
   if (ports) return Promise.resolve()
   if (!portsPromise) {
     portsPromise = import('data/ports').then((mod) => {
       ports = mod.default
+      listeners.forEach((l) => l())
     })
   }
   return portsPromise
+}
+
+const subscribe = (cb: () => void) => {
+  listeners.add(cb)
+  return () => {
+    listeners.delete(cb)
+  }
+}
+
+export const usePorts = (enabled = true): boolean => {
+  const ready = useSyncExternalStore(
+    subscribe,
+    () => ports !== null,
+    () => false
+  )
+  useEffect(() => {
+    if (enabled) {
+      loadPorts()
+    }
+  }, [enabled])
+  return ready
 }
 
 const parsePort = (port: PortData, lng = i18n.language): Port => {

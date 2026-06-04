@@ -39,7 +39,7 @@ import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.ut
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
-import { loadPorts } from 'utils/ports'
+import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
 import {
@@ -154,13 +154,7 @@ function LayerFilters({
     isGuestUser,
   })
 
-  const hasPortFilter = filtersAllowed.some((f) => f.id === 'next_port_id')
-  const [, setPortsLoaded] = useState(false)
-  useEffect(() => {
-    if (hasPortFilter) {
-      loadPorts().then(() => setPortsLoaded(true))
-    }
-  }, [hasPortFilter])
+  usePorts(filtersAllowed.some((f) => f.id === 'next_port_id'))
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
