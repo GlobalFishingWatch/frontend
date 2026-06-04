@@ -20,7 +20,7 @@ import { getSegmentsFromData, type GetSegmentsFromDataParams } from './vessel.ut
 import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackPathLayerProps } from './VesselTrackPathLayer'
-import { VesselTrackPathLayer } from './VesselTrackPathLayer'
+import { getTrackShaderLayoutKey, VesselTrackPathLayer } from './VesselTrackPathLayer'
 
 export type VesselTrackLayerProps = Omit<_VesselTrackPathLayerProps, 'hoveredTime'> &
   LayerProps & {
@@ -159,6 +159,11 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
 
   renderLayers(): Layer<VesselTrackData> | LayersList {
     const { id, data, visualizationMode = 'track', ...props } = this.props
+    const interactiveLayoutKey = getTrackShaderLayoutKey({
+      ...props,
+      colorBy: undefined,
+      maxTimeGapHours: undefined,
+    })
 
     const trackLayers = [
       ...(visualizationMode !== 'positions'
@@ -166,7 +171,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
             // Transparent thicker layer for interactivity
             new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
               ...props,
-              id: `${id}-interactive`,
+              id: `${id}-${interactiveLayoutKey}-interactive`,
               data: data as VesselTrackData,
               getWidth: 10,
               getColor: COLOR_TRANSPARENT,
@@ -184,9 +189,10 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         : []),
       new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
         ...props,
-        id: `${id}-${props.colorBy}-${props.maxTimeGapHours}-track`,
+        id: `${id}-${getTrackShaderLayoutKey(props)}-track`,
         data: data as VesselTrackData,
         getWidth: 1.5,
+        pickable: false,
         hoveredTime: props.hoveredTime,
       }),
     ] as LayersList
