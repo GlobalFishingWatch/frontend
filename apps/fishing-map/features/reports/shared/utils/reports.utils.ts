@@ -1,11 +1,11 @@
 import { groupBy, sum, uniq } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import {
   DEFAULT_LABEL_KEY,
   getResponsiveVisualizationItemValue,
-  type ResponsiveVisualizationData,
-} from '@globalfishingwatch/responsive-visualizations'
+} from '@globalfishingwatch/responsive-visualizations/lib/values'
 
 import {
   EMPTY_API_VALUES,

@@ -20,6 +20,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { isHistogramDataviewSupported } from 'features/workspace/shared/layer-properties.utils'
 import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter.utils'
+import { usePorts } from 'utils/ports'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
@@ -46,6 +47,9 @@ function DatasetSchemaField({
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  usePorts(field === 'next_port_id' && !!dataview.config?.filters?.[field])
+
   const filterOperation = getFilterOperationInDataview(dataview, field)
   const filterUnit = getFilterUnitInDataview(dataview, field)
   const schemaFieldSelected = getFiltersSelectedInDataview(dataview, field, {

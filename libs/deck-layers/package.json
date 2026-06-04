@@ -1,6 +1,7 @@
 {
   "name": "@globalfishingwatch/deck-layers",
   "version": "0.1.7",
+  "sideEffects": false,
   "type": "module",
   "sideEffects": false,
   "exports": {

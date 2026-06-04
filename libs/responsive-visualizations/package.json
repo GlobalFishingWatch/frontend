@@ -1,6 +1,9 @@
 {
   "name": "@globalfishingwatch/responsive-visualizations",
   "version": "14.0.9",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "description": "Set of react components and hooks to render responsive visualizations",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
