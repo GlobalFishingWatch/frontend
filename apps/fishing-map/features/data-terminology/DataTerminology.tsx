@@ -6,7 +6,6 @@ import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
-import type I18nNamespaces from 'features/i18n/i18n.types'
 
 import styles from './DataTerminology.module.css'
 
@@ -16,7 +15,7 @@ interface ModalProps {
   title?: string | React.ReactNode
   size?: IconButtonSize
   type?: IconButtonType
-  terminologyKey: keyof I18nNamespaces['data-terminology']
+  terminologyKey: string
   tooltip?: string
 }
 
