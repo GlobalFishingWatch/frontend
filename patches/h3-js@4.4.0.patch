@@ -24,3 +24,21 @@ index e70b2f1d29e7820f4e2908f85269d1debae6cd28..ce80a91809db77ac36e08ed76b956dce
      var nodeFS;
      var nodePath;
      read_ = function shell_read(filename, binary) {
+diff --git a/package.json b/package.json
+index 10d578b01f77759a53c41d131270afaa3a0a95ec..3a8d3c3a4463cfc54a7e0e5c8c3d67f5358a8165 100644
+--- a/package.json
++++ b/package.json
+@@ -107,5 +107,12 @@
+       "**/test/**"
+     ]
+   },
+-  "dependencies": {}
++  "dependencies": {},
++  "exports": {
++    ".": {
++      "browser": "./dist/browser/h3-js.es.js",
++      "import": "./dist/h3-js.es.js",
++      "require": "./dist/h3-js.js"
++    }
++  }
+ }

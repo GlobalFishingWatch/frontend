@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@nx/vitest@22.7.5': 71523adf51dd484ab42018c6cf4f1bc5ab0009771b6c3bc6291e1a097e8a21c1
-  h3-js@4.4.0: ecb41e8fdf55d277d035dcd9ad2ff1b4b81db82a7e8bf3e59e7437b64e3eb2bd
+  h3-js@4.4.0: 6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4
 
 importers:
 
@@ -14,7 +14,7 @@ importers:
     dependencies:
       '@deck.gl-community/editable-layers':
         specifier: 9.3.2
-        version: 9.3.2(d7381337dd7a00927a31f751b9c5ab59)
+        version: 9.3.2(122558f8100339923a90bfbb9ca515b2)
       '@deck.gl-community/layers':
         specifier: 9.3.2
         version: 9.3.2(@deck.gl/core@9.3.3)(@deck.gl/layers@9.3.3(@deck.gl/core@9.3.3)(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3))))(@deck.gl/mesh-layers@9.3.3(@deck.gl/core@9.3.3)(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/gltf@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))
@@ -18286,7 +18286,7 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.1
 
-  '@deck.gl-community/editable-layers@9.3.2(d7381337dd7a00927a31f751b9c5ab59)':
+  '@deck.gl-community/editable-layers@9.3.2(122558f8100339923a90bfbb9ca515b2)':
     dependencies:
       '@deck.gl-community/layers': 9.3.2(@deck.gl/core@9.3.3)(@deck.gl/layers@9.3.3(@deck.gl/core@9.3.3)(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3))))(@deck.gl/mesh-layers@9.3.3(@deck.gl/core@9.3.3)(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/gltf@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))(@loaders.gl/core@4.4.2)(@luma.gl/core@9.3.3)(@luma.gl/engine@9.3.3(@luma.gl/core@9.3.3)(@luma.gl/shadertools@9.3.3(@luma.gl/core@9.3.3)))
       '@deck.gl/core': 9.3.3
@@ -18334,7 +18334,7 @@ snapshots:
       '@turf/transform-translate': 7.3.5
       '@turf/union': 7.3.5
       '@types/geojson': 7946.0.16
-      h3-js: 4.4.0(patch_hash=ecb41e8fdf55d277d035dcd9ad2ff1b4b81db82a7e8bf3e59e7437b64e3eb2bd)
+      h3-js: 4.4.0(patch_hash=6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4)
       lodash.throttle: 4.1.1
       preact: 10.29.1
 
@@ -18407,7 +18407,7 @@ snapshots:
       '@math.gl/web-mercator': 4.1.0
       '@types/geojson': 7946.0.16
       a5-js: 0.7.3
-      h3-js: 4.4.0(patch_hash=ecb41e8fdf55d277d035dcd9ad2ff1b4b81db82a7e8bf3e59e7437b64e3eb2bd)
+      h3-js: 4.4.0(patch_hash=6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4)
       long: 3.2.0
     transitivePeerDependencies:
       - '@75lb/nature'
@@ -29755,7 +29755,7 @@ snapshots:
     dependencies:
       duplexer: 0.1.2
 
-  h3-js@4.4.0(patch_hash=ecb41e8fdf55d277d035dcd9ad2ff1b4b81db82a7e8bf3e59e7437b64e3eb2bd): {}
+  h3-js@4.4.0(patch_hash=6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4): {}
 
   h3@1.15.11:
     dependencies:

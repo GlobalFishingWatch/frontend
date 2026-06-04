@@ -79,12 +79,24 @@ export default defineConfig(({ command, mode }) => {
     ],
     envPrefix: ['VITE_', 'i18n_'],
     environments: {
-      ssr: { build: { rollupOptions: { input: './server.ts' } } },
+      ssr: {
+        build: { rollupOptions: { input: './server.ts' } },
+      },
     },
     ssr: {
       noExternal: ['@mastra/core', '@mastra/client-js'],
       // Prevent browser-only packages from being bundled into the SSR output.
-      external: ['html2canvas', 'papaparse'],
+      external: [
+        '@deck.gl-community/editable-layers',
+        '@deck.gl/core',
+        '@deck.gl/extensions',
+        '@deck.gl/geo-layers',
+        '@deck.gl/layers',
+        '@deck.gl/mesh-layers',
+        '@deck.gl/react',
+        'html2canvas',
+        'papaparse',
+      ],
     },
   }
 })
