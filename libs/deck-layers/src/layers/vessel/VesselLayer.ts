@@ -226,7 +226,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!start || !end) {
         return []
       }
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${maxTimeGapHours}`
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${maxTimeGapHours ?? ''}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
