@@ -117,6 +117,7 @@
       "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
+      "dependsOn": ["prepare-loaders"],
       "options": {
         "commands": [
           "rimraf dist .output",
