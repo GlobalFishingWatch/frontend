@@ -89,6 +89,12 @@ export default defineConfig(({ command, mode }) => {
           chunkSizeWarningLimit: 1500,
           rollupOptions: {
             output: {
+              // Prevents Rolldown from reordering inlined chunks in a way that places
+              // __exportAll() calls before the var declaration runs (e.g. recharts' YAxis
+              // chunk throwing "t is not a function" at module init). Same fix as the SSR output.
+              // Track: https://github.com/vitejs/vite/issues/22291
+              //        https://github.com/rolldown/rolldown/issues/9441
+              hoistTransitiveImports: false,
               manualChunks(id) {
                 if (id.includes('/libs/ui-components/src/icon/icons/')) {
                   return 'ui-icons-bundle'
