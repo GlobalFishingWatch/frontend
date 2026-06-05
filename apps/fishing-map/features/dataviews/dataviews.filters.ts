@@ -1,5 +1,4 @@
-import { uniq } from 'es-toolkit'
-import intersection from 'lodash/intersection'
+import { intersection, uniq } from 'es-toolkit'
 
 import type {
   Dataset,
@@ -223,7 +222,9 @@ export const getCommonFiltersInDataview = (
     }
   }
   const cleanFilterFields =
-    compatibilityOperation === 'every' ? intersection(...filterFields) : uniq(filterFields.flat())
+    compatibilityOperation === 'every'
+      ? filterFields.slice(1).reduce<(string | number | boolean)[]>((acc, arr) => intersection(acc, arr), filterFields[0] ?? [])
+      : uniq(filterFields.flat())
   const activeDataset = activeDatasets?.[0] as Dataset
   let commonFilters = filterFields
     ? cleanFilterFields.map((field) => {

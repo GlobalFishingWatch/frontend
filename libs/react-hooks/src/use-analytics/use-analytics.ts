@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga4'
-import snakeCase from 'lodash/snakeCase'
+import { snakeCase } from 'es-toolkit'
 
 type InitOptions = Extract<Parameters<typeof ReactGA.initialize>[0], object[]>[number]
 

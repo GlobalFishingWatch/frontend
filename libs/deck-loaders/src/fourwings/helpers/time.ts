@@ -1,4 +1,4 @@
-import intersection from 'lodash/intersection'
+import { intersection } from 'es-toolkit'
 import { DateTime, Duration } from 'luxon'
 
 import type { FourwingsInterval } from '../lib/types'

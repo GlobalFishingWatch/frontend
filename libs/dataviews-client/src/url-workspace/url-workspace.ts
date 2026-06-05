@@ -1,7 +1,5 @@
 import { invert } from 'es-toolkit'
-import isObject from 'lodash/isObject'
-import isString from 'lodash/isString'
-import transform from 'lodash/transform'
+import { isObject, isString, transform } from 'es-toolkit/compat'
 import { parse, stringify } from 'qs'
 
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '../config'

@@ -1,3 +1,4 @@
+import { isEqual } from 'es-toolkit'
 import type {
   Feature,
   FeatureCollection,
@@ -7,7 +8,6 @@ import type {
   MultiLineString,
   Position,
 } from 'geojson'
-import isEqual from 'lodash/isEqual'
 
 import {
   COORDINATE_PROPERTY_TIMESTAMP,

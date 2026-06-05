@@ -1,6 +1,5 @@
 import { scaleLinear } from 'd3-scale'
 import { uniqBy } from 'es-toolkit'
-import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
@@ -16,6 +15,20 @@ import { getUTCDateTime } from '../../utils'
 import type { VesselsColorByProperty } from './vessel.config'
 import { VESSEL_GRAPH_COLORS } from './vessel.config'
 import type { VesselEventsLayer } from './VesselEventsLayer'
+
+function memoize<T extends (...args: any[]) => any>(
+  fn: T,
+  resolver: (...args: Parameters<T>) => string
+): T {
+  const cache = new Map<string, ReturnType<T>>()
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const key = resolver(...args)
+    if (cache.has(key)) return cache.get(key)!
+    const result = fn(...args)
+    cache.set(key, result)
+    return result
+  }) as T
+}
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year

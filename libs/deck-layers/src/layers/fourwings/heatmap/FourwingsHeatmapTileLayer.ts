@@ -8,8 +8,7 @@ import type {
 import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
 import { scaleLinear } from 'd3-scale'
-import { debounce, sum } from 'es-toolkit'
-import isEqual from 'lodash/isEqual'
+import { debounce, isEqual, sum } from 'es-toolkit'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'

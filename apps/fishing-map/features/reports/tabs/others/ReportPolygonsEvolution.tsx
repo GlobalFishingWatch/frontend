@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import max from 'lodash/max'
-import min from 'lodash/min'
+import { max, min } from 'es-toolkit/compat'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
@@ -93,19 +92,16 @@ export default function ReportPolygonsEvolution({
     }
   }, [start, end, interval])
 
-  const dataFormatted = useMemo(
-    () => {
-      if (!data) {
-        return null
-      }
-      return formatEvolutionData(data, {
-        start: domain ? new Date(domain[0]).toISOString() : start,
-        end: domain ? new Date(domain[1]).toISOString() : end,
-        timeseriesInterval: interval,
-      })
-    },
-    [data, start, end, interval, domain]
-  )
+  const dataFormatted = useMemo(() => {
+    if (!data) {
+      return null
+    }
+    return formatEvolutionData(data, {
+      start: domain ? new Date(domain[0]).toISOString() : start,
+      end: domain ? new Date(domain[1]).toISOString() : end,
+      timeseriesInterval: interval,
+    })
+  }, [data, start, end, interval, domain])
 
   if (!data || !dataFormatted || !domain) return null
 

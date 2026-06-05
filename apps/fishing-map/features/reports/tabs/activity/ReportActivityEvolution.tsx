@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import max from 'lodash/max'
-import min from 'lodash/min'
+import { max, min } from 'es-toolkit/compat'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import {

@@ -1,4 +1,4 @@
-import toNumber from 'lodash/toNumber'
+import { toNumber } from 'es-toolkit/compat'
 import type { DateTimeOptions } from 'luxon'
 import { DateTime } from 'luxon'
 

@@ -143,6 +143,10 @@ export default defineConfig(({ command, mode }) => {
                   return 'vendor-sentry'
                 }
 
+                if (id.includes('/node_modules/es-toolkit/')) {
+                  return 'vendor-es-toolkit'
+                }
+
                 if (
                   id.includes('/node_modules/d3') ||
                   id.includes('/node_modules/@turf/') ||

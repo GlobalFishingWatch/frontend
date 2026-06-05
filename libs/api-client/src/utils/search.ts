@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import partition from 'lodash/partition'
+import { partition } from 'es-toolkit'
 
 // Copied from ui-components to avoid circular dependencies
 export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
@@ -221,7 +221,7 @@ export const getAdvancedSearchQuery = (
 
   const [fieldsQueriesCombinedWithOR, fieldsQueriesCombinedWithAND] = partition(
     fields.filter((field) => field.value !== undefined && field.value !== '' && field.value.length),
-    (field) => field.combinedWithOR
+    (field) => field.combinedWithOR === true
   ).map((fields) => fields.map(getFieldQuery))
 
   const query = [
