@@ -1,10 +1,10 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import { MAIN_DOM_ID } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import type { RootState } from 'reducers'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 

@@ -19,6 +19,13 @@
   font-weight: 500;
 }
 
+.row {
+  margin-top: var(--space-S);
+  padding-left: var(--space-S);
+  display: flex;
+  gap: var(--space-S);
+}
+
 .padding {
   padding-left: var(--space-S);
 }

@@ -11,7 +11,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
 

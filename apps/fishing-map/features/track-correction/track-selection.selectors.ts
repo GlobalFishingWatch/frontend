@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectWorkspacesTrackCorrectionIssues } from 'features/track-correction/track-correction.slice'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
-import { selectTrackCorrectionId } from 'routes/routes.selectors'
+import { selectTrackCorrectionId } from 'router/routes.selectors'
 
 export const selectTrackCorrectionOpen = createSelector(
   [selectTrackCorrectionId],

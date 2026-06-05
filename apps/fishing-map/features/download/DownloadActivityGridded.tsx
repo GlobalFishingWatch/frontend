@@ -48,7 +48,7 @@ import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -66,7 +66,8 @@ import {
   SPATIAL_RESOLUTION_OPTIONS,
   SpatialResolution,
 } from './downloadActivity.config'
-import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { useActivityDownloadTimeoutRefresh } from './downloadActivity.hooks'
+import ActivityDownloadError from './DownloadActivityError'
 
 import styles from './DownloadModal.module.css'
 
@@ -283,7 +284,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
-        <UserGuideLink section="downloadActivity" />
+        <UserGuideLink slug="downloading-data" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>

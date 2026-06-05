@@ -8,27 +8,29 @@
 }
 
 .list {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.2rem;
-  border-radius: var(--size-M);
-  border: var(--border);
+  border-radius: calc(var(--border-radius-0) + 0.2rem);
+  background-color: var(--color-terthiary-blue);
   padding: 0.2rem;
   min-width: min-content;
 }
 
-.activeChip {
-  content: '';
+.activePill {
   position: absolute;
-  width: 10px;
-  top: 0.3rem;
-  left: 0.2rem;
-  height: calc(100% - 0.6rem);
-  border-radius: var(--size-M);
-  background-color: var(--color-terthiary-blue);
-  z-index: 0;
-  transition: all 300ms ease-in-out;
+  top: 0.2rem;
+  left: 0;
+  height: calc(100% - 0.4rem);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-0);
+  filter: var(--filter-drop-shadow-0);
+  pointer-events: none;
+  transition:
+    transform 220ms var(--ease-out-strong),
+    width 220ms var(--ease-out-strong);
 }
 
 .option {
@@ -41,21 +43,28 @@
   flex: 1;
   min-width: auto;
   width: 100%;
-  border-radius: var(--size-M);
+  border-radius: var(--border-radius-0);
   background-color: transparent;
   color: var(--color-secondary-blue);
+  min-height: var(--size-XS);
+
+  /* z-index keeps text above the sliding pill */
+  position: relative;
+  z-index: 1;
+  transition: color 180ms ease;
 }
 
 .optionActive {
   color: var(--color-primary-blue);
 }
 
+.Choice .optionActive:hover,
 .Choice .optionActive:focus {
   background-color: transparent;
   box-shadow: none;
 }
 
-.Choice .disabled {
+.Choice .disabled:not(.optionActive) {
   background-color: transparent;
   opacity: 0.5;
 }
@@ -63,10 +72,7 @@
 @media print {
   .list {
     border: none;
-  }
-
-  .activeChip {
-    display: none;
+    background-color: transparent;
   }
 
   .option {
@@ -80,5 +86,15 @@
 
   .option:not([aria-checked='true']) {
     display: none;
+  }
+
+  .Choice .optionActive {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activePill {
+    transition: none;
   }
 }

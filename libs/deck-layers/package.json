@@ -1,11 +1,17 @@
 {
   "name": "@globalfishingwatch/deck-layers",
   "version": "0.1.7",
+  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./draw": {
+      "types": "./dist/draw.d.ts",
+      "default": "./dist/draw.js"
     }
   },
   "main": "./dist/index.js",

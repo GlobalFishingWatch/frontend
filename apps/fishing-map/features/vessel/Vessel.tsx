@@ -43,15 +43,10 @@ import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectIsWorkspaceVesselLocation,
-  selectVesselId,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectVesselId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import VesselActivity from './activity/VesselActivity'
@@ -64,7 +59,7 @@ const Vessel = () => {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -72,11 +67,9 @@ const Vessel = () => {
   const vesselSection = useSelector(selectVesselSection)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
@@ -174,9 +167,6 @@ const Vessel = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (isWorkspaceVesselLocation) {
-      dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
-    }
     if (
       !infoStatus ||
       infoStatus === AsyncReducerStatus.Idle ||
@@ -184,7 +174,7 @@ const Vessel = () => {
     ) {
       dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
     }
-  }, [datasetId, dispatch, vesselId, urlWorkspaceId])
+  }, [datasetId, dispatch, vesselId])
 
   useEffect(() => {
     dispatchClickedEvent(null)
@@ -193,25 +183,24 @@ const Vessel = () => {
 
   const changeTab = useCallback(
     (tab: Tab<VesselSection>) => {
-      dispatchQueryParams({ vesselSection: tab.id })
+      replaceQueryParams({ vesselSection: tab.id })
       updateAreaLayersVisibility(tab.id === 'areas' ? vesselArea : undefined)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: `click_${tab.id}_tab`,
       })
     },
-    [dispatchQueryParams, updateAreaLayersVisibility, vesselArea]
+    [updateAreaLayersVisibility, vesselArea]
   )
 
   const handleFullProfileClick = useCallback(() => {
-    dispatchQueryParams({
+    replaceQueryParams({
       includeRelatedIdentities: true,
       start: undefined,
       end: undefined,
       vesselSelfReportedId: undefined,
     })
-    window.location.reload()
-  }, [dispatchQueryParams])
+  }, [])
 
   if (infoStatus === AsyncReducerStatus.Loading) {
     return <Spinner />
@@ -248,13 +237,24 @@ const Vessel = () => {
           <VesselIdentity />
         </Fragment>
       )}
-      {hasSelfReportedData ? (
-        <Tabs
-          tabs={sectionTabs}
-          activeTab={vesselSection}
-          onTabClick={changeTab}
-          mountAllTabsOnLoad
+      {guestUser ? (
+        <WorkspaceLoginError
+          title={t((t) => t.errors.vesselActivityLogin)}
+          className={styles.loginRequiered}
         />
+      ) : hasSelfReportedData ? (
+        <Fragment>
+          <Tabs
+            tabs={sectionTabs}
+            activeTab={vesselSection}
+            onTabClick={changeTab}
+            mountAllTabsOnLoad
+            className={styles.tabsContainer}
+          />
+          {vesselSection === 'activity' && (
+            <div className="print-hidden" style={{ height: '48vh' }}></div>
+          )}
+        </Fragment>
       ) : (
         <div className={styles.placeholder}>
           <p className={styles.secondary}>{t((t) => t.vessel.noActivityData)}</p>

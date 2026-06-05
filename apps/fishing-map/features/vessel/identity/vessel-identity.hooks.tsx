@@ -4,18 +4,27 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
+import AISIdentityTab from 'features/vessel/identity/tabs/IdentityTabAIS'
+import VMSIdentityTab from 'features/vessel/identity/tabs/IdentityTabVMS'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import {
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
+} from 'features/vessel/vessel.config.selectors'
+import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
+import { useReplaceQueryParams } from 'router/routes.hook'
+
+import IdentityTabRegistry from './tabs/IdentityTabRegistry'
+import IdentityTabWrapper from './tabs/IdentityTabWrapper'
 
 import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {
   const vesselData = useSelector(selectVesselInfoData)
-  const identitySource = useSelector(selectVesselIdentitySource)
   const registryDisabled = !vesselData.identities.some(
     (i) => i.identitySource === VesselIdentitySourceEnum.Registry
   )
@@ -23,13 +32,19 @@ export function useVesselIdentities() {
     (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
   )
 
-  return { identitySource, registryDisabled, selfReportedIdentities }
+  return { registryDisabled, selfReportedIdentities }
 }
 
 export function useVesselIdentityTabs() {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
-  const { identitySource, registryDisabled, selfReportedIdentities } = useVesselIdentities()
+  const identitySource = useSelector(selectVesselIdentitySource)
+  const { registryDisabled, selfReportedIdentities } = useVesselIdentities()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const vesselData = useSelector(selectVesselInfoData)
+  const identityId = useSelector(selectVesselIdentityId)
+  const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
+
+  const isVMS = vesselIdentity?.sourceCode?.some((s) => getIsVMSDataset(s))
 
   const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
     () => [
@@ -39,14 +54,16 @@ export function useVesselIdentityTabs() {
           <span className={styles.tabTitle}>
             {t((t) => t.vessel.infoSources.registry)}
             {identitySource === VesselIdentitySourceEnum.Registry && (
-              <DataTerminology
-                title={t((t) => t.vessel.infoSources.registry)}
-                terminologyKey="registryInfo"
-              />
+              <DataTerminology terminologyKey="registryInfo" />
             )}
           </span>
         ),
         disabled: registryDisabled,
+        content: (
+          <IdentityTabWrapper>
+            <IdentityTabRegistry />
+          </IdentityTabWrapper>
+        ),
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
@@ -54,26 +71,26 @@ export function useVesselIdentityTabs() {
           <span className={styles.tabTitle}>
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
-              <DataTerminology
-                title={t((t) => t.vessel.infoSources.selfReported)}
-                terminologyKey="selfReported"
-              />
+              <DataTerminology terminologyKey="selfReported" />
             )}
           </span>
         ),
         disabled: selfReportedIdentities.length === 0,
+        content: (
+          <IdentityTabWrapper>{isVMS ? <VMSIdentityTab /> : <AISIdentityTab />}</IdentityTabWrapper>
+        ),
       },
     ],
-    [identitySource, registryDisabled, selfReportedIdentities, t]
+    [identitySource, isVMS, registryDisabled, selfReportedIdentities, t]
   )
 
   useEffect(() => {
     if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
-      dispatchQueryParams({
+      replaceQueryParams({
         vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
       })
     }
-  }, [dispatchQueryParams, identitySource, registryDisabled])
+  }, [identitySource, registryDisabled])
 
   return useMemo(
     () => ({ identityTabs, selfReportedIdentities, registryDisabled }),

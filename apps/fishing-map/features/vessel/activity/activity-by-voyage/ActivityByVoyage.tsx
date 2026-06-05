@@ -28,16 +28,16 @@ import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selector
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
 import type { VesselEvent } from 'features/vessel/vessel.types'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const isSmallScreen = useSmallScreen()
-  const { dispatchQueryParams } = useLocationConnect()
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const selectedVesselEventId = useSelector(selectVesselEventId)
@@ -85,9 +85,9 @@ const ActivityByVoyage = () => {
       const events = voyages[voyageId]
       const bounds = eventsToBbox(events)
       fitBounds(bounds, { fitZoom: true })
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      if (isSmallScreen) replaceQueryParams({ sidebarOpen: false })
     },
-    [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
+    [fitBounds, isSmallScreen, voyages]
   )
 
   const onEventMapHover = useCallback(
@@ -151,9 +151,14 @@ const ActivityByVoyage = () => {
                   events={events}
                   onToggleClick={handleToggleClick}
                   onMapClick={selectVoyageOnMap}
+                  className={cx(
+                    styles.eventGroup,
+                    { [styles.first]: index === 0 },
+                    { [styles.last]: index === groups.length - 1 },
+                    { [styles.expanded]: expanded }
+                  )}
                   // onMapHover={onVoyageMapHover}
                 />
-                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
               </Fragment>
             )
           }}
@@ -175,11 +180,16 @@ const ActivityByVoyage = () => {
                     fitEventBounds(event)
                   }}
                   onInfoClick={handleEventClick}
-                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+                  className={cx(
+                    styles.event,
+                    { [styles.eventExpanded]: expanded },
+                    { [styles.lastEvent]: index === events.length - 1 },
+                    {
+                      [styles.lastEventFromLastGroup]:
+                        index === events.length - 1 && groupIndex === groups.length - 1,
+                    }
+                  )}
                 />
-                {index === events.length - 1 && groupIndex === groups.length - 1 && (
-                  <div style={{ height: '48vh' }}></div>
-                )}
               </Fragment>
             )
           }}

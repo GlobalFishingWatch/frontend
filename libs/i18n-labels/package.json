@@ -28,7 +28,6 @@
     "dist"
   ],
   "devDependencies": {
-    "cross-env": "^10.1.0",
     "prettier": "3.8.0",
     "rimraf": "6.1.2"
   },

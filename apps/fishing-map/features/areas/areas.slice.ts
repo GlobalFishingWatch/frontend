@@ -1,8 +1,9 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { circle, featureCollection, flatten, union } from '@turf/turf'
+import { circle, flatten } from '@turf/turf'
 import { kebabCase, memoize, uniqBy } from 'es-toolkit'
 import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
+import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
@@ -16,6 +17,8 @@ import type { RootState } from 'store'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
+
+const { union } = polygonClipping
 
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
@@ -108,10 +111,18 @@ async function fetchAreaDetail({
       console.warn('Area has no geometry, even calling the endpoint without simplification')
     }
   }
-  const geometry =
-    (area.geometry as GeometryCollection).type === 'GeometryCollection'
-      ? (union(flatten(area.geometry))?.geometry as AreaGeometry)
-      : (area.geometry as AreaGeometry)
+  let geometry: AreaGeometry
+  if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
+    const geoms = flatten(area.geometry).features.flatMap((f) =>
+      f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
+        ? [f.geometry.coordinates as Geom]
+        : []
+    )
+    const unioned = union(geoms[0], ...geoms)
+    geometry = { type: 'MultiPolygon', coordinates: unioned }
+  } else {
+    geometry = area.geometry as AreaGeometry
+  }
 
   if (!geometry) {
     console.warn('No geometry found for area', area)
@@ -152,7 +163,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
             let dataset = selectDatasetById(datasetId)(getState() as RootState)
             if (!dataset) {
               // It needs to be request when it hasn't been loaded yet
-              const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+              const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
               if (fetchDatasetByIdThunk.fulfilled.match(action)) {
                 dataset = action.payload
               }
@@ -176,27 +187,27 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           )
         )
         try {
-          const areaFeatures = featureCollection(
-            areas.flatMap((area) => {
-              if (!area) return []
-              return (area?.geometry as any).type === 'Point' ? circle(area as any, 1) || [] : area
-            })
-          )
-          const mergedFeature = union(areaFeatures)
-          if (mergedFeature) {
-            const bounds = mergedFeature.bbox
-              ? wrapBBoxLongitudes(mergedFeature.bbox as Bbox)
-              : wrapGeometryBbox(mergedFeature.geometry)
-            const area = {
-              id: areaId?.toString(),
-              name:
-                areaName ||
-                `${t((t) => t.common.unionOf)} ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
-              bounds: bounds,
-              geometry: mergedFeature.geometry as AreaGeometry,
-              properties: { areaIds, datasetIds },
-            }
-            return area
+          const geoms = areas.flatMap((fetchedArea) => {
+            if (!fetchedArea?.geometry) return []
+            const geometry =
+              (fetchedArea.geometry as any).type === 'Point'
+                ? circle(fetchedArea as any, 1).geometry
+                : (fetchedArea.geometry as Polygon | MultiPolygon)
+            return [geometry.coordinates as Geom]
+          })
+          const mergedGeometry: MultiPolygon = {
+            type: 'MultiPolygon',
+            coordinates: union(geoms[0], ...geoms),
+          }
+          const bounds = wrapGeometryBbox(mergedGeometry)
+          return {
+            id: areaId?.toString(),
+            name:
+              areaName ||
+              `${t((t) => t.common.unionOf)} ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
+            bounds,
+            geometry: mergedGeometry,
+            properties: { areaIds, datasetIds },
           }
         } catch (e) {
           console.error('Error merging areas', e)
@@ -204,7 +215,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
       }
       let dataset = selectDatasetById(datasetId)(getState() as RootState)
       if (!dataset) {
-        const action = await dispatch(fetchDatasetByIdThunk(datasetId))
+        const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
         if (fetchDatasetByIdThunk.fulfilled.match(action)) {
           dataset = action.payload
         }

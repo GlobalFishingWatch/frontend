@@ -2,6 +2,10 @@ import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
+import { HOME, REPORT, WORKSPACE } from 'router/routes'
+import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type {
   WorkspaceEditAccessType,
@@ -17,11 +21,13 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -52,7 +58,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const [error, setError] = useState('')
   const [createLoading, setCreateLoading] = useState(false)
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const viewport = useSelector(selectViewport)
+  const locationType = useSelector(selectLocationType)
+  const locationCategory = useSelector(selectLocationCategory) || WorkspaceCategory.FishingActivity
+  const reportId = useSelector(selectReportId)
   const timerange = useTimerangeConnect()
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
@@ -167,15 +177,37 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
       }
       const dispatchedAction = await dispatch(saveWorkspaceThunk({ workspace, properties }))
       if (saveWorkspaceThunk.fulfilled.match(dispatchedAction)) {
-        const workspace = dispatchedAction.payload as AppWorkspace
+        const workspaceUpdated = dispatchedAction.payload as AppWorkspace
+        const targetType = locationType === HOME ? WORKSPACE : locationType
+        if (targetType === WORKSPACE) {
+          router.navigate({
+            to: ROUTE_PATHS.WORKSPACE,
+            params: { category: locationCategory, workspaceId: workspaceUpdated.id },
+            search: {},
+            replace: true,
+          })
+        } else if (targetType === REPORT && reportId) {
+          router.navigate({
+            to: ROUTE_PATHS.REPORT,
+            params: { reportId },
+            search: {},
+            replace: true,
+          })
+        } else {
+          router.navigate({
+            to: ROUTE_PATHS.HOME,
+            search: {},
+            replace: true,
+          })
+        }
         trackEvent({
           category: TrackCategory.WorkspaceManagement,
           action: 'Save current workspace',
-          label: workspace?.name ?? 'Unknown',
+          label: workspaceUpdated?.name ?? 'Unknown',
         })
         setCreateLoading(false)
         if (onFinish) {
-          onFinish(workspace)
+          onFinish(workspaceUpdated)
         }
         onClose()
       } else {
@@ -213,6 +245,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
       className={styles.modalContentWrapper}
       contentClassName={styles.modal}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       <form onSubmit={handleSubmit}>
         <div className={styles.row}>

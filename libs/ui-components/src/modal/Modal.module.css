@@ -1,11 +1,21 @@
 .modalOverlay {
-  background: rgba(var(--primary-blue-rgb), 0.85);
+  background: rgba(var(--primary-blue-rgb), 0.75);
   position: fixed;
   inset: 0;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+:global(.ReactModal__Overlay--after-open).modalOverlay {
+  opacity: 1;
+}
+
+:global(.ReactModal__Overlay--before-close).modalOverlay {
+  opacity: 0;
 }
 
 @media only screen and (width <= 720px) {
@@ -15,13 +25,29 @@
 }
 
 .modalContentWrapper {
-  background: var(--gradient);
+  background: var(--color-background);
   padding: 0;
   position: relative;
   width: 100%;
   max-width: 78rem;
   overflow-y: auto;
   max-height: 100dvh;
+  border-radius: var(--border-radius-1);
+  opacity: 0;
+  transform: scale(0.95);
+  transition:
+    transform 200ms var(--ease-out-strong),
+    opacity 180ms ease;
+}
+
+:global(.ReactModal__Content--after-open).modalContentWrapper {
+  opacity: 1;
+  transform: scale(1);
+}
+
+:global(.ReactModal__Content--before-close).modalContentWrapper {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .auto {
@@ -79,7 +105,7 @@
   }
 
   .content {
-    height: 50rem;
+    height: 55rem;
     max-height: calc(100vh - var(--size-L));
   }
 
@@ -91,5 +117,16 @@
 
   .contentNoHeader {
     height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalOverlay,
+  .modalContentWrapper {
+    transition: opacity 200ms ease;
+  }
+
+  .modalContentWrapper {
+    transform: none;
   }
 }

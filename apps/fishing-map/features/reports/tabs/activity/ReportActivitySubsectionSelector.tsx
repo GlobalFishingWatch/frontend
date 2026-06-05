@@ -22,14 +22,15 @@ import type {
 import { ReportCategory } from 'features/reports/reports.types'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
+
+import { getReportSubCategoryLabel } from './reports-activity.utils'
 
 import styles from './ReportActivity.module.css'
 
 function ReportActivitySubsectionSelector() {
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const hasFishingDataviews = useSelector(selectHasFishingDataviews)
@@ -45,12 +46,12 @@ function ReportActivitySubsectionSelector() {
       ? ([
           {
             id: 'fishing',
-            label: t((t) => t.common.apparentFishing),
+            label: getReportSubCategoryLabel('fishing'),
             disabled: loading || !hasFishingDataviews,
           },
           {
             id: 'presence',
-            label: t((t) => t.common.vesselPresence),
+            label: getReportSubCategoryLabel('presence'),
             disabled: loading || !hasPresenceDataviews,
           },
         ] as ChoiceOption<ReportActivitySubCategory>[])
@@ -59,7 +60,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'viirs',
-                  label: t((t) => t.common.viirs),
+                  label: getReportSubCategoryLabel('viirs'),
                   disabled: loading,
                 },
               ]
@@ -68,7 +69,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sar',
-                  label: t((t) => t.common.sar),
+                  label: getReportSubCategoryLabel('sar'),
                   disabled: loading,
                 },
               ]
@@ -77,7 +78,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sentinel-2',
-                  label: t((t) => t.common.sentinel2),
+                  label: getReportSubCategoryLabel('sentinel-2'),
                   disabled: loading,
                 },
               ]
@@ -92,7 +93,7 @@ function ReportActivitySubsectionSelector() {
         reportCategory === ReportCategory.Activity
           ? 'reportActivitySubCategory'
           : 'reportDetectionsSubCategory'
-      dispatchQueryParams({ [queryParam]: option.id })
+      replaceQueryParams({ [queryParam]: option.id })
       fitAreaInViewport()
       dispatch(resetReportData())
       trackEvent({
@@ -108,7 +109,7 @@ function ReportActivitySubsectionSelector() {
 
   return (
     <Choice
-      size="small"
+      size="medium"
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}

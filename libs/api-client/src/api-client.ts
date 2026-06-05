@@ -1,5 +1,3 @@
-import { saveAs } from 'file-saver'
-
 import type {
   APIPagination,
   ResourceRequestType,
@@ -139,14 +137,23 @@ export class GFW_API_CLASS {
     )
   }
 
-  getLoginUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
+  getLoginUrl(
+    callbackUrl: string,
+    { client = 'gfw', locale = '', hideHeader = false } = {} satisfies {
+      client?: string
+      locale?: string
+      hideHeader?: boolean
+    }
+  ) {
     const fallbackLocale =
       locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
-    const callbackUrlEncoded = encodeURIComponent(callbackUrl)
-    return this.generateUrl(
-      `/${API_VERSION}/${AUTH_PATH}?client=${client}&callback=${callbackUrlEncoded}&locale=${fallbackLocale}`,
-      { absolute: true }
-    )
+    const params = new URLSearchParams({
+      client,
+      locale: fallbackLocale,
+      callback: callbackUrl,
+      ...(hideHeader && { hideHeader: 'true' }),
+    })
+    return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}?${params.toString()}`, { absolute: true })
   }
 
   getConfig() {
@@ -160,6 +167,11 @@ export class GFW_API_CLASS {
   }
 
   async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+    // We need to avoid requesting tokens from the Login window because the accessToken
+    // needs to be used for the first time in the main window
+    if (typeof window === 'undefined' || window.opener) {
+      return { token: '', refreshToken: '' }
+    }
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )
@@ -247,7 +259,8 @@ export class GFW_API_CLASS {
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
     this.status = 'downloading'
     return this._internalFetch<Blob>({ url: downloadUrl, options: { responseType: 'blob' } })
-      .then((blob) => {
+      .then(async (blob) => {
+        const { saveAs } = await import('file-saver')
         saveAs(blob, fileName)
         this.status = 'idle'
         return true
@@ -335,19 +348,12 @@ export class GFW_API_CLASS {
               case 'arrayBuffer':
                 return res.arrayBuffer()
               case 'vessel': {
-                try {
-                  return import('@globalfishingwatch/pbf-decoders').then(({ vessels }) => {
-                    return res.arrayBuffer().then((buffer) => {
-                      const track = vessels.Track.decode(new Uint8Array(buffer))
-                      return track.data
-                    })
+                return import('./pbf-decoders/vessels-proto').then(({ Track }) => {
+                  return res.arrayBuffer().then((buffer) => {
+                    const track = Track.decode(new Uint8Array(buffer))
+                    return track.data
                   })
-                } catch (e: any) {
-                  console.warn(
-                    '@globalfishingwatch/pbf-decoders is a mandatory external dependency when using vessel response decoding'
-                  )
-                  throw e
-                }
+                })
               }
               default:
                 return res

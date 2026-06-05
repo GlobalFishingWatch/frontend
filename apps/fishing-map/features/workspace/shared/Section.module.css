@@ -1,10 +1,31 @@
 .container {
-  padding-block: var(--space-XS);
   position: relative;
+  padding-block: var(--space-XS);
 }
 
-.container:not(:last-of-type) {
-  border-bottom: var(--border-thick);
+.collapsibleContent {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-rows 240ms var(--ease-out-strong),
+    opacity 200ms var(--ease-out-strong);
+}
+
+.collapsibleInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.containerCollapsed .collapsibleContent {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapsibleContent {
+    transition: opacity 200ms ease;
+  }
 }
 
 .header {
@@ -59,10 +80,6 @@
 .collapseButton {
   opacity: 0;
   transition: var(--transition);
-}
-
-.containerCollapsed .content {
-  display: none;
 }
 
 .containerCollapsed .sectionButtons {
@@ -123,6 +140,7 @@
 
 .link {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .surveyLink {
@@ -140,6 +158,11 @@
 
 .vesselsOnScreen summary span {
   padding: 0;
+}
+
+.vesselsOnScreenList {
+  padding: var(--space-S);
+  padding-top: var(--space-XS);
 }
 
 .vesselOnScreen {

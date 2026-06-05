@@ -1,62 +1,47 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { getRouteApi, Outlet, useSearch } from '@tanstack/react-router'
 
-import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { CONTENT_PANEL_WIDTH_COOKIE_KEY, SIDEBAR_WIDTH_COOKIE_KEY } from 'features/app/app.config'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
+import ContentPanel from 'features/content-panel/ContentPanel'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
-import { useActivityDownloadTimeoutRefresh } from 'features/download/DownloadActivityError'
+import { useActivityDownloadTimeoutRefresh } from 'features/download/downloadActivity.hooks'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { useLoginPopupListener } from 'features/user/user.hooks'
 import { fetchUserThunk } from 'features/user/user.slice'
-import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
+import { useEnsureWorkspaceLoad } from 'features/workspace/workspace.hook'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
-  isWorkspacePasswordProtected,
-  selectCurrentWorkspaceId,
-  selectWorkspaceCustomStatus,
-  selectWorkspaceReportId,
-} from 'features/workspace/workspace.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import {
-  HOME,
-  PORT_REPORT,
-  REPORT,
   SEARCH,
   USER,
   VESSEL,
-  VESSEL_GROUP_REPORT,
-  WORKSPACE,
-  WORKSPACE_REPORT,
   WORKSPACE_SEARCH,
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
-} from 'routes/routes'
-import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+} from 'router/routes'
+import { useBeforeUnload, useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
-  selectIsAnyVesselLocation,
   selectIsMapDrawing,
-  selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
-  selectReportId,
-  selectWorkspaceId,
-} from 'routes/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
+} from 'router/routes.selectors'
+import { usePersistedCookieNumber } from 'utils/cookies'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -71,104 +56,49 @@ declare global {
   }
 }
 
+const rootRoute = getRouteApi('__root__')
+
 function App() {
   useAnalytics()
   useDatasetDrag()
-  useReplaceLoginUrl()
   useBeforeUnload()
   useUserLanguageUpdate()
   useFeatureFlagsToast()
   useFetchTrackCorrections()
   useActivityDownloadTimeoutRefresh()
+  useEnsureWorkspaceLoad()
+  useLoginPopupListener()
 
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
-  const i18n = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
 
   const locationType = useSelector(selectLocationType)
-  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
-  const currentReportId = useSelector(selectWorkspaceReportId)
-  const reportId = useSelector(selectReportId)
-  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
-  const userLogged = useSelector(selectIsUserLogged)
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
-
-  // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
-  // probably better to fetch in both components just checking if the workspaceId is already fetched
-  const isHomeLocation = locationType === HOME
-  const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
-  const locationNeedsFetch =
-    locationType === REPORT ||
-    locationType === VESSEL_GROUP_REPORT ||
-    locationType === PORT_REPORT ||
-    ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
-      currentWorkspaceId !== urlWorkspaceId)
-  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
-  const hasWorkspaceReportIdChanged = locationType === REPORT && currentReportId !== reportId
-
-  useEffect(() => {
-    let action: any
-    let actionResolved = false
-    const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
-      const resolvedAction = await action
-      if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const workspace = resolvedAction.payload as Workspace
-        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
-          fitWorkspaceBounds(workspace)
-        }
-        fitWorkspaceTimerange(workspace)
-      }
-      actionResolved = true
-    }
-    if (
-      userLogged &&
-      workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged || hasWorkspaceReportIdChanged)
-    ) {
-      // TODO Can we arrive in a situation where no workspace is ever loaded?
-      // In that case static timerange will need to be set manually
-      fetchWorkspace()
-    }
-    return () => {
-      if (action && action.abort !== undefined && !actionResolved) {
-        action.abort()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    userLogged,
-    homeNeedsFetch,
-    locationNeedsFetch,
-    hasWorkspaceIdChanged,
-    hasWorkspaceReportIdChanged,
-  ])
+  const sidebarWidthPct = rootRoute.useLoaderData({ select: (d) => d?.asideWidthPct })
+  const onSidebarWidthChange = usePersistedCookieNumber(SIDEBAR_WIDTH_COOKIE_KEY)
+  const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
+  const onContentPanelWidthChange = usePersistedCookieNumber(CONTENT_PANEL_WIDTH_COOKIE_KEY)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
   }, [dispatch])
 
   const onToggle = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: !sidebarOpen })
-  }, [dispatchQueryParams, sidebarOpen])
+    replaceQueryParams({ sidebarOpen: !sidebarOpen })
+  }, [replaceQueryParams, sidebarOpen])
 
   const getSidebarName = useCallback(() => {
     if (locationType === USER) return t((t) => t.user.title)
@@ -182,6 +112,7 @@ function App() {
   }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
+
   if (screenshotMode) {
     asideWidth = '0'
   } else if (readOnly) {
@@ -189,51 +120,79 @@ function App() {
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = isPrinting ? '34rem' : '39rem'
+    asideWidth = isPrinting ? '34rem' : '40rem'
   }
 
-  if (!i18n.ready) {
+  const isAsideResizable =
+    !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
+
+  const isPopup = useSearch({ strict: false, select: (s) => s?.isPopup })
+  if ((typeof window !== 'undefined' && window.opener) || isPopup) {
     return null
   }
 
   return (
     <Fragment>
+      <ConfirmLeave />
+      <ConfirmVesselProfileLeave />
       <a
         href="https://globalfishingwatch.org"
         className={screenshotMode ? styles.logo : 'print-only'}
       >
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
-      <ErrorBoundary>
-        <SplitView
-          isOpen={sidebarOpen && !isMapDrawing}
-          showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
-          onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
-          main={<Main />}
-          asideWidth={asideWidth}
-          showAsideLabel={getSidebarName()}
-          showMainLabel={t((t) => t.common.map)}
-          className={styles.splitContainer}
-          asideClassName={styles.aside}
-          mainClassName={styles.main}
-        />
-        {!readOnly && (
-          <Menu
-            appSelector={ROOT_DOM_ELEMENT}
-            bgImage={menuBgImage.src}
-            isOpen={menuOpen}
-            onClose={() => setMenuOpen(false)}
-            activeLinkId="map-data"
-          />
-        )}
-        <AppModals />
-        <ToastContainer
-          position="top-center"
-          className={styles.toastContainer}
-          closeButton={false}
-        />
-      </ErrorBoundary>
+      <div className={styles.appLayout}>
+        <div id="app-layout-content" className={styles.appLayoutContent}>
+          <ErrorBoundary>
+            <SplitView
+              isOpen={sidebarOpen && !isMapDrawing}
+              showToggle={(isWorkspaceLocation || vesselLocation) && !screenshotMode}
+              onToggle={onToggle}
+              aside={
+                <Sidebar onMenuClick={onMenuClick}>
+                  <Suspense fallback={null}>
+                    <Outlet />
+                  </Suspense>
+                </Sidebar>
+              }
+              main={<Main />}
+              asideWidth={asideWidth}
+              initialAsideWidthPct={sidebarWidthPct ?? undefined}
+              onAsideWidthChange={onSidebarWidthChange}
+              resizable={isAsideResizable}
+              showAsideLabel={getSidebarName()}
+              showMainLabel={t((t) => t.common.map)}
+              className={styles.splitContainer}
+              asideClassName={styles.aside}
+              mainClassName={styles.main}
+            />
+
+            {!readOnly && (
+              <Menu
+                appSelector={ROOT_DOM_ELEMENT}
+                bgImage={menuBgImage}
+                isOpen={menuOpen}
+                onClose={() => setMenuOpen(false)}
+                activeLinkId="map-data"
+              />
+            )}
+            <AppModals />
+            <ToastContainer
+              position="top-center"
+              className={styles.toastContainer}
+              closeButton={false}
+            />
+          </ErrorBoundary>
+        </div>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <ContentPanel
+              initialPanelWidth={contentPanelWidth ?? undefined}
+              onPanelWidthChange={onContentPanelWidthChange}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      </div>
     </Fragment>
   )
 }

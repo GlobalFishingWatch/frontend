@@ -1,9 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
 import cx from 'classnames'
 import Downshift from 'downshift'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -29,8 +30,7 @@ import {
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from './SearchError'
@@ -52,14 +52,15 @@ function SearchBasic({
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
+  const [inputValue, setInputValue] = useState(searchQuery || '')
+  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
-  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const { dispatchQueryParams } = useLocationConnect()
   const basicSearchDatasets = useSelector(selectBasicSearchDatasets)
   const isBrazilVMSWorkspace =
     basicSearchDatasets !== undefined &&
@@ -71,20 +72,26 @@ function SearchBasic({
     searchPagination.since &&
     searchResults?.length < searchPagination.total
 
+  const debouncedReplaceQuery = useDebouncedCallback(
+    (value: string) => replaceQueryParams({ query: value }),
+    300
+  )
+
+  if (prevSearchQuery !== searchQuery && !debouncedReplaceQuery.isPending()) {
+    setPrevSearchQuery(searchQuery)
+    setInputValue(searchQuery || '')
+  }
+
   const onInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatchQueryParams({ query: e.target.value }, isStandaloneSearchLocation)
-      if (e.target.value !== searchQuery && searchSuggestionClicked) {
+      const value = e.target.value
+      setInputValue(value)
+      debouncedReplaceQuery(value)
+      if (value !== searchQuery && searchSuggestionClicked) {
         dispatch(setSuggestionClicked(false))
       }
     },
-    [
-      dispatch,
-      dispatchQueryParams,
-      isStandaloneSearchLocation,
-      searchQuery,
-      searchSuggestionClicked,
-    ]
+    [dispatch, searchQuery, searchSuggestionClicked, debouncedReplaceQuery]
   )
 
   const handleIntersection = useCallback(
@@ -116,7 +123,7 @@ function SearchBasic({
             <InputText
               {...getInputProps()}
               onChange={onInputChange}
-              value={searchQuery || ''}
+              value={inputValue}
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}

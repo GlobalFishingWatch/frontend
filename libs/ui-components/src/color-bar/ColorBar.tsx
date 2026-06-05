@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import type { Color } from 'react-aria-components'
-import { ColorSlider, ColorThumb, parseColor, SliderTrack } from 'react-aria-components'
+import { ColorSlider, ColorThumb, parseColor } from 'react-aria-components/ColorSlider'
+import { SliderTrack } from 'react-aria-components/Slider'
 import cx from 'classnames'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'

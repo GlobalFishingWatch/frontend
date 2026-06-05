@@ -2,13 +2,12 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { saveAs } from 'file-saver'
 import { DateTime } from 'luxon'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
@@ -23,6 +22,7 @@ interface EventProps {
   onMapClick?: (voyageId: ActivityEvent['voyage']) => void
   onMapHover?: (voyageId?: ActivityEvent['voyage']) => void
   onToggleClick?: (voyageId: ActivityEvent['voyage']) => void
+  className?: string
 }
 
 const VoyageGroup: React.FC<EventProps> = ({
@@ -31,6 +31,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   onMapClick,
   onMapHover,
   onToggleClick,
+  className,
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
@@ -70,11 +71,12 @@ const VoyageGroup: React.FC<EventProps> = ({
 
   const hasEvents = events.length > 0
 
-  const onDownloadClick = () => {
+  const onDownloadClick = async () => {
     if (events.length) {
       const { start, end } = getVoyageTimeRange(events)
       const data = parseEventsToCSV(events)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
+      const { saveAs } = await import('file-saver')
       saveAs(blob, `${vesselId}-voyage-${start}-${end}-events.csv`)
     }
   }
@@ -106,7 +108,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   }, [onMapHover])
 
   return (
-    <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
+    <li className={cx(styles.eventGroup, { [styles.open]: expanded }, className)}>
       <div
         className={styles.header}
         onClick={onToggle}

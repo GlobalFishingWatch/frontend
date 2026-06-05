@@ -13,8 +13,11 @@ import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import type { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
-const blankImage = new Image()
-blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
+let blankImage: HTMLImageElement | undefined
+if (typeof window !== 'undefined') {
+  blankImage = new Image()
+  blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
+}
 
 const MapAnnotations = (): React.ReactNode | null => {
   const { t } = useTranslation()
@@ -39,7 +42,7 @@ const MapAnnotations = (): React.ReactNode | null => {
     ({ event, annotation }: { event: DragEvent; annotation: MapAnnotation }) => {
       if (!viewport) return
       setOverlaysCursor('move')
-      event.dataTransfer.setDragImage(blankImage, 0, 0)
+      if (blankImage) event.dataTransfer.setDragImage(blankImage, 0, 0)
       event.dataTransfer.effectAllowed = 'none'
       selectedAnnotationRef.current = annotation.id
     },
@@ -85,6 +88,7 @@ const MapAnnotations = (): React.ReactNode | null => {
   return (
     <div onPointerUp={(event) => event.preventDefault()}>
       <HtmlOverlay viewport={viewport} key="1">
+        {/* eslint-disable-next-line react-hooks/refs */}
         {mapAnnotations.map((annotation) => (
           <HtmlOverlayItem
             key={annotation.id}

@@ -13,7 +13,7 @@ import { selectPointsActiveReportDataviews } from 'features/dataviews/selectors/
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { getContextValue } from 'features/map/popups/map-popups.utils'
-import { selectLocationAreaId } from 'routes/routes.selectors'
+import { selectLocationAreaId } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 export const getAreaIdFromFeature = (

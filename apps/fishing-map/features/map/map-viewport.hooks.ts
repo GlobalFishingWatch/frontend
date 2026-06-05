@@ -5,13 +5,11 @@ import { MapView } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { updateUrlViewport } from 'routes/routes.actions'
-
-const URL_VIEWPORT_DEBOUNCED_TIME = 1000
+import { useReplaceQueryParams } from 'router/routes.hook'
+import type { WorkspaceViewport } from 'types'
 
 export const useMapViewState = () => {
   return useAtomValue(viewStateAtom)
@@ -53,25 +51,30 @@ export function useSetMapCoordinates() {
   )
 }
 
+const VIEW_STATE_URL_DEBOUNCE = 300
+
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
-  const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
 
-  const updateUrlViewportDebounced = useMemo(
-    () => debounce(dispatch(updateUrlViewport), URL_VIEWPORT_DEBOUNCED_TIME),
-    [dispatch]
+  const debouncedReplace = useMemo(
+    () =>
+      debounce((viewport: WorkspaceViewport) => {
+        replaceQueryParams(viewport)
+      }, VIEW_STATE_URL_DEBOUNCE),
+    [replaceQueryParams]
   )
 
   useEffect(() => {
     if (isWorkspaceReady) {
       const { longitude, latitude, zoom } = viewState
-      updateUrlViewportDebounced({ longitude, latitude, zoom })
+      debouncedReplace({ longitude, latitude, zoom })
     }
     return () => {
-      updateUrlViewportDebounced.cancel()
+      debouncedReplace.cancel()
     }
-  }, [viewState, updateUrlViewportDebounced, isWorkspaceReady])
+  }, [viewState, isWorkspaceReady, debouncedReplace])
 }
 
 export const MAP_CONTAINER_ID = 'map-container'

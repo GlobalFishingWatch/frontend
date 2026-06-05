@@ -1,6 +1,6 @@
 import type { UserGroupId } from '@globalfishingwatch/api-types'
 
-export const VMS_PANAMA_V4_1_PREVIEW = process.env.NEXT_PUBLIC_VMS_PANAMA_V4_1_PREVIEW === 'true'
+export const VMS_PANAMA_V4_1_PREVIEW = import.meta.env.VITE_VMS_PANAMA_V4_1_PREVIEW === 'true'
 
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'

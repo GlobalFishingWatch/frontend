@@ -5,11 +5,11 @@ import { DateTime } from 'luxon'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 
 import VesselGroupReportInsightFishing from './VGRInsightFishing'
@@ -46,7 +46,7 @@ const VesselGroupReportInsights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
-          year: MIN_INSIGHTS_YEAR,
+          year: String(MIN_INSIGHTS_YEAR),
         })}
       </div>
     )
@@ -60,10 +60,7 @@ const VesselGroupReportInsights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology
-          title={t((t) => t.vesselGroupReport.insights.title)}
-          terminologyKey="insightsVesselGroups"
-        />
+        <DataTerminology terminologyKey="insightsVesselGroups" />
       </p>
       <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />

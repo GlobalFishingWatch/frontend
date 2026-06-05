@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -13,7 +13,7 @@ import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
@@ -21,8 +21,7 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
-import { WORKSPACE_REPORT } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
@@ -41,14 +40,15 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportLayersVisible = useSelector(selectReportLayersVisible)
+  const featureFlags = useSelector(selectFeatureFlags)
   const isDataviewReportAnalysable = getIsDataviewReportSupported(
     reportLayersVisible!,
+    featureFlags,
     feature?.layerId
   )
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
-  const query = useSelector(selectLocationQuery)
   const reportAreaDataset = useSelector(selectReportDatasetId)
   const reportAreaId = useSelector(selectReportAreaId)
   const areaId = getAreaIdFromFeature(feature)
@@ -74,7 +74,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
 
   const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
     const layerSources = (reportLayersVisible ?? [])
-      .map((layer) => (layer.datasets ?? []).map((d) => getDatasetNameTranslated(d)))
+      .map((layer) => (layer.datasets ?? []).map((d) => d.name))
       .flat()
       .join(', ')
     resetSidebarScroll()
@@ -85,49 +85,42 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
     }
   }
 
-  const reportLinkTo = {
-    type: WORKSPACE_REPORT,
-    payload: {
-      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      datasetId: feature.datasetId,
-      areaId,
-    },
-    query: {
-      ...query,
-      bivariateDataviews: null,
-      reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
-      reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
-      reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
-      ...(!isSidebarOpen && { sidebarOpen: true }),
-    },
+  const reportLinkParams = {
+    category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+    workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+    datasetId: feature.datasetId,
+    areaId: String(areaId),
   }
 
-  const addReportLinkTo = {
-    ...reportLinkTo,
-    payload: {
-      ...reportLinkTo.payload,
-      datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
-      areaId: [reportAreaId, areaId].join(','),
-    },
+  const reportLinkSearch = {
+    bivariateDataviews: null,
+    reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
+    reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
+    reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
+    ...(!isSidebarOpen && { sidebarOpen: true }),
   }
+
   const areaIndex = reportAreaIds.indexOf(areaId?.toString() ?? '')
-  const removeReportLinkTo = {
-    ...reportLinkTo,
-    payload: {
-      ...reportLinkTo.payload,
-      datasetId: reportAreaDatasetIds.filter((id, index) => index !== areaIndex).join(','),
-      areaId: reportAreaIds.filter((id, index) => index !== areaIndex).join(','),
-    },
+  const addReportLinkParams = {
+    ...reportLinkParams,
+    datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
+    areaId: [reportAreaId, areaId].join(','),
+  }
+  const removeReportLinkParams = {
+    ...reportLinkParams,
+    datasetId: reportAreaDatasetIds.filter((id, index) => index !== areaIndex).join(','),
+    areaId: reportAreaIds.filter((id, index) => index !== areaIndex).join(','),
   }
 
   return (
     <Fragment>
       <Link
         className={styles.workspaceLink}
-        to={reportLinkTo}
-        onClick={onReportClick}
+        to="/$category/$workspaceId/report/$datasetId/$areaId"
+        params={reportLinkParams}
+        search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
         data-testid="open-analysis-link"
+        onClick={onReportClick}
       >
         <IconButton
           icon="analysis"
@@ -139,7 +132,9 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       {addAreaToReport && (
         <Link
           className={styles.workspaceLink}
-          to={addReportLinkTo}
+          to="/$category/$workspaceId/report/$datasetId/$areaId"
+          params={addReportLinkParams}
+          search={reportLinkSearch}
           onClick={onReportClick}
           data-testid="add-area-to-report-link"
         >
@@ -154,7 +149,9 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       {removeAreaFromReport && (
         <Link
           className={styles.workspaceLink}
-          to={removeReportLinkTo}
+          to="/$category/$workspaceId/report/$datasetId/$areaId"
+          params={removeReportLinkParams}
+          search={reportLinkSearch}
           onClick={onReportClick}
           data-testid="remove-area-from-report-link"
         >

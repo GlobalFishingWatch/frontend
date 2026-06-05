@@ -204,7 +204,7 @@ function NewTrackDataset({
             t((t) => t.common[f], { defaultValue: f })
           )
           error = t((t) => t.dataset.requiredFields, {
-            fields,
+            fields: fields.join(', '),
           })
         } else {
           const errors = checkRecordValidity({
@@ -432,7 +432,7 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink section="uploadTracks" />
+          <UserGuideLink slug="uploading-data" />
         </div>
         <Button
           className={styles.saveBtn}

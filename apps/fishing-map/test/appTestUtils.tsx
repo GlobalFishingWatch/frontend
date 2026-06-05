@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react'
-import { Provider } from 'react-redux'
+import type { ReactNode } from 'react'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { createStore as createJotaiStore, Provider as JotaiProvider } from 'jotai'
 import type { Store as JotaiStore } from 'jotai/vanilla/store'
 import { vi } from 'vitest'
@@ -8,16 +8,35 @@ import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
 import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
+import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import { fetchUserThunk } from 'features/user/user.slice'
+import type { AppRouterContext } from 'router/app-router-context'
+import type { LocationState } from 'router/location.slice'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
+import { getCreateRouterOptions } from '../router'
 import type { AppStore } from '../store'
 import { makeStore } from '../store'
 
-interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
+export interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore
   jotaiStore?: JotaiStore
   authenticated?: boolean
+}
+
+function buildInitialHref(location: LocationState): string {
+  const search = stringifyWorkspace(location.query)
+  const pathname = location.pathname?.startsWith(PATH_BASENAME)
+    ? location.pathname
+    : `${PATH_BASENAME}${location.to === ROUTE_PATHS.HOME ? '/' : location.pathname || '/'}`
+  return `${pathname}${search ? `?${search}` : ''}`
+}
+
+function seedBrowserHistory(location?: LocationState) {
+  if (!location || typeof window === 'undefined') return
+  window.history.replaceState(null, '', buildInitialHref(location))
 }
 
 export async function withGuestUser(store: AppStore) {
@@ -29,13 +48,11 @@ export async function withGuestUser(store: AppStore) {
   return store
 }
 
-export async function render(ui: ReactElement, options?: AppRenderOptions) {
-  const { store, jotaiStore, authenticated, ...renderOptions } = options || {}
+export async function render(options: AppRenderOptions = {}) {
+  const { store, jotaiStore, authenticated, ...renderOptions } = options
 
   return page.mark('render app', async () => {
-    // Load authentication tokens if requested
     if (authenticated) {
-      // Fetch tokens only once per test session
       try {
         const response = await fetch('/.auth/tokens.json').catch(() => null)
         if (response?.ok) {
@@ -49,16 +66,12 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
         console.warn('Authentication requested but tokens not available')
       }
 
-      // Mock logout to prevent invalidating shared auth tokens
-      // This allows tests to call logout without affecting other tests
       vi.spyOn(GFWAPI, 'logout').mockImplementation(async () => {
-        // Only clear localStorage, don't make the API call
         localStorage.removeItem('GFW_API_USER_TOKEN')
         localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
         return true
       })
     } else {
-      // Ensure no tokens are set for non-authenticated tests
       localStorage.removeItem('GFW_API_USER_TOKEN')
       localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
     }
@@ -66,25 +79,35 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
     const storeToUse = store || makeStore()
     const jotaiStoreToUse = jotaiStore || createJotaiStore()
 
-    // Ensure __next element exists for modals
-    let rootElement = document.getElementById('__next')
+    const location = storeToUse.getState().location
+    // HOME is always the initial route — seeding is for the search params (lat/lng/zoom),
+    // not the pathname. Without this, the router boots at bare /map/ and setupRouterSync
+    // overwrites location.query from the URL, dropping the fixture's viewport.
+    seedBrowserHistory(location)
+
+    const router = createRouter({
+      ...getCreateRouterOptions(),
+      // Inject the store into the router context for integration tests
+      context: { store: storeToUse } satisfies AppRouterContext,
+    })
+
+    let rootElement = document.getElementById(ROOT_DOM_ELEMENT)
     if (!rootElement) {
       rootElement = document.createElement('div')
-      rootElement.id = '__next'
+      rootElement.id = ROOT_DOM_ELEMENT
       document.body.appendChild(rootElement)
     }
 
-    function Wrapper({ children }: { children: React.ReactNode }) {
-      return (
-        <Provider store={storeToUse}>
-          <JotaiProvider store={jotaiStoreToUse}>{children}</JotaiProvider>
-        </Provider>
-      )
+    function Wrapper({ children }: { children: ReactNode }) {
+      return <JotaiProvider store={jotaiStoreToUse}>{children}</JotaiProvider>
     }
 
-    return vitestRender(ui, { wrapper: Wrapper, container: rootElement, ...renderOptions })
+    const renderResult = await vitestRender(<RouterProvider router={router} />, {
+      wrapper: Wrapper,
+      container: rootElement,
+      ...renderOptions,
+    })
+
+    return Object.assign(renderResult, { router, store: storeToUse })
   })
 }
-
-// Re-export everything else from vitest-browser-react
-export * from 'vitest-browser-react'

@@ -1,17 +1,16 @@
-import type { datasets, flags, timebar } from '@globalfishingwatch/i18n-labels/types'
+// import type { flags, timebar } from '@globalfishingwatch/i18n-labels/types'
 
 import 'i18next'
 
 import type { DEFAULT_NAMESPACE, FALLBACK_LNG } from './i18n'
-// import type AppResources from './i18n.types'
+import type AppResources from './i18n.types'
 
 type LibraryResources = {
-  datasets: datasets
-  flags: flags
-  timebar: timebar
+  flags: any // flags
+  timebar: any // timebar
 }
 
-type Resources = any
+type Resources = AppResources & LibraryResources
 
 export declare module 'i18next' {
   interface CustomTypeOptions {

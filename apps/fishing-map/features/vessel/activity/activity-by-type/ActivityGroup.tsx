@@ -17,6 +17,7 @@ interface ActivityGroupProps {
   onToggleClick?: (type: EventType) => void
   quantity: number
   expanded: boolean
+  className?: string
 }
 
 const ActivityGroup: React.FC<ActivityGroupProps> = ({
@@ -25,6 +26,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   quantity,
   expanded,
   eventSource,
+  className,
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
@@ -33,7 +35,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   return (
     <Fragment>
       <li
-        className={cx(styles.eventGroup, { [styles.open]: expanded })}
+        className={cx(styles.eventGroup, { [styles.open]: expanded }, className)}
         data-testid={`vv-list-${eventType}`}
       >
         <div className={styles.header} onClick={onToggle}>

@@ -8,7 +8,7 @@ import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types
 import { getDatasetFiltersAllowed } from '@globalfishingwatch/datasets-client'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
+import { NEW_DATASET_MODAL_ID, ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
@@ -19,11 +19,12 @@ import NewTrackDataset from 'features/datasets/upload/NewTrackDataset'
 import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
+import { getModalParent } from 'features/modals/modals.utils'
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection/UserSection'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { selectLocationType } from 'routes/routes.selectors'
+import { selectLocationType } from 'router/routes.selectors'
 
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -36,8 +37,6 @@ import {
 import DatasetTypeSelect from './DatasetTypeSelect'
 
 import styles from './NewDataset.module.css'
-
-export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {
@@ -197,6 +196,7 @@ function NewDataset() {
       className={style === 'transparent' ? styles.transparentOverlay : undefined}
       size={style === 'transparent' ? 'fullscreen' : 'default'}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>
@@ -235,7 +235,7 @@ function NewDataset() {
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
           </div>
           {style !== 'transparent' && (
-            <UserGuideLink section="uploadData" className={styles.userGuideLink} />
+            <UserGuideLink slug="uploading-data" className={styles.userGuideLink} />
           )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>

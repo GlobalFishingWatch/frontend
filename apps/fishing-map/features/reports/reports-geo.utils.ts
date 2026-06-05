@@ -1,12 +1,12 @@
-import { booleanPointInPolygon } from '@turf/turf'
-import type { Feature, MultiPolygon, Point, Polygon } from 'geojson'
+import { bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
+import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
 
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
   instanceId: string
-  contained: (FourwingsFeature | FourwingsStaticFeature | Feature<Point>)[]
-  overlapping: (FourwingsFeature | FourwingsStaticFeature | Feature<Point>)[]
+  contained: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
+  overlapping: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
   error?: string
 }
 
@@ -20,10 +20,10 @@ function isCellInPolygon(cellGeometry: FourwingsFeature, polygon: Polygon) {
   return corners.every((corner) => booleanPointInPolygon(corner, polygon))
 }
 
-export type FilterByPolygonMode = 'cell' | 'cellCenter' | 'point'
+export type FilterByPolygonMode = 'cell' | 'cellCenter' | 'point' | 'polygon'
 export type FilterByPolygomParams = {
   instanceId: string
-  layersCells: (FourwingsFeature | Feature<Point>)[][]
+  layersCells: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[][]
   polygon: Polygon | MultiPolygon
   mode?: FilterByPolygonMode
 }
@@ -33,6 +33,7 @@ export function filterByPolygon({
   polygon,
   mode = 'cell',
 }: FilterByPolygomParams): FilteredPolygons[] {
+  const [px1, py1, px2, py2] = bbox(polygon)
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {
@@ -42,6 +43,32 @@ export function filterByPolygon({
         if (mode === 'point') {
           if (booleanPointInPolygon((cell as Feature<Point>)?.geometry, polygon)) {
             acc.contained.push(cell as FourwingsFeature)
+          }
+          return acc
+        }
+        if (mode === 'polygon') {
+          const feature = cell as Feature<Geometry>
+          if (!feature?.geometry) return acc
+          const subPolygons: Feature<Polygon>[] =
+            feature.geometry.type === 'MultiPolygon'
+              ? feature.geometry.coordinates.map((coords) => ({
+                  ...feature,
+                  geometry: { type: 'Polygon' as const, coordinates: coords },
+                }))
+              : ([feature] as Feature<Polygon>[])
+          if (subPolygons.every((p) => booleanContains(polygon, p))) {
+            acc.contained.push(feature)
+          } else {
+            const [fx1, fy1, fx2, fy2] = bbox(feature)
+            if (
+              fx2 >= px1 &&
+              fx1 <= px2 &&
+              fy2 >= py1 &&
+              fy1 <= py2 &&
+              booleanIntersects(polygon, feature)
+            ) {
+              acc.overlapping.push(feature)
+            }
           }
           return acc
         }
@@ -84,7 +111,11 @@ export function filterByPolygon({
         }
         return acc
       },
-      { contained: [] as FourwingsFeature[], overlapping: [] as FourwingsFeature[], instanceId }
+      {
+        contained: [] as FilteredPolygons['contained'],
+        overlapping: [] as FilteredPolygons['overlapping'],
+        instanceId,
+      }
     )
   })
   return filtered

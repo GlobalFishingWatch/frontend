@@ -1,12 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'es-toolkit'
-import type { RootState } from 'reducers'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { RelatedDataset } from '@globalfishingwatch/api-types'
 
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type BigQueryVisualisation = '4wings' | 'events'
@@ -96,7 +96,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
           } as any,
         }
       )
-      const dataset = await dispatch(fetchDatasetByIdThunk(id))
+      const dataset = await dispatch(fetchDatasetByIdThunk({ id }))
       return dataset
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))

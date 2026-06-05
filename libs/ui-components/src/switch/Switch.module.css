@@ -3,8 +3,12 @@
   background-color: transparent;
   border: var(--border);
   border-radius: 0.7rem;
-  transition: var(--transition);
   cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    transform 160ms var(--ease-out-strong);
 }
 
 .switch.default {
@@ -21,6 +25,10 @@
   box-shadow: var(--box-shadow-highlight);
 }
 
+.switch:active:not(.disabled) {
+  transform: scale(0.92);
+}
+
 .switch.disabled {
   cursor: not-allowed;
 }
@@ -30,7 +38,11 @@
   border-radius: 0.5rem;
   border: 1px solid white;
   background-color: var(--color-secondary-blue);
-  transition: var(--transition);
+  transform: translateX(0);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms var(--ease-out-strong);
 }
 
 .switch.default .nib {
@@ -58,23 +70,36 @@
 .switch[aria-checked='true'] .nib {
   background-color: var(--color-white);
   border: var(--border);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .switch.default[aria-checked='true'] .nib {
-  left: 1.1rem;
+  transform: translateX(1rem);
 }
 
 .switch.small[aria-checked='true'] .nib {
-  left: 0.75rem;
+  transform: translateX(0.75rem);
 }
 
-.switch:not(.disabled):not([aria-checked='true']):hover,
-.switch:not(.disabled):not([aria-checked='true']):focus {
+.switch:not(.disabled, [aria-checked='true']):hover,
+.switch:not(.disabled, [aria-checked='true']):focus {
   border: 0.1rem solid var(--color-secondary-blue);
 }
 
-.switch:not(.disabled):not([aria-checked='true']):hover .nib,
-.switch:not(.disabled):not([aria-checked='true']):focus .nib {
+.switch:not(.disabled, [aria-checked='true']):hover .nib,
+.switch:not(.disabled, [aria-checked='true']):focus .nib {
   background-color: var(--color-primary-blue);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch .nib {
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .switch:active:not(.disabled) {
+    transform: none;
+  }
 }

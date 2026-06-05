@@ -1,13 +1,9 @@
-import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { WAIT } from 'test/setup/config'
+import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
-import { mapInstanceAtom } from 'features/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
 
 // async function getViewport(jotaiStore: ReturnType<typeof createJotaiStore>) {
@@ -23,8 +19,8 @@ import { makeStore } from 'store'
 describe('Datasets', () => {
   it('should add reference data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByText } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-eez-button')
@@ -35,13 +31,11 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 6, y: 400 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'eez__1771416000000',
@@ -60,8 +54,8 @@ describe('Datasets', () => {
 
   it('should add environment data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByText } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-bathymetry-button')
@@ -71,12 +65,10 @@ describe('Datasets', () => {
     await expect.element(getByText('Layer Library')).toBeVisible()
 
     await addLayerButton.click()
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
     await userEvent.click(mapElement, { position: { x: 200, y: 200 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'bathymetry__1771416000000',
@@ -95,8 +87,8 @@ describe('Datasets', () => {
 
   it('should add events data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByText } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-port-visits-button')
@@ -107,14 +99,11 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.hover(mapElement, { position: { x: 40, y: 350 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'port-visits__1771416000000',
@@ -134,10 +123,9 @@ describe('Datasets', () => {
 
   // TODO fix this, don't know why if randomly fails
   // it('should add detections data layer', async () => {
-  //   const testingMiddleware = createTestingMiddleware()
-  //   const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+  //   const store = makeStore(defaultState)
   //   const jotaiStore = createJotaiStore()
-  //   const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+  //   const { getByTestId, getByText } = await render({ store, jotaiStore })
 
   //   const DISABLED_LAYERS = ['ais', 'vms']
   //   for (const layer of DISABLED_LAYERS) {
@@ -154,9 +142,7 @@ describe('Datasets', () => {
   //   const addLayerButton = getByTestId(`add-layer-${LAYER_ID}-button`)
   //   await addLayerButton.click()
 
-  //   const actions = testingMiddleware.getActions()
-  //   const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-  //   expect(addLayerAction?.query).toMatchObject({
+  //   expect(store.getState().location.query).toMatchObject({
   //     dataviewInstances: [
   //       {
   //         id: `${LAYER_ID}__1771416000000`,
@@ -200,8 +186,8 @@ describe('Datasets', () => {
 
   it('should add activity data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId, getByText } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId, getByText } = await render({ store })
     const mapElement = getByTestId('app-main')
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const removeLayerButton = getByTestId('activity-layer-panel-remove-presence')
@@ -216,14 +202,11 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'presence__1771416000000',
@@ -258,8 +241,8 @@ describe('Datasets', () => {
 
   it('should preserve other layers when removing layer', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId } = await render(<App />, { store })
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const { getByTestId } = await render({ store })
     const mapElement = getByTestId('app-main')
     const vesselPresenceSwitch = getByTestId('activity-layer-panel-switch-presence')
     const removeAISLayerButton = getByTestId('activity-layer-panel-remove-ais')
@@ -271,13 +254,11 @@ describe('Datasets', () => {
     await userEvent.hover(getByTestId('activity-layer-panel-switch-vms'))
     await removeVMSLayerButton.click()
 
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await userEvent.click(mapElement, { position: { x: 5, y: 402 } })
 
-    const actions = testingMiddleware.getActions()
-    const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-    expect(addLayerAction?.query).toMatchObject({
+    expect(store.getState().location.query).toMatchObject({
       dataviewInstances: [
         {
           id: 'presence',

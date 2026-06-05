@@ -32,10 +32,10 @@ import {
 } from 'features/app/selectors/app.timebar.selectors'
 import { selectHasVectorDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { useTimebarTracksGraphSteps } from 'features/map/timebar-graph.hooks'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
@@ -54,7 +54,7 @@ import {
 import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
-import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -381,7 +381,7 @@ const TimebarWrapper = () => {
           <label className={styles.disclaimerLabel}>
             {upperFirst(
               t((t) => t.timebar.maxTracksNumber, {
-                number: MAX_TIMEBAR_VESSELS,
+                number: String(MAX_TIMEBAR_VESSELS),
               })
             )}
           </label>

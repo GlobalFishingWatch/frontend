@@ -465,14 +465,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       throw new Error(error)
     }
 
-    const arrayBuffers = settledPromises.flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
-    })
+    const buffersLength = settledPromises.map((p) =>
+      p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+    )
+    const filteredBuffers = settledPromises.flatMap((d) =>
+      d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    ) as ArrayBuffer[]
+    // Release settled promise refs before the worker await to allow GC during transfer
+    settledPromises.length = 0
+
     if (tile.signal?.aborted) {
       return
     }
 
-    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+    const data = await parse(filteredBuffers, FourwingsLoader, {
       worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
@@ -489,9 +495,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         interval,
         tile,
         aggregationOperation,
-        buffersLength: settledPromises.map((p) =>
-          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-        ),
+        buffersLength,
       } as ParseFourwingsOptions,
     })
     return data
@@ -577,15 +581,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       throw new Error(error)
     }
 
+    const buffersLength = settledPromises.map((p) =>
+      p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+    )
+    const filteredBuffers = settledPromises.flatMap((d) =>
+      d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    ) as ArrayBuffer[]
+    // Release settled promise refs before the worker await to allow GC during transfer
+    settledPromises.length = 0
+
     if (tile.signal?.aborted) {
       return null
     }
 
-    const arrayBuffers = settledPromises.flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
-    })
-
-    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
+    const data = await parse(filteredBuffers, FourwingsLoader, {
       worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
@@ -602,9 +611,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         interval,
         tile,
         aggregationOperation,
-        buffersLength: settledPromises.map((p) =>
-          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-        ),
+        buffersLength,
       } as ParseFourwingsOptions,
     })
     return data

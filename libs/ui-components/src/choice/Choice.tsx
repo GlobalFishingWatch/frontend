@@ -42,41 +42,37 @@ export function Choice({
   const activeOptionId = activeOption
 
   const activeRef = useRef<HTMLLIElement | null>(null)
-  const [activeElementProperties, setActiveElementProperties] = useState<
-    ActiveChoiceProperties | undefined
-  >()
+  const listRef = useRef<HTMLUListElement | null>(null)
+  const [pill, setPill] = useState<{ width: number; left: number } | null>(null)
 
-  const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
-    if (activeOptionId === option.id) return
-    activeRef.current = e.currentTarget.parentElement as HTMLLIElement
-    setActiveElementProperties({
-      width: activeRef?.current.clientWidth,
-      left: activeRef?.current.offsetLeft,
-    })
-    if (onSelect) {
-      onSelect(option, e)
-    }
-  }
-
-  const updateActiveElementPoperties = useCallback(() => {
-    if (activeRef?.current?.clientWidth) {
-      setActiveElementProperties({
-        width: activeRef?.current.clientWidth,
-        left: activeRef?.current.offsetLeft,
+  const measurePill = useCallback(() => {
+    if (activeRef.current) {
+      setPill({
+        width: activeRef.current.offsetWidth,
+        left: activeRef.current.offsetLeft,
       })
     }
   }, [])
 
   useLayoutEffect(() => {
-    updateActiveElementPoperties()
-  }, [activeRef, activeOptionId, updateActiveElementPoperties])
+    measurePill()
+  }, [activeOption, measurePill])
 
   useEffect(() => {
-    if (!activeRef.current) return
-    const resizeObserver = new ResizeObserver(updateActiveElementPoperties)
-    resizeObserver.observe(activeRef.current)
-    return () => resizeObserver.disconnect()
-  }, [updateActiveElementPoperties])
+    const list = listRef.current
+    if (!list) return
+    const observer = new ResizeObserver(measurePill)
+    observer.observe(list)
+    return () => observer.disconnect()
+  }, [measurePill])
+
+  const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
+    if (activeOptionId === option.id) return
+    activeRef.current = e.currentTarget.parentElement as HTMLLIElement
+    if (onSelect) {
+      onSelect(option, e)
+    }
+  }
 
   if (!options?.length) {
     return null
@@ -96,10 +92,18 @@ export function Choice({
       )}
       <div className={cx(styles.Choice, className)}>
         <ul
+          ref={listRef}
           className={styles.list}
           role="radiogroup"
           {...(testId && { 'data-testid': `${testId}` })}
         >
+          {pill && (
+            <span
+              className={styles.activePill}
+              style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
+              aria-hidden="true"
+            />
+          )}
           {options.map((option) => {
             const optionSelected = activeOptionId === option.id
             return (
@@ -129,15 +133,6 @@ export function Choice({
               </li>
             )
           })}
-          {activeOption && activeElementProperties && (
-            <div
-              className={styles.activeChip}
-              style={{
-                width: activeElementProperties.width,
-                left: activeElementProperties.left,
-              }}
-            />
-          )}
         </ul>
       </div>
     </div>

@@ -12,9 +12,11 @@ import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import VesselActivityDownload from 'features/vessel/activity/VesselActivityDownload'
 import {
@@ -23,7 +25,6 @@ import {
   selectEventsGroupedByType,
   selectVoyagesNumber,
 } from 'features/vessel/activity/vessels-activity.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
@@ -139,7 +140,7 @@ export const VesselActivitySummary = () => {
                     <Tooltip key={regionType} content={tooltipContent}>
                       <span className={styles.help}>
                         {activityRegions[regionType].length}{' '}
-                        {t((t: any) => t.layer.areas[regionType], {
+                        {t((t) => t.layer.areas[regionType as keyof typeof t.layer.areas], {
                           defaultvalue: regionType,
                           count: activityRegions[regionType].length,
                         })}
@@ -248,13 +249,7 @@ export const VesselActivitySummary = () => {
                       </span>
                     )}
                   </p>
-                  <DataTerminology
-                    title={t((t) => t.event[eventType], {
-                      defaultValue: eventType,
-                      source: t((t) => t.common.ais),
-                    })}
-                    terminologyKey={eventType as any}
-                  />
+                  <DataTerminology terminologyKey={eventType as any} />
                 </div>
               </li>
             )

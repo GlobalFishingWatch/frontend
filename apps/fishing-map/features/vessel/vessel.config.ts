@@ -1,33 +1,16 @@
-import {
-  RegionType,
-  SelfReportedSource,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
-import {
-  DATASET_PRIVATE_PREFIX,
-  PIPE_DATASET_ID,
-  PIPE_DATASET_VERSION,
-} from '@globalfishingwatch/datasets-client'
-
-import type I18nNamespaces from 'features/i18n/i18n.types'
-import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
+import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
 import type { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity' as const
 export const DEFAULT_VESSEL_IDENTITY_ID =
   `${DEFAULT_VESSEL_IDENTITY_DATASET}:${PIPE_DATASET_ID}` as const
+export const RF_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity-vi-653'
+export const RF_VESSEL_IDENTITY_ID = `${RF_VESSEL_IDENTITY_DATASET}:v1.0` as const
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID =
   'POTENTIAL_RELATED_SELF_REPORTED_INFO' as const
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
-export const REGISTRY_SOURCES = [
-  {
-    key: 'TMT',
-    logo: 'https://globalfishingwatch.org/wp-content/uploads/TMT_logo_primary_RGB@2x.png',
-    contact: 'jac-coord@tm-tracking.org',
-  },
-]
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,
@@ -41,129 +24,8 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   includeRelatedIdentities: true,
 }
 
-export type VesselRenderField<Key = string> = {
-  key: Key
-  label?: string
-  terminologyKey?: keyof I18nNamespaces['data-terminology']
-}
-
-const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
-
-const IDENTIFIER_FIELDS: VesselRenderField[] = [
-  { key: 'ssvid', label: 'mmsi' },
-  { key: 'imo' },
-  { key: 'callsign' },
-]
-
 // TODO review private datasets to ensure there are no missing fields
-
 export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
-type CustomVMSGroup = Partial<
-  Record<
-    SelfReportedSource | `${SelfReportedSource}-${typeof DATASET_PRIVATE_PREFIX}`,
-    VesselRenderField[][]
-  >
->
-export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
-  [SelfReportedSource.Peru_Pipe3]: [
-    [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
-    [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
-    [{ key: 'regimen' }, { key: 'resolution' }],
-    [{ key: 'casco' }, { key: 'chdSpecies' }],
-  ],
-  [SelfReportedSource.CostaRica_Pipe3]: [[{ key: 'nationalId' }]],
-  [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
-  [SelfReportedSource.Brazil_Pipe3]: [
-    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'codMarinha' }],
-  ],
-  [SelfReportedSource.Chile_Pipe3]: [[{ key: 'fleet' }]],
-  [SelfReportedSource.Peru]: [
-    [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
-    [{ key: 'length' }, { key: 'holdCapacityM3' }, { key: 'beam' }],
-    [{ key: 'licenseDescription' }, { key: 'resolution' }],
-    [{ key: 'hull' }, { key: 'targetSpecies' }],
-  ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
-  [SelfReportedSource.Brazil]: [
-    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'externalId' }],
-  ],
-  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
-  ...(VMS_PANAMA_V4_1_PREVIEW ? { [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]] } : {}),
-  [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
-    [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
-    [
-      { key: 'fishingLicenseCode' },
-      { key: 'fishingLicenseStatus', terminologyKey: 'fishingLicenseStatus' },
-    ],
-    [{ key: 'fishingLicenseStartDate' }, { key: 'fishingLicenseEndDate' }],
-    [{ key: 'builtYear' }, { key: 'length' }],
-    [{ key: 'grossTonnage' }, { key: 'horsePower' }],
-  ],
-}
-
-const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
-  { key: 'lengthM', label: 'lengthM' },
-  { key: 'depthM', label: 'depthM' },
-  { key: 'tonnageGt', label: 'grossTonnage' },
-]
-
-const VESSEL_SHIPTYPES_FIELD: VesselRenderField = {
-  key: 'shiptypes',
-  terminologyKey: 'shiptype',
-}
-
-const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
-  key: 'geartypes',
-  terminologyKey: 'geartype',
-}
-
-const VESSEL_CLASSIFICATION_FIELDS: VesselRenderField[] = [
-  VESSEL_SHIPTYPES_FIELD,
-  VESSEL_GEARTYPES_FIELD,
-]
-
-export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRenderField[][]> = {
-  [VesselIdentitySourceEnum.SelfReported]: [
-    COMMON_FIELD_GROUPS,
-    IDENTIFIER_FIELDS,
-    VESSEL_CLASSIFICATION_FIELDS,
-  ],
-  [VesselIdentitySourceEnum.Registry]: [
-    COMMON_FIELD_GROUPS,
-    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
-    IDENTIFIER_FIELDS,
-    VESSEL_FISICAL_FEATURES_FIELDS,
-  ],
-}
-
-export const REGISTRY_FIELD_GROUPS: VesselRenderField<
-  keyof Pick<
-    IdentityVesselData,
-    'registryOwners' | 'registryPublicAuthorizations' | 'operator' | 'recordId'
-  >
->[] = [
-  {
-    key: 'registryOwners',
-    label: 'owner',
-    terminologyKey: 'owner',
-  },
-  {
-    key: 'operator',
-    label: 'operator',
-  },
-  {
-    key: 'registryPublicAuthorizations',
-    label: 'authorization',
-    terminologyKey: 'authorization',
-  },
-  {
-    key: 'recordId',
-    label: 'recordId',
-  },
-]
 
 export const REGIONS_PRIORITY: RegionType[] = [
   RegionType.mpa,

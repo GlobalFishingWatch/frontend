@@ -9,7 +9,7 @@ import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-ty
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
@@ -27,7 +27,7 @@ import VesselGroupReportInsightVesselEvents from './VGRInsightVesselEvents'
 
 import styles from './VGRInsights.module.css'
 
-export const RFMO_REGIONS_PRIORITY: RegionType[] = [
+const RFMO_REGIONS_PRIORITY: RegionType[] = [
   RegionType.rfmo,
   RegionType.mpa,
   RegionType.eez,
@@ -158,10 +158,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.fishing)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.fishing)}
-          terminologyKey="insightsFishing"
-        />
+        <DataTerminology terminologyKey="insightsFishing" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -185,7 +182,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
                   0
                 ),
 
-                vessels: vesselsWithNoTakeMpas?.length,
+                vessels: String(vesselsWithNoTakeMpas?.length),
               })}
               onToggle={onMPAToggle}
             >
@@ -212,7 +209,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
                   0
                 ),
 
-                vessels: vesselsInRfmoWithoutKnownAuthorization.length,
+                vessels: String(vesselsInRfmoWithoutKnownAuthorization.length),
               })}
               onToggle={onRFMOToggle}
             >

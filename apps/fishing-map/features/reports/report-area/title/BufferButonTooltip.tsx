@@ -81,7 +81,7 @@ export const BufferButtonTooltip = ({
       <div className={styles.actionContainer}>
         <label>{t((t) => t.common.unit)}</label>
         <Choice
-          size="tiny"
+          size="small"
           activeOption={activeUnit}
           onSelect={handleBufferUnitChange}
           options={bufferUnitOptions}
@@ -158,14 +158,14 @@ export const BufferButtonTooltip = ({
             min={minValue}
             max={maxValue}
             onChange={handleInputChange}
-            inputSize="small"
+            inputSize="medium"
           />
         </div>
       </div>
       <div className={styles.actionContainer}>
         <label>{t((t) => t.analysis.bufferOperationLabel)}</label>
         <Choice
-          size="tiny"
+          size="small"
           className={styles.operationChoice}
           activeOption={activeOperation}
           onSelect={handleBufferOperationChange}
@@ -177,12 +177,12 @@ export const BufferButtonTooltip = ({
           type="border"
           icon="delete"
           tooltip={t((t) => t.analysis.deleteBuffer)}
-          size="small"
+          size="medium"
           onClick={handleRemoveBuffer}
           disabled={areaType === 'Point'}
         />
         <Button
-          size="small"
+          size="medium"
           onClick={handleConfirmBuffer}
           disabled={!previewBuffer || !values || values[1] < minValue || values[1] > maxValue}
         >

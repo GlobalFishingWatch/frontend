@@ -1,6 +1,7 @@
 {
   "name": "@globalfishingwatch/deck-layer-composer",
   "version": "0.1.13",
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {

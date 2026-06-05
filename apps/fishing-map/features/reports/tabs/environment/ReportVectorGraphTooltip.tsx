@@ -10,7 +10,7 @@ import { PRIMARY_BLUE_COLOR } from 'data/config'
 import type { CURRENTS_LAYER_ID} from 'data/layer-library';
 import { WINDS_LAYER_ID } from 'data/layer-library'
 import i18n from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatDate } from 'features/reports/report-area/area-reports.utils'
 import { useReportFilteredFeatures } from 'features/reports/reports-timeseries.hooks'
 import type { EvolutionTooltipContentProps } from 'features/reports/tabs/activity/ReportActivityEvolution'

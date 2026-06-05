@@ -72,7 +72,7 @@ const calculateXDomain = (start: string, end: string, interval?: string) => {
   return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
 }
 
-export const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
+const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
   const values = data.map((d) => d.avg?.[index]).filter((v) => v != null)
 
   if (values.length === 0) {
@@ -161,13 +161,16 @@ const ReportActivityDatasetComparisonGraph = ({
           dataKey="date"
           minTickGap={10}
           tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
+          axisLine={{
+            stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+          }}
         />
         <YAxis
           yAxisId="left"
           scale="linear"
           interval="preserveEnd"
           tickFormatter={tickFormatter}
-          tick={{ stroke: leftAxisColor, strokeWidth: 0.5 }}
+          tick={{ style: { fill: leftAxisColor, stroke: leftAxisColor, strokeWidth: 0.5 } }}
           axisLine={{ stroke: leftAxisColor }}
           tickLine={false}
           orientation="left"
@@ -181,7 +184,7 @@ const ReportActivityDatasetComparisonGraph = ({
             scale="linear"
             interval="preserveEnd"
             tickFormatter={tickFormatter}
-            tick={{ stroke: rightAxisColor, strokeWidth: 0.5 }}
+            tick={{ style: { fill: rightAxisColor, stroke: rightAxisColor, strokeWidth: 0.5 } }}
             axisLine={{ stroke: rightAxisColor }}
             tickLine={false}
             orientation="right"

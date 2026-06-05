@@ -4,7 +4,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -26,10 +26,7 @@ const InsightCoverage = ({
         <Tooltip content={t((t) => t.common.experimentalTooltip)}>
           <label className="experimental">{t((t) => t.vessel.insights.coverage)}</label>
         </Tooltip>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.coverage)}
-          terminologyKey="insightsCoverage"
-        />
+        <DataTerminology terminologyKey="insightsCoverage" />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />

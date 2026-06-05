@@ -3,16 +3,21 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  border: none;
-  transition: var(--transition);
+  border-bottom: 1px solid transparent;
   border-radius: 50%;
   background-repeat: no-repeat;
   background-position: center center;
   color: var(--color-primary-blue);
   background-color: transparent;
   cursor: pointer;
+  touch-action: manipulation;
   flex-shrink: 0;
   line-height: 1;
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms var(--ease-out-strong);
 }
 
 .disabled {
@@ -21,6 +26,15 @@
 
 .iconButton:focus {
   box-shadow: var(--box-shadow-highlight);
+}
+
+.iconButton:active:not(:disabled) {
+  transform: scale(0.88);
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 100ms ease-out;
 }
 
 .default,
@@ -32,7 +46,7 @@
 
 .border,
 .warning-border {
-  border: var(--border);
+  background-color: var(--color-terthiary-blue);
 }
 
 .warning-invert {
@@ -55,6 +69,7 @@
 .border:focus:not(:disabled) {
   opacity: 1;
   background-color: var(--color-terthiary-blue);
+  border-bottom: var(--border);
 }
 
 .invert {
@@ -69,15 +84,27 @@
 }
 
 .map-tool {
-  color: rgba(var(--white-rgb), var(--opacity-secondary));
-  background-color: var(--color-primary-blue);
-  border: var(--border-white);
+  color: rgba(var(--white-rgb), 0.9);
+  background-color: rgba(var(--primary-blue-rgb), 0.8);
+  border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
+  box-shadow: 0 2px 8px rgba(1, 30, 66, 0.35);
 }
 
 .map-tool:hover,
 .map-tool:focus {
   color: var(--color-white);
-  background-color: var(--color-primary-blue-hover);
+  background-color: rgba(var(--primary-blue-rgb), 0.92);
+  border-color: rgba(var(--white-rgb), 0.3);
+}
+
+.map-tool:active {
+  transform: scale(0.84);
+  background-color: rgba(var(--primary-blue-rgb), 1);
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 100ms ease-out;
 }
 
 .solid {
@@ -109,4 +136,21 @@
 .tinySize {
   width: var(--size-XS);
   height: var(--size-XS);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconButton {
+    transition:
+      opacity 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .iconButton:active:not(:disabled) {
+    transform: none;
+    transition:
+      opacity 160ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
 }

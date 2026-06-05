@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 
+import { selectPrintMode } from 'features/app/print.slice'
 import { selectReportVesselFilter } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { type ReportVesselsSubCategory } from 'features/reports/reports.types'
@@ -12,6 +13,7 @@ import {
   selectReportVesselsGraphAggregatedData,
   selectReportVesselsGraphDataKeys,
   selectReportVesselsGraphIndividualData,
+  selectReportVesselsOrdered,
   selectReportVesselsPaginated,
 } from './report-vessels.selectors'
 import ReportVesselsFilter from './ReportVesselsFilter'
@@ -32,11 +34,14 @@ function ReportVessels({
   title?: string
   activityUnit?: ReportActivityUnit
 }) {
+  const isPrinting = useSelector(selectPrintMode)
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   const individualData = useSelector(selectReportVesselsGraphIndividualData)
   const reportVesselGraph = useSelector(selectReportVesselGraph)
   const filter = useSelector(selectReportVesselFilter)
-  const vessels = useSelector(selectReportVesselsPaginated)
+  const vessels = useSelector(
+    isPrinting ? selectReportVesselsOrdered : selectReportVesselsPaginated
+  )
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
 
   return (

@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse, InsightValueInPeriod } from '@globalfishingwatch/api-types'
 
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import DataTerminology from 'features/data-terminology/DataTerminology'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -175,10 +175,7 @@ const InsightMOUList = ({
     <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.MOULists)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.MOULists)}
-          terminologyKey="insightsMOUList"
-        />
+        <DataTerminology terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

@@ -1,0 +1,230 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/// <reference types="vite/client" />
+
+import type { ReactNode } from 'react'
+import { Suspense } from 'react'
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
+import { reportRouteError } from 'features/app/sentry'
+import { getLoadedI18nState } from 'features/i18n/i18n'
+import type { I18nServerState } from 'features/i18n/i18n.server'
+import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
+import { getTFuntion } from 'router/router.meta'
+
+import appCss from './styles.css?url'
+
+const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
+
+const defaultDescription =
+  'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
+
+async function loadI18nState(): Promise<I18nServerState> {
+  if (!import.meta.env.SSR) {
+    const clientI18nState = getLoadedI18nState()
+    if (clientI18nState) {
+      return clientI18nState
+    }
+  }
+
+  // needs to be loaded dinamycally to avoid createServerFn errors on serve
+  const { getI18nState } = await import('features/i18n/getI18nState')
+  return (await getI18nState()) as I18nServerState
+}
+
+async function loadPanelWidths(): Promise<{
+  asideWidthPct: number | null
+  contentPanelWidth: number | null
+}> {
+  const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
+  if (!import.meta.env.SSR) {
+    return { asideWidthPct: null, contentPanelWidth: null }
+  }
+  return getSidebarWidthState()
+}
+
+export const Route = createRootRoute({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === '/index') {
+      throw redirect({ to: '/' })
+    }
+  },
+  errorComponent: ({ error }) => (
+    <RootDocument lang="en">
+      <RouterErrorBoundary error={error as Error} />
+    </RootDocument>
+  ),
+  loader: async () => {
+    const [i18nState, panelWidths] = await Promise.all([
+      loadI18nState(),
+      loadPanelWidths().catch(() => ({ asideWidthPct: null, contentPanelWidth: null })),
+    ])
+    return {
+      i18nState,
+      asideWidthPct: panelWidths.asideWidthPct,
+      contentPanelWidth: panelWidths.contentPanelWidth,
+    }
+  },
+  onError: (err) => {
+    reportRouteError(err, 'router-loader')
+  },
+  staleTime: Number.POSITIVE_INFINITY,
+  preloadStaleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+  shouldReload: false,
+  head: ({ matches }) => {
+    const t = getTFuntion(matches)
+    const title = `GFW | ${t('common.map')}`
+    const description = t('workspace.siteDescription.default') || defaultDescription
+    return {
+      meta: [
+        { charSet: 'utf-8' },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, viewport-fit=cover',
+        },
+        { title },
+        {
+          property: 'og:description',
+          content: description,
+        },
+        {
+          name: 'twitter:description',
+          content: description,
+        },
+        {
+          name: 'description',
+          content: description,
+        },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'theme-color', content: '#163f89' },
+        { name: 'application-name', content: 'GFW Fishing map' },
+        { name: 'referrer', content: 'no-referrer-when-downgrade' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'GFW Fishing map' },
+        { name: 'msapplication-TileColor', content: '#fff' },
+        { name: 'msapplication-TileImage', content: 'icons/mstile-144x144.png' },
+        { name: 'msapplication-config', content: 'icons/browserconfig.xml' },
+      ],
+      links: [
+        { rel: 'stylesheet', href: appCss },
+        { rel: 'canonical', href: 'https://globalfishingwatch.org/map' },
+        { rel: 'shortcut icon', href: `${PATH_BASENAME}/icons/favicon.ico` },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '16x16',
+          href: `${PATH_BASENAME}/icons/favicon-16x16.png`,
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '32x32',
+          href: `${PATH_BASENAME}/icons/favicon-32x32.png`,
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '48x48',
+          href: `${PATH_BASENAME}/icons/favicon-48x48.png`,
+        },
+        { rel: 'manifest', href: `${PATH_BASENAME}/icons/manifest.webmanifest` },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com/' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com/' },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com/',
+          crossOrigin: 'anonymous',
+        },
+        {
+          href: 'https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap',
+          rel: 'stylesheet',
+        },
+        {
+          rel: 'apple-touch-icon',
+          sizes: '120x120',
+          href: `${PATH_BASENAME}/icons/apple-touch-icon-120x120.png`,
+        },
+        {
+          rel: 'apple-touch-icon',
+          sizes: '152x152',
+          href: `${PATH_BASENAME}/icons/apple-touch-icon-152x152.png`,
+        },
+        {
+          rel: 'apple-touch-icon',
+          sizes: '1024x1024',
+          href: `${PATH_BASENAME}/icons/apple-touch-icon-1024x1024.png`,
+        },
+      ],
+    }
+  },
+
+  component: RootComponent,
+})
+
+function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode; lang: string }>) {
+  return (
+    <html lang={lang}>
+      <head>
+        <HeadContent />
+      </head>
+      <body suppressHydrationWarning>
+        {GOOGLE_TAG_MANAGER_ID && (
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `
+                <iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+              `,
+            }}
+          />
+        )}
+        <div id={ROOT_DOM_ELEMENT}>{children}</div>
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+
+function RootComponent() {
+  const { i18nState } = Route.useLoaderData() ?? {}
+
+  // Tests render RouterProvider inside a DOM container — skip <html>/<body> wrapper.
+  if (import.meta.env.VITEST) {
+    return (
+      <Suspense fallback={null}>
+        <I18nSSRProvider serverState={i18nState}>
+          <Outlet />
+        </I18nSSRProvider>
+      </Suspense>
+    )
+  }
+
+  return (
+    <RootDocument lang={i18nState?.initialLanguage}>
+      <Suspense fallback={null}>
+        <I18nSSRProvider serverState={i18nState}>
+          <Outlet />
+        </I18nSSRProvider>
+      </Suspense>
+      {import.meta.env.DEV && (
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
+      )}
+    </RootDocument>
+  )
+}

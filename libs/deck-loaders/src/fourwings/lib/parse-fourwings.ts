@@ -1,5 +1,5 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import Pbf from 'pbf'
+import { PbfReader as Pbf } from 'pbf'
 
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
@@ -58,6 +58,7 @@ export const getCellTimeseries = (
   const sublayersLength = buffersLength.length
   let cellNum = 0
   let startFrame = 0
+  // eslint-disable-next-line no-useless-assignment
   let endFrame = 0
   let indexInCell = 0
   let subLayerIndex = buffersLength.findIndex((length) => length > 0)

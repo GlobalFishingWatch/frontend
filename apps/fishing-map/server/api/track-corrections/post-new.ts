@@ -3,6 +3,7 @@ import {
   getSheetTab,
   ISSUES_SPREADSHEET_TITLE,
 } from 'server/api/track-corrections/utils'
+import { escapeFormulaString, sanitizeSheetRow } from 'server/api/utils/sanitize'
 import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
 
 import type {
@@ -21,12 +22,12 @@ export async function createNewIssue(
   const commentsSheet = getSheetTab(COMMENTS_SPREADSHEET_TITLE, spreadsheetDoc)
 
   try {
-    await commentsSheet.addRow(commentBody)
+    await commentsSheet.addRow(sanitizeSheetRow(commentBody))
 
     const rowData = {
-      ...issueBody,
-      issueId: `=HYPERLINK("${issueBody.workspaceLink}", "${commentBody.issueId}")`,
-      createdBy: `=HYPERLINK("mailto:${issueBody.userEmail}", "${commentBody.user}")`,
+      ...sanitizeSheetRow(issueBody),
+      issueId: `=HYPERLINK("${escapeFormulaString(issueBody.workspaceLink)}", "${escapeFormulaString(commentBody.issueId)}")`,
+      createdBy: `=HYPERLINK("mailto:${escapeFormulaString(issueBody.userEmail)}", "${escapeFormulaString(commentBody.user)}")`,
       startDate: `=GET_LATEST_STARTDATE(${issueBody.issueId})`,
       endDate: `=GET_LATEST_ENDDATE(${issueBody.issueId})`,
       comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,

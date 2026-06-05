@@ -23,7 +23,8 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
@@ -37,12 +38,13 @@ import styles from 'features/workspace/shared/Section.module.css'
 
 function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
 
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
@@ -56,7 +58,7 @@ function ActivitySection(): React.ReactElement<any> {
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
-      dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
+      replaceQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
       // automatically set other animated heatmaps to invisible
       const activityDataviewsToDisable = (dataviews || []).filter(
         (dataview) =>
@@ -89,7 +91,7 @@ function ActivitySection(): React.ReactElement<any> {
         ]),
       })
     },
-    [dataviews, detectionsDataviews, dispatchQueryParams, upsertDataviewInstance]
+    [dataviews, detectionsDataviews, replaceQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(
@@ -179,7 +181,7 @@ function ActivitySection(): React.ReactElement<any> {
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
-                  size="small"
+                  size="medium"
                   className={activityStyles.bivariateToggle}
                   tooltip={t((t) => t.layer.toggleCombinationMode.combine)}
                   tooltipPlacement="top"
@@ -189,7 +191,7 @@ function ActivitySection(): React.ReactElement<any> {
             )}
           </Fragment>
         ) : dataviewHasPrivateDataset ? (
-          <DatasetLoginRequired dataview={dataview} />
+          <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
         ) : (
           <DatasetNotFound dataview={dataview} />
         )

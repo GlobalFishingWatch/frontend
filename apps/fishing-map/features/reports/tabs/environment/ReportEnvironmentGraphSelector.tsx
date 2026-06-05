@@ -14,15 +14,15 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { type ReportActivityGraph } from 'features/reports/reports.types'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
 import styles from './ReportEnvironment.module.css'
 
 export default function ReportEnvironmentGraphSelector() {
-  const { dispatchQueryParams } = useLocationConnect()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fitAreaInViewport = useFitAreaInViewport()
   const dataviews = useSelector(selectActiveReportDataviews)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
@@ -51,7 +51,7 @@ export default function ReportEnvironmentGraphSelector() {
           ? { main: dataviews[0]?.id, compare: '' }
           : undefined
 
-      dispatchQueryParams({
+      replaceQueryParams({
         reportComparisonDataviewIds,
         ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
           dataviewInstances: filteredDataviewInstances,
@@ -62,7 +62,7 @@ export default function ReportEnvironmentGraphSelector() {
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} environmental graph`,
       })
-      dispatchQueryParams({ reportActivityGraph: option.id })
+      replaceQueryParams({ reportActivityGraph: option.id })
     }
   }
 

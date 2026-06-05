@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector, useStore } from 'react-redux'
-import type { RootState } from 'reducers'
 
+import { NEW_DATASET_MODAL_ID } from 'data/config'
 import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { NEW_DATASET_MODAL_ID } from 'features/datasets/upload/NewDataset'
 import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
-import { selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import type { RootState } from 'reducers'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getFileType } from 'utils/files'
 
 export function useDatasetDrag() {

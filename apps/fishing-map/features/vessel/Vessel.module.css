@@ -3,6 +3,14 @@
   padding-block: var(--space-XL);
 }
 
+.tabsContainer {
+  margin: var(--space-S);
+}
+
+.tabsContainer > *[role='tabpanel'] {
+  break-before: page;
+}
+
 .secondary {
   color: var(--color-secondary-blue);
 }
@@ -18,4 +26,8 @@
 
 .linkTooltip {
   max-width: none;
+}
+
+.loginRequiered {
+  height: 32rem;
 }

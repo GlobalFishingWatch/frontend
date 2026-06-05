@@ -7,25 +7,29 @@ import { InputText, Switch } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 
 import {
   DebugOption,
   FAKE_VESSEL_NAME,
+  FeatureFlag,
   selectDebugOptions,
+  selectFeatureFlags,
   setDebugOption,
   toggleDebugOption,
+  toggleFeatureFlag,
 } from './debug.slice'
 
 import styles from './DebugMenu.module.css'
 
 const DebugFeatureFlags: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
+  const featureFlags = useSelector(selectFeatureFlags)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
@@ -80,10 +84,10 @@ const DebugFeatureFlags: React.FC = () => {
           onClick={() => {
             dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
             if (debugOptions.vesselsMaxTimeGapHours) {
-              dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
+              replaceQueryParams({ vesselsMaxTimeGapHours: undefined })
             } else {
               dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
-              dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
+              replaceQueryParams({ vesselsMaxTimeGapHours: 3 })
             }
           }}
         />
@@ -99,7 +103,7 @@ const DebugFeatureFlags: React.FC = () => {
               const value = Number(e.target.value)
               // Validate input: must be a valid number between 0 and 24
               if (!isNaN(value) && value >= 0 && value <= 24) {
-                dispatchQueryParams({ vesselsMaxTimeGapHours: value })
+                replaceQueryParams({ vesselsMaxTimeGapHours: value })
               }
             }}
           />
@@ -132,15 +136,26 @@ const DebugFeatureFlags: React.FC = () => {
         <Fragment>
           <div className={styles.header}>
             <Switch
-              id="option_data_terminology_iframe"
-              active={debugOptions.dataTerminologyIframe}
-              onClick={() => dispatch(toggleDebugOption(DebugOption.DataTerminologyIframe))}
+              id="option_polygons_report"
+              active={featureFlags.polygonsReport}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.PolygonsReport))}
             />
-            <label htmlFor="option_data_terminology_iframe">
-              <strong>Feature flag:</strong> Data terminology iframe
+            <label htmlFor="option_polygons_report">
+              <strong>Feature flag:</strong> Polygons report
             </label>
           </div>
-          <p>Activates the data terminology iframe feature</p>
+          <p>See reports of polygon areas</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_hotspot_button"
+              active={featureFlags.hotspotButton}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}
+            />
+            <label htmlFor="option_hotspot_button">
+              <strong>Feature flag:</strong> Hotspot zone button
+            </label>
+          </div>
+          <p>Show the hotspot zone button in the report activity graph</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"

@@ -6,6 +6,7 @@ const foldersToExtract = [
   'hooks',
   'pages',
   'routes',
+  'router',
   'server',
   'types',
   'utils',
@@ -37,7 +38,6 @@ export default defineConfig({
       'vessel.gearTypes.*',
       'vessel.vesselTypes.*',
       // Namespaces controlled by hand
-      'data-terminology:*',
       'layer-library:*',
       'workspaces:*',
     ],

@@ -7,8 +7,8 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 
@@ -41,7 +41,7 @@ const Insights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
-          year: MIN_INSIGHTS_YEAR,
+          year: String(MIN_INSIGHTS_YEAR),
         })}
       </div>
     )
@@ -55,7 +55,7 @@ const Insights = () => {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology title={t((t) => t.vessel.sectionInsights)} terminologyKey="insights" />
+        <DataTerminology terminologyKey="insights" />
       </p>
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />

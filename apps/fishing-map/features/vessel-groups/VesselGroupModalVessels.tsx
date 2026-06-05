@@ -12,7 +12,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
 import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
@@ -170,7 +170,7 @@ function VesselGroupVesselsComponent({
 
             if (unknownVesselsCount > 0) {
               const confirmation = window.confirm(
-                t((t) => t.vesselGroup.removeUnknownVessels, { param: unknownVesselsCount })
+                t((t) => t.vesselGroup.removeUnknownVessels, { param: String(unknownVesselsCount) })
               )
               if (confirmation) {
                 filteredVessels = vesselsWithShipname

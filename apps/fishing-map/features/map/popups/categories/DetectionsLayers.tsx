@@ -7,7 +7,8 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { getIsSkylightDataset } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
-import VesselsTable, { getVesselsInfoConfig } from 'features/map/popups/categories/VesselsTable'
+import { getVesselsInfoConfig } from 'features/map/popups/categories/vessels-table.utils'
+import VesselsTable from 'features/map/popups/categories/VesselsTable'
 
 import type { ExtendedFeatureVessel, SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 
@@ -74,10 +75,10 @@ function DetectionsTooltipRow({
                 <I18nNumber number={feature.value} />{' '}
               </Fragment>
             )}
-            {t((t: any) => t.common[feature?.unit ?? 'detections'], {
+            {t((t) => (t.common as any)[feature?.unit ?? 'detections'], {
               defaultValue: 'detections',
               count: feature.value, // neded to select the plural automatically
-            })}{' '}
+            } as any)}{' '}
             {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
                 {' - '}

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,11 +7,12 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/datasets/datasets.hook'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import {
@@ -25,8 +26,8 @@ import { selectUserDatasets } from 'features/user/selectors/user.permissions.sel
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -34,8 +35,9 @@ import { getHighlightedText } from 'utils/text'
 import styles from './LayerLibraryUserPanel.module.css'
 
 const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
-  const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
   const { t } = useTranslation()
+  const { openSidePanel } = useSidePanel()
+
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const dispatch = useAppDispatch()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
@@ -73,9 +75,15 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     [dispatch, upsertDataviewInstance]
   )
 
-  const onInfoClick = useCallback((dataset: Dataset) => {
-    setInfoDataset(dataset)
-  }, [])
+  const onInfoClick = useCallback(
+    (dataset: Dataset) => {
+      openSidePanel({
+        type: 'userDataset',
+        id: dataset.id,
+      })
+    },
+    [openSidePanel]
+  )
 
   const onUploadClick = useCallback(() => {
     onAddNewClick()

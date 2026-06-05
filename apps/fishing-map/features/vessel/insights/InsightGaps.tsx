@@ -5,7 +5,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 
 import InsightError from './InsightErrorMessage'
 import InsightGapsDetails from './InsightGapsDetails'
@@ -35,7 +35,7 @@ const InsightGaps = ({
         <Tooltip content={t((t) => t.common.experimentalTooltip)}>
           <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>
         </Tooltip>
-        <DataTerminology title={t((t) => t.vessel.insights.gaps)} terminologyKey="insightsGaps" />
+        <DataTerminology terminologyKey="insightsGaps" />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
@@ -47,7 +47,7 @@ const InsightGaps = ({
             <Fragment>
               <span>
                 {t((t) => t.vessel.insights.gapsEvents, {
-                  count: aisOff?.length,
+                  count: aisOff?.length ?? 0,
                 })}
               </span>
               <InsightGapsDetails

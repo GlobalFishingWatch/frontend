@@ -9,3 +9,7 @@
   padding-block: var(--space-S);
   color: var(--color-danger-red);
 }
+
+.sourcesSpinner {
+  margin-left: var(--space-S);
+}

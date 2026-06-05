@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -39,36 +39,23 @@ import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = dynamicWithRetry(
-  () =>
-    import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
-)
-const ReportEnvironment = dynamicWithRetry(
-  () =>
-    import(
-      /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
-    )
-)
-const ReportOthers = dynamicWithRetry(
-  () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
-)
-const ReportEvents = dynamicWithRetry(
-  () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
-)
+const ReportActivity = lazy(() => import('features/reports/tabs/activity/ReportActivity'))
+const ReportEnvironment = lazy(() => import('features/reports/tabs/environment/ReportEnvironment'))
+const ReportOthers = lazy(() => import('features/reports/tabs/others/ReportOthers'))
+const ReportEvents = lazy(() => import('features/reports/tabs/events/EventsReport'))
 
 export default function Report() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const highlightArea = useHighlightReportArea()
-  const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const reportStatus = useSelector(selectReportVesselsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -90,22 +77,27 @@ export default function Report() {
     {
       id: ReportCategory.Activity,
       title: t((t) => t.common.activity),
+      content: <ReportActivity />,
     },
     {
       id: ReportCategory.Detections,
       title: t((t) => t.common.detections),
+      content: <ReportActivity />,
     },
     {
       id: ReportCategory.Events,
       title: t((t) => t.common.events),
+      content: <ReportEvents />,
     },
     {
       id: ReportCategory.Environment,
       title: t((t) => t.common.environment),
+      content: <ReportEnvironment />,
     },
     {
       id: ReportCategory.Others,
       title: t((t) => t.common.others),
+      content: <ReportOthers />,
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
@@ -171,11 +163,10 @@ export default function Report() {
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
       dispatch(resetReportData())
-      dispatchQueryParams({
+      replaceQueryParams({
         reportCategory: option.id,
         reportVesselPage: 0,
       })
-
       fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,
@@ -203,26 +194,20 @@ export default function Report() {
     return <ErrorPlaceholder title={t((t) => t.errors.areaOutOfTime)}></ErrorPlaceholder>
   }
 
-  return (
-    <Fragment>
-      {filteredCategoryTabs.length > 1 && (
-        <div className={styles.tabContainer}>
-          <Tabs
-            tabs={filteredCategoryTabs}
-            activeTab={reportCategory}
-            onTabClick={handleTabClick}
-          />
-        </div>
-      )}
-      {reportCategory === ReportCategory.Environment ? (
-        <ReportEnvironment />
-      ) : reportCategory === ReportCategory.Events ? (
-        <ReportEvents />
-      ) : reportCategory === ReportCategory.Others ? (
-        <ReportOthers />
-      ) : (
-        <ReportActivity />
-      )}
-    </Fragment>
+  return filteredCategoryTabs.length > 1 ? (
+    <div className="cardContainer">
+      <Suspense fallback={<Spinner />}>
+        <Tabs
+          className={styles.tabContainer}
+          tabs={filteredCategoryTabs}
+          activeTab={reportCategory}
+          onTabClick={handleTabClick}
+        />
+      </Suspense>
+    </div>
+  ) : (
+    <Suspense fallback={<Spinner />}>
+      {filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content}
+    </Suspense>
   )
 }

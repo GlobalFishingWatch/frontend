@@ -21,9 +21,13 @@ import {
 
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters'
+import {
+  getLabelWithUnit,
+  getSchemaValueRounded,
+  showSchemaFilter,
+} from 'features/workspace/shared/LayerSchemaFilter.utils'
 
 import styles from './LayerFilters.module.css'
 
@@ -34,9 +38,6 @@ type LayerSchemaFilterProps = {
   onIsOpenChange?: (open: boolean) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
   onClean: (filterKey: string) => void
-}
-export const showSchemaFilter = (schemaFilter: DataviewFilterConfig) => {
-  return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
 type TransformationUnit = 'minutes' | 'hours' | 'km'
@@ -77,30 +78,6 @@ const getValueByUnit = (
   return parseFloat(value)
 }
 
-const getUnitLabel = (unit?: string): string => {
-  if (!unit) return ''
-  const label = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.getLabel?.()
-  return label || unit || ''
-}
-
-export const getValueLabelByUnit = (
-  value: string | number,
-  { unit, unitLabel = true } = {} as { unit?: string; unitLabel?: boolean }
-): string => {
-  if (unitLabel) {
-    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${getUnitLabel(unit)}`
-  }
-  return formatI18nNumber(getValueByUnit(value, { unit })) as string
-}
-
-export const getLabelWithUnit = (label: string, unit?: string): string => {
-  const translatedLabel = t((t: any) => t[label], { defalutValue: label })
-  if (unit) {
-    return `${translatedLabel} (${getUnitLabel(unit)})`
-  }
-  return translatedLabel
-}
-
 const getFilterOperatorOptions = () => {
   return [
     {
@@ -112,10 +89,6 @@ const getFilterOperatorOptions = () => {
       label: t((t) => t.common.exclude),
     },
   ] as ChoiceOption[]
-}
-
-export const getSchemaValueRounded = (value: number, decimals = 2): number => {
-  return parseFloat(value.toFixed(decimals))
 }
 
 const getSliderConfigBySchema = (schemaFilter: DataviewFilterConfig) => {

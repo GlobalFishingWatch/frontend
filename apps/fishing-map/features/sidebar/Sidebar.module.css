@@ -1,6 +1,11 @@
 .container {
   display: flex;
+  flex-direction: row-reverse;
   height: 100%;
+}
+
+:global(.printing) .container {
+  background: var(--color-white);
 }
 
 .content {
@@ -32,4 +37,16 @@
 .overlay {
   background-color: var(--color-white);
   z-index: 3;
+}
+
+@media print {
+  .container {
+    flex-direction: unset;
+    height: auto;
+  }
+
+  .scrollContainer {
+    overflow: visible;
+    height: auto;
+  }
 }

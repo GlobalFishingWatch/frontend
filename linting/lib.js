@@ -6,6 +6,7 @@ import importPlugin from 'eslint-plugin-import'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
 import reactPlugin from 'eslint-plugin-react'
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
+import reactRefreshPlugin from 'eslint-plugin-react-refresh'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 
 import tseslint from 'typescript-eslint'
@@ -24,6 +25,7 @@ export const config = {
     'simple-import-sort': simpleImportSort,
     react: reactPlugin,
     'react-hooks': reactHooksPlugin,
+    'react-refresh': reactRefreshPlugin,
   },
   settings: {
     react: {
@@ -94,7 +96,7 @@ export const config = {
           ['^(@|@globalfishingwatch)(/.*|$)'],
           // Internal paths.
           [
-            '^(features|store|routes|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
+            '^(features|store|routes|router|reducers|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
           ['^\\u0000'],
@@ -133,6 +135,10 @@ export const config = {
     'jsx-a11y/mouse-events-have-key-events': 'warn',
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/no-noninteractive-element-interactions': 'warn',
+    'react-refresh/only-export-components': [
+      'error',
+      { allowConstantExport: true, allowExportNames: ['Route'] },
+    ],
   },
 }
 

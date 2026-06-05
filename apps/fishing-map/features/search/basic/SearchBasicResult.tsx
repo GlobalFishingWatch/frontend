@@ -19,17 +19,17 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,
@@ -40,7 +40,7 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -191,7 +191,7 @@ function SearchBasicResult({
       {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
       onBlur={() => setHighlightedIndex(-1)}
-      className={cx(styles.searchResult, {
+      className={cx('card', styles.searchResult, {
         [styles.highlighted]: highlightedIndex === index,
         [styles.inWorkspace]: isInWorkspace,
         [styles.selected]: isSelected,
@@ -312,10 +312,7 @@ function SearchBasicResult({
               <div className={styles.property}>
                 <label>
                   {t((t) => t.vessel.infoSource)}
-                  <DataTerminology
-                    title={t((t) => t.vessel.infoSource)}
-                    terminologyKey="registryInfo"
-                  />
+                  <DataTerminology terminologyKey="registryInfo" />
                 </label>
                 <span>{identitySource}</span>
               </div>

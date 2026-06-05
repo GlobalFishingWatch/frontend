@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -36,7 +35,8 @@ import VesselGroupAddButton, {
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
@@ -45,7 +45,7 @@ import styles from './VesselHeader.module.css'
 const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
@@ -118,7 +118,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
-    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    if (isSmallScreen) replaceQueryParams({ sidebarOpen: false })
     setVesselBounds()
     trackAction('center_map')
   }
@@ -191,7 +191,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
                   onClick={() => setCurrentImageIndex(index)}
                   className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
                   aria-label={t((t) => t.vessel.goToImage, {
-                    number: index + 1,
+                    number: String(index + 1),
                   })}
                 />
               ))}
@@ -211,9 +211,9 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           </svg>
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
-          <span className={styles.reportLink}>
-            <a href={window.location.href}>{t((t) => t.vessel.linkToVessel)}</a>
-          </span>
+          <a className={styles.reportLink} href={getCurrentAppUrl()}>
+            {t((t) => t.vessel.linkToVessel)}
+          </a>
         </h1>
 
         <div className={styles.actionsContainer}>
@@ -235,7 +235,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             icon="target"
             tooltip={t((t) => t.layer.vessel_fit_bounds)}
             tooltipPlacement="bottom"
-            size="small"
+            size="medium"
             disabled={!boundsReady}
             onClick={onVesselFitBoundsClick}
           />
@@ -244,7 +244,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             type="border"
             icon="print"
             tooltip={upperFirst(t((t) => t.analysis.print))}
-            size="small"
+            size="medium"
             tooltipPlacement="bottom"
             onClick={onPrintClick}
           />
@@ -252,7 +252,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             vessels={vessel ? [vessel] : []}
             onAddToVesselGroup={onAddToVesselGroup}
           >
-            <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
+            <VesselGroupAddActionButton buttonSize="medium" buttonType="border-secondary" />
           </VesselGroupAddButton>
         </div>
       </div>

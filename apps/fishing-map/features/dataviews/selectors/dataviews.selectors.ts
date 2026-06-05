@@ -31,7 +31,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
-  selectPointsActiveReportDataviews,
+  selectOthersActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -41,13 +41,15 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import type { FeatureFlag } from 'features/debug/debug.slice'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
-import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectReportCategory, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import { selectIsVesselGroupReportLocation, selectVesselId } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectVesselId } from 'router/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 export const selectBasemapLabelsDataviewInstance = createSelector(
@@ -112,12 +114,12 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectReportCategory,
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
-    selectActiveHeatmapEnvironmentalDataviews,
+    selectActiveEnvironmentalDataviews,
     selectVGRFootprintDataview,
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
-    selectPointsActiveReportDataviews,
+    selectOthersActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -130,7 +132,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    let dataviews: UrlDataviewInstance<DataviewType>[]
     switch (reportCategory) {
       case ReportCategory.Activity:
         dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
@@ -246,8 +248,8 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (allDataviewInstancesResolved) => {
+  [selectAllDataviewInstancesResolved, selectReportDatasetId, selectFeatureFlags],
+  (allDataviewInstancesResolved, reportDatasetId, featureFlags) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
@@ -256,7 +258,13 @@ export const selectReportLayersVisible = createSelector(
       if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
         return false
       }
-      return isSupportedReportDataview(dataview)
+      const dataviewIsSameAsReportArea = dataview.datasets?.some((ds) =>
+        reportDatasetId?.split(',').includes(ds.id)
+      )
+      if (dataviewIsSameAsReportArea) {
+        return false
+      }
+      return isSupportedReportDataview(dataview, featureFlags)
     })
   }
 )
@@ -270,13 +278,14 @@ export const selectEnvironmentReportLayersVisible = createSelector(
 
 export const getIsDataviewReportSupported = (
   reportLayers: (DataviewInstance | UrlDataviewInstance)[],
+  featureFlags: Record<FeatureFlag, boolean>,
   currentDataviewId?: string
 ) => {
   if (!reportLayers) {
     return false
   }
   return reportLayers
-    ?.filter((dataview) => isSupportedReportDataview(dataview))
+    ?.filter((dataview) => isSupportedReportDataview(dataview, featureFlags))
     .some((dataview) => dataview.id !== currentDataviewId)
 }
 

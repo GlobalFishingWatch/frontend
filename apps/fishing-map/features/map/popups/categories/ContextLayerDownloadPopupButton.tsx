@@ -10,8 +10,9 @@ import {
   selectActiveHeatmapDowloadDataviews,
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
 
 type ContextLayerDownloadPopupButtonProps = {
   feature: ContextPickingObject | UserLayerPickingObject
@@ -27,8 +28,10 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
   const userData = useSelector(selectUserData)
   const activityDataviews = useSelector(selectActiveHeatmapDowloadDataviews)
   const reportLayersVisible = useSelector(selectReportLayersVisible)
+  const featureFlags = useSelector(selectFeatureFlags)
   const isDataviewReportAnalysable = getIsDataviewReportSupported(
     reportLayersVisible!,
+    featureFlags,
     feature?.layerId
   )
   const datasetsReportAllowed = getActivityDatasetsReportSupported(

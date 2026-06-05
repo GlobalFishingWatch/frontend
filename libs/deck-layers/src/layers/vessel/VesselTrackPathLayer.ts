@@ -13,17 +13,10 @@ import { getUTCDateTime } from '../../utils'
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
 import { MAX_FILTER_VALUE } from '../layers.config'
 
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
+import type { VesselsColorByProperty } from './vessel.config'
+import { COLOR_BY, DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { generateVesselGraphSteps, getSegmentsFromData, VESSEL_GRAPH_STEPS } from './vessel.utils'
-
-export type VesselsColorByProperty = 'track' | 'speed' | 'elevation'
-export type VesselsColorByValue = 1 | 2 | 3
-export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
-  track: 1,
-  speed: 2,
-  elevation: 3,
-}
 
 export type TrackShaderAttributeFlags = {
   includeSpeed: boolean

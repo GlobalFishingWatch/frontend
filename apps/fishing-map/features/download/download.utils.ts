@@ -58,7 +58,7 @@ export function getSupportedGroupByOptions(
         ...option,
         disabled: true,
         tooltip: t((t) => t.download.groupByNotSupported, {
-          property: option.label,
+          property: option.label as string,
         }),
         tooltipPlacement: 'top',
       }
@@ -71,7 +71,7 @@ export function getSupportedGroupByOptions(
         ...option,
         disabled: true,
         tooltip: t((t) => t.download.groupByNotSupported, {
-          property: option.label,
+          property: option.label as string,
         }),
         tooltipPlacement: 'top',
       }

@@ -2,6 +2,7 @@ import { Fragment, useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
+import { useRouter } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
@@ -35,11 +36,12 @@ import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-g
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { WORKSPACE_SEARCH } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import LocalStorageLoginLink from 'router/LoginLink'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
 
@@ -63,7 +65,8 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
 function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchLocation } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const router = useRouter()
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
@@ -80,7 +83,6 @@ function VesselsSection(): React.ReactElement<any> {
   const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
-  const { dispatchQueryParams } = useLocationConnect()
   const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
 
   const onToggleAllVessels = useCallback(() => {
@@ -143,21 +145,22 @@ function VesselsSection(): React.ReactElement<any> {
         }
       })
       .map((d) => d.id)
-    dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
-  }, [dataviews, dispatchQueryParams, resources, sortOrder])
+    replaceQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
+  }, [dataviews, resources, sortOrder, replaceQueryParams])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
-    dispatchLocation(WORKSPACE_SEARCH, {
-      payload: {
-        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      },
+    const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+    const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
+    router.navigate({
+      to: ROUTE_PATHS.WORKSPACE_SEARCH,
+      params: { category, workspaceId },
+      search: (prev) => prev,
     })
-  }, [dispatchLocation, workspace])
+  }, [router, workspace])
 
   const vesselResources = activeDataviews.flatMap((dataview) => {
     const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
@@ -272,11 +275,13 @@ function VesselsSection(): React.ReactElement<any> {
         <SortableContext items={dataviews}>
           {dataviews.length > 0 ? (
             dataviews?.map((dataview) => (
-              <VesselLayerPanel
-                key={dataview.id}
-                dataview={dataview}
-                showApplyToAll={dataviews.length > 1}
-              />
+              <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                <VesselLayerPanel
+                  key={dataview.id}
+                  dataview={dataview}
+                  showApplyToAll={dataviews.length > 1}
+                />
+              </LayerPanelContainer>
             ))
           ) : (
             <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>

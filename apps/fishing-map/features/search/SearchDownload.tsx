@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { saveAs } from 'file-saver'
-import { unparse as unparseCSV } from 'papaparse'
+import papaparse from 'papaparse'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -16,7 +15,7 @@ function SearchDownload() {
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
 
-  const onDownloadVesselsClick = () => {
+  const onDownloadVesselsClick = async () => {
     if (vesselsSelected) {
       const vesselsParsed = vesselsSelected.map((vessel) => {
         return {
@@ -60,8 +59,9 @@ function SearchDownload() {
         ),
       })
 
-      const csv = unparseCSV(vesselsParsed)
+      const csv = papaparse.unparse(vesselsParsed)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
+      const { saveAs } = await import('file-saver')
       saveAs(blob, `gfw-search-results-selection.csv`)
     }
   }

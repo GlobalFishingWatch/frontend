@@ -10,9 +10,9 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
@@ -142,8 +142,8 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             expanded={insightsExpanded.includes(`${country}-${list}`)}
             onToggle={(isOpen) => onToggle(isOpen, list)}
             label={t((t) => t.vesselGroupReport.insights.MOUListsCount, {
-              vessels: uniqVessels.length,
-              list: t((t: any) => t.insights.lists[list], { defaultValue: list }),
+              vessels: String(uniqVessels.length),
+              list: t((t) => (t as any).insights.lists[list as string], { defaultValue: list }),
             })}
           />
         </div>
@@ -155,10 +155,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-mou" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vesselGroupReport.insights.MOULists)}</label>
-        <DataTerminology
-          title={t((t) => t.vesselGroupReport.insights.MOULists)}
-          terminologyKey="insightsMOUList"
-        />
+        <DataTerminology terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

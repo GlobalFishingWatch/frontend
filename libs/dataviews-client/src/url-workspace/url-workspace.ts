@@ -143,6 +143,8 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   mapRulers: (rulers: { id: string }[]) => {
     return rulers?.map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
   },
+  reportAreaBounds: (reportAreaBounds: string[]) =>
+    reportAreaBounds?.map((bound: string) => parseFloat(bound)),
   mapDrawing: (drawing: boolean | string) => {
     if (drawing === true || drawing === 'true') {
       return 'polygons'
@@ -371,7 +373,9 @@ export const parseWorkspace = (
 }
 
 export const URL_STRINGIFY_CONFIG = {
-  encodeValuesOnly: true,
+  // This throws a redirect error in tanstack start as the url missmatched
+  // see https://github.com/TanStack/router/issues/4514
+  // encodeValuesOnly: true,
   strictNullHandling: true,
 }
 

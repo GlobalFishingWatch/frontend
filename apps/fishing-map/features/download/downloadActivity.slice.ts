@@ -1,8 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { saveAs } from 'file-saver'
 import { stringify } from 'qs'
-import type { RootState } from 'reducers'
 
 import {
   getIsConcurrentError,
@@ -15,6 +13,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { AreaKeyId, AreaKeys } from 'features/areas/areas.slice'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
+import type { RootState } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -84,6 +83,7 @@ export const downloadActivityLastReportThunk = createAsyncThunk(
           return data.status
         } else {
           const data = await response.blob()
+          const { saveAs } = await import('file-saver')
           saveAs(data as any, fileName)
           return 'finished'
         }
@@ -158,7 +158,8 @@ export const downloadActivityThunk = createAsyncThunk<
 
       const createdDownload: any = await GFWAPI.fetch<DownloadActivity>(downloadUrl, {
         responseType: 'blob',
-      }).then((blob) => {
+      }).then(async (blob) => {
+        const { saveAs } = await import('file-saver')
         saveAs(blob as any, fileName)
       })
 

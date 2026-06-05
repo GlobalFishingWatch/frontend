@@ -17,7 +17,7 @@ import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
 import { PRIVATE_ICON } from 'data/config'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { TimeRange } from 'features/timebar/timebar.slice'

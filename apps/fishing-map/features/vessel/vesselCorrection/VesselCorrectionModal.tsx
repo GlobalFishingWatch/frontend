@@ -10,6 +10,7 @@ import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import flags from 'data/flags'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nFlag from 'features/i18n/i18nFlag'
+import { getModalParent } from 'features/modals/modals.utils'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -18,6 +19,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import {
   formatInfoField,
   getVesselGearTypeLabel,
@@ -64,7 +66,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       const finalFeedbackData: InfoCorrectionSendFormat = {
         reviewer: userData!.email || '',
         source: vesselIdentity.identitySource || '',
-        workspaceLink: window.location.href,
+        workspaceLink: getCurrentAppUrl(),
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
         vesselId:
@@ -149,6 +151,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.top}>

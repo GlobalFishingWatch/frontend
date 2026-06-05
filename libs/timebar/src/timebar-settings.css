@@ -1,7 +1,4 @@
 :root {
-  /* BASE COLORS */
-  --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
-
   /* COLORS */
   --timebar-main-background-color: #021236;
   --timebar-main-background-color-faded: rgba(2, 18, 54, 0.5);
@@ -19,8 +16,8 @@
   --timebar-track-default: #fe81eb;
   --timebar-white: #fff;
   --timebar-white-faded: rgba(255, 255, 255, 0.6);
-  --color-primary-blue: rgb(22, 63, 137);
-  --color-danger-red: rgb(360, 62, 98);
+  --color-primary-blue: rgba(22, 63, 137);
+  --color-danger-red: rgba(360, 62, 98);
 
   /* TYPE */
   --timebar-font-family: 'Roboto', sans-serif;
@@ -41,16 +38,11 @@
   /* --timebar-hover-transition: all 150ms linear; */
   --timebar-hover-transition: 'none';
   --timebar-size: 7.2rem;
-
-  /* UTILS */
-  --opacity-border: 0.15;
-  --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
-  --border: 1px solid var(--color-border);
 }
 
 @media only screen and (width <= 800px) {
   :root {
-    --timebar-size: 6rem;
+    --timebar-size: 7.2rem;
   }
 }
 

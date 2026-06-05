@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 
 import { trackEvent } from '@globalfishingwatch/react-hooks'
@@ -20,7 +19,7 @@ import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
@@ -29,8 +28,6 @@ type ReportSummaryProps = {
   activityUnit?: ReportActivityUnit
   reportStatus?: AsyncReducerStatus
 }
-
-export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
 export default function ReportSummary({
   activityUnit,
@@ -72,29 +69,27 @@ export default function ReportSummary({
         </div>
       )}
       {dataviews?.length > 0 && (
-        <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={cx(styles.tagsContainer, styles.tagsContainerBorder)}>
-            {dataviews?.map((dataview) => (
-              <ReportSummaryTags
-                key={dataview.id}
-                dataview={dataview}
-                allowDelete={dataviews.length > 1}
-              />
-            ))}
-            {!isPortReportLocation && !isVesselGroupReportLocation && (
-              <IconButton
-                icon="plus"
-                type="border"
-                size="small"
-                tooltip={t((t) => t.layer.add)}
-                tooltipPlacement="top"
-                onClick={onAddLayerClick}
-                className={'print-hidden'}
-                testId="report-summary-add-layer-button"
-              />
-            )}
-          </div>
-        </Sticky>
+        <div className={cx(styles.tagsContainer)}>
+          {dataviews?.map((dataview) => (
+            <ReportSummaryTags
+              key={dataview.id}
+              dataview={dataview}
+              allowDelete={dataviews.length > 1}
+            />
+          ))}
+          {!isPortReportLocation && !isVesselGroupReportLocation && (
+            <IconButton
+              icon="plus"
+              type="border"
+              size="small"
+              tooltip={t((t) => t.layer.add)}
+              tooltipPlacement="top"
+              onClick={onAddLayerClick}
+              className={'print-hidden'}
+              testId="report-summary-add-layer-button"
+            />
+          )}
+        </div>
       )}
     </div>
   )

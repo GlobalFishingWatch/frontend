@@ -1,13 +1,14 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Script from 'next/script'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { IS_DEVELOPMENT_ENV } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { refreshDatasetsLocaleThunk } from 'features/datasets/datasets.slice'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
@@ -16,6 +17,25 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
+
+function CrowdinScripts({ enabled }: { enabled: boolean }) {
+  const injectedRef = useRef(false)
+
+  useEffect(() => {
+    if (!enabled || injectedRef.current) return
+    injectedRef.current = true
+
+    const initScript = document.createElement('script')
+    initScript.textContent = `var _jipt = []; _jipt.push(['project', 'gfw-frontend']);`
+    document.head.appendChild(initScript)
+
+    const crowdinScript = document.createElement('script')
+    crowdinScript.src = '//cdn.crowdin.com/jipt/jipt.js'
+    document.head.appendChild(crowdinScript)
+  }, [enabled])
+
+  return null
+}
 
 type LanguageToggleProps = {
   className?: string
@@ -27,6 +47,8 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   className = '',
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
+  const dispatch = useAppDispatch()
+  const [isLoading, setIsLoading] = useState(false)
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
 
   const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
@@ -34,38 +56,60 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
-  const toggleLanguage = (lang: Locale | 'source') => {
-    trackEvent({
-      category: TrackCategory.I18n,
-      action: `Change language`,
-      label: lang,
-    })
-    i18n.changeLanguage(lang)
-    if (basemapDataviewInstance?.id) {
-      upsertDataviewInstance({
-        id: basemapDataviewInstance.id as string,
-        config: {
-          locale: lang === 'source' ? Locale.en : (lang as Locale),
-        },
+
+  const toggleLanguage = async (lang: Locale | 'source') => {
+    if (lang === i18n.language) {
+      setIsLanguageMenuOpen(false)
+    } else {
+      trackEvent({
+        category: TrackCategory.I18n,
+        action: `Change language`,
+        label: lang,
       })
+
+      setIsLanguageMenuOpen(false)
+      setIsLoading(true)
+      const locale = lang === 'source' ? Locale.en : (lang as Locale)
+      await dispatch(refreshDatasetsLocaleThunk(locale))
+      i18n.changeLanguage(lang)
+      if (basemapDataviewInstance?.id) {
+        upsertDataviewInstance({
+          id: basemapDataviewInstance.id as string,
+          config: {
+            locale,
+          },
+        })
+      }
+      setIsLoading(false)
     }
-    setIsLanguageMenuOpen(false)
   }
 
   return (
-    <div className={cx(styles.languageToggle, className)} ref={expandedContainerRef}>
+    <div
+      className={cx(styles.languageToggle, className)}
+      ref={expandedContainerRef}
+      onMouseEnter={() => setIsLanguageMenuOpen(true)}
+      onMouseLeave={() => setIsLanguageMenuOpen(false)}
+      data-testid="language-toggle-container"
+    >
       <div className={styles.languageBtn}>
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
           type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          loading={isLoading}
+          disabled={isLoading}
           testId="language-toggle-button"
+          aria-expanded={isLanguageMenuOpen}
           onClick={(e) => {
             e.stopPropagation()
             setIsLanguageMenuOpen(!isLanguageMenuOpen)
           }}
         />
       </div>
-      <ul className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}>
+      <ul
+        className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}
+        data-testid="language-menu"
+      >
         {IS_DEVELOPMENT_ENV && (
           <li>
             <button
@@ -107,21 +151,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           </li>
         )}
       </ul>
-      {i18n.language === CROWDIN_IN_CONTEXT_LANG && (
-        <Fragment>
-          <Script
-            id="pre-crowding"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-            var _jipt = [];
-            _jipt.push(['project', 'gfw-frontend']);
-    `,
-            }}
-          />
-          <Script id="crowding" src="//cdn.crowdin.com/jipt/jipt.js" strategy="afterInteractive" />
-        </Fragment>
-      )}
+      <CrowdinScripts enabled={i18n.language === CROWDIN_IN_CONTEXT_LANG} />
     </div>
   )
 }

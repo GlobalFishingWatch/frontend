@@ -17,7 +17,6 @@ import {
   getDatasetFilterItem,
   getDatasetFiltersAllowed,
   getEnvironmentalDatasetRange,
-  removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -68,26 +67,37 @@ export const isDataviewFilterSupported = (
   return filtersSupported
 }
 
-export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId?: string) => {
-  if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${filter}.keyword`)) {
-    const label = t((t) => t[datasetId]?.schema?.[filter]?.keyword, {
-      ns: 'datasets',
-      defaultValue: filter.toString(),
-    })
+const getDatasetI18nFilter = (dataset: Dataset, filter: SupportedDatasetFilter) => {
+  return dataset?.i18n?.filters?.[filter]
+}
+
+export const getFilterLabel = (dataset: Dataset, filter: SupportedDatasetFilter) => {
+  const datasetI18n = getDatasetI18nFilter(dataset, filter)
+  if (datasetI18n && datasetI18n?.label) {
+    const label = datasetI18n?.label
     if (label !== filter) {
       return label
     }
   }
   const vesselField = filter === 'ssvid' ? 'mmsi' : filter.replace(/^selfReportedInfo\./, '')
   if (i18n.exists(`vessel.${vesselField}`)) {
-    const label = t((t: any) => t.vessel[vesselField], {
+    const label = t((t) => (t.vessel as any)[vesselField] as string, {
       defaultValue: filter.toString(),
     })
     if (label !== filter) {
       return label
     }
   }
-  return t((t: any) => t.layer[filter], { defaultValue: filter.toString() })
+  return t((t) => (t.layer as any)[filter] as string, { defaultValue: filter.toString() })
+}
+
+export const getFilterEnumLabel = (
+  dataset: Dataset,
+  filter: SupportedDatasetFilter,
+  filterKey: string
+) => {
+  const datasetI18n = getDatasetI18nFilter(dataset, filter)
+  return datasetI18n?.enum?.[filterKey] || filterKey
 }
 
 const getSupportedFilterDatasets = (
@@ -214,16 +224,13 @@ export const getCommonFiltersInDataview = (
   }
   const cleanFilterFields =
     compatibilityOperation === 'every' ? intersection(...filterFields) : uniq(filterFields.flat())
-  const datasetId = removeDatasetVersion(activeDatasets?.[0]?.id as string)
+  const activeDataset = activeDatasets?.[0] as Dataset
   let commonFilters = filterFields
     ? cleanFilterFields.map((field) => {
         let label =
           filterType === 'range' || filterType === 'number'
             ? field
-            : t((t: any) => t[datasetId]?.schema?.[filter]?.enum?.[field as string], {
-                ns: 'datasets',
-                defaultValue: field?.toString(),
-              })
+            : getFilterEnumLabel(activeDataset, filter, field.toString())
         if (EXPERIMENTAL_FIELDS_BY_FILTER[filter]?.includes(field as string)) {
           label += ' (Experimental)'
         }
@@ -240,7 +247,7 @@ export const getCommonFiltersInDataview = (
             filter !== 'encounter_type'
           ) {
             const fallbackValue = typeof field === 'string' ? field : (field || '').toString()
-            label = t((t: any) => t.vessel?.[filter]?.[field as string], {
+            label = t((t) => (t.vessel as any)?.[filter]?.[field as string], {
               defaultValue: fallbackValue,
             })
           }
@@ -404,10 +411,8 @@ export const getDataviewFilterConfig = (
   const hasIncompatibleFilterSelection =
     incompatibleFilterSelection !== undefined && incompatibleFilterSelection?.length > 0
   const disabled = !hasDatasetsWithFilter || hasIncompatibleFilterSelection
-  const datasetId = removeDatasetVersion(
-    getActiveDatasetsInDataview(dataview as UrlDataviewInstance)?.[0]?.id as string
-  )
-  const label = getFilterLabel(filter, datasetId)
+  const activeDataset = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)?.[0] as Dataset
+  const label = getFilterLabel(activeDataset, filter)
 
   return {
     id: filter,

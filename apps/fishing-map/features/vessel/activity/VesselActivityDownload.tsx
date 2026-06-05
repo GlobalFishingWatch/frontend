@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { saveAs } from 'file-saver'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -27,9 +26,10 @@ const VesselActivityDownload = () => {
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselSection = useSelector(selectVesselSection)
 
-  const onDownloadClick = () => {
+  const onDownloadClick = async () => {
     const data = parseEventsToCSV(events)
     const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
+    const { saveAs } = await import('file-saver')
     saveAs(
       blob,
       `${getVesselProperty(vesselData, 'shipname', {

@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { difference, uniq } from 'es-toolkit'
-import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -24,6 +23,7 @@ import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'

@@ -7,6 +7,13 @@
     "default": {
       "options": {
         "runtimeCacheInputs": [
+          "echo $VITE_PUBLIC_URL",
+          "echo $VITE_API_GATEWAY",
+          "echo $VITE_WORKSPACE_ENV",
+          "echo $VITE_REPORT_DAYS_LIMIT",
+          "echo $VITE_GOOGLE_MEASUREMENT_ID",
+          "echo $VITE_GOOGLE_TAG_MANAGER_ID",
+          "echo $VITE_GOOGLE_ANALYTICS_TEST_MODE",
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",
@@ -77,7 +84,7 @@
     },
     "dist:workers": {
       "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
+      "outputs": ["{projectRoot}/dist/workers"],
       "cache": true
     },
     "@nx/js:tsc": {
@@ -96,6 +103,10 @@
     "prepare-loaders": {
       "cache": true,
       "outputs": ["{projectRoot}/public/workers"]
+    },
+    "build": {
+      "cache": true,
+      "inputs": ["production", "^production"]
     },
     "@nx/vitest:test": {
       "cache": true,

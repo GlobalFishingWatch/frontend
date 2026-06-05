@@ -52,9 +52,6 @@ function TrackFootprint({
   const densityMultiplier = isHighDensityDisplay ? 2 : 1
   const footprintWidth = FOOTPRINT_WIDTH * densityMultiplier
   const footprintHeight = FOOTPRINT_HEIGHT * densityMultiplier
-  const fullContext = fullCanvasRef.current?.getContext('2d')
-  const highlightContext = highlightCanvasRef.current?.getContext('2d')
-
   const projection = useMemo(
     () =>
       geoEqualEarth()
@@ -113,6 +110,7 @@ function TrackFootprint({
   }, [error, fetchData, onScreen, trackData, vesselIds])
 
   useEffect(() => {
+    const fullContext = fullCanvasRef.current?.getContext('2d')
     if (fullContext && trackData && lastPosition) {
       const isSmallFootprint = area(bboxPolygon(bbox(trackData))) < MAX_SMALL_AREA_M
       const fullPath = geoPath(projection, fullContext).pointRadius(1)
@@ -140,17 +138,10 @@ function TrackFootprint({
       fullPath(lastPosition)
       fullContext.stroke()
     }
-  }, [
-    densityMultiplier,
-    fullContext,
-    isHighDensityDisplay,
-    lastPosition,
-    projection,
-    trackData,
-    vesselIds,
-  ])
+  }, [densityMultiplier, isHighDensityDisplay, lastPosition, projection, trackData, vesselIds])
 
   useEffect(() => {
+    const highlightContext = highlightCanvasRef.current?.getContext('2d')
     highlightContext?.clearRect(0, 0, footprintWidth, footprintHeight)
     const highlightPath = geoPath(projection, highlightContext)
     if (trackData && highlightedYear && highlightContext) {
@@ -189,15 +180,7 @@ function TrackFootprint({
         highlightContext.stroke()
       })
     }
-  }, [
-    densityMultiplier,
-    footprintHeight,
-    footprintWidth,
-    highlightContext,
-    highlightedYear,
-    projection,
-    trackData,
-  ])
+  }, [densityMultiplier, footprintHeight, footprintWidth, highlightedYear, projection, trackData])
 
   return (
     <Tooltip content={error && t((t) => t.vessel.noTrackAvailable)}>

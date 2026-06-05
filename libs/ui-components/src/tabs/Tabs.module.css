@@ -1,44 +1,133 @@
+.container {
+  filter: var(--filter-drop-shadow-1);
+  border-radius: var(--border-radius-1);
+}
+
 .header {
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-XS);
+  z-index: 0;
+  position: relative;
+  overflow: auto hidden;
+  scrollbar-width: none;
 }
 
 .tab {
-  flex: 1;
+  flex: 1 0 auto;
+  height: 4rem;
 }
 
-.tabButton {
+.container .tabButton {
   flex: 1;
   min-width: auto;
   width: 100%;
-  padding: var(--space-XS);
-  border-radius: 0;
+  height: 3.2rem;
+  padding: var(--space-XS) var(--space-S);
+  margin-top: var(--space-XS);
+  border-radius: var(--border-radius-1);
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  color: rgba(var(--primary-blue-rgb), 0.6);
+  position: relative;
 }
 
-.tabActive {
+.container .tabButton:hover {
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
+  border-bottom: 1px solid transparent;
+  transform: none;
+}
+
+.container .tabButton.border::after {
+  content: '';
+  width: 1px;
+  height: 30%;
+  top: 30%;
+  background-color: var(--color-border-thick);
+  position: absolute;
+  right: -3px;
+}
+
+.container .tabButton.border:hover::after,
+.container .tab:has(+ .tab .tabButton:hover) .tabButton.border::after {
   background-color: transparent;
+}
+
+.container .tabActive {
+  background-color: var(--color-off-white-0);
+  color: var(--color-primary-blue);
+  height: 4.1rem;
+  margin-top: 0;
+  border-radius: var(--border-radius-1) var(--border-radius-1) 0 0;
+  z-index: 1;
+  transition: none;
+}
+
+.container .tabActive::before,
+.container .tabActive::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  bottom: calc(-1 * var(--border-radius-1));
+  width: calc(var(--border-radius-1) * 2);
+  height: calc(var(--border-radius-1) * 2);
+}
+
+.container .tabActive:not(.tabFirst)::before {
+  left: calc(-1 * var(--border-radius-1));
+  transform: rotate(-90deg);
+  background: radial-gradient(
+    circle at 100% 0%,
+    transparent var(--border-radius-1),
+    var(--color-off-white-0) var(--border-radius-1)
+  );
+}
+
+.container .tabActive:not(.tabLast)::after {
+  right: calc(-1 * var(--border-radius-1));
+  transform: rotate(90deg);
+  background: radial-gradient(
+    circle at 0% 0%,
+    transparent var(--border-radius-1),
+    var(--color-off-white-0) var(--border-radius-1)
+  );
 }
 
 .container .header .tabActive:hover {
-  background-color: transparent;
+  background-color: var(--color-off-white-0);
 }
 
 .container .header .tabActive:focus {
   box-shadow: none;
-  background-color: transparent;
+  background-color: var(--color-off-white-0);
 }
 
 .content {
   display: none;
+  background-color: var(--color-off-white-0);
+  border-radius: var(--border-radius-1);
+  z-index: 0;
+  position: relative;
 }
 
 .contentActive {
   display: block;
 }
 
+.firstTabSelected {
+  border-radius: 0 var(--border-radius-1) var(--border-radius-1) var(--border-radius-1);
+}
+
+.lastTabSelected {
+  border-radius: var(--border-radius-1) 0 var(--border-radius-1) var(--border-radius-1);
+}
+
 @media print {
+  .container {
+    filter: none;
+  }
+
   .tab button {
     padding: var(--space-M);
     justify-content: flex-start;
@@ -46,7 +135,7 @@
 
   .content {
     display: block;
-    page-break-after: always;
+    background-color: transparent;
   }
 
   .tab {

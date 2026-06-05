@@ -11,7 +11,8 @@ import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualization
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
@@ -28,7 +29,7 @@ import type {
 import { REPORT_VESSELS_GRAPH_LABEL_KEY } from 'features/reports/shared/utils/reports.utils'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from './ReportVesselsGraph.module.css'
@@ -133,7 +134,7 @@ const ReportGraphTick = (props: any) => {
     props
 
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive =
     !EMPTY_API_VALUES.includes(payload.value) && payload.value !== OTHERS_CATEGORY_LABEL
@@ -159,7 +160,7 @@ const ReportGraphTick = (props: any) => {
 
   const onLabelClick = () => {
     if (payload.value !== OTHERS_CATEGORY_LABEL) {
-      dispatchQueryParams({
+      replaceQueryParams({
         [filterQueryParam]: `${FILTER_PROPERTIES[property as ReportVesselsSubCategory]}:${
           payload.value
         }`,
@@ -218,11 +219,11 @@ export default function ReportVesselsGraph({
   filterQueryParam = 'reportVesselFilter',
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
     if (payload && propertyParam && payload?.name !== OTHERS_CATEGORY_LABEL) {
-      dispatchQueryParams({
+      replaceQueryParams({
         [filterQueryParam]: `${propertyParam}:${payload.name}`,
         [pageQueryParam]: 0,
       })

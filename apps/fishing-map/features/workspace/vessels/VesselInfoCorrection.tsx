@@ -29,12 +29,12 @@ function VesselInfoCorrection() {
   return (
     <Fragment>
       <IconButton
-        className="vessel-info-correction"
+        className="vessel-info-correction print-hidden"
         type="border"
         icon="feedback-error"
         tooltip={t((t) => t.layer.vessel_info_correction)}
         tooltipPlacement="bottom"
-        size="small"
+        size="medium"
         onClick={onInfoCorrectionClick}
       />
       {modalOpen && (

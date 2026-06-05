@@ -7,7 +7,6 @@ import { AUXILIAR_DATAVIEW_SUFIX, useGetDeckLayer } from '@globalfishingwatch/de
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { Spinner, Switch } from '@globalfishingwatch/ui-components'
 
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import Title from 'features/workspace/shared/Title'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
@@ -38,7 +37,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
     })
   }
 
-  const datasetTitle = getDatasetNameTranslated(dataset)
+  const datasetTitle = dataset?.name
 
   return (
     <div>

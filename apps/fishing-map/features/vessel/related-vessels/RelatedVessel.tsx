@@ -6,10 +6,10 @@ import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 
 import { selectVesselDataset } from 'features/vessel/selectors/vessel.resources.selectors'
 import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
+import type { VesselToResolve } from 'features/vessel/vessel-pin.hooks'
 import VesselLink from 'features/vessel/VesselLink'
-import type { VesselToResolve } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import { selectIsWorkspaceVesselLocation } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
 import styles from './RelatedVessels.module.css'

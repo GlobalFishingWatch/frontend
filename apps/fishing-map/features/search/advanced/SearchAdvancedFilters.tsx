@@ -1,15 +1,18 @@
-import { useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { InputDate, MultiSelect, Select } from '@globalfishingwatch/ui-components'
+import { InputDate, MultiSelect, Select, Spinner } from '@globalfishingwatch/ui-components'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { getActiveDatasetsInDataview, getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { getDataviewFilterConfig, getFilterLabel } from 'features/dataviews/dataviews.filters'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -28,7 +31,9 @@ import {
   DEFAULT_VESSEL_IDENTITY_ID,
   IS_PIPE_4,
 } from 'features/vessel/vessel.config'
-import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './SearchAdvancedFilters.module.css'
 
@@ -80,6 +85,9 @@ function SearchAdvancedFilters() {
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
+  const showSourcesLoading = datasetsStatus === AsyncReducerStatus.Loading && isWorkspaceRefreshing
 
   const { sources, transmissionDateFrom, transmissionDateTo, infoSource } = searchFilters
 
@@ -114,6 +122,8 @@ function SearchAdvancedFilters() {
   const dataview = useMemo(() => {
     return getSearchDataview(datasets, searchFilters, sources)
   }, [datasets, searchFilters, sources])
+
+  const activeDataset = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)?.[0] as Dataset
 
   const schemaFilters = useMemo(
     () =>
@@ -169,7 +179,7 @@ function SearchAdvancedFilters() {
           key={field}
           field={field}
           onChange={onInputChange}
-          label={getFilterLabel(field)}
+          label={getFilterLabel(activeDataset, field)}
         />
       ))}
       <Select
@@ -214,7 +224,12 @@ function SearchAdvancedFilters() {
         sourceOptions &&
         sourceOptions.length > 0 && (
           <MultiSelect
-            label={t((t) => t.layer.sources)}
+            label={
+              <Fragment>
+                {t((t) => t.layer.sources)}
+                {showSourcesLoading && <Spinner className={styles.sourcesSpinner} size="tiny" />}
+              </Fragment>
+            }
             placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
             options={sourceOptions}
             selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
@@ -258,7 +273,10 @@ function SearchAdvancedFilters() {
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={schemaFilter.label || getFilterLabel(translationKey as SupportedDatasetFilter)}
+            label={
+              schemaFilter.label ||
+              getFilterLabel(activeDataset, translationKey as SupportedDatasetFilter)
+            }
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,

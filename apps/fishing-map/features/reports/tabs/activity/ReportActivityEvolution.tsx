@@ -46,7 +46,7 @@ const ReportActivityEvolution = ({
   removeEmptyValues = false,
   freezeTooltipOnClick = false,
 }: {
-  data: ReportGraphProps
+  data?: ReportGraphProps
   start: string
   end: string
   TooltipContent?: ReactNode
@@ -57,7 +57,7 @@ const ReportActivityEvolution = ({
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
   const fourwingsInterval = getFourwingsInterval(start, end)
-  let interval: FourwingsInterval = data?.interval
+  let interval: FourwingsInterval | undefined = data?.interval
   if (interval === 'MONTH' && (fourwingsInterval === 'DAY' || fourwingsInterval === 'HOUR')) {
     interval = 'DAY'
   }
@@ -78,6 +78,9 @@ const ReportActivityEvolution = ({
 
   const dataFormated = useMemo(
     () => {
+      if (!data || !interval) {
+        return []
+      }
       return formatEvolutionData(data, {
         start: domain ? new Date(domain[0]).toISOString() : start,
         end: domain ? new Date(domain[1]).toISOString() : end,
@@ -148,7 +151,7 @@ const ReportActivityEvolution = ({
     }
   }, [fixedTooltip, handleClickOutside])
 
-  if (!dataFormated || !domain) {
+  if (!dataFormated || !domain || !interval) {
     return null
   }
 
@@ -180,7 +183,9 @@ const ReportActivityEvolution = ({
           minTickGap={10}
           interval="preserveStartEnd"
           tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-          axisLine={paddedDomain[0] === 0}
+          axisLine={{
+            stroke: paddedDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+          }}
         />
         <YAxis
           scale="linear"

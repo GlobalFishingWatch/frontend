@@ -12,7 +12,7 @@ import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
 } from 'features/datasets/datasets.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'

@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import {
   selectIsGuestUser,
   selectIsUserExpired,
   selectUserData,
+  selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { USER } from 'routes/routes'
+import LocalStorageLoginLink from 'router/LoginLink'
+import { selectIsUserLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './UserButton.module.css'
@@ -23,8 +24,10 @@ import styles from './UserButton.module.css'
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
+  const isUserLocation = useSelector(selectIsUserLocation)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
+  const userStatus = useSelector(selectUserStatus)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
   const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
@@ -44,6 +47,15 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
+
+  if (userStatus !== AsyncReducerStatus.Finished) {
+    return (
+      <div className={cx(className, styles.wrapper)}>
+        <Spinner size="tiny" />
+      </div>
+    )
+  }
+
   return (
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
@@ -53,18 +65,26 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
           </LocalStorageLoginLink>
         </Tooltip>
       ) : (
-        <Link
-          to={{
-            type: USER,
-            payload: {},
-            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
-            replaceQuery: true,
-          }}
-          data-testid={testId}
-          className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+        <Tooltip
+          content={
+            isUserLocation ? undefined : (
+              <div>
+                {userData?.email && <p>{userData.email}</p>}
+                <p className={styles.secondary}>{t((t) => t.user.profileTooltip)}</p>
+              </div>
+            )
+          }
         >
-          {userData ? initials : <Icon icon="user" className="print-hidden" />}
-        </Link>
+          <Link
+            to="/user"
+            search={{ ...DEFAULT_WORKSPACE_LIST_VIEWPORT }}
+            replace
+            data-testid={testId}
+            className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+          >
+            {userData ? initials : <Icon icon="user" className="print-hidden" />}
+          </Link>
+        </Tooltip>
       )}
       <span
         aria-hidden

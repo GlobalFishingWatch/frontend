@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,7 +7,6 @@ import { debounce } from 'es-toolkit'
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
   type UrlDataviewInstance,
@@ -34,11 +33,12 @@ import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
-import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
-import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
 import {
@@ -47,6 +47,8 @@ import {
   getSourcesSelectedInDataview,
 } from '../activity/activity.utils'
 
+import { isHistogramDataviewSupported } from './layer-properties.utils'
+
 import styles from './LayerFilters.module.css'
 
 type LayerFiltersProps = {
@@ -54,6 +56,10 @@ type LayerFiltersProps = {
   showApplyToAll?: boolean
   onConfirmCallback?: () => void
 }
+
+const HistogramRangeFilter = lazy(
+  () => import('features/workspace/environmental/HistogramRangeFilter')
+)
 
 const trackEventCb = debounce((filterKey: string, label: string) => {
   trackEvent({
@@ -93,18 +99,6 @@ const cleanDataviewFiltersNotAllowed = (
   return filters
 }
 
-export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = getDatasetConfiguration(dataset)
-  return (
-    max !== undefined &&
-    min !== undefined &&
-    max !== null &&
-    min !== null &&
-    (max !== 0 || min !== 0)
-  )
-}
-
 export type OnSelectFilterArgs = {
   filterKey: string | SupportedDatasetFilter
   selection: number | MultiSelectOption | MultiSelectOption[]
@@ -118,11 +112,10 @@ function LayerFilters({
 }: LayerFiltersProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
   >()
@@ -163,6 +156,8 @@ function LayerFilters({
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
+
+  usePorts(filtersAllowed.some((f) => f.id === 'next_port_id'))
 
   const onDataviewFilterChange = useCallback(
     (dataviewInstance: UrlDataviewInstance) => {
@@ -205,10 +200,10 @@ function LayerFilters({
             : false
       if (isHighRes && dataviewInstance?.config?.filters?.['vessel-groups']) {
         const categoryQueryParam = `${dataview.category}VisualizationMode`
-        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
       }
     },
-    [activityVisualizationMode, dataview.category, detectionsVisualizationMode, dispatchQueryParams]
+    [activityVisualizationMode, dataview.category, detectionsVisualizationMode]
   )
 
   useEffect(() => {
@@ -448,7 +443,9 @@ function LayerFilters({
         />
       )}
       {showHistogramFilter && (
-        <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+        <Suspense fallback={null}>
+          <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+        </Suspense>
       )}
       {filtersAllowed.map((schemaFilter) => {
         if (!showSchemaFilter(schemaFilter)) {
@@ -487,12 +484,12 @@ function LayerFilters({
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>
           {t((t) => t.layer.filtersDisabled, {
-            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
+            filters: listAsSentence(filtersDisabled.map((filter) => filter.label)) ?? '',
           })}
         </p>
       )}
       {dataview.category === DataviewCategory.Activity && (
-        <UserGuideLink section="activityFilters" className={styles.userGuideLink} />
+        <UserGuideLink slug="filtering-activity-layers" className={styles.userGuideLink} />
       )}
     </Fragment>
   )

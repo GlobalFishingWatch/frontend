@@ -1,27 +1,21 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
-import {
-  COORDINATE_PROPERTY_TIMESTAMP,
-  getUTCDate,
-  NO_RECORD_ID,
-} from '@globalfishingwatch/data-transforms'
+import { COORDINATE_PROPERTY_TIMESTAMP, getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfigurationProperty,
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import { type AnyUserLayer, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import type { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectActiveUserTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDisableHighlightTimeConnect } from 'features/timebar/timebar.hooks'
 import { setHighlightedTime } from 'features/timebar/timebar.slice'
+
+import { useUserLayerMetadata } from './user-layer-track-panel.hooks'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
@@ -31,39 +25,6 @@ type UserPanelProps = {
 }
 
 const SEE_MORE_LENGTH = 5
-
-export function useUserLayerMetadata(dataview: UrlDataviewInstance, mergedDataviewId?: string) {
-  const dataset = getUserDataviewDataset(dataview)
-  const allTracksActive = useSelector(selectActiveUserTrackDataviews)
-  const userLayer = useGetDeckLayer<AnyUserLayer>(mergedDataviewId || dataview?.id)
-
-  const data = useMemo(() => {
-    if (userLayer?.instance instanceof UserTracksLayer) {
-      return userLayer?.instance?.getData?.()
-    }
-  }, [userLayer])
-
-  const idProperty = getDatasetConfigurationProperty({
-    dataset,
-    property: 'lineId',
-  }) as string
-
-  const hasRecordIds = idProperty
-    ? data?.features?.some((f) => !f.properties?.id?.startsWith?.(NO_RECORD_ID))
-    : false
-
-  const singleTrack = allTracksActive.length === 1
-  const hasFeaturesColoredByField = singleTrack && data && hasRecordIds
-
-  return {
-    data,
-    hasRecordIds,
-    hasFeaturesColoredByField,
-    error: userLayer?.instance?.getError?.(),
-    loaded: userLayer?.loaded,
-    instance: userLayer?.instance,
-  }
-}
 
 const getFeatureTimeExtent = (
   feature: UserTrackFeature,
