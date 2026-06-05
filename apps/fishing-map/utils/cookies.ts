@@ -8,6 +8,11 @@ export function readDocumentCookieString(key: string): string | null {
   return match?.[1] ?? null
 }
 
+export function readRequestCookieString(cookieHeader: string, key: string): string | null {
+  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))
+  return match?.[1] ? decodeURIComponent(match[1]) : null
+}
+
 export function readDocumentCookieNumber(key: string): number | null {
   const stringMatch = readDocumentCookieString(key)
   if (stringMatch === null) return null
