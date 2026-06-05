@@ -37,21 +37,7 @@ yarn|pnpm add @globalfishingwatch/i18n-labels
 
 ## Available Resources
 
-### 1. Datasets (`datasets.json`)
-
-Contains translations for dataset names, descriptions and schema definitions.
-
-Example usage:
-
-```typescript
-import { datasets } from '@globalfishingwatch/i18n-labels'
-
-// Access dataset information
-const bathymetryInfo = datasets['public-global-bathymetry']
-console.log(bathymetryInfo.name) // "Bathymetry"
-```
-
-### 2. Flags (`flags.json`)
+### 1. Flags (`flags.json`)
 
 Contains country names mapped to their ISO-3 codes.
 
@@ -63,7 +49,7 @@ import { flags } from '@globalfishingwatch/i18n-labels'
 console.log(flags.USA) // "United States of America"
 ```
 
-### 3. Timebar (`timebar.json`)
+### 2. Timebar (`timebar.json`)
 
 Contains translations for the time navigation interface elements:
 

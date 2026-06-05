@@ -11,4 +11,4 @@ if [[ "$BASE_REF" == origin/* ]] && ! git rev-parse --verify --quiet "$BASE_REF"
   git fetch --no-tags --depth=2 origin "${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}"
 fi
 
-pnpm exec nx show projects --affected --base="$NX_BASE" --head="$NX_HEAD" --type app --exclude='linting,port-labeler,*-e2e,libs/*' --plain > affected-apps.txt
+pnpm exec nx show projects --affected --base="$NX_BASE" --head="$NX_HEAD" --type app --exclude='linting,port-labeler,*-e2e,libs/*' --plain 2>/dev/null | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' > affected-apps.txt

@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { VariableSizeList as List } from 'react-window'
+import { List } from 'react-window'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import { selectFilteredPoints } from 'features/labeler/labeler.selectors'
@@ -34,13 +33,18 @@ function TableAnchorage() {
 
   const [orderColumn, setOrderColumn] = useState<string | null>(null)
   const [orderDirection, setOrderDirection] = useState<orderDirectionType>('')
-  const [anchorageChangeCountryOpen, setAnchorageChangeCountryOpen] = useState<PortPosition | null>(null)
+  const [anchorageChangeCountryOpen, setAnchorageChangeCountryOpen] = useState<PortPosition | null>(
+    null
+  )
 
-  const onToggleHeader = useCallback((column: string, order: string) => {
-    setOrderColumn(column)
-    setOrderDirection(order as orderDirectionType)
-    dispatch(sortPoints({ orderColumn: column, orderDirection: order }))
-  }, [dispatch])
+  const onToggleHeader = useCallback(
+    (column: string, order: string) => {
+      setOrderColumn(column)
+      setOrderDirection(order as orderDirectionType)
+      dispatch(sortPoints({ orderColumn: column, orderDirection: order }))
+    },
+    [dispatch]
+  )
 
   const mapBounds = useMapBounds()
 
@@ -121,31 +125,24 @@ function TableAnchorage() {
 
       {screenFilteredRecords && screenFilteredRecords.length ? (
         <div className={styles.body}>
-          <AutoSizer disableWidth={true}>
-            {(params: any) => (
-              <List
-                width={params.width}
-                height={params.height}
-                itemCount={screenFilteredRecords.length}
-                itemData={screenFilteredRecords}
-                itemSize={() => 40}
-              >
-                {({ index, style }) => {
-                  const record = screenFilteredRecords[index]
-                  return (
-                    <div style={style}>
-                      <TableRow
-                        key={record.s2id}
-                        record={record}
-                        extra={extraColumn}
-                        onCountryChange={onSetCountryToChange}
-                      ></TableRow>
-                    </div>
-                  )
-                }}
-              </List>
-            )}
-          </AutoSizer>
+          <List
+            rowCount={screenFilteredRecords.length}
+            rowHeight={40}
+            rowProps={{}}
+            rowComponent={({ index, style }) => {
+              const record = screenFilteredRecords[index]
+              return (
+                <div style={style}>
+                  <TableRow
+                    record={record}
+                    extra={extraColumn}
+                    onCountryChange={onSetCountryToChange}
+                  />
+                </div>
+              )
+            }}
+            style={{ height: '100%' }}
+          />
         </div>
       ) : (
         <p className={styles.alert}>{t('messages.no_anchorages', 'No anchorages found')}</p>
@@ -167,7 +164,8 @@ function TableAnchorage() {
                 ? {
                     id: anchorageChangeCountryOpen.iso3,
                     label:
-                      flags[anchorageChangeCountryOpen.iso3 as keyof typeof flags] ?? anchorageChangeCountryOpen.iso3,
+                      flags[anchorageChangeCountryOpen.iso3 as keyof typeof flags] ??
+                      anchorageChangeCountryOpen.iso3,
                   }
                 : undefined
             }
