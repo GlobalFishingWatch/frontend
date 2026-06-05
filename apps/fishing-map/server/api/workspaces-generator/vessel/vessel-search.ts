@@ -11,7 +11,7 @@ import { getVesselShipNameLabel } from 'utils/info'
 import type { VesselParams } from '../types'
 
 const GFW_API_URL = API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
-const API_TOKEN = process.env.VITE_GFW_API_KEY
+const API_TOKEN = process.env.GFW_API_KEY
 const VESSEL_SEARCH_URL = `${API_VERSION}/vessels/search`
 
 export const searchVessels = async (vessel: VesselParams) => {

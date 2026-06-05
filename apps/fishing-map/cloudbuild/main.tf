@@ -15,51 +15,29 @@ locals {
     sta = "frontend-sta@gfw-development.iam.gserviceaccount.com"
     pro = "frontend-pro@gfw-production.iam.gserviceaccount.com"
   }
-  // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
-  next_secrets = [
-    "BASIC_AUTH_PASS",
-    "NEXT_DOWNLOAD_SURVEY_SPREADSHEET_ID",
-    "NEXT_FEEDBACK_SPREADSHEET_ID",
-    "NEXT_GFW_API_KEY",
-    "NEXT_IDENTITY_REVIEW_SPREADSHEET_ID",
-    "NEXT_MAP_ERRORS_SPREADSHEET_ID",
-    "NEXT_MASTRA_API_URL",
-    "NEXT_SENTRY_AUTH_TOKEN",
-    "NEXT_SPREADSHEET_CLIENT_EMAIL",
-    "NEXT_SPREADSHEET_PRIVATE_KEY",
-    "NEXT_TURNING_TIDES_AIS_ID",
-    "NEXT_TURNING_TIDES_BRAZIL_ID",
-    "NEXT_TURNING_TIDES_CHILE_ID",
-    "NEXT_TURNING_TIDES_PERU_ID",
-    "NEXT_WORKSPACES_AGENT_ID",
-  ]
+  // Server-only secrets, bare names (no VITE_ prefix so they are never bundled into the client).
+  // Stored prefixed with FISHING_MAP_ in the secrets manager.
   secrets = [
     "BASIC_AUTH_PASS",
     "STRAPI_TOKEN",
     "STRAPI_URL",
-    "VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID",
-    "VITE_FEEDBACK_SPREADSHEET_ID",
-    "VITE_GFW_API_KEY",
-    "VITE_IDENTITY_REVIEW_SPREADSHEET_ID",
-    "VITE_MAP_ERRORS_SPREADSHEET_ID",
-    "VITE_MIGRAMAR_SPREADSHEET_ID",
-    "VITE_MASTRA_API_URL",
-    "VITE_SENTRY_AUTH_TOKEN",
-    "VITE_SPREADSHEET_CLIENT_EMAIL",
-    "VITE_SPREADSHEET_PRIVATE_KEY",
-    "VITE_TURNING_TIDES_AIS_ID",
-    "VITE_TURNING_TIDES_BRAZIL_ID",
-    "VITE_TURNING_TIDES_CHILE_ID",
-    "VITE_TURNING_TIDES_PERU_ID",
-    "VITE_WORKSPACES_AGENT_ID",
+    "DOWNLOAD_SURVEY_SPREADSHEET_ID",
+    "FEEDBACK_SPREADSHEET_ID",
+    "GFW_API_KEY",
+    "IDENTITY_REVIEW_SPREADSHEET_ID",
+    "MAP_ERRORS_SPREADSHEET_ID",
+    "MIGRAMAR_SPREADSHEET_ID",
+    "MASTRA_API_URL",
+    "SENTRY_AUTH_TOKEN",
+    "SPREADSHEET_CLIENT_EMAIL",
+    "SPREADSHEET_PRIVATE_KEY",
+    "TURNING_TIDES_AIS_ID",
+    "TURNING_TIDES_BRAZIL_ID",
+    "TURNING_TIDES_CHILE_ID",
+    "TURNING_TIDES_PERU_ID",
+    "WORKSPACES_AGENT_ID",
   ]
 
-  generate_next_secrets = {
-    for env, path in local.secrets_path : env => [
-      for secret in local.next_secrets :
-      "${secret}=${path}/FISHING_MAP_${secret}"
-    ]
-  }
   generate_secrets = {
     for env, path in local.secrets_path : env => [
       for secret in local.secrets :
@@ -84,24 +62,24 @@ module "develop" {
     branch = "develop"
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
-    "NEXT_PUBLIC_API_VERSION=v3",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-    "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
-    "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
-    "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_VMS_PANAMA_V4_1_PREVIEW=true",
+    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=development",
+    "VITE_REPORT_DAYS_LIMIT=366",
+    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets  = local.generate_next_secrets.dev
+  set_secrets  = local.generate_secrets.dev
   machine_type = "E2_HIGHCPU_8"
 }
 
@@ -135,7 +113,7 @@ module "preview-dev" {
     "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -175,7 +153,7 @@ module "router-refactor" {
     "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -215,7 +193,7 @@ module "random-forest" {
     "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -242,24 +220,24 @@ module "staging" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
-    "NEXT_PUBLIC_API_VERSION=v3",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-    "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
-    "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
-    "NEXT_PUBLIC_WORKSPACE_ENV=staging",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_VMS_PANAMA_V4_1_PREVIEW=true",
+    "VITE_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=staging",
+    "VITE_REPORT_DAYS_LIMIT=366",
+    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_next_secrets.sta
+  set_secrets = local.generate_secrets.sta
 }
 
 module "production" {
@@ -281,20 +259,20 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
-    "NEXT_PUBLIC_API_VERSION=v3",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-WXTMN69",
-    "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
-    "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
-    "NEXT_PUBLIC_WORKSPACE_ENV=production",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "VITE_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-WXTMN69",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=production",
+    "VITE_REPORT_DAYS_LIMIT=366",
   ]
   build_secrets = {
-    SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
     "BASIC_AUTH=off"
   ]
-  set_secrets = local.generate_next_secrets.pro
+  set_secrets = local.generate_secrets.pro
 }
