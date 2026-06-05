@@ -9,13 +9,9 @@ import type {
   DataviewInstance,
   DataviewInstanceOrigin,
   DataviewType,
-  VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getFlattenDatasetFilters,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getEncounteredVesselDataviewInstanceId,
@@ -451,13 +447,13 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
 }
 
 export function hasVesselGroupVesselsDeprecated(
-  vesselGroupvessels: VesselGroupVessel[] | undefined,
+  vesselGroupDatasets: string[] | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
-  if (!vesselGroupvessels || !deprecatedDatasets) {
+  if (!vesselGroupDatasets || !deprecatedDatasets) {
     return false
   }
-  return vesselGroupvessels.some((v) => deprecatedDatasets[v.dataset])
+  return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
 export function isDataviewDeprecated(
@@ -486,7 +482,7 @@ export function isDataviewDeprecated(
     ? config.events.some((d) => deprecatedDatasets[d])
     : false
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    dataview.vesselGroup?.vessels,
+    dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
 

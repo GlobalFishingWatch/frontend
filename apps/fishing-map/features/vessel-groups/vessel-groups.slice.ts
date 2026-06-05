@@ -49,6 +49,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
       const vesselGroupsParams = {
         ids: vesselGroupsNotLoaded,
         cache: false,
+        exclude: ['vessels'],
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
@@ -80,14 +81,13 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
       const vesselGroupsParams = {
         ...DEFAULT_PAGINATION_PARAMS,
         cache: false,
+        exclude: ['vessels'],
         ...(ids?.length ? { ids } : { 'logged-user': true }),
       }
       const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
       const vesselGroupVesselDatasets = uniq(
-        (vesselGroups.entries || []).flatMap((vG) =>
-          (vG.vessels || []).flatMap((v) => v.dataset || [])
-        )
+        (vesselGroups.entries || []).flatMap((vG) => vG.vesselsSummary?.datasets || [])
       )
       await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
       return vesselGroups.entries
@@ -164,7 +164,7 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
             name: name || vesselGroup.name,
             vessels: override
               ? vessels
-              : uniqBy([...vesselGroup.vessels, ...vessels], (v) => v.vesselId),
+              : uniqBy([...(vesselGroup.vessels || []), ...vessels], (v) => v.vesselId),
           })
         )
         if (updateVesselGroupThunk.fulfilled.match(action)) {

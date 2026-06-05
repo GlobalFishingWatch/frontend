@@ -59,11 +59,12 @@ export const fetchVesselGroupReportThunk = createAsyncThunk(
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
       const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroupId, signal)
-      const vesselGroupVesselDatasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+      const groupVessels = vesselGroup.vessels || []
+      const vesselGroupVesselDatasets = uniq(groupVessels.flatMap((v) => v.dataset || []))
       await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
       return {
         ...vesselGroup,
-        vessels: mergeVesselGroupVesselIdentities(vesselGroup.vessels, vesselGroupVessels.entries),
+        vessels: mergeVesselGroupVesselIdentities(groupVessels, vesselGroupVessels.entries),
       }
     } catch (e) {
       console.warn(e)

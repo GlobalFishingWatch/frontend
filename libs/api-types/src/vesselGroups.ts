@@ -6,10 +6,17 @@ export type VesselGroupVessel = {
   vesselType?: string
 }
 
+export type VesselGroupVesselsSummary = {
+  totalVessels: number
+  distinctRelationIds: number
+  datasets: string[]
+}
+
 export type VesselGroup = {
   id: string
   name: string
-  vessels: VesselGroupVessel[]
+  vessels?: VesselGroupVessel[]
+  vesselsSummary?: VesselGroupVesselsSummary
   public?: boolean
   ownerId?: number
   ownerType?: string

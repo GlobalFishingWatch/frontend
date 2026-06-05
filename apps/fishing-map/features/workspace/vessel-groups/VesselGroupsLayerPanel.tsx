@@ -101,7 +101,7 @@ function VesselGroupLayerPanel({
   const onEditClick = () => {
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
-      dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
+      dispatch(setVesselGroupModalVessels(vesselGroup.vessels ?? null))
       dispatch(setVesselGroupsModalOpen(true))
       if (isOutdated) {
         dispatch(setVesselGroupConfirmationMode('update'))
@@ -159,7 +159,7 @@ function VesselGroupLayerPanel({
                       ) : (
                         <Fragment>
                           {vesselGroup?.name}{' '}
-                          {vesselGroup?.vessels?.length && (
+                          {getVesselGroupVesselsCount(vesselGroup) > 0 && (
                             <span className={styles.secondary}>
                               ({getVesselGroupVesselsCount(vesselGroup)})
                             </span>
@@ -173,7 +173,7 @@ function VesselGroupLayerPanel({
             ) : (
               <span>
                 {vesselGroup?.name}{' '}
-                {vesselGroup?.vessels?.length && (
+                {getVesselGroupVesselsCount(vesselGroup) > 0 && (
                   <span className={styles.secondary}>
                     {' '}
                     ({getVesselGroupVesselsCount(vesselGroup)})
