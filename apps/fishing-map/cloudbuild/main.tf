@@ -35,6 +35,8 @@ locals {
   ]
   secrets = [
     "BASIC_AUTH_PASS",
+    "STRAPI_TOKEN",
+    "STRAPI_URL",
     "VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID",
     "VITE_FEEDBACK_SPREADSHEET_ID",
     "VITE_GFW_API_KEY",
@@ -45,8 +47,6 @@ locals {
     "VITE_SENTRY_AUTH_TOKEN",
     "VITE_SPREADSHEET_CLIENT_EMAIL",
     "VITE_SPREADSHEET_PRIVATE_KEY",
-    "VITE_STRAPI_TOKEN",
-    "VITE_STRAPI_URL",
     "VITE_TURNING_TIDES_AIS_ID",
     "VITE_TURNING_TIDES_BRAZIL_ID",
     "VITE_TURNING_TIDES_CHILE_ID",
@@ -132,11 +132,10 @@ module "preview-dev" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
+    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
-    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
-    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -173,11 +172,10 @@ module "router-refactor" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
+    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
-    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
-    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -214,11 +212,10 @@ module "random-forest" {
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
     "VITE_RANDOM_FOREST_ENABLED=true",
+    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
-    VITE_STRAPI_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_TOKEN"
-    VITE_STRAPI_URL   = "${local.secrets_path.dev}/FISHING_MAP_VITE_STRAPI_URL"
   }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
