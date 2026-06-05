@@ -11,7 +11,6 @@ import type {
   DataviewDatasetConfig,
   IdentityVessel,
   VesselGroup,
-  VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
@@ -28,6 +27,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 
+import type { VesselGroupVesselIdentity } from './vessel-groups.types'
 import type { VesselPropertyApiSearch } from './vessel-groups.utils'
 import {
   flatVesselGroupSearchVessels,
@@ -35,11 +35,11 @@ import {
   vesselPropertyToApiSearch,
 } from './vessel-groups.utils'
 
+export type { VesselGroupVesselIdentity }
+
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
-
-export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
 
 export type VesselGroupCsvData = Record<string, string>
 interface VesselGroupModalState {

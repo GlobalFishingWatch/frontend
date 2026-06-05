@@ -1,29 +1,15 @@
 import type { DatasetConfiguration, DatasetTypeToConfigurationType } from './datasets.configuration'
+import { DatasetTypes } from './datasets.configuration'
 import type { DatasetFilters } from './datasets.filters'
-import type { Endpoint } from './endpoints'
 import type { EventTypes } from './events'
+
+export { DatasetTypes }
 
 export const DRAW_DATASET_SOURCE = 'drawn_on_gfw_map'
 
 export type UploadResponse = {
   path: string
   url: string
-}
-
-export enum DatasetTypes {
-  BulkDownload = 'bulk-download:v1',
-  Context = 'context-layer:v1',
-  Download = 'data-download:v1',
-  Events = 'events:v1',
-  Fourwings = '4wings:v1',
-  Insights = 'insights:v1',
-  PMTiles = 'pm-tiles:v1',
-  TemporalContext = 'temporal-context-layer:v1',
-  Thumbnails = 'thumbnails:v1',
-  Tracks = 'tracks:v1',
-  UserContext = 'user-context-layer:v1',
-  UserTracks = 'user-tracks:v1',
-  Vessels = 'vessels:v1',
 }
 
 export type DatasetType = `${DatasetTypes}`

@@ -12,8 +12,7 @@ import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 
 import { VESSEL_GROUPS_REPORT_RELEASE_DATE } from './vessel-groups.config'
-import type { AddVesselGroupVessel } from './vessel-groups.hooks'
-import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import type { AddVesselGroupVessel, VesselGroupVesselIdentity } from './vessel-groups.types'
 
 export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   const isPrivate = !vesselGroup.id.endsWith(`-${PUBLIC_SUFIX}`)

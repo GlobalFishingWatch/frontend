@@ -1,4 +1,18 @@
-import { DatasetTypes } from './datasets'
+export enum DatasetTypes {
+  BulkDownload = 'bulk-download:v1',
+  Context = 'context-layer:v1',
+  Download = 'data-download:v1',
+  Events = 'events:v1',
+  Fourwings = '4wings:v1',
+  Insights = 'insights:v1',
+  PMTiles = 'pm-tiles:v1',
+  TemporalContext = 'temporal-context-layer:v1',
+  Thumbnails = 'thumbnails:v1',
+  Tracks = 'tracks:v1',
+  UserContext = 'user-context-layer:v1',
+  UserTracks = 'user-tracks:v1',
+  Vessels = 'vessels:v1',
+}
 
 export type ApiSupportedVersions = 'v3'
 
