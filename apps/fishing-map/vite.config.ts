@@ -46,6 +46,7 @@ export default defineConfig(({ command, mode }) => {
       command === 'build' &&
         nitro({
           baseURL: basePath,
+          entry: './h2c-server',
           sourcemap: true,
           compressPublicAssets: {
             gzip: true,
