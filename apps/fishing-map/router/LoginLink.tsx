@@ -1,5 +1,4 @@
 import { forwardRef } from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -8,14 +7,17 @@ import { usePopupLogin } from './LoginLink.hooks'
 type LocalStorageLoginLinkProps = {
   children: React.ReactNode
   className?: string
+  tooltip?: string
 }
 
-function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLinkProps, ref: any) {
-  const { t } = useTranslation()
+function LocalStorageLoginLink(
+  { children, className = '', tooltip }: LocalStorageLoginLinkProps,
+  ref: any
+) {
   const onClick = usePopupLogin()
 
   return (
-    <Tooltip content={t((t) => t.common.login)}>
+    <Tooltip content={tooltip}>
       <span
         ref={ref}
         role="button"
