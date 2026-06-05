@@ -15,5 +15,9 @@ allowBuilds:
   unrs-resolver: true
 
 patchedDependencies:
+  # Moves SIGINT/SIGTERM handlers outside watch-mode so vitest exits cleanly in
+  # non-watch CI runs. Remove once @nx/vitest ships the upstream fix.
   '@nx/vitest@22.7.5': patches/@nx__vitest@22.7.5.patch
+  # Adds an import.meta.dirname fallback + exports map so h3-js resolves __dirname in
+  # the ESM (Vite/Nitro) server bundle. Remove once h3-js publishes ESM-safe builds.
   h3-js@4.4.0: patches/h3-js@4.4.0.patch
