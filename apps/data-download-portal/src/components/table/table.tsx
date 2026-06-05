@@ -1,5 +1,6 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type {
+  Cell,
   Column,
   HeaderGroup,
   Hooks,
@@ -17,6 +18,7 @@ import type {
   UseResizeColumnsColumnProps,
   UseResizeColumnsState,
   UseRowSelectInstanceProps,
+  UseRowSelectState,
   UseSortByColumnProps,
   UseSortByInstanceProps,
 } from 'react-table'
@@ -29,7 +31,8 @@ import {
   useSortBy,
   useTable,
 } from 'react-table'
-import { FixedSizeList } from 'react-window'
+import type { RowComponentProps } from 'react-window'
+import { List } from 'react-window'
 import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
 
@@ -55,7 +58,8 @@ export type TableData = {
 type ExtendedTableState = TableState<TableData> &
   UseGlobalFiltersState<TableData> &
   UseExpandedState<TableData> &
-  UseResizeColumnsState<TableData>
+  UseResizeColumnsState<TableData> &
+  UseRowSelectState<TableData>
 
 type TableInstanceWithHooks = TableInstance<TableData> &
   UseGlobalFiltersInstanceProps<TableData> &
@@ -78,7 +82,7 @@ const IndeterminateCheckbox = React.forwardRef<HTMLInputElement, IndeterminateCh
   ({ indeterminate, ...rest }, ref) => {
     const defaultRef = useRef<HTMLInputElement>(null)
     const resolvedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>
-    const inputID = Math.random().toString()
+    const inputID = useId()
 
     useEffect(() => {
       if (resolvedRef.current) {
@@ -157,6 +161,50 @@ function HighlightedCell({ cell, state }: HighlightedCellProps) {
           regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>
         )}
     </span>
+  )
+}
+
+type TableRowItemProps = {
+  rows: ExtendedRow[]
+  prepareRow: (row: ExtendedRow) => void
+  logged: boolean
+  downloadSingleFile: (path: string) => void
+  selectedRowIds: Record<string, boolean>
+}
+
+function TableRowItem({
+  index,
+  style,
+  rows,
+  prepareRow,
+  logged,
+  downloadSingleFile,
+}: RowComponentProps<TableRowItemProps>): React.ReactElement {
+  const row = rows[index]
+  prepareRow(row)
+  return (
+    <div {...row.getRowProps({ style })} key={row.id} className={styles.tr}>
+      {row.cells.map((cell: Cell<TableData>) => (
+        <div {...cell.getCellProps()} key={cell.column.id} className={styles.td} title={cell.value}>
+          {cell.column.id === 'name' ? (
+            // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+            <div
+              onClick={() =>
+                row.canExpand
+                  ? row.toggleRowExpanded(!row.isExpanded)
+                  : logged && downloadSingleFile(cell.row.original.path)
+              }
+              style={{ cursor: 'pointer' }}
+              className={row.canExpand ? styles.folder : undefined}
+            >
+              {cell.render('Cell')}
+            </div>
+          ) : (
+            cell.render('Cell')
+          )}
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -349,49 +397,20 @@ function Table({ columns, data, logged }: TableProps) {
             </div>
           ))}
         </div>
-        <FixedSizeList
-          height={500}
-          width="100%"
-          itemSize={40}
-          itemCount={rows.length}
-          {...getTableBodyProps()}
-        >
-          {({ index, style }) => {
-            const row = rows[index] as ExtendedRow
-            prepareRow(row)
-            return (
-              <div {...row.getRowProps({ style })} key={row.id} className={styles.tr}>
-                {row.cells.map((cell) => {
-                  return (
-                    <div
-                      {...cell.getCellProps()}
-                      key={cell.column.id}
-                      className={styles.td}
-                      title={cell.value}
-                    >
-                      {cell.column.id === 'name' ? (
-                        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-                        <div
-                          onClick={() =>
-                            row.canExpand
-                              ? row.toggleRowExpanded(!row.isExpanded)
-                              : logged && downloadSingleFile(cell.row.original.path)
-                          }
-                          style={{ cursor: 'pointer' }}
-                          className={row.canExpand ? styles.folder : undefined}
-                        >
-                          {cell.render('Cell')}
-                        </div>
-                      ) : (
-                        cell.render('Cell')
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )
-          }}
-        </FixedSizeList>
+        <div {...getTableBodyProps()} style={{ height: 500 }}>
+          <List
+            rowComponent={TableRowItem}
+            rowCount={rows.length}
+            rowHeight={40}
+            rowProps={{
+              rows: rows as ExtendedRow[],
+              prepareRow: prepareRow as (row: ExtendedRow) => void,
+              logged,
+              downloadSingleFile,
+              selectedRowIds: (state as ExtendedTableState).selectedRowIds,
+            }}
+          />
+        </div>
       </div>
       <div className={styles.actionFooter}>
         <span className={styles.filesInfo}>
