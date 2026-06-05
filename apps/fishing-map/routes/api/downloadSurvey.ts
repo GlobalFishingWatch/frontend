@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const SURVEY_SPREADSHEET_ID = process.env.VITE_DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
+const SURVEY_SPREADSHEET_ID = process.env.DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
 const SURVEY_SHEET_TITLE = 'answers'
 
 export type ContactConsent = 'yes' | 'no'
@@ -27,6 +27,10 @@ export const Route = createFileRoute('/api/downloadSurvey')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         const data: FeedbackFormData = await request.json().catch(() => null)
 
         if (!data || !data.email) {
@@ -38,10 +42,11 @@ export const Route = createFileRoute('/api/downloadSurvey')({
 
         try {
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
+          const { sanitizeSheetRow } = await import('server/api/utils/sanitize')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(SURVEY_SPREADSHEET_ID)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[SURVEY_SHEET_TITLE]
 
-          await sheet.addRow(data)
+          await sheet.addRow(sanitizeSheetRow(data))
 
           return Response.json({
             success: true,

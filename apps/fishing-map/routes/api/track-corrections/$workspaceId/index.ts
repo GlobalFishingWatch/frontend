@@ -25,9 +25,19 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/')({
         return Response.json(issues)
       },
       POST: async ({ request, params }: { request: Request; params: { workspaceId: string } }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         const { workspaceId } = params
         try {
           const body = await request.json()
+          if (!body?.issueBody || !body?.commentBody) {
+            return Response.json(
+              { success: false, message: 'issueBody and commentBody are required' },
+              { status: 400 }
+            )
+          }
           const { createNewIssue } = await import('server/api/track-corrections/post-new')
           await createNewIssue(
             body.issueBody as TrackCorrection,

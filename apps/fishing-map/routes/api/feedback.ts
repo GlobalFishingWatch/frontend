@@ -2,8 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
-const FEEDBACK_SPREADSHEET_ID = process.env.VITE_FEEDBACK_SPREADSHEET_ID || ''
-const ERRORS_SPREADSHEET_ID = process.env.VITE_MAP_ERRORS_SPREADSHEET_ID || ''
+const FEEDBACK_SPREADSHEET_ID = process.env.FEEDBACK_SPREADSHEET_ID || ''
+const ERRORS_SPREADSHEET_ID = process.env.MAP_ERRORS_SPREADSHEET_ID || ''
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
 const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
@@ -38,6 +38,10 @@ export const Route = createFileRoute('/api/feedback')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         const body = await request.json().catch(() => ({}))
         const { type, data }: FeedbackForm = body || {}
 
@@ -60,10 +64,11 @@ export const Route = createFileRoute('/api/feedback')({
                 ? CORRECTIONS_SHEET_TITLE
                 : FEEDBACK_SHEET_TITLE
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
+          const { sanitizeSheetRow } = await import('server/api/utils/sanitize')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
-          await sheet.addRow(data)
+          await sheet.addRow(sanitizeSheetRow(data))
 
           return Response.json({
             success: true,

@@ -3,8 +3,8 @@ import type { StorageThreadType } from '@mastra/core'
 import { createFileRoute } from '@tanstack/react-router'
 import { getWorkspaceConfig } from 'server/api/workspaces-generator'
 
-const MASTRA_API_URL = process.env.VITE_MASTRA_API_URL
-const WORKSPACES_AGENT_ID = process.env.VITE_WORKSPACES_AGENT_ID
+const MASTRA_API_URL = process.env.MASTRA_API_URL
+const WORKSPACES_AGENT_ID = process.env.WORKSPACES_AGENT_ID
 
 export const mastra = new MastraClient({
   baseUrl: MASTRA_API_URL || 'http://localhost:4111',
@@ -38,6 +38,10 @@ export const Route = createFileRoute('/api/workspaces-generator/')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         if (!WORKSPACES_AGENT_ID) {
           console.error('WORKSPACES_AGENT_ID environment variable is not set')
           return Response.json(
@@ -47,7 +51,7 @@ export const Route = createFileRoute('/api/workspaces-generator/')({
         }
 
         if (!MASTRA_API_URL) {
-          console.error('VITE_MASTRA_API_URL environment variable is not set')
+          console.error('MASTRA_API_URL environment variable is not set')
           return Response.json(
             { success: false, error: 'Mastra API URL not configured' },
             { status: 500 }

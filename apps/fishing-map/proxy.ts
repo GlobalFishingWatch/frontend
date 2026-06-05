@@ -16,14 +16,15 @@ function createAuthRequiredResponse() {
   })
 }
 
-function isRootPath(pathname: string): boolean {
-  const normalized = pathname.replace(/\/$/, '') || '/'
-  return normalized === '/' || normalized === basePath
-}
-
 function isMonitoringPath(pathname: string): boolean {
   const normalized = pathname.replace(/\/$/, '') || '/'
   return normalized === '/monitoring' || normalized === `${basePath}/monitoring`
+}
+
+// API endpoints are not gated by basic auth — basic auth only protects the app (page)
+// routes. The API routes have their own same-origin guard for the write endpoints.
+function isApiPath(pathname: string): boolean {
+  return pathname.startsWith('/api/') || pathname.startsWith(`${basePath}/api/`)
 }
 
 export type ProxyResult =
@@ -47,8 +48,14 @@ export function proxy(request: Request): ProxyResult {
     return { type: 'next' }
   }
 
-  // Handle basic auth for root path
-  if (isRootPath(pathname) && basicAuthEnabled) {
+  // API routes bypass basic auth — only the app (page) routes are gated.
+  if (isApiPath(pathname)) {
+    return { type: 'next' }
+  }
+
+  // When restricted, every app (page) route requires valid basic auth.
+  // (Previously only the root path was gated, so deep links bypassed it.)
+  if (basicAuthEnabled) {
     if (basicAuth) {
       try {
         const authValue = basicAuth.split(' ')[1]

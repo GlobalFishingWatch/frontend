@@ -105,7 +105,7 @@
   }
 
   .content {
-    height: 50rem;
+    height: 55rem;
     max-height: calc(100vh - var(--size-L));
   }
 

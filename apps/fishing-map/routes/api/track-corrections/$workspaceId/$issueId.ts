@@ -24,8 +24,19 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
         request: Request
         params: { workspaceId: string; issueId: string }
       }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         const { workspaceId, issueId } = params
         const body = await request.json()
+
+        if (!body?.commentBody) {
+          return Response.json(
+            { success: false, message: 'commentBody is required' },
+            { status: 400 }
+          )
+        }
 
         const requiredFields = [
           'issueId',
