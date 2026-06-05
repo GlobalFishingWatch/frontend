@@ -32,6 +32,7 @@ import {
   selectReportVesselsNumber,
 } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
@@ -108,7 +109,10 @@ export default function ReportSummaryActivity({
         end: formatI18nDate(timerange?.end),
 
         sources: ` (${listAsSentence(
-          getReportSourcesWithVessels(dataviews, datasetIdsWithVessels)
+          getReportSourcesWithVessels(
+            dataviews.flatMap((dataview) => getSourcesSelectedInDataview(dataview)),
+            datasetIdsWithVessels
+          )
         )})`,
       })
     }
