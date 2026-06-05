@@ -62,3 +62,11 @@ export const selectReportVesselsHours = createSelector([selectReportActivityFlat
   if (!vessels?.length) return null
   return vessels.map((vessel) => vessel?.value || 0).reduce((acc, value) => acc + value, 0)
 })
+
+export const selectReportActivityDatasetIdsWithVessels = createSelector(
+  [selectReportActivityFlatten],
+  (vessels) => {
+    if (!vessels?.length) return null
+    return [...new Set(vessels.map((vessel) => vessel.activityDatasetId))]
+  }
+)
