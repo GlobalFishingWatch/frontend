@@ -9,6 +9,7 @@
   align-items: flex-end;
   justify-content: space-between;
   z-index: 100;
+  border-radius: var(--border-radius-1);
 }
 
 .hidden {
@@ -75,6 +76,7 @@
   max-width: 40vw;
   background: var(--color-white);
   padding: var(--space-S);
+  border-radius: var(--border-radius-1);
 }
 
 .popupButtons {

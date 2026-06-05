@@ -49,7 +49,7 @@ export default function VesselGroupReportTitle() {
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    vesselGroup?.vessels,
+    vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
   const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels

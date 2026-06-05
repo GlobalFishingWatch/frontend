@@ -51,7 +51,11 @@ export const isOutdatedVesselGroup = (vesselGroup: VesselGroup) => {
 }
 
 export const getVesselGroupVesselsCount = (vesselGroup: VesselGroup) => {
-  return uniq(vesselGroup.vessels.map((v) => v.relationId || v.vesselId)).filter(Boolean).length
+  if (vesselGroup.vesselsSummary?.distinctRelationIds != null) {
+    return vesselGroup.vesselsSummary.distinctRelationIds
+  }
+  return uniq((vesselGroup.vessels || []).map((v) => v.relationId || v.vesselId)).filter(Boolean)
+    .length
 }
 
 export const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVesselIdentity[]) => {

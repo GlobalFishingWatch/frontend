@@ -119,7 +119,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                       searchQuery,
                       styles
                     )}{' '}
-                    ({vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
+                    ({getVesselGroupVesselsCount(vesselGroup)})
                   </span>
                   <div>
                     {isOutdated ? (

@@ -269,7 +269,7 @@ const getVesselsInVesselGroup = async ({ datasets, signal, vesselGroup }: GetVes
     cache: 'reload',
   })
   const vesselGroupVessels = mergeVesselGroupVesselIdentities(
-    vesselGroup.vessels,
+    vesselGroup.vessels || [],
     vesselsIdentities.entries
   )
   return vesselGroupVessels
@@ -357,7 +357,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
   async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, dispatch }) => {
-    const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+    const datasetIds = uniq((vesselGroup.vessels || []).flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
     const getDatasetsAction = await dispatch(
@@ -376,7 +376,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
         const { vessels } = await searchVesselsInVesselGroup({
           datasets,
           signal,
-          ids: vesselGroup.vessels.map((v) => v.vesselId),
+          ids: (vesselGroup.vessels || []).map((v) => v.vesselId),
         })
         return vessels
       }

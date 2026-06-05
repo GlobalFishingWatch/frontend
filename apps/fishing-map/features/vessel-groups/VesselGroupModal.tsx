@@ -62,6 +62,7 @@ import { listAsSentence } from 'utils/shared'
 import type { IdField, UpdateVesselGroupThunkParams } from './vessel-groups.slice'
 import {
   createVesselGroupThunk,
+  fetchVesselGroupByIdThunk,
   resetVesselGroupStatus,
   selectVesselGroupById,
   selectVesselGroupsError,
@@ -273,7 +274,13 @@ function VesselGroupModal(): React.ReactElement<any> {
   )
 
   useEffect(() => {
-    if (editingVesselGroup && editingVesselGroup.vessels?.length > 0) {
+    if (editingVesselGroupId && !editingVesselGroup?.vessels) {
+      dispatch(fetchVesselGroupByIdThunk(editingVesselGroupId))
+    }
+  }, [dispatch, editingVesselGroupId, editingVesselGroup?.vessels])
+
+  useEffect(() => {
+    if (editingVesselGroup && (editingVesselGroup.vessels?.length ?? 0) > 0) {
       dispatch(getVesselInVesselGroupThunk({ vesselGroup: editingVesselGroup }))
     }
   }, [dispatch, editingVesselGroup])

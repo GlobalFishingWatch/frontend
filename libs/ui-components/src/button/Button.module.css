@@ -4,6 +4,7 @@
   justify-content: center;
   align-items: center;
   gap: var(--space-XS);
+  border-top: 2px solid transparent;
   border-bottom: 1px solid transparent;
   cursor: pointer;
   touch-action: manipulation;

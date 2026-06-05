@@ -1,6 +1,7 @@
 .popupContent {
   background: var(--color-white);
   padding: var(--space-S);
+  border-radius: var(--border-radius-1);
 }
 
 .input {

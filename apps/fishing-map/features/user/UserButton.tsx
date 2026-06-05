@@ -59,11 +59,12 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   return (
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
-        <Tooltip content={t((t) => t.common.login)}>
-          <LocalStorageLoginLink>
-            <Icon icon="user" testId={testId} />
-          </LocalStorageLoginLink>
-        </Tooltip>
+        <LocalStorageLoginLink
+          tooltip={t((t) => t.common.login)}
+          className={styles.loginLinkButton}
+        >
+          <Icon icon="user" testId={testId} />
+        </LocalStorageLoginLink>
       ) : (
         <Tooltip
           content={
