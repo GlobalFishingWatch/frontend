@@ -7,6 +7,13 @@
     "default": {
       "options": {
         "runtimeCacheInputs": [
+          "echo $VITE_PUBLIC_URL",
+          "echo $VITE_API_GATEWAY",
+          "echo $VITE_WORKSPACE_ENV",
+          "echo $VITE_REPORT_DAYS_LIMIT",
+          "echo $VITE_GOOGLE_MEASUREMENT_ID",
+          "echo $VITE_GOOGLE_TAG_MANAGER_ID",
+          "echo $VITE_GOOGLE_ANALYTICS_TEST_MODE",
           "echo $NEXT_PUBLIC_URL",
           "echo $NEXT_PUBLIC_API_GATEWAY",
           "echo $NEXT_PUBLIC_WORKSPACE_ENV",

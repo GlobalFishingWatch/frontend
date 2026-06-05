@@ -32,13 +32,13 @@ export default defineConfig(({ mode }): ViteUserConfig => {
     },
 
     define: {
+      'import.meta.env.VITE_API_GATEWAY': JSON.stringify(env.VITE_API_GATEWAY),
       'import.meta.env.VITE_PUBLIC_URL': JSON.stringify(basePath),
+      'import.meta.env.VITE_WORKSPACE_ENV': JSON.stringify(env.VITE_WORKSPACE_ENV),
       'import.meta.env.VITEST': JSON.stringify(true),
       'process.env.NODE_ENV': JSON.stringify('test'),
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
       'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
-      'process.env.VITE_PUBLIC_API_GATEWAY': JSON.stringify(env.VITE_PUBLIC_API_GATEWAY),
-      'process.env.VITE_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.VITE_PUBLIC_WORKSPACE_ENV),
       'process.env.VITEST': JSON.stringify('true'),
     },
     optimizeDeps: {

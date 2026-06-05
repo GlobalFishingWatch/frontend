@@ -2,6 +2,8 @@ import { parse } from '@loaders.gl/core'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
+import { getEnv } from '../layers/layers.config'
+
 type FetchWithGFWAPIContext = {
   signal?: AbortSignal
   layer?: {
@@ -37,7 +39,7 @@ function getSpriteFilename(url: string): string {
 
 function resolveLocalSpriteUrl(url: string): string {
   const filename = getSpriteFilename(url)
-  const basename = process.env.NEXT_PUBLIC_URL || '/map'
+  const basename = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/map'
   const basePath = /^https?:\/\//i.test(basename)
     ? (() => {
         try {

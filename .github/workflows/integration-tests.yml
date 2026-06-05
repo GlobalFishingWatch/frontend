@@ -50,7 +50,6 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
-
       # --- Running tests -----------------------------------------------------
 
       - name: Run affected tests
@@ -66,8 +65,8 @@ jobs:
             --head=HEAD 2>&1 \
             | tee test-output.txt
         env:
-          NEXT_PUBLIC_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
-          NEXT_PUBLIC_WORKSPACE_ENV: development
+          VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
+          VITE_WORKSPACE_ENV: development
           CI: '1'
           NX_DAEMON: 'false'
           NODE_OPTIONS: --trace-warnings
