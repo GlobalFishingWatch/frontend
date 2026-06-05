@@ -47,6 +47,10 @@ export default defineConfig(({ command, mode }) => {
         nitro({
           baseURL: basePath,
           sourcemap: true,
+          compressPublicAssets: {
+            gzip: true,
+            brotli: true,
+          },
           rollupConfig: {
             // Only Node.js built-ins — npm packages cannot be external because the
             // production Docker image copies only .output/ with no node_modules.
@@ -80,6 +84,74 @@ export default defineConfig(({ command, mode }) => {
     ],
     envPrefix: ['VITE_', 'i18n_'],
     environments: {
+      client: {
+        build: {
+          chunkSizeWarningLimit: 1500,
+          rollupOptions: {
+            output: {
+              manualChunks(id) {
+                if (id.includes('/libs/ui-components/src/icon/icons/')) {
+                  return 'ui-icons-bundle'
+                }
+                if (
+                  id.includes('/libs/timebar/src/icons/') ||
+                  id.includes('/apps/fishing-map/assets/icons/')
+                ) {
+                  return 'icons-bundle'
+                }
+
+                if (
+                  id.includes('/node_modules/react/') ||
+                  id.includes('/node_modules/react-dom/') ||
+                  id.includes('/node_modules/scheduler/')
+                ) {
+                  return 'vendor-react'
+                }
+
+                if (id.includes('/node_modules/@tanstack/')) {
+                  return 'vendor-tanstack'
+                }
+
+                if (
+                  id.includes('/node_modules/@reduxjs/') ||
+                  id.includes('/node_modules/redux/') ||
+                  id.includes('/node_modules/react-redux/') ||
+                  id.includes('/node_modules/reselect/') ||
+                  id.includes('/node_modules/immer/')
+                ) {
+                  return 'vendor-redux'
+                }
+
+                if (id.includes('/node_modules/@mui/') || id.includes('/node_modules/@emotion/')) {
+                  return 'vendor-mui'
+                }
+
+                if (
+                  id.includes('/node_modules/i18next') ||
+                  id.includes('/node_modules/react-i18next/')
+                ) {
+                  return 'vendor-i18n'
+                }
+
+                if (id.includes('/node_modules/@sentry/')) {
+                  return 'vendor-sentry'
+                }
+
+                if (
+                  id.includes('/node_modules/d3') ||
+                  id.includes('/node_modules/@turf/') ||
+                  id.includes('/node_modules/topojson') ||
+                  id.includes('/node_modules/supercluster') ||
+                  id.includes('/node_modules/kdbush') ||
+                  id.includes('/node_modules/geokdbush')
+                ) {
+                  return 'vendor-geo'
+                }
+              },
+            },
+          },
+        },
+      },
       ssr: {
         build: { rollupOptions: { input: './server.ts' } },
       },
