@@ -58,7 +58,7 @@ function WhatsNew() {
   return (
     <a
       className={cx({ [styles.newVersionHint]: newVersionSinceLastVisit })}
-      href="https://globalfishingwatch.org/platform-updates"
+      href="https://globalfishingwatch.org/platform-and-data-updates/"
       target="_blank"
       rel="noreferrer"
     >
