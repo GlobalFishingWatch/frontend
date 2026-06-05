@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 
 import {
   getAccessTokenFromUrl,
@@ -9,7 +9,6 @@ import {
 import type { UserData } from '@globalfishingwatch/api-types'
 import { redirectToLogin } from '@globalfishingwatch/react-hooks'
 
-import type { RootState } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 interface UserState {
@@ -83,10 +82,11 @@ const userSlice = createSlice({
   },
 })
 
-export const selectUserData = (state: RootState) => state.user.data
-export const selectUserStatus = (state: RootState) => state.user.status
-export const selectUserLogged = (state: RootState) => state.user.logged
-export const selectIsGFWUser = (state: RootState) => state.user.data?.groups.includes(GFW_GROUP_ID)
+export const selectUserData = (state: { user: UserState }) => state.user.data
+export const selectUserStatus = (state: { user: UserState }) => state.user.status
+export const selectUserLogged = (state: { user: UserState }) => state.user.logged
+export const selectIsGFWUser = (state: { user: UserState }) =>
+  state.user.data?.groups.includes(GFW_GROUP_ID)
 
 export const isGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE

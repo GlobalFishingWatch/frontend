@@ -147,7 +147,7 @@ export const selectSubareaFeatures = createSelector(
             }
           : null
       })
-      .filter((feature) => feature)
+      .filter(Boolean)
 
     return result
   }

@@ -16,7 +16,8 @@ import {
   setPorts,
   setPortValues,
   setSubareas,
-  setSubareaValues} from 'features/labeler/labeler.slice'
+  setSubareaValues,
+} from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
 import type { PortPosition, PortSubarea } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
@@ -33,14 +34,14 @@ export const useSelectedTracksConnect = () => {
   let fileReader: FileReader
 
   const findPortName = (country: string, portId: string, defaultValue: string) => {
-    const port = ports[country]?.find(p => p.id === portId)
+    const port = ports[country]?.find((p) => p.id === portId)
     if (port) {
       return port.name
     }
     return defaultValue
   }
   const findSubareaName = (country: string, subareaId: string, defaultValue: string) => {
-    const subarea = subareas[country]?.find(s => s.id === subareaId)
+    const subarea = subareas[country]?.find((s) => s.id === subareaId)
     if (subarea) {
       return subarea.name
     }
@@ -48,13 +49,21 @@ export const useSelectedTracksConnect = () => {
   }
 
   const assignLabeledValues = (points: PortPosition[]) => {
-    return points.map(point => {
+    return points.map((point) => {
       // in this variables first we check in the value was updated in the laber, else we keep the original value
-      const communityIso3 = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : point.community_iso3
-      const communityLabel = subareaValues[point.iso3] ? subareaValues[point.iso3][point.s2id] : (point.community_label ?? point.community_iso3)
+      const communityIso3 = subareaValues[point.iso3]
+        ? subareaValues[point.iso3][point.s2id]
+        : point.community_iso3
+      const communityLabel = subareaValues[point.iso3]
+        ? subareaValues[point.iso3][point.s2id]
+        : (point.community_label ?? point.community_iso3)
       const portIso3 = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_iso3
-      const portLabel = portValues[point.iso3] ? portValues[point.iso3][point.s2id] : point.port_label
-      const pointValue = pointValues[point.iso3] ? pointValues[point.iso3][point.s2id] : point.point_label
+      const portLabel = portValues[point.iso3]
+        ? portValues[point.iso3][point.s2id]
+        : point.port_label
+      const pointValue = pointValues[point.iso3]
+        ? pointValues[point.iso3][point.s2id]
+        : point.point_label
 
       return {
         ...point,
@@ -62,7 +71,7 @@ export const useSelectedTracksConnect = () => {
         port_iso3: portIso3,
         community_label: findSubareaName(point.iso3, communityIso3, communityLabel),
         community_iso3: communityIso3,
-        point_label: pointValue ?? null
+        point_label: pointValue ?? null,
       }
     })
   }
@@ -78,37 +87,46 @@ export const useSelectedTracksConnect = () => {
     element.click()
   }
 
-  const parseCountriesMetadata = ((data: any) => {
+  const parseCountriesMetadata = (data: any) => {
     if (!data) {
-      dispatch(setCountriesMetadata({
-        options: [],
-        colors: {}
-      }))
+      dispatch(
+        setCountriesMetadata({
+          options: [],
+          colors: {},
+        })
+      )
     }
     const countriesDuplicated: string[] = data.map((e: PortPosition) => {
       return e.iso3
     })
-    const countries: string[] = [...new Set(countriesDuplicated)];
+    const countries: string[] = [...new Set(countriesDuplicated)]
     const countryColors: any = {}
     countries.forEach((country: string, index: number) => {
       countryColors[country] = getFixedColorForUnknownLabel(index)
     })
 
-    const countryOptions = [{
-      id: null,
-      label: 'All countries'
-    }, ...countries.map((e: string) => {
-      return {
-        id: e,
-        label: flags[e as keyof typeof flags] ?? e,
-      }
-    }).sort((a, b) => a.label > b.label ? 1 : -1)]
+    const countryOptions = [
+      {
+        id: null,
+        label: 'All countries',
+      },
+      ...countries
+        .map((e: string) => {
+          return {
+            id: e,
+            label: flags[e as keyof typeof flags] ?? e,
+          }
+        })
+        .sort((a, b) => (a.label > b.label ? 1 : -1)),
+    ]
 
-    dispatch(setCountriesMetadata({
-      options: countryOptions,
-      colors: countryColors
-    }))
-  })
+    dispatch(
+      setCountriesMetadata({
+        options: countryOptions,
+        colors: countryColors,
+      })
+    )
+  }
 
   /**
    * handle the file after this was uploaded
@@ -117,13 +135,17 @@ export const useSelectedTracksConnect = () => {
     const content: string = fileReader.result as string
     const records: any = JSON.parse(content)
 
-    dispatch(setData(records.map((record: any) => ({
-      ...record,
-      port_label: record.port_label ?? record.label,
-      // in some cases the coords are uploaded in string, we need to parse them
-      lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
-      lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon
-    }))))
+    dispatch(
+      setData(
+        records.map((record: any) => ({
+          ...record,
+          port_label: record.port_label ?? record.label,
+          // in some cases the coords are uploaded in string, we need to parse them
+          lat: typeof record.lat === 'string' ? parseFloat(record.lat) : record.lat,
+          lon: typeof record.lon === 'string' ? parseFloat(record.lon) : record.lon,
+        }))
+      )
+    )
     parseCountriesMetadata(records)
   }
 
@@ -160,25 +182,36 @@ export const useSelectedTracksConnect = () => {
         tempSubareas.push(e.community_iso3)
       }
     })
-    const uniqueTempPortsNames = [...new Set(tempPortsNames)];
-    const uniqueTempPortsIds = [...new Set(tempPortsIds)];
+    const uniqueTempPortsNames = [...new Set(tempPortsNames)]
+    const uniqueTempPortsIds = [...new Set(tempPortsIds)]
 
     // here we know that community_iso3 exists
     if (!subareas[country]) {
-      const uniqueTempSubareas = [...new Set(tempSubareas)];
-      dispatch(setSubareas(uniqueTempSubareas.map((e: string, index: number) => {
-        const record = countryRecords.find((record: PortPosition) => record.community_iso3 === e)
-        return {
-          id: e,
-          name: record?.community_label ?? record?.community_iso3 ?? e,
-          color: getFixedColorForUnknownLabel(index)
-        }
-      }).sort((a, b) => a.name > b.name ? 1 : -1)))
+      const uniqueTempSubareas = [...new Set(tempSubareas)]
+      dispatch(
+        setSubareas(
+          uniqueTempSubareas
+            .map((e: string, index: number) => {
+              const record = countryRecords.find(
+                (record: PortPosition) => record.community_iso3 === e
+              )
+              return {
+                id: e,
+                name: record?.community_label ?? record?.community_iso3 ?? e,
+                color: getFixedColorForUnknownLabel(index),
+              }
+            })
+            .sort((a, b) => (a.name > b.name ? 1 : -1))
+        )
+      )
 
-      const subareaMap = countryRecords.reduce((ac: Record<string, string>, value: PortPosition) => {
-        ac[value.s2id] = value.community_iso3
-        return ac
-      }, {})
+      const subareaMap = countryRecords.reduce(
+        (ac: Record<string, string>, value: PortPosition) => {
+          ac[value.s2id] = value.community_iso3
+          return ac
+        },
+        {}
+      )
       dispatch(setSubareaValues(subareaMap))
     }
 
@@ -202,11 +235,19 @@ export const useSelectedTracksConnect = () => {
           })
         }
       })
-      dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
-      const portMap = countryRecords.reduce((ac: Record<string, string | null>, value: PortPosition) => {
-        ac[value.s2id] = value.port_iso3 ?? (value.port_label ? countryPorts.find((port: PortSubarea) => port.name === value.port_label)?.id ?? null : null)
-        return ac
-      }, {})
+      dispatch(setPorts(countryPorts.sort((a, b) => (a.name > b.name ? 1 : -1))))
+      const portMap = countryRecords.reduce(
+        (ac: Record<string, string | null>, value: PortPosition) => {
+          ac[value.s2id] =
+            value.port_iso3 ??
+            (value.port_label
+              ? (countryPorts.find((port: PortSubarea) => port.name === value.port_label)?.id ??
+                null)
+              : null)
+          return ac
+        },
+        {}
+      )
 
       dispatch(setPortValues(portMap))
     }
@@ -216,12 +257,11 @@ export const useSelectedTracksConnect = () => {
       return ac
     }, {})
     dispatch(setPointValues(pointMap))
-
   }
 
   return {
     dispatchDownload,
     dispatchImportHandler,
-    onCountryChange
+    onCountryChange,
   }
 }
