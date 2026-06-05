@@ -102,10 +102,7 @@ function EventsReport() {
     if (!hasEvents) {
       return (
         <div className={styles.emptyState}>
-          <img
-            src={EventsEmptyState}
-            alt=""
-          />
+          <img className={styles.emptyStateImage} src={EventsEmptyState} alt="" />
           {t((t) => t.vessel.noEventsinTimeRange)}
         </div>
       )
@@ -156,52 +153,54 @@ function EventsReport() {
           <div className={styles.container}>
             <div className={styles.headerContainer}>
               <label>{t((t) => t.common.events)}</label>
-              <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />
+              {hasEvents && <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />}
             </div>
             {graph}
           </div>
         </div>
-        <div className={cx('card', styles.subsection)}>
-          {!hasEvents ? null : !timerangeSupported ? (
-            <ReportVesselsPlaceholder animate={false}>
-              <div className={cx(styles.cover, styles.error)}>
-                <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
-              </div>
-            </ReportVesselsPlaceholder>
-          ) : reportOutdated ? (
-            <ReportVesselsPlaceholder animate={false}>
-              <div className={cx(styles.cover, styles.center, styles.top)}>
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: t((t) => t.eventsReport.newTimeRange, {
-                      start: formatI18nDate(start),
-                      end: formatI18nDate(end),
-                    }),
-                  }}
-                />
-                <Button
-                  testId="see-vessel-table-events-report"
-                  onClick={() => {
-                    updateReportHash()
-                    trackEvent({
-                      category: TrackCategory.Analysis,
-                      action: 'Click on see vessels button in events activity',
-                    })
-                  }}
-                >
-                  {t((t) => t.analysis.seeVessels)}
-                </Button>
-              </div>
-            </ReportVesselsPlaceholder>
-          ) : (
-            <ReportVessels
-              color={eventsDataview?.config?.color}
-              activityUnit="numEvents"
-              title={t((t) => t.common.vessels)}
-              loading={isLoadingVessels}
-            />
-          )}
-        </div>
+        {hasEvents && (
+          <div className={cx('card', styles.subsection)}>
+            {!timerangeSupported ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={cx(styles.cover, styles.error)}>
+                  <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : reportOutdated ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={cx(styles.cover, styles.center, styles.top)}>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: t((t) => t.eventsReport.newTimeRange, {
+                        start: formatI18nDate(start),
+                        end: formatI18nDate(end),
+                      }),
+                    }}
+                  />
+                  <Button
+                    testId="see-vessel-table-events-report"
+                    onClick={() => {
+                      updateReportHash()
+                      trackEvent({
+                        category: TrackCategory.Analysis,
+                        action: 'Click on see vessels button in events activity',
+                      })
+                    }}
+                  >
+                    {t((t) => t.analysis.seeVessels)}
+                  </Button>
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : (
+              <ReportVessels
+                color={eventsDataview?.config?.color}
+                activityUnit="numEvents"
+                title={t((t) => t.common.vessels)}
+                loading={isLoadingVessels}
+              />
+            )}
+          </div>
+        )}
 
         {showPortsTable && (
           <div className={cx('card', styles.subsection)}>

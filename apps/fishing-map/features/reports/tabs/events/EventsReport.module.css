@@ -85,6 +85,10 @@
   flex-direction: column;
 }
 
+.emptyStateImage {
+  max-width: 28rem;
+}
+
 .cover {
   position: absolute;
   inset: 0;
