@@ -1,4 +1,4 @@
-import get from 'lodash/get'
+import { get } from 'es-toolkit/compat'
 
 import flagsEnglish from '../../../libs/i18n-labels/en/flags.json'
 import flagsSource from '../../../libs/i18n-labels/source/flags.json'

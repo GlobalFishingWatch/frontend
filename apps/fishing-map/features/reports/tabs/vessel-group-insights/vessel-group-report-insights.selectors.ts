@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import get from 'lodash/get'
+import { get } from 'es-toolkit/compat'
 
 import type {
   InsightFishing,

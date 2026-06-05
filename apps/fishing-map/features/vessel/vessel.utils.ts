@@ -1,6 +1,6 @@
 import { isEqual, uniq, uniqBy } from 'es-toolkit'
+import { get } from 'es-toolkit/compat'
 import type { TFunction } from 'i18next'
-import get from 'lodash/get'
 
 import type {
   Dataset,
