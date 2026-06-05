@@ -70,6 +70,7 @@ export default defineConfig(({ command, mode }) => {
           template: 'treemap',
         }),
       !!process.env.CI &&
+        !!env.SENTRY_AUTH_TOKEN &&
         sentryTanstackStart({
           org: 'global-fishing-watch',
           project: 'frontend',
