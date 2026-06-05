@@ -14,7 +14,6 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiFeedbackRouteImport } from './routes/api/feedback'
 import { Route as ApiDownloadSurveyRouteImport } from './routes/api/downloadSurvey'
 import { Route as ApiCorrectionsRouteImport } from './routes/api/corrections'
-import { Route as ApiAuthRouteImport } from './routes/api/auth'
 import { Route as AppVesselSearchRouteImport } from './routes/_app/vessel-search'
 import { Route as AppUserRouteImport } from './routes/_app/user'
 import { Route as ApiWorkspacesGeneratorIndexRouteImport } from './routes/api/workspaces-generator/index'
@@ -59,11 +58,6 @@ const ApiDownloadSurveyRoute = ApiDownloadSurveyRouteImport.update({
 const ApiCorrectionsRoute = ApiCorrectionsRouteImport.update({
   id: '/api/corrections',
   path: '/api/corrections',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthRoute = ApiAuthRouteImport.update({
-  id: '/api/auth',
-  path: '/api/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppVesselSearchRoute = AppVesselSearchRouteImport.update({
@@ -186,7 +180,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
-  '/api/auth': typeof ApiAuthRoute
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
@@ -213,7 +206,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
-  '/api/auth': typeof ApiAuthRoute
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
@@ -242,7 +234,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_app/user': typeof AppUserRoute
   '/_app/vessel-search': typeof AppVesselSearchRoute
-  '/api/auth': typeof ApiAuthRoute
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
@@ -273,7 +264,6 @@ export interface FileRouteTypes {
     | '/'
     | '/user'
     | '/vessel-search'
-    | '/api/auth'
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
@@ -300,7 +290,6 @@ export interface FileRouteTypes {
   to:
     | '/user'
     | '/vessel-search'
-    | '/api/auth'
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
@@ -328,7 +317,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_app/user'
     | '/_app/vessel-search'
-    | '/api/auth'
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
@@ -356,7 +344,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
-  ApiAuthRoute: typeof ApiAuthRoute
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
   ApiFeedbackRoute: typeof ApiFeedbackRoute
@@ -405,13 +392,6 @@ declare module '@tanstack/react-router' {
       path: '/api/corrections'
       fullPath: '/api/corrections'
       preLoaderRoute: typeof ApiCorrectionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth': {
-      id: '/api/auth'
-      path: '/api/auth'
-      fullPath: '/api/auth'
-      preLoaderRoute: typeof ApiAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/vessel-search': {
@@ -620,7 +600,6 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
-  ApiAuthRoute: ApiAuthRoute,
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,
   ApiFeedbackRoute: ApiFeedbackRoute,

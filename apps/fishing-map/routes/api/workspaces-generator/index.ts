@@ -38,6 +38,10 @@ export const Route = createFileRoute('/api/workspaces-generator/')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         if (!WORKSPACES_AGENT_ID) {
           console.error('WORKSPACES_AGENT_ID environment variable is not set')
           return Response.json(

@@ -65,6 +65,10 @@ export const Route = createFileRoute('/api/corrections')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
+        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        if (!isSameOrigin(request)) {
+          return forbiddenResponse()
+        }
         const body = await request.json().catch(() => null)
         const rawData = body?.data
 
@@ -83,6 +87,7 @@ export const Route = createFileRoute('/api/corrections')({
               : GFW_SOURCE_CORRECTIONS_SHEET_TITLE
 
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
+          const { sanitizeSheetValue } = await import('server/api/utils/sanitize')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
@@ -97,7 +102,7 @@ export const Route = createFileRoute('/api/corrections')({
 
             const rowToAdd: Record<string, any> = {}
             for (const header of headers) {
-              rowToAdd[header] = mapDataToHeader(header, rawData)
+              rowToAdd[header] = sanitizeSheetValue(mapDataToHeader(header, rawData))
             }
 
             await sheet.addRow(rowToAdd)
