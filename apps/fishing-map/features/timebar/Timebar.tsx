@@ -20,7 +20,7 @@ import {
 } from '@globalfishingwatch/timebar'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
   selectLatestAvailableDataDate,
   selectScreenshotMode,
@@ -65,7 +65,7 @@ import {
   selectAvailableStart,
   selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
-import { selectHighlightedTime, setHighlightedTime } from './timebar.slice'
+import { selectHighlightedTime, setHighlightedEvents, setHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarPointsGraph from './TimebarPointsGraph'
 import TimebarSettings from './TimebarSettings'
@@ -74,94 +74,118 @@ import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({
-  showTooltip,
-  fixed,
-  onToggleFixedTooltip,
-}: {
-  showTooltip: boolean
-  fixed?: boolean
-  onToggleFixedTooltip?: (toggle?: boolean) => void
-}) => {
-  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
-  const timebarVisualisation = useSelector(selectTimebarVisualisation)
-  const highlightedTime = useSelector(selectHighlightedTime)
-  const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
-  const { start, end } = useTimerangeConnect()
-  const interval = getFourwingsInterval(start, end)
+const TimebarHighlighterWrapper = memo(
+  ({
+    showTooltip,
+    fixed,
+    onToggleFixedTooltip,
+  }: {
+    showTooltip: boolean
+    fixed?: boolean
+    onToggleFixedTooltip?: (toggle?: boolean) => void
+  }) => {
+    const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+    const timebarVisualisation = useSelector(selectTimebarVisualisation)
+    const highlightedTime = useSelector(selectHighlightedTime)
+    const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
+    const { start, end } = useTimerangeConnect()
+    const interval = getFourwingsInterval(start, end)
 
-  const onHighlightChunks = useCallback(
-    (chunks?: HighlightedChunks) => {
-      dispatchHighlightedEvents(chunks?.tracksEvents?.length ? chunks.tracksEvents : undefined)
-    },
-    [dispatchHighlightedEvents]
-  )
+    const onHighlightChunks = useCallback(
+      (chunks?: HighlightedChunks) => {
+        dispatchHighlightedEvents(chunks?.tracksEvents?.length ? chunks.tracksEvents : undefined)
+      },
+      [dispatchHighlightedEvents]
+    )
 
-  // Return precise chunk frame extent
-  const activityDateCallback = useCallback(
-    (timestamp: number) => {
-      const dateLabel = formatI18nDate(timestamp, {
-        format: DateTime.DATETIME_MED,
-        showUTCLabel: true,
-      })
-      if (interval) {
-        if (interval === 'HOUR') {
-          const HOUR_FORMAT = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long',
-            hour: 'numeric',
+    // Return precise chunk frame extent
+    const activityDateCallback = useCallback(
+      (timestamp: number) => {
+        const dateLabel = formatI18nDate(timestamp, {
+          format: DateTime.DATETIME_MED,
+          showUTCLabel: true,
+        })
+        if (interval) {
+          if (interval === 'HOUR') {
+            const HOUR_FORMAT = {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              weekday: 'long',
+              hour: 'numeric',
+            }
+            return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
+          } else if (interval === 'DAY') {
+            const DAY_FORMAT = {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              weekday: 'long',
+            }
+            return formatI18nDate(timestamp, { format: DAY_FORMAT })
+          } else if (interval === 'MONTH') {
+            const MONTH_FORMAT = {
+              year: 'numeric',
+              month: 'long',
+            }
+            return formatI18nDate(timestamp, { format: MONTH_FORMAT })
+          } else if (interval === 'YEAR') {
+            const YEAR_FORMAT = {
+              year: 'numeric',
+            }
+            return formatI18nDate(timestamp, { format: YEAR_FORMAT })
           }
-          return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
-        } else if (interval === 'DAY') {
-          const DAY_FORMAT = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            weekday: 'long',
-          }
-          return formatI18nDate(timestamp, { format: DAY_FORMAT })
-        } else if (interval === 'MONTH') {
-          const MONTH_FORMAT = {
-            year: 'numeric',
-            month: 'long',
-          }
-          return formatI18nDate(timestamp, { format: MONTH_FORMAT })
-        } else if (interval === 'YEAR') {
-          const YEAR_FORMAT = {
-            year: 'numeric',
-          }
-          return formatI18nDate(timestamp, { format: YEAR_FORMAT })
         }
-      }
-      return dateLabel
-    },
-    [interval]
-  )
+        return dateLabel
+      },
+      [interval]
+    )
 
-  const formatDate = useMemo(
-    () =>
-      timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-      timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
-      visualizationMode !== 'positions'
-        ? activityDateCallback
-        : undefined,
-    [timebarVisualisation, visualizationMode, activityDateCallback]
-  )
+    const formatDate = useMemo(
+      () =>
+        timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+        timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+        visualizationMode !== 'positions'
+          ? activityDateCallback
+          : undefined,
+      [timebarVisualisation, visualizationMode, activityDateCallback]
+    )
 
-  return highlightedTime ? (
-    <TimebarHighlighter
-      fixed={fixed}
-      showTooltip={showTooltip}
-      hoverStart={highlightedTime.start}
-      hoverEnd={highlightedTime.end}
-      onHighlightChunks={onHighlightChunks}
-      dateCallback={formatDate}
-      onToggleFixedTooltip={onToggleFixedTooltip}
-    />
-  ) : null
-}
+    return highlightedTime ? (
+      <TimebarHighlighter
+        fixed={fixed}
+        showTooltip={showTooltip}
+        hoverStart={highlightedTime.start}
+        hoverEnd={highlightedTime.end}
+        onHighlightChunks={onHighlightChunks}
+        dateCallback={formatDate}
+        onToggleFixedTooltip={onToggleFixedTooltip}
+      />
+    ) : null
+  }
+)
+
+const TimebarTracksEventsWrapper = memo(
+  ({
+    data,
+    tracks,
+    onEventClick,
+  }: {
+    data: Parameters<typeof TimebarTracksEvents>[0]['data']
+    tracks?: Parameters<typeof TimebarTracksEvents>[0]['tracks']
+    onEventClick?: Parameters<typeof TimebarTracksEvents>[0]['onEventClick']
+  }) => {
+    const { highlightedEventIds } = useHighlightedEventsConnect()
+    return (
+      <TimebarTracksEvents
+        tracks={tracks}
+        data={data}
+        highlightedEventsIds={highlightedEventIds}
+        onEventClick={onEventClick}
+      />
+    )
+  }
+)
 
 const TimebarWrapper = () => {
   useTimebarVisualisation()
@@ -173,7 +197,6 @@ const TimebarWrapper = () => {
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
   const { start, end, onTimebarChange } = useTimerangeConnect()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
-  const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const viewState = useMapViewState()
   const setMapCoordinates = useSetMapCoordinates()
@@ -190,8 +213,7 @@ const TimebarWrapper = () => {
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
-
-  const highlightedTime = useSelector(selectHighlightedTime)
+  const appStore = useAppStore()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
@@ -254,7 +276,6 @@ const TimebarWrapper = () => {
   const onToggleFixedTooltip = useCallback(
     (toggle?: boolean) => {
       const newToggle = toggle !== undefined ? toggle : !isMouseClicked
-      console.log('🚀 ~ TimebarWrapper ~ newToggle:', newToggle)
       setMouseClicked(newToggle)
       if (!newToggle) {
         dispatchDisableHighlightedTime()
@@ -285,6 +306,7 @@ const TimebarWrapper = () => {
           })
         }
         onTimebarChange(e.start, e.end, e.source)
+        const highlightedTime = selectHighlightedTime(appStore.getState())
         if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
           onToggleFixedTooltip(false)
         }
@@ -297,7 +319,7 @@ const TimebarWrapper = () => {
       start,
       end,
       onTimebarChange,
-      highlightedTime,
+      appStore,
       reportAreaLocation,
       onToggleFixedTooltip,
       fitAreaInViewport,
@@ -312,18 +334,18 @@ const TimebarWrapper = () => {
     setMouseInside(false)
     if (!isMouseClicked) {
       requestAnimationFrame(() => {
-        dispatchHighlightedEvents(undefined)
+        dispatch(setHighlightedEvents(undefined))
       })
     }
-  }, [dispatchHighlightedEvents, isMouseClicked])
+  }, [dispatch, isMouseClicked])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
-  }, [rootElement?.classList])
+  }, [rootElement])
 
   const onMouseUp = useCallback(() => {
     rootElement?.classList.remove('dragging')
-  }, [rootElement?.classList])
+  }, [rootElement])
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
@@ -397,25 +419,14 @@ const TimebarWrapper = () => {
         {showGraph && tracksGraphsData && (
           <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
         )}
-        <TimebarTracksEvents
+        <TimebarTracksEventsWrapper
           tracks={tracks}
           data={events || []}
-          highlightedEventsIds={highlightedEventIds}
           onEventClick={onEventClick}
         />
       </Fragment>
     )
-  }, [
-    events,
-    hasTrackError,
-    highlightedEventIds,
-    onEventClick,
-    showGraph,
-    t,
-    trackGraphSteps,
-    tracks,
-    tracksGraphsData,
-  ])
+  }, [events, hasTrackError, onEventClick, showGraph, t, trackGraphSteps, tracks, tracksGraphsData])
 
   const timebarChildren = useMemo(() => {
     return (

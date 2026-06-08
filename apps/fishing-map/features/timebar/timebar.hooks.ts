@@ -10,7 +10,7 @@ import { usePrevious } from '@globalfishingwatch/react-hooks'
 import { EVENT_SOURCE } from '@globalfishingwatch/timebar'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -175,22 +175,16 @@ export const useTimerangeConnect = () => {
 }
 
 export const useDisableHighlightTimeConnect = () => {
-  const highlightedTime = useSelector(selectHighlightedTime)
   const dispatch = useAppDispatch()
+  const appStore = useAppStore()
 
   const dispatchDisableHighlightedTime = useCallback(() => {
-    if (highlightedTime !== undefined) {
+    if (selectHighlightedTime(appStore.getState()) !== undefined) {
       dispatch(disableHighlightedTime())
     }
-  }, [dispatch, highlightedTime])
+  }, [dispatch, appStore])
 
-  return useMemo(
-    () => ({
-      highlightedTime,
-      dispatchDisableHighlightedTime,
-    }),
-    [highlightedTime, dispatchDisableHighlightedTime]
-  )
+  return { dispatchDisableHighlightedTime }
 }
 
 export const useHighlightedEventsConnect = () => {
