@@ -28,9 +28,10 @@ import type {
 } from './common/types'
 import { getTrackY } from './common/utils'
 import { hoveredEventState, useUpdateChartsData } from './chartsData.atom'
-import { MAX_THICK_TRACKS_NUMBER } from './tracks'
 
 import styles from './tracks-events.module.css'
+
+const MAX_THICK_TRACKS_NUMBER = 2
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 
