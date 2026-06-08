@@ -11,11 +11,6 @@ import styles from './Choice.module.css'
 
 export type ChoiceOption<Option = string> = SelectOption<Option>
 
-type ActiveChoiceProperties = {
-  width: number
-  left: number
-}
-
 interface ChoiceProps {
   options: ChoiceOption[]
   activeOption?: string
@@ -23,6 +18,7 @@ interface ChoiceProps {
   onSelect?: (option: ChoiceOption<any>, e: React.MouseEvent) => void
   size?: ButtonSize
   className?: string
+  containerClassName?: string
   testId?: string
   label?: string
   infoTooltip?: string
@@ -35,6 +31,7 @@ export function Choice({
   onSelect,
   size = 'default',
   className = '',
+  containerClassName = '',
   testId,
   label,
   infoTooltip,
@@ -79,7 +76,7 @@ export function Choice({
   }
 
   return (
-    <div>
+    <div className={containerClassName}>
       {label && (
         <label className={styles.label}>
           {label}

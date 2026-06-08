@@ -153,7 +153,12 @@ function EventsReport() {
           <div className={styles.container}>
             <div className={styles.headerContainer}>
               <label>{t((t) => t.common.events)}</label>
-              {hasEvents && <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />}
+              {hasEvents && (
+                <EventsReportGraphSelector
+                  disabled={isLoadingVessels || !hasEvents}
+                  containerClassName={styles.graphSelector}
+                />
+              )}
             </div>
             {graph}
           </div>
