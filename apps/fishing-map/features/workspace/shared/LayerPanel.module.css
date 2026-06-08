@@ -156,6 +156,10 @@
   display: none;
 }
 
+.tagListLabel {
+  min-width: max-content;
+}
+
 .infoLogin {
   margin-top: var(--space-M);
   color: var(--color-secondary-blue);
@@ -304,6 +308,7 @@
 
 :global(.printing) .tagList > li > div {
   border: var(--border);
+  min-width: max-content;
 }
 
 :global(.printing) .tagList > li *::after {
