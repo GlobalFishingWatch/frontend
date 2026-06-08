@@ -54,7 +54,7 @@ export function useVesselIdentityTabs() {
           <span className={styles.tabTitle}>
             {t((t) => t.vessel.infoSources.registry)}
             {identitySource === VesselIdentitySourceEnum.Registry && (
-              <DataTerminology terminologyKey="registryInfo" />
+              <DataTerminology terminologyKey="registryInfo" inline />
             )}
           </span>
         ),
@@ -71,7 +71,7 @@ export function useVesselIdentityTabs() {
           <span className={styles.tabTitle}>
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
-              <DataTerminology terminologyKey="selfReported" />
+              <DataTerminology terminologyKey="selfReported" inline />
             )}
           </span>
         ),
