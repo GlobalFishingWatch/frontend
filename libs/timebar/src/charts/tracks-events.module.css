@@ -2,6 +2,45 @@
   position: absolute;
 }
 
+.loading {
+  width: 100%;
+  position: absolute;
+  padding: 0.5px;
+}
+
+.loadingBar {
+  position: absolute;
+  inset: 0 100% 0 0;
+  width: 0;
+  animation: borealisBar 2s linear infinite;
+}
+
+@keyframes borealisBar {
+  0% {
+    left: 0%;
+    right: 100%;
+    width: 0%;
+  }
+
+  10% {
+    left: 0%;
+    right: 75%;
+    width: 25%;
+  }
+
+  90% {
+    right: 0%;
+    left: 75%;
+    width: 25%;
+  }
+
+  100% {
+    left: 100%;
+    right: 0%;
+    width: 0%;
+  }
+}
+
 .track,
 .event {
   position: absolute;

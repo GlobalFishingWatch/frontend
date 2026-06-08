@@ -1,3 +1,5 @@
+import { truncate } from 'fs/promises'
+
 import React, { Fragment, PureComponent } from 'react'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
@@ -73,6 +75,7 @@ type TimelineProps = {
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   locale: string
+  onGraphClick?: (bool: boolean) => void
 }
 
 type Dragging = 'DRAG_START' | 'DRAG_END' | 'DRAG_INNER'
@@ -101,6 +104,7 @@ class Timeline extends PureComponent<TimelineProps> {
   tooltipContainer: Element | null = null
   frameTimestamp: number = 0
   lastX: number = 0
+  hasDragged: boolean = false
 
   state: TimelineState
 
@@ -312,6 +316,7 @@ class Timeline extends PureComponent<TimelineProps> {
     const clientX =
       (event as React.MouseEvent).clientX || (event as React.TouchEvent).changedTouches[0].clientX
     this.lastX = clientX
+    this.hasDragged = false
     const x = clientX - outerX
 
     this.setState({
@@ -371,6 +376,7 @@ class Timeline extends PureComponent<TimelineProps> {
     }
 
     if (isDraggingInner) {
+      this.hasDragged = true
       const currentDeltaMs = getDeltaMs(start, end)
       // Calculates x movement from last event since TouchEvent doesn't have the movementX property
       const movementX = clientX - this.lastX
@@ -578,6 +584,7 @@ class Timeline extends PureComponent<TimelineProps> {
               onTouchStart={(event) => {
                 this.onMouseDown(event, DRAG_INNER)
               }}
+              onClick={() => !this.hasDragged && this.props.onGraphClick?.(true)}
             >
               <TimelineUnits
                 labels={labels}

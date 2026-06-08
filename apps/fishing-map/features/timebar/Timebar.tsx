@@ -15,7 +15,6 @@ import type {
 import {
   Timebar,
   TimebarHighlighter,
-  TimebarTracks,
   TimebarTracksEvents,
   TimebarTracksGraph,
 } from '@globalfishingwatch/timebar'
@@ -252,6 +251,17 @@ const TimebarWrapper = () => {
     },
     [dispatch, dispatchDisableHighlightedTime, isMouseClicked]
   )
+  const onToggleFixedTooltip = useCallback(
+    (toggle?: boolean) => {
+      const newToggle = toggle !== undefined ? toggle : !isMouseClicked
+      console.log('🚀 ~ TimebarWrapper ~ newToggle:', newToggle)
+      setMouseClicked(newToggle)
+      if (!newToggle) {
+        dispatchDisableHighlightedTime()
+      }
+    },
+    [dispatchDisableHighlightedTime, isMouseClicked]
+  )
 
   const onChange: TimebarProps['onChange'] = useCallback(
     (e) => {
@@ -276,33 +286,27 @@ const TimebarWrapper = () => {
         }
         onTimebarChange(e.start, e.end, e.source)
         if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
-          setMouseClicked(false)
+          onToggleFixedTooltip(false)
         }
         if (reportAreaLocation) {
           fitAreaInViewport()
         }
       }
     },
-    [fitAreaInViewport, onTimebarChange, reportAreaLocation, highlightedTime, end, start]
+    [
+      start,
+      end,
+      onTimebarChange,
+      highlightedTime,
+      reportAreaLocation,
+      onToggleFixedTooltip,
+      fitAreaInViewport,
+    ]
   )
 
   const onMouseEnter = useCallback(() => {
     setMouseInside(true)
   }, [])
-
-  const onToggleFixedTooltip = useCallback(
-    (toggle?: boolean) => {
-      if (toggle !== undefined) {
-        setMouseClicked(toggle)
-        if (!toggle) {
-          setMouseInside(false)
-        }
-      } else {
-        setMouseClicked(!isMouseClicked)
-      }
-    },
-    [isMouseClicked, setMouseInside]
-  )
 
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
@@ -390,17 +394,15 @@ const TimebarWrapper = () => {
     }
     return (
       <Fragment>
-        <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
           <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
         )}
-        {events && (
-          <TimebarTracksEvents
-            data={events}
-            highlightedEventsIds={highlightedEventIds}
-            onEventClick={onEventClick}
-          />
-        )}
+        <TimebarTracksEvents
+          tracks={tracks}
+          data={events || []}
+          highlightedEventsIds={highlightedEventIds}
+          onEventClick={onEventClick}
+        />
       </Fragment>
     )
   }, [
@@ -490,6 +492,7 @@ const TimebarWrapper = () => {
         getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language as Locale}
+        onGraphClick={onToggleFixedTooltip}
       >
         {!isSmallScreen ? timebarChildren : null}
       </Timebar>

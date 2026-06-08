@@ -133,6 +133,7 @@ export type TimebarProps = {
   trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
   defaultHeight?: number
+  onGraphClick?: () => void
 }
 
 type TimebarState = {
@@ -519,6 +520,7 @@ export class Timebar extends Component<TimebarProps> {
           stickToUnit={stickToUnit}
           displayWarningWhenInFuture={displayWarningWhenInFuture}
           locale={locale}
+          onGraphClick={this.props.onGraphClick}
         />
       </div>
     )

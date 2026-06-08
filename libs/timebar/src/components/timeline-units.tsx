@@ -107,7 +107,8 @@ class TimelineUnits extends PureComponent<TimelineUnitsProps> {
               ) : (
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     this.zoomToUnit(d)
                   }}
                   title={d.hoverLabel}
