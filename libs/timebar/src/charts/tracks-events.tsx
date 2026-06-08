@@ -1,9 +1,8 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import type { Color, OrthographicViewState, PickingInfo, Position } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { PathLayer, PolygonLayer } from '@deck.gl/layers'
-import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 import { useSetAtom } from 'jotai'
 import type { MjolnirEvent } from 'mjolnir.js'
@@ -97,7 +96,8 @@ const getTracksWithCoords = (
         ? []
         : track.chunks.map((chunk, id) => {
             const x = outerScale(chunk.start)
-            return { ...chunk, id, x, width: outerScale(chunk.end as number) - x }
+            const x2 = chunk.end != null ? outerScale(chunk.end) : x
+            return { ...chunk, id, x, width: x2 - x }
           }),
       y: baseTrackY.defaultY,
       props: { segmentsOffsetY: track?.props?.segmentsOffsetY },
@@ -118,7 +118,6 @@ const TracksEvents = ({
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
-  const deckRef = useRef<DeckGLRef>(null)
   const { graphHeight, trackGraphOrientation, innerWidth, outerWidth } = useContext(TimelineContext)
   const outerScale = useOuterScale()
 
@@ -133,25 +132,6 @@ const TracksEvents = ({
   useUpdateChartsData('tracksEvents', filteredTracksEvents)
 
   const updateHoveredEvent = useSetAtom(hoveredEventState)
-
-  const tracksEventsWithCoords = useMemo(() => {
-    return getTracksEventsWithCoords(
-      filteredTracksEvents,
-      outerScale,
-      graphHeight,
-      trackGraphOrientation
-    )
-  }, [
-    filteredTracksEvents,
-    outerScale,
-    graphHeight,
-    trackGraphOrientation,
-  ]) as TimebarChartData<TrackEventChunkProps>
-
-  const eventSize = useMemo(
-    () => Math.round(graphHeight / (tracksEventsWithCoords.length * 2 || 1)),
-    [graphHeight, tracksEventsWithCoords.length]
-  )
 
   const initialViewState = useMemo(
     () =>
@@ -195,8 +175,18 @@ const TracksEvents = ({
   const eventGeometry = useMemo(() => {
     const fishing: EventDatum[] = []
     const gaps: EventDatum[] = []
-    const filledPolygons: EventDatum[] = [] // encounter (diamond) + port_visit (rect)
-    const strokePolygons: EventDatum[] = [] // loitering (diamond outline)
+    const encounters: EventDatum[] = []
+    const ports: EventDatum[] = []
+    const loitering: EventDatum[] = []
+
+    const tracksEventsWithCoords = getTracksEventsWithCoords(
+      filteredTracksEvents,
+      outerScale,
+      graphHeight,
+      trackGraphOrientation
+    )
+
+    const eventSize = Math.round(graphHeight / (tracksEventsWithCoords.length * 2 || 1))
 
     const tracksLen = tracksEventsWithCoords.length
     tracksEventsWithCoords.forEach((trackEvents) => {
@@ -257,7 +247,7 @@ const TracksEvents = ({
           }
           case EventTypes.Port: {
             const w = Math.max(width, s)
-            filledPolygons.push({
+            ports.push({
               ...meta,
               lineColor: PORT_STROKE,
               polygon: [
@@ -273,7 +263,7 @@ const TracksEvents = ({
             // Elongated hexagon: diamond points at both ends, flat top/bottom spanning duration
             const w = Math.max(width, s)
             const xr = x + w
-            strokePolygons.push({
+            loitering.push({
               ...meta,
               lineColor: baseColor,
               polygon: [
@@ -289,7 +279,7 @@ const TracksEvents = ({
           }
           case EventTypes.Encounter:
           default: {
-            filledPolygons.push({
+            encounters.push({
               ...meta,
               lineColor: TRANSPARENT,
               polygon: [
@@ -304,13 +294,17 @@ const TracksEvents = ({
         }
       })
     })
-    return { fishing, gaps, filledPolygons, strokePolygons }
-  }, [tracksEventsWithCoords, eventSize, useTrackColor])
+    return { fishing, gaps, encounters, ports, loitering }
+  }, [filteredTracksEvents, graphHeight, outerScale, trackGraphOrientation, useTrackColor])
 
-  // Base, pickable layers. Deliberately NOT dependent on highlightedEventsIds so their
-  // instances stay reference-stable across cursor moves — rebuilding them would regenerate
-  // deck's picking buffer and make onHover return transient nulls (flickering the tooltip).
-  const baseLayers = useMemo(() => {
+  // Stable string dep so layers memo doesn't rerun when array reference changes but content is same
+  const highlightTrigger = highlightedEventsIds?.join(',')
+
+  const layers = useMemo(() => {
+    const highlightedSet = new Set(highlightTrigger ? highlightTrigger.split(',') : [])
+    const hit = (d: EventDatum) =>
+      highlightedSet.has(d.eventId) || (d.clusterIds?.some((id) => highlightedSet.has(id)) ?? false)
+    const filledPolygons = [...eventGeometry.encounters, ...eventGeometry.ports]
     return [
       new PathLayer<LineDatum>({
         id: 'tracks-line',
@@ -328,7 +322,8 @@ const TracksEvents = ({
         jointRounded: true,
         widthUnits: 'pixels',
         getPath: (d) => d.path as Position[],
-        getColor: (d) => d.baseColor,
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        updateTriggers: { getColor: highlightTrigger },
         getWidth: (d) => d.width as number,
       }),
       new PathLayer({
@@ -337,94 +332,40 @@ const TracksEvents = ({
         pickable: true,
         widthUnits: 'pixels',
         getPath: (d: EventDatum) => d.path as Position[],
-        getColor: (d: EventDatum) => d.baseColor,
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
         getWidth: (d: EventDatum) => d.width as number,
+        updateTriggers: { getColor: highlightTrigger },
         getDashArray: [4, 4],
         dashJustified: true,
         extensions: [new PathStyleExtension({ dash: true })],
       }),
       new PolygonLayer<EventDatum>({
         id: 'events-filled',
-        data: eventGeometry.filledPolygons,
+        data: filledPolygons,
         pickable: true,
         stroked: true,
         filled: true,
         lineWidthUnits: 'pixels',
         getPolygon: (d) => d.polygon as number[][],
-        getFillColor: (d) => d.baseColor,
+        getFillColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        updateTriggers: { getFillColor: highlightTrigger },
         getLineColor: (d) => d.lineColor,
         getLineWidth: (d) => (d.type === EventTypes.Port ? 1 : 0),
       }),
       new PolygonLayer<EventDatum>({
         id: 'events-stroke',
-        data: eventGeometry.strokePolygons,
+        data: eventGeometry.loitering,
         pickable: true,
         stroked: true,
         filled: false,
         lineWidthUnits: 'pixels',
         getPolygon: (d) => d.polygon as number[][],
-        getLineColor: (d) => d.lineColor,
+        getLineColor: (d) => (hit(d) ? WHITE : d.lineColor),
+        updateTriggers: { getLineColor: highlightTrigger },
         getLineWidth: 1.5,
       }),
     ]
-  }, [eventGeometry, lineData])
-
-  const highlightLayers = useMemo(() => {
-    const highlightedSet = new Set(highlightedEventsIds || [])
-    if (!highlightedSet.size) return []
-    const hit = (d: EventDatum) =>
-      highlightedSet.has(d.eventId) || (d.clusterIds?.some((id) => highlightedSet.has(id)) ?? false)
-    const fishing = eventGeometry.fishing.filter(hit)
-    const gaps = eventGeometry.gaps.filter(hit)
-    const filled = eventGeometry.filledPolygons.filter(hit)
-    const stroke = eventGeometry.strokePolygons.filter(hit)
-    return [
-      new PathLayer<EventDatum>({
-        id: 'events-fishing-hl',
-        data: fishing,
-        capRounded: true,
-        jointRounded: true,
-        widthUnits: 'pixels',
-        getPath: (d) => d.path as Position[],
-        getColor: WHITE,
-        getWidth: (d) => d.width as number,
-      }),
-      new PathLayer({
-        id: 'events-gaps-hl',
-        data: gaps,
-        widthUnits: 'pixels',
-        getPath: (d: EventDatum) => d.path as Position[],
-        getColor: WHITE,
-        getWidth: (d: EventDatum) => d.width as number,
-        getDashArray: [4, 4],
-        dashJustified: true,
-        extensions: [new PathStyleExtension({ dash: true })],
-      }),
-      new PolygonLayer<EventDatum>({
-        id: 'events-filled-hl',
-        data: filled,
-        stroked: true,
-        filled: true,
-        lineWidthUnits: 'pixels',
-        getPolygon: (d) => d.polygon as number[][],
-        getFillColor: WHITE,
-        getLineColor: WHITE,
-        getLineWidth: (d) => (d.type === EventTypes.Port ? 1 : 0),
-      }),
-      new PolygonLayer<EventDatum>({
-        id: 'events-stroke-hl',
-        data: stroke,
-        stroked: true,
-        filled: false,
-        lineWidthUnits: 'pixels',
-        getPolygon: (d) => d.polygon as number[][],
-        getLineColor: WHITE,
-        getLineWidth: 1.5,
-      }),
-    ]
-  }, [eventGeometry, highlightedEventsIds])
-
-  const layers = useMemo(() => [...baseLayers, ...highlightLayers], [baseLayers, highlightLayers])
+  }, [eventGeometry, lineData, highlightTrigger])
 
   const loadingBars = useMemo(() => {
     if (!tracks) return []
@@ -446,17 +387,27 @@ const TracksEvents = ({
     })
   }, [tracks, graphHeight, trackGraphOrientation])
 
-  const onHover = (info: PickingInfo) => {
-    const eventId = (info.object as EventDatum)?.eventId
-    if (eventId) updateHoveredEvent(eventId)
-  }
-  const onClick = (info: PickingInfo, event: MjolnirEvent) => {
-    const datum = info.object as EventDatum
-    if (datum && onEventClick) {
-      event.stopPropagation()
-      onEventClick(datum.chunk)
-    }
-  }
+  const onHover = useCallback(
+    (info: PickingInfo) => {
+      updateHoveredEvent((info.object as EventDatum)?.eventId ?? undefined)
+    },
+    [updateHoveredEvent]
+  )
+
+  const onClick = useCallback(
+    (info: PickingInfo, event: MjolnirEvent) => {
+      const datum = info.object as EventDatum
+      if (datum && onEventClick) {
+        event.stopPropagation()
+        onEventClick(datum.chunk)
+      }
+    },
+    [onEventClick]
+  )
+
+  const onMouseLeave = useCallback(() => {
+    updateHoveredEvent(undefined)
+  }, [updateHoveredEvent])
 
   return (
     <div
@@ -467,11 +418,10 @@ const TracksEvents = ({
         width: outerWidth + veilWidth * 2,
         height: graphHeight,
       }}
-      onMouseLeave={() => updateHoveredEvent(undefined)}
+      onMouseLeave={onMouseLeave}
     >
       {loadingBars}
       <DeckGL
-        ref={deckRef}
         views={VIEW}
         initialViewState={initialViewState}
         layers={layers}
