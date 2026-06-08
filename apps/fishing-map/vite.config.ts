@@ -177,7 +177,6 @@ export default defineConfig(({ command, mode }) => {
         '@deck.gl/layers',
         '@deck.gl/mesh-layers',
         '@deck.gl/react',
-        'html2canvas',
         'papaparse',
       ],
     },

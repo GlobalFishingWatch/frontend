@@ -15,7 +15,6 @@ import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
-import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
@@ -71,7 +70,6 @@ const MapControlScreenshot = ({
       timeoutRef.current = setTimeout(() => {
         if (rootElement && domId) {
           rootElement.classList.add('printing')
-          setInlineStyles(rootElement)
           // leave some time to
           // 1. apply the styles + timebar to re - render
           timeoutRef.current = setTimeout(() => {
@@ -95,7 +93,6 @@ const MapControlScreenshot = ({
     resetPreviewImage()
     if (rootElement) {
       rootElement.classList.remove('printing')
-      cleantInlineStyles(rootElement)
     }
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
   }, [dispatch, resetPreviewImage, rootElement])

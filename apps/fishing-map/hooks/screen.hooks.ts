@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
   const [error, setError] = useState<string | null>('')
@@ -9,33 +8,26 @@ export const useDownloadDomElementAsImage = () => {
   const [previewImage, setPreviewImage] = useState<string>('')
   const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
-  const html2canvasRef = useRef<any>(null)
   const map = useDeckMap()
 
   const getCanvas = useCallback(async (domId: string) => {
-    if (!domId) {
-      setError('No DOM element id provided')
-      return null
-    }
-    if (!html2canvasRef.current) {
-      try {
-        const node = await import('html2canvas')
-        html2canvasRef.current = node.default
-      } catch (e: any) {
-        console.warn(e)
-        setError('Error importing html2canvas dependency')
-      }
-    }
     try {
-      const domElement = document.getElementById(domId)
+      const domElement = typeof window !== 'undefined' ? document.getElementById(domId || '') : null
       if (domElement) {
-        const canvas = html2canvasRef.current(domElement)
-        return canvas
+        const { snapdom } = await import('@zumer/snapdom')
+        const canvas = await snapdom.toCanvas(domElement, {
+          exclude: ['.ReactModalPortal'],
+        })
+        if (canvas) {
+          return canvas
+        }
+        throw new Error('no canvas element found')
       } else {
-        console.warn('DOM element to use in html2canvas')
+        throw new Error('no DOM element to use in snapdom')
       }
     } catch (e: any) {
       console.warn(e)
+      setError(e.message)
       throw e
     }
   }, [])
@@ -65,7 +57,6 @@ export const useDownloadDomElementAsImage = () => {
       if (domElement) {
         try {
           setLoading(true)
-          setInlineStyles(domElement)
           const { saveAs } = await import('file-saver')
           const canvas = await getCanvas(domId)
           canvas.toBlob((blob: any) => {
@@ -81,7 +72,6 @@ export const useDownloadDomElementAsImage = () => {
               return false
             }
           })
-          cleantInlineStyles(domElement)
         } catch (e: any) {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)
