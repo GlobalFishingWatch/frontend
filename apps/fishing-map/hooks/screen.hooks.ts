@@ -1,47 +1,46 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { CaptureResult } from '@zumer/snapdom'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
+import { getSafeElementById } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
   const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [capture, setCapture] = useState<CaptureResult | null>(null)
   const [previewImage, setPreviewImage] = useState<string>('')
   const [previewImageLoading, setPreviewImageLoading] = useState(false)
   const [finished, setFinished] = useState<boolean>(false)
-  const html2canvasRef = useRef<any>(null)
   const map = useDeckMap()
 
-  const getCanvas = useCallback(async (domId: string) => {
-    if (!domId) {
-      setError('No DOM element id provided')
-      return null
-    }
-    if (!html2canvasRef.current) {
-      try {
-        const node = await import('html2canvas')
-        html2canvasRef.current = node.default
-      } catch (e: any) {
-        console.warn(e)
-        setError('Error importing html2canvas dependency')
-      }
-    }
+  const getCapture = useCallback(async (domId: string) => {
     try {
-      const domElement = document.getElementById(domId)
+      const domElement = getSafeElementById(domId)
       if (domElement) {
-        const canvas = html2canvasRef.current(domElement)
-        return canvas
+        const { snapdom } = await import('@zumer/snapdom')
+        const capture = await snapdom(domElement, {
+          exclude: ['.ReactModalPortal'],
+          dpr: 2,
+          scale: 2,
+        })
+        setCapture(capture)
+        if (capture) {
+          return capture
+        }
+        throw new Error('no capture element found')
       } else {
-        console.warn('DOM element to use in html2canvas')
+        throw new Error('no DOM element to use in snapdom')
       }
     } catch (e: any) {
       console.warn(e)
+      setError(e.message)
       throw e
     }
   }, [])
 
   const resetPreviewImage = useCallback(() => {
     setPreviewImage('')
+    setCapture(null)
   }, [])
 
   const generatePreviewImage = useCallback(
@@ -49,39 +48,34 @@ export const useDownloadDomElementAsImage = () => {
       try {
         setPreviewImageLoading(true)
         map?.redraw('previewImage')
-        const canvas = await getCanvas(domId)
-        setPreviewImage(canvas.toDataURL())
+        const capture = await getCapture(domId)
+        const img = await capture.toPng()
+        setPreviewImage(img.src)
         setPreviewImageLoading(false)
       } catch (e: any) {
         setPreviewImageLoading(false)
       }
     },
-    [getCanvas, map]
+    [getCapture, map]
   )
 
   const downloadImage = useCallback(
-    async (domId: string, fileName = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
+    async (domId: string, filename = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
       const domElement = document.getElementById(domId)
       if (domElement) {
         try {
           setLoading(true)
-          setInlineStyles(domElement)
-          const { saveAs } = await import('file-saver')
-          const canvas = await getCanvas(domId)
-          canvas.toBlob((blob: any) => {
-            if (blob) {
-              saveAs(blob, fileName)
-              setLoading(false)
-              setFinished(true)
-              return true
-            } else {
-              setLoading(false)
-              setFinished(true)
-              setError('No blob canvas')
-              return false
-            }
-          })
-          cleantInlineStyles(domElement)
+          if (capture) {
+            capture.download({ format: 'png', filename, dpr: 2, scale: 2 })
+            setLoading(false)
+            setFinished(true)
+            return true
+          } else {
+            setLoading(false)
+            setFinished(true)
+            setError('No blob canvas')
+            return false
+          }
         } catch (e: any) {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)
@@ -91,27 +85,25 @@ export const useDownloadDomElementAsImage = () => {
         console.warn('Dom element needed for image download')
       }
     },
-    [getCanvas]
+    [capture]
   )
 
   return useMemo(
     () => ({
-      loading,
+      downloadImage,
       error,
       finished,
-      downloadImage,
-      getCanvas,
-      previewImage,
-      resetPreviewImage,
       generatePreviewImage,
+      loading,
+      previewImage,
       previewImageLoading,
+      resetPreviewImage,
     }),
     [
       downloadImage,
       error,
       finished,
       generatePreviewImage,
-      getCanvas,
       loading,
       previewImage,
       previewImageLoading,

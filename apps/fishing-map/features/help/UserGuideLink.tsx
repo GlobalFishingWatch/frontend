@@ -4,13 +4,9 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type {
-  UserGuideSectionSlug,
-  UserGuideSlug,
-  UserGuideSubSectionSlug,
-} from 'features/cms/loaders/user-guide.types'
-import { CATEGORIES_CONFIG } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import { findSectionForSlug } from 'features/help/userGuide.utils'
 
 import styles from './UserGuideLink.module.css'
 
@@ -19,28 +15,13 @@ type UserGuideLinkProps = {
   className?: string
 }
 
-function findSectionForSlug(slug: UserGuideSlug): {
-  section: UserGuideSectionSlug
-  subSection?: UserGuideSubSectionSlug
-} {
-  if (slug in CATEGORIES_CONFIG) {
-    return { section: slug as UserGuideSectionSlug }
-  }
-  for (const [section, subsections] of Object.entries(CATEGORIES_CONFIG) as [
-    UserGuideSectionSlug,
-    readonly string[],
-  ][]) {
-    if (subsections.includes(slug)) {
-      return { section, subSection: slug as UserGuideSubSectionSlug }
-    }
-  }
-  return { section: 'introduction' }
-}
-
 function UserGuideLink({ slug, className }: UserGuideLinkProps) {
   const { t, i18n } = useTranslation()
   const { openSidePanel } = useSidePanel()
-  const { section, subSection } = findSectionForSlug(slug)
+  const sectionMatch = findSectionForSlug(slug)
+  const section = sectionMatch?.section ?? 'introduction'
+  const subSection = sectionMatch?.subSection
+
   const handleClick = async () => {
     openSidePanel({
       type: 'userGuide',

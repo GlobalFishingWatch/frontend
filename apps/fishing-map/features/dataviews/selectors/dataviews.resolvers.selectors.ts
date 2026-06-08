@@ -1,7 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
-import type { DataviewDatasetConfig, IdentityVessel, Locale,Resource  } from '@globalfishingwatch/api-types'
+import type {
+  DataviewDatasetConfig,
+  IdentityVessel,
+  Locale,
+  Resource,
+} from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
@@ -74,6 +79,18 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
   }
 )
 
+// Returns highlightedTime only when track correction is active to avoid
+// recomputing the entire dataview resolver on every timebar mousemove.
+const selectHighlightedTimeForTrackCorrection = createSelector(
+  [selectTrackCorrectionVesselDataviewId, selectTrackCorrectionId, selectHighlightedTime],
+  (trackCorrectionVesselDataviewId, trackCorrectionId, highlightedTime) => {
+    if (!trackCorrectionVesselDataviewId || trackCorrectionId === 'new') {
+      return undefined
+    }
+    return highlightedTime
+  }
+)
+
 export const selectAllDataviewInstancesResolved = createSelector(
   [
     selectDataviewInstancesMergedOrdered,
@@ -85,7 +102,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectIsGuestUser,
     selectTrackCorrectionVesselDataviewId,
     selectTrackCorrectionId,
-    selectHighlightedTime,
+    selectHighlightedTimeForTrackCorrection,
     selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
     () => i18n.language,

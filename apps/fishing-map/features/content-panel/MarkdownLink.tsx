@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { parse } from 'qs'
 
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { Route } from 'routes/_app'
 import type { QueryParams } from 'types'
@@ -9,6 +11,7 @@ type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
 
 const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
   const { replaceQueryParams } = useReplaceQueryParams()
+  const { openSidePanel } = useSidePanel()
   const { sidePanelContent, sidePanelId, sidePanelSubcontentId } = Route.useSearch()
 
   const sameRouteUrl = useMemo(() => {
@@ -22,6 +25,29 @@ const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
       return null
     }
   }, [href])
+
+  if (href?.startsWith('#')) {
+    const sectionMatch = findSectionForSlug(href.replace(/^#/, ''))
+    if (!sectionMatch) {
+      return <span>{children}</span>
+    }
+    return (
+      <a
+        href={href}
+        onClick={(e) => {
+          e.preventDefault()
+          openSidePanel({
+            type: 'userGuide',
+            id: sectionMatch.section,
+            subcontentId: sectionMatch.subSection,
+          })
+        }}
+        {...props}
+      >
+        {children}
+      </a>
+    )
+  }
 
   if (!sameRouteUrl) {
     return (

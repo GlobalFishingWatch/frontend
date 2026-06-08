@@ -140,7 +140,7 @@ function DatasetSchemaField({
     <Fragment>
       {valuesSelected.length > 0 && (
         <div className={cx(styles.filter, className)}>
-          <label>
+          <label className={styles.tagListLabel}>
             {label}
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t((t) => t.common.excluded)})`}
           </label>

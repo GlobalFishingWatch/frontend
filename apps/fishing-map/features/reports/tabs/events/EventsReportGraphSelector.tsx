@@ -22,9 +22,13 @@ import { selectIsPortReportLocation } from 'router/routes.selectors'
 
 type EventsReportGraphSelectorProps = {
   disabled: boolean
+  containerClassName?: string
 }
 
-function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelectorProps) {
+function EventsReportGraphSelector({
+  disabled = false,
+  containerClassName,
+}: EventsReportGraphSelectorProps) {
   const { replaceQueryParams } = useReplaceQueryParams()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const isGlobalReport = useSelector(selectIsGlobalReport)
@@ -80,7 +84,13 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
     : options[0]
 
   return (
-    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
+    <Choice
+      size="small"
+      options={options}
+      activeOption={selectedOption?.id}
+      onSelect={onSelect}
+      containerClassName={containerClassName}
+    />
   )
 }
 

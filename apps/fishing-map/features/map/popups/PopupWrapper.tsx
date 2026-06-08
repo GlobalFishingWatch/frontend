@@ -20,10 +20,7 @@ import { MAP_WRAPPER_ID } from '../map.config'
 
 import styles from './Popup.module.css'
 
-const getBoundary = () =>
-  typeof document !== 'undefined'
-    ? (document.getElementById(MAP_WRAPPER_ID) ?? undefined)
-    : undefined
+const getBoundary = () => document.getElementById(MAP_WRAPPER_ID) || undefined
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null

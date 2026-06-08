@@ -1,1 +1,3 @@
-export const getModalParent = () => document.getElementById('app-layout-content') as HTMLElement
+import { getSafeElementById } from 'utils/dom'
+
+export const getModalParent = () => getSafeElementById('app-layout-content') as HTMLElement
