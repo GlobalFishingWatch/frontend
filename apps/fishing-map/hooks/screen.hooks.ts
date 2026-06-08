@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
+import { getSafeElementById } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
   const [error, setError] = useState<string | null>('')
@@ -12,7 +13,7 @@ export const useDownloadDomElementAsImage = () => {
 
   const getCanvas = useCallback(async (domId: string) => {
     try {
-      const domElement = typeof window !== 'undefined' ? document.getElementById(domId || '') : null
+      const domElement = getSafeElementById(domId)
       if (domElement) {
         const { snapdom } = await import('@zumer/snapdom')
         const canvas = await snapdom.toCanvas(domElement, {
