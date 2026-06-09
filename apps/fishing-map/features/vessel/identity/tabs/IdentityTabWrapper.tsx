@@ -66,7 +66,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
         start: vesselIdentity.transmissionDateFrom,
         end: vesselIdentity.transmissionDateTo,
       },
-      false
+      !isStandaloneVesselLocation
     )
   }
 
@@ -136,15 +136,13 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
                 vesselIdentity.transmissionDateTo
               )}`}
             />
-            {isStandaloneVesselLocation && (
-              <IconButton
-                size="small"
-                icon="fit-to-timerange"
-                tooltip={t((t) => t.timebar.fitOnThisDates)}
-                className="print-hidden"
-                onClick={onTimeRangeClick}
-              />
-            )}
+            <IconButton
+              size="small"
+              icon="fit-to-timerange"
+              tooltip={t((t) => t.timebar.fitOnThisDates)}
+              className="print-hidden"
+              onClick={onTimeRangeClick}
+            />
           </div>
         </div>
         <div className={styles.actionsContainer}>
