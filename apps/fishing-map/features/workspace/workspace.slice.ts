@@ -257,9 +257,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         if (vesselGroupsIds?.length) {
           dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         }
-        const fetchDatasetsAction: any = dispatch(
-          fetchDatasetsByIdsThunk({ ids: datasetsIds, useApiCache: true })
-        )
+        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
