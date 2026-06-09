@@ -49,6 +49,10 @@
   transition: var(--transition-spring);
 }
 
+.tabContent.disabled {
+  cursor: default;
+}
+
 .tab.current .tabContent,
 .tab:hover > .tabContent {
   color: var(--color-primary-blue);
