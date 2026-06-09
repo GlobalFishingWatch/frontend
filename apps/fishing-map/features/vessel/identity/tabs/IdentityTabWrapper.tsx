@@ -61,10 +61,13 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   }
 
   const onTimeRangeClick = () => {
-    setTimerange({
-      start: vesselIdentity.transmissionDateFrom,
-      end: vesselIdentity.transmissionDateTo,
-    })
+    setTimerange(
+      {
+        start: vesselIdentity.transmissionDateFrom,
+        end: vesselIdentity.transmissionDateTo,
+      },
+      !isStandaloneVesselLocation
+    )
   }
 
   const onDownloadClick = async () => {
@@ -133,15 +136,13 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
                 vesselIdentity.transmissionDateTo
               )}`}
             />
-            {isStandaloneVesselLocation && (
-              <IconButton
-                size="small"
-                icon="fit-to-timerange"
-                tooltip={t((t) => t.timebar.fitOnThisDates)}
-                className="print-hidden"
-                onClick={onTimeRangeClick}
-              />
-            )}
+            <IconButton
+              size="small"
+              icon="fit-to-timerange"
+              tooltip={t((t) => t.timebar.fitOnThisDates)}
+              className="print-hidden"
+              onClick={onTimeRangeClick}
+            />
           </div>
         </div>
         <div className={styles.actionsContainer}>

@@ -175,7 +175,8 @@ const TracksEvents = ({
 
   const eventGeometry = useMemo(() => {
     const fishing: EventDatum[] = []
-    const gaps: EventDatum[] = []
+    const gapLines: EventDatum[] = []
+    const gapIcons: EventDatum[] = []
     const encounters: EventDatum[] = []
     const ports: EventDatum[] = []
     const loitering: EventDatum[] = []
@@ -205,12 +206,11 @@ const TracksEvents = ({
             ? trackColor
             : toDeckColor(colorStr)
 
-        const s = Math.min(eventSize, event.type === EventTypes.Fishing ? 4 : 12)
+        const size = Math.min(eventSize, event.type === EventTypes.Fishing ? 4 : 12)
         const x = event.x as number
         const width = event.width as number
         if (isNaN(x) || isNaN(width)) return
         const x2 = x + width
-        const cx = x + width / 2
 
         const meta = {
           eventId: event.id as string,
@@ -229,65 +229,73 @@ const TracksEvents = ({
                 [x, y],
                 [x2, y],
               ],
-              width: s,
+              width: size,
             })
             break
           }
           case EventTypes.Gap:
           case EventTypes.Gaps: {
-            gaps.push({
+            const h = size / 2
+            gapLines.push({
               ...meta,
               lineColor: TRANSPARENT,
               path: [
-                [x, y],
+                [x + h, y],
                 [x2, y],
               ],
               width: 2,
             })
+            gapIcons.push(
+              {
+                ...meta,
+                lineColor: TRANSPARENT,
+                path: [
+                  [x - h, y - h],
+                  [x + h, y + h],
+                ],
+                width: 2,
+              },
+              {
+                ...meta,
+                lineColor: TRANSPARENT,
+                path: [
+                  [x - h, y + h],
+                  [x + h, y - h],
+                ],
+                width: 2,
+              }
+            )
             break
           }
           case EventTypes.Port: {
-            const w = Math.max(width, s)
+            const w = Math.max(width, size)
             ports.push({
               ...meta,
               lineColor: PORT_STROKE,
               polygon: [
-                [x, y - s / 2],
-                [x + w, y - s / 2],
-                [x + w, y + s / 2],
-                [x, y + s / 2],
+                [x, y - size / 2],
+                [x + w, y - size / 2],
+                [x + w, y + size / 2],
+                [x, y + size / 2],
               ],
             })
             break
           }
-          case EventTypes.Loitering: {
-            // Elongated hexagon: diamond points at both ends, flat top/bottom spanning duration
-            const w = Math.max(width, s)
+          case EventTypes.Loitering:
+          case EventTypes.Encounter: {
+            const w = Math.max(width, size)
             const xr = x + w
-            loitering.push({
+            const target = event.type === EventTypes.Loitering ? loitering : encounters
+            target.push({
               ...meta,
               lineColor: baseColor,
               polygon: [
                 [x, y],
-                [x + s / 2, y - s / 2],
-                [xr - s / 2, y - s / 2],
+                [x + size / 2, y - size / 2],
+                [xr - size / 2, y - size / 2],
                 [xr, y],
-                [xr - s / 2, y + s / 2],
-                [x + s / 2, y + s / 2],
-              ],
-            })
-            break
-          }
-          case EventTypes.Encounter:
-          default: {
-            encounters.push({
-              ...meta,
-              lineColor: TRANSPARENT,
-              polygon: [
-                [cx - s / 2, y],
-                [cx, y - s / 2],
-                [cx + s / 2, y],
-                [cx, y + s / 2],
+                [xr - size / 2, y + size / 2],
+                [x + size / 2, y + size / 2],
               ],
             })
             break
@@ -295,7 +303,7 @@ const TracksEvents = ({
         }
       })
     })
-    return { fishing, gaps, encounters, ports, loitering }
+    return { fishing, gapLines, gapIcons, encounters, ports, loitering }
   }, [filteredTracksEvents, graphHeight, outerScale, trackGraphOrientation, useTrackColor])
 
   // Stable string dep so layers memo doesn't rerun when array reference changes but content is same
@@ -327,19 +335,7 @@ const TracksEvents = ({
         updateTriggers: { getColor: highlightTrigger },
         getWidth: (d) => d.width as number,
       }),
-      new PathLayer({
-        id: 'events-gaps',
-        data: eventGeometry.gaps,
-        pickable: true,
-        widthUnits: 'pixels',
-        getPath: (d: EventDatum) => d.path as Position[],
-        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
-        getWidth: (d: EventDatum) => d.width as number,
-        updateTriggers: { getColor: highlightTrigger },
-        getDashArray: [4, 4],
-        dashJustified: true,
-        extensions: [new PathStyleExtension({ dash: true })],
-      }),
+
       new PolygonLayer<EventDatum>({
         id: 'events-filled',
         data: filledPolygons,
@@ -364,6 +360,28 @@ const TracksEvents = ({
         getLineColor: (d) => (hit(d) ? WHITE : d.lineColor),
         updateTriggers: { getLineColor: highlightTrigger },
         getLineWidth: 1.5,
+      }),
+      new PathLayer({
+        id: 'events-gap-lines',
+        data: eventGeometry.gapLines,
+        pickable: true,
+        widthUnits: 'pixels',
+        getPath: (d: EventDatum) => d.path as Position[],
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        getWidth: (d: EventDatum) => d.width as number,
+        updateTriggers: { getColor: highlightTrigger },
+        getDashArray: [4, 4],
+        extensions: [new PathStyleExtension({ dash: true })],
+      }),
+      new PathLayer({
+        id: 'events-gap-markers',
+        data: eventGeometry.gapIcons,
+        pickable: true,
+        widthUnits: 'pixels',
+        getPath: (d: EventDatum) => d.path as Position[],
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        getWidth: (d: EventDatum) => d.width as number,
+        updateTriggers: { getColor: highlightTrigger },
       }),
     ]
   }, [eventGeometry, lineData, highlightTrigger])
@@ -432,7 +450,6 @@ const TracksEvents = ({
         getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         onHover={onHover}
         onClick={onClick}
-        style={{ position: 'absolute' }}
       />
     </div>
   )

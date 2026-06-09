@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -66,7 +65,7 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
     <UserLoggedIconButton
       icon="download"
       size="medium"
-      className={cx('print-hidden', className)}
+      className={className}
       type="border"
       onClick={onDownloadClick}
       loading={isDownloading}

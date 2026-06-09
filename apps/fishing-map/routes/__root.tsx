@@ -50,7 +50,7 @@ async function loadPanelWidths(): Promise<{
 export const Route = createRootRoute({
   beforeLoad: ({ location }) => {
     if (location.pathname === '/index') {
-      throw redirect({ to: '/' })
+      throw redirect({ to: '/', search: location.search })
     }
   },
   errorComponent: ({ error }) => (

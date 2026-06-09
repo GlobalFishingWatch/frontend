@@ -100,30 +100,27 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 )
 
-type FetchDatasetsFromApiParams = {
+type FetchUserDatasetsMode = 'all' | 'user-only'
+
+type FetchDatasetsBatchParams = {
   existingIds: string[]
   fetchUserDatasetsMode?: FetchUserDatasetsMode
   forceRefresh?: boolean
   ids: string[]
-  includeRelated?: boolean
   locale: Locale | 'source'
-  maxDepth?: number
   signal: AbortSignal
   useApiCache?: boolean
 }
-const fetchDatasetsFromApi = async (
-  {
-    existingIds,
-    fetchUserDatasetsMode,
-    forceRefresh = false,
-    ids,
-    includeRelated = true,
-    locale = i18n.language as Locale,
-    maxDepth = 5,
-    signal,
-    useApiCache = false,
-  } = {} as FetchDatasetsFromApiParams
-) => {
+
+const fetchDatasetsBatch = async ({
+  existingIds,
+  fetchUserDatasetsMode,
+  forceRefresh = false,
+  ids,
+  locale = i18n.language as Locale,
+  signal,
+  useApiCache = false,
+}: FetchDatasetsBatchParams) => {
   const uniqIds = ids?.length
     ? ids.filter((id) => {
         const isLegacyV2Dataset = ALL_LEGACY_V2_VESSELS_DATASETS_DICT[id]
@@ -134,8 +131,9 @@ const fetchDatasetsFromApi = async (
         return forceRefresh || !existingIds.includes(id)
       })
     : []
+
   if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
-    return { datasetsDeprecated: {}, datasets: [] }
+    return { datasetsDeprecated: {} as DatasetsMigration, datasets: [], relatedIds: [] }
   }
   const datasetsParams = {
     ...(uniqIds?.length
@@ -157,7 +155,7 @@ const fetchDatasetsFromApi = async (
   )
 
   const initialDatasets = (await initialDatasetsResponse.json()) as APIPagination<Dataset>
-  let datasetsDeprecatedDict = {}
+  let datasetsDeprecatedDict: DatasetsMigration = {}
   const deprecatedDatasetsHeader = initialDatasetsResponse.headers.get(DEPRECATED_DATASETS_HEADER)
   if (deprecatedDatasetsHeader) {
     datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
@@ -171,32 +169,19 @@ const fetchDatasetsFromApi = async (
     IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
-  let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
+  const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
-  const relatedDatasetsIds = includeRelated
-    ? uniq(
-        datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
-      )
-    : []
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
-  const uniqRelatedDatasetsIds = without(relatedDatasetsIds, ...currentIds)
-  if (uniqRelatedDatasetsIds.length > 1 && maxDepth > 0) {
-    const { datasetsDeprecated, datasets: relatedDatasets } = await fetchDatasetsFromApi({
-      ids: uniqRelatedDatasetsIds,
-      existingIds: currentIds,
-      signal,
-      maxDepth: maxDepth - 1,
-      locale,
-      useApiCache,
-    })
-    datasets = uniqBy([...datasets, ...relatedDatasets], (d) => d.id)
-    datasetsDeprecatedDict = { ...datasetsDeprecatedDict, ...datasetsDeprecated }
-  }
+  const relatedDatasetsIds = uniq(
+    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+  )
+  const relatedIds = without(relatedDatasetsIds, ...currentIds)
 
-  return { datasetsDeprecated: datasetsDeprecatedDict, datasets }
+  return { datasetsDeprecated: datasetsDeprecatedDict, datasets, relatedIds }
 }
 
-type FetchUserDatasetsMode = 'all' | 'user-only'
+const MAX_RELATED_FETCH_DEPTH = 5
+
 export const fetchDatasetsByIdsThunk = createAsyncThunk<
   Dataset[],
   {
@@ -238,20 +223,60 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
     }
     try {
-      const { datasetsDeprecated, datasets } = await fetchDatasetsFromApi({
+      const {
+        datasets: batch,
+        datasetsDeprecated,
+        relatedIds,
+      } = await fetchDatasetsBatch({
         ids,
         existingIds,
-        signal,
         fetchUserDatasetsMode,
         forceRefresh,
-        includeRelated,
         locale,
+        signal,
         useApiCache,
       })
+
+      if (batch.length) {
+        dispatch(upsertDatasets(batch))
+      }
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return uniqBy([...datasets, ...existingRequestedDatasets], (dataset) => dataset.id)
+
+      if (includeRelated && relatedIds.length >= 1) {
+        let frontier = relatedIds
+        let bgExistingIds = selectIds(state) as string[]
+
+        for (let depth = 1; depth < MAX_RELATED_FETCH_DEPTH; depth++) {
+          const {
+            datasets: relatedBatch,
+            datasetsDeprecated: relatedDeprecated,
+            relatedIds: nextRelatedIds,
+          } = await fetchDatasetsBatch({
+            ids: frontier,
+            existingIds: bgExistingIds,
+            locale,
+            signal,
+            useApiCache,
+          })
+
+          if (relatedBatch.length) {
+            dispatch(upsertDatasets(relatedBatch))
+          }
+          if (Object.keys(relatedDeprecated).length) {
+            dispatch(setDeprecatedDatasets(relatedDeprecated))
+          }
+
+          bgExistingIds = uniq([...bgExistingIds, ...relatedBatch.map((d) => d.id)])
+          if (!nextRelatedIds.length) {
+            break
+          }
+          frontier = nextRelatedIds
+        }
+      }
+
+      return uniqBy([...batch, ...existingRequestedDatasets], (dataset) => dataset.id)
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -429,8 +454,10 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
     ) => {
       state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
     },
+    upsertDatasets: (state: DatasetsState, action: PayloadAction<Dataset[]>) => {
+      entityAdapter.upsertMany(state, action.payload)
+    },
   },
-  // extraReducers: (builder) => {},
   thunks: {
     fetchThunk: fetchDatasetsByIdsThunk,
     fetchByIdThunk: fetchDatasetByIdThunk,
@@ -440,8 +467,7 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   },
 })
 
-export const { setDeprecatedDatasets } = datasetSlice.actions
-
+export const { setDeprecatedDatasets, upsertDatasets } = datasetSlice.actions
 export const {
   selectAll: selectAllDatasets,
   selectById,

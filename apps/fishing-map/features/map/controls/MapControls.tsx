@@ -176,7 +176,7 @@ const MapControls = ({
                 </Suspense>
                 {gfwUser && <ReportControls disabled={mapLoading} />}
                 <Suspense fallback={null}>
-                  <MapControlScreenshot />
+                  <MapControlScreenshot mapLoading={mapLoading} />
                 </Suspense>
                 <Tooltip
                   content={

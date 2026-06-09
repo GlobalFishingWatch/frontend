@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { IconButtonProps } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -16,6 +17,7 @@ type UserLoggedIconButton = IconButtonProps & {
   // Needed to avoid react warnings when cloning the component and used in a parent
   onToggleClick?: () => void
   testId?: string
+  className?: string
 }
 
 const UserLoggedIconButton = ({
@@ -23,6 +25,7 @@ const UserLoggedIconButton = ({
   onToggleClick,
   loginTooltip,
   testId,
+  className,
   ...props
 }: UserLoggedIconButton) => {
   const { t } = useTranslation()
@@ -42,12 +45,12 @@ const UserLoggedIconButton = ({
           onClick={undefined}
           onMouseEnter={() => setIsLoginHover(true)}
           onMouseLeave={() => setIsLoginHover(false)}
-          className="print-hidden"
+          className={cx('print-hidden', className)}
         />
       </LocalStorageLoginLink>
     )
   }
-  return <IconButton {...props} testId={testId} className="print-hidden" />
+  return <IconButton {...props} testId={testId} className={cx('print-hidden', className)} />
 }
 
 export default UserLoggedIconButton

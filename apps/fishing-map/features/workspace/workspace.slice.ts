@@ -257,18 +257,31 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         if (vesselGroupsIds?.length) {
           dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         }
+
         const fetchDatasetsAction: any = dispatch(
-          fetchDatasetsByIdsThunk({ ids: datasetsIds, useApiCache: true })
+          fetchDatasetsByIdsThunk({ ids: datasetsIds, includeRelated: false })
         )
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
+
         if (error) {
           console.warn(error)
           return rejectWithValue({ workspace, error: payload })
         } else {
           datasets = payload as Dataset[]
         }
+
+        const relatedIds = datasets.flatMap(
+          (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
+        )
+
+        // we dont wait here for the related loads
+        dispatch(fetchDatasetsByIdsThunk({ ids: relatedIds, includeRelated: true }))
+          .unwrap()
+          .then(() => {
+            dispatch(fetchVesselGroupsThunk())
+          })
 
         if (privateUserGroups.length) {
           try {

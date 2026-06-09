@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -7,6 +8,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -19,6 +21,7 @@ import {
   selectUrlTimeRange,
   selectUrlViewport,
 } from 'router/routes.selectors'
+import type { QueryParams } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import {
@@ -228,6 +231,8 @@ export const useDataviewInstancesConnect = () => {
   )
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const { closeSidePanel } = useSidePanel()
+  const router = useRouter()
   const deleteDataviewInstance = useCallback(
     (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id]
@@ -242,9 +247,14 @@ export const useDataviewInstancesConnect = () => {
           dataviewInstances.push({ id, deleted: true })
         })
       }
+      const { sidePanelId } = router.latestLocation.search as QueryParams
+      if (sidePanelId && ids.includes(sidePanelId)) {
+        closeSidePanel()
+      }
+
       replaceQueryParams({ dataviewInstances })
     },
-    [replaceQueryParams, urlDataviewInstances, workspaceDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances, workspaceDataviewInstances, router, closeSidePanel]
   )
   return useMemo(
     () => ({

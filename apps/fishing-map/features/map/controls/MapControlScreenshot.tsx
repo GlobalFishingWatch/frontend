@@ -25,7 +25,7 @@ import styles from './MapControls.module.css'
 type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
 
 const MapControlScreenshot = ({
-  mapLoading = false,
+  mapLoading,
 }: {
   mapLoading?: boolean
   onMouseEnter?: () => void
