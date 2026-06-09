@@ -61,10 +61,13 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   }
 
   const onTimeRangeClick = () => {
-    setTimerange({
-      start: vesselIdentity.transmissionDateFrom,
-      end: vesselIdentity.transmissionDateTo,
-    })
+    setTimerange(
+      {
+        start: vesselIdentity.transmissionDateFrom,
+        end: vesselIdentity.transmissionDateTo,
+      },
+      false
+    )
   }
 
   const onDownloadClick = async () => {
