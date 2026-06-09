@@ -83,7 +83,7 @@ function ReportEnvironmentGraph({
 
   return (
     <div className={cx('card', styles.container)}>
-      <p className={styles.summary}>
+      <div className={styles.summary}>
         <ReportSummaryTags dataview={dataview} showFilters={false} />
         <span>
           {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
@@ -95,7 +95,7 @@ function ReportEnvironmentGraph({
             </Fragment>
           )}
         </span>
-      </p>
+      </div>
       {hasFilters && (
         <div className={styles.tagsContainer}>
           <ReportSummaryTags dataview={dataview} showColor={false} />
