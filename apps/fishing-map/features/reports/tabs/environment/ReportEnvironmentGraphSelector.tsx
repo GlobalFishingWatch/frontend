@@ -73,7 +73,7 @@ export default function ReportEnvironmentGraphSelector() {
   return (
     <div className={styles.graphSelectorContainer}>
       <Choice
-        size="small"
+        size="medium"
         options={options}
         activeOption={selectedOption?.id}
         onSelect={onSelect}

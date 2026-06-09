@@ -45,11 +45,19 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: CURRENTS_LAYER_ID,
     dataviewId: CURRENTS_DATAVIEW_SLUG,
+    config: {
+      color: '#00EEFF',
+      colorRamp: 'sky',
+    },
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
   },
   {
     id: WINDS_LAYER_ID,
     dataviewId: WINDS_DATAVIEW_SLUG,
+    config: {
+      color: '#9CA4FF',
+      colorRamp: 'lilac',
+    },
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/winds.jpg`,
   },
   // {
