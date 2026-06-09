@@ -20,7 +20,6 @@ import {
   selectIsUserLogged,
   selectUserStatus,
 } from 'features/user/selectors/user.selectors'
-import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -46,12 +45,6 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const userStatus = useSelector(selectUserStatus)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
-
-  useEffect(() => {
-    if (isUserLogged) {
-      dispatch(fetchVesselGroupsThunk())
-    }
-  }, [dispatch, isUserLogged])
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {

@@ -5,7 +5,6 @@ import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatc
 
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/vessel-groups/vessel-groups.config'
