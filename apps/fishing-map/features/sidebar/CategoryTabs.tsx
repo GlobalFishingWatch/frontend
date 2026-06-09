@@ -124,9 +124,11 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}
         >
           {isWorkspaceLocation ? (
-            <span className={styles.tabContent}>
-              <Icon icon="workspace" className={styles.searchIcon} />
-            </span>
+            <Tooltip content={t((t) => t.common.seeMyWorkspace)} placement="right">
+              <span className={cx(styles.tabContent, styles.disabled)}>
+                <Icon icon="workspace" />
+              </span>
+            </Tooltip>
           ) : (
             <Link
               to={
