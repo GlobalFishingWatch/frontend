@@ -130,8 +130,8 @@ export const getIncompatibleFilterSelection = (
   dataview: DataviewWithFilters,
   filter: SupportedDatasetFilter
 ) => {
-  return dataview?.datasets?.flatMap((dataset) => {
-    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[dataset.id]
+  return (dataview?.config?.datasets || [])?.flatMap((datasetId) => {
+    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[datasetId]
     if (!incompatibilityDict?.length) {
       return []
     }
@@ -223,7 +223,11 @@ export const getCommonFiltersInDataview = (
   }
   const cleanFilterFields =
     compatibilityOperation === 'every'
-      ? filterFields.slice(1).reduce<(string | number | boolean)[]>((acc, arr) => intersection(acc, arr), filterFields[0] ?? [])
+      ? filterFields
+          .slice(1)
+          .reduce<
+            (string | number | boolean)[]
+          >((acc, arr) => intersection(acc, arr), filterFields[0] ?? [])
       : uniq(filterFields.flat())
   const activeDataset = activeDatasets?.[0] as Dataset
   let commonFilters = filterFields
