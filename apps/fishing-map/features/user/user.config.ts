@@ -1,7 +1,5 @@
 import type { UserGroupId } from '@globalfishingwatch/api-types'
 
-export const VMS_PANAMA_V4_1_PREVIEW = import.meta.env.VITE_VMS_PANAMA_V4_1_PREVIEW === 'true'
-
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
 export const GFW_DEV_GROUP_ID = 'development-group'
@@ -51,11 +49,7 @@ export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroupId, string[]> = {
   montenegro: ['private-mne-vessel-identity:v4.0'],
   norway: ['private-vms-nor-vessel-identity:v4.0'],
   palau: ['private-vms-plw-vessel-identity:v4.0'],
-  panama: [
-    VMS_PANAMA_V4_1_PREVIEW
-      ? 'private-vms-pan-vessel-identity:v4.1'
-      : 'private-vms-pan-vessel-identity:v4.0',
-  ],
+  panama: ['private-vms-pan-vessel-identity:v4.1'],
   peru: ['private-vms-per-vessel-identity:v4.0'],
   'ssf-aruna': [],
   'ssf-rare': [],

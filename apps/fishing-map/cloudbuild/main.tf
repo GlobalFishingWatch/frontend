@@ -71,7 +71,6 @@ module "develop" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
-    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -111,7 +110,6 @@ module "preview-dev" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
-    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -151,7 +149,6 @@ module "random-forest" {
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
     "VITE_RANDOM_FOREST_ENABLED=true",
-    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -189,7 +186,6 @@ module "staging" {
     "VITE_USE_LOCAL_DATAVIEWS=false",
     "VITE_WORKSPACE_ENV=staging",
     "VITE_REPORT_DAYS_LIMIT=366",
-    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -229,7 +225,6 @@ module "production-preview" {
     "VITE_WORKSPACE_ENV=production",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
-    "VITE_VMS_PANAMA_V4_1_PREVIEW=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_SENTRY_AUTH_TOKEN"

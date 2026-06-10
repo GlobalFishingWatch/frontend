@@ -2,7 +2,6 @@ import { SelfReportedSource } from '@globalfishingwatch/api-types'
 import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
 
 import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
-import { VMS_PANAMA_V4_1_PREVIEW } from 'features/user/user.config'
 
 export type VesselRenderField<Key = string> = {
   key: Key
@@ -107,7 +106,7 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
-  ...(VMS_PANAMA_V4_1_PREVIEW ? { [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]] } : {}),
+  [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]],
   [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
     [
