@@ -161,7 +161,7 @@ function ActivitySection(): React.ReactElement<any> {
         const isVisible = dataview?.config?.visible ?? false
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
         const showBivariateIcon =
-          bivariateDataviews === null && isVisible && isNextVisible && !isLastElement
+          !bivariateDataviews && isVisible && isNextVisible && !isLastElement
         return hasDatasetAvailable ? (
           <Fragment key={dataview.id}>
             <LayerPanelContainer key={dataview.id} dataview={dataview}>
