@@ -49,6 +49,7 @@ const VesselActivityDownload = () => {
 
   return (
     <UserLoggedIconButton
+      loginSource="vessel-download"
       icon="download"
       size="medium"
       className="print-hidden"

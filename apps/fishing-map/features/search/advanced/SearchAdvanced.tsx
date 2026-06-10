@@ -27,8 +27,8 @@ import SearchPlaceholder, {
   SearchEmptyState,
   SearchNoResultsState,
 } from 'features/search/SearchPlaceholders'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -67,7 +67,9 @@ function SearchAdvanced({
       <SearchPlaceholder>
         <Trans i18nKey={(t) => t.search.advancedDisabled}>
           You need to
-          <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+          <LoginLink className={styles.link} loginSource="search-advanced">
+            login
+          </LoginLink>
           to use advanced search
         </Trans>
       </SearchPlaceholder>

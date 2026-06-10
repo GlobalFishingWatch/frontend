@@ -8,6 +8,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
+import LoginLink from 'features/user/LoginLink'
 import {
   selectIsGuestUser,
   selectIsUserExpired,
@@ -15,7 +16,6 @@ import {
   selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { selectIsUserLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -59,12 +59,13 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   return (
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
-        <LocalStorageLoginLink
+        <LoginLink
           tooltip={t((t) => t.common.login)}
           className={styles.loginLinkButton}
+          loginSource="user-icon"
         >
           <Icon icon="user" testId={testId} />
-        </LocalStorageLoginLink>
+        </LoginLink>
       ) : (
         <Tooltip
           content={

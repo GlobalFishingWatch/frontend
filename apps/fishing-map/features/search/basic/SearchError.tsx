@@ -1,8 +1,8 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import LoginLink from 'features/user/LoginLink'
 import { selectIsUserExpired } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectSearchStatus, selectSearchStatusCode } from '../search.slice'
@@ -25,7 +25,10 @@ function SearchError() {
       <SearchPlaceholder>
         <Trans i18nKey={(t) => t.errors.sessionExpired}>
           Your session has expired, please
-          <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink> again.
+          <LoginLink className={styles.link} loginSource="search-session-expired">
+            log in
+          </LoginLink>{' '}
+          again.
         </Trans>
       </SearchPlaceholder>
     )

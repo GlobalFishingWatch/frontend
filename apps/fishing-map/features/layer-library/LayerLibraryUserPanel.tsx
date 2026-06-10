@@ -22,12 +22,12 @@ import {
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
+import LoginLink from 'features/user/LoginLink'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import LoginButtonWrapper from 'router/LoginButtonWrapper'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -116,7 +116,9 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
               Register
             </a>
             or
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+            <LoginLink className={styles.link} loginSource="layer-library-user">
+              login
+            </LoginLink>
             to upload datasets (free, 2 minutes)
           </Trans>
         </div>
@@ -201,7 +203,10 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         <label id={DataviewCategory.User} className={styles.categoryLabel}>
           {t((t) => t.common.user)}
         </label>
-        <LoginButtonWrapper tooltip={t((t) => t.dataset.uploadLogin)}>
+        <LoginButtonWrapper
+          tooltip={t((t) => t.dataset.uploadLogin)}
+          loginSource="user-upload-datasets"
+        >
           <IconButton
             icon="upload"
             type="border"
@@ -212,7 +217,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             onClick={onUploadClick}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPolygonLogin)}>
+        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPolygonLogin)} loginSource="draw-polygon">
           <IconButton
             icon="draw"
             type="border"
@@ -223,7 +228,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             onClick={() => onDrawClick('polygons')}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPointsLogin)}>
+        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPointsLogin)} loginSource="draw-points">
           <IconButton
             icon="draw-points"
             type="border"

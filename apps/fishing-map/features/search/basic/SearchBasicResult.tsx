@@ -1,8 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import type { GetItemPropsOptions } from 'downshift'
 import { lowerFirst, uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
@@ -26,7 +25,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
-import { cleanVesselSearchResults } from 'features/search/search.slice'
+import { cleanVesselSearchResults, setSelectedVessels } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
@@ -55,9 +54,8 @@ import styles from './SearchBasicResult.module.css'
 type SearchBasicResultProps = {
   vessel: IdentityVesselData
   index: number
-  highlightedIndex: number
+  highlighted: boolean
   setHighlightedIndex: (index: number) => void
-  getItemProps: (options: GetItemPropsOptions<IdentityVesselData>) => any
   vesselsSelected: IdentityVesselData[]
   highlightQuery: string
 }
@@ -65,9 +63,8 @@ type SearchBasicResultProps = {
 function SearchBasicResult({
   vessel,
   index,
-  highlightedIndex,
+  highlighted,
   setHighlightedIndex,
-  getItemProps,
   vesselsSelected,
   highlightQuery,
 }: SearchBasicResultProps) {
@@ -146,7 +143,10 @@ function SearchBasicResult({
   } else if (isSelected) {
     tooltip = t((t) => t.search.vesselSelected)
   }
-  const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
+
+  const onSelectClick = useCallback(() => {
+    dispatch(setSelectedVessels([getSearchVesselId(vessel)]))
+  }, [dispatch, vessel])
 
   const vesselQuery = (() => {
     const query = isStandaloneSearchLocation
@@ -188,11 +188,10 @@ function SearchBasicResult({
 
   return (
     <li
-      {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
       onBlur={() => setHighlightedIndex(-1)}
       className={cx('card', styles.searchResult, {
-        [styles.highlighted]: highlightedIndex === index,
+        [styles.highlighted]: highlighted,
         [styles.inWorkspace]: isInWorkspace,
         [styles.selected]: isSelected,
       })}
@@ -207,7 +206,7 @@ function SearchBasicResult({
           className={cx(styles.icon, { [styles.selectedIcon]: isSelected || isInWorkspace })}
           size="tiny"
           tooltip={tooltip}
-          onClick={isInWorkspace ? undefined : onClick}
+          onClick={isInWorkspace ? undefined : onSelectClick}
         />
         <div className={styles.fullWidth}>
           <div className={styles.name}>
@@ -353,4 +352,4 @@ function SearchBasicResult({
   )
 }
 
-export default SearchBasicResult
+export default memo(SearchBasicResult)

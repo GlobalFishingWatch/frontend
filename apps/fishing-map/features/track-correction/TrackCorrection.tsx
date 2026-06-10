@@ -10,9 +10,9 @@ import {
 } from 'features/track-correction/track-selection.selectors'
 import TrackCorrectionEdit from 'features/track-correction/TrackCorrectionEdit'
 import TrackCorrectionNew from 'features/track-correction/TrackCorrectionNew'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './TrackCorrection.module.css'
@@ -33,7 +33,10 @@ const TrackCorrection = () => {
           <Icon type="default" icon="warning" />
           <Trans i18nKey={(t) => t.trackCorrection.loginRequired}>
             To suggest and view this correction, you must
-            <LocalStorageLoginLink className={styles.link}> log in </LocalStorageLoginLink>
+            <LoginLink className={styles.link} loginSource="track-correction">
+              {' '}
+              log in{' '}
+            </LoginLink>
           </Trans>
         </div>
       </>

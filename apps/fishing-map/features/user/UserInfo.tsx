@@ -71,7 +71,6 @@ function UserInfo() {
         to,
         params,
         search,
-        state: (state) => ({ ...state, isHistoryNavigation: true }),
         replace: true,
       })
     } else {

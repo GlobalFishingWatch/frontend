@@ -11,8 +11,8 @@ import {
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectFeatureFlags } from 'features/debug/debug.slice'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import LoginButtonWrapper from 'router/LoginButtonWrapper'
 
 type ContextLayerDownloadPopupButtonProps = {
   feature: ContextPickingObject | UserLayerPickingObject
@@ -41,7 +41,7 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
 
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
   return (
-    <LoginButtonWrapper tooltip={t((t) => t.download.heatmapLogin)}>
+    <LoginButtonWrapper tooltip={t((t) => t.download.heatmapLogin)} loginSource="layer-download">
       <IconButton
         icon="download"
         disabled={!guestUser && (!isDataviewReportAnalysable || !datasetsReportSupported)}

@@ -7,12 +7,14 @@
     border 150ms linear;
 }
 
-.searchResult.highlighted:has(.icon:hover),
+.searchResult:hover,
 .searchResult.selected {
   background-color: var(--color-white);
 }
 
-.icon {
+.icon,
+.searchResult .icon:hover,
+.searchResult .icon:focus {
   border: 1px solid var(--color-secondary-blue);
   top: 3px;
 }

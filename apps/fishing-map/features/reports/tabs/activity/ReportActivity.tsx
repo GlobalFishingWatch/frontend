@@ -157,6 +157,7 @@ function ActivityReport() {
         <ReportVesselsPlaceholder animate={false}>
           <div className={styles.cover}>
             <WorkspaceLoginError
+              loginSource="report-private"
               title={errorMsg}
               emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
             />

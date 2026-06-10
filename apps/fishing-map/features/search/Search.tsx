@@ -83,6 +83,7 @@ function Search() {
   if (isWorkspaceError || isDatasetError) {
     return isAuthError(datasetError) ? (
       <WorkspaceLoginError
+        loginSource="search-private"
         title={
           guestUser
             ? t((t) => t.errors.searchLogin)

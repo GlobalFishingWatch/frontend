@@ -1,22 +1,29 @@
 import { Children, cloneElement, isValidElement, type JSX } from 'react'
 import { useSelector } from 'react-redux'
 
-import type { ButtonProps,IconButtonProps,TooltipPlacement  } from '@globalfishingwatch/ui-components'
+import type {
+  ButtonProps,
+  IconButtonProps,
+  TooltipPlacement,
+} from '@globalfishingwatch/ui-components'
 
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import type { LoginSource } from 'features/user/user.types'
 
-import LocalStorageLoginLink from './LoginLink'
+import LoginLink from './LoginLink'
 
 interface LoginButtonWrapperProps {
   tooltip?: string
   tooltipPlacement?: TooltipPlacement
   children: JSX.Element
+  loginSource?: LoginSource
 }
 
 const LoginButtonWrapper = ({
   children,
   tooltip,
   tooltipPlacement = 'top',
+  loginSource,
 }: LoginButtonWrapperProps) => {
   const guestUser = useSelector(selectIsGuestUser)
 
@@ -40,7 +47,7 @@ const LoginButtonWrapper = ({
       return child
     }
   )
-  return <LocalStorageLoginLink>{childrenWithoutAction}</LocalStorageLoginLink>
+  return <LoginLink loginSource={loginSource}>{childrenWithoutAction}</LoginLink>
 }
 
 export default LoginButtonWrapper

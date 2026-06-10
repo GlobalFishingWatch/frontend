@@ -19,7 +19,7 @@ import { getDefaultWorkspace } from 'features/workspace/workspace.slice'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import type { WorkspaceState } from 'types'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
-import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
+import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
 
 export type AppWorkspace = Workspace<WorkspaceState, WorkspaceCategory>
 
@@ -62,6 +62,15 @@ export const fetchWorkspacesThunk = createAsyncThunk<
         message: `${ids || userId} - ${parseAPIErrorMessage(e)}`,
       })
     }
+  },
+  {
+    condition: ({ ids } = {}, { getState }) => {
+      if (ids?.length) {
+        return true
+      }
+      const status = (getState() as WorkspaceSliceState).workspaces.status
+      return status !== AsyncReducerStatus.Loading
+    },
   }
 )
 

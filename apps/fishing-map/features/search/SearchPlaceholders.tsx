@@ -10,8 +10,8 @@ import VesselSearchNoSesultsImage from 'assets/images/vessel-search-no-results.s
 import UserGuideLink from 'features/help/UserGuideLink'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectSearchStatus } from 'features/search/search.slice'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { selectQueryParam } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse, options } from 'utils/html-parser'
@@ -85,7 +85,9 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
               </Tooltip>{' '}
               <Trans i18nKey={(t) => t.search.missingSources}>
                 won't appear unless you
-                <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink>
+                <LoginLink className={styles.link} loginSource="search-basic">
+                  log in
+                </LoginLink>
               </Trans>
             </p>
           )}

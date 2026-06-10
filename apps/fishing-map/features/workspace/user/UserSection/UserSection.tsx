@@ -18,12 +18,12 @@ import { selectCustomUserDataviewsGrouped } from 'features/dataviews/selectors/d
 import Hint from 'features/help/Hint'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import LoginLink from 'features/user/LoginLink'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import Section from 'features/workspace/shared/Section'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanel from '../UserLayerPanel'
@@ -42,8 +42,10 @@ export function RegisterOrLoginToUpload() {
         Register
       </a>
       or
-      <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>to upload datasets
-      (free, 2 minutes)
+      <LoginLink className={styles.link} loginSource="user-upload-datasets">
+        login
+      </LoginLink>
+      to upload datasets (free, 2 minutes)
     </Trans>
   )
 }
@@ -129,6 +131,7 @@ export function UserSection(): React.ReactElement<any> {
             <div className={styles.relative}>
               <Hint id="userContextLayers" />
               <UserLoggedIconButton
+                loginSource="user-upload-datasets"
                 testId="upload-user-dataset"
                 icon="upload"
                 type="border"
@@ -141,6 +144,7 @@ export function UserSection(): React.ReactElement<any> {
             </div>
           )}
           <UserLoggedIconButton
+            loginSource="draw-polygon"
             icon="draw"
             type="border"
             size="medium"
@@ -151,6 +155,7 @@ export function UserSection(): React.ReactElement<any> {
             testId="draw-polygon-button"
           />
           <UserLoggedIconButton
+            loginSource="draw-points"
             icon="draw-points"
             type="border"
             size="medium"

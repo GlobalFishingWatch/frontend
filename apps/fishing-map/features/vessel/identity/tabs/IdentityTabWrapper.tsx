@@ -148,6 +148,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
         <div className={styles.actionsContainer}>
           {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
           <UserLoggedIconButton
+            loginSource="vessel-download"
             type="border"
             icon="download"
             size="medium"
