@@ -139,7 +139,14 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     duration: parseInt(reportTimeComparison.duration),
   }),
   mapRulers: (rulers: { id: string }[]) => {
-    return rulers?.map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
+    return (Array.isArray(rulers) ? rulers : [])
+      .filter((ruler) => ruler && typeof ruler === 'object')
+      .map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
+  },
+  mapAnnotations: (annotations: any[]) => {
+    return (Array.isArray(annotations) ? annotations : []).filter(
+      (annotation) => annotation && typeof annotation === 'object'
+    )
   },
   reportAreaBounds: (reportAreaBounds: string[]) =>
     reportAreaBounds?.map((bound: string) => parseFloat(bound)),
@@ -375,6 +382,7 @@ export const URL_STRINGIFY_CONFIG = {
   // see https://github.com/TanStack/router/issues/4514
   // encodeValuesOnly: true,
   strictNullHandling: true,
+  allowEmptyArrays: true,
 }
 
 export const stringifyWorkspace = (object: BaseUrlWorkspace) => {

@@ -317,6 +317,7 @@ describe('url-workspace', () => {
     test('should have correct configuration', () => {
       expect(URL_STRINGIFY_CONFIG).toEqual({
         strictNullHandling: true,
+        allowEmptyArrays: true,
       })
     })
   })

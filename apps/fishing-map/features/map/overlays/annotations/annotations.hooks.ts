@@ -71,7 +71,7 @@ export const useMapAnnotations = () => {
   }, [areMapAnnotationsVisible, replaceQueryParams])
 
   const cleanMapAnnotations = useCallback(() => {
-    replaceQueryParams({ mapAnnotations: undefined })
+    replaceQueryParams({ mapAnnotations: [] })
   }, [replaceQueryParams])
 
   const upsertMapAnnotations = useCallback(
@@ -93,7 +93,7 @@ export const useMapAnnotations = () => {
       const annotations = mapAnnotations.filter((a) => {
         return a.id !== id
       })
-      replaceQueryParams({ mapAnnotations: annotations })
+      replaceQueryParams({ mapAnnotations: annotations || [] })
     },
     [mapAnnotations, replaceQueryParams]
   )
