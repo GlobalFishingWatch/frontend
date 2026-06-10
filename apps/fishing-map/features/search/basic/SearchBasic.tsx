@@ -117,7 +117,7 @@ function SearchBasic({
       }}
       itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
     >
-      {({ getInputProps, getItemProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
+      {({ getInputProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
         <div>
           <div className={styles.form}>
             <InputText
@@ -168,7 +168,6 @@ function SearchBasic({
                   searchResults={searchResults}
                   highlightedIndex={highlightedIndex as number}
                   setHighlightedIndex={setHighlightedIndex}
-                  getItemProps={getItemProps}
                   vesselsSelected={vesselsSelected}
                   highlightQuery={debouncedQuery || ''}
                 />
