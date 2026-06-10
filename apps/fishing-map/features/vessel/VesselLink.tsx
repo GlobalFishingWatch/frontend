@@ -32,6 +32,7 @@ import {
   selectIsStandaloneSearchLocation,
   selectIsVesselLocation,
   selectLocationQuery,
+  selectWorkspaceId as selectUrlWorkspaceId,
 } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
@@ -71,6 +72,7 @@ const VesselLink = ({
 }: VesselLinkProps) => {
   const { t } = useTranslation()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const urlWorkspaceId = useSelector(selectUrlWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isVesselLocation = useSelector(selectIsVesselLocation)
@@ -189,7 +191,7 @@ const VesselLink = ({
     ? { vesselId }
     : {
         category: workspaceCategory || DEFAULT_WORKSPACE_CATEGORY,
-        workspaceId: workspaceId || '',
+        workspaceId: workspaceId || urlWorkspaceId || '',
         vesselId,
       }
 
