@@ -54,7 +54,8 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
     dataviewInstanceId: SENTINEL2_DATAVIEW_INSTANCE_ID,
     releaseDateTimestamp: Date.parse('2025-07-10T18:00:00:00Z'),
     imageUrl: `${PATH_BASENAME}/images/highlighted-popup/sentinel2.jpg`,
-    learnMoreUrl: 'https://globalfishingwatch.org/article/expanding-our-view-with-sentinel-2/',
+    learnMoreUrl:
+      'https://globalfishingwatch.org/article/ai-breakthrough-ocean-monitoring-satellite-imagery-unprecedented-view-global-vessel-activity/',
     en: {
       title: 'New satellite source reveals human activity with vessel imagery',
       description:
