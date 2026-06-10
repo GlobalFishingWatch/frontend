@@ -15,12 +15,13 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import useClickedOutside from 'hooks/use-clicked-outside'
+import { getSafeElementById } from 'utils/dom'
 
 import { MAP_WRAPPER_ID } from '../map.config'
 
 import styles from './Popup.module.css'
 
-const getBoundary = () => document.getElementById(MAP_WRAPPER_ID) || undefined
+const getBoundary = () => getSafeElementById(MAP_WRAPPER_ID) || undefined
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null

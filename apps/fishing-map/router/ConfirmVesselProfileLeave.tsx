@@ -74,6 +74,7 @@ export function ConfirmVesselProfileLeave() {
           router.navigate({
             to: toValidRoutePath(stripAppPrefix(next.routeId) as RoutePathValues, next.params),
             params: next.params,
+            state: (state) => ({ ...state, isHistoryNavigation: true }),
             search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
             replace: true,
             resetScroll: false,
