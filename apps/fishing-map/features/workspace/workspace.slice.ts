@@ -49,7 +49,7 @@ import { RF_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { HOME, REPORT } from 'router/routes'
+import { HOME, REPORT, SEARCH } from 'router/routes'
 import {
   selectLocationType,
   selectReportId,
@@ -189,7 +189,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             }),
           })
         }
-        if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
+        if (
+          (!workspace && (locationType === HOME || locationType === SEARCH)) ||
+          workspaceId === DEFAULT_WORKSPACE_ID
+        ) {
           workspace = await getDefaultWorkspace()
           if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
             return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
