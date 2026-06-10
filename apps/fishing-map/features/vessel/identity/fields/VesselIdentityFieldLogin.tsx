@@ -6,6 +6,7 @@ const VesselIdentityFieldLogin = () => {
   const { t } = useTranslation()
   return (
     <UserLoggedIconButton
+      loginSource="vessel-identity-field"
       icon="private"
       loginTooltip={t((t) => t.vessel.infoLogin)}
       tooltipPlacement="bottom"

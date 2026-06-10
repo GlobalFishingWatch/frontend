@@ -8,6 +8,7 @@ import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import LoginLink from 'features/user/LoginLink'
 import {
   selectIsUserLogged,
   selectUserData,
@@ -18,7 +19,6 @@ import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
@@ -104,7 +104,10 @@ function User() {
       <div className={cx(styles.container, styles.centered)}>
         <span>
           <Trans i18nKey={(t) => t.user.loginRequired}>
-            Register or <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>{' '}
+            Register or{' '}
+            <LoginLink className={styles.link} loginSource="user-panel">
+              login
+            </LoginLink>{' '}
             to see your user panel
           </Trans>
         </span>

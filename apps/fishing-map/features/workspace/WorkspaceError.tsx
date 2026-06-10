@@ -27,6 +27,7 @@ export default function WorkspaceError() {
   ) {
     return (
       <WorkspaceLoginError
+        loginSource="workspace-private"
         title={t((t) => t.errors.privateView)}
         emailSubject={`Requesting access for ${workspaceId} view`}
       />

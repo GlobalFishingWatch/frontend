@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { SUPPORT_EMAIL } from 'data/config'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import LoginLink from 'router/LoginLink'
-import { usePopupLogin } from 'router/LoginLink.hooks'
+import { usePopupLogin } from 'features/user/user.hooks'
+import type { LoginSource } from 'features/user/user.types'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 
@@ -17,12 +18,14 @@ interface WorkspaceLoginErrorProps {
   title: string
   emailSubject?: string
   className?: string
+  loginSource?: LoginSource
 }
 
 export default function WorkspaceLoginError({
   title,
   emailSubject,
   className,
+  loginSource,
 }: WorkspaceLoginErrorProps) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
@@ -33,7 +36,9 @@ export default function WorkspaceLoginError({
   return (
     <ErrorPlaceholder title={title} className={className}>
       {guestUser ? (
-        <LoginLink className={styles.button}>{t((t) => t.common.login)}</LoginLink>
+        <LoginLink className={styles.button} loginSource={loginSource}>
+          {t((t) => t.common.login)}
+        </LoginLink>
       ) : (
         <Fragment>
           {emailSubject && (

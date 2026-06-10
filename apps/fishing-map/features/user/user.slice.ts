@@ -8,6 +8,7 @@ import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
+import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
@@ -25,6 +26,7 @@ interface UserState {
   status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
+  loginSource: LoginSource | null
 }
 
 const initialState: UserState = {
@@ -34,6 +36,7 @@ const initialState: UserState = {
   status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
+  loginSource: null,
 }
 
 type UserSliceState = { user: UserState }
@@ -96,6 +99,9 @@ const userSlice = createSlice({
       state.settings = { ...state.settings, ...action.payload }
       localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
     },
+    setLoginSource: (state, action: PayloadAction<LoginSource | null>) => {
+      state.loginSource = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserThunk.pending, (state) => {
@@ -117,6 +123,7 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting, setLoginExpired, setUserLanguage } = userSlice.actions
+export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource } =
+  userSlice.actions
 
 export default userSlice.reducer

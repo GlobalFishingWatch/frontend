@@ -63,6 +63,7 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
 
   return (
     <UserLoggedIconButton
+      loginSource="report-download"
       icon="download"
       size="medium"
       className={className}

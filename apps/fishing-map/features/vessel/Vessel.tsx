@@ -210,6 +210,7 @@ const Vessel = () => {
     const hasAuthError = isAuthError(infoError)
     return hasAuthError ? (
       <WorkspaceLoginError
+        loginSource="vessel-events"
         title={guestUser ? t((t) => t.errors.profileLogin) : t((t) => t.errors.privateProfile)}
         emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
       />
@@ -240,6 +241,7 @@ const Vessel = () => {
       {guestUser ? (
         <WorkspaceLoginError
           title={t((t) => t.errors.vesselActivityLogin)}
+          loginSource="vessel-events"
           className={styles.loginRequiered}
         />
       ) : hasSelfReportedData ? (

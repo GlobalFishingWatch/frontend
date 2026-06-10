@@ -1,8 +1,8 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import LoginLink from 'features/user/LoginLink'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectVGRError, selectVGRStatus } from './vessel-group-report.slice'
@@ -40,7 +40,10 @@ function VesselGroupReportError({ vesselGroupId }: { vesselGroupId: string }) {
       <div className={styles.emptyState}>
         <Trans i18nKey={(t) => t.errors.sessionExpired}>
           Your session has expired, please
-          <LocalStorageLoginLink className={styles.loginLink}>log in</LocalStorageLoginLink> again.
+          <LoginLink className={styles.loginLink} loginSource="vessel-group-report">
+            log in
+          </LoginLink>{' '}
+          again.
         </Trans>
       </div>
     )

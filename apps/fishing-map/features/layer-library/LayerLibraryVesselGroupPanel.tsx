@@ -14,6 +14,7 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -25,7 +26,6 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
@@ -83,6 +83,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
           tooltip={t((t) => t.vesselGroup.createNewGroup)}
           tooltipPlacement="top"
           onClick={() => onAddVesselGroupClick()}
+          loginSource="layer-library-vessel-group"
         />
       </div>
       {guestUser ? (
@@ -97,7 +98,9 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
               Register
             </a>
             or
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+            <LoginLink className={styles.link} loginSource="layer-library-vessel-group">
+              login
+            </LoginLink>
             to create and access your vessel groups.
           </Trans>
         </div>

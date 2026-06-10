@@ -27,6 +27,7 @@ import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
 } from 'features/timebar/timebar-vessel.hooks'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
@@ -39,7 +40,6 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'router/LoginLink'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -228,6 +228,7 @@ function VesselsSection(): React.ReactElement<any> {
                 onAddToVesselGroup={onAddToVesselGroupClick}
               >
                 <UserLoggedIconButton
+                  loginSource="vessel-group-create"
                   icon={'add-to-vessel-group'}
                   loading={areVesselsLoading || isVesselGroupUpdating}
                   disabled={areVesselsLoading || isVesselGroupUpdating}
@@ -292,13 +293,17 @@ function VesselsSection(): React.ReactElement<any> {
             {hasVesselsWithNoTrack ? (
               <Trans i18nKey={(t) => t.vessel.trackLogin}>
                 One of your selected sources requires you to
-                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
-                vessel tracks and events
+                <LoginLink className={styles.link} loginSource="vessel-tracks">
+                  login
+                </LoginLink>{' '}
+                to see vessel tracks and events
               </Trans>
             ) : (
               <Trans i18nKey={(t) => t.vessel.trackResolution}>
-                <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
-                more detailed vessel tracks (free, 2 minutes)
+                <LoginLink className={styles.link} loginSource="vessel-tracks">
+                  Login
+                </LoginLink>{' '}
+                to see more detailed vessel tracks (free, 2 minutes)
               </Trans>
             )}
           </p>

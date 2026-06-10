@@ -20,6 +20,7 @@ import {
   selectReportVesselGroupFlags,
   selectReportVesselGroupTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
@@ -28,7 +29,6 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
-import LoginButtonWrapper from 'router/LoginButtonWrapper'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -131,7 +131,7 @@ export default function VesselGroupReportTitle() {
               }}
             />
           )}
-          <LoginButtonWrapper tooltip="">
+          <LoginButtonWrapper tooltip="" loginSource="vessel-group-report">
             <Button
               type="border-secondary"
               size="medium"

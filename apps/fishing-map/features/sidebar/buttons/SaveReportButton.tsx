@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense,useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
@@ -10,9 +10,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
-import LoginButtonWrapper from 'router/LoginButtonWrapper'
 import { getCurrentAppUrl, ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -68,7 +68,7 @@ function SaveReportButton() {
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
+      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)} loginSource="report-save">
         <IconButton
           icon={showClipboardNotification ? 'tick' : 'save'}
           size="medium"
