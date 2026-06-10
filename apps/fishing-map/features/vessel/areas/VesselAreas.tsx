@@ -240,25 +240,29 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               />
               <XAxis type="number" hide />
               <RechartsTooltip content={<AreaTooltip />} />
-              {eventTypes?.map((eventType, index) => (
-                <Bar
-                  key={eventType}
-                  dataKey={eventType}
-                  barSize={15}
-                  stackId="a"
-                  fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
-                >
-                  {index === eventTypes.length - 1 && (
+              {eventTypes?.map((eventType) => {
+                return (
+                  <Bar
+                    key={eventType}
+                    dataKey={eventType}
+                    barSize={15}
+                    stackId="a"
+                    fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
+                  >
                     <LabelList
                       position="right"
                       valueAccessor={(entry: any) => {
-                        return formatI18nNumber(entry?.payload?.total)
+                        const { total, region, ...rest } = entry?.payload || {}
+                        const eventsWithValues = Object.keys(rest)
+                        if (eventType === eventsWithValues[eventsWithValues.length - 1]) {
+                          return formatI18nNumber(total)
+                        }
                       }}
                       className={styles.count}
                     />
-                  )}
-                </Bar>
-              ))}
+                  </Bar>
+                )
+              })}
             </BarChart>
             {eventsGroupedUnknown?.total && (
               <p className={styles.unknownRegionEvents}>
