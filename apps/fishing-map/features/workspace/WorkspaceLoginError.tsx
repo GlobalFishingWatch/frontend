@@ -6,6 +6,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 
 import { SUPPORT_EMAIL } from 'data/config'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import LoginLink from 'router/LoginLink'
 import { usePopupLogin } from 'router/LoginLink.hooks'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
@@ -32,9 +33,7 @@ export default function WorkspaceLoginError({
   return (
     <ErrorPlaceholder title={title} className={className}>
       {guestUser ? (
-        <Button className={styles.button} onClick={openPopupLogin}>
-          {t((t) => t.common.login) as string}
-        </Button>
+        <LoginLink className={styles.button}>{t((t) => t.common.login)}</LoginLink>
       ) : (
         <Fragment>
           {emailSubject && (

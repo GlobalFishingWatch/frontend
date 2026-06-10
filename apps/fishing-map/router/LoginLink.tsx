@@ -4,17 +4,14 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { usePopupLogin } from './LoginLink.hooks'
 
-type LocalStorageLoginLinkProps = {
+type LoginLinkProps = {
   children: React.ReactNode
   className?: string
   tooltip?: string
 }
 
-function LocalStorageLoginLink(
-  { children, className = '', tooltip }: LocalStorageLoginLinkProps,
-  ref: any
-) {
-  const onClick = usePopupLogin()
+function LoginLink({ children, className = '', tooltip }: LoginLinkProps, ref: any) {
+  const openPopupLogin = usePopupLogin()
 
   return (
     <Tooltip content={tooltip}>
@@ -22,7 +19,7 @@ function LocalStorageLoginLink(
         ref={ref}
         role="button"
         tabIndex={0}
-        onClick={onClick}
+        onClick={openPopupLogin}
         className={className}
         data-testid="login-link"
       >
@@ -32,4 +29,4 @@ function LocalStorageLoginLink(
   )
 }
 
-export default forwardRef(LocalStorageLoginLink)
+export default forwardRef(LoginLink)
