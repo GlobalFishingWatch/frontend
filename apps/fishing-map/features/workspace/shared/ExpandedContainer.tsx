@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import type { Middleware } from '@floating-ui/react'
 import {
   arrow,
+  autoUpdate,
   detectOverflow,
   FloatingArrow,
   FloatingPortal,
@@ -75,6 +76,7 @@ function ExpandedContainer({
   const { refs, floatingStyles, context } = useFloating({
     open: disabled ? false : isOpen,
     strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
     onOpenChange: (nextOpen, event, reason) => {
       if (disabled) return
       setIsOpen(nextOpen)
