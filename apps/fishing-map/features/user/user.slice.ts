@@ -1,18 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import {
-  getAccessTokenFromUrl,
-  GFWAPI,
-  removeAccessTokenFromUrl,
-} from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
@@ -53,29 +48,12 @@ export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
-  async (
-    { guest, accessToken: paramToken }: { guest?: boolean; accessToken?: string } = { guest: false }
-  ) => {
+  async ({ guest, accessToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
     if (guest) {
       return await GFWAPI.fetchGuestUser()
     }
-    const accessToken = paramToken || getAccessTokenFromUrl()
     try {
       const user = await GFWAPI.login({ accessToken })
-      if (accessToken) {
-        trackEvent({
-          category: TrackCategory.User,
-          action: 'login',
-          other: {
-            user_id: user.id,
-            // email: user.email,
-          },
-        })
-      }
-
-      if (accessToken) {
-        removeAccessTokenFromUrl()
-      }
 
       return user
     } catch (e: any) {
