@@ -308,7 +308,7 @@ export const parseFourwingsVectors = (
 ) => {
   const vectorsOptions = options?.fourwingsVectors
   if (!vectorsOptions) {
-    return []
+    return assignFourwingsFeaturesByteLength([])
   }
 
   const parseData = {

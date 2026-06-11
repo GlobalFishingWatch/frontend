@@ -163,7 +163,7 @@ export const getCellTimeseries = (
 
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
-    return []
+    return assignFourwingsFeaturesByteLength([])
   }
 
   const features = Array.from(

@@ -19,7 +19,12 @@ import type {
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { IS_TEST_ENV } from '../../layers.config'
-import { FOURWINGS_MAX_ZOOM, FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL } from '../fourwings.config'
+import {
+  FOURWINGS_MAX_CACHE_BYTE_SIZE,
+  FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
+  HEATMAP_API_TILES_URL,
+} from '../fourwings.config'
 import type {
   FourwingsDeckSublayer,
   FourwingsHeatmapTilesCache,
@@ -27,7 +32,7 @@ import type {
   GetViewportDataParams,
 } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../fourwings.types'
-import { getAreTilePositionsAvailable } from '../fourwings-tile.utils'
+import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 import {
   aggregateCellTimeseries,
   getDataUrl,
@@ -152,7 +157,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     }
 
     if (tile.signal?.aborted) {
-      return
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
@@ -181,12 +186,17 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         ),
       } as ParseFourwingsOptions,
     })
+
+    if (tile.signal?.aborted) {
+      return EMPTY_FOURWINGS_TILE_DATA
+    }
+
     return data
   }
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
     if (this.state.viewportLoaded) {
       this.setState({ viewportLoaded: false })
@@ -270,6 +280,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         minZoom: 0,
         onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
+        maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
         opacity: 1,

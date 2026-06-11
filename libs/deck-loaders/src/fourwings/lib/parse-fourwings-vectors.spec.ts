@@ -20,7 +20,8 @@ describe('parse-fourwings-vectors', () => {
 
       const result = parseFourwingsVectors(buffer)
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should return empty array when options has no fourwingsVectors', () => {
@@ -28,7 +29,8 @@ describe('parse-fourwings-vectors', () => {
 
       const result = parseFourwingsVectors(buffer, {})
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should parse Pbf buffer with temporal aggregation', () => {

@@ -1,6 +1,10 @@
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import { assignFourwingsFeaturesByteLength } from '@globalfishingwatch/deck-loaders'
 
 import { MAX_POSITIONS_PER_TILE_SUPPORTED } from './fourwings.config'
+
+/** Reused for stale/aborted tile loads so Tileset2D always sees a finite byteLength. */
+export const EMPTY_FOURWINGS_TILE_DATA = assignFourwingsFeaturesByteLength([])
 
 export function isTilePositionsOverLimit(
   tileData: FourwingsFeature[],

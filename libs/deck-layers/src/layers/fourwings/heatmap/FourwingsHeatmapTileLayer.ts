@@ -49,7 +49,7 @@ import type {
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
 } from '../fourwings.types'
-import { getAreTilePositionsAvailable } from '../fourwings-tile.utils'
+import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 
 import type {
   FourwingsChunk,
@@ -491,7 +491,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     settledPromises.length = 0
 
     if (tile.signal?.aborted) {
-      return
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const data = await parse(filteredBuffers, FourwingsLoader, {
@@ -607,7 +607,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     settledPromises.length = 0
 
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const data = await parse(filteredBuffers, FourwingsLoader, {
@@ -635,7 +635,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
     if (this.state.viewportLoaded) {
       this.setState({ viewportLoaded: false })

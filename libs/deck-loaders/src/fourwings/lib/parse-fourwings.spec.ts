@@ -20,7 +20,8 @@ describe('parse-fourwings', () => {
 
       const result = parseFourwings(buffer)
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should return empty array when options has no fourwings', () => {
@@ -28,7 +29,8 @@ describe('parse-fourwings', () => {
 
       const result = parseFourwings(buffer, {})
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should return empty array when fourwings has no buffersLength', () => {
@@ -44,7 +46,8 @@ describe('parse-fourwings', () => {
         } as any,
       })
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should return empty array when buffersLength is empty array', () => {
@@ -61,7 +64,8 @@ describe('parse-fourwings', () => {
         } as any,
       })
 
-      expect(result).toEqual([])
+      expect(result).toHaveLength(0)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBe(0)
     })
 
     it('should parse heatmap cells without dates and derive timestamps from frames', () => {
