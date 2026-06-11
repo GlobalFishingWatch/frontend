@@ -453,7 +453,10 @@ export function useReportTitle() {
     if (
       reportId &&
       !report &&
-      (reportsStatus === AsyncReducerStatus.Finished || reportsStatus === AsyncReducerStatus.Error)
+      (reportsStatus === AsyncReducerStatus.Finished ||
+        reportsStatus === AsyncReducerStatus.Error ||
+        reportsStatus === AsyncReducerStatus.Loading ||
+        reportsStatus === AsyncReducerStatus.Idle)
     ) {
       return ''
     }
