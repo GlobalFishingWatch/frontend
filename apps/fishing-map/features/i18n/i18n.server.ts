@@ -23,7 +23,7 @@ const SUPPORTED_LANGUAGES = [
 const DEFAULT_NAMESPACE = 'translations'
 const FALLBACK_LNG = import.meta.env.DEV ? 'source' : Locale.en
 
-const NAMESPACES = ['translations'] as const
+const NAMESPACES = ['translations', 'workspaces'] as const
 
 function detectLanguageFromRequest(request: Request): string {
   const cookieHeader = request.headers.get('cookie')
