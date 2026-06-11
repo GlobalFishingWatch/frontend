@@ -21,12 +21,10 @@ import { selectUserData, selectUserSettings } from 'features/user/selectors/user
 import type { UserSettings } from 'features/user/user.slice'
 import type { RootState } from 'reducers'
 import {
-  HOME,
   PORT_REPORT,
   REPORT,
   REPORT_ROUTES,
-  SEARCH,
-  USER,
+  ROUTES_WITH_DEFAULT_WORKSPACE,
   VESSEL_GROUP_REPORT,
   WORKSPACE,
   WORKSPACE_REPORT,
@@ -227,6 +225,7 @@ export const selectWorkspaceFetchParams = createSelector(
   [
     selectLocationType,
     selectCurrentWorkspaceId,
+    selectWorkspaceStatus,
     selectWorkspaceReportId,
     selectWorkspaceId,
     selectReportId,
@@ -234,17 +233,19 @@ export const selectWorkspaceFetchParams = createSelector(
   (
     locationType,
     currentWorkspaceId,
+    workspaceStatus,
     currentReportId,
     urlWorkspaceId,
     reportId
   ): WorkspaceFetchParams | null => {
+    if (ROUTES_WITH_DEFAULT_WORKSPACE.includes(locationType)) {
+      const hasDefaultWorkspace =
+        currentWorkspaceId === DEFAULT_WORKSPACE_ID &&
+        workspaceStatus === AsyncReducerStatus.Finished
+      return hasDefaultWorkspace ? null : { workspaceId: '' }
+    }
+
     switch (locationType) {
-      // Routes that need the default workspace (no workspaceId in the URL)
-      case HOME:
-      case USER:
-      case SEARCH: {
-        return currentWorkspaceId !== DEFAULT_WORKSPACE_ID ? { workspaceId: '' } : null
-      }
 
       // Routes under /$category/$workspaceId/* — fetch the workspace named in the URL
       case WORKSPACE:
