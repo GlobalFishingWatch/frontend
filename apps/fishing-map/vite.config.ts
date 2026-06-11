@@ -95,6 +95,9 @@ export default defineConfig(({ command, mode }) => {
               // Track: https://github.com/vitejs/vite/issues/22291
               //        https://github.com/rolldown/rolldown/issues/9441
               hoistTransitiveImports: false,
+              // Ensures CJS-heavy chunks (recharts → es-toolkit/compat) execute in import order.
+              // Track: https://github.com/rolldown/rolldown/issues/8803
+              strictExecutionOrder: true,
               manualChunks(id) {
                 if (id.includes('/libs/ui-components/src/icon/icons/')) {
                   return 'ui-icons-bundle'
@@ -104,6 +107,15 @@ export default defineConfig(({ command, mode }) => {
                   id.includes('/apps/fishing-map/assets/icons/')
                 ) {
                   return 'icons-bundle'
+                }
+                if (id.includes('/node_modules/recharts/')) {
+                  return 'vendor-recharts'
+                }
+                if (
+                  id.includes('/node_modules/es-toolkit/compat/') ||
+                  id.includes('/node_modules/es-toolkit/')
+                ) {
+                  return 'vendor-es-toolkit'
                 }
               },
             },
