@@ -39,7 +39,7 @@ export declare class GeoJSONFeature<P = Record<string, any>> {
 export const filterFeaturesByBounds = ({
   features,
   bounds,
-  onlyValuesAndDates = false,
+  onlyValuesAndStartFrame = false,
 }: {
   features:
     | GeoJSONFeature[]
@@ -47,7 +47,7 @@ export const filterFeaturesByBounds = ({
     | FourwingsStaticFeature[]
     | FourwingsPointFeature[]
   bounds: Bounds
-  onlyValuesAndDates?: boolean
+  onlyValuesAndStartFrame?: boolean
 }) => {
   if (!bounds || !features?.length) {
     return []
@@ -80,14 +80,14 @@ export const filterFeaturesByBounds = ({
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     const isInBounds =
       lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
-    if (onlyValuesAndDates) {
+    if (onlyValuesAndStartFrame) {
       return isInBounds
         ? [
             f.properties.values?.map((sublayerValues: number[], sublayerIndex: number) => {
-              return [
-                sublayerValues,
-                (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],
-              ]
+              const { tileStartFrame = 0, startOffsets } =
+                f.properties as FourwingsFeatureProperties
+              // values[i] happened at getIntervalTimestamp(startFrame + i)
+              return [sublayerValues, tileStartFrame + (startOffsets?.[sublayerIndex] ?? 0)]
             }),
           ]
         : []

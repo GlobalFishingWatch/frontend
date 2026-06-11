@@ -252,7 +252,7 @@ export const getCellVectorValues = (
           const uValue = pbf.readVarint()
           const vValue = pbf.readVarint()
 
-          feature.properties.dates[0][timeStepIndex] = getIntervalTimestamp(
+          feature.properties.dates![0][timeStepIndex] = getIntervalTimestamp(
             startFrame + tileStartFrame + timeStepIndex
           )
 

@@ -58,7 +58,7 @@ function ReportVectorGraphTooltip(
 
     return (featuresFiltered || []).flatMap((f) => {
       const dateIndex = f.properties.dates?.[0]?.findIndex((date) => date === hoveredTime)
-      if (dateIndex === -1) return []
+      if (dateIndex === undefined || dateIndex === -1) return []
       return {
         direction: f.properties.directions?.[dateIndex],
         velocity: f.properties.velocities?.[dateIndex],

@@ -9,8 +9,9 @@ import type {
   FourwingsInterval,
   FourwingsPointFeature,
   FourwingsPositionFeature,
-  FourwingsValuesAndDatesFeature,
+  FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
+import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
@@ -242,7 +243,7 @@ export function getGraphDataFromPoints(
 }
 
 export function getGraphDataFromFourwingsHeatmap(
-  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[] | Feature<Point>[],
+  features: FourwingsFeature[] | FourwingsValuesAndStartFrameFeature[] | Feature<Point>[],
   {
     start,
     end,
@@ -275,10 +276,13 @@ export function getGraphDataFromFourwingsHeatmap(
     (f) => f.properties !== undefined
   )
 
+  const getIntervalTimestamp = CONFIG_BY_INTERVAL[interval].getIntervalTimestamp
+
   if (areFourwingsFeatures) {
     ;(features as FourwingsFeature[]).forEach((feature) => {
-      const { dates, values, velocities } = feature.properties
+      const { dates, values, velocities, startOffsets, tileStartFrame } = feature.properties
       if (dates) {
+        // vectors features store their dates arrays
         dates.forEach((sublayerDates, sublayerIndex) => {
           const valueArray = values[sublayerIndex] || velocities
           if (valueArray && valueArray.length) {
@@ -305,36 +309,53 @@ export function getGraphDataFromFourwingsHeatmap(
             }
           }
         })
+      } else if (values) {
+        // heatmap features don't store dates: derive each value's timestamp
+        // from tile start frame and sublayer start offset
+        values.forEach((sublayerValues, sublayerIndex) => {
+          if (!sublayerValues?.length) {
+            return
+          }
+          const startFrame = (tileStartFrame ?? 0) + (startOffsets?.[sublayerIndex] ?? 0)
+          for (let valueIndex = 0; valueIndex < sublayerValues.length; valueIndex++) {
+            const value = sublayerValues[valueIndex]
+            if (value === undefined) {
+              continue
+            }
+            const sublayerDateData = data[getIntervalTimestamp(startFrame + valueIndex)]
+            if (
+              sublayerDateData &&
+              (!hasMinVisibleValue || value >= minVisibleValue!) &&
+              (!hasMaxVisibleValue || value <= maxVisibleValue!)
+            ) {
+              sublayerDateData[sublayerIndex] += value
+              sublayerDateData.count![sublayerIndex]++
+            }
+          }
+        })
       }
     })
   } else {
-    ;(features as FourwingsValuesAndDatesFeature[]).forEach((feature) => {
+    ;(features as FourwingsValuesAndStartFrameFeature[]).forEach((feature) => {
       for (let sublayerIndex = 0; sublayerIndex < feature.length; sublayerIndex++) {
         const sublayer = feature[sublayerIndex]
-        const [values, dates] = sublayer || []
-        if (dates) {
-          if (hasMinVisibleValue || hasMaxVisibleValue) {
-            for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
-              const sublayerDate = dates[dateIndex]
-              const sublayerDateData = data[sublayerDate]
-              if (
-                sublayerDateData &&
-                (!hasMinVisibleValue || values[dateIndex] >= minVisibleValue) &&
-                (!hasMaxVisibleValue || values[dateIndex] <= maxVisibleValue)
-              ) {
-                sublayerDateData[sublayerIndex] += values[dateIndex]
-                sublayerDateData.count![sublayerIndex]++
-              }
-            }
-          } else {
-            for (let dateIndex = 0; dateIndex < dates.length; dateIndex++) {
-              const sublayerDate = dates[dateIndex]
-              const sublayerDateData = data[sublayerDate]
-              if (sublayerDateData) {
-                sublayerDateData[sublayerIndex] += values[dateIndex]
-                sublayerDateData.count![sublayerIndex]++
-              }
-            }
+        const [values, startFrame] = sublayer || []
+        if (!values || startFrame === undefined) {
+          continue
+        }
+        for (let valueIndex = 0; valueIndex < values.length; valueIndex++) {
+          const value = values[valueIndex]
+          if (value === undefined) {
+            continue
+          }
+          const sublayerDateData = data[getIntervalTimestamp(startFrame + valueIndex)]
+          if (
+            sublayerDateData &&
+            (!hasMinVisibleValue || value >= minVisibleValue!) &&
+            (!hasMaxVisibleValue || value <= maxVisibleValue!)
+          ) {
+            sublayerDateData[sublayerIndex] += value
+            sublayerDateData.count![sublayerIndex]++
           }
         }
       }

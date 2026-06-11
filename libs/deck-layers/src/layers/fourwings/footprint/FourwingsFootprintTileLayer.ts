@@ -13,7 +13,7 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
   FourwingsInterval,
-  FourwingsValuesAndDatesFeature,
+  FourwingsValuesAndStartFrameFeature,
   ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -319,20 +319,31 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   getIsPositionsAvailable() {
     const tilesData = this.getTilesData()
-    return !tilesData.some(
-      (tileData) =>
-        tileData.reduce((acc, feature) => {
-          if (!feature.properties?.values?.length) {
-            return acc
+    // plain loops instead of flat()/reduce to avoid allocating copies of every
+    // values array, bailing out as soon as the tile exceeds the limit
+    return !tilesData.some((tileData) => {
+      let tileSum = 0
+      for (const feature of tileData) {
+        const values = feature.properties?.values
+        if (!values?.length) {
+          continue
+        }
+        for (const sublayerValues of values) {
+          if (!sublayerValues) {
+            continue
           }
-          return (
-            acc +
-            feature.properties?.values.flat().reduce((acc, value) => {
-              return value ? acc + value : acc
-            }, 0)
-          )
-        }, 0) > MAX_POSITIONS_PER_TILE_SUPPORTED
-    )
+          for (let i = 0; i < sublayerValues.length; i++) {
+            if (sublayerValues[i]) {
+              tileSum += sublayerValues[i]
+            }
+          }
+        }
+        if (tileSum > MAX_POSITIONS_PER_TILE_SUPPORTED) {
+          return true
+        }
+      }
+      return false
+    })
   }
 
   getViewportData(params = {} as GetViewportDataParams) {
@@ -346,7 +357,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         bounds: { north, south, west, east },
         ...params,
       })
-      return dataFiltered as FourwingsFeature[] | FourwingsValuesAndDatesFeature[]
+      return dataFiltered as FourwingsFeature[] | FourwingsValuesAndStartFrameFeature[]
     }
     return []
   }
