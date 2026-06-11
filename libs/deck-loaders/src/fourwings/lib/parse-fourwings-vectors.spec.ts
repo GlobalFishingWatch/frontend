@@ -1,37 +1,9 @@
-import { PbfWriter as Pbf } from 'pbf'
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
+import { getFourwingsValueTimestamp } from '../helpers/timestamps'
+
+import { createMockTileBBox, createVectorsPbfBuffer } from './fourwings-test-fixtures'
 import { parseFourwingsVectors } from './parse-fourwings-vectors'
-
-const createMockTileBBox = () => ({
-  id: 'tile-0-0',
-  bbox: {
-    west: -180,
-    south: -90,
-    east: 180,
-    north: 90,
-  },
-  index: { x: 0, y: 0, z: 0 },
-})
-
-function createVectorsPbfBuffer(
-  temporalAggregation: boolean,
-  cells: { cellNum: number; u: number; v: number }[]
-) {
-  const pbf = new Pbf()
-  if (temporalAggregation) {
-    const values = cells.flatMap((c) => [c.cellNum, c.u, c.v])
-    pbf.writePackedVarint(1, values)
-  } else {
-    const values: number[] = []
-    for (const c of cells) {
-      values.push(c.cellNum, 0, 1, c.u, c.v)
-    }
-    pbf.writePackedVarint(1, values)
-  }
-  const bytes = pbf.finish()
-  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
-}
 
 describe('parse-fourwings-vectors', () => {
   beforeEach(() => {
@@ -79,6 +51,52 @@ describe('parse-fourwings-vectors', () => {
       expect(result).toHaveLength(2)
       expect(result[0].properties.velocities).toBeDefined()
       expect(result[0].properties.directions).toBeDefined()
+      expect(result[0].properties.dates).toBeUndefined()
+    })
+
+    it('should parse timeseries vectors without dates and derive timestamps from frames', () => {
+      const buffer = createVectorsPbfBuffer(false, [
+        {
+          cellNum: 0,
+          u: 3,
+          v: 4,
+          startAbs: 0,
+          endAbs: 1,
+          pairs: [
+            { u: 3, v: 4 },
+            { u: 6, v: 8 },
+          ],
+        },
+      ])
+
+      const result = parseFourwingsVectors(buffer as ArrayBuffer, {
+        fourwingsVectors: {
+          tile: createMockTileBBox(),
+          cols: [113],
+          rows: [53],
+          bufferedStartDate: 0,
+          interval: 'HOUR',
+          temporalAggregation: false,
+        },
+      })
+
+      expect(result).toHaveLength(1)
+      expect(result[0].properties.dates).toBeUndefined()
+      expect(result[0].properties.tileStartFrame).toBe(0)
+      expect(result[0].properties.startOffsets[0]).toBe(0)
+      expect(result[0].properties.velocities).toHaveLength(2)
+      expect(result[0].properties.directions).toHaveLength(2)
+      expect((result as typeof result & { byteLength: number }).byteLength).toBeGreaterThan(0)
+
+      const expectedTimestamps = [0, 1].map((index) =>
+        getFourwingsValueTimestamp(
+          'HOUR',
+          result[0].properties.tileStartFrame!,
+          result[0].properties.startOffsets[0],
+          index
+        )
+      )
+      expect(expectedTimestamps).toEqual([0, 3_600_000])
     })
   })
 })
