@@ -85,9 +85,14 @@ export const filterFeaturesByBounds = ({
       return isInBounds
         ? [
             f.properties.values?.map((sublayerValues: number[], sublayerIndex: number) => {
-              const properties = f.properties as FourwingsFeatureProperties
-              // values[i] happened at getIntervalTimestamp(startFrame + i)
-              return [sublayerValues, getFourwingsSublayerStartFrame(properties, sublayerIndex)]
+              return [
+                sublayerValues,
+                // values[i] happened at getIntervalTimestamp(startFrame + i)
+                getFourwingsSublayerStartFrame(
+                  f.properties as FourwingsFeatureProperties,
+                  sublayerIndex
+                ),
+              ]
             }),
           ]
         : []
