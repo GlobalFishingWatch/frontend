@@ -67,6 +67,7 @@ import {
   selectDaysFromLatest,
   selectWorkspace,
   selectWorkspaceRefreshStatus,
+  selectWorkspaceReportId,
   selectWorkspaceStatus,
 } from './workspace.selectors'
 import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
@@ -366,7 +367,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ workspaceId, isRefresh }, { getState }) => {
+    condition: ({ workspaceId, reportId, isRefresh }, { getState }) => {
       const rootState = getState() as any
       const workspaceRefreshStatus = selectWorkspaceRefreshStatus(rootState)
       if (isRefresh) {
@@ -374,6 +375,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       }
       const workspaceStatus = selectWorkspaceStatus(rootState)
       const isLoading = workspaceStatus === AsyncReducerStatus.Loading
+      if (reportId) {
+        return selectWorkspaceReportId(rootState) !== reportId && !isLoading
+      }
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
         return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading

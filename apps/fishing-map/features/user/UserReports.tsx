@@ -17,7 +17,6 @@ import {
 } from 'features/reports/reports.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -51,7 +50,6 @@ function UserReports() {
 
   const onReportClick = useCallback(
     (report: Report) => {
-      dispatch(resetWorkspaceSlice())
       dispatch(resetReportData())
     },
     [dispatch]
