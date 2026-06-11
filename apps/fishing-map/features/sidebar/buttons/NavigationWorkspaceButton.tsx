@@ -18,11 +18,13 @@ import { cleanReportQuery } from 'features/workspace/workspace.utils'
 import {
   selectIsAnySearchLocation,
   selectIsAnyWorkspaceReportLocation,
+  selectIsStandaloneSearchLocation,
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from '../SidebarHeader.module.css'
@@ -34,6 +36,7 @@ function NavigationWorkspaceButton() {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
   const locationCategory = useSelector(selectLocationCategory)
@@ -47,8 +50,17 @@ function NavigationWorkspaceButton() {
     return (
       <Link
         className={cx(styles.workspaceLink, 'print-hidden')}
-        to="/"
+        to={isStandaloneSearchLocation ? ROUTE_PATHS.HOME : ROUTE_PATHS.WORKSPACE}
+        params={
+          isStandaloneSearchLocation
+            ? undefined
+            : {
+                workspaceId: workspaceId,
+                category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
+              }
+        }
         search={{}}
+        state={(state) => ({ ...state, isHistoryNavigation: true })}
         replace
         onClick={resetState}
       >
@@ -81,6 +93,7 @@ function NavigationWorkspaceButton() {
           trackCorrectionId: undefined,
           dataviewInstances: cleanVesselProfileDataviewInstances(prev.dataviewInstances),
         })}
+        state={(state) => ({ ...state, isHistoryNavigation: true })}
         onClick={resetState}
       >
         <IconButton type="border" icon="close" tooltip={tooltip} />

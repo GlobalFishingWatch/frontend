@@ -92,8 +92,8 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
       const prevLocation = state.location
 
       // --- Workspace history tracking ---
-      const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
-      if (isNotInitialLoad) {
+      const hasPreviousLocation = Boolean(prevLocation.pathname)
+      if (hasPreviousLocation) {
         const isHistoryNavigation = navState.isHistoryNavigation ?? false
         const allHistoryNavigation = state.workspace?.historyNavigation || []
         const currentHistoryNavigation = isHistoryNavigation
@@ -108,8 +108,8 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
           search?.trackCorrectionId && !prevQuery?.trackCorrectionId
 
         if (
-          (isDifferentRoute || isDifferentTrackCorrection) &&
           !isHistoryNavigation &&
+          (isDifferentRoute || isDifferentTrackCorrection) &&
           (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
         ) {
           const newHistoryNavigation: LastWorkspaceVisited = {
