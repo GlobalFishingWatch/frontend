@@ -9,6 +9,22 @@ export const isValidCoordinate = (value: number | string | null | undefined): bo
   return Number.isFinite(Number(value))
 }
 
+export const isValidLngLat = (lon: unknown, lat: unknown): boolean => {
+  return (
+    isValidCoordinate(lon as number | string | null | undefined) &&
+    isValidCoordinate(lat as number | string | null | undefined) &&
+    Number(lat) >= -90 &&
+    Number(lat) <= 90
+  )
+}
+
+export const toLngLatCoordinates = (lon: unknown, lat: unknown): [number, number] | null => {
+  if (!isValidLngLat(lon, lat)) {
+    return null
+  }
+  return [Number(lon), Number(lat)]
+}
+
 export const parseCoords = (
   latitude: number | string,
   longitude: number | string

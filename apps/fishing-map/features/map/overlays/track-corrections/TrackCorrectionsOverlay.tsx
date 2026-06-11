@@ -5,7 +5,7 @@ import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import cx from 'classnames'
 import { useSetAtom } from 'jotai'
 
-import { isValidCoordinate } from '@globalfishingwatch/data-transforms'
+import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -119,7 +119,8 @@ const TrackCorrectionsOverlay = (): React.ReactNode | null => {
   return (
     <HtmlOverlay viewport={viewport} key="track-corrections-overlay">
       {trackCorrectionIssues.map((issue) => {
-        if (!isValidCoordinate(issue.lon) || !isValidCoordinate(issue.lat)) {
+        const coordinates = toLngLatCoordinates(issue.lon, issue.lat)
+        if (!coordinates) {
           return null
         }
         return (
@@ -132,7 +133,7 @@ const TrackCorrectionsOverlay = (): React.ReactNode | null => {
               textAlign: 'center',
               fontWeight: 500,
             }}
-            coordinates={[Number(issue.lon), Number(issue.lat)]}
+            coordinates={coordinates}
           >
             <TrackCorrectionOverlayIssue issue={issue} />
           </HtmlOverlayItem>
