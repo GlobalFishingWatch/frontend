@@ -31,6 +31,11 @@ import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
 
+type AppLocale = Locale | 'source' | 'val'
+function getAPILocale(locale: AppLocale) {
+  return locale === 'source' || locale === 'val' ? Locale.en.toUpperCase() : locale.toUpperCase()
+}
+
 export const getDatasetByIdsThunk = createAsyncThunk(
   'datasets/getByIds',
   async (
@@ -75,7 +80,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
-  { id: string; locale?: Locale | 'source'; useApiCache?: boolean },
+  { id: string; locale?: AppLocale; useApiCache?: boolean },
   {
     rejectValue: AsyncError
   }
@@ -85,7 +90,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
     try {
       const includesParam = stringify({
         cache: useApiCache,
-        locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
+        locale: getAPILocale(locale),
         includes: ['DESCRIPTION'],
       })
       const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
@@ -107,7 +112,7 @@ type FetchDatasetsBatchParams = {
   fetchUserDatasetsMode?: FetchUserDatasetsMode
   forceRefresh?: boolean
   ids: string[]
-  locale: Locale | 'source'
+  locale: Locale | 'source' | 'val'
   signal: AbortSignal
   useApiCache?: boolean
 }
@@ -140,7 +145,7 @@ const fetchDatasetsBatch = async ({
       ? { ids: uniqIds }
       : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
     cache: useApiCache,
-    locale: locale === 'source' ? Locale.en.toUpperCase() : locale.toUpperCase(),
+    locale: getAPILocale(locale),
     ...DEFAULT_PAGINATION_PARAMS,
   }
   const includesParam = stringify(
@@ -189,7 +194,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
     fetchUserDatasetsMode?: FetchUserDatasetsMode
     forceRefresh?: boolean
     includeRelated?: boolean
-    locale?: Locale
+    locale?: AppLocale
     useApiCache?: boolean
   },
   {
