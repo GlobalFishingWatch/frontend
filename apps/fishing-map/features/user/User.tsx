@@ -97,18 +97,16 @@ function User() {
     )
   }
 
-  if (!userLogged || !userData) return null
-
   if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
     return (
       <div className={cx(styles.container, styles.centered)}>
         <span>
           <Trans i18nKey={(t) => t.user.loginRequired}>
-            Register or{' '}
+            {'Register or '}
             <LoginLink className={styles.link} loginSource="user-panel">
               login
-            </LoginLink>{' '}
-            to see your user panel
+            </LoginLink>
+            {' to see your user panel'}
           </Trans>
         </span>
       </div>

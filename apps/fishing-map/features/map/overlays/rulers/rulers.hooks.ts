@@ -60,7 +60,7 @@ const useRulers = () => {
       const mapRulers = rulers.filter((a) => {
         return a.id !== id
       })
-      replaceQueryParams({ mapRulers })
+      replaceQueryParams({ mapRulers: mapRulers || [] })
     },
     [rulers, replaceQueryParams]
   )
@@ -91,7 +91,7 @@ const useRulers = () => {
   const resetRulers = useCallback(() => {
     setMapControl(false)
     resetMapControlValue()
-    replaceQueryParams({ mapRulers: undefined })
+    replaceQueryParams({ mapRulers: [] })
   }, [replaceQueryParams, resetMapControlValue, setMapControl])
 
   return useMemo(

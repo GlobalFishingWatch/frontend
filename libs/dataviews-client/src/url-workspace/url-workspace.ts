@@ -139,7 +139,14 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     duration: parseInt(reportTimeComparison.duration),
   }),
   mapRulers: (rulers: { id: string }[]) => {
-    return rulers?.map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
+    return (Array.isArray(rulers) ? rulers : [])
+      .filter((ruler) => ruler && typeof ruler === 'object')
+      .map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
+  },
+  mapAnnotations: (annotations: any[]) => {
+    return (Array.isArray(annotations) ? annotations : []).filter(
+      (annotation) => annotation && typeof annotation === 'object'
+    )
   },
   reportAreaBounds: (reportAreaBounds: string[]) =>
     reportAreaBounds?.map((bound: string) => parseFloat(bound)),
@@ -337,6 +344,11 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   }
 }
 
+export const URL_STRINGIFY_CONFIG = {
+  strictNullHandling: true,
+  allowEmptyArrays: true,
+}
+
 export const parseWorkspace = (
   queryString: string,
   customUrlTransformations: Dictionary<(value: any) => any> = {}
@@ -345,8 +357,8 @@ export const parseWorkspace = (
     arrayLimit: 1000,
     depth: 20,
     decoder,
-    strictNullHandling: true,
     ignoreQueryPrefix: true,
+    ...URL_STRINGIFY_CONFIG,
   })
   if (parsed.analysis) {
     // Removes old legacy analysis param replaced by reports
@@ -368,13 +380,6 @@ export const parseWorkspace = (
   })
 
   return parsedDetokenized
-}
-
-export const URL_STRINGIFY_CONFIG = {
-  // This throws a redirect error in tanstack start as the url missmatched
-  // see https://github.com/TanStack/router/issues/4514
-  // encodeValuesOnly: true,
-  strictNullHandling: true,
 }
 
 export const stringifyWorkspace = (object: BaseUrlWorkspace) => {

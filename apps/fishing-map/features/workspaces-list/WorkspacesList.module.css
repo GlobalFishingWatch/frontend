@@ -93,3 +93,11 @@ a.linkButton,
   gap: var(--space-M);
   align-items: center;
 }
+
+@media only screen and (width <= 800px) {
+  .imageLink,
+  .image {
+    width: 8rem;
+    height: 8rem;
+  }
+}
