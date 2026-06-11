@@ -432,7 +432,7 @@ export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
   const datasets = getActiveDatasetsInDataview(dataview)
-  const flattenDatasetFilters = datasets?.flatMap((d) =>
+  const flattenDatasetFilters = (datasets || [])?.flatMap((d) =>
     d
       ? getDatasetConfigurationProperty({
           dataset: d,
@@ -441,9 +441,7 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
         }) || []
       : []
   )
-  return flattenDatasetFilters?.some(({ id }) => {
-    return id === 'bearing'
-  })
+  return flattenDatasetFilters?.length > 0
 }
 
 export function hasVesselGroupVesselsDeprecated(
