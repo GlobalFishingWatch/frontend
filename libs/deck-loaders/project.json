@@ -13,13 +13,16 @@
           "pbjs src/vessels/lib/vessel-track.proto -t static-module -w esm -o src/vessels/lib/vessel-track-proto.gen.js",
           "pbts src/vessels/lib/vessel-track-proto.gen.js -o src/vessels/lib/vessel-track-proto.gen.d.ts",
           "prettier --write src/vessels/lib/vessel-track-proto.gen.js src/vessels/lib/vessel-track-proto.gen.d.ts --config ../../.prettierrc.js",
-          "tsc --noEmit -p tsconfig.lib.json"
+          "tsc --noEmit -p tsconfig.lib.json",
+          "shx cp src/vessels/lib/vessel-track-proto.gen.js dist/vessels/lib/",
+          "shx cp src/vessels/lib/vessel-track-proto.gen.d.ts dist/vessels/lib/"
         ],
         "parallel": false
       }
     },
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["proto:generate", "^dist"]
     },
     "dev": {
       "dependsOn": ["^dev"],

@@ -11,6 +11,8 @@
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,port-labeler,*-e2e,libs/*' --plain > affected-apps.txt",
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
+    "test:apps": "nx run-many -t test --exclude='libs/*'",
+    "test:libs": "nx run-many -t test --exclude='apps/*'",
     "postinstall": "husky",
     "nx:latest": "nx migrate latest",
     "nx:migrations": "nx migrate --run-migrations",

@@ -10,7 +10,7 @@ import {
 } from '@floating-ui/react'
 import cx from 'classnames'
 
-import { isValidCoordinate } from '@globalfishingwatch/data-transforms'
+import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -72,8 +72,11 @@ function PopupWrapper({
     ],
   })
 
-  if (!mapViewport || !isValidCoordinate(latitude) || !isValidCoordinate(longitude)) return null
-  const [left, top] = mapViewport.project([longitude, latitude])
+  const coordinates = toLngLatCoordinates(longitude, latitude)
+  if (!mapViewport || !coordinates) {
+    return null
+  }
+  const [left, top] = mapViewport.project(coordinates)
   return (
     <div
       // eslint-disable-next-line react-hooks/refs
