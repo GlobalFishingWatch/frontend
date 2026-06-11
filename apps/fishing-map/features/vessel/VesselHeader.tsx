@@ -35,6 +35,7 @@ import VesselGroupAddButton, {
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { handleOpenImage } from 'utils/img'
@@ -56,6 +57,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
+  const isClientHydrated = useIsClientHydrated()
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
@@ -211,7 +213,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           </svg>
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
-          <a className={styles.reportLink} href={getCurrentAppUrl()}>
+          <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
             {t((t) => t.vessel.linkToVessel)}
           </a>
         </h1>

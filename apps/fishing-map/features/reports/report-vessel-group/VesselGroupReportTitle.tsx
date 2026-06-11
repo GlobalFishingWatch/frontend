@@ -29,6 +29,7 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -54,6 +55,7 @@ export default function VesselGroupReportTitle() {
   )
   const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels
   const loading = reportStatus === AsyncReducerStatus.Loading
+  const isClientHydrated = useIsClientHydrated()
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
@@ -114,7 +116,7 @@ export default function VesselGroupReportTitle() {
             <DataTerminology terminologyKey="vessels" />
           </h2>
         </div>
-        <a className={styles.reportLink} href={getCurrentAppUrl()}>
+        <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
           {t((t) => t.vesselGroupReport.linkToReport)}
         </a>
         <div className={styles.actions}>
