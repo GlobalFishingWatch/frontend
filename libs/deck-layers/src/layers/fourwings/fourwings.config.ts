@@ -42,6 +42,11 @@ export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname'
 export const FOURWINGS_MAX_ZOOM = 12
 export const VECTORS_MAX_ZOOM = 12
 export const FOURWINGS_TILE_SIZE = 512
+// Caps the bytes retained per tileset cache to avoid browser out-of-memory
+// crashes in long sessions. Byte-based instead of tile count because tile
+// size varies by orders of magnitude with interval and zoom. Relies on the
+// byteLength estimate the fourwings loader stamps on each parsed tile
+export const FOURWINGS_MAX_CACHE_BYTE_SIZE = 256 * 1024 * 1024
 export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12

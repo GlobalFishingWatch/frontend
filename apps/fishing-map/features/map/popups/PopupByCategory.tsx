@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { groupBy, uniqBy } from 'es-toolkit'
@@ -403,4 +403,4 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   )
 }
 
-export default PopupByCategory
+export default memo(PopupByCategory)

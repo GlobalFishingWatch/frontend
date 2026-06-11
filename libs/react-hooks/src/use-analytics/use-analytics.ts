@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import ReactGA from 'react-ga4'
+import type ReactGADefault from 'react-ga4'
 import { snakeCase } from 'es-toolkit'
 
-type InitOptions = Extract<Parameters<typeof ReactGA.initialize>[0], object[]>[number]
+type InitOptions = Extract<Parameters<typeof ReactGADefault.initialize>[0], object[]>[number]
 
 type ReactGAClient = {
   event?: (eventName: string, params?: Record<string, any>) => void
@@ -11,8 +11,8 @@ type ReactGAClient = {
   default?: ReactGAClient
 }
 
-function getReactGAClient() {
-  const reactGA = ReactGA as ReactGAClient
+function resolveReactGAClient(mod: unknown): ReactGAClient {
+  const reactGA = ((mod as { default?: ReactGAClient })?.default ?? mod) as ReactGAClient
   if (typeof reactGA.event === 'function') {
     return reactGA
   }
@@ -20,6 +20,18 @@ function getReactGAClient() {
     return reactGA.default
   }
   return reactGA
+}
+
+// react-ga4 is loaded on demand so it stays out of the initial bundle.
+// Calls made before the module resolves are ordered by the shared promise,
+// and react-ga4 itself queues events fired before initialize().
+let reactGAClientPromise: Promise<ReactGAClient> | undefined
+
+function getReactGAClient() {
+  if (!reactGAClientPromise) {
+    reactGAClientPromise = import('react-ga4').then(resolveReactGAClient)
+  }
+  return reactGAClientPromise
 }
 
 export enum TrackCategory {
@@ -41,27 +53,28 @@ export const trackEvent = <T>({
   value,
   other = {},
 }: TrackEventParams<T>) => {
-  const reactGA = getReactGAClient()
-  if (typeof reactGA.event !== 'function') {
-    return
-  }
-  /**
-   * IMPORTANT
-   *
-   * To send the category and action in snake_case to GA4
-   * it is necessary to use this:
-   * ```
-   * ReactGA.event(name, params)
-   * ```
-   * method signature so they won't be converted to title case.
-   *
-   * https://github.com/codler/react-ga4/issues/15
-   */
-  reactGA.event(snakeCase(action), {
-    ...(category && { category: snakeCase((category as string) ?? '') }),
-    ...(label && { label }),
-    ...(value && { value }),
-    ...other,
+  getReactGAClient().then((reactGA) => {
+    if (typeof reactGA.event !== 'function') {
+      return
+    }
+    /**
+     * IMPORTANT
+     *
+     * To send the category and action in snake_case to GA4
+     * it is necessary to use this:
+     * ```
+     * ReactGA.event(name, params)
+     * ```
+     * method signature so they won't be converted to title case.
+     *
+     * https://github.com/codler/react-ga4/issues/15
+     */
+    reactGA.event(snakeCase(action), {
+      ...(category && { category: snakeCase((category as string) ?? '') }),
+      ...(label && { label }),
+      ...(value && { value }),
+      ...other,
+    })
   })
 }
 
@@ -97,25 +110,35 @@ export const useAnalyticsInit = ({
     }, [debugMode, googleMeasurementId, googleTagManagerId, gtagUrl])
 
   useEffect(() => {
-    const reactGA = getReactGAClient()
-    if (config.length > 0) {
+    if (config.length === 0) {
+      return
+    }
+    let cancelled = false
+    getReactGAClient().then((reactGA) => {
+      if (cancelled) {
+        return
+      }
       if (typeof reactGA.initialize === 'function') {
         reactGA.initialize(config, initGtagOptions)
         setInitialized(true)
       }
       // Tip: Uncomment this to prevent sending hits to GA
       // reactGA.set({ sendHitTask: null })
+    })
+    return () => {
+      cancelled = true
     }
   }, [config, initGtagOptions])
 
   return useMemo(() => {
-    const reactGA = getReactGAClient()
     return {
       initialized,
       setConfig: (...args: any[]) => {
-        if (typeof reactGA.set === 'function') {
-          reactGA.set(...args)
-        }
+        getReactGAClient().then((reactGA) => {
+          if (typeof reactGA.set === 'function') {
+            reactGA.set(...args)
+          }
+        })
       },
     }
   }, [initialized])

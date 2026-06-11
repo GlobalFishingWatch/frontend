@@ -20,7 +20,7 @@ export type FourwingsDatasetId = string
 export type FourwingsVisualizationMode = (typeof FOURWINGS_VISUALIZATION_MODES)[number]
 
 export type GetViewportDataParams = {
-  onlyValuesAndDates?: boolean
+  onlyValuesAndStartFrame?: boolean
 }
 
 export type FourwingsColorObject = { r: number; g: number; b: number; a: number }

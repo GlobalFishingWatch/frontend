@@ -26,12 +26,24 @@ export function useDeckLayerComposer({
 
   const debouncedSetDeckLayers = useMemo(() => debounce(setDeckLayers, 1), [setDeckLayers])
 
+  // getDataviewsResolved only reads these fields, so the expensive dataview merge
+  // is not re-run when frequently-changing config (zoom, time range, highlights) updates
+  const resolutionConfig = useMemoCompare({
+    bivariateDataviews: memoGlobalConfig.bivariateDataviews,
+    activityVisualizationMode: memoGlobalConfig.activityVisualizationMode,
+    detectionsVisualizationMode: memoGlobalConfig.detectionsVisualizationMode,
+    environmentVisualizationMode: memoGlobalConfig.environmentVisualizationMode,
+    vesselGroupsVisualizationMode: memoGlobalConfig.vesselGroupsVisualizationMode,
+    compareStart: memoGlobalConfig.compareStart,
+    compareEnd: memoGlobalConfig.compareEnd,
+  })
+
+  const dataviewsMergedSorted = useMemo(() => {
+    const dataviewsMerged = getDataviewsResolved(memoDataviews, resolutionConfig) as DataviewInstance[]
+    return getDataviewsSorted(dataviewsMerged)
+  }, [memoDataviews, resolutionConfig])
+
   const layerInstances = useMemo(() => {
-    const dataviewsMerged = getDataviewsResolved(
-      memoDataviews,
-      memoGlobalConfig
-    ) as DataviewInstance[]
-    const dataviewsMergedSorted = getDataviewsSorted(dataviewsMerged)
     const deckLayers = dataviewsMergedSorted?.flatMap((dataview) => {
       // TODO research if we can use atoms here
       try {
@@ -62,7 +74,7 @@ export function useDeckLayerComposer({
       ] as AnyDeckLayer[]
     }
     return deckLayers
-  }, [memoDataviews, memoGlobalConfig])
+  }, [dataviewsMergedSorted, memoGlobalConfig])
 
   useEffect(() => {
     debouncedSetDeckLayers(layerInstances)

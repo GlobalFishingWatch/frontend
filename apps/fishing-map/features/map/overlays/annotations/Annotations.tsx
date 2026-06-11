@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { useSetAtom } from 'jotai'
 
-import { isValidCoordinate } from '@globalfishingwatch/data-transforms'
+import { isValidLngLat, toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useMapViewport } from 'features/map/map-viewport.hooks'
@@ -61,7 +61,9 @@ const MapAnnotations = (): React.ReactNode | null => {
             ? event.clientY
             : window.innerHeight - yOffset
         const coords = viewport.unproject([x, y])
-        setNewCoords(coords)
+        if (isValidLngLat(coords[0], coords[1])) {
+          setNewCoords(coords)
+        }
       }
     },
     [setOverlaysCursor, viewport]
@@ -82,7 +84,7 @@ const MapAnnotations = (): React.ReactNode | null => {
     [newCoords, setOverlaysCursor, upsertMapAnnotations, viewport]
   )
 
-  if (!mapAnnotations || !areMapAnnotationsVisible) {
+  if (!mapAnnotations || !areMapAnnotationsVisible || !viewport) {
     return null
   }
 
@@ -91,11 +93,15 @@ const MapAnnotations = (): React.ReactNode | null => {
       <HtmlOverlay viewport={viewport} key="1">
         {/* eslint-disable-next-line react-hooks/refs */}
         {mapAnnotations.map((annotation) => {
-          const coordinates = (selectedAnnotationRef?.current === annotation.id &&
-            (newCoords as number[])) || [Number(annotation.lon), Number(annotation.lat)]
-          if (!coordinates.every(isValidCoordinate)) {
+          const coordinates =
+            selectedAnnotationRef?.current === annotation.id && newCoords
+              ? toLngLatCoordinates(newCoords[0], newCoords[1])
+              : toLngLatCoordinates(annotation.lon, annotation.lat)
+
+          if (!coordinates) {
             return null
           }
+
           return (
             <HtmlOverlayItem
               key={annotation.id}
