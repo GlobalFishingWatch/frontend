@@ -10,12 +10,12 @@ import type { ReportWorkspace, WorkspaceReportLink } from 'data/highlighted-work
 import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
-import { selectI18nLocale } from 'features/i18n/i18n.selectors'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
+import { selectUserLanguage } from 'features/user/selectors/user.selectors'
 import { USER } from 'router/routes'
 import { selectLocationCategory, selectLocationType } from 'router/routes.selectors'
 
@@ -45,53 +45,50 @@ export type HighlightedWorkspaces = {
   workspaces: HighlightedWorkspace[]
 }
 
+export const WORKSPACES_BY_CATEGORY: Record<
+  HighlightedWorkspaceCategory,
+  (MarineManagerWorkspace | ReportWorkspace)[]
+> = {
+  'marine-manager': MARINE_MANAGER_WORKSPACES,
+  reports: REPORTS_INDEX,
+}
+
+export const AVAILABLE_WORKSPACES_CATEGORIES: HighlightedWorkspaceCategory[] = (
+  Object.keys(WORKSPACES_BY_CATEGORY) as HighlightedWorkspaceCategory[]
+).filter((category) => WORKSPACES_BY_CATEGORY[category].length > 0)
+
 export const selectHighlightedWorkspaces = createSelector(
-  [selectI18nLocale],
+  [selectUserLanguage],
   (locale): HighlightedWorkspaces[] => {
-    const WORKSPACES_BY_CATEGORY: Record<
-      HighlightedWorkspaceCategory,
-      (MarineManagerWorkspace | ReportWorkspace)[]
-    > = {
-      'marine-manager': MARINE_MANAGER_WORKSPACES,
-      reports: REPORTS_INDEX,
-    }
     return (Object.entries(WORKSPACES_BY_CATEGORY) as Entries<typeof WORKSPACES_BY_CATEGORY>).map(
       ([category, workspaces]) => {
         return {
           category: category,
           workspaces: workspaces.map((workspace) => ({
             ...workspace,
-            name: t((t: any) => t[category][workspace.id].name, { ns: 'workspaces', lng: locale }),
-            description: t((t: any) => t[category][workspace.id].description, {
+            name: t((resources: any) => resources[category][workspace.id].name, {
+              ns: 'workspaces',
+              lng: locale,
+            }),
+            description: t((resources: any) => resources[category][workspace.id].description, {
               ns: 'workspaces',
               lng: locale,
             }),
             visible: workspace.visible !== false,
-            cta: t((t: any) => t[category][workspace.id].cta, {
+            cta: t((resources: any) => resources[category][workspace.id].cta, {
               ns: 'workspaces',
               lng: locale,
               defaultValue:
                 category === 'marine-manager'
-                  ? t((t) => t.workspace.marineManagerLink)
+                  ? t((resources) => resources.workspace.marineManagerLink, { lng: locale })
                   : category === 'reports'
-                    ? t((t) => t.analysis.see)
-                    : t((t) => t.common.see),
+                    ? t((resources) => resources.analysis.see, { lng: locale })
+                    : t((resources) => resources.common.see, { lng: locale }),
             }),
           })),
         }
       }
     )
-  }
-)
-
-export const selectAvailableWorkspacesCategories = createSelector(
-  [selectHighlightedWorkspaces],
-  (highlightedWorkspaces = []): HighlightedWorkspaceCategory[] => {
-    const highlightedWorkspacesWithData = highlightedWorkspaces?.filter(({ workspaces }) => {
-      return workspaces.length > 0
-    })
-    const highlightedCategories = highlightedWorkspacesWithData.map(({ category }) => category)
-    return highlightedCategories
   }
 )
 

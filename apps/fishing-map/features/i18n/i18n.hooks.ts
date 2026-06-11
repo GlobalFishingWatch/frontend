@@ -10,14 +10,20 @@ export function useUserLanguageUpdate() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    i18n.on('languageChanged', (lng) => {
+    if (i18n.isInitialized && i18n.language) {
+      dispatch(setUserLanguage(i18n.language as Locale))
+    }
+
+    const onLanguageChanged = (lng: Locale) => {
       if (typeof window !== 'undefined') {
         document.documentElement.setAttribute('lang', lng)
       }
       dispatch(setUserLanguage(lng as Locale))
-    })
+    }
+
+    i18n.on('languageChanged', onLanguageChanged)
     return () => {
-      i18n.off('languageChanged')
+      i18n.off('languageChanged', onLanguageChanged)
     }
   }, [i18n, dispatch])
 }

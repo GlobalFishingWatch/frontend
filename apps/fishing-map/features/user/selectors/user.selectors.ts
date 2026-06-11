@@ -17,6 +17,7 @@ export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
+export const selectUserLanguage = (state: RootState) => state.user.language
 export const selectLoginSource = (state: RootState) => state.user.loginSource
 
 export const selectUserGroups = createSelector([selectUserData], (userData) => {

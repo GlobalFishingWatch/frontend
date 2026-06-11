@@ -34,7 +34,6 @@ import {
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
-import { selectI18nLocale } from 'features/i18n/i18n.selectors'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
@@ -42,7 +41,11 @@ import {
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
 } from 'features/track-correction/track-correction.slice'
-import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGuestUser,
+  selectUserLanguage,
+  selectUserLogged,
+} from 'features/user/selectors/user.selectors'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
@@ -105,7 +108,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectHighlightedTimeForTrackCorrection,
     selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
-    selectI18nLocale,
+    selectUserLanguage,
   ],
   (
     dataviewInstances,

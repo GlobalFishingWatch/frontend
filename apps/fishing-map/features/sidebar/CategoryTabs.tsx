@@ -34,7 +34,7 @@ import {
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { cleanReportPayload, cleanReportQuery } from 'features/workspace/workspace.utils'
-import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/workspaces-list/workspaces-list.selectors'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
@@ -62,7 +62,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
-  const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
@@ -196,7 +195,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </Tooltip>
           </Link>
         </li>
-        {availableCategories?.map((category, index) => {
+        {AVAILABLE_WORKSPACES_CATEGORIES?.map((category, index) => {
           return (
             <Tooltip
               key={category}
