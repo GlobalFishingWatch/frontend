@@ -20,6 +20,7 @@ function ContentHeader({ title }: ContentHeaderProps) {
       <div className={styles.labelContainer}>{title || t((t) => t.common.content)}</div>
       <IconButton
         icon="close"
+        type="solid"
         aria-label={t((t) => t.common.close)}
         onClick={() => closeSidePanel()}
       />
