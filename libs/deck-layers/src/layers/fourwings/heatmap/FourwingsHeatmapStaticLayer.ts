@@ -75,6 +75,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       scales: [],
       rampDirty: false,
       viewportLoaded: false,
+      tilesCacheUpdateTimeout: null,
     }
   }
 

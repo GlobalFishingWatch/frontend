@@ -1,4 +1,4 @@
-import { sample } from 'simple-statistics'
+// import { sample } from 'simple-statistics'
 
 import type {
   FourwingsFeature,
@@ -6,6 +6,7 @@ import type {
   FourwingsPointFeature,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsSublayerStartFrame } from '@globalfishingwatch/deck-loaders'
 
 export interface Bounds {
   north: number
@@ -14,7 +15,7 @@ export interface Bounds {
   east: number
 }
 
-const MAX_FEATURES_TO_CHECK = 5000
+// const MAX_FEATURES_TO_CHECK = 5000
 
 // Copied from below to avoid importing the dependency
 // import type { GeoJSONFeature } from 'maplibre-gl'
@@ -84,10 +85,14 @@ export const filterFeaturesByBounds = ({
       return isInBounds
         ? [
             f.properties.values?.map((sublayerValues: number[], sublayerIndex: number) => {
-              const { tileStartFrame = 0, startOffsets } =
-                f.properties as FourwingsFeatureProperties
-              // values[i] happened at getIntervalTimestamp(startFrame + i)
-              return [sublayerValues, tileStartFrame + (startOffsets?.[sublayerIndex] ?? 0)]
+              return [
+                sublayerValues,
+                // values[i] happened at getIntervalTimestamp(startFrame + i)
+                getFourwingsSublayerStartFrame(
+                  f.properties as FourwingsFeatureProperties,
+                  sublayerIndex
+                ),
+              ]
             }),
           ]
         : []

@@ -20,10 +20,10 @@ import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-
 
 import { IS_TEST_ENV } from '../../layers.config'
 import {
+  FOURWINGS_MAX_CACHE_BYTE_SIZE,
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
-  MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
 import type {
   FourwingsDeckSublayer,
@@ -32,6 +32,7 @@ import type {
   GetViewportDataParams,
 } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../fourwings.types'
+import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 import {
   aggregateCellTimeseries,
   getDataUrl,
@@ -156,7 +157,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     }
 
     if (tile.signal?.aborted) {
-      return
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const arrayBuffers = settledPromises.flatMap((d) => {
@@ -185,12 +186,17 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         ),
       } as ParseFourwingsOptions,
     })
+
+    if (tile.signal?.aborted) {
+      return EMPTY_FOURWINGS_TILE_DATA
+    }
+
     return data
   }
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
     if (this.state.viewportLoaded) {
       this.setState({ viewportLoaded: false })
@@ -274,6 +280,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         minZoom: 0,
         onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
+        maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
         opacity: 1,
@@ -318,32 +325,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getIsPositionsAvailable() {
-    const tilesData = this.getTilesData()
-    // plain loops instead of flat()/reduce to avoid allocating copies of every
-    // values array, bailing out as soon as the tile exceeds the limit
-    return !tilesData.some((tileData) => {
-      let tileSum = 0
-      for (const feature of tileData) {
-        const values = feature.properties?.values
-        if (!values?.length) {
-          continue
-        }
-        for (const sublayerValues of values) {
-          if (!sublayerValues) {
-            continue
-          }
-          for (let i = 0; i < sublayerValues.length; i++) {
-            if (sublayerValues[i]) {
-              tileSum += sublayerValues[i]
-            }
-          }
-        }
-        if (tileSum > MAX_POSITIONS_PER_TILE_SUPPORTED) {
-          return true
-        }
-      }
-      return false
-    })
+    return getAreTilePositionsAvailable(this.getTilesData())
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

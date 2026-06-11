@@ -5,6 +5,7 @@ import * as d3 from 'd3'
 import { max } from 'es-toolkit/compat'
 
 import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { findFourwingsValueIndexByTimestamp } from '@globalfishingwatch/deck-loaders'
 
 import { PRIMARY_BLUE_COLOR } from 'data/config'
 import type { CURRENTS_LAYER_ID } from 'data/layer-library'
@@ -57,14 +58,25 @@ function ReportVectorGraphTooltip(
       ?.contained as FourwingsFeature[]
 
     return (featuresFiltered || []).flatMap((f) => {
-      const dateIndex = f.properties.dates?.[0]?.findIndex((date) => date === hoveredTime)
-      if (dateIndex === undefined || dateIndex === -1) return []
+      if (hoveredTime === undefined) {
+        return []
+      }
+      const dateIndex = findFourwingsValueIndexByTimestamp({
+        interval: timeChunkInterval || 'DAY',
+        tileStartFrame: f.properties.tileStartFrame ?? 0,
+        startOffset: f.properties.startOffsets?.[0] ?? 0,
+        valuesLength: f.properties.velocities?.length ?? 0,
+        timestamp: hoveredTime,
+      })
+      if (dateIndex === -1) {
+        return []
+      }
       return {
         direction: f.properties.directions?.[dateIndex],
         velocity: f.properties.velocities?.[dateIndex],
       }
     })
-  }, [features, instanceId, hoveredTime])
+  }, [features, instanceId, hoveredTime, timeChunkInterval])
 
   const dataFormated = useMemo(() => {
     // Store force sums and counts for each degree bin

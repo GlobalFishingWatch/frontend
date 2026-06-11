@@ -22,6 +22,7 @@ import { hexToRgbaString, removeOutliers } from '../../../utils'
 import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
+  FOURWINGS_MAX_CACHE_BYTE_SIZE,
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES,
@@ -33,6 +34,7 @@ import type {
   FourwingsPickingObject,
   GetViewportDataParams,
 } from '../fourwings.types'
+import { EMPTY_FOURWINGS_TILE_DATA } from '../fourwings-tile.utils'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
@@ -274,7 +276,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
 
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const cols: number[] = []
@@ -300,6 +302,10 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
     const arrayBuffer = await response.arrayBuffer()
 
+    if (tile.signal?.aborted) {
+      return EMPTY_FOURWINGS_TILE_DATA
+    }
+
     const data = await parse(arrayBuffer, FourwingsVectorsLoader, {
       worker: !IS_TEST_ENV,
       fourwingsVectors: {
@@ -324,7 +330,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
     return this._fetchTimeseriesTileData(tile)
   }
@@ -401,6 +407,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
+        maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,
         maxZoom: maxZoom || 8,
         refinementStrategy: 'never',
         zoomOffset,

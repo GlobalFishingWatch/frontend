@@ -39,7 +39,6 @@ import {
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
-  MAX_POSITIONS_PER_TILE_SUPPORTED,
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
 import type {
@@ -50,6 +49,7 @@ import type {
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
 } from '../fourwings.types'
+import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 
 import type {
   FourwingsChunk,
@@ -85,8 +85,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  _colorUpdateRequest: number | null = null
-  _tilesCacheUpdateTimeout: ReturnType<typeof setTimeout> | null = null
   declare state: FourwingsTileLayerState
 
   initializeState(context: LayerContext) {
@@ -106,22 +104,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       rampDirty: false,
+      tilesCacheUpdateTimeout: null,
     }
   }
 
   finalizeState(context: LayerContext) {
     super.finalizeState(context)
-    if (this._colorUpdateRequest !== null) {
-      cancelAnimationFrame(this._colorUpdateRequest)
-      this._colorUpdateRequest = null
-    }
     this._clearPendingTilesCacheUpdate()
   }
 
   _clearPendingTilesCacheUpdate() {
-    if (this._tilesCacheUpdateTimeout !== null) {
-      clearTimeout(this._tilesCacheUpdateTimeout)
-      this._tilesCacheUpdateTimeout = null
+    const { tilesCacheUpdateTimeout } = this.state
+    if (tilesCacheUpdateTimeout !== null) {
+      clearTimeout(tilesCacheUpdateTimeout)
+      this.state.tilesCacheUpdateTimeout = null
     }
   }
 
@@ -491,7 +487,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     settledPromises.length = 0
 
     if (tile.signal?.aborted) {
-      return
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const data = await parse(filteredBuffers, FourwingsLoader, {
@@ -607,7 +603,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     settledPromises.length = 0
 
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
 
     const data = await parse(filteredBuffers, FourwingsLoader, {
@@ -635,7 +631,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
     if (tile.signal?.aborted) {
-      return null
+      return EMPTY_FOURWINGS_TILE_DATA
     }
     if (this.state.viewportLoaded) {
       this.setState({ viewportLoaded: false })
@@ -683,7 +679,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       minVisibleValue,
       maxVisibleValue,
     } = props
-    const { tilesCache, colorRanges, colorDomain } = this.state
+    const { tilesCache, colorRanges } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
@@ -695,25 +691,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
     const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
     if (needsColorUpdate) {
-      // Set rampDirty immediately to prevent rendering with stale colors
-      this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
-      // Defer the expensive walk of all viewport features so bursts of prop
-      // changes (e.g. dragging the visible values slider) collapse into a
-      // single calculation per frame
-      if (this._colorUpdateRequest !== null) {
-        cancelAnimationFrame(this._colorUpdateRequest)
-      }
-      this._colorUpdateRequest = requestAnimationFrame(() => {
-        this._colorUpdateRequest = null
-        const newColorDomain =
-          newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
-        const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
-        this.setState({
-          colorRanges: newSublayerColorRanges,
-          colorDomain: newColorDomain,
-          scales,
-          rampDirty: false,
-        })
+      const recalculateDomain = newMode || newVisibleValueLimits
+      const newColorDomain = recalculateDomain
+        ? this._calculateColorDomain()
+        : this.state.colorDomain
+      const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
+      this.setState({
+        colorRanges: newSublayerColorRanges,
+        colorDomain: newColorDomain,
+        scales,
+        rampDirty: false,
       })
     }
 
@@ -741,12 +728,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         compareStart,
         compareEnd,
       })
-    } else if (isTimeRangeOutOfCache && this._tilesCacheUpdateTimeout === null) {
+    } else if (isTimeRangeOutOfCache && this.state.tilesCacheUpdateTimeout === null) {
       // Coalesces a scrub across several chunk boundaries into one tile
       // refetch round per debounceTime window instead of one round per
       // boundary crossed. Reads this.props at fire time to use the latest range
-      this._tilesCacheUpdateTimeout = setTimeout(() => {
-        this._tilesCacheUpdateTimeout = null
+      this.state.tilesCacheUpdateTimeout = setTimeout(() => {
+        this.state.tilesCacheUpdateTimeout = null
         this.setState({
           tilesCache: getTileDataCache({
             zoom: Math.round(this.context.viewport.zoom),
@@ -836,32 +823,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getIsPositionsAvailable() {
-    const tilesData = this.getTilesData()
-    // plain loops instead of flat()/reduce to avoid allocating copies of every
-    // values array, bailing out as soon as the tile exceeds the limit
-    return !tilesData.some((tileData) => {
-      let tileSum = 0
-      for (const feature of tileData) {
-        const values = feature.properties?.values
-        if (!values?.length) {
-          continue
-        }
-        for (const sublayerValues of values) {
-          if (!sublayerValues) {
-            continue
-          }
-          for (let i = 0; i < sublayerValues.length; i++) {
-            if (sublayerValues[i]) {
-              tileSum += sublayerValues[i]
-            }
-          }
-        }
-        if (tileSum > MAX_POSITIONS_PER_TILE_SUPPORTED) {
-          return true
-        }
-      }
-      return false
-    })
+    return getAreTilePositionsAvailable(this.getTilesData())
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

@@ -23,13 +23,16 @@ function resolveReactGAClient(mod: unknown): ReactGAClient {
 }
 
 // react-ga4 is loaded on demand so it stays out of the initial bundle.
-// Calls made before the module resolves are ordered by the shared promise,
-// and react-ga4 itself queues events fired before initialize().
+// Concurrent callers share one import promise; initialize() must run before hits are meaningful.
 let reactGAClientPromise: Promise<ReactGAClient> | undefined
 
 function getReactGAClient() {
   if (!reactGAClientPromise) {
-    reactGAClientPromise = import('react-ga4').then(resolveReactGAClient)
+    reactGAClientPromise = import('react-ga4').then(resolveReactGAClient).catch((error) => {
+      reactGAClientPromise = undefined
+      console.warn('Failed to load react-ga4', error)
+      throw error
+    })
   }
   return reactGAClientPromise
 }
@@ -53,29 +56,31 @@ export const trackEvent = <T>({
   value,
   other = {},
 }: TrackEventParams<T>) => {
-  getReactGAClient().then((reactGA) => {
-    if (typeof reactGA.event !== 'function') {
-      return
-    }
-    /**
-     * IMPORTANT
-     *
-     * To send the category and action in snake_case to GA4
-     * it is necessary to use this:
-     * ```
-     * ReactGA.event(name, params)
-     * ```
-     * method signature so they won't be converted to title case.
-     *
-     * https://github.com/codler/react-ga4/issues/15
-     */
-    reactGA.event(snakeCase(action), {
-      ...(category && { category: snakeCase((category as string) ?? '') }),
-      ...(label && { label }),
-      ...(value && { value }),
-      ...other,
+  getReactGAClient()
+    .then((reactGA) => {
+      if (typeof reactGA.event !== 'function') {
+        return
+      }
+      /**
+       * IMPORTANT
+       *
+       * To send the category and action in snake_case to GA4
+       * it is necessary to use this:
+       * ```
+       * ReactGA.event(name, params)
+       * ```
+       * method signature so they won't be converted to title case.
+       *
+       * https://github.com/codler/react-ga4/issues/15
+       */
+      reactGA.event(snakeCase(action), {
+        ...(category && { category: snakeCase((category as string) ?? '') }),
+        ...(label && { label }),
+        ...(value && { value }),
+        ...other,
+      })
     })
-  })
+    .catch(() => {})
 }
 
 export type useAnalyticsParams = {
@@ -114,17 +119,19 @@ export const useAnalyticsInit = ({
       return
     }
     let cancelled = false
-    getReactGAClient().then((reactGA) => {
-      if (cancelled) {
-        return
-      }
-      if (typeof reactGA.initialize === 'function') {
-        reactGA.initialize(config, initGtagOptions)
-        setInitialized(true)
-      }
-      // Tip: Uncomment this to prevent sending hits to GA
-      // reactGA.set({ sendHitTask: null })
-    })
+    getReactGAClient()
+      .then((reactGA) => {
+        if (cancelled) {
+          return
+        }
+        if (typeof reactGA.initialize === 'function') {
+          reactGA.initialize(config, initGtagOptions)
+          setInitialized(true)
+        }
+        // Tip: Uncomment this to prevent sending hits to GA
+        // reactGA.set({ sendHitTask: null })
+      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
@@ -134,11 +141,13 @@ export const useAnalyticsInit = ({
     return {
       initialized,
       setConfig: (...args: any[]) => {
-        getReactGAClient().then((reactGA) => {
-          if (typeof reactGA.set === 'function') {
-            reactGA.set(...args)
-          }
-        })
+        getReactGAClient()
+          .then((reactGA) => {
+            if (typeof reactGA.set === 'function') {
+              reactGA.set(...args)
+            }
+          })
+          .catch(() => {})
       },
     }
   }, [initialized])

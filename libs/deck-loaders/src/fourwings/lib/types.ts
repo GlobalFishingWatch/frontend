@@ -67,12 +67,11 @@ export type FourwingsFeatureProperties = {
   id?: string
   initialValues: Record<string, number[]>
   startOffsets: number[]
-  // Only set by the vectors parser. The heatmap parser doesn't store dates:
-  // they are derived from tileStartFrame + startOffsets + value index to
-  // halve the tile memory footprint
-  dates?: FourwingsFeatureValues
-  // Absolute interval frame of the tile's buffered start, base for deriving
-  // the timestamp of each value: getIntervalTimestamp(tileStartFrame + startOffsets[i] + index)
+  // Deprecated: dates are no longer stored. Use getFourwingsSublayerStartFrame and
+  // getFourwingsValueTimestamp from ../helpers/timestamps instead.
+  // dates?: FourwingsFeatureValues
+  // Absolute interval frame of the tile's buffered start; combined with startOffsets
+  // to derive each value's timestamp via getFourwingsValueTimestamp.
   tileStartFrame?: number
   values: FourwingsFeatureValues
   cellId: number
