@@ -9,13 +9,12 @@ import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-ma
 import type { ReportWorkspace, WorkspaceReportLink } from 'data/highlighted-workspaces/reports'
 import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
-import { t } from 'features/i18n/i18n'
+import i18n, { t } from 'features/i18n/i18n'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
-import { selectLanguage } from 'features/user/selectors/user.selectors'
 import { USER } from 'router/routes'
 import { selectLocationCategory, selectLocationType } from 'router/routes.selectors'
 
@@ -46,7 +45,7 @@ export type HighlightedWorkspaces = {
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectLanguage],
+  [() => i18n.language],
   (locale): HighlightedWorkspaces[] => {
     const WORKSPACES_BY_CATEGORY: Record<
       HighlightedWorkspaceCategory,
