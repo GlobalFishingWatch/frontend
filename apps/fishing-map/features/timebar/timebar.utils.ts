@@ -12,8 +12,8 @@ import type {
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
 import {
+  accumulateFourwingsSublayerByFrame,
   accumulateSublayerValuesByFrame,
-  getFourwingsSublayerStartFrame,
 } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
@@ -259,7 +259,7 @@ export function getGraphDataFromFourwingsHeatmap(
     maxVisibleValue,
   }: GetGraphDataFromFourwingsFeaturesParams
 ): ActivityTimeseriesFrame[] {
-  if (!features?.length || !start || !end) {
+  if (!features?.length || start == null || end == null) {
     return []
   }
 
@@ -278,29 +278,31 @@ export function getGraphDataFromFourwingsHeatmap(
 
   if (areFourwingsFeatures) {
     ;(features as FourwingsFeature[]).forEach((feature) => {
-      const { values, velocities, tileStartFrame } = feature.properties
+      const { values, velocities } = feature.properties
+      const hasHeatmapValues = values?.some((sublayerValues) => sublayerValues?.length)
 
-      if (velocities?.length) {
-        accumulateSublayerValuesByFrame({
+      if (velocities?.length && !hasHeatmapValues) {
+        accumulateFourwingsSublayerByFrame({
           interval,
-          tileStartFrame,
-          startOffset: getFourwingsSublayerStartFrame(feature.properties, 0),
+          properties: feature.properties,
+          chunkBufferedStart: start,
           values: velocities,
           data,
           sublayerIndex: 0,
           minVisibleValue,
           maxVisibleValue,
         })
+        return
       }
 
       values?.forEach((sublayerValues, sublayerIndex) => {
         if (!sublayerValues?.length) {
           return
         }
-        accumulateSublayerValuesByFrame({
+        accumulateFourwingsSublayerByFrame({
           interval,
-          tileStartFrame,
-          startOffset: getFourwingsSublayerStartFrame(feature.properties, sublayerIndex),
+          properties: feature.properties,
+          chunkBufferedStart: start,
           values: sublayerValues,
           data,
           sublayerIndex,

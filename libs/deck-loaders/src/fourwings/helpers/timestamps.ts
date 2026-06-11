@@ -2,6 +2,7 @@ import type { FourwingsFeatureProperties, FourwingsInterval } from '../lib/types
 
 import { CONFIG_BY_INTERVAL } from './time'
 
+/** Absolute interval frame for a sublayer. Use as startOffset only when tileStartFrame is 0. */
 export function getFourwingsSublayerStartFrame(
   properties: Pick<FourwingsFeatureProperties, 'tileStartFrame' | 'startOffsets'>,
   sublayerIndex: number
@@ -72,9 +73,8 @@ export function accumulateSublayerValuesByFrame({
     if (value === undefined) {
       continue
     }
-    const sublayerDateData = data[
-      getFourwingsValueTimestamp(interval, tileStartFrame, startOffset, valueIndex)
-    ]
+    const sublayerDateData =
+      data[getFourwingsValueTimestamp(interval, tileStartFrame, startOffset, valueIndex)]
     if (
       sublayerDateData &&
       (!hasMinVisibleValue || value >= minVisibleValue!) &&
@@ -84,4 +84,43 @@ export function accumulateSublayerValuesByFrame({
       sublayerDateData.count![sublayerIndex]++
     }
   }
+}
+
+export function accumulateFourwingsSublayerByFrame({
+  interval,
+  properties,
+  chunkBufferedStart,
+  sublayerIndex,
+  values,
+  data,
+  minVisibleValue,
+  maxVisibleValue,
+}: {
+  interval: FourwingsInterval
+  properties: Pick<FourwingsFeatureProperties, 'tileStartFrame' | 'startOffsets'>
+  chunkBufferedStart: number
+  sublayerIndex: number
+  values: number[]
+  data: Record<number, FourwingsDateBucket>
+  minVisibleValue?: number
+  maxVisibleValue?: number
+}) {
+  const chunkTileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(chunkBufferedStart)
+
+  return accumulateSublayerValuesByFrame({
+    interval,
+    tileStartFrame: 0,
+    startOffset: getFourwingsSublayerStartFrame(
+      {
+        tileStartFrame: properties.tileStartFrame ?? chunkTileStartFrame,
+        startOffsets: properties.startOffsets,
+      },
+      sublayerIndex
+    ),
+    values,
+    data,
+    sublayerIndex,
+    minVisibleValue,
+    maxVisibleValue,
+  })
 }

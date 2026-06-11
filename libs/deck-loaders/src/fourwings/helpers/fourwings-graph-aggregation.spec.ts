@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
+import { CONFIG_BY_INTERVAL } from './time'
 import {
+  accumulateFourwingsSublayerByFrame,
   accumulateSublayerValuesByFrame,
   getFourwingsValueTimestamp,
 } from './timestamps'
@@ -50,6 +52,43 @@ describe('fourwings graph aggregation', () => {
 
     expect(data[0][0]).toBe(5)
     expect(data[3_600_000][0]).toBe(15)
+  })
+
+  it('falls back to chunkBufferedStart when tileStartFrame is missing on the feature', () => {
+    const bufferedStart = Date.UTC(2024, 5, 1)
+    const chunkTileStartFrame = CONFIG_BY_INTERVAL.DAY.getIntervalFrame(bufferedStart)
+    const timestamps = [0, 1].map((index) =>
+      CONFIG_BY_INTERVAL.DAY.getIntervalTimestamp(chunkTileStartFrame + index)
+    )
+    const data = createDateMap(timestamps)
+
+    accumulateFourwingsSublayerByFrame({
+      interval: 'DAY',
+      properties: { startOffsets: [0] },
+      chunkBufferedStart: bufferedStart,
+      values: [10, 20],
+      data,
+      sublayerIndex: 0,
+    })
+
+    expect(data[timestamps[0]][0]).toBe(10)
+    expect(data[timestamps[1]][0]).toBe(20)
+  })
+
+  it('aggregates with tileStartFrame and sublayer startOffset passed separately', () => {
+    const timestamp = getFourwingsValueTimestamp('HOUR', 2, 1, 0)
+    const data = createDateMap([timestamp])
+
+    accumulateSublayerValuesByFrame({
+      interval: 'HOUR',
+      tileStartFrame: 2,
+      startOffset: 1,
+      values: [42],
+      data,
+      sublayerIndex: 0,
+    })
+
+    expect(data[timestamp][0]).toBe(42)
   })
 
   it('matches legacy dates-based aggregation for the same cell values', () => {
