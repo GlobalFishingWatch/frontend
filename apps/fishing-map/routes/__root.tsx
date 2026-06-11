@@ -174,6 +174,8 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
+        <div id={ROOT_DOM_ELEMENT}>{children}</div>
+        <Scripts />
         {GOOGLE_TAG_MANAGER_ID && (
           <noscript
             dangerouslySetInnerHTML={{
@@ -184,8 +186,6 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
             }}
           />
         )}
-        <div id={ROOT_DOM_ELEMENT}>{children}</div>
-        <Scripts />
       </body>
     </html>
   )
