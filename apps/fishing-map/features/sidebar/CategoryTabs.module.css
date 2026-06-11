@@ -111,7 +111,6 @@
   width: 100%;
 }
 
-.linksToggle.open .links,
 .linksToggle:hover .links {
   display: flex;
 }

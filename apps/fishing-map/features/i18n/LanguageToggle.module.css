@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-.open {
+.languageToggle:hover .languages {
   display: flex;
 }
 

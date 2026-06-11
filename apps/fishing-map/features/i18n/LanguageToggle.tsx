@@ -13,7 +13,6 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import useClickedOutside from 'hooks/use-clicked-outside'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
@@ -49,9 +48,6 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const { i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
-  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
-
-  const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
 
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
@@ -59,39 +55,31 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
 
   const toggleLanguage = async (lang: Locale | 'source') => {
     if (lang === i18n.language) {
-      setIsLanguageMenuOpen(false)
-    } else {
-      trackEvent({
-        category: TrackCategory.I18n,
-        action: `Change language`,
-        label: lang,
-      })
-
-      setIsLanguageMenuOpen(false)
-      setIsLoading(true)
-      const locale = lang === 'source' ? Locale.en : (lang as Locale)
-      await dispatch(refreshDatasetsLocaleThunk(locale))
-      i18n.changeLanguage(lang)
-      if (basemapDataviewInstance?.id) {
-        upsertDataviewInstance({
-          id: basemapDataviewInstance.id as string,
-          config: {
-            locale,
-          },
-        })
-      }
-      setIsLoading(false)
+      return
     }
+    trackEvent({
+      category: TrackCategory.I18n,
+      action: `Change language`,
+      label: lang,
+    })
+
+    setIsLoading(true)
+    const locale = lang === 'source' ? Locale.en : (lang as Locale)
+    await dispatch(refreshDatasetsLocaleThunk(locale))
+    i18n.changeLanguage(lang)
+    if (basemapDataviewInstance?.id) {
+      upsertDataviewInstance({
+        id: basemapDataviewInstance.id as string,
+        config: {
+          locale,
+        },
+      })
+    }
+    setIsLoading(false)
   }
 
   return (
-    <div
-      className={cx(styles.languageToggle, className)}
-      ref={expandedContainerRef}
-      onMouseEnter={() => setIsLanguageMenuOpen(true)}
-      onMouseLeave={() => setIsLanguageMenuOpen(false)}
-      data-testid="language-toggle-container"
-    >
+    <div className={cx(styles.languageToggle, className)} data-testid="language-toggle-container">
       <div className={styles.languageBtn}>
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
@@ -99,17 +87,9 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           loading={isLoading}
           disabled={isLoading}
           testId="language-toggle-button"
-          aria-expanded={isLanguageMenuOpen}
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsLanguageMenuOpen(!isLanguageMenuOpen)
-          }}
         />
       </div>
-      <ul
-        className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}
-        data-testid="language-menu"
-      >
+      <ul className={cx(styles.languages, styles[position])} data-testid="language-menu">
         {IS_DEVELOPMENT_ENV && (
           <li>
             <button

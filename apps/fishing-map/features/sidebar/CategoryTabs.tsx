@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
@@ -65,10 +65,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const userData = useSelector(selectUserData)
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
-  const [isFeedbackMenuOpen, setIsFeedbackMenuOpen] = useState(false)
 
   const onFeedbackClick = useCallback(() => {
-    setIsFeedbackMenuOpen(false)
     if (userData) {
       dispatch(setModalOpen({ id: 'feedback', open: true }))
     }
@@ -233,18 +231,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <HelpHub />
         </li>
         <li className={cx(styles.tab, styles.secondary)}>
-          <div
-            className={cx(styles.linksToggle, { [styles.open]: isFeedbackMenuOpen })}
-            onMouseEnter={() => setIsFeedbackMenuOpen(true)}
-            onMouseLeave={() => setIsFeedbackMenuOpen(false)}
-          >
+          <div className={cx(styles.linksToggle)}>
             <div className={styles.linksBtn}>
-              <IconButton
-                icon="feedback"
-                testId="feedback-button"
-                aria-expanded={isFeedbackMenuOpen}
-                onClick={() => setIsFeedbackMenuOpen((open) => !open)}
-              />
+              <IconButton icon="feedback" testId="feedback-button" />
             </div>
             <ul className={styles.links} data-testid="feedback-menu">
               <li>
@@ -271,7 +260,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </ul>
           </div>
         </li>
-        <li className={styles.tab}>
+        <li className={cx(styles.tab, styles.secondary)}>
           <LanguageToggle />
         </li>
         <li className={cx(styles.tab, styles.user, { [styles.current]: isUserLocation })}>
