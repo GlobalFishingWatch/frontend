@@ -34,7 +34,7 @@ import {
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
-import i18n from 'features/i18n/i18n'
+import { selectI18nLocale } from 'features/i18n/i18n.selectors'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
@@ -105,7 +105,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectHighlightedTimeForTrackCorrection,
     selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
-    () => i18n.language,
+    selectI18nLocale,
   ],
   (
     dataviewInstances,
