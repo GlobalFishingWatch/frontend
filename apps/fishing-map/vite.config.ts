@@ -148,6 +148,18 @@ export default defineConfig(({ command, mode }) => {
                 }
 
                 if (
+                  id.includes('/node_modules/@deck.gl/') ||
+                  id.includes('/node_modules/@deck.gl-community/') ||
+                  id.includes('/node_modules/@luma.gl/') ||
+                  id.includes('/node_modules/@loaders.gl/') ||
+                  id.includes('/node_modules/@math.gl/') ||
+                  id.includes('/node_modules/@probe.gl/') ||
+                  id.includes('/node_modules/mjolnir.js/')
+                ) {
+                  return 'vendor-deck'
+                }
+
+                if (
                   id.includes('/node_modules/d3') ||
                   id.includes('/node_modules/@turf/') ||
                   id.includes('/node_modules/topojson') ||
