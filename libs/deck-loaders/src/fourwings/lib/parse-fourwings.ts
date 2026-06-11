@@ -1,6 +1,7 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PbfReader as Pbf } from 'pbf'
 
+import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
@@ -160,24 +161,6 @@ export const getCellTimeseries = (
   }
 }
 
-// Rough per-feature heap cost outside the values arrays: feature and
-// properties objects, coordinates array and fixed scalar props
-const FEATURE_BYTES_OVERHEAD = 250
-const BYTES_PER_VALUE = 8
-
-const estimateFeaturesByteLength = (features: FourwingsFeature[]) => {
-  let bytes = 0
-  for (const feature of features) {
-    bytes += FEATURE_BYTES_OVERHEAD
-    for (const values of feature.properties.values) {
-      if (values) {
-        bytes += values.length * BYTES_PER_VALUE
-      }
-    }
-  }
-  return bytes
-}
-
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
     return []
@@ -191,10 +174,5 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       })
       .features.values()
   )
-  // deck.gl Tileset2D reads content.byteLength for maxCacheByteSize cache
-  // accounting. Plain assignment keeps the property enumerable so it survives
-  // the structured clone back from the loader worker
-  ;(features as FourwingsFeature[] & { byteLength: number }).byteLength =
-    estimateFeaturesByteLength(features)
-  return features
+  return assignFourwingsFeaturesByteLength(features)
 }

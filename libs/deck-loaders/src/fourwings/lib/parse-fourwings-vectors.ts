@@ -1,6 +1,7 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
 import { PbfReader as Pbf } from 'pbf'
 
+import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import { CONFIG_BY_INTERVAL } from '../helpers/time'
@@ -102,16 +103,28 @@ function createTileBBox(tile: ParseFourwingsVectorsOptions['tile']): BBox {
   return [bbox.west, bbox.south, bbox.east, bbox.north]
 }
 
+type CreateVectorFeatureParams = {
+  cellNum: number
+  tileBBox: BBox
+  cols: number[]
+  rows: number[]
+  tile: ParseFourwingsVectorsOptions['tile']
+  subLayerIndex: number
+  tileStartFrame?: number
+  numTimeSteps?: number
+}
+
 // Create a new feature for a cell
-function createFeature(
-  cellNum: number,
-  tileBBox: BBox,
-  cols: number[],
-  rows: number[],
-  tile: ParseFourwingsVectorsOptions['tile'],
-  subLayerIndex: number,
-  numTimeSteps: number = 1
-): FourwingsFeature {
+function createFeature({
+  cellNum,
+  tileBBox,
+  cols,
+  rows,
+  tile,
+  subLayerIndex,
+  tileStartFrame,
+  numTimeSteps = 1,
+}: CreateVectorFeatureParams): FourwingsFeature {
   const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
   const sublayersLength = 2
 
@@ -128,7 +141,7 @@ function createFeature(
       // not needed for vectors, but required by types
       values: [],
       initialValues: {},
-      dates: numTimeSteps > 1 ? [new Array(numTimeSteps)] : [],
+      tileStartFrame,
       cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
       cellNum,
       startOffsets: new Array(sublayersLength),
@@ -165,7 +178,14 @@ export const getCellVectorValuesAggregated = (
 
     let feature = data.features.get(cellNum)
     if (!feature) {
-      feature = createFeature(cellNum, tileBBox, cols, rows, tile, subLayerIndex, 1)
+      feature = createFeature({
+        cellNum,
+        tileBBox,
+        cols,
+        rows,
+        tile,
+        subLayerIndex,
+      })
       data.features.set(cellNum, feature)
     }
 
@@ -194,7 +214,6 @@ export const getCellVectorValues = (
 
   const intervalConfig = CONFIG_BY_INTERVAL[interval]
   const tileStartFrame = intervalConfig.getIntervalFrame(bufferedStartDate)
-  const getIntervalTimestamp = intervalConfig.getIntervalTimestamp
   const tileBBox = createTileBBox(tile)
   const context = getVectorContext(options)
 
@@ -227,15 +246,25 @@ export const getCellVectorValues = (
         let feature = data.features.get(cellNum)
         if (!feature) {
           // add the feature if previous sublayers didn't contain data for it
-          feature = createFeature(cellNum, tileBBox, cols, rows, tile, subLayerIndex, numTimeSteps)
-          // Single dates array shared by both sublayers (U and V have same time steps)
-          feature.properties.dates = [new Array(numTimeSteps)]
+          feature = createFeature({
+            cellNum,
+            tileBBox,
+            cols,
+            rows,
+            tile,
+            subLayerIndex,
+            tileStartFrame,
+            numTimeSteps,
+          })
           data.features.set(cellNum, feature)
         } else {
           // Ensure velocities and directions arrays exist even if feature was created in previous sublayer
           if (!feature.properties.velocities || !feature.properties.directions) {
             feature.properties.velocities = new Array(numTimeSteps)
             feature.properties.directions = new Array(numTimeSteps)
+          }
+          if (feature.properties.tileStartFrame === undefined) {
+            feature.properties.tileStartFrame = tileStartFrame
           }
         }
 
@@ -252,10 +281,8 @@ export const getCellVectorValues = (
           const uValue = pbf.readVarint()
           const vValue = pbf.readVarint()
 
-          feature.properties.dates![0][timeStepIndex] = getIntervalTimestamp(
-            startFrame + tileStartFrame + timeStepIndex
-          )
-
+          // no dates array stored: the timestamp of each value is derived as
+          // getIntervalTimestamp(tileStartFrame + startOffsets[subLayerIndex] + index)
           const result = processVectorComponents(uValue, vValue, context)
           if (result) {
             feature.properties.velocities![timeStepIndex] = result.velocity
@@ -294,7 +321,5 @@ export const parseFourwingsVectors = (
     parseData
   ).features
 
-  const features = Array.from(featuresMap.values())
-
-  return features
+  return assignFourwingsFeaturesByteLength(Array.from(featuresMap.values()))
 }

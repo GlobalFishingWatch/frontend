@@ -19,12 +19,7 @@ import type {
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { IS_TEST_ENV } from '../../layers.config'
-import {
-  FOURWINGS_MAX_ZOOM,
-  FOURWINGS_TILE_SIZE,
-  HEATMAP_API_TILES_URL,
-  MAX_POSITIONS_PER_TILE_SUPPORTED,
-} from '../fourwings.config'
+import { FOURWINGS_MAX_ZOOM, FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
   FourwingsDeckSublayer,
   FourwingsHeatmapTilesCache,
@@ -32,6 +27,7 @@ import type {
   GetViewportDataParams,
 } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../fourwings.types'
+import { getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 import {
   aggregateCellTimeseries,
   getDataUrl,
@@ -318,32 +314,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getIsPositionsAvailable() {
-    const tilesData = this.getTilesData()
-    // plain loops instead of flat()/reduce to avoid allocating copies of every
-    // values array, bailing out as soon as the tile exceeds the limit
-    return !tilesData.some((tileData) => {
-      let tileSum = 0
-      for (const feature of tileData) {
-        const values = feature.properties?.values
-        if (!values?.length) {
-          continue
-        }
-        for (const sublayerValues of values) {
-          if (!sublayerValues) {
-            continue
-          }
-          for (let i = 0; i < sublayerValues.length; i++) {
-            if (sublayerValues[i]) {
-              tileSum += sublayerValues[i]
-            }
-          }
-        }
-        if (tileSum > MAX_POSITIONS_PER_TILE_SUPPORTED) {
-          return true
-        }
-      }
-      return false
-    })
+    return getAreTilePositionsAvailable(this.getTilesData())
   }
 
   getViewportData(params = {} as GetViewportDataParams) {
