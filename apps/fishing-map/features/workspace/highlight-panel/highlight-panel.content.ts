@@ -65,6 +65,8 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       title: 'Nueva fuente satelital revela la actividad humana con imágenes de embarcaciones',
       description:
         'Global Fishing Watch ha añadido una nueva capa de detección de embarcaciones basada en imágenes satelitales ópticas de Sentinel-2. Este conjunto de datos permite visualizar embarcaciones detectadas en condiciones de buen tiempo y durante el día, incluidas embarcaciones más pequeñas que a menudo no son detectadas por radar u otros sistemas de monitoreo. Cada detección incluye una miniatura de la imagen, lo que permite inspeccionar visualmente las embarcaciones directamente en la imagen satelital.',
+      learnMoreUrl:
+        'https://globalfishingwatch.org/es/articulo/un-avance-de-la-ia-en-el-monitoreo-de-los-oceanos-imagenes-satelitales-ofrecen-una-vision-sin-precedentes-de-la-actividad-maritima-global/',
     },
     fr: {
       title: 'Nouvelle source satellite révélant l’activité humaine grâce à l’imagerie des navires',
