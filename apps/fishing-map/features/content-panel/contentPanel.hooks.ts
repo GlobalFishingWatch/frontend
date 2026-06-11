@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useReplaceQueryParams } from 'router/routes.hook'
 
@@ -36,4 +36,12 @@ export function useSidePanel() {
   )
 
   return useMemo(() => ({ openSidePanel, closeSidePanel }), [openSidePanel, closeSidePanel])
+}
+
+export function useScrollToTopOnChange<T extends HTMLElement>(dependency: unknown) {
+  const ref = useRef<T>(null)
+  useEffect(() => {
+    ref.current?.scrollTo({ top: 0 })
+  }, [dependency])
+  return ref
 }

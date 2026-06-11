@@ -135,7 +135,7 @@ export default function ReportSummaryTags({
             />
           </ExpandedContainer>
         )}
-        {showFilters && showSchemaFilters && (
+        {showFilters && showSchemaFilters && !disabledFilters && (
           <ExpandedContainer
             onClickOutside={onToggleFiltersUIOpen}
             visible={filtersUIOpen}

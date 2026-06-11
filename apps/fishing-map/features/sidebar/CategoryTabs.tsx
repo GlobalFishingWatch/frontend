@@ -152,7 +152,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                       userTab: undefined,
                     }
                   : (prev: QueryParams) => ({
-                      ...prev,
+                      ...cleanReportQuery(prev),
+                      dataviewInstances: (prev.dataviewInstances || []).filter(
+                        (dataviewInstance) => dataviewInstance.origin !== 'report'
+                      ),
                       ...EMPTY_SEARCH_FILTERS,
                       userTab: undefined,
                     })

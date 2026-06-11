@@ -236,7 +236,10 @@ function SearchAdvancedFilters() {
             onSelect={onSourceSelect}
             onRemove={(_, rest) => {
               const notCompatibleSchemaFilters = getIncompatibleFilters(rest)
-              setSearchFilters({ ...notCompatibleSchemaFilters, sources: rest.map(({ id }) => id) })
+              setSearchFilters({
+                ...notCompatibleSchemaFilters,
+                sources: rest.length ? rest.map(({ id }) => id) : undefined,
+              })
             }}
             onCleanClick={() => {
               const notCompatibleSchemaFilters = getIncompatibleFilters(sourceOptions)
@@ -289,7 +292,7 @@ function SearchAdvancedFilters() {
               })
             }}
             onRemove={(_, rest) => {
-              setSearchFilters({ [id]: rest })
+              setSearchFilters({ [id]: rest.length ? rest : undefined })
             }}
             onCleanClick={() => {
               setSearchFilters({ [id]: undefined })

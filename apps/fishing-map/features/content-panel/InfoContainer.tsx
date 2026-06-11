@@ -16,7 +16,7 @@ import { Choice, Select, Spinner } from '@globalfishingwatch/ui-components'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
-import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import { useScrollToTopOnChange, useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
@@ -32,6 +32,7 @@ const InfoContainer = () => {
   const { ready: i18nReady } = useTranslation()
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const { openSidePanel } = useSidePanel()
+  const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -117,7 +118,7 @@ const InfoContainer = () => {
           }
         />
       </div>
-      <div className={cx(styles.scrollContainer)}>
+      <div ref={scrollContainerRef} className={cx(styles.scrollContainer)}>
         {!isSingleTab && options.length > 0 && (
           <div className={styles.sourceSelector}>
             {options.length <= 2 ? (

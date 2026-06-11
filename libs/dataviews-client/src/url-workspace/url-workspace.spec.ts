@@ -317,6 +317,7 @@ describe('url-workspace', () => {
     test('should have correct configuration', () => {
       expect(URL_STRINGIFY_CONFIG).toEqual({
         strictNullHandling: true,
+        allowEmptyArrays: true,
       })
     })
   })
@@ -526,6 +527,28 @@ describe('url-workspace', () => {
       const parsed = parseWorkspace(stringified)
 
       expect(parsed).toEqual(complexWorkspace)
+    })
+
+    test('should round-trip empty arrays, also when normalized by URLSearchParams', () => {
+      const workspace = {
+        visibleEvents: [],
+        dataviewInstances: [
+          {
+            id: 'test',
+            config: {
+              filters: { flag: [] },
+            },
+          },
+        ],
+      }
+
+      const stringified = stringifyWorkspace(workspace)
+
+      expect(parseWorkspace(stringified)).toEqual(workspace)
+      // The app router normalizes the search string with URLSearchParams,
+      // which encodes brackets and appends '=' to valueless params
+      const normalized = new URLSearchParams(stringified).toString()
+      expect(parseWorkspace(normalized)).toEqual(workspace)
     })
   })
 })

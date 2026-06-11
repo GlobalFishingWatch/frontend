@@ -6,6 +6,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
+import { useScrollToTopOnChange } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
 import { Route } from 'routes/_app'
 import type { Locale } from 'types'
@@ -15,6 +16,7 @@ import styles from './ContentPanel.module.css'
 const DataTerminologyContent = () => {
   const { sidePanelId } = Route.useSearch()
   const { i18n, t } = useTranslation()
+  const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
 
   const { data, isLoading, isError } = useGetDataTerminologyContentQuery({
     id: sidePanelId as string,
@@ -38,7 +40,7 @@ const DataTerminologyContent = () => {
       <div className={cx(styles.header)}>
         <ContentHeader title={labelTranslation} />
       </div>
-      <div className={cx(styles.scrollContainer)}>
+      <div ref={scrollContainerRef} className={cx(styles.scrollContainer)}>
         <div className={cx(styles.content)}>
           <ContentMarkdown>{data.description}</ContentMarkdown>
         </div>

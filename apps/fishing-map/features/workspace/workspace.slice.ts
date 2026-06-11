@@ -49,7 +49,7 @@ import { RF_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { HOME, REPORT, SEARCH } from 'router/routes'
+import { REPORT, ROUTES_WITH_DEFAULT_WORKSPACE } from 'router/routes'
 import {
   selectLocationType,
   selectReportId,
@@ -190,7 +190,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           })
         }
         if (
-          (!workspace && (locationType === HOME || locationType === SEARCH)) ||
+          (!workspace && ROUTES_WITH_DEFAULT_WORKSPACE.includes(locationType)) ||
           workspaceId === DEFAULT_WORKSPACE_ID
         ) {
           workspace = await getDefaultWorkspace()
@@ -350,7 +350,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
       const migratedWorkspace = {
         ...workspace,
-        dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
+        dataviewInstances: workspace?.dataviewInstances?.map(parseLegacyDataviewInstanceConfig),
       }
 
       return {

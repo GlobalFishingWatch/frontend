@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
 import { useSetAtom } from 'jotai'
 
+import { isValidCoordinate } from '@globalfishingwatch/data-transforms'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useMapViewport } from 'features/map/map-viewport.hooks'
@@ -89,44 +90,46 @@ const MapAnnotations = (): React.ReactNode | null => {
     <div onPointerUp={(event) => event.preventDefault()}>
       <HtmlOverlay viewport={viewport} key="1">
         {/* eslint-disable-next-line react-hooks/refs */}
-        {mapAnnotations.map((annotation) => (
-          <HtmlOverlayItem
-            key={annotation.id}
-            style={{
-              pointerEvents: 'all',
-              transform: 'translate(-50%,-50%)',
-              maxWidth: '32rem',
-              textAlign: 'center',
-              fontWeight: 500,
-            }}
-            coordinates={
-              (selectedAnnotationRef?.current === annotation.id && (newCoords as number[])) || [
-                Number(annotation.lon),
-                Number(annotation.lat),
-              ]
-            }
-          >
-            <p
-              // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
-              role="button"
-              tabIndex={0}
-              onClick={(event) => {
-                setMapAnnotation(annotation)
+        {mapAnnotations.map((annotation) => {
+          const coordinates = (selectedAnnotationRef?.current === annotation.id &&
+            (newCoords as number[])) || [Number(annotation.lon), Number(annotation.lat)]
+          if (!coordinates.every(isValidCoordinate)) {
+            return null
+          }
+          return (
+            <HtmlOverlayItem
+              key={annotation.id}
+              style={{
+                pointerEvents: 'all',
+                transform: 'translate(-50%,-50%)',
+                maxWidth: '32rem',
+                textAlign: 'center',
+                fontWeight: 500,
               }}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              style={{ color: annotation.color }}
-              draggable={true}
-              onDragStart={(event) => handleDragStart({ event, annotation })}
-              onDrag={handleDrag}
-              onDragEnd={() => handleDragEnd(annotation)}
+              coordinates={coordinates}
             >
-              <Tooltip content={t((t) => t.map.annotationsHover)}>
-                <span>{annotation.label}</span>
-              </Tooltip>
-            </p>
-          </HtmlOverlayItem>
-        ))}
+              <p
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+                role="button"
+                tabIndex={0}
+                onClick={(event) => {
+                  setMapAnnotation(annotation)
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={{ color: annotation.color }}
+                draggable={true}
+                onDragStart={(event) => handleDragStart({ event, annotation })}
+                onDrag={handleDrag}
+                onDragEnd={() => handleDragEnd(annotation)}
+              >
+                <Tooltip content={t((t) => t.map.annotationsHover)}>
+                  <span>{annotation.label}</span>
+                </Tooltip>
+              </p>
+            </HtmlOverlayItem>
+          )
+        })}
       </HtmlOverlay>
     </div>
   )
