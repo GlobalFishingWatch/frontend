@@ -42,6 +42,11 @@ export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname'
 export const FOURWINGS_MAX_ZOOM = 12
 export const VECTORS_MAX_ZOOM = 12
 export const FOURWINGS_TILE_SIZE = 512
+// Caps tiles retained by deck.gl's tileset cache to avoid browser
+// out-of-memory crashes in long sessions. Tile count instead of
+// maxCacheByteSize because parsed fourwings data is a plain array
+// without the byteLength deck.gl needs for byte-based accounting
+export const FOURWINGS_MAX_CACHE_SIZE = 64
 export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12

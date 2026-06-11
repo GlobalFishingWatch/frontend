@@ -339,6 +339,9 @@ type FourwingsIntervalFrames = {
   startFrame: number
   endFrame: number
 }
+// Bounded to avoid unbounded growth in long sessions where timebar scrubbing
+// generates a new cache key per time range
+const INTERVAL_FRAMES_CACHE_MAX_SIZE = 1000
 const intervalFramesCache = new Map<string, FourwingsIntervalFrames>()
 
 export function getIntervalFrames({
@@ -370,6 +373,9 @@ export function getIntervalFrames({
   const endFrame = Math.ceil(intervalConfig.getIntervalFrame(endTime) - tileStartFrame)
 
   const result = { interval, tileStartFrame, startFrame, endFrame } as FourwingsIntervalFrames
+  if (intervalFramesCache.size >= INTERVAL_FRAMES_CACHE_MAX_SIZE) {
+    intervalFramesCache.delete(intervalFramesCache.keys().next().value as string)
+  }
   intervalFramesCache.set(cacheKey, result)
   return result
 }

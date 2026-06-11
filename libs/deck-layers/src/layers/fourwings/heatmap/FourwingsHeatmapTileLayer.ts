@@ -35,6 +35,7 @@ import {
 import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
+  FOURWINGS_MAX_CACHE_SIZE,
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
@@ -732,6 +733,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         minZoom: -1, // fixes global report when zoom is 0
         onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
+        // Bounds tiles retained in the tileset cache during long sessions
+        maxCacheSize: FOURWINGS_MAX_CACHE_SIZE,
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,
         maxRequests: this.props.maxRequests,
