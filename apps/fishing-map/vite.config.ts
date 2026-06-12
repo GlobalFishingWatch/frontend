@@ -108,8 +108,14 @@ export default defineConfig(({ command, mode }) => {
                 ) {
                   return 'icons-bundle'
                 }
-                if (id.includes('/node_modules/recharts/')) {
-                  return 'vendor-recharts'
+                if (
+                  id.includes('/node_modules/@reduxjs/') ||
+                  id.includes('/node_modules/redux/') ||
+                  id.includes('/node_modules/react-redux/') ||
+                  id.includes('/node_modules/immer/') ||
+                  id.includes('/node_modules/reselect/')
+                ) {
+                  return 'vendor-redux'
                 }
                 if (
                   id.includes('/node_modules/es-toolkit/compat/') ||
