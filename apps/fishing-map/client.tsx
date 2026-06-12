@@ -8,8 +8,10 @@ import '@fontsource/roboto/500.css'
 
 // A failed dynamic import usually means the deployed assets changed under us
 // (stale HTML referencing old hashed chunks) — reload to pick up the new build.
-window.addEventListener('vite:preloadError', (event) => {
-  event.preventDefault()
+// Do NOT call event.preventDefault(): Vite only rethrows the original error when
+// defaultPrevented is false. Suppressing it makes the import promise resolve with
+// undefined, causing "Cannot read properties of undefined (reading 'default')".
+window.addEventListener('vite:preloadError', () => {
   window.location.reload()
 })
 
