@@ -11,10 +11,8 @@ export function useUserLanguageUpdate() {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    if (i18n.isInitialized && i18n.language) {
-      dispatch(setUserLanguage(i18n.language as Locale))
-    }
-
+    // Initial language is dispatched on store creation in routes/_app.tsx —
+    // here we only track changes.
     const onLanguageChanged = (lng: Locale) => {
       if (getIsBrowser()) {
         document.documentElement.setAttribute('lang', lng)

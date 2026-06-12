@@ -24,6 +24,7 @@ import {
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
 import i18n from 'features/i18n/i18n'
+import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
@@ -31,8 +32,7 @@ import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
 
-type AppLocale = Locale | 'source' | 'val'
-function getAPILocale(locale: AppLocale) {
+function getAPILocale(locale: i18nSupportedLocale) {
   return locale === 'source' || locale === 'val' ? Locale.en.toUpperCase() : locale.toUpperCase()
 }
 
@@ -80,7 +80,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
-  { id: string; locale?: AppLocale; useApiCache?: boolean },
+  { id: string; locale?: i18nSupportedLocale; useApiCache?: boolean },
   {
     rejectValue: AsyncError
   }
@@ -194,7 +194,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
     fetchUserDatasetsMode?: FetchUserDatasetsMode
     forceRefresh?: boolean
     includeRelated?: boolean
-    locale?: AppLocale
+    locale?: i18nSupportedLocale
     useApiCache?: boolean
   },
   {

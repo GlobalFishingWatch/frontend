@@ -33,6 +33,10 @@ export default defineConfig(({ command, mode }) => {
     root: __dirname,
     base: basePath,
     devtools: command === 'serve',
+    define: {
+      // Stable per deploy (evaluated at build time) — used to cache-bust locale JSON requests
+      __BUILD_ID__: JSON.stringify(env.COMMIT_SHA || Date.now().toString()),
+    },
     resolve: {
       tsconfigPaths: true,
     },
@@ -50,6 +54,16 @@ export default defineConfig(({ command, mode }) => {
           compressPublicAssets: {
             gzip: true,
             brotli: true,
+          },
+          routeRules: {
+            // Locale JSON is requested with a per-deploy ?v=__BUILD_ID__ param, so it can be
+            // cached aggressively. Both keys cover nitro matching with/without baseURL prefix.
+            '/locales/**': {
+              headers: { 'cache-control': 'public, max-age=31536000, immutable' },
+            },
+            [`${basePath}/locales/**`]: {
+              headers: { 'cache-control': 'public, max-age=31536000, immutable' },
+            },
           },
           rollupConfig: {
             // Only Node.js built-ins — npm packages cannot be external because the

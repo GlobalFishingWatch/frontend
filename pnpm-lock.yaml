@@ -256,9 +256,6 @@ importers:
       i18next-browser-languagedetector:
         specifier: 8.2.1
         version: 8.2.1
-      i18next-fs-backend:
-        specifier: ^2.6.6
-        version: 2.6.6
       i18next-http-backend:
         specifier: 4.0.0
         version: 4.0.0
@@ -10704,9 +10701,6 @@ packages:
     resolution: {integrity: sha512-PN7GgLfYfUlpUdolCGfQQu1kj5kDrQeLzmYVuQegInWs8bcUtZ0yJ1IVGnIiIvNo5pDWKZoqjZL2PVPp4YPGtQ==}
     engines: {node: '>=22'}
     hasBin: true
-
-  i18next-fs-backend@2.6.6:
-    resolution: {integrity: sha512-mYGu6Nt8RIp3X/U8Y+Gej1wo5xmYWmGKLqBGMCC2OCAou5rW5epeHgHmVcw20mJs9Z9+DAPHIxQPNCgFyPRMeg==}
 
   i18next-http-backend@4.0.0:
     resolution: {integrity: sha512-EgSjO3Q1G6f2Q5oy7u9mmxuesE0oSfzAD97NFBjC8EmkK4guBSYLljM0Fng3DarMWIIkU70jfo4+mUzmyVISTA==}
@@ -28589,8 +28583,6 @@ snapshots:
       - react-dom
       - react-native
       - typescript
-
-  i18next-fs-backend@2.6.6: {}
 
   i18next-http-backend@4.0.0: {}
 

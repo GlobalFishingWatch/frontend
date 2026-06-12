@@ -23,3 +23,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+
+/** Build-time constant injected via Vite `define` — stable per deploy, used for cache busting */
+declare const __BUILD_ID__: string

@@ -1,29 +1,52 @@
-import { initReactI18next } from 'react-i18next'
-import i18next from 'i18next'
-import Backend from 'i18next-fs-backend'
+import { readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { Locale } from 'types'
+import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
+import { FALLBACK_LNG, SUPPORTED_LANGUAGES } from 'features/i18n/i18n.config'
 import { readRequestCookieString } from 'utils/cookies'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const SUPPORTED_LANGUAGES = [
-  Locale.en,
-  Locale.es,
-  Locale.fr,
-  // Locale.id,
-  Locale.pt,
-  'val',
-  ...(import.meta.env.DEV ? (['source'] as const) : []),
-]
-
-const DEFAULT_NAMESPACE = 'translations'
-const FALLBACK_LNG = import.meta.env.DEV ? 'source' : Locale.en
-
 const NAMESPACES = ['translations', 'workspaces'] as const
+
+const LOCALES_DIR = join(__dirname, '..', '..', 'public', 'locales')
+
+// Translations are static per deploy — parse each language/namespace file once per process
+// instead of re-reading from disk on every SSR request.
+const resourceCache = new Map<string, Promise<Record<string, unknown> | undefined>>()
+
+function loadNamespace(lng: string, ns: string): Promise<Record<string, unknown> | undefined> {
+  const cacheKey = `${lng}/${ns}`
+  let cached = resourceCache.get(cacheKey)
+  if (!cached) {
+    cached = readFile(join(LOCALES_DIR, lng, `${ns}.json`), 'utf-8')
+      .then((raw) => JSON.parse(raw) as Record<string, unknown>)
+      .catch(() => {
+        // Don't cache failures permanently — allow retry on next request
+        resourceCache.delete(cacheKey)
+        return undefined
+      })
+    resourceCache.set(cacheKey, cached)
+  }
+  return cached
+}
+
+/** Parses the Accept-Language header honoring q-values, returns languages in preference order */
+function parseAcceptLanguage(header: string): i18nSupportedLocale[] {
+  return header
+    .split(',')
+    .map((entry) => {
+      const [tag, ...params] = entry.trim().split(';')
+      const qParam = params.find((p) => p.trim().startsWith('q='))
+      const q = qParam ? Number.parseFloat(qParam.trim().slice(2)) : 1
+      return { language: tag?.split('-')[0]?.toLowerCase() ?? '', q: Number.isNaN(q) ? 0 : q }
+    })
+    .filter(({ language }) => language)
+    .sort((a, b) => b.q - a.q)
+    .map(({ language }) => language as i18nSupportedLocale)
+}
 
 function detectLanguageFromRequest(request: Request): string {
   const cookieHeader = request.headers.get('cookie')
@@ -35,8 +58,10 @@ function detectLanguageFromRequest(request: Request): string {
   }
   const acceptLanguage = request.headers.get('accept-language')
   if (acceptLanguage) {
-    const preferred = acceptLanguage.split(',')[0]?.split('-')[0]?.toLowerCase()
-    if (preferred && SUPPORTED_LANGUAGES.includes(preferred)) {
+    const preferred = parseAcceptLanguage(acceptLanguage).find((lng) =>
+      SUPPORTED_LANGUAGES.includes(lng)
+    )
+    if (preferred) {
       return preferred
     }
   }
@@ -48,60 +73,25 @@ export type I18nServerState = {
   initialLanguage: string
 }
 
-export async function createServerI18n(request: Request): Promise<{
-  i18n: typeof i18next
-  state: I18nServerState
-}> {
+/**
+ * Builds the i18n state embedded in the SSR payload: only the detected language's namespaces.
+ * The client lazy-fetches the fallback language (and other namespaces) over HTTP when needed,
+ * where they're cached by the browser across reloads.
+ */
+export async function getI18nServerState(request: Request): Promise<I18nServerState> {
   const language = detectLanguageFromRequest(request)
 
-  const localesPath = join(__dirname, '..', '..', 'public', 'locales', '{{lng}}', '{{ns}}.json')
+  const resources = await Promise.all(NAMESPACES.map((ns) => loadNamespace(language, ns)))
 
-  const i18n = i18next.createInstance()
-
-  await i18n
-    .use(Backend)
-    .use(initReactI18next)
-    .init({
-      lng: language,
-      fallbackLng: FALLBACK_LNG,
-      supportedLngs: SUPPORTED_LANGUAGES,
-      ns: NAMESPACES,
-      defaultNS: DEFAULT_NAMESPACE,
-      backend: {
-        loadPath: localesPath,
-      },
-      initAsync: true,
-      interpolation: {
-        escapeValue: false,
-      },
-      react: {
-        useSuspense: false,
-      },
-    })
-
-  // Preload all namespaces so initialI18nStore contains translations used during SSR
-  await i18n.loadNamespaces(NAMESPACES)
-
-  // If we only embed the primary language, the client still has fallbackLng (dev: source,
-  // prod: en) and i18next-http-backend will fetch that locale — duplicating data already
-  // implied by SSR. Load and embed the fallback language too when it differs.
-  if (FALLBACK_LNG !== language) {
-    await i18n.loadLanguages([FALLBACK_LNG])
-  }
-
-  const initialI18nStore: Record<string, Record<string, Record<string, unknown>>> = {}
-  for (const lng of new Set([language, FALLBACK_LNG])) {
-    const data = i18n.services.resourceStore.data[lng]
-    if (data) {
-      initialI18nStore[lng] = data as Record<string, Record<string, unknown>>
+  const namespaces: Record<string, Record<string, unknown>> = {}
+  NAMESPACES.forEach((ns, index) => {
+    if (resources[index]) {
+      namespaces[ns] = resources[index]
     }
-  }
+  })
 
   return {
-    i18n,
-    state: {
-      initialI18nStore,
-      initialLanguage: i18n.language,
-    },
+    initialI18nStore: { [language]: namespaces },
+    initialLanguage: language,
   }
 }

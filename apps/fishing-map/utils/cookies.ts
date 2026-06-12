@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
 import { getIsBrowser } from 'utils/dom'
 
 export function readDocumentCookieString(key: string): string | null {
@@ -9,9 +10,12 @@ export function readDocumentCookieString(key: string): string | null {
   return match?.[1] ?? null
 }
 
-export function readRequestCookieString(cookieHeader: string, key: string): string | null {
+export function readRequestCookieString(
+  cookieHeader: string,
+  key: string
+): i18nSupportedLocale | null {
   const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))
-  return match?.[1] ? decodeURIComponent(match[1]) : null
+  return match?.[1] ? (decodeURIComponent(match[1]) as i18nSupportedLocale) : null
 }
 
 export function readDocumentCookieNumber(key: string): number | null {
