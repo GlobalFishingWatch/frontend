@@ -125,7 +125,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (!this.state) {
       return ''
     }
-    return `${this._getTileDataCacheKey()}|${this.state.rampDirty}|${this.state.viewportLoaded}`
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${this.state.rampDirty}|${this.state.viewportLoaded}`
   }
 
   get debounceTime(): number {
