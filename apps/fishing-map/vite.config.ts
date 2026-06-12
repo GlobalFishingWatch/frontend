@@ -123,6 +123,9 @@ export default defineConfig(({ command, mode }) => {
                 ) {
                   return 'vendor-es-toolkit'
                 }
+                if (id.includes('/node_modules/jsts/')) {
+                  return 'vendor-jsts'
+                }
               },
             },
           },

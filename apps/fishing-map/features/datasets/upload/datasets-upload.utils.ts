@@ -223,7 +223,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
 ): FeatureCollection<T, GeoJsonProperties> => {
   return {
     ...geojson,
-    features: geojson.features.map((feature) => {
+    features: (geojson.features ?? []).map((feature) => {
       const cleanedProperties = cleanProperties(feature.properties, datasetMetadata.filters)
       const propertiesToDateMillis = (
         ['timestamp', 'startTime', 'endTime'] as DatasetConfigurationProperty[]
