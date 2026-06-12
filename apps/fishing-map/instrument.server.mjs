@@ -5,13 +5,5 @@ Sentry.init({
   enabled: globalThis.process?.env.NODE_ENV === 'production',
   sendDefaultPii: true,
   tracesSampleRate: 1.0,
-  integrations: [
-    Sentry.replayIntegration({
-      maskAllText: false,
-      blockAllMedia: false,
-    }),
-  ],
   enableLogs: true,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
 })
