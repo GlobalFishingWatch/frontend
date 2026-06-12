@@ -5,6 +5,7 @@ import { MAIN_DOM_ID } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import type { RootState } from 'reducers'
+import { getIsBrowser } from 'utils/dom'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
@@ -28,7 +29,7 @@ interface ScreenshotState {
 }
 
 const getInitialState = (): ScreenshotState => {
-  if (typeof window === 'undefined') return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
+  if (!getIsBrowser()) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
 
   const storedValue = localStorage.getItem(SCREENSHOT_AREA_KEY_ID)
   if (!storedValue) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
@@ -47,7 +48,7 @@ const screenshotSlice = createSlice({
   reducers: {
     setScreenshotAreaId: (state, action: PayloadAction<ScrenshotDOMArea>) => {
       state.screenshotAreaId = action.payload
-      if (typeof window !== 'undefined') {
+      if (getIsBrowser()) {
         localStorage.setItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
       }
     },

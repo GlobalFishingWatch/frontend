@@ -27,6 +27,7 @@ import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-m
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 import { formatInfoField } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
@@ -91,9 +92,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
           <Trans i18nKey={(t) => t.dataset.uploadVesselGroups}>
             <a
               className={styles.link}
-              href={GFWAPI.getRegisterUrl(
-                typeof window !== 'undefined' ? window.location.toString() : ''
-              )}
+              href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
             >
               Register
             </a>

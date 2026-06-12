@@ -6,6 +6,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { getIsBrowser } from 'utils/dom'
 
 import { useAppDispatch } from './app.hooks'
 
@@ -68,7 +69,7 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
               </li>
             )}
 
-            {typeof document !== 'undefined' && (
+            {getIsBrowser() && (
               <li>
                 <label>Url:</label> {document.URL}
               </li>

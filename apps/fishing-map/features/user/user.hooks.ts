@@ -22,6 +22,7 @@ import {
   selectVesselId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import { getIsBrowser } from 'utils/dom'
 
 const SUCCESS_LOGIN_MESSAGE = 'LOGIN_SUCCESS'
 
@@ -29,7 +30,7 @@ export function usePopupLogin() {
   const dispatch = useAppDispatch()
 
   return (e?: React.MouseEvent) => {
-    if (typeof window === 'undefined') {
+    if (!getIsBrowser()) {
       return
     }
     e?.preventDefault()

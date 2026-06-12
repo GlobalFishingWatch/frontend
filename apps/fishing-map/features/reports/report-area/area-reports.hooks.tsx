@@ -78,6 +78,7 @@ import {
 import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 
 import styles from './title/ReportTitle.module.css'
 
@@ -119,12 +120,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth:
-        typeof window !== 'undefined'
-          ? screenshotMode
-            ? window.innerWidth
-            : window.innerWidth / 2
-          : 800,
+      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : window.innerWidth / 2) : 800,
       ...params,
     })
     return {

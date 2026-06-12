@@ -9,6 +9,7 @@ import {
 import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
 import type { RootState } from 'reducers'
 import { selectIsWorkspaceLocation } from 'router/routes.selectors'
+import { getIsBrowser } from 'utils/dom'
 import { getFileType } from 'utils/files'
 
 export function useDatasetDrag() {
@@ -81,7 +82,7 @@ export function useDatasetDrag() {
     const eventsConfig: { event: keyof WindowEventMap; callback: any }[] = [
       { event: 'dragenter', callback: onDragEnter },
     ]
-    if (typeof window !== 'undefined' && isWorkspaceLocation && !datasetModalOpen) {
+    if (getIsBrowser() && isWorkspaceLocation && !datasetModalOpen) {
       eventsConfig.forEach(({ event, callback }) => {
         window.addEventListener(event, callback)
       })
@@ -101,7 +102,7 @@ export function useDatasetDrag() {
       { event: 'drop', callback: onDrop },
       { event: 'dragleave', callback: onDragLeave },
     ]
-    if (typeof window !== 'undefined' && isDragging) {
+    if (getIsBrowser() && isDragging) {
       eventsConfig.forEach(({ event, callback }) => {
         window.addEventListener(event, callback)
       })

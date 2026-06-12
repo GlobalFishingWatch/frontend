@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import { HINTS } from 'data/config'
 import type { RootState } from 'reducers'
+import { getIsBrowser } from 'utils/dom'
 
 import type { HintId } from './hints.content'
 
@@ -25,18 +26,17 @@ const hintsSlice = createSlice({
     },
     resetHints: (state) => {
       state.hintsDismissed = undefined
-      if (typeof window !== 'undefined') {
+      if (getIsBrowser()) {
         localStorage.setItem(HINTS, '{}')
       }
     },
     setHintDismissed: (state, action: PayloadAction<HintId>) => {
-      const currentHintsDismissed =
-        typeof window === 'undefined'
-          ? state.hintsDismissed || {}
-          : JSON.parse(localStorage.getItem(HINTS) || '{}')
+      const currentHintsDismissed = !getIsBrowser()
+        ? state.hintsDismissed || {}
+        : JSON.parse(localStorage.getItem(HINTS) || '{}')
       const allHintsDismissed = { ...currentHintsDismissed, ...{ [action.payload]: true } }
       state.hintsDismissed = allHintsDismissed
-      if (typeof window !== 'undefined') {
+      if (getIsBrowser()) {
         localStorage.setItem(HINTS, JSON.stringify(allHintsDismissed))
       }
     },

@@ -3,6 +3,7 @@ import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
+import { getIsBrowser } from 'utils/dom'
 
 import { TEST_END_DATE } from './config'
 
@@ -63,7 +64,7 @@ beforeAll(async () => {
   vi.spyOn(window, 'confirm').mockReturnValue(false)
 
   // Setup localstorage modal shown flag to prevent it from appearing in tests
-  if (typeof window !== 'undefined') {
+  if (getIsBrowser()) {
     localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')

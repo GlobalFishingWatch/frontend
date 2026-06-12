@@ -9,13 +9,14 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import { overlaysCursorAtom } from 'features/map/overlays/overlays-hooks'
+import { getIsBrowser } from 'utils/dom'
 
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import type { MapAnnotation } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
 let blankImage: HTMLImageElement | undefined
-if (typeof window !== 'undefined') {
+if (getIsBrowser()) {
   blankImage = new Image()
   blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
 }

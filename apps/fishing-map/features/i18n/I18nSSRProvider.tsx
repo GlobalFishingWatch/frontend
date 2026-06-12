@@ -3,11 +3,12 @@ import { I18nextProvider, initReactI18next } from 'react-i18next'
 import i18next from 'i18next'
 
 import globalI18n, { DEFAULT_NAMESPACE } from 'features/i18n/i18n'
+import { getIsBrowser } from 'utils/dom'
 
 import type { I18nServerState } from './i18n.server'
 
 // Constant — never changes between server and client within one environment.
-const isServer = typeof window === 'undefined'
+const isServer = !getIsBrowser()
 
 function createI18nFromState(state: I18nServerState) {
   const i18nInstance = i18next.createInstance()

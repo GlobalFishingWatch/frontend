@@ -42,6 +42,7 @@ import {
   selectLocationType,
 } from 'router/routes.selectors'
 import { usePersistedCookieNumber } from 'utils/cookies'
+import { getIsBrowser } from 'utils/dom'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
@@ -127,7 +128,7 @@ function App() {
     !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
 
   const isPopup = useSearch({ strict: false, select: (s) => s?.isPopup })
-  if ((typeof window !== 'undefined' && window.opener) || isPopup) {
+  if ((getIsBrowser() && window.opener) || isPopup) {
     return null
   }
 

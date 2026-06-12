@@ -42,6 +42,7 @@ import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import { getIsBrowser } from 'utils/dom'
 
 import { getModalParent } from './modals.utils'
 
@@ -63,7 +64,7 @@ const DebugMenuConfig = {
   key: 'd',
   dispatchToggle: toggleDebugMenu,
   selectMenuActive: selectDebugActive,
-  guestEnabled: typeof window !== 'undefined' && window.location.hostname === 'localhost',
+  guestEnabled: getIsBrowser() && window.location.hostname === 'localhost',
 }
 
 const EditorMenuConfig = {
