@@ -221,6 +221,26 @@ export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSe
 
 export type WorkspaceFetchParams = { workspaceId: string; reportId?: string }
 
+function getDefaultWorkspaceFetchParams(
+  currentWorkspaceId: string | undefined,
+  workspaceStatus: AsyncReducerStatus
+): WorkspaceFetchParams | null {
+  const hasDefaultWorkspace =
+    currentWorkspaceId === DEFAULT_WORKSPACE_ID && workspaceStatus === AsyncReducerStatus.Finished
+  return hasDefaultWorkspace ? null : { workspaceId: DEFAULT_WORKSPACE_ID }
+}
+
+export function getReportWorkspaceFetchNeeded(
+  currentReportId: string | null | undefined,
+  reportId: string | undefined,
+  workspaceStatus: AsyncReducerStatus
+) {
+  if (!reportId) {
+    return false
+  }
+  return currentReportId !== reportId || workspaceStatus !== AsyncReducerStatus.Finished
+}
+
 export const selectWorkspaceFetchParams = createSelector(
   [
     selectLocationType,
@@ -239,14 +259,10 @@ export const selectWorkspaceFetchParams = createSelector(
     reportId
   ): WorkspaceFetchParams | null => {
     if (ROUTES_WITH_DEFAULT_WORKSPACE.includes(locationType)) {
-      const hasDefaultWorkspace =
-        currentWorkspaceId === DEFAULT_WORKSPACE_ID &&
-        workspaceStatus === AsyncReducerStatus.Finished
-      return hasDefaultWorkspace ? null : { workspaceId: '' }
+      return getDefaultWorkspaceFetchParams(currentWorkspaceId, workspaceStatus)
     }
 
     switch (locationType) {
-
       // Routes under /$category/$workspaceId/* — fetch the workspace named in the URL
       case WORKSPACE:
       case WORKSPACE_SEARCH:
@@ -254,14 +270,15 @@ export const selectWorkspaceFetchParams = createSelector(
       case WORKSPACE_REPORT:
       case VESSEL_GROUP_REPORT:
       case PORT_REPORT: {
-        return urlWorkspaceId && currentWorkspaceId !== urlWorkspaceId
-          ? { workspaceId: urlWorkspaceId }
-          : null
+        if (!urlWorkspaceId || urlWorkspaceId === DEFAULT_WORKSPACE_ID) {
+          return getDefaultWorkspaceFetchParams(currentWorkspaceId, workspaceStatus)
+        }
+        return currentWorkspaceId !== urlWorkspaceId ? { workspaceId: urlWorkspaceId } : null
       }
 
       // Standalone report (/report/$reportId) — workspace comes from the report
       case REPORT: {
-        return currentReportId !== reportId
+        return getReportWorkspaceFetchNeeded(currentReportId, reportId, workspaceStatus)
           ? { workspaceId: urlWorkspaceId || '', reportId: reportId as string }
           : null
       }

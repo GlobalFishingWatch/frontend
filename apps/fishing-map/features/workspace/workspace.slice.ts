@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { castDraft } from 'immer'
 
@@ -63,6 +63,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
+  getReportWorkspaceFetchNeeded,
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
   selectWorkspace,
@@ -161,25 +162,30 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           const action = dispatch(fetchReportsThunk([reportId as string]))
           const resolvedAction = await action
           if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
-            workspace = resolvedAction.payload?.[0]?.workspace as Workspace
-            workspaceReportId = resolvedAction.payload?.[0]?.id
+            const report = resolvedAction.payload?.[0]
+            workspace = report?.workspace as Workspace
+            workspaceReportId = report?.id ?? reportId
+            if (!report) {
+              return rejectWithValue({
+                error: { status: 404, message: 'Report not found' },
+              })
+            }
             if (!workspace) {
               return rejectWithValue({
-                error: {
-                  status: 404,
-                  message: 'Report workspace not found',
-                },
+                error: { status: 404, message: 'Report workspace not found' },
               })
+            }
+            if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+              return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
             }
           } else {
             if (resolvedAction.payload?.status === 401) {
               return rejectWithValue({ error: { status: 401, message: 'Private report' } })
             }
-            if (!isRejected(resolvedAction)) {
-              throw new Error('Error fetching report')
-            }
+            return rejectWithValue({
+              error: resolvedAction.payload || { status: 500, message: 'Error fetching report' },
+            })
           }
-          // TODO fetch report and use the workspace within it
         } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
           workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
             signal,
@@ -374,15 +380,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         return workspaceRefreshStatus !== AsyncReducerStatus.Loading
       }
       const workspaceStatus = selectWorkspaceStatus(rootState)
-      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
       if (reportId) {
-        return selectWorkspaceReportId(rootState) !== reportId && !isLoading
+        const currentReportId = selectWorkspaceReportId(rootState)
+        return getReportWorkspaceFetchNeeded(currentReportId, reportId, workspaceStatus)
       }
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
-        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
       }
-      // Fetched already in progress, don't need to re-fetch
+
+      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
       return !isLoading
     },
   }
@@ -576,6 +583,7 @@ const workspaceSlice = createSlice({
       const { isRefresh } = action.meta.arg
       state.status = isRefresh ? state.status : AsyncReducerStatus.Loading
       state.refreshStatus = isRefresh ? AsyncReducerStatus.Loading : state.refreshStatus
+      state.error = initialState.error
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       const { isRefresh } = action.meta.arg
