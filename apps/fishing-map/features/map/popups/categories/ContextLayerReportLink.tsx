@@ -134,7 +134,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
           className={styles.workspaceLink}
           to="/$category/$workspaceId/report/$datasetId/$areaId"
           params={addReportLinkParams}
-          search={reportLinkSearch}
+          search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
           onClick={onReportClick}
           data-testid="add-area-to-report-link"
         >
@@ -151,7 +151,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
           className={styles.workspaceLink}
           to="/$category/$workspaceId/report/$datasetId/$areaId"
           params={removeReportLinkParams}
-          search={reportLinkSearch}
+          search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
           onClick={onReportClick}
           data-testid="remove-area-from-report-link"
         >
