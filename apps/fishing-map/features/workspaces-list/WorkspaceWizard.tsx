@@ -17,7 +17,11 @@ import {
 } from 'data/highlighted-workspaces/marine-manager.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
   WorkspaceCategory,
 } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -35,6 +39,13 @@ import { getEventLabel } from 'utils/analytics'
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
+
+const AREA_TYPE_DATAVIEW_SLUG: Record<string, string> = {
+  eez: EEZ_DATAVIEW_SLUG,
+  mpa: MPA_DATAVIEW_SLUG,
+  fao: FAO_AREAS_DATAVIEW_SLUG,
+  rfmo: RFMO_DATAVIEW_SLUG,
+}
 
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
@@ -171,9 +182,10 @@ function WorkspaceWizard() {
     if (!selectedItem) {
       return null
     }
-    const dataview = dataviews.find((d) =>
-      (d.slug as string).includes(selectedItem?.properties?.type)
-    )
+    const dataviewSlug = AREA_TYPE_DATAVIEW_SLUG[selectedItem?.properties?.type]
+    const dataview = dataviewSlug
+      ? dataviews.find((d) => (d.slug as string) === dataviewSlug)
+      : undefined
 
     if (!dataview) {
       return null

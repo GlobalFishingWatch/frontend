@@ -110,20 +110,17 @@ export const useEnsureWorkspaceLoad = () => {
   const userLogged = useSelector(selectIsUserLogged)
   const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null
 
+  const shouldFetchWorkspace =
+    userLogged &&
+    workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+    !!workspaceFetchParams
+
   useEffect(() => {
-    if (
-      !userLogged ||
-      workspaceCustomStatus === AsyncReducerStatus.Loading ||
-      !workspaceFetchParams
-    ) {
-      return
-    }
-    const action = fetchWorkspace(workspaceFetchParams)
-    return () => {
-      action?.abort?.()
+    if (shouldFetchWorkspace) {
+      fetchWorkspace(workspaceFetchParams)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, workspaceCustomStatus, fetchParamsKey])
+  }, [shouldFetchWorkspace, fetchParamsKey])
 }
 
 const createDataviewsInstances = (

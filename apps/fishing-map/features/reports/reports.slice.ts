@@ -163,7 +163,7 @@ export function selectAllReports(state: ReportsSliceState) {
   return selectAll(state)
 }
 
-export const selectReportById = memoize((id: number) =>
+export const selectReportById = memoize((id: number | string) =>
   createSelector([(state: ReportsSliceState) => state], (state) => selectById(state, id as any))
 )
 

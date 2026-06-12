@@ -404,15 +404,18 @@ export const selectReportArea = createSelector(
 )
 
 export const selectReportAreaStatus = createSelector(
-  [selectReportArea, selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
-  (area, areaApiStatus, isVesselGroupReportLocation) => {
-    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID || isVesselGroupReportLocation) {
+  [selectReportAreaId, selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
+  (reportAreaId, areaApiStatus, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return AsyncReducerStatus.Finished
+    }
+    if (!reportAreaId || reportAreaId === ENTIRE_WORLD_REPORT_AREA_ID) {
       return AsyncReducerStatus.Finished
     }
     return areaApiStatus
   }
 )
 
-export const selectIsGlobalReport = createSelector([selectReportArea], (reportArea) => {
-  return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+export const selectIsGlobalReport = createSelector([selectReportAreaId], (reportAreaId) => {
+  return !reportAreaId || reportAreaId === ENTIRE_WORLD_REPORT_AREA_ID
 })

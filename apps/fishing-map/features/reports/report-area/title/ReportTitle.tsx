@@ -37,6 +37,7 @@ import {
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
@@ -69,6 +70,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
   const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
+  const isClientHydrated = useIsClientHydrated()
 
   const handleBufferUnitChange = useCallback(
     (option: ChoiceOption<BufferUnit>) => {
@@ -232,7 +234,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             [styles.actionsContainerColumn]: isSticky || hasLongTitle,
           })}
         >
-          <a className={styles.reportLink} href={getCurrentAppUrl()}>
+          <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
             {t((t) => t.analysis.linkToReport)}
           </a>
           {!isSticky && showAreaReportSearch && (
