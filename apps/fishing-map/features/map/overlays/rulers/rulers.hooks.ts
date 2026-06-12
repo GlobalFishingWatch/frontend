@@ -42,7 +42,7 @@ const useRulers = () => {
 
   const onRulerMapHover = useCallback(
     (info: PickingInfo) => {
-      if (isEditing && value) {
+      if (isEditing && value && info.coordinate) {
         const [longitude, latitude] = info.coordinate as number[]
         const end = {
           longitude,

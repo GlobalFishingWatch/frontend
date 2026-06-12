@@ -13,11 +13,13 @@ import styles from './Icon.module.css'
 
 type IconComponent = React.LazyExoticComponent<React.ComponentType<any>>
 
+const NullIcon = () => null
+
 const IconComponents = icons.reduce<Record<IconType, IconComponent>>((acc, icon) => {
   acc[icon] = lazy(async () => {
     const svgModule: any = await import(`./icons/${icon}.svg`)
     return {
-      default: svgModule.ReactComponent || svgModule.default || svgModule,
+      default: svgModule?.ReactComponent || svgModule?.default || svgModule || NullIcon,
     }
   })
   return acc

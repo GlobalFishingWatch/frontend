@@ -5,6 +5,7 @@ import Backend from 'i18next-http-backend'
 
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import { WORKSPACE_ENV } from 'data/workspaces'
+import { getDehydratedRootI18nState } from 'features/i18n/i18n.dehydrated-state'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { Locale } from 'types'
 
@@ -38,12 +39,7 @@ if (IS_DEVELOPMENT_ENV && !IS_TEST_ENV) {
 }
 
 // Read TanStack Router's dehydrated root-loader data before React hydrates.
-// $_TSR.router.matches holds each route's loader result (l); the root match id starts with '__root__'.
-const ssrState: I18nServerState | undefined =
-  typeof window !== 'undefined'
-    ? (window as any)?.$_TSR?.router?.matches?.find((m: any) => m.i?.startsWith('__root__'))?.l
-        ?.i18nState
-    : undefined
+const ssrState: I18nServerState | undefined = getDehydratedRootI18nState()
 
 export function getLoadedI18nState(): I18nServerState | undefined {
   if (!i18n.isInitialized) {

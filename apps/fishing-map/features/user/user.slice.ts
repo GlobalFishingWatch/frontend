@@ -14,6 +14,7 @@ import {
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
@@ -84,7 +85,7 @@ export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispa
 const userSlice = createSlice({
   name: 'user',
   initialState: () => {
-    if (typeof window === 'undefined') return initialState
+    if (!getIsBrowser()) return initialState
     const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}') as UserSettings
     return { ...initialState, settings }
   },

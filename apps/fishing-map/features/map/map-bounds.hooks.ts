@@ -11,7 +11,7 @@ import { boundsAtom } from 'features/map/map.atoms'
 import { useMapSetViewState, useMapViewport } from 'features/map/map-viewport.hooks'
 import { DEFAULT_TIMEBAR_HEIGHT } from 'features/timebar/timebar.config'
 import type { Bbox } from 'types'
-import { getSafeElementById } from 'utils/dom'
+import { getIsBrowser, getSafeElementById } from 'utils/dom'
 
 import { MAP_CANVAS_ID } from './map.config'
 
@@ -50,7 +50,7 @@ export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParam
   const { mapDOMId = MAP_CANVAS_ID, mapWidth, mapHeight, padding = 60 } = params
   const map = getSafeElementById(mapDOMId)
   const mapRect = map?.getBoundingClientRect()
-  const isBrowser = typeof window !== 'undefined'
+  const isBrowser = getIsBrowser()
   const width = mapWidth || mapRect?.width || (isBrowser ? window.innerWidth / 2 : 800)
   const height =
     mapHeight ||

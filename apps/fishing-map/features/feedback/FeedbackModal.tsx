@@ -31,6 +31,7 @@ import { getWorkspaceReport, parseUpsertWorkspace } from 'features/workspace/wor
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
+import { getIsBrowser } from 'utils/dom'
 
 import styles from './FeedbackModal.module.css'
 
@@ -97,8 +98,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
-    userAgent: typeof window !== 'undefined' ? navigator.userAgent : '',
-    resolution: typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}px` : '',
+    userAgent: getIsBrowser() ? navigator.userAgent : '',
+    resolution: getIsBrowser() ? `${window.innerWidth}x${window.innerHeight}px` : '',
   }
 
   const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)

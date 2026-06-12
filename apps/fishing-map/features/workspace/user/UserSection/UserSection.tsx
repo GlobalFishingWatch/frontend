@@ -25,6 +25,7 @@ import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import Section from 'features/workspace/shared/Section'
 import { getEventLabel } from 'utils/analytics'
+import { getIsBrowser } from 'utils/dom'
 
 import LayerPanel from '../UserLayerPanel'
 
@@ -36,7 +37,7 @@ export function RegisterOrLoginToUpload() {
       <a
         className={styles.link}
         href={GFWAPI.getRegisterUrl(
-          typeof window !== 'undefined' ? window.location.toString() : ''
+          getIsBrowser() ? window.location.toString() : ''
         )}
       >
         Register

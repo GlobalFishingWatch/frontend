@@ -15,6 +15,7 @@ import { fetchUserThunk } from 'features/user/user.slice'
 import type { AppRouterContext } from 'router/app-router-context'
 import type { LocationState } from 'router/location.slice'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import { getIsBrowser } from 'utils/dom'
 
 import { getCreateRouterOptions } from '../router'
 import type { AppStore } from '../store'
@@ -35,7 +36,7 @@ function buildInitialHref(location: LocationState): string {
 }
 
 function seedBrowserHistory(location?: LocationState) {
-  if (!location || typeof window === 'undefined') return
+  if (!location || !getIsBrowser()) return
   window.history.replaceState(null, '', buildInitialHref(location))
 }
 

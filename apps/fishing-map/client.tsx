@@ -19,6 +19,14 @@ Sentry.init({
   sendDefaultPii: true,
   tracesSampleRate: 1.0,
   enableLogs: true,
+  integrations: [
+    Sentry.replayIntegration({
+      maskAllText: false,
+      blockAllMedia: false,
+    }),
+  ],
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
 })
 
 startTransition(() => {

@@ -30,6 +30,7 @@ import InfoError from 'features/workspace/shared/InfoError'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
+import { getIsBrowser } from 'utils/dom'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryUserPanel.module.css'
@@ -109,9 +110,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
           <Trans i18nKey={(t) => t.dataset.uploadLogin}>
             <a
               className={styles.link}
-              href={GFWAPI.getRegisterUrl(
-                typeof window !== 'undefined' ? window.location.toString() : ''
-              )}
+              href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
             >
               Register
             </a>

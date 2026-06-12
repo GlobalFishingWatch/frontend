@@ -1,9 +1,11 @@
+export const getIsBrowser = () => typeof window !== 'undefined'
+
 export const getSafeElementById = (domId: string) => {
-  return typeof window !== 'undefined' ? document.getElementById(domId || '') : null
+  return getIsBrowser() ? document.getElementById(domId || '') : null
 }
 
 export const getCSSVarValue = (property: string) => {
-  if (typeof window !== 'undefined') {
+  if (getIsBrowser()) {
     return window.getComputedStyle(document.body).getPropertyValue(property)
   }
   return ''

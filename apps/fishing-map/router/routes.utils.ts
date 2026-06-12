@@ -1,4 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
+import { getIsBrowser } from 'utils/dom'
 
 import { getRouterRef } from './router-ref'
 import type { ROUTE_TYPES } from './routes'
@@ -123,7 +124,7 @@ export function mapRouteIdToPath(routeId: string): string {
  * Use this instead of window.location.href to stay consistent with router state.
  */
 export function getCurrentAppUrl(): string {
-  if (typeof window === 'undefined') {
+  if (!getIsBrowser()) {
     return ''
   }
   const router = getRouterRef()

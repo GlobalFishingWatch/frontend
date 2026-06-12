@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 
+import { getIsBrowser } from 'utils/dom'
+
 export function readDocumentCookieString(key: string): string | null {
-  const match =
-    typeof document !== 'undefined'
-      ? document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))
-      : null
+  const match = getIsBrowser()
+    ? document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))
+    : null
   return match?.[1] ?? null
 }
 
@@ -27,7 +28,7 @@ export function writeDocumentCookie(
   value: string | number,
   maxAge = COOKIE_MAX_AGE_1_YEAR
 ) {
-  if (typeof document === 'undefined') return
+  if (!getIsBrowser()) return
   document.cookie = `${key}=${value};path=/;max-age=${maxAge};samesite=lax`
 }
 

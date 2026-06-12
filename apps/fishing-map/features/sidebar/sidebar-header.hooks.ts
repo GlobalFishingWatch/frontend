@@ -4,7 +4,10 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 export function cleanVesselProfileDataviewInstances(
   dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
 ) {
-  return dataviewInstances?.map((dataviewInstance) => {
+  if (!Array.isArray(dataviewInstances)) {
+    return []
+  }
+  return dataviewInstances.map((dataviewInstance) => {
     if (dataviewInstance.origin === 'vesselProfile') {
       return {
         ...dataviewInstance,
