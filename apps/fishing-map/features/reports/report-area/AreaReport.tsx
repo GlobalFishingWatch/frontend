@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -25,10 +25,14 @@ import {
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import ReportActivity from 'features/reports/tabs/activity/ReportActivity'
 import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
+import ReportEnvironment from 'features/reports/tabs/environment/ReportEnvironment'
+import ReportEvents from 'features/reports/tabs/events/EventsReport'
+import ReportOthers from 'features/reports/tabs/others/ReportOthers'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -45,10 +49,21 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = lazy(() => import('features/reports/tabs/activity/ReportActivity'))
-const ReportEnvironment = lazy(() => import('features/reports/tabs/environment/ReportEnvironment'))
-const ReportOthers = lazy(() => import('features/reports/tabs/others/ReportOthers'))
-const ReportEvents = lazy(() => import('features/reports/tabs/events/EventsReport'))
+function ReportTabContent({ category }: { category: ReportCategory }) {
+  switch (category) {
+    case ReportCategory.Activity:
+    case ReportCategory.Detections:
+      return <ReportActivity />
+    case ReportCategory.Events:
+      return <ReportEvents />
+    case ReportCategory.Environment:
+      return <ReportEnvironment />
+    case ReportCategory.Others:
+      return <ReportOthers />
+    default:
+      return null
+  }
+}
 
 export default function Report() {
   useMigrateWorkspaceToast()
@@ -73,42 +88,41 @@ export default function Report() {
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
     [reportDataviews]
   )
-  const categoryTabs: Tab<ReportCategory>[] = [
-    {
-      id: ReportCategory.Activity,
-      title: t((t) => t.common.activity),
-      content: <ReportActivity />,
-    },
-    {
-      id: ReportCategory.Detections,
-      title: t((t) => t.common.detections),
-      content: <ReportActivity />,
-    },
-    {
-      id: ReportCategory.Events,
-      title: t((t) => t.common.events),
-      content: <ReportEvents />,
-    },
-    {
-      id: ReportCategory.Environment,
-      title: t((t) => t.common.environment),
-      content: <ReportEnvironment />,
-    },
-    {
-      id: ReportCategory.Others,
-      title: t((t) => t.common.others),
-      content: <ReportOthers />,
-    },
-  ]
-  const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
-    if (!dataviewCategories.includes(tab.id)) {
-      return []
-    }
-    return {
-      ...tab,
-      disabled: tab.id !== reportCategory && reportStatus === AsyncReducerStatus.Loading,
-    }
-  })
+
+  const filteredCategoryTabs = useMemo(() => {
+    const categoryTabs: Tab<ReportCategory>[] = [
+      {
+        id: ReportCategory.Activity,
+        title: t((t) => t.common.activity),
+      },
+      {
+        id: ReportCategory.Detections,
+        title: t((t) => t.common.detections),
+      },
+      {
+        id: ReportCategory.Events,
+        title: t((t) => t.common.events),
+      },
+      {
+        id: ReportCategory.Environment,
+        title: t((t) => t.common.environment),
+      },
+      {
+        id: ReportCategory.Others,
+        title: t((t) => t.common.others),
+      },
+    ]
+    return categoryTabs.flatMap((tab) => {
+      if (!dataviewCategories.includes(tab.id)) {
+        return []
+      }
+      return {
+        ...tab,
+        content: <ReportTabContent category={tab.id} />,
+        disabled: tab.id !== reportCategory && reportStatus === AsyncReducerStatus.Loading,
+      }
+    })
+  }, [dataviewCategories, reportCategory, reportStatus, t])
 
   const { status } = useFetchReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -196,18 +210,14 @@ export default function Report() {
 
   return filteredCategoryTabs.length > 1 ? (
     <div className="cardContainer">
-      <Suspense fallback={<Spinner />}>
-        <Tabs
-          className={styles.tabContainer}
-          tabs={filteredCategoryTabs}
-          activeTab={reportCategory}
-          onTabClick={handleTabClick}
-        />
-      </Suspense>
+      <Tabs
+        className={styles.tabContainer}
+        tabs={filteredCategoryTabs}
+        activeTab={reportCategory}
+        onTabClick={handleTabClick}
+      />
     </div>
   ) : (
-    <Suspense fallback={<Spinner />}>
-      {filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content}
-    </Suspense>
+    <ReportTabContent category={reportCategory} />
   )
 }
