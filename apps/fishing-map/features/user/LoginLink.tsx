@@ -2,6 +2,7 @@ import { forwardRef, useCallback } from 'react'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setLoginSource } from 'features/user/user.slice'
 import type { LoginSource } from 'features/user/user.types'
@@ -25,6 +26,10 @@ function LoginLink({ children, className = '', tooltip, loginSource }: LoginLink
       if (loginSource) {
         dispatch(setLoginSource(loginSource))
       }
+      trackEvent({
+        category: TrackCategory.User,
+        action: `Clicked login button${loginSource ? ` from ${loginSource}` : ''}`,
+      })
     },
     [dispatch, loginSource, openPopupLogin]
   )
