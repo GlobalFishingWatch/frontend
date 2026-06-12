@@ -6,5 +6,5 @@ import { validateSearchQueryParams } from 'router/routes.search'
 export const Route = createFileRoute('/_app/$category/$workspaceId/vessel-search')({
   component: lazyRouteComponent(() => import('features/search/Search')),
   validateSearch: validateSearchQueryParams,
-  head: ({ matches }) => getSearchHead(getTFunction(matches)),
+  head: ({ match }) => getSearchHead(getTFunction(match)),
 })

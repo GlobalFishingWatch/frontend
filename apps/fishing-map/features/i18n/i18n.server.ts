@@ -3,7 +3,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
-import { FALLBACK_LNG, SUPPORTED_LANGUAGES } from 'features/i18n/i18n.config'
+import {
+  FALLBACK_LNG,
+  normalizeI18nLanguage,
+  SUPPORTED_LANGUAGES,
+} from 'features/i18n/i18n.config'
 import { readRequestCookieString } from 'utils/cookies'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -52,8 +56,8 @@ function detectLanguageFromRequest(request: Request): string {
   const cookieHeader = request.headers.get('cookie')
   if (cookieHeader) {
     const cookieLng = readRequestCookieString(cookieHeader, 'i18next')
-    if (cookieLng && SUPPORTED_LANGUAGES.includes(cookieLng)) {
-      return cookieLng
+    if (cookieLng) {
+      return normalizeI18nLanguage(cookieLng)
     }
   }
   const acceptLanguage = request.headers.get('accept-language')
@@ -68,8 +72,11 @@ function detectLanguageFromRequest(request: Request): string {
   return FALLBACK_LNG
 }
 
+// TanStack Router beforeLoad context must be JSON-serializable — avoid `unknown` here.
+export type I18nTranslationStore = Record<string, Record<string, Record<string, object>>>
+
 export type I18nServerState = {
-  initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
+  initialI18nStore: I18nTranslationStore
   initialLanguage: string
 }
 
@@ -83,10 +90,10 @@ export async function getI18nServerState(request: Request): Promise<I18nServerSt
 
   const resources = await Promise.all(NAMESPACES.map((ns) => loadNamespace(language, ns)))
 
-  const namespaces: Record<string, Record<string, unknown>> = {}
+  const namespaces: Record<string, Record<string, object>> = {}
   NAMESPACES.forEach((ns, index) => {
     if (resources[index]) {
-      namespaces[ns] = resources[index]
+      namespaces[ns] = resources[index] as Record<string, object>
     }
   })
 

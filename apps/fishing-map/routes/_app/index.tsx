@@ -4,5 +4,5 @@ import { getRouteHead, getTFunction } from 'router/router.meta'
 
 export const Route = createFileRoute('/_app/')({
   component: lazyRouteComponent(() => import('features/workspace/Workspace')),
-  head: ({ matches }) => getRouteHead({ t: getTFunction(matches) }),
+  head: ({ match }) => getRouteHead({ t: getTFunction(match) }),
 })

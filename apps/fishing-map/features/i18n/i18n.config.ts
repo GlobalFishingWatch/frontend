@@ -23,3 +23,21 @@ export const SUPPORTED_LANGUAGES: i18nSupportedLocale[] = [
   CROWDIN_IN_CONTEXT_LANG,
   ...(IS_I18N_DEV_ENV ? ['source' as const] : []),
 ]
+
+/** Map browser locales (e.g. en-IN) to a supported language code (e.g. en). */
+export function normalizeI18nLanguage(language: string | undefined): i18nSupportedLocale {
+  if (!language) {
+    return FALLBACK_LNG
+  }
+
+  if (SUPPORTED_LANGUAGES.includes(language as i18nSupportedLocale)) {
+    return language as i18nSupportedLocale
+  }
+
+  const languageOnly = language.split('-')[0]
+  if (SUPPORTED_LANGUAGES.includes(languageOnly as i18nSupportedLocale)) {
+    return languageOnly as i18nSupportedLocale
+  }
+
+  return FALLBACK_LNG
+}

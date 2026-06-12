@@ -8,6 +8,7 @@ import type { Locale } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 import i18n from './i18n'
+import { normalizeI18nLanguage } from './i18n.config'
 
 type formatI18DateParams = {
   format?: DateTimeFormatOptions | object
@@ -21,7 +22,7 @@ export const formatI18nDate = (
   date: SupportedDateType,
   {
     format = DateTime.DATE_MED,
-    locale = i18n.language as Locale,
+    locale = normalizeI18nLanguage(i18n.resolvedLanguage || i18n.language) as Locale,
     showUTCLabel,
   }: formatI18DateParams = {}
 ) => {
@@ -39,5 +40,9 @@ export const useI18nDate = (
   showUTCLabel?: boolean
 ) => {
   const { i18n } = useTranslation()
-  return formatI18nDate(date, { format, locale: i18n.language as Locale, showUTCLabel })
+  return formatI18nDate(date, {
+    format,
+    locale: normalizeI18nLanguage(i18n.resolvedLanguage || i18n.language) as Locale,
+    showUTCLabel,
+  })
 }

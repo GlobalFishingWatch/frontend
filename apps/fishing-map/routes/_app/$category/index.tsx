@@ -6,9 +6,9 @@ import { getTFunction, getWorkspaceHead } from 'router/router.meta'
 
 export const Route = createFileRoute('/_app/$category/')({
   component: lazyRouteComponent(() => import('features/workspaces-list/WorkspacesList')),
-  head: ({ matches, params }) =>
+  head: ({ match, params }) =>
     getWorkspaceHead(
       lowerCase(params.category || '') as WorkspaceCategoryDescriptionKey,
-      getTFunction(matches)
+      getTFunction(match)
     ),
 })

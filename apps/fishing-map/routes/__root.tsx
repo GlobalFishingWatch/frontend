@@ -33,7 +33,7 @@ async function loadI18nState(): Promise<I18nServerState> {
 
   // needs to be loaded dinamycally to avoid createServerFn errors on serve
   const { getI18nState } = await import('features/i18n/getI18nState')
-  return (await getI18nState()) as I18nServerState
+  return getI18nState()
 }
 
 async function loadPanelWidths(): Promise<{
@@ -48,10 +48,15 @@ async function loadPanelWidths(): Promise<{
 }
 
 export const Route = createRootRoute({
-  beforeLoad: ({ location }) => {
+  // i18nState lives in beforeLoad context (not loaderData) so route head() functions can
+  // read it: executeHead receives a fresh `match` (with context) but a stale pre-loader
+  // `matches` snapshot, so loaderData isn't reliably visible there during SSR.
+  beforeLoad: async ({ location }) => {
     if (location.pathname === '/index') {
       throw redirect({ to: '/', search: location.search })
     }
+    const i18nState = await loadI18nState()
+    return { i18nState }
   },
   errorComponent: ({ error }) => (
     <RootDocument lang="en">
@@ -59,12 +64,11 @@ export const Route = createRootRoute({
     </RootDocument>
   ),
   loader: async () => {
-    const [i18nState, panelWidths] = await Promise.all([
-      loadI18nState(),
-      loadPanelWidths().catch(() => ({ asideWidthPct: null, contentPanelWidth: null })),
-    ])
+    const panelWidths = await loadPanelWidths().catch(() => ({
+      asideWidthPct: null,
+      contentPanelWidth: null,
+    }))
     return {
-      i18nState,
       asideWidthPct: panelWidths.asideWidthPct,
       contentPanelWidth: panelWidths.contentPanelWidth,
     }
@@ -76,8 +80,8 @@ export const Route = createRootRoute({
   preloadStaleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
   shouldReload: false,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
+  head: ({ match }) => {
+    const t = getTFunction(match)
     const title = `GFW | ${t('common.map')}`
     const description = t('workspace.siteDescription.default') || defaultDescription
     return {
@@ -181,7 +185,7 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
 }
 
 function RootComponent() {
-  const { i18nState } = Route.useLoaderData() ?? {}
+  const { i18nState } = Route.useRouteContext() ?? {}
 
   // Tests render RouterProvider inside a DOM container — skip <html>/<body> wrapper.
   if (import.meta.env.VITEST) {

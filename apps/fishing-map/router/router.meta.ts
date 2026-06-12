@@ -1,3 +1,4 @@
+import type { I18nServerState } from 'features/i18n/i18n.server'
 import type Resources from 'features/i18n/i18n.types'
 
 export type WorkspaceCategoryDescriptionKey =
@@ -28,12 +29,7 @@ const fallbackTranslations = {
   user: { title: 'User' },
 } as const
 
-type I18nState = {
-  initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
-  initialLanguage: string
-}
-
-type RouteMatch = { routeId: string; loaderData?: { i18nState?: I18nState } }
+type HeadRouteMatch = { context?: { i18nState?: I18nServerState } }
 
 function getNested(obj: Record<string, unknown>, path: string): string | undefined {
   const parts = path.split('.')
@@ -46,12 +42,13 @@ function getNested(obj: Record<string, unknown>, path: string): string | undefin
 }
 
 /**
- * Derives a translation function from the root match's i18nState.
+ * Derives a translation function from the i18nState in the route context (loaded by the
+ * root route's beforeLoad, so it's inherited by every route's match). Pass head()'s `match`
+ * argument — it's read fresh from the router store, unlike the stale `matches` snapshot.
  * Falls back to English when state is missing (SSR edge cases, pre-render).
  */
-export function getTFunction(matches: RouteMatch[]): TranslateFn {
-  const rootMatch = matches.find((m) => m.routeId?.startsWith?.('__root__'))
-  const state = rootMatch?.loaderData?.i18nState
+export function getTFunction(match?: HeadRouteMatch): TranslateFn {
+  const state = match?.context?.i18nState
   if (!state?.initialI18nStore?.[state.initialLanguage]) {
     return (key: string) =>
       getNested(fallbackTranslations as unknown as Record<string, unknown>, key) ?? key

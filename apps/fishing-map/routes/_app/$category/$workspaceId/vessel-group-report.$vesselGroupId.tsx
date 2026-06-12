@@ -10,8 +10,8 @@ export const Route = createFileRoute(
     () => import('features/reports/report-vessel-group/VesselGroupReport')
   ),
   validateSearch: validateReportSearchParams,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
+  head: ({ match }) => {
+    const t = getTFunction(match)
     return getRouteHead({ category: t('analysis.title'), t })
   },
 })

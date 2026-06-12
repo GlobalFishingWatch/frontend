@@ -25,7 +25,7 @@ const rootRoute = getRouteApi('__root__')
 
 function AppLayout() {
   const router = useRouter()
-  const { i18nState } = rootRoute.useLoaderData()
+  const { i18nState } = rootRoute.useRouteContext()
   const routerUnsubcribeRef = useRef<(() => void) | null>(null)
 
   const store = useMemo(() => {

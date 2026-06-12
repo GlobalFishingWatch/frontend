@@ -9,6 +9,7 @@ import {
   DEFAULT_NAMESPACE,
   FALLBACK_LNG,
   IS_I18N_DEV_ENV,
+  normalizeI18nLanguage,
   SUPPORTED_LANGUAGES,
 } from 'features/i18n/i18n.config'
 import { getDehydratedRootI18nState } from 'features/i18n/i18n.dehydrated-state'
@@ -47,7 +48,7 @@ export function getLoadedI18nState(): I18nServerState | undefined {
     return undefined
   }
 
-  const initialLanguage = i18n.resolvedLanguage || i18n.language
+  const initialLanguage = normalizeI18nLanguage(i18n.resolvedLanguage || i18n.language)
   const initialI18nStore = i18n.services.resourceStore.data as I18nServerState['initialI18nStore']
 
   if (!initialLanguage || !initialI18nStore?.[initialLanguage]) {
@@ -73,11 +74,15 @@ if (typeof window !== 'undefined') {
     // init i18next
     // for all options read: https://www.i18next.com/overview/configuration-options
     .init({
+      load: 'languageOnly',
+      nonExplicitSupportedLngs: true,
       ...(ssrState && {
         resources: ssrState.initialI18nStore as Resource,
         lng: ssrState.initialLanguage,
         // Resources only contain the SSR language — let the backend load others on demand
         partialBundledLanguages: true,
+        // Finish init before React hydrates; SSR already picked the language.
+        initAsync: false,
       }),
       backend: {
         loadPath: (lngs: string[], namespaces: string[]) => {
@@ -89,7 +94,11 @@ if (typeof window !== 'undefined') {
         },
       },
       detection: {
-        order: ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+        // With SSR state, `lng` is set explicitly so the detection order is never consulted
+        // (keeps the SSR language during hydration — navigator can be en-IN while SSR used en).
+        order: ssrState ? [] : ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+        // Caches must stay on regardless: i18n.changeLanguage persists the choice here,
+        // and the server reads the `i18next` cookie to pick the SSR language on reload.
         caches: ['cookie', 'localStorage'],
         cookieOptions: { path: '/', sameSite: 'lax' },
       },

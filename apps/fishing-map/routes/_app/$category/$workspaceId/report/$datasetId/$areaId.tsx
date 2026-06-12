@@ -6,8 +6,8 @@ import { validateReportSearchParams } from 'router/routes.search'
 export const Route = createFileRoute('/_app/$category/$workspaceId/report/$datasetId/$areaId')({
   component: lazyRouteComponent(() => import('features/reports/report-area/AreaReport')),
   validateSearch: validateReportSearchParams,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
+  head: ({ match }) => {
+    const t = getTFunction(match)
     return getRouteHead({ category: t('analysis.title'), t })
   },
 })
