@@ -188,7 +188,6 @@ module "staging" {
     "VITE_USE_LOCAL_DATAVIEWS=false",
     "VITE_WORKSPACE_ENV=staging",
     "VITE_REPORT_DAYS_LIMIT=366",
-    "VITE_RANDOM_FOREST_ENABLED=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -227,7 +226,6 @@ module "production" {
     "VITE_USE_LOCAL_DATAVIEWS=false",
     "VITE_WORKSPACE_ENV=production",
     "VITE_REPORT_DAYS_LIMIT=366",
-    "VITE_RANDOM_FOREST_ENABLED=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_SENTRY_AUTH_TOKEN"
