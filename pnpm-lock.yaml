@@ -853,9 +853,6 @@ importers:
 
   apps/fishing-map:
     dependencies:
-      '@fontsource/roboto':
-        specifier: ^5.2.10
-        version: 5.2.10
       '@sentry/tanstackstart-react':
         specifier: ^10.55.0
         version: 10.55.0(@opentelemetry/exporter-trace-otlp-http@0.203.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(react@19.2.6)(rollup@4.60.3)
@@ -2369,9 +2366,6 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
-
-  '@fontsource/roboto@5.2.10':
-    resolution: {integrity: sha512-8HlA5FtSfz//oFSr2eL7GFXAiE7eIkcGOtx7tjsLKq+as702x9+GU7K95iDeWFapHC4M2hv9RrpXKRTGGBI8Zg==}
 
   '@globalfishingwatch/auth-middleware@1.0.0':
     resolution: {integrity: sha512-cyaEd2ByFwoq4wI/8GHtHZo/s0ngrql86YfyvUIR3u+34sbDxliPPAsaFx3hs1tajEZQxaW/dG5Z1bUKEUjSAw==}
@@ -18969,8 +18963,6 @@ snapshots:
       tabbable: 6.4.0
 
   '@floating-ui/utils@0.2.11': {}
-
-  '@fontsource/roboto@5.2.10': {}
 
   '@globalfishingwatch/auth-middleware@1.0.0':
     dependencies:
