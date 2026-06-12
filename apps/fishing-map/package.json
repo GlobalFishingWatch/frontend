@@ -23,6 +23,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@fontsource/roboto": "^5.2.10",
     "@sentry/tanstackstart-react": "^10.55.0"
   }
 }
