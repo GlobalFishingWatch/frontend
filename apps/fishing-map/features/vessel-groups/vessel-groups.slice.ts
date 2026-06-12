@@ -49,7 +49,7 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
       const vesselGroupsParams = {
         ids: vesselGroupsNotLoaded,
         cache: false,
-        // exclude: ['vessels'],
+        exclude: ['vessels'],
         ...DEFAULT_PAGINATION_PARAMS,
       }
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(
@@ -81,7 +81,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
       const vesselGroupsParams = {
         ...DEFAULT_PAGINATION_PARAMS,
         cache: false,
-        // exclude: ['vessels'],
+        exclude: ['vessels'],
         ...(ids?.length ? { ids } : { 'logged-user': true }),
       }
       const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
@@ -275,7 +275,6 @@ export const { slice: vesselGroupsSlice, entityAdapter } = createAsyncSlice<
       } else {
         state.workspace.status = AsyncReducerStatus.Error
         state.workspace.error = action.payload as ParsedAPIError
-        console.log('🚀 ~ action.payload:', action.payload)
       }
     })
   },
