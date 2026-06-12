@@ -169,6 +169,6 @@ export const VMS_BASE_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedVMS',
-    fields: [OTHER_BASE_FIELDS],
+    fields: [OTHER_BASE_FIELDS, [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD]],
   },
 ]
