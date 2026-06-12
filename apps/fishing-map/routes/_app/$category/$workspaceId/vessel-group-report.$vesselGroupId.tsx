@@ -1,6 +1,6 @@
 import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
-import { getRouteHead, getTFuntion } from 'router/router.meta'
+import { getRouteHead, getTFunction } from 'router/router.meta'
 import { validateReportSearchParams } from 'router/routes.search'
 
 export const Route = createFileRoute(
@@ -11,7 +11,7 @@ export const Route = createFileRoute(
   ),
   validateSearch: validateReportSearchParams,
   head: ({ matches }) => {
-    const t = getTFuntion(matches)
+    const t = getTFunction(matches)
     return getRouteHead({ category: t('analysis.title'), t })
   },
 })
