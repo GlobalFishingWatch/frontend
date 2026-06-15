@@ -53,7 +53,17 @@
     "kilometers": "crwdns69294:0crwdne69294:0",
     "linkToReport": "crwdns59605:0crwdne59605:0",
     "migramar": {
+      "avp": "crwdns131563:0crwdne131563:0",
+      "category_1": "crwdns131565:0crwdne131565:0",
+      "category_2": "crwdns131567:0crwdne131567:0",
+      "category_3": "crwdns131569:0crwdne131569:0",
+      "category_4": "crwdns131571:0crwdne131571:0",
+      "category_5": "crwdns131573:0crwdne131573:0",
+      "gamm": "crwdns131575:0crwdne131575:0",
       "indicator": "crwdns131469:0crwdne131469:0",
+      "noData": "crwdns131577:0crwdne131577:0",
+      "selectIndicator": "crwdns131579:0crwdne131579:0",
+      "selectSpecies": "crwdns131581:0crwdne131581:0",
       "species": "crwdns131471:0crwdne131471:0",
       "title": "crwdns131473:0crwdne131473:0"
     },
