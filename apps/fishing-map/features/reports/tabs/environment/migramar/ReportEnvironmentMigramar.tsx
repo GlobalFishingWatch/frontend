@@ -1,106 +1,83 @@
-import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
+import { selectReportArea } from 'features/reports/report-area/area-reports.selectors'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 
-import { useMigramarAreaData, useMigramarOptions } from './reportEnvironmentMigramar.hooks'
+import { useMigramar } from './reportEnvironmentMigramar.hooks'
 import ReportEnvironmentMigramarGraph from './ReportEnvironmentMigramarGraph'
 
 import styles from '../ReportEnvironment.module.css'
 
-// TODO:Migramar make id dynamic
-const AREA_ID = 'cocos_island'
-
 function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance<DataviewType> }) {
-  const { t, i18n } = useTranslation()
-  const { species, indicators, loading: optionsLoading } = useMigramarOptions()
-  const { rows, loading: dataLoading } = useMigramarAreaData(AREA_ID)
-
-  // TODO:Migramar take these values from dataview config
-  const [selectedSpecies, setSelectedSpecies] = useState<SelectOption | undefined>()
-  const [selectedIndicator, setSelectedIndicator] = useState<SelectOption | undefined>()
-
-  const speciesOptions: SelectOption[] = useMemo(
-    () =>
-      species
-        .filter((s) => rows.some((r) => r.species === s.id))
-        .map((s) => ({ id: s.id, label: i18n.language === 'es' ? s.label_es : s.label_en })),
-    [species, rows, i18n.language]
-  )
-
-  const indicatorOptions: SelectOption[] = useMemo(
-    () =>
-      indicators
-        .filter((ind) => rows.some((r) => r.indicator === ind.id))
-        .map((ind) => ({
-          id: ind.id,
-          label: i18n.language === 'es' ? ind.label_es_long : ind.label_en_long,
-        })),
-    [indicators, rows, i18n.language]
-  )
-
-  const loading = optionsLoading || dataLoading
-
-  const selectedRow = useMemo(
-    () =>
-      selectedSpecies && selectedIndicator
-        ? rows.find(
-            (row) => row.species === selectedSpecies.id && row.indicator === selectedIndicator.id
-          )
-        : undefined,
-    [rows, selectedSpecies, selectedIndicator]
-  )
+  const { t } = useTranslation()
+  const reportArea = useSelector(selectReportArea)
+  const {
+    speciesOptions,
+    indicatorOptions,
+    effectiveSpecies,
+    effectiveIndicator,
+    selectSpecies,
+    selectIndicator,
+    graphData,
+    loading,
+  } = useMigramar(reportArea?.properties?.id)
 
   return (
     <div className={cx('card', styles.container)}>
       <p className={styles.summary}>{t((t) => t.analysis.migramar.title)}</p>
-      <div className={styles.migramarSelectors}>
-        <Select
-          label={t((t) => t.analysis.migramar.species)}
-          options={speciesOptions}
-          selectedOption={selectedSpecies}
-          onSelect={(option) => {
-            setSelectedSpecies(option)
-            const firstMatch = indicatorOptions.find((ind) =>
-              rows.some((r) => r.species === option.id && r.indicator === ind.id)
-            )
-            setSelectedIndicator(firstMatch)
-          }}
-          placeholder={loading ? '…' : 'Select a species'}
-          disabled={loading}
-        />
-        <Select
-          label={t((t) => t.analysis.migramar.indicator)}
-          options={indicatorOptions}
-          selectedOption={selectedIndicator}
-          onSelect={(option) => {
-            setSelectedIndicator(option)
-            const firstMatch = speciesOptions.find((sp) =>
-              rows.some((r) => r.indicator === option.id && r.species === sp.id)
-            )
-            setSelectedSpecies(firstMatch)
-          }}
-          placeholder={loading ? '…' : 'Select an indicator'}
-          disabled={loading}
-        />
-      </div>
-      {selectedRow ? (
-        <ReportEnvironmentMigramarGraph row={selectedRow} />
-      ) : (
-        <ReportActivityPlaceholder showHeader={false} />
+      {!loading && speciesOptions.length >= 1 && indicatorOptions.length >= 1 && (
+        <div className={styles.migramarSelectors}>
+          <div>
+            <label>{t((t) => t.analysis.migramar.species)}</label>
+            {speciesOptions.length === 1 ? (
+              <p className={styles.migramarSingleOption}>{effectiveSpecies?.label}</p>
+            ) : (
+              <Select
+                options={speciesOptions}
+                selectedOption={effectiveSpecies}
+                onSelect={selectSpecies}
+                placeholder={loading ? '…' : t((t) => t.analysis.migramar.selectSpecies)}
+                disabled={loading}
+              />
+            )}
+          </div>
+          <div>
+            <label>{t((t) => t.analysis.migramar.indicator)}</label>
+            {indicatorOptions.length === 1 ? (
+              <p className={styles.migramarSingleOption}>{effectiveIndicator?.label}</p>
+            ) : (
+              <Select
+                options={indicatorOptions}
+                selectedOption={effectiveIndicator}
+                onSelect={selectIndicator}
+                placeholder={loading ? '…' : t((t) => t.analysis.migramar.selectIndicator)}
+                disabled={loading}
+              />
+            )}
+          </div>
+        </div>
       )}
-      {selectedRow?.data_owner && (
+      {graphData ? (
+        <ReportEnvironmentMigramarGraph row={graphData} />
+      ) : (
+        <ReportActivityPlaceholder showHeader={false}>
+          {!loading &&
+            speciesOptions.length === 0 &&
+            indicatorOptions.length === 0 &&
+            t((t) => t.analysis.migramar.noData)}
+        </ReportActivityPlaceholder>
+      )}
+      {graphData?.data_owner && (
         <p className={styles.disclaimer}>
           <span>
-            {t((t) => t.analysis.dataSource)}: {selectedRow.data_owner}
+            {t((t) => t.analysis.dataSource)}: {graphData.data_owner}
           </span>
-          {/* {selectedRow.contact_info && <span>{selectedRow.contact_info}</span>} */}
         </p>
       )}
     </div>

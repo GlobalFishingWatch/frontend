@@ -88,13 +88,28 @@
 }
 
 .migramarSelectors > div {
-  flex: 1;
+  width: calc((100% - var(--space-S)) / 2);
+}
+
+.migramarSingleOption {
+  line-height: var(--size-M);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .migramarTooltip {
   background: var(--color-white);
   border: var(--border);
   padding: var(--space-S);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+}
+
+.migramarTooltipRow {
+  display: flex;
+  align-items: center;
 }
 
 .migramarDot {
@@ -102,5 +117,22 @@
   width: 1rem;
   height: 1rem;
   border-radius: 0.5rem;
-  margin-right: var(--space-XS);
+  flex-shrink: 0;
+}
+
+.migramarLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-S);
+  padding: var(--space-S) 0;
+  color: var(--color-secondary-blue);
+}
+
+.migramarLegendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  font: var(--font-S);
 }

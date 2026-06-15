@@ -36,6 +36,7 @@ export type MigramarRow = {
   indicator: string
   area: string
   scenario: string
+  analysis: string
   baseline_years: string
   baseline_value: string
   P20: string
@@ -43,8 +44,9 @@ export type MigramarRow = {
   P60: string
   P80: string
   significance_p: string
-  slope: string
-  intercept: string
+  Estimated_initial_value: string
+  Estimated_final_value: string
+  Net_percent_range: string
   data_owner: string
   contact_info: string
 } & Record<MigramarRowYear, string>

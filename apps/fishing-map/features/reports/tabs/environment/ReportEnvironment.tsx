@@ -86,7 +86,6 @@ function ReportEnvironment() {
                   />
                 )
               }
-
               return (
                 <ReportEnvironmentGraph
                   key={dataview.id}
@@ -99,7 +98,7 @@ function ReportEnvironment() {
               )
             })}
             {/* TODO:Migramar show this instead of ReportEnvironmentGraph when dataview is migramar */}
-            {/* <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} /> */}
+            <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
           </>
         ) : (
           <Fragment>
