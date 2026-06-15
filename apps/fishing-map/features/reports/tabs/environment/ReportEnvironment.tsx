@@ -27,6 +27,7 @@ import {
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import ReportPolygonsGraph from 'features/reports/tabs/others/ReportPolygonsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectMigramarLayer } from 'router/routes.selectors'
 
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
@@ -45,6 +46,7 @@ function ReportEnvironment() {
   const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const migramarLayer = useSelector(selectMigramarLayer)
   const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const reportGraphType = useSelector(selectReportActivityGraph)
@@ -98,7 +100,9 @@ function ReportEnvironment() {
               )
             })}
             {/* TODO:Migramar show this instead of ReportEnvironmentGraph when dataview is migramar */}
-            <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
+            {migramarLayer && (
+              <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
+            )}
           </>
         ) : (
           <Fragment>
