@@ -250,6 +250,9 @@ const vesselSlice = createSlice({
     resetVesselState: (state) => {
       return { ...initialState, data: state.data }
     },
+    resetVesselData: (state) => {
+      state.data = {}
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchVesselInfoThunk.pending, (state, action) => {
@@ -309,12 +312,13 @@ const vesselSlice = createSlice({
 })
 
 export const {
+  resetVesselData,
+  resetVesselState,
+  setVesselEventId,
+  setVesselEvents,
+  setVesselEventType,
   setVesselFitBoundsOnLoad,
   setVesselPrintMode,
-  resetVesselState,
-  setVesselEvents,
-  setVesselEventId,
-  setVesselEventType,
   setVesselVoyage,
 } = vesselSlice.actions
 
