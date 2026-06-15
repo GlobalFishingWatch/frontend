@@ -63,9 +63,9 @@ export function useLoginPopupListener() {
   const datasetId = useSelector(selectVesselDatasetId)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
 
-  const reloadDataAfterLogin = useCallback(() => {
-    if (isAnyVesselProfileLocation) {
-      dispatch(
+  const reloadDataAfterLogin = useCallback(async () => {
+    if (isAnyVesselProfileLocation && vesselId) {
+      await dispatch(
         fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities, isRefresh: true })
       )
     }
@@ -87,7 +87,7 @@ export function useLoginPopupListener() {
         const user = await dispatch(
           fetchUserThunk({ accessToken: event.data.accessToken })
         ).unwrap()
-        reloadDataAfterLogin()
+        await reloadDataAfterLogin()
         if (user) {
           trackEvent({
             category: TrackCategory.User,
