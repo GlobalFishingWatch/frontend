@@ -70,9 +70,6 @@ export function useVesselIdentityTabs() {
         title: (
           <span className={styles.tabTitle}>
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
-            {identitySource === VesselIdentitySourceEnum.SelfReported && (
-              <DataTerminology terminologyKey="selfReported" inline />
-            )}
           </span>
         ),
         disabled: selfReportedIdentities.length === 0,

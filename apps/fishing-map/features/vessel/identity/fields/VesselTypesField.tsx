@@ -1,4 +1,4 @@
-import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
@@ -13,10 +13,7 @@ interface VesselTypesFieldProps {
 }
 
 const VesselTypesField = ({ vesselIdentity, fieldKey, identitySource }: VesselTypesFieldProps) => {
-  if (
-    identitySource === VesselIdentitySourceEnum.Registry ||
-    vesselIdentity.sourceCode?.includes(SelfReportedSource.Brazil)
-  ) {
+  if (identitySource === VesselIdentitySourceEnum.Registry) {
     return (
       <VesselIdentityField
         value={formatInfoField(vesselIdentity?.[fieldKey], fieldKey) as string}
