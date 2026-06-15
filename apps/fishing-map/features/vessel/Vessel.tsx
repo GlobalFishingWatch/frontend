@@ -24,6 +24,7 @@ import Insights from 'features/vessel/insights/Insights'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import {
+  selectIsVesselRefreshing,
   selectVesselInfoData,
   selectVesselInfoError,
   selectVesselInfoStatus,
@@ -68,6 +69,7 @@ const Vessel = () => {
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
   const infoStatus = useSelector(selectVesselInfoStatus)
+  const isVesselRefreshing = useSelector(selectIsVesselRefreshing)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const infoError = useSelector(selectVesselInfoError)
   const guestUser = useSelector(selectIsGuestUser)
@@ -202,7 +204,7 @@ const Vessel = () => {
     })
   }, [])
 
-  if (infoStatus === AsyncReducerStatus.Loading) {
+  if (infoStatus === AsyncReducerStatus.Loading || isVesselRefreshing) {
     return <Spinner />
   }
 
