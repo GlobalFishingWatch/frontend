@@ -27,7 +27,6 @@ import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { selectLastWorkspaceNavigationProps } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
@@ -40,7 +39,6 @@ import styles from '../SidebarHeader.module.css'
 function NavigationHistoryButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const lastWorkspaceNavigationProps = useSelector(selectLastWorkspaceNavigationProps)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -69,10 +67,6 @@ function NavigationHistoryButton() {
       })
     }
   }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
-
-  const resetQueryParams = useCallback(() => {
-    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
-  }, [replaceQueryParams])
 
   if (!lastWorkspaceNavigationProps) {
     return null
@@ -141,12 +135,11 @@ function NavigationHistoryButton() {
       state={(state) => ({ ...state, isHistoryNavigation: true })}
       search={{
         ...search,
+        ...EMPTY_SEARCH_FILTERS,
+        userTab: undefined,
         dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
       }}
-      onClick={() => {
-        resetQueryParams()
-        onCloseClick()
-      }}
+      onClick={onCloseClick}
     >
       <IconButton type="border" icon="close" tooltip={tooltip} />
     </Link>
