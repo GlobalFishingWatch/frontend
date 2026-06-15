@@ -41,8 +41,7 @@ export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID 
 export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID as
   | string
   | undefined
-export const IS_RANDOM_FOREST_ENABLED =
-  import.meta.env.VITE_RANDOM_FOREST_ENABLED === 'true'
+export const IS_RANDOM_FOREST_ENABLED = import.meta.env.VITE_RANDOM_FOREST_ENABLED === 'true'
 
 // Local storage keys
 export const HINTS = 'hints'
