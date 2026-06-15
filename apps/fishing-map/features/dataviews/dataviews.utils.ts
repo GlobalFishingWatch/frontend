@@ -466,9 +466,8 @@ export function isDataviewDeprecated(
   const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
   const hasDatasetsDeprecated =
     datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) || false
-  const hasConfigDeprecated = config?.datasets
-    ? config.datasets.some((d) => deprecatedDatasets[d])
-    : false
+  const configDatasets = Array.isArray(config?.datasets) ? config.datasets : []
+  const hasConfigDeprecated = configDatasets.some((d) => deprecatedDatasets[d])
 
   const hasVesselInfoDeprecated = config?.info
     ? deprecatedDatasets[config.info] !== undefined
@@ -476,9 +475,8 @@ export function isDataviewDeprecated(
   const hasVesselTrackDeprecated = config?.track
     ? deprecatedDatasets[config.track] !== undefined
     : false
-  const hasVesselEventsDeprecated = config?.events
-    ? config.events.some((d) => deprecatedDatasets[d])
-    : false
+  const configEvents = Array.isArray(config?.events) ? config.events : []
+  const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
     dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
