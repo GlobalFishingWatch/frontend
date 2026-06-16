@@ -240,6 +240,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
             disabled={
               isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
             }
+            tooltip={!isDownloadReportSupported ? t((t) => t.download.timerangeTooLong) : undefined}
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>

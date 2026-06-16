@@ -24,7 +24,12 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 
 import type { VALID_PASSWORD } from 'data/config'
-import { DEFAULT_TIME_RANGE, IS_RANDOM_FOREST_ENABLED, PRIVATE_SUFIX } from 'data/config'
+import {
+  DEFAULT_TIME_RANGE,
+  IS_RANDOM_FOREST_ENABLED,
+  PRIVATE_SUFIX,
+  WORKSPACE_HISTORY_NAVIGATION,
+} from 'data/config'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   DEFAULT_DATAVIEW_SLUGS,
@@ -61,6 +66,7 @@ import type { AnyWorkspaceState, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
+import { getIsBrowser } from 'utils/dom'
 
 import {
   getReportWorkspaceFetchNeeded,
@@ -82,6 +88,29 @@ export type LastWorkspaceVisited = LinkTo & {
 }
 
 const MAX_HISTORY_NAVIGATION = 20
+
+export function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
+  if (getIsBrowser()) {
+    try {
+      const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
+      return stored ? (JSON.parse(stored) as LastWorkspaceVisited[]) : []
+    } catch (e) {
+      return []
+    }
+  }
+  return []
+}
+
+function persistHistoryNavigation(historyNavigation: LastWorkspaceVisited[]) {
+  if (getIsBrowser()) {
+    try {
+      sessionStorage.setItem(WORKSPACE_HISTORY_NAVIGATION, JSON.stringify(historyNavigation))
+    } catch (e) {
+      // ignore
+    }
+  }
+  return
+}
 
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
@@ -407,17 +436,13 @@ type SaveWorkspaceThunkProperties = {
 
 export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (
-    {
-      properties,
-      workspace,
-    }: {
-      properties: SaveWorkspaceThunkProperties
-      workspace: AppWorkspace
-    },
-    { getState }
-  ) => {
-    const state = getState() as any
+  async ({
+    properties,
+    workspace,
+  }: {
+    properties: SaveWorkspaceThunkProperties
+    workspace: AppWorkspace
+  }) => {
     const workspaceUpsert = parseUpsertWorkspace(workspace)
     const {
       name: defaultName,
@@ -563,12 +588,17 @@ const workspaceSlice = createSlice({
     },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
       const next = action.payload
-      state.historyNavigation = castDraft(
+      const historyNavigation =
         next.length > MAX_HISTORY_NAVIGATION ? next.slice(-MAX_HISTORY_NAVIGATION) : next
-      )
+      state.historyNavigation = castDraft(historyNavigation)
+      persistHistoryNavigation(historyNavigation)
     },
     resetWorkspaceHistoryNavigation: (state) => {
-      state.historyNavigation = castDraft(initialState.historyNavigation)
+      state.historyNavigation = castDraft([])
+      persistHistoryNavigation([])
+    },
+    hydrateWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
@@ -652,6 +682,7 @@ export const {
   cleanCurrentWorkspaceStateBufferParams,
   setWorkspaceHistoryNavigation,
   resetWorkspaceHistoryNavigation,
+  hydrateWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

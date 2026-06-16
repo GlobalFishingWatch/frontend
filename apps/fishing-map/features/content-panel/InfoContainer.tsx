@@ -10,8 +10,8 @@ import {
   getVesselIdFromDatasetConfig,
   isHeatmapVectorsDataview,
 } from '@globalfishingwatch/dataviews-client'
-import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
-import { Choice, Select, Spinner } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import ContentHeader from 'features/content-panel/ContentHeader'
@@ -121,20 +121,12 @@ const InfoContainer = () => {
       <div ref={scrollContainerRef} className={cx(styles.scrollContainer)}>
         {!isSingleTab && options.length > 0 && (
           <div className={styles.sourceSelector}>
-            {options.length <= 2 ? (
-              <Choice
-                options={options}
-                activeOption={activeTab?.id}
-                onSelect={(option) => updateSubsectionId((option as ChoiceOption).id as string)}
-                size="medium"
-              />
-            ) : (
-              <Select
-                options={options}
-                selectedOption={activeTab as SelectOption}
-                onSelect={(option) => updateSubsectionId((option as SelectOption).id as string)}
-              />
-            )}
+            <Choice
+              options={options}
+              activeOption={activeTab?.id}
+              onSelect={(option) => updateSubsectionId((option as ChoiceOption).id as string)}
+              size="medium"
+            />
           </div>
         )}
         <div className={cx(styles.content)}>

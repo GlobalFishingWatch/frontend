@@ -208,12 +208,12 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.value != null && message.hasOwnProperty('value')) {
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value')) {
         if (!Array.isArray(message.value)) return 'value: array expected'
         for (let i = 0; i < message.value.length; ++i)
           if (typeof message.value[i] !== 'number') return 'value: number[] expected'
       }
-      if (message.size != null && message.hasOwnProperty('size'))
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
         if (!$util.isInteger(message.size)) return 'size: integer expected'
       return null
     }
@@ -266,7 +266,8 @@ export const vessels = ($root.vessels = (() => {
               ? String(message.value[j])
               : message.value[j]
       }
-      if (message.size != null && message.hasOwnProperty('size')) object.size = message.size
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+        object.size = message.size
       return object
     }
 
@@ -574,23 +575,23 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.getPath != null && message.hasOwnProperty('getPath')) {
+      if (message.getPath != null && Object.hasOwnProperty.call(message, 'getPath')) {
         let error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
         if (error) return 'getPath.' + error
       }
-      if (message.getTimestamp != null && message.hasOwnProperty('getTimestamp')) {
+      if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp')) {
         let error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
         if (error) return 'getTimestamp.' + error
       }
-      if (message.getSpeed != null && message.hasOwnProperty('getSpeed')) {
+      if (message.getSpeed != null && Object.hasOwnProperty.call(message, 'getSpeed')) {
         let error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
         if (error) return 'getSpeed.' + error
       }
-      if (message.getElevation != null && message.hasOwnProperty('getElevation')) {
+      if (message.getElevation != null && Object.hasOwnProperty.call(message, 'getElevation')) {
         let error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
         if (error) return 'getElevation.' + error
       }
-      if (message.getCourse != null && message.hasOwnProperty('getCourse')) {
+      if (message.getCourse != null && Object.hasOwnProperty.call(message, 'getCourse')) {
         let error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
         if (error) return 'getCourse.' + error
       }
@@ -670,31 +671,31 @@ export const vessels = ($root.vessels = (() => {
         object.getElevation = null
         object.getCourse = null
       }
-      if (message.getPath != null && message.hasOwnProperty('getPath'))
+      if (message.getPath != null && Object.hasOwnProperty.call(message, 'getPath'))
         object.getPath = $root.vessels.DeckTrackAttribute.toObject(
           message.getPath,
           options,
           _depth + 1
         )
-      if (message.getTimestamp != null && message.hasOwnProperty('getTimestamp'))
+      if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp'))
         object.getTimestamp = $root.vessels.DeckTrackAttribute.toObject(
           message.getTimestamp,
           options,
           _depth + 1
         )
-      if (message.getSpeed != null && message.hasOwnProperty('getSpeed'))
+      if (message.getSpeed != null && Object.hasOwnProperty.call(message, 'getSpeed'))
         object.getSpeed = $root.vessels.DeckTrackAttribute.toObject(
           message.getSpeed,
           options,
           _depth + 1
         )
-      if (message.getElevation != null && message.hasOwnProperty('getElevation'))
+      if (message.getElevation != null && Object.hasOwnProperty.call(message, 'getElevation'))
         object.getElevation = $root.vessels.DeckTrackAttribute.toObject(
           message.getElevation,
           options,
           _depth + 1
         )
-      if (message.getCourse != null && message.hasOwnProperty('getCourse'))
+      if (message.getCourse != null && Object.hasOwnProperty.call(message, 'getCourse'))
         object.getCourse = $root.vessels.DeckTrackAttribute.toObject(
           message.getCourse,
           options,
@@ -947,14 +948,14 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.length != null && message.hasOwnProperty('length'))
+      if (message.length != null && Object.hasOwnProperty.call(message, 'length'))
         if (!$util.isInteger(message.length)) return 'length: integer expected'
-      if (message.startIndices != null && message.hasOwnProperty('startIndices')) {
+      if (message.startIndices != null && Object.hasOwnProperty.call(message, 'startIndices')) {
         if (!Array.isArray(message.startIndices)) return 'startIndices: array expected'
         for (let i = 0; i < message.startIndices.length; ++i)
           if (!$util.isInteger(message.startIndices[i])) return 'startIndices: integer[] expected'
       }
-      if (message.attributes != null && message.hasOwnProperty('attributes')) {
+      if (message.attributes != null && Object.hasOwnProperty.call(message, 'attributes')) {
         let error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
         if (error) return 'attributes.' + error
       }
@@ -1014,13 +1015,14 @@ export const vessels = ($root.vessels = (() => {
         object.length = 0
         object.attributes = null
       }
-      if (message.length != null && message.hasOwnProperty('length')) object.length = message.length
+      if (message.length != null && Object.hasOwnProperty.call(message, 'length'))
+        object.length = message.length
       if (message.startIndices && message.startIndices.length) {
         object.startIndices = Array(message.startIndices.length)
         for (let j = 0; j < message.startIndices.length; ++j)
           object.startIndices[j] = message.startIndices[j]
       }
-      if (message.attributes != null && message.hasOwnProperty('attributes'))
+      if (message.attributes != null && Object.hasOwnProperty.call(message, 'attributes'))
         object.attributes = $root.vessels.DeckTrackAttributeStruct.toObject(
           message.attributes,
           options,

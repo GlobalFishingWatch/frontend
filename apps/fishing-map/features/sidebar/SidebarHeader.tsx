@@ -38,6 +38,7 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
@@ -65,6 +66,7 @@ function SidebarHeader() {
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const isClientHydrated = useIsClientHydrated()
   const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -164,8 +166,8 @@ function SidebarHeader() {
   ])
 
   return (
-    <div className={cx({ [styles.sticky]: isSticky })}>
-      <div className={cx(styles.sidebarHeader)}>
+    <div className={cx({ [styles.sticky]: isSticky }, styles.container)}>
+      <div className={cx(styles.sidebarHeader, 'print-hidden')}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
@@ -194,7 +196,7 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {workspaceHistoryNavigation?.length ? (
+            {isClientHydrated && workspaceHistoryNavigation?.length ? (
               <NavigationHistoryButton />
             ) : (
               <NavigationWorkspaceButton />

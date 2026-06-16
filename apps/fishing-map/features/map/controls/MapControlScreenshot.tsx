@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { Entries } from 'type-fest'
 
-import type { MAIN_DOM_ID, SelectOption } from '@globalfishingwatch/ui-components'
+import type {
+  MAIN_DOM_ID,
+  SelectOption,
+  SPLIT_VIEW_DOM_ID,
+} from '@globalfishingwatch/ui-components'
 import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -22,7 +26,7 @@ import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from '.
 
 import styles from './MapControls.module.css'
 
-type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
+type ScrenshotDOMArea = typeof SPLIT_VIEW_DOM_ID | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
 
 const MapControlScreenshot = ({
   mapLoading,

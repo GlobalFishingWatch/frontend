@@ -7,7 +7,7 @@ import { trackEvent } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLoginSource, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectLoginSource } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk, setLoginSource } from 'features/user/user.slice'
 import {
   selectIncludeRelatedIdentities,
@@ -84,22 +84,26 @@ export function useLoginPopupListener() {
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === SUCCESS_LOGIN_MESSAGE) {
-        const user = await dispatch(
-          fetchUserThunk({ accessToken: event.data.accessToken })
-        ).unwrap()
-        await reloadDataAfterLogin()
-        if (user) {
-          trackEvent({
-            category: TrackCategory.User,
-            action: 'login',
-            label: loginSource ?? '',
-            other: {
-              user_id: user.id,
-              // email: user.email,
-            },
-          })
+        try {
+          const user = await dispatch(
+            fetchUserThunk({ accessToken: event.data.accessToken })
+          ).unwrap()
+          await reloadDataAfterLogin()
+          if (user) {
+            trackEvent({
+              category: TrackCategory.User,
+              action: 'login',
+              label: loginSource ?? '',
+              other: {
+                user_id: user.id,
+                // email: user.email,
+              },
+            })
+          }
+          dispatch(setLoginSource(null))
+        } catch (e) {
+          console.warn(e)
         }
-        dispatch(setLoginSource(null))
       }
     }
     window.addEventListener('message', handleMessage)

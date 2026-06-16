@@ -12,6 +12,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
@@ -58,6 +59,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
   const isClientHydrated = useIsClientHydrated()
+  const { closeSidePanel } = useSidePanel()
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
@@ -84,6 +86,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   useEffect(() => {
     const enableVesselPrintMode = () => {
+      closeSidePanel()
       dispatch(setVesselPrintMode(true))
     }
     const disableVesselPrintMode = () => {
@@ -95,7 +98,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-  }, [])
+  }, [closeSidePanel])
 
   useCallbackAfterPaint({
     callback: vesselPrintCallback,
@@ -127,6 +130,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   const onPrintClick = () => {
     dispatch(setVesselPrintMode(true))
+    closeSidePanel()
     trackAction('print')
   }
 

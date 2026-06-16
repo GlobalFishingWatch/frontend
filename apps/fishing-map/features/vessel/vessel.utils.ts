@@ -13,7 +13,6 @@ import type {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
 import { PRIVATE_ICON } from 'data/config'
 import { isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -377,13 +376,6 @@ export const getOtherVesselNames = (vessel: VesselsParamsSupported, currentName?
   )
 
   return otherIdentities?.length ? otherIdentities.map((i) => i.shipname) : ([] as string[])
-}
-
-export const getSidebarContentWidth = () => {
-  const margins = 92
-  return window.innerWidth <= DEFAULT_BREAKPOINT
-    ? window.innerWidth - margins
-    : window.innerWidth / 2 - margins
 }
 
 export const isFieldLoginRequired = (field: string) => {

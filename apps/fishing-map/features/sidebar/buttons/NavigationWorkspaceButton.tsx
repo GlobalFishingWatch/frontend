@@ -6,7 +6,11 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { DEFAULT_WORKSPACE_CATEGORY, WorkspaceCategory } from 'data/workspaces'
+import {
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  WorkspaceCategory,
+} from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
@@ -50,12 +54,14 @@ function NavigationWorkspaceButton() {
     return (
       <Link
         className={cx(styles.workspaceLink, 'print-hidden')}
-        to={isStandaloneSearchLocation ? ROUTE_PATHS.HOME : ROUTE_PATHS.WORKSPACE}
+        to={
+          isStandaloneSearchLocation || isVesselLocation ? ROUTE_PATHS.HOME : ROUTE_PATHS.WORKSPACE
+        }
         params={
-          isStandaloneSearchLocation
+          isStandaloneSearchLocation || isVesselLocation
             ? undefined
             : {
-                workspaceId: workspaceId,
+                workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,
                 category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
               }
         }

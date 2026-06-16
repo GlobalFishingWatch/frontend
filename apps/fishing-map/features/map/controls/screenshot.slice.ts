@@ -1,9 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import { MAIN_DOM_ID } from '@globalfishingwatch/ui-components'
+import { MAIN_DOM_ID, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import type { RootState } from 'reducers'
 import { getIsBrowser } from 'utils/dom'
 
@@ -11,14 +10,14 @@ import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 export type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
 export type ScrenshotDOMArea =
-  | typeof ROOT_DOM_ELEMENT
+  | typeof SPLIT_VIEW_DOM_ID
   | typeof MAP_CONTAINER_ID
   | typeof MAIN_DOM_ID
 
 export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   map: MAP_CONTAINER_ID,
   withTimebar: MAIN_DOM_ID,
-  withTimebarAndLegend: ROOT_DOM_ELEMENT,
+  withTimebarAndLegend: SPLIT_VIEW_DOM_ID,
 }
 
 const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend

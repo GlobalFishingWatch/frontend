@@ -7,8 +7,14 @@
   margin: var(--space-S);
 }
 
-.tabsContainer > *[role='tabpanel'] {
-  break-before: page;
+@media print {
+  .tabsContainer > *[role='tabpanel'] {
+    break-inside: avoid;
+  }
+
+  .tabsContainer h2 {
+    break-after: avoid;
+  }
 }
 
 .secondary {

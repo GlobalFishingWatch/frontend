@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 
@@ -6,6 +6,10 @@ import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
+import {
+  getPersistedHistoryNavigation,
+  hydrateWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.slice'
 import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
@@ -22,7 +26,6 @@ const rootRoute = getRouteApi('__root__')
 function AppLayout() {
   const router = useRouter()
   const { i18nState, user } = rootRoute.useLoaderData()
-  const routerUnsubcribeRef = useRef<(() => void) | null>(null)
 
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
@@ -33,19 +36,20 @@ function AppLayout() {
     if (user) {
       store.dispatch(setLoggedUser(user))
     }
-    // eslint-disable-next-line react-hooks/refs
-    routerUnsubcribeRef.current = setupRouterSync(router, store)
+
     return store
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
   useEffect(() => {
-    return () => routerUnsubcribeRef.current?.()
-  }, [store])
+    const unsubscribe = setupRouterSync(router, store)
+    return () => unsubscribe()
+  }, [router, store])
 
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
     store.dispatch(hydrateHintsDismissed(hintsDismissed))
+    store.dispatch(hydrateWorkspaceHistoryNavigation(getPersistedHistoryNavigation()))
   }, [store])
 
   return (

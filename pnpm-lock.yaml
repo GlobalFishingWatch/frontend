@@ -7,6 +7,7 @@ settings:
 patchedDependencies:
   '@nx/vitest@22.7.5': 71523adf51dd484ab42018c6cf4f1bc5ab0009771b6c3bc6291e1a097e8a21c1
   h3-js@4.4.0: 6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4
+  mdast-util-gfm-autolink-literal@2.0.1: f666bea6fc810a9fb94265fd5a3c810320751c8a74ea37a8d26423c9d7310469
 
 importers:
 
@@ -30081,7 +30082,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-gfm-autolink-literal@2.0.1:
+  mdast-util-gfm-autolink-literal@2.0.1(patch_hash=f666bea6fc810a9fb94265fd5a3c810320751c8a74ea37a8d26423c9d7310469):
     dependencies:
       '@types/mdast': 4.0.4
       ccount: 2.0.1
@@ -30129,7 +30130,7 @@ snapshots:
   mdast-util-gfm@3.1.0:
     dependencies:
       mdast-util-from-markdown: 2.0.3
-      mdast-util-gfm-autolink-literal: 2.0.1
+      mdast-util-gfm-autolink-literal: 2.0.1(patch_hash=f666bea6fc810a9fb94265fd5a3c810320751c8a74ea37a8d26423c9d7310469)
       mdast-util-gfm-footnote: 2.1.0
       mdast-util-gfm-strikethrough: 2.0.0
       mdast-util-gfm-table: 2.0.0

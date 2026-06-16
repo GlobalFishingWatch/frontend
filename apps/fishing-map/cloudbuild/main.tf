@@ -71,7 +71,6 @@ module "develop" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
-    "VITE_RANDOM_FOREST_ENABLED=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"
@@ -111,7 +110,6 @@ module "preview-dev" {
     "VITE_WORKSPACE_ENV=development",
     "VITE_REPORT_DAYS_LIMIT=366",
     "VITE_PIPE_DATASET_VERSION=4",
-    "VITE_RANDOM_FOREST_ENABLED=true",
   ]
   build_secrets = {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_SENTRY_AUTH_TOKEN"

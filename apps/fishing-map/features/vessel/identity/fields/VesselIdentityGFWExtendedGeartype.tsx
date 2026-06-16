@@ -1,8 +1,7 @@
-import { useTranslation } from 'react-i18next'
+import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { SelfReportedSource } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { IS_RANDOM_FOREST_ENABLED } from 'data/config'
@@ -21,7 +20,6 @@ const VesselIdentityGFWExtendedGeartype = ({
   identity,
   sourceIndex,
 }: VesselIdentityGFWExtendedGeartypeProps) => {
-  const { t } = useTranslation()
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
 
@@ -33,7 +31,6 @@ const VesselIdentityGFWExtendedGeartype = ({
     inferredLowActivityVesselClassAgRf,
     inferredVesselClassAgNnet,
     messyMmsi,
-    onFishingListSr,
     prodGeartypeNnet,
     prodGeartypeSource,
     registryVesselClass,
@@ -47,7 +44,7 @@ const VesselIdentityGFWExtendedGeartype = ({
   return (
     <ul className={styles.extendedInfo}>
       {isGFWUser && (
-        <>
+        <Fragment>
           <li>
             <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
           </li>
@@ -83,21 +80,10 @@ const VesselIdentityGFWExtendedGeartype = ({
                 ) as string)
               : EMPTY_FIELD_PLACEHOLDER}
           </li>
-        </>
+        </Fragment>
       )}
-      <li>
-        <Tooltip content="(selfReportedGearType)">
-          <span className={cx(styles.secondary, styles.help)}>
-            {identity.sourceCode?.includes(SelfReportedSource.Ais) ? 'AIS' : 'VMS'}{' '}
-            self-reported:{' '}
-          </span>
-        </Tooltip>
-        {onFishingListSr?.[sourceIndex]?.value
-          ? t((t) => t.vessel.gearTypes.fishing)
-          : t((t) => t.vessel.gearTypes.other)}
-      </li>
       {isGFWUser && (
-        <>
+        <Fragment>
           <li>
             <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">
               <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
@@ -106,7 +92,7 @@ const VesselIdentityGFWExtendedGeartype = ({
               EMPTY_FIELD_PLACEHOLDER}
           </li>
           {IS_RANDOM_FOREST_ENABLED && (
-            <>
+            <Fragment>
               <li>
                 <Tooltip content="(geartype)">
                   <span className={cx(styles.secondary, styles.help)}>
@@ -135,20 +121,22 @@ const VesselIdentityGFWExtendedGeartype = ({
                   </span>
                 </Tooltip>
                 {inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value
-                  ? (inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value as string).toLowerCase()
+                  ? (
+                      inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value as string
+                    ).toLowerCase()
                   : EMPTY_FIELD_PLACEHOLDER}
               </li>
-            </>
+              <li>
+                <Tooltip content="(messyMmsi)">
+                  <span className={cx(styles.secondary, styles.help)}>Messy MMSI: </span>
+                </Tooltip>
+                {messyMmsi?.[sourceIndex]?.value !== undefined
+                  ? messyMmsi?.[sourceIndex]?.value?.toString()
+                  : EMPTY_FIELD_PLACEHOLDER}
+              </li>
+            </Fragment>
           )}
-          <li>
-            <Tooltip content="(messyMmsi)">
-              <span className={cx(styles.secondary, styles.help)}>Messy MMSI: </span>
-            </Tooltip>
-            {messyMmsi?.[sourceIndex]?.value !== undefined
-              ? messyMmsi?.[sourceIndex]?.value?.toString()
-              : EMPTY_FIELD_PLACEHOLDER}
-          </li>
-        </>
+        </Fragment>
       )}
     </ul>
   )

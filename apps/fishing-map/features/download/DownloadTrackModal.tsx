@@ -135,7 +135,7 @@ function DownloadTrackModal() {
             className={styles.downloadBtn}
             onClick={onDownloadClick}
             loading={downloadStatus === AsyncReducerStatus.Loading}
-            disabled={isDownloadRatioExceeded}
+            disabled={isDownloadRatioExceeded || downloadStatus === AsyncReducerStatus.Loading}
           >
             {downloadStatus === AsyncReducerStatus.Finished ? (
               <Icon icon="tick" />
