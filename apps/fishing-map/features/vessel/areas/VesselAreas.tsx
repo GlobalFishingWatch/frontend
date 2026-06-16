@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Bar, BarChart, LabelList, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
-import type { CartesianLayout } from 'recharts/types/util/types'
+import {
+  Bar,
+  BarChart,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
@@ -28,7 +35,6 @@ import {
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
-import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/context.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -116,19 +122,12 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const eventsGroupedUnknown = eventsGrouped.find((group) => group.region === UNKNOWN_AREA)
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
-  const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
   const areaDataview = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.dataviewId === vesselArea)
   const eventsLoading = useVesselProfileEventsLoading()
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
-
-  // TODO: remove this hack if recharts fixes the 3.0.0 vertical layout bug
-  const [layout, setLayout] = useState<CartesianLayout>('horizontal')
-  useEffect(() => {
-    setLayout(eventsGroupedWithoutUnknown.length > 0 ? 'vertical' : 'horizontal')
-  }, [eventsGroupedWithoutUnknown])
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
     () => [
@@ -151,16 +150,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     ],
     [t]
   )
-
-  useEffect(() => {
-    const resizeGraph = () => {
-      setGraphWidth(getSidebarContentWidth())
-    }
-    window.addEventListener('resize', resizeGraph)
-    return () => {
-      window.removeEventListener('resize', resizeGraph)
-    }
-  }, [])
 
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
@@ -222,48 +211,45 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       <div className={styles.areaList}>
         {eventsGroupedWithoutUnknown.length > 0 ? (
           <div>
-            <BarChart
-              width={graphWidth}
-              height={eventsGroupedWithoutUnknown.length * 40}
-              layout={layout}
-              data={eventsGroupedWithoutUnknown}
-              margin={{ right: 40 }}
-            >
-              <YAxis
-                interval={0}
-                axisLine={false}
-                tickLine={false}
-                type="category"
-                dataKey="region"
-                width={200}
-                tick={<AreaTick />}
-              />
-              <XAxis type="number" hide />
-              <RechartsTooltip content={<AreaTooltip />} />
-              {eventTypes?.map((eventType) => {
-                return (
-                  <Bar
-                    key={eventType}
-                    dataKey={eventType}
-                    barSize={15}
-                    stackId="a"
-                    fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
-                  >
-                    <LabelList
-                      position="right"
-                      valueAccessor={(entry: any) => {
-                        const { total, region, ...rest } = entry?.payload || {}
-                        const eventsWithValues = Object.keys(rest)
-                        if (eventType === eventsWithValues[eventsWithValues.length - 1]) {
-                          return formatI18nNumber(total)
-                        }
-                      }}
-                      className={styles.count}
-                    />
-                  </Bar>
-                )
-              })}
-            </BarChart>
+            <ResponsiveContainer width="100%" height={eventsGroupedWithoutUnknown.length * 40}>
+              <BarChart layout="vertical" data={eventsGroupedWithoutUnknown} margin={{ right: 40 }}>
+                <YAxis
+                  interval={0}
+                  axisLine={false}
+                  tickLine={false}
+                  type="category"
+                  dataKey="region"
+                  width={200}
+                  tick={<AreaTick />}
+                />
+                <XAxis type="number" hide />
+                <RechartsTooltip content={<AreaTooltip />} />
+                {eventTypes?.map((eventType) => {
+                  return (
+                    <Bar
+                      key={eventType}
+                      dataKey={eventType}
+                      barSize={15}
+                      stackId="a"
+                      fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
+                      isAnimationActive={false}
+                    >
+                      <LabelList
+                        position="right"
+                        valueAccessor={(entry: any) => {
+                          const { total, region, ...rest } = entry?.payload || {}
+                          const eventsWithValues = Object.keys(rest)
+                          if (eventType === eventsWithValues[eventsWithValues.length - 1]) {
+                            return formatI18nNumber(total)
+                          }
+                        }}
+                        className={styles.count}
+                      />
+                    </Bar>
+                  )
+                })}
+              </BarChart>
+            </ResponsiveContainer>
             {eventsGroupedUnknown?.total && (
               <p className={styles.unknownRegionEvents}>
                 <span className={styles.unknownRegionEventsTitle}>
