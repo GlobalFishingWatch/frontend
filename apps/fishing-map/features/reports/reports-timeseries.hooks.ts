@@ -291,6 +291,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       return
     }
 
+    if (!area?.geometry) {
+      return
+    }
     const processFeatures = async () => {
       setReportState((prev) => {
         return { ...prev, isLoading: true }
@@ -384,13 +387,14 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     processFeatures()
   }, [
     processingHash,
-    area,
     debouncedAreaId,
-    instances,
     filterCellsByPolygon,
     setReportState,
     isAreaInViewport,
     isLoaded,
+    area?.geometry,
+    area?.id,
+    instances,
   ])
 
   useEffect(() => {
@@ -412,9 +416,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       })
       return { ...prev, stats }
     })
-    // Only stats needs to recalculate on start and end changes
+    // Only stats needs to recalculate on featuresFiltered and start/end changes;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportState.featuresFiltered, instances, start, end, setReportState])
+  }, [reportState.featuresFiltered, start, end, setReportState])
 
   return reportState
 }

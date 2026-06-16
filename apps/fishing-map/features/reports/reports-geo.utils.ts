@@ -34,6 +34,9 @@ export function filterByPolygon({
   mode = 'cell',
 }: FilterByPolygomParams): FilteredPolygons[] {
   const [px1, py1, px2, py2] = bbox(polygon)
+  if (!polygon.bbox) {
+    polygon.bbox = [px1, py1, px2, py2]
+  }
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {

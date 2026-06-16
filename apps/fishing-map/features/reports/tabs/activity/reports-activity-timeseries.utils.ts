@@ -30,7 +30,6 @@ import type {
   ReportGraphProps,
 } from 'features/reports/reports-timeseries.hooks'
 import type { ReportFourwingsDeckLayer } from 'features/reports/reports-timeseries.utils'
-import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
@@ -78,7 +77,7 @@ export const fourwingsFeaturesToTimeseries = (
       return featureToTimeseries
     }
 
-    const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(contained as FourwingsFeature[], {
+    const heatmapParams = {
       sublayers,
       interval,
       start,
@@ -88,34 +87,46 @@ export const fourwingsFeaturesToTimeseries = (
       aggregationOperation,
       minVisibleValue,
       maxVisibleValue,
-    })
+    }
+
+    const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(
+      contained as FourwingsFeature[],
+      heatmapParams
+    )
 
     const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw as any)
 
-    const featuresContainedAndOverlapping =
-      overlapping.length > 0 ? [...(contained || []), ...(overlapping || [])] : []
-
-    let valuesContainedAndOverlappingRaw: TimeSeries['values'] = []
-    if (featuresContainedAndOverlapping.length > 0) {
-      valuesContainedAndOverlappingRaw = getGraphDataFromFourwingsHeatmap(
-        featuresContainedAndOverlapping as FourwingsFeature[],
-        {
-          sublayers,
-          interval,
-          start,
-          end,
-          compareStart,
-          compareEnd,
-          aggregationOperation,
-          minVisibleValue,
-          maxVisibleValue,
-        }
-      ) as any
+    let valuesContainedAndOverlapping: typeof valuesContained = []
+    if (overlapping.length > 0) {
+      if (aggregationOperation === 'avg') {
+        // avg is not additive (it divides by the cell count per frame), so the
+        // contained+overlapping union must be accumulated in a single pass.
+        const raw = getGraphDataFromFourwingsHeatmap(
+          [...(contained || []), ...(overlapping || [])] as FourwingsFeature[],
+          heatmapParams
+        ) as any
+        valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(raw)
+      } else {
+        // sum is additive: accumulate only the (smaller) overlapping set and add it
+        // to the already-computed contained values, skipping a second pass over contained.
+        const overlappingRaw = getGraphDataFromFourwingsHeatmap(
+          overlapping as FourwingsFeature[],
+          heatmapParams
+        ) as any
+        const overlappingValuesByDate = new Map(
+          frameTimeseriesToDateTimeseries(overlappingRaw).map((o) => [o.date, o.values])
+        )
+        valuesContainedAndOverlapping = valuesContained.map(({ date, values }) => {
+          const overlappingValues = overlappingValuesByDate.get(date)
+          return {
+            date,
+            values: overlappingValues
+              ? values.map((v, i) => v + (overlappingValues[i] || 0))
+              : values,
+          }
+        })
+      }
     }
-
-    const valuesContainedAndOverlapping = frameTimeseriesToDateTimeseries(
-      valuesContainedAndOverlappingRaw
-    )
 
     featureToTimeseries.timeseries = valuesContained.map(({ values, date }) => {
       const maxValues = valuesContainedAndOverlapping.find(
@@ -252,15 +263,21 @@ export const formatEvolutionData = (
       : undefined
 
     if (!Number.isFinite(intervalDiff) || intervalDiff < 0) return []
+
+    const dataByDate = new Map(data.timeseries.map((item) => [item.date, item]))
+    const comparedByDate = comparedData
+      ? new Map(comparedData.timeseries.map((item) => [item.date, item]))
+      : undefined
+
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
-        let dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+        const dateISO = date.toISO()
+        let dataValue = dateISO ? dataByDate.get(dateISO) : undefined
         if (!dataValue && data.interval === 'MONTH' && timeseriesInterval === 'DAY') {
-          dataValue = data.timeseries.find((item) =>
-            date.startOf('month').toISO()?.startsWith(item.date)
-          )
+          const monthISO = date.startOf('month').toISO()
+          dataValue = monthISO ? dataByDate.get(monthISO) : undefined
         }
         if (!dataValue && removeEmptyValues) {
           return {
@@ -283,9 +300,7 @@ export const formatEvolutionData = (
         let avg
 
         if (comparedData) {
-          let comparedDataValue = comparedData?.timeseries.find((item) =>
-            date.toISO()?.startsWith(item.date)
-          )
+          let comparedDataValue = dateISO ? comparedByDate?.get(dateISO) : undefined
           if (isMonthlyComparison) {
             if (comparedDataValue) {
               lastKnownComparedValue = comparedDataValue
