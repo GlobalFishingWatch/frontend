@@ -412,7 +412,7 @@ describe('Global reports', () => {
     await clickReportTab(getByRole, 'Activity')
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const presenceButton = getByText(/vessel Presence/i)
+    const presenceButton = getByTestId('report-subsection-selector-presence')
     await userEvent.click(presenceButton)
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await waitForMapLoaded(getByTestId)
