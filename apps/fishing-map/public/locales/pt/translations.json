@@ -53,7 +53,17 @@
     "kilometers": "kilometers",
     "linkToReport": "Veja o relatório dinâmico aqui",
     "migramar": {
-      "indicator": "indicator",
+      "avp": "Status (AVP)",
+      "category_1": "Critical (≤20%)",
+      "category_2": "Alert (21-40%)",
+      "category_3": "Stable (41-60%)",
+      "category_4": "Good (61-80%)",
+      "category_5": "Excellent (>80%)",
+      "gamm": "Trend (GAMM)",
+      "indicator": "Indicator",
+      "noData": "There is no data available for this area",
+      "selectIndicator": "Select an indicator",
+      "selectSpecies": "Select a species",
       "species": "species",
       "title": "Species Monitoring Plan CMAR"
     },
