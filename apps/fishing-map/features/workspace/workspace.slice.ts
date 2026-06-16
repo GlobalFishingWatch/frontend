@@ -90,26 +90,26 @@ export type LastWorkspaceVisited = LinkTo & {
 const MAX_HISTORY_NAVIGATION = 20
 
 function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
-  if (!getIsBrowser()) {
-    return []
+  if (getIsBrowser()) {
+    try {
+      const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
+      return stored ? (JSON.parse(stored) as LastWorkspaceVisited[]) : []
+    } catch (e) {
+      return []
+    }
   }
-  try {
-    const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
-    return stored ? (JSON.parse(stored) as LastWorkspaceVisited[]) : []
-  } catch (e) {
-    return []
-  }
+  return []
 }
 
 function persistHistoryNavigation(historyNavigation: LastWorkspaceVisited[]) {
-  if (!getIsBrowser()) {
-    return
+  if (getIsBrowser()) {
+    try {
+      sessionStorage.setItem(WORKSPACE_HISTORY_NAVIGATION, JSON.stringify(historyNavigation))
+    } catch (e) {
+      // ignore
+    }
   }
-  try {
-    sessionStorage.setItem(WORKSPACE_HISTORY_NAVIGATION, JSON.stringify(historyNavigation))
-  } catch (e) {
-    // ignore
-  }
+  return
 }
 
 interface WorkspaceSliceState {
