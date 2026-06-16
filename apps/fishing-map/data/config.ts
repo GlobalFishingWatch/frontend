@@ -48,6 +48,9 @@ export const HINTS = 'hints'
 export const USER_SETTINGS = 'userSettings'
 export const PREFERRED_FOURWINGS_VISUALISATION_MODE = 'preferredFourwingsVisualisationMode'
 
+// Session storage keys
+export const WORKSPACE_HISTORY_NAVIGATION = 'workspaceHistoryNavigation'
+
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
 export const PUBLIC_SUFIX = DATASET_PUBLIC_PREFIX
