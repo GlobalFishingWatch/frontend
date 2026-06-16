@@ -84,22 +84,26 @@ export function useLoginPopupListener() {
   useEffect(() => {
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === SUCCESS_LOGIN_MESSAGE) {
-        const user = await dispatch(
-          fetchUserThunk({ accessToken: event.data.accessToken })
-        ).unwrap()
-        await reloadDataAfterLogin()
-        if (user) {
-          trackEvent({
-            category: TrackCategory.User,
-            action: 'login',
-            label: loginSource ?? '',
-            other: {
-              user_id: user.id,
-              // email: user.email,
-            },
-          })
+        try {
+          const user = await dispatch(
+            fetchUserThunk({ accessToken: event.data.accessToken })
+          ).unwrap()
+          await reloadDataAfterLogin()
+          if (user) {
+            trackEvent({
+              category: TrackCategory.User,
+              action: 'login',
+              label: loginSource ?? '',
+              other: {
+                user_id: user.id,
+                // email: user.email,
+              },
+            })
+          }
+          dispatch(setLoginSource(null))
+        } catch (e) {
+          console.warn(e)
         }
-        dispatch(setLoginSource(null))
       }
     }
     window.addEventListener('message', handleMessage)
