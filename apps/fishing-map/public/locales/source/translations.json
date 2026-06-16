@@ -775,6 +775,7 @@
     "genus": "Genus",
     "geometryError": "Some polygons have self-intersections",
     "height": "Height",
+    "maxGapHours": "Max gap time",
     "name": "Layer name",
     "nameLengthError_one": "Layer name requires at least {{count}} characters",
     "nameLengthError_many": "Layer name requires at least {{count}} characters",

@@ -31,7 +31,6 @@ type LayerPanelProps = {
   field: SupportedDatasetFilter
   label: string
   className?: string
-  removeType?: 'visibleValues' | 'filter'
   onRemove?: (tag: TagItem) => void
 }
 
@@ -40,7 +39,6 @@ function DatasetSchemaField({
   field,
   label,
   className = '',
-  removeType = 'filter',
   onRemove,
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -110,31 +108,31 @@ function DatasetSchemaField({
 
   const onRemoveFilterClick = useCallback(
     (tag: TagItem, tags: TagItem[]) => {
-      upsertDataviewInstance({
-        id: dataview.id,
-        config: {
-          filters: {
-            ...(dataview.config?.filters || {}),
-            [field]: tags.length ? tags.map((t) => t.id) : '',
+      if (field === 'visibleValues') {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            minVisibleValue: undefined,
+            maxVisibleValue: undefined,
           },
-        },
-      })
+        })
+      } else {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            filters: {
+              ...(dataview.config?.filters || {}),
+              [field]: tags.length ? tags.map((t) => t.id) : '',
+            },
+          },
+        })
+      }
       if (onRemove) {
         onRemove({ id: field, label: tag.label })
       }
     },
     [dataview, field, upsertDataviewInstance, onRemove]
   )
-
-  const onRemoveVisibleValuesClick = useCallback(() => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        minVisibleValue: undefined,
-        maxVisibleValue: undefined,
-      },
-    })
-  }, [dataview, upsertDataviewInstance])
 
   return (
     <Fragment>
@@ -148,9 +146,7 @@ function DatasetSchemaField({
             tags={valuesSelected}
             color={dataview.config?.color}
             className={styles.tagList}
-            onRemove={
-              removeType === 'visibleValues' ? onRemoveVisibleValuesClick : onRemoveFilterClick
-            }
+            onRemove={onRemoveFilterClick}
           />
         </div>
       )}

@@ -9,11 +9,12 @@ import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishin
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
+  isTrackDataview,
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -22,17 +23,17 @@ import {
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import {
-  getCommonFiltersInDataview,
   getFiltersInDataview,
   getIncompatibleFilterSelection,
   VESSEL_GROUPS_MODAL_ID,
 } from 'features/dataviews/dataviews.filters'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
+import LayerFiltersGap from 'features/workspace/shared/LayerFiltersGap'
+import LayerFiltersSource from 'features/workspace/shared/LayerFiltersSource'
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -41,11 +42,7 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
-import {
-  areAllSourcesSelectedInDataview,
-  getSourcesOptionsInDataview,
-  getSourcesSelectedInDataview,
-} from '../activity/activity.utils'
+import { getSourcesOptionsInDataview } from '../activity/activity.utils'
 
 import { isHistogramDataviewSupported } from './layer-properties.utils'
 
@@ -68,36 +65,6 @@ const trackEventCb = debounce((filterKey: string, label: string) => {
     label: label,
   })
 }, 200)
-
-const cleanDataviewFiltersNotAllowed = (
-  dataview: UrlDataviewInstance,
-  vesselGroups: MultiSelectOption[],
-  isGuestUser?: boolean
-) => {
-  const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
-  Object.keys(filters).forEach((k) => {
-    const key = k as SupportedDatasetFilter
-    if (filters[key]) {
-      const newFilterOptions = getCommonFiltersInDataview(dataview, key, {
-        vesselGroups,
-        isGuestUser,
-      })
-      const newFilterSelection = newFilterOptions?.filter((option) =>
-        dataview.config?.filters?.[key]?.includes(option.id)
-      )
-
-      // We have to remove the key if it is not supported by the datasets selecion
-      if (newFilterOptions.length === 0) {
-        delete filters[key]
-        // or keep only the options that every dataset have in common
-      } else if (!newFilterSelection?.length !== dataview.config?.filters?.[key]?.length) {
-        filters[key] = newFilterSelection.map(({ id }) => id)
-      }
-    }
-  })
-
-  return filters
-}
 
 export type OnSelectFilterArgs = {
   filterKey: string | SupportedDatasetFilter
@@ -143,14 +110,10 @@ function LayerFilters({
   }, [baseDataview, newDataviewInstanceConfig])
 
   const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
-  // insert the "All" option only when more than one option available
-  const allOption = { id: 'all', label: t((t) => t.selects.allSelected) }
-  const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
-  const allSelected = areAllSourcesSelectedInDataview(dataview)
-  const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
   const showSourceFilter =
     sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
+  const showGapsFilter = isTrackDataview(dataview)
 
   const { filtersAllowed, filtersDisabled } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
@@ -218,25 +181,6 @@ function LayerFilters({
     // Running on effect to ensure the dataview update is running when we close the filter from outside
   }, [])
 
-  const onSelectSourceClick: MultiSelectOnChange = (source) => {
-    const datasets =
-      source.id === allOption.id
-        ? sourceOptions.map((s) => s.id)
-        : allSelected
-          ? [source.id]
-          : [...(dataview.config?.datasets || []), source.id]
-
-    const newDataview = { ...dataview, config: { ...dataview.config, datasets } }
-    const filters = cleanDataviewFiltersNotAllowed(newDataview, vesselGroupsOptions, isGuestUser)
-    setNewDataviewInstanceConfig({
-      id: dataview.id,
-      config: {
-        datasets,
-        filters,
-      },
-    })
-  }
-
   const onSelectHistogramRangeFilterClick = ({
     minVisibleValue,
     maxVisibleValue,
@@ -253,12 +197,10 @@ function LayerFilters({
     })
   }
 
-  const onRemoveSourceClick: MultiSelectOnChange = (source) => {
-    const datasets =
-      dataview.config?.datasets?.filter((datasetId: string) => datasetId !== source.id) || undefined
+  const onGapChange = (maxGapHours: number | undefined) => {
     onDataviewFilterChange({
       id: dataview.id,
-      config: { datasets },
+      config: { maxGapHours },
     })
   }
 
@@ -427,21 +369,13 @@ function LayerFilters({
   return (
     <Fragment>
       {showSourceFilter && (
-        <MultiSelect
-          testId="activity-filters"
-          label={t((t) => t.layer.sources) as string}
-          placeholder={getPlaceholderBySelections({
-            selection: sourcesSelected.map(({ id }) => id),
-            options: allSourceOptions,
-          })}
-          options={allSourceOptions}
-          labelContainerClassName={styles.labelContainer}
-          selectedOptions={sourcesSelected}
-          onSelect={onSelectSourceClick}
+        <LayerFiltersSource
+          dataview={dataview}
+          onSourceChange={onDataviewFilterChange}
           onIsOpenChange={handleIsOpenChange}
-          onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
         />
       )}
+      {showGapsFilter && <LayerFiltersGap dataview={dataview} onChange={onGapChange} />}
       {showHistogramFilter && (
         <Suspense fallback={null}>
           <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />

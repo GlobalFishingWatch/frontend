@@ -200,7 +200,6 @@ export default function ReportSummaryTags({
               dataview={dataview}
               field={'visibleValues'}
               label={t((t) => t.common.visibleValues)}
-              removeType="visibleValues"
             />
           ) : null
         ) : null}

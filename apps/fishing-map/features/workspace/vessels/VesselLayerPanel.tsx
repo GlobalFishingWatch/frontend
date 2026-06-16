@@ -22,7 +22,7 @@ import {
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, TagList } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
 import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -135,6 +135,8 @@ function VesselLayerPanel({
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+
+  const showMaxGapHoursFilter = dataview.config?.maxGapHours !== undefined
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -331,13 +333,39 @@ function VesselLayerPanel({
           size="small"
         />
       </div>
-      {hasSchemaFilterSelection && layerActive && (
+      {(hasSchemaFilterSelection || showMaxGapHoursFilter) && layerActive && (
         <div className={styles.propertiesNoPaddingBlock}>
           <div className={styles.filters}>
             <div className={styles.filters}>
-              {filtersAllowed.map(({ id, label }) => (
-                <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
-              ))}
+              {showMaxGapHoursFilter && (
+                <div className={cx(styles.filter)}>
+                  <label className={styles.tagListLabel}>
+                    {t((t) => t.layer.maxGapHours)} ({t((t) => t.common.hours)})
+                  </label>
+                  <TagList
+                    tags={[
+                      {
+                        id: dataview.config?.maxGapHours?.toString() || '',
+                        label: dataview.config?.maxGapHours?.toString() || '',
+                      },
+                    ]}
+                    color={dataview.config?.color}
+                    className={styles.tagList}
+                    onRemove={() => {
+                      upsertDataviewInstance({
+                        id: dataview.id,
+                        config: {
+                          maxGapHours: undefined,
+                        },
+                      })
+                    }}
+                  />
+                </div>
+              )}
+              {hasSchemaFilterSelection &&
+                filtersAllowed.map(({ id, label }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+                ))}
             </div>
           </div>
         </div>

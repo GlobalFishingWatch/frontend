@@ -159,6 +159,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
 
   renderLayers(): Layer<VesselTrackData> | LayersList {
     const { id, data, visualizationMode = 'track', ...props } = this.props
+
     const interactiveLayoutKey = getTrackShaderLayoutKey({
       ...props,
       colorBy: undefined,

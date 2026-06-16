@@ -84,6 +84,8 @@ export type DataviewConfig<Type = DataviewType> = {
   filterIds?: string[]
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
+  /** Max time in hours to mark two points segment as a gap  */
+  maxGapHours?: number
   /** Min value for filters in environmental layers to perform frontend data filtering */
   minVisibleValue?: number
   /** Max value for filters in environmental layers to perform frontend data filtering */
