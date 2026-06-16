@@ -44,9 +44,6 @@ function AppLayout() {
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
     store.dispatch(hydrateHintsDismissed(hintsDismissed))
-  }, [store])
-
-  useEffect(() => {
     store.dispatch(hydrateWorkspaceHistoryNavigation())
   }, [store])
 
