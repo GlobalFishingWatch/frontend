@@ -35,6 +35,7 @@ import {
 } from 'features/workspace/workspace.slice'
 import { cleanReportPayload, cleanReportQuery } from 'features/workspace/workspace.utils'
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/workspaces-list/workspaces-list.selectors'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
@@ -57,7 +58,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { dispatchClickedEvent } = useClickedEventConnect()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
-  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const isClientHydrated = useIsClientHydrated()
+  const lastVisitedWorkspaceState = useSelector(selectLastVisitedWorkspace)
+  const lastVisitedWorkspace = isClientHydrated ? lastVisitedWorkspaceState : undefined
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
