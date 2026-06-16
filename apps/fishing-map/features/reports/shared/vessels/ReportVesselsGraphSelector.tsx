@@ -120,6 +120,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
+      containerClassName={styles.choiceContainer}
     />
   )
 }

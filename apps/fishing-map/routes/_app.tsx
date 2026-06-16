@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 
@@ -6,6 +6,10 @@ import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import { setUserLanguage } from 'features/user/user.slice'
+import {
+  getPersistedHistoryNavigation,
+  hydrateWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.slice'
 import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
@@ -43,6 +47,7 @@ function AppLayout() {
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
     store.dispatch(hydrateHintsDismissed(hintsDismissed))
+    store.dispatch(hydrateWorkspaceHistoryNavigation(getPersistedHistoryNavigation()))
   }, [store])
 
   return (

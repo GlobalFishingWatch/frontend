@@ -120,7 +120,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : window.innerWidth / 2) : 800,
+      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : undefined) : 800,
       ...params,
     })
     return {

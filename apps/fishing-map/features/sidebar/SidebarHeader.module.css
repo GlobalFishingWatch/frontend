@@ -1,3 +1,7 @@
+.container {
+  break-after: avoid;
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;

@@ -1,4 +1,4 @@
-/*eslint-disable no-prototype-builtins, jsdoc/require-param*/
+/*eslint-disable jsdoc/require-param*/
 import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
@@ -190,7 +190,7 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.data != null && message.hasOwnProperty('data')) {
+      if (message.data != null && Object.hasOwnProperty.call(message, 'data')) {
         if (!Array.isArray(message.data)) return 'data: array expected'
         for (let i = 0; i < message.data.length; ++i)
           if (!$util.isInteger(message.data[i])) return 'data: integer[] expected'
@@ -452,7 +452,7 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.query = value
+            if ((value = reader.stringVerify()).length) message.query = value
             else delete message.query
             continue
           }
@@ -526,17 +526,17 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.query != null && message.hasOwnProperty('query'))
+      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
         if (!$util.isString(message.query)) return 'query: string expected'
-      if (message.total != null && message.hasOwnProperty('total'))
+      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
         if (!$util.isInteger(message.total)) return 'total: integer expected'
-      if (message.limit != null && message.hasOwnProperty('limit'))
+      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
         if (!$util.isInteger(message.limit)) return 'limit: integer expected'
-      if (message.offset != null && message.hasOwnProperty('offset'))
+      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
         if (!$util.isInteger(message.offset)) return 'offset: integer expected'
-      if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
+      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         if (!$util.isInteger(message.nextOffset)) return 'nextOffset: integer expected'
-      if (message.entries != null && message.hasOwnProperty('entries')) {
+      if (message.entries != null && Object.hasOwnProperty.call(message, 'entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
           const error = $root.vessels.TilesetVesselInfo.verify(message.entries[i], _depth + 1)
@@ -607,11 +607,15 @@ export const vessels = ($root.vessels = (() => {
         object.offset = 0
         object.nextOffset = 0
       }
-      if (message.query != null && message.hasOwnProperty('query')) object.query = message.query
-      if (message.total != null && message.hasOwnProperty('total')) object.total = message.total
-      if (message.limit != null && message.hasOwnProperty('limit')) object.limit = message.limit
-      if (message.offset != null && message.hasOwnProperty('offset')) object.offset = message.offset
-      if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
+      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
+        object.query = message.query
+      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
+        object.total = message.total
+      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
+        object.limit = message.limit
+      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
+        object.offset = message.offset
+      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
         object.entries = Array(message.entries.length)
@@ -851,49 +855,49 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.id = value
+            if ((value = reader.stringVerify()).length) message.id = value
             else delete message.id
             continue
           }
           case 2: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.name = value
+            if ((value = reader.stringVerify()).length) message.name = value
             else delete message.name
             continue
           }
           case 3: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.end = value
+            if ((value = reader.stringVerify()).length) message.end = value
             else delete message.end
             continue
           }
           case 4: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.start = value
+            if ((value = reader.stringVerify()).length) message.start = value
             else delete message.start
             continue
           }
           case 5: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.ssvid = value
+            if ((value = reader.stringVerify()).length) message.ssvid = value
             else delete message.ssvid
             continue
           }
           case 6: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.callsign = value
+            if ((value = reader.stringVerify()).length) message.callsign = value
             else delete message.callsign
             continue
           }
           case 7: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.vesselId = value
+            if ((value = reader.stringVerify()).length) message.vesselId = value
             else delete message.vesselId
             continue
           }
           case 8: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.tilesetId = value
+            if ((value = reader.stringVerify()).length) message.tilesetId = value
             else delete message.tilesetId
             continue
           }
@@ -935,21 +939,21 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.id != null && message.hasOwnProperty('id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         if (!$util.isString(message.id)) return 'id: string expected'
-      if (message.name != null && message.hasOwnProperty('name'))
+      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
         if (!$util.isString(message.name)) return 'name: string expected'
-      if (message.end != null && message.hasOwnProperty('end'))
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
         if (!$util.isString(message.end)) return 'end: string expected'
-      if (message.start != null && message.hasOwnProperty('start'))
+      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
         if (!$util.isString(message.start)) return 'start: string expected'
-      if (message.ssvid != null && message.hasOwnProperty('ssvid'))
+      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
         if (!$util.isString(message.ssvid)) return 'ssvid: string expected'
-      if (message.callsign != null && message.hasOwnProperty('callsign'))
+      if (message.callsign != null && Object.hasOwnProperty.call(message, 'callsign'))
         if (!$util.isString(message.callsign)) return 'callsign: string expected'
-      if (message.vesselId != null && message.hasOwnProperty('vesselId'))
+      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
         if (!$util.isString(message.vesselId)) return 'vesselId: string expected'
-      if (message.tilesetId != null && message.hasOwnProperty('tilesetId'))
+      if (message.tilesetId != null && Object.hasOwnProperty.call(message, 'tilesetId'))
         if (!$util.isString(message.tilesetId)) return 'tilesetId: string expected'
       return null
     }
@@ -1017,16 +1021,20 @@ export const vessels = ($root.vessels = (() => {
         object.vesselId = ''
         object.tilesetId = ''
       }
-      if (message.id != null && message.hasOwnProperty('id')) object.id = message.id
-      if (message.name != null && message.hasOwnProperty('name')) object.name = message.name
-      if (message.end != null && message.hasOwnProperty('end')) object.end = message.end
-      if (message.start != null && message.hasOwnProperty('start')) object.start = message.start
-      if (message.ssvid != null && message.hasOwnProperty('ssvid')) object.ssvid = message.ssvid
-      if (message.callsign != null && message.hasOwnProperty('callsign'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id')) object.id = message.id
+      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+        object.name = message.name
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
+        object.end = message.end
+      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
+        object.start = message.start
+      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
+        object.ssvid = message.ssvid
+      if (message.callsign != null && Object.hasOwnProperty.call(message, 'callsign'))
         object.callsign = message.callsign
-      if (message.vesselId != null && message.hasOwnProperty('vesselId'))
+      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
         object.vesselId = message.vesselId
-      if (message.tilesetId != null && message.hasOwnProperty('tilesetId'))
+      if (message.tilesetId != null && Object.hasOwnProperty.call(message, 'tilesetId'))
         object.tilesetId = message.tilesetId
       return object
     }
@@ -1197,7 +1205,7 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 10: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.dataset = value
+            if ((value = reader.stringVerify()).length) message.dataset = value
             else delete message.dataset
             continue
           }
@@ -1252,9 +1260,9 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.dataset != null && message.hasOwnProperty('dataset'))
+      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         if (!$util.isString(message.dataset)) return 'dataset: string expected'
-      if (message.results != null && message.hasOwnProperty('results')) {
+      if (message.results != null && Object.hasOwnProperty.call(message, 'results')) {
         if (!Array.isArray(message.results)) return 'results: array expected'
         for (let i = 0; i < message.results.length; ++i) {
           const error = $root.vessels.DatasetVesselQuery.verify(message.results[i], _depth + 1)
@@ -1313,7 +1321,7 @@ export const vessels = ($root.vessels = (() => {
       const object = {}
       if (options.arrays || options.defaults) object.results = []
       if (options.defaults) object.dataset = ''
-      if (message.dataset != null && message.hasOwnProperty('dataset'))
+      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         object.dataset = message.dataset
       if (message.results && message.results.length) {
         object.results = Array(message.results.length)
@@ -1537,7 +1545,7 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.query = value
+            if ((value = reader.stringVerify()).length) message.query = value
             else delete message.query
             continue
           }
@@ -1611,17 +1619,17 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.query != null && message.hasOwnProperty('query'))
+      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
         if (!$util.isString(message.query)) return 'query: string expected'
-      if (message.total != null && message.hasOwnProperty('total'))
+      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
         if (!$util.isInteger(message.total)) return 'total: integer expected'
-      if (message.limit != null && message.hasOwnProperty('limit'))
+      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
         if (!$util.isInteger(message.limit)) return 'limit: integer expected'
-      if (message.offset != null && message.hasOwnProperty('offset'))
+      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
         if (!$util.isInteger(message.offset)) return 'offset: integer expected'
-      if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
+      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         if (!$util.isInteger(message.nextOffset)) return 'nextOffset: integer expected'
-      if (message.entries != null && message.hasOwnProperty('entries')) {
+      if (message.entries != null && Object.hasOwnProperty.call(message, 'entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
           const error = $root.vessels.DatasetVesselInfo.verify(message.entries[i], _depth + 1)
@@ -1692,11 +1700,15 @@ export const vessels = ($root.vessels = (() => {
         object.offset = 0
         object.nextOffset = 0
       }
-      if (message.query != null && message.hasOwnProperty('query')) object.query = message.query
-      if (message.total != null && message.hasOwnProperty('total')) object.total = message.total
-      if (message.limit != null && message.hasOwnProperty('limit')) object.limit = message.limit
-      if (message.offset != null && message.hasOwnProperty('offset')) object.offset = message.offset
-      if (message.nextOffset != null && message.hasOwnProperty('nextOffset'))
+      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
+        object.query = message.query
+      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
+        object.total = message.total
+      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
+        object.limit = message.limit
+      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
+        object.offset = message.offset
+      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
         object.entries = Array(message.entries.length)
@@ -2010,43 +2022,43 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.id = value
+            if ((value = reader.stringVerify()).length) message.id = value
             else delete message.id
             continue
           }
           case 2: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.name = value
+            if ((value = reader.stringVerify()).length) message.name = value
             else delete message.name
             continue
           }
           case 3: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.imo = value
+            if ((value = reader.stringVerify()).length) message.imo = value
             else delete message.imo
             continue
           }
           case 4: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.ssvid = value
+            if ((value = reader.stringVerify()).length) message.ssvid = value
             else delete message.ssvid
             continue
           }
           case 5: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.vesselId = value
+            if ((value = reader.stringVerify()).length) message.vesselId = value
             else delete message.vesselId
             continue
           }
           case 6: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.type = value
+            if ((value = reader.stringVerify()).length) message.type = value
             else delete message.type
             continue
           }
           case 7: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.dataset = value
+            if ((value = reader.stringVerify()).length) message.dataset = value
             else delete message.dataset
             continue
           }
@@ -2129,49 +2141,49 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.id != null && message.hasOwnProperty('id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         if (!$util.isString(message.id)) return 'id: string expected'
-      if (message.name != null && message.hasOwnProperty('name'))
+      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
         if (!$util.isString(message.name)) return 'name: string expected'
-      if (message.imo != null && message.hasOwnProperty('imo'))
+      if (message.imo != null && Object.hasOwnProperty.call(message, 'imo'))
         if (!$util.isString(message.imo)) return 'imo: string expected'
-      if (message.ssvid != null && message.hasOwnProperty('ssvid'))
+      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
         if (!$util.isString(message.ssvid)) return 'ssvid: string expected'
-      if (message.vesselId != null && message.hasOwnProperty('vesselId'))
+      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
         if (!$util.isString(message.vesselId)) return 'vesselId: string expected'
-      if (message.type != null && message.hasOwnProperty('type'))
+      if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
         if (!$util.isString(message.type)) return 'type: string expected'
-      if (message.dataset != null && message.hasOwnProperty('dataset'))
+      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         if (!$util.isString(message.dataset)) return 'dataset: string expected'
-      if (message.authorizations != null && message.hasOwnProperty('authorizations')) {
+      if (message.authorizations != null && Object.hasOwnProperty.call(message, 'authorizations')) {
         if (!Array.isArray(message.authorizations)) return 'authorizations: array expected'
         for (let i = 0; i < message.authorizations.length; ++i) {
           const error = $root.vessels.StartEndValue.verify(message.authorizations[i], _depth + 1)
           if (error) return 'authorizations.' + error
         }
       }
-      if (message.extra != null && message.hasOwnProperty('extra')) {
+      if (message.extra != null && Object.hasOwnProperty.call(message, 'extra')) {
         if (!Array.isArray(message.extra)) return 'extra: array expected'
         for (let i = 0; i < message.extra.length; ++i) {
           const error = $root.vessels.Extra.verify(message.extra[i], _depth + 1)
           if (error) return 'extra.' + error
         }
       }
-      if (message.mmsi != null && message.hasOwnProperty('mmsi')) {
+      if (message.mmsi != null && Object.hasOwnProperty.call(message, 'mmsi')) {
         if (!Array.isArray(message.mmsi)) return 'mmsi: array expected'
         for (let i = 0; i < message.mmsi.length; ++i) {
           const error = $root.vessels.StartEndValue.verify(message.mmsi[i], _depth + 1)
           if (error) return 'mmsi.' + error
         }
       }
-      if (message.callsign != null && message.hasOwnProperty('callsign')) {
+      if (message.callsign != null && Object.hasOwnProperty.call(message, 'callsign')) {
         if (!Array.isArray(message.callsign)) return 'callsign: array expected'
         for (let i = 0; i < message.callsign.length; ++i) {
           const error = $root.vessels.StartEndValue.verify(message.callsign[i], _depth + 1)
           if (error) return 'callsign.' + error
         }
       }
-      if (message.flags != null && message.hasOwnProperty('flags')) {
+      if (message.flags != null && Object.hasOwnProperty.call(message, 'flags')) {
         if (!Array.isArray(message.flags)) return 'flags: array expected'
         for (let i = 0; i < message.flags.length; ++i) {
           const error = $root.vessels.StartEndValue.verify(message.flags[i], _depth + 1)
@@ -2303,14 +2315,18 @@ export const vessels = ($root.vessels = (() => {
         object.type = ''
         object.dataset = ''
       }
-      if (message.id != null && message.hasOwnProperty('id')) object.id = message.id
-      if (message.name != null && message.hasOwnProperty('name')) object.name = message.name
-      if (message.imo != null && message.hasOwnProperty('imo')) object.imo = message.imo
-      if (message.ssvid != null && message.hasOwnProperty('ssvid')) object.ssvid = message.ssvid
-      if (message.vesselId != null && message.hasOwnProperty('vesselId'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id')) object.id = message.id
+      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+        object.name = message.name
+      if (message.imo != null && Object.hasOwnProperty.call(message, 'imo'))
+        object.imo = message.imo
+      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
+        object.ssvid = message.ssvid
+      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
         object.vesselId = message.vesselId
-      if (message.type != null && message.hasOwnProperty('type')) object.type = message.type
-      if (message.dataset != null && message.hasOwnProperty('dataset'))
+      if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
+        object.type = message.type
+      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         object.dataset = message.dataset
       if (message.authorizations && message.authorizations.length) {
         object.authorizations = Array(message.authorizations.length)
@@ -2527,13 +2543,13 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.id = value
+            if ((value = reader.stringVerify()).length) message.id = value
             else delete message.id
             continue
           }
           case 2: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.label = value
+            if ((value = reader.stringVerify()).length) message.label = value
             else delete message.label
             continue
           }
@@ -2581,11 +2597,11 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.id != null && message.hasOwnProperty('id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
         if (!$util.isString(message.id)) return 'id: string expected'
-      if (message.label != null && message.hasOwnProperty('label'))
+      if (message.label != null && Object.hasOwnProperty.call(message, 'label'))
         if (!$util.isString(message.label)) return 'label: string expected'
-      if (message.value != null && message.hasOwnProperty('value'))
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
         if (typeof message.value !== 'number') return 'value: number expected'
       return null
     }
@@ -2632,9 +2648,10 @@ export const vessels = ($root.vessels = (() => {
         object.label = ''
         object.value = 0
       }
-      if (message.id != null && message.hasOwnProperty('id')) object.id = message.id
-      if (message.label != null && message.hasOwnProperty('label')) object.label = message.label
-      if (message.value != null && message.hasOwnProperty('value'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id')) object.id = message.id
+      if (message.label != null && Object.hasOwnProperty.call(message, 'label'))
+        object.label = message.label
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
         object.value =
           options.json && !isFinite(message.value) ? String(message.value) : message.value
       return object
@@ -2811,19 +2828,19 @@ export const vessels = ($root.vessels = (() => {
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.start = value
+            if ((value = reader.stringVerify()).length) message.start = value
             else delete message.start
             continue
           }
           case 2: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.end = value
+            if ((value = reader.stringVerify()).length) message.end = value
             else delete message.end
             continue
           }
           case 3: {
             if (wireType !== 2) break
-            if ((value = reader.string()).length) message.value = value
+            if ((value = reader.stringVerify()).length) message.value = value
             else delete message.value
             continue
           }
@@ -2865,11 +2882,11 @@ export const vessels = ($root.vessels = (() => {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
-      if (message.start != null && message.hasOwnProperty('start'))
+      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
         if (!$util.isString(message.start)) return 'start: string expected'
-      if (message.end != null && message.hasOwnProperty('end'))
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
         if (!$util.isString(message.end)) return 'end: string expected'
-      if (message.value != null && message.hasOwnProperty('value'))
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
         if (!$util.isString(message.value)) return 'value: string expected'
       return null
     }
@@ -2918,9 +2935,12 @@ export const vessels = ($root.vessels = (() => {
         object.end = ''
         object.value = ''
       }
-      if (message.start != null && message.hasOwnProperty('start')) object.start = message.start
-      if (message.end != null && message.hasOwnProperty('end')) object.end = message.end
-      if (message.value != null && message.hasOwnProperty('value')) object.value = message.value
+      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
+        object.start = message.start
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
+        object.end = message.end
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+        object.value = message.value
       return object
     }
 

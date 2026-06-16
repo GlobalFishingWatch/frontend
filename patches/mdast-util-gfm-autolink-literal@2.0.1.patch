@@ -1,0 +1,18 @@
+diff --git a/lib/index.js b/lib/index.js
+index c5ca771c24dd914e342f791716a822431ee32b3a..e505971ea2f0c4c777dd552c8ff343c297366768 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -132,7 +132,12 @@ function transformGfmAutolinkLiterals(tree) {
+     tree,
+     [
+       [/(https?:\/\/|www(?=\.))([-.\w]+)([^ \t\r\n]*)/gi, findUrl],
+-      [/(?<=^|\s|\p{P}|\p{S})([-.\w+]+)@([-\w]+(?:\.[-\w]+)+)/gu, findEmail]
++      // Lookbehind removed: Safari <16.4 / iOS <16.4 fail to PARSE this module
++      // (`SyntaxError: Invalid regular expression: invalid group specifier name`),
++      // taking down the whole bundle chunk. The preceding-character constraint is
++      // already enforced at runtime by `previous(match, true)` in `findEmail`, so
++      // dropping the lookbehind preserves behavior.
++      [/([-.\w+]+)@([-\w]+(?:\.[-\w]+)+)/gu, findEmail]
+     ],
+     {ignore: ['link', 'linkReference']}
+   )

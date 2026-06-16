@@ -67,9 +67,8 @@
     --color-primary-blue: black;
 
     height: auto;
-    min-height: 100%;
     background: none;
-    width: 21cm;
+    width: 19cm;
     display: flex;
     flex-direction: column-reverse;
     overflow: visible;
@@ -81,20 +80,19 @@
     overflow: visible;
     height: auto;
     background: none;
-    break-before: always;
   }
 
   .main {
     position: relative;
     width: 100%;
-    height: 28.5cm;
+    height: auto;
     left: 0 !important;
     overflow: hidden;
   }
 
   .mapContainer,
   .withTimebar {
-    height: 28.5cm;
+    height: auto;
     background-color: var(--color-map-background);
   }
 
@@ -117,5 +115,7 @@
 
   .aside h2 {
     font: var(--font-L);
+    margin-block: var(--space-S) var(--space-XS);
+    break-after: avoid;
   }
 }

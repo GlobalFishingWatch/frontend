@@ -19,7 +19,9 @@ const parseAppWorkspace = (searchStr: string): QueryParams => {
 const normalizeSearchString = (searchStr: string): string => {
   // This is needed to match how TanStack Router normalizes the search string for SSR requests.
   // https://github.com/TanStack/router/blob/b0024d6310f123736ea18a7f8692b45265cdee74/packages/router-core/src/ssr/ssr-server.ts#L570C1-L570C58
-  return new URLSearchParams(searchStr).toString()
+  const params = new URLSearchParams(searchStr)
+  params.sort()
+  return params.toString()
 }
 
 const stringifyAppWorkspace = (search: QueryParams): string => {

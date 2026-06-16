@@ -10520,7 +10520,7 @@ export const REDUX_STORE_DEFAULT_STATE = {
   },
   reports: { entities: {}, error: '', ids: [], status: 'idle' },
   resources: {},
-  screenshot: { screenshotAreaId: '__root__' },
+  screenshot: { screenshotAreaId: 'app-layout-content' },
   search: {
     data: [],
     pagination: { loading: false, since: '', total: 0 },
