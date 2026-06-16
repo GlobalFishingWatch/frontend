@@ -101,7 +101,10 @@
   gap: var(--space-S);
 }
 
+.headerContainerLabel {
+  width: 12rem;
+}
+
 .graphSelector {
-  flex-shrink: 1;
-  min-width: 0;
+  width: calc(100% - 12rem - var(--space-S));
 }
