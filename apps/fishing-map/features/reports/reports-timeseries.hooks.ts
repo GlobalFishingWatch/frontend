@@ -217,12 +217,6 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     () => getInstancesFromLayers(reportLayers, layersStateHash),
     [reportLayers, layersStateHash]
   )
-  const instancesRef = useRef(instances)
-  const areaRef = useRef(area)
-  useEffect(() => {
-    instancesRef.current = instances
-    areaRef.current = area
-  })
   const debouncedTime = Math.max(
     ...reportLayers.map(({ instance }) =>
       'debounceTime' in instance ? (instance.debounceTime as number) || 0 : 0
@@ -291,14 +285,12 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       processingHash === lastProcessedHash.current ||
       !isAreaInViewport ||
       !isLoaded ||
-      !areaRef.current?.geometry ||
+      !area?.geometry ||
       !debouncedAreaId
     ) {
       return
     }
 
-    const area = areaRef.current
-    const instances = instancesRef.current
     if (!area?.geometry) {
       return
     }
@@ -400,16 +392,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     setReportState,
     isAreaInViewport,
     isLoaded,
+    area?.geometry,
+    area?.id,
+    instances,
   ])
 
   useEffect(() => {
     const { featuresFiltered } = reportState
-    if (!featuresFiltered || !instancesRef.current.length) {
+    if (!featuresFiltered || !instances.length) {
       return
     }
 
     setReportState((prev) => {
-      const instances = instancesRef.current
       if (!prev.featuresFiltered || !instances.length) {
         return prev
       }
@@ -418,7 +412,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         featuresFiltered: prev.featuresFiltered,
         start,
         end,
-        reportArea: areaRef.current?.geometry as Polygon | MultiPolygon | undefined,
+        reportArea: area?.geometry as Polygon | MultiPolygon | undefined,
       })
       return { ...prev, stats }
     })
