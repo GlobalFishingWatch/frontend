@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { Choice } from '../choice'
@@ -14,6 +8,7 @@ import useSmallScreen from './use-small-screen'
 
 import styles from './SplitView.module.css'
 
+export const SPLIT_VIEW_DOM_ID = 'app-layout-content'
 export const MAIN_DOM_ID = 'app-main'
 export const SIDEBAR_DOM_ID = 'app-sidebar'
 

@@ -6,9 +6,8 @@ import {
   useSetDeckLayerComposer,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import { Logo } from '@globalfishingwatch/ui-components'
+import { Logo, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import MapControls from 'features/map/controls/MapControls'
 import { selectScreenshotAreaId } from 'features/map/controls/screenshot.slice'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
@@ -19,7 +18,6 @@ import {
   selectIsAnyVesselLocation,
   selectIsWorkspaceLocation,
 } from 'router/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import MapInfo from './controls/MapInfo'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
@@ -64,7 +62,7 @@ const MapWrapper = () => {
       className={styles.container}
       onMouseLeave={onMouseLeave}
     >
-      {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
+      {isPrinting && screenshotAreaId !== SPLIT_VIEW_DOM_ID && (
         <Logo className={styles.logo} type="invert" />
       )}
       <Suspense fallback={null}>
