@@ -17,3 +17,4 @@ export const COLOR_GRADIENT =
 
 export const SIDEBAR_WIDTH_COOKIE_KEY = 'sidebarWidth'
 export const CONTENT_PANEL_WIDTH_COOKIE_KEY = 'contentPanelWidth'
+export const USER_TOKEN_COOKIE_KEY = 'GFW_API_USER_TOKEN'

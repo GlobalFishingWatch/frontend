@@ -5,7 +5,7 @@ import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
-import { setUserLanguage } from 'features/user/user.slice'
+import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
 import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
@@ -21,7 +21,7 @@ const rootRoute = getRouteApi('__root__')
 
 function AppLayout() {
   const router = useRouter()
-  const { i18nState } = rootRoute.useLoaderData()
+  const { i18nState, user } = rootRoute.useLoaderData()
   const routerUnsubcribeRef = useRef<(() => void) | null>(null)
 
   const store = useMemo(() => {
@@ -29,6 +29,9 @@ function AppLayout() {
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     if (i18nState?.initialLanguage) {
       store.dispatch(setUserLanguage(i18nState.initialLanguage as Locale))
+    }
+    if (user) {
+      store.dispatch(setLoggedUser(user))
     }
     // eslint-disable-next-line react-hooks/refs
     routerUnsubcribeRef.current = setupRouterSync(router, store)

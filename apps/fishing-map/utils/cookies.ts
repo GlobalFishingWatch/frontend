@@ -32,6 +32,11 @@ export function writeDocumentCookie(
   document.cookie = `${key}=${value};path=/;max-age=${maxAge};samesite=lax`
 }
 
+export function removeDocumentCookie(key: string) {
+  if (!getIsBrowser()) return
+  document.cookie = `${key}=;path=/;max-age=0;samesite=lax`
+}
+
 export function usePersistedCookieNumber(cookieKey: string) {
   return useCallback(
     (value: number) => {

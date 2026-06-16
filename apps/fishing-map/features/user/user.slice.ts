@@ -8,12 +8,14 @@ import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
+import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { removeDocumentCookie, writeDocumentCookie } from 'utils/cookies'
 import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
@@ -58,7 +60,9 @@ export const fetchUserThunk = createAsyncThunk(
     }
     try {
       const user = await GFWAPI.login({ accessToken })
-
+      if (GFWAPI.token) {
+        writeDocumentCookie(USER_TOKEN_COOKIE_KEY, GFWAPI.token)
+      }
       return user
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()
@@ -75,6 +79,7 @@ export const fetchUserThunk = createAsyncThunk(
 export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
   try {
     await GFWAPI.logout()
+    removeDocumentCookie(USER_TOKEN_COOKIE_KEY)
     dispatch(cleanCurrentWorkspaceData())
     dispatch(removeGFWStaffOnlyDataviews())
   } catch (e: any) {
@@ -103,6 +108,11 @@ const userSlice = createSlice({
     setLoginSource: (state, action: PayloadAction<LoginSource | null>) => {
       state.loginSource = action.payload
     },
+    setLoggedUser: (state, action: PayloadAction<UserData>) => {
+      state.logged = true
+      state.status = AsyncReducerStatus.Finished
+      state.data = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserThunk.pending, (state) => {
@@ -124,7 +134,7 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource } =
+export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource, setLoggedUser } =
   userSlice.actions
 
 export default userSlice.reducer
