@@ -4,8 +4,10 @@ import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
-import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters'
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
+import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+
+import { type OnSelectFilterArgs, trackEventCb } from './LayerFilters.utils'
 
 const MIN_GAP_HOURS = 0
 const MAX_GAP_HOURS = 24
@@ -13,10 +15,10 @@ const GAP_FILTER_ID = 'maxGapHours' as SupportedDatasetFilter
 
 type LayerFiltersGapProps = {
   dataview: UrlDataviewInstance
-  onChange: (maxGapHours: number | undefined) => void
+  onGapChange: (dataviewInstance: UrlDataviewInstance) => void
 }
 
-function LayerFiltersGap({ dataview, onChange }: LayerFiltersGapProps): React.ReactElement<any> {
+function LayerFiltersGap({ dataview, onGapChange }: LayerFiltersGapProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const maxGapHours = dataview.config?.maxGapHours ?? MAX_GAP_HOURS
 
@@ -34,6 +36,19 @@ function LayerFiltersGap({ dataview, onChange }: LayerFiltersGapProps): React.Re
     operation: 'gte',
     filterOperator: 'include',
     singleSelection: false,
+  }
+
+  const onChange = (newMaxGapHours: number | undefined) => {
+    onGapChange({
+      id: dataview.id,
+      config: { maxGapHours: newMaxGapHours },
+    })
+    const eventLabel = getEventLabel([
+      'select',
+      getActivitySources(dataview),
+      ...getActivityFilters({ maxGapHours: newMaxGapHours }),
+    ])
+    trackEventCb(GAP_FILTER_ID, eventLabel)
   }
 
   const onSelect = ({ selection }: OnSelectFilterArgs) => {
