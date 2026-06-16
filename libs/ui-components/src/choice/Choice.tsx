@@ -62,7 +62,7 @@ export function Choice({
   useLayoutEffect(() => {
     measurePill()
     checkOverflow()
-  }, [activeOptionId, measurePill, checkOverflow])
+  }, [activeOptionId, measurePill, checkOverflow, isOverflowing])
 
   useEffect(() => {
     const measure = measureRef.current
@@ -127,7 +127,7 @@ export function Choice({
           <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': testId })}>
             {pill && (
               <span
-                className={cx(styles.activePill, 'print-hidden')}
+                className={cx(styles.activePill)}
                 style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
                 aria-hidden="true"
               />

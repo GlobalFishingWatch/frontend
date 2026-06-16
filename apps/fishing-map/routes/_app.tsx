@@ -6,7 +6,10 @@ import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
 import { setUserLanguage } from 'features/user/user.slice'
-import { hydrateWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
+import {
+  getPersistedHistoryNavigation,
+  hydrateWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.slice'
 import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
@@ -44,10 +47,7 @@ function AppLayout() {
   useEffect(() => {
     const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
     store.dispatch(hydrateHintsDismissed(hintsDismissed))
-  }, [store])
-
-  useEffect(() => {
-    store.dispatch(hydrateWorkspaceHistoryNavigation())
+    store.dispatch(hydrateWorkspaceHistoryNavigation(getPersistedHistoryNavigation()))
   }, [store])
 
   return (

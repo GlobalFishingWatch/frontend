@@ -89,7 +89,7 @@ export type LastWorkspaceVisited = LinkTo & {
 
 const MAX_HISTORY_NAVIGATION = 20
 
-function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
+export function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
   if (getIsBrowser()) {
     try {
       const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
@@ -436,17 +436,13 @@ type SaveWorkspaceThunkProperties = {
 
 export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (
-    {
-      properties,
-      workspace,
-    }: {
-      properties: SaveWorkspaceThunkProperties
-      workspace: AppWorkspace
-    },
-    { getState }
-  ) => {
-    const state = getState() as any
+  async ({
+    properties,
+    workspace,
+  }: {
+    properties: SaveWorkspaceThunkProperties
+    workspace: AppWorkspace
+  }) => {
     const workspaceUpsert = parseUpsertWorkspace(workspace)
     const {
       name: defaultName,
@@ -601,8 +597,8 @@ const workspaceSlice = createSlice({
       state.historyNavigation = castDraft([])
       persistHistoryNavigation([])
     },
-    hydrateWorkspaceHistoryNavigation: (state) => {
-      state.historyNavigation = castDraft(getPersistedHistoryNavigation())
+    hydrateWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
