@@ -3,7 +3,6 @@ import type { Loader, LoaderWithParser, StrictLoaderOptions } from '@loaders.gl/
 import { PATH_BASENAME } from '../loaders.config'
 import { VERSION } from '../version'
 
-import type { VesselTrackLoaderParams } from './lib/parse-tracks'
 import { parseTrack } from './lib/parse-tracks'
 import type { VesselTrackData } from './lib/types'
 
@@ -12,7 +11,7 @@ import type { VesselTrackData } from './lib/types'
  */
 
 export type VesselTrackLoaderOptions = StrictLoaderOptions & {
-  'vessel-tracks'?: VesselTrackLoaderParams & {
+  'vessel-tracks'?: {
     workerUrl?: string
   }
 }
@@ -20,7 +19,6 @@ export type VesselTrackLoaderOptions = StrictLoaderOptions & {
 const defaultOptions: VesselTrackLoaderOptions = {
   'vessel-tracks': {
     workerUrl: `${PATH_BASENAME}workers/vessel-tracks-worker.js`,
-    maxTimeGapHours: undefined,
   },
 }
 
@@ -42,9 +40,7 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
 
 export const VesselTrackLoader: LoaderWithParser<VesselTrackData, any, VesselTrackLoaderOptions> = {
   ...VesselTrackWorkerLoader,
-  parse: async (arrayBuffer, options?: VesselTrackLoaderOptions) =>
-    parseTrack(arrayBuffer, options?.['vessel-tracks']),
-  parseSync: (arrayBuffer, options?: VesselTrackLoaderOptions) =>
-    parseTrack(arrayBuffer, options?.['vessel-tracks']),
+  parse: async (arrayBuffer) => parseTrack(arrayBuffer),
+  parseSync: (arrayBuffer) => parseTrack(arrayBuffer),
   binary: true,
 }

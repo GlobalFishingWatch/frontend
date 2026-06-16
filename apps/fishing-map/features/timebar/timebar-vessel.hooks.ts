@@ -158,7 +158,7 @@ export const useTimebarVesselTracks = () => {
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const segments = isVesselLayerInstance(instance)
             ? instance.getVesselTrackSegments({
-                ...((debugOptions?.vesselsAsPositions || instance?.props.maxTimeGapHours) && {
+                ...((debugOptions?.vesselsAsPositions || instance?.props.gapSegmentThreshold) && {
                   includeMiddlePoints: true,
                 }),
               })

@@ -76,9 +76,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   get cacheHash(): string {
-    const { id, color, maxTimeGapHours } = this.props
+    const { id, color, gapSegmentThreshold } = this.props
     const filters = this.getFilters()
-    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${maxTimeGapHours}`
+    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}`
   }
 
   getPickingInfo = ({
@@ -212,7 +212,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackGraphExtent,
       colorBy,
       trackVisualizationMode,
-      maxTimeGapHours,
+      gapSegmentThreshold,
     } = this.props
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
@@ -229,7 +229,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!start || !end) {
         return []
       }
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${maxTimeGapHours ?? ''}`
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -242,12 +242,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             trackThinningZoomConfig,
           }),
           fetch: fetchWithGFWAPI,
-          loadOptions: {
-            'vessel-tracks': {
-              maxTimeGapHours,
-            },
-          },
-          maxTimeGapHours,
+          gapSegmentThreshold,
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,
           type: TRACK_LAYER_TYPE,
