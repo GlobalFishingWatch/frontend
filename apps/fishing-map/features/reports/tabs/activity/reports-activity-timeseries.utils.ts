@@ -263,15 +263,21 @@ export const formatEvolutionData = (
       : undefined
 
     if (!Number.isFinite(intervalDiff) || intervalDiff < 0) return []
+
+    const dataByDate = new Map(data.timeseries.map((item) => [item.date, item]))
+    const comparedByDate = comparedData
+      ? new Map(comparedData.timeseries.map((item) => [item.date, item]))
+      : undefined
+
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
-        let dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+        const dateISO = date.toISO()
+        let dataValue = dateISO ? dataByDate.get(dateISO) : undefined
         if (!dataValue && data.interval === 'MONTH' && timeseriesInterval === 'DAY') {
-          dataValue = data.timeseries.find((item) =>
-            date.startOf('month').toISO()?.startsWith(item.date)
-          )
+          const monthISO = date.startOf('month').toISO()
+          dataValue = monthISO ? dataByDate.get(monthISO) : undefined
         }
         if (!dataValue && removeEmptyValues) {
           return {
@@ -294,9 +300,7 @@ export const formatEvolutionData = (
         let avg
 
         if (comparedData) {
-          let comparedDataValue = comparedData?.timeseries.find((item) =>
-            date.toISO()?.startsWith(item.date)
-          )
+          let comparedDataValue = dateISO ? comparedByDate?.get(dateISO) : undefined
           if (isMonthlyComparison) {
             if (comparedDataValue) {
               lastKnownComparedValue = comparedDataValue
