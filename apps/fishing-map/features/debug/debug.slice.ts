@@ -18,7 +18,6 @@ export enum DebugOption {
   AreasOnScreen = 'areasOnScreen',
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
-  VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -46,7 +45,6 @@ export const debugInitialState: DebugState = {
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
-    vesselsMaxTimeGapHours: false,
     hideVesselNames: false,
   },
 }

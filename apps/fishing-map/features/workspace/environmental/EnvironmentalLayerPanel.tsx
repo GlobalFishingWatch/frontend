@@ -262,7 +262,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   dataview={dataview}
                   field={'visibleValues'}
                   label={t((t) => t.common.visibleValues)}
-                  removeType="visibleValues"
                 />
               )}
             </div>

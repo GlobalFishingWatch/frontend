@@ -205,7 +205,6 @@ export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 export const selectTrackCorrectionId = selectQueryParam('trackCorrectionId')
 export const selectSidePanelId = selectQueryParam('sidePanelId')
 export const selectSidePanelContent = selectQueryParam('sidePanelContent')
-export const selectVesselsMaxTimeGapHours = selectQueryParam('vesselsMaxTimeGapHours')
 export const selectMigramarLayer = selectQueryParam('migramarLayer')
 
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')

@@ -68,7 +68,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     trackGraphExtent: globalConfig.trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
     colorBy: globalConfig.vesselsColorBy,
-    maxTimeGapHours: globalConfig.vesselsMaxTimeGapHours,
+    maxTimeGapHours: dataview.config?.maxGapHours,
     events,
     visibleEvents: visibleEvents,
     highlightEventIds,

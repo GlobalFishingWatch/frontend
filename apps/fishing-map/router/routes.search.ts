@@ -104,7 +104,6 @@ export const rootSearchSchema = z
     ] as const),
     vesselsColorBy: optionalLiteralUnion(Object.keys(COLOR_BY) as [string, ...string[]]),
     migramarLayer: optionalBoolean(),
-    vesselsMaxTimeGapHours: optionalNumber(),
     visibleEvents: fallback(
       z
         .union([

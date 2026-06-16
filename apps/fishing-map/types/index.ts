@@ -67,7 +67,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   migramarLayer?: boolean
   vesselsColorBy?: VesselsColorByProperty
-  vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents
   skipColorDomainSampling?: boolean
 }

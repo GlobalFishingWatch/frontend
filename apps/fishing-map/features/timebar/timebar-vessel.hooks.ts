@@ -26,7 +26,6 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
-import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventDescription } from 'utils/events'
 
@@ -86,7 +85,6 @@ export const useTimebarVesselTracksData = () => {
 type VesselTrackAtom = TimebarChartData<any>
 export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const timebarGraph = useSelector(selectTimebarGraph)
   const debugOptions = useSelector(selectDebugOptions)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
@@ -160,11 +158,8 @@ export const useTimebarVesselTracks = () => {
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const segments = isVesselLayerInstance(instance)
             ? instance.getVesselTrackSegments({
-                ...((debugOptions?.vesselsAsPositions || debugOptions?.vesselsMaxTimeGapHours) && {
+                ...((debugOptions?.vesselsAsPositions || instance?.props.maxTimeGapHours) && {
                   includeMiddlePoints: true,
-                }),
-                ...(debugOptions?.vesselsMaxTimeGapHours && {
-                  maxTimeGapHours: vesselsMaxTimeGapHours,
                 }),
               })
             : instance.getSegments()
