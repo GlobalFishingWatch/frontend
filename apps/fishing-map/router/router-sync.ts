@@ -173,9 +173,10 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
     (event: RouterEvents['onResolved']) => {
       const navState = (event.toLocation.state || {}) as NavigationState
       if (navState.isHistoryNavigation) {
-        router.history.replace(event.toLocation.href, {
-          ...event.toLocation.state,
-          isHistoryNavigation: undefined,
+        router.navigate({
+          replace: true,
+          resetScroll: false,
+          state: (state) => ({ ...state, isHistoryNavigation: undefined }),
         })
       }
     }

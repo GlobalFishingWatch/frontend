@@ -72,7 +72,7 @@ export const rootSearchSchema = z
 
     // ── WorkspaceState (extends BaseUrlWorkspace) ─────────────────────────
     activityCategory: optionalString(), // legacy
-    dataviewInstances: z.array(z.any()).optional(), // deep-parsed by parseWorkspace
+    dataviewInstances: fallback(z.array(z.any()).optional(), undefined),
     dataviewInstancesOrder: optionalStringArray(),
     activityVisualizationMode: optionalLiteralUnion(FOURWINGS_VISUALIZATION_MODES),
     bivariateDataviews: fallback(
@@ -86,9 +86,9 @@ export const rootSearchSchema = z
     daysFromLatest: optionalNumber(),
     detectionsVisualizationMode: optionalLiteralUnion(FOURWINGS_VISUALIZATION_MODES),
     environmentVisualizationMode: optionalLiteralUnion([HEATMAP_ID, HEATMAP_LOW_RES_ID] as const),
-    mapAnnotations: z.array(z.any()).optional(), // deep-parsed by parseWorkspace
+    mapAnnotations: fallback(z.array(z.any()).optional(), undefined),
     mapAnnotationsVisible: optionalBoolean(),
-    mapRulers: z.array(z.any()).optional(), // deep-parsed by parseWorkspace
+    mapRulers: fallback(z.array(z.any()).optional(), undefined),
     mapRulersVisible: optionalBoolean(),
     readOnly: optionalBoolean(),
     reportLoadVessels: optionalBoolean(),
