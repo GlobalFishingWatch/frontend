@@ -43,6 +43,11 @@
   flex-shrink: 0;
   width: var(--size-M);
   height: var(--size-M);
+  transition: var(--transition);
+}
+
+.basemapSwitcher:hover {
+  border-color: rgba(var(--white-rgb), 0.3);
 }
 
 .basemapSwitcher.basemap_default {
