@@ -29,6 +29,7 @@
   margin-block: var(--space-S);
   margin-inline: calc(-1 * var(--space-S));
   background: var(--color-off-white-1);
+  break-inside: avoid;
 }
 
 .sectionHeader {
@@ -160,4 +161,14 @@
 .gfwOnly {
   display: inline-block;
   margin: var(--space-XS) 0;
+}
+
+@media print {
+  .container {
+    padding: 0;
+  }
+
+  .identitySection {
+    background: none;
+  }
 }

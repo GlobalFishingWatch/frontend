@@ -49,4 +49,8 @@
     overflow: visible;
     height: auto;
   }
+
+  .content {
+    width: unset;
+  }
 }

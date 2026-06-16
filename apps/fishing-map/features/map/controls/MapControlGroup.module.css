@@ -6,6 +6,10 @@
   transition: var(--transition);
 }
 
+.container:hover {
+  border-color: rgba(var(--white-rgb), 0.3);
+}
+
 .container.active {
   opacity: 1;
   background-color: var(--color-white);

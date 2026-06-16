@@ -85,21 +85,18 @@
 
 .map-tool {
   color: rgba(var(--white-rgb), 0.9);
-  background-color: rgba(var(--primary-blue-rgb), 0.8);
+  background-color: var(--color-primary-blue);
   border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
-  box-shadow: 0 2px 8px rgba(1, 30, 66, 0.35);
 }
 
 .map-tool:hover,
 .map-tool:focus {
   color: var(--color-white);
-  background-color: rgba(var(--primary-blue-rgb), 0.92);
   border-color: rgba(var(--white-rgb), 0.3);
 }
 
 .map-tool:active {
   transform: scale(0.84);
-  background-color: rgba(var(--primary-blue-rgb), 1);
   transition:
     opacity 160ms ease,
     background-color 160ms ease,

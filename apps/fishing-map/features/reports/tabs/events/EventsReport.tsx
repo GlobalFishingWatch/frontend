@@ -40,7 +40,6 @@ import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReport
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './EventsReport.module.css'
 
@@ -152,7 +151,7 @@ function EventsReport() {
         <div className={cx('card', styles.subsection)}>
           <div className={styles.container}>
             <div className={styles.headerContainer}>
-              <label>{t((t) => t.common.events)}</label>
+              <label className={styles.headerContainerLabel}>{t((t) => t.common.events)}</label>
               {hasEvents && (
                 <EventsReportGraphSelector
                   disabled={isLoadingVessels || !hasEvents}
