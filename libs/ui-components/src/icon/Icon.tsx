@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import React, { lazy,Suspense } from 'react'
+import React from 'react'
 import cx from 'classnames'
 
 import type { TooltipPlacement } from '../tooltip'
@@ -7,23 +7,24 @@ import { Tooltip } from '../tooltip'
 import type { TooltipTypes } from '../types/types'
 
 import type { IconType } from './icon.config'
-import icons from './icon.config'
 
 import styles from './Icon.module.css'
 
-type IconComponent = React.LazyExoticComponent<React.ComponentType<any>>
+type IconComponent = React.ComponentType<React.SVGProps<SVGSVGElement>>
 
 const NullIcon = () => null
 
-const IconComponents = icons.reduce<Record<IconType, IconComponent>>((acc, icon) => {
-  acc[icon] = lazy(async () => {
-    const svgModule: any = await import(`./icons/${icon}.svg`)
-    return {
-      default: svgModule?.ReactComponent || svgModule?.default || svgModule || NullIcon,
-    }
-  })
-  return acc
-}, {} as Record<IconType, IconComponent>)
+// builds the IconComponents map synchronously at module load
+const svgModules = import.meta.glob<Record<string, any>>('./icons/*.svg', { eager: true })
+
+const IconComponents = Object.entries(svgModules).reduce<Record<string, IconComponent>>(
+  (acc, [path, svgModule]) => {
+    const name = path.slice('./icons/'.length, -'.svg'.length)
+    acc[name] = svgModule?.ReactComponent || svgModule?.default || svgModule || NullIcon
+    return acc
+  },
+  {}
+)
 
 export interface IconProps {
   className?: string
@@ -46,13 +47,11 @@ export function Icon(props: IconProps) {
   }
   return (
     <Tooltip content={tooltip as React.ReactNode} placement="top">
-      <Suspense fallback={null}>
-        <Component
-          className={cx(styles.icon, styles[type], className)}
-          style={style}
-          {...(testId && { 'data-test': testId })}
-        />
-      </Suspense>
+      <Component
+        className={cx(styles.icon, styles[type], className)}
+        style={style}
+        {...(testId && { 'data-test': testId })}
+      />
     </Tooltip>
   )
 }
