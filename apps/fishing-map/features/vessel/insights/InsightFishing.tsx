@@ -76,7 +76,7 @@ const InsightFishing = ({
       ) : (
         <div>
           {eventsInNoTakeMpas?.length !== 0 ? (
-            <p>
+            <span>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpas, {
                 count: eventsInNoTakeMpas?.length ?? 0,
               })}
@@ -85,14 +85,14 @@ const InsightFishing = ({
                 visible={eventsInNoTakeMpasDetailsVisibility}
                 toggleVisibility={toggleEventsInNoTakeMpasDetailsVisibility}
               />
-            </p>
+            </span>
           ) : (
             <p className={styles.secondary}>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpasEmpty)}
             </p>
           )}
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
-            <p>
+            <span>
               {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization, {
                 count: eventsInRfmoWithoutKnownAuthorization?.length ?? 0,
               })}
@@ -101,7 +101,7 @@ const InsightFishing = ({
                 visible={eventsInRfmoDetailsVisibility}
                 toggleVisibility={toggleEventsInRfmoDetailsVisibility}
               />
-            </p>
+            </span>
           ) : (
             <p className={styles.secondary}>
               {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty)}
