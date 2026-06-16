@@ -3,6 +3,12 @@
   position: relative;
 }
 
+@media print {
+  .container {
+    height: auto;
+  }
+}
+
 .helpHintLeft {
   position: absolute;
   top: 50%;

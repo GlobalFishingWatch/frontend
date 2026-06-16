@@ -131,8 +131,12 @@
     background: transparent;
   }
 
-  .eventGroup:not(:first-child) {
-    break-before: page;
+  .eventGroup {
+    break-inside: avoid;
+  }
+
+  .event {
+    break-inside: avoid;
   }
 
   .eventExpanded {

@@ -127,7 +127,7 @@ export function Choice({
           <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': testId })}>
             {pill && (
               <span
-                className={styles.activePill}
+                className={cx(styles.activePill, 'print-hidden')}
                 style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
                 aria-hidden="true"
               />

@@ -12,7 +12,9 @@
   cursor: pointer;
 }
 
-:global(.printing) .scale {
-  left: var(--space-XS);
-  bottom: 3rem;
+@media print {
+  .scale {
+    left: var(--space-XS);
+    bottom: 2.8rem;
+  }
 }

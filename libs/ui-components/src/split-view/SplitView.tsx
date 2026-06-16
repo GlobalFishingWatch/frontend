@@ -66,6 +66,11 @@ export function SplitView(props: SplitViewProps) {
     [showAsideLabel, showMainLabel]
   )
   const [internalOpen, setInternalOpen] = useState<boolean>(isOpen)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen)
+    setInternalOpen(isOpen)
+  }
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
@@ -121,10 +126,6 @@ export function SplitView(props: SplitViewProps) {
     [internalOpen, onToggle]
   )
 
-  useEffect(() => {
-    setInternalOpen(isOpen)
-  }, [isOpen])
-
   return (
     <div
       ref={containerRef}
@@ -139,7 +140,7 @@ export function SplitView(props: SplitViewProps) {
             role="button"
             tabIndex={0}
             aria-label="Resize sidebar"
-            className={cx(styles.resizer, { [styles.resizing]: isDragging })}
+            className={cx(styles.resizer, { [styles.resizing]: isDragging }, 'print-hidden')}
             onMouseDown={handleMouseDown}
           />
         )}

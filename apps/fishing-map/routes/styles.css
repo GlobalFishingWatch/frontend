@@ -72,6 +72,9 @@ body:has(.printing) {
   .card,
   .cardContainer .card {
     background: transparent;
+    break-inside: avoid;
+    padding: 0;
+    margin-inline: 0;
   }
 
   .print-hidden {
@@ -111,4 +114,17 @@ body:has(.printing) {
 /* Ensure this id matches the id in the DeckGLWrapper.tsx */
 #map {
   object-fit: contain;
+}
+
+@media print {
+  #map {
+    position: relative !important;
+    display: block;
+    margin: 0 auto;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: calc(29.7cm - (1cm * 2) - 7rem);
+    object-fit: contain;
+  }
 }

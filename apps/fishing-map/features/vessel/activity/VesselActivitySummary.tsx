@@ -181,7 +181,10 @@ export const VesselActivitySummary = () => {
               return null
             }
             return (
-              <li key={eventType} className={styles.eventTypeRowContainer}>
+              <li
+                key={eventType}
+                className={cx(styles.eventTypeRowContainer, { 'print-hidden': !active })}
+              >
                 <Switch
                   active={active}
                   onClick={onEventChange}
