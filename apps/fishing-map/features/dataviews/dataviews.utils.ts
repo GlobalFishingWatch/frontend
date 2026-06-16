@@ -5,6 +5,7 @@ import type {
   Dataset,
   DatasetsMigration,
   Dataview,
+  DataviewConfigVessel,
   DataviewDatasetConfig,
   DataviewInstance,
   DataviewInstanceOrigin,
@@ -161,13 +162,23 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
-const vesselDataviewInstanceTemplate = (
-  dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets,
-  highlightEventStartTime?: number,
-  highlightEventEndTime?: number,
+type VesselDataviewInstanceTemplateParams = {
+  dataviewSlug: Dataview['slug']
+  datasets: VesselInstanceDatasets
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
   color?: string
-) => {
+  config?: DataviewConfigVessel
+}
+
+const vesselDataviewInstanceTemplate = ({
+  dataviewSlug,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+  color,
+  config,
+}: VesselDataviewInstanceTemplateParams) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
@@ -185,6 +196,7 @@ const vesselDataviewInstanceTemplate = (
       ...(highlightEventEndTime && {
         highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
       }),
+      ...config,
     },
   }
 }
@@ -197,6 +209,7 @@ export const getVesselDataviewInstance = ({
   vesselTemplateDataviews,
   origin,
   color,
+  config,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
@@ -205,6 +218,7 @@ export const getVesselDataviewInstance = ({
   vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
   origin?: DataviewInstanceOrigin
   color?: string
+  config?: DataviewConfigVessel
 }): DataviewInstance => {
   const dataviewTemplate =
     vesselTemplateDataviews.find((dataview) => {
@@ -212,13 +226,14 @@ export const getVesselDataviewInstance = ({
     })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(
-      dataviewTemplate,
+    ...vesselDataviewInstanceTemplate({
+      dataviewSlug: dataviewTemplate,
       datasets,
       highlightEventStartTime,
       highlightEventEndTime,
-      color
-    ),
+      color,
+      config,
+    }),
     deleted: false,
     ...(origin && { origin }),
   }

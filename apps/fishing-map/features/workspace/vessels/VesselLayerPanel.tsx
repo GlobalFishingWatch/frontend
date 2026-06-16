@@ -136,7 +136,7 @@ function VesselLayerPanel({
     (schema) => schema.optionsSelected?.length > 0
   )
 
-  const showMaxGapHoursFilter = dataview.config?.maxGapHours !== undefined
+  const showGapSegmentThresholdFilter = dataview.config?.gapSegmentThreshold !== undefined
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -333,20 +333,20 @@ function VesselLayerPanel({
           size="small"
         />
       </div>
-      {(hasSchemaFilterSelection || showMaxGapHoursFilter) && layerActive && (
+      {(hasSchemaFilterSelection || showGapSegmentThresholdFilter) && layerActive && (
         <div className={styles.propertiesNoPaddingBlock}>
           <div className={styles.filters}>
             <div className={styles.filters}>
-              {showMaxGapHoursFilter && (
+              {showGapSegmentThresholdFilter && (
                 <div className={cx(styles.filter)}>
                   <label className={styles.tagListLabel}>
-                    {t((t) => t.layer.maxGapHours)} ({t((t) => t.common.hours)})
+                    {t((t) => t.layer.gapDuration)} ({t((t) => t.common.hours)})
                   </label>
                   <TagList
                     tags={[
                       {
-                        id: dataview.config?.maxGapHours?.toString() || '',
-                        label: dataview.config?.maxGapHours?.toString() || '',
+                        id: dataview.config?.gapSegmentThreshold?.toString() || '',
+                        label: dataview.config?.gapSegmentThreshold?.toString() || '',
                       },
                     ]}
                     color={dataview.config?.color}
@@ -355,7 +355,7 @@ function VesselLayerPanel({
                       upsertDataviewInstance({
                         id: dataview.id,
                         config: {
-                          maxGapHours: undefined,
+                          gapSegmentThreshold: undefined,
                         },
                       })
                     }}

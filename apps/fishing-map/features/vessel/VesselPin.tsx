@@ -32,6 +32,7 @@ export function VesselPin({
   size = 'small',
   origin,
   onClick,
+  config,
   style,
 }: VesselPinProps) {
   const { t } = useTranslation()
@@ -41,6 +42,7 @@ export function VesselPin({
     vesselToSearch,
     origin,
     onClick,
+    config,
   })
 
   const vesselName = useMemo(

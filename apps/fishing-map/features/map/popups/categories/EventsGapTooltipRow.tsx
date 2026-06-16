@@ -41,6 +41,7 @@ function EventsGapTooltipRow({
   const { t } = useTranslation()
   const dataviews = useSelector(selectEventsDataviews)
   const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
+  const gapSegmentThreshold = encounterDataview?.config?.filters?.duration?.[0] as number
   const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const encounterVesselDatasetId = getRelatedDatasetByType(
     encounterDataset,
@@ -149,6 +150,11 @@ function EventsGapTooltipRow({
                                     vesselToResolve={{
                                       ...event.vessel,
                                       datasetId: vesselDatasetId,
+                                    }}
+                                    config={{
+                                      ...(!!gapSegmentThreshold && {
+                                        gapSegmentThreshold,
+                                      }),
                                     }}
                                   />
                                 )}
