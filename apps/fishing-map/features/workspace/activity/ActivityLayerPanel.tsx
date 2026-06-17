@@ -224,14 +224,15 @@ function ActivityLayerPanel({
                 onClickOutside={closeExpandedContainer}
                 visible={filterOpen}
                 component={
-                  showTurningTidesFilters ? (
-                    <TurningTidesFilters
-                      dataview={dataview}
-                      onConfirmCallback={onToggleFilterOpen}
-                    />
-                  ) : (
+                  <Fragment>
+                    {showTurningTidesFilters && (
+                      <TurningTidesFilters
+                        dataview={dataview}
+                        onConfirmCallback={onToggleFilterOpen}
+                      />
+                    )}
                     <LayerFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
-                  )
+                  </Fragment>
                 }
               >
                 <div className={styles.filterButtonWrapper}>
