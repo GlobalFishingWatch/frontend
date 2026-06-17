@@ -70,7 +70,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   skipColorDomainSampling?: boolean
   // Feature flags
   migramarLayer?: boolean
-  vesselGapFilter?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>

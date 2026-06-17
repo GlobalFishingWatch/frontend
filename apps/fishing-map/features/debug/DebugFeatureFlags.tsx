@@ -87,6 +87,17 @@ const DebugFeatureFlags: React.FC = () => {
       </p>
       <div className={styles.header}>
         <Switch
+          id="option_vessels_max_time_gap_hours"
+          active={debugOptions.vesselGapsThresholdFilter}
+          onClick={() => {
+            dispatch(toggleDebugOption(DebugOption.VesselGapsThresholdFilter))
+          }}
+        />
+        <label htmlFor="option_vessels_max_time_gap_hours">Show vessel gaps threshold filter</label>
+      </div>
+      <p>Show the gaps threshold filter by hours in the vessel layer filters</p>
+      <div className={styles.header}>
+        <Switch
           id="option_disable_dataset_hash"
           active={debugOptions.addDatasetIdHash}
           onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}

@@ -229,7 +229,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!start || !end) {
         return []
       }
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
+      // Only the on/off state is part of the identity: the gap value is applied at render time
+      // (shader uniform + segment helper), so changing it must not trigger a reparse/reload.
+      const computeGaps = Boolean(gapSegmentThreshold)
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -242,6 +245,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             trackThinningZoomConfig,
           }),
           fetch: fetchWithGFWAPI,
+          loadOptions: {
+            'vessel-tracks': {
+              computeGaps,
+            },
+          },
           gapSegmentThreshold,
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,

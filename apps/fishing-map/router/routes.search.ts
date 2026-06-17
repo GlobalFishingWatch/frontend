@@ -115,7 +115,6 @@ export const rootSearchSchema = z
 
     // ── Feature flags ──────────────────────────────────────────────────────
     migramarLayer: optionalBoolean(),
-    vesselGapFilter: optionalBoolean(),
 
     // ── AppState ──────────────────────────────────────────────────────────
     userTab: optionalEnum(UserTab),

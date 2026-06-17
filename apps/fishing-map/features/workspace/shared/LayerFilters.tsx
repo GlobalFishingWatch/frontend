@@ -13,6 +13,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -24,7 +25,6 @@ import LayerFiltersGap from 'features/workspace/shared/LayerFiltersGap'
 import LayerFiltersSource from 'features/workspace/shared/LayerFiltersSource'
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
-import { selectVesselGapFilter } from 'router/routes.selectors'
 import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
@@ -57,7 +57,7 @@ function LayerFilters({
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
   const vesselGroupsOptions = useVesselGroupsOptions()
 
-  const vesselGapFilter = useSelector(selectVesselGapFilter)
+  const { vesselGapsThresholdFilter } = useSelector(selectDebugOptions)
 
   const {
     dataview,
@@ -83,7 +83,7 @@ function LayerFilters({
   const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   const showSourceFilter =
     sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
-  const showGapsFilter = isTrackDataview(dataview) && vesselGapFilter
+  const showGapsFilter = isTrackDataview(dataview) && vesselGapsThresholdFilter
   const showHistogramFilter = isHistogramDataviewSupported(dataview)
 
   const { filtersAllowed, filtersDisabled } = getFiltersInDataview(dataview, {

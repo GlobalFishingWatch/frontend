@@ -199,7 +199,7 @@ export const vessels = ($root.vessels = (() => {
     /**
      * Verifies a DeckTrackAttribute message.
      * @function verify
-     * @memberof vessels.DeckTrackAttributeƒ
+     * @memberof vessels.DeckTrackAttribute
      * @static
      * @param {Object.<string,*>} message Plain object to verify
      * @returns {string|null} `null` if valid, otherwise the reason why it is not

@@ -14,6 +14,7 @@ import { TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
@@ -41,8 +42,11 @@ function EventsGapTooltipRow({
 }: EventsGapTooltipRowProps) {
   const { t } = useTranslation()
   const dataviews = useSelector(selectEventsDataviews)
+  const { vesselGapsThresholdFilter } = useSelector(selectDebugOptions)
   const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
-  const gapSegmentThreshold = encounterDataview?.config?.filters?.duration?.[0] as number
+  const gapSegmentThreshold = vesselGapsThresholdFilter
+    ? (encounterDataview?.config?.filters?.duration?.[0] as number)
+    : undefined
   const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const encounterVesselDatasetId = getRelatedDatasetByType(
     encounterDataset,

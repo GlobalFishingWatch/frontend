@@ -62,7 +62,16 @@ export function getVesselGraphExtentClamped(
   return [Math.max(domain[0], MIN_SPEED_VALUE), Math.min(domain[1], MAX_SPEED_VALUE)]
 }
 
-export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
+export type VesselTrackLoaderParams = {
+  // Whether to compute the per-point time gaps (in hours). Skipped entirely when the
+  // gap-segment feature is off so we don't pay the cost on every track parse.
+  computeGaps?: boolean
+}
+
+export const parseTrack = (
+  arrayBuffer: ArrayBuffer,
+  { computeGaps = false } = {} as VesselTrackLoaderParams
+): VesselTrackData => {
   const track = DeckTrack.decode(new Uint8Array(arrayBuffer)) as unknown as VesselTrackData
   if (!track.attributes.getPath.value.length) {
     return {} as VesselTrackData
@@ -93,14 +102,18 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
   // The shader and the segment helper compare it against gapSegmentThreshold at render time, so
   // the threshold is no longer baked into the parsed data (no reparse when it changes).
   // Boundaries between paths and the last point have no outgoing segment -> 0.
-  const segmentStartIndices = new Set(track.startIndices || [0])
-  const gaps = new Float32Array(defaultAttributesLength)
-  for (let i = 0; i < defaultAttributesLength - 1; i++) {
-    const nextStartsNewPath = segmentStartIndices.has(i + 1)
-    if (nextStartsNewPath) continue
-    const current = timestamps[i * timestampSize]
-    const next = timestamps[(i + 1) * timestampSize]
-    gaps[i] = (next - current) / 3600000
+  // Computed only when the gap-segment feature is on (computeGaps).
+  let gaps: Float32Array | undefined
+  if (computeGaps) {
+    const segmentStartIndices = new Set(track.startIndices || [0])
+    gaps = new Float32Array(defaultAttributesLength)
+    for (let i = 0; i < defaultAttributesLength - 1; i++) {
+      const nextStartsNewPath = segmentStartIndices.has(i + 1)
+      if (nextStartsNewPath) continue
+      const current = timestamps[i * timestampSize]
+      const next = timestamps[(i + 1) * timestampSize]
+      gaps[i] = (next - current) / 3600000
+    }
   }
 
   return {
@@ -124,10 +137,12 @@ export const parseTrack = (arrayBuffer: ArrayBuffer): VesselTrackData => {
         size: elevationSize,
         extent: elevationExtent,
       },
-      getGap: {
-        value: gaps,
-        size: 1,
-      },
+      ...(gaps && {
+        getGap: {
+          value: gaps,
+          size: 1,
+        },
+      }),
       // TODO getCourse
     },
   } as VesselTrackData

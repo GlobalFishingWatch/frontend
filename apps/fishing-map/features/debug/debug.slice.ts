@@ -18,6 +18,7 @@ export enum DebugOption {
   AreasOnScreen = 'areasOnScreen',
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
+  VesselGapsThresholdFilter = 'vesselGapsThresholdFilter',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -46,6 +47,7 @@ export const debugInitialState: DebugState = {
     areasOnScreen: false,
     vesselsAsPositions: false,
     hideVesselNames: false,
+    vesselGapsThresholdFilter: false,
   },
 }
 

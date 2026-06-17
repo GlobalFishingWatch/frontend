@@ -208,7 +208,6 @@ export const selectSidePanelContent = selectQueryParam('sidePanelContent')
 
 // Feature flags
 export const selectMigramarLayer = selectQueryParam('migramarLayer')
-export const selectVesselGapFilter = selectQueryParam('vesselGapFilter')
 
 // Map state
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
