@@ -6,8 +6,9 @@ import { DateTime } from 'luxon'
 import { type VesselInfo } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { IS_RANDOM_FOREST_ENABLED } from 'data/config'
 import type { VesselLastIdentity } from 'features/search/search.slice'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import VesselIdentityGFWExtendedGeartype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedGeartype'
 import VesselIdentityGFWExtendedVesseltype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedVesseltype'
@@ -23,7 +24,6 @@ const VesselIdentityCombinedSourceField = ({
   identity,
   property,
 }: VesselIdentityCombinedSourceFieldProps) => {
-  const isJACUser = useSelector(selectIsJACUser)
   const isGFWUser = useSelector(selectIsGFWUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const [vesseltypesExpanded, setVesseltypesExpanded] = useState<number | null>(null)
@@ -75,7 +75,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if ((isGFWUser || isJACUser) && property === 'geartypes') {
+          if (isGFWUser && property === 'geartypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
@@ -92,7 +92,7 @@ const VesselIdentityCombinedSourceField = ({
             )
           }
 
-          if (isGFWUser && property === 'shiptypes') {
+          if (isGFWUser && IS_RANDOM_FOREST_ENABLED && property === 'shiptypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleVesselTypesExpanded(index)} className={styles.expandable}>
