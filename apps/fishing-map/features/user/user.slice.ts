@@ -1,24 +1,20 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import {
-  getAccessTokenFromUrl,
-  GFWAPI,
-  removeAccessTokenFromUrl,
-} from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
@@ -31,6 +27,7 @@ interface UserState {
   status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
+  loginSource: LoginSource | null
 }
 
 const initialState: UserState = {
@@ -40,6 +37,7 @@ const initialState: UserState = {
   status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
+  loginSource: null,
 }
 
 type UserSliceState = { user: UserState }
@@ -54,27 +52,12 @@ export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
 
 export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
-  async ({ guest }: { guest: boolean } = { guest: false }) => {
+  async ({ guest, accessToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
     if (guest) {
       return await GFWAPI.fetchGuestUser()
     }
-    const accessToken = getAccessTokenFromUrl()
     try {
       const user = await GFWAPI.login({ accessToken })
-      if (accessToken) {
-        trackEvent({
-          category: TrackCategory.User,
-          action: 'login',
-          other: {
-            user_id: user.id,
-            // email: user.email,
-          },
-        })
-      }
-
-      if (accessToken) {
-        removeAccessTokenFromUrl()
-      }
 
       return user
     } catch (e: any) {
@@ -89,32 +72,20 @@ export const fetchUserThunk = createAsyncThunk(
   }
 )
 
-export const logoutUserThunk = createAsyncThunk(
-  'user/logout',
-  async (
-    { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
-    { dispatch, getState }
-  ) => {
-    try {
-      await GFWAPI.logout()
-      dispatch(cleanCurrentWorkspaceData())
-      dispatch(removeGFWStaffOnlyDataviews())
-    } catch (e: any) {
-      console.warn(e)
-    }
-    if (loginRedirect) {
-      const state = getState() as any
-      const historyNavigation = state.workspace?.historyNavigation || []
-      setHistoryNavigation(historyNavigation)
-      redirectToLogin()
-    }
+export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
+  try {
+    await GFWAPI.logout()
+    dispatch(cleanCurrentWorkspaceData())
+    dispatch(removeGFWStaffOnlyDataviews())
+  } catch (e: any) {
+    console.warn(e)
   }
-)
+})
 
 const userSlice = createSlice({
   name: 'user',
   initialState: () => {
-    if (typeof window === 'undefined') return initialState
+    if (!getIsBrowser()) return initialState
     const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}') as UserSettings
     return { ...initialState, settings }
   },
@@ -128,6 +99,9 @@ const userSlice = createSlice({
     setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
       state.settings = { ...state.settings, ...action.payload }
       localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
+    },
+    setLoginSource: (state, action: PayloadAction<LoginSource | null>) => {
+      state.loginSource = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -150,6 +124,7 @@ const userSlice = createSlice({
   },
 })
 
-export const { setUserSetting, setLoginExpired, setUserLanguage } = userSlice.actions
+export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource } =
+  userSlice.actions
 
 export default userSlice.reducer

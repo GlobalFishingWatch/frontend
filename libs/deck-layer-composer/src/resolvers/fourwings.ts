@@ -161,12 +161,16 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     aggregationOperation,
     availableIntervals,
     skipColorDomainSampling,
-    highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
-    ...(highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
-    }),
-    ...(highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
+    ...(visualizationMode === 'positions' && {
+      ...(highlightedFeatures && {
+        highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
+      }),
+      ...(highlightedTime?.start && {
+        highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
+      }),
+      ...(highlightedTime?.end && {
+        highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
+      }),
     }),
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,

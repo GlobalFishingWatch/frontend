@@ -16,7 +16,7 @@ import {
   selectIsWorkspaceLocation,
   selectIsWorkspaceVesselLocation,
   selectMapDrawingEditId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import {
   PREVIEW_BUFFER_GENERATOR_ID,

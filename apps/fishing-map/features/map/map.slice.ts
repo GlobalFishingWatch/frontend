@@ -2,7 +2,6 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import { castDraft } from 'immer'
-import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -58,6 +57,7 @@ import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import type { RootState } from 'reducers'
 import type { AppDispatch } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -368,7 +368,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
                 let infoDataset = selectDatasetById(id)(state)
                 if (!infoDataset) {
                   // It needs to be request when it hasn't been loaded yet
-                  const action = await dispatch(fetchDatasetByIdThunk(id))
+                  const action = await dispatch(fetchDatasetByIdThunk({ id }))
                   if (fetchDatasetByIdThunk.fulfilled.match(action)) {
                     infoDataset = action.payload
                   }
@@ -714,7 +714,7 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
             let thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
             if (!thumbnailDataset) {
               thumbnailDataset = await dispatch(
-                fetchDatasetByIdThunk(thumbnailDatasetId as string)
+                fetchDatasetByIdThunk({ id: thumbnailDatasetId as string })
               ).unwrap()
             }
             if (thumbnailDataset) {

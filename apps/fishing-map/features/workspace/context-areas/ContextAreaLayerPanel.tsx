@@ -18,14 +18,7 @@ import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/layer-library/layers-context'
-import {
-  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
-  HIDDEN_DATAVIEW_FILTERS,
-  MPA_DATAVIEW_INSTANCE_ID,
-  ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-} from 'data/workspaces'
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
@@ -34,25 +27,32 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
 import { useContextInteractions } from 'features/map/popups/categories/ContextLayers.hooks'
+import { getModalParent } from 'features/modals/modals.utils'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   CONTEXT_FEATURES_LIMIT,
+  DATAVIEWS_WARNING,
   filterFeaturesByDistance,
   parseContextFeatures,
 } from 'features/workspace/context-areas/context.utils'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import {
+  POINT_PROPERTIES,
+  POLYGON_PROPERTIES,
+} from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import Filters from '../shared/LayerFilters'
-import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
-import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerProperties from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
 import Remove from '../shared/Remove'
@@ -66,12 +66,6 @@ type LayerPanelProps = {
   mergedDataviewId?: string
 }
 
-export const DATAVIEWS_WARNING = [
-  EEZ_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-]
 const LIST_ELEMENT_HEIGHT = 30
 const LIST_ELLIPSIS_HEIGHT = 14
 const LIST_MARGIN_HEIGHT = 10
@@ -88,6 +82,7 @@ function LayerPanel({
   const { onReportClick } = useContextInteractions()
   const [filterOpen, setFiltersOpen] = useState(false)
   const debugOptions = useSelector(selectDebugOptions)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const [areasOnScreenOpen, setAreasOnScreenOpen] = useState(false)
   const [featuresOnScreen, setFeaturesOnScreen] = useState<FeaturesOnScreen>({
     total: 0,
@@ -198,8 +193,8 @@ function LayerPanel({
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
-    return guestUser && dataviewHasPrivateDataset ? (
-      <DatasetLoginRequired dataview={dataview} />
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
     ) : (
       <DatasetNotFound dataview={dataview} />
     )
@@ -302,7 +297,7 @@ function LayerPanel({
                 </div>
               </ExpandedContainer>
             )}
-          {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
+          {!isBasemapLabelsDataview && <InfoButton dataview={dataview} />}
           <Remove
             dataview={dataview}
             loading={!showSortHandler && layerActive && !layerLoaded}
@@ -355,6 +350,7 @@ function LayerPanel({
                     isOpen={modalDataWarningOpen}
                     onClose={onDataWarningModalClose}
                     contentClassName={styles.modalContent}
+                    parentSelector={getModalParent}
                   >
                     {htmlSafeParse(t((t: any) => t.dataview[dataview?.id].dataWarningDetail))}
                   </Modal>

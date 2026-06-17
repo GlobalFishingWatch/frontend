@@ -1,14 +1,31 @@
+@keyframes popoverEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .expandedContainer {
-  width: 100%;
-  transition: none;
   padding: var(--space-S);
-  padding-bottom: var(--space-M);
-  background-color: var(--color-off-white);
-  border-top: var(--border);
-  border-bottom: var(--border);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-1);
   z-index: 1;
+  filter: var(--filter-drop-shadow-2);
+  transform-origin: top center;
+  animation: popoverEnter 150ms var(--ease-out-strong) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expandedContainer {
+    animation: none;
+  }
 }
 
 .tooltipArrow {
-  fill: var(--color-off-white);
+  fill: var(--color-white);
 }

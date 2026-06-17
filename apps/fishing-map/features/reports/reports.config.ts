@@ -4,6 +4,7 @@ import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
+  MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { BufferOperation, BufferUnit } from 'types'
@@ -23,12 +24,23 @@ export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 export const REPORT_VESSELS_GRAPH_GEARTYPE = 'geartype' as const
 export const REPORT_VESSELS_GRAPH_VESSELTYPE = 'vesselType' as const
 export const REPORT_VESSELS_GRAPH_FLAG = 'flag' as const
+export const REPORT_VESSEL_GRAPHS = [
+  REPORT_VESSELS_GRAPH_GEARTYPE,
+  REPORT_VESSELS_GRAPH_VESSELTYPE,
+  REPORT_VESSELS_GRAPH_FLAG,
+] as const
 
 // ACTIVITY GRAPH
 export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution' as const
 export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter' as const
 export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison' as const
 export const REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON = 'datasetComparison' as const
+export const REPORT_ACTIVITY_GRAPHS = [
+  REPORT_ACTIVITY_GRAPH_EVOLUTION,
+  REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+  REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
+] as const
 
 // EVENTS GRAPH
 export const REPORT_EVENTS_GRAPH_EVOLUTION = 'evolution' as const
@@ -36,6 +48,13 @@ export const REPORT_EVENTS_GRAPH_GROUP_BY_FLAG = 'byFlag' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_RFMO = 'byRFMO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_FAO = 'byFAO' as const
 export const REPORT_EVENTS_GRAPH_GROUP_BY_EEZ = 'byEEZ' as const
+export const REPORT_EVENTS_GRAPHS = [
+  REPORT_EVENTS_GRAPH_EVOLUTION,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+] as const
 
 export const REPORT_EVENTS_GRAPH_GROUP_BY_PARAMS: Record<string, StatsGroupBy> = {
   [REPORT_EVENTS_GRAPH_GROUP_BY_FLAG]: 'FLAG' as const,
@@ -59,8 +78,6 @@ export const REPORT_EVENTS_RFMO_AREAS = [
   'SPRFMO',
   'WCPFC',
 ]
-
-export const CONTEXT_DATAVIEWS_WITH_REPORTS = [FIXED_SAR_INFRASTRUCTURE]
 
 export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Category

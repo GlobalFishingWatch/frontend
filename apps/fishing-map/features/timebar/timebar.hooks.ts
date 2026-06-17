@@ -6,11 +6,11 @@ import type { DateTimeUnit } from 'luxon'
 
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { DEFAULT_CALLBACK_URL_KEY, usePrevious } from '@globalfishingwatch/react-hooks'
-import { EVENT_SOURCE, isValidISODate } from '@globalfishingwatch/timebar'
+import { usePrevious } from '@globalfishingwatch/react-hooks'
+import { EVENT_SOURCE } from '@globalfishingwatch/timebar'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
@@ -29,8 +29,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { updateUrlTimerange } from 'routes/routes.actions'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 import { getUTCDateTime } from 'utils/dates'
@@ -46,7 +45,7 @@ import {
   setHighlightedEvents,
 } from './timebar.slice'
 
-const TIMERANGE_DEBOUNCED_TIME = 1000
+const isValidISODate = (value: string) => !isNaN(Date.parse(value))
 
 const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
   try {
@@ -71,32 +70,28 @@ timerangeState.onMount = (setAtom) => {
   if (urlTimerange) {
     return setAtom(urlTimerange)
   }
-  const redirectUrl =
-    typeof window !== 'undefined' ? window.localStorage.getItem(DEFAULT_CALLBACK_URL_KEY) : null
-  // Workaround to get start and end date from redirect url as the
-  // location reducer isn't ready until initialDispatch
-  if (redirectUrl) {
-    try {
-      const redirectTimerange = getTimerangeFromUrl(JSON.parse(redirectUrl))
-      if (redirectTimerange) {
-        setAtom(redirectTimerange)
-      }
-    } catch (e: any) {
-      console.warn(e)
-    }
-  }
 }
+
+const TIMERANGE_URL_DEBOUNCE = 300
 
 export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
 
-  const updateUrlTimerangeDebounced = useMemo(
-    () => debounce(dispatch(updateUrlTimerange), TIMERANGE_DEBOUNCED_TIME),
-    [dispatch]
+  // Debounce the URL write so we only navigate once the user stops scrubbing the
+  // timebar, instead of firing a full router.navigate() on every frame (navigation storm).
+  const debouncedReplace = useMemo(
+    () =>
+      debounce((timerange: TimeRange) => {
+        replaceQueryParams(timerange)
+      }, TIMERANGE_URL_DEBOUNCE),
+    [replaceQueryParams]
   )
+
+  useEffect(() => () => debouncedReplace.cancel(), [debouncedReplace])
 
   const setTimerange = useCallback(
     (timerange: TimeRange, stickToInterval = true) => {
@@ -138,15 +133,15 @@ export const useSetTimerange = () => {
         return stuckTimerange
       })
       if (isWorkspaceMapReady) {
-        updateUrlTimerangeDebounced(stuckTimerange)
+        debouncedReplace(stuckTimerange)
       }
     },
     [
+      debouncedReplace,
       dispatch,
       hintsDismissed?.changingTheTimeRange,
       isWorkspaceMapReady,
       setAtomTimerange,
-      updateUrlTimerangeDebounced,
     ]
   )
 
@@ -180,22 +175,16 @@ export const useTimerangeConnect = () => {
 }
 
 export const useDisableHighlightTimeConnect = () => {
-  const highlightedTime = useSelector(selectHighlightedTime)
   const dispatch = useAppDispatch()
+  const appStore = useAppStore()
 
   const dispatchDisableHighlightedTime = useCallback(() => {
-    if (highlightedTime !== undefined) {
+    if (selectHighlightedTime(appStore.getState()) !== undefined) {
       dispatch(disableHighlightedTime())
     }
-  }, [dispatch, highlightedTime])
+  }, [dispatch, appStore])
 
-  return useMemo(
-    () => ({
-      highlightedTime,
-      dispatchDisableHighlightedTime,
-    }),
-    [highlightedTime, dispatchDisableHighlightedTime]
-  )
+  return { dispatchDisableHighlightedTime }
 }
 
 export const useHighlightedEventsConnect = () => {
@@ -205,6 +194,7 @@ export const useHighlightedEventsConnect = () => {
   const dispatch = useAppDispatch()
 
   const hoveredEventsRef = useRef(hoveredEvents)
+
   // eslint-disable-next-line react-hooks/refs
   hoveredEventsRef.current = hoveredEvents
 
@@ -232,26 +222,24 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
-
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatchTimebarVisualisation = useCallback(
     (newTimebarVisualisation: TimebarVisualisations | undefined, automated = false) => {
       if (timebarVisualisation !== newTimebarVisualisation) {
-        dispatchQueryParams({ timebarVisualisation: newTimebarVisualisation })
+        replaceQueryParams({ timebarVisualisation: newTimebarVisualisation })
       }
       if (!automated && !hasChangedSettingsOnce) {
         dispatch(setHasChangedSettings())
       }
     },
-    [timebarVisualisation, dispatchQueryParams, hasChangedSettingsOnce, dispatch]
+    [timebarVisualisation, hasChangedSettingsOnce, dispatch]
   )
 
   return useMemo(
@@ -261,15 +249,12 @@ export const useTimebarVisualisationConnect = () => {
 }
 
 export const useTimebarEnvironmentConnect = () => {
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
 
-  const dispatchTimebarSelectedEnvId = useCallback(
-    (timebarSelectedEnvId: string) => {
-      dispatchQueryParams({ timebarSelectedEnvId })
-    },
-    [dispatchQueryParams]
-  )
+  const dispatchTimebarSelectedEnvId = useCallback((timebarSelectedEnvId: string) => {
+    replaceQueryParams({ timebarSelectedEnvId })
+  }, [])
 
   return useMemo(
     () => ({
@@ -281,15 +266,12 @@ export const useTimebarEnvironmentConnect = () => {
 }
 
 export const useTimebarUserPointsConnect = () => {
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedUserId = useSelector(selectTimebarSelectedUserId)
 
-  const dispatchTimebarSelectedUserId = useCallback(
-    (timebarSelectedUserId: string) => {
-      dispatchQueryParams({ timebarSelectedUserId })
-    },
-    [dispatchQueryParams]
-  )
+  const dispatchTimebarSelectedUserId = useCallback((timebarSelectedUserId: string) => {
+    replaceQueryParams({ timebarSelectedUserId })
+  }, [])
 
   return useMemo(
     () => ({
@@ -301,15 +283,12 @@ export const useTimebarUserPointsConnect = () => {
 }
 
 export const useTimebarVesselGroupConnect = () => {
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedVGId = useSelector(selectTimebarSelectedVGId)
 
-  const dispatchTimebarSelectedVGId = useCallback(
-    (timebarSelectedVGId: string) => {
-      dispatchQueryParams({ timebarSelectedVGId })
-    },
-    [dispatchQueryParams]
-  )
+  const dispatchTimebarSelectedVGId = useCallback((timebarSelectedVGId: string) => {
+    replaceQueryParams({ timebarSelectedVGId })
+  }, [])
 
   return useMemo(
     () => ({ timebarSelectedVGId, dispatchTimebarSelectedVGId }),
@@ -318,14 +297,11 @@ export const useTimebarVesselGroupConnect = () => {
 }
 
 export const useTimebarGraphConnect = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarGraph = useSelector(selectTimebarGraph)
-  const { dispatchQueryParams } = useLocationConnect()
-  const dispatchTimebarGraph = useCallback(
-    (timebarGraph: TimebarGraphs) => {
-      dispatchQueryParams({ timebarGraph })
-    },
-    [dispatchQueryParams]
-  )
+  const dispatchTimebarGraph = useCallback((timebarGraph: TimebarGraphs) => {
+    replaceQueryParams({ timebarGraph })
+  }, [])
 
   return useMemo(
     () => ({
@@ -406,7 +382,6 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

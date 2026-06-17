@@ -6,7 +6,7 @@ import type { Feature, Polygon } from 'geojson'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import PopupWrapper from 'features/map/popups/PopupWrapper'
-import { selectMapDrawingMode } from 'routes/routes.selectors'
+import { selectMapDrawingMode } from 'router/routes.selectors'
 
 import { useDrawLayerInstance } from './draw.hooks'
 
@@ -40,7 +40,7 @@ export const CoordinateEditOverlay = () => {
     drawingMode === 'polygons'
       ? drawData &&
         currentFeatureIndexes?.every(
-          (index) =>
+          (index: number) =>
             (drawData?.features as Feature<Polygon>[])?.[index]?.geometry?.coordinates?.[0].length >
             4
         )

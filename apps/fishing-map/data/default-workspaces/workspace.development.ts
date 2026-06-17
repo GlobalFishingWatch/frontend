@@ -1,7 +1,12 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
-import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
+import {
+  APP_NAME,
+  DEFAULT_TIME_RANGE,
+  DEFAULT_VIEWPORT,
+  IS_RANDOM_FOREST_ENABLED,
+} from 'data/config'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -36,6 +41,10 @@ import {
   VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
+  RANDOM_FOREST_FISHING_EFFORT_DATAVIEW_ID,
+  RANDOM_FOREST_PRESENCE_DATAVIEW_ID,
+} from 'features/dataviews/dataviews.mock'
+import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
@@ -64,27 +73,46 @@ const workspace: Workspace<WorkspaceState> = {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
-    {
-      id: AIS_DATAVIEW_INSTANCE_ID,
-      config: {
-        visible: true,
-        filters: {
-          distance_from_port_km: '3',
-        },
-      },
-      dataviewId: FISHING_DATAVIEW_SLUG_AIS,
-    },
-    {
-      id: VMS_DATAVIEW_INSTANCE_ID,
-      dataviewId: FISHING_DATAVIEW_SLUG_VMS,
-    },
-    {
-      id: PRESENCE_DATAVIEW_INSTANCE_ID,
-      config: {
-        visible: false,
-      },
-      dataviewId: PRESENCE_DATAVIEW_SLUG,
-    },
+    ...(IS_RANDOM_FOREST_ENABLED
+      ? [
+          {
+            id: 'random-forest-fishing',
+            config: {
+              visible: true,
+              datasets: ['public-global-fishing-effort-vi-653:v1.0'],
+              filters: { distance_from_port_km: '3' },
+            },
+            dataviewId: RANDOM_FOREST_FISHING_EFFORT_DATAVIEW_ID,
+          },
+          {
+            id: 'random-forest-presence',
+            config: { visible: false },
+            dataviewId: RANDOM_FOREST_PRESENCE_DATAVIEW_ID,
+          },
+        ]
+      : [
+          {
+            id: AIS_DATAVIEW_INSTANCE_ID,
+            config: {
+              visible: true,
+              filters: {
+                distance_from_port_km: '3',
+              },
+            },
+            dataviewId: FISHING_DATAVIEW_SLUG_AIS,
+          },
+          {
+            id: VMS_DATAVIEW_INSTANCE_ID,
+            dataviewId: FISHING_DATAVIEW_SLUG_VMS,
+          },
+          {
+            id: PRESENCE_DATAVIEW_INSTANCE_ID,
+            config: {
+              visible: false,
+            },
+            dataviewId: PRESENCE_DATAVIEW_SLUG,
+          },
+        ]),
     {
       id: SENTINEL2_DATAVIEW_INSTANCE_ID,
       dataviewId: SENTINEL2_DATAVIEW_SLUG,
@@ -125,7 +153,11 @@ const workspace: Workspace<WorkspaceState> = {
     //   id: GAPS_EVENTS_SOURCE_ID,
     //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
     //   config: {
-    //     visible: false,
+    //     visible: true,
+    //     filters: {
+    //       start_distance_from_shore_trunc: 1,
+    //       duration: ['4', '48'],
+    //     },
     //   },
     // },
     {

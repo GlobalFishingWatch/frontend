@@ -5,11 +5,10 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 
-import { PUBLIC_SUFIX } from './config'
+import { IS_RANDOM_FOREST_ENABLED, PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
-export const WORKSPACE_ENV =
-  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) || (process.env.NODE_ENV as WorkspaceEnv) || 'production'
+export const WORKSPACE_ENV = (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) || (import.meta.env.MODE as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
@@ -77,8 +76,10 @@ export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = IS_RANDOM_FOREST_ENABLED
+  ? ('fishing-map-vessel-track-random-forest' as const)
+  : (`fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const)
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const
@@ -90,7 +91,6 @@ export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = `template-for-bigquery-cluster-ev
 const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = `default-environmental-layer` as const
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -102,6 +102,8 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
+
+export const VESSEL_TEMPLATE_DATAVIEW_SLUGS = [TEMPLATE_VESSEL_DATAVIEW_SLUG, TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS]
 
 export const DEFAULT_FISHING_DATASET_ID = `public-global-fishing-effort${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
 export const DEFAULT_PRESENCE_DATASET_ID = `public-global-presence${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
@@ -169,6 +171,7 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   ...DETECTIONS_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
   ...TEMPLATE_DATAVIEW_SLUGS,
+  ...VESSEL_TEMPLATE_DATAVIEW_SLUGS,
   ...CONTEXT_LAYERS_DATAVIEWS,
 ]
 

@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
-import AutoSizer from 'react-virtualized-auto-sizer'
-import { VariableSizeList as List } from 'react-window'
+import type { RowComponentProps } from 'react-window'
+import { List } from 'react-window'
 import { fitBounds } from '@math.gl/web-mercator'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
@@ -40,6 +40,92 @@ import { useSelectedTracksConnect } from './sidebar.hooks'
 
 import styles from './Sidebar.module.css'
 
+function formatedDate(timestamp: number | null | undefined): string {
+  if (timestamp) {
+    const date = DateTime.fromMillis(timestamp, { zone: 'UTC' })
+    return [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ')
+  }
+  return ''
+}
+
+type SegmentRowItemProps = {
+  segments: SelectedTrackType[]
+  trackActions: SelectOption[]
+  onSegmentOver: (segment: SelectedTrackType) => void
+  resetHighlight: () => void
+  onFitSelectedSegmentBoundsClick: (segment: SelectedTrackType) => void
+  dispatchUpdateActionSelectedTrack: (index: number, id: string) => void
+  dispatchDeleteSelectedTrack: (index: number) => void
+}
+
+function SegmentRowItem({
+  index,
+  style,
+  segments,
+  trackActions,
+  onSegmentOver,
+  resetHighlight,
+  onFitSelectedSegmentBoundsClick,
+  dispatchUpdateActionSelectedTrack,
+  dispatchDeleteSelectedTrack,
+}: RowComponentProps<SegmentRowItemProps>): React.ReactElement {
+  const segment = segments[index]
+  const selectedAction =
+    trackActions.filter((action) => action.id === segment.action).shift() || undefined
+  return (
+    <div
+      key={`segment-${index}`}
+      data-testid={`segment-${index}`}
+      style={style}
+      className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
+      onMouseEnter={() => onSegmentOver(segment)}
+      onMouseLeave={resetHighlight}
+    >
+      <div className={cx(styles.segmentField, styles.segmentTimestamp)}>
+        <button
+          onClick={() => onFitSelectedSegmentBoundsClick(segment)}
+          className={styles.segmentButton}
+        >
+          {formatedDate(segment.start)}
+        </button>
+        <button
+          onClick={() => onFitSelectedSegmentBoundsClick(segment)}
+          className={styles.segmentButton}
+        >
+          {formatedDate(segment.end)}
+        </button>
+      </div>
+      <div className={cx(styles.segmentField, styles.segmentActivity)}>
+        <Select
+          className={styles.shortSelect}
+          options={trackActions}
+          selectedOption={selectedAction}
+          onRemove={() => {
+            dispatchUpdateActionSelectedTrack(index, '')
+            resetHighlight()
+            return
+          }}
+          onSelect={(selected: SelectOption) => {
+            dispatchUpdateActionSelectedTrack(index, selected.id as string)
+            resetHighlight()
+            return
+          }}
+        />
+      </div>
+      <div className={cx(styles.segmentField, styles.segmentAction)}>
+        <IconButton
+          icon="delete"
+          type="warning"
+          onClick={() => {
+            dispatchDeleteSelectedTrack(index)
+            resetHighlight()
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
 const Sidebar: React.FC = (props): React.ReactElement<any> => {
   const {
     uploadingTrack,
@@ -59,14 +145,6 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
   const dispatch = useAppDispatch()
   const track = useSelector(getVesselTrackGeojsonByDateRange)
   const { allowedAppAccess, allowedProjectAccess, projects, user, logged } = useUser()
-  const formatedDate = (timestamp: number | null | undefined) => {
-    if (timestamp) {
-      const date = DateTime.fromMillis(timestamp, { zone: 'UTC' })
-      return [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ')
-    }
-
-    return ''
-  }
 
   const deckMap = useDeckMap()
   const onFitBoundsClick = useCallback(() => {
@@ -278,76 +356,20 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
       )}
       <div className={styles.segments} data-testid="segments">
         {segments && segments.length > 0 && (
-          <AutoSizer disableWidth={true}>
-            {({ width, height }: any) => (
-              <List
-                width={width}
-                height={height}
-                itemCount={segments.length}
-                itemData={segments}
-                itemSize={() => 61}
-              >
-                {({ index, style }) => {
-                  const segment = segments[index]
-                  const selectedAction =
-                    trackActions.filter((action) => action.id === segment.action).shift() ||
-                    undefined
-                  return (
-                    <div
-                      key={`segment-${index}`}
-                      data-testid={`segment-${index}`}
-                      style={style}
-                      className={cx(styles.segment, !selectedAction && styles.segmentActivityEmpty)}
-                      onMouseEnter={() => onSegmentOver(segment)}
-                      onMouseLeave={resetHighlight}
-                    >
-                      <div className={cx(styles.segmentField, styles.segmentTimestamp)}>
-                        <button
-                          onClick={() => onFitSelectedSegmentBoundsClick(segment)}
-                          className={styles.segmentButton}
-                        >
-                          {formatedDate(segment.start)}
-                        </button>
-                        <button
-                          onClick={() => onFitSelectedSegmentBoundsClick(segment)}
-                          className={styles.segmentButton}
-                        >
-                          {formatedDate(segment.end)}
-                        </button>
-                      </div>
-                      <div className={cx(styles.segmentField, styles.segmentActivity)}>
-                        <Select
-                          className={styles.shortSelect}
-                          options={trackActions}
-                          selectedOption={selectedAction}
-                          onRemove={() => {
-                            dispatchUpdateActionSelectedTrack(index, '')
-                            resetHighlight()
-                            return
-                          }}
-                          onSelect={(selected: SelectOption) => {
-                            dispatchUpdateActionSelectedTrack(index, selected.id as string)
-                            resetHighlight()
-                            return
-                          }}
-                        />
-                      </div>
-                      <div className={cx(styles.segmentField, styles.segmentAction)}>
-                        <IconButton
-                          icon="delete"
-                          type="warning"
-                          onClick={() => {
-                            dispatchDeleteSelectedTrack(index)
-                            resetHighlight()
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )
-                }}
-              </List>
-            )}
-          </AutoSizer>
+          <List
+            rowComponent={SegmentRowItem}
+            rowCount={segments.length}
+            rowHeight={61}
+            rowProps={{
+              segments,
+              trackActions,
+              onSegmentOver,
+              resetHighlight,
+              onFitSelectedSegmentBoundsClick,
+              dispatchUpdateActionSelectedTrack,
+              dispatchDeleteSelectedTrack,
+            }}
+          />
         )}
       </div>
       <div className={styles.actionButtons}>

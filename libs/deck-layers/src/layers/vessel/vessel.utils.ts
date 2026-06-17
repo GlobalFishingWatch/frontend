@@ -1,6 +1,5 @@
 import { scaleLinear } from 'd3-scale'
 import { uniqBy } from 'es-toolkit'
-import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
@@ -13,9 +12,23 @@ import type {
 
 import { getUTCDateTime } from '../../utils'
 
+import type { VesselsColorByProperty } from './vessel.config'
 import { VESSEL_GRAPH_COLORS } from './vessel.config'
 import type { VesselEventsLayer } from './VesselEventsLayer'
-import type { VesselsColorByProperty } from './VesselTrackPathLayer'
+
+function memoize<T extends (...args: any[]) => any>(
+  fn: T,
+  resolver: (...args: Parameters<T>) => string
+): T {
+  const cache = new Map<string, ReturnType<T>>()
+  return ((...args: Parameters<T>): ReturnType<T> => {
+    const key = resolver(...args)
+    if (cache.has(key)) return cache.get(key)!
+    const result = fn(...args)
+    cache.set(key, result)
+    return result
+  }) as T
+}
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
@@ -54,7 +67,7 @@ export type GetSegmentsFromDataParams = {
   includeCoordinates?: boolean
   startTime?: number
   endTime?: number
-  maxTimeGapHours?: number
+  gapSegmentThreshold?: number
 }
 
 export const getSegmentsFromData = memoize(
@@ -65,7 +78,7 @@ export const getSegmentsFromData = memoize(
       includeCoordinates = false,
       startTime,
       endTime,
-      maxTimeGapHours,
+      gapSegmentThreshold,
     } = {} as GetSegmentsFromDataParams
   ): TrackSegment[] => {
     const segmentsIndexes = data.startIndices
@@ -84,8 +97,7 @@ export const getSegmentsFromData = memoize(
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
     const gapSize = (data as VesselTrackData).attributes?.getGap?.size || 1
-    const maxTimeGapMs = maxTimeGapHours ? maxTimeGapHours * 3600000 : undefined
-    const hasGapSupport = !!(gaps && maxTimeGapMs)
+    const hasGapSupport = !!(gaps && gapSegmentThreshold)
     const totalPoints = timestamps.length / timestampSize
 
     // Pre-compute wrapped longitudes if needed
@@ -108,20 +120,13 @@ export const getSegmentsFromData = memoize(
       }
     }
 
-    // Helper to check if a point is a gap point
-    const isGapPoint = (index: number): boolean => {
-      if (!hasGapSupport || !gaps) return false
-      const gapIndex = index * gapSize
-      return gapIndex < gaps.length && gaps[gapIndex] === 1
-    }
-
-    // Helper to check if a segment is entirely gap points
-    const isGapSegment = (segmentStart: number, segmentEnd: number): boolean => {
-      if (!hasGapSupport) return false
-      for (let index = segmentStart; index < segmentEnd; index++) {
-        if (!isGapPoint(index)) return false
+    // The segment from point `index` to the next point exceeds the gap threshold.
+    // getGap stores the gap in hours, so compare directly against gapSegmentThreshold.
+    const isGapAfter = (index: number): boolean => {
+      if (!hasGapSupport || !gaps) {
+        return false
       }
-      return true
+      return gaps[index * gapSize] > (gapSegmentThreshold as number)
     }
 
     const isTimestampInRange = (timestamp: number, isFirstAfterEndTime: boolean): boolean => {
@@ -133,27 +138,16 @@ export const getSegmentsFromData = memoize(
     // Track if we've already included the first point after endTime (for course calculation)
     let firstPointAfterEndTimeIncluded = false
 
-    const segments = segmentsIndexes.map((segmentIndex, i) => {
-      const points = [] as TrackSegment
+    const segments: TrackSegment[] = []
+
+    segmentsIndexes.forEach((segmentIndex, i) => {
       const isLastSegment = i === segmentsIndexes.length - 1
       const nextSegmentIndex = segmentsIndexes[i + 1] ?? totalPoints
       const segmentEndIndex = isLastSegment ? totalPoints : nextSegmentIndex
 
-      // Skip gap segments entirely
-      if (hasGapSupport && isGapSegment(segmentIndex, segmentEndIndex)) {
-        return points
-      }
-
-      // Check if previous segment was a gap (to avoid duplicate boundary points)
-      const previousSegmentIsGap =
-        i > 0 &&
-        hasGapSupport &&
-        segmentsIndexes[i - 1] !== undefined &&
-        isGapSegment(segmentsIndexes[i - 1], segmentIndex)
-
+      // Collect the in-time-range point indices for this path
+      const inRange: number[] = []
       for (let pointIndex = segmentIndex; pointIndex < segmentEndIndex; pointIndex++) {
-        if (isGapPoint(pointIndex)) continue
-
         const timestamp = timestamps[pointIndex * timestampSize]
         const isFirstAfterEndTime =
           endTime && timestamp >= endTime && !firstPointAfterEndTimeIncluded
@@ -163,20 +157,29 @@ export const getSegmentsFromData = memoize(
         if (isFirstAfterEndTime) {
           firstPointAfterEndTimeIncluded = true
         }
-
-        const isFirstPoint = pointIndex === segmentIndex
-        const isLastPoint = pointIndex === segmentEndIndex - 1
-        if (
-          includeMiddlePoints ||
-          isFirstAfterEndTime ||
-          (isFirstPoint && !previousSegmentIsGap) ||
-          isLastPoint
-        ) {
-          points.push(getPointByIndex(pointIndex))
-        }
+        inRange.push(pointIndex)
       }
 
-      return points
+      // Split the path into sub-segments wherever the gap to the next point exceeds the threshold
+      let current: number[] = []
+      const flushCurrent = () => {
+        if (!current.length) return
+        const run = current
+        const points = run
+          .filter((_, idx) => includeMiddlePoints || idx === 0 || idx === run.length - 1)
+          .map((pointIndex) => getPointByIndex(pointIndex))
+        segments.push(points)
+        current = []
+      }
+
+      for (let k = 0; k < inRange.length; k++) {
+        const pointIndex = inRange[k]
+        current.push(pointIndex)
+        if (k < inRange.length - 1 && isGapAfter(pointIndex)) {
+          flushCurrent()
+        }
+      }
+      flushCurrent()
     })
 
     return segments

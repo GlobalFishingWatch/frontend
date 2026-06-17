@@ -4,6 +4,7 @@ import { uniq } from 'es-toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -19,14 +20,14 @@ import type {
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
 
 export const selectActiveSupportedReportDataviews = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return dataviews.filter((dataview) => isSupportedReportDataview(dataview))
+  [selectDataviewInstancesResolved, selectFeatureFlags],
+  (dataviews, featureFlags) => {
+    return dataviews.filter((dataview) => isSupportedReportDataview(dataview, featureFlags))
   }
 )
 

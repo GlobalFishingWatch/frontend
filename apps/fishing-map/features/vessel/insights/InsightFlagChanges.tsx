@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
 
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import { formatInfoField } from 'utils/info'
 import { listAsSentence } from 'utils/shared'
@@ -31,10 +31,7 @@ const InsightFlagChanges = ({
     <div id="flagChanges" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.flagChanges)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.flagChanges)}
-          terminologyKey="insightsFlagsChanges"
-        />
+        <DataTerminology terminologyKey="insightsFlagsChanges" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
@@ -50,7 +47,7 @@ const InsightFlagChanges = ({
             {flagsChanges?.valuesInThePeriod.length !== 0 ? (
               <span>
                 {t((t) => t.vessel.insights.flagChangesCount, {
-                  count: flagsChanges?.valuesInThePeriod.length,
+                  count: flagsChanges?.valuesInThePeriod.length ?? 0,
                 })}{' '}
                 (
                 {listAsSentence(

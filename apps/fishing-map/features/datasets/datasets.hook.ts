@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+  getDatasetGeometryType,
+} from '@globalfishingwatch/datasets-client'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -54,12 +58,16 @@ export const getDataviewInstanceByDataset = (dataset: Dataset) => {
         })
       : getBigQueryEventsDataviewInstance(dataset.id)
   }
-  const config = getDatasetConfiguration(dataset)
-  if (config?.geometryType === 'points') {
+  const geometryType = getDatasetGeometryType(dataset)
+  const resolvedGeometryType =
+    geometryType === 'draw'
+      ? getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+      : geometryType
+  if (resolvedGeometryType === 'points') {
     return getUserPointsDataviewInstance(dataset)
-  } else if (config?.geometryType === 'polygons') {
+  } else if (resolvedGeometryType === 'polygons') {
     return getUserPolygonsDataviewInstance(dataset.id)
-  } else if (config?.geometryType === 'tracks') {
+  } else if (resolvedGeometryType === 'tracks') {
     return getUserTrackDataviewInstance(dataset)
   }
   return getContextDataviewInstance(dataset.id)
@@ -129,7 +137,7 @@ export const useDatasetsAPI = () => {
 
   const dispatchFetchDataset = useCallback(
     async (id: string): Promise<{ payload?: Dataset; error?: AsyncError }> => {
-      const action = await dispatch(fetchDatasetByIdThunk(id))
+      const action = await dispatch(fetchDatasetByIdThunk({ id }))
       if (fetchDatasetByIdThunk.fulfilled.match(action)) {
         return { payload: action.payload }
       } else {

@@ -32,12 +32,12 @@ import {
   selectIsTurningTidesWorkspace,
   selectIsWorkspaceOwnerOrDefault,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import DatasetFilterSource from '../shared/DatasetSourceField'
-import InfoModal from '../shared/InfoModal'
+import InfoButton from '../shared/InfoButton'
 import LayerFilters from '../shared/LayerFilters'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
@@ -65,11 +65,11 @@ function ActivityLayerPanel({
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [colorOpen, setColorOpen] = useState(false)
 
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const isGFWUser = useSelector(selectIsGFWUser)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
@@ -104,7 +104,7 @@ function ActivityLayerPanel({
   // )
   // const statsValue = stats && (stats.vesselIds || stats.id)
   const disableBivariate = () => {
-    dispatchQueryParams({ bivariateDataviews: null })
+    replaceQueryParams({ bivariateDataviews: null })
   }
 
   const onSplitLayers = () => {
@@ -252,7 +252,7 @@ function ActivityLayerPanel({
               </ExpandedContainer>
             )}
             {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
-            <InfoModal
+            <InfoButton
               dataview={dataview}
               // Workaround to always show the auxiliar dataset too
               showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
@@ -380,7 +380,7 @@ function ActivityLayerPanel({
               </div>
               {bivariateDataviews?.[0] === dataview.id && (
                 <IconButton
-                  size="small"
+                  size="medium"
                   type="border"
                   icon="split"
                   tooltip={t((t) => t.layer.toggleCombinationMode.split)}

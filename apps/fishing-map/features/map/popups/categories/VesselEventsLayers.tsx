@@ -18,10 +18,10 @@ import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import type { VesselPinOnClickCb } from 'features/vessel/vessel-pin.hooks'
 import VesselLink from 'features/vessel/VesselLink'
-import type { VesselPinOnClickCb } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { getEventDescription, getTimeLabels } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
@@ -72,7 +72,7 @@ function EventDescription({
             i18nKey={(t) => t.event.encounterActionWithVesselsPin}
             defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
             values={{
-              encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
+              encounterVessel: formatInfoField(encounterVesselName, 'shipname') as string,
               ...time,
             }}
             components={{

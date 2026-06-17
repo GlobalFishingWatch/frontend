@@ -7,8 +7,8 @@ import type { Locale } from '@globalfishingwatch/api-types'
 
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportAreaId, selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -18,7 +18,7 @@ import {
   useReportFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
-import { getHasAllSourcesInCommon } from 'features/reports/shared/summary/report-summary.utils'
+import { getReportSourcesWithVessels } from 'features/reports/shared/summary/report-summary.utils'
 import {
   getReportRequestHash,
   selectReportRequestHash,
@@ -27,6 +27,7 @@ import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-
 import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import {
+  selectReportActivityDatasetIdsWithVessels,
   selectReportVesselsHours,
   selectReportVesselsNumber,
 } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
@@ -36,7 +37,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
-export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 const HOUR_ROUNDING_THRESHOLD = 5
 
 export default function ReportSummaryActivity({
@@ -51,6 +51,7 @@ export default function ReportSummaryActivity({
   const reportCategory = useSelector(selectReportCategory)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
   const reportVessels = useSelector(selectReportVesselsNumber)
+  const datasetIdsWithVessels = useSelector(selectReportActivityDatasetIdsWithVessels)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const reportHours = useSelector(selectReportVesselsHours) as number
@@ -66,8 +67,6 @@ export default function ReportSummaryActivity({
       areaId,
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
-
-  const hasAllSourcesInCommon = getHasAllSourcesInCommon(dataviews)
 
   const activitySummary = useMemo(() => {
     if (!dataviews.length || !layersTimeseriesFiltered?.length) return
@@ -109,11 +108,12 @@ export default function ReportSummaryActivity({
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
 
-        sources: hasAllSourcesInCommon
-          ? ` (${listAsSentence(
-              getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
-            )})`
-          : '',
+        sources: ` (${listAsSentence(
+          getReportSourcesWithVessels(
+            dataviews.flatMap((dataview) => getSourcesSelectedInDataview(dataview)),
+            datasetIdsWithVessels
+          )
+        )})`,
       })
     }
     if (
@@ -167,9 +167,9 @@ export default function ReportSummaryActivity({
           : ''
 
       return t((t) => t.analysis.summaryNoVessels, {
-        activityQuantity,
+        activityQuantity: activityQuantity as string,
         activityUnit: activityUnitLabel,
-        activityType: datasetTitle,
+        activityType: datasetTitle ?? '',
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
       })
@@ -189,7 +189,7 @@ export default function ReportSummaryActivity({
     activityUnit,
     timerange?.start,
     timerange?.end,
-    hasAllSourcesInCommon,
+    datasetIdsWithVessels,
   ])
 
   return activitySummary ? htmlSafeParse(activitySummary) : <ReportSummaryPlaceholder />

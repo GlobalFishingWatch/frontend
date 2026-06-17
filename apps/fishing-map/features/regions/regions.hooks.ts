@@ -4,21 +4,22 @@ import { useSelector } from 'react-redux'
 
 import type { Regions } from '@globalfishingwatch/api-types'
 
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/regions/regions.slice'
 
 export function useRegionTranslationsById() {
-  const { t } = useTranslation()
   const regionsDatasets = useSelector(selectRegionsDatasets)
+  const allDatasets = useSelector(selectAllDatasets)
 
   const getRegionTranslationsById = useCallback(
     (id: Regions) => {
       if (!id) return ''
       let translation = ''
       for (const key of Object.values(regionsDatasets)) {
-        const schemaTranslation: string = t((t) => t[key].schema.ID.enum[id as any], {
-          ns: 'datasets',
-        })
+        const schemaTranslation = allDatasets.find((d) => key === d.id)?.i18n?.filters?.ID?.enum?.[
+          id as any
+        ]
         if (schemaTranslation) {
           translation = schemaTranslation
           break
@@ -26,7 +27,7 @@ export function useRegionTranslationsById() {
       }
       return translation
     },
-    [regionsDatasets, t]
+    [allDatasets, regionsDatasets]
   )
 
   return useMemo(() => ({ getRegionTranslationsById }), [getRegionTranslationsById])

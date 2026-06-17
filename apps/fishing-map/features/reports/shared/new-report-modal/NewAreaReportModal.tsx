@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { Report, Workspace, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
+import type { Report, WorkspaceViewAccessType } from '@globalfishingwatch/api-types'
 import {
   WORKSPACE_PASSWORD_ACCESS,
   WORKSPACE_PRIVATE_ACCESS,
@@ -18,6 +18,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/modals.utils'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk, updateReportThunk } from 'features/reports/reports.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
@@ -28,17 +29,10 @@ import {
   DAYS_FROM_LATEST_MIN,
   getViewAccessOptions,
 } from 'features/workspace/save/workspace-save.utils'
-import type { WorkspaceState } from 'types'
+import { getWorkspaceReport } from 'features/workspace/workspace.utils'
 import type { AsyncError } from 'utils/async-slice'
 
 import styles from './NewAreaReportModal.module.css'
-
-export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
-  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
-    workspace
-
-  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
-}
 
 type NewReportModalProps = {
   title?: string
@@ -168,6 +162,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
       shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
+      parentSelector={getModalParent}
     >
       <form onSubmit={isEditing ? updateReport : createReport}>
         <div className={styles.row}>

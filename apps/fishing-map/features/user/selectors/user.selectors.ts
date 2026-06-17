@@ -1,5 +1,4 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { RootState } from 'reducers'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
@@ -10,6 +9,7 @@ import {
   GFW_TEST_GROUP_ID,
   JAC_GROUP_ID,
 } from 'features/user/user.config'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectUserData = (state: RootState) => state.user.data
@@ -17,7 +17,8 @@ export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
-export const selectLanguage = (state: RootState) => state.user.language
+export const selectUserLanguage = (state: RootState) => state.user.language
+export const selectLoginSource = (state: RootState) => state.user.loginSource
 
 export const selectUserGroups = createSelector([selectUserData], (userData) => {
   return (userData?.groups || []).map((group) => group.toLowerCase())
@@ -32,7 +33,7 @@ export const selectIsJACUser = createSelector([selectUserData], (userData) => {
 })
 
 export const selectIsGFWAdminUser = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(ADMIN_GROUP_ID)
+  return userData?.groups.some((g) => g.toLowerCase() === ADMIN_GROUP_ID.toLowerCase())
 })
 export const selectIsGFWDeveloper = createSelector([selectUserData], (userData) => {
   return userData?.groups.includes(GFW_DEV_GROUP_ID)

@@ -72,7 +72,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
       tooltip={
         hasMoreMaxVesselsAllowed
           ? t((t) => t.analysis.pinVesselsMaxAllowed, {
-              maxVessels: MAX_VESSEL_REPORT_PIN,
+              maxVessels: String(MAX_VESSEL_REPORT_PIN),
             })
           : ''
       }

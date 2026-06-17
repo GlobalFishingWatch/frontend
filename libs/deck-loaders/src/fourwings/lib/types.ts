@@ -67,7 +67,12 @@ export type FourwingsFeatureProperties = {
   id?: string
   initialValues: Record<string, number[]>
   startOffsets: number[]
-  dates: FourwingsFeatureValues
+  // Deprecated: dates are no longer stored. Use getFourwingsSublayerStartFrame and
+  // getFourwingsValueTimestamp from ../helpers/timestamps instead.
+  // dates?: FourwingsFeatureValues
+  // Absolute interval frame of the tile's buffered start; combined with startOffsets
+  // to derive each value's timestamp via getFourwingsValueTimestamp.
+  tileStartFrame?: number
   values: FourwingsFeatureValues
   cellId: number
   cellNum: number
@@ -110,7 +115,9 @@ export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
   aggregatedValues?: number[]
 }
 
-export type FourwingsValuesAndDatesFeature = [number[], number[]][] // values in first place, dates in second
+// values in first place, absolute start frame in second: the timestamp of
+// values[i] is getIntervalTimestamp(startFrame + i)
+export type FourwingsValuesAndStartFrameFeature = [number[], number][]
 export type FourwingsMVTStaticFeature = FourwingsFeature<FourwingsMVTStaticFeatureProperties> & {
   geometry: Polygon
 }

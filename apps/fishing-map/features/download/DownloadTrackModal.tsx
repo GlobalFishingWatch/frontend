@@ -23,6 +23,7 @@ import {
   selectDownloadTrackStatus,
 } from 'features/download/downloadTrack.slice'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -94,6 +95,7 @@ function DownloadTrackModal() {
       isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.info}>
@@ -121,7 +123,7 @@ function DownloadTrackModal() {
           <p className={cx({ [styles.error]: isDownloadRatioExceeded })}>
             {isDownloadRatioExceeded
               ? (t((t) => t.download.trackLimitExceeded, {
-                  limit: rateLimit?.limit,
+                  limit: String(rateLimit?.limit ?? ''),
                 }) as string)
               : rateLimit?.remaining
                 ? (t((t) => t.download.trackRemaining, {
@@ -133,7 +135,7 @@ function DownloadTrackModal() {
             className={styles.downloadBtn}
             onClick={onDownloadClick}
             loading={downloadStatus === AsyncReducerStatus.Loading}
-            disabled={isDownloadRatioExceeded}
+            disabled={isDownloadRatioExceeded || downloadStatus === AsyncReducerStatus.Loading}
           >
             {downloadStatus === AsyncReducerStatus.Finished ? (
               <Icon icon="tick" />

@@ -8,8 +8,9 @@ import {
   selectVesselEventType,
   selectVesselSlice,
 } from 'features/vessel/vessel.slice'
-import { selectVesselId } from 'routes/routes.selectors'
+import { selectVesselId } from 'router/routes.selectors'
 import type { RootState } from 'store'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectVessel = createSelector(
   [selectVesselSlice, selectVesselId],
@@ -29,6 +30,14 @@ export const selectSelfReportedVesselIds = createSelector([selectVessel], (vesse
     .map((i: any) => i.id)
 )
 export const selectVesselInfoStatus = createSelector([selectVessel], (vessel) => vessel?.status)
+export const selectVesselRefreshStatus = createSelector(
+  [selectVessel],
+  (vessel) => vessel?.refreshStatus
+)
+export const selectIsVesselRefreshing = createSelector(
+  [selectVesselRefreshStatus],
+  (refreshStatus) => refreshStatus === AsyncReducerStatus.Loading
+)
 export const selectVesselInfoError = createSelector([selectVessel], (vessel) => vessel?.error)
 export const selectVesselPrintMode = (state: RootState) => state.vessel.printMode as boolean
 export const selectVesselFitBoundsOnLoad = (state: RootState) =>

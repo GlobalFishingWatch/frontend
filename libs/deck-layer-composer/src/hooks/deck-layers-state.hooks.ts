@@ -50,9 +50,15 @@ export const useSetDeckLayerLoadedState = () => {
         setDeckLayerLoadedState((loadedState) => {
           const newLoadedState = {} as DeckLayerState
           currentLayers.forEach((layer) => {
+            const hasCacheHash = 'cacheHash' in layer
+            const cacheHash = hasCacheHash && layer.cacheHash ? (layer.cacheHash as string) : ''
+            if (hasCacheHash && !cacheHash && loadedState[layer.id]) {
+              newLoadedState[layer.id] = loadedState[layer.id]
+              return
+            }
             newLoadedState[layer.id] = {
               loaded: layer.isLoaded,
-              cacheHash: 'cacheHash' in layer && layer.cacheHash ? (layer.cacheHash as string) : '',
+              cacheHash,
             }
           })
           if (

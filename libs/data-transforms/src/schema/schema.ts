@@ -1,8 +1,6 @@
-import { uniq } from 'es-toolkit'
+import { snakeCase, uniq } from 'es-toolkit'
+import { max, min } from 'es-toolkit/compat'
 import type { FeatureCollection } from 'geojson'
-import max from 'lodash/max'
-import min from 'lodash/min'
-import snakeCase from 'lodash/snakeCase'
 
 import type {
   Dataset,

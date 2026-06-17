@@ -1,25 +1,28 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
-import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
+import LoginLink from 'features/user/LoginLink'
+import {
+  selectIsUserLogged,
+  selectUserData,
+  selectUserStatus,
+} from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
-import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectUserTab } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
@@ -32,12 +35,11 @@ import styles from './User.module.css'
 function User() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
+  const userStatus = useSelector(selectUserStatus)
   const userTab = useSelector(selectUserTab)
-  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const userTabs = useMemo(() => {
     const tabs = [
       {
@@ -72,9 +74,9 @@ function User() {
 
   const onTabClick = useCallback(
     (tab: Tab<UserTab>) => {
-      dispatchQueryParams({ userTab: tab.id })
+      replaceQueryParams({ userTab: tab.id })
     },
-    [dispatchQueryParams]
+    [replaceQueryParams]
   )
 
   useEffect(() => {
@@ -87,19 +89,26 @@ function User() {
     dispatch(fetchVesselGroupsThunk())
   }, [dispatch])
 
-  useEffect(() => {
-    if (userData?.type === GUEST_USER_TYPE) {
-      setHistoryNavigation(workspaceHistoryNavigation)
-      redirectToLogin()
-    }
-  }, [userData?.type, workspaceHistoryNavigation])
-
-  if (!userLogged || !userData) return null
-
-  if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
+  if (userStatus === AsyncReducerStatus.Loading) {
     return (
       <div className={styles.container}>
         <Spinner />
+      </div>
+    )
+  }
+
+  if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
+    return (
+      <div className={cx(styles.container, styles.centered)}>
+        <span>
+          <Trans i18nKey={(t) => t.user.loginRequired}>
+            {'Register or '}
+            <LoginLink className={styles.link} loginSource="user-panel">
+              login
+            </LoginLink>
+            {' to see your user panel'}
+          </Trans>
+        </span>
       </div>
     )
   }

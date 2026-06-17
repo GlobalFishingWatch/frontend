@@ -6,7 +6,7 @@ import {
   TranslateMode,
   ViewMode,
 } from '@deck.gl-community/editable-layers'
-import uniqBy from 'lodash/uniqBy'
+import { uniqBy } from 'es-toolkit'
 
 import type { EditHandleFeature } from './draw.types'
 
@@ -167,7 +167,7 @@ export class CustomModifyMode extends ModifyMode {
     event.sourceEvent.preventDefault()
     const geometryPicks = uniqBy(
       event.picks.filter((p) => !p.isGuide),
-      'index'
+      (e) => e.index
     )
     const hasDifferentSelectedIndex =
       props.selectedIndexes?.length !== geometryPicks.length ||

@@ -1,7 +1,7 @@
 import { Component } from 'react'
-import * as Sentry from '@sentry/nextjs'
 
 import ErrorBoundaryUI from './ErrorBoundaryUI'
+import { reportRouteError } from './sentry'
 
 export default class ErrorBoundary extends Component<any, { error: Error | null }> {
   constructor(props: any) {
@@ -15,12 +15,8 @@ export default class ErrorBoundary extends Component<any, { error: Error | null 
 
   componentDidCatch(error: any, errorInfo: any) {
     console.error(error, errorInfo)
-    Sentry.captureException(error, {
-      contexts: {
-        react: {
-          componentStack: errorInfo.componentStack,
-        },
-      },
+    reportRouteError(error, 'react-error-boundary', {
+      componentStack: errorInfo?.componentStack,
     })
   }
 

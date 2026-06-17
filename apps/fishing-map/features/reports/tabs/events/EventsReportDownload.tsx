@@ -1,8 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
-import { saveAs } from 'file-saver'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -39,6 +37,7 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
       ]
         .filter(Boolean)
         .join('-')
+      const { saveAs } = await import('file-saver')
       saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.Analysis,
@@ -64,9 +63,10 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
 
   return (
     <UserLoggedIconButton
+      loginSource="report-download"
       icon="download"
       size="medium"
-      className={cx('print-hidden', className)}
+      className={className}
       type="border"
       onClick={onDownloadClick}
       loading={isDownloading}

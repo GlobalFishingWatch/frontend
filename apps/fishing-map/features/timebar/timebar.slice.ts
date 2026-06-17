@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+
 import type { RootState } from 'reducers'
 
 export type TimeRange = {

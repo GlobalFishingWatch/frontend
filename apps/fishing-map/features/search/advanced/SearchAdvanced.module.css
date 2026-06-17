@@ -3,10 +3,8 @@
   display: flex;
 }
 
-.form {
-  background-color: var(--color-white);
-  border-right: var(--border);
-  box-shadow: 0.6rem 0 1rem -0.4rem rgba(var(--primary-blue-rgb), var(--opacity-border));
+.advancedLayout .form {
+  margin-top: 0;
   width: var(--sidebar-width);
   z-index: 4;
   display: flex;
@@ -36,7 +34,9 @@
   min-width: 15rem;
 }
 
-.scrollContainer {
+.advancedLayout .scrollContainer {
+  margin-top: 0;
+  margin-left: 0;
   flex: 1;
   overflow-y: auto;
   display: flex;

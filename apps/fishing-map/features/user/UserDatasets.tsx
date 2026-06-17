@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
@@ -8,18 +9,10 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import {
-  Button,
-  Icon,
-  IconButton,
-  InputText,
-  Modal,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import DatasetLabel from 'features/datasets/DatasetLabel'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   getDataviewInstanceByDataset,
   useDatasetModalConfigConnect,
@@ -34,10 +27,8 @@ import {
 import { getDatasetLabel, getDatasetTypeIcon } from 'features/datasets/datasets.utils'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import InfoError from 'features/workspace/shared/InfoError'
-import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -45,13 +36,14 @@ import { getHighlightedText } from 'utils/text'
 import styles from './User.module.css'
 
 function UserDatasets() {
-  const [infoDataset, setInfoDataset] = useState<Dataset | undefined>()
+  const { openSidePanel } = useSidePanel()
   const datasets = useSelector(selectUserDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const [searchQuery, setSearchQuery] = useState('')
@@ -75,26 +67,32 @@ function UserDatasets() {
         return
       }
       const {
-        type = HOME,
-        query = { dataviewInstances: [] },
-        payload = {},
+        to = ROUTE_PATHS.HOME,
+        params,
+        search = { dataviewInstances: [] },
       } = lastVisitedWorkspace || {}
-      const locationParams = {
-        payload,
-        query: {
-          ...query,
-          dataviewInstances: [...(query.dataviewInstances || []), dataviewInstanceWithDataset],
+
+      router.navigate({
+        to: toValidRoutePath(to, params),
+        params,
+        search: {
+          ...search,
+          dataviewInstances: [...(search.dataviewInstances || []), dataviewInstanceWithDataset],
         },
-        replaceQuery: false,
-      }
-      dispatch(updateLocation(type, locationParams))
+      })
     },
-    [dispatch, lastVisitedWorkspace]
+    [lastVisitedWorkspace, router]
   )
 
-  const onInfoClick = useCallback((dataset: Dataset) => {
-    setInfoDataset(dataset)
-  }, [])
+  const onInfoClick = useCallback(
+    (dataset: Dataset) => {
+      openSidePanel({
+        type: 'userDataset',
+        id: dataset.id,
+      })
+    },
+    [openSidePanel]
+  )
 
   const onEditClick = useCallback(
     (dataset: Dataset) => {
@@ -210,14 +208,6 @@ function UserDatasets() {
             )}
           </ul>
         )}
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={<DatasetLabel dataset={infoDataset} />}
-          isOpen={infoDataset !== undefined}
-          onClose={() => setInfoDataset(undefined)}
-        >
-          {infoDataset && <InfoModalContent dataset={infoDataset} />}
-        </Modal>
       </div>
     </Fragment>
   )

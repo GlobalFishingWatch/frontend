@@ -137,7 +137,7 @@ function VesselsFromPositions() {
         open
         className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
       >
-        <ul>
+        <ul className={styles.vesselsOnScreenList}>
           {(vessels.length > MAX_VESSLES_TO_DISPLAY
             ? vessels.slice(0, MAX_VESSLES_TO_DISPLAY)
             : vessels

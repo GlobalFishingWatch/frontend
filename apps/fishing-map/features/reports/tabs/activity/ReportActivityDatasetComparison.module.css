@@ -34,7 +34,6 @@
 
 .select {
   max-width: calc(50% - 1rem);
-  min-width: 25rem;
 }
 
 .select:last-child {
@@ -48,5 +47,11 @@
 @media print {
   .printableTitle {
     display: ruby-text;
+  }
+}
+
+@media only screen and (width >= 800px) {
+  .select {
+    min-width: 25rem;
   }
 }

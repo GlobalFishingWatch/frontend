@@ -22,7 +22,7 @@ import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permis
 import { getIsBQEditorDataset } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/reports/report-area/area-reports.config'
 import { useFetchReportVessel } from 'features/reports/report-area/area-reports.hooks'
@@ -52,8 +52,8 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -65,6 +65,7 @@ function ActivityReport() {
   useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
@@ -88,8 +89,6 @@ function ActivityReport() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
-  const { dispatchQueryParams } = useLocationConnect()
-
   // TODO get this from datasets config
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
 
@@ -140,9 +139,9 @@ function ActivityReport() {
     if (reportLoadVessels && reportDataviews?.length) {
       dispatch(setReportRequestHash(''))
       dispatchFetchReport()
-      dispatchQueryParams({ reportLoadVessels: false })
+      replaceQueryParams({ reportLoadVessels: false })
     }
-  }, [dispatch, dispatchFetchReport, reportLoadVessels, reportDataviews, dispatchQueryParams])
+  }, [dispatch, dispatchFetchReport, reportLoadVessels, reportDataviews])
 
   const ReportVesselError = useMemo(() => {
     if (hasAuthError || guestUser) {
@@ -158,6 +157,7 @@ function ActivityReport() {
         <ReportVesselsPlaceholder animate={false}>
           <div className={styles.cover}>
             <WorkspaceLoginError
+              loginSource="report-private"
               title={errorMsg}
               emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
             />
@@ -379,18 +379,22 @@ function ActivityReport() {
   ])
 
   return (
-    <Fragment>
+    <div className={styles.section}>
       {activeReportSubCategories && activeReportSubCategories.length > 1 && (
         <div className={styles.subsectionSelectorContainer}>
           <ReportActivitySubsectionSelector />
         </div>
       )}
       {!isVesselGroupReportLocation && (
-        <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+        <div className={cx('card', styles.subsection, styles.front)}>
+          <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+        </div>
       )}
-      <ReportActivityGraph />
-      {ReportComponent}
-    </Fragment>
+      <div className={cx('card', styles.subsection)}>
+        <ReportActivityGraph />
+      </div>
+      <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
+    </div>
   )
 }
 

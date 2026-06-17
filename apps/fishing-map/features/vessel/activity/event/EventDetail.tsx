@@ -8,12 +8,12 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton, SolarStatus, Spinner } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { useVesselProfileEncounterLayer } from 'features/vessel/vessel.hooks'
@@ -173,10 +173,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                 <th>
                   <label>
                     {t((t) => t.eventInfo.authorization)}
-                    <DataTerminology
-                      title={t((t) => t.eventInfo.authorization)}
-                      terminologyKey="authorization"
-                    />
+                    <DataTerminology terminologyKey="authorization" />
                   </label>
                 </th>
                 {authAreas?.map((rfmo) => {

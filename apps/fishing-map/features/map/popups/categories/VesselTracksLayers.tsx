@@ -30,7 +30,7 @@ import { setTrackCorrectionDataviewId } from 'features/track-correction/track-co
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { formatInfoField } from 'utils/info'
 

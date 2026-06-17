@@ -1,8 +1,6 @@
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
-import { replace } from 'redux-first-router'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
@@ -41,60 +39,32 @@ import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
-import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
-import dynamicWithRetry from 'utils/dynamic-import'
+import { getRouterRef } from 'router/router-ref'
+import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import { getIsBrowser } from 'utils/dom'
+
+import { getModalParent } from './modals.utils'
 
 import styles from './Modals.module.css'
 
-const NewDataset = dynamic(
-  () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/upload/NewDataset')
-)
-
-const BigQueryModal = dynamic(
-  () => import(/* webpackChunkName: "BigQueryModal" */ 'features/bigquery/BigQueryModal')
-)
-
-const TurningTidesModal = dynamic(
-  () => import(/* webpackChunkName: "TurningTidesModal" */ 'features/bigquery/TurningTidesModal')
-)
-
-const LayerLibrary = dynamicWithRetry(
-  () => import(/* webpackChunkName: "LayerLibrary" */ 'features/layer-library/LayerLibrary')
-)
-const DebugMenu = dynamic(
-  () => import(/* webpackChunkName: "DebugMenu" */ 'features/debug/DebugMenu')
-)
-
-const WorkspaceGenerator = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "WorkspaceGenerator" */ 'features/workspace-generator/WorkspaceGenerator'
-    )
-)
-
-const DownloadActivityModal = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "DownloadActivityModal" */ 'features/download/DownloadActivityModal'
-    )
-)
-const DownloadTrackModal = dynamic(
-  () => import(/* webpackChunkName: "DownloadTrackModal" */ 'features/download/DownloadTrackModal')
-)
-const EditorMenu = dynamic(
-  () => import(/* webpackChunkName: "EditorMenu" */ 'features/editor/EditorMenu')
-)
-const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features/welcome/Welcome'))
-
-const VesselGroupModal = dynamic(
-  () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
-)
+const NewDataset = lazy(() => import('features/datasets/upload/NewDataset'))
+const BigQueryModal = lazy(() => import('features/bigquery/BigQueryModal'))
+const TurningTidesModal = lazy(() => import('features/bigquery/TurningTidesModal'))
+const LayerLibrary = lazy(() => import('features/layer-library/LayerLibrary'))
+const DebugMenu = lazy(() => import('features/debug/DebugMenu'))
+const WorkspaceGenerator = lazy(() => import('features/workspace-generator/WorkspaceGenerator'))
+const DownloadActivityModal = lazy(() => import('features/download/DownloadActivityModal'))
+const DownloadTrackModal = lazy(() => import('features/download/DownloadTrackModal'))
+const EditorMenu = lazy(() => import('features/editor/EditorMenu'))
+const Welcome = lazy(() => import('features/welcome/Welcome'))
+const VesselGroupModal = lazy(() => import('features/vessel-groups/VesselGroupModal'))
 
 const DebugMenuConfig = {
   key: 'd',
   dispatchToggle: toggleDebugMenu,
   selectMenuActive: selectDebugActive,
-  guestEnabled: typeof window !== 'undefined' && window.location.hostname === 'localhost',
+  guestEnabled: getIsBrowser() && window.location.hostname === 'localhost',
 }
 
 const EditorMenuConfig = {
@@ -118,7 +88,7 @@ const TurningTidesMenuConfig = {
 const ResetWorkspaceConfig = {
   key: 'w',
   dispatchToggle: () => {
-    replace(window.location.origin)
+    getRouterRef()?.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
   },
 }
 
@@ -178,8 +148,12 @@ const AppModals = () => {
         onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
         contentClassName={styles.layerLibraryModal}
         size="fullscreen"
+        parentSelector={getModalParent}
+        shouldCloseOnEsc
       >
-        <LayerLibrary />
+        <Suspense fallback={null}>
+          <LayerLibrary />
+        </Suspense>
       </Modal>
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
@@ -193,8 +167,11 @@ const AppModals = () => {
         shouldCloseOnEsc
         onClose={dispatchToggleDebugMenu}
         contentClassName={styles.debugMenuModal}
+        parentSelector={getModalParent}
       >
-        <DebugMenu />
+        <Suspense fallback={null}>
+          <DebugMenu />
+        </Suspense>
       </Modal>
       {isGFWUser && (
         <Modal
@@ -208,8 +185,11 @@ const AppModals = () => {
           isOpen={editorActive && !anyAppModalOpen}
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
+          parentSelector={getModalParent}
         >
-          <EditorMenu />
+          <Suspense fallback={null}>
+            <EditorMenu />
+          </Suspense>
         </Modal>
       )}
       {(isGFWUser || jacUser) && (bigqueryActive || turningTidesActive) && !anyAppModalOpen && (
@@ -225,8 +205,11 @@ const AppModals = () => {
             isOpen={bigqueryActive}
             onClose={dispatchBigQueryMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
-            <BigQueryModal />
+            <Suspense fallback={null}>
+              <BigQueryModal />
+            </Suspense>
           </Modal>
           <Modal
             appSelector={ROOT_DOM_ELEMENT}
@@ -239,8 +222,11 @@ const AppModals = () => {
             isOpen={turningTidesActive}
             onClose={dispatchTurningTidesMenu}
             contentClassName={styles.bqModal}
+            parentSelector={getModalParent}
           >
-            <TurningTidesModal />
+            <Suspense fallback={null}>
+              <TurningTidesModal />
+            </Suspense>
           </Modal>
         </Fragment>
       )}
@@ -252,30 +238,61 @@ const AppModals = () => {
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
           contentClassName={styles.workspaceGeneratorModal}
           header={false}
+          parentSelector={getModalParent}
         >
-          <WorkspaceGenerator />
+          <Suspense fallback={null}>
+            <WorkspaceGenerator />
+          </Suspense>
         </Modal>
       )}
-      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
+      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && (
+        <Suspense fallback={null}>
+          <NewDataset />
+        </Suspense>
+      )}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
-      {downloadActivityAreaKey && <DownloadActivityModal />}
-      {downloadTrackModalOpen && <DownloadTrackModal />}
+      {downloadActivityAreaKey && (
+        <Suspense fallback={null}>
+          <DownloadActivityModal />
+        </Suspense>
+      )}
+      {downloadTrackModalOpen && (
+        <Suspense fallback={null}>
+          <DownloadTrackModal />
+        </Suspense>
+      )}
       {!readOnly && isWorkspaceReady && (
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
-          {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}
-          {welcomePopupContentKey === 'deep-sea-mining' && <Welcome contentKey="deep-sea-mining" />}
+          {welcomePopupContentKey === 'vessel-profile' && (
+            <Suspense fallback={null}>
+              <Welcome contentKey="vessel-profile" />
+            </Suspense>
+          )}
+          {welcomePopupContentKey === 'deep-sea-mining' && (
+            <Suspense fallback={null}>
+              <Welcome contentKey="deep-sea-mining" />
+            </Suspense>
+          )}
           {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
-            <Welcome contentKey={WorkspaceCategory.FishingActivity} />
+            <Suspense fallback={null}>
+              <Welcome contentKey={WorkspaceCategory.FishingActivity} />
+            </Suspense>
           )}
           {welcomePopupContentKey === WorkspaceCategory.MarineManager && (
-            <Welcome contentKey={WorkspaceCategory.MarineManager} />
+            <Suspense fallback={null}>
+              <Welcome contentKey={WorkspaceCategory.MarineManager} />
+            </Suspense>
           )}
           {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>
       )}
-      {isVesselGroupModalOpen && <VesselGroupModal />}
+      {isVesselGroupModalOpen && (
+        <Suspense fallback={null}>
+          <VesselGroupModal />
+        </Suspense>
+      )}
     </Fragment>
   )
 }

@@ -1,15 +1,18 @@
+.section {
+  padding-block: var(--space-XS);
+}
+
 .container {
-  padding: var(--space-M) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-SM);
 }
 
 .graphSelectorContainer {
-  padding: var(--space-M);
+  padding: var(--space-S);
   padding-bottom: 0;
 }
 
 .comparisonContainer {
-  padding: var(--space-S) var(--space-M) 0;
+  padding: var(--space-S);
 }
 
 .addLayerContainer {
@@ -29,12 +32,23 @@
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
-  padding-bottom: var(--space-S);
+  padding-block: var(--space-S);
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
 }
 
 .summary strong {
   font-weight: 400;
   color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+  padding-bottom: var(--space-S);
 }
 
 .marginTop {
@@ -65,4 +79,60 @@
   opacity: var(--opacity-secondary);
   font: var(--font-S);
   width: 100%;
+}
+
+.migramarSelectors {
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.migramarSelectors > div {
+  width: calc((100% - var(--space-S)) / 2);
+}
+
+.migramarSingleOption {
+  line-height: var(--size-M);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.migramarTooltip {
+  background: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+}
+
+.migramarTooltipRow {
+  display: flex;
+  align-items: center;
+}
+
+.migramarDot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.migramarLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-S);
+  padding: var(--space-S) 0;
+  color: var(--color-secondary-blue);
+}
+
+.migramarLegendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  font: var(--font-S);
 }

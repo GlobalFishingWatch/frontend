@@ -7,26 +7,28 @@ import { InputText, Switch } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
   DebugOption,
   FAKE_VESSEL_NAME,
+  FeatureFlag,
   selectDebugOptions,
+  selectFeatureFlags,
   setDebugOption,
   toggleDebugOption,
+  toggleFeatureFlag,
 } from './debug.slice'
 
 import styles from './DebugMenu.module.css'
 
 const DebugFeatureFlags: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
-  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
+  const featureFlags = useSelector(selectFeatureFlags)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -65,47 +67,11 @@ const DebugFeatureFlags: React.FC = () => {
           active={debugOptions.vesselsAsPositions}
           onClick={() => {
             dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
-            if (debugOptions.vesselsAsPositions) {
-              dispatch(setDebugOption({ option: DebugOption.VesselsMaxTimeGapHours, value: false }))
-            }
           }}
         />
         <label htmlFor="option_vessels_as_positions">Tracks positions</label>
       </div>
       <p>Show vessel position icons on top of the track lines</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_vessels_max_time_gap_hours"
-          active={debugOptions.vesselsMaxTimeGapHours}
-          onClick={() => {
-            dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
-            if (debugOptions.vesselsMaxTimeGapHours) {
-              dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
-            } else {
-              dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
-              dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
-            }
-          }}
-        />
-        <label htmlFor="option_vessels_max_time_gap_hours">Vessels max time gap hours</label>
-        {debugOptions.vesselsMaxTimeGapHours && (
-          <InputText
-            type="number"
-            min={0}
-            max={24}
-            value={vesselsMaxTimeGapHours}
-            className={cx(styles.inputShort, styles.input)}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              // Validate input: must be a valid number between 0 and 24
-              if (!isNaN(value) && value >= 0 && value <= 24) {
-                dispatchQueryParams({ vesselsMaxTimeGapHours: value })
-              }
-            }}
-          />
-        )}
-      </div>
-      <p>Split tracks into segments with a maximum time gap in hours</p>
       <div className={styles.header}>
         <Switch
           id="option_hide_vessel_names"
@@ -121,6 +87,17 @@ const DebugFeatureFlags: React.FC = () => {
       </p>
       <div className={styles.header}>
         <Switch
+          id="option_vessels_max_time_gap_hours"
+          active={debugOptions.vesselGapsThresholdFilter}
+          onClick={() => {
+            dispatch(toggleDebugOption(DebugOption.VesselGapsThresholdFilter))
+          }}
+        />
+        <label htmlFor="option_vessels_max_time_gap_hours">Show vessel gaps threshold filter</label>
+      </div>
+      <p>Show the gaps threshold filter by hours in the vessel layer filters</p>
+      <div className={styles.header}>
+        <Switch
           id="option_disable_dataset_hash"
           active={debugOptions.addDatasetIdHash}
           onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
@@ -132,15 +109,26 @@ const DebugFeatureFlags: React.FC = () => {
         <Fragment>
           <div className={styles.header}>
             <Switch
-              id="option_data_terminology_iframe"
-              active={debugOptions.dataTerminologyIframe}
-              onClick={() => dispatch(toggleDebugOption(DebugOption.DataTerminologyIframe))}
+              id="option_polygons_report"
+              active={featureFlags.polygonsReport}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.PolygonsReport))}
             />
-            <label htmlFor="option_data_terminology_iframe">
-              <strong>Feature flag:</strong> Data terminology iframe
+            <label htmlFor="option_polygons_report">
+              <strong>Feature flag:</strong> Polygons report
             </label>
           </div>
-          <p>Activates the data terminology iframe feature</p>
+          <p>See reports of polygon areas</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_hotspot_button"
+              active={featureFlags.hotspotButton}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}
+            />
+            <label htmlFor="option_hotspot_button">
+              <strong>Feature flag:</strong> Hotspot zone button
+            </label>
+          </div>
+          <p>Show the hotspot zone button in the report activity graph</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"

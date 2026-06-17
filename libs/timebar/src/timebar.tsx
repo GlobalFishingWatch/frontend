@@ -133,6 +133,7 @@ export type TimebarProps = {
   trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
   defaultHeight?: number
+  onGraphClick?: () => void
 }
 
 type TimebarState = {
@@ -217,7 +218,8 @@ export class Timebar extends Component<TimebarProps> {
   constructor(props: TimebarProps) {
     super(props)
     this.interval = null
-    const storedHeight = localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY)
+    const storedHeight =
+      typeof localStorage !== 'undefined' ? localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY) : null
     const initialHeight = storedHeight
       ? parseInt(storedHeight)
       : props.defaultHeight || DEFAULT_HEIGHT
@@ -519,6 +521,7 @@ export class Timebar extends Component<TimebarProps> {
           stickToUnit={stickToUnit}
           displayWarningWhenInFuture={displayWarningWhenInFuture}
           locale={locale}
+          onGraphClick={this.props.onGraphClick}
         />
       </div>
     )

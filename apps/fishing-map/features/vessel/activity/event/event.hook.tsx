@@ -2,8 +2,8 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { EventType, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import type { EventType, GapPosition, Regions } from '@globalfishingwatch/api-types'
+import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
 import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -55,10 +55,11 @@ export function useActivityEventTranslations() {
         Object.entries(event.regions).forEach((entry) => {
           const regionType = entry[0] as keyof Regions
           const regions = entry[1] as string[]
-          if (!regions.length || regionType === 'majorFao' || regionType === 'highSeas') return
+          if (!regions.length || regionType === 'highSeas') return
+          const regionTypeKey = regionType === 'majorFao' ? RegionType.fao : regionType
           allRegionsDescriptionBlocks.push(
-            `${t((t) => t.layer.areas[regionType])}: ${getRegionNamesByType(
-              regionType,
+            `${t((t) => t.layer.areas[regionTypeKey])}: ${getRegionNamesByType(
+              regionTypeKey,
               regions
             ).join(', ')}`
           )

@@ -27,7 +27,6 @@ import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data
 import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { SKYLIGHT_VIIRS_DATASET_ID } from 'data/workspaces'
 import { t } from 'features/i18n/i18n'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
@@ -66,7 +65,7 @@ export type GetDatasetLabelParams = { id: string; name?: string }
 export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string => {
   const { id, name = '' } = dataset || {}
   if (!id) return name || ''
-  const label = getDatasetNameTranslated(dataset)
+  const label = dataset.name || ''
   if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
   if (isPrivateDataset(dataset)) return `${PRIVATE_ICON} ${label}`
   return label
@@ -204,9 +203,7 @@ export const getDatasetTitleByDataview = (
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
       return datasetTitle
     }
-    datasetTitle = showPrivateIcon
-      ? getDatasetLabel(activeDatasets[0])
-      : getDatasetNameTranslated(activeDatasets[0])
+    datasetTitle = showPrivateIcon ? getDatasetLabel(activeDatasets[0]) : activeDatasets[0]?.name
   }
   if (!withSources) {
     return datasetTitle
@@ -214,7 +211,7 @@ export const getDatasetTitleByDataview = (
   const sources =
     dataview?.datasets && dataview?.datasets?.length > 1
       ? `(${dataview.datasets?.length} ${t((t) => t.common.sources)})`
-      : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
+      : `(${dataview.datasets?.[0]?.name})`
 
   return datasetTitle + ' ' + sources
 }

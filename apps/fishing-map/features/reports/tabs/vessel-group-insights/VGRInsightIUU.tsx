@@ -8,7 +8,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 
 import { selectFetchVesselGroupReportIUUParams } from '../../report-vessel-group/vessel-group-report.selectors'
@@ -48,7 +48,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-iuu" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.IUU)}</label>
-        <DataTerminology title={t((t) => t.vessel.insights.IUU)} terminologyKey="insightsIUU" />
+        <DataTerminology terminologyKey="insightsIUU" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -66,7 +66,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t((t) => t.vesselGroupReport.insights.IUUBlackListsCount, {
-              vessels: vesselsWithIIU.length,
+              vessels: String(vesselsWithIIU.length),
             })}
             onToggle={onInsightToggle}
           >

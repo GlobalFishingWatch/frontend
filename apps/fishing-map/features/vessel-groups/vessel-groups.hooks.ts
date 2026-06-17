@@ -8,8 +8,6 @@ import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 // import { VesselLastIdentity } from 'features/search/search.slice'
 // import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
-import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
@@ -19,19 +17,16 @@ import { sortByCreationDate } from 'utils/dates'
 import { selectAllVisibleVesselGroups } from './vessel-groups.selectors'
 import type { UpdateVesselGroupThunkParams } from './vessel-groups.slice'
 import { selectVesselGroupsStatusId, updateVesselGroupVesselsThunk } from './vessel-groups.slice'
-import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
+import type { AddVesselGroupVessel, VesselGroupVesselIdentity } from './vessel-groups.types'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from './vessel-groups-modal.slice'
 
-export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
+export type { AddVesselGroupVessel }
 
-export type AddVesselGroupVessel =
-  | IdentityVesselData
-  | VesselGroupVesselIdentity
-  | ReportTableVessel
+export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()

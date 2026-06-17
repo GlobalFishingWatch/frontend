@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { difference, uniq } from 'es-toolkit'
-import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -12,7 +11,6 @@ import type {
   DataviewDatasetConfig,
   IdentityVessel,
   VesselGroup,
-  VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
@@ -24,10 +22,12 @@ import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getDatasetByIdsThunk } from '../datasets/datasets.slice'
 
+import type { VesselGroupVesselIdentity } from './vessel-groups.types'
 import type { VesselPropertyApiSearch } from './vessel-groups.utils'
 import {
   flatVesselGroupSearchVessels,
@@ -35,11 +35,11 @@ import {
   vesselPropertyToApiSearch,
 } from './vessel-groups.utils'
 
+export type { VesselGroupVesselIdentity }
+
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
-
-export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
 
 export type VesselGroupCsvData = Record<string, string>
 interface VesselGroupModalState {
@@ -269,7 +269,7 @@ const getVesselsInVesselGroup = async ({ datasets, signal, vesselGroup }: GetVes
     cache: 'reload',
   })
   const vesselGroupVessels = mergeVesselGroupVesselIdentities(
-    vesselGroup.vessels,
+    vesselGroup.vessels || [],
     vesselsIdentities.entries
   )
   return vesselGroupVessels
@@ -357,7 +357,7 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
 export const getVesselInVesselGroupThunk = createAsyncThunk(
   'vessel-groups/getVessels',
   async ({ vesselGroup }: { vesselGroup: VesselGroup }, { signal, rejectWithValue, dispatch }) => {
-    const datasetIds = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+    const datasetIds = uniq((vesselGroup.vessels || []).flatMap((v) => v.dataset || []))
     const updatedDatasetsIds = datasetIds.map(runDatasetMigrations)
     const hasOutdatedDatasets = difference(datasetIds, updatedDatasetsIds)?.length > 0
     const getDatasetsAction = await dispatch(
@@ -376,7 +376,7 @@ export const getVesselInVesselGroupThunk = createAsyncThunk(
         const { vessels } = await searchVesselsInVesselGroup({
           datasets,
           signal,
-          ids: vesselGroup.vessels.map((v) => v.vesselId),
+          ids: (vesselGroup.vessels || []).map((v) => v.vesselId),
         })
         return vessels
       }

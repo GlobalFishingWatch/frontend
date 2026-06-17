@@ -26,19 +26,38 @@
 }
 
 .sliderTrack {
+  position: relative;
   height: 2px;
   width: 100%;
   align-self: center;
+  cursor: pointer;
+}
+
+/* Transparent hit area so the thin 2px track is easy to click/drag */
+.sliderTrack::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 20px;
+  transform: translateY(-50%);
 }
 
 .sliderThumb {
+  top: 50%;
   border-radius: 50%;
-  background-color: var(--color-off-white);
+  background-color: var(--color-off-white-0);
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
+  cursor: pointer;
   box-shadow: 0 2px 7px 0 var(--color-border-thick);
+}
+
+.sliderThumb[data-focus-visible] {
+  outline: 2px solid var(--color-primary-blue);
 }
 
 .sliderThumbCounter {
@@ -56,7 +75,7 @@
 }
 
 .miniSize {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   width: var(--size-XXS);
   height: var(--size-XXS);
   background: var(--color-primary-blue);
@@ -77,5 +96,5 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  left: 0.6rem;
+  left: 0.5rem;
 }

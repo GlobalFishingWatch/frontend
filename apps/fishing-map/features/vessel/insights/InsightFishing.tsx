@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EventTypes, type InsightResponse } from '@globalfishingwatch/api-types'
 
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
@@ -64,10 +64,7 @@ const InsightFishing = ({
     <div id="fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.fishing)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.fishing)}
-          terminologyKey="insightsFishing"
-        />
+        <DataTerminology terminologyKey="insightsFishing" />
       </div>
       {isLoading ? (
         <Fragment>
@@ -79,32 +76,32 @@ const InsightFishing = ({
       ) : (
         <div>
           {eventsInNoTakeMpas?.length !== 0 ? (
-            <p>
+            <span>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpas, {
-                count: eventsInNoTakeMpas?.length,
+                count: eventsInNoTakeMpas?.length ?? 0,
               })}
               <InsightEventDetails
                 events={eventsInNoTakeMpasDetails}
                 visible={eventsInNoTakeMpasDetailsVisibility}
                 toggleVisibility={toggleEventsInNoTakeMpasDetailsVisibility}
               />
-            </p>
+            </span>
           ) : (
             <p className={styles.secondary}>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpasEmpty)}
             </p>
           )}
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
-            <p>
+            <span>
               {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization, {
-                count: eventsInRfmoWithoutKnownAuthorization?.length,
+                count: eventsInRfmoWithoutKnownAuthorization?.length ?? 0,
               })}
               <InsightEventDetails
                 events={eventsInRfmoWithoutKnownAuthorizationDetails}
                 visible={eventsInRfmoDetailsVisibility}
                 toggleVisibility={toggleEventsInRfmoDetailsVisibility}
               />
-            </p>
+            </span>
           ) : (
             <p className={styles.secondary}>
               {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty)}

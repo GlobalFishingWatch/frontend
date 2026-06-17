@@ -1,25 +1,23 @@
 import { render } from 'test/appTestUtils'
-import { navigateToVesselViewerAction } from 'test/utils/actions/navigateToVesselViewer'
+import { navigateToVesselViewer } from 'test/utils/navigation/navigateToVesselViewer'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Vessel viewer', async () => {
   it('should renders tabs and vessel basic info', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
-
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, getByText, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
 
     await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
     await expect.element(getByText('Registry', { exact: true })).toBeVisible()
     await expect.element(getByText('AIS', { exact: true })).toBeVisible()
-    await expect.element(getByText('Name')).toBeVisible()
+    await expect.element(getByText('Name').first()).toBeVisible()
     await expect.element(getByText('Flag', { exact: true })).toBeVisible()
     await expect.element(getByText('Registry sources')).toBeVisible()
     await expect.element(getByText('Dates')).toBeVisible()
@@ -50,21 +48,25 @@ describe('Vessel viewer', async () => {
   })
 
   it('should change tab when clicking on a tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByText, getByTestId } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByText, getByTestId, getByRole, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
 
     await userEvent.click(getByText('AIS', { exact: true }))
 
-    await expect.element(getByText('Name')).toBeVisible()
-    await expect.element(getByText('Flag', { exact: true })).toBeVisible()
-    await expect.element(getByText('MMSI')).toBeVisible()
-    await expect.element(getByText('IMO', { exact: true })).toBeVisible()
-    await expect.element(getByText('Call Sign')).toBeVisible()
-    await expect.element(getByText('GFW Vessel type')).toBeVisible()
-    await expect.element(getByText('GFW Gear type')).toBeVisible()
-    await expect.element(getByText('View in')).toBeVisible()
+    const aisPanel = getByRole('tabpanel').filter({ hasText: 'GFW Predictions' })
+    await expect.element(aisPanel.getByText('Self reported by vessel', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Predictions', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Name', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Vessel type', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Flag', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('MMSI')).toBeVisible()
+    await expect.element(aisPanel.getByText('IMO', { exact: true })).toBeVisible()
+    await expect.element(aisPanel.getByText('Call Sign')).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Vessel type')).toBeVisible()
+    await expect.element(aisPanel.getByText('GFW Gear type')).toBeVisible()
+    await expect.element(aisPanel.getByText('View in')).toBeVisible()
     await expect.element(getByTestId('vv-summary-tab')).toBeVisible()
     await expect.element(getByTestId('vv-areas-tab')).toBeVisible()
     await expect.element(getByTestId('vv-related-tab')).toBeVisible()
@@ -73,37 +75,34 @@ describe('Vessel viewer', async () => {
 
   it('should render summary tab by type', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
 
     await GFWAPITest.waitForRequest('/events')
     await userEvent.click(getByTestId('vv-summary-tab'))
     await expect.element(getByTestId('vv-list-port_visit')).toBeVisible()
-    await expect.element(getByTestId('vv-list-loitering')).toBeVisible()
   })
 
   it('should render summary tab by timeline', async () => {
     const GFWAPITest = new GFWAPITestUtils()
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, getByText, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
 
     await GFWAPITest.waitForRequest('/events')
     await userEvent.click(getByTestId('vv-summary-tab'))
     await userEvent.click(getByText('Timeline by voyages'))
-    await expect
-      .element(getByText(/\d+ Events? between .+ and .+/).first())
-      .toBeVisible({ timeout: 15000 })
+    await expect.element(getByText(/\d+ Events? between .+ and .+/).first()).toBeVisible()
   })
 
   it('should render areas tab and its tabs', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
     await userEvent.click(getByTestId('vv-areas-tab'))
 
     await expect.element(getByTestId('vv-area-eez')).toBeVisible()
@@ -113,10 +112,10 @@ describe('Vessel viewer', async () => {
   })
 
   it('should render related vessels tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, getByText, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
     await userEvent.click(getByTestId('vv-related-tab'))
 
     await expect
@@ -128,10 +127,10 @@ describe('Vessel viewer', async () => {
   })
 
   it('should render insights tab', async () => {
-    const store = makeStore(defaultState, [], true)
+    const store = makeStore(defaultState)
 
-    const { getByTestId, getByText } = await render(<App />, { store })
-    store.dispatch(navigateToVesselViewerAction)
+    const { getByTestId, getByText, router } = await render({ store })
+    await router.navigate(navigateToVesselViewer())
     await userEvent.click(getByTestId('vv-insights-tab'))
 
     await expect

@@ -45,6 +45,7 @@ function VesselDownloadButton({
 
   return (
     <UserLoggedIconButton
+      loginSource="vessel-download"
       icon="download"
       type={iconType}
       disabled={!downloadSupported}
@@ -58,7 +59,7 @@ function VesselDownloadButton({
       }
       tooltipPlacement="top"
       onClick={onDownloadClick}
-      size="small"
+      size="medium"
     />
   )
 }

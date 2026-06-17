@@ -1,18 +1,28 @@
 import { useRef } from 'react'
-import { arrow, autoUpdate, flip, FloatingArrow, offset, shift, useFloating } from '@floating-ui/react'
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  FloatingArrow,
+  offset,
+  shift,
+  useFloating,
+} from '@floating-ui/react'
 import cx from 'classnames'
 
+import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import useClickedOutside from 'hooks/use-clicked-outside'
+import { getSafeElementById } from 'utils/dom'
 
 import { MAP_WRAPPER_ID } from '../map.config'
 
 import styles from './Popup.module.css'
 
-const getBoundary = () => document.getElementById(MAP_WRAPPER_ID) ?? undefined
+const getBoundary = () => getSafeElementById(MAP_WRAPPER_ID) || undefined
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null
@@ -62,8 +72,11 @@ function PopupWrapper({
     ],
   })
 
-  if (!mapViewport || !latitude || !longitude) return null
-  const [left, top] = mapViewport.project([longitude, latitude])
+  const coordinates = toLngLatCoordinates(longitude, latitude)
+  if (!mapViewport || !coordinates) {
+    return null
+  }
+  const [left, top] = mapViewport.project(coordinates)
   return (
     <div
       // eslint-disable-next-line react-hooks/refs

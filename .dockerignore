@@ -11,6 +11,8 @@ dist
 **/dist
 .nx
 **/.nx
+.output
+*.tsbuildinfo
 
 coverage
 **/coverage
@@ -29,6 +31,7 @@ temp
 **/.vitest-attachments
 **/.playwright
 **/.pytest_cache
+**/playwright-report
 
 *.log
 npm-debug.log*

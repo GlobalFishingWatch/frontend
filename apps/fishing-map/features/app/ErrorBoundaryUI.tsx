@@ -1,16 +1,18 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { Button } from '@globalfishingwatch/ui-components'
 
-import FeedbackModal from 'features/feedback/FeedbackModal'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { getIsBrowser } from 'utils/dom'
 
 import { useAppDispatch } from './app.hooks'
 
 import styles from './ErrorBoundary.module.css'
+
+const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 
 interface ErrorBoundaryUIProps {
   error: Error
@@ -23,8 +25,6 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
   const userData = useSelector(selectUserData)
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { message, stack } = error
-  const errorInfo = [message, stack, document.URL]
 
   const onFeedbackClick = useCallback(() => {
     if (userData) {
@@ -56,13 +56,34 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
         )}
       </div>
       <div className={styles.error}>
-        {showError && errorInfo.map((info, i) => <div key={i}>{info}</div>)}
+        {showError && error && (
+          <ul>
+            {error.message && (
+              <li>
+                <label>Message:</label> {error.message}
+              </li>
+            )}
+            {error.stack && (
+              <li>
+                <label>Stack:</label> {error.stack}
+              </li>
+            )}
+
+            {getIsBrowser() && (
+              <li>
+                <label>Url:</label> {document.URL}
+              </li>
+            )}
+          </ul>
+        )}
       </div>
       {modalFeedbackOpen && (
-        <FeedbackModal
-          isOpen={modalFeedbackOpen}
-          onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
-        />
+        <Suspense fallback={null}>
+          <FeedbackModal
+            isOpen={modalFeedbackOpen}
+            onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
+          />
+        </Suspense>
       )}
     </Fragment>
   )

@@ -1,5 +1,5 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import Pbf from 'pbf'
+import { PbfReader as Pbf } from 'pbf'
 
 import { CONFIG_BY_INTERVAL } from '../helpers'
 import type { BBox } from '../helpers/cells'
@@ -105,6 +105,7 @@ export const getPoints = (
 
   let cellNum = 0
   let startFrame = 0
+  // eslint-disable-next-line no-useless-assignment
   let endFrame = 0
   let indexInCell = 0
 

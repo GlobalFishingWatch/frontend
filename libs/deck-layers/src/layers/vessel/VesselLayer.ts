@@ -76,9 +76,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   get cacheHash(): string {
-    const { id, color, maxTimeGapHours } = this.props
+    const { id, color, gapSegmentThreshold } = this.props
     const filters = this.getFilters()
-    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${maxTimeGapHours}`
+    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}`
   }
 
   getPickingInfo = ({
@@ -183,6 +183,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   _getVesselChunks = () => {
     const { startTime, endTime, strictTimeRange } = this.props
+    if (!startTime || !endTime) {
+      return []
+    }
 
     const chunks = strictTimeRange
       ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
@@ -209,7 +212,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackGraphExtent,
       colorBy,
       trackVisualizationMode,
-      maxTimeGapHours,
+      gapSegmentThreshold,
     } = this.props
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
@@ -226,7 +229,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!start || !end) {
         return []
       }
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${maxTimeGapHours ?? ''}`
+      // Only the on/off state is part of the identity: the gap value is applied at render time
+      // (shader uniform + segment helper), so changing it must not trigger a reparse/reload.
+      const computeGaps = Boolean(gapSegmentThreshold)
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -241,10 +247,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           fetch: fetchWithGFWAPI,
           loadOptions: {
             'vessel-tracks': {
-              maxTimeGapHours,
+              computeGaps,
             },
           },
-          maxTimeGapHours,
+          gapSegmentThreshold,
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,
           type: TRACK_LAYER_TYPE,
@@ -403,6 +409,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   renderLayers() {
+    const { startTime, endTime } = this.props
+    if (!startTime || !endTime) {
+      return []
+    }
     return [
       ...this._getVesselTrackLayers(),
       ...this._getVesselEventLayers(),

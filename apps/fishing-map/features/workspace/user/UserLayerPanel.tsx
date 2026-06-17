@@ -13,17 +13,18 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
-  type DrawFeatureType,
   UserContextTileLayer,
   UserPointsTileLayer,
   type UserTracksLayer,
 } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/workspaces'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   useAutoRefreshImportingDataset,
   useDatasetModalConfigConnect,
@@ -41,21 +42,27 @@ import { selectUserId } from 'features/user/selectors/user.permissions.selectors
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import FitBounds from 'features/workspace/shared/FitBounds'
+import InfoError from 'features/workspace/shared/InfoError'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
+import {
+  POINT_PROPERTIES,
+  POLYGON_PROPERTIES,
+} from 'features/workspace/shared/layer-properties.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import ExpandedContainer from '../shared/ExpandedContainer'
-import InfoModal from '../shared/InfoModal'
 import Filters from '../shared/LayerFilters'
-import LayerProperties, { POINT_PROPERTIES, POLYGON_PROPERTIES } from '../shared/LayerProperties'
-import { showSchemaFilter } from '../shared/LayerSchemaFilter'
+import LayerProperties from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
-import UserLayerTrackPanel, { useUserLayerMetadata } from './UserLayerTrackPanel'
+import { useUserLayerMetadata } from './user-layer-track-panel.hooks'
+import UserLayerTrackPanel from './UserLayerTrackPanel'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
@@ -71,6 +78,8 @@ function UserPanel({
   onToggle,
 }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
+  const { openSidePanel } = useSidePanel()
+
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
@@ -79,6 +88,7 @@ function UserPanel({
   const [propertiesOpen, setPropertiesOpen] = useState(false)
   const userId = useSelector(selectUserId)
   const guestUser = useSelector(selectIsGuestUser)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
@@ -168,8 +178,8 @@ function UserPanel({
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
     )
-    return guestUser && dataviewHasPrivateDataset ? (
-      <DatasetLoginRequired dataview={dataview} />
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
     ) : (
       <DatasetNotFound dataview={dataview} />
     )
@@ -180,6 +190,8 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
+  const datasetError = dataset.status === DatasetStatus.Error
+  const datasetDescription = dataset.description !== dataset.name
 
   const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
@@ -296,7 +308,21 @@ function UserPanel({
                 )}
             </>
           )}
-          <InfoModal dataview={dataview} />
+          {(datasetError || datasetDescription) && (
+            <InfoError
+              error={datasetError}
+              loading={dataset.status === DatasetStatus.Importing}
+              tooltip={error || t((t) => t.layer.seeDescription)}
+              size="small"
+              onClick={() =>
+                !datasetError &&
+                openSidePanel({
+                  type: 'userDataset',
+                  id: dataset.id,
+                })
+              }
+            />
+          )}
           <Remove
             testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}

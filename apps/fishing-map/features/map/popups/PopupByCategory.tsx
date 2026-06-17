@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { groupBy, uniqBy } from 'es-toolkit'
@@ -24,7 +24,7 @@ import {
 import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { PORTS_LAYER_ID } from 'features/map/map.config'
+import { PORTS_LAYER_ID, REPORT_HOTSPOT_ID } from 'features/map/map.config'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
@@ -56,6 +56,7 @@ import {
   selectDetectionPositionsInteractionStatus,
 } from '../map.slice'
 
+import HotspotTooltipSection from './categories/HotspotTooltip'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
 import UserContextTooltipSection from './categories/UserContextLayers'
 import VectorsTooltipRow from './categories/VectorsLayers'
@@ -82,11 +83,15 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
 
+  const hotspotFeature = interaction?.features.find((f) => (f as any).id === REPORT_HOTSPOT_ID)
+  const hotspotProperties = hotspotFeature ? (hotspotFeature as any).properties : null
+
   const visibleFeatures = interaction?.features.filter(
-    (feature) => !OMITED_CATEGORIES.includes(feature.category)
+    (feature) =>
+      !OMITED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
   )
 
-  if (!visibleFeatures.length) return null
+  if (!visibleFeatures.length && !hotspotFeature) return null
   const featureByCategory = groupBy(
     visibleFeatures
       // Needed to create a new array and not muting with sort
@@ -393,8 +398,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             return null
         }
       })}
+      {hotspotProperties && <HotspotTooltipSection properties={hotspotProperties} />}
     </div>
   )
 }
 
-export default PopupByCategory
+export default memo(PopupByCategory)

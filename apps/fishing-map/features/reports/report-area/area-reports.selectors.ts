@@ -46,7 +46,7 @@ import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -404,15 +404,24 @@ export const selectReportArea = createSelector(
 )
 
 export const selectReportAreaStatus = createSelector(
-  [selectReportArea, selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
-  (area, areaApiStatus, isVesselGroupReportLocation) => {
-    if (area?.id === ENTIRE_WORLD_REPORT_AREA_ID || isVesselGroupReportLocation) {
+  [selectReportAreaId, selectReportAreaApiStatus, selectIsVesselGroupReportLocation],
+  (reportAreaId, areaApiStatus, isVesselGroupReportLocation) => {
+    if (isVesselGroupReportLocation) {
+      return AsyncReducerStatus.Finished
+    }
+    if (!reportAreaId || reportAreaId === ENTIRE_WORLD_REPORT_AREA_ID) {
       return AsyncReducerStatus.Finished
     }
     return areaApiStatus
   }
 )
 
-export const selectIsGlobalReport = createSelector([selectReportArea], (reportArea) => {
-  return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
-})
+export const selectIsGlobalReport = createSelector(
+  [selectReportAreaId, selectIsAnyReportLocation],
+  (reportAreaId, isAnyReportLocation) => {
+    if (!isAnyReportLocation) {
+      return false
+    }
+    return !reportAreaId || reportAreaId === ENTIRE_WORLD_REPORT_AREA_ID
+  }
+)

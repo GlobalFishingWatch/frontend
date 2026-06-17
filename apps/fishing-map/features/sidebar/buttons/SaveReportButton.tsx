@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
+import { useRouter } from '@tanstack/react-router'
 
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -10,18 +10,14 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { REPORT } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import { getCurrentAppUrl, ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-const NewReportModal = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
-    )
+const NewReportModal = lazy(
+  () => import('features/reports/shared/new-report-modal/NewAreaReportModal')
 )
 
 function SaveReportButton() {
@@ -31,7 +27,7 @@ function SaveReportButton() {
   const report = useSelector(selectCurrentReport)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportStatus = useSelector(selectReportsStatus)
-  const { dispatchLocation } = useLocationConnect()
+  const router = useRouter()
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const [showReportCreateModal, setShowReportCreateModal] = useState(false)
 
@@ -41,16 +37,19 @@ function SaveReportButton() {
 
   const onSaveCreateReport = useCallback(
     (report: any) => {
-      copyToClipboard(window.location.href)
-      dispatchLocation(
-        REPORT,
-        { payload: { reportId: report?.id }, query: {} },
-        { replaceQuery: true }
-      )
+      copyToClipboard(getCurrentAppUrl())
+      router.navigate({
+        to: ROUTE_PATHS.REPORT,
+        params: {
+          reportId: report?.id,
+        },
+        search: {},
+        replace: true,
+      })
       dispatch(setWorkspace(report.workspace))
       onCloseCreateReport()
     },
-    [copyToClipboard, dispatch, dispatchLocation, onCloseCreateReport]
+    [copyToClipboard, dispatch, router, onCloseCreateReport]
   )
 
   const onSaveClick = async () => {
@@ -69,7 +68,7 @@ function SaveReportButton() {
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
+      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)} loginSource="report-save">
         <IconButton
           icon={showClipboardNotification ? 'tick' : 'save'}
           size="medium"
@@ -87,12 +86,14 @@ function SaveReportButton() {
         />
       </LoginButtonWrapper>
       {showReportCreateModal && (
-        <NewReportModal
-          isOpen={showReportCreateModal}
-          onClose={onCloseCreateReport}
-          onFinish={onSaveCreateReport}
-          report={report}
-        />
+        <Suspense fallback={null}>
+          <NewReportModal
+            isOpen={showReportCreateModal}
+            onClose={onCloseCreateReport}
+            onFinish={onSaveCreateReport}
+            report={report}
+          />
+        </Suspense>
       )}
     </Fragment>
   )

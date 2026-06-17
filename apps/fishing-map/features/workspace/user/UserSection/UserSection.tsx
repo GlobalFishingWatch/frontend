@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -18,13 +18,14 @@ import { selectCustomUserDataviewsGrouped } from 'features/dataviews/selectors/d
 import Hint from 'features/help/Hint'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import LoginLink from 'features/user/LoginLink'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import Section from 'features/workspace/shared/Section'
-import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
+import { getIsBrowser } from 'utils/dom'
 
 import LayerPanel from '../UserLayerPanel'
 
@@ -36,14 +37,16 @@ export function RegisterOrLoginToUpload() {
       <a
         className={styles.link}
         href={GFWAPI.getRegisterUrl(
-          typeof window !== 'undefined' ? window.location.toString() : ''
+          getIsBrowser() ? window.location.toString() : ''
         )}
       >
         Register
       </a>
       or
-      <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>to upload datasets
-      (free, 2 minutes)
+      <LoginLink className={styles.link} loginSource="user-upload-datasets">
+        login
+      </LoginLink>
+      to upload datasets (free, 2 minutes)
     </Trans>
   )
 }
@@ -129,6 +132,7 @@ export function UserSection(): React.ReactElement<any> {
             <div className={styles.relative}>
               <Hint id="userContextLayers" />
               <UserLoggedIconButton
+                loginSource="user-upload-datasets"
                 testId="upload-user-dataset"
                 icon="upload"
                 type="border"
@@ -141,6 +145,7 @@ export function UserSection(): React.ReactElement<any> {
             </div>
           )}
           <UserLoggedIconButton
+            loginSource="draw-polygon"
             icon="draw"
             type="border"
             size="medium"
@@ -151,6 +156,7 @@ export function UserSection(): React.ReactElement<any> {
             testId="draw-polygon-button"
           />
           <UserLoggedIconButton
+            loginSource="draw-points"
             icon="draw-points"
             type="border"
             size="medium"

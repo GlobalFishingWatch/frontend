@@ -9,11 +9,11 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Collapsable, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import {
   GAPS_EVENTS_SOURCE_ID,
   VESSEL_GROUP_DATAVIEW_PREFIX,
 } from 'features/dataviews/dataviews.utils'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
@@ -68,7 +68,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
         <Tooltip content={t((t) => t.common.experimentalTooltip)}>
           <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>
         </Tooltip>
-        <DataTerminology title={t((t) => t.vessel.insights.gaps)} terminologyKey="insightsGaps" />
+        <DataTerminology terminologyKey="insightsGaps" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -91,7 +91,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
                 0
               ),
 
-              vessels: vesselsWithGaps.length,
+              vessels: String(vesselsWithGaps.length),
             })}
             onToggle={onInsightToggle}
           >

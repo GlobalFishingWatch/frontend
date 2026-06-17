@@ -1,7 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
-import type { DataviewDatasetConfig, IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import type {
+  DataviewDatasetConfig,
+  IdentityVessel,
+  Locale,
+  Resource,
+} from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
@@ -19,6 +24,7 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
+import { BASEMAP_LABELS_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
@@ -35,7 +41,11 @@ import {
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
 } from 'features/track-correction/track-correction.slice'
-import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGuestUser,
+  selectUserLanguage,
+  selectUserLogged,
+} from 'features/user/selectors/user.selectors'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
@@ -43,7 +53,7 @@ import {
   selectIsAnyVesselLocation,
   selectTrackCorrectionId,
   selectUrlDataviewInstancesOrder,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 import { createDeepEqualSelector } from 'utils/selectors'
 
@@ -72,6 +82,18 @@ export const selectDataviewInstancesMergedOrdered = createSelector(
   }
 )
 
+// Returns highlightedTime only when track correction is active to avoid
+// recomputing the entire dataview resolver on every timebar mousemove.
+const selectHighlightedTimeForTrackCorrection = createSelector(
+  [selectTrackCorrectionVesselDataviewId, selectTrackCorrectionId, selectHighlightedTime],
+  (trackCorrectionVesselDataviewId, trackCorrectionId, highlightedTime) => {
+    if (!trackCorrectionVesselDataviewId || trackCorrectionId === 'new') {
+      return undefined
+    }
+    return highlightedTime
+  }
+)
+
 export const selectAllDataviewInstancesResolved = createSelector(
   [
     selectDataviewInstancesMergedOrdered,
@@ -83,9 +105,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectIsGuestUser,
     selectTrackCorrectionVesselDataviewId,
     selectTrackCorrectionId,
-    selectHighlightedTime,
+    selectHighlightedTimeForTrackCorrection,
     selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
+    selectUserLanguage,
   ],
   (
     dataviewInstances,
@@ -99,7 +122,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionId,
     highlightedTime,
     trackCorrectionTimerange,
-    deprecatedDatasets
+    deprecatedDatasets,
+    language
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
@@ -162,6 +186,15 @@ export const selectAllDataviewInstancesResolved = createSelector(
                   highlightEndTime: highlightedTime.end,
                   showVesselIcon: true,
                 }),
+            },
+          }
+        }
+        if (dataview.slug === BASEMAP_LABELS_DATAVIEW_SLUG && language) {
+          return {
+            ...dataview,
+            config: {
+              ...(dataview.config || {}),
+              locale: language as Locale,
             },
           }
         }

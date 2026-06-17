@@ -12,7 +12,8 @@
   left: 0;
   height: 100%;
   transform: translateX(-100%);
-  background: var(--gradient);
+  background: var(--color-background);
+  transition: transform 280ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .isOpen .aside {
@@ -23,9 +24,25 @@
   position: absolute;
   top: 0;
   right: 0;
-  height: 100%;
+  height: 100vh;
   left: 0;
   z-index: 0;
+}
+
+.resizer {
+  width: 10px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -2px;
+  z-index: 1;
+  cursor: ew-resize;
+  border-right: 2px solid transparent;
+}
+
+.resizer:hover,
+.resizing {
+  border-right: 2px solid var(--color-white);
 }
 
 .toggleBtn {
@@ -34,25 +51,36 @@
   justify-content: center;
   position: absolute;
   top: var(--space-XS);
-  right: -2.4rem;
-  width: 2.4rem;
-  height: 5rem;
+  right: -2rem;
+  width: 2rem;
+  height: 4.8rem;
   cursor: pointer;
   color: var(--color-white);
   background-color: var(--color-primary-blue);
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-radius: 0 1rem 1rem 0;
   transition: var(--transition);
+}
+
+.toggleBtn:hover {
+  background-color: var(--color-primary-blue-hover);
+  right: -2.4rem;
+  width: 2.4rem;
 }
 
 @media only screen and (width <= 800px) {
   .container {
-    padding-bottom: 4.2rem;
+    padding-bottom: 3.6rem;
   }
 
   .aside,
   .main {
     width: 100vw;
-    height: calc(100% - 4.2rem);
+    height: calc(100% - 3.6rem);
+    transition: none;
+  }
+
+  .resizer {
+    display: none;
   }
 
   .toggleChoice {
@@ -62,10 +90,12 @@
     width: 100vw;
     transform: translateX(100vw);
     left: 0;
-    bottom: -4.2rem;
+    bottom: -3.6rem;
+    height: 3.6rem;
+    padding-block: 0.4rem;
     z-index: 1;
-    transition: var(--transition);
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--box-shadow-1);
+    transition: none;
   }
 
   .isOpen .toggleChoice {

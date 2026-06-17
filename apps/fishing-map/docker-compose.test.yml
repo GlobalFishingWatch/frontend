@@ -1,10 +1,10 @@
 services:
   test:
-    image: mcr.microsoft.com/playwright:v1.58.2-noble
+    image: mcr.microsoft.com/playwright:v1.60.0-noble
     volumes:
       - ../..:/workspace
     working_dir: /workspace
     environment:
-      - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
-      - NEXT_PUBLIC_WORKSPACE_ENV=development
+      - VITE_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+      - VITE_PUBLIC_WORKSPACE_ENV=development
     command: bash -c "pnpm install --frozen-lockfile && pnpm exec nx test fishing-map --browser='chromium'"

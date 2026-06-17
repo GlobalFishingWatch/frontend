@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
-import Link from 'redux-first-router-link'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -17,7 +17,11 @@ import {
 } from 'data/highlighted-workspaces/marine-manager.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
+  MPA_DATAVIEW_SLUG,
+  RFMO_DATAVIEW_SLUG,
   WorkspaceCategory,
 } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -29,13 +33,19 @@ import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 
 import styles from './WorkspaceWizard.module.css'
 
 const MAX_RESULTS_NUMBER = 10
+
+const AREA_TYPE_DATAVIEW_SLUG: Record<string, string> = {
+  eez: EEZ_DATAVIEW_SLUG,
+  mpa: MPA_DATAVIEW_SLUG,
+  fao: FAO_AREAS_DATAVIEW_SLUG,
+  rfmo: RFMO_DATAVIEW_SLUG,
+}
 
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
@@ -104,7 +114,7 @@ function WorkspaceWizard() {
     const highlightedArea = areasMatching[highlightedIndex as number]
     const bounds = highlightedArea?.properties.bounds
     if (bounds) {
-      fitBounds(bounds)
+      fitBounds(bounds, { fitZoom: true })
     }
   }
 
@@ -138,18 +148,18 @@ function WorkspaceWizard() {
       setAreasMatching([])
     }
   }
-  const linkToArea = useMemo(() => {
+  const linkToAreaProps = useMemo(() => {
     const linkViewport = selectedItem
       ? getMapCoordinatesFromBounds(selectedItem.properties?.bounds as Bbox)
       : viewState
 
     return {
-      type: WORKSPACE,
-      payload: {
+      to: '/$category/$workspaceId' as const,
+      params: {
         category: WorkspaceCategory.MarineManager,
         workspaceId: WIZARD_TEMPLATE_ID,
       },
-      query: {
+      search: {
         ...linkViewport,
         daysFromLatest: 90,
         dataviewInstances: [
@@ -164,17 +174,18 @@ function WorkspaceWizard() {
           ...MARINE_MANAGER_DATAVIEWS_INSTANCES,
         ],
       },
-      replaceQuery: true,
+      replace: true,
     }
   }, [selectedItem, viewState])
 
-  const linkToReport = useMemo(() => {
+  const linkToReportProps = useMemo(() => {
     if (!selectedItem) {
       return null
     }
-    const dataview = dataviews.find((d) =>
-      (d.slug as string).includes(selectedItem?.properties?.type)
-    )
+    const dataviewSlug = AREA_TYPE_DATAVIEW_SLUG[selectedItem?.properties?.type]
+    const dataview = dataviewSlug
+      ? dataviews.find((d) => (d.slug as string) === dataviewSlug)
+      : undefined
 
     if (!dataview) {
       return null
@@ -184,31 +195,32 @@ function WorkspaceWizard() {
       return null
     }
     return {
-      ...linkToArea,
-      type: WORKSPACE_REPORT,
-      payload: {
-        ...linkToArea.payload,
+      to: '/$category/$workspaceId/report/$datasetId/$areaId' as const,
+      params: {
+        ...linkToAreaProps.params,
         datasetId,
-        areaId: selectedItem?.properties?.area,
+        areaId: String(selectedItem?.properties?.area ?? ''),
       },
-      query: {
-        ...linkToArea.query,
+      search: {
+        ...linkToAreaProps.search,
       },
+      replace: true,
     }
-  }, [selectedItem, dataviews, linkToArea])
+  }, [selectedItem, dataviews, linkToAreaProps])
 
   const linkLabel = selectedItem
     ? t((t) => t.workspace.wizard.exploreArea)
     : t((t) => t.workspace.wizard.exploreGlobal)
 
   return (
-    <div className={styles.wizardContainer}>
+    <div className={cx('card', styles.wizardContainer)}>
       <div
         className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
       >
         <label>{t((t) => t.workspace.wizard.title)}</label>
         <div className={styles.comboContainer}>
           <InputText
+            // eslint-disable-next-line react-hooks/refs
             {...getInputProps({ ref: inputRef })}
             className={styles.input}
             placeholder={t((t) => t.map.search)}
@@ -243,12 +255,12 @@ function WorkspaceWizard() {
           </p>
         </div>
         <div className={styles.linksContainer}>
-          {selectedItem && linkToReport && (
-            <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
+          {selectedItem && linkToReportProps && (
+            <Link {...linkToReportProps} target="_self" className={cx(styles.confirmBtn)}>
               {t((t) => t.analysis.see)}
             </Link>
           )}
-          <Link to={linkToArea} target="_self" className={cx(styles.confirmBtn)}>
+          <Link {...linkToAreaProps} target="_self" className={cx(styles.confirmBtn)}>
             {linkLabel}
           </Link>
         </div>

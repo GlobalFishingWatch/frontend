@@ -1,0 +1,16 @@
+diff --git a/src/executors/test/vitest.impl.js b/src/executors/test/vitest.impl.js
+index 842531fa698775bfe5f10d747b2603fac0c8b75d..7c4527370091015e3c169eb9e0b065b5cc5db7db 100644
+--- a/src/executors/test/vitest.impl.js
++++ b/src/executors/test/vitest.impl.js
+@@ -35,9 +35,9 @@ async function* vitestExecutor(options, context) {
+             process.exit(0);
+         }
+     };
++    process.on('SIGINT', processExit);
++    process.on('SIGTERM', processExit);
+     if (watch) {
+-        process.on('SIGINT', processExit);
+-        process.on('SIGTERM', processExit);
+         process.on('exit', processExit);
+     }
+     // vitest sets the exitCode in case of exception without notifying reporters

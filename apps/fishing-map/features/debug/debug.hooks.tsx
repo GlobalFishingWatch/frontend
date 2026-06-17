@@ -5,13 +5,6 @@ import { toast } from 'react-toastify'
 import type { FeatureFlag } from 'features/debug/debug.slice'
 import { selectDebugActive, selectFeatureFlags } from 'features/debug/debug.slice'
 
-function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
-  if (featureFlags.length === 0) {
-    return null
-  }
-  return <p>⚠️ You are using the following beta features: {featureFlags.join(', ')} </p>
-}
-
 let toastDismissed = false
 export const useFeatureFlagsToast = () => {
   const allFeatureFlags = useSelector(selectFeatureFlags)
@@ -23,8 +16,11 @@ export const useFeatureFlagsToast = () => {
 
   useEffect(() => {
     if (featureFlags?.length > 0 && !debugActive && !toastDismissed) {
+      const message = (
+        <p>⚠️ You are using the following beta features: {featureFlags.join(', ')} </p>
+      )
       if (!toastId.current) {
-        toastId.current = toast(<FeatureFlagsToast featureFlags={featureFlags} />, {
+        toastId.current = toast(message, {
           toastId: 'featureFlags',
           autoClose: false,
           closeButton: true,
@@ -33,9 +29,7 @@ export const useFeatureFlagsToast = () => {
           },
         })
       } else {
-        toast.update(toastId.current, {
-          render: <FeatureFlagsToast featureFlags={featureFlags} />,
-        })
+        toast.update(toastId.current, { render: message })
       }
     }
   }, [featureFlags, debugActive])

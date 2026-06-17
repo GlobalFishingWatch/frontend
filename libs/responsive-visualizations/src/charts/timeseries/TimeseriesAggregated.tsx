@@ -1,9 +1,8 @@
 import { format } from 'd3-format'
-import max from 'lodash/max'
-import min from 'lodash/min'
+import { max, min } from 'es-toolkit/compat'
 import { CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { getResponsiveVisualizationItemValue } from '../../lib/density'
+import { getResponsiveVisualizationItemValue } from '../../lib/values'
 import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'
 import { getContrastSafeColor } from '../utils'

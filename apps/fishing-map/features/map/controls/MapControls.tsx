@@ -1,8 +1,16 @@
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import {
+  Fragment,
+  lazy,
+  memo,
+  Suspense,
+  useCallback,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
@@ -25,29 +33,29 @@ import {
   selectIsAnyVesselLocation,
   selectIsMapDrawing,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './MapControls.module.css'
 
-const MiniGlobeInfo = dynamic(
-  () => import(/* webpackChunkName: "MiniGlobeInfo" */ './MiniGlobeInfo')
-)
-const MapControlScreenshot = dynamic(
-  () => import(/* webpackChunkName: "MapControlScreenshot" */ './MapControlScreenshot')
-)
-const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(
-  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
-)
-const MapAnnotations = dynamic(
-  () =>
-    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
-)
+const MiniGlobeInfo = lazy(() => import('./MiniGlobeInfo'))
+const MapControlScreenshot = lazy(() => import('./MapControlScreenshot'))
+const MapSearch = lazy(() => import('./MapSearch'))
+const Rulers = lazy(() => import('features/map/controls/RulersControl'))
+const AnnotationsControl = lazy(() => import('features/map/controls/AnnotationsControl'))
 
-const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.ReactElement<any> => {
+const MapControls = ({
+  onMouseEnter,
+}: {
+  onMouseEnter?: () => void
+}): React.ReactElement<any> | null => {
   const { t } = useTranslation()
   const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true, // client
+    () => false // server
+  )
   const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
   const gfwUser = useSelector(selectIsGFWUser)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
@@ -114,22 +122,36 @@ const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.Rea
   const enterMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(true), [])
   const leaveMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(false), [])
 
+  if (!isClient) {
+    return null
+  }
+
   return (
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div onMouseEnter={enterMiniGlobeHandler} onMouseLeave={leaveMiniGlobeHandler}>
-          <MiniGlobe
-            className={styles.miniglobe}
-            size={60}
-            viewportThickness={3}
-            bounds={debouncedOptions.bounds}
-            center={debouncedOptions.center}
-          />
-          {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
+          <Suspense fallback={null}>
+            <MiniGlobe
+              className={styles.miniglobe}
+              size={60}
+              viewportThickness={3}
+              bounds={debouncedOptions.bounds}
+              center={debouncedOptions.center}
+            />
+          </Suspense>
+          {miniGlobeHovered && (
+            <Suspense fallback={null}>
+              <MiniGlobeInfo viewport={viewState} />
+            </Suspense>
+          )}
         </div>
         {!screenshotMode && (
           <div className={cx('print-hidden', styles.controlsNested)}>
-            {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && <MapSearch />}
+            {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
+              <Suspense fallback={null}>
+                <MapSearch />
+              </Suspense>
+            )}
             <IconButton
               icon="plus"
               type="map-tool"
@@ -146,10 +168,16 @@ const MapControls = ({ onMouseEnter }: { onMouseEnter?: () => void }): React.Rea
             />
             {showExtendedControls && (
               <Fragment>
-                <Rulers />
-                <MapAnnotations />
+                <Suspense fallback={null}>
+                  <Rulers />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <AnnotationsControl />
+                </Suspense>
                 {gfwUser && <ReportControls disabled={mapLoading} />}
-                <MapControlScreenshot />
+                <Suspense fallback={null}>
+                  <MapControlScreenshot mapLoading={mapLoading} />
+                </Suspense>
                 <Tooltip
                   content={
                     currentBasemap === BasemapType.Default

@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { castDraft } from 'immer'
 
@@ -24,14 +24,18 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 
 import type { VALID_PASSWORD } from 'data/config'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX } from 'data/config'
+import {
+  DEFAULT_TIME_RANGE,
+  IS_RANDOM_FOREST_ENABLED,
+  PRIVATE_SUFIX,
+  WORKSPACE_HISTORY_NAVIGATION,
+} from 'data/config'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  WorkspaceCategory,
 } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -42,45 +46,75 @@ import {
 } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
-import { cleanAggregateByPropertyDataviewFromReport } from 'features/reports/report-area/area-reports.utils'
-import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
-import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
-import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { RF_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
+import { REPORT, ROUTES_WITH_DEFAULT_WORKSPACE } from 'router/routes'
 import {
-  selectLocationCategory,
   selectLocationType,
   selectReportId,
   selectUrlDataviewInstances,
-} from 'routes/routes.selectors'
-import type { LinkTo } from 'routes/routes.types'
+} from 'router/routes.selectors'
+import type { LinkTo } from 'router/routes.types'
 import type { AppDispatch } from 'store'
-import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
+import type { AnyWorkspaceState, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
+import { getIsBrowser } from 'utils/dom'
 
 import {
+  getReportWorkspaceFetchNeeded,
   selectCurrentWorkspaceId,
   selectDaysFromLatest,
+  selectWorkspace,
+  selectWorkspaceRefreshStatus,
+  selectWorkspaceReportId,
   selectWorkspaceStatus,
 } from './workspace.selectors'
-import { parseUpsertWorkspace } from './workspace.utils'
+import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
 
+/**
+ * History navigation entry stored in TanStack Router format.
+ * No conversion needed when navigating back - use directly with Link or useRouter().navigate().
+ */
 export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
 }
 
+const MAX_HISTORY_NAVIGATION = 20
+
+export function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
+  if (getIsBrowser()) {
+    try {
+      const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
+      return stored ? (JSON.parse(stored) as LastWorkspaceVisited[]) : []
+    } catch (e) {
+      return []
+    }
+  }
+  return []
+}
+
+function persistHistoryNavigation(historyNavigation: LastWorkspaceVisited[]) {
+  if (getIsBrowser()) {
+    try {
+      sessionStorage.setItem(WORKSPACE_HISTORY_NAVIGATION, JSON.stringify(historyNavigation))
+    } catch (e) {
+      // ignore
+    }
+  }
+  return
+}
+
 interface WorkspaceSliceState {
   status: AsyncReducerStatus
+  refreshStatus: AsyncReducerStatus
   suggestSave: boolean
   // used to identify when someone saves its own version of the workspace
   customStatus: AsyncReducerStatus
@@ -93,6 +127,7 @@ interface WorkspaceSliceState {
 
 const initialState: WorkspaceSliceState = {
   status: AsyncReducerStatus.Idle,
+  refreshStatus: AsyncReducerStatus.Idle,
   suggestSave: false,
   customStatus: AsyncReducerStatus.Idle,
   error: {} as AsyncError,
@@ -107,24 +142,35 @@ type RejectedActionPayload = {
   error: AsyncError
 }
 
-export const getDefaultWorkspace = () => {
+const workspaceModules = import.meta.glob<{ default: AppWorkspace }>(
+  '../../data/default-workspaces/workspace.*.ts'
+)
+
+export const getDefaultWorkspace = async (): Promise<AppWorkspace> => {
   const workspaceEnv = getWorkspaceEnv()
-  const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
-    (m) => m.default
-  )
-  return workspace as Promise<AppWorkspace>
+  const loader =
+    workspaceModules[`../../data/default-workspaces/workspace.${workspaceEnv}.ts`] ??
+    workspaceModules['../../data/default-workspaces/workspace.production.ts']!
+  const mod = await loader()
+  return mod.default
 }
 
-type FetchWorkspacesThunkParams = {
+export type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
   reportId?: string
+  isRefresh?: boolean
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (
-    { workspaceId, password, reportId: reportIdParam }: FetchWorkspacesThunkParams,
+    {
+      workspaceId,
+      password,
+      reportId: reportIdParam,
+      isRefresh = false,
+    }: FetchWorkspacesThunkParams,
     { signal, dispatch, getState, rejectWithValue }: any
   ) => {
     const state = getState() as any
@@ -132,58 +178,70 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const currentWorkspace = selectWorkspace(state)
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
+    let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
 
     try {
-      let workspace: Workspace<any> | null = null
-      if (locationType === REPORT) {
-        const action = dispatch(fetchReportsThunk([reportId]))
-        const resolvedAction = await action
-        if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
-          workspace = resolvedAction.payload?.[0]?.workspace as Workspace
-          workspaceReportId = resolvedAction.payload?.[0]?.id
-          if (!workspace) {
+      let workspace: Workspace<any> | null = isRefresh ? currentWorkspace : null
+      if (!workspace) {
+        if (locationType === REPORT) {
+          const action = dispatch(fetchReportsThunk([reportId as string]))
+          const resolvedAction = await action
+          if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
+            const report = resolvedAction.payload?.[0]
+            workspace = report?.workspace as Workspace
+            workspaceReportId = report?.id ?? reportId
+            if (!report) {
+              return rejectWithValue({
+                error: { status: 404, message: 'Report not found' },
+              })
+            }
+            if (!workspace) {
+              return rejectWithValue({
+                error: { status: 404, message: 'Report workspace not found' },
+              })
+            }
+            if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+              return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
+            }
+          } else {
+            if (resolvedAction.payload?.status === 401) {
+              return rejectWithValue({ error: { status: 401, message: 'Private report' } })
+            }
             return rejectWithValue({
-              error: {
-                status: 404,
-                message: 'Report workspace not found',
-              },
+              error: resolvedAction.payload || { status: 500, message: 'Error fetching report' },
             })
           }
-        } else {
-          if (resolvedAction.payload?.status === 401) {
-            return rejectWithValue({ error: { status: 401, message: 'Private report' } })
-          }
-          if (!isRejected(resolvedAction)) {
-            throw new Error('Error fetching report')
+        } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
+          workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
+            signal,
+            ...(password && {
+              headers: {
+                'x-workspace-password': password,
+              },
+            }),
+          })
+        }
+        if (
+          (!workspace && ROUTES_WITH_DEFAULT_WORKSPACE.includes(locationType)) ||
+          workspaceId === DEFAULT_WORKSPACE_ID
+        ) {
+          workspace = await getDefaultWorkspace()
+          if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+            return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
           }
         }
-        // TODO fetch report and use the workspace within it
-      } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
-        workspace = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, {
-          signal,
-          ...(password && {
-            headers: {
-              'x-workspace-password': password,
-            },
-          }),
-        })
-      }
-      if ((!workspace && locationType === HOME) || workspaceId === DEFAULT_WORKSPACE_ID) {
-        workspace = await getDefaultWorkspace()
-        if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
-          return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
-        }
-      }
 
-      if (workspace) {
-        workspace = {
-          ...workspace,
-          dataviewInstances: (workspace?.dataviewInstances || []).map(
-            (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
-          ),
+        if (workspace) {
+          workspace = {
+            ...workspace,
+            dataviewInstances: (workspace?.dataviewInstances || []).map(
+              (dv) => parseLegacyDataviewInstanceConfig(dv) as DataviewInstance
+            ),
+          }
         }
       }
 
@@ -227,6 +285,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
+        if (IS_RANDOM_FOREST_ENABLED) {
+          datasetsIds.push(RF_VESSEL_IDENTITY_ID)
+        }
         const vesselGroupsIds = getVesselGroupsInDataviews(
           [...dataviews, ...dataviewInstances],
           guestUser
@@ -235,10 +296,14 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         if (vesselGroupsIds?.length) {
           dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         }
-        const fetchDatasetsAction: any = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsIds }))
+
+        const fetchDatasetsAction: any = dispatch(
+          fetchDatasetsByIdsThunk({ ids: datasetsIds, includeRelated: false })
+        )
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
+
         if (error) {
           console.warn(error)
           return rejectWithValue({ workspace, error: payload })
@@ -246,13 +311,24 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           datasets = payload as Dataset[]
         }
 
+        const relatedIds = datasets.flatMap(
+          (dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || []
+        )
+
+        // we dont wait here for the related loads
+        dispatch(fetchDatasetsByIdsThunk({ ids: relatedIds, includeRelated: true }))
+          .unwrap()
+          .then(() => {
+            dispatch(fetchVesselGroupsThunk())
+          })
+
         if (privateUserGroups.length) {
           try {
             const privateDatasets = privateUserGroups.flatMap((group) => {
               return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
             })
 
-            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+            await dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
           } catch (e) {
             console.warn('Error fetching private datasets for search within user groups', e)
           }
@@ -288,13 +364,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           }
           return []
         })
-        // Update the dataviewInstances with the track config in case it was found
+        // Compute the dataviewInstances with the track config to be upserted by the caller
         if (vesselDataviewsWithTrack?.length) {
-          const dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
+          dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
             vesselDataviewsWithTrack,
             urlDataviewInstances
           )
-          dispatch(updateQueryParam({ dataviewInstances: dataviewInstancesToUpsert }))
         }
       }
 
@@ -311,7 +386,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           : getUTCDateTime(workspace?.startAt || DEFAULT_TIME_RANGE.start)
       const migratedWorkspace = {
         ...workspace,
-        dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
+        dataviewInstances: workspace?.dataviewInstances?.map(parseLegacyDataviewInstanceConfig),
       }
 
       return {
@@ -319,6 +394,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         startAt: startAt.toISO(),
         endAt: endAt.toISO(),
         workspaceReportId,
+        dataviewInstancesToUpsert,
       }
     } catch (e: any) {
       console.warn(e)
@@ -326,15 +402,23 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     }
   },
   {
-    condition: ({ workspaceId }, { getState }) => {
+    condition: ({ workspaceId, reportId, isRefresh }, { getState }) => {
       const rootState = getState() as any
+      const workspaceRefreshStatus = selectWorkspaceRefreshStatus(rootState)
+      if (isRefresh) {
+        return workspaceRefreshStatus !== AsyncReducerStatus.Loading
+      }
       const workspaceStatus = selectWorkspaceStatus(rootState)
-      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
+      if (reportId) {
+        const currentReportId = selectWorkspaceReportId(rootState)
+        return getReportWorkspaceFetchNeeded(currentReportId, reportId, workspaceStatus)
+      }
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
-        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
       }
-      // Fetched already in progress, don't need to re-fetch
+
+      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
       return !isLoading
     },
   }
@@ -352,17 +436,13 @@ type SaveWorkspaceThunkProperties = {
 
 export const saveWorkspaceThunk = createAsyncThunk(
   'workspace/saveCurrent',
-  async (
-    {
-      properties,
-      workspace,
-    }: {
-      properties: SaveWorkspaceThunkProperties
-      workspace: AppWorkspace
-    },
-    { dispatch, getState }
-  ) => {
-    const state = getState() as any
+  async ({
+    properties,
+    workspace,
+  }: {
+    properties: SaveWorkspaceThunkProperties
+    workspace: AppWorkspace
+  }) => {
     const workspaceUpsert = parseUpsertWorkspace(workspace)
     const {
       name: defaultName,
@@ -408,20 +488,6 @@ export const saveWorkspaceThunk = createAsyncThunk(
     }
 
     const workspaceUpdated = await saveWorkspace()
-    const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
-    if (workspaceUpdated) {
-      dispatch(
-        updateLocation(locationType === HOME ? WORKSPACE : locationType, {
-          payload: {
-            category: locationCategory,
-            workspaceId: workspaceUpdated.id,
-          },
-          query: {},
-          replaceQuery: true,
-        })
-      )
-    }
     return workspaceUpdated
   }
 )
@@ -443,7 +509,7 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
     dispatch: AppDispatch
     rejectValue: UpdateWorkspaceThunkRejectError
   }
->('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
+>('workspace/updatedCurrent', async (workspaceWithPassword, { rejectWithValue }) => {
   try {
     const { editPassword, newPassword, ...workspace } = workspaceWithPassword
     const password = newPassword || editPassword || 'default'
@@ -460,8 +526,12 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
         },
       }),
     } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-    if (workspaceUpdated) {
-      dispatch(cleanQueryLocation())
+    if (!workspaceUpdated) {
+      return rejectWithValue({
+        status: 500,
+        message: 'Workspace update failed',
+        isWorkspaceWrongPassword: false,
+      })
     }
     return workspaceUpdated
   } catch (e: any) {
@@ -469,32 +539,6 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
     return rejectWithValue({ ...error, isWorkspaceWrongPassword: error.status === 401 })
   }
 })
-
-export function cleanReportQuery(query: QueryParams) {
-  return {
-    ...query,
-    ...Object.keys(DEFAULT_REPORT_STATE).reduce(
-      (acc, key) => {
-        acc[key] = undefined
-        return acc
-      },
-      {} as Record<string, undefined>
-    ),
-    ...(query?.dataviewInstances?.length && {
-      dataviewInstances: cleanDatasetComparisonDataviewInstances(
-        query?.dataviewInstances?.map((dI) =>
-          cleanPortClusterDataviewFromReport(cleanAggregateByPropertyDataviewFromReport(dI))
-        )
-      ),
-    }),
-  }
-}
-
-export function cleanReportPayload(payload: Record<string, any>) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { areaId, datasetId, reportId, ...rest } = payload || {}
-  return rest
-}
 
 const workspaceSlice = createSlice({
   name: 'workspace',
@@ -543,10 +587,18 @@ const workspaceSlice = createSlice({
       }
     },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
-      state.historyNavigation = castDraft(action.payload)
+      const next = action.payload
+      const historyNavigation =
+        next.length > MAX_HISTORY_NAVIGATION ? next.slice(-MAX_HISTORY_NAVIGATION) : next
+      state.historyNavigation = castDraft(historyNavigation)
+      persistHistoryNavigation(historyNavigation)
     },
     resetWorkspaceHistoryNavigation: (state) => {
-      state.historyNavigation = castDraft(initialState.historyNavigation)
+      state.historyNavigation = castDraft([])
+      persistHistoryNavigation([])
+    },
+    hydrateWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
+      state.historyNavigation = action.payload
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
@@ -557,21 +609,28 @@ const workspaceSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchWorkspaceThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
+    builder.addCase(fetchWorkspaceThunk.pending, (state, action) => {
+      const { isRefresh } = action.meta.arg
+      state.status = isRefresh ? state.status : AsyncReducerStatus.Loading
+      state.refreshStatus = isRefresh ? AsyncReducerStatus.Loading : state.refreshStatus
+      state.error = initialState.error
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
+      const { isRefresh } = action.meta.arg
       state.status = AsyncReducerStatus.Finished
-      const { workspaceReportId, ...data } = action.payload
+      state.refreshStatus = isRefresh ? AsyncReducerStatus.Finished : state.refreshStatus
+      const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
       if (data) {
         state.data = data
       }
       state.reportId = workspaceReportId
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
+      const { isRefresh } = action.meta.arg
       if (action.payload) {
         const { workspace, error } = action.payload as RejectedActionPayload
         state.status = AsyncReducerStatus.Error
+        state.refreshStatus = isRefresh ? AsyncReducerStatus.Error : state.refreshStatus
         if (workspace) {
           state.data = castDraft(workspace)
         }
@@ -579,8 +638,9 @@ const workspaceSlice = createSlice({
           state.error = error
         }
       } else {
-        // This means action was cancelled
-        state.status = AsyncReducerStatus.Idle
+        const cancelledStatus = state.data ? AsyncReducerStatus.Finished : AsyncReducerStatus.Idle
+        state.status = cancelledStatus
+        state.refreshStatus = isRefresh ? cancelledStatus : state.refreshStatus
       }
     })
     builder.addCase(saveWorkspaceThunk.pending, (state) => {
@@ -622,6 +682,7 @@ export const {
   cleanCurrentWorkspaceStateBufferParams,
   setWorkspaceHistoryNavigation,
   resetWorkspaceHistoryNavigation,
+  hydrateWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer

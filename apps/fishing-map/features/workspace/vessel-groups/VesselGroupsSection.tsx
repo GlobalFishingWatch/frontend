@@ -80,6 +80,7 @@ function VesselGroupSection(): React.ReactElement<any> {
               className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
             >
               <UserLoggedIconButton
+                loginSource="vessel-group-create"
                 type="border"
                 icon="vessel-group"
                 size="medium"

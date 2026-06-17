@@ -65,6 +65,9 @@ export const TimeFieldsGroup = ({
       if (selected.id === 'date') {
         setDatasetMetadataConfig({ endTime: '' })
       }
+      if (selected.id === 'dateRange') {
+        setDatasetMetadataConfig({ timestamp: '' })
+      }
     },
     [setDatasetMetadataConfig]
   )

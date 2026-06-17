@@ -7,19 +7,20 @@ import { DateTime } from 'luxon'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+// import { getEventLabel } from 'utils/analytics'
+// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
   selectReportVesselGroupFlags,
   selectReportVesselGroupTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
-// import { getEventLabel } from 'utils/analytics'
-// import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
@@ -28,7 +29,8 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -48,11 +50,12 @@ export default function VesselGroupReportTitle() {
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    vesselGroup?.vessels,
+    vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
   const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels
   const loading = reportStatus === AsyncReducerStatus.Loading
+  const isClientHydrated = useIsClientHydrated()
 
   const onEditClick = useCallback(() => {
     if (vesselGroup?.id || !vesselGroup?.vessels?.length) {
@@ -98,8 +101,8 @@ export default function VesselGroupReportTitle() {
           <h2 className={styles.summary}>
             {htmlSafeParse(
               t((t) => t.vesselGroup.summary, {
-                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
-                flags: flags?.size,
+                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)) as string,
+                flags: String(flags?.size ?? 0),
 
                 start: formatI18nDate(timeRange.start, {
                   format: DateTime.DATE_MED,
@@ -110,13 +113,10 @@ export default function VesselGroupReportTitle() {
                 }),
               })
             )}
-            <DataTerminology
-              title={t((t) => t.vesselGroupReport.vessels)}
-              terminologyKey="vessels"
-            />
+            <DataTerminology terminologyKey="vessels" />
           </h2>
         </div>
-        <a className={styles.reportLink} href={window.location.href}>
+        <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
           {t((t) => t.vesselGroupReport.linkToReport)}
         </a>
         <div className={styles.actions}>
@@ -133,10 +133,10 @@ export default function VesselGroupReportTitle() {
               }}
             />
           )}
-          <LoginButtonWrapper tooltip="">
+          <LoginButtonWrapper tooltip="" loginSource="vessel-group-report">
             <Button
               type="border-secondary"
-              size="small"
+              size="medium"
               className={styles.actionButton}
               onClick={onEditClick}
               disabled={loading}

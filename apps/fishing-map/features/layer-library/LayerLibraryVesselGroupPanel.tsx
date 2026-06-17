@@ -14,6 +14,7 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -25,9 +26,10 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 import { formatInfoField } from 'utils/info'
+import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryVesselGroupPanel.module.css'
 
@@ -82,6 +84,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
           tooltip={t((t) => t.vesselGroup.createNewGroup)}
           tooltipPlacement="top"
           onClick={() => onAddVesselGroupClick()}
+          loginSource="layer-library-vessel-group"
         />
       </div>
       {guestUser ? (
@@ -89,14 +92,14 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
           <Trans i18nKey={(t) => t.dataset.uploadVesselGroups}>
             <a
               className={styles.link}
-              href={GFWAPI.getRegisterUrl(
-                typeof window !== 'undefined' ? window.location.toString() : ''
-              )}
+              href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
             >
               Register
             </a>
             or
-            <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
+            <LoginLink className={styles.link} loginSource="layer-library-vessel-group">
+              login
+            </LoginLink>
             to create and access your vessel groups.
           </Trans>
         </div>
@@ -113,8 +116,12 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                 <li className={styles.dataset} key={vesselGroup?.id}>
                   <span className={styles.datasetLabel}>
                     <Icon icon="vessel-group" />
-                    {formatInfoField(vesselGroup?.name, 'shipname')} (
-                    {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
+                    {getHighlightedText(
+                      formatInfoField(vesselGroup?.name, 'shipname') as string,
+                      searchQuery,
+                      styles
+                    )}{' '}
+                    ({getVesselGroupVesselsCount(vesselGroup)})
                   </span>
                   <div>
                     {isOutdated ? (

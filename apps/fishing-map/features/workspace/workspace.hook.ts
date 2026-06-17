@@ -1,23 +1,37 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
+  selectIsVesselGroupReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import type { QueryParams } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+import {
+  isWorkspacePasswordProtected,
+  selectWorkspaceCustomStatus,
+  selectWorkspaceDataviewInstances,
+  selectWorkspaceFetchParams,
+} from './workspace.selectors'
+import type { FetchWorkspacesThunkParams } from './workspace.slice'
+import { fetchWorkspaceThunk } from './workspace.slice'
 import { getNextColor } from './workspace.utils'
 
 export const useFitWorkspaceBounds = () => {
@@ -52,6 +66,61 @@ export const useFitWorkspaceBounds = () => {
     () => ({ fitWorkspaceBounds, fitWorkspaceTimerange }),
     [fitWorkspaceBounds, fitWorkspaceTimerange]
   )
+}
+
+export const useFetchWorkspace = () => {
+  const dispatch = useAppDispatch()
+  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+
+  const fetchWorkspace = useCallback(
+    (params: FetchWorkspacesThunkParams) => {
+      const action = dispatch(fetchWorkspaceThunk(params))
+      action.then((resolvedAction) => {
+        if (!fetchWorkspaceThunk.fulfilled.match(resolvedAction)) return
+        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace as Workspace)) {
+          fitWorkspaceBounds(workspace as Workspace)
+        }
+        fitWorkspaceTimerange(workspace as Workspace)
+      })
+      return action
+    },
+    [
+      dispatch,
+      fitWorkspaceBounds,
+      fitWorkspaceTimerange,
+      isVesselGroupReportLocation,
+      replaceQueryParams,
+    ]
+  )
+
+  return fetchWorkspace
+}
+
+export const useEnsureWorkspaceLoad = () => {
+  const workspaceFetchParams = useSelector(selectWorkspaceFetchParams)
+  const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
+  const fetchWorkspace = useFetchWorkspace()
+
+  const userLogged = useSelector(selectIsUserLogged)
+  const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null
+
+  const shouldFetchWorkspace =
+    userLogged &&
+    workspaceCustomStatus !== AsyncReducerStatus.Loading &&
+    !!workspaceFetchParams
+
+  useEffect(() => {
+    if (shouldFetchWorkspace) {
+      fetchWorkspace(workspaceFetchParams)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldFetchWorkspace, fetchParamsKey])
 }
 
 const createDataviewsInstances = (
@@ -122,17 +191,16 @@ export const mergeDataviewIntancesToUpsert = (
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const allDataviews = useSelector(selectDataviewInstancesResolved)
-  const { dispatchQueryParams } = useLocationConnect()
-
+  const { replaceQueryParams } = useReplaceQueryParams()
   const removeDataviewInstance = useCallback(
     (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id]
       const dataviewInstances = urlDataviewInstances?.filter(
         (urlDataviewInstance) => !ids.includes(urlDataviewInstance.id)
       )
-      dispatchQueryParams({ dataviewInstances })
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances]
   )
 
   const upsertDataviewInstance = useCallback(
@@ -142,24 +210,26 @@ export const useDataviewInstancesConnect = () => {
         urlDataviewInstances,
         allDataviews
       )
-      dispatchQueryParams({ dataviewInstances })
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances, allDataviews]
+    [replaceQueryParams, urlDataviewInstances, allDataviews]
   )
 
   const addNewDataviewInstances = useCallback(
     (dataviewInstances: Partial<UrlDataviewInstance>[]) => {
-      dispatchQueryParams({
+      replaceQueryParams({
         dataviewInstances: [
           ...createDataviewsInstances(dataviewInstances, allDataviews),
           ...(urlDataviewInstances || []),
         ],
       })
     },
-    [dispatchQueryParams, urlDataviewInstances, allDataviews]
+    [replaceQueryParams, allDataviews, urlDataviewInstances]
   )
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const { closeSidePanel } = useSidePanel()
+  const router = useRouter()
   const deleteDataviewInstance = useCallback(
     (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id]
@@ -174,9 +244,14 @@ export const useDataviewInstancesConnect = () => {
           dataviewInstances.push({ id, deleted: true })
         })
       }
-      dispatchQueryParams({ dataviewInstances })
+      const { sidePanelId } = router.latestLocation.search as QueryParams
+      if (sidePanelId && ids.includes(sidePanelId)) {
+        closeSidePanel()
+      }
+
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances, workspaceDataviewInstances, router, closeSidePanel]
   )
   return useMemo(
     () => ({

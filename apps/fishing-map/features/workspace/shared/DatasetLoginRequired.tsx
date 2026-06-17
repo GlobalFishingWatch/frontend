@@ -2,32 +2,44 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
-function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
+function DatasetLoginRequired({
+  dataview,
+  isLoading,
+}: {
+  dataview: UrlDataviewInstance
+  isLoading?: boolean
+}) {
   const { t } = useTranslation()
+
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
       <div className={styles.header}>
         <Tooltip content={t((t) => t.dataset.login)}>
           <h3 className={cx(styles.name, styles.error)}>
-            {dataview.datasetsConfig?.[0]?.datasetId || t((t) => t.errors.datasetLoginRequired)}
+            {dataview.datasetsConfig?.[0]?.datasetId?.replace(/-\d{13,}$/, '') ||
+              t((t) => t.errors.datasetLoginRequired)}
           </h3>
         </Tooltip>
-        <div className={styles.actions}>
-          <LoginButtonWrapper>
-            <IconButton
-              icon="user"
-              size="small"
-              tooltip={t((t) => t.dataset.login)}
-              tooltipPlacement="top"
-            />
-          </LoginButtonWrapper>
-        </div>
+        {isLoading ? (
+          <Spinner size="tiny" />
+        ) : (
+          <div className={styles.actions}>
+            <LoginButtonWrapper>
+              <IconButton
+                icon="user"
+                size="small"
+                tooltip={t((t) => t.dataset.login)}
+                tooltipPlacement="top"
+              />
+            </LoginButtonWrapper>
+          </div>
+        )}
       </div>
     </div>
   )

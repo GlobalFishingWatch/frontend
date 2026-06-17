@@ -1,6 +1,6 @@
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import type { AnyWorkspaceState } from 'types'
 
 import type { ConfigurationParams } from './types'

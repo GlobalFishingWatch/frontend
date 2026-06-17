@@ -1,7 +1,5 @@
 import { invert } from 'es-toolkit'
-import isObject from 'lodash/isObject'
-import isString from 'lodash/isString'
-import transform from 'lodash/transform'
+import { isObject, isString, transform } from 'es-toolkit/compat'
 import { parse, stringify } from 'qs'
 
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '../config'
@@ -141,8 +139,17 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     duration: parseInt(reportTimeComparison.duration),
   }),
   mapRulers: (rulers: { id: string }[]) => {
-    return rulers?.map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
+    return (Array.isArray(rulers) ? rulers : [])
+      .filter((ruler) => ruler && typeof ruler === 'object')
+      .map((ruler) => ({ ...ruler, id: parseIntNumber(ruler.id) }))
   },
+  mapAnnotations: (annotations: any[]) => {
+    return (Array.isArray(annotations) ? annotations : []).filter(
+      (annotation) => annotation && typeof annotation === 'object'
+    )
+  },
+  reportAreaBounds: (reportAreaBounds: string[]) =>
+    reportAreaBounds?.map((bound: string) => parseFloat(bound)),
   mapDrawing: (drawing: boolean | string) => {
     if (drawing === true || drawing === 'true') {
       return 'polygons'
@@ -299,6 +306,9 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (dataview.config?.thickness !== undefined) {
     config.thickness = parseInt(dataview.config?.thickness as any)
   }
+  if (dataview.config?.gapSegmentThreshold !== undefined) {
+    config.gapSegmentThreshold = parseFloat(dataview.config?.gapSegmentThreshold as any)
+  }
   if (vesselGroup) {
     if (!config.filters) {
       config.filters = {}
@@ -337,6 +347,11 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   }
 }
 
+export const URL_STRINGIFY_CONFIG = {
+  strictNullHandling: true,
+  allowEmptyArrays: true,
+}
+
 export const parseWorkspace = (
   queryString: string,
   customUrlTransformations: Dictionary<(value: any) => any> = {}
@@ -345,8 +360,8 @@ export const parseWorkspace = (
     arrayLimit: 1000,
     depth: 20,
     decoder,
-    strictNullHandling: true,
     ignoreQueryPrefix: true,
+    ...URL_STRINGIFY_CONFIG,
   })
   if (parsed.analysis) {
     // Removes old legacy analysis param replaced by reports
@@ -368,11 +383,6 @@ export const parseWorkspace = (
   })
 
   return parsedDetokenized
-}
-
-export const URL_STRINGIFY_CONFIG = {
-  encodeValuesOnly: true,
-  strictNullHandling: true,
 }
 
 export const stringifyWorkspace = (object: BaseUrlWorkspace) => {

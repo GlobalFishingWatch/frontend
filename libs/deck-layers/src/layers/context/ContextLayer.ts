@@ -35,7 +35,12 @@ import type {
   ContextSublayerCallbackParams,
 } from './context.types'
 import { ContextLayerId } from './context.types'
-import { getContextFiltersHash, getContextId, getContextLink } from './context.utils'
+import {
+  getContextFiltersHash,
+  getContextId,
+  getContextLink,
+  mergePickedFeatures,
+} from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
 
@@ -62,6 +67,20 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     this.state = {
       highlightedFeatures: [],
     }
+  }
+
+  get filtersHash(): string {
+    return (
+      this.props.layers
+        ?.flatMap((layer) =>
+          layer.sublayers.map((sublayer) => getContextFiltersHash(sublayer.filters))
+        )
+        .join('-') ?? ''
+    )
+  }
+
+  get cacheHash(): string {
+    return `${this.props.id}${this.filtersHash}-${this.isLoaded}`
   }
 
   _getHighlightedFeatures() {
@@ -147,36 +166,18 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const height = viewport.height
     const x = viewport.x
     const y = viewport.y
-    const features = deck!.pickObjects({
-      x,
-      y,
-      width,
-      height,
-      layerIds: [this.id],
-      maxObjects,
-    })
+    const layerIds = this.props.layers.map((l) => l.id)
+    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
     return features.filter((f) => f.object)
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
-    const features = this._pickObjects(maxFeatures)
-    const featureCache = new Set()
-    const renderedFeatures: ContextFeature[] = []
-
-    for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, this.props.layers?.[0]?.idProperty)
-
-      if (featureId === undefined) {
-        // we have no id for the feature, we just add to the list
-        renderedFeatures.push(f.object as ContextFeature)
-      } else if (!featureCache.has(featureId)) {
-        // Add removing duplicates
-        featureCache.add(featureId)
-        renderedFeatures.push(f.object as ContextFeature)
-      }
-    }
-
-    return renderedFeatures
+    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
+    return mergePickedFeatures<ContextFeature>({
+      pickedFeatures: this._pickObjects(maxFeatures),
+      idProperty,
+      layers: this.props.layers,
+    })
   }
 
   renderLayers() {
@@ -211,7 +212,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                   lineCapRounded: true,
                   extensions: [
                     ...mvtSublayerProps.extensions,
-                    new PathStyleExtension({ dash: true }),
+                    new PathStyleExtension({ dash: true, highPrecisionDash: true }),
                   ],
                   getDashArray: (d: ContextFeature) => this.getDashArray(d),
                   updateTriggers: {

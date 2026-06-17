@@ -8,6 +8,7 @@ import { IconButton, Popover, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
+import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import {
   selectIsDefaultWorkspace,
   selectIsWorkspaceOwnerOrDefault,
@@ -15,7 +16,6 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from '../SidebarHeader.module.css'
@@ -65,7 +65,7 @@ function SaveWorkspaceButton() {
 
   if (isDefaultWorkspace) {
     return (
-      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
+      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)} loginSource="workspace-save">
         <IconButton
           icon="save"
           size="medium"
@@ -111,7 +111,10 @@ function SaveWorkspaceButton() {
         }
       >
         <div>
-          <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
+          <LoginButtonWrapper
+            tooltip={t((t) => t.workspace.saveLogin)}
+            loginSource="workspace-save"
+          >
             <IconButton
               icon="save"
               size="medium"

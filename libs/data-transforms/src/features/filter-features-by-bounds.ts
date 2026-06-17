@@ -1,4 +1,4 @@
-import { sample } from 'simple-statistics'
+// import { sample } from 'simple-statistics'
 
 import type {
   FourwingsFeature,
@@ -6,6 +6,7 @@ import type {
   FourwingsPointFeature,
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsSublayerStartFrame } from '@globalfishingwatch/deck-loaders'
 
 export interface Bounds {
   north: number
@@ -14,7 +15,7 @@ export interface Bounds {
   east: number
 }
 
-const MAX_FEATURES_TO_CHECK = 5000
+// const MAX_FEATURES_TO_CHECK = 5000
 
 // Copied from below to avoid importing the dependency
 // import type { GeoJSONFeature } from 'maplibre-gl'
@@ -39,7 +40,7 @@ export declare class GeoJSONFeature<P = Record<string, any>> {
 export const filterFeaturesByBounds = ({
   features,
   bounds,
-  onlyValuesAndDates = false,
+  onlyValuesAndStartFrame = false,
 }: {
   features:
     | GeoJSONFeature[]
@@ -47,7 +48,7 @@ export const filterFeaturesByBounds = ({
     | FourwingsStaticFeature[]
     | FourwingsPointFeature[]
   bounds: Bounds
-  onlyValuesAndDates?: boolean
+  onlyValuesAndStartFrame?: boolean
 }) => {
   if (!bounds || !features?.length) {
     return []
@@ -80,13 +81,17 @@ export const filterFeaturesByBounds = ({
     const rightOffset = rightWorldCopy && !leftWorldCopy && featureInRightCopy ? 360 : 0
     const isInBounds =
       lon + leftOffset + rightOffset > west && lon + leftOffset + rightOffset < east
-    if (onlyValuesAndDates) {
+    if (onlyValuesAndStartFrame) {
       return isInBounds
         ? [
             f.properties.values?.map((sublayerValues: number[], sublayerIndex: number) => {
               return [
                 sublayerValues,
-                (f.properties as FourwingsFeatureProperties).dates?.[sublayerIndex],
+                // values[i] happened at getIntervalTimestamp(startFrame + i)
+                getFourwingsSublayerStartFrame(
+                  f.properties as FourwingsFeatureProperties,
+                  sublayerIndex
+                ),
               ]
             }),
           ]

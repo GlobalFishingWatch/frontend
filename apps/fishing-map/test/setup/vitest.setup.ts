@@ -3,10 +3,11 @@ import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
+import { getIsBrowser } from 'utils/dom'
 
-import { TEST_END_DATE } from '../test.config'
+import { TEST_END_DATE } from './config'
 
-import '../../pages/styles.css'
+import '../../routes/styles.css'
 import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
@@ -53,11 +54,17 @@ beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
 
+  // Preload lazy modal chunks used in integration tests
+  await Promise.all([
+    import('features/layer-library/LayerLibrary'),
+    import('features/feedback/FeedbackModal'),
+  ])
+
   // Browser mode cannot handle native confirm dialogs without explicit mocking.
   vi.spyOn(window, 'confirm').mockReturnValue(false)
 
   // Setup localstorage modal shown flag to prevent it from appearing in tests
-  if (typeof window !== 'undefined') {
+  if (getIsBrowser()) {
     localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')

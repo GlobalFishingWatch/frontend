@@ -1,14 +1,13 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { saveAs } from 'file-saver'
 import { stringify } from 'qs'
-import type { RootState } from 'reducers'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
 
 import type { DateRange } from 'features/download/downloadActivity.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
+import type { RootState } from 'reducers'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -90,6 +89,7 @@ export const downloadTrackThunk = createAsyncThunk<
     ).then(async (response) => {
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
+      const { saveAs } = await import('file-saver')
       saveAs(blob as any, fileName)
 
       return rateLimit

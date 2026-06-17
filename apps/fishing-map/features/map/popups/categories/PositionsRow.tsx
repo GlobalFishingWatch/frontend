@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -21,12 +21,15 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
-import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField, upperFirst } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
+
+const DetectionThumbnailImage = lazy(
+  () => import('features/map/popups/categories/DetectionThumbnail')
+)
 
 type PositionsRowProps = {
   loading: boolean

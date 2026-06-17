@@ -7,7 +7,7 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import { isTimestampNumber } from 'utils/dates'
 
@@ -89,9 +89,7 @@ export function getUserContextLayerLabel(
     return label
   }
 
-  const cleanValueProperties = feature.properties
-    ? getCleanPropertiesList(feature.properties)
-    : {}
+  const cleanValueProperties = feature.properties ? getCleanPropertiesList(feature.properties) : {}
   if (Object.keys(cleanValueProperties).length >= 1) {
     return parsePropertiesList(cleanValueProperties, dataset)
   }

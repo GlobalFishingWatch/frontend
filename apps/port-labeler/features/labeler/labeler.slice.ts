@@ -1,9 +1,8 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
-import type { RootState } from 'store'
 import type { PortPosition, PortSubarea } from 'types'
 
 interface ValuesObject {
@@ -234,15 +233,15 @@ export const {
 
 export default slice.reducer
 
-export const selectDisplayExtraData = (state: RootState) => state.labeler.extraData
-export const selectSelectedPoints = (state: RootState) => state.labeler.selected
-export const selectCountry = (state: RootState) => state.labeler.country
-export const selectHoverPoint = (state: RootState) => state.labeler.hover
-export const selectSubareas = (state: RootState) => state.labeler.subareas
-export const selectPorts = (state: RootState) => state.labeler.ports
-export const selectMapData = (state: RootState) => state.labeler.data
-export const selectPortValues = (state: RootState) => state.labeler.portValues
-export const selectSubareaValues = (state: RootState) => state.labeler.subareaValues
-export const selectPointValues = (state: RootState) => state.labeler.pointValues
-export const selectCountries = (state: RootState) => state.labeler.countryOptions
-export const selectCountryColors = (state: RootState) => state.labeler.countryColors
+export const selectDisplayExtraData = (state: { labeler: ProjectSlice }) => state.labeler.extraData
+export const selectSelectedPoints = (state: { labeler: ProjectSlice }) => state.labeler.selected
+export const selectCountry = (state: { labeler: ProjectSlice }) => state.labeler.country
+export const selectHoverPoint = (state: { labeler: ProjectSlice }) => state.labeler.hover
+export const selectSubareas = (state: { labeler: ProjectSlice }) => state.labeler.subareas
+export const selectPorts = (state: { labeler: ProjectSlice }) => state.labeler.ports
+export const selectMapData = (state: { labeler: ProjectSlice }) => state.labeler.data
+export const selectPortValues = (state: { labeler: ProjectSlice }) => state.labeler.portValues
+export const selectSubareaValues = (state: { labeler: ProjectSlice }) => state.labeler.subareaValues
+export const selectPointValues = (state: { labeler: ProjectSlice }) => state.labeler.pointValues
+export const selectCountries = (state: { labeler: ProjectSlice }) => state.labeler.countryOptions
+export const selectCountryColors = (state: { labeler: ProjectSlice }) => state.labeler.countryColors

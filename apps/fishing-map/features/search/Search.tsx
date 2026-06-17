@@ -23,13 +23,14 @@ import {
 } from 'features/search/search.slice'
 import SearchActions from 'features/search/SearchActions'
 import SearchDownload from 'features/search/SearchDownload'
-import SearchPlaceholder, { SearchNotAllowed } from 'features/search/SearchPlaceholders'
+import SearchPlaceholder from 'features/search/SearchPlaceholders'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import {
+  selectIsWorkspaceRefreshing,
+  selectWorkspaceStatus,
+} from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './Search.module.css'
@@ -37,12 +38,11 @@ import styles from './Search.module.css'
 function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const urlWorkspaceId = useSelector(selectWorkspaceId)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const { searchSuggestion } = useSearchConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const { debouncedQuery, fetchMoreResults, onAdvancedSearchClick } = useSearch()
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
@@ -51,18 +51,15 @@ function Search() {
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const guestUser = useSelector(selectIsGuestUser)
   const datasetError = useSelector(selectDatasetsError)
-
-  useEffect(() => {
-    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
-  }, [dispatch, urlWorkspaceId])
 
   useEffect(() => {
     if (debouncedQuery === '') {
       dispatch(cleanVesselSearchResults())
     }
-    dispatchQueryParams({ query: debouncedQuery })
+    replaceQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
@@ -76,7 +73,7 @@ function Search() {
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
-      dispatchQueryParams({ query: searchSuggestion })
+      replaceQueryParams({ query: searchSuggestion })
     }
   }
 
@@ -86,6 +83,7 @@ function Search() {
   if (isWorkspaceError || isDatasetError) {
     return isAuthError(datasetError) ? (
       <WorkspaceLoginError
+        loginSource="search-private"
         title={
           guestUser
             ? t((t) => t.errors.searchLogin)
@@ -102,10 +100,10 @@ function Search() {
     )
   }
 
-  const showWorkspaceSpinner = workspaceStatus !== AsyncReducerStatus.Finished
-  const showDatasetsSpinner = datasetsStatus !== AsyncReducerStatus.Finished
-
-  if (showWorkspaceSpinner || showDatasetsSpinner) {
+  const isWorkspaceLoading = workspaceStatus !== AsyncReducerStatus.Finished
+  const areDatasetsLoading = datasetsStatus !== AsyncReducerStatus.Finished
+  const showSpinner = isWorkspaceLoading || (areDatasetsLoading && !isWorkspaceRefreshing)
+  if (showSpinner) {
     return (
       <SearchPlaceholder>
         <Spinner />
@@ -124,7 +122,7 @@ function Search() {
         debouncedQuery={debouncedQuery}
       />
       <div
-        className={cx(styles.footer, styles[activeSearchOption], {
+        className={cx('card', styles.footer, styles[activeSearchOption], {
           [styles.hidden]:
             !searchResultsPagination ||
             searchResultsPagination.total === 0 ||

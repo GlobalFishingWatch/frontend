@@ -1,10 +1,9 @@
+import { getIsBrowser } from 'utils/dom'
+
 export const SCROLL_CONTAINER_DOM_ID = 'scroll-container'
 
 export function getScrollElement(id = SCROLL_CONTAINER_DOM_ID) {
-  if (typeof window === 'undefined') {
-    return null
-  }
-  return document.getElementById(id) as HTMLElement
+  return getIsBrowser() ? (document.getElementById(id) as HTMLElement) : null
 }
 
 export function resetSidebarScroll() {

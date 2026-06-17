@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -19,6 +18,7 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
@@ -42,8 +42,8 @@ import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLocationCategory } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -62,6 +62,7 @@ function Workspace() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const isWorkspacePasswordRequired = useSelector(selectIsWorkspacePasswordRequired)
   const workspace = useSelector(selectWorkspace)
@@ -73,7 +74,6 @@ function Workspace() {
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
     workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
-  const { dispatchQueryParams } = useLocationConnect()
   const [workspaceEditName, setWorkspaceEditName] = useState(workspace?.name)
   const [workspaceEditDescription, setWorkspaceEditDescription] = useState(workspace?.description)
   const [workspaceEditModalOpen, setWorkspaceEditModalOpen] = useState(false)
@@ -107,10 +107,10 @@ function Workspace() {
         const oldIndex = dataviews.findIndex((d) => d.id === active.id)
         const newIndex = dataviews.findIndex((d) => d.id === over.id)
         const dataviewInstancesId = arrayMove(dataviews, oldIndex, newIndex).map((d) => d.id)
-        dispatchQueryParams({ dataviewInstancesOrder: dataviewInstancesId })
+        replaceQueryParams({ dataviewInstancesOrder: dataviewInstancesId })
       }
     },
-    [dataviews, dispatchQueryParams]
+    [dataviews, replaceQueryParams]
   )
 
   const onWorkspaceUpdateClose = useCallback(() => {
@@ -171,14 +171,13 @@ function Workspace() {
         workspace?.id !== WIZARD_TEMPLATE_ID &&
         workspace?.id !== DEFAULT_WORKSPACE_ID &&
         !readOnly && (
-          <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-            <div className={styles.header}>
-              {isUserWorkspace && (
-                <label className={styles.subTitle}>{t((t) => t.workspace.user)}</label>
-              )}
-              <h2 className={styles.title} data-test="user-workspace-title">
-                {getWorkspaceLabel(workspace)}
-                {/* {gfwUser && (
+          <div className={styles.header}>
+            {isUserWorkspace && (
+              <label className={styles.subTitle}>{t((t) => t.workspace.user)}</label>
+            )}
+            <h2 className={styles.title} data-test="user-workspace-title">
+              {getWorkspaceLabel(workspace)}
+              {/* {gfwUser && (
                 <IconButton
                   className="print-hidden"
                   size="small"
@@ -186,51 +185,51 @@ function Workspace() {
                   onClick={() => setWorkspaceEditModalOpen(true)}
                 />
               )} */}
-              </h2>
-              {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
-                <h3 className={styles.subTitle}>
-                  {htmlSafeParse(workspace.description)}
-                  <IconButton
-                    className={styles.subTitleBtn}
-                    icon="info"
-                    size="tiny"
-                    onClick={openDSMPopup}
-                  />
-                </h3>
-              )}
-              <Modal
-                appSelector={ROOT_DOM_ELEMENT}
-                title={t((t) => t.workspace.edit)}
-                isOpen={workspaceEditModalOpen}
-                contentClassName={styles.modalContainer}
-                onClose={onWorkspaceUpdateClose}
-              >
-                <div className={styles.content}>
-                  <InputText
-                    value={workspaceEditName}
-                    className={styles.input}
-                    label={t((t) => t.common.name)}
-                    onChange={(e) => setWorkspaceEditName(e.target.value)}
-                  />
-                  <InputText
-                    value={workspaceEditDescription}
-                    className={styles.input}
-                    label={t((t) => t.common.description)}
-                    onChange={(e) => setWorkspaceEditDescription(e.target.value)}
-                  />
-                </div>
-                <div className={styles.modalFooter}>
-                  <Button
-                    className={styles.saveBtn}
-                    loading={editWorkspaceLoading}
-                    onClick={() => onWorkspaceUpdateClick(workspace?.id)}
-                  >
-                    {t((t) => t.common.update) as string}
-                  </Button>
-                </div>
-              </Modal>
-            </div>
-          </Sticky>
+            </h2>
+            {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
+              <h3 className={styles.subTitle}>
+                {htmlSafeParse(workspace.description)}
+                <IconButton
+                  className={styles.subTitleBtn}
+                  icon="info"
+                  size="tiny"
+                  onClick={openDSMPopup}
+                />
+              </h3>
+            )}
+            <Modal
+              appSelector={ROOT_DOM_ELEMENT}
+              title={t((t) => t.workspace.edit)}
+              isOpen={workspaceEditModalOpen}
+              contentClassName={styles.modalContainer}
+              onClose={onWorkspaceUpdateClose}
+              parentSelector={getModalParent}
+            >
+              <div className={styles.content}>
+                <InputText
+                  value={workspaceEditName}
+                  className={styles.input}
+                  label={t((t) => t.common.name)}
+                  onChange={(e) => setWorkspaceEditName(e.target.value)}
+                />
+                <InputText
+                  value={workspaceEditDescription}
+                  className={styles.input}
+                  label={t((t) => t.common.description)}
+                  onChange={(e) => setWorkspaceEditDescription(e.target.value)}
+                />
+              </div>
+              <div className={styles.modalFooter}>
+                <Button
+                  className={styles.saveBtn}
+                  loading={editWorkspaceLoading}
+                  onClick={() => onWorkspaceUpdateClick(workspace?.id)}
+                >
+                  {t((t) => t.common.update) as string}
+                </Button>
+              </div>
+            </Modal>
+          </div>
         )}
       <ActivitySection />
       <DetectionsSection />

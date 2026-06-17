@@ -17,7 +17,8 @@
     "inlineSources": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ]
   },
   "include": [

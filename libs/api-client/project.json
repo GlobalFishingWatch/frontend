@@ -5,8 +5,21 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
+    "proto:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/api-client",
+        "commands": [
+          "pbjs src/pbf-decoders/vessels.proto -t static-module -w esm -o src/pbf-decoders/vessels.gen.js",
+          "pbts src/pbf-decoders/vessels.gen.js -o src/pbf-decoders/vessels.gen.d.ts",
+          "prettier --write src/pbf-decoders/vessels.gen.js src/pbf-decoders/vessels.gen.d.ts --config ../../.prettierrc.js",
+          "tsc --noEmit -p tsconfig.lib.json"
+        ]
+      }
+    },
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["proto:generate"]
     },
     "dev": {
       "dependsOn": ["^dev"],
@@ -29,7 +42,7 @@
       "dependsOn": ["^dist"],
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
+        "command": "vitest run --config=vitest.config.ts",
         "reportsDirectory": "{projectRoot}/../../coverage/libs/api-client"
       }
     },
@@ -37,7 +50,7 @@
       "executor": "@nx/vitest:test",
       "cache": false,
       "options": {
-        "configFile": "libs/api-client/vitest.config.mts",
+        "configFile": "libs/api-client/vitest.config.ts",
         "watch": true
       },
       "continuous": true

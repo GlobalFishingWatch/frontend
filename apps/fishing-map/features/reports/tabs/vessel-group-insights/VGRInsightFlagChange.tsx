@@ -9,9 +9,9 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/data-terminology/DataTerminology'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import DataTerminology from 'features/vessel/identity/DataTerminology'
-import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import VesselIdentityFieldLogin from 'features/vessel/identity/fields/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
 import { formatInfoField } from 'utils/info'
@@ -63,10 +63,7 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
     <div id="vessel-group-flags" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.flagChanges)}</label>
-        <DataTerminology
-          title={t((t) => t.vessel.insights.flagChanges)}
-          terminologyKey="insightsFlagsChanges"
-        />
+        <DataTerminology terminologyKey="insightsFlagsChanges" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />
@@ -86,7 +83,7 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t((t) => t.vesselGroupReport.insights.flagChangesCount, {
-              vessels: vesselsWithFlagChanges.length,
+              vessels: String(vesselsWithFlagChanges.length),
             })}
             onToggle={onInsightToggle}
           >

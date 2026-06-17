@@ -8,5 +8,7 @@ export type VesselSearchState = {
   sources?: string[]
   searchOption?: SearchType
   infoSource?: VesselIdentitySourceEnum
+  lastTransmissionDate?: string
+  firstTransmissionDate?: string
 } & Partial<Record<AdvancedSearchQueryFieldKey, string | string[]>>
 export type VesselSearchStateProperty = keyof VesselSearchState

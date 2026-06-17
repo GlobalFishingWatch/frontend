@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import ambassadorImg from 'assets/images/badges/ambassador.webp'
 import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'
@@ -17,14 +16,13 @@ import presenterPlaceholderImg from 'assets/images/badges/presenter-placeholder.
 import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
+import { getModalParent } from 'features/modals/modals.utils'
+import LogoutButton from 'features/user/LogoutButton'
 import {
   selectIsGFWUser,
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
 
 import {
   selectHasAmbassadorBadge,
@@ -34,7 +32,6 @@ import {
   selectHasTeacherBadge,
   selectUserGroupsClean,
 } from './selectors/user.permissions.selectors'
-import { fetchUserThunk, logoutUserThunk } from './user.slice'
 
 import styles from './User.module.css'
 
@@ -43,7 +40,6 @@ type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
 function UserInfo() {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const userLogged = useSelector(selectIsUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
   const userData = useSelector(selectUserData)
@@ -53,18 +49,9 @@ function UserInfo() {
   const hasPresenterBadge = useSelector(selectHasPresenterBadge)
   const hasTeacherBadge = useSelector(selectHasTeacherBadge)
   const hasImpactReporterBadge = useSelector(selectHasImpactReporterBadge)
-  const [logoutLoading, setLogoutLoading] = useState(false)
   const [badgeSelected, setBadgeSelected] = useState<Badge>()
 
   const badgesModalOpen = badgeSelected !== undefined
-
-  const onLogoutClick = useCallback(async () => {
-    setLogoutLoading(true)
-    await dispatch(logoutUserThunk({ loginRedirect: false }))
-    dispatch(updateLocation(HOME, { query: {}, replaceQuery: true }))
-    await dispatch(fetchUserThunk({ guest: true }))
-    setLogoutLoading(false)
-  }, [dispatch])
 
   const onBadgeClick = (badge: Badge) => {
     setBadgeSelected(badge)
@@ -76,28 +63,28 @@ function UserInfo() {
   const BADGES: Record<Badge, BadgeInfo> = useMemo(
     () => ({
       presenter: {
-        image: presenterImg.src,
-        placeholder: presenterPlaceholderImg.src,
+        image: presenterImg,
+        placeholder: presenterPlaceholderImg,
         userHasIt: hasPresenterBadge,
       },
       teacher: {
-        image: teacherImg.src,
-        placeholder: teacherPlaceholderImg.src,
+        image: teacherImg,
+        placeholder: teacherPlaceholderImg,
         userHasIt: hasTeacherBadge,
       },
       fixer: {
-        image: fixerImg.src,
-        placeholder: fixerPlaceholderImg.src,
+        image: fixerImg,
+        placeholder: fixerPlaceholderImg,
         userHasIt: hasFeedbackProviderBadge,
       },
       ambassador: {
-        image: ambassadorImg.src,
-        placeholder: ambassadorPlaceholderImg.src,
+        image: ambassadorImg,
+        placeholder: ambassadorPlaceholderImg,
         userHasIt: hasAmbassadorBadge,
       },
       impactReporter: {
-        image: impactReporterImg.src,
-        placeholder: impactReporterPlaceholderImg.src,
+        image: impactReporterImg,
+        placeholder: impactReporterPlaceholderImg,
         userHasIt: hasImpactReporterBadge,
       },
     }),
@@ -121,21 +108,14 @@ function UserInfo() {
   }
 
   return (
-    <div className={styles.userInfo}>
+    <div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
           <div>
             <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
             <p className={styles.secondary}>{userData.email}</p>
           </div>
-          <Button
-            type="secondary"
-            loading={logoutLoading}
-            disabled={logoutLoading}
-            onClick={onLogoutClick}
-          >
-            <span>{t((t) => t.common.logout)}</span>
-          </Button>
+          <LogoutButton />
         </div>
         <label>{t((t) => t.user.groups)}</label>
         {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
@@ -184,6 +164,7 @@ function UserInfo() {
               onClose={onBadgeModalClose}
               contentClassName={styles.badgeModalContent}
               shouldCloseOnEsc
+              parentSelector={getModalParent}
             >
               <Fragment>
                 {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}

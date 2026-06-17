@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { Choice } from '../choice'
@@ -8,14 +8,24 @@ import useSmallScreen from './use-small-screen'
 
 import styles from './SplitView.module.css'
 
+export const SPLIT_VIEW_DOM_ID = 'app-layout-content'
 export const MAIN_DOM_ID = 'app-main'
 export const SIDEBAR_DOM_ID = 'app-sidebar'
+
+const MIN_ASIDE_PCT = 33
+const MAX_ASIDE_PCT = 66
+const DEFAULT_ASIDE_PCT = 50
+
+const clampAsidePct = (pct: number) => Math.min(MAX_ASIDE_PCT, Math.max(MIN_ASIDE_PCT, pct))
 
 interface SplitViewProps {
   isOpen?: boolean
   showToggle?: boolean
   onToggle?: (e: React.MouseEvent) => void
   asideWidth?: string
+  initialAsideWidthPct?: number
+  onAsideWidthChange?: (pct: number) => void
+  resizable?: boolean
   aside: React.ReactNode
   main: React.ReactNode
   showAsideLabel?: string
@@ -33,6 +43,9 @@ export function SplitView(props: SplitViewProps) {
     aside = null,
     main = null,
     asideWidth = '32rem',
+    initialAsideWidthPct,
+    onAsideWidthChange,
+    resizable = false,
     showAsideLabel = 'Show aside',
     showMainLabel = 'Show main',
     className,
@@ -53,7 +66,55 @@ export function SplitView(props: SplitViewProps) {
     [showAsideLabel, showMainLabel]
   )
   const [internalOpen, setInternalOpen] = useState<boolean>(isOpen)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen)
+    setInternalOpen(isOpen)
+  }
   const isSmallScreen = useSmallScreen()
+
+  const [isDragging, setIsDragging] = useState(false)
+  const [widthPct, setWidthPct] = useState(() =>
+    clampAsidePct(initialAsideWidthPct ?? DEFAULT_ASIDE_PCT)
+  )
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect()
+      if (!rect || rect.width === 0) return
+      const newPct = clampAsidePct(((e.clientX - rect.left) / rect.width) * 100)
+      setWidthPct(newPct)
+      onAsideWidthChange?.(newPct)
+    },
+    [onAsideWidthChange]
+  )
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+  }, [])
+
+  useEffect(() => {
+    if (isDragging) {
+      document.body.style.userSelect = 'none'
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+      return () => {
+        document.body.style.userSelect = ''
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
+      }
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp])
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragging(true)
+  }, [])
+
+  const isResizable = resizable && !isSmallScreen
+  const effectiveWidth = isResizable ? `${widthPct}%` : asideWidth
 
   const handleClick = useCallback(
     (e: any) => {
@@ -65,16 +126,24 @@ export function SplitView(props: SplitViewProps) {
     [internalOpen, onToggle]
   )
 
-  useEffect(() => {
-    setInternalOpen(isOpen)
-  }, [isOpen])
-
   return (
-    <div className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.container, { [styles.isOpen]: internalOpen }, className)}
+    >
       <aside
         className={cx(styles.aside, asideClassName)}
-        style={isSmallScreen ? {} : { width: asideWidth }}
+        style={isSmallScreen ? {} : { width: effectiveWidth }}
       >
+        {isResizable && (
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Resize sidebar"
+            className={cx(styles.resizer, { [styles.resizing]: isDragging }, 'print-hidden')}
+            onMouseDown={handleMouseDown}
+          />
+        )}
         {isSmallScreen ? (
           <div className={cx('print-hidden', styles.toggleChoice)}>
             <Choice
@@ -100,7 +169,7 @@ export function SplitView(props: SplitViewProps) {
       <main
         id={MAIN_DOM_ID}
         data-testid={MAIN_DOM_ID}
-        style={{ left: isOpen ? asideWidth : 0 }}
+        style={{ left: isOpen ? effectiveWidth : 0 }}
         className={cx(styles.main, mainClassName)}
       >
         {main}

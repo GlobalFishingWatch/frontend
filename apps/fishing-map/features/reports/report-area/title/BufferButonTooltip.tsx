@@ -1,10 +1,16 @@
 import { useMemo, useState } from 'react'
+import { Slider, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
 import { useTranslation } from 'react-i18next'
-import { getTrackBackground, Range } from 'react-range'
 import { useSelector } from 'react-redux'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Choice, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Choice,
+  getSliderTrackBackground,
+  IconButton,
+  InputText,
+} from '@globalfishingwatch/ui-components'
 
 import { BUFFER_PREVIEW_COLOR } from 'data/config'
 import {
@@ -81,7 +87,7 @@ export const BufferButtonTooltip = ({
       <div className={styles.actionContainer}>
         <label>{t((t) => t.common.unit)}</label>
         <Choice
-          size="tiny"
+          size="small"
           activeOption={activeUnit}
           onSelect={handleBufferUnitChange}
           options={bufferUnitOptions}
@@ -90,67 +96,53 @@ export const BufferButtonTooltip = ({
       <div className={styles.actionContainer}>
         <label>{t((t) => t.common.value)}</label>
         <div className={styles.bufferValueControls}>
-          <Range
-            allowOverlap
-            values={values || [0, 0]}
+          <Slider
+            aria-label={t((t) => t.common.value)}
+            value={[values[1]]}
             step={STEP}
-            min={minValue}
-            max={maxValue}
-            onChange={setValues}
-            onFinalChange={handleBufferValueChange}
-            renderTrack={({ props, children }) => (
-              <div
+            minValue={minValue}
+            maxValue={maxValue}
+            onChange={(vals) => setValues([0, Array.isArray(vals) ? vals[0] : vals])}
+            onChangeEnd={(vals) =>
+              handleBufferValueChange([0, Array.isArray(vals) ? vals[0] : vals])
+            }
+            style={{ height: '36px', display: 'flex', width: '100%' }}
+          >
+            <SliderTrack
+              style={{
+                position: 'relative',
+                height: '2px',
+                width: '100%',
+                borderRadius: '2px',
+                background: getSliderTrackBackground({
+                  values,
+                  colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
+                  min: minValue,
+                  max: maxValue,
+                }),
+                alignSelf: 'center',
+              }}
+            >
+              <SliderThumb
+                index={0}
                 style={{
-                  ...props.style,
-                  height: '36px',
+                  top: '50%',
+                  height: '30px',
+                  width: '30px',
+                  borderRadius: '50px',
+                  backgroundColor: '#FFF',
                   display: 'flex',
-                  width: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: '14px',
+                  boxShadow: '0px 2px 6px #AAA',
+                  cursor: 'pointer',
                 }}
               >
-                <div
-                  ref={props.ref}
-                  style={{
-                    height: '2px',
-                    width: '100%',
-                    borderRadius: '2px',
-                    background: getTrackBackground({
-                      values,
-                      colors: ['#ccc', BUFFER_PREVIEW_COLOR, '#ccc'],
-                      min: minValue,
-                      max: maxValue,
-                    }),
-                    alignSelf: 'center',
-                  }}
-                >
-                  {children}
-                </div>
-              </div>
-            )}
-            renderThumb={({ props, index }) => {
-              const { key, ...rest } = props
-              return (
-                <div
-                  key={key}
-                  {...rest}
-                  style={{
-                    ...props.style,
-                    height: index === 1 ? '30px' : '8px',
-                    width: index === 1 ? '30px' : '3px',
-                    borderRadius: '50px',
-                    backgroundColor: index === 1 ? '#FFF' : '#ccc',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    fontSize: '14px',
-                    boxShadow: index === 1 ? '0px 2px 6px #AAA' : 'none',
-                    pointerEvents: index === 1 ? 'auto' : 'none',
-                  }}
-                >
-                  {index === 1 ? Math.round(values[index]) || 0 : null}
-                </div>
-              )
-            }}
-          />
+                {Math.round(values[1]) || 0}
+              </SliderThumb>
+            </SliderTrack>
+          </Slider>
           <InputText
             className={styles.bufferValueInput}
             value={values[1]}
@@ -158,14 +150,14 @@ export const BufferButtonTooltip = ({
             min={minValue}
             max={maxValue}
             onChange={handleInputChange}
-            inputSize="small"
+            inputSize="medium"
           />
         </div>
       </div>
       <div className={styles.actionContainer}>
         <label>{t((t) => t.analysis.bufferOperationLabel)}</label>
         <Choice
-          size="tiny"
+          size="small"
           className={styles.operationChoice}
           activeOption={activeOperation}
           onSelect={handleBufferOperationChange}
@@ -177,12 +169,12 @@ export const BufferButtonTooltip = ({
           type="border"
           icon="delete"
           tooltip={t((t) => t.analysis.deleteBuffer)}
-          size="small"
+          size="medium"
           onClick={handleRemoveBuffer}
           disabled={areaType === 'Point'}
         />
         <Button
-          size="small"
+          size="medium"
           onClick={handleConfirmBuffer}
           disabled={!previewBuffer || !values || values[1] < minValue || values[1] > maxValue}
         >

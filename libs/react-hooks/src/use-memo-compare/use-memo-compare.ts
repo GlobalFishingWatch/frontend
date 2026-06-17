@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 
 // https://usehooks.com/useMemoCompare/
 export function useMemoCompare<N = unknown>(next: N, compare = isEqual): N {
   // Ref for storing previous value
   const previousRef = useRef<N>(next)
+  // eslint-disable-next-line react-hooks/refs
   const previous = previousRef.current
   // Pass previous and next value to compare function
   // to determine whether to consider them equal.

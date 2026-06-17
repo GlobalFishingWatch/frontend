@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
-import type { RootState } from 'reducers'
 
 import {
   DatasetTypes,
@@ -16,6 +15,7 @@ import {
 import { getEndpointByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import type { RootState } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
 
 export type BaseReportEventsVesselsParamsFilters = {

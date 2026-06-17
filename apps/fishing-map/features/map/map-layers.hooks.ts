@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { PolygonLayer } from '@deck.gl/layers'
 import { useAtomValue } from 'jotai'
-import { extent } from 'simple-statistics'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
@@ -15,17 +15,9 @@ import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import type {
-  DeckLayerPickingObject,
-  FourwingsLayer,
-  VesselLayer,
-} from '@globalfishingwatch/deck-layers'
-import { generateVesselGraphSteps, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import type {
-  FourwingsFeatureProperties,
-  VesselTrackGraphExtent,
-} from '@globalfishingwatch/deck-loaders'
-import { getVesselGraphExtentClamped } from '@globalfishingwatch/deck-loaders'
+import type { DeckLayerPickingObject, FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
@@ -47,29 +39,31 @@ import {
   selectDetectionsMergedDataviewId,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useTimebarTracksGraphExtent } from 'features/map/timebar-graph.hooks'
 import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
+import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
+import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
-import { useVesselTracksLayers } from 'features/timebar/timebar-vessel.hooks'
 import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
-  selectVesselsMaxTimeGapHours,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
+import { HOTSPOT_COLOR, HOTSPOT_FILL, REPORT_HOTSPOT_ID } from './map.config'
 import {
   selectMapReportBufferDataviews,
   selectShowWorkspaceDetail,
@@ -93,52 +87,12 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   return dataviewId
 }
 
-// Used to generate the dynamic ramp for speed and elevation
-export const useTimebarTracksGraphExtent = () => {
-  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  const vessels = useVesselTracksLayers()
-  const areAllVesselsLoaded = vessels.every((vessel) => vessel.loaded)
-  const vesselsHash = vessels.map((v) => v.id).join()
-
-  return useMemo(() => {
-    if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
-      return
-    }
-    const vesselExtents = vessels.flatMap((v) =>
-      (v.instance as VesselLayer).getVesselTrackGraphExtent(vesselsTimebarGraph)
-    )
-    if (!vesselExtents.length) {
-      return
-    }
-
-    return getVesselGraphExtentClamped(
-      extent(vesselExtents),
-      vesselsTimebarGraph
-    ) as VesselTrackGraphExtent
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areAllVesselsLoaded, vesselsHash, vesselsTimebarGraph])
-}
-
-export const useTimebarTracksGraphSteps = () => {
-  const extent = useTimebarTracksGraphExtent()
-  const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  return useMemo(() => {
-    if (
-      !extent?.length ||
-      (vesselsTimebarGraph !== 'speed' && vesselsTimebarGraph !== 'elevation')
-    ) {
-      return []
-    }
-    return generateVesselGraphSteps(extent, vesselsTimebarGraph)
-  }, [extent, vesselsTimebarGraph])
-}
-
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
   const viewState = useMapViewState()
-  const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -155,7 +109,6 @@ export const useGlobalConfigConnect = () => {
   const trackGraphExtent = useTimebarTracksGraphExtent()
   // const hoverFeatures = useMapHoverInteraction()?.features
   const debugOptions = useSelector(selectDebugOptions)
-  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
 
@@ -192,7 +145,7 @@ export const useGlobalConfigConnect = () => {
         layer.props.category === DataviewCategory.Detections
       ) {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
-        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
         if (isWorkspace) {
           toast(
             t((t) => t.toasts.maxPointsVisualizationExceeded),
@@ -203,7 +156,7 @@ export const useGlobalConfigConnect = () => {
         }
       }
     },
-    [dispatchQueryParams, isWorkspace, t]
+    [isWorkspace, replaceQueryParams, t]
   )
 
   return useMemo(() => {
@@ -226,8 +179,6 @@ export const useGlobalConfigConnect = () => {
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
-      ...(debugOptions.vesselsAsPositions &&
-        debugOptions.vesselsMaxTimeGapHours && { vesselsMaxTimeGapHours }),
       visibleEvents,
       zoom: viewState.zoom,
     }
@@ -252,7 +203,6 @@ export const useGlobalConfigConnect = () => {
     highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
-    vesselsMaxTimeGapHours,
     vesselGroupsVisualizationMode,
     highlightedFeatures,
     trackGraphExtent,
@@ -328,6 +278,7 @@ function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
 
 function getLayerHoverFeatures(layer: HighlightableLayer, features: DeckLayerPickingObject[] = []) {
   return features.filter((feature) => {
+    if (!feature.layerId) return false
     return layer.id.includes(feature.layerId) || feature.layerId.includes(layer.id)
   })
 }
@@ -359,12 +310,33 @@ export const useSyncMapHoverHighlightedFeatures = () => {
   }, [hoverFeatures, hoverFeaturesHash, layers])
 }
 
+const useHotspotOverlayLayer = () => {
+  const settings = useSelector(selectReportHotspotSettings)
+  const geometry = useAtomValue(hotspotGeometryAtom)
+  return useMemo(() => {
+    if (!settings.enabled || !geometry) return null
+    return new PolygonLayer({
+      id: REPORT_HOTSPOT_ID,
+      data: [geometry],
+      getPolygon: (f) => f.geometry.coordinates,
+      filled: true,
+      getFillColor: HOTSPOT_FILL,
+      stroked: true,
+      getLineColor: HOTSPOT_COLOR,
+      getLineWidth: 3,
+      lineWidthUnits: 'pixels',
+      pickable: true,
+    })
+  }, [settings.enabled, geometry])
+}
+
 const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
+  const hotspotLayer = useHotspotOverlayLayer()
   return useMemo(() => {
-    return [drawLayerInstance!, rulerLayerInstance!].filter(Boolean)
-  }, [drawLayerInstance, rulerLayerInstance])
+    return [drawLayerInstance!, rulerLayerInstance!, hotspotLayer!].filter(Boolean)
+  }, [drawLayerInstance, rulerLayerInstance, hotspotLayer])
 }
 
 export const useMapLayers = () => {

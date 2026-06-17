@@ -1,12 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { VESSEL_GROUP_REPORT } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import type { QueryParams } from 'types'
 
 import { ReportCategory } from '../reports.types'
 
@@ -19,7 +18,6 @@ type VesselGroupReportLinkProps = {
 
 function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
-  const query = useSelector(selectLocationQuery)
 
   const analysisRedirect = () => {
     trackEvent({
@@ -36,15 +34,13 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
   return (
     <Link
       className={styles.link}
-      to={{
-        type: VESSEL_GROUP_REPORT,
-        payload: {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          vesselGroupId: vesselGroupId,
-        },
-        query: { ...query, reportCategory: ReportCategory.VesselGroup },
+      to="/$category/$workspaceId/vessel-group-report/$vesselGroupId"
+      params={{
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+        vesselGroupId: vesselGroupId,
       }}
+      search={(prev: QueryParams) => ({ ...prev, reportCategory: ReportCategory.VesselGroup })}
       onClick={analysisRedirect}
     >
       {children}

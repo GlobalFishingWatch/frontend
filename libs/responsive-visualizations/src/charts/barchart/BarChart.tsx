@@ -1,12 +1,9 @@
 import { useRef } from 'react'
 
 import { getIsIndividualBarChartSupported } from '../../lib/density'
+import { DEFAULT_LABEL_KEY } from '../../lib/values'
 import type { ResponsiveVisualizationData } from '../../types'
-import {
-  DEFAULT_AGGREGATED_ITEM_KEY,
-  DEFAULT_INDIVIDUAL_ITEM_KEY,
-  DEFAULT_LABEL_KEY,
-} from '../config'
+import { DEFAULT_AGGREGATED_ITEM_KEY, DEFAULT_INDIVIDUAL_ITEM_KEY } from '../config'
 import { useResponsiveVisualization, useValueKeys } from '../hooks'
 import { BarChartPlaceholder } from '../placeholders/BarChartPlaceholder'
 import type { BaseResponsiveBarChartProps, BaseResponsiveChartProps } from '../types'

@@ -5,7 +5,7 @@ import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfi
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 
 import { t } from 'features/i18n/i18n'
-import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatNumber } from 'utils/info'
 
 import { useTimebarPoints } from './timebar-points.hooks'
@@ -27,8 +27,8 @@ const TimebarPointsGraph = () => {
         t((t) => t.common.points, { count: value?.count }).toLocaleLowerCase(),
         aggregatedPropertyLabel && value?.value
           ? t((t) => t.common.aggregatedBy, {
-              total: formatI18nNumber(value?.value),
-              property: aggregatedPropertyLabel,
+              total: formatI18nNumber(value?.value) as string,
+              property: aggregatedPropertyLabel ?? '',
             })
           : t((t) => t.common.onScreen),
       ]

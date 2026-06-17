@@ -27,7 +27,7 @@ export const UserTrackWorkerLoader: Loader<UserTrackData, any, UserTracksLoaderO
     userTracks: {
       filters: {},
       includeCoordinateProperties: [],
-      workerUrl: `${PATH_BASENAME}/workers/user-tracks-worker.js`,
+      workerUrl: `${PATH_BASENAME}workers/user-tracks-worker.js`,
     },
   },
 }

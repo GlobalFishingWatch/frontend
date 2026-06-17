@@ -18,8 +18,9 @@ import {
 } from 'features/dataviews/dataviews.filters'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
-import { isHistogramDataviewSupported } from 'features/workspace/shared/LayerFilters'
-import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter'
+import { isHistogramDataviewSupported } from 'features/workspace/shared/layer-properties.utils'
+import { getValueLabelByUnit } from 'features/workspace/shared/LayerSchemaFilter.utils'
+import { usePorts } from 'utils/ports'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
@@ -30,7 +31,6 @@ type LayerPanelProps = {
   field: SupportedDatasetFilter
   label: string
   className?: string
-  removeType?: 'visibleValues' | 'filter'
   onRemove?: (tag: TagItem) => void
 }
 
@@ -39,13 +39,15 @@ function DatasetSchemaField({
   field,
   label,
   className = '',
-  removeType = 'filter',
   onRemove,
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  usePorts(field === 'next_port_id' && !!dataview.config?.filters?.[field])
+
   const filterOperation = getFilterOperationInDataview(dataview, field)
   const filterUnit = getFilterUnitInDataview(dataview, field)
   const schemaFieldSelected = getFiltersSelectedInDataview(dataview, field, {
@@ -106,15 +108,25 @@ function DatasetSchemaField({
 
   const onRemoveFilterClick = useCallback(
     (tag: TagItem, tags: TagItem[]) => {
-      upsertDataviewInstance({
-        id: dataview.id,
-        config: {
-          filters: {
-            ...(dataview.config?.filters || {}),
-            [field]: tags.length ? tags.map((t) => t.id) : '',
+      if (field === 'visibleValues') {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            minVisibleValue: undefined,
+            maxVisibleValue: undefined,
           },
-        },
-      })
+        })
+      } else {
+        upsertDataviewInstance({
+          id: dataview.id,
+          config: {
+            filters: {
+              ...(dataview.config?.filters || {}),
+              [field]: tags.length ? tags.map((t) => t.id) : '',
+            },
+          },
+        })
+      }
       if (onRemove) {
         onRemove({ id: field, label: tag.label })
       }
@@ -122,21 +134,11 @@ function DatasetSchemaField({
     [dataview, field, upsertDataviewInstance, onRemove]
   )
 
-  const onRemoveVisibleValuesClick = useCallback(() => {
-    upsertDataviewInstance({
-      id: dataview.id,
-      config: {
-        minVisibleValue: undefined,
-        maxVisibleValue: undefined,
-      },
-    })
-  }, [dataview, upsertDataviewInstance])
-
   return (
     <Fragment>
       {valuesSelected.length > 0 && (
         <div className={cx(styles.filter, className)}>
-          <label>
+          <label className={styles.tagListLabel}>
             {label}
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t((t) => t.common.excluded)})`}
           </label>
@@ -144,9 +146,7 @@ function DatasetSchemaField({
             tags={valuesSelected}
             color={dataview.config?.color}
             className={styles.tagList}
-            onRemove={
-              removeType === 'visibleValues' ? onRemoveVisibleValuesClick : onRemoveFilterClick
-            }
+            onRemove={onRemoveFilterClick}
           />
         </div>
       )}

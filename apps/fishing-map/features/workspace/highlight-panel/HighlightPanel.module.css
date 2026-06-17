@@ -4,6 +4,7 @@
 
 .highlightPanel {
   border: none;
+  background-color: transparent;
 }
 
 @media only screen and (width <= 800px) {
@@ -16,6 +17,8 @@
   max-width: var(--sidebar-width);
   max-height: 95vh;
   overflow: auto;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-1);
 }
 
 .img {
@@ -49,6 +52,7 @@
   background-color: var(--color-white);
   width: 100%;
   bottom: 0;
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
 .footer .footerBtn,

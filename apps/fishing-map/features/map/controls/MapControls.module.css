@@ -43,6 +43,11 @@
   flex-shrink: 0;
   width: var(--size-M);
   height: var(--size-M);
+  transition: var(--transition);
+}
+
+.basemapSwitcher:hover {
+  border-color: rgba(var(--white-rgb), 0.3);
 }
 
 .basemapSwitcher.basemap_default {
@@ -64,7 +69,9 @@
   transform: scale(0);
   height: 0;
   pointer-events: none;
-  transition: transform 0.3s 0.5s, border 0.3s 0s;
+  transition:
+    transform 0.3s 0.5s,
+    border 0.3s 0s;
   margin-bottom: 0;
   border: none;
 }
@@ -73,6 +80,10 @@
   transform: scale(1);
   border: var(--border-white);
   height: var(--size-M);
+}
+
+.screenshotModal {
+  max-width: max-content;
 }
 
 .previewContainer {
@@ -94,21 +105,17 @@
   filter: drop-shadow(0 0 4px var(--color-border));
 }
 
-.screenshotArea {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .previewFooter {
   margin-top: var(--space-S);
   display: flex;
   gap: var(--space-S);
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
-.previewFooter button {
+.previewFooter > button {
+  margin-left: auto;
   min-width: 15rem;
 }
 

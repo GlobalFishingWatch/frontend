@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { SUPPORT_EMAIL } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
+import LoginLink from 'features/user/LoginLink'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { logoutUserThunk } from 'features/user/user.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import { usePopupLogin } from 'features/user/user.hooks'
+import type { LoginSource } from 'features/user/user.types'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 
@@ -17,21 +17,28 @@ import styles from './Workspace.module.css'
 interface WorkspaceLoginErrorProps {
   title: string
   emailSubject?: string
+  className?: string
+  loginSource?: LoginSource
 }
 
-export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLoginErrorProps) {
+export default function WorkspaceLoginError({
+  title,
+  emailSubject,
+  className,
+  loginSource,
+}: WorkspaceLoginErrorProps) {
   const { t } = useTranslation()
   const [logoutLoading, setLogoutLoading] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
   const userData = useSelector(selectUserData)
-  const dispatch = useAppDispatch()
+  const openPopupLogin = usePopupLogin()
 
   return (
-    <ErrorPlaceholder title={title}>
+    <ErrorPlaceholder title={title} className={className}>
       {guestUser ? (
-        <LocalStorageLoginLink className={styles.button}>
-          {t((t) => t.common.login) as string}
-        </LocalStorageLoginLink>
+        <LoginLink className={styles.button} loginSource={loginSource}>
+          {t((t) => t.common.login)}
+        </LoginLink>
       ) : (
         <Fragment>
           {emailSubject && (
@@ -50,7 +57,7 @@ export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLo
             loading={logoutLoading}
             onClick={async () => {
               setLogoutLoading(true)
-              await dispatch(logoutUserThunk({ loginRedirect: true }))
+              openPopupLogin()
               setLogoutLoading(false)
             }}
           >

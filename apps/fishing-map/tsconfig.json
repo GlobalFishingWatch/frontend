@@ -1,17 +1,17 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
       "node",
-      "@vitest/browser/matchers",
-      "next",
-      "@vitest/browser-playwright",
+      "vite/client",
+      "vitest",
       "vitest-browser-react",
-      "vitest"
+      "@vitest/browser/matchers",
+      "@vitest/browser-playwright"
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -37,14 +37,17 @@
       "@globalfishingwatch/dataviews-client": ["../../libs/dataviews-client/src/index.ts"],
       "@globalfishingwatch/deck-layer-composer": ["../../libs/deck-layer-composer/src/index.ts"],
       "@globalfishingwatch/deck-layers": ["../../libs/deck-layers/src/index.ts"],
+      "@globalfishingwatch/deck-layers/draw": ["../../libs/deck-layers/src/draw.ts"],
       "@globalfishingwatch/deck-loaders": ["../../libs/deck-loaders/src/index.ts"],
       "@globalfishingwatch/i18n-labels": ["../../libs/i18n-labels/index.ts"],
       "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],
       "@globalfishingwatch/ocean-areas": ["../../libs/ocean-areas/src/index.ts"],
-      "@globalfishingwatch/pbf-decoders": ["../../libs/pbf-decoders/index.ts"],
       "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
       "@globalfishingwatch/responsive-visualizations": [
         "../../libs/responsive-visualizations/src/index.ts"
+      ],
+      "@globalfishingwatch/responsive-visualizations/*": [
+        "../../libs/responsive-visualizations/src/*"
       ],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
@@ -72,15 +75,12 @@
   "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
   "exclude": [
     "node_modules",
+    ".next",
     "jest.config.ts",
     "exported",
     "**/resources.d.ts",
     "**/__traces__/**",
-    "**/test/*.ts",
-    "**/test/*.tsx",
     "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
+    "**/*.test.tsx"
   ]
 }

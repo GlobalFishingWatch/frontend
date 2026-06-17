@@ -95,6 +95,16 @@ const createMockGlobalConfig = (
     ...overrides,
   }) as ResolverGlobalConfig
 
+const createMockResolutionConfig = (globalConfig: ResolverGlobalConfig) => ({
+  bivariateDataviews: globalConfig.bivariateDataviews,
+  activityVisualizationMode: globalConfig.activityVisualizationMode,
+  detectionsVisualizationMode: globalConfig.detectionsVisualizationMode,
+  environmentVisualizationMode: globalConfig.environmentVisualizationMode,
+  vesselGroupsVisualizationMode: globalConfig.vesselGroupsVisualizationMode,
+  compareStart: globalConfig.compareStart,
+  compareEnd: globalConfig.compareEnd,
+})
+
 describe('useDeckLayerComposer', () => {
   beforeEach(() => {
     // Reset mocks before each test
@@ -139,7 +149,10 @@ describe('useDeckLayerComposer', () => {
       const mockGetDataviewsResolved2 = vi.mocked(getDataviewsResolved)
 
       await waitFor(() => {
-        expect(mockGetDataviewsResolved2).toHaveBeenCalledWith([mockDataview], mockGlobalConfig)
+        expect(mockGetDataviewsResolved2).toHaveBeenCalledWith(
+          [mockDataview],
+          createMockResolutionConfig(mockGlobalConfig)
+        )
         expect(getDataviewsSorted).toHaveBeenCalled()
         expect(dataviewToDeckLayer).toHaveBeenCalled()
         expect(result.current).toHaveLength(1)

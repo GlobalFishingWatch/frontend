@@ -10,6 +10,8 @@ import {
   URL_STRINGIFY_CONFIG,
 } from './url-workspace'
 
+const encodeParams = (key: string) => key.replace(/\[/g, '%5B').replace(/\]/g, '%5D')
+
 // Mock the migrations module
 vi.mock('./migrations', () => ({
   migrateEventsLegacyDatasets: vi.fn((d) => d),
@@ -178,8 +180,8 @@ describe('url-workspace', () => {
       }
       const result = stringifyWorkspace(workspace)
 
-      expect(result).toContain('dvIn[0][id]=test')
-      expect(result).toContain('dvInOr[0]=test')
+      expect(result).toContain(encodeParams('dvIn[0][id]=test'))
+      expect(result).toContain(encodeParams('dvInOr[0]=test'))
       expect(result).toContain('sbO=true')
     })
 
@@ -191,7 +193,7 @@ describe('url-workspace', () => {
       }
       const result = stringifyWorkspace(workspace)
 
-      expect(result).toContain('tk[0]=common-value')
+      expect(result).toContain(encodeParams('tk[0]=common-value'))
       expect(result).toContain('~0')
     })
 
@@ -228,7 +230,7 @@ describe('url-workspace', () => {
       }
       const result = stringifyWorkspace(workspace)
 
-      expect(result).toContain('dvIn[0][id]=test')
+      expect(result).toContain(encodeParams('dvIn[0][id]=test'))
       expect(result).toContain('test')
     })
 
@@ -307,15 +309,15 @@ describe('url-workspace', () => {
 
       const result = parseLegacyDataviewInstanceConfig(dataviewInstance)
 
-      expect(result.config.events).toBeUndefined()
+      expect(result.config?.events).toBeUndefined()
     })
   })
 
   describe('URL_STRINGIFY_CONFIG', () => {
     test('should have correct configuration', () => {
       expect(URL_STRINGIFY_CONFIG).toEqual({
-        encodeValuesOnly: true,
         strictNullHandling: true,
+        allowEmptyArrays: true,
       })
     })
   })
@@ -391,7 +393,7 @@ describe('url-workspace', () => {
       }
       const result = stringifyWorkspace(workspace)
 
-      expect(result).toContain('nested[level1][level2][val]=deep-value')
+      expect(result).toContain(encodeParams('nested[level1][level2][val]=deep-value'))
     })
 
     test('should handle circular references gracefully', () => {
@@ -413,7 +415,7 @@ describe('url-workspace', () => {
       }
       const result = stringifyWorkspace(workspace)
 
-      expect(result).toContain('tk[0]=')
+      expect(result).toContain(encodeParams('tk[0]='))
       expect(result).toContain('~0')
     })
 
@@ -525,6 +527,28 @@ describe('url-workspace', () => {
       const parsed = parseWorkspace(stringified)
 
       expect(parsed).toEqual(complexWorkspace)
+    })
+
+    test('should round-trip empty arrays, also when normalized by URLSearchParams', () => {
+      const workspace = {
+        visibleEvents: [],
+        dataviewInstances: [
+          {
+            id: 'test',
+            config: {
+              filters: { flag: [] },
+            },
+          },
+        ],
+      }
+
+      const stringified = stringifyWorkspace(workspace)
+
+      expect(parseWorkspace(stringified)).toEqual(workspace)
+      // The app router normalizes the search string with URLSearchParams,
+      // which encodes brackets and appends '=' to valueless params
+      const normalized = new URLSearchParams(stringified).toString()
+      expect(parseWorkspace(normalized)).toEqual(workspace)
     })
   })
 })

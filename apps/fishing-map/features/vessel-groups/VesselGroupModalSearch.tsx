@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { parse as parseCSV } from 'papaparse'
+import papaparse from 'papaparse'
 
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -68,7 +68,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     async (file: File) => {
       setCsvName(file.name)
       const fileData = await readBlobAs(file, 'text')
-      const { data } = parseCSV<VesselGroupCsvData>(fileData, {
+      const { data } = papaparse.parse<VesselGroupCsvData>(fileData, {
         header: true,
         skipEmptyLines: true,
       })
@@ -160,7 +160,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               csvName
                 ? csvName
                 : t((t) => t.vesselGroup.csvPlaceholder, {
-                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or'),
+                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or') ?? '',
                   })
             }
           />

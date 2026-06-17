@@ -17,15 +17,19 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
 
 type EventsReportGraphSelectorProps = {
   disabled: boolean
+  containerClassName?: string
 }
 
-function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelectorProps) {
-  const { dispatchQueryParams } = useLocationConnect()
+function EventsReportGraphSelector({
+  disabled = false,
+  containerClassName,
+}: EventsReportGraphSelectorProps) {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
@@ -67,7 +71,7 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
   const onSelect = (option: ChoiceOption<ReportEventsGraph>) => {
     if (reportEventsGraph !== option.id) {
       fitAreaInViewport()
-      dispatchQueryParams({ reportEventsGraph: option.id })
+      replaceQueryParams({ reportEventsGraph: option.id })
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} activity graph`,
@@ -80,7 +84,13 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
     : options[0]
 
   return (
-    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
+    <Choice
+      size="small"
+      options={options}
+      activeOption={selectedOption?.id}
+      onSelect={onSelect}
+      containerClassName={containerClassName}
+    />
   )
 }
 

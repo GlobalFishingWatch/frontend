@@ -21,15 +21,17 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { getModalParent } from 'features/modals/modals.utils'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk } from 'features/reports/reports.slice'
-import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/NewAreaReportModal'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
-import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
+import { getWorkspaceReport, parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
+import { getIsBrowser } from 'utils/dom'
 
 import styles from './FeedbackModal.module.css'
 
@@ -96,8 +98,8 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
-    userAgent: typeof window !== 'undefined' ? navigator.userAgent : '',
-    resolution: typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}px` : '',
+    userAgent: getIsBrowser() ? navigator.userAgent : '',
+    resolution: getIsBrowser() ? `${window.innerWidth}x${window.innerHeight}px` : '',
   }
 
   const [feedbackData, setFeedbackData] = useState<FeedbackData>(initialFeedbackState)
@@ -174,7 +176,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     e.stopPropagation()
     setLoading(true)
     try {
-      let url = window.location.href
+      let url = getCurrentAppUrl()
       const name = `${AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX}-${Date.now()}`
       if (!guestUser) {
         let createDispatchedAction
@@ -256,8 +258,9 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
     >
-      <div className={styles.container}>
+      <div className={styles.container} data-testid="feedback-modal">
         <div className={styles.form}>
           <div className={styles.column}>
             {guestUser && (

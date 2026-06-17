@@ -1,10 +1,11 @@
-import { Fragment, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 import PopupWrapper from 'features/map/popups/PopupWrapper'
+import { getSafeElementById } from 'utils/dom'
 
 import { selectClickedEvent } from '../map.slice'
 import { useClickedEventConnect } from '../map-interactions.hooks'
@@ -30,8 +31,7 @@ function MapPopups() {
 
   const onClickOutside = useCallback(
     (e?: MouseEvent) => {
-      const mapContainer =
-        typeof document !== 'undefined' ? document.getElementById(MAP_CONTAINER_ID) : null
+      const mapContainer = getSafeElementById(MAP_CONTAINER_ID)
       if (e && !mapContainer?.contains(e.target as Node)) {
         dispatchClickedEvent(null)
         cancelPendingInteractionRequests()

@@ -40,7 +40,7 @@ import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -51,7 +51,8 @@ import {
 } from './download.utils'
 import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
 import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
-import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { useActivityDownloadTimeoutRefresh } from './downloadActivity.hooks'
+import ActivityDownloadError from './DownloadActivityError'
 import { DownloadAreaLabel } from './DownloadAreaLabel'
 
 import styles from './DownloadModal.module.css'
@@ -211,7 +212,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
         </div>
-        <UserGuideLink section="downloadActivity" />
+        <UserGuideLink slug="downloading-data" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>
@@ -239,6 +240,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
             disabled={
               isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
             }
+            tooltip={!isDownloadReportSupported ? t((t) => t.download.timerangeTooLong) : undefined}
           >
             {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>

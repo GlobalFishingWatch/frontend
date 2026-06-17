@@ -1,7 +1,32 @@
 .wrapper {
   position: relative;
-  background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, white);
+  background-color: var(--color-background);
   z-index: 5;
+  transition: var(--transition);
+}
+
+.wrapper a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper:hover {
+  background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, var(--color-background));
+}
+
+.loginLinkButton {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary {
+  opacity: var(--opacity-secondary);
 }
 
 .saveIcon {
@@ -10,7 +35,7 @@
   opacity: 0;
   pointer-events: none;
   left: 60px;
-  bottom: 8px;
+  bottom: 3px;
 }
 
 .openFileAnimation {
@@ -28,14 +53,14 @@
 @keyframes x {
   50%,
   100% {
-    left: 8px;
+    left: 6px;
   }
 }
 
 @keyframes y {
   50%,
   100% {
-    bottom: 9px;
+    bottom: 4px;
   }
 }
 

@@ -9,7 +9,8 @@ Integration tests verify that different parts of the Fishing Map application wor
 **Technology Stack:**
 
 - **Test Framework:** Vitest with Browser Mode
-- **Rendering:** React Testing Library (vitest-browser-react)
+- **Rendering:** React Testing Library (vitest-browser-react) via TanStack Router (`RouterProvider`)
+- **Routing:** TanStack Router (navigation source of truth; synced to Redux via `setupRouterSync`)
 - **State Management:** Redux + Jotai
 - **User Interactions:** @vitest/browser userEvent API
 - **Artifacts:** Screenshots and Playwright traces
@@ -40,66 +41,86 @@ test/integration/
 ### Test File Template
 
 ```typescript
-import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { WAIT } from 'test/setup/constants'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Feature Name', () => {
   beforeEach(() => {
-    // WHY: Clear all mocks before each test to ensure test isolation
-    // Without this, spies and mocks from previous tests could affect subsequent tests
     vi.clearAllMocks()
   })
 
   it('should describe expected behavior', async () => {
-    // WHY: makeStore creates a Redux store with initial state and optional middleware
-    const store = makeStore(defaultState, [], true)
-    // WHY: Jotai store needed to access map-specific atoms (mapInstanceAtom, viewStateAtom)
-    // Map viewport state (lat/lng/zoom) is managed in Jotai, not Redux
+    const store = makeStore(defaultState, [])
     const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render({ store, jotaiStore })
 
     // Your test logic here
   })
 })
 ```
 
+## Test Utilities Reference
+
+### `test/setup/constants.ts`
+
+Shared constants for all specs:
+
+```typescript
+import { WAIT, TEST_END_DATE } from 'test/setup/constants'
+
+// System clock is frozen at TEST_END_DATE in vitest.setup.ts
+// Use WAIT constants instead of magic numbers:
+await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT)) // 3000ms – full map bootstrap
+await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD)) // 2000ms – layer + tile fetch
+await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE)) // 1500ms – debounced URL update
+```
+
+### `test/utils/store/`
+
+| File                          | Exports                                                                                 | Use                                      |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `factory.ts`                  | `defaultState`, `defaultViewport`, `getDefaultState()`, `getDefaultStateWithDatasets()` | Build Redux initial state for tests      |
+| `state.ts`                    | `REDUX_STORE_DEFAULT_STATE`                                                             | Internal — imported only by `factory.ts` |
+| `fixtures.ts`                 | `USER_POLYGON_DATASET`, `USER_POLYGON_DATASET_ID`, etc.                                 | Test fixture data                        |
+| `testing-store-middleware.ts` | `TestingStoreMiddleware`, `createTestingMiddleware()`                                   | Track dispatched Redux actions           |
+| `index.ts`                    | re-exports `factory` + `fixtures` + `testing-store-middleware`                          | Barrel for convenience                   |
+
+### `test/utils/navigation/`
+
+Naming convention:
+
+| Prefix             | Meaning                              | Example                            |
+| ------------------ | ------------------------------------ | ---------------------------------- |
+| `navigateToX`      | Route change (URL/router state)      | `navigateToVesselViewer`           |
+| `openX`            | UI interaction opening a panel/modal | _(reserved for future UI helpers)_ |
+| `addX` / `removeX` | Workspace mutations                  | `addVesselToWorkspace`             |
+
 ## Common Test Casuistics
 
 ### 1. **State Synchronization**
 
-Testing that UI changes properly update application state (Redux + URL).
+Testing that UI changes properly update application state (TanStack Router → Redux location).
 
 **Pattern:**
 
 ```typescript
 it('should reflect store changes on layer toggle', async () => {
-  // WHY: Testing middleware captures all Redux actions for verification
-  // This allows us to inspect the action history and verify state changes
-  const testingMiddleware = createTestingMiddleware()
-  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-  const { getByTestId } = await render(<App />, { store })
+  const store = makeStore(defaultState)
+  const { getByTestId } = await render({ store })
 
   await getByTestId('activity-layer-panel-switch-ais').click()
 
-  // WHY: Get all dispatched actions to find the one we're testing
-  // filtering out 'middlewareRegistered' actions automatically
-  const actions = testingMiddleware.getActions()
-  // WHY: findLast gets the most recent HOME action (navigation action)
-  // HOME actions contain the full URL state including dataviewInstances
-  const toggleAction = actions.findLast((action) => action.type === 'HOME')
-
-  // WHY: Verify both the action payload AND the resulting store state
-  // This ensures the UI interaction → action → reducer → state flow works correctly
-  expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
-  expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
+  // WHY: Router sync writes navigation into Redux location — read store state, not actions.
+  // location/setLocation is covered by dedicated router navigation tests.
+  await expect
+    .poll(() => store.getState().location.query.dataviewInstances)
+    .toMatchObject(expectedResult)
 })
 ```
 
@@ -121,14 +142,14 @@ it('should open vessel popup on vessel click', async () => {
   // WHY: Jotai store is needed to access map instance atoms (mapInstanceAtom)
   // The map uses Jotai for managing deck.gl state, while Redux handles application state
   const jotaiStore = createJotaiStore()
-  const { getByTestId } = await render(<App />, { store, jotaiStore })
+  const { getByTestId } = await render({ store, jotaiStore })
 
-  // WHY: Wait 3000ms for map initialization and vessel data to fully load
+  // WHY: Wait WAIT.MAP_INIT (3000ms) for map initialization and vessel data to fully load
   // Map must: initialize deck.gl, fetch tiles, render layers, and position vessels
-  // This is longer than layer loading (2000ms) because it includes full map bootstrap
+  // This is longer than layer loading (WAIT.LAYER_LOAD) because it includes full map bootstrap
   // ⚠️ IMPORTANT: This wait is REQUIRED because we're about to interact with map features
   // that depend on tiles being loaded. Without it, the click coordinates won't find any vessels.
-  await new Promise((resolve) => setTimeout(resolve, 3000))
+  await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
 
   const mapInstance = jotaiStore.get(mapInstanceAtom)
   const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
@@ -168,31 +189,23 @@ Testing adding, removing, and configuring data layers.
 
 ```typescript
 it('should add reference data layer', async () => {
-  // WHY: Testing middleware captures Redux actions so we can verify state changes
-  const testingMiddleware = createTestingMiddleware()
-  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-  const { getByTestId } = await render(<App />, { store })
+  const store = makeStore(defaultState)
+  const { getByTestId } = await render({ store })
 
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-eez-button').click()
 
-  // WHY: Wait 2000ms for layer data to load and tiles to be fetched from the API
+  // WHY: Wait WAIT.LAYER_LOAD (2000ms) for layer data to load and tiles to be fetched from the API
   // Layer addition triggers async operations: API calls, tile loading, and deck.gl layer creation
   // ⚠️ IMPORTANT: This wait is ONLY needed if we're going to interact with the map after this
   // (e.g., clicking on a feature that depends on the loaded tiles)
-  // If we're only checking the Redux action, this wait might not be necessary!
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
-  const actions = testingMiddleware.getActions()
-  const addLayerAction = actions.findLast((action) => action.type === 'HOME')
-
-  // WHY: Use expect.stringContaining for IDs because they include timestamps
-  // Layer IDs are generated as 'eez__1771416000000' (dataviewId + timestamp)
-  // ℹ️ NOTE: This assertion doesn't need a wait because we're checking the Redux action,
-  // not the rendered map. The action is dispatched immediately when the button is clicked.
-  expect(addLayerAction?.query).toMatchObject({
-    dataviewInstances: [{ id: expect.stringContaining('eez'), category: 'context' }]
-  })
+  await expect
+    .poll(() => store.getState().location.query)
+    .toMatchObject({
+      dataviewInstances: [{ id: expect.stringContaining('eez'), category: 'context' }],
+    })
 })
 ```
 
@@ -240,7 +253,7 @@ Testing authenticated vs. unauthenticated user experiences.
 it('should show login prompt when user is not logged in', async () => {
   // WHY: Not passing 'authenticated: true' means the test runs as a guest user
   // This allows us to test the login prompt that should appear for unauthenticated users
-  const { getByRole } = await render(<App />, { store })
+  const { getByRole } = await render({ store })
 
   await getByTestId('activity-add-layer-button').click()
   await userEvent.click(getByRole('button', { name: 'User' }))
@@ -252,7 +265,7 @@ it('should show user dataset sections when user is logged in', async () => {
   // WHY: authenticated: true loads pre-fetched auth tokens from /.auth/tokens.json
   // This avoids navigating to external OAuth pages which would break the iframe-based test environment
   // Global setup authenticates once and saves tokens; tests reuse them for speed and reliability
-  const { getByRole, getByText } = await render(<App />, { store, authenticated: true })
+  const { getByRole, getByText } = await render({ store, authenticated: true })
 
   await getByTestId('activity-add-layer-button').click()
   await userEvent.click(getByRole('button', { name: 'User' }))
@@ -278,7 +291,10 @@ Testing timeline interactions and their effect on map layers.
 
 ```typescript
 it('the map should be interactive after timebar interaction', async () => {
-  const { getByTestId } = await render(<App />, { store, jotaiStore })
+  const testingMiddleware = createTestingMiddleware()
+  const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+  const jotaiStore = createJotaiStore()
+  const { getByTestId } = await render({ store, jotaiStore })
   const timebarWrapper = getByTestId('timebar-wrapper')
 
   // WHY: Wait 3000ms for map and timebar to fully initialize
@@ -292,12 +308,10 @@ it('the map should be interactive after timebar interaction', async () => {
     steps: 5,
   })
 
-  const actions = testingMiddleware.getActions()
-  const timebarAction = actions.findLast((action) => action.type === 'timebar/setHighlightedTime')
-
-  // WHY: Verify the timebar interaction triggered the expected Redux action
-  // This ensures the timeline scrubbing updates the application state correctly
+  // WHY: timebar/setHighlightedTime is a feature action — assert dispatch, not router sync
+  const timebarAction = testingMiddleware.getLastActionByType('timebar/setHighlightedTime')
   expect(timebarAction).toBeDefined()
+  expect(timebarAction?.payload?.start).toBeDefined()
 })
 ```
 
@@ -315,10 +329,12 @@ Testing the vessel profile viewer with multiple tabs and data sections.
 **Pattern:**
 
 ```typescript
-it('should render tabs and vessel basic info', async () => {
-  const { getByTestId, getByText } = await render(<App />, { store })
+import { navigateToVesselViewer } from 'test/utils/navigation/navigateToVesselViewer'
 
-  store.dispatch(navigateToVesselViewerAction)
+it('should render tabs and vessel basic info', async () => {
+  const { getByTestId, getByText, router } = await render({ store })
+
+  await router.navigate(navigateToVesselViewer())
 
   await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   await expect.element(getByText('Registry', { exact: true })).toBeVisible()
@@ -343,10 +359,12 @@ Testing vessel search functionality and navigation flows.
 **Pattern:**
 
 ```typescript
-it('can search for a vessel and see it on the map', async () => {
-  const { getByTestId } = await render(<App />, { store, jotaiStore })
+import { navigateToVesselSearch } from 'test/utils/navigation/navigateToVesselSearch'
 
-  store.dispatch(navigateToVesselSearchAction)
+it('can search for a vessel and see it on the map', async () => {
+  const { getByTestId, router } = await render({ store, jotaiStore })
+
+  await router.navigate(navigateToVesselSearch())
 
   await userEvent.type(getByTestId('search-vessels-basic-input'), 'Gabu Reefer')
   await userEvent.click(getByTestId('link-vessel-profile'))
@@ -375,7 +393,7 @@ it('should request tiles with correct parameters', async () => {
   // WHY: Spy on GFWAPI.fetch to intercept and verify all API calls
   // This allows us to check URLs, parameters, headers, and request counts
   const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
-  const { getByTestId } = await render(<App />, { store, jotaiStore })
+  const { getByTestId } = await render({ store, jotaiStore })
 
   // ⚠️ IMPORTANT: Wait for initial data to load before assertions
   await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -413,15 +431,14 @@ it('should request tiles with correct parameters', async () => {
 **Pattern 2: Using GFWAPITestUtils**
 
 ```typescript
+import { addVesselToWorkspace } from 'test/utils/navigation/addVesselToWorkspace'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 
 it('should wait for API request to complete', async () => {
-  // WHY: GFWAPITestUtils wraps the fetch spy with convenient helpers
-  // waitForRequest() waits for a specific API call to complete before continuing
   const GFWAPITest = new GFWAPITestUtils()
-  const { getByTestId } = await render(<App />, { store })
+  const { getByTestId, router } = await render({ store })
 
-  store.dispatch(addVesselToWorkspaceAction)
+  await router.navigate(addVesselToWorkspace())
 
   // WHY: Wait for the /events API call to complete
   // This ensures the data is loaded before we interact with UI that depends on it
@@ -460,7 +477,7 @@ Testing that application state persists correctly during various operations.
 
 ```typescript
 it('should preserve map previous state on layer toggle', async () => {
-  const { getByTestId } = await render(<App />, { store })
+  const { getByTestId } = await render({ store })
 
   await getByTestId('map-control-zoom-in').click()
   await new Promise((resolve) => setTimeout(resolve, 1100))
@@ -491,7 +508,7 @@ Testing sidebar controls, modals, and dialogs.
 
 ```typescript
 it('should open feedback modal', async () => {
-  const { getByTestId, getByRole } = await render(<App />, { store })
+  const { getByTestId, getByRole } = await render({ store })
 
   await userEvent.hover(getByTestId('feedback-button'))
   await getByTestId('open-feedback-modal').click()
@@ -516,7 +533,7 @@ Testing components that require data to load before interaction.
 
 ```typescript
 it('should display data after loading', async () => {
-  const { getByTestId } = await render(<App />, { store })
+  const { getByTestId } = await render({ store })
 
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-button').click()
@@ -625,18 +642,23 @@ beforeEach(() => {
 })
 ```
 
-### 4. **Use Testing Middleware for Redux Actions**
+### 4. **Use Testing Middleware for Non-Router Redux Actions**
 
-Track Redux actions using the custom testing middleware.
+Use `createTestingMiddleware` to assert that **feature actions** were dispatched (e.g. `timebar/setHighlightedTime`, workspace actions). Do **not** use it for `location/setLocation` — router navigation and URL sync are asserted via `store.getState().location` (and will have dedicated router navigation tests).
 
 ```typescript
+import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+
 const testingMiddleware = createTestingMiddleware()
-const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
-// ... perform actions ...
+// ... perform UI interaction ...
 
-const actions = testingMiddleware.getActions()
-const targetAction = actions.findLast((action) => action.type === 'TARGET_TYPE')
+const timebarAction = testingMiddleware.getLastActionByType('timebar/setHighlightedTime')
+expect(timebarAction).toBeDefined()
+
+// Or wait for an async side-effect action
+await testingMiddleware.waitForAction('workspace/setReport')
 ```
 
 ### 5. **Mock Time-Dependent Values**
@@ -721,14 +743,14 @@ When testing features that vary by auth state, test both scenarios.
 it('shows login for guests', async () => {
   // WHY: Not passing 'authenticated: true' means the test runs as a guest user
   // This allows us to test the login prompt that should appear for unauthenticated users
-  await render(<App />, { store }) // Unauthenticated
+  await render({ store }) // Unauthenticated
   // assertions...
 })
 
 it('shows content for logged-in users', async () => {
   // WHY: authenticated: true loads pre-fetched auth tokens from /.auth/tokens.json
   // This avoids navigating to external OAuth pages which would break the iframe-based test environment
-  await render(<App />, { store, authenticated: true }) // Authenticated
+  await render({ store, authenticated: true }) // Authenticated
   // assertions...
 })
 ```
@@ -760,10 +782,10 @@ Located in [appTestUtils.tsx](../appTestUtils.tsx)
 ```typescript
 import { render } from 'test/appTestUtils'
 
-await render(<App />, {
-  store,                    // Redux store (optional, creates new if not provided)
-  jotaiStore,              // Jotai store (optional, creates new if not provided)
-  authenticated: true,     // Pre-authenticate the test (optional)
+await render({
+  store, // Redux store (optional, creates new if not provided)
+  jotaiStore, // Jotai store (optional, creates new if not provided)
+  authenticated: true, // Pre-authenticate the test (optional)
 })
 ```
 
@@ -777,7 +799,7 @@ await render(<App />, {
   - WHY: Tests share the same auth tokens for performance (one global authentication)
   - WHY: If a test calls logout() and it hits the real API, it would invalidate the token for all tests
   - Solution: Mock logout to only clear localStorage (local effect) without API calls (global effect)
-- Ensures `__next` element exists for modals
+- Ensures `__root__` element exists for modals (ROOT_DOM_ELEMENT)
   - WHY: Next.js modals and portals render into #\_\_next element by default
   - WHY: In the test environment, this element doesn't exist automatically
   - Without it, modal rendering would fail with "Target container is not a DOM element"
@@ -789,37 +811,27 @@ Located in [defaultState.ts](../defaultState.ts)
 Provides a consistent starting state for all tests.
 
 ```typescript
-import { defaultState } from 'test/utils/store/redux-store-test'
+import { defaultState } from 'test/utils/store'
 
-const store = makeStore(defaultState, [], true)
+const store = makeStore(defaultState, [])
 ```
 
 ### Testing Middleware
 
 Located in [testingStoreMiddeware.ts](../testingStoreMiddeware.ts)
 
-Captures Redux actions for verification.
+Captures Redux actions for verification. Use for **non-router feature actions** only — not for `location/setLocation` (use `store.getState().location` instead).
 
 ```typescript
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 
-// WHY: Each test should have its own middleware instance for isolation
-// Prevents action history from one test affecting another
 const testingMiddleware = createTestingMiddleware()
+const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
-// WHY: Pass middleware array to makeStore to intercept all Redux actions
-// The middleware records every action that flows through the store
-const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+// ... perform UI interaction that should dispatch a feature action ...
 
-// ... perform actions ...
-
-// WHY: Get all dispatched actions to verify the action flow
-// Automatically filters out 'middlewareRegistered' actions (Redux Toolkit internals)
-const actions = testingMiddleware.getActions()
-
-// WHY: findLast gets the most recent action of a specific type
-// Useful when multiple actions of the same type are dispatched during a test
-const lastAction = actions.findLast((action) => action.type === 'TARGET_TYPE')
+const lastAction = testingMiddleware.getLastActionByType('timebar/setHighlightedTime')
+expect(lastAction?.payload?.start).toBeDefined()
 ```
 
 **Key Methods:**
@@ -876,36 +888,47 @@ expect(spy).toHaveBeenCalled()
 - Ensuring correct parameters are sent to the backend
 - Checking authentication headers are included in requests
 
-### Navigation Actions
+### Navigation Helpers
 
-Located in `test/utils/actions/`
+Located in `test/utils/navigation/` (one file per navigation helper).
 
-Pre-built actions for setting up application state programmatically.
-
-> **Important:** These actions are NOT for testing navigation itself. They are for **setting up test preconditions** by dispatching Redux actions directly, bypassing the UI. This makes tests faster and more focused on the specific feature being tested.
+Helpers wrap `router.navigate()` using fixture data and production route paths. Use them to **set up test preconditions** — not to bypass navigation when you are testing the navigation flow itself.
 
 ```typescript
-import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
-import { navigateToVesselViewerAction } from 'test/utils/actions/navigateToVesselViewer'
-import { navigateToVesselSearchAction } from 'test/utils/actions/navigateToVesselSearch'
+import { addVesselToWorkspace } from 'test/utils/navigation/addVesselToWorkspace'
+import { navigateToVesselViewer } from 'test/utils/navigation/navigateToVesselViewer'
+import { navigateToVesselSearch } from 'test/utils/navigation/navigateToVesselSearch'
 
-// WHY: Dispatch action directly to set up the desired state
-// This avoids having to simulate clicking through the UI to reach the vessel viewer
-// Use this when you want to TEST the vessel viewer, not the navigation to it
-store.dispatch(navigateToVesselViewerAction)
+const { getByTestId, router } = await render({ store })
+
+// WHY: Navigate through TanStack Router (same path as production)
+// Redux location state is synced automatically via setupRouterSync
+await router.navigate(navigateToVesselViewer())
 ```
 
 **When to use:**
 
-- When you need the app in a specific state to test a feature
+- When you need the app on a specific route to test a feature
 - To skip irrelevant UI interactions and focus on what you're testing
-- To make tests faster by avoiding multi-step UI setup
 - When the state setup is complex and would require many user interactions
 
 **When NOT to use:**
 
-- When you're actually testing the navigation flow itself
-- When you need to verify that UI interactions trigger the correct state changes
+- When you're actually testing the navigation flow itself (click through the UI instead)
+- When you need to verify that UI interactions trigger the correct route/location changes
+
+**Asserting location state (router / URL sync):**
+
+```typescript
+// Read synced Redux location after navigation or UI interaction
+await expect.poll(() => store.getState().location.query).toMatchObject({ ... })
+await expect.poll(() => store.getState().location.type).toBe('WORKSPACE')
+
+import { waitForLocationType } from 'test/utils/location'
+await waitForLocationType(store, WORKSPACE_REPORT)
+
+// Do not assert location/setLocation via testing middleware — that belongs in router navigation tests
+```
 
 ## Debugging Tests
 
@@ -963,7 +986,7 @@ The trace viewer shows:
 
 ```typescript
 // ✅ Use pre-authentication
-const { getByTestId } = await render(<App />, { store, authenticated: true })
+const { getByTestId } = await render({ store, authenticated: true })
 
 // ❌ Don't navigate to actual login pages in tests
 await getByTestId('login-button').click() // This will break in iframe mode
@@ -1052,55 +1075,27 @@ await userEvent.dragAndDrop(source, target, { steps: 1 })
 ### Example: Adding a New Feature Test
 
 ```typescript
-import React from 'react'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/utils/store/redux-store-test'
-import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('New Feature', () => {
   beforeEach(() => {
-    // WHY: Clear all mocks before each test to ensure test isolation
     vi.clearAllMocks()
   })
 
   it('should perform expected behavior when user interacts', async () => {
-    // 1. Setup
-    // WHY: Testing middleware captures all Redux actions for verification
-    const testingMiddleware = createTestingMiddleware()
-    // WHY: Create store with testing middleware to intercept actions
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const { getByTestId } = await render(<App />, { store })
+    const store = makeStore(defaultState)
+    const { getByTestId } = await render({ store })
 
-    // 2. Act
-    // WHY: Simulate user interaction with the feature
     await userEvent.click(getByTestId('trigger-button'))
 
-    // ⚠️ DECISION: Do we need to wait here?
-    // - Start WITHOUT this wait and run the test
-    // - Add it ONLY if the test fails due to timing
-    // - Ask: Does the next assertion depend on async operations completing?
-
-    // If yes, add a targeted wait:
-    // WHY: Wait 500ms for async operations to complete
-    // Adjust this based on your feature's requirements (API calls, animations, etc.)
-    // await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // 3. Assert UI
-    // WHY: Verify the UI changed in response to the user interaction
-    // ℹ️ NOTE: No wait needed here - expect.element() has built-in retry logic
     await expect.element(getByTestId('result-display')).toBeVisible()
 
-    // 4. Assert State
-    // WHY: Verify the Redux state was updated correctly
-    const actions = testingMiddleware.getActions()
-    const targetAction = actions.findLast((action) => action.type === 'EXPECTED_ACTION')
-    expect(targetAction).toBeDefined()
-    expect(store.getState().feature.value).toBe('expected')
+    await expect.poll(() => store.getState().feature.value).toBe('expected')
   })
 })
 ```
@@ -1117,7 +1112,7 @@ describe('New Feature', () => {
 
 Integration tests in the Fishing Map app verify complete user workflows by:
 
-1. **Rendering** the full App component with real stores
+1. **Rendering** the app through TanStack Router with real stores (`RouterProvider` + route tree)
 2. **Interacting** with UI elements using userEvent API
 3. **Asserting** both UI changes and state updates
 4. **Capturing** artifacts (screenshots, traces) on failure

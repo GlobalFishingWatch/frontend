@@ -1,0 +1,18 @@
+import { useTranslation } from 'react-i18next'
+
+import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+
+const VesselIdentityFieldLogin = () => {
+  const { t } = useTranslation()
+  return (
+    <UserLoggedIconButton
+      loginSource="vessel-identity-field"
+      icon="private"
+      loginTooltip={t((t) => t.vessel.infoLogin)}
+      tooltipPlacement="bottom"
+      size="small"
+    />
+  )
+}
+
+export default VesselIdentityFieldLogin

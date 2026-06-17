@@ -1,9 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
+  HotspotButton = 'hotspotButton',
+  PolygonsReport = 'polygonsReport',
 }
 
 export enum DebugOption {
@@ -13,10 +16,9 @@ export enum DebugOption {
   DatasetIdHash = 'addDatasetIdHash',
   ExperimentalLayers = 'experimentalLayers',
   AreasOnScreen = 'areasOnScreen',
-  DataTerminologyIframe = 'dataTerminologyIframe',
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
-  VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
+  VesselGapsThresholdFilter = 'vesselGapsThresholdFilter',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -33,18 +35,19 @@ export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
+    hotspotButton: false,
+    polygonsReport: false,
   },
   options: {
     debugTiles: false,
     mapStats: false,
     thinning: true,
     addDatasetIdHash: true,
-    dataTerminologyIframe: false,
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
-    vesselsMaxTimeGapHours: false,
     hideVesselNames: false,
+    vesselGapsThresholdFilter: false,
   },
 }
 

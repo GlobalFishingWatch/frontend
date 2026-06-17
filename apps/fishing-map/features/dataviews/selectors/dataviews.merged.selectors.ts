@@ -6,12 +6,12 @@ import {
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 
-import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.selectors'
+import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.utils'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const EMPTY_ARRAY: [] = []

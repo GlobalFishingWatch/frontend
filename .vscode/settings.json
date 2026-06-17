@@ -43,7 +43,10 @@
     "**/dist": false,
     "**/.nx": true,
     "**/.turbo": true,
-    "**/.tanstack": true
+    "**/.tanstack": true,
+    "**/coverage": true,
+    "**/.output": true,
+    "**/.nitro": true
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,
@@ -60,13 +63,17 @@
     "**/exported/**": true,
     "**/tmp/**": true,
     "**/cypress/**": true,
-    "**/e2e/**": true
+    "**/e2e/**": true,
+    "**/.output": true,
+    "**/.nitro": true
   },
   "search.exclude": {
     "**/.git": true,
     "**/node_modules": true,
     "**/dist": true,
     "**/build": true,
+    "**/.output": true,
+    "**/.nitro": true,
     "**/.tanstack": true,
     "**/.next": true,
     "**/.nx": true,

@@ -5,6 +5,7 @@ import type { RegionType } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import Event from 'features/vessel/activity/event/Event'
+import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 
 import styles from './VGRInsights.module.css'
 
@@ -49,7 +50,7 @@ const VesselGroupReportInsightVesselEvents = ({
 
   return (
     <ul className={styles.eventDetailsList}>
-      {data.map((event) => (
+      {data.map(removeNonTunaRFMO).map((event) => (
         <Event
           key={event.id}
           event={event}

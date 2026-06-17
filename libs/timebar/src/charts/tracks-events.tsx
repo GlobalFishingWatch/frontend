@@ -1,6 +1,14 @@
-import React, { useContext, useMemo } from 'react'
-import cx from 'classnames'
+import { useCallback, useContext, useMemo } from 'react'
+import type { Color, OrthographicViewState, PickingInfo, Position } from '@deck.gl/core'
+import { OrthographicView } from '@deck.gl/core'
+import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, PolygonLayer } from '@deck.gl/layers'
+import DeckGL from '@deck.gl/react'
 import { useSetAtom } from 'jotai'
+import type { MjolnirEvent } from 'mjolnir.js'
+
+import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
 import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
 import TimelineContext from '../timelineContext'
@@ -15,6 +23,7 @@ import type {
   TimebarChartChunk,
   TimebarChartData,
   TimebarChartItem,
+  TrackChunkProps,
   TrackEventChunkProps,
 } from './common/types'
 import { getTrackY } from './common/utils'
@@ -22,13 +31,39 @@ import { hoveredEventState, useUpdateChartsData } from './chartsData.atom'
 
 import styles from './tracks-events.module.css'
 
+const MAX_THICK_TRACKS_NUMBER = 2
+
+const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
+
+const WHITE: Color = [255, 255, 255, 255]
+const TRANSPARENT: Color = [0, 0, 0, 0]
+const PORT_STROKE: Color = hexToDeckColor('#021236')
+
+const toDeckColor = (color?: string): Color => {
+  if (!color || color === 'white') return WHITE
+  return hexToDeckColor(color)
+}
+
+type EventDatum = {
+  eventId: string
+  clusterIds?: string[]
+  type?: EventTypes
+  chunk: TimebarChartChunk<TrackEventChunkProps>
+  baseColor: Color
+  lineColor: Color
+  polygon?: number[][]
+  path?: Position[]
+  width?: number
+}
+
+type LineDatum = { path: Position[]; color: Color }
+
 const getTracksEventsWithCoords = (
   tracksEvents: TimebarChartData<any>,
   outerScale: TimelineScale,
   graphHeight: number,
   orientation: TrackGraphOrientation
 ) => {
-  // TODO merge with Tracks' getTracksWithCoords
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
     const trackItemWithCoords: TimebarChartItem<any> = {
@@ -40,120 +75,384 @@ const getTracksEventsWithCoords = (
             const x = outerScale(chunk.start)
             const x2 = chunk.end ? outerScale(chunk.end) : x
             const width = Math.max(1, x2 - x)
-            return {
-              ...chunk,
-              x,
-              width,
-            }
+            return { ...chunk, x, width }
           }),
     }
     return trackItemWithCoords
   })
 }
 
+const getTracksWithCoords = (
+  tracks: TimebarChartData<TrackChunkProps>,
+  outerScale: TimelineScale,
+  graphHeight: number,
+  orientation: TrackGraphOrientation
+) => {
+  if (!tracks || tracks.length === 0 || !outerScale) return []
+  return tracks.map((track, trackIndex) => {
+    const baseTrackY = getTrackY(tracks.length, trackIndex, graphHeight, orientation)
+    return {
+      ...track,
+      chunks: !track?.chunks
+        ? []
+        : track.chunks.map((chunk, id) => {
+            const x = outerScale(chunk.start)
+            const x2 = chunk.end != null ? outerScale(chunk.end) : x
+            return { ...chunk, id, x, width: x2 - x }
+          }),
+      y: baseTrackY.defaultY,
+      props: { segmentsOffsetY: track?.props?.segmentsOffsetY },
+    } as TimebarChartItem<TrackChunkProps>
+  })
+}
+
 const TracksEvents = ({
   data,
+  tracks,
   useTrackColor,
   highlightedEventsIds,
   onEventClick,
 }: {
   data: TimebarChartData<TrackEventChunkProps>
+  tracks?: TimebarChartData<TrackChunkProps>
   useTrackColor?: boolean
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
-  const { graphHeight, trackGraphOrientation } = useContext(TimelineContext)
+  const { graphHeight, trackGraphOrientation, innerWidth, outerWidth } = useContext(TimelineContext)
   const outerScale = useOuterScale()
+
+  const veilWidth = (outerWidth - innerWidth) / 2
+
+  const filteredTracks = useFilteredChartData(tracks || [])
+  useUpdateChartsData('tracks', filteredTracks)
 
   const sortedTracksEvents = useSortedChartData(data)
   const clusteredTracksEvents = useClusteredChartData(sortedTracksEvents)
   const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
   useUpdateChartsData('tracksEvents', filteredTracksEvents)
 
-  const tracksEventsWithCoords = useMemo(() => {
-    return getTracksEventsWithCoords(
+  const updateHoveredEvent = useSetAtom(hoveredEventState)
+
+  const initialViewState = useMemo(
+    () =>
+      ({
+        target: [outerWidth / 2, graphHeight / 2, 0],
+        zoom: 0,
+      }) as OrthographicViewState,
+    [graphHeight, outerWidth]
+  )
+
+  const lineData = useMemo(() => {
+    const tracksWithCoords = getTracksWithCoords(
+      filteredTracks,
+      outerScale,
+      graphHeight,
+      trackGraphOrientation
+    )
+    const lineHeight = filteredTracks.length > MAX_THICK_TRACKS_NUMBER ? 1 : 2
+    const result: LineDatum[] = []
+    tracksWithCoords.forEach((track) => {
+      const trackColor = toDeckColor(track.color)
+      track.chunks.forEach((chunk, i) => {
+        const y = track.props?.segmentsOffsetY
+          ? track.chunks.length > 8
+            ? (track.y || 0) + (i % 3)
+            : (track.y || 0) - 5 * (i - (track.chunks.length - 1) / 2)
+          : track.y || 0
+        if (isNaN(chunk.x as number) || isNaN(chunk.width as number)) return
+        result.push({
+          path: [
+            [chunk.x as number, y],
+            [(chunk.x as number) + (chunk.width as number), y],
+          ],
+          color: chunk.props?.color ? toDeckColor(chunk.props.color) : trackColor,
+        })
+      })
+    })
+    return { data: result, lineHeight }
+  }, [filteredTracks, outerScale, graphHeight, trackGraphOrientation])
+
+  const eventGeometry = useMemo(() => {
+    const fishing: EventDatum[] = []
+    const gapLines: EventDatum[] = []
+    const gapIcons: EventDatum[] = []
+    const encounters: EventDatum[] = []
+    const ports: EventDatum[] = []
+    const loitering: EventDatum[] = []
+
+    const tracksEventsWithCoords = getTracksEventsWithCoords(
       filteredTracksEvents,
       outerScale,
       graphHeight,
       trackGraphOrientation
     )
-  }, [
-    filteredTracksEvents,
-    outerScale,
-    graphHeight,
-    trackGraphOrientation,
-  ]) as TimebarChartData<TrackEventChunkProps>
 
-  const updateHoveredEvent = useSetAtom(hoveredEventState)
-  const eventSize = useMemo(
-    () => Math.round(graphHeight / (tracksEventsWithCoords.length * 2)),
-    [graphHeight, tracksEventsWithCoords.length]
-  )
-  const trackEvents = useMemo(() => {
-    return tracksEventsWithCoords.map((trackEvents, index) => (
-      <div
-        key={index}
-        className={styles.track}
-        style={{
-          top: `${trackEvents.y}px`,
-        }}
-      >
-        {trackEvents.chunks.map((event) => {
-          let color = event.props?.color || 'white'
-          if (tracksEventsWithCoords.length === 1 && event.type === 'fishing') {
-            color = 'white'
-          } else if (useTrackColor || event.type === 'fishing') {
-            color = trackEvents.color as string
+    const eventSize = Math.round(graphHeight / (tracksEventsWithCoords.length * 2 || 1))
+
+    const tracksLen = tracksEventsWithCoords.length
+    tracksEventsWithCoords.forEach((trackEvents) => {
+      const trackColor = toDeckColor(trackEvents.color)
+      const y = trackEvents.y || 0
+      trackEvents.chunks.forEach((event) => {
+        let colorStr = event.props?.color || 'white'
+        if (tracksLen === 1 && event.type === EventTypes.Fishing) {
+          colorStr = 'white'
+        } else if (useTrackColor || event.type === EventTypes.Fishing) {
+          colorStr = trackEvents.color as string
+        }
+        const baseColor =
+          (useTrackColor || event.type === EventTypes.Fishing) && colorStr !== 'white'
+            ? trackColor
+            : toDeckColor(colorStr)
+
+        const size = Math.min(eventSize, event.type === EventTypes.Fishing ? 4 : 12)
+        const x = event.x as number
+        const width = event.width as number
+        if (isNaN(x) || isNaN(width)) return
+        const x2 = x + width
+
+        const meta = {
+          eventId: event.id as string,
+          clusterIds: event.cluster?.ids,
+          type: event.type,
+          chunk: event,
+          baseColor,
+        }
+
+        switch (event.type) {
+          case EventTypes.Fishing: {
+            fishing.push({
+              ...meta,
+              lineColor: TRANSPARENT,
+              path: [
+                [x, y],
+                [x2, y],
+              ],
+              width: size,
+            })
+            break
           }
-          const eventSizeByType = Math.min(eventSize, event.type === 'fishing' ? 5 : 15)
-          const borderSize =
-            event.type === 'gap' || event.type === 'gaps' ? 2 : eventSizeByType >= 10 ? 1.5 : 1
-          return (
-            <div
-              role="button"
-              tabIndex={0}
-              key={event.id}
-              className={cx(styles.event, styles[event.type || 'none'], {
-                [styles.highlighted]:
-                  highlightedEventsIds && highlightedEventsIds.includes(event.id as string),
-              })}
-              style={
-                {
-                  left: `${event.x}px`,
-                  width: `${event.width}px`,
-                  height:
-                    event.type === 'gap' || event.type === 'gaps'
-                      ? `${borderSize + 1}px`
-                      : `${eventSizeByType}px`,
-                  '--background-color': color,
-                  '--size': `${eventSizeByType}px`,
-                  '--border-size': `${borderSize}px`,
-                } as React.CSSProperties
+          case EventTypes.Gap:
+          case EventTypes.Gaps: {
+            const h = size / 2
+            gapLines.push({
+              ...meta,
+              lineColor: TRANSPARENT,
+              path: [
+                [x + h, y],
+                [x2, y],
+              ],
+              width: 2,
+            })
+            gapIcons.push(
+              {
+                ...meta,
+                lineColor: TRANSPARENT,
+                path: [
+                  [x - h, y - h],
+                  [x + h, y + h],
+                ],
+                width: 2,
+              },
+              {
+                ...meta,
+                lineColor: TRANSPARENT,
+                path: [
+                  [x - h, y + h],
+                  [x + h, y - h],
+                ],
+                width: 2,
               }
-              onClick={() => {
-                if (onEventClick) onEventClick(event)
-              }}
-              onMouseEnter={() => {
-                updateHoveredEvent(event.id as string)
-              }}
-              onMouseLeave={() => {
-                updateHoveredEvent(undefined)
-              }}
-            />
-          )
-        })}
-      </div>
-    ))
-  }, [
-    eventSize,
-    highlightedEventsIds,
-    onEventClick,
-    tracksEventsWithCoords,
-    updateHoveredEvent,
-    useTrackColor,
-  ])
+            )
+            break
+          }
+          case EventTypes.Port: {
+            const w = Math.max(width, size)
+            ports.push({
+              ...meta,
+              lineColor: PORT_STROKE,
+              polygon: [
+                [x, y - size / 2],
+                [x + w, y - size / 2],
+                [x + w, y + size / 2],
+                [x, y + size / 2],
+              ],
+            })
+            break
+          }
+          case EventTypes.Loitering:
+          case EventTypes.Encounter: {
+            const w = Math.max(width, size)
+            const xr = x + w
+            const target = event.type === EventTypes.Loitering ? loitering : encounters
+            target.push({
+              ...meta,
+              lineColor: baseColor,
+              polygon: [
+                [x, y],
+                [x + size / 2, y - size / 2],
+                [xr - size / 2, y - size / 2],
+                [xr, y],
+                [xr - size / 2, y + size / 2],
+                [x + size / 2, y + size / 2],
+              ],
+            })
+            break
+          }
+        }
+      })
+    })
+    return { fishing, gapLines, gapIcons, encounters, ports, loitering }
+  }, [filteredTracksEvents, graphHeight, outerScale, trackGraphOrientation, useTrackColor])
 
-  return <div className={styles.Events}>{trackEvents}</div>
+  // Stable string dep so layers memo doesn't rerun when array reference changes but content is same
+  const highlightTrigger = highlightedEventsIds?.join(',')
+
+  const layers = useMemo(() => {
+    const highlightedSet = new Set(highlightTrigger ? highlightTrigger.split(',') : [])
+    const hit = (d: EventDatum) =>
+      highlightedSet.has(d.eventId) || (d.clusterIds?.some((id) => highlightedSet.has(id)) ?? false)
+    const filledPolygons = [...eventGeometry.encounters, ...eventGeometry.ports]
+    return [
+      new PathLayer<LineDatum>({
+        id: 'tracks-line',
+        data: lineData.data,
+        widthUnits: 'pixels',
+        getPath: (d) => d.path,
+        getColor: (d) => d.color,
+        getWidth: lineData.lineHeight,
+      }),
+      new PathLayer<EventDatum>({
+        id: 'events-fishing',
+        data: eventGeometry.fishing,
+        pickable: true,
+        capRounded: true,
+        jointRounded: true,
+        widthUnits: 'pixels',
+        getPath: (d) => d.path as Position[],
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        updateTriggers: { getColor: highlightTrigger },
+        getWidth: (d) => d.width as number,
+      }),
+
+      new PolygonLayer<EventDatum>({
+        id: 'events-filled',
+        data: filledPolygons,
+        pickable: true,
+        stroked: true,
+        filled: true,
+        lineWidthUnits: 'pixels',
+        getPolygon: (d) => d.polygon as number[][],
+        getFillColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        updateTriggers: { getFillColor: highlightTrigger },
+        getLineColor: (d) => d.lineColor,
+        getLineWidth: (d) => (d.type === EventTypes.Port ? 1 : 0),
+      }),
+      new PolygonLayer<EventDatum>({
+        id: 'events-stroke',
+        data: eventGeometry.loitering,
+        pickable: true,
+        stroked: true,
+        filled: false,
+        lineWidthUnits: 'pixels',
+        getPolygon: (d) => d.polygon as number[][],
+        getLineColor: (d) => (hit(d) ? WHITE : d.lineColor),
+        updateTriggers: { getLineColor: highlightTrigger },
+        getLineWidth: 1.5,
+      }),
+      new PathLayer({
+        id: 'events-gap-lines',
+        data: eventGeometry.gapLines,
+        pickable: true,
+        widthUnits: 'pixels',
+        getPath: (d: EventDatum) => d.path as Position[],
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        getWidth: (d: EventDatum) => d.width as number,
+        updateTriggers: { getColor: highlightTrigger },
+        getDashArray: [4, 4],
+        extensions: [new PathStyleExtension({ dash: true })],
+      }),
+      new PathLayer({
+        id: 'events-gap-markers',
+        data: eventGeometry.gapIcons,
+        pickable: true,
+        widthUnits: 'pixels',
+        getPath: (d: EventDatum) => d.path as Position[],
+        getColor: (d) => (hit(d) ? WHITE : d.baseColor),
+        getWidth: (d: EventDatum) => d.width as number,
+        updateTriggers: { getColor: highlightTrigger },
+      }),
+    ]
+  }, [eventGeometry, lineData, highlightTrigger])
+
+  const loadingBars = useMemo(() => {
+    if (!tracks) return []
+    return tracks.flatMap((track, i) => {
+      if (track.status !== ResourceStatus.Loading) return []
+      const y = getTrackY(tracks.length, i, graphHeight, trackGraphOrientation).defaultY
+      const top = track.props?.segmentsOffsetY ? (y || 0) + i : y
+      return (
+        <div key={i} className={styles.loading} style={{ top }}>
+          <div
+            className={styles.loadingBar}
+            style={{
+              backgroundColor: track.color as string,
+              animationDelay: `${(i * 0.5) % 2}s`,
+            }}
+          />
+        </div>
+      )
+    })
+  }, [tracks, graphHeight, trackGraphOrientation])
+
+  const onHover = useCallback(
+    (info: PickingInfo) => {
+      updateHoveredEvent((info.object as EventDatum)?.eventId ?? undefined)
+    },
+    [updateHoveredEvent]
+  )
+
+  const onClick = useCallback(
+    (info: PickingInfo, event: MjolnirEvent) => {
+      const datum = info.object as EventDatum
+      if (datum && onEventClick) {
+        event.stopPropagation()
+        onEventClick(datum.chunk)
+      }
+    },
+    [onEventClick]
+  )
+
+  const onMouseLeave = useCallback(() => {
+    updateHoveredEvent(undefined)
+  }, [updateHoveredEvent])
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        transform: `translateX(${-veilWidth}px)`,
+        width: outerWidth + veilWidth * 2,
+        height: graphHeight,
+      }}
+      onMouseLeave={onMouseLeave}
+    >
+      {loadingBars}
+      <DeckGL
+        views={VIEW}
+        initialViewState={initialViewState}
+        layers={layers}
+        width={outerWidth + veilWidth * 2}
+        height={graphHeight}
+        pickingRadius={4}
+        getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
+        onHover={onHover}
+        onClick={onClick}
+      />
+    </div>
+  )
 }
 
 export default TracksEvents

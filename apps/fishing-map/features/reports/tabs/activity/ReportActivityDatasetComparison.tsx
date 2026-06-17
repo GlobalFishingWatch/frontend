@@ -13,13 +13,13 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
-import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
+import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary.utils'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportSubCategory } from 'features/reports/reports.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import styles from './ReportActivityDatasetComparison.module.css'
 
@@ -36,7 +36,7 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
 
 const ReportActivityDatasetComparison = () => {
   const { t, ready: i18nReady } = useTranslation(['layer-library', 'translations'])
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const reportSubcategory = useSelector(selectReportSubCategory)
   const locationQuery = useSelector(selectLocationQuery)
@@ -107,22 +107,17 @@ const ReportActivityDatasetComparison = () => {
 
   useEffect(() => {
     if (selectedMainDataset?.id && selectedMainDataset.id !== comparisonDatasets?.main) {
-      dispatchQueryParams({
+      replaceQueryParams({
         reportComparisonDataviewIds: {
           main: selectedMainDataset.id,
           compare: comparisonDatasets?.compare,
         },
       })
     }
-  }, [
-    selectedMainDataset?.id,
-    comparisonDatasets?.main,
-    comparisonDatasets?.compare,
-    dispatchQueryParams,
-  ])
+  }, [selectedMainDataset?.id, comparisonDatasets?.main, comparisonDatasets?.compare])
 
   const onMainSelect = (option: SelectOption) => {
-    dispatchQueryParams({
+    replaceQueryParams({
       reportComparisonDataviewIds: {
         main: option.id,
         compare: comparisonDatasets?.compare,
@@ -132,10 +127,11 @@ const ReportActivityDatasetComparison = () => {
 
   const onCompareSelect = (option: SelectOption) => {
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    dispatchQueryParams({
+    replaceQueryParams({
       reportCategory:
         locationQuery.reportCategory ||
-        reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
+        (reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)
+          ?.category as any),
       reportComparisonDataviewIds: {
         main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
         compare: dataviewID,

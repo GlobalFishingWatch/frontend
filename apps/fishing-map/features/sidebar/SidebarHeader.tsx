@@ -38,7 +38,8 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
@@ -48,13 +49,14 @@ import {
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)
@@ -64,6 +66,7 @@ function SidebarHeader() {
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const isClientHydrated = useIsClientHydrated()
   const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -71,7 +74,6 @@ function SidebarHeader() {
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
   const scrollElement = getScrollElement()
@@ -139,7 +141,7 @@ function SidebarHeader() {
       }
     }
     dispatch(cleanVesselSearchResults())
-    dispatchQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
+    replaceQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
   }
 
   const sectionHeaderComponent = useMemo(() => {
@@ -164,8 +166,8 @@ function SidebarHeader() {
   ])
 
   return (
-    <div className={cx({ [styles.sticky]: isSticky })}>
-      <div className={cx(styles.sidebarHeader)}>
+    <div className={cx({ [styles.sticky]: isSticky }, styles.container)}>
+      <div className={cx(styles.sidebarHeader, 'print-hidden')}>
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} subBrand={getSubBrand()} />
         </a>
@@ -190,15 +192,16 @@ function SidebarHeader() {
                 options={searchOptions}
                 activeOption={activeSearchOption}
                 onSelect={onSearchOptionChange}
-                size="small"
+                size="medium"
                 className={styles.searchOption}
               />
             )}
-            {workspaceHistoryNavigation?.length ? (
-              <NavigationHistoryButton />
-            ) : (
-              <NavigationWorkspaceButton />
-            )}
+            {isClientHydrated &&
+              (workspaceHistoryNavigation?.length ? (
+                <NavigationHistoryButton />
+              ) : (
+                <NavigationWorkspaceButton />
+              ))}
           </Fragment>
         )}
       </div>

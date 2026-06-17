@@ -1,8 +1,8 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { memoize } from 'es-toolkit'
 import type { Feature, FeatureCollection, LineString } from 'geojson'
 import { castDraft } from 'immer'
-import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'

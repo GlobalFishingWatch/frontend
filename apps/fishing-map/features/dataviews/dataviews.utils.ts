@@ -5,17 +5,14 @@ import type {
   Dataset,
   DatasetsMigration,
   Dataview,
+  DataviewConfigVessel,
   DataviewDatasetConfig,
   DataviewInstance,
   DataviewInstanceOrigin,
   DataviewType,
-  VesselGroupVessel,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getFlattenDatasetFilters,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getEncounteredVesselDataviewInstanceId,
@@ -62,7 +59,7 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
 }
 
-export function dataviewHasUserPointsTimeRange(dataview: UrlDataviewInstance) {
+export function dataviewHasUserTimeRange(dataview: UrlDataviewInstance) {
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
   )
@@ -165,13 +162,23 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
-const vesselDataviewInstanceTemplate = (
-  dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets,
-  highlightEventStartTime?: number,
-  highlightEventEndTime?: number,
+type VesselDataviewInstanceTemplateParams = {
+  dataviewSlug: Dataview['slug']
+  datasets: VesselInstanceDatasets
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
   color?: string
-) => {
+  config?: DataviewConfigVessel
+}
+
+const vesselDataviewInstanceTemplate = ({
+  dataviewSlug,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+  color,
+  config,
+}: VesselDataviewInstanceTemplateParams) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
@@ -189,40 +196,53 @@ const vesselDataviewInstanceTemplate = (
       ...(highlightEventEndTime && {
         highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
       }),
+      ...config,
     },
   }
 }
+
+// Pick the template matching the vessel info dataset (keeps AIS vs VMS separation).
+const getBestVesselTemplateSlug = (
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  datasets: VesselInstanceDatasets
+) =>
+  dataviewTemplates.find((dataview) =>
+    dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+  )?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
 
 export const getVesselDataviewInstance = ({
   vessel,
   datasets,
   highlightEventStartTime,
   highlightEventEndTime,
-  vesselTemplateDataviews,
+  dataviewTemplates,
+  dataviewTemplateId,
   origin,
   color,
+  config,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
-  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplateId?: Dataview['slug']
   origin?: DataviewInstanceOrigin
   color?: string
+  config?: DataviewConfigVessel
 }): DataviewInstance => {
   const dataviewTemplate =
-    vesselTemplateDataviews.find((dataview) => {
-      return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-    })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+    dataviewTemplateId || getBestVesselTemplateSlug(dataviewTemplates, datasets)
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(
-      dataviewTemplate,
+    ...vesselDataviewInstanceTemplate({
+      dataviewSlug: dataviewTemplate,
       datasets,
       highlightEventStartTime,
       highlightEventEndTime,
-      color
-    ),
+      color,
+      config,
+    }),
     deleted: false,
     ...(origin && { origin }),
   }
@@ -436,7 +456,7 @@ export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
   const datasets = getActiveDatasetsInDataview(dataview)
-  const flattenDatasetFilters = datasets?.flatMap((d) =>
+  const flattenDatasetFilters = (datasets || [])?.flatMap((d) =>
     d
       ? getDatasetConfigurationProperty({
           dataset: d,
@@ -445,19 +465,17 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
         }) || []
       : []
   )
-  return flattenDatasetFilters?.some(({ id }) => {
-    return id === 'bearing'
-  })
+  return flattenDatasetFilters?.length > 0
 }
 
 export function hasVesselGroupVesselsDeprecated(
-  vesselGroupvessels: VesselGroupVessel[] | undefined,
+  vesselGroupDatasets: string[] | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
-  if (!vesselGroupvessels || !deprecatedDatasets) {
+  if (!vesselGroupDatasets || !deprecatedDatasets) {
     return false
   }
-  return vesselGroupvessels.some((v) => deprecatedDatasets[v.dataset])
+  return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
 export function isDataviewDeprecated(
@@ -472,9 +490,8 @@ export function isDataviewDeprecated(
   const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
   const hasDatasetsDeprecated =
     datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) || false
-  const hasConfigDeprecated = config?.datasets
-    ? config.datasets.some((d) => deprecatedDatasets[d])
-    : false
+  const configDatasets = Array.isArray(config?.datasets) ? config.datasets : []
+  const hasConfigDeprecated = configDatasets.some((d) => deprecatedDatasets[d])
 
   const hasVesselInfoDeprecated = config?.info
     ? deprecatedDatasets[config.info] !== undefined
@@ -482,11 +499,10 @@ export function isDataviewDeprecated(
   const hasVesselTrackDeprecated = config?.track
     ? deprecatedDatasets[config.track] !== undefined
     : false
-  const hasVesselEventsDeprecated = config?.events
-    ? config.events.some((d) => deprecatedDatasets[d])
-    : false
+  const configEvents = Array.isArray(config?.events) ? config.events : []
+  const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    dataview.vesselGroup?.vessels,
+    dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
 

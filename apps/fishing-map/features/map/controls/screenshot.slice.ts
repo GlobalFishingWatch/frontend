@@ -1,23 +1,23 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+
+import { MAIN_DOM_ID, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
+
 import type { RootState } from 'reducers'
-
-import { MAIN_DOM_ID } from '@globalfishingwatch/ui-components'
-
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { getIsBrowser } from 'utils/dom'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 export type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
 export type ScrenshotDOMArea =
-  | typeof ROOT_DOM_ELEMENT
+  | typeof SPLIT_VIEW_DOM_ID
   | typeof MAP_CONTAINER_ID
   | typeof MAIN_DOM_ID
 
 export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   map: MAP_CONTAINER_ID,
   withTimebar: MAIN_DOM_ID,
-  withTimebarAndLegend: ROOT_DOM_ELEMENT,
+  withTimebarAndLegend: SPLIT_VIEW_DOM_ID,
 }
 
 const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
@@ -28,7 +28,7 @@ interface ScreenshotState {
 }
 
 const getInitialState = (): ScreenshotState => {
-  if (typeof window === 'undefined') return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
+  if (!getIsBrowser()) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
 
   const storedValue = localStorage.getItem(SCREENSHOT_AREA_KEY_ID)
   if (!storedValue) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
@@ -47,7 +47,7 @@ const screenshotSlice = createSlice({
   reducers: {
     setScreenshotAreaId: (state, action: PayloadAction<ScrenshotDOMArea>) => {
       state.screenshotAreaId = action.payload
-      if (typeof window !== 'undefined') {
+      if (getIsBrowser()) {
         localStorage.setItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
       }
     },

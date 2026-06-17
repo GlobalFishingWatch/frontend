@@ -74,9 +74,11 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { getIsBrowser } from 'utils/dom'
 
 import styles from './title/ReportTitle.module.css'
 
@@ -118,7 +120,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: screenshotMode ? window.innerWidth : window.innerWidth / 2,
+      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : undefined) : 800,
       ...params,
     })
     return {
@@ -183,6 +185,9 @@ export function useReportAreaBounds() {
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const { areaId } = useSelector(selectReportAreaIds)
+  const reportId = useSelector(selectReportId)
+  const currentReport = useSelector(selectCurrentReport)
   return useMemo(() => {
     if (isVesselGroupReportLocation) {
       return {
@@ -196,6 +201,18 @@ export function useReportAreaBounds() {
         bbox: portBbox,
       }
     }
+    const isResolvingReportById = Boolean(reportId) && !currentReport
+    const isResolvingArea =
+      Boolean(areaId) &&
+      areaId !== ENTIRE_WORLD_REPORT_AREA_ID &&
+      reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+    if (isResolvingReportById || isResolvingArea) {
+      return {
+        id: reportArea?.id,
+        loaded: false,
+        bbox: null,
+      }
+    }
     return {
       id: reportArea?.id,
       loaded:
@@ -205,12 +222,15 @@ export function useReportAreaBounds() {
       bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
     }
   }, [
+    areaId,
+    currentReport,
     isPortReportLocation,
     isVesselGroupReportLocation,
     portBbox,
     portLoaded,
     reportArea,
     reportAreaStatus,
+    reportId,
     vesselGroupBbox,
     vesselGroupLoaded,
   ])
@@ -332,7 +352,7 @@ export function useFetchReportVessel() {
       setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
-          workspaceUrl: window.location.href,
+          workspaceUrl: getCurrentAppUrl(),
         }
         if (!lastReportUrls?.length) {
           return [newReportUrl]
@@ -427,7 +447,6 @@ export function usePortsReportAreaFootprintFitBounds() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
 }
 
@@ -446,10 +465,16 @@ export function useReportTitle() {
     if (reportId && !report) {
       return ''
     }
+    if (!isGlobalReport && reportAreaStatus !== AsyncReducerStatus.Finished) {
+      return ''
+    }
     if (isGlobalReport && !report?.name) {
       return t((t) => t.common.globalReport)
     }
-    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(
+      report?.name || '',
+      i18n.language
+    )
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])

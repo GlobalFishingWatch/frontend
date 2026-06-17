@@ -1,6 +1,7 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import Pbf from 'pbf'
+import { PbfReader as Pbf } from 'pbf'
 
+import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
@@ -53,11 +54,10 @@ export const getCellTimeseries = (
     (tile?.bbox as GeoBoundingBox).north,
   ]
 
-  const getIntervalTimestamp = CONFIG_BY_INTERVAL[interval].getIntervalTimestamp
-
   const sublayersLength = buffersLength.length
   let cellNum = 0
   let startFrame = 0
+  // eslint-disable-next-line no-useless-assignment
   let endFrame = 0
   let indexInCell = 0
   let subLayerIndex = buffersLength.findIndex((length) => length > 0)
@@ -96,7 +96,7 @@ export const getCellTimeseries = (
               col,
               row,
               values: new Array(sublayersLength),
-              dates: new Array(sublayersLength),
+              tileStartFrame,
               cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
               cellNum,
               startOffsets: new Array(sublayersLength),
@@ -121,16 +121,14 @@ export const getCellTimeseries = (
             if (!feature.properties.values[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
               feature.properties.values[subLayerIndex] = new Array(numCellValues)
-              feature.properties.dates[subLayerIndex] = new Array(numCellValues)
               feature.properties.startOffsets[subLayerIndex] = startFrame
               feature.properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
+            // no dates array stored: the timestamp of each value is derived as
+            // getIntervalTimestamp(tileStartFrame + startOffsets[subLayerIndex] + index)
             feature.properties.values[subLayerIndex][Math.floor(j / sublayers)] =
               cellValue * sublayerScale - sublayerOffset
-            // add current date to the array of dates for this sublayer
-            feature.properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
-              getIntervalTimestamp(startFrame + tileStartFrame + j)
 
             // sum current value to the initialValue for this sublayer
             const inRange =
@@ -165,10 +163,10 @@ export const getCellTimeseries = (
 
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
-    return []
+    return assignFourwingsFeaturesByteLength([])
   }
 
-  return Array.from(
+  const features = Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),
@@ -176,4 +174,5 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
       })
       .features.values()
   )
+  return assignFourwingsFeaturesByteLength(features)
 }

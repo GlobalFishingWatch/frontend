@@ -241,10 +241,8 @@ const Highlighter = ({
           left,
           width,
           height: graphHeight,
+          pointerEvents: 'none',
         }}
-        onClick={() => onToggleFixedTooltip?.()}
-        role="button"
-        tabIndex={0}
       >
         <div className={styles.highlighterCenter} style={{ left: center - left }} />
       </div>
@@ -259,6 +257,7 @@ const Highlighter = ({
             style={{
               left: center,
             }}
+            onClick={(e) => e.stopPropagation()}
           >
             <div
               className={cx(styles.tooltip, {

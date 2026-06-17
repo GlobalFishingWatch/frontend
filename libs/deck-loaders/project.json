@@ -5,8 +5,24 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
+    "proto:generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/deck-loaders",
+        "commands": [
+          "pbjs src/vessels/lib/vessel-track.proto -t static-module -w esm -o src/vessels/lib/vessel-track-proto.gen.js",
+          "pbts src/vessels/lib/vessel-track-proto.gen.js -o src/vessels/lib/vessel-track-proto.gen.d.ts",
+          "prettier --write src/vessels/lib/vessel-track-proto.gen.js src/vessels/lib/vessel-track-proto.gen.d.ts --config ../../.prettierrc.js",
+          "tsc --noEmit -p tsconfig.lib.json",
+          "shx cp src/vessels/lib/vessel-track-proto.gen.js dist/vessels/lib/",
+          "shx cp src/vessels/lib/vessel-track-proto.gen.d.ts dist/vessels/lib/"
+        ],
+        "parallel": false
+      }
+    },
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["proto:generate", "^dist"]
     },
     "dev": {
       "dependsOn": ["^dev"],
@@ -21,7 +37,7 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
+        "command": "vitest run --config=vitest.config.ts",
         "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-loaders"
       }
     },
@@ -29,28 +45,31 @@
       "executor": "@nx/vitest:test",
       "cache": false,
       "options": {
-        "configFile": "libs/deck-loaders/vitest.config.mts",
+        "configFile": "libs/deck-loaders/vitest.config.ts",
         "watch": true
       },
       "continuous": true
     },
     "dist:workers": {
+      "dependsOn": ["build:workers"],
       "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist/workers"],
       "options": {
-        "commands": [
-          "nx build:workers deck-loaders",
-          "node libs/deck-loaders/scripts/clean-workers-output.mjs"
-        ],
-        "parallel": false
+        "command": "node libs/deck-loaders/scripts/clean-workers-output.mjs"
       }
     },
     "build:workers": {
+      "dependsOn": ["^dist"],
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
-          "outdir": "libs/deck-loaders/dist/workers"
+          "outdir": "libs/deck-loaders/dist/workers",
+          "format": "iife",
+          "define": {
+            "import.meta.env": "\"{}\""
+          }
         },
         "outputPath": "libs/deck-loaders/dist/workers",
         "generateExportsField": true,

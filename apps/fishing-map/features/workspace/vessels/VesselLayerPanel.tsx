@@ -3,7 +3,6 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { groupBy } from 'es-toolkit'
 
 import type {
   DataviewDatasetConfigParam,
@@ -23,15 +22,12 @@ import {
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, TagList } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
 import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
-import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
-import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
@@ -44,7 +40,7 @@ import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
-import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
+import { getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
 import FitBounds from '../shared/FitBounds'
 import Filters from '../shared/LayerFilters'
@@ -53,66 +49,13 @@ import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
+import { getVesselIdentityTooltipSummary } from './vessel-layer-panel.utils'
+
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
   showApplyToAll?: boolean
-}
-
-export const getVesselIdentityTooltipSummary = (
-  vessel: IdentityVessel | ExtendedFeatureVessel,
-  { showVesselId } = {} as { showVesselId: boolean }
-) => {
-  if (!vessel || !vessel.selfReportedInfo?.length) {
-    return ['']
-  }
-  const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, (i) => i.nShipname)
-  const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
-    ([_, selfReportedInfo], index) => {
-      const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
-        if (!acc) {
-          return curr.transmissionDateFrom
-        }
-        return acc < curr.transmissionDateFrom ? acc : curr.transmissionDateFrom
-      }, '')
-      const lastTransmissionDateTo = selfReportedInfo.reduce((acc, curr) => {
-        if (!acc) {
-          return curr.transmissionDateTo
-        }
-        return acc > curr.transmissionDateTo ? acc : curr.transmissionDateTo
-      }, '')
-
-      const selfReported = selfReportedInfo[0]
-      const name = formatInfoField(selfReported.shipname, 'shipname')
-      const flag = formatInfoField(selfReported.flag, 'flag')
-      let info = `${name} - (${flag})`
-      if (firstTransmissionDateFrom && lastTransmissionDateTo) {
-        info = `${info} (${formatI18nDate(
-          firstTransmissionDateFrom
-        )} - ${formatI18nDate(lastTransmissionDateTo)})`
-      }
-      return showVesselId ? (
-        <Fragment key={index}>
-          {info}
-          <br />
-          {selfReportedInfo.map((s, index) => (
-            <Fragment key={s.id || index}>
-              <GFWOnly type="only-icon" /> {s.id}
-              {index < selfReportedInfo.length - 1 && <br />}
-            </Fragment>
-          ))}
-          <br />
-        </Fragment>
-      ) : (
-        <Fragment key={index}>
-          {info}
-          <br />
-        </Fragment>
-      )
-    }
-  )
-  return [...identities, t((t) => t.vessel.clickToSeeMore)]
 }
 
 function VesselLayerPanel({
@@ -192,6 +135,8 @@ function VesselLayerPanel({
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+
+  const showGapSegmentThresholdFilter = dataview.config?.gapSegmentThreshold !== undefined
 
   const vesselId =
     (infoResource?.datasetConfig?.params?.find(
@@ -388,13 +333,39 @@ function VesselLayerPanel({
           size="small"
         />
       </div>
-      {hasSchemaFilterSelection && layerActive && (
+      {(hasSchemaFilterSelection || showGapSegmentThresholdFilter) && layerActive && (
         <div className={styles.propertiesNoPaddingBlock}>
           <div className={styles.filters}>
             <div className={styles.filters}>
-              {filtersAllowed.map(({ id, label }) => (
-                <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
-              ))}
+              {showGapSegmentThresholdFilter && (
+                <div className={cx(styles.filter)}>
+                  <label className={styles.tagListLabel}>
+                    {t((t) => t.layer.gapDuration)} ({t((t) => t.common.hours)})
+                  </label>
+                  <TagList
+                    tags={[
+                      {
+                        id: dataview.config?.gapSegmentThreshold?.toString() || '',
+                        label: dataview.config?.gapSegmentThreshold?.toString() || '',
+                      },
+                    ]}
+                    color={dataview.config?.color}
+                    className={styles.tagList}
+                    onRemove={() => {
+                      upsertDataviewInstance({
+                        id: dataview.id,
+                        config: {
+                          gapSegmentThreshold: undefined,
+                        },
+                      })
+                    }}
+                  />
+                </div>
+              )}
+              {hasSchemaFilterSelection &&
+                filtersAllowed.map(({ id, label }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+                ))}
             </div>
           </div>
         </div>

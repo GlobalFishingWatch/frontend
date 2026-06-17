@@ -13,17 +13,10 @@ import { getUTCDateTime } from '../../utils'
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
 import { MAX_FILTER_VALUE } from '../layers.config'
 
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
+import type { VesselsColorByProperty } from './vessel.config'
+import { COLOR_BY, DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { generateVesselGraphSteps, getSegmentsFromData, VESSEL_GRAPH_STEPS } from './vessel.utils'
-
-export type VesselsColorByProperty = 'track' | 'speed' | 'elevation'
-export type VesselsColorByValue = 1 | 2 | 3
-export const COLOR_BY: Record<VesselsColorByProperty, VesselsColorByValue> = {
-  track: 1,
-  speed: 2,
-  elevation: 3,
-}
 
 export type TrackShaderAttributeFlags = {
   includeSpeed: boolean
@@ -38,7 +31,7 @@ export type TrackShaderLayoutProps = Pick<
   | 'maxSpeedFilter'
   | 'minElevationFilter'
   | 'maxElevationFilter'
-  | 'maxTimeGapHours'
+  | 'gapSegmentThreshold'
 >
 
 export function getTrackShaderAttributeFlags(
@@ -53,7 +46,7 @@ export function getTrackShaderAttributeFlags(
       props.colorBy === 'elevation' ||
       props.minElevationFilter !== undefined ||
       props.maxElevationFilter !== undefined,
-    includeGap: Boolean(props.maxTimeGapHours),
+    includeGap: Boolean(props.gapSegmentThreshold),
   }
 }
 
@@ -129,7 +122,7 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
   /**
    * The maximum time gap in hours to split the track into segments
    */
-  maxTimeGapHours?: number
+  gapSegmentThreshold?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -246,6 +239,7 @@ const uniformBlock = `
     uniform vec4 color8;
     uniform vec4 color9;
     uniform float colorBy;
+    uniform float gapSegmentThreshold;
   } track;
 `
 
@@ -286,6 +280,7 @@ const trackLayerUniforms = {
     color8: 'vec4<f32>',
     color9: 'vec4<f32>',
     colorBy: 'f32',
+    gapSegmentThreshold: 'f32',
   },
 }
 
@@ -363,9 +358,9 @@ export class VesselTrackPathLayer<
           }
         }
 
-        // Render gap segments with 0.25 opacity
-        if (vGap > 0.5) {
-          color.a = 0.25;
+        // Hide segments whose time gap to the next point exceeds gapSegmentThreshold
+        if (track.gapSegmentThreshold > 0.0 && vGap > track.gapSegmentThreshold) {
+          discard;
         }
 
         // TODO how can we fade the rest of the track?
@@ -446,6 +441,7 @@ export class VesselTrackPathLayer<
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
       colorBy,
+      gapSegmentThreshold = 0,
       id,
     } = this.props
 
@@ -487,6 +483,7 @@ export class VesselTrackPathLayer<
         maxElevationFilter,
         discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
         colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
+        gapSegmentThreshold,
         ...values,
         ...colors,
       },

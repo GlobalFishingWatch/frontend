@@ -1,7 +1,6 @@
 import type { DataviewCategory, EventType } from '@globalfishingwatch/api-types'
 import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
-  DrawFeatureType,
   FOOTPRINT_HIGH_RES_ID,
   FOOTPRINT_ID,
   FourwingsVisualizationMode,
@@ -10,6 +9,7 @@ import type {
   RulerData,
   VesselsColorByProperty,
 } from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 import type { MapAnnotation } from 'features/map/overlays/annotations/annotations.types'
 import type { ReportState, ReportStateProperty } from 'features/reports/reports.types'
@@ -20,8 +20,10 @@ export { Locale } from '@globalfishingwatch/api-types'
 
 type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 type WorkspaceTimeRangeParam = 'start' | 'end'
-export type BufferUnit = 'nauticalmiles' | 'kilometers'
-export type BufferOperation = 'dissolve' | 'difference'
+export const BUFFER_UNITS = ['nauticalmiles', 'kilometers'] as const
+export type BufferUnit = (typeof BUFFER_UNITS)[number]
+export const BUFFER_OPERATIONS = ['dissolve', 'difference'] as const
+export type BufferOperation = (typeof BUFFER_OPERATIONS)[number]
 
 export type WorkspaceStateProperty = keyof WorkspaceState
 type AppStateProperty = keyof AppState
@@ -61,19 +63,20 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedEnvId?: string
   timebarSelectedUserId?: string
   timebarSelectedVGId?: string
-  timebarVisualisation?: TimebarVisualisations
+  timebarVisualisation?: TimebarVisualisation
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   vesselsColorBy?: VesselsColorByProperty
-  vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents
   skipColorDomainSampling?: boolean
+  // Feature flags
+  migramarLayer?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
 
 type RedirectParam = {
+  isPopup?: boolean
   'access-token'?: string
-  callbackUrlStorage?: boolean
 }
 
 export enum UserTab {
@@ -95,6 +98,9 @@ export type AppState = {
   mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
+  sidePanelId?: string
+  sidePanelSubcontentId?: string
+  sidePanelContent?: 'userGuide' | 'datasets' | 'userDataset' | 'dataTerminology'
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &
@@ -117,6 +123,7 @@ export enum TimebarVisualisations {
   Environment = 'environment',
   Points = 'points',
 }
+export type TimebarVisualisation = `${TimebarVisualisations}`
 
 type VisibleEvents = EventType[] | 'all' | 'none'
 

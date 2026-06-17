@@ -1,8 +1,8 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -34,9 +34,8 @@ import {
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
+import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/vessel-layer-panel.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { WORKSPACE_SEARCH } from 'routes/routes'
 import { getEventLabel } from 'utils/analytics'
 import {
   EMPTY_FIELD_PLACEHOLDER,
@@ -47,18 +46,9 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 
-import styles from './VesselsTable.module.css'
+import { getVesselsInfoConfig } from './vessels-table.utils'
 
-export const getVesselsInfoConfig = (vessels: ExtendedFeatureVessel[]) => {
-  if (!vessels?.length) return {}
-  return {
-    numVessels: vessels.length,
-    overflow: vessels.length > MAX_TOOLTIP_LIST,
-    overflowNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
-    overflowLoad: vessels.length > MAX_TOOLTIP_LIST,
-    overflowLoadNumber: Math.max(vessels.length - MAX_TOOLTIP_LIST, 0),
-  }
-}
+import styles from './VesselsTable.module.css'
 
 function VesselsTable({
   feature,
@@ -177,22 +167,20 @@ function VesselsTable({
                           <span className={styles.skylightLink}>
                             <Link
                               className={styles.link}
-                              to={{
-                                type: WORKSPACE_SEARCH,
-                                payload: {
-                                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                                },
-                                query: {
-                                  searchOption: 'advanced',
-                                  query: vesselName,
-                                  ...(vessel.skylight_id
-                                    ? { ssvid: vessel.skylight_id }
-                                    : { query: vesselName }),
-                                  transmissionDateFrom: end,
-                                  transmissionDateTo: start,
-                                  flag: [vessel.flag],
-                                },
+                              to="/$category/$workspaceId/vessel-search"
+                              params={{
+                                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                              }}
+                              search={{
+                                searchOption: 'advanced',
+                                query: vesselName as string,
+                                ...(vessel.skylight_id
+                                  ? { ssvid: vessel.skylight_id }
+                                  : { query: vesselName as string }),
+                                transmissionDateFrom: end,
+                                transmissionDateTo: start,
+                                flag: vessel.flag ? [vessel.flag] : undefined,
                               }}
                             >
                               <IconButton

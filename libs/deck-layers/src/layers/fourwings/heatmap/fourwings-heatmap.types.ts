@@ -126,6 +126,7 @@ export type FourwingsTileLayerState = {
   scales?: FourwinsTileLayerScale[]
   rampDirty?: boolean
   viewportLoaded: boolean
+  tilesCacheUpdateTimeout: ReturnType<typeof setTimeout> | null
 }
 
 export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {

@@ -1,8 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Bar, BarChart, LabelList, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
-import type { CartesianLayout } from 'recharts/types/util/types'
+import {
+  Bar,
+  BarChart,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
@@ -13,9 +20,11 @@ import { EVENTS_COLORS, ROOT_DOM_ELEMENT } from 'data/config'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselProfileColor } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDebouncedDispatchHighlightedEvent } from 'features/map/map-interactions.hooks'
+import { getModalParent } from 'features/modals/modals.utils'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { useFetchRegionsData } from 'features/vessel/activity/event/event.hook'
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
@@ -26,9 +35,8 @@ import {
 } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
-import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
-import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
-import { useLocationConnect } from 'routes/routes.hook'
+import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/context.utils'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import type { VesselAreaSubsection } from '../vessel.types'
@@ -91,7 +99,7 @@ const AreaTooltip = ({ payload }: any) => {
             <li key={name} className={styles.tooltipValue}>
               <span className={styles.tooltipValueDot} style={{ color }} />
               <I18nNumber number={value} />{' '}
-              {t((t: any) => t.event[name], {
+              {t((t) => (t.event as any)[name], {
                 defaultValue: name,
                 count: value,
               })}
@@ -106,7 +114,7 @@ const AreaTooltip = ({ payload }: any) => {
 const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   useFetchRegionsData()
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
@@ -114,19 +122,12 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const eventsGroupedUnknown = eventsGrouped.find((group) => group.region === UNKNOWN_AREA)
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
-  const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
   const areaDataview = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.dataviewId === vesselArea)
   const eventsLoading = useVesselProfileEventsLoading()
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
-
-  // TODO: remove this hack if recharts fixes the 3.0.0 vertical layout bug
-  const [layout, setLayout] = useState<CartesianLayout>('horizontal')
-  useEffect(() => {
-    setLayout(eventsGroupedWithoutUnknown.length > 0 ? 'vertical' : 'horizontal')
-  }, [eventsGroupedWithoutUnknown])
 
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
     () => [
@@ -150,26 +151,16 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     [t]
   )
 
-  useEffect(() => {
-    const resizeGraph = () => {
-      setGraphWidth(getSidebarContentWidth())
-    }
-    window.addEventListener('resize', resizeGraph)
-    return () => {
-      window.removeEventListener('resize', resizeGraph)
-    }
-  }, [])
-
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
-      dispatchQueryParams({ vesselArea: option.id })
+      replaceQueryParams({ vesselArea: option.id })
       updateAreaLayersVisibility(option.id)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: `click_${option.id}_areas_tab`,
       })
     },
-    [dispatchQueryParams, updateAreaLayersVisibility]
+    [updateAreaLayersVisibility]
   )
 
   if (eventsLoading) {
@@ -188,7 +179,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       </div>
       <Choice
         options={areaOptions}
-        size="small"
+        size="medium"
         testId="vv-area"
         activeOption={vesselArea}
         className={styles.choice}
@@ -196,7 +187,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       />
       {areaDataview && DATAVIEWS_WARNING.includes(areaDataview?.id as any) && (
         <div className={styles.dataWarning}>
-          {t((t: any) => t.dataview[areaDataview?.id]?.dataWarning)}{' '}
+          {t((t) => (t.dataview as any)[areaDataview?.id]?.dataWarning)}{' '}
           <span className={'print-hidden'}>
             <button
               className={styles.dataWarningLink}
@@ -210,8 +201,9 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               isOpen={modalDataWarningOpen}
               onClose={onDataWarningModalClose}
               contentClassName={styles.modalContent}
+              parentSelector={getModalParent}
             >
-              {htmlSafeParse(t((t: any) => t.dataview[areaDataview?.id]?.dataWarningDetail))}
+              {htmlSafeParse(t((t) => (t.dataview as any)[areaDataview?.id]?.dataWarningDetail))}
             </Modal>
           </span>
         </div>
@@ -219,49 +211,50 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       <div className={styles.areaList}>
         {eventsGroupedWithoutUnknown.length > 0 ? (
           <div>
-            <BarChart
-              width={graphWidth}
-              height={eventsGroupedWithoutUnknown.length * 40}
-              layout={layout}
-              data={eventsGroupedWithoutUnknown}
-              margin={{ right: 40 }}
-            >
-              <YAxis
-                interval={0}
-                axisLine={false}
-                tickLine={false}
-                type="category"
-                dataKey="region"
-                width={200}
-                tick={<AreaTick />}
-              />
-              <XAxis type="number" hide />
-              <RechartsTooltip content={<AreaTooltip />} />
-              {eventTypes?.map((eventType, index) => (
-                <Bar
-                  key={eventType}
-                  dataKey={eventType}
-                  barSize={15}
-                  stackId="a"
-                  fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
-                >
-                  {index === eventTypes.length - 1 && (
-                    <LabelList
-                      position="right"
-                      valueAccessor={(entry: any) => {
-                        return formatI18nNumber(entry?.payload?.total)
-                      }}
-                      className={styles.count}
-                    />
-                  )}
-                </Bar>
-              ))}
-            </BarChart>
+            <ResponsiveContainer width="100%" height={eventsGroupedWithoutUnknown.length * 40}>
+              <BarChart layout="vertical" data={eventsGroupedWithoutUnknown} margin={{ right: 40 }}>
+                <YAxis
+                  interval={0}
+                  axisLine={false}
+                  tickLine={false}
+                  type="category"
+                  dataKey="region"
+                  width={200}
+                  tick={<AreaTick />}
+                />
+                <XAxis type="number" hide />
+                <RechartsTooltip content={<AreaTooltip />} />
+                {eventTypes?.map((eventType) => {
+                  return (
+                    <Bar
+                      key={eventType}
+                      dataKey={eventType}
+                      barSize={15}
+                      stackId="a"
+                      fill={eventType === 'fishing' ? vesselColor : EVENTS_COLORS[eventType]}
+                      isAnimationActive={false}
+                    >
+                      <LabelList
+                        position="right"
+                        valueAccessor={(entry: any) => {
+                          const { total, region, ...rest } = entry?.payload || {}
+                          const eventsWithValues = Object.keys(rest)
+                          if (eventType === eventsWithValues[eventsWithValues.length - 1]) {
+                            return formatI18nNumber(total)
+                          }
+                        }}
+                        className={styles.count}
+                      />
+                    </Bar>
+                  )
+                })}
+              </BarChart>
+            </ResponsiveContainer>
             {eventsGroupedUnknown?.total && (
               <p className={styles.unknownRegionEvents}>
                 <span className={styles.unknownRegionEventsTitle}>
                   {t((t) => t.vessel.unknownRegionEvents, {
-                    regionType: t((t: any) => t.layer.areas[vesselArea], {
+                    regionType: t((t) => t.layer.areas[vesselArea as keyof typeof t.layer.areas], {
                       defalutValue: vesselArea,
                     }),
                   })}
@@ -273,10 +266,10 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                       if (key === 'total' || key === 'region') return ''
                       return (
                         <p key={key}>
-                          {t((t: any) => t.event[key], {
+                          {t((t) => (t.event as any)[key], {
                             defaultValue: key,
                             count: value as number,
-                          })}
+                          } as any)}
                           : <I18nNumber number={value} />
                         </p>
                       )
@@ -294,7 +287,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         ) : (
           <span className={styles.enptyState}>
             {t((t) => t.vessel.noEventsIn, {
-              regionType: t((t: any) => t.layer.areas[vesselArea], { defalutValue: vesselArea }),
+              regionType: t((t) => t.layer.areas[vesselArea], { defalutValue: vesselArea }),
             })}
           </span>
         )}

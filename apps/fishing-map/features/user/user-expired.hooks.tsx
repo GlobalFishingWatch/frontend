@@ -3,7 +3,7 @@ import { Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LoginLink from 'features/user/LoginLink'
 
 import { selectIsUserExpired } from './selectors/user.selectors'
 
@@ -17,7 +17,10 @@ export const useUserExpiredToast = () => {
     <div className={styles.disclaimer}>
       <Trans i18nKey={(t) => t.errors.sessionExpired}>
         Your session has expired, please
-        <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink> again.
+        <LoginLink className={styles.link} loginSource="user-session-expired">
+          log in
+        </LoginLink>{' '}
+        again.
       </Trans>
     </div>
   )

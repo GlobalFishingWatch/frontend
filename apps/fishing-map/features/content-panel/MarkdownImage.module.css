@@ -1,0 +1,36 @@
+.markdownImageBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  display: block;
+}
+
+.markdownImage {
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+.open {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  cursor: zoom-out;
+  object-fit: contain;
+  z-index: 10;
+  overflow: hidden;
+  filter: drop-shadow(2px 0 0 var(--color-white)) drop-shadow(-2px 0 0 var(--color-white))
+    drop-shadow(0 2px 0 var(--color-white)) drop-shadow(0 -2px 0 var(--color-white));
+}
+
+.veil {
+  z-index: 9;
+  position: fixed;
+  background: rgba(var(--primary-blue-rgb), 0.75);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: zoom-out;
+}

@@ -7,12 +7,12 @@ import type {
   getIsIndividualTimeseriesSupported,
   IsIndividualSupportedParams,
 } from '../lib/density'
+import { DEFAULT_LABEL_KEY } from '../lib/values'
 import type { ResponsiveVisualizationData, ResponsiveVisualizationValue } from '../types'
 
 import {
   DEFAULT_AGGREGATED_ITEM_KEY,
   DEFAULT_INDIVIDUAL_ITEM_KEY,
-  DEFAULT_LABEL_KEY,
   DEFAULT_POINT_SIZE,
 } from './config'
 import type {
@@ -41,21 +41,17 @@ export function useResponsiveDimensions(containerRef: ResponsiveVisualizationCon
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(() => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect()
-        setDimensions({ width, height })
-      }
-    })
+    const element = containerRef.current
+    if (!element) return
 
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current)
-    }
+    const resizeObserver = new ResizeObserver(() => {
+      const { width, height } = element.getBoundingClientRect()
+      setDimensions({ width, height })
+    })
+    resizeObserver.observe(element)
 
     return () => {
-      if (containerRef.current) {
-        resizeObserver.unobserve(containerRef.current)
-      }
+      resizeObserver.unobserve(element)
     }
   }, [containerRef])
 
