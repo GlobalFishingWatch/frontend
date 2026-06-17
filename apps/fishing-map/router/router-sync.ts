@@ -176,6 +176,7 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
         router.navigate({
           replace: true,
           resetScroll: false,
+          search: true,
           state: (state) => ({ ...state, isHistoryNavigation: undefined }),
         })
       }
