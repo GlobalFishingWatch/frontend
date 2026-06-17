@@ -668,6 +668,162 @@ describe('api-client', () => {
       })
     })
 
+    describe('token refresh resilience', () => {
+      let fetchMock: ReturnType<typeof vi.fn>
+
+      beforeEach(() => {
+        fetchMock = vi.fn()
+        vi.stubGlobal('fetch', fetchMock)
+      })
+
+      afterEach(() => {
+        vi.useRealTimers()
+      })
+
+      it('should retry the reload on a transient 5xx failure', async () => {
+        vi.useFakeTimers()
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
+
+        fetchMock
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ message: 'Server Error' }), {
+              status: 503,
+              statusText: 'Service Unavailable',
+            })
+          )
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+              status: 200,
+            })
+          )
+
+        const promise = client.refreshAPIToken()
+        await vi.runAllTimersAsync()
+        const result = await promise
+
+        expect(result).toEqual({ token: 'new-token', refreshToken: 'new-refresh' })
+        expect(fetchMock).toHaveBeenCalledTimes(2)
+      })
+
+      it('should retry the reload on a transient network failure', async () => {
+        vi.useFakeTimers()
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
+
+        fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch')).mockResolvedValueOnce(
+          new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+            status: 200,
+          })
+        )
+
+        const promise = client.refreshAPIToken()
+        await vi.runAllTimersAsync()
+        const result = await promise
+
+        expect(result).toEqual({ token: 'new-token', refreshToken: 'new-refresh' })
+        expect(fetchMock).toHaveBeenCalledTimes(2)
+      })
+
+      it('should give up after maxReloadRetries transient failures', async () => {
+        vi.useFakeTimers()
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
+
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ message: 'Server Error' }), {
+            status: 503,
+            statusText: 'Service Unavailable',
+          })
+        )
+
+        const promise = client.refreshAPIToken()
+        const expectation = expect(promise).rejects.toMatchObject({ status: 503 })
+        await vi.runAllTimersAsync()
+        await expectation
+
+        // 1 initial attempt + maxReloadRetries (2) = 3
+        expect(fetchMock).toHaveBeenCalledTimes(client.maxReloadRetries + 1)
+      })
+
+      it('should NOT retry the reload on a 401 (invalid refresh token)', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'invalid-refresh')
+
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ message: 'Invalid' }), {
+            status: 401,
+            statusText: 'Unauthorized',
+          })
+        )
+
+        await expect(client.refreshAPIToken()).rejects.toMatchObject({ status: 401 })
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('multi-tab refresh lock', () => {
+      let fetchMock: ReturnType<typeof vi.fn>
+
+      beforeEach(() => {
+        fetchMock = vi.fn()
+        vi.stubGlobal('fetch', fetchMock)
+      })
+
+      afterEach(() => {
+        vi.unstubAllGlobals()
+      })
+
+      it('should run the refresh inside the Web Lock when available', async () => {
+        const requestSpy = vi.fn((_name: string, cb: () => Promise<unknown>) => cb())
+        vi.stubGlobal('navigator', { locks: { request: requestSpy } })
+
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-token')
+
+        fetchMock.mockResolvedValueOnce(
+          new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
+            status: 200,
+          })
+        )
+
+        await client.refreshAPIToken()
+
+        expect(requestSpy).toHaveBeenCalledWith('gfw-token-refresh', expect.any(Function))
+      })
+
+      it('should skip the network call when another tab already rotated the token', async () => {
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'old-refresh')
+
+        // Simulate another tab finishing a refresh while we waited for the lock:
+        // the stored tokens are rotated before our callback runs.
+        vi.stubGlobal('navigator', {
+          locks: {
+            request: (_name: string, cb: () => Promise<unknown>) => {
+              storage.setItem('GFW_API_USER_TOKEN', 'rotated-token')
+              storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'rotated-refresh')
+              return cb()
+            },
+          },
+        })
+
+        const client = createApiClient()
+
+        const result = await client.refreshAPIToken()
+
+        expect(result).toEqual({ token: 'rotated-token', refreshToken: 'rotated-refresh' })
+        // The consumed 'old-refresh' is never replayed against the server.
+        expect(fetchMock).not.toHaveBeenCalled()
+      })
+    })
+
     describe('fetchUser', () => {
       let fetchMock: ReturnType<typeof vi.fn>
 

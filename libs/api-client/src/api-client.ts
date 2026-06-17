@@ -6,7 +6,12 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
-import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
+import {
+  getIsTimeoutError,
+  getIsUnauthorizedError,
+  isAuthError,
+  parseAPIError,
+} from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
 import { isUrlAbsolute } from './utils/url'
 import {
@@ -61,6 +66,7 @@ export class GFW_API_CLASS {
     refreshToken: string
   }
   maxRefreshRetries = 1
+  maxReloadRetries = 2
   logging: Promise<UserData> | null
   private refreshingToken: Promise<UserTokens> | null = null
   status: RequestStatus = 'idle'
@@ -191,25 +197,49 @@ export class GFW_API_CLASS {
       .then(parseJSON)
   }
 
-  private async reloadAPIToken(refreshToken: string) {
-    const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
-    const { token, refreshToken: newRefreshToken } = refreshResponse
-    this.token = token
-    this.refreshToken = newRefreshToken
-    return refreshResponse
-  }
-
-  private async reloadAPITokenWithLatestRefreshToken(refreshToken: string) {
+  private async reloadAPIToken(refreshToken: string, reloadRetries = 0): Promise<UserTokens> {
     try {
-      return await this.reloadAPIToken(refreshToken)
+      const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
+      const { token, refreshToken: newRefreshToken } = refreshResponse
+      this.token = token
+      this.refreshToken = newRefreshToken
+      return refreshResponse
     } catch (e: any) {
-      const latestRefreshToken = this.refreshToken
-      if (latestRefreshToken && latestRefreshToken !== refreshToken) {
-        return await this.reloadAPIToken(latestRefreshToken)
+      const isTransient = !isAuthError(e) && (getIsTimeoutError(e) || !e?.status || e.status >= 500)
+      if (isTransient && reloadRetries < this.maxReloadRetries) {
+        if (this.debug) {
+          console.log(`GFWAPI: Transient reload failure, retry attempt ${reloadRetries + 1}`)
+        }
+        await new Promise((resolve) => setTimeout(resolve, 500 * (reloadRetries + 1)))
+        return this.reloadAPIToken(refreshToken, reloadRetries + 1)
       }
-      e.status = 401
       throw e
     }
+  }
+
+  private async withTokenRefreshLock<T>(run: () => Promise<T>): Promise<T> {
+    if (isClientSide && typeof navigator !== 'undefined' && navigator.locks?.request) {
+      return navigator.locks.request('gfw-token-refresh', run) as Promise<T>
+    }
+    return run()
+  }
+
+  private async reloadAPITokenWithLatestRefreshToken(refreshToken: string): Promise<UserTokens> {
+    return this.withTokenRefreshLock(async () => {
+      const latestRefreshToken = this.refreshToken
+      if (latestRefreshToken && latestRefreshToken !== refreshToken) {
+        return { token: this.token, refreshToken: latestRefreshToken }
+      }
+      try {
+        return await this.reloadAPIToken(refreshToken)
+      } catch (e: any) {
+        const newerRefreshToken = this.refreshToken
+        if (newerRefreshToken && newerRefreshToken !== refreshToken) {
+          return await this.reloadAPIToken(newerRefreshToken)
+        }
+        throw e
+      }
+    })
   }
 
   async refreshAPIToken() {
@@ -379,7 +409,8 @@ export class GFW_API_CLASS {
               if (this.debug) {
                 console.warn(`GFWAPI: Error fetching ${url}`, err)
               }
-              if (isClientSide) {
+              const refreshRejected = getIsUnauthorizedError(err) && !getIsTimeoutError(err)
+              if (isClientSide && refreshRejected) {
                 this.token = ''
                 this.refreshToken = ''
               }

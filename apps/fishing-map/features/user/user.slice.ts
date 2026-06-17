@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getIsTimeoutError, GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
@@ -61,6 +61,11 @@ export const fetchUserThunk = createAsyncThunk(
 
       return user
     } catch (e: any) {
+      const cause = e?.cause ?? e
+      const isTransient = getIsTimeoutError(cause) || (cause?.status as number) >= 500
+      if (isTransient) {
+        throw e
+      }
       return await GFWAPI.fetchGuestUser()
     }
   },
