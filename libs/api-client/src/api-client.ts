@@ -421,7 +421,9 @@ export class GFW_API_CLASS {
                 this.token = ''
                 this.refreshToken = ''
               }
-              e.refreshError = true
+              if (refreshRejected) {
+                e.refreshError = true
+              }
               throw parseAPIError(e)
             }
           }

@@ -116,6 +116,7 @@ const userSlice = createSlice({
     builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.logged = true
+      state.expired = false
       state.data = action.payload
     })
     builder.addCase(fetchUserThunk.rejected, (state) => {

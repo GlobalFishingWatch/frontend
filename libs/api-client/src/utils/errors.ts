@@ -47,13 +47,21 @@ export const parseAPIErrorMetadata = (error: ResponseError) => {
   return {} as V2MetadataError
 }
 
-export type ParsedAPIError = { status: number; message: string; metadata?: V2MetadataError }
-export const parseAPIError = (error: ResponseError): ParsedAPIError => {
+export type ParsedAPIError = {
+  status: number
+  message: string
+  metadata?: V2MetadataError
+  refreshError?: boolean
+}
+export const parseAPIError = (
+  error: ResponseError & { refreshError?: boolean }
+): ParsedAPIError => {
   const metadata = parseAPIErrorMetadata(error)
   return {
     status: parseAPIErrorStatus(error),
     message: parseAPIErrorMessage(error),
     ...(metadata && { metadata }),
+    ...(error?.refreshError && { refreshError: true }),
   }
 }
 
