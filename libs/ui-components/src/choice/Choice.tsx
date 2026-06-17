@@ -122,6 +122,7 @@ export function Choice({
             selectedOption={selectOptions.find((o) => o.id === activeOptionId)}
             onSelect={(option) => onSelect?.(option as ChoiceOption, {} as React.MouseEvent)}
             disabled={disabled}
+            testId={testId}
           />
         ) : (
           <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': testId })}>

@@ -99,9 +99,6 @@ export default defineConfig(({ command, mode }) => {
               // Track: https://github.com/rolldown/rolldown/issues/8803
               strictExecutionOrder: true,
               manualChunks(id) {
-                if (id.includes('/libs/ui-components/src/icon/icons/')) {
-                  return 'ui-icons-bundle'
-                }
                 if (
                   id.includes('/libs/timebar/src/icons/') ||
                   id.includes('/apps/fishing-map/assets/icons/')

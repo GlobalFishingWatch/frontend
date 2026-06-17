@@ -196,11 +196,12 @@ function SidebarHeader() {
                 className={styles.searchOption}
               />
             )}
-            {isClientHydrated && workspaceHistoryNavigation?.length ? (
-              <NavigationHistoryButton />
-            ) : (
-              <NavigationWorkspaceButton />
-            )}
+            {isClientHydrated &&
+              (workspaceHistoryNavigation?.length ? (
+                <NavigationHistoryButton />
+              ) : (
+                <NavigationWorkspaceButton />
+              ))}
           </Fragment>
         )}
       </div>

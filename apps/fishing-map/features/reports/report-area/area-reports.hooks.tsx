@@ -185,6 +185,9 @@ export function useReportAreaBounds() {
   const { loaded: portLoaded, bbox: portBbox } = usePortsReportAreaFootprintBounds()
   const reportArea = useSelector(selectReportArea)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const { areaId } = useSelector(selectReportAreaIds)
+  const reportId = useSelector(selectReportId)
+  const currentReport = useSelector(selectCurrentReport)
   return useMemo(() => {
     if (isVesselGroupReportLocation) {
       return {
@@ -198,6 +201,18 @@ export function useReportAreaBounds() {
         bbox: portBbox,
       }
     }
+    const isResolvingReportById = Boolean(reportId) && !currentReport
+    const isResolvingArea =
+      Boolean(areaId) &&
+      areaId !== ENTIRE_WORLD_REPORT_AREA_ID &&
+      reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+    if (isResolvingReportById || isResolvingArea) {
+      return {
+        id: reportArea?.id,
+        loaded: false,
+        bbox: null,
+      }
+    }
     return {
       id: reportArea?.id,
       loaded:
@@ -207,12 +222,15 @@ export function useReportAreaBounds() {
       bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
     }
   }, [
+    areaId,
+    currentReport,
     isPortReportLocation,
     isVesselGroupReportLocation,
     portBbox,
     portLoaded,
     reportArea,
     reportAreaStatus,
+    reportId,
     vesselGroupBbox,
     vesselGroupLoaded,
   ])

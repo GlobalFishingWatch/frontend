@@ -23,6 +23,7 @@ import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -33,6 +34,7 @@ const InfoContainer = () => {
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const { openSidePanel } = useSidePanel()
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
 
   const dataviews = useSelector(selectDataviewInstancesResolved)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -40,6 +42,9 @@ const InfoContainer = () => {
     () => dataviews.find((d) => d.id === sidePanelId),
     [dataviews, sidePanelId]
   )
+  const loaded =
+    workspaceStatus === AsyncReducerStatus.Finished || workspaceStatus === AsyncReducerStatus.Error
+  const loading = datasetsStatus === AsyncReducerStatus.Loading
 
   const isHeatmapVector = dataview ? isHeatmapVectorsDataview(dataview) : false
 
@@ -81,9 +86,9 @@ const InfoContainer = () => {
     return match ?? options[0]
   }, [options, selectedId])
 
-  const loading = datasetsStatus === AsyncReducerStatus.Loading
-
-  if (!dataview) return <EmptyContent />
+  if (!dataview) {
+    return loaded && !loading ? <EmptyContent /> : <Spinner size="small" />
+  }
 
   const isSingleTab = options.length === 1
 
@@ -130,11 +135,7 @@ const InfoContainer = () => {
           </div>
         )}
         <div className={cx(styles.content)}>
-          {loading ? (
-            <Spinner size="small" />
-          ) : (
-            <ContentMarkdown>{dataset?.description}</ContentMarkdown>
-          )}
+          <ContentMarkdown>{dataset?.description}</ContentMarkdown>
         </div>
       </div>
     </div>
