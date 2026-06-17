@@ -37,12 +37,18 @@ interface LoginParams {
   refreshToken?: string | null
 }
 export type ApiVersion = '' | 'v3'
-export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
+export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body' | 'headers'>> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   cache?: RequestCache
   responseType?: ResourceResponseType
   requestType?: ResourceRequestType
+  // Pass a function when a header value must be re-read on every attempt (e.g. a
+  // rotating refresh-token), so the auto-retry never replays a stale value.
+  headers?: HeadersInit | (() => HeadersInit)
+  // Skip the 401/403 → refresh → retry machinery (e.g. logout, where a 401 just
+  // means the session is already gone and refreshing would replay a stale token).
+  skipAuthRefresh?: boolean
   body?: T
   local?: boolean
 }
@@ -319,6 +325,7 @@ export class GFW_API_CLASS {
       cache,
       signal,
       local = false,
+      skipAuthRefresh = false,
     } = options
     try {
       if (this.logging && waitLogin) {
@@ -338,7 +345,7 @@ export class GFW_API_CLASS {
           console.log(`GFWAPI: Fetching URL: ${url}`)
         }
         const finalHeaders = {
-          ...headers,
+          ...(typeof headers === 'function' ? headers() : headers),
           ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
           ...(local && {
             'x-gateway-url': API_GATEWAY,
@@ -396,7 +403,7 @@ export class GFW_API_CLASS {
         // 401 + refreshError = true => refresh token failed
         if (refreshRetries <= this.maxRefreshRetries) {
           const authError = isAuthError(e)
-          if (authError) {
+          if (authError && !skipAuthRefresh) {
             if (this.debug) {
               console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
             }
@@ -418,7 +425,7 @@ export class GFW_API_CLASS {
               throw parseAPIError(e)
             }
           }
-          if (authError || e.status >= 500) {
+          if ((authError && !skipAuthRefresh) || e.status >= 500) {
             return this._internalFetch<T, Body>({
               url,
               options,
@@ -584,13 +591,13 @@ export class GFW_API_CLASS {
       await this._internalFetch<void>({
         url: this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/logout`),
         options: {
-          headers: {
-            'refresh-token': this.refreshToken,
-          },
+          // Re-read the refresh token per attempt and don't refresh on a 401:
+          // a logout 401 means the session is already gone, so refreshing would
+          // only replay a now-stale token against the server.
+          headers: () => ({ 'refresh-token': this.refreshToken }),
+          skipAuthRefresh: true,
         },
       })
-      this.token = ''
-      this.refreshToken = ''
       if (this.debug) {
         console.log(`GFWAPI: Logout invalid session api OK`)
       }
@@ -600,6 +607,11 @@ export class GFW_API_CLASS {
         console.warn(`GFWAPI: Logout invalid session fail`)
       }
       throw new Error('Error on the logout proccess', { cause: e })
+    } finally {
+      // Logout intent is to drop the local session — always clear, even if the
+      // server call failed.
+      this.token = ''
+      this.refreshToken = ''
     }
   }
 }

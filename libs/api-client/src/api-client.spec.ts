@@ -240,6 +240,40 @@ describe('api-client', () => {
         )
       })
 
+      it('should re-read function headers on each attempt (no stale capture across retry)', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-A')
+
+        fetchMock
+          // initial request → 401, triggers refresh
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ message: 'Unauthorized' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+          // /tokens/reload → 200, rotates refresh-A → refresh-B
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ token: 'new-token', refreshToken: 'refresh-B' }), {
+              status: 200,
+            })
+          )
+          // retried request → 200
+          .mockResolvedValueOnce(new Response(JSON.stringify({ ok: true }), { status: 200 }))
+
+        await client.fetch('/protected', {
+          headers: () => ({
+            'x-refresh': storage.getItem('GFW_API_USER_REFRESH_TOKEN'),
+          }),
+        })
+
+        // First attempt sends the original token, the retry re-reads the rotated one.
+        expect(fetchMock.mock.calls[0][1].headers['x-refresh']).toBe('refresh-A')
+        expect(fetchMock.mock.calls[2][1].headers['x-refresh']).toBe('refresh-B')
+      })
+
       it('should pass body and method for POST', async () => {
         const client = createApiClient()
         fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }))
@@ -1090,6 +1124,45 @@ describe('api-client', () => {
         fetchMock.mockRejectedValue(new Error('Network error'))
 
         await expect(client.logout()).rejects.toThrow('Error on the logout proccess')
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
+        expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBeNull()
+      })
+
+      it('should not refresh or retry on a 401 (single request) and clear tokens', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh')
+
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ message: 'Unauthorized' }), {
+            status: 401,
+            statusText: 'Unauthorized',
+          })
+        )
+
+        await expect(client.logout()).rejects.toThrow('Error on the logout proccess')
+        // skipAuthRefresh: no /tokens/reload call, no retry — exactly one request.
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
+        expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBeNull()
+      })
+
+      it('should send the current refresh token (re-read), not a stale one', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh-A')
+
+        fetchMock.mockResolvedValue(new Response(null, { status: 200 }))
+
+        await client.logout()
+
+        expect(fetchMock).toHaveBeenCalledWith(
+          expect.stringContaining('logout'),
+          expect.objectContaining({
+            headers: expect.objectContaining({ 'refresh-token': 'refresh-A' }),
+          })
+        )
       })
 
       it('should log when debug is true', async () => {
