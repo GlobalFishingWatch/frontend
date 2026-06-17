@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Slider, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { area as turfArea } from '@turf/turf'
@@ -10,10 +9,10 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Choice,
-  getSliderTrackBackground,
   Icon,
   IconButton,
   Popover,
+  Slider,
 } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -46,15 +45,9 @@ export default function ReportHotspotControls() {
   const reportArea = useSelector(selectReportArea)
   const activitySubCategory = useSelector(selectReportActivitySubCategory)
   const timeRange = useSelector(selectTimeRange)
-  const rangeRef = useRef<HTMLDivElement>(null)
   const [panelOpen, setPanelOpen] = useState(false)
-  const [values, setValues] = useState([area])
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
-
-  useEffect(() => {
-    if (panelOpen) rangeRef.current?.querySelector<HTMLInputElement>('input')?.focus()
-  }, [panelOpen])
 
   const unitOptions = useMemo<ChoiceOption<string>[]>(
     () => [
@@ -84,19 +77,18 @@ export default function ReportHotspotControls() {
   }, [reportArea?.geometry, unit])
 
   const unitLabel = unit === NAUTICAL_MILES ? 'nm²' : 'km²'
-  const displayValues = [Math.min(max, Math.max(min, values[0]))]
 
   const datasetName = useMemo(
     () =>
       t((t) => t.analysis.hotspot.datasetName, {
-        areaSize: formatArea(Math.round(values[0])),
+        areaSize: formatArea(Math.round(area)),
         unit: unitLabel,
         activitySubCategory: getReportSubCategoryLabel(activitySubCategory),
         areaName: reportArea?.name || '',
         start: formatI18nDate(timeRange?.start),
         end: formatI18nDate(timeRange?.end),
       }),
-    [activitySubCategory, reportArea?.name, t, timeRange?.end, timeRange?.start, unitLabel, values]
+    [activitySubCategory, area, reportArea?.name, t, timeRange?.end, timeRange?.start, unitLabel]
   )
 
   const handleSave = useCallback(async () => {
@@ -164,37 +156,22 @@ export default function ReportHotspotControls() {
             onSelect={handleUnitChange}
             options={unitOptions}
           />
-          <div ref={rangeRef} style={{ height: '36px', display: 'flex', width: '100%' }}>
-            <Slider
-              aria-label={t((t) => t.common.area, { count: 1 })}
-              value={displayValues}
-              step={step}
-              minValue={min}
-              maxValue={max}
-              onChange={(vals) => setValues(Array.isArray(vals) ? vals : [vals])}
-              onChangeEnd={(vals) => setArea(Array.isArray(vals) ? vals[0] : vals)}
-              style={{ width: '100%', alignSelf: 'center' }}
-            >
-              <SliderTrack
-                style={{
-                  position: 'relative',
-                  height: '2px',
-                  width: '100%',
-                  borderRadius: '2px',
-                  background: getSliderTrackBackground({
-                    values: displayValues,
-                    colors: [deckToHexColor(HOTSPOT_COLOR), 'var(--color-terthiary-blue)'],
-                    min,
-                    max,
-                  }),
-                }}
-              >
-                <SliderThumb index={0} className={styles.thumb}>
-                  {formatArea(displayValues[0])}
-                </SliderThumb>
-              </SliderTrack>
-            </Slider>
-          </div>
+          <Slider
+            key={unit}
+            aria-label={t((t) => t.common.area, { count: 1 })}
+            initialValue={area}
+            config={{ steps: [min, max], min, max, step }}
+            colors={[
+              deckToHexColor(HOTSPOT_COLOR),
+              'var(--color-terthiary-blue)',
+              'var(--color-terthiary-blue)',
+            ]}
+            formatValue={formatArea}
+            thumbsSize="small"
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+            onChange={setArea}
+          />
         </div>
       }
     >

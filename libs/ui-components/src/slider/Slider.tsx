@@ -15,13 +15,18 @@ type SliderConfig = {
   max: number
 }
 interface SliderProps {
-  label: string
+  label?: string
   operationLabel?: string
   thumbsSize?: SliderThumbsSize
   initialValue: number
   config: SliderConfig
   onChange: (value: number) => void
   className?: string
+  colors?: [string, string, string]
+  activeColor?: string
+  formatValue?: (value: number) => string
+  autoFocus?: boolean
+  'aria-label'?: string
 }
 
 const MIN = 0
@@ -49,6 +54,10 @@ export function Slider(props: SliderProps) {
     onChange,
     className,
     thumbsSize = 'default',
+    colors = [borderColor, activeColor, activeColor],
+    formatValue = formatSliderNumber,
+    autoFocus,
+    'aria-label': ariaLabel,
   } = props
   const { min = MIN, max = MAX, steps, step = STEP } = config as SliderConfig
   const scale = useMemo(() => {
@@ -84,18 +93,18 @@ export function Slider(props: SliderProps) {
         min: rangeMin,
         max: rangeMax,
         values,
-        colors: [borderColor, activeColor, borderColor],
+        colors,
       }),
-    [values]
+    [values, rangeMin, rangeMax, colors]
   )
 
   return (
     <div className={className}>
-      <label>{label}</label>
+      {label && <label>{label}</label>}
       <div className={styles.container}>
         <AriaSlider
           className={styles.slider}
-          aria-label={label}
+          aria-label={label || ariaLabel}
           value={values}
           minValue={rangeMin}
           maxValue={rangeMax}
@@ -110,6 +119,8 @@ export function Slider(props: SliderProps) {
               return (
                 <SliderThumb
                   index={0}
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus={autoFocus}
                   className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                 >
                   {thumbsSize !== 'mini' && (
@@ -117,7 +128,7 @@ export function Slider(props: SliderProps) {
                       className={styles.sliderThumbCounter}
                       style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
                     >
-                      {`${operationLabel}${formatSliderNumber(scale(value))}`}
+                      {`${operationLabel}${formatValue(scale(value))}`}
                     </span>
                   )}
                 </SliderThumb>

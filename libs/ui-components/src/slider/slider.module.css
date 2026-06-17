@@ -30,6 +30,18 @@
   height: 2px;
   width: 100%;
   align-self: center;
+  cursor: pointer;
+}
+
+/* Transparent hit area so the thin 2px track is easy to click/drag */
+.sliderTrack::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 20px;
+  transform: translateY(-50%);
 }
 
 .sliderThumb {
