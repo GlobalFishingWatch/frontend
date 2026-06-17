@@ -1,4 +1,8 @@
-import { CONTENT_PANEL_WIDTH_COOKIE_KEY, SIDEBAR_WIDTH_COOKIE_KEY } from 'features/app/app.config'
+import {
+  CONTENT_PANEL_WIDTH_COOKIE_KEY,
+  SCREEN_WIDTH_COOKIE_KEY,
+  SIDEBAR_WIDTH_COOKIE_KEY,
+} from 'features/app/app.config'
 
 const MIN_ASIDE_PCT = 33
 const MAX_ASIDE_PCT = 66
@@ -27,4 +31,10 @@ export function detectContentPanelWidthFromRequest(request: Request): number | n
   if (!cookieHeader) return null
   const value = readCookieNumber(cookieHeader, CONTENT_PANEL_WIDTH_COOKIE_KEY)
   return value !== null ? clampContentPanelWidth(value) : null
+}
+
+export function detectScreenWidthFromRequest(request: Request): number | null {
+  const cookieHeader = request.headers.get('cookie')
+  if (!cookieHeader) return null
+  return readCookieNumber(cookieHeader, SCREEN_WIDTH_COOKIE_KEY)
 }

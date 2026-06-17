@@ -7,6 +7,8 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
+import type { UserData } from '@globalfishingwatch/api-types'
+
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
@@ -39,12 +41,21 @@ async function loadI18nState(): Promise<I18nServerState> {
 async function loadPanelWidths(): Promise<{
   asideWidthPct: number | null
   contentPanelWidth: number | null
+  screenWidth: number | null
 }> {
   const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
   if (!import.meta.env.SSR) {
-    return { asideWidthPct: null, contentPanelWidth: null }
+    return { asideWidthPct: null, contentPanelWidth: null, screenWidth: null }
   }
   return getSidebarWidthState()
+}
+
+async function loadUser(): Promise<{ user: UserData | null }> {
+  if (!import.meta.env.SSR) {
+    return { user: null }
+  }
+  const { getUserState } = await import('features/user/getUserState')
+  return getUserState()
 }
 
 export const Route = createRootRoute({
@@ -59,14 +70,21 @@ export const Route = createRootRoute({
     </RootDocument>
   ),
   loader: async () => {
-    const [i18nState, panelWidths] = await Promise.all([
+    const [i18nState, panelWidths, userState] = await Promise.all([
       loadI18nState(),
-      loadPanelWidths().catch(() => ({ asideWidthPct: null, contentPanelWidth: null })),
+      loadPanelWidths().catch(() => ({
+        asideWidthPct: null,
+        contentPanelWidth: null,
+        screenWidth: null,
+      })),
+      loadUser().catch(() => ({ user: null })),
     ])
     return {
       i18nState,
       asideWidthPct: panelWidths.asideWidthPct,
       contentPanelWidth: panelWidths.contentPanelWidth,
+      screenWidth: panelWidths.screenWidth,
+      user: userState.user,
     }
   },
   onError: (err) => {

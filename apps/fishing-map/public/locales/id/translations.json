@@ -771,6 +771,7 @@
     "filterValues": "Nilai filter",
     "flagState": "Flag",
     "fleet_other": "Armada",
+    "gapDuration": "Gap duration",
     "gearType_other": "Jenis peralatan",
     "genus": "Genus",
     "geometryError": "Sebagian poligon memiliki perpotongan sendiri",

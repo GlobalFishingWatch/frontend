@@ -150,7 +150,7 @@ nx e2e fishing-map-e2e --repeatEach=3
 ## Configuration
 
 - **Playwright Config**: `playwright.config.mts`
-- **Test Directory**: `src/e2e/`
+- **Test Directory**: `src/`
 - **Test Pattern**: `*.e2e.spec.{ts,tsx}`
 - **Base URL**: `http://localhost:3003` (configurable via `PLAYWRIGHT_BASE_URL` env var)
 

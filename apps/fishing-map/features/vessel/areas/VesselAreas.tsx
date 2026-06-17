@@ -75,6 +75,7 @@ const AreaTick = ({ y, payload }: any) => {
   return (
     <foreignObject x={0} y={y - 12} width="200" height="40" className={styles.areaContainer}>
       <Tooltip content={`${t((t) => t.vessel.clickToFitMapToEvents)} ${areaLabel}`}>
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <span
           onMouseOver={setHighlightEvents}
           onMouseOut={resetHighlightedEvents}
@@ -160,6 +161,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         action: `click_${option.id}_areas_tab`,
       })
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateAreaLayersVisibility]
   )
 
@@ -237,7 +239,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                       <LabelList
                         position="right"
                         valueAccessor={(entry: any) => {
-                          const { total, region, ...rest } = entry?.payload || {}
+                          const { total, ...rest } = entry?.payload || {}
                           const eventsWithValues = Object.keys(rest)
                           if (eventType === eventsWithValues[eventsWithValues.length - 1]) {
                             return formatI18nNumber(total)

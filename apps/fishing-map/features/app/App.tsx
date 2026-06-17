@@ -7,7 +7,11 @@ import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { CONTENT_PANEL_WIDTH_COOKIE_KEY, SIDEBAR_WIDTH_COOKIE_KEY } from 'features/app/app.config'
+import {
+  CONTENT_PANEL_WIDTH_COOKIE_KEY,
+  SCREEN_WIDTH_COOKIE_KEY,
+  SIDEBAR_WIDTH_COOKIE_KEY,
+} from 'features/app/app.config'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content-panel/ContentPanel'
@@ -91,6 +95,8 @@ function App() {
   const onSidebarWidthChange = usePersistedCookieNumber(SIDEBAR_WIDTH_COOKIE_KEY)
   const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
   const onContentPanelWidthChange = usePersistedCookieNumber(CONTENT_PANEL_WIDTH_COOKIE_KEY)
+  const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
+  const onScreenWidthChange = usePersistedCookieNumber(SCREEN_WIDTH_COOKIE_KEY)
   const { replaceQueryParams } = useReplaceQueryParams()
 
   useEffect(() => {
@@ -160,6 +166,8 @@ function App() {
               asideWidth={asideWidth}
               initialAsideWidthPct={sidebarWidthPct ?? undefined}
               onAsideWidthChange={onSidebarWidthChange}
+              initialScreenWidth={screenWidth ?? undefined}
+              onScreenWidthChange={onScreenWidthChange}
               resizable={isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}

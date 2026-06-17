@@ -7,7 +7,7 @@ import { trackEvent } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectLoginSource, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectLoginSource } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk, setLoginSource } from 'features/user/user.slice'
 import {
   selectIncludeRelatedIdentities,
