@@ -5,6 +5,7 @@ import type {
   Dataset,
   DatasetsMigration,
   Dataview,
+  DataviewConfigVessel,
   DataviewDatasetConfig,
   DataviewInstance,
   DataviewInstanceOrigin,
@@ -161,13 +162,23 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
-const vesselDataviewInstanceTemplate = (
-  dataviewSlug: Dataview['slug'],
-  datasets: VesselInstanceDatasets,
-  highlightEventStartTime?: number,
-  highlightEventEndTime?: number,
+type VesselDataviewInstanceTemplateParams = {
+  dataviewSlug: Dataview['slug']
+  datasets: VesselInstanceDatasets
+  highlightEventStartTime?: number
+  highlightEventEndTime?: number
   color?: string
-) => {
+  config?: DataviewConfigVessel
+}
+
+const vesselDataviewInstanceTemplate = ({
+  dataviewSlug,
+  datasets,
+  highlightEventStartTime,
+  highlightEventEndTime,
+  color,
+  config,
+}: VesselDataviewInstanceTemplateParams) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
     // panama and peru doesn't show events and needed a workaround to work with this
@@ -185,40 +196,53 @@ const vesselDataviewInstanceTemplate = (
       ...(highlightEventEndTime && {
         highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
       }),
+      ...config,
     },
   }
 }
+
+// Pick the template matching the vessel info dataset (keeps AIS vs VMS separation).
+const getBestVesselTemplateSlug = (
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  datasets: VesselInstanceDatasets
+) =>
+  dataviewTemplates.find((dataview) =>
+    dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+  )?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
 
 export const getVesselDataviewInstance = ({
   vessel,
   datasets,
   highlightEventStartTime,
   highlightEventEndTime,
-  vesselTemplateDataviews,
+  dataviewTemplates,
+  dataviewTemplateId,
   origin,
   color,
+  config,
 }: {
   vessel: { id: string }
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
-  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplateId?: Dataview['slug']
   origin?: DataviewInstanceOrigin
   color?: string
+  config?: DataviewConfigVessel
 }): DataviewInstance => {
   const dataviewTemplate =
-    vesselTemplateDataviews.find((dataview) => {
-      return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-    })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+    dataviewTemplateId || getBestVesselTemplateSlug(dataviewTemplates, datasets)
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
-    ...vesselDataviewInstanceTemplate(
-      dataviewTemplate,
+    ...vesselDataviewInstanceTemplate({
+      dataviewSlug: dataviewTemplate,
       datasets,
       highlightEventStartTime,
       highlightEventEndTime,
-      color
-    ),
+      color,
+      config,
+    }),
     deleted: false,
     ...(origin && { origin }),
   }

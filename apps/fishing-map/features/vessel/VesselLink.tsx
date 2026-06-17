@@ -159,7 +159,7 @@ const VesselLink = ({
           ...getVesselDataviewInstance({
             vessel: { id: vesselId },
             datasets: { info: vesselDatasetId },
-            vesselTemplateDataviews,
+            dataviewTemplates: vesselTemplateDataviews,
           }),
           config: {
             visible: true,

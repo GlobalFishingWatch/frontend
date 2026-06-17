@@ -62,7 +62,7 @@ function SearchActions() {
           ...(eventsDatasetsId.length > 0 && { events: eventsDatasetsId }),
           relatedVesselIds: getRelatedIdentityVesselIds(vessel),
         },
-        vesselTemplateDataviews,
+        dataviewTemplates: vesselTemplateDataviews,
       })
       return vesselDataviewInstance
     })

@@ -6,6 +6,8 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   APIPagination,
   Dataset,
+  Dataview,
+  DataviewConfigVessel,
   DataviewInstanceOrigin,
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
@@ -49,6 +51,8 @@ export type UsePinVesselParams = {
   vesselToResolve?: VesselToResolve
   vesselToSearch?: VesselToSearch
   origin?: DataviewInstanceOrigin
+  config?: DataviewConfigVessel
+  dataviewTemplateId?: Dataview['slug']
   onClick?: VesselPinOnClickCb
 }
 
@@ -64,6 +68,8 @@ export function usePinVessel({
   vesselToSearch,
   origin,
   onClick,
+  config,
+  dataviewTemplateId,
 }: UsePinVesselParams): UsePinVesselResult {
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
@@ -154,7 +160,9 @@ export function usePinVessel({
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },
           origin,
-          vesselTemplateDataviews,
+          dataviewTemplates: vesselTemplateDataviews,
+          dataviewTemplateId,
+          config,
         })
 
         if (vesselDataviewInstance) {

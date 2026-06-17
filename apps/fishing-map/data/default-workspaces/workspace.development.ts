@@ -153,7 +153,11 @@ const workspace: Workspace<WorkspaceState> = {
     //   id: GAPS_EVENTS_SOURCE_ID,
     //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
     //   config: {
-    //     visible: false,
+    //     visible: true,
+    //     filters: {
+    //       start_distance_from_shore_trunc: 1,
+    //       duration: ['4', '48'],
+    //     },
     //   },
     // },
     {

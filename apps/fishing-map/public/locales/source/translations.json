@@ -771,6 +771,7 @@
     "filterValues": "Filter values",
     "flagState": "Flag",
     "fleet_other": "Fleets",
+    "gapDuration": "Gap duration",
     "gearType_other": "Gear types",
     "genus": "Genus",
     "geometryError": "Some polygons have self-intersections",

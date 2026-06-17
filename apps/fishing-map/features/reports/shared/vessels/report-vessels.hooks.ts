@@ -102,7 +102,7 @@ export default function usePinReportVessels() {
               ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
               relatedVesselIds: getRelatedIdentityVesselIds(vessel),
             },
-            vesselTemplateDataviews,
+            dataviewTemplates: vesselTemplateDataviews,
           })
           if (!vesselDataviewInstance?.config) {
             return []
