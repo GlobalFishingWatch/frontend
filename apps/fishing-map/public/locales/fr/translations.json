@@ -771,6 +771,7 @@
     "filterValues": "Filtrer les valeurs",
     "flagState": "Flag",
     "fleet_other": "Flottes",
+    "gapDuration": "Gap duration",
     "gearType_other": "Types d’engin",
     "genus": "Genre",
     "geometryError": "Certains polygones ont des auto-intersections",
