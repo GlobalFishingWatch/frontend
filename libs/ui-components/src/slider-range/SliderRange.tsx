@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getTrackBackground, Range } from 'react-range'
+import { Slider as AriaSlider, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
 import cx from 'classnames'
 
 import { IconButton } from '../icon-button'
 import { InputText } from '../input-text'
 import type { SliderThumbsSize } from '../slider'
-import { formatSliderNumber } from '../slider'
+import { formatSliderNumber, getSliderTrackBackground } from '../slider/slider.utils'
 
 import styles from '../slider/slider.module.css'
 
@@ -128,7 +128,7 @@ export function SliderRange(props: SliderRangeProps) {
 
   const background = useMemo(
     () =>
-      getTrackBackground({
+      getSliderTrackBackground({
         min: min,
         max: max,
         values: internalValues,
@@ -162,51 +162,41 @@ export function SliderRange(props: SliderRangeProps) {
             </g>
           </svg>
         )}
-        <Range
-          values={internalValues}
+        <AriaSlider
+          className={styles.slider}
+          aria-label={label}
+          value={internalValues}
+          minValue={min}
+          maxValue={max}
           step={inputStep}
-          min={min}
-          max={max}
           onChange={handleChange}
-          onFinalChange={handleFinalChange}
-          renderTrack={({ props, children }) => (
-            <div
-              role="button"
-              tabIndex={0}
-              onMouseDown={props.onMouseDown}
-              onTouchStart={props.onTouchStart}
-              className={styles.slider}
-              style={props.style}
-            >
-              <div ref={props.ref} className={styles.sliderTrack} style={{ background }}>
-                {children}
-              </div>
-            </div>
-          )}
-          renderThumb={({ index, props }) => {
-            const value = internalValues[index]
-            const isDefaultSelection = index === 0 ? value === min : value === max
-            return (
-              <div
-                {...props}
-                key={props.key}
-                className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
-                style={{
-                  ...props.style,
-                }}
-              >
-                {thumbsSize !== 'mini' && (
-                  <span
-                    className={styles.sliderThumbCounter}
-                    style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+          onChangeEnd={handleFinalChange}
+        >
+          <SliderTrack className={styles.sliderTrack} style={{ background }}>
+            {({ state }) =>
+              state.values.map((_, index) => {
+                const value = state.getThumbValue(index)
+                const isDefaultSelection = index === 0 ? value === min : value === max
+                return (
+                  <SliderThumb
+                    key={index}
+                    index={index}
+                    className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
                   >
-                    {formatSliderNumber(value)}
-                  </span>
-                )}
-              </div>
-            )
-          }}
-        />
+                    {thumbsSize !== 'mini' && (
+                      <span
+                        className={styles.sliderThumbCounter}
+                        style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+                      >
+                        {formatSliderNumber(value)}
+                      </span>
+                    )}
+                  </SliderThumb>
+                )
+              })
+            }
+          </SliderTrack>
+        </AriaSlider>
       </div>
       {showInputs && (
         <div className={styles.rangeContainerInputs}>

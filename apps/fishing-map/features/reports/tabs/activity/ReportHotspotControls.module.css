@@ -28,6 +28,7 @@
 }
 
 .thumb {
+  top: 50%;
   height: var(--size-SM);
   width: var(--size-SM);
   border-radius: 50%;
@@ -37,6 +38,12 @@
   align-items: center;
   font: var(--font-S);
   box-shadow: var(--box-shadow-1);
+  outline: none;
+  cursor: pointer;
+}
+
+.thumb[data-focus-visible] {
+  outline: 2px solid var(--color-primary-blue);
 }
 
 .headerButtons {

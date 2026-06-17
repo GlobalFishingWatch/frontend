@@ -26,19 +26,26 @@
 }
 
 .sliderTrack {
+  position: relative;
   height: 2px;
   width: 100%;
   align-self: center;
 }
 
 .sliderThumb {
+  top: 50%;
   border-radius: 50%;
   background-color: var(--color-off-white-0);
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
+  cursor: pointer;
   box-shadow: 0 2px 7px 0 var(--color-border-thick);
+}
+
+.sliderThumb[data-focus-visible] {
+  outline: 2px solid var(--color-primary-blue);
 }
 
 .sliderThumbCounter {

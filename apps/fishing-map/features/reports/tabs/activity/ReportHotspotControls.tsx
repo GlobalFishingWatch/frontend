@@ -1,13 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Slider, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
 import { useTranslation } from 'react-i18next'
-import { getTrackBackground, Range } from 'react-range'
 import { useSelector } from 'react-redux'
 import { area as turfArea } from '@turf/turf'
 import { useAtomValue } from 'jotai'
 
 import { deckToHexColor } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Choice, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Choice,
+  getSliderTrackBackground,
+  Icon,
+  IconButton,
+  Popover,
+} from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -46,7 +53,7 @@ export default function ReportHotspotControls() {
   const [saveError, setSaveError] = useState('')
 
   useEffect(() => {
-    if (panelOpen) rangeRef.current?.querySelector<HTMLDivElement>('[role="slider"]')?.focus()
+    if (panelOpen) rangeRef.current?.querySelector<HTMLInputElement>('input')?.focus()
   }, [panelOpen])
 
   const unitOptions = useMemo<ChoiceOption<string>[]>(
@@ -157,53 +164,37 @@ export default function ReportHotspotControls() {
             onSelect={handleUnitChange}
             options={unitOptions}
           />
-          <Range
-            values={displayValues}
-            step={step}
-            min={min}
-            max={max}
-            onChange={setValues}
-            onFinalChange={(vals) => setArea(vals[0])}
-            renderTrack={({ props, children }) => (
-              <div
-                ref={rangeRef}
-                style={{ ...props.style, height: '36px', display: 'flex', width: '100%' }}
+          <div ref={rangeRef} style={{ height: '36px', display: 'flex', width: '100%' }}>
+            <Slider
+              aria-label={t((t) => t.common.area, { count: 1 })}
+              value={displayValues}
+              step={step}
+              minValue={min}
+              maxValue={max}
+              onChange={(vals) => setValues(Array.isArray(vals) ? vals : [vals])}
+              onChangeEnd={(vals) => setArea(Array.isArray(vals) ? vals[0] : vals)}
+              style={{ width: '100%', alignSelf: 'center' }}
+            >
+              <SliderTrack
+                style={{
+                  position: 'relative',
+                  height: '2px',
+                  width: '100%',
+                  borderRadius: '2px',
+                  background: getSliderTrackBackground({
+                    values: displayValues,
+                    colors: [deckToHexColor(HOTSPOT_COLOR), 'var(--color-terthiary-blue)'],
+                    min,
+                    max,
+                  }),
+                }}
               >
-                <div
-                  ref={props.ref}
-                  style={{
-                    height: '2px',
-                    width: '100%',
-                    borderRadius: '2px',
-                    background: getTrackBackground({
-                      values: displayValues,
-                      colors: [deckToHexColor(HOTSPOT_COLOR), 'var(--color-terthiary-blue)'],
-                      min,
-                      max,
-                    }),
-                    alignSelf: 'center',
-                  }}
-                >
-                  {children}
-                </div>
-              </div>
-            )}
-            renderThumb={({ props }) => {
-              const { key, ...rest } = props
-              return (
-                <div
-                  key={key}
-                  {...rest}
-                  className={styles.thumb}
-                  style={{
-                    ...props.style,
-                  }}
-                >
+                <SliderThumb index={0} className={styles.thumb}>
                   {formatArea(displayValues[0])}
-                </div>
-              )
-            }}
-          />
+                </SliderThumb>
+              </SliderTrack>
+            </Slider>
+          </div>
         </div>
       }
     >

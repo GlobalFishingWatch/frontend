@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { getTrackBackground, Range } from 'react-range'
+import { useCallback, useMemo, useState } from 'react'
+import { Slider as AriaSlider, SliderThumb, SliderTrack } from 'react-aria-components/Slider'
 import cx from 'classnames'
-import { format } from 'd3-format'
 import { scaleLinear } from 'd3-scale'
+
+import { formatSliderNumber, getSliderTrackBackground } from './slider.utils'
 
 import styles from './slider.module.css'
 
@@ -39,13 +40,6 @@ const borderColor =
     ? getComputedStyle(document.body).getPropertyValue('--color-border') || fallbackBorderColor
     : fallbackBorderColor
 
-export const formatSliderNumber = (num: number): string => {
-  const absNum = Math.abs(num)
-  if (absNum >= 1000) return format('.2s')(num)
-  if (absNum > 9) return format('.0f')(num)
-  return Number.isInteger(num) ? format('.0f')(num) : format('.1f')(num)
-}
-
 export function Slider(props: SliderProps) {
   const {
     initialValue,
@@ -81,11 +75,14 @@ export function Slider(props: SliderProps) {
     [onChange, scale]
   )
 
+  const rangeMin = Math.min(min, 0)
+  const rangeMax = Math.max(min, max)
+
   const background = useMemo(
     () =>
-      getTrackBackground({
-        min: MIN,
-        max: MAX,
+      getSliderTrackBackground({
+        min: rangeMin,
+        max: rangeMax,
         values,
         colors: [borderColor, activeColor, borderColor],
       }),
@@ -96,53 +93,38 @@ export function Slider(props: SliderProps) {
     <div className={className}>
       <label>{label}</label>
       <div className={styles.container}>
-        <Range
-          values={values}
+        <AriaSlider
+          className={styles.slider}
+          aria-label={label}
+          value={values}
+          minValue={rangeMin}
+          maxValue={rangeMax}
           step={step}
-          min={Math.min(min, 0)}
-          max={Math.max(min, max)}
-          onChange={handleChange}
-          onFinalChange={handleFinalChange}
-          renderTrack={({ props, children }) => (
-            <div
-              role="button"
-              tabIndex={0}
-              onMouseDown={props.onMouseDown}
-              onTouchStart={props.onTouchStart}
-              className={styles.slider}
-              style={props.style}
-            >
-              <div ref={props.ref} className={styles.sliderTrack} style={{ background }}>
-                {children}
-              </div>
-            </div>
-          )}
-          renderThumb={({ index, props }) => {
-            const { key, ...rest } = props
-            const value = values[index]
-            const scaledValue = scale(value)
-            const isDefaultSelection = index === 0 ? value === min : value === max
-            return (
-              <div
-                key={key}
-                {...rest}
-                className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
-                style={{
-                  ...props.style,
-                }}
-              >
-                {thumbsSize !== 'mini' && (
-                  <span
-                    className={styles.sliderThumbCounter}
-                    style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
-                  >
-                    {`${operationLabel}${formatSliderNumber(scaledValue)}`}
-                  </span>
-                )}
-              </div>
-            )
-          }}
-        />
+          onChange={(value) => handleChange(Array.isArray(value) ? value : [value])}
+          onChangeEnd={(value) => handleFinalChange(Array.isArray(value) ? value : [value])}
+        >
+          <SliderTrack className={styles.sliderTrack} style={{ background }}>
+            {({ state }) => {
+              const value = state.getThumbValue(0)
+              const isDefaultSelection = value === min
+              return (
+                <SliderThumb
+                  index={0}
+                  className={cx(styles.sliderThumb, styles[`${thumbsSize}Size`])}
+                >
+                  {thumbsSize !== 'mini' && (
+                    <span
+                      className={styles.sliderThumbCounter}
+                      style={{ opacity: isDefaultSelection ? 0.7 : 1 }}
+                    >
+                      {`${operationLabel}${formatSliderNumber(scale(value))}`}
+                    </span>
+                  )}
+                </SliderThumb>
+              )
+            }}
+          </SliderTrack>
+        </AriaSlider>
       </div>
     </div>
   )
