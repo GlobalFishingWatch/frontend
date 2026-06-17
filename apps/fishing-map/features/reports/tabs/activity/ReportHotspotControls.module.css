@@ -27,18 +27,6 @@
   text-transform: uppercase;
 }
 
-.thumb {
-  height: var(--size-SM);
-  width: var(--size-SM);
-  border-radius: 50%;
-  background-color: var(--color-white);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: var(--font-S);
-  box-shadow: var(--box-shadow-1);
-}
-
 .headerButtons {
   display: flex;
   align-items: center;

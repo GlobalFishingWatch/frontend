@@ -43,7 +43,6 @@
     "react-aria-components": "1.x",
     "react-dom": "19.x",
     "react-modal": "3.x",
-    "react-range": "1.x",
     "topojson-client": "3.x",
     "tslib": "2.x"
   }
