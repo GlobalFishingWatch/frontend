@@ -33,6 +33,7 @@ export function VesselPin({
   origin,
   onClick,
   config,
+  dataviewTemplateId,
   style,
 }: VesselPinProps) {
   const { t } = useTranslation()
@@ -43,6 +44,7 @@ export function VesselPin({
     origin,
     onClick,
     config,
+    dataviewTemplateId,
   })
 
   const vesselName = useMemo(

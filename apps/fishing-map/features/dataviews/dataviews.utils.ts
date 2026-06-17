@@ -201,12 +201,22 @@ const vesselDataviewInstanceTemplate = ({
   }
 }
 
+// Pick the template matching the vessel info dataset (keeps AIS vs VMS separation).
+const getBestVesselTemplateSlug = (
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  datasets: VesselInstanceDatasets
+) =>
+  dataviewTemplates.find((dataview) =>
+    dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
+  )?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+
 export const getVesselDataviewInstance = ({
   vessel,
   datasets,
   highlightEventStartTime,
   highlightEventEndTime,
-  vesselTemplateDataviews,
+  dataviewTemplates,
+  dataviewTemplateId,
   origin,
   color,
   config,
@@ -215,15 +225,14 @@ export const getVesselDataviewInstance = ({
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
-  vesselTemplateDataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[]
+  dataviewTemplateId?: Dataview['slug']
   origin?: DataviewInstanceOrigin
   color?: string
   config?: DataviewConfigVessel
 }): DataviewInstance => {
   const dataviewTemplate =
-    vesselTemplateDataviews.find((dataview) => {
-      return dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-    })?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+    dataviewTemplateId || getBestVesselTemplateSlug(dataviewTemplates, datasets)
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate({
