@@ -41,10 +41,11 @@ async function loadI18nState(): Promise<I18nServerState> {
 async function loadPanelWidths(): Promise<{
   asideWidthPct: number | null
   contentPanelWidth: number | null
+  screenWidth: number | null
 }> {
   const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
   if (!import.meta.env.SSR) {
-    return { asideWidthPct: null, contentPanelWidth: null }
+    return { asideWidthPct: null, contentPanelWidth: null, screenWidth: null }
   }
   return getSidebarWidthState()
 }
@@ -71,13 +72,18 @@ export const Route = createRootRoute({
   loader: async () => {
     const [i18nState, panelWidths, userState] = await Promise.all([
       loadI18nState(),
-      loadPanelWidths().catch(() => ({ asideWidthPct: null, contentPanelWidth: null })),
+      loadPanelWidths().catch(() => ({
+        asideWidthPct: null,
+        contentPanelWidth: null,
+        screenWidth: null,
+      })),
       loadUser().catch(() => ({ user: null })),
     ])
     return {
       i18nState,
       asideWidthPct: panelWidths.asideWidthPct,
       contentPanelWidth: panelWidths.contentPanelWidth,
+      screenWidth: panelWidths.screenWidth,
       user: userState.user,
     }
   },
