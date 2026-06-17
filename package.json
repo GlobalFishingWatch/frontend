@@ -186,7 +186,6 @@
     "@jscutlery/semver": "6.1.2",
     "@next/bundle-analyzer": "16.2.7",
     "@next/eslint-plugin-next": "16.2.7",
-    "@nx/cypress": "22.7.5",
     "@nx/esbuild": "22.7.5",
     "@nx/eslint": "22.7.5",
     "@nx/eslint-plugin": "22.7.5",

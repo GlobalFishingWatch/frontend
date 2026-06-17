@@ -15,8 +15,8 @@ const TRACK_THINNING_BY_ZOOM_USER = { ...TRACK_THINNING_BY_ZOOM_GUEST, 7: Thinni
 
 export const selectTrackThinningConfig = createSelector(
   [selectIsGuestUser, selectDebugOptions, selectIsTurningTidesWorkspace],
-  (guestUser, { thinning, vesselsMaxTimeGapHours }, isTurningTidesWorkspace) => {
-    if (!thinning || isTurningTidesWorkspace || vesselsMaxTimeGapHours) {
+  (guestUser, { thinning, vesselGapsThresholdFilter }, isTurningTidesWorkspace) => {
+    if (!thinning || isTurningTidesWorkspace || vesselGapsThresholdFilter) {
       return { 0: ThinningLevels.None }
     }
     return guestUser ? TRACK_THINNING_BY_ZOOM_GUEST : TRACK_THINNING_BY_ZOOM_USER

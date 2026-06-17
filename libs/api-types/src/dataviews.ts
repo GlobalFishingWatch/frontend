@@ -47,7 +47,34 @@ export type FourwingsGeolocation = 'country' | 'port' | 'default'
 /** Used to define the max zoom level for each geolocation (all levels must be below 12) */
 export type ClusterMaxZoomLevelConfig = Partial<Record<FourwingsGeolocation, number>>
 
-export type DataviewConfig<Type = DataviewType> = {
+export type DataviewConfigVessel = {
+  /** Vessel datasets */
+  info?: string
+  track?: string
+  events?: string[]
+  relatedVesselIds?: string[]
+
+  /** Vessels to override the globalconfig start and end */
+  startDate?: string
+  endDate?: string
+
+  /** Vessels to override the globalconfig start and end */
+  highlightEventStartTime?: string
+  highlightEventEndTime?: string
+  showVesselIcon?: boolean
+
+  /** Vessels to override the globalconfig start and end */
+  highlightStartTime?: string
+  highlightEndTime?: string
+
+  /** Used to store the vessel name */
+  name?: string
+
+  /** Time in hours to mark two points segment as a gap  */
+  gapSegmentThreshold?: number
+}
+
+export type DataviewConfig<Type = DataviewType> = DataviewConfigVessel & {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
   /** Used in buffers report to store the geometry, normally a FeatureCollection */
@@ -109,9 +136,6 @@ export type DataviewConfig<Type = DataviewType> = {
 
   /** Used to store the property for aggregating user datasets values in report */
   aggregateByProperty?: string
-
-  /** Used to store the vessel name */
-  name?: string
   event?:
     | string
     // Used in VV
@@ -127,25 +151,6 @@ export type DataviewConfig<Type = DataviewType> = {
   showAuthorizationStatus?: boolean
   aggregationOperation?: string
   breaksMultiplier?: number
-
-  /** Vessel datasets */
-  info?: string
-  track?: string
-  events?: string[]
-  relatedVesselIds?: string[]
-
-  /** Vessels to override the globalconfig start and end */
-  startDate?: string
-  endDate?: string
-
-  /** Vessels to override the globalconfig start and end */
-  highlightEventStartTime?: string
-  highlightEventEndTime?: string
-  showVesselIcon?: boolean
-
-  /** Vessels to override the globalconfig start and end */
-  highlightStartTime?: string
-  highlightEndTime?: string
 
   /** Requests fourwings events datasets aggregated  */
   eventsTemporalAggregation?: boolean

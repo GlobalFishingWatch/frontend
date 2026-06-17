@@ -49,7 +49,7 @@ function getNested(obj: Record<string, unknown>, path: string): string | undefin
  * Derives a translation function from the root match's i18nState.
  * Falls back to English when state is missing (SSR edge cases, pre-render).
  */
-export function getTFuntion(matches: RouteMatch[]): TranslateFn {
+export function getTFunction(matches: RouteMatch[]): TranslateFn {
   const rootMatch = matches.find((m) => m.routeId?.startsWith?.('__root__'))
   const state = rootMatch?.loaderData?.i18nState
   if (!state?.initialI18nStore?.[state.initialLanguage]) {

@@ -15,7 +15,7 @@ import { reportRouteError } from 'features/app/sentry'
 import { getLoadedI18nState } from 'features/i18n/i18n'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
-import { getTFuntion } from 'router/router.meta'
+import { getTFunction } from 'router/router.meta'
 
 import appCss from './styles.css?url'
 
@@ -89,7 +89,7 @@ export const Route = createRootRoute({
   gcTime: Number.POSITIVE_INFINITY,
   shouldReload: false,
   head: ({ matches }) => {
-    const t = getTFuntion(matches)
+    const t = getTFunction(matches)
     const title = `GFW | ${t('common.map')}`
     const description = t('workspace.siteDescription.default') || defaultDescription
     return {

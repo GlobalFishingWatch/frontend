@@ -771,6 +771,7 @@
     "filterValues": "Filtrar valores",
     "flagState": "Pabellón",
     "fleet_other": "Flotas",
+    "gapDuration": "Gap duration",
     "gearType_other": "Artes de pesca",
     "genus": "Género",
     "geometryError": "Algunos polígonos tienen intersecciones",

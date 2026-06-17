@@ -46,7 +46,7 @@
       "executor": "@nx/playwright:playwright",
       "options": {
         "config": "apps/fishing-map-e2e/playwright.config.mts",
-        "testFiles": ["src/e2e/screenshots/"],
+        "testFiles": ["src/screenshots/"],
         "project": ["chromium"],
         "workers": 2
       },

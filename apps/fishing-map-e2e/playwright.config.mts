@@ -13,7 +13,7 @@ dotenv.config({ path: resolve(__dirname, '.env') })
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './src/e2e',
+  testDir: './src',
   testMatch: /.*\.e2e\.spec\.(ts|tsx)$/,
 
   /* Run tests in files in parallel */
@@ -28,7 +28,7 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01,
     },
   },
-  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */

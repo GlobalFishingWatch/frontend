@@ -13,6 +13,8 @@ const CUSTOM_TURNING_TIDES_DATASET_PROPERTIES: Record<
   'tt-chile-public': ['matricula'],
   'tt-peru-public': ['nationalId'],
   'tt_ais-public': ['ssvid'],
+  'tt_ais_v_2_1-public': ['ssvid'],
+  'tt_vms_v_2_1-public': ['ssvid'],
 }
 
 const CUSTOM_TURNING_TIDES_SOURCECODE_PROPERTIES: Record<string, VesselIdentityProperty[]> = {

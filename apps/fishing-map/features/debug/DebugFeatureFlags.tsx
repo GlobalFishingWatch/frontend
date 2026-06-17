@@ -8,7 +8,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 
 import {
   DebugOption,
@@ -30,7 +29,6 @@ const DebugFeatureFlags: React.FC = () => {
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
-  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -69,47 +67,11 @@ const DebugFeatureFlags: React.FC = () => {
           active={debugOptions.vesselsAsPositions}
           onClick={() => {
             dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
-            if (debugOptions.vesselsAsPositions) {
-              dispatch(setDebugOption({ option: DebugOption.VesselsMaxTimeGapHours, value: false }))
-            }
           }}
         />
         <label htmlFor="option_vessels_as_positions">Tracks positions</label>
       </div>
       <p>Show vessel position icons on top of the track lines</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_vessels_max_time_gap_hours"
-          active={debugOptions.vesselsMaxTimeGapHours}
-          onClick={() => {
-            dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
-            if (debugOptions.vesselsMaxTimeGapHours) {
-              replaceQueryParams({ vesselsMaxTimeGapHours: undefined })
-            } else {
-              dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
-              replaceQueryParams({ vesselsMaxTimeGapHours: 3 })
-            }
-          }}
-        />
-        <label htmlFor="option_vessels_max_time_gap_hours">Vessels max time gap hours</label>
-        {debugOptions.vesselsMaxTimeGapHours && (
-          <InputText
-            type="number"
-            min={0}
-            max={24}
-            value={vesselsMaxTimeGapHours}
-            className={cx(styles.inputShort, styles.input)}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              // Validate input: must be a valid number between 0 and 24
-              if (!isNaN(value) && value >= 0 && value <= 24) {
-                replaceQueryParams({ vesselsMaxTimeGapHours: value })
-              }
-            }}
-          />
-        )}
-      </div>
-      <p>Split tracks into segments with a maximum time gap in hours</p>
       <div className={styles.header}>
         <Switch
           id="option_hide_vessel_names"
@@ -123,6 +85,17 @@ const DebugFeatureFlags: React.FC = () => {
       <p>
         Replace vessel names with {FAKE_VESSEL_NAME} in the sidebar and remove from map tooltips.
       </p>
+      <div className={styles.header}>
+        <Switch
+          id="option_vessels_max_time_gap_hours"
+          active={debugOptions.vesselGapsThresholdFilter}
+          onClick={() => {
+            dispatch(toggleDebugOption(DebugOption.VesselGapsThresholdFilter))
+          }}
+        />
+        <label htmlFor="option_vessels_max_time_gap_hours">Show vessel gaps threshold filter</label>
+      </div>
+      <p>Show the gaps threshold filter by hours in the vessel layer filters</p>
       <div className={styles.header}>
         <Switch
           id="option_disable_dataset_hash"

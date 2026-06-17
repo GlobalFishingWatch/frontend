@@ -123,7 +123,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
           datasets: vesselDatasets,
           highlightEventStartTime: eventStartDateTime?.toMillis(),
           highlightEventEndTime: eventEndDateTime?.toMillis(),
-          vesselTemplateDataviews,
+          dataviewTemplates: vesselTemplateDataviews,
           color: nextColor?.value,
         })
         if (dataviewInstance) {

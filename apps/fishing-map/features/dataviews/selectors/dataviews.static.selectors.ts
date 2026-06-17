@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { PRESENCE_DATAVIEW_SLUG, TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { PRESENCE_DATAVIEW_SLUG, VESSEL_TEMPLATE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 
 const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  ...VESSEL_TEMPLATE_DATAVIEW_SLUGS,
   ...Object.values(VMS_VESSEL_DATAVIEW_SLUGS),
 ]
 

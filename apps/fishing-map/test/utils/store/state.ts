@@ -10432,7 +10432,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
       mapStats: false,
       thinning: true,
       vesselsAsPositions: false,
-      vesselsMaxTimeGapHours: false,
     },
   },
   downloadActivity: {

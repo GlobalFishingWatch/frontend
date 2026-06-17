@@ -58,7 +58,6 @@ import {
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
-  selectVesselsMaxTimeGapHours,
 } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -110,7 +109,6 @@ export const useGlobalConfigConnect = () => {
   const trackGraphExtent = useTimebarTracksGraphExtent()
   // const hoverFeatures = useMapHoverInteraction()?.features
   const debugOptions = useSelector(selectDebugOptions)
-  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
 
@@ -181,8 +179,6 @@ export const useGlobalConfigConnect = () => {
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
-      ...(debugOptions.vesselsAsPositions &&
-        debugOptions.vesselsMaxTimeGapHours && { vesselsMaxTimeGapHours }),
       visibleEvents,
       zoom: viewState.zoom,
     }
@@ -207,7 +203,6 @@ export const useGlobalConfigConnect = () => {
     highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
-    vesselsMaxTimeGapHours,
     vesselGroupsVisualizationMode,
     highlightedFeatures,
     trackGraphExtent,

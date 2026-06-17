@@ -88,60 +88,42 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         includeCoordinates: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        // maxTimeGapHours: this.props.maxTimeGapHours,
+        gapSegmentThreshold: this.props.gapSegmentThreshold,
       })
       if (segments?.length) {
-        const points = segments.flatMap((segment) => (segment.length ? segment : []))
-
-        // Filter out gap points
-        const data = this.props.data as VesselTrackData
-        const gaps = data?.attributes?.getGap?.value
-        const timestamps = data?.attributes?.getTimestamp?.value
-        const gapSize = data?.attributes?.getGap?.size || 1
-        const timestampSize = data?.attributes?.getTimestamp?.size || 1
-        const maxTimeGapMs = this.props.maxTimeGapHours
-          ? this.props.maxTimeGapHours * 3600000
-          : undefined
-
-        // Create a map of timestamp to point index for efficient lookup
-        const timestampToIndexMap = new Map<number, number>()
-        if (gaps && maxTimeGapMs && timestamps) {
-          for (let i = 0; i < timestamps.length; i += timestampSize) {
-            const timestamp = timestamps[i]
-            const pointIndex = i / timestampSize
-            timestampToIndexMap.set(timestamp, pointIndex)
-          }
-        }
-
-        const isGapPoint = (point: TrackPoint): boolean => {
-          if (!gaps || !maxTimeGapMs || !point.timestamp) return false
-          const pointIndex = timestampToIndexMap.get(point.timestamp)
-          if (pointIndex === undefined) return false
-          return gaps[pointIndex * gapSize] === 1
-        }
-
-        const pointsWithoutGaps = points.filter((point) => !isGapPoint(point))
-        const pointsWithCourse = pointsWithoutGaps.flatMap((point, index) => {
-          if (index < pointsWithoutGaps.length - 1) {
-            const nextPoint = pointsWithoutGaps[index + 1]
-            if (nextPoint.latitude === point.latitude && nextPoint.longitude === point.longitude) {
-              return []
-            }
-            if (point.longitude && point.latitude && nextPoint?.longitude && nextPoint?.latitude) {
-              try {
-                const course = rhumbBearing(
-                  [point.longitude, point.latitude] as Position,
-                  [nextPoint.longitude, nextPoint.latitude] as Position
-                )
-                return { ...point, course }
-              } catch {
+        // getSegments already splits the track at gaps, so compute the course per segment:
+        // it resets at every gap boundary and never bridges a hidden gap.
+        const pointsWithCourse = segments.flatMap((segment) => {
+          if (!segment.length) return []
+          return segment.flatMap((point, index) => {
+            if (index < segment.length - 1) {
+              const nextPoint = segment[index + 1]
+              if (
+                nextPoint.latitude === point.latitude &&
+                nextPoint.longitude === point.longitude
+              ) {
                 return []
               }
-            } else {
+              if (
+                point.longitude &&
+                point.latitude &&
+                nextPoint?.longitude &&
+                nextPoint?.latitude
+              ) {
+                try {
+                  const course = rhumbBearing(
+                    [point.longitude, point.latitude] as Position,
+                    [nextPoint.longitude, nextPoint.latitude] as Position
+                  )
+                  return { ...point, course }
+                } catch {
+                  return []
+                }
+              }
               return []
             }
-          }
-          return { ...point, course: 0 }
+            return { ...point, course: 0 }
+          })
         })
         if (pointsWithCourse.length) {
           this.setState({
@@ -159,10 +141,11 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
 
   renderLayers(): Layer<VesselTrackData> | LayersList {
     const { id, data, visualizationMode = 'track', ...props } = this.props
+
     const interactiveLayoutKey = getTrackShaderLayoutKey({
       ...props,
       colorBy: undefined,
-      maxTimeGapHours: undefined,
+      gapSegmentThreshold: undefined,
     })
 
     const trackLayers = [
@@ -183,7 +166,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
               highlightEventEndTime: undefined,
               hoveredTime: undefined,
               colorBy: undefined,
-              maxTimeGapHours: undefined,
+              gapSegmentThreshold: undefined,
             }),
           ]
         : []),
@@ -238,8 +221,11 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
     return this.props.data as VesselTrackData
   }
 
-  getSegments(params: GetSegmentsFromDataParams) {
-    return getSegmentsFromData(this.props.data as VesselTrackData, params)
+  getSegments(params = {} as GetSegmentsFromDataParams) {
+    return getSegmentsFromData(this.props.data as VesselTrackData, {
+      gapSegmentThreshold: this.props.gapSegmentThreshold,
+      ...params,
+    })
   }
 
   getGraphExtent(graph: 'speed' | 'elevation') {

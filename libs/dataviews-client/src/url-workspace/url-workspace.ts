@@ -306,6 +306,9 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (dataview.config?.thickness !== undefined) {
     config.thickness = parseInt(dataview.config?.thickness as any)
   }
+  if (dataview.config?.gapSegmentThreshold !== undefined) {
+    config.gapSegmentThreshold = parseFloat(dataview.config?.gapSegmentThreshold as any)
+  }
   if (vesselGroup) {
     if (!config.filters) {
       config.filters = {}

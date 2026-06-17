@@ -167,7 +167,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         const dataviewId = getVesselDataviewInstance({
           vessel: { id: vesselId },
           datasets: {},
-          vesselTemplateDataviews,
+          dataviewTemplates: vesselTemplateDataviews,
         })?.id
         if (!dataviewId) {
           return rejectWithValue({ message: 'Error getting dataview id' })

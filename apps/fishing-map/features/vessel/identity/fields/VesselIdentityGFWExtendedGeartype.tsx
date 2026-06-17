@@ -49,18 +49,8 @@ const VesselIdentityGFWExtendedGeartype = ({
             <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
           </li>
           <li>
-            <Tooltip content="(prodGeartypeNnet)">
-              <span className={cx(styles.secondary, styles.help)}>
-                Previous GFW best gear type:{' '}
-              </span>
-            </Tooltip>
-            {prodGeartypeNnetSort?.[0]?.value !== undefined
-              ? prodGeartypeNnetSort?.[0]?.value.toString()
-              : EMPTY_FIELD_PLACEHOLDER}
-          </li>
-          <li>
             <Tooltip content="(inferredVesselClassAgNnet) Vessel class inferred by the machine learning model.">
-              <span className={cx(styles.secondary, styles.help)}>Neural net estimate: </span>
+              <span className={cx(styles.secondary, styles.help)}>Machine learning estimate: </span>
             </Tooltip>
             {inferredVesselClassAgNnet?.[sourceIndex]?.value
               ? formatInfoField(
@@ -80,10 +70,6 @@ const VesselIdentityGFWExtendedGeartype = ({
                 ) as string)
               : EMPTY_FIELD_PLACEHOLDER}
           </li>
-        </Fragment>
-      )}
-      {isGFWUser && (
-        <Fragment>
           <li>
             <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">
               <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
@@ -93,6 +79,16 @@ const VesselIdentityGFWExtendedGeartype = ({
           </li>
           {IS_RANDOM_FOREST_ENABLED && (
             <Fragment>
+              <li>
+                <Tooltip content="(prodGeartypeNnet)">
+                  <span className={cx(styles.secondary, styles.help)}>
+                    Previous GFW best gear type:{' '}
+                  </span>
+                </Tooltip>
+                {prodGeartypeNnetSort?.[0]?.value !== undefined
+                  ? prodGeartypeNnetSort?.[0]?.value.toString()
+                  : EMPTY_FIELD_PLACEHOLDER}
+              </li>
               <li>
                 <Tooltip content="(geartype)">
                   <span className={cx(styles.secondary, styles.help)}>
