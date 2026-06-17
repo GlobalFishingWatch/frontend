@@ -103,7 +103,6 @@ export const rootSearchSchema = z
       FOOTPRINT_HIGH_RES_ID,
     ] as const),
     vesselsColorBy: optionalLiteralUnion(Object.keys(COLOR_BY) as [string, ...string[]]),
-    migramarLayer: optionalBoolean(),
     visibleEvents: fallback(
       z
         .union([
@@ -113,6 +112,10 @@ export const rootSearchSchema = z
         .optional(),
       undefined
     ),
+
+    // ── Feature flags ──────────────────────────────────────────────────────
+    migramarLayer: optionalBoolean(),
+    vesselGapFilter: optionalBoolean(),
 
     // ── AppState ──────────────────────────────────────────────────────────
     userTab: optionalEnum(UserTab),

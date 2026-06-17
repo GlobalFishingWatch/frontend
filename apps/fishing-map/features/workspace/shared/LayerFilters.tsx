@@ -24,6 +24,7 @@ import LayerFiltersGap from 'features/workspace/shared/LayerFiltersGap'
 import LayerFiltersSource from 'features/workspace/shared/LayerFiltersSource'
 import LayerSchemaFilter from 'features/workspace/shared/LayerSchemaFilter'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter.utils'
+import { selectVesselGapFilter } from 'router/routes.selectors'
 import { usePorts } from 'utils/ports'
 import { listAsSentence } from 'utils/shared'
 
@@ -56,6 +57,8 @@ function LayerFilters({
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
   const vesselGroupsOptions = useVesselGroupsOptions()
 
+  const vesselGapFilter = useSelector(selectVesselGapFilter)
+
   const {
     dataview,
     handleIsOpenChange,
@@ -80,7 +83,7 @@ function LayerFilters({
   const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   const showSourceFilter =
     sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
-  const showGapsFilter = isTrackDataview(dataview)
+  const showGapsFilter = isTrackDataview(dataview) && vesselGapFilter
   const showHistogramFilter = isHistogramDataviewSupported(dataview)
 
   const { filtersAllowed, filtersDisabled } = getFiltersInDataview(dataview, {

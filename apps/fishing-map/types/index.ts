@@ -65,10 +65,12 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisation
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
-  migramarLayer?: boolean
   vesselsColorBy?: VesselsColorByProperty
   visibleEvents?: VisibleEvents
   skipColorDomainSampling?: boolean
+  // Feature flags
+  migramarLayer?: boolean
+  vesselGapFilter?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>
