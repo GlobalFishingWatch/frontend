@@ -4,8 +4,9 @@ import Backend from 'i18next-fs-backend'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { readCookie } from '@globalfishingwatch/api-client'
+
 import { Locale } from 'types'
-import { readRequestCookieString } from 'utils/cookies'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -28,7 +29,7 @@ const NAMESPACES = ['translations', 'workspaces'] as const
 function detectLanguageFromRequest(request: Request): string {
   const cookieHeader = request.headers.get('cookie')
   if (cookieHeader) {
-    const cookieLng = readRequestCookieString(cookieHeader, 'i18next')
+    const cookieLng = readCookie({ cookie: cookieHeader, key: 'i18next' })
     if (cookieLng && SUPPORTED_LANGUAGES.includes(cookieLng)) {
       return cookieLng
     }

@@ -1,4 +1,5 @@
 export * from './utils/errors'
+export * from './utils/cookies'
 export * from './utils/guest'
 export * from './utils/search'
 export * from './utils/thinning'

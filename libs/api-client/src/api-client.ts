@@ -6,6 +6,7 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
+import { readDocumentCookie, removeDocumentCookie, writeDocumentCookie } from './utils/cookies'
 import {
   getIsTimeoutError,
   getIsUnauthorizedError,
@@ -95,14 +96,15 @@ export const createCookieTokenStorage = (key: string): TokenStorage => ({
   // so it's correct wherever cookies are available and testable for the SSR case.
   get: () => {
     if (typeof document === 'undefined') return ''
-    const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))
-    return match?.[1] ? decodeURIComponent(match[1]) : ''
+    return readDocumentCookie({ key }) || ''
   },
   set: (value: string) => {
     if (typeof document === 'undefined') return
-    document.cookie = value
-      ? `${key}=${encodeURIComponent(value)};path=/;samesite=lax`
-      : `${key}=;path=/;max-age=0;samesite=lax`
+    if (value) {
+      writeDocumentCookie(key, value)
+    } else {
+      removeDocumentCookie(key)
+    }
   },
 })
 
