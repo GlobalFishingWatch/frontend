@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { getAccessTokenFromUrl, GFWAPI } from '@globalfishingwatch/api-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
 
+import { PATH_BASENAME } from 'data/config'
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -33,14 +34,16 @@ import {
   selectVesselId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { loginServerFn } from 'server-functions/auth'
+import { loginServerFn } from 'server-functions/auth.functions'
 import { getIsBrowser } from 'utils/dom'
 
 const IS_POPUP_KEY = 'isPopup'
 const IS_POPUP_VALUE = 'true'
 
 export const getIsLoginPopup = () => {
-  if (!getIsBrowser()) return false
+  if (!getIsBrowser()) {
+    return false
+  }
   const isPopupParam =
     new URLSearchParams(window.location.search).get(IS_POPUP_KEY) === IS_POPUP_VALUE
   return isPopupParam || Boolean(window.opener)
@@ -58,8 +61,9 @@ export function usePopupLogin() {
     dispatch(setWorkspaceSuggestSave(false))
     const params = new URLSearchParams({ [IS_POPUP_KEY]: IS_POPUP_VALUE, hideHeader: 'true' })
 
-    const { origin, pathname } = window.location
-    const loginUrl = GFWAPI.getLoginUrl(`${origin}${pathname}?${params.toString()}`, {
+    const loginPath = `${PATH_BASENAME.replace(/\/$/, '')}/login`
+    const callbackUrl = `${window.location.origin}${loginPath}?${params.toString()}`
+    const loginUrl = GFWAPI.getLoginUrl(callbackUrl, {
       hideHeader: true,
     })
 
@@ -151,19 +155,24 @@ export function useLoginPopupListener() {
 let popupLoginHandled = false
 
 export function usePopupLoginCallback() {
+  const login = useCallback(async () => {
+    const accessToken = getAccessTokenFromUrl()
+    try {
+      const user = await loginServerFn({ data: { accessToken } })
+      broadcastLogin(user)
+    } catch (e) {
+      console.warn('Popup login failed', e)
+    } finally {
+      window.close()
+    }
+  }, [])
+
   useEffect(() => {
     const accessToken = getAccessTokenFromUrl()
-    if (popupLoginHandled || !accessToken) return
-    popupLoginHandled = true
-    ;(async () => {
-      try {
-        const user = await loginServerFn({ data: { accessToken } })
-        broadcastLogin(user)
-      } catch (e) {
-        console.warn('Popup login failed', e)
-      } finally {
-        window.close()
-      }
-    })()
+    if (!popupLoginHandled && accessToken) {
+      popupLoginHandled = true
+      login()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

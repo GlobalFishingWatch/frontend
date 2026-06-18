@@ -16,6 +16,7 @@ import { Route as ApiDownloadSurveyRouteImport } from './routes/api/downloadSurv
 import { Route as ApiCorrectionsRouteImport } from './routes/api/corrections'
 import { Route as AppVesselSearchRouteImport } from './routes/_app/vessel-search'
 import { Route as AppUserRouteImport } from './routes/_app/user'
+import { Route as AppLoginRouteImport } from './routes/_app/login'
 import { Route as ApiWorkspacesGeneratorIndexRouteImport } from './routes/api/workspaces-generator/index'
 import { Route as ApiOceanAreasIndexRouteImport } from './routes/api/ocean-areas/index'
 import { Route as AppCategoryIndexRouteImport } from './routes/_app/$category/index'
@@ -68,6 +69,11 @@ const AppVesselSearchRoute = AppVesselSearchRouteImport.update({
 const AppUserRoute = AppUserRouteImport.update({
   id: '/user',
   path: '/user',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLoginRoute = AppLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiWorkspacesGeneratorIndexRoute =
@@ -178,6 +184,7 @@ const AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/login': typeof AppLoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof AppLoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -232,6 +240,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/_app/login': typeof AppLoginRoute
   '/_app/user': typeof AppUserRoute
   '/_app/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/user'
     | '/vessel-search'
     | '/api/corrections'
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/$category/$workspaceId/report/$datasetId/$areaId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
     | '/user'
     | '/vessel-search'
     | '/api/corrections'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/_app/login'
     | '/_app/user'
     | '/_app/vessel-search'
     | '/api/corrections'
@@ -406,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/user'
       preLoaderRoute: typeof AppUserRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/login': {
+      id: '/_app/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/workspaces-generator/': {
@@ -577,6 +596,7 @@ const AppCategoryWorkspaceIdRouteWithChildren =
   )
 
 interface AppRouteChildren {
+  AppLoginRoute: typeof AppLoginRoute
   AppUserRoute: typeof AppUserRoute
   AppVesselSearchRoute: typeof AppVesselSearchRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -587,6 +607,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppLoginRoute: AppLoginRoute,
   AppUserRoute: AppUserRoute,
   AppVesselSearchRoute: AppVesselSearchRoute,
   AppIndexRoute: AppIndexRoute,

@@ -60,7 +60,9 @@ function AppLayout() {
 
   return (
     <Provider store={store}>
-      <Suspense fallback={null}>{getIsLoginPopup() ? <LoginPopupHandler /> : <App />}</Suspense>
+      <Suspense fallback={null}>
+        <App />
+      </Suspense>
     </Provider>
   )
 }
