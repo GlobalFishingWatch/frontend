@@ -34,9 +34,6 @@ import { isHistogramDataviewSupported } from './layer-properties.utils'
 
 import styles from './LayerFilters.module.css'
 
-// Re-exported for back-compat (consumed by LayerFiltersGap)
-export type { OnSelectFilterArgs } from './LayerFilters.utils'
-
 type LayerFiltersProps = {
   dataview: UrlDataviewInstance
   showApplyToAll?: boolean
