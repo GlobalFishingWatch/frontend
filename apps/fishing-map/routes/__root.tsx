@@ -1,11 +1,17 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /// <reference types="vite/client" />
 
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+// import { TanStackDevtools } from '@tanstack/react-devtools'
+// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import {
+  createRootRoute,
+  getRouteApi,
+  HeadContent,
+  Outlet,
+  redirect,
+  Scripts,
+} from '@tanstack/react-router'
 
 import type { UserData } from '@globalfishingwatch/api-types'
 
@@ -15,15 +21,26 @@ import { reportRouteError } from 'features/app/sentry'
 import { getLoadedI18nState } from 'features/i18n/i18n'
 import type { I18nServerState } from 'features/i18n/i18n.server'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
-import { getTFunction } from 'router/router.meta'
+import { getDefaultMeta, getTFunction } from 'router/router.meta'
 
 import appCss from './styles.css?url'
 
-const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
 const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
 
 const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
+
+type PanelWidthsState = {
+  asideWidthPct: number | null
+  contentPanelWidth: number | null
+  screenWidth: number | null
+}
+
+const EMPTY_PANEL_WIDTHS: PanelWidthsState = {
+  asideWidthPct: null,
+  contentPanelWidth: null,
+  screenWidth: null,
+}
 
 async function loadI18nState(): Promise<I18nServerState> {
   if (!import.meta.env.SSR) {
@@ -38,141 +55,23 @@ async function loadI18nState(): Promise<I18nServerState> {
   return (await getI18nState()) as I18nServerState
 }
 
-async function loadPanelWidths(): Promise<{
-  asideWidthPct: number | null
-  contentPanelWidth: number | null
-  screenWidth: number | null
-}> {
-  const { getSidebarWidthState } = await import('server-functions/screen-size.functions')
+async function loadPanelWidths() {
   if (!import.meta.env.SSR) {
-    return { asideWidthPct: null, contentPanelWidth: null, screenWidth: null }
+    return EMPTY_PANEL_WIDTHS
   }
+  const { getSidebarWidthState } = await import('server-functions/screen-size.functions')
   return getSidebarWidthState()
 }
 
 async function loadUser(): Promise<{ user: UserData | null }> {
   if (!import.meta.env.SSR) {
-    return { user: null }
+    return { user: null as UserData | null }
   }
   const { getUserState } = await import('server-functions/user.functions')
   return getUserState()
 }
 
-export const Route = createRootRoute({
-  beforeLoad: ({ location }) => {
-    if (location.pathname === '/index') {
-      throw redirect({ to: '/', search: location.search })
-    }
-  },
-  errorComponent: ({ error }) => (
-    <RootDocument lang="en">
-      <RouterErrorBoundary error={error as Error} />
-    </RootDocument>
-  ),
-  loader: async () => {
-    const [i18nState, panelWidths, userState] = await Promise.all([
-      loadI18nState(),
-      loadPanelWidths().catch(() => ({
-        asideWidthPct: null,
-        contentPanelWidth: null,
-        screenWidth: null,
-      })),
-      loadUser().catch(() => ({ user: null })),
-    ])
-    return {
-      i18nState,
-      asideWidthPct: panelWidths.asideWidthPct,
-      contentPanelWidth: panelWidths.contentPanelWidth,
-      screenWidth: panelWidths.screenWidth,
-      user: userState.user,
-    }
-  },
-  onError: (err) => {
-    reportRouteError(err, 'router-loader')
-  },
-  staleTime: Number.POSITIVE_INFINITY,
-  preloadStaleTime: Number.POSITIVE_INFINITY,
-  gcTime: Number.POSITIVE_INFINITY,
-  shouldReload: false,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
-    const title = `GFW | ${t('common.map')}`
-    const description = t('workspace.siteDescription.default') || defaultDescription
-    return {
-      meta: [
-        { charSet: 'utf-8' },
-        {
-          name: 'viewport',
-          content: 'width=device-width, initial-scale=1, viewport-fit=cover',
-        },
-        { title },
-        {
-          property: 'og:description',
-          content: description,
-        },
-        {
-          name: 'twitter:description',
-          content: description,
-        },
-        {
-          name: 'description',
-          content: description,
-        },
-        { name: 'mobile-web-app-capable', content: 'yes' },
-        { name: 'theme-color', content: '#163f89' },
-        { name: 'application-name', content: 'GFW Fishing map' },
-        { name: 'referrer', content: 'no-referrer-when-downgrade' },
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-        { name: 'apple-mobile-web-app-title', content: 'GFW Fishing map' },
-        { name: 'msapplication-TileColor', content: '#fff' },
-        { name: 'msapplication-TileImage', content: 'icons/mstile-144x144.png' },
-        { name: 'msapplication-config', content: 'icons/browserconfig.xml' },
-      ],
-      links: [
-        { rel: 'stylesheet', href: appCss },
-        { rel: 'canonical', href: 'https://globalfishingwatch.org/map' },
-        { rel: 'shortcut icon', href: `${PATH_BASENAME}/icons/favicon.ico` },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '16x16',
-          href: `${PATH_BASENAME}/icons/favicon-16x16.png`,
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '32x32',
-          href: `${PATH_BASENAME}/icons/favicon-32x32.png`,
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '48x48',
-          href: `${PATH_BASENAME}/icons/favicon-48x48.png`,
-        },
-        { rel: 'manifest', href: `${PATH_BASENAME}/icons/manifest.webmanifest` },
-        {
-          rel: 'apple-touch-icon',
-          sizes: '120x120',
-          href: `${PATH_BASENAME}/icons/apple-touch-icon-120x120.png`,
-        },
-        {
-          rel: 'apple-touch-icon',
-          sizes: '152x152',
-          href: `${PATH_BASENAME}/icons/apple-touch-icon-152x152.png`,
-        },
-        {
-          rel: 'apple-touch-icon',
-          sizes: '1024x1024',
-          href: `${PATH_BASENAME}/icons/apple-touch-icon-1024x1024.png`,
-        },
-      ],
-    }
-  },
-
-  component: RootComponent,
-})
+const rootRouteApi = getRouteApi('__root__')
 
 function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode; lang: string }>) {
   return (
@@ -199,7 +98,7 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
 }
 
 function RootComponent() {
-  const { i18nState } = Route.useLoaderData() ?? {}
+  const { i18nState } = rootRouteApi.useLoaderData() ?? {}
 
   // Tests render RouterProvider inside a DOM container — skip <html>/<body> wrapper.
   if (import.meta.env.VITEST) {
@@ -219,7 +118,7 @@ function RootComponent() {
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
-      {import.meta.env.DEV && (
+      {/* {import.meta.env.DEV && (
         <TanStackDevtools
           config={{
             position: 'bottom-right',
@@ -231,7 +130,51 @@ function RootComponent() {
             },
           ]}
         />
-      )}
+      )} */}
     </RootDocument>
   )
 }
+
+export const Route = createRootRoute({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === '/index') {
+      throw redirect({ to: '/', search: location.search })
+    }
+  },
+  errorComponent: ({ error }) => (
+    <RootDocument lang="en">
+      <RouterErrorBoundary error={error as Error} />
+    </RootDocument>
+  ),
+  loader: async () => {
+    const [i18nState, panelWidths, userState] = await Promise.all([
+      loadI18nState(),
+      loadPanelWidths().catch(() => EMPTY_PANEL_WIDTHS),
+      loadUser().catch(() => ({ user: null })),
+    ])
+    return {
+      i18nState,
+      asideWidthPct: panelWidths.asideWidthPct,
+      contentPanelWidth: panelWidths.contentPanelWidth,
+      screenWidth: panelWidths.screenWidth,
+      user: userState.user,
+    }
+  },
+  onError: (err) => {
+    reportRouteError(err, 'router-loader')
+  },
+  staleTime: Number.POSITIVE_INFINITY,
+  preloadStaleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+  shouldReload: false,
+  head: ({ matches }) => {
+    const t = getTFunction(matches)
+    const title = `GFW | ${t('common.map')}`
+    const description = t('workspace.siteDescription.default') || defaultDescription
+    const meta = getDefaultMeta(title, description)
+    meta.links.unshift({ rel: 'stylesheet', href: appCss })
+    return meta
+  },
+
+  component: RootComponent,
+})

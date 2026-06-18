@@ -5,8 +5,6 @@ import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
-import LoginPopupHandler from 'features/user/LoginPopupHandler'
-import { getIsLoginPopup } from 'features/user/user.hooks'
 import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
 import {
   getPersistedHistoryNavigation,
@@ -32,9 +30,6 @@ function AppLayout() {
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
     const store = getAppRouterStore(router.options.context) ?? makeStore()
-    // Seed location from the URL synchronously (runs during SSR render and the first
-    // client render) so layout components don't briefly see the default HOME location
-    // — an effect-only sync would cause a hydration mismatch.
     syncInitialLocation(router, store)
     if (i18nState?.initialLanguage) {
       store.dispatch(setUserLanguage(i18nState.initialLanguage as Locale))
