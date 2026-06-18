@@ -91,12 +91,15 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
-  async ({ local }: { local?: boolean } = {}, { dispatch }) => {
+  async (
+    { logoutServer, broadcast }: { logoutServer?: boolean; broadcast?: boolean } = {},
+    { dispatch }
+  ) => {
     try {
-      if (!local) {
-        // Server fn invalidates the session on the gateway (using the httpOnly refresh
-        // cookie) and clears both auth cookies.
+      if (logoutServer) {
         await logoutServerFn()
+      }
+      if (broadcast) {
         broadcastLogout()
       }
       dispatch(cleanCurrentWorkspaceData())
@@ -130,6 +133,7 @@ const userSlice = createSlice({
     },
     setLoggedUser: (state, action: PayloadAction<UserData>) => {
       state.logged = true
+      state.expired = false
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
     },

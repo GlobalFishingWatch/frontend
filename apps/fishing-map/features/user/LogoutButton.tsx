@@ -23,7 +23,8 @@ function LogoutButton() {
 
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
-    await dispatch(logoutUserThunk({ local: false }))
+
+    await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
 
     if (lastWorkspaceNavProps) {
       const { to, params, search } = lastWorkspaceNavProps

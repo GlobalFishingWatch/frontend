@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { getAccessTokenFromUrl, GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
 
 import { PATH_BASENAME } from 'data/config'
@@ -9,7 +9,6 @@ import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   AUTH_CHANNEL_NAME,
-  broadcastLogin,
   LOGIN_MESSAGE,
   LOGOUT_MESSAGE,
   TAB_ID,
@@ -34,7 +33,6 @@ import {
   selectVesselId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { loginServerFn } from 'server-functions/auth.functions'
 import { getIsBrowser } from 'utils/dom'
 
 const IS_POPUP_KEY = 'isPopup'
@@ -135,11 +133,9 @@ export function useLoginPopupListener() {
           console.warn(e)
         }
       }
-      if (event.data?.type === LOGOUT_MESSAGE) {
-        if (event.data.senderId === TAB_ID) return
-        await dispatch(logoutUserThunk({ local: true }))
+      if (event.data?.type === LOGOUT_MESSAGE && event.data.senderId !== TAB_ID) {
+        await dispatch(logoutUserThunk({ logoutServer: false, broadcast: false }))
         dispatch(fetchUserThunk({ guest: true }))
-        return
       }
       return
     }
@@ -149,30 +145,4 @@ export function useLoginPopupListener() {
       channel.close()
     }
   }, [dispatch, reloadDataAfterLogin, loginSource])
-}
-
-// avoid react strictMode calling loginServerFn twice
-let popupLoginHandled = false
-
-export function usePopupLoginCallback() {
-  const login = useCallback(async () => {
-    const accessToken = getAccessTokenFromUrl()
-    try {
-      const user = await loginServerFn({ data: { accessToken } })
-      broadcastLogin(user)
-    } catch (e) {
-      console.warn('Popup login failed', e)
-    } finally {
-      window.close()
-    }
-  }, [])
-
-  useEffect(() => {
-    const accessToken = getAccessTokenFromUrl()
-    if (!popupLoginHandled && accessToken) {
-      popupLoginHandled = true
-      login()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 }
