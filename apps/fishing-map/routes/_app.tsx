@@ -5,6 +5,8 @@ import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
+import LoginPopupHandler from 'features/user/LoginPopupHandler'
+import { getIsLoginPopup } from 'features/user/user.hooks'
 import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
 import {
   getPersistedHistoryNavigation,
@@ -58,9 +60,7 @@ function AppLayout() {
 
   return (
     <Provider store={store}>
-      <Suspense fallback={null}>
-        <App />
-      </Suspense>
+      <Suspense fallback={null}>{getIsLoginPopup() ? <LoginPopupHandler /> : <App />}</Suspense>
     </Provider>
   )
 }
