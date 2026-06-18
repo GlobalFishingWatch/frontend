@@ -1,16 +1,15 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI, readCookie } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { readRequestCookieString } from 'utils/cookies'
 
 async function fetchUserFromRequest(request: Request): Promise<UserData | null> {
   const cookieHeader = request.headers.get('cookie')
   if (!cookieHeader) return null
 
-  const token = readRequestCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
+  const token = readCookie({ cookie: cookieHeader, key: USER_TOKEN_COOKIE_KEY })
   if (!token) return null
 
   try {

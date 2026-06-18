@@ -43,7 +43,7 @@ async function loadPanelWidths(): Promise<{
   contentPanelWidth: number | null
   screenWidth: number | null
 }> {
-  const { getSidebarWidthState } = await import('features/split-view/getSidebarWidthState')
+  const { getSidebarWidthState } = await import('server-functions/screen-size.functions')
   if (!import.meta.env.SSR) {
     return { asideWidthPct: null, contentPanelWidth: null, screenWidth: null }
   }
@@ -54,7 +54,7 @@ async function loadUser(): Promise<{ user: UserData | null }> {
   if (!import.meta.env.SSR) {
     return { user: null }
   }
-  const { getUserState } = await import('server-functions/user.server')
+  const { getUserState } = await import('server-functions/user.functions')
   return getUserState()
 }
 

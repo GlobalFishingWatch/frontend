@@ -14,7 +14,7 @@ import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import { loginServerFn, logoutServerFn } from 'server-functions/auth'
+import { loginServerFn, logoutServerFn } from 'server-functions/auth.functions'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getIsBrowser } from 'utils/dom'
 
