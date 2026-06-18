@@ -6,7 +6,7 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
-import { readDocumentCookie, removeDocumentCookie, writeDocumentCookie } from './utils/cookies'
+import { getIsBrowser } from './utils/browser'
 import {
   getIsTimeoutError,
   getIsUnauthorizedError,
@@ -15,6 +15,8 @@ import {
   parseAPIError,
 } from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
+import type { TokenStorage } from './utils/token-storage'
+import { createLocalStorageTokenStorage } from './utils/token-storage'
 import { isUrlAbsolute } from './utils/url'
 import {
   API_GATEWAY,
@@ -38,80 +40,27 @@ interface LoginParams {
 }
 export type ApiVersion = '' | 'v3'
 export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body' | 'headers'>> & {
-  version?: ApiVersion
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  cache?: RequestCache
-  responseType?: ResourceResponseType
-  requestType?: ResourceRequestType
-  // Pass a function when a header value must be re-read on every attempt (e.g. a
-  // rotating refresh-token), so the auto-retry never replays a stale value.
-  headers?: HeadersInit | (() => HeadersInit)
-  // Skip the 401/403 → refresh → retry machinery (e.g. logout, where a 401 just
-  // means the session is already gone and refreshing would replay a stale token).
-  skipAuthRefresh?: boolean
-  // Per-request bearer token, used INSTEAD of the singleton's stored token. For
-  // server-side (SSR) requests: avoids reading/mutating the shared singleton (which
-  // would leak tokens across concurrent requests). When set, the login gate and the
-  // refresh/retry machinery are skipped — a failure just throws so SSR can fall back.
-  token?: string
   body?: T
+  cache?: RequestCache
+  // Static headers or a function to avoid stale values between requests (e.g. a rotating refresh-token)
+  headers?: HeadersInit | (() => HeadersInit)
   local?: boolean
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  requestType?: ResourceRequestType
+  responseType?: ResourceResponseType
+  token?: string
+  version?: ApiVersion
 }
 
 type InternalFetchOptions<Body = unknown> = {
   url: string
-  options?: FetchOptions<Body>
+  options?: FetchOptions<Body> & { skipAuthRefresh?: boolean }
   refreshRetries?: number
   waitLogin?: boolean
 }
 
-const isClientSide = typeof window !== 'undefined'
-
-// Where the access token is read/written. Default is localStorage; apps that need
-// the token visible to a server (SSR) can swap in `createCookieTokenStorage` via
-// `GFWAPI.configure({ tokenStorage })`. Both are SSR-safe (no-op without the global).
-export interface TokenStorage {
-  get(): string
-  set(value: string): void
-}
-
-const createLocalStorageTokenStorage = (key: string): TokenStorage => ({
-  get: () => (isClientSide ? localStorage.getItem(key) || '' : ''),
-  set: (value: string) => {
-    if (isClientSide) {
-      if (value) {
-        localStorage.setItem(key, value)
-      } else {
-        localStorage.removeItem(key)
-      }
-    }
-  },
-})
-
-// JS-readable cookie storage so the access token is sent on requests and readable
-// by the server from the request Cookie header (NOT httpOnly — the client reads it
-// to build Bearer headers). Server-side it returns '' (no `document`).
-export const createCookieTokenStorage = (key: string): TokenStorage => ({
-  // Guard on `document` (the global this storage actually uses), not `window`/isClientSide,
-  // so it's correct wherever cookies are available and testable for the SSR case.
-  get: () => {
-    if (typeof document === 'undefined') return ''
-    return readDocumentCookie({ key }) || ''
-  },
-  set: (value: string) => {
-    if (typeof document === 'undefined') return
-    if (value) {
-      writeDocumentCookie(key, value)
-    } else {
-      removeDocumentCookie(key)
-    }
-  },
-})
-
-// Injected when an app's token refresh must happen elsewhere (e.g. an SSR server
-// function that forwards an httpOnly refresh cookie to the gateway). Returns the
-// rotated tokens; the strategy itself is responsible for persisting them.
 export type RefreshStrategy = () => Promise<UserTokens>
+export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
 export class GFW_API_CLASS {
@@ -128,6 +77,7 @@ export class GFW_API_CLASS {
   private refreshingToken: Promise<UserTokens> | null = null
   private accessTokenStorage: TokenStorage
   private refreshStrategy: RefreshStrategy | null = null
+  private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
   status: RequestStatus = 'idle'
 
   constructor({
@@ -158,13 +108,27 @@ export class GFW_API_CLASS {
   configure({
     tokenStorage,
     refreshStrategy,
-  }: { tokenStorage?: TokenStorage; refreshStrategy?: RefreshStrategy } = {}) {
+    sessionInvalidateStrategy,
+  }: {
+    tokenStorage?: TokenStorage
+    refreshStrategy?: RefreshStrategy
+    sessionInvalidateStrategy?: SessionInvalidateStrategy
+  } = {}) {
     if (tokenStorage) {
       this.accessTokenStorage = tokenStorage
     }
     if (refreshStrategy) {
       this.refreshStrategy = refreshStrategy
     }
+    if (sessionInvalidateStrategy) {
+      this.sessionInvalidateStrategy = sessionInvalidateStrategy
+    }
+  }
+
+  private invalidateClientSession() {
+    this.token = ''
+    this.refreshToken = ''
+    void this.sessionInvalidateStrategy?.()
   }
 
   get token() {
@@ -179,14 +143,14 @@ export class GFW_API_CLASS {
   }
 
   get refreshToken() {
-    if (isClientSide) {
+    if (getIsBrowser()) {
       return localStorage.getItem(this.storageKeys.refreshToken) || ''
     }
     return ''
   }
 
   private set refreshToken(refreshToken: string) {
-    if (isClientSide) {
+    if (getIsBrowser()) {
       if (refreshToken) {
         localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
       } else {
@@ -198,30 +162,26 @@ export class GFW_API_CLASS {
     }
   }
 
-  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
-    const fallbackLocale =
-      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
+  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = 'en' } = {}) {
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
-      )}&locale=${fallbackLocale}`,
+      )}&locale=${locale}`,
       { absolute: true }
     )
   }
 
   getLoginUrl(
     callbackUrl: string,
-    { client = 'gfw', locale = '', hideHeader = false } = {} satisfies {
+    { client = 'gfw', locale = 'en', hideHeader = false } = {} satisfies {
       client?: string
       locale?: string
       hideHeader?: boolean
     }
   ) {
-    const fallbackLocale =
-      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     const params = new URLSearchParams({
       client,
-      locale: fallbackLocale,
+      locale,
       callback: callbackUrl,
       ...(hideHeader && { hideHeader: 'true' }),
     })
@@ -238,8 +198,6 @@ export class GFW_API_CLASS {
     }
   }
 
-  // Pure token-endpoint calls: no singleton state, no env guards — safe to call from a
-  // server (SSR). Reject with a status-bearing error on non-2xx (via processStatus).
   exchangeAccessToken(accessToken: string): Promise<UserTokens> {
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
@@ -262,34 +220,6 @@ export class GFW_API_CLASS {
     }).then(processStatus)
   }
 
-  async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
-    // We need to avoid requesting tokens from the Login window because the accessToken
-    // needs to be used for the first time in the main window
-    if (typeof window === 'undefined' || window.opener) {
-      return { token: '', refreshToken: '' }
-    }
-    return this.exchangeAccessToken(accessToken)
-  }
-
-  /**
-   * AUTH / TOKEN-REFRESH INVARIANTS — each guard below covers a DISTINCT race.
-   * Before adding a fix, find which invariant it belongs to and extend that one
-   * rather than bolting on a new branch elsewhere.
-   *
-   * 1. Concurrent requests must trigger ONE refresh        → `refreshingToken` promise dedup (refreshAPIToken).
-   * 2. Another tab rotated the token BEFORE we start        → Web Lock + before-flight pre-check (refreshTokens).
-   * 3. The token rotates DURING our in-flight reload        → during-flight catch retry (refreshTokens); also the
-   *    (and when navigator.locks is unavailable)              ONLY guard without Web Locks — do not remove it.
-   * 4. Transient (network/5xx) vs auth (401/403) failure    → `isTransientError` (single source of truth).
-   * 5. Wipe tokens ONLY on a real 401 refresh rejection     → `getIsUnauthorizedError(err) && !getIsTimeoutError(err)`
-   *    (never on transient/timeout/5xx, never on a 403)        in `attempt`; sets `e.refreshError` for consumers.
-   * 6. A stale refresh token must not be replayed on logout → `skipAuthRefresh` + function-valued `headers`.
-   *
-   * Server-side (SSR): never read/write the shared singleton's token (cross-request
-   * leak) — callers pass a per-request `token` via FetchOptions instead.
-   */
-  // Calls reloadTokens, stores the rotated tokens, and retries transient
-  // (network/5xx) failures with backoff. Does NOT retry auth rejections (401/403).
   private async reloadAPIToken(refreshToken: string, reloadRetries = 0): Promise<UserTokens> {
     try {
       const refreshResponse = await this.reloadTokens(refreshToken)
@@ -310,15 +240,12 @@ export class GFW_API_CLASS {
   }
 
   private async withTokenRefreshLock<T>(run: () => Promise<T>): Promise<T> {
-    if (isClientSide && typeof navigator !== 'undefined' && navigator.locks?.request) {
+    if (getIsBrowser() && typeof navigator !== 'undefined' && navigator.locks?.request) {
       return navigator.locks.request('gfw-token-refresh', run) as Promise<T>
     }
     return run()
   }
 
-  // Returns the stored refresh token if another tab has rotated it away from the
-  // one we started with, otherwise null. Backs both the before-flight pre-check
-  // and the during-flight catch in refreshTokens.
   private getRotatedRefreshToken(startedWith: string): string | null {
     const latest = this.refreshToken
     return latest && latest !== startedWith ? latest : null
@@ -326,7 +253,6 @@ export class GFW_API_CLASS {
 
   private async refreshTokens(startRefreshToken: string): Promise<UserTokens> {
     return this.withTokenRefreshLock(async () => {
-      // Another tab rotated the token BEFORE our refresh started: reuse it.
       const rotatedBefore = this.getRotatedRefreshToken(startRefreshToken)
       if (rotatedBefore) {
         return { token: this.token, refreshToken: rotatedBefore }
@@ -334,8 +260,6 @@ export class GFW_API_CLASS {
       try {
         return await this.reloadAPIToken(startRefreshToken)
       } catch (e: any) {
-        // The token rotated DURING our in-flight reload (also the only guard when
-        // navigator.locks is unavailable): retry once with the newer stored token.
         const rotatedDuring = this.getRotatedRefreshToken(startRefreshToken)
         if (rotatedDuring) {
           return await this.reloadAPIToken(rotatedDuring)
@@ -349,9 +273,7 @@ export class GFW_API_CLASS {
     if (this.refreshingToken) {
       return this.refreshingToken
     }
-    // Configured (e.g. SSR/httpOnly) refresh: delegate to the injected strategy. It
-    // owns "is there a refresh token?" (it reads an httpOnly cookie this client can't)
-    // and persists the rotated tokens. Still deduped here and serialized across tabs.
+
     if (this.refreshStrategy) {
       const strategy = this.refreshStrategy
       this.status = 'refreshingToken'
@@ -361,12 +283,14 @@ export class GFW_API_CLASS {
       })
       return this.refreshingToken
     }
+
     const refreshToken = this.refreshToken
     if (!refreshToken) {
       const error: any = new Error('No refresh token')
       error.status = 401
       throw error
     }
+
     this.status = 'refreshingToken'
     this.refreshingToken = this.refreshTokens(refreshToken).finally(() => {
       this.status = 'idle'
@@ -407,17 +331,16 @@ export class GFW_API_CLASS {
       .then(async (blob) => {
         const { saveAs } = await import('file-saver')
         saveAs(blob, fileName)
-        this.status = 'idle'
         return true
       })
       .catch((e) => {
-        this.status = 'idle'
         return false
+      })
+      .finally(() => {
+        this.status = 'idle'
       })
   }
 
-  // Raw errors are returned as-is for responseType 'default' (callers want the
-  // original Response/object, by identity); everything else gets the parsed shape.
   private normalizeError(e: any, responseType: ResourceResponseType) {
     return responseType === 'default' ? e : parseAPIError(e)
   }
@@ -431,10 +354,8 @@ export class GFW_API_CLASS {
     refreshRetries = 0,
     waitLogin = true,
   }: InternalFetchOptions<Body>): Promise<T> {
-    // A per-request token is a stateless server call — never wait on the client login.
     if (this.logging && waitLogin && options.token == null) {
-      // Don't do any request until the login is completed, and don't wait for the
-      // login request itself. The gate runs once, not on every retry attempt.
+      // Don't do any request until the login is completed
       try {
         await this.logging
       } catch (e: any) {
@@ -444,7 +365,7 @@ export class GFW_API_CLASS {
       }
     }
     try {
-      return await this.attempt<T, Body>({ url, options, refreshRetries, waitLogin })
+      return await this._fetchAttempt<T, Body>({ url, options, refreshRetries, waitLogin })
     } catch (e: any) {
       if (this.debug) {
         console.warn(`GFWAPI: Error fetching ${url}`, e)
@@ -453,7 +374,7 @@ export class GFW_API_CLASS {
     }
   }
 
-  private async attempt<T, Body = unknown>({
+  private async _fetchAttempt<T, Body = unknown>({
     url,
     options = {},
     refreshRetries = 0,
@@ -471,15 +392,10 @@ export class GFW_API_CLASS {
       skipAuthRefresh = false,
       token,
     } = options
-    // A per-request token means a stateless server call: use it for the bearer and
-    // skip the client-only refresh/retry machinery (no singleton refresh context).
-    const stateless = token != null
     try {
       if (this.debug) {
         console.log(`GFWAPI: Fetching URL: ${url}`)
       }
-      // Headers are rebuilt on every attempt so a function-valued `headers` and the
-      // Authorization token are re-read after a refresh/rotation, never replayed stale.
       const finalHeaders = {
         ...(typeof headers === 'function' ? headers() : headers),
         ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
@@ -543,6 +459,7 @@ export class GFW_API_CLASS {
         throw e
       }
       const authError = isAuthError(e)
+      const stateless = token != null
       if (authError && !skipAuthRefresh && !stateless) {
         if (this.debug) {
           console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
@@ -554,15 +471,12 @@ export class GFW_API_CLASS {
           }
         } catch (err: any) {
           if (this.debug) {
-            console.warn(`GFWAPI: Error fetching ${url}`, err)
+            console.warn(`GFWAPI: Error refreshing the token ${url}`, err)
           }
-          // Wipe tokens only when the refresh was genuinely rejected (a real 401),
-          // not on a transient timeout — and flag the original error as a refresh
-          // failure so consumers can surface "session expired".
+
           const refreshRejected = getIsUnauthorizedError(err) && !getIsTimeoutError(err)
-          if (isClientSide && refreshRejected) {
-            this.token = ''
-            this.refreshToken = ''
+          if (getIsBrowser() && refreshRejected) {
+            this.invalidateClientSession()
           }
           if (refreshRejected) {
             e.refreshError = true
@@ -571,7 +485,7 @@ export class GFW_API_CLASS {
         }
       }
       if (!stateless && ((authError && !skipAuthRefresh) || e.status >= 500)) {
-        return this.attempt<T, Body>({
+        return this._fetchAttempt<T, Body>({
           url,
           options,
           refreshRetries: refreshRetries + 1,
@@ -582,8 +496,6 @@ export class GFW_API_CLASS {
     }
   }
 
-  // `token` lets SSR resolve the user from a per-request token without touching the
-  // shared singleton's stored token (which would leak across concurrent requests).
   async fetchUser({ token }: { token?: string } = {}) {
     try {
       const user = await this._internalFetch<UserData>({
@@ -618,20 +530,20 @@ export class GFW_API_CLASS {
     }
   }
 
-  async login(params: LoginParams): Promise<UserData> {
-    if (this.logging) {
-      return this.logging
-    }
-    const { accessToken = null, refreshToken } = params
-    this.status = 'logging'
-    // eslint-disable-next-line no-async-promise-executor
-    this.logging = new Promise<UserData>(async (resolve, reject) => {
+  private async _login({
+    accessToken,
+    refreshToken,
+  }: {
+    accessToken: string | null
+    refreshToken?: string | null
+  }): Promise<UserData> {
+    try {
       if (accessToken) {
         if (this.debug) {
           console.log(`GFWAPI: Trying to get tokens using access-token`)
         }
         try {
-          const tokens = await this.getTokensWithAccessToken(accessToken)
+          const tokens = await this.exchangeAccessToken(accessToken)
           this.token = tokens.token
           this.refreshToken = tokens.refreshToken
           if (this.debug) {
@@ -645,9 +557,7 @@ export class GFW_API_CLASS {
             if (this.debug) {
               console.warn(`GFWAPI: ${msg}`)
             }
-            reject(new Error(msg, { cause: e }))
-            this.status = 'idle'
-            return null
+            throw new Error(msg, { cause: e })
           }
         }
       }
@@ -661,8 +571,6 @@ export class GFW_API_CLASS {
           if (this.debug) {
             console.log(`GFWAPI: Token valid, user data ready:`, user)
           }
-          resolve(user)
-          this.status = 'idle'
           return user
         } catch (e: any) {
           if (this.debug) {
@@ -672,12 +580,17 @@ export class GFW_API_CLASS {
       }
 
       const refreshTokenToUse = refreshToken || this.refreshToken
-      if (refreshTokenToUse) {
+      const canRefresh = this.refreshStrategy || refreshTokenToUse
+      if (canRefresh) {
         if (this.debug) {
           console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
         }
         try {
-          await this.refreshTokens(refreshTokenToUse)
+          if (this.refreshStrategy) {
+            await this.refreshAPIToken()
+          } else {
+            await this.refreshTokens(refreshTokenToUse)
+          }
           if (this.debug) {
             console.log(`GFWAPI: Refresh token OK, fetching user`)
           }
@@ -685,8 +598,6 @@ export class GFW_API_CLASS {
           if (this.debug) {
             console.log(`GFWAPI: Login finished, user data ready:`, user)
           }
-          resolve(user)
-          this.status = 'idle'
           return user
         } catch (e: any) {
           const msg = getIsUnauthorizedError(e)
@@ -696,19 +607,27 @@ export class GFW_API_CLASS {
           if (this.debug) {
             console.warn(`GFWAPI: ${msg}`)
           }
-          reject(new Error(msg, { cause: e }))
-          this.status = 'idle'
-          return null
+          throw new Error(msg, { cause: e })
         }
       }
-      this.status = 'idle'
+
       // status 401 so consumers classify "no session" as an auth error (→ guest
       // fallback), not a transient/network failure to retry. Mirrors refreshAPIToken.
       const error: any = new Error('No login token provided')
       error.status = 401
-      reject(error)
-      return
-    }).finally(() => {
+      throw error
+    } finally {
+      this.status = 'idle'
+    }
+  }
+
+  async login(params: LoginParams): Promise<UserData> {
+    if (this.logging) {
+      return this.logging
+    }
+    const { accessToken = null, refreshToken } = params
+    this.status = 'logging'
+    this.logging = this._login({ accessToken, refreshToken }).finally(() => {
       this.logging = null
     })
     return this.logging
@@ -740,9 +659,8 @@ export class GFW_API_CLASS {
       throw new Error('Error on the logout proccess', { cause: e })
     } finally {
       // Logout intent is to drop the local session — always clear, even if the
-      // server call failed.
-      this.token = ''
-      this.refreshToken = ''
+      // server call failed (incl. httpOnly cookies via sessionInvalidateStrategy).
+      this.invalidateClientSession()
     }
   }
 }

@@ -1,4 +1,4 @@
-export const getIsBrowser = () => typeof window !== 'undefined'
+import { getIsBrowser } from './browser'
 
 export function readCookieString(cookieHeader: string, key: string): string | null {
   const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${key}=([^;]+)`))

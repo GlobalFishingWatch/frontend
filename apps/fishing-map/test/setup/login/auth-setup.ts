@@ -140,7 +140,7 @@ async function runLoginFlow(email: string, password: string) {
     log(`Access token captured from callback URL: Yes (length: ${accessToken.length})`)
 
     log('Exchanging access token for API tokens with GFWAPI...')
-    const tokens = await GFWAPI.getTokensWithAccessToken(accessToken)
+    const tokens = await GFWAPI.exchangeAccessToken(accessToken)
 
     log(`Token retrieved: ${tokens.token ? 'Yes (length: ' + tokens.token.length + ')' : 'No'}`)
     log(

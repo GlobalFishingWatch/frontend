@@ -30,14 +30,7 @@ export const GUEST_USER_TYPE = 'guest'
 export const CONCURRENT_ERROR_STATUS = 429
 
 export const ANONYMOUS_PERMISSIONS = [
-  { type: 'application', value: 'data-portal', action: 'map.layer-vessel' },
-  { type: 'application', value: 'data-portal', action: 'map.load' },
-  { type: 'application', value: 'data-portal', action: 'map.vessel-basic-info' },
-  { type: 'application', value: 'data-portal', action: 'map.vessel-select' },
-  { type: 'application', value: 'data-portal', action: 'map.workspace-share' },
-  { type: 'application', value: 'fishing-map', action: 'map.load' },
   { type: 'dataset', value: '*global*', action: 'basic-search' },
-  { type: 'dataset', value: 'jira-pipeline-80-chile-v1', action: 'read' },
   { type: 'dataset', value: '*public*', action: 'read' },
   { type: 'dataset', value: 'vessel-insights', action: 'read' },
   { type: 'insights', value: 'coverage', action: 'read' },
@@ -56,4 +49,4 @@ export const ANONYMOUS_PERMISSIONS = [
   { type: 'vessel-info', value: 'commercial-sources', action: 'basic-search' },
   { type: 'vessel-info', value: 'non-commercial-sources', action: 'basic-search' },
   { type: 'workspace', value: '*-public', action: 'read' },
-] as UserPermission[]
+] satisfies UserPermission[]

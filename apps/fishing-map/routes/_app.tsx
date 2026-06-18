@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from 'react'
+import { Suspense, useEffect, useMemo, useRef } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 
@@ -26,6 +26,7 @@ const rootRoute = getRouteApi('__root__')
 function AppLayout() {
   const router = useRouter()
   const { i18nState, user } = rootRoute.useLoaderData()
+  const ssrUserSeeded = useRef<boolean>(false)
 
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
@@ -34,8 +35,10 @@ function AppLayout() {
     if (i18nState?.initialLanguage) {
       store.dispatch(setUserLanguage(i18nState.initialLanguage as Locale))
     }
-    if (user) {
+    // eslint-disable-next-line react-hooks/refs
+    if (user && !ssrUserSeeded.current) {
       store.dispatch(setLoggedUser(user))
+      ssrUserSeeded.current = true
     }
 
     return store

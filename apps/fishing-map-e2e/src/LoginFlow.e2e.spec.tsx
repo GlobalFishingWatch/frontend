@@ -15,7 +15,7 @@ async function disableWelcomeModal(page: Page) {
 }
 
 // Drives the SSO popup login from a guest session and waits for the opener to
-// finish exchanging the access token (loginServerFn) and refetching data.
+// receive the session via BroadcastChannel after the popup exchanges the token.
 async function loginViaPopup(page: Page) {
   await disableWelcomeModal(page)
   await page.goto('/')
@@ -36,7 +36,8 @@ async function loginViaPopup(page: Page) {
   await popup.getByRole('textbox', { name: 'Password' }).fill(process.env.TEST_USER_PASSWORD || '')
   await popup.getByRole('button', { name: 'Login' }).click()
 
-  // The popup posts the access token to the opener and closes itself.
+  // The popup exchanges the access token server-side (loginServerFn), broadcasts the
+  // session to the opener via BroadcastChannel, and closes itself.
   await popup.waitForEvent('close')
 
   // Login is resolved when the sidebar user button flips from the loading spinner to

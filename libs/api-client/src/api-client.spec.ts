@@ -1121,6 +1121,35 @@ describe('api-client', () => {
 
         expect(result).toEqual(user)
       })
+
+      it('should login via refreshStrategy when there is no access token in storage', async () => {
+        let jar = ''
+        vi.stubGlobal('document', {
+          get cookie() {
+            return jar
+          },
+          set cookie(value: string) {
+            jar = value.split(';')[0]
+          },
+        })
+        const client = createApiClient()
+        const user = { id: 1, type: 'user', permissions: [], groups: [] }
+        const refreshStrategy = vi.fn(async () => {
+          jar = 'GFW_API_USER_TOKEN=new-token'
+          return { token: 'new-token', refreshToken: 'new-refresh' }
+        })
+        client.configure({
+          tokenStorage: createCookieTokenStorage('GFW_API_USER_TOKEN'),
+          refreshStrategy,
+        })
+
+        fetchMock.mockResolvedValue(new Response(JSON.stringify(user), { status: 200 }))
+
+        const result = await client.login({})
+
+        expect(result).toEqual(user)
+        expect(refreshStrategy).toHaveBeenCalledTimes(1)
+      })
     })
 
     describe('logout', () => {
@@ -1144,6 +1173,17 @@ describe('api-client', () => {
         expect(result).toBe(true)
         expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
         expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBeNull()
+      })
+
+      it('should call sessionInvalidateStrategy when clearing the session', async () => {
+        const client = createApiClient()
+        const sessionInvalidateStrategy = vi.fn()
+        client.configure({ sessionInvalidateStrategy })
+        fetchMock.mockResolvedValue(new Response(null, { status: 200 }))
+
+        await client.logout()
+
+        expect(sessionInvalidateStrategy).toHaveBeenCalledTimes(1)
       })
 
       it('should clear tokens even when API fails', async () => {
@@ -1380,6 +1420,33 @@ describe('api-client', () => {
 
         await expect(client.fetch('/protected')).rejects.toMatchObject({ status: 401 })
         expect(refreshStrategy).toHaveBeenCalledTimes(1)
+      })
+
+      it('should call sessionInvalidateStrategy when refresh is rejected with 401', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'invalid-refresh')
+        const sessionInvalidateStrategy = vi.fn()
+        client.configure({ sessionInvalidateStrategy })
+
+        fetchMock
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ message: 'Unauthorized' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ message: 'Invalid refresh' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+
+        await expect(client.fetch('/datasets/1')).rejects.toMatchObject({ status: 401 })
+        expect(sessionInvalidateStrategy).toHaveBeenCalledTimes(1)
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
       })
     })
   })

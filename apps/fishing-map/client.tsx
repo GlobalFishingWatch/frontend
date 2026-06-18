@@ -6,24 +6,18 @@ import { StartClient } from '@tanstack/react-start/client'
 import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client'
 
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { refreshTokenServerFn } from 'server-functions/auth.functions'
+import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions/auth.functions'
 
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 
-// Opt the shared client into the SSR auth model: the access token lives in a
-// JS-readable cookie (so the server can read it from the request) and token refresh
-// runs through the server function that holds the httpOnly refresh cookie.
 GFWAPI.configure({
   tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),
   refreshStrategy: () => refreshTokenServerFn(),
+  sessionInvalidateStrategy: () => clearAuthCookiesServerFn(),
 })
 
-// A failed dynamic import usually means the deployed assets changed under us
-// (stale HTML referencing old hashed chunks) — reload to pick up the new build.
-// Do NOT call event.preventDefault(): Vite only rethrows the original error when
-// defaultPrevented is false. Suppressing it makes the import promise resolve with
-// undefined, causing "Cannot read properties of undefined (reading 'default')".
+// A failed dynamic import usually means the deployed assets changed between deploys
 window.addEventListener('vite:preloadError', () => {
   window.location.reload()
 })

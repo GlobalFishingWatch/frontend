@@ -229,7 +229,7 @@ Authentication is handled in `test/setup/login/` and runs once before all tests.
 4. The browser navigates to `http://localhost:3000/login`, which immediately redirects to the GFW OAuth login page (`GFWAPI.getLoginUrl(callbackUrl)`).
 5. Playwright fills in the credentials and submits the form.
 6. On success, the GFW gateway redirects to `http://localhost:3000/auth/callback?access_token=…`. The proxy server captures the access token from the query string and resolves its internal promise.
-7. The access token is exchanged for long-lived API tokens via `GFWAPI.getTokensWithAccessToken()`.
+7. The access token is exchanged for long-lived API tokens via `GFWAPI.exchangeTokens()`.
 8. Tokens are saved to `.auth/tokens.json` for all tests to reuse.
 
 ### Why a proxy server?
