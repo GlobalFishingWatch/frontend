@@ -35,6 +35,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     if (!data.accessToken) return null
     const { setCookie } = await import('@tanstack/react-start/server')
     const tokens = await GFWAPI.exchangeAccessToken(data.accessToken)
+    console.log('🚀 ~ tokens:', tokens)
     setAuthCookies(setCookie, tokens)
     return GFWAPI.fetchUser({ token: tokens.token })
   })
@@ -59,17 +60,19 @@ export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
 
 // Invalidate the session on the gateway and clear both cookies (always clears, even
 // if the gateway call fails — logout intent is to drop the local session).
-export const logoutServerFn = createServerFn({ method: 'POST' }).handler(async (): Promise<boolean> => {
-  const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-  const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
-  try {
-    if (refreshToken) {
-      await GFWAPI.revokeRefreshToken(refreshToken)
+export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
+  async (): Promise<boolean> => {
+    const { getCookie, setCookie } = await import('@tanstack/react-start/server')
+    const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
+    try {
+      if (refreshToken) {
+        await GFWAPI.revokeRefreshToken(refreshToken)
+      }
+    } catch (e) {
+      console.warn('Logout gateway call failed', e)
+    } finally {
+      clearAuthCookies(setCookie)
     }
-  } catch (e) {
-    console.warn('Logout gateway call failed', e)
-  } finally {
-    clearAuthCookies(setCookie)
+    return true
   }
-  return true
-})
+)

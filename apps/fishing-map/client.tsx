@@ -6,7 +6,7 @@ import { StartClient } from '@tanstack/react-start/client'
 import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client'
 
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { refreshTokenServerFn } from 'server-functions/auth.server'
+import { refreshTokenServerFn } from 'server-functions/auth'
 
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
