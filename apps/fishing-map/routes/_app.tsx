@@ -11,7 +11,7 @@ import {
   hydrateWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { getAppRouterStore } from 'router/app-router-context'
-import { setupRouterSync } from 'router/router-sync'
+import { setupRouterSync, syncInitialLocation } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
 import { makeStore } from 'store'
 import type { Locale } from 'types'
@@ -30,6 +30,10 @@ function AppLayout() {
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
     const store = getAppRouterStore(router.options.context) ?? makeStore()
+    // Seed location from the URL synchronously (runs during SSR render and the first
+    // client render) so layout components don't briefly see the default HOME location
+    // — an effect-only sync would cause a hydration mismatch.
+    syncInitialLocation(router, store)
     if (i18nState?.initialLanguage) {
       store.dispatch(setUserLanguage(i18nState.initialLanguage as Locale))
     }
