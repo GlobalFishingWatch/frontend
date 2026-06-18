@@ -45,10 +45,17 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     /* Video on failure */
     video: 'retain-on-failure',
-    httpCredentials: {
-      username: process.env.BASIC_AUTH_USER || 'user',
-      password: process.env.BASIC_AUTH_PASS || 'password',
-    },
+    // Only enable basic auth when it is actually configured (deployed/preview envs).
+    // Setting it unconditionally makes the context credentialed, which blocks the
+    // app's cross-origin requests to the API gateway (whose CORS uses a wildcard
+    // origin) and breaks the guest/login flow against a local dev server.
+    ...(process.env.BASIC_AUTH_USER && {
+      httpCredentials: {
+        username: process.env.BASIC_AUTH_USER,
+        password: process.env.BASIC_AUTH_PASS || '',
+        origin: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3003',
+      },
+    }),
   },
   /* Configure projects for major browsers */
   projects: [
