@@ -1,14 +1,13 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { parse } from 'qs'
 
-import { ACCESS_TOKEN_STRING, GFWAPI } from '@globalfishingwatch/api-client'
+import { getAccessTokenFromUrl, GFWAPI } from '@globalfishingwatch/api-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLoginSource } from 'features/user/selectors/user.selectors'
-import { fetchUserThunk, setLoginSource } from 'features/user/user.slice'
+import { fetchUserThunk, setLoggedUser, setLoginSource } from 'features/user/user.slice'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,
@@ -22,9 +21,20 @@ import {
   selectVesselId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import { loginServerFn } from 'server-functions/auth'
 import { getIsBrowser } from 'utils/dom'
 
 const SUCCESS_LOGIN_MESSAGE = 'LOGIN_SUCCESS'
+const LOGIN_CHANNEL_NAME = 'gfw-login'
+const IS_POPUP_KEY = 'isPopup'
+const IS_POPUP_VALUE = 'true'
+
+export const getIsLoginPopup = () => {
+  if (!getIsBrowser()) return false
+  const isPopupParam =
+    new URLSearchParams(window.location.search).get(IS_POPUP_KEY) === IS_POPUP_VALUE
+  return isPopupParam || Boolean(window.opener)
+}
 
 export function usePopupLogin() {
   const dispatch = useAppDispatch()
@@ -36,7 +46,7 @@ export function usePopupLogin() {
     e?.preventDefault()
     e?.stopPropagation()
     dispatch(setWorkspaceSuggestSave(false))
-    const params = new URLSearchParams({ isPopup: 'true', hideHeader: 'true' })
+    const params = new URLSearchParams({ [IS_POPUP_KEY]: IS_POPUP_VALUE, hideHeader: 'true' })
 
     const { origin, pathname } = window.location
     const loginUrl = GFWAPI.getLoginUrl(`${origin}${pathname}?${params.toString()}`, {
@@ -47,7 +57,8 @@ export function usePopupLogin() {
     const height = 750
     const left = window.screenX + (window.outerWidth - width) / 2
     const top = window.screenY + (window.outerHeight - height) / 2
-    // This works because we have useLoginMessage hook initialized in the app listening to messages
+    // The opener listens via useLoginPopupListener (BroadcastChannel); the popup completes
+    // login with usePopupLoginCallback, broadcasts the session, and closes.
     window.open(loginUrl, 'SSO Login', `width=${width},height=${height},left=${left},top=${top}`)
   }
 }
@@ -82,45 +93,63 @@ export function useLoginPopupListener() {
   ])
 
   useEffect(() => {
-    const handleMessage = async (event: MessageEvent) => {
-      if (event.data?.type === SUCCESS_LOGIN_MESSAGE) {
-        try {
-          const user = await dispatch(
-            fetchUserThunk({ accessToken: event.data.accessToken })
-          ).unwrap()
-          await reloadDataAfterLogin()
-          if (user) {
-            trackEvent({
-              category: TrackCategory.User,
-              action: 'login',
-              label: loginSource ?? '',
-              other: {
-                user_id: user.id,
-                // email: user.email,
-              },
-            })
-          }
-          dispatch(setLoginSource(null))
-        } catch (e) {
-          console.warn(e)
-        }
-      }
-    }
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [dispatch, reloadDataAfterLogin, loginSource])
-
-  useEffect(() => {
-    const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
-    const accessToken = currentQuery[ACCESS_TOKEN_STRING]
-
-    if (window?.opener) {
-      window.opener.postMessage(
-        { type: SUCCESS_LOGIN_MESSAGE, accessToken },
-        window.location.origin
-      )
-      window.close()
+    if (getIsLoginPopup() || typeof BroadcastChannel === 'undefined') {
       return
     }
+    const channel = new BroadcastChannel(LOGIN_CHANNEL_NAME)
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.data?.type !== SUCCESS_LOGIN_MESSAGE) {
+        return
+      }
+      try {
+        const user = event.data.user ?? (await dispatch(fetchUserThunk({})).unwrap())
+        if (event.data.user) {
+          dispatch(setLoggedUser(event.data.user))
+        }
+        await reloadDataAfterLogin()
+        if (user) {
+          trackEvent({
+            category: TrackCategory.User,
+            action: 'login',
+            label: loginSource ?? '',
+            other: {
+              user_id: user.id,
+              // email: user.email,
+            },
+          })
+        }
+        dispatch(setLoginSource(null))
+      } catch (e) {
+        console.warn(e)
+      }
+    }
+    channel.addEventListener('message', handleMessage)
+    return () => {
+      channel.removeEventListener('message', handleMessage)
+      channel.close()
+    }
+  }, [dispatch, reloadDataAfterLogin, loginSource])
+}
+
+// avoid react strictMode calling loginServerFn twice
+let popupLoginHandled = false
+
+export function usePopupLoginCallback() {
+  useEffect(() => {
+    const accessToken = getAccessTokenFromUrl()
+    if (popupLoginHandled || !accessToken) return
+    popupLoginHandled = true
+    ;(async () => {
+      try {
+        const user = await loginServerFn({ data: { accessToken } })
+        const channel = new BroadcastChannel(LOGIN_CHANNEL_NAME)
+        channel.postMessage({ type: SUCCESS_LOGIN_MESSAGE, user })
+        channel.close()
+      } catch (e) {
+        console.warn('Popup login failed', e)
+      } finally {
+        window.close()
+      }
+    })()
   }, [])
 }
