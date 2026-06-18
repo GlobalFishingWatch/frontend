@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiFeedbackRouteImport } from './routes/api/feedback'
@@ -16,7 +17,6 @@ import { Route as ApiDownloadSurveyRouteImport } from './routes/api/downloadSurv
 import { Route as ApiCorrectionsRouteImport } from './routes/api/corrections'
 import { Route as AppVesselSearchRouteImport } from './routes/_app/vessel-search'
 import { Route as AppUserRouteImport } from './routes/_app/user'
-import { Route as AppLoginRouteImport } from './routes/_app/login'
 import { Route as ApiWorkspacesGeneratorIndexRouteImport } from './routes/api/workspaces-generator/index'
 import { Route as ApiOceanAreasIndexRouteImport } from './routes/api/ocean-areas/index'
 import { Route as AppCategoryIndexRouteImport } from './routes/_app/$category/index'
@@ -37,6 +37,11 @@ import { Route as AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImpor
 import { Route as AppCategoryWorkspaceIdPortsReportPortIdRouteImport } from './routes/_app/$category/$workspaceId/ports-report.$portId'
 import { Route as AppCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport } from './routes/_app/$category/$workspaceId/report/$datasetId/$areaId'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -69,11 +74,6 @@ const AppVesselSearchRoute = AppVesselSearchRouteImport.update({
 const AppUserRoute = AppUserRouteImport.update({
   id: '/user',
   path: '/user',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLoginRoute = AppLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiWorkspacesGeneratorIndexRoute =
@@ -184,7 +184,7 @@ const AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/login': typeof AppLoginRoute
+  '/login': typeof LoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -211,7 +211,7 @@ export interface FileRoutesByFullPath {
   '/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
 }
 export interface FileRoutesByTo {
-  '/login': typeof AppLoginRoute
+  '/login': typeof LoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -240,7 +240,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_app/login': typeof AppLoginRoute
+  '/login': typeof LoginRoute
   '/_app/user': typeof AppUserRoute
   '/_app/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -326,7 +326,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
-    | '/_app/login'
+    | '/login'
     | '/_app/user'
     | '/_app/vessel-search'
     | '/api/corrections'
@@ -356,6 +356,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
   ApiFeedbackRoute: typeof ApiFeedbackRoute
@@ -371,6 +372,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -418,13 +426,6 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/user'
       preLoaderRoute: typeof AppUserRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/login': {
-      id: '/_app/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AppLoginRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/workspaces-generator/': {
@@ -596,7 +597,6 @@ const AppCategoryWorkspaceIdRouteWithChildren =
   )
 
 interface AppRouteChildren {
-  AppLoginRoute: typeof AppLoginRoute
   AppUserRoute: typeof AppUserRoute
   AppVesselSearchRoute: typeof AppVesselSearchRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -607,7 +607,6 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppLoginRoute: AppLoginRoute,
   AppUserRoute: AppUserRoute,
   AppVesselSearchRoute: AppVesselSearchRoute,
   AppIndexRoute: AppIndexRoute,
@@ -621,6 +620,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,
   ApiFeedbackRoute: ApiFeedbackRoute,
