@@ -35,7 +35,6 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     if (!data.accessToken) return null
     const { setCookie } = await import('@tanstack/react-start/server')
     const tokens = await GFWAPI.exchangeAccessToken(data.accessToken)
-    console.log('🚀 ~ tokens:', tokens)
     setAuthCookies(setCookie, tokens)
     return GFWAPI.fetchUser({ token: tokens.token })
   })

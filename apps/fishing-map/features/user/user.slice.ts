@@ -8,6 +8,7 @@ import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
+import { broadcastLogout } from 'features/user/auth-channel'
 import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
@@ -88,17 +89,23 @@ export const fetchUserThunk = createAsyncThunk(
   }
 )
 
-export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
-  try {
-    // Server fn invalidates the session on the gateway (using the httpOnly refresh
-    // cookie) and clears both auth cookies.
-    await logoutServerFn()
-    dispatch(cleanCurrentWorkspaceData())
-    dispatch(removeGFWStaffOnlyDataviews())
-  } catch (e: any) {
-    console.warn(e)
+export const logoutUserThunk = createAsyncThunk(
+  'user/logout',
+  async ({ local }: { local?: boolean } = {}, { dispatch }) => {
+    try {
+      if (!local) {
+        // Server fn invalidates the session on the gateway (using the httpOnly refresh
+        // cookie) and clears both auth cookies.
+        await logoutServerFn()
+        broadcastLogout()
+      }
+      dispatch(cleanCurrentWorkspaceData())
+      dispatch(removeGFWStaffOnlyDataviews())
+    } catch (e: any) {
+      console.warn(e)
+    }
   }
-})
+)
 
 const userSlice = createSlice({
   name: 'user',
