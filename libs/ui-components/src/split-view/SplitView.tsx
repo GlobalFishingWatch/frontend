@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+
 import { Choice } from '../choice'
 import { Icon } from '../icon'
-
-import useSmallScreen from './use-small-screen'
 
 import styles from './SplitView.module.css'
 

@@ -1,9 +1,16 @@
-import { useCallback, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useSyncExternalStore } from 'react'
 
 export const SMALL_PHONE_BREAKPOINT = 360
 export const DEFAULT_BREAKPOINT = 800
 
-export function useSmallScreen(width = DEFAULT_BREAKPOINT) {
+interface UseSmallScreenOptions {
+  initialScreenWidth?: number
+  onScreenWidthChange?: (screenWidth: number) => void
+}
+
+export function useSmallScreen(width = DEFAULT_BREAKPOINT, options: UseSmallScreenOptions = {}) {
+  const { initialScreenWidth, onScreenWidthChange } = options
+
   const subscribe = useCallback(
     (cb: () => void) => {
       const mql = window.matchMedia(`(max-width: ${width}px)`)
@@ -13,9 +20,24 @@ export function useSmallScreen(width = DEFAULT_BREAKPOINT) {
     [width]
   )
 
-  return useSyncExternalStore(
+  const getServerSnapshot = useCallback(
+    () => (initialScreenWidth != null ? initialScreenWidth <= width : false),
+    [initialScreenWidth, width]
+  )
+
+  const isSmallScreen = useSyncExternalStore(
     subscribe,
     () => window.matchMedia(`(max-width: ${width}px)`).matches,
-    () => false // Server-side rendering fallback, can be set to true if you want to render the small screen version on the server
+    getServerSnapshot
   )
+
+  useEffect(() => {
+    if (!onScreenWidthChange) return
+    const report = () => onScreenWidthChange(window.innerWidth)
+    report()
+    window.addEventListener('resize', report, { passive: true })
+    return () => window.removeEventListener('resize', report)
+  }, [onScreenWidthChange])
+
+  return isSmallScreen
 }
