@@ -1,21 +1,20 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { getIsTimeoutError, GFWAPI } from '@globalfishingwatch/api-client'
+import { getGuestUser, GFWAPI, isTransientError } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
-import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
+import { loginServerFn, logoutServerFn } from 'server-functions/auth.server'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { removeDocumentCookie, writeDocumentCookie } from 'utils/cookies'
 import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
@@ -56,21 +55,29 @@ export const fetchUserThunk = createAsyncThunk(
   'user/fetch',
   async ({ guest, accessToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
     if (guest) {
-      return await GFWAPI.fetchGuestUser()
+      return getGuestUser()
     }
     try {
-      const user = await GFWAPI.login({ accessToken })
-      if (GFWAPI.token) {
-        writeDocumentCookie(USER_TOKEN_COOKIE_KEY, GFWAPI.token)
+      // With an SSO access token, exchange it server-side (sets the JS access cookie +
+      // httpOnly refresh cookie). Without one, resolve the existing session — GFWAPI
+      // reads the access cookie and silently refreshes via the server fn if expired.
+      const user = accessToken
+        ? await loginServerFn({ data: { accessToken } })
+        : await GFWAPI.login({})
+      if (!user) {
+        return getGuestUser()
       }
       return user
     } catch (e: any) {
+      // Only a transient server failure (timeout / 5xx) should be rethrown so the
+      // session is retried. Any other failure (incl. "no session" with no status)
+      // falls back to the guest user — never leave the app without a user.
       const cause = e?.cause ?? e
-      const isTransient = getIsTimeoutError(cause) || (cause?.status as number) >= 500
+      const isTransient = isTransientError(cause)
       if (isTransient) {
         throw e
       }
-      return await GFWAPI.fetchGuestUser()
+      return getGuestUser()
     }
   },
   {
@@ -83,8 +90,9 @@ export const fetchUserThunk = createAsyncThunk(
 
 export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
   try {
-    await GFWAPI.logout()
-    removeDocumentCookie(USER_TOKEN_COOKIE_KEY)
+    // Server fn invalidates the session on the gateway (using the httpOnly refresh
+    // cookie) and clears both auth cookies.
+    await logoutServerFn()
     dispatch(cleanCurrentWorkspaceData())
     dispatch(removeGFWStaffOnlyDataviews())
   } catch (e: any) {

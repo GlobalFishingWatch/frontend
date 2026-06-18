@@ -97,11 +97,18 @@ function App() {
   const onContentPanelWidthChange = usePersistedCookieNumber(CONTENT_PANEL_WIDTH_COOKIE_KEY)
   const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
   const onScreenWidthChange = usePersistedCookieNumber(SCREEN_WIDTH_COOKIE_KEY)
+  const ssrUser = rootRoute.useLoaderData({ select: (d) => d?.user })
   const { replaceQueryParams } = useReplaceQueryParams()
 
   useEffect(() => {
-    dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
+    // SSR already resolved the user (logged-in or guest) and hydrated the store, so skip
+    // the redundant /auth/me. Only fetch when SSR gave us nothing (transient failure on
+    // the server, or a non-SSR navigation) — an expiring token is refreshed lazily on
+    // the next 401 anyway.
+    if (!ssrUser) {
+      dispatch(fetchUserThunk({ guest: false }))
+    }
+  }, [dispatch, ssrUser])
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })

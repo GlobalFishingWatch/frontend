@@ -1,13 +1,12 @@
+import { createServerFn } from '@tanstack/react-start'
+
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { readRequestCookieString } from 'utils/cookies'
 
-// Server-only: resolves the logged-in user during SSR by reading the access
-// token from the request's Cookie header (NOT the GFWAPI singleton, whose token
-// getter is client-only and whose state would leak across concurrent requests).
-export async function fetchUserFromRequest(request: Request): Promise<UserData | null> {
+async function fetchUserFromRequest(request: Request): Promise<UserData | null> {
   const cookieHeader = request.headers.get('cookie')
   if (!cookieHeader) return null
 
@@ -28,3 +27,11 @@ export async function fetchUserFromRequest(request: Request): Promise<UserData |
     return null
   }
 }
+
+export const getUserState = createServerFn({ method: 'GET' }).handler(
+  async (): Promise<{ user: UserData | null }> => {
+    const { getRequest } = await import('@tanstack/react-start/server')
+    const request = getRequest()
+    return { user: await fetchUserFromRequest(request) }
+  }
+)

@@ -18,4 +18,7 @@ export const COLOR_GRADIENT =
 export const SIDEBAR_WIDTH_COOKIE_KEY = 'sidebarWidth'
 export const CONTENT_PANEL_WIDTH_COOKIE_KEY = 'contentPanelWidth'
 export const SCREEN_WIDTH_COOKIE_KEY = 'screenWidth'
+// Access token: JS-readable (client builds Bearer headers from it; SSR reads it from the request).
 export const USER_TOKEN_COOKIE_KEY = 'GFW_API_USER_TOKEN'
+// Refresh token: httpOnly (only the auth server functions touch it).
+export const USER_REFRESH_TOKEN_COOKIE_KEY = 'GFW_API_REFRESH_TOKEN'

@@ -54,7 +54,7 @@ async function loadUser(): Promise<{ user: UserData | null }> {
   if (!import.meta.env.SSR) {
     return { user: null }
   }
-  const { getUserState } = await import('features/user/getUserState')
+  const { getUserState } = await import('server-functions/user.server')
   return getUserState()
 }
 
