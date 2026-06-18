@@ -1,7 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { getGuestUser, GFWAPI, isTransientError } from '@globalfishingwatch/api-client'
+import {
+  getGuestUser,
+  GFWAPI,
+  isSessionError,
+  isTransientError,
+} from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
@@ -74,8 +79,10 @@ export const fetchUserThunk = createAsyncThunk(
       // session is retried. Any other failure (incl. "no session" with no status)
       // falls back to the guest user — never leave the app without a user.
       const cause = e?.cause ?? e
-      const isTransient = isTransientError(cause)
-      if (isTransient) {
+      if (isSessionError(cause) || isSessionError(e)) {
+        return getGuestUser()
+      }
+      if (isTransientError(cause)) {
         throw e
       }
       return getGuestUser()
@@ -154,7 +161,8 @@ const userSlice = createSlice({
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
       state.expired = false
-      state.data = null
+      state.status = AsyncReducerStatus.Finished
+      state.data = getGuestUser()
     })
   },
 })

@@ -1,12 +1,13 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 
-type Tokens = { token: string; refreshToken: string }
-type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
+export type Tokens = { token: string; refreshToken: string }
+export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
+type CookieGetter = (key: string) => string | undefined
 
 const COOKIE_MAX_AGE_1_YEAR = 60 * 60 * 24 * 365
 
@@ -19,12 +20,12 @@ const accessCookieOptions = {
 
 const refreshCookieOptions = { ...accessCookieOptions, httpOnly: true }
 
-const setAuthCookies = (setCookie: CookieSetter, { token, refreshToken }: Tokens) => {
+export const setAuthCookies = (setCookie: CookieSetter, { token, refreshToken }: Tokens) => {
   setCookie(USER_TOKEN_COOKIE_KEY, token, accessCookieOptions)
   setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, refreshToken, refreshCookieOptions)
 }
 
-const clearAuthCookies = (setCookie: CookieSetter) => {
+export const clearAuthCookies = (setCookie: CookieSetter) => {
   setCookie(USER_TOKEN_COOKIE_KEY, '', { ...accessCookieOptions, maxAge: 0 })
   setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, '', { ...refreshCookieOptions, maxAge: 0 })
 }
@@ -39,18 +40,27 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     return GFWAPI.fetchUser({ token: tokens.token })
   })
 
+// Reads the refresh cookie, reloads tokens and persists them. Throws a 401 when there
+// is no refresh cookie. Shared between the refresh RPC and SSR user resolution.
+export async function refreshAuthTokens(
+  getCookie: CookieGetter,
+  setCookie: CookieSetter
+): Promise<Tokens> {
+  const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
+  if (!refreshToken) {
+    const error = new Error('No refresh token') as Error & { status: number }
+    error.status = 401
+    throw error
+  }
+  const tokens = await GFWAPI.reloadTokens(refreshToken)
+  setAuthCookies(setCookie, tokens)
+  return tokens
+}
+
 export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
   async (): Promise<Tokens> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
-    if (!refreshToken) {
-      const error = new Error('No refresh token') as Error & { status: number }
-      error.status = 401
-      throw error
-    }
-    const tokens = await GFWAPI.reloadTokens(refreshToken)
-    setAuthCookies(setCookie, tokens)
-    return tokens
+    return refreshAuthTokens(getCookie, setCookie)
   }
 )
 
@@ -71,7 +81,11 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
         await GFWAPI.revokeRefreshToken(refreshToken)
       }
     } catch (e) {
-      console.warn('Logout gateway call failed', e)
+      // 401 means the refresh token is already invalid/revoked on the gateway — the
+      // local session is still cleared below. Only warn on unexpected failures.
+      if (!getIsUnauthorizedError(e as { status?: number })) {
+        console.warn('Logout gateway call failed', e)
+      }
     } finally {
       clearAuthCookies(setCookie)
     }
