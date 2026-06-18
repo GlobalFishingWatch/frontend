@@ -1122,8 +1122,8 @@ describe('api-client', () => {
         expect(result).toEqual(user)
       })
 
-      it('should login via refreshStrategy when there is no access token in storage', async () => {
-        let jar = ''
+      it('should login via refreshStrategy when access token is expired in cookie', async () => {
+        let jar = 'GFW_API_USER_TOKEN=expired-token'
         vi.stubGlobal('document', {
           get cookie() {
             return jar
@@ -1143,12 +1143,40 @@ describe('api-client', () => {
           refreshStrategy,
         })
 
-        fetchMock.mockResolvedValue(new Response(JSON.stringify(user), { status: 200 }))
+        fetchMock
+          .mockResolvedValueOnce(
+            new Response(JSON.stringify({ message: 'Unauthorized' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+          .mockResolvedValueOnce(new Response(JSON.stringify(user), { status: 200 }))
 
         const result = await client.login({})
 
         expect(result).toEqual(user)
         expect(refreshStrategy).toHaveBeenCalledTimes(1)
+      })
+
+      it('should not call refreshStrategy on login when there is no session (post-logout)', async () => {
+        let jar = ''
+        vi.stubGlobal('document', {
+          get cookie() {
+            return jar
+          },
+          set cookie(value: string) {
+            jar = value.split(';')[0]
+          },
+        })
+        const client = createApiClient()
+        const refreshStrategy = vi.fn()
+        client.configure({
+          tokenStorage: createCookieTokenStorage('GFW_API_USER_TOKEN'),
+          refreshStrategy,
+        })
+
+        await expect(client.login({})).rejects.toThrow('No login token provided')
+        expect(refreshStrategy).not.toHaveBeenCalled()
       })
     })
 

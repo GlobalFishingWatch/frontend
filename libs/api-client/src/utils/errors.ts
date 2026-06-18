@@ -77,9 +77,23 @@ export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
   return isUnauthorized(error) || isForbidden(error)
 }
 
-// Transient = a retry-worthy network/server hiccup, NOT an auth rejection.
-// A bare network failure (timeout / no status) and any 5xx are transient; a
-// 401/403 is an auth rejection and must NOT be retried as if transient.
+const NO_SESSION_MESSAGES = [
+  'No refresh token',
+  'No login token provided',
+  'Invalid refresh token',
+  'Invalid access token',
+] as const
+
+// Auth/session rejection — incl. server-fn errors that lose `status` after deserialization.
+export function isSessionError(error?: { status?: number; message?: string } | null) {
+  if (!error) return false
+  if (isAuthError(error) || getIsUnauthorizedError(error)) return true
+  const message = error.message ?? ''
+  return NO_SESSION_MESSAGES.some((m) => message.includes(m))
+}
+
 export const isTransientError = (error?: ResponseError | { status?: number; message?: string }) =>
-  !isAuthError(error) &&
-  (getIsTimeoutError(error) || !(error as { status?: number })?.status || (error as any).status >= 500)
+  !isSessionError(error) &&
+  (getIsTimeoutError(error) ||
+    !(error as { status?: number })?.status ||
+    (error as any).status >= 500)
