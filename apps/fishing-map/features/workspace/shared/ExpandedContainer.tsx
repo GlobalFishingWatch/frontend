@@ -4,6 +4,7 @@ import {
   arrow,
   autoUpdate,
   detectOverflow,
+  flip,
   FloatingArrow,
   FloatingPortal,
   offset,
@@ -64,15 +65,10 @@ function ExpandedContainer({
           state[property] = key === 'right' ? state[property] - value : state[property] + value
         }
       })
-      if (overflow.bottom > 0 && state.elements.floating) {
-        state.elements.floating.scrollIntoView({
-          behavior: 'smooth',
-          block: 'end',
-        })
-      }
       return state
     },
   }
+  const overflowBoundary = overflowDOMId ? document.getElementById(overflowDOMId) : null
   const { refs, floatingStyles, context } = useFloating({
     open: disabled ? false : isOpen,
     strategy: 'fixed',
@@ -86,12 +82,14 @@ function ExpandedContainer({
     },
     middleware: [
       offset(5),
+      flip({
+        fallbackPlacements: ['top'],
+        ...(overflowBoundary ? { boundary: overflowBoundary } : {}),
+      }),
       ...(overflowDOMId ? [overflowMiddlware] : []),
       shift({
         padding: 8,
-        ...(overflowDOMId && document.getElementById(overflowDOMId)
-          ? { boundary: document.getElementById(overflowDOMId)! }
-          : {}),
+        ...(overflowBoundary ? { boundary: overflowBoundary } : {}),
       }),
       size({
         apply({ elements }) {
@@ -110,14 +108,7 @@ function ExpandedContainer({
   })
 
   useEffect(() => {
-    if (disabled) {
-      setIsOpen(false)
-      return
-    }
-    if (visible !== isOpen) {
-      setIsOpen(visible)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsOpen(disabled ? false : visible)
   }, [visible, disabled])
 
   const click = useClick(context)
