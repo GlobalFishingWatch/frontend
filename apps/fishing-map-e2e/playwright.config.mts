@@ -17,7 +17,7 @@ export default defineConfig({
   testMatch: /.*\.e2e\.spec\.(ts|tsx)$/,
 
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   timeout: 180 * 1000, // 3 minutes per test

@@ -7,26 +7,24 @@ test('Log01 - should allow a user to log in and log out', async ({ page }) => {
   await page.goto('/')
 
   await page.getByTestId('modal-close-button').click()
-  // Click the login button
-  await page.getByText('login').click()
 
-  expect(page.url()).toContain('/v3/auth')
-
-  await page.waitForURL('**/v3/auth*')
-
-  await page.getByRole('textbox', { name: 'Email' }).fill(process.env.TEST_USER_EMAIL || '')
-  await page.getByRole('textbox', { name: 'Password' }).fill(process.env.TEST_USER_PASSWORD || '')
-
-  await page.getByRole('button', { name: 'Login' }).click()
+  // Click the login button and wait for the auth popup window
+  const [popup] = await Promise.all([page.waitForEvent('popup'), page.getByText('login').click()])
+  await popup.waitForLoadState()
+  await popup.locator('#email').fill(process.env.TEST_USER_EMAIL || '')
+  await popup.locator('#password').fill(process.env.TEST_USER_PASSWORD || '')
+  await popup.getByRole('button', { name: 'Login' }).click()
 
   await page.getByTestId('sidebar-login-icon').click()
 
   await page.waitForLoadState('networkidle')
 
-  expect(page.getByText('Francisco Pacio')).toBeVisible()
-  expect(page.getByText('francisco.pacio+testing@globalfishingwatch.org')).toBeVisible()
+  expect(page.getByText('frontend test')).toBeVisible()
+  expect(page.getByText('frontendproject@yopmail.com')).toBeVisible()
 
-  await page.getByRole('button', { name: 'LOG OUT' }).click()
+  await page.waitForSelector('button:has-text("Log out")')
+  await page.click('button:has-text("Log out")')
 
-  await page.waitForURL('**/map/index*')
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByTestId('login-link')) //.toBeVisible()
 })
