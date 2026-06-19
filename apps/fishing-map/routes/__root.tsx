@@ -2,6 +2,8 @@
 
 import type { ReactNode } from 'react'
 import { Suspense } from 'react'
+import robotoLatin400 from '@fontsource/roboto/files/roboto-latin-400-normal.woff2?url'
+import robotoLatin500 from '@fontsource/roboto/files/roboto-latin-500-normal.woff2?url'
 // import { TanStackDevtools } from '@tanstack/react-devtools'
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import {
@@ -172,7 +174,21 @@ export const Route = createRootRoute({
     const title = `GFW | ${t('common.map')}`
     const description = t('workspace.siteDescription.default') || defaultDescription
     const meta = getDefaultMeta(title, description)
-    meta.links.unshift({ rel: 'stylesheet', href: appCss })
+    meta.links.unshift(
+      { rel: 'stylesheet', href: appCss },
+      {
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        href: robotoLatin400,
+      },
+      {
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        href: robotoLatin500,
+      }
+    )
     return meta
   },
 
