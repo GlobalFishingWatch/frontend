@@ -60,19 +60,35 @@ async function loadPanelWidths() {
   if (!import.meta.env.SSR) {
     return EMPTY_PANEL_WIDTHS
   }
-  const { getSidebarWidthState } = await import('server-functions/screen-size.functions')
-  return getSidebarWidthState()
+  const { getPanelWidthsFromRequest } = await import('server-functions/screen-size.functions')
+  return getPanelWidthsFromRequest()
 }
 
 async function loadUser(): Promise<{ user: UserData | null }> {
   if (!import.meta.env.SSR) {
     return { user: null as UserData | null }
   }
-  const { getUserState } = await import('server-functions/user.functions')
-  return getUserState()
+  const { resolveUserStateFromRequest } = await import('server-functions/user.functions')
+  return resolveUserStateFromRequest()
 }
 
 const rootRouteApi = getRouteApi('__root__')
+
+const fontFaceCss = `
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url(${robotoLatin400}) format('woff2');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-display: optional;
+  src: url(${robotoLatin500}) format('woff2');
+}`
 
 function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode; lang: string }>) {
   return (
@@ -105,7 +121,7 @@ function RootComponent() {
   if (import.meta.env.VITEST) {
     return (
       <Suspense fallback={null}>
-        <I18nSSRProvider>
+        <I18nSSRProvider serverState={i18nState}>
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
@@ -115,7 +131,7 @@ function RootComponent() {
   return (
     <RootDocument lang={toDocumentLang(i18nState?.initialLanguage)}>
       <Suspense fallback={null}>
-        <I18nSSRProvider>
+        <I18nSSRProvider serverState={i18nState}>
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
@@ -189,7 +205,7 @@ export const Route = createRootRoute({
         crossOrigin: 'anonymous',
       }
     )
-    return meta
+    return { ...meta, styles: [{ children: fontFaceCss }] }
   },
 
   component: RootComponent,
