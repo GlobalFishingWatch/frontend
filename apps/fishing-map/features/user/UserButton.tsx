@@ -21,7 +21,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './UserButton.module.css'
 
-const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
+const UserButton = ({ className = '' }: { className?: string }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const isUserLocation = useSelector(selectIsUserLocation)
@@ -60,11 +60,12 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
         <LoginLink
+          dataTestId="sidebar-login-link"
           tooltip={t((t) => t.common.login)}
           className={styles.loginLinkButton}
           loginSource="user-icon"
         >
-          <Icon icon="user" testId={testId} />
+          <Icon icon="user" />
         </LoginLink>
       ) : (
         <Tooltip
@@ -81,7 +82,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
             to="/user"
             search={{ ...DEFAULT_WORKSPACE_LIST_VIEWPORT }}
             replace
-            data-testid={testId}
+            data-testid="sidebar-user-link"
             className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
           >
             {userData ? initials : <Icon icon="user" className="print-hidden" />}

@@ -387,7 +387,7 @@ describe('User Datasets', () => {
 
     // Delete the dataset
     window.confirm = () => true
-    await userEvent.click(getByTestId('sidebar-login-icon'))
+    await userEvent.click(getByTestId('sidebar-user-link'))
     await userEvent.click(getByText('Dataset'))
 
     await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
