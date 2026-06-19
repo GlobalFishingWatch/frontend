@@ -74,7 +74,7 @@ const InsightFishing = ({
       ) : error ? (
         <InsightError error={error} />
       ) : (
-        <div>
+        <div className={styles.content}>
           {eventsInNoTakeMpas?.length !== 0 ? (
             <span>
               {t((t) => t.vessel.insights.fishingEventsInNoTakeMpas, {

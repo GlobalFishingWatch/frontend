@@ -214,11 +214,7 @@ const getUnmatchedInputs = (
   vessels: VesselGroupVesselIdentity[],
   input: ParsedSearchInput
 ): string[] => {
-  const identities = vessels.flatMap((v) =>
-    v.identity
-      ? getVesselIdentities(v.identity, { identitySource: VesselIdentitySourceEnum.SelfReported })
-      : []
-  )
+  const identities = vessels.flatMap((v) => (v.identity ? getVesselIdentities(v.identity) : []))
   if (input.type === 'ids') {
     const matched = new Set(identities.map((i) => (i as any)[input.property]).filter(Boolean))
     return input.values.filter((v) => !matched.has(v))
