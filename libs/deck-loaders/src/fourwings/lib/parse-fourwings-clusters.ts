@@ -1,5 +1,5 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import { PbfReader as Pbf } from 'pbf'
+import Pbf from 'pbf'
 
 import { CONFIG_BY_INTERVAL } from '../helpers'
 import type { BBox } from '../helpers/cells'

@@ -1,5 +1,5 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import { PbfReader as Pbf } from 'pbf'
+import Pbf from 'pbf'
 
 import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
@@ -166,7 +166,7 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
     return assignFourwingsFeaturesByteLength([])
   }
 
-  const features = Array.from(
+  const features: FourwingsFeature[] = Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),
