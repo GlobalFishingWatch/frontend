@@ -90,7 +90,11 @@
       "dependsOn": ["build:app"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "node .output/server/index.mjs",
+        "commands": [
+          "pkill -f '.output/server/index.mjs' || true",
+          "node .output/server/index.mjs"
+        ],
+        "parallel": false,
         "cwd": "apps/fishing-map"
       }
     },
