@@ -9,6 +9,22 @@ import svgr from 'vite-plugin-svgr'
 
 export const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
 
+const LOCALE_JSON_CACHE_HEADERS = {
+  'cache-control': 'public, max-age=31536000, immutable',
+} as const
+
+const LOCALE_JSON_NO_CACHE_HEADERS = {
+  'cache-control': 'no-store',
+} as const
+
+function localeJsonRouteRules(basePath: string, mode: string) {
+  const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : LOCALE_JSON_NO_CACHE_HEADERS
+  return {
+    '/locales/**': { headers },
+    [`${basePath}/locales/**`]: { headers },
+  }
+}
+
 export const plugins = [
   nxViteTsPaths(),
   tanstackStart({
@@ -47,6 +63,7 @@ export default defineConfig(({ command, mode }) => {
         nitro({
           baseURL: basePath,
           sourcemap: true,
+          routeRules: localeJsonRouteRules(basePath, mode),
           compressPublicAssets: {
             gzip: true,
             brotli: true,
@@ -83,6 +100,11 @@ export default defineConfig(({ command, mode }) => {
         }),
     ],
     envPrefix: ['VITE_', 'i18n_'],
+    define: {
+      __BUILD_ID__: JSON.stringify(
+        process.env.BUILD_ID || process.env.GITHUB_SHA?.slice(0, 12) || String(Date.now())
+      ),
+    },
     environments: {
       client: {
         build: {

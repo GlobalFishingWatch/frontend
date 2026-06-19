@@ -1,12 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { t } from 'features/i18n/i18n'
 import User from 'features/user/User'
-import { getRouteHead, getTFunction } from 'router/router.meta'
+import { getRouteHead } from 'router/router.meta'
 
 export const Route = createFileRoute('/_app/user')({
   component: User,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
-    return getRouteHead({ category: t('user.title'), t })
-  },
+  head: () => getRouteHead({ category: t((s) => s.user.title) }),
 })
