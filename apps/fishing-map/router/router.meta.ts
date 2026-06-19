@@ -9,7 +9,10 @@ export type TranslateFn = (key: string) => string
 const PREFIX = 'GFW'
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 
-export const getDefaultMeta = (title: string, description: string) => ({
+export const getDefaultMeta = (
+  title: string,
+  description: string
+): { meta: Record<string, string>[]; links: Record<string, string>[] } => ({
   meta: [
     { charSet: 'utf-8' },
     {

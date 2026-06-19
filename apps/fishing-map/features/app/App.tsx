@@ -100,6 +100,7 @@ function App() {
     // the redundant /auth/me. Only fetch when SSR gave us nothing (transient failure on
     // the server, or a non-SSR navigation) — an expiring token is refreshed lazily on
     // the next 401 anyway.
+    console.log('[DEBUG App] ssrUser:', ssrUser ? { id: ssrUser.id, type: ssrUser.type } : ssrUser)
     if (!ssrUser) {
       dispatch(fetchUserThunk({ guest: false }))
     }
