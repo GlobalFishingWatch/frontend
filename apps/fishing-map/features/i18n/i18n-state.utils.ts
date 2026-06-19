@@ -1,6 +1,6 @@
 import type i18next from 'i18next'
 
-import { FALLBACK_LNG, normalizeI18nLanguage } from './i18n.config'
+import { normalizeI18nLanguage } from './i18n.config'
 
 export type I18nServerState = {
   initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
@@ -34,11 +34,9 @@ export function normalizeI18nServerState(state: I18nServerState): I18nServerStat
 export function serializeI18nState(instance: typeof i18next): I18nServerState {
   const initialLanguage = instance.resolvedLanguage || instance.language
   const initialI18nStore: I18nServerState['initialI18nStore'] = {}
-  for (const lng of new Set([initialLanguage, FALLBACK_LNG])) {
-    const data = instance.services.resourceStore.data[lng]
-    if (data) {
-      initialI18nStore[lng] = data as Record<string, Record<string, unknown>>
-    }
+  const data = instance.services.resourceStore.data[initialLanguage]
+  if (data) {
+    initialI18nStore[initialLanguage] = data as Record<string, Record<string, unknown>>
   }
   return {
     initialI18nStore,

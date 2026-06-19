@@ -2,8 +2,9 @@ import type i18next from 'i18next'
 import { AsyncLocalStorage } from 'node:async_hooks'
 
 import { __setServerI18nAccessor } from 'features/i18n/i18n'
+import { FALLBACK_LNG } from 'features/i18n/i18n.config'
 
-import { createI18nForLanguage, createRequestI18n, FALLBACK_LNG } from './i18n.server'
+import { createI18nForLanguage, createRequestI18n } from './i18n.server'
 
 type I18nInstance = typeof i18next
 

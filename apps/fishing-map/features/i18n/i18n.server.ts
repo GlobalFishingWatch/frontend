@@ -8,7 +8,6 @@ import { readCookie } from '@globalfishingwatch/api-client'
 
 import {
   DEFAULT_NAMESPACE,
-  FALLBACK_LNG,
   type i18nSupportedLocale,
   normalizeI18nLanguage,
   resolveLanguageFromSources,
@@ -23,7 +22,7 @@ export { normalizeI18nServerState, serializeI18nState } from './i18n-state.utils
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-export { FALLBACK_LNG, normalizeI18nLanguage, parseSupportedLanguage } from './i18n.config'
+export { normalizeI18nLanguage, parseSupportedLanguage } from './i18n.config'
 
 const LOCALES_DIR = join(__dirname, '..', '..', 'public', 'locales')
 
@@ -67,14 +66,12 @@ function getLanguageResources(language: string): Record<string, unknown> {
 export function createI18nForLanguage(language: string): typeof i18next {
   const lng = normalizeI18nLanguage(language)
   const resources: Resource = {}
-  for (const resourceLng of new Set([lng, FALLBACK_LNG])) {
-    resources[resourceLng] = getLanguageResources(resourceLng) as ResourceLanguage
-  }
+  resources[lng] = getLanguageResources(lng) as ResourceLanguage
 
   const instance = i18next.createInstance()
   instance.use(initReactI18next).init({
     lng,
-    fallbackLng: FALLBACK_LNG,
+    fallbackLng: lng,
     supportedLngs: SUPPORTED_LANGUAGES,
     ns: SERVER_NAMESPACES,
     defaultNS: DEFAULT_NAMESPACE,

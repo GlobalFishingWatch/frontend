@@ -2,7 +2,7 @@
 
 import 'i18next'
 
-import type { DEFAULT_NAMESPACE, FALLBACK_LNG } from './i18n'
+import type { DEFAULT_NAMESPACE, FALLBACK_LNG } from './i18n.config'
 import type AppResources from './i18n.types'
 
 type LibraryResources = {

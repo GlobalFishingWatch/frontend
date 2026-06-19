@@ -18,13 +18,6 @@ import {
 import { getDehydratedRootI18nState } from 'features/i18n/i18n.dehydrated-state'
 import { type I18nServerState, serializeI18nState } from 'features/i18n/i18n-state.utils'
 
-export {
-  DEFAULT_NAMESPACE,
-  FALLBACK_LNG,
-  IS_TEST_ENV,
-  SUPPORTED_LANGUAGES,
-} from 'features/i18n/i18n.config'
-
 export type { I18nServerState } from 'features/i18n/i18n-state.utils'
 
 const USE_LOCAL_SHARED_LABELS = IS_DEVELOPMENT_ENV && !IS_TEST_ENV
@@ -51,7 +44,6 @@ export function getLoadedI18nState(): I18nServerState | undefined {
 if (!import.meta.env.SSR) {
   // Read at init time so TanStack Router's bootstrap payload is available.
   const ssrState: I18nServerState | undefined = getDehydratedRootI18nState()
-  console.log('🚀 ~ ssrState:', ssrState)
 
   i18n
     // load translation using http -> see /public/locales
@@ -87,7 +79,7 @@ if (!import.meta.env.SSR) {
       detection: CLIENT_LANGUAGE_DETECTION,
       ns: CLIENT_NAMESPACES,
       defaultNS: DEFAULT_NAMESPACE,
-      fallbackLng: FALLBACK_LNG,
+      fallbackLng: ssrState?.initialLanguage ?? FALLBACK_LNG,
       supportedLngs: SUPPORTED_LANGUAGES,
       debug: import.meta.env.VITE_I18N_DEBUG === 'true',
       interpolation: {
