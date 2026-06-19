@@ -256,6 +256,7 @@ export default function ReportVesselsGraph({
             pageQueryParam={pageQueryParam}
           />
         }
+        barLabelInterval={0}
         labelKey={REPORT_VESSELS_GRAPH_LABEL_KEY}
         individualTooltip={<ReportVesselsIndividualTooltip />}
         individualItem={<VesselGraphLink />}

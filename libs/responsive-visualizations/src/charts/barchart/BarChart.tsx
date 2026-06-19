@@ -24,6 +24,7 @@ export function ResponsiveBarChart({
   individualValueKey = DEFAULT_INDIVIDUAL_ITEM_KEY,
   labelKey = DEFAULT_LABEL_KEY,
   barLabel,
+  barLabelInterval,
   aggregatedTooltip,
   individualTooltip,
   individualItem,
@@ -64,6 +65,7 @@ export function ResponsiveBarChart({
           labelKey={labelKey}
           onClick={onIndividualItemClick}
           barLabel={barLabel}
+          barLabelInterval={barLabelInterval}
           customTooltip={individualTooltip}
           customItem={individualItem}
           icon={individualIcon}
@@ -77,6 +79,7 @@ export function ResponsiveBarChart({
           labelKey={labelKey}
           onClick={onAggregatedItemClick}
           barLabel={barLabel}
+          barLabelInterval={barLabelInterval}
           customTooltip={aggregatedTooltip}
           barValueFormatter={barValueFormatter}
         />

@@ -12,6 +12,7 @@ export function AggregatedBarChart({
   data,
   color,
   barLabel,
+  barLabelInterval = 'equidistantPreserveStart',
   valueKeys,
   labelKey,
   onClick,
@@ -81,7 +82,7 @@ export function AggregatedBarChart({
       )}
       <XAxis
         dataKey={labelKey}
-        interval="equidistantPreserveStart"
+        interval={barLabelInterval}
         tickLine={false}
         minTickGap={-1000}
         tick={barLabel}

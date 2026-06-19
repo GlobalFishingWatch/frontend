@@ -17,6 +17,7 @@ export function IndividualBarChart({
   data,
   color,
   barLabel,
+  barLabelInterval = 'equidistantPreserveStart',
   valueKeys,
   labelKey,
   barValueFormatter,
@@ -73,7 +74,7 @@ export function IndividualBarChart({
       </foreignObject>
       <XAxis
         dataKey={labelKey}
-        interval="equidistantPreserveStart"
+        interval={barLabelInterval}
         tickLine={false}
         minTickGap={-1000}
         tick={barLabel}

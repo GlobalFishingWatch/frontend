@@ -102,8 +102,15 @@ export const groupVesselGroupVessels = (
     return {} as Record<string, VesselGroupVesselIdentity[]>
   }
   return groupBy(vessels, (vessel) => {
-    const propertyValue = getVesselProperty(vessel.identity!, property)
-    return propertyValue || vessel.vesselId
+    const selfReportedValue = getVesselProperty(vessel.identity!, property, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+    const propertyValue =
+      selfReportedValue ||
+      getVesselProperty(vessel.identity!, property, {
+        identitySource: VesselIdentitySourceEnum.Registry,
+      })
+    return propertyValue
   })
 }
 
@@ -116,6 +123,8 @@ export const mergeVesselGroupVesselIdentities = (
       identitySource: VesselIdentitySourceEnum.SelfReported,
     })?.map((v) => v.id)
   )
+  const groupVesselIds = new Set(vesselGroupVessels.map((v) => v.vesselId))
+  const orphanRelationIdsUsed = new Set<string>()
   return vesselGroupVessels
     .flatMap((v) => {
       const vesselIdentity = vesselIdentities.find((_, index) => {
@@ -125,10 +134,17 @@ export const mergeVesselGroupVesselIdentities = (
         return []
       }
       const relationId = getVesselId(vesselIdentity)
+      let identity: IdentityVessel | undefined
+      if (relationId === v.vesselId) {
+        identity = vesselIdentity
+      } else if (!groupVesselIds.has(relationId) && !orphanRelationIdsUsed.has(relationId)) {
+        identity = vesselIdentity
+        orphanRelationIdsUsed.add(relationId)
+      }
       return {
         ...v,
         relationId,
-        identity: (relationId === v.vesselId ? vesselIdentity : undefined) as IdentityVessel,
+        identity: identity as IdentityVessel,
       }
     })
     .toSorted((a, b) => {
@@ -193,7 +209,10 @@ export function parseVesselGroupVessels(
 }
 
 export const getVesselsWithoutDuplicates = (vessels: VesselGroupVesselIdentity[]) => {
-  return vessels.filter((v) => v.identity !== undefined)
+  return uniqBy(
+    vessels.filter((v) => v.identity !== undefined),
+    (v) => v.relationId || v.vesselId
+  )
 }
 
 export function calculateVMSVesselsPercentage(vessels: VesselGroupVesselIdentity[] | null): string {
