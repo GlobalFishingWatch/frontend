@@ -21,10 +21,6 @@ function getFallbackInstance(): I18nInstance {
   return fallbackInstance
 }
 
-export function runWithI18n<T>(instance: I18nInstance, fn: () => T): T {
-  return als.run(instance, fn)
-}
-
 export function runRequestWithI18n<T>(request: Request, fn: () => T): T {
   return als.run(createRequestI18n(request), fn)
 }
@@ -32,4 +28,5 @@ export function runRequestWithI18n<T>(request: Request, fn: () => T): T {
 export function getRequestI18n(): I18nInstance {
   return als.getStore() ?? getFallbackInstance()
 }
+
 __setServerI18nAccessor(getRequestI18n)

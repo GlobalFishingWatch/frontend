@@ -1,36 +1,55 @@
-import type { I18nServerState } from 'features/i18n/i18n.server'
+import { ROOT_DOM_ELEMENT } from 'data/config'
+import {
+  type I18nServerState,
+  isValidI18nServerState,
+  normalizeI18nServerState,
+} from 'features/i18n/i18n-state.utils'
 import { getIsBrowser } from 'utils/dom'
 
 /**
- * TanStack Router dehydrated match (`DehydratedMatch` in @tanstack/router-core).
- * `i` is the match id; `l` is loader data. This is the stable SSR wire format in
- * `window.$_TSR.router.matches` before client hydration runs — not post-hydration
- * `routeId` / `loaderData` fields on router context matches.
+ * TanStack Router dehydrated match before client hydration.
+ * `i` = route id, `l` = loader data — not post-hydration `routeId` / `loaderData`.
  */
-type DehydratedMatch = {
+type DehydratedRouterMatch = {
   i?: string
-  l?: { i18nState?: I18nServerState }
+  l?: { i18nState?: unknown }
 }
 
-export function getRootI18nStateFromDehydratedMatches(
-  matches: DehydratedMatch[] | undefined
+type TanStackRouterBootstrapWindow = Window &
+  typeof globalThis & {
+    $_TSR?: { router?: { matches?: DehydratedRouterMatch[] } }
+  }
+
+function getDehydratedRouterMatches(): DehydratedRouterMatch[] | undefined {
+  return (window as TanStackRouterBootstrapWindow).$_TSR?.router?.matches
+}
+
+/** Extract validated root i18n loader state from TanStack Router dehydrated matches. */
+function getRootI18nStateFromDehydratedMatches(
+  matches: DehydratedRouterMatch[] | undefined
 ): I18nServerState | undefined {
   if (!matches?.length) {
     return undefined
   }
 
-  const rootMatch = matches.find((match) => match.i?.startsWith('__root__'))
-  return rootMatch?.l?.i18nState
+  for (const match of matches) {
+    if (!match.i?.startsWith(ROOT_DOM_ELEMENT)) {
+      continue
+    }
+    const state = match.l?.i18nState
+    if (isValidI18nServerState(state)) {
+      return normalizeI18nServerState(state)
+    }
+  }
+
+  return undefined
 }
 
-/** Read root loader i18n state from TanStack Router's pre-hydration bootstrap payload. */
+/** Root loader i18n state from TanStack Router's pre-hydration bootstrap payload. */
 export function getDehydratedRootI18nState(): I18nServerState | undefined {
   if (!getIsBrowser()) {
     return undefined
   }
 
-  const matches = (window as { $_TSR?: { router?: { matches?: DehydratedMatch[] } } }).$_TSR
-    ?.router?.matches
-
-  return getRootI18nStateFromDehydratedMatches(matches)
+  return getRootI18nStateFromDehydratedMatches(getDehydratedRouterMatches())
 }

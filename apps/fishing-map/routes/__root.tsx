@@ -20,10 +20,11 @@ import type { UserData } from '@globalfishingwatch/api-types'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
-import { getLoadedI18nState } from 'features/i18n/i18n'
-import type { I18nServerState } from 'features/i18n/i18n.server'
+import { getLoadedI18nState, t } from 'features/i18n/i18n'
+import { toDocumentLang } from 'features/i18n/i18n.config'
+import type { I18nServerState } from 'features/i18n/i18n-state.utils'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
-import { getDefaultMeta, getTFunction } from 'router/router.meta'
+import { getDefaultMeta } from 'router/router.meta'
 
 import appCss from './styles.css?url'
 
@@ -51,9 +52,7 @@ async function loadI18nState(): Promise<I18nServerState> {
       return clientI18nState
     }
   }
-
-  // needs to be loaded dinamycally to avoid createServerFn errors on serve
-  const { getI18nState } = await import('features/i18n/getI18nState')
+  const { getI18nState } = await import('server-functions/i18n-state.functions')
   return (await getI18nState()) as I18nServerState
 }
 
@@ -106,7 +105,7 @@ function RootComponent() {
   if (import.meta.env.VITEST) {
     return (
       <Suspense fallback={null}>
-        <I18nSSRProvider serverState={i18nState}>
+        <I18nSSRProvider>
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
@@ -114,9 +113,9 @@ function RootComponent() {
   }
 
   return (
-    <RootDocument lang={i18nState?.initialLanguage}>
+    <RootDocument lang={toDocumentLang(i18nState?.initialLanguage)}>
       <Suspense fallback={null}>
-        <I18nSSRProvider serverState={i18nState}>
+        <I18nSSRProvider>
           <Outlet />
         </I18nSSRProvider>
       </Suspense>
@@ -169,10 +168,9 @@ export const Route = createRootRoute({
   preloadStaleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
   shouldReload: false,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
-    const title = `GFW | ${t('common.map')}`
-    const description = t('workspace.siteDescription.default') || defaultDescription
+  head: () => {
+    const title = `GFW | ${t((s) => s.common.map)}`
+    const description = t((s) => s.workspace.siteDescription.default) || defaultDescription
     const meta = getDefaultMeta(title, description)
     meta.links.unshift(
       { rel: 'stylesheet', href: appCss },

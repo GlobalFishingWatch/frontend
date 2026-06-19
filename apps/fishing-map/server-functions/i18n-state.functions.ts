@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 
 export const getI18nState = createServerFn({ method: 'GET' }).handler(async () => {
-  const { getRequestI18n } = await import('./request-i18n.server')
-  const { getI18nServerState } = await import('./i18n.server')
+  const { getRequestI18n } = await import('../features/i18n/request-i18n.server')
+  const { getI18nServerState } = await import('../features/i18n/i18n.server')
   const state = getI18nServerState(getRequestI18n())
   // Assert to satisfy createServerFn's serializable constraint (expects {} vs unknown)
   return state as {
