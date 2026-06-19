@@ -102,8 +102,15 @@ export const groupVesselGroupVessels = (
     return {} as Record<string, VesselGroupVesselIdentity[]>
   }
   return groupBy(vessels, (vessel) => {
-    const propertyValue = getVesselProperty(vessel.identity!, property)
-    return propertyValue || vessel.vesselId
+    const selfReportedValue = getVesselProperty(vessel.identity!, property, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+    const propertyValue =
+      selfReportedValue ||
+      getVesselProperty(vessel.identity!, property, {
+        identitySource: VesselIdentitySourceEnum.Registry,
+      })
+    return propertyValue
   })
 }
 
