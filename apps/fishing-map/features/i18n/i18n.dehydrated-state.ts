@@ -1,9 +1,5 @@
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import {
-  type I18nServerState,
-  isValidI18nServerState,
-  normalizeI18nServerState,
-} from 'features/i18n/i18n-state.utils'
+import { type I18nServerState, isValidI18nServerState } from 'features/i18n/i18n-state.utils'
 import { getIsBrowser } from 'utils/dom'
 
 /**
@@ -38,7 +34,7 @@ function getRootI18nStateFromDehydratedMatches(
     }
     const state = match.l?.i18nState
     if (isValidI18nServerState(state)) {
-      return normalizeI18nServerState(state)
+      return state
     }
   }
 

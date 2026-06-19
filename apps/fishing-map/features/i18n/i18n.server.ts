@@ -14,10 +14,9 @@ import {
   SERVER_NAMESPACES,
   SUPPORTED_LANGUAGES,
 } from './i18n.config'
-import { type I18nServerState, serializeI18nState } from './i18n-state.utils'
 
 export type { I18nServerState } from './i18n-state.utils'
-export { normalizeI18nServerState, serializeI18nState } from './i18n-state.utils'
+export { serializeI18nState } from './i18n-state.utils'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -89,8 +88,4 @@ export function createI18nForLanguage(language: string): typeof i18next {
 
 export function createRequestI18n(request: Request): typeof i18next {
   return createI18nForLanguage(detectLanguageFromRequest(request))
-}
-
-export function getI18nServerState(instance: typeof i18next): I18nServerState {
-  return serializeI18nState(instance)
 }

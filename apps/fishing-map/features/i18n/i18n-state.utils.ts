@@ -24,13 +24,6 @@ export function isValidI18nServerState(state: unknown): state is I18nServerState
   )
 }
 
-export function normalizeI18nServerState(state: I18nServerState): I18nServerState {
-  return {
-    initialLanguage: normalizeI18nLanguage(state.initialLanguage),
-    initialI18nStore: state.initialI18nStore,
-  }
-}
-
 export function serializeI18nState(instance: typeof i18next): I18nServerState {
   const initialLanguage = instance.resolvedLanguage || instance.language
   const initialI18nStore: I18nServerState['initialI18nStore'] = {}
