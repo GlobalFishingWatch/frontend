@@ -6,5 +6,10 @@
     "allowJs": true,
     "types": ["node", "playwright"]
   },
-  "include": ["src/**/*.ts", "src/**/*.js", "playwright.config.mts", "../../../fishing-map/**/*"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "playwright.config.mts",
+    "../fishing-map/features/app/app.config.ts"
+  ]
 }
