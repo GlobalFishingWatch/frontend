@@ -22,7 +22,7 @@ import {
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { t } from 'features/i18n/i18n'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters'
+import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters.utils'
 import {
   getLabelWithUnit,
   getSchemaValueRounded,
