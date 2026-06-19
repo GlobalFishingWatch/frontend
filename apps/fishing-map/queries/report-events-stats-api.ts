@@ -17,6 +17,7 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { RootState } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
+import { getEncounterTypesFromIds } from 'utils/encounter-types'
 
 export type BaseReportEventsVesselsParamsFilters = {
   portId?: string
@@ -25,7 +26,7 @@ export type BaseReportEventsVesselsParamsFilters = {
    */
   port_id?: string
   vesselGroupId?: string
-  encounter_type?: string
+  encounter_type?: string | string[]
   confidence?: number
   flag?: string[]
   type?: string[]
@@ -111,6 +112,17 @@ function getFilterWithOperator(
   return { [key]: value }
 }
 
+function getEncounterTypesFilter(
+  encounterTypes?: string | string[],
+  filtersOperator?: FilterOperator
+) {
+  const expandedTypes = getEncounterTypesFromIds(encounterTypes)
+  if (!expandedTypes.length) {
+    return {}
+  }
+  return getFilterWithOperator('encounter-types', expandedTypes, filtersOperator)
+}
+
 export function parseEventsFilters(
   filters: BaseReportEventsVesselsParamsFilters,
   filtersOperators?: FilterOperators
@@ -121,11 +133,7 @@ export function parseEventsFilters(
   const vesselGroupId = filters.vesselGroupId || (filters as any)['vessel-groups']?.[0]
 
   return {
-    ...getFilterWithOperator(
-      'encounter-types',
-      filters.encounter_type,
-      filtersOperators?.encounter_type
-    ),
+    ...getEncounterTypesFilter(filters.encounter_type, filtersOperators?.encounter_type),
     ...getFilterWithOperator('flags', filters.flag, filtersOperators?.flag),
     ...getFilterWithOperator('vessel-types', filters.type, filtersOperators?.type),
     ...getFilterWithOperator('confidences', filters.confidence, filtersOperators?.confidence),
