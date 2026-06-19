@@ -181,12 +181,14 @@ export const Route = createRootRoute({
         as: 'font',
         type: 'font/woff2',
         href: robotoLatin400,
+        crossOrigin: 'anonymous',
       },
       {
         rel: 'preload',
         as: 'font',
         type: 'font/woff2',
         href: robotoLatin500,
+        crossOrigin: 'anonymous',
       }
     )
     return meta
