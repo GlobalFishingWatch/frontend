@@ -1,4 +1,4 @@
-import Pbf from 'pbf'
+import { PbfWriter as Pbf } from 'pbf'
 
 export const createMockTileBBox = () => ({
   id: 'tile-0-0',

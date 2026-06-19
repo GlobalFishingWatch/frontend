@@ -1,5 +1,5 @@
 import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import Pbf from 'pbf'
+import { PbfReader as Pbf } from 'pbf'
 
 import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
