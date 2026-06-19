@@ -1,9 +1,10 @@
-import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
+import User from 'features/user/User'
 import { getRouteHead, getTFunction } from 'router/router.meta'
 
 export const Route = createFileRoute('/_app/user')({
-  component: lazyRouteComponent(() => import('features/user/User')),
+  component: User,
   head: ({ matches }) => {
     const t = getTFunction(matches)
     return getRouteHead({ category: t('user.title'), t })

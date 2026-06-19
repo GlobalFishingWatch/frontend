@@ -1,14 +1,13 @@
-import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
+import VesselGroupReport from 'features/reports/report-vessel-group/VesselGroupReport'
 import { getRouteHead, getTFunction } from 'router/router.meta'
 import { validateReportSearchParams } from 'router/routes.search'
 
 export const Route = createFileRoute(
   '/_app/$category/$workspaceId/vessel-group-report/$vesselGroupId'
 )({
-  component: lazyRouteComponent(
-    () => import('features/reports/report-vessel-group/VesselGroupReport')
-  ),
+  component: VesselGroupReport,
   validateSearch: validateReportSearchParams,
   head: ({ matches }) => {
     const t = getTFunction(matches)
