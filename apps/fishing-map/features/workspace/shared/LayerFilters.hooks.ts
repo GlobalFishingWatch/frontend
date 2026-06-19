@@ -23,6 +23,7 @@ import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-m
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
+import { getEncounterTypesFromId } from 'utils/encounter-types'
 
 import { type OnSelectFilterArgs, trackEventCb } from './LayerFilters.utils'
 
@@ -223,15 +224,7 @@ export function useLayerFilterHandlers({
       let value: string[] = typeof selection === 'number' ? [selection] : [selection.id]
       if (filterKey === 'encounter_type') {
         // For encounter_type we need to add the reverse value to ensure both types are included
-        const [first, second] = (selection as MultiSelectOption).id.split('-')
-        if (first && second) {
-          if (first === second) {
-            // when equal not need to add the reverse value
-            value = [`${first}-${second}`]
-          } else {
-            value = [`${first}-${second}`, `${second}-${first}`]
-          }
-        }
+        value = getEncounterTypesFromId((selection as MultiSelectOption).id)
       }
       filterValues = [...(dataview.config?.filters?.[filterKey] || []), ...value]
     }
