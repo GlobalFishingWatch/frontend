@@ -13,17 +13,17 @@ const LOCALE_JSON_CACHE_HEADERS = {
   'cache-control': 'public, max-age=31536000, immutable',
 } as const
 
-const LOCALE_JSON_NO_CACHE_HEADERS = {
-  'cache-control': 'no-store',
-} as const
-
 const IMAGE_CACHE_HEADERS = {
   'cache-control': 'public, max-age=31536000, stale-while-revalidate=604800',
 } as const
 
+const NO_CACHE_HEADERS = {
+  'cache-control': 'no-store',
+} as const
+
 function staticRouteRules(basePath: string, mode: string) {
-  const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : LOCALE_JSON_NO_CACHE_HEADERS
-  const imageHeaders = mode === 'production' ? IMAGE_CACHE_HEADERS : LOCALE_JSON_NO_CACHE_HEADERS
+  const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : NO_CACHE_HEADERS
+  const imageHeaders = mode === 'production' ? IMAGE_CACHE_HEADERS : NO_CACHE_HEADERS
   return {
     '/locales/**': { headers },
     [`${basePath}/locales/**`]: { headers },

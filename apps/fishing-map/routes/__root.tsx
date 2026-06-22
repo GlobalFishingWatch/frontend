@@ -73,6 +73,15 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
   return (
     <html lang={lang}>
       <head>
+        <link rel="stylesheet" href={appCss} />
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={robotoLatin400}
+          crossOrigin="anonymous"
+        />
+        <style>{fontFaceCss}</style>
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
@@ -162,25 +171,7 @@ export const Route = createRootRoute({
   head: () => {
     const title = `GFW | ${t((s) => s.common.map)}`
     const description = t((s) => s.workspace.siteDescription.default) || defaultDescription
-    const meta = getDefaultMeta(title, description)
-    meta.links.unshift(
-      { rel: 'stylesheet', href: appCss },
-      {
-        rel: 'preload',
-        as: 'font',
-        type: 'font/woff2',
-        href: robotoLatin400,
-        crossOrigin: 'anonymous',
-      },
-      {
-        rel: 'preload',
-        as: 'font',
-        type: 'font/woff2',
-        href: robotoLatin500,
-        crossOrigin: 'anonymous',
-      }
-    )
-    return { ...meta, styles: [{ children: fontFaceCss }] }
+    return getDefaultMeta(title, description)
   },
 
   component: RootComponent,
