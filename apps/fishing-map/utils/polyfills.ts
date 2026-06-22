@@ -5,3 +5,35 @@ if (typeof Array.prototype.toSorted !== 'function') {
     return arr.sort(compareFn) // Sort the copied array
   }
 }
+
+if (typeof Array.prototype.findLast !== 'function') {
+  Array.prototype.findLast = function (
+    predicate: (value: unknown, index: number, array: unknown[]) => unknown,
+    thisArg?: unknown
+  ) {
+    if (this == null) throw new TypeError('Array.prototype.findLast called on null or undefined')
+    const array = this as unknown[]
+    for (let i = array.length - 1; i >= 0; i--) {
+      if (predicate.call(thisArg, array[i], i, array)) {
+        return array[i]
+      }
+    }
+    return undefined
+  }
+}
+
+if (typeof Array.prototype.findLastIndex !== 'function') {
+  Array.prototype.findLastIndex = function (
+    predicate: (value: unknown, index: number, array: unknown[]) => unknown,
+    thisArg?: unknown
+  ) {
+    if (this == null) throw new TypeError('Array.prototype.findLastIndex called on null or undefined')
+    const array = this as unknown[]
+    for (let i = array.length - 1; i >= 0; i--) {
+      if (predicate.call(thisArg, array[i], i, array)) {
+        return i
+      }
+    }
+    return -1
+  }
+}
