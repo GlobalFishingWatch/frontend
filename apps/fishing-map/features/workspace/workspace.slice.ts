@@ -297,8 +297,15 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         }
 
+        const matchUserDataset = (id: string): boolean => /-\d{13}$/.test(id)
+        const workspaceDatasetIds = datasetsIds.filter((id) => !matchUserDataset(id))
+
         const fetchDatasetsAction: any = dispatch(
-          fetchDatasetsByIdsThunk({ ids: datasetsIds, includeRelated: false })
+          fetchDatasetsByIdsThunk({
+            ids: workspaceDatasetIds,
+            includeRelated: false,
+            useApiCache: true,
+          })
         )
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
@@ -316,11 +323,17 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         )
 
         // we dont wait here for the related loads
-        dispatch(fetchDatasetsByIdsThunk({ ids: relatedIds, includeRelated: true }))
+        dispatch(
+          fetchDatasetsByIdsThunk({ ids: relatedIds, includeRelated: true, useApiCache: true })
+        )
           .unwrap()
           .then(() => {
             dispatch(fetchVesselGroupsThunk())
           })
+
+        // we don't wait for user datasets either but needs to be requested without cache
+        const userDatasetsIds = datasetsIds.filter(matchUserDataset)
+        dispatch(fetchDatasetsByIdsThunk({ ids: userDatasetsIds }))
 
         if (privateUserGroups.length) {
           try {
@@ -328,7 +341,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
               return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
             })
 
-            await dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
           } catch (e) {
             console.warn('Error fetching private datasets for search within user groups', e)
           }
