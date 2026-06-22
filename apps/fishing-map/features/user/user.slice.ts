@@ -1,12 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import {
-  getGuestUser,
-  GFWAPI,
-  isSessionError,
-  isTransientError,
-} from '@globalfishingwatch/api-client'
+import { getGuestUser } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
@@ -19,8 +14,7 @@ import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import { loginServerFn, logoutServerFn } from 'server-functions/auth.functions'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { logoutServerFn } from 'server-functions/auth.functions'
 import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
@@ -31,7 +25,6 @@ interface UserState {
   logged: boolean
   expired: boolean
   language: Locale
-  status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
   loginSource: LoginSource | null
@@ -41,13 +34,10 @@ const initialState: UserState = {
   logged: false,
   expired: false,
   language: Locale.en,
-  status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
   loginSource: null,
 }
-
-type UserSliceState = { user: UserState }
 
 export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
   'costa rica': 'costa_rica',
@@ -56,45 +46,6 @@ export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
   'ssf-rare': 'coastal_fisheries_indonesia',
   'ssf-ipnlf': 'coastal_fisheries_indonesia',
 }
-
-export const fetchUserThunk = createAsyncThunk(
-  'user/fetch',
-  async ({ guest, accessToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
-    if (guest) {
-      return getGuestUser()
-    }
-    try {
-      // With an SSO access token, exchange it server-side (sets the JS access cookie +
-      // httpOnly refresh cookie). Without one, resolve the existing session — GFWAPI
-      // reads the access cookie and silently refreshes via the server fn if expired.
-      const user = accessToken
-        ? await loginServerFn({ data: { accessToken } })
-        : await GFWAPI.login({})
-      if (!user) {
-        return getGuestUser()
-      }
-      return user
-    } catch (e: any) {
-      // Only a transient server failure (timeout / 5xx) should be rethrown so the
-      // session is retried. Any other failure (incl. "no session" with no status)
-      // falls back to the guest user — never leave the app without a user.
-      const cause = e?.cause ?? e
-      if (isSessionError(cause) || isSessionError(e)) {
-        return getGuestUser()
-      }
-      if (isTransientError(cause)) {
-        throw e
-      }
-      return getGuestUser()
-    }
-  },
-  {
-    condition: (params, { getState }) => {
-      const { user } = getState() as UserSliceState
-      return user.status !== AsyncReducerStatus.Loading
-    },
-  }
-)
 
 export const logoutUserThunk = createAsyncThunk(
   'user/logout',
@@ -141,27 +92,13 @@ const userSlice = createSlice({
     setLoggedUser: (state, action: PayloadAction<UserData>) => {
       state.logged = true
       state.expired = false
-      state.status = AsyncReducerStatus.Finished
       state.data = action.payload
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
-      state.logged = true
-      state.expired = false
-      state.data = action.payload
-    })
-    builder.addCase(fetchUserThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Error
-    })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
       state.expired = false
-      state.status = AsyncReducerStatus.Finished
       state.data = getGuestUser()
     })
   },

@@ -1,4 +1,4 @@
-import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet, useSearch } from '@tanstack/react-router'
@@ -19,7 +19,6 @@ import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
 import { useLoginPopupListener } from 'features/user/user.hooks'
-import { fetchUserThunk } from 'features/user/user.slice'
 import { useEnsureWorkspaceLoad } from 'features/workspace/workspace.hook'
 import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 import { ConfirmLeave } from 'router/ConfirmLeave'
@@ -45,7 +44,6 @@ import { getIsBrowser } from 'utils/dom'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
-import { useAppDispatch } from './app.hooks'
 import Main from './Main'
 
 import styles from './App.module.css'
@@ -69,7 +67,6 @@ function App() {
   useEnsureWorkspaceLoad()
   useLoginPopupListener()
 
-  const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
@@ -92,14 +89,7 @@ function App() {
   const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
   const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
   const onScreenWidthChange = usePersistedPanelWidth('screen')
-  const ssrUser = rootRoute.useLoaderData({ select: (d) => d?.user })
   const { replaceQueryParams } = useReplaceQueryParams()
-
-  useEffect(() => {
-    if (!ssrUser) {
-      dispatch(fetchUserThunk({ guest: false }))
-    }
-  }, [dispatch, ssrUser])
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })

@@ -1,6 +1,8 @@
-import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
+
+import { getGuestUser } from '@globalfishingwatch/api-client'
 
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
@@ -27,19 +29,13 @@ const rootRoute = getRouteApi('__root__')
 function AppLayout() {
   const router = useRouter()
   const { user } = rootRoute.useLoaderData()
-  const ssrUserSeeded = useRef<boolean>(false)
 
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     syncInitialLocation(router, store)
     store.dispatch(setUserLanguage(getActiveI18nLanguage() as Locale))
-    // eslint-disable-next-line react-hooks/refs
-    if (user && !ssrUserSeeded.current) {
-      store.dispatch(setLoggedUser(user))
-      ssrUserSeeded.current = true
-    }
-
+    store.dispatch(setLoggedUser(user || getGuestUser()))
     return store
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])

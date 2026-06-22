@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
 
 import { PATH_BASENAME } from 'data/config'
@@ -14,12 +14,7 @@ import {
   TAB_ID,
 } from 'features/user/auth-channel'
 import { selectLoginSource } from 'features/user/selectors/user.selectors'
-import {
-  fetchUserThunk,
-  logoutUserThunk,
-  setLoggedUser,
-  setLoginSource,
-} from 'features/user/user.slice'
+import { logoutUserThunk, setLoggedUser, setLoginSource } from 'features/user/user.slice'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,
@@ -112,12 +107,9 @@ export function useLoginPopupListener() {
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === LOGIN_MESSAGE) {
         try {
-          const user = event.data.user ?? (await dispatch(fetchUserThunk({})).unwrap())
-          if (event.data.user) {
-            dispatch(setLoggedUser(event.data.user))
-          }
-          await reloadDataAfterLogin()
+          const user = event.data.user
           if (user) {
+            dispatch(setLoggedUser(user))
             trackEvent({
               category: TrackCategory.User,
               action: 'login',
@@ -127,15 +119,16 @@ export function useLoginPopupListener() {
                 // email: user.email,
               },
             })
+            await reloadDataAfterLogin()
+            dispatch(setLoginSource(null))
           }
-          dispatch(setLoginSource(null))
         } catch (e) {
           console.warn(e)
         }
       }
       if (event.data?.type === LOGOUT_MESSAGE && event.data.senderId !== TAB_ID) {
         await dispatch(logoutUserThunk({ logoutServer: false, broadcast: false }))
-        dispatch(fetchUserThunk({ guest: true }))
+        dispatch(setLoggedUser(getGuestUser()))
       }
       return
     }

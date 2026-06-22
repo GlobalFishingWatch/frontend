@@ -5,15 +5,11 @@ import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
-import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import { Tabs } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import LoginLink from 'features/user/LoginLink'
-import {
-  selectIsUserLogged,
-  selectUserData,
-  selectUserStatus,
-} from 'features/user/selectors/user.selectors'
+import { selectUserData, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import {
   // fetchDefaultWorkspaceThunk,
@@ -22,7 +18,6 @@ import {
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import UserDatasets from './UserDatasets'
 import UserInfo from './UserInfo'
@@ -36,9 +31,8 @@ function User() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const userLogged = useSelector(selectIsUserLogged)
+  const userLogged = useSelector(selectUserLogged)
   const userData = useSelector(selectUserData)
-  const userStatus = useSelector(selectUserStatus)
   const userTab = useSelector(selectUserTab)
   const userTabs = useMemo(() => {
     const tabs = [
@@ -88,14 +82,6 @@ function User() {
   useEffect(() => {
     dispatch(fetchVesselGroupsThunk())
   }, [dispatch])
-
-  if (userStatus === AsyncReducerStatus.Loading) {
-    return (
-      <div className={styles.container}>
-        <Spinner />
-      </div>
-    )
-  }
 
   if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
     return (

@@ -4,9 +4,9 @@ import type { UserData } from '@globalfishingwatch/api-types'
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { clearAuthCookies, refreshAuthTokens } from 'server-functions/auth.functions'
 
-export async function resolveUserState(request: Request): Promise<{ user: UserData | null }> {
-  const { setCookie } = await import('@tanstack/react-start/server')
-  const cookieHeader = request.headers.get('cookie') ?? ''
+export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
+  const { getRequest, setCookie } = await import('@tanstack/react-start/server')
+  const cookieHeader = getRequest().headers.get('cookie') ?? ''
   const token = readCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
 
   // Try the access token if present.
@@ -30,9 +30,4 @@ export async function resolveUserState(request: Request): Promise<{ user: UserDa
     clearAuthCookies(setCookie)
     return { user: getGuestUser() }
   }
-}
-
-export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
-  const { getRequest } = await import('@tanstack/react-start/server')
-  return resolveUserState(getRequest())
 }

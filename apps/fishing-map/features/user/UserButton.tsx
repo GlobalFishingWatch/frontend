@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
 import LoginLink from 'features/user/LoginLink'
@@ -13,7 +13,6 @@ import {
   selectIsGuestUser,
   selectIsUserExpired,
   selectUserData,
-  selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
 import { selectIsUserLocation } from 'router/routes.selectors'
@@ -27,7 +26,6 @@ const UserButton = ({ className = '' }: { className?: string }) => {
   const isUserLocation = useSelector(selectIsUserLocation)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
-  const userStatus = useSelector(selectUserStatus)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
   const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
@@ -47,14 +45,6 @@ const UserButton = ({ className = '' }: { className?: string }) => {
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-
-  if (userStatus !== AsyncReducerStatus.Finished) {
-    return (
-      <div className={cx(className, styles.wrapper)}>
-        <Spinner size="tiny" />
-      </div>
-    )
-  }
 
   return (
     <div className={cx(className, styles.wrapper)}>

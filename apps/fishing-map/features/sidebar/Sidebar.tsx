@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
@@ -14,9 +13,6 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import TrackCorrection from 'features/track-correction/TrackCorrection'
-import { selectUserStatus } from 'features/user/selectors/user.selectors'
-import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -29,14 +25,12 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick, children }: SidebarProps) {
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isPrinting = useSelector(selectScreenshotModalOpen)
-  const userStatus = useSelector(selectUserStatus)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   useEffect(() => {
@@ -56,16 +50,12 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   }, [dispatch, dataviewsResources])
 
   const content = useMemo(() => {
-    if (userStatus === AsyncReducerStatus.Error) {
-      return <ErrorPlaceholder title={t((t) => t.errors.userDataError)} />
-    }
-
     if (isTrackCorrectionOpen) {
       return <TrackCorrection />
     }
 
     return children
-  }, [userStatus, isTrackCorrectionOpen, children, t])
+  }, [isTrackCorrectionOpen, children])
 
   const showTabs =
     !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen && !screenshotMode

@@ -7,11 +7,11 @@ import { page } from 'vitest/browser'
 import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
-import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
-import { fetchUserThunk } from 'features/user/user.slice'
+import { setLoggedUser } from 'features/user/user.slice'
 import type { AppRouterContext } from 'router/app-router-context'
 import type { LocationState } from 'router/location.slice'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -41,11 +41,7 @@ function seedBrowserHistory(location?: LocationState) {
 }
 
 export async function withGuestUser(store: AppStore) {
-  store.dispatch(
-    fetchUserThunk.fulfilled({ id: 0, type: GUEST_USER_TYPE, permissions: [], groups: [] }, '', {
-      guest: true,
-    })
-  )
+  store.dispatch(setLoggedUser(getGuestUser()))
   return store
 }
 
