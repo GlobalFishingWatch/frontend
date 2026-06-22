@@ -37,7 +37,7 @@ const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 
 const WHITE: Color = [255, 255, 255, 255]
 const TRANSPARENT: Color = [0, 0, 0, 0]
-const PORT_STROKE: Color = hexToDeckColor('#021236')
+const BACKGROUND_COLOR: Color = hexToDeckColor('#021236')
 
 const toDeckColor = (color?: string): Color => {
   if (!color || color === 'white') return WHITE
@@ -271,7 +271,7 @@ const TracksEvents = ({
             const w = Math.max(width, size)
             ports.push({
               ...meta,
-              lineColor: PORT_STROKE,
+              lineColor: BACKGROUND_COLOR,
               polygon: [
                 [x, y - size / 2],
                 [x + w, y - size / 2],
@@ -362,6 +362,14 @@ const TracksEvents = ({
         getLineWidth: 1.5,
       }),
       new PathLayer({
+        id: 'events-gap-lines-bg',
+        data: eventGeometry.gapLines,
+        widthUnits: 'pixels',
+        getPath: (d: EventDatum) => d.path as Position[],
+        getColor: BACKGROUND_COLOR,
+        getWidth: (d: EventDatum) => d.width as number,
+      }),
+      new PathLayer({
         id: 'events-gap-lines',
         data: eventGeometry.gapLines,
         pickable: true,
@@ -370,7 +378,7 @@ const TracksEvents = ({
         getColor: (d) => (hit(d) ? WHITE : d.baseColor),
         getWidth: (d: EventDatum) => d.width as number,
         updateTriggers: { getColor: highlightTrigger },
-        getDashArray: [4, 4],
+        getDashArray: [4, 6],
         extensions: [new PathStyleExtension({ dash: true })],
       }),
       new PathLayer({
