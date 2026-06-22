@@ -7,7 +7,12 @@ import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import {
+  DEFAULT_BACKGROUND_COLOR,
+  getLayerGroupOffset,
+  hexToDeckColor,
+  LayerGroup,
+} from '../../utils'
 
 import { DEFAULT_FISHING_EVENT_COLOR } from './vessel.config'
 import type { _VesselEventIconLayerProps, VesselEventIconLayerProps } from './VesselEventIconLayer'
@@ -107,14 +112,22 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       // )
       chunkLayers.push(
         new PathLayer({
+          id: `${id}-line-bg`,
+          data: baseLayerProps.data,
+          getColor: DEFAULT_BACKGROUND_COLOR,
+          getPath: (d: VesselDeckLayersEventData) =>
+            d.gaps ? [d.coordinates, [d.gaps.lonMax, d.gaps.latMax]] : [],
+          getWidth: 2,
+          widthUnits: 'pixels',
+          widthMinPixels: 1,
+          pickable: false,
+        })
+      )
+      chunkLayers.push(
+        new PathLayer({
           id: `${id}-line`,
           data: baseLayerProps.data,
-          getColor: (d: VesselDeckLayersEventData) => {
-            if (highlightEventIds?.includes(d.id ?? '')) {
-              return hexToDeckColor(EVENTS_COLORS.gaps)
-            }
-            return COLOR_TRANSPARENT
-          },
+          getColor: hexToDeckColor(EVENTS_COLORS.gaps),
           getPath: (d: VesselDeckLayersEventData) =>
             d.gaps ? [d.coordinates, [d.gaps.lonMax, d.gaps.latMax]] : [],
           getWidth: 2,
@@ -122,11 +135,8 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           widthMinPixels: 1,
           pickable: false,
           extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
-          getDashArray: [2, 6],
+          getDashArray: [4, 8],
           dashJustified: true,
-          updateTriggers: {
-            getColor: [highlightEventIds],
-          },
         })
       )
     }
