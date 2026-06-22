@@ -108,7 +108,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   }
 
   get cacheHash(): string {
-    return this.state.error
+    return `${this.props.id}-${this.state.error}-${this.isLoaded}`
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<PolygonFeature> }): PolygonPickingInfo => {

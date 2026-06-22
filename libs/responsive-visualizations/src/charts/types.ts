@@ -36,11 +36,21 @@ export type BaseResponsiveChartProps = {
   individualIcon?: ReactElement
 }
 
+// Mirrors recharts' AxisInterval without importing recharts into the public types
+export type BarChartLabelInterval =
+  | number
+  | 'preserveStart'
+  | 'preserveEnd'
+  | 'preserveStartEnd'
+  | 'equidistantPreserveStart'
+  | 'equidistantPreserveEnd'
+
 // Shared types within the BarChart
 export type BaseResponsiveBarChartProps = {
   color?: string
   barLabel?: ReactElement<SVGElement>
   barValueFormatter?: (value: number) => string
+  barLabelInterval?: BarChartLabelInterval
 }
 
 export type BarChartByTypeProps<M extends ResponsiveVisualizationMode> =
