@@ -19,7 +19,12 @@ import {
   useMapMouseHover,
 } from 'features/map/map-interactions.hooks'
 import { useMapLayers } from 'features/map/map-layers.hooks'
-import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
+import {
+  MAP_VIEW,
+  useMapSetViewState,
+  useMapViewState,
+  useMapViewStateUrlSync,
+} from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
 import TrackCorrectionsOverlay from 'features/map/overlays/track-corrections/TrackCorrectionsOverlay'
 import { selectReportCategory } from 'features/reports/reports.selectors'
@@ -29,6 +34,7 @@ import { selectIsAnyReportLocation } from 'router/routes.selectors'
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
+  useMapViewStateUrlSync()
   const setViewState = useMapSetViewState()
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()

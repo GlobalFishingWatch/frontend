@@ -9,6 +9,29 @@ import svgr from 'vite-plugin-svgr'
 
 export const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
 
+const LOCALE_JSON_CACHE_HEADERS = {
+  'cache-control': 'public, max-age=31536000, immutable',
+} as const
+
+const IMAGE_CACHE_HEADERS = {
+  'cache-control': 'public, max-age=31536000, stale-while-revalidate=604800',
+} as const
+
+const NO_CACHE_HEADERS = {
+  'cache-control': 'no-store',
+} as const
+
+function staticRouteRules(basePath: string, mode: string) {
+  const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : NO_CACHE_HEADERS
+  const imageHeaders = mode === 'production' ? IMAGE_CACHE_HEADERS : NO_CACHE_HEADERS
+  return {
+    '/locales/**': { headers },
+    [`${basePath}/locales/**`]: { headers },
+    '/images/**': { headers: imageHeaders },
+    [`${basePath}/images/**`]: { headers: imageHeaders },
+  }
+}
+
 export const plugins = [
   nxViteTsPaths(),
   tanstackStart({
@@ -47,6 +70,7 @@ export default defineConfig(({ command, mode }) => {
         nitro({
           baseURL: basePath,
           sourcemap: true,
+          routeRules: staticRouteRules(basePath, mode),
           compressPublicAssets: {
             gzip: true,
             brotli: true,
@@ -83,6 +107,11 @@ export default defineConfig(({ command, mode }) => {
         }),
     ],
     envPrefix: ['VITE_', 'i18n_'],
+    define: {
+      __BUILD_ID__: JSON.stringify(
+        process.env.BUILD_ID || process.env.GITHUB_SHA?.slice(0, 12) || String(Date.now())
+      ),
+    },
     environments: {
       client: {
         build: {

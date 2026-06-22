@@ -8,8 +8,7 @@ import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions/auth.functions'
 
-import '@fontsource/roboto/400.css'
-import '@fontsource/roboto/500.css'
+import 'utils/polyfills'
 
 GFWAPI.configure({
   tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),

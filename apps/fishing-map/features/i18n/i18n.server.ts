@@ -1,108 +1,91 @@
 import { initReactI18next } from 'react-i18next'
-import i18next from 'i18next'
-import Backend from 'i18next-fs-backend'
+import i18next, { type Resource, type ResourceLanguage } from 'i18next'
+import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { readCookie } from '@globalfishingwatch/api-client'
 
-import { Locale } from 'types'
+import {
+  DEFAULT_NAMESPACE,
+  type i18nSupportedLocale,
+  normalizeI18nLanguage,
+  resolveLanguageFromSources,
+  SERVER_NAMESPACES,
+  SUPPORTED_LANGUAGES,
+} from './i18n.config'
+
+export type { I18nServerState } from './i18n-state.utils'
+export { serializeI18nState } from './i18n-state.utils'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const SUPPORTED_LANGUAGES = [
-  Locale.en,
-  Locale.es,
-  Locale.fr,
-  // Locale.id,
-  Locale.pt,
-  'val',
-  ...(import.meta.env.DEV ? (['source'] as const) : []),
-]
+export { normalizeI18nLanguage, parseSupportedLanguage } from './i18n.config'
 
-const DEFAULT_NAMESPACE = 'translations'
-const FALLBACK_LNG = import.meta.env.DEV ? 'source' : Locale.en
+const LOCALES_DIR = join(__dirname, '..', '..', 'public', 'locales')
 
-const NAMESPACES = ['translations', 'workspaces'] as const
-
-function detectLanguageFromRequest(request: Request): string {
+export function detectLanguageFromRequest(request: Request): i18nSupportedLocale {
   const cookieHeader = request.headers.get('cookie')
-  if (cookieHeader) {
-    const cookieLng = readCookie({ cookie: cookieHeader, key: 'i18next' })
-    if (cookieLng && SUPPORTED_LANGUAGES.includes(cookieLng)) {
-      return cookieLng
-    }
-  }
-  const acceptLanguage = request.headers.get('accept-language')
-  if (acceptLanguage) {
-    const preferred = acceptLanguage.split(',')[0]?.split('-')[0]?.toLowerCase()
-    if (preferred && SUPPORTED_LANGUAGES.includes(preferred)) {
-      return preferred
-    }
-  }
-  return FALLBACK_LNG
+  const cookieLng = cookieHeader ? readCookie({ cookie: cookieHeader, key: 'i18next' }) : undefined
+
+  return resolveLanguageFromSources({
+    cookie: cookieLng ?? undefined,
+    acceptLanguage: request.headers.get('accept-language') ?? undefined,
+  })
 }
 
-export type I18nServerState = {
-  initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
-  initialLanguage: string
-}
+// Only cache in production: locale files are static there, but under dev HMR an edited
+// translation must refresh, so skip the cache when not in production.
+const CACHE_RESOURCES = process.env.NODE_ENV === 'production'
+const resourceCache = new Map<string, Record<string, unknown>>()
 
-export async function createServerI18n(request: Request): Promise<{
-  i18n: typeof i18next
-  state: I18nServerState
-}> {
-  const language = detectLanguageFromRequest(request)
-
-  const localesPath = join(__dirname, '..', '..', 'public', 'locales', '{{lng}}', '{{ns}}.json')
-
-  const i18n = i18next.createInstance()
-
-  await i18n
-    .use(Backend)
-    .use(initReactI18next)
-    .init({
-      lng: language,
-      fallbackLng: FALLBACK_LNG,
-      supportedLngs: SUPPORTED_LANGUAGES,
-      ns: NAMESPACES,
-      defaultNS: DEFAULT_NAMESPACE,
-      backend: {
-        loadPath: localesPath,
-      },
-      initAsync: true,
-      interpolation: {
-        escapeValue: false,
-      },
-      react: {
-        useSuspense: false,
-      },
-    })
-
-  // Preload all namespaces so initialI18nStore contains translations used during SSR
-  await i18n.loadNamespaces(NAMESPACES)
-
-  // If we only embed the primary language, the client still has fallbackLng (dev: source,
-  // prod: en) and i18next-http-backend will fetch that locale — duplicating data already
-  // implied by SSR. Load and embed the fallback language too when it differs.
-  if (FALLBACK_LNG !== language) {
-    await i18n.loadLanguages([FALLBACK_LNG])
-  }
-
-  const initialI18nStore: Record<string, Record<string, Record<string, unknown>>> = {}
-  for (const lng of new Set([language, FALLBACK_LNG])) {
-    const data = i18n.services.resourceStore.data[lng]
-    if (data) {
-      initialI18nStore[lng] = data as Record<string, Record<string, unknown>>
+function getLanguageResources(language: string): Record<string, unknown> {
+  if (CACHE_RESOURCES) {
+    const cached = resourceCache.get(language)
+    if (cached) {
+      return cached
     }
   }
+  const bundle: Record<string, unknown> = {}
+  for (const ns of SERVER_NAMESPACES) {
+    try {
+      const file = join(LOCALES_DIR, language, `${ns}.json`)
+      bundle[ns] = JSON.parse(readFileSync(file, 'utf-8'))
+    } catch {
+      // Namespace missing for this language — skip; i18next falls back to FALLBACK_LNG.
+    }
+  }
+  if (CACHE_RESOURCES) {
+    resourceCache.set(language, bundle)
+  }
+  return bundle
+}
 
-  return {
-    i18n,
-    state: {
-      initialI18nStore,
-      initialLanguage: i18n.language,
+export function createI18nForLanguage(language: string): typeof i18next {
+  const lng = normalizeI18nLanguage(language)
+  const resources: Resource = {}
+  resources[lng] = getLanguageResources(lng) as ResourceLanguage
+
+  const instance = i18next.createInstance()
+  instance.use(initReactI18next).init({
+    lng,
+    fallbackLng: lng,
+    supportedLngs: SUPPORTED_LANGUAGES,
+    ns: SERVER_NAMESPACES,
+    defaultNS: DEFAULT_NAMESPACE,
+    resources,
+    initAsync: false,
+    interpolation: {
+      escapeValue: false,
     },
-  }
+    react: {
+      useSuspense: false,
+    },
+  })
+  return instance
+}
+
+export function createRequestI18n(request: Request): typeof i18next {
+  return createI18nForLanguage(detectLanguageFromRequest(request))
 }

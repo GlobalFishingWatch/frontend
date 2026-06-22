@@ -1,5 +1,3 @@
-import { createServerFn } from '@tanstack/react-start'
-
 import { readCookie } from '@globalfishingwatch/api-client'
 
 import { PANEL_WIDTHS_COOKIE_KEY, type PanelWidths } from 'features/app/app.config'
@@ -34,8 +32,7 @@ export function detectPanelWidthsFromRequest(request: Request): {
   }
 }
 
-export const getSidebarWidthState = createServerFn({ method: 'GET' }).handler(async () => {
+export async function getPanelWidthsFromRequest() {
   const { getRequest } = await import('@tanstack/react-start/server')
-  const request = getRequest()
-  return detectPanelWidthsFromRequest(request)
-})
+  return detectPanelWidthsFromRequest(getRequest())
+}

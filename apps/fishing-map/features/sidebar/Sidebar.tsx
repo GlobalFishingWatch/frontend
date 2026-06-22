@@ -5,7 +5,6 @@ import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly, selectScreenshotMode } from 'features/app/selectors/app.selectors'
@@ -15,11 +14,7 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import TrackCorrection from 'features/track-correction/TrackCorrection'
-import {
-  selectIsGuestUser,
-  selectIsUserLogged,
-  selectUserStatus,
-} from 'features/user/selectors/user.selectors'
+import { selectUserStatus } from 'features/user/selectors/user.selectors'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -39,8 +34,6 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const readOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
-  const isUserLogged = useSelector(selectIsUserLogged)
-  const isGuestUser = useSelector(selectIsGuestUser)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const userStatus = useSelector(selectUserStatus)
@@ -67,16 +60,12 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
       return <ErrorPlaceholder title={t((t) => t.errors.userDataError)} />
     }
 
-    if (!isUserLogged && !isGuestUser) {
-      return <Spinner />
-    }
-
     if (isTrackCorrectionOpen) {
       return <TrackCorrection />
     }
 
     return children
-  }, [userStatus, isUserLogged, isGuestUser, isTrackCorrectionOpen, children, t])
+  }, [userStatus, isTrackCorrectionOpen, children, t])
 
   const showTabs =
     !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen && !screenshotMode

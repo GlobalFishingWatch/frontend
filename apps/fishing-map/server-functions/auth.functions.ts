@@ -7,7 +7,6 @@ import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/a
 
 export type Tokens = { token: string; refreshToken: string }
 export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
-type CookieGetter = (key: string) => string | undefined
 
 const COOKIE_MAX_AGE_1_YEAR = 60 * 60 * 24 * 365
 
@@ -40,13 +39,12 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     return GFWAPI.fetchUser({ token: tokens.token })
   })
 
-// Reads the refresh cookie, reloads tokens and persists them. Throws a 401 when there
-// is no refresh cookie. Shared between the refresh RPC and SSR user resolution.
+// Reloads tokens from the given refresh token and persists them. Throws a 401 when there
+// is no refresh token. Shared between the refresh RPC and SSR user resolution
 export async function refreshAuthTokens(
-  getCookie: CookieGetter,
+  refreshToken: string | undefined,
   setCookie: CookieSetter
 ): Promise<Tokens> {
-  const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
   if (!refreshToken) {
     const error = new Error('No refresh token') as Error & { status: number }
     error.status = 401
@@ -60,7 +58,7 @@ export async function refreshAuthTokens(
 export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
   async (): Promise<Tokens> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens(getCookie, setCookie)
+    return refreshAuthTokens(getCookie(USER_REFRESH_TOKEN_COOKIE_KEY), setCookie)
   }
 )
 

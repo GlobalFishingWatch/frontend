@@ -7,6 +7,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import { PATH_BASENAME } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
+import { getActiveI18nState } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
@@ -47,6 +48,7 @@ export function getCreateRouterOptions() {
     defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
+    dehydrate: () => ({ i18nState: getActiveI18nState() }),
   }
 }
 

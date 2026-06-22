@@ -54,7 +54,6 @@
       "apps/port-labeler": true,
       "apps/track-labeler": true,
       "apps/user-groups-admin": true,
-      "apps/fishing-map-e2e": true,
     },
     "search.exclude": {
       "apps/api-portal": true,
@@ -63,7 +62,6 @@
       "apps/port-labeler": true,
       "apps/track-labeler": true,
       "apps/user-groups-admin": true,
-      "apps/fishing-map-e2e": true,
       "**/.nitro": true,
     },
     "files.watcherExclude": {
@@ -73,7 +71,6 @@
       "apps/port-labeler/**": true,
       "apps/track-labeler/**": true,
       "apps/user-groups-admin/**": true,
-      "apps/fishing-map-e2e/**": true,
       "**/.next/**": true,
       "**/build/**": true,
       "**/dist/**": true,
