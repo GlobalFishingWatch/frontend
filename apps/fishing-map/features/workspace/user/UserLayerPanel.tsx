@@ -279,7 +279,7 @@ function UserPanel({
                 />
               </Fragment>
               <FitBounds
-                hasError={error !== undefined}
+                hasError={Boolean(error)}
                 layer={instance as UserTracksLayer}
                 disabled={isBaseUserLayer ? false : layerLoading}
                 dataviewId={dataview.id}
