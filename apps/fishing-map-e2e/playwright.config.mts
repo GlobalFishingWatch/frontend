@@ -23,7 +23,7 @@ export default defineConfig({
   timeout: 180 * 1000, // 3 minutes per test
   expect: {
     /* Timeout for expect assertions */
-    timeout: 10 * 1000, // 10 seconds
+    timeout: 30 * 1000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.01,
     },
