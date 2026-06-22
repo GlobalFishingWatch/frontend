@@ -58,6 +58,7 @@ function LogoutButton() {
       loading={logoutLoading}
       disabled={logoutLoading}
       onClick={onLogoutClick}
+      testId="logout-button"
     >
       <span>{t((t) => t.common.logout)}</span>
     </Button>
