@@ -28,19 +28,6 @@ const SHARED_LABELS_PATH = USE_LOCAL_SHARED_LABELS
   ? 'http://localhost:8000'
   : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
-export function getLoadedI18nState(): I18nServerState | undefined {
-  if (!i18n.isInitialized) {
-    return undefined
-  }
-
-  const state = serializeI18nState(i18n)
-  if (!state.initialLanguage || !state.initialI18nStore[state.initialLanguage]) {
-    return undefined
-  }
-
-  return state
-}
-
 if (!import.meta.env.SSR) {
   // Read at init time so TanStack Router's bootstrap payload is available.
   const ssrState: I18nServerState | undefined = getDehydratedRootI18nState()
@@ -99,6 +86,25 @@ export function __setServerI18nAccessor(accessor: () => typeof i18n): void {
 
 function getActiveI18n(): typeof i18n {
   return serverI18nAccessor?.() ?? i18n
+}
+
+export function getActiveI18nState(): I18nServerState | undefined {
+  const instance = getActiveI18n()
+  if (!instance.isInitialized) {
+    return undefined
+  }
+
+  const state = serializeI18nState(instance)
+  if (!state.initialLanguage || !state.initialI18nStore[state.initialLanguage]) {
+    return undefined
+  }
+
+  return state
+}
+
+export function getActiveI18nLanguage(): string {
+  const instance = getActiveI18n()
+  return instance.resolvedLanguage ?? instance.language ?? FALLBACK_LNG
 }
 
 const t: typeof i18n.t = import.meta.env.SSR

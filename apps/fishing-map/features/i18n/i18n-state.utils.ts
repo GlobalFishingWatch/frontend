@@ -2,8 +2,10 @@ import type i18next from 'i18next'
 
 import { normalizeI18nLanguage } from './i18n.config'
 
+export type I18nResourceValue = string | { [key: string]: I18nResourceValue }
+
 export type I18nServerState = {
-  initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
+  initialI18nStore: Record<string, Record<string, Record<string, I18nResourceValue>>>
   initialLanguage: string
 }
 
@@ -29,7 +31,7 @@ export function serializeI18nState(instance: typeof i18next): I18nServerState {
   const initialI18nStore: I18nServerState['initialI18nStore'] = {}
   const data = instance.services.resourceStore.data[initialLanguage]
   if (data) {
-    initialI18nStore[initialLanguage] = data as Record<string, Record<string, unknown>>
+    initialI18nStore[initialLanguage] = data as I18nServerState['initialI18nStore'][string]
   }
   return {
     initialI18nStore,

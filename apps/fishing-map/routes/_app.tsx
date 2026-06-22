@@ -5,6 +5,7 @@ import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
 import { hydrateHintsDismissed } from 'features/help/hints.slice'
+import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
 import {
   getPersistedHistoryNavigation,
@@ -25,16 +26,14 @@ const rootRoute = getRouteApi('__root__')
 
 function AppLayout() {
   const router = useRouter()
-  const { i18nState, user } = rootRoute.useLoaderData()
+  const { user } = rootRoute.useLoaderData()
   const ssrUserSeeded = useRef<boolean>(false)
 
   const store = useMemo(() => {
     // This allows us to inject a store into the router context for testing purposes
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     syncInitialLocation(router, store)
-    if (i18nState?.initialLanguage) {
-      store.dispatch(setUserLanguage(i18nState.initialLanguage as Locale))
-    }
+    store.dispatch(setUserLanguage(getActiveI18nLanguage() as Locale))
     // eslint-disable-next-line react-hooks/refs
     if (user && !ssrUserSeeded.current) {
       store.dispatch(setLoggedUser(user))
