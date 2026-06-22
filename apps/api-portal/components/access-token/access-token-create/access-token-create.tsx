@@ -68,8 +68,10 @@ export function AccessTokenCreate(props: AccessTokenCreateProps) {
                 id="new-token-description"
                 value={token?.description}
                 className={styles.editor}
+                maxLength={500}
                 onChange={(e) => setToken({ ...token, description: e.target.value })}
               />
+              <span className={styles.charCount}>{token?.description?.length ?? 0}/500</span>
               <Button
                 className={styles.createBtn}
                 disabled={!valid}

@@ -57,13 +57,20 @@
   padding: var(--space-XS);
 }
 
+.charCount {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  align-self: flex-end;
+  margin-top: var(--space-XS);
+}
+
 .createBtn {
   margin-top: var(--space-M);
   width: 50%;
   align-self: end;
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
   .fieldsRow {
     flex-direction: column;
   }
