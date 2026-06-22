@@ -109,7 +109,10 @@ const VesselIdentityFields = ({
 
   if (label) {
     return (
-      <div className={styles.identitySection}>
+      <div
+        className={styles.identitySection}
+        data-testid={`identity-section-${label.toLowerCase()}`}
+      >
         <div className={styles.sectionHeader}>
           <label>{t((t: any) => t.vessel[label!])}</label>
           {terminologyKey && <DataTerminology terminologyKey={terminologyKey} />}
