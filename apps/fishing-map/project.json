@@ -14,7 +14,7 @@
     },
     "prepare-start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["clean-next", "prepare-loaders", "i18n-labels:serve"],
+      "dependsOn": ["prepare-loaders", "i18n-labels:serve"],
       "options": {
         "command": "nx run fishing-map:i18n:watch"
       },
@@ -89,12 +89,9 @@
     "serve": {
       "dependsOn": ["build:app"],
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
-        "commands": [
-          "pkill -f '.output/server/index.mjs' || true",
-          "node .output/server/index.mjs"
-        ],
-        "parallel": false,
+        "command": "node scripts/serve-ssr.mjs",
         "cwd": "apps/fishing-map"
       }
     },
