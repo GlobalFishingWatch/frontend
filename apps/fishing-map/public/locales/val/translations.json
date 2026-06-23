@@ -398,7 +398,6 @@
     "VIIRSDelayDisclaimer": "crwdns108864:0crwdne108864:0"
   },
   "datasetUpload": {
-    "datasetDescription": "crwdns82682:0crwdne82682:0",
     "datasetName": "crwdns82684:0crwdne82684:0",
     "date": "crwdns82702:0crwdne82702:0",
     "dateRange": "crwdns82704:0crwdne82704:0",
@@ -633,6 +632,7 @@
     "monthAbbreviated_one": "crwdns84688:0{{count}}crwdne84688:0",
     "monthAbbreviated_many": "crwdns106686:0{{count}}crwdne106686:0",
     "monthAbbreviated_other": "crwdns84690:0{{count}}crwdne84690:0",
+    "naiveGaps": "crwdns131587:0{{regionName}}crwdne131587:0",
     "noData": "crwdns60165:0crwdne60165:0",
     "port": "crwdns60169:0crwdne60169:0",
     "port_entryActionIn": "crwdns68345:0{{port}}crwdne68345:0",
