@@ -7,10 +7,13 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import { PATH_BASENAME } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
+import { getActiveI18nState } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
 import { routeTree } from './routeTree.gen'
+import { makeStore } from './store'
+import { getDehydratedReduxState, serializeReduxState } from './store.dehydrated-state'
 
 const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr) as QueryParams
@@ -47,11 +50,20 @@ export function getCreateRouterOptions() {
     defaultNotFoundComponent: () => <Navigate to="/" />,
     stringifySearch: stringifyAppWorkspace,
     parseSearch: parseAppWorkspace,
+    dehydrate: () => ({ i18nState: getActiveI18nState() }),
   }
 }
 
 export function createAppRouter() {
-  const router = createRouter(getCreateRouterOptions())
+  const store = makeStore(getDehydratedReduxState())
+  const router = createRouter({
+    ...getCreateRouterOptions(),
+    context: { store },
+    dehydrate: () => ({
+      i18nState: getActiveI18nState(),
+      reduxState: serializeReduxState(store),
+    }),
+  })
 
   return router
 }

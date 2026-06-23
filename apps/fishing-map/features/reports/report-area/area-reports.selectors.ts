@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
-import { t } from 'i18next'
 
 import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
 import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
@@ -17,6 +16,7 @@ import { getDatasetsReportSupported } from 'features/datasets/datasets.permissio
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { t } from 'features/i18n/i18n'
 import {
   ENTIRE_WORLD_REPORT_AREA,
   ENTIRE_WORLD_REPORT_AREA_ID,

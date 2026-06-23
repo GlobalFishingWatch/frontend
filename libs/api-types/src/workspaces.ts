@@ -1,4 +1,4 @@
-import type { DataviewCategory, DataviewInstance } from './dataviews'
+import type { DataviewInstance } from './dataviews'
 
 export type ApiAppName = 'fishing-map' | 'marine-manager'
 

@@ -1,5 +1,8 @@
 /// <reference types="vite/client" />
 
+/** Injected by Vite `define` at build time. Omitted when the define is not applied. */
+declare const __BUILD_ID__: string | undefined
+
 interface ImportMetaEnv {
   readonly VITE_API_GATEWAY?: string
   readonly VITE_API_VERSION?: string

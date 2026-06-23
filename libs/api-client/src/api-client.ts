@@ -6,8 +6,18 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
-import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
+import { getIsBrowser, logDebugUrl } from './utils/browser'
+import {
+  getIsTimeoutError,
+  getIsUnauthorizedError,
+  isAuthError,
+  isSessionError,
+  isTransientError,
+  parseAPIError,
+} from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
+import type { TokenStorage } from './utils/token-storage'
+import { createLocalStorageTokenStorage } from './utils/token-storage'
 import { isUrlAbsolute } from './utils/url'
 import {
   API_GATEWAY,
@@ -20,8 +30,6 @@ import {
   USER_TOKEN_STORAGE_KEY,
 } from './config'
 
-export { GUEST_USER_TYPE, API_VERSION, API_GATEWAY } from './config'
-
 interface UserTokens {
   token: string
   refreshToken: string
@@ -32,24 +40,28 @@ interface LoginParams {
   refreshToken?: string | null
 }
 export type ApiVersion = '' | 'v3'
-export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
-  version?: ApiVersion
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  cache?: RequestCache
-  responseType?: ResourceResponseType
-  requestType?: ResourceRequestType
+export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body' | 'headers'>> & {
   body?: T
+  cache?: RequestCache
+  // Static headers or a function to avoid stale values between requests (e.g. a rotating refresh-token)
+  headers?: HeadersInit | (() => HeadersInit)
   local?: boolean
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  requestType?: ResourceRequestType
+  responseType?: ResourceResponseType
+  token?: string
+  version?: ApiVersion
 }
 
 type InternalFetchOptions<Body = unknown> = {
   url: string
-  options?: FetchOptions<Body>
+  options?: FetchOptions<Body> & { skipAuthRefresh?: boolean }
   refreshRetries?: number
   waitLogin?: boolean
 }
 
-const isClientSide = typeof window !== 'undefined'
+export type RefreshStrategy = () => Promise<UserTokens>
+export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
 export class GFW_API_CLASS {
@@ -61,8 +73,12 @@ export class GFW_API_CLASS {
     refreshToken: string
   }
   maxRefreshRetries = 1
+  maxReloadRetries = 2
   logging: Promise<UserData> | null
   private refreshingToken: Promise<UserTokens> | null = null
+  private accessTokenStorage: TokenStorage
+  private refreshStrategy: RefreshStrategy | null = null
+  private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
   status: RequestStatus = 'idle'
 
   constructor({
@@ -79,6 +95,7 @@ export class GFW_API_CLASS {
       token: tokenStorageKey,
       refreshToken: refreshTokenStorageKey,
     }
+    this.accessTokenStorage = createLocalStorageTokenStorage(tokenStorageKey)
     this.logging = null
 
     if (debug) {
@@ -86,35 +103,90 @@ export class GFW_API_CLASS {
     }
   }
 
-  get token() {
-    if (isClientSide) {
-      return localStorage.getItem(this.storageKeys.token) || ''
+  private debugLog(...args: unknown[]) {
+    if (this.debug) {
+      console.log(...args)
     }
-    return ''
+  }
+
+  private debugWarn(...args: unknown[]) {
+    if (this.debug) {
+      console.warn(...args)
+    }
+  }
+
+  private debugAuthState(label: string) {
+    if (!this.debug) return
+    this.debugLog(`GFWAPI: ${label}`, {
+      hasAccessToken: Boolean(this.token),
+      hasLocalRefreshToken: Boolean(this.refreshToken),
+      hasRefreshStrategy: Boolean(this.refreshStrategy),
+      hasSessionInvalidateStrategy: Boolean(this.sessionInvalidateStrategy),
+      status: this.status,
+      loginInProgress: Boolean(this.logging),
+      refreshInProgress: Boolean(this.refreshingToken),
+    })
+  }
+
+  // Opt-in overrides for apps that need a different auth model (e.g. SSR: a cookie
+  // access token + a server-function refresh). Default behavior is unchanged for
+  // every app that does not call this.
+  configure({
+    tokenStorage,
+    refreshStrategy,
+    sessionInvalidateStrategy,
+  }: {
+    tokenStorage?: TokenStorage
+    refreshStrategy?: RefreshStrategy
+    sessionInvalidateStrategy?: SessionInvalidateStrategy
+  } = {}) {
+    if (tokenStorage) {
+      this.accessTokenStorage = tokenStorage
+    }
+    if (refreshStrategy) {
+      this.refreshStrategy = refreshStrategy
+    }
+    if (sessionInvalidateStrategy) {
+      this.sessionInvalidateStrategy = sessionInvalidateStrategy
+    }
+    if (this.debug) {
+      this.debugLog('GFWAPI: configure()', {
+        tokenStorage: Boolean(tokenStorage),
+        refreshStrategy: Boolean(refreshStrategy),
+        sessionInvalidateStrategy: Boolean(sessionInvalidateStrategy),
+      })
+    }
+  }
+
+  private invalidateClientSession() {
+    if (this.debug) {
+      this.debugLog('GFWAPI: invalidateClientSession — clearing local session')
+    }
+    this.token = ''
+    this.refreshToken = ''
+    void this.sessionInvalidateStrategy?.()
+  }
+
+  get token() {
+    return this.accessTokenStorage.get()
   }
 
   private set token(token: string) {
-    if (isClientSide) {
-      if (token) {
-        localStorage.setItem(this.storageKeys.token, token)
-      } else {
-        localStorage.removeItem(this.storageKeys.token)
-      }
-    }
+    this.accessTokenStorage.set(token)
     if (this.debug) {
-      console.log('GFWAPI: updated token with', token)
+      this.debugLog('GFWAPI: updated token with', token)
     }
   }
 
   get refreshToken() {
-    if (isClientSide) {
+    if (getIsBrowser()) {
       return localStorage.getItem(this.storageKeys.refreshToken) || ''
     }
     return ''
   }
 
   private set refreshToken(refreshToken: string) {
-    if (isClientSide) {
+    if (getIsBrowser()) {
       if (refreshToken) {
         localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
       } else {
@@ -122,34 +194,30 @@ export class GFW_API_CLASS {
       }
     }
     if (this.debug) {
-      console.log('GFWAPI: updated refreshToken with', refreshToken)
+      this.debugLog('GFWAPI: updated refreshToken with', refreshToken)
     }
   }
 
-  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
-    const fallbackLocale =
-      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
+  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = 'en' } = {}) {
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
-      )}&locale=${fallbackLocale}`,
+      )}&locale=${locale}`,
       { absolute: true }
     )
   }
 
   getLoginUrl(
     callbackUrl: string,
-    { client = 'gfw', locale = '', hideHeader = false } = {} satisfies {
+    { client = 'gfw', locale = 'en', hideHeader = false } = {} satisfies {
       client?: string
       locale?: string
       hideHeader?: boolean
     }
   ) {
-    const fallbackLocale =
-      locale || (isClientSide ? localStorage.getItem('i18nextLng') : 'en') || 'en'
     const params = new URLSearchParams({
       client,
-      locale: fallbackLocale,
+      locale,
       callback: callbackUrl,
       ...(hideHeader && { hideHeader: 'true' }),
     })
@@ -166,11 +234,9 @@ export class GFW_API_CLASS {
     }
   }
 
-  async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
-    // We need to avoid requesting tokens from the Login window because the accessToken
-    // needs to be used for the first time in the main window
-    if (typeof window === 'undefined' || window.opener) {
-      return { token: '', refreshToken: '' }
+  exchangeAccessToken(accessToken: string): Promise<UserTokens> {
+    if (this.debug) {
+      this.debugLog('GFWAPI: exchangeAccessToken')
     }
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
@@ -179,51 +245,104 @@ export class GFW_API_CLASS {
       .then(parseJSON)
   }
 
-  private async getTokenWithRefreshToken(
-    refreshToken: string
-  ): Promise<{ token: string; refreshToken: string }> {
+  reloadTokens(refreshToken: string): Promise<UserTokens> {
+    if (this.debug) {
+      this.debugLog('GFWAPI: reloadTokens', { hasRefreshToken: Boolean(refreshToken) })
+    }
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
-      headers: {
-        'refresh-token': refreshToken,
-      },
+      headers: { 'refresh-token': refreshToken },
     })
       .then(processStatus)
       .then(parseJSON)
   }
 
-  private async reloadAPIToken(refreshToken: string) {
-    const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
-    const { token, refreshToken: newRefreshToken } = refreshResponse
-    this.token = token
-    this.refreshToken = newRefreshToken
-    return refreshResponse
+  revokeRefreshToken(refreshToken: string): Promise<Response> {
+    if (this.debug) {
+      this.debugLog('GFWAPI: revokeRefreshToken', { hasRefreshToken: Boolean(refreshToken) })
+    }
+    return fetch(this.generateUrl(`/${AUTH_PATH}/logout`, { absolute: true }), {
+      headers: { 'refresh-token': refreshToken },
+    }).then(processStatus)
   }
 
-  private async reloadAPITokenWithLatestRefreshToken(refreshToken: string) {
+  private async reloadAPIToken(refreshToken: string, reloadRetries = 0): Promise<UserTokens> {
     try {
-      return await this.reloadAPIToken(refreshToken)
+      const refreshResponse = await this.reloadTokens(refreshToken)
+      const { token, refreshToken: newRefreshToken } = refreshResponse
+      this.token = token
+      this.refreshToken = newRefreshToken
+      return refreshResponse
     } catch (e: any) {
-      const latestRefreshToken = this.refreshToken
-      if (latestRefreshToken && latestRefreshToken !== refreshToken) {
-        return await this.reloadAPIToken(latestRefreshToken)
+      if (isTransientError(e) && reloadRetries < this.maxReloadRetries) {
+        this.debugLog(`GFWAPI: Transient reload failure, retry attempt ${reloadRetries + 1}`)
+        await new Promise((resolve) => setTimeout(resolve, 500 * (reloadRetries + 1)))
+        return this.reloadAPIToken(refreshToken, reloadRetries + 1)
       }
-      e.status = 401
+      this.debugWarn('GFWAPI: reloadAPIToken failed', e)
       throw e
     }
   }
 
+  private async withTokenRefreshLock<T>(run: () => Promise<T>): Promise<T> {
+    if (getIsBrowser() && typeof navigator !== 'undefined' && navigator.locks?.request) {
+      return navigator.locks.request('gfw-token-refresh', run) as Promise<T>
+    }
+    return run()
+  }
+
+  private getRotatedRefreshToken(startedWith: string): string | null {
+    const latest = this.refreshToken
+    return latest && latest !== startedWith ? latest : null
+  }
+
+  private async refreshTokens(startRefreshToken: string): Promise<UserTokens> {
+    return this.withTokenRefreshLock(async () => {
+      const rotatedBefore = this.getRotatedRefreshToken(startRefreshToken)
+      if (rotatedBefore) {
+        this.debugLog('GFWAPI: refreshTokens — reusing token rotated by another tab (before reload)')
+        return { token: this.token, refreshToken: rotatedBefore }
+      }
+      try {
+        return await this.reloadAPIToken(startRefreshToken)
+      } catch (e: any) {
+        const rotatedDuring = this.getRotatedRefreshToken(startRefreshToken)
+        if (rotatedDuring) {
+          this.debugLog('GFWAPI: refreshTokens — retrying with token rotated during reload')
+          return await this.reloadAPIToken(rotatedDuring)
+        }
+        throw e
+      }
+    })
+  }
+
   async refreshAPIToken() {
     if (this.refreshingToken) {
+      this.debugLog('GFWAPI: refreshAPIToken — joining in-flight refresh')
       return this.refreshingToken
     }
+
+    if (this.refreshStrategy) {
+      this.debugAuthState('refreshAPIToken — via refreshStrategy')
+      const strategy = this.refreshStrategy
+      this.status = 'refreshingToken'
+      this.refreshingToken = this.withTokenRefreshLock(() => strategy()).finally(() => {
+        this.status = 'idle'
+        this.refreshingToken = null
+      })
+      return this.refreshingToken
+    }
+
     const refreshToken = this.refreshToken
     if (!refreshToken) {
+      this.debugWarn('GFWAPI: refreshAPIToken — no local refresh token')
       const error: any = new Error('No refresh token')
       error.status = 401
       throw error
     }
+
+    this.debugAuthState('refreshAPIToken — via localStorage reload')
     this.status = 'refreshingToken'
-    this.refreshingToken = this.reloadAPITokenWithLatestRefreshToken(refreshToken).finally(() => {
+    this.refreshingToken = this.refreshTokens(refreshToken).finally(() => {
       this.status = 'idle'
       this.refreshingToken = null
     })
@@ -262,19 +381,49 @@ export class GFW_API_CLASS {
       .then(async (blob) => {
         const { saveAs } = await import('file-saver')
         saveAs(blob, fileName)
-        this.status = 'idle'
         return true
       })
       .catch((e) => {
-        this.status = 'idle'
         return false
       })
+      .finally(() => {
+        this.status = 'idle'
+      })
+  }
+
+  private normalizeError(e: any, responseType: ResourceResponseType) {
+    return responseType === 'default' ? e : parseAPIError(e)
   }
 
   private async _internalFetch<
     T = Record<string, unknown> | Blob | ArrayBuffer | Response,
     Body = unknown,
   >({
+    url,
+    options = {},
+    refreshRetries = 0,
+    waitLogin = true,
+  }: InternalFetchOptions<Body>): Promise<T> {
+    if (this.logging && waitLogin && options.token == null) {
+      this.debugLog('GFWAPI: waiting for login before fetch', { url })
+      try {
+        await this.logging
+        this.debugLog('GFWAPI: login settled, continuing fetch', { url })
+      } catch {
+        this.debugLog('GFWAPI: login failed — fetch continues without session', { url })
+      }
+    }
+    try {
+      return await this._fetchAttempt<T, Body>({ url, options, refreshRetries, waitLogin })
+    } catch (e: any) {
+      if (this.debug) {
+        this.debugWarn(`GFWAPI: Error fetching ${url}`, e)
+      }
+      throw this.normalizeError(e, options.responseType ?? 'json')
+    }
+  }
+
+  private async _fetchAttempt<T, Body = unknown>({
     url,
     options = {},
     refreshRetries = 0,
@@ -289,286 +438,300 @@ export class GFW_API_CLASS {
       cache,
       signal,
       local = false,
+      skipAuthRefresh = false,
+      token,
     } = options
     try {
-      if (this.logging && waitLogin) {
-        // Don't do any request until the login is completed
-        // and don't wait for the login request itselft
-        try {
-          await this.logging
-        } catch (e: any) {
-          if (this.debug) {
-            console.log(`Fetch resource executed without login headers in url: ${url}`)
-          }
-        }
-      }
-
-      try {
-        if (this.debug) {
-          console.log(`GFWAPI: Fetching URL: ${url}`)
-        }
-        const finalHeaders = {
-          ...headers,
-          ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
-          ...(local && {
-            'x-gateway-url': API_GATEWAY,
-            user: JSON.stringify({
-              id: process.env.REACT_APP_LOCAL_API_USER_ID,
-              type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-              email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
-            }),
-          }),
-          Authorization: `Bearer ${this.token}`,
-        }
-        const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
-        const data = await fetch(fetchUrl, {
-          method,
-          signal,
-          ...(cache && { cache }),
-          ...(body &&
-            ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
-          headers: finalHeaders,
-        })
-          .then((res) => processStatus(res, responseType))
-          .then((res) => {
-            switch (responseType) {
-              case 'default':
-                return res
-              case 'json':
-                return parseJSON(res).catch((e) => {
-                  // When an error occurs while parsing and
-                  // http response is no content, returns an
-                  // empty response instead of an raising error
-                  if (res.status === 204) return
-                })
-              case 'blob':
-                return res.blob()
-              case 'text':
-                return res.text()
-              case 'arrayBuffer':
-                return res.arrayBuffer()
-              case 'vessel': {
-                return import('./pbf-decoders/vessels-proto').then(({ Track }) => {
-                  return res.arrayBuffer().then((buffer) => {
-                    const track = Track.decode(new Uint8Array(buffer))
-                    return track.data
-                  })
-                })
-              }
-              default:
-                return res
-            }
-          })
-        return data
-      } catch (e: any) {
-        // 401 = not authenticated => trying to refresh the token
-        // 403 = not authorized => trying to refresh the token
-        // 401 + refreshError = true => refresh token failed
-        if (refreshRetries <= this.maxRefreshRetries) {
-          const authError = isAuthError(e)
-          if (authError) {
-            if (this.debug) {
-              console.log(`GFWAPI: Trying to refresh the token attempt: ${refreshRetries}`)
-            }
-            try {
-              await this.refreshAPIToken()
-              if (this.debug) {
-                console.log(`GFWAPI: Token refresh worked! trying to fetch again ${url}`)
-              }
-            } catch (err: any) {
-              if (this.debug) {
-                console.warn(`GFWAPI: Error fetching ${url}`, err)
-              }
-              if (isClientSide) {
-                this.token = ''
-                this.refreshToken = ''
-              }
-              e.refreshError = true
-              throw parseAPIError(e)
-            }
-          }
-          if (authError || e.status >= 500) {
-            return this._internalFetch<T, Body>({
-              url,
-              options,
-              refreshRetries: refreshRetries + 1,
-              waitLogin,
-            })
-          }
-          throw e
-        } else {
-          if (this.debug) {
-            if (refreshRetries >= this.maxRefreshRetries) {
-              console.log(`GFWAPI: Attemps to retry the request excedeed`)
-            }
-            console.warn(`GFWAPI: Error fetching ${url}`, e)
-          }
-          if (responseType === 'default') {
-            throw e
-          }
-
-          throw parseAPIError(e)
-        }
-      }
-    } catch (e: any) {
       if (this.debug) {
-        console.warn(`GFWAPI: Error fetching ${url}`, e)
+        logDebugUrl('GFWAPI: Fetching URL: ', url)
+        if (token != null) {
+          this.debugLog('GFWAPI: stateless fetch (per-request token, no refresh/retry)')
+        }
       }
-      if (responseType === 'default') {
+      const finalHeaders = {
+        ...(typeof headers === 'function' ? headers() : headers),
+        ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
+        ...(local && {
+          'x-gateway-url': API_GATEWAY,
+          user: JSON.stringify({
+            id: process.env.REACT_APP_LOCAL_API_USER_ID,
+            type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
+            email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+          }),
+        }),
+        Authorization: `Bearer ${token ?? this.token}`,
+      }
+      const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
+      const data = await fetch(fetchUrl, {
+        method,
+        signal,
+        ...(cache && { cache }),
+        ...(body &&
+          ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
+        headers: finalHeaders,
+      })
+        .then((res) => processStatus(res, responseType))
+        .then((res) => {
+          switch (responseType) {
+            case 'default':
+              return res
+            case 'json':
+              return parseJSON(res).catch((e) => {
+                // When an error occurs while parsing and
+                // http response is no content, returns an
+                // empty response instead of an raising error
+                if (res.status === 204) return
+              })
+            case 'blob':
+              return res.blob()
+            case 'text':
+              return res.text()
+            case 'arrayBuffer':
+              return res.arrayBuffer()
+            case 'vessel': {
+              return import('./pbf-decoders/vessels-proto').then(({ Track }) => {
+                return res.arrayBuffer().then((buffer) => {
+                  const track = Track.decode(new Uint8Array(buffer))
+                  return track.data
+                })
+              })
+            }
+            default:
+              return res
+          }
+        })
+      return data
+    } catch (e: any) {
+      // 401 = not authenticated, 403 = not authorized => try to refresh the token.
+      if (refreshRetries > this.maxRefreshRetries) {
+        this.debugLog(`GFWAPI: retry attempts exceeded for ${url}`)
+        this.debugWarn(`GFWAPI: Error fetching ${url}`, e)
         throw e
       }
-      throw parseAPIError(e)
+      const authError = isAuthError(e)
+      const stateless = token != null
+      if (authError && skipAuthRefresh) {
+        this.debugLog('GFWAPI: auth error — skipAuthRefresh, not retrying', {
+          url,
+          status: e.status,
+        })
+      }
+      if (authError && stateless) {
+        this.debugLog('GFWAPI: auth error — stateless request, not refreshing', {
+          url,
+          status: e.status,
+        })
+      }
+      if (authError && !skipAuthRefresh && !stateless) {
+        this.debugLog(`GFWAPI: auth error — refreshing token (attempt ${refreshRetries})`, {
+          url,
+          status: e.status,
+        })
+        try {
+          await this.refreshAPIToken()
+          if (this.debug) {
+            logDebugUrl('GFWAPI: Token refresh worked! trying to fetch again ', url)
+          }
+        } catch (err: any) {
+          this.debugWarn(`GFWAPI: token refresh failed for ${url}`, err)
+
+          const refreshRejected = isSessionError(err) && !getIsTimeoutError(err)
+          if (getIsBrowser() && refreshRejected) {
+            this.debugLog('GFWAPI: refresh rejected — invalidating client session')
+            this.invalidateClientSession()
+          }
+          if (refreshRejected) {
+            e.refreshError = true
+            this.debugLog('GFWAPI: marking original error as refreshError')
+          }
+          throw e
+        }
+      }
+      if (!stateless && ((authError && !skipAuthRefresh) || e.status >= 500)) {
+        this.debugLog(`GFWAPI: retrying fetch (attempt ${refreshRetries + 1})`, {
+          url,
+          reason: authError ? 'auth' : '5xx',
+          status: e.status,
+        })
+        return this._fetchAttempt<T, Body>({
+          url,
+          options,
+          refreshRetries: refreshRetries + 1,
+          waitLogin,
+        })
+      }
+      throw e
     }
   }
 
-  async fetchUser() {
+  async fetchUser({ token }: { token?: string } = {}) {
+    if (this.debug) {
+      this.debugLog('GFWAPI: fetchUser', { stateless: token != null, hasToken: Boolean(token) })
+    }
     try {
       const user = await this._internalFetch<UserData>({
         url: this.generateUrl(`/${AUTH_PATH}/me`),
+        options: { token },
         refreshRetries: 0,
         waitLogin: false,
       })
+      this.debugLog('GFWAPI: fetchUser OK', { userId: user?.id, type: user?.type })
       return user
     } catch (e: any) {
-      console.warn(e)
+      this.debugWarn('GFWAPI: fetchUser failed', e)
       throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
-  async fetchGuestUser(): Promise<UserData> {
+  async fetchGuestUser({ token }: { token?: string } = {}): Promise<UserData> {
+    if (this.debug) {
+      this.debugLog('GFWAPI: fetchGuestUser', { stateless: token != null })
+    }
     try {
       const permissions: UserPermission[] = await this._internalFetch<
         APIPagination<UserPermission>
       >({
         url: this.generateUrl(`/auth/acl/permissions/anonymous`),
+        options: { token },
       }).then((response: APIPagination<UserPermission>) => {
         return response.entries
       })
       const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
 
+      this.debugLog('GFWAPI: fetchGuestUser OK', { permissions: permissions.length })
       return user
     } catch (e: any) {
-      console.warn(e)
+      this.debugWarn('GFWAPI: fetchGuestUser failed', e)
       throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
-  async login(params: LoginParams): Promise<UserData> {
-    if (this.logging) {
-      return this.logging
-    }
-    const { accessToken = null, refreshToken } = params
-    this.status = 'logging'
-    // eslint-disable-next-line no-async-promise-executor
-    this.logging = new Promise<UserData>(async (resolve, reject) => {
+  private async _login({
+    accessToken,
+    refreshToken,
+  }: {
+    accessToken: string | null
+    refreshToken?: string | null
+  }): Promise<UserData> {
+    this.debugAuthState('_login start')
+    try {
       if (accessToken) {
-        if (this.debug) {
-          console.log(`GFWAPI: Trying to get tokens using access-token`)
-        }
+        this.debugLog('GFWAPI: _login — exchanging SSO access token')
         try {
-          const tokens = await this.getTokensWithAccessToken(accessToken)
+          const tokens = await this.exchangeAccessToken(accessToken)
           this.token = tokens.token
           this.refreshToken = tokens.refreshToken
-          if (this.debug) {
-            console.log(`GFWAPI: access-token valid, tokens ready`)
-          }
+          this.debugLog('GFWAPI: _login — access token exchanged, tokens stored')
         } catch (e: any) {
           if (!this.token && !this.refreshToken) {
             const msg = getIsUnauthorizedError(e)
               ? 'Invalid access token'
               : 'Error trying to generate tokens'
-            if (this.debug) {
-              console.warn(`GFWAPI: ${msg}`)
-            }
-            reject(new Error(msg, { cause: e }))
-            this.status = 'idle'
-            return null
+            this.debugWarn(`GFWAPI: _login — ${msg}`, e)
+            throw new Error(msg, { cause: e })
           }
+          this.debugLog('GFWAPI: _login — access token exchange failed, falling back to stored tokens')
         }
       }
 
       if (this.token) {
-        if (this.debug) {
-          console.log(`GFWAPI: Trying to get user with current token`)
-        }
+        this.debugLog('GFWAPI: _login — fetching user with stored access token')
         try {
           const user = await this.fetchUser()
-          if (this.debug) {
-            console.log(`GFWAPI: Token valid, user data ready:`, user)
-          }
-          resolve(user)
-          this.status = 'idle'
+          this.debugLog('GFWAPI: _login — user resolved with access token', {
+            userId: user?.id,
+            type: user?.type,
+          })
           return user
         } catch (e: any) {
-          if (this.debug) {
-            console.warn('GFWAPI: Token expired, trying to refresh', e)
-          }
+          this.debugWarn('GFWAPI: _login — access token rejected, will try refresh', e)
         }
       }
 
       const refreshTokenToUse = refreshToken || this.refreshToken
-      if (refreshTokenToUse) {
-        if (this.debug) {
-          console.log(`GFWAPI: Token wasn't valid, trying to refresh`)
-        }
+      const canRefresh = this.refreshStrategy
+        ? Boolean(this.token || refreshTokenToUse)
+        : Boolean(refreshTokenToUse)
+      this.debugLog('GFWAPI: _login — refresh decision', {
+        canRefresh,
+        viaRefreshStrategy: Boolean(this.refreshStrategy),
+        hasAccessToken: Boolean(this.token),
+        hasLocalRefreshToken: Boolean(refreshTokenToUse),
+      })
+      if (canRefresh) {
+        this.debugLog(
+          `GFWAPI: _login — refreshing via ${this.refreshStrategy ? 'refreshStrategy' : 'localStorage'}`
+        )
         try {
-          await this.reloadAPITokenWithLatestRefreshToken(refreshTokenToUse)
-          if (this.debug) {
-            console.log(`GFWAPI: Refresh token OK, fetching user`)
+          if (this.refreshStrategy) {
+            await this.refreshAPIToken()
+          } else {
+            await this.refreshTokens(refreshTokenToUse)
           }
+          this.debugLog('GFWAPI: _login — refresh OK, fetching user')
           const user = await this.fetchUser()
-          if (this.debug) {
-            console.log(`GFWAPI: Login finished, user data ready:`, user)
-          }
-          resolve(user)
-          this.status = 'idle'
+          this.debugLog('GFWAPI: _login — user resolved after refresh', {
+            userId: user?.id,
+            type: user?.type,
+          })
           return user
         } catch (e: any) {
-          const msg = getIsUnauthorizedError(e)
+          const msg = isSessionError(e)
             ? 'Invalid refresh token'
             : 'Error trying to refreshing the token'
-          console.warn(e)
-          if (this.debug) {
-            console.warn(`GFWAPI: ${msg}`)
-          }
-          reject(new Error(msg, { cause: e }))
-          this.status = 'idle'
-          return null
+          this.debugWarn(`GFWAPI: _login — ${msg}`, e)
+          throw new Error(msg, { cause: e })
         }
       }
+
+      this.debugWarn('GFWAPI: _login — no session (no token and refresh not attempted)')
+      // status 401 so consumers classify "no session" as an auth error (→ guest
+      // fallback), not a transient/network failure to retry. Mirrors refreshAPIToken.
+      const error: any = new Error('No login token provided')
+      error.status = 401
+      throw error
+    } finally {
       this.status = 'idle'
-      reject(new Error('No login token provided'))
-      return
-    }).finally(() => {
+      this.debugLog('GFWAPI: _login finished')
+    }
+  }
+
+  async login(params: LoginParams): Promise<UserData> {
+    if (this.logging) {
+      this.debugLog('GFWAPI: login — joining in-flight login')
+      return this.logging
+    }
+    const { accessToken = null, refreshToken } = params
+    this.debugAuthState('login start')
+    this.status = 'logging'
+    this.logging = this._login({ accessToken, refreshToken }).finally(() => {
       this.logging = null
     })
     return this.logging
   }
 
   async logout() {
+    this.debugAuthState('logout start')
     try {
-      if (this.debug) {
-        console.log(`GFWAPI: Logout - tokens cleaned`)
-      }
+      this.debugLog('GFWAPI: logout — revoking session on gateway')
       await this._internalFetch<void>({
         url: this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/logout`),
         options: {
-          headers: {
-            'refresh-token': this.refreshToken,
-          },
+          // Re-read the refresh token per attempt and don't refresh on a 401:
+          // a logout 401 means the session is already gone, so refreshing would
+          // only replay a now-stale token against the server.
+          headers: () => ({ 'refresh-token': this.refreshToken }),
+          skipAuthRefresh: true,
         },
       })
-      this.token = ''
-      this.refreshToken = ''
-      if (this.debug) {
-        console.log(`GFWAPI: Logout invalid session api OK`)
-      }
+      this.debugLog('GFWAPI: logout — gateway OK')
       return true
     } catch (e: any) {
-      if (this.debug) {
-        console.warn(`GFWAPI: Logout invalid session fail`)
-      }
+      this.debugWarn('GFWAPI: logout — gateway call failed (local session still cleared)', e)
       throw new Error('Error on the logout proccess', { cause: e })
+    } finally {
+      this.invalidateClientSession()
+      this.debugLog('GFWAPI: logout finished')
     }
   }
 }

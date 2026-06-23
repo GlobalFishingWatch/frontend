@@ -267,7 +267,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <LanguageToggle />
         </li>
         <li className={cx(styles.tab, styles.user, { [styles.current]: isUserLocation })}>
-          <UserButton className={styles.tabContent} testId="sidebar-login-icon" />
+          <UserButton className={styles.tabContent} />
         </li>
       </ul>
       {modalFeedbackOpen && (

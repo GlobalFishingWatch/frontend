@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { t } from 'i18next'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
@@ -21,6 +20,7 @@ import {
   selectActiveDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { t } from 'features/i18n/i18n'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'

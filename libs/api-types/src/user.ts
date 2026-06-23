@@ -16,41 +16,64 @@ export type BADGES_GROUP =
   | typeof IMPACT_REPORTER_BADGE_ID
 
 export type BADGES_PERMISSIONS =
+  | 'gfw-ambassador-badge'
+  | 'gfw-feedback-provider-badge'
+  | 'gfw-impact-reporter-badge'
   | 'gfw-presenter-badge'
   | 'gfw-teacher-badge'
-  | 'gfw-feedback-provider-badge'
-  | 'gfw-ambassador-badge'
-  | 'gfw-impact-reporter-badge'
 
 export type UserPermissionType =
   | 'application'
   | 'dataset'
   | 'entity'
+  | 'insights'
+  | 'report'
   | 'user-group'
   | 'user-property'
+  | 'vessel-group'
+  | 'vessel-info'
+  | 'vessel'
+  | 'workspace'
 
 export type UserPermissionValue =
-  | 'tmt'
+  | '*-public'
+  | '*global*'
+  | '*public*'
+  | 'bunker'
   | 'carrier-portal'
+  | 'carrier'
   | 'carriers:*'
+  | 'commercial-sources'
+  | 'coverage'
   | 'data-portal'
   | 'dataview'
+  | 'encounter'
   | 'fishing-map'
+  | 'fishing'
+  | 'gap'
   | 'indonesia:*'
+  | 'loitering'
   | 'map-client'
+  | 'non-commercial-sources'
+  | 'port_visit'
   | 'public'
+  | 'support'
+  | 'tmt'
   | 'user-application'
+  | 'vessel_identity_iuu_vessel_list'
   | 'vessel-group'
+  | 'vessel-insights'
   | 'workspace'
   | BADGES_PERMISSIONS
 
 export type UserPermissionAction =
-  | 'read'
-  | 'read-all'
-  | 'create'
+  | 'basic-search'
   | 'create-all'
-  | 'delete'
+  | 'create'
   | 'delete-all'
+  | 'delete'
+  | 'read-all'
+  | 'read'
   | string
 
 export type UserPermission = {

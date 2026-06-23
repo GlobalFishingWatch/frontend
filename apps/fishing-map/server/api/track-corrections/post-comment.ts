@@ -1,8 +1,7 @@
+import type { TrackCorrectionComment } from 'features/track-correction/track-correction.slice'
 import { COMMENTS_SPREADSHEET_TITLE, getSheetTab } from 'server/api/track-corrections/utils'
 import { sanitizeSheetRow } from 'server/api/utils/sanitize'
 import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
-
-import type { TrackCorrectionComment } from 'features/track-correction/track-correction.slice'
 
 export async function addCommentToIssue(
   issueId: string,

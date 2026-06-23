@@ -32,6 +32,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
     },
 
     define: {
+      __BUILD_ID__: JSON.stringify('dev'),
       'import.meta.env.VITE_API_GATEWAY': JSON.stringify(env.VITE_API_GATEWAY),
       'import.meta.env.VITE_PUBLIC_URL': JSON.stringify(basePath),
       'import.meta.env.VITE_WORKSPACE_ENV': JSON.stringify(env.VITE_WORKSPACE_ENV),

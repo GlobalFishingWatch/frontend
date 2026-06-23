@@ -1,8 +1,9 @@
-import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
-import { getRouteHead, getTFunction } from 'router/router.meta'
+import Workspace from 'features/workspace/Workspace'
+import { getRouteHead } from 'router/router.meta'
 
 export const Route = createFileRoute('/_app/')({
-  component: lazyRouteComponent(() => import('features/workspace/Workspace')),
-  head: ({ matches }) => getRouteHead({ t: getTFunction(matches) }),
+  component: Workspace,
+  head: () => getRouteHead(),
 })

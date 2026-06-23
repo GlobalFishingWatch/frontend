@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+
 import { Choice } from '../choice'
 import { Icon } from '../icon'
-
-import useSmallScreen from './use-small-screen'
 
 import styles from './SplitView.module.css'
 
@@ -25,6 +25,8 @@ interface SplitViewProps {
   asideWidth?: string
   initialAsideWidthPct?: number
   onAsideWidthChange?: (pct: number) => void
+  initialScreenWidth?: number
+  onScreenWidthChange?: (screenWidth: number) => void
   resizable?: boolean
   aside: React.ReactNode
   main: React.ReactNode
@@ -45,6 +47,8 @@ export function SplitView(props: SplitViewProps) {
     asideWidth = '32rem',
     initialAsideWidthPct,
     onAsideWidthChange,
+    initialScreenWidth,
+    onScreenWidthChange,
     resizable = false,
     showAsideLabel = 'Show aside',
     showMainLabel = 'Show main',
@@ -71,7 +75,7 @@ export function SplitView(props: SplitViewProps) {
     setPrevIsOpen(isOpen)
     setInternalOpen(isOpen)
   }
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(undefined, { initialScreenWidth, onScreenWidthChange })
 
   const [isDragging, setIsDragging] = useState(false)
   const [widthPct, setWidthPct] = useState(() =>

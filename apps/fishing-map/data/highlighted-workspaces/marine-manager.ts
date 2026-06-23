@@ -18,7 +18,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'fiji-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-fiji.png`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-fiji.jpg`,
   },
   // {
   //   id: 'galapagos-public',
@@ -30,11 +30,11 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'micronesia-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-micronesia.png`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-micronesia.jpg`,
   },
   {
     id: 'maldives-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-maldives.png`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-maldives.jpg`,
   },
   {
     id: 'niue-public',

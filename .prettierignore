@@ -1,5 +1,9 @@
 # Add files here to ignore them from prettier formatting
 
+# Protobuf codegen — formatted only via proto:generate (explicit CLI paths bypass this ignore)
+**/*.gen.js
+**/*.gen.d.ts
+
 /dist
 /coverage
 

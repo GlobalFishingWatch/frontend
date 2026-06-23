@@ -1,4 +1,4 @@
-import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet, useSearch } from '@tanstack/react-router'
@@ -7,7 +7,6 @@ import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { CONTENT_PANEL_WIDTH_COOKIE_KEY, SIDEBAR_WIDTH_COOKIE_KEY } from 'features/app/app.config'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content-panel/ContentPanel'
@@ -20,8 +19,8 @@ import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
 import { useLoginPopupListener } from 'features/user/user.hooks'
-import { fetchUserThunk } from 'features/user/user.slice'
 import { useEnsureWorkspaceLoad } from 'features/workspace/workspace.hook'
+import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 import { ConfirmLeave } from 'router/ConfirmLeave'
 import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
@@ -41,12 +40,10 @@ import {
   selectIsWorkspaceLocation,
   selectLocationType,
 } from 'router/routes.selectors'
-import { usePersistedCookieNumber } from 'utils/cookies'
 import { getIsBrowser } from 'utils/dom'
 
 import { selectReadOnly, selectScreenshotMode, selectSidebarOpen } from './selectors/app.selectors'
 import { useAnalytics } from './analytics.hooks'
-import { useAppDispatch } from './app.hooks'
 import Main from './Main'
 
 import styles from './App.module.css'
@@ -70,7 +67,6 @@ function App() {
   useEnsureWorkspaceLoad()
   useLoginPopupListener()
 
-  const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
@@ -88,14 +84,12 @@ function App() {
   const locationType = useSelector(selectLocationType)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const sidebarWidthPct = rootRoute.useLoaderData({ select: (d) => d?.asideWidthPct })
-  const onSidebarWidthChange = usePersistedCookieNumber(SIDEBAR_WIDTH_COOKIE_KEY)
+  const onSidebarWidthChange = usePersistedPanelWidth('sidebar')
   const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
-  const onContentPanelWidthChange = usePersistedCookieNumber(CONTENT_PANEL_WIDTH_COOKIE_KEY)
+  const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
+  const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
+  const onScreenWidthChange = usePersistedPanelWidth('screen')
   const { replaceQueryParams } = useReplaceQueryParams()
-
-  useEffect(() => {
-    dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
 
   const onToggle = useCallback(() => {
     replaceQueryParams({ sidebarOpen: !sidebarOpen })
@@ -160,6 +154,8 @@ function App() {
               asideWidth={asideWidth}
               initialAsideWidthPct={sidebarWidthPct ?? undefined}
               onAsideWidthChange={onSidebarWidthChange}
+              initialScreenWidth={screenWidth ?? undefined}
+              onScreenWidthChange={onScreenWidthChange}
               resizable={isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}
