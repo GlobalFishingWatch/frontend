@@ -308,19 +308,19 @@ function UserPanel({
                 )}
             </>
           )}
-          {(datasetError || datasetDescription) && (
+          {datasetError && (
             <InfoError
               error={datasetError}
               loading={dataset.status === DatasetStatus.Importing}
               tooltip={error || t((t) => t.layer.seeDescription)}
               size="small"
-              onClick={() =>
-                !datasetError &&
-                openSidePanel({
-                  type: 'userDataset',
-                  id: dataset.id,
-                })
-              }
+              // onClick={() =>
+              //   !datasetError &&
+              //   openSidePanel({
+              //     type: 'userDataset',
+              //     id: dataset.id,
+              //   })
+              // }
             />
           )}
           <Remove
