@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import type { EventType, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
-import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
+import { type DatasetEventSource, VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -174,10 +174,14 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t((t) => t.event.gapActionIn, {
-                    regionName: mainRegionDescription,
-                    source,
-                  })}
+                  {source === VMS_DATASET_ID
+                    ? t((t) => t.event.naiveGaps, {
+                        regionName: mainRegionDescription,
+                      })
+                    : t((t) => t.event.gapActionIn, {
+                        regionName: mainRegionDescription,
+                        source,
+                      })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
               </Tooltip>
