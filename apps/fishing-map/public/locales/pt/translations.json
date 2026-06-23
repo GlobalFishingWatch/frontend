@@ -855,7 +855,7 @@
     },
     "screenshotDownload": "Baixar imagem",
     "screenshotPreview": "Pré-visualizar imagem",
-    "search": "Procure por oceanos e mares, AMPs ou ZEEs",
+    "search": "Busque por uma área de interesse, por exemplo: mar, porto, ZEE, OROP",
     "searchTypes": {
       "eez": "ZEE",
       "fao": "FAO",
