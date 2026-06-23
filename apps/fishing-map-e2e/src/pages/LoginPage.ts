@@ -17,7 +17,7 @@ function requireEnv(name: string): string {
 }
 
 export class LoginPage {
-  readonly page: Page
+  private page: Page
   readonly context: BrowserContext
   readonly guestLoginIcon: Locator
   readonly userLink: Locator
@@ -36,8 +36,7 @@ export class LoginPage {
 
   async login() {
     await expect(this.guestLoginIcon).toBeVisible()
-    // SSR: button markup ships before hydration, but its click handler (which opens the auth
-    // popup) only attaches once React hydrates. Clicking earlier silently no-ops.
+
     await waitForHydration(this.page)
 
     const popupPromise = this.page.waitForEvent('popup', { timeout: 30_000 })
@@ -72,6 +71,10 @@ export class LoginPage {
 
   async reload() {
     await this.page.reload()
+  }
+
+  async close() {
+    await this.page.close()
   }
 
   async clearUserToken() {
