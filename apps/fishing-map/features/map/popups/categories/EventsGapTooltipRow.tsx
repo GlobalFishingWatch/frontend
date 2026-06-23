@@ -179,7 +179,7 @@ function EventsGapTooltipRow({
                               vesselSelfReportedId: event.vessel.id,
                             }}
                             eventId={event.id ? event.id.split('.')[0] : undefined}
-                            eventType={'encounter'}
+                            eventType={'gaps'}
                             showTooltip={false}
                             className={styles.btnLarge}
                           >

@@ -59,7 +59,13 @@ export const getValueLabelByUnit = (
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
-  const translatedLabel = t((t: any) => t[label], { defalutValue: label })
+  const translation = t(
+    (t: any) => {
+      return t[label]
+    },
+    { defaultValue: label, returnObjects: true } as any
+  )
+  const translatedLabel = typeof translation === 'string' ? translation : label
   if (unit) {
     return `${translatedLabel} (${getUnitLabel(unit)})`
   }

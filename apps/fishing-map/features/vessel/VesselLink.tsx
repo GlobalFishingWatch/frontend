@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'

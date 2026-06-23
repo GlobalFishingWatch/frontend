@@ -12,7 +12,6 @@ import {
 import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import {
   getDataviewInstanceByDataset,
   useDatasetModalConfigConnect,
@@ -36,7 +35,6 @@ import { getHighlightedText } from 'utils/text'
 import styles from './User.module.css'
 
 function UserDatasets() {
-  const { openSidePanel } = useSidePanel()
   const datasets = useSelector(selectUserDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const datasetStatusId = useSelector(selectDatasetsStatusId)
@@ -82,16 +80,6 @@ function UserDatasets() {
       })
     },
     [lastVisitedWorkspace, router]
-  )
-
-  const onInfoClick = useCallback(
-    (dataset: Dataset) => {
-      openSidePanel({
-        type: 'userDataset',
-        id: dataset.id,
-      })
-    },
-    [openSidePanel]
   )
 
   const onEditClick = useCallback(
@@ -148,17 +136,11 @@ function UserDatasets() {
                 }
                 const datasetError = dataset.status === DatasetStatus.Error
                 const datasetImporting = dataset.status === DatasetStatus.Importing
-                const datasetDescription = dataset.description !== dataset.name
-                let infoTooltip: string = t((t) => t.layer.seeDescription, {
-                  defaultValue: 'Click to see layer description',
-                })
-                if (datasetImporting) {
-                  infoTooltip = t((t) => t.dataset.importing)
-                }
-                if (datasetError) {
-                  const { importLogs = '' } = getDatasetConfiguration(dataset, 'userContextLayerV1')
-                  infoTooltip = `${t((t) => t.errors.uploadError)} - ${importLogs}`
-                }
+                const infoTooltip: string = datasetImporting
+                  ? t((t) => t.dataset.importing)
+                  : datasetError
+                    ? `${t((t) => t.errors.uploadError)} - ${getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''}`
+                    : ''
                 const datasetIcon = getDatasetTypeIcon(dataset)
                 return (
                   <li className={styles.dataset} key={dataset.id}>
@@ -176,12 +158,11 @@ function UserDatasets() {
                           tooltip={t((t) => t.user.seeDataset)}
                         />
                       )}
-                      {(datasetError || datasetDescription) && (
+                      {(datasetError || datasetImporting) && (
                         <InfoError
                           error={datasetError}
                           loading={datasetImporting}
                           tooltip={infoTooltip}
-                          onClick={() => !datasetError && onInfoClick(dataset)}
                         />
                       )}
                       {!datasetImporting && !datasetError && (

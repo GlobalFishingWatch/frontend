@@ -37,7 +37,6 @@ export const pointsListToGeojson = (
   let hasDatesError = false
   const features: Feature<Point>[] = data.flatMap((point, index) => {
     const cleanedPoint = normalizePropertiesKeys(point)
-    if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) return []
     const coords = parseCoords(cleanedPoint[latitude] as number, cleanedPoint[longitude] as number)
     if (coords) {
       const cleanedProperties = cleanProperties(cleanedPoint, filters)

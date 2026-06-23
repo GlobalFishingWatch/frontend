@@ -5,7 +5,6 @@ import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
-import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'
@@ -16,7 +15,6 @@ import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import { upperFirst } from 'utils/info'
 
 import layerStyles from './VesselEventsLegend.module.css'
 import styles from 'features/workspace/shared/Section.module.css'
@@ -96,7 +94,9 @@ function VesselEventsLegend({
             <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
               {t((t) => t.event[eventType], {
                 defaultValue: eventType,
-                source: getDatasetSourceTranslated(eventDatasets),
+                source: getDatasetSourceTranslated(
+                  eventDatasets.filter((d) => d.subcategory === eventType)
+                ),
               })}
             </label>
             <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>

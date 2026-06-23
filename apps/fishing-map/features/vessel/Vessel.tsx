@@ -98,7 +98,7 @@ const Vessel = () => {
 
   const isOnlyVMS = useMemo(() => {
     return vesselIdentity?.sourceCode?.every((source) =>
-      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+      source.toUpperCase().includes(VMS_DATASET_ID)
     )
   }, [vesselIdentity])
 

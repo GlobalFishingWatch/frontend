@@ -108,7 +108,7 @@ async function runLoginFlow(email: string, password: string) {
       timeout: NAVIGATION_TIMEOUT_MS,
       waitUntil: 'domcontentloaded',
     })
-    await page.waitForURL('**/auth*', { timeout: NAVIGATION_TIMEOUT_MS })
+    await page.waitForURL('**/auth*', { timeout: NAVIGATION_TIMEOUT_MS, waitUntil: 'commit' })
     log(`Navigated to auth page: ${page.url()}`)
 
     log('Filling in email...')
