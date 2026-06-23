@@ -8,6 +8,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
+import { selectReportsStatus } from 'features/reports/reports.slice'
 import LoginLink from 'features/user/LoginLink'
 import {
   selectIsGuestUser,
@@ -27,8 +28,10 @@ const UserButton = ({ className = '' }: { className?: string }) => {
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
+  const reportStatus = useSelector(selectReportsStatus)
   const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
+  const prevReportStatusRef = useRef(reportStatus)
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
@@ -41,6 +44,17 @@ const UserButton = ({ className = '' }: { className?: string }) => {
     }
     prevStatusRef.current = customStatus
   }, [customStatus, isSmallScreen])
+
+  useEffect(() => {
+    if (
+      !isSmallScreen &&
+      prevReportStatusRef.current === AsyncReducerStatus.LoadingCreate &&
+      reportStatus === AsyncReducerStatus.Finished
+    ) {
+      setIsAnimating(true)
+    }
+    prevReportStatusRef.current = reportStatus
+  }, [reportStatus, isSmallScreen])
 
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
