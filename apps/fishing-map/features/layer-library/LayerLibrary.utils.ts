@@ -56,9 +56,7 @@ export const resolveLibraryLayers = (
     layers.push({
       id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
       dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
-      config: {
-        color: '#ffffff',
-      },
+      config: {},
       category: DataviewCategory.Environment,
       name: t((t) => t['bathymetry-contour'].name, {
         ns: 'layer-library',
