@@ -14,7 +14,8 @@
           "pbts src/pbf-decoders/vessels.gen.js -o src/pbf-decoders/vessels.gen.d.ts",
           "prettier --write src/pbf-decoders/vessels.gen.js src/pbf-decoders/vessels.gen.d.ts --config ../../.prettierrc.js",
           "tsc --noEmit -p tsconfig.lib.json"
-        ]
+        ],
+        "parallel": false
       }
     },
     "dist": {

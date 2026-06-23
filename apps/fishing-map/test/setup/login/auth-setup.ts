@@ -139,16 +139,8 @@ async function runLoginFlow(email: string, password: string) {
     ])
     log(`Access token captured from callback URL: Yes (length: ${accessToken.length})`)
 
-    log('Exchanging access token for API tokens...')
-    const tokensResponse = await fetch(
-      `${GFWAPI.baseUrl}/${GFWAPI.apiVersion}/auth/tokens?access-token=${accessToken}`
-    )
-    if (!tokensResponse.ok) {
-      throw new Error(
-        `Token exchange failed: ${tokensResponse.status} ${tokensResponse.statusText}`
-      )
-    }
-    const tokens = await tokensResponse.json()
+    log('Exchanging access token for API tokens with GFWAPI...')
+    const tokens = await GFWAPI.exchangeAccessToken(accessToken)
 
     log(`Token retrieved: ${tokens.token ? 'Yes (length: ' + tokens.token.length + ')' : 'No'}`)
     log(

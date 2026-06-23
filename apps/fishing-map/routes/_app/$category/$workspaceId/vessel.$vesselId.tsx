@@ -1,13 +1,14 @@
-import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
-import { getRouteHead, getTFunction } from 'router/router.meta'
+import { t } from 'features/i18n/i18n'
+import Vessel from 'features/vessel/Vessel'
+import { ssrLoadVessel } from 'features/vessel/vessel.ssr'
+import { getRouteHead } from 'router/router.meta'
 import { validateVesselProfileParams } from 'router/routes.search'
 
 export const Route = createFileRoute('/_app/$category/$workspaceId/vessel/$vesselId')({
-  component: lazyRouteComponent(() => import('features/vessel/Vessel')),
+  component: Vessel,
   validateSearch: validateVesselProfileParams,
-  head: ({ matches }) => {
-    const t = getTFunction(matches)
-    return getRouteHead({ category: t('vessel.title'), t })
-  },
+  loader: ({ context, params, location }) => ssrLoadVessel({ context, params, location }),
+  head: () => getRouteHead({ category: t((s) => s.vessel.title) }),
 })

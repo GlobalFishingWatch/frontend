@@ -10,10 +10,8 @@ import {
   JAC_GROUP_ID,
 } from 'features/user/user.config'
 import type { RootState } from 'reducers'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectUserData = (state: RootState) => state.user.data
-export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
@@ -45,10 +43,3 @@ export const selectIsGFWTestGroup = createSelector([selectUserData], (userData) 
 export const selectIsGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
-
-export const selectIsUserLogged = createSelector(
-  [selectUserStatus, selectUserLogged],
-  (status, logged) => {
-    return status === AsyncReducerStatus.Finished && logged
-  }
-)

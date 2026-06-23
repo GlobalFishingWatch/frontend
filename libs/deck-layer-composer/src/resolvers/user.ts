@@ -148,7 +148,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
 
   const baseDataset = dataview.datasets?.find((d) => d.id === dataview.config?.layers?.[0].dataset)
   if (!baseDataset) {
-    console.error('No dataset found for user layer', dataview)
+    throw new Error(`No dataset found for user layer ${dataview.id}`)
   }
 
   const timeFilters = getUserContextTimeFilterProps({ dataset: baseDataset!, start, end })

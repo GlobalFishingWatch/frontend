@@ -20,8 +20,8 @@ import { getModalParent } from 'features/modals/modals.utils'
 import LogoutButton from 'features/user/LogoutButton'
 import {
   selectIsGFWUser,
-  selectIsUserLogged,
   selectUserData,
+  selectUserLogged,
 } from 'features/user/selectors/user.selectors'
 
 import {
@@ -40,7 +40,7 @@ type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
 function UserInfo() {
   const { t } = useTranslation()
-  const userLogged = useSelector(selectIsUserLogged)
+  const userLogged = useSelector(selectUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)

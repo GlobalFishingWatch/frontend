@@ -4,11 +4,25 @@ Global Fishing Watch interactive map application.
 
 ## Development
 
+Use `start` for daily work (Vite dev server with hot reload):
+
 ```bash
 pnpm nx run fishing-map:start
 ```
 
-Runs on [http://localhost:3003](http://localhost:3003). Automatically prepares loaders, cleans cache, and starts i18n watchers before serving.
+Runs on [http://localhost:3003](http://localhost:3003). Automatically prepares loaders and starts i18n watchers before serving.
+
+Use `serve` only when you need to test the production SSR build locally. It runs a full build first, then starts the Nitro server from `.output/server/index.mjs`:
+
+```bash
+pnpm nx serve fishing-map
+```
+
+If a server is left running after Ctrl+C, kill it with:
+
+```bash
+pkill -f '.output/server/index.mjs' || true
+```
 
 ## Build
 

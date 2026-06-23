@@ -1,9 +1,8 @@
 import type { DefaultProps, LayerContext } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { DataFilterExtensionOptions } from '@deck.gl/extensions'
-import { CollisionFilterExtension, DataFilterExtension } from '@deck.gl/extensions'
+import { CollisionFilterExtension } from '@deck.gl/extensions'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
-import { GeoJsonLayer } from '@deck.gl/layers'
+import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 
 import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
@@ -18,14 +17,13 @@ import type {
 
 type _ContextLayerProps = TileLayerProps & BathymetryContourLayerProps
 const defaultProps: DefaultProps<_ContextLayerProps> = {
+  color: '#ffffff',
   thickness: 1,
-  pickable: true,
   maxRequests: 100,
   debounceTime: 500,
 }
 
 const TILES_MAX_ZOOM = 12
-const filterRange = [1, 1] as [number, number]
 
 export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
   _ContextLayerProps & PropsT
@@ -42,110 +40,73 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
     this.setState({ viewportLoaded: false, labels: [] })
   }
 
-  _bathymetryColorScale = scaleLinear([-10, -100, -1000, -10000], [0.7, 0.4, 0.3, 0.1]).clamp(true)
+  _bathymetryColorScale = scaleLinear([-10, -100, -1000, -10000], [0.8, 0.6, 0.4, 0.2]).clamp(true)
   _priorityLengthScale = scaleLinear([5, 10000], [-900, 900]).clamp(true)
   _priorityBearingScale = scaleLinear([-180, 0, 180], [-100, 100, -100]).clamp(true)
+
+  _pathCache = new WeakMap<object, (BathymetryContourFeature & { path: number[][] })[]>()
+  _getPaths = (features: BathymetryContourFeature[]) => {
+    let paths = this._pathCache.get(features)
+    if (!paths) {
+      paths = features.flatMap((d) => {
+        if (d.geometry?.type === 'MultiLineString') {
+          return d.geometry.coordinates.map((path) => ({ ...d, path }))
+        }
+        if (d.geometry?.type === 'LineString') {
+          return [{ ...d, path: d.geometry.coordinates }]
+        }
+        return []
+      })
+      this._pathCache.set(features, paths)
+    }
+    return paths
+  }
 
   _getBathymetryColor = (d: BathymetryContourFeature | BathymetryLabelFeature) => {
     const baseOpacity = this._bathymetryColorScale(d.properties?.elevation)
     const zoomOpacityMultiplier = Math.min(1, Math.max(0.2, this.context.viewport.zoom / 8))
     const finalOpacity = baseOpacity * zoomOpacityMultiplier
-    return hexToDeckColor('#ffffff', finalOpacity)
+    return hexToDeckColor(this.props.color, finalOpacity)
   }
 
   renderLayers() {
-    const { visible, color, tilesUrl, thickness = 1, elevations } = this.props
-
+    const { visible, color, tilesUrl, depths } = this.props
     if (!visible) return []
 
-    const hasElevationsFilter = elevations !== undefined && elevations.length > 0
-    const filterExtensionParams: DataFilterExtensionOptions = {
-      filterSize: 1,
-      ...(hasElevationsFilter && {
-        categorySize: 1,
-      }),
-    }
+    const hasDepthFilter = depths !== undefined && depths.length > 0
+    const matchesDepth = (elevation: number) => !hasDepthFilter || depths.includes(0 - elevation)
 
     return new PMTilesLayer<TileLayerProps>({
       id: `${this.id}-boundaries-layer`,
       data: tilesUrl,
       maxZoom: TILES_MAX_ZOOM,
       updateTriggers: {
-        data: [elevations],
-        renderSubLayers: [color, thickness],
+        renderSubLayers: [depths, color],
       },
       renderSubLayers: (props: any) => {
         return [
-          // new PathLayer(props, {
-          //   id: `${props.id}-bathymetry-contour`,
-          //   data: props.data?.features,
-          //   extensions: [new DataFilterExtension(filterExtensionParams)],
-          //   // getFilterValue: (d: BathymetryContourFeature | BathymetryLabelFeature) => {
-          //   //   return d.geometry?.type !== 'Point' ? 1 : 0
-          //   // },
-          //   // filterRange,
-          //   ...(hasElevationsFilter && {
-          //     getFilterCategory: (d: BathymetryLabelFeature) => d.properties.elevation,
-          //     filterCategories: elevations,
-          //   }),
-          //   getPolygonOffset: (params: { layerIndex: number }) =>
-          //     getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-          //   getColor: this._getBathymetryColor,
-          //   getPath: (d: BathymetryContourFeature) => {
-          //     if (d.geometry.type === 'MultiLineString') {
-          //       return d.geometry.coordinates.flat()
-          //     }
-          //     return d.geometry.coordinates
-          //   },
-          //   positionFormat: 'XY',
-          //   getWidth: thickness,
-          //   widthUnits: 'pixels',
-          //   jointRounded: true,
-          //   updateTriggers: {
-          //     getWidth: [thickness],
-          //     getColor: [color],
-          //   },
-          // } as any),
-          new GeoJsonLayer(props, {
+          new PathLayer(props, {
             id: `${props.id}-bathymetry-contour`,
-            lineWidthMinPixels: 0,
-            extensions: [new DataFilterExtension(filterExtensionParams)],
-            getFilterValue: (d: BathymetryContourFeature | BathymetryLabelFeature) => {
-              return d.geometry?.type !== 'Point' ? 1 : 0
-            },
-            filterRange,
-            ...(hasElevationsFilter && {
-              getFilterCategory: (d: BathymetryLabelFeature) => d.properties.elevation,
-              filterCategories: elevations,
-            }),
-            filled: false,
+            data: this._getPaths((props.data?.features as BathymetryContourFeature[]) ?? []).filter(
+              (d) => matchesDepth(d.properties?.elevation)
+            ),
+            getPath: (d: any) => d.path,
+            positionFormat: 'XY',
+            getColor: this._getBathymetryColor,
+            getWidth: 1,
+            widthUnits: 'pixels',
+            jointRounded: true,
+            capRounded: true,
             getPolygonOffset: (params: { layerIndex: number }) =>
               getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-            getLineColor: this._getBathymetryColor,
-            getLineWidth: thickness,
-            lineWidthUnits: 'pixels',
-            lineJointRounded: true,
-            lineCapRounded: true,
-            updateTriggers: {
-              getLineWidth: [thickness],
-              getLineColor: [color],
-            },
+            updateTriggers: { getColor: [color] },
           } as any),
           new LabelLayer<BathymetryLabelFeature>({
             id: `${props.id}-labels`,
-            data: props.data?.features,
-            extensions: [
-              new DataFilterExtension(filterExtensionParams),
-              new CollisionFilterExtension(),
-            ],
-            getFilterValue: (d: BathymetryContourFeature | BathymetryLabelFeature) => {
-              return d.geometry?.type === 'Point' ? 1 : 0
-            },
-            filterRange,
-            ...(hasElevationsFilter && {
-              getFilterCategory: (d: BathymetryLabelFeature) => d.properties.elevation,
-              filterCategories: elevations,
-            }),
+            data: ((props.data?.features ?? []) as BathymetryLabelFeature[]).filter(
+              (d) => d.geometry?.type === 'Point' && matchesDepth(d.properties.elevation)
+            ),
+            extensions: [new CollisionFilterExtension()],
             getCollisionPriority: (d: BathymetryLabelFeature) => {
               if (d.properties.length === undefined) {
                 return -1000
@@ -157,9 +118,8 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             },
             collisionTestProps: { sizeScale: 5 },
             getSize: 11,
-            getPixelOffset: [0, 0],
             getText: (d: BathymetryLabelFeature) => {
-              return d.properties.elevation?.toString()
+              return d.properties.elevation?.toString().slice(1)
             },
             getPosition: (d: BathymetryLabelFeature) => {
               return d.geometry.coordinates as [number, number]
@@ -168,7 +128,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
               return 90 - (d.properties.bearing || 0)
             },
             getColor: this._getBathymetryColor,
-            // outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.7),
+            updateTriggers: { getColor: [color] },
           }),
         ]
       },

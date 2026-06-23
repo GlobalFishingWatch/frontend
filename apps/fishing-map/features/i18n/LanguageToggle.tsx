@@ -10,7 +10,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { refreshDatasetsLocaleThunk } from 'features/datasets/datasets.slice'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
-import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
+import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { Locale } from 'types'
@@ -35,6 +35,14 @@ function CrowdinScripts({ enabled }: { enabled: boolean }) {
 
   return null
 }
+
+const LocaleLabels = [
+  { id: Locale.en, label: 'English' },
+  { id: Locale.es, label: 'Español' },
+  { id: Locale.fr, label: 'Français' },
+  // { id: Locale.id, label: 'Bahasa Indonesia' },
+  { id: Locale.pt, label: 'Portuguese' },
+]
 
 type LanguageToggleProps = {
   className?: string

@@ -166,7 +166,7 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
     return assignFourwingsFeaturesByteLength([])
   }
 
-  const features = Array.from(
+  const features: FourwingsFeature[] = Array.from(
     new Pbf(datasetsBuffer)
       .readFields(getCellTimeseries, {
         features: new Map<number, FourwingsFeature>(),

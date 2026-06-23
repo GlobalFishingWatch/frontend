@@ -1,6 +1,7 @@
 import { MastraClient } from '@mastra/client-js'
 import type { StorageThreadType } from '@mastra/core'
 import { createFileRoute } from '@tanstack/react-router'
+
 import { getWorkspaceConfig } from 'server/api/workspaces-generator'
 
 const MASTRA_API_URL = process.env.MASTRA_API_URL

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
+import { getGuestUser } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -12,7 +13,7 @@ import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { ROUTES_WITH_WORKSPACES } from 'router/routes'
 import { mapRouteIdToType, ROUTE_PATHS } from 'router/routes.utils'
 
-import { fetchUserThunk, logoutUserThunk } from './user.slice'
+import { logoutUserThunk, setLoggedUser } from './user.slice'
 
 function LogoutButton() {
   const { t } = useTranslation()
@@ -23,7 +24,8 @@ function LogoutButton() {
 
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
-    await dispatch(logoutUserThunk())
+
+    await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
 
     if (lastWorkspaceNavProps) {
       const { to, params, search } = lastWorkspaceNavProps
@@ -48,7 +50,7 @@ function LogoutButton() {
       )
     }
 
-    await dispatch(fetchUserThunk({ guest: true }))
+    dispatch(setLoggedUser(getGuestUser()))
     setLogoutLoading(false)
   }, [dispatch, lastWorkspaceNavProps, router])
 
@@ -58,6 +60,7 @@ function LogoutButton() {
       loading={logoutLoading}
       disabled={logoutLoading}
       onClick={onLogoutClick}
+      testId="logout-button"
     >
       <span>{t((t) => t.common.logout)}</span>
     </Button>

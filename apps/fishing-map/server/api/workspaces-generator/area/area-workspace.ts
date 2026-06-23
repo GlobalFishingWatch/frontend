@@ -1,5 +1,3 @@
-import { searchPorts } from 'server/api/workspaces-generator/port/port-search'
-
 import { DatasetSubCategory, EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -19,6 +17,7 @@ import type {
   ReportEventsSubCategory,
 } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
+import { searchPorts } from 'server/api/workspaces-generator/port/port-search'
 import type { AnyWorkspaceState } from 'types'
 import { TimebarVisualisations } from 'types'
 import { upperFirst } from 'utils/info'
