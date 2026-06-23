@@ -633,7 +633,7 @@
     "monthAbbreviated_one": "{{count}}m",
     "monthAbbreviated_many": "{{count}}m",
     "monthAbbreviated_other": "{{count}}m",
-    "naiveGaps": "Naive gaps",
+    "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "No data available",
     "port": "Port",
     "port_entryActionIn": "Entered port {{port}}",
