@@ -12,6 +12,8 @@ import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
 import { routeTree } from './routeTree.gen'
+import { makeStore } from './store'
+import { getDehydratedReduxState, serializeReduxState } from './store.dehydrated-state'
 
 const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr) as QueryParams
@@ -53,7 +55,15 @@ export function getCreateRouterOptions() {
 }
 
 export function createAppRouter() {
-  const router = createRouter(getCreateRouterOptions())
+  const store = makeStore(getDehydratedReduxState())
+  const router = createRouter({
+    ...getCreateRouterOptions(),
+    context: { store },
+    dehydrate: () => ({
+      i18nState: getActiveI18nState(),
+      reduxState: serializeReduxState(store),
+    }),
+  })
 
   return router
 }
