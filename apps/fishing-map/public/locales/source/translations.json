@@ -580,7 +580,6 @@
     "trackLoading": "There was an error loading the vessel track.",
     "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
     "uploadError": "There was an error uploading your dataset.",
-    "userDataError": "There was an error loading your user data. Please try again or contact support.",
     "vesselActivityLogin": "Register or log in to see vessel events and insights (free, 2 minutes)",
     "vesselGroupReportLogin": "Login to see the vessels active",
     "vesselLoading": "There was an error loading the vessel details.",

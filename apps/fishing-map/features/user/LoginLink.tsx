@@ -14,9 +14,13 @@ type LoginLinkProps = {
   className?: string
   tooltip?: string
   loginSource?: LoginSource
+  dataTestId?: string
 }
 
-function LoginLink({ children, className = '', tooltip, loginSource }: LoginLinkProps, ref: any) {
+function LoginLink(
+  { children, className = '', tooltip, loginSource, dataTestId = 'login-link' }: LoginLinkProps,
+  ref: any
+) {
   const dispatch = useAppDispatch()
   const openPopupLogin = usePopupLogin()
 
@@ -42,7 +46,7 @@ function LoginLink({ children, className = '', tooltip, loginSource }: LoginLink
         tabIndex={0}
         onClick={onLoginClick}
         className={className}
-        data-testid="login-link"
+        data-testid={dataTestId}
       >
         {children}
       </span>

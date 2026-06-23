@@ -31,6 +31,36 @@ function normalizeRouteId(routeId: string): RoutePathValues {
 }
 
 /**
+ * Sync the initial route to Redux from the router's current URL.
+ *
+ * MUST run synchronously during store creation (i.e. while rendering), NOT in a
+ * useEffect: effects don't run during SSR, so an effect-only sync leaves the
+ * server render on the default HOME location while the real URL is something else
+ * (e.g. the user page). That divergence (workspace layout vs not) produces a
+ * hydration mismatch. Running it synchronously makes the SSR markup and the first
+ * client render both reflect the actual URL.
+ */
+export function syncInitialLocation(router: AnyRouter, store: AppStore) {
+  const basenameRegex = new RegExp(`^${PATH_BASENAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
+  const pathname = router.latestLocation.pathname.replace(basenameRegex, '') || '/'
+  const initialMatches = router.matchRoutes(pathname, router.latestLocation.search)
+  const initialMatch = initialMatches[initialMatches.length - 1]
+  if (!initialMatch) return
+  const routeType = mapRouteIdToType(initialMatch.routeId)
+  const params = initialMatch.params as unknown as LinkToPayload
+  const search = router.latestLocation.search as unknown as QueryParams
+  store.dispatch(
+    setLocation({
+      type: routeType,
+      payload: params,
+      query: search,
+      pathname: router.latestLocation.pathname,
+      to: normalizeRouteId(initialMatch.routeId),
+    })
+  )
+}
+
+/**
  * Sets up the one-way sync from TanStack Router → Redux state.location.
  * Also handles workspace history tracking
  *
@@ -39,29 +69,12 @@ function normalizeRouteId(routeId: string): RoutePathValues {
  *    route renders so layout components never see a stale location state.
  *  - onResolved: single cleanup — clears the isHistoryNavigation flag from the
  *    committed history entry (requires the entry to exist in browser history first).
+ *
+ * The initial route is synced separately by syncInitialLocation() during store
+ * creation; onBeforeNavigate only fires for navigations after this setup runs.
  */
 export function setupRouterSync(router: AnyRouter, store: AppStore) {
   const basenameRegex = new RegExp(`^${PATH_BASENAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
-
-  // Sync the initial route to Redux immediately — onBeforeNavigate only fires
-  // for navigations that happen after this setup runs (inside a useEffect).
-  const pathname = router.latestLocation.pathname.replace(basenameRegex, '') || '/'
-  const initialMatches = router.matchRoutes(pathname, router.latestLocation.search)
-  const initialMatch = initialMatches[initialMatches.length - 1]
-  if (initialMatch) {
-    const routeType = mapRouteIdToType(initialMatch.routeId)
-    const params = initialMatch.params as unknown as LinkToPayload
-    const search = router.latestLocation.search as unknown as QueryParams
-    store.dispatch(
-      setLocation({
-        type: routeType,
-        payload: params,
-        query: search,
-        pathname: router.latestLocation.pathname,
-        to: normalizeRouteId(initialMatch.routeId),
-      })
-    )
-  }
 
   // Deduplicate rapid-fire events for the same URL (viewport rAF, timebar rAF, etc.)
   let lastDispatchedHref = router.latestLocation.href
