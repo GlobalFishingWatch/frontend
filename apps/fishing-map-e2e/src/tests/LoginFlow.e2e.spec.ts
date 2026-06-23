@@ -96,3 +96,36 @@ test('Login - a tab opened after a token rotation resolves the rotated session',
   await newTabPage.expectUserVisible()
   await newTabPage.close()
 })
+
+test('Login - should reject invalid credentials', async ({ loginPage }) => {
+  await loginPage.loginExpectingFailure('wrong-password')
+
+  await loginPage.expectGuest()
+  await loginPage.expectUserTokenCleared()
+})
+
+test('Login - should stay guest after cancelling, then succeed on retry', async ({ loginPage }) => {
+  await loginPage.cancelLogin()
+
+  await loginPage.expectGuest()
+  await loginPage.expectUserTokenCleared()
+
+  await loginPage.login()
+  await loginPage.expectLoggedIn()
+})
+
+test('Login - should fall back to guest when the refresh token is cleared', async ({
+  loginPage,
+}) => {
+  await loginPage.login()
+
+  await loginPage.clearUserToken()
+  await loginPage.clearRefreshToken()
+
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectRefreshTokenCleared()
+
+  await loginPage.reload()
+
+  await loginPage.expectGuest()
+})

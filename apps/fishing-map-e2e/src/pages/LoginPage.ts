@@ -34,7 +34,7 @@ export class LoginPage {
     this.logoutButton = page.getByTestId('logout-button')
   }
 
-  async login() {
+  private async openLoginPopup() {
     await expect(this.guestLoginIcon).toBeVisible()
 
     await waitForHydration(this.page)
@@ -44,12 +44,37 @@ export class LoginPage {
     const popup = await popupPromise
 
     await popup.waitForURL('**/v3/auth*')
+    return popup
+  }
+
+  async login() {
+    const popup = await this.openLoginPopup()
+
     await popup.getByRole('textbox', { name: 'Email' }).fill(this.TEST_USER_EMAIL)
     await popup.getByRole('textbox', { name: 'Password' }).fill(this.TEST_USER_PASSWORD)
     await popup.getByRole('button', { name: 'Login' }).click()
 
     await popup.waitForEvent('close')
     await expect(this.userLink).toBeVisible()
+  }
+
+  // Submits bad credentials; popup stays open on the auth URL instead of closing.
+  async loginExpectingFailure(password: string) {
+    const popup = await this.openLoginPopup()
+
+    await popup.getByRole('textbox', { name: 'Email' }).fill(this.TEST_USER_EMAIL)
+    await popup.getByRole('textbox', { name: 'Password' }).fill(password)
+    await popup.getByRole('button', { name: 'Login' }).click()
+
+    // Login failed → popup does not close, stays on the auth page.
+    await expect(popup).toHaveURL(/\/v3\/auth/)
+    await expect(this.guestLoginIcon).toBeVisible()
+  }
+
+  // Opens the login popup then closes it without submitting.
+  async cancelLogin() {
+    const popup = await this.openLoginPopup()
+    await popup.close()
   }
 
   async newTab() {
@@ -79,6 +104,10 @@ export class LoginPage {
 
   async clearUserToken() {
     await this.context.clearCookies({ name: USER_TOKEN_COOKIE_KEY })
+  }
+
+  async clearRefreshToken() {
+    await this.context.clearCookies({ name: USER_REFRESH_TOKEN_COOKIE_KEY })
   }
 
   async clearCookies() {
