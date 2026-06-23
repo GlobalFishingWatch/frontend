@@ -63,7 +63,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
   }
 
   _getBathymetryColor = (d: BathymetryContourFeature | BathymetryLabelFeature) => {
-    const baseOpacity = this._bathymetryColorScale(d.properties?.depths)
+    const baseOpacity = this._bathymetryColorScale(d.properties?.elevation)
     const zoomOpacityMultiplier = Math.min(1, Math.max(0.2, this.context.viewport.zoom / 8))
     const finalOpacity = baseOpacity * zoomOpacityMultiplier
     return hexToDeckColor(this.props.color, finalOpacity)
