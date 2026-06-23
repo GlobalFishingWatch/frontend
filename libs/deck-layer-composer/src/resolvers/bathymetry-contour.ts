@@ -5,6 +5,8 @@ import type { BathymetryContourLayerProps } from '@globalfishingwatch/deck-layer
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
+const PELAGIC_ZONES_ELEVATIONS = [-200, -1000, -4000, -6000]
+
 export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   BathymetryContourLayerProps
 > = (dataview) => {
@@ -12,12 +14,15 @@ export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   const datasetConfig = dataview.datasetsConfig?.[0]
   const filters = dataview.config?.filters
   const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-  let elevations: number[] = []
-  if (typeof filters?.elevation === 'string' && filters.elevation !== '') {
-    elevations = [Number(filters.elevation)]
-  } else if (Array.isArray(filters?.elevation)) {
-    elevations = filters?.elevation?.map((e: string) => Number(e)) || []
-  }
+  const rawElevations =
+    typeof filters?.elevation === 'string' && filters.elevation !== ''
+      ? [filters.elevation]
+      : Array.isArray(filters?.elevation)
+        ? filters.elevation
+        : []
+  const elevations = rawElevations
+    .flatMap((e: string) => (e === 'pelagic zones' ? PELAGIC_ZONES_ELEVATIONS : Number(e)))
+    .filter((n) => !Number.isNaN(n))
 
   return {
     id: dataview.id,
