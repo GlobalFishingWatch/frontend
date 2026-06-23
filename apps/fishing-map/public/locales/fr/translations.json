@@ -398,7 +398,6 @@
     "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
   },
   "datasetUpload": {
-    "datasetDescription": "Description du jeu de données",
     "datasetName": "Nom du jeu de données",
     "date": "Date",
     "dateRange": "Plage de temps",
@@ -633,6 +632,7 @@
     "monthAbbreviated_one": "{{count}}m",
     "monthAbbreviated_many": "{{count}}m",
     "monthAbbreviated_other": "{{count}}m",
+    "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "Aucune donnée disponible",
     "port": "Port",
     "port_entryActionIn": "Entré au port de {{port}}",
