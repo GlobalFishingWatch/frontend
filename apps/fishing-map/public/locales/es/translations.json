@@ -398,7 +398,6 @@
     "VIIRSDelayDisclaimer": "Los datos de luz nocturna de VIIRS están disponibles con un retraso de ingestión de aproximadamente 3 meses."
   },
   "datasetUpload": {
-    "datasetDescription": "Descripción del conjunto de datos",
     "datasetName": "Nombre del conjunto de datos",
     "date": "Fecha",
     "dateRange": "Periodo",
@@ -633,6 +632,7 @@
     "monthAbbreviated_one": "{{count}}m",
     "monthAbbreviated_many": "{{count}}m",
     "monthAbbreviated_other": "{{count}}m",
+    "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "No hay datos disponibles",
     "port": "Puerto",
     "port_entryActionIn": "Ingreso puerto {{port}}",
@@ -855,7 +855,7 @@
     },
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
-    "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "search": "Busque un área de interés, por ejemplo: océano, mar, puerto, AMP, ZEE u ORP",
     "searchTypes": {
       "eez": "ZEE",
       "fao": "FAO",
