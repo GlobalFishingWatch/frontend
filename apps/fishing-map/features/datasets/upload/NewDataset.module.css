@@ -17,6 +17,7 @@
 .container {
   display: flex;
   flex: 1;
+  min-width: 0;
   height: 100%;
   flex-direction: column;
   padding-bottom: var(--space-M);
@@ -41,12 +42,14 @@
 .row {
   display: flex;
   width: 100%;
+  max-width: 100%;
   gap: var(--space-S);
   align-items: flex-end;
 }
 
 .row > * {
   flex: 1;
+  min-width: 0;
 }
 
 .errorMargin,
