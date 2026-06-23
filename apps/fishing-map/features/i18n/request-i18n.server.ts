@@ -4,7 +4,11 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 import { __setServerI18nAccessor } from 'features/i18n/i18n'
 import { FALLBACK_LNG } from 'features/i18n/i18n.config'
 
-import { createI18nForLanguage, createRequestI18n } from './i18n.server'
+import {
+  createI18nForLanguage,
+  createRequestI18n,
+  loadServerPackageNamespaces,
+} from './i18n.server'
 
 type I18nInstance = typeof i18next
 
@@ -22,8 +26,11 @@ function getFallbackInstance(): I18nInstance {
   return fallbackInstance
 }
 
-export function runRequestWithI18n<T>(request: Request, fn: () => T): T {
-  return als.run(createRequestI18n(request), fn)
+export async function runRequestWithI18n<T>(request: Request, fn: () => T): Promise<Awaited<T>> {
+  const instance = createRequestI18n(request)
+  // Load CDN-only package namespaces (e.g. flags) before render so SSR resolves their values
+  await loadServerPackageNamespaces(instance, instance.language)
+  return await als.run(instance, fn)
 }
 
 export function getRequestI18n(): I18nInstance {

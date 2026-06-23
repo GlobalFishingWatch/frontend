@@ -1,6 +1,7 @@
 import { Locale } from '@globalfishingwatch/api-types'
 
 import { IS_DEVELOPMENT_ENV } from 'data/config'
+import { WORKSPACE_ENV } from 'data/workspaces'
 
 export const DEFAULT_NAMESPACE = 'translations'
 
@@ -34,6 +35,17 @@ export const SUPPORTED_LANGUAGES = [
 ] satisfies i18nSupportedLocale[]
 
 export const I18N_LOCALE_CACHE_KEY = typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'
+
+// Where the CDN-only package namespaces (flags, timebar) are served from.
+const USE_LOCAL_SHARED_LABELS = IS_DEVELOPMENT_ENV && !IS_TEST_ENV
+const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
+export const SHARED_LABELS_PATH = USE_LOCAL_SHARED_LABELS
+  ? 'http://localhost:8000'
+  : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
+
+export function getPackageNamespaceUrl(lng: string, ns: string): string {
+  return `${SHARED_LABELS_PATH}/${lng}/${ns}.json?v=${I18N_LOCALE_CACHE_KEY}`
+}
 
 export function parseSupportedLanguage(
   language: string | undefined

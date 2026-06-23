@@ -3,7 +3,10 @@ import type { Register } from '@tanstack/react-router'
 import type { RequestOptions } from '@tanstack/react-start/server'
 import server, { createServerEntry } from '@tanstack/react-start/server-entry'
 
+import { configureServerGFWAPI } from './server-functions/gfw-api.server-config'
 import { proxy } from './proxy'
+
+configureServerGFWAPI()
 
 const fetchHandler = {
   fetch(request: Request, opts?: unknown) {

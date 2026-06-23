@@ -11,16 +11,22 @@ test('WS01 - Save workspace', async ({ page }) => {
   // LOGIN
 
   await page.getByTestId('modal-close-button').click()
+  await page.waitForLoadState('networkidle')
   await page.getByText('Dismiss', { exact: true }).first().click()
 
-  await page.getByText('login').click()
+  // Click the login button and wait for the auth popup window
+  const [popup] = await Promise.all([page.waitForEvent('popup'), page.getByText('login').click()])
+  await popup.waitForLoadState()
+  await popup.locator('#email').fill(process.env.TEST_USER_EMAIL || '')
+  await popup.locator('#password').fill(process.env.TEST_USER_PASSWORD || '')
+  await popup.getByRole('button', { name: 'Login' }).click()
 
-  await page.waitForURL('**/v3/auth*')
+  await page.getByTestId('sidebar-login-icon').click()
 
-  await page.getByRole('textbox', { name: 'Email' }).fill(process.env.TEST_USER_EMAIL || '')
-  await page.getByRole('textbox', { name: 'Password' }).fill(process.env.TEST_USER_PASSWORD || '')
+  //Close modal was popping up after login, so we need to close it again
+  await page.getByTestId('modal-close-button').click()
 
-  await page.getByRole('button', { name: 'Login' }).click()
+  await page.getByTestId('link-workspace').click()
 
   await page.waitForURL('**/map/fishing-activity/deep-sea-mining-public*')
 
@@ -32,7 +38,7 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   expect(page.getByText('Save the current workspace')).toBeVisible()
 
-  await page.locator('[data-test="create-workspace-name"]').fill('E2E Test Workspace')
+  await page.getByTestId('create-workspace-name').fill('E2E Test Workspace')
 
   await page.getByText('Static (Apr 3 2020 - Apr 3 2021)').click()
 
@@ -47,11 +53,11 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   await page.waitForTimeout(5000) // Wait for the workspace to be saved and appear in the list
 
-  await page.getByRole('button', { name: 'close' }).click()
+  // nothing to close await page.getByRole('button', { name: 'close' }).click()
 
   await page.getByTestId('sidebar-login-icon').click()
 
-  await page.locator('[data-test="user-workspace"]').click()
+  await page.getByTestId('user-workspace').click()
 
   page.on('dialog', async (dialog) => {
     await dialog.accept()
