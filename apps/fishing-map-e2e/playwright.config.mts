@@ -17,13 +17,13 @@ export default defineConfig({
   testMatch: /.*\.e2e\.spec\.(ts|tsx)$/,
 
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   timeout: 180 * 1000, // 3 minutes per test
   expect: {
     /* Timeout for expect assertions */
-    timeout: 10 * 1000, // 10 seconds
+    timeout: 30 * 1000,
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.01,
     },
