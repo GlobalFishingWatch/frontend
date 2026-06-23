@@ -1,4 +1,4 @@
-import type { BrowserContext, Cookie, Locator, Page } from 'playwright/test'
+import type { BrowserContext, Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
 import {
@@ -8,28 +8,37 @@ import {
 import { waitForHydration } from '../helpers/hydration'
 import { disableWelcomePopups } from '../helpers/modals'
 
+function requireEnv(name: string): string {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required env var "${name}". Set it in apps/fishing-map-e2e/.env`)
+  }
+  return value
+}
+
 export class LoginPage {
-  private page: Page
+  readonly page: Page
   readonly context: BrowserContext
   readonly guestLoginIcon: Locator
   readonly userLink: Locator
   readonly logoutButton: Locator
-  readonly TEST_USER_EMAIL = process.env.TEST_USER_EMAIL || ''
-  readonly TEST_USER_PASSWORD = process.env.TEST_USER_PASSWORD || ''
-  readonly TEST_USER_NAME = process.env.TEST_USER_NAME || ''
-  readonly USER_TOKEN_COOKIE_KEY = USER_TOKEN_COOKIE_KEY
-  readonly USER_REFRESH_TOKEN_COOKIE_KEY = USER_REFRESH_TOKEN_COOKIE_KEY
+  readonly TEST_USER_EMAIL = requireEnv('TEST_USER_EMAIL')
+  readonly TEST_USER_PASSWORD = requireEnv('TEST_USER_PASSWORD')
+  readonly TEST_USER_NAME = requireEnv('TEST_USER_NAME')
 
   constructor(page: Page, context: BrowserContext) {
     this.page = page
     this.context = context
     this.guestLoginIcon = page.getByTestId('sidebar-login-link')
-    this.userLink = page.getByTestId('sidebar-user-icon')
+    this.userLink = page.getByTestId('sidebar-user-link')
     this.logoutButton = page.getByTestId('logout-button')
   }
 
   async login() {
     await expect(this.guestLoginIcon).toBeVisible()
+    // SSR: button markup ships before hydration, but its click handler (which opens the auth
+    // popup) only attaches once React hydrates. Clicking earlier silently no-ops.
+    await waitForHydration(this.page)
 
     const popupPromise = this.page.waitForEvent('popup', { timeout: 30_000 })
     await this.guestLoginIcon.click()
@@ -61,6 +70,23 @@ export class LoginPage {
     await this.logoutButton.click()
   }
 
+  async reload() {
+    await this.page.reload()
+  }
+
+  async clearUserToken() {
+    await this.context.clearCookies({ name: USER_TOKEN_COOKIE_KEY })
+  }
+
+  async clearCookies() {
+    await this.context.clearCookies()
+  }
+
+  private async getCookie(name: string) {
+    const cookies = await this.context.cookies()
+    return cookies.find((c) => c.name === name)?.value
+  }
+
   async expectLoggedIn() {
     await expect(this.userLink).toBeVisible()
   }
@@ -74,20 +100,18 @@ export class LoginPage {
     await expect(this.guestLoginIcon).toBeVisible()
   }
 
-  async expectUserTokenCleared(cookies: Cookie[]) {
-    expect(cookies.find((c) => c.name === this.USER_TOKEN_COOKIE_KEY)?.value).toBeUndefined()
+  async expectUserTokenCleared() {
+    expect(await this.getCookie(USER_TOKEN_COOKIE_KEY)).toBeUndefined()
   }
-  async expectUserTokenPresent(cookies: Cookie[]) {
-    expect(cookies.find((c) => c.name === this.USER_TOKEN_COOKIE_KEY)?.value).toBeTruthy()
-  }
-
-  async expectRefreshTokenPresent(cookies: Cookie[]) {
-    expect(cookies.find((c) => c.name === this.USER_REFRESH_TOKEN_COOKIE_KEY)?.value).toBeTruthy()
+  async expectUserTokenPresent() {
+    expect(await this.getCookie(USER_TOKEN_COOKIE_KEY)).toBeTruthy()
   }
 
-  async expectRefreshTokenCleared(cookies: Cookie[]) {
-    expect(
-      cookies.find((c) => c.name === this.USER_REFRESH_TOKEN_COOKIE_KEY)?.value
-    ).toBeUndefined()
+  async expectRefreshTokenPresent() {
+    expect(await this.getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)).toBeTruthy()
+  }
+
+  async expectRefreshTokenCleared() {
+    expect(await this.getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)).toBeUndefined()
   }
 }

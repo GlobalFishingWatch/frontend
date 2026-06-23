@@ -30,30 +30,28 @@ test('Login - should persist the session across a reload (server-side)', async (
 test('Login - should refresh an expired access token on reload (SSR)', async ({
   loginPage,
   page,
-  context,
 }) => {
-  await context.clearCookies({ name: loginPage.USER_TOKEN_COOKIE_KEY })
+  await loginPage.login()
 
-  let cookies = await context.cookies()
-  await loginPage.expectUserTokenCleared(cookies)
-  await loginPage.expectRefreshTokenPresent(cookies)
+  // Simulate an expired access token while the refresh token survives.
+  await loginPage.clearUserToken()
+
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectRefreshTokenPresent()
 
   await page.reload()
 
   await loginPage.expectLoggedIn()
-
-  cookies = await context.cookies()
-  await loginPage.expectUserTokenPresent(cookies)
+  await loginPage.expectUserTokenPresent()
 })
 
 test('Login - should fall back to the guest user when cookies are cleared', async ({
   loginPage,
   page,
-  context,
 }) => {
   await loginPage.login()
 
-  await context.clearCookies()
+  await loginPage.clearCookies()
   await page.reload()
 
   await loginPage.expectGuest()
@@ -83,24 +81,23 @@ test.fixme('Login - should sync logout across tabs', async ({ loginPage }) => {
   await newTabPage.page.close()
 })
 
-test.fixme('Login - a tab opened after a token rotation resolves the rotated session', async ({
-  loginPage,
-  context,
-}) => {
-  await loginPage.login()
+test.fixme(
+  'Login - a tab opened after a token rotation resolves the rotated session',
+  async ({ loginPage }) => {
+    await loginPage.login()
 
-  await context.clearCookies({ name: loginPage.USER_TOKEN_COOKIE_KEY })
+    await loginPage.clearUserToken()
 
-  const cookies = await context.cookies()
-  await loginPage.expectUserTokenCleared(cookies)
-  await loginPage.expectRefreshTokenPresent(cookies)
+    await loginPage.expectUserTokenCleared()
+    await loginPage.expectRefreshTokenPresent()
 
-  await loginPage.reload()
-  await loginPage.expectLoggedIn()
+    await loginPage.reload()
+    await loginPage.expectLoggedIn()
 
-  const newTabPage = await loginPage.newTab()
-  await newTabPage.expectLoggedIn()
-  await newTabPage.openUserPanel()
-  await newTabPage.expectUserVisible()
-  await newTabPage.page.close()
-})
+    const newTabPage = await loginPage.newTab()
+    await newTabPage.expectLoggedIn()
+    await newTabPage.openUserPanel()
+    await newTabPage.expectUserVisible()
+    await newTabPage.page.close()
+  }
+)
