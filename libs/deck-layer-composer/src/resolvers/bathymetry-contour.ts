@@ -25,8 +25,9 @@ export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   )?.flatMap((s) => Number(s) || [])
   const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
 
+  const depthFilter = filters?.depth
   const resolvedDepths = uniq(
-    filters?.depth?.flatMap((d: string) => {
+    (Array.isArray(depthFilter) ? depthFilter : []).flatMap((d: string) => {
       return DEPTH_GROUPS[d] || Number(d)
     })
   )
