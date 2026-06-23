@@ -18,9 +18,11 @@ import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getDatasetsLatestEndDate,
+  getDatasetSource,
   getIsVMSDataset,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import type { IconType } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
@@ -69,6 +71,17 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
   if (isPrivateDataset(dataset)) return `${PRIVATE_ICON} ${label}`
   return label
+}
+
+export const getDataviewsSources = (dataviews: UrlDataviewInstance[]) => {
+  return uniq(
+    dataviews
+      .map((dataview) => {
+        const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+        return getDatasetSource(dataset?.id)
+      })
+      .filter(Boolean)
+  )
 }
 
 export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {

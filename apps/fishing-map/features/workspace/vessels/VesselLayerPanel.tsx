@@ -28,6 +28,7 @@ import { PRIVATE_ICON } from 'data/config'
 import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
@@ -56,11 +57,13 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 export type VesselLayerPanelProps = {
   dataview: UrlDataviewInstance
   showApplyToAll?: boolean
+  showSources?: boolean
 }
 
 function VesselLayerPanel({
   dataview,
   showApplyToAll,
+  showSources,
 }: VesselLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
@@ -101,10 +104,6 @@ function VesselLayerPanel({
     setFiltersOpen(!filterOpen)
   }
 
-  // const onToggleInfoOpen = () => {
-  //   setInfoOpen(!infoOpen)
-  // }
-
   const closeExpandedContainer = () => {
     setColorOpen(false)
     setFiltersOpen(false)
@@ -121,6 +120,7 @@ function VesselLayerPanel({
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselShipNameLabel(vesselData) : ''
+  const sourceLabel = showSources && dataset ? getDatasetSourceTranslated(dataset) : ''
   const otherVesselsLabel = vesselData
     ? getVesselOtherNamesLabel(getOtherVesselNames(vesselData as IdentityVessel))
     : ''
@@ -165,7 +165,7 @@ function VesselLayerPanel({
     return (
       <Fragment>
         {isPrivateVessel && PRIVATE_ICON}
-        {vesselLabel}
+        {vesselLabel + (showSources ? ` (${sourceLabel})` : '')}
         {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
       </Fragment>
     )

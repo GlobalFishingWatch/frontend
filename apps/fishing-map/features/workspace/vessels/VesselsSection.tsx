@@ -16,6 +16,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { getDataviewsSources } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
@@ -79,6 +80,7 @@ function VesselsSection(): React.ReactElement<any> {
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const hasVisibleDataviews = visibleDataviews.length >= 1
+  const sources = getDataviewsSources(dataviews)
   const searchAllowed = useSelector(isBasicSearchAllowed)
   const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
@@ -275,15 +277,18 @@ function VesselsSection(): React.ReactElement<any> {
         {hasVisibleDataviews && <VesselTracksLegend />}
         <SortableContext items={dataviews}>
           {dataviews.length > 0 ? (
-            dataviews?.map((dataview) => (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <VesselLayerPanel
-                  key={dataview.id}
-                  dataview={dataview}
-                  showApplyToAll={dataviews.length > 1}
-                />
-              </LayerPanelContainer>
-            ))
+            dataviews?.map((dataview) => {
+              return (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <VesselLayerPanel
+                    key={dataview.id}
+                    dataview={dataview}
+                    showApplyToAll={dataviews.length > 1}
+                    showSources={sources.length > 1}
+                  />
+                </LayerPanelContainer>
+              )
+            })
           ) : (
             <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>
           )}
