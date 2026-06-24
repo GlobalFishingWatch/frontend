@@ -50,7 +50,7 @@
 }
 
 .description > * {
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .description a {
@@ -63,6 +63,10 @@
 
 .interactive a {
   text-decoration: underline;
+}
+
+.interactive > * {
+  pointer-events: auto;
 }
 
 .detailContainer {
