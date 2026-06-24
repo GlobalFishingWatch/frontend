@@ -65,6 +65,7 @@ const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
 }
 
 const RelatedOwnerVessels = () => {
+  const { t } = useTranslation()
   const vesselData = useSelector(selectVesselInfoData)
   const dataset = useSelector(selectVesselDatasetId)
   const { timerange } = useTimerangeConnect()
@@ -74,6 +75,10 @@ const RelatedOwnerVessels = () => {
   ) as VesselRegistryOwner[]
   const uniqOwners = uniqBy(filteredOwners, (o) => o.name)
   const vesselId = getVesselProperty(vesselData, 'id')
+
+  if (!uniqOwners?.length) {
+    return <p className={styles.enptyState}>{t((t) => t.vessel.noOwners)}</p>
+  }
 
   return (
     <ul className={styles.vesselsList}>
