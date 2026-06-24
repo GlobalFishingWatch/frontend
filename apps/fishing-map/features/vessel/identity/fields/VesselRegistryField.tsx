@@ -130,7 +130,7 @@ const VesselRegistryField = ({
           {terminologyKey && <DataTerminology terminologyKey={terminologyKey} />}
         </div>
       )}
-      {allRegistryInfo?.length > 0 ? (
+      {filteredRegistryInfo?.length > 0 ? (
         <Fragment>
           <ul
             className={cx(styles.fieldGroup, {
@@ -170,7 +170,7 @@ const VesselRegistryField = ({
               }
               return (
                 <li
-                  key={`${registry.recordId}-${index}`}
+                  key={index}
                   className={cx({
                     [styles.threeCells]: key === 'registryOwners',
                     [styles.hidden]: !registryOverlapsTimeRange,
