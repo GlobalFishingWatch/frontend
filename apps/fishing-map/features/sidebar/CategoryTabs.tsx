@@ -40,6 +40,7 @@ import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceVesselLocation,
 } from 'router/routes.selectors'
 import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import type { QueryParams } from 'types'
@@ -62,6 +63,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const lastVisitedWorkspaceState = useSelector(selectLastVisitedWorkspace)
   const lastVisitedWorkspace = isClientHydrated ? lastVisitedWorkspaceState : undefined
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
@@ -180,13 +182,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           <Link
             className={styles.tabContent}
-            to={isWorkspaceLocation ? '/$category/$workspaceId/vessel-search' : '/vessel-search'}
+            to={
+              isWorkspaceLocation || isWorkspaceVesselLocation
+                ? '/$category/$workspaceId/vessel-search'
+                : '/vessel-search'
+            }
             params={{
               category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
               workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
             }}
-            search={isWorkspaceLocation ? (prev: QueryParams) => prev : {}}
-            replace={!isWorkspaceLocation}
+            search={
+              isWorkspaceLocation || isWorkspaceVesselLocation ? (prev: QueryParams) => prev : {}
+            }
+            replace={!(isWorkspaceLocation || isWorkspaceVesselLocation)}
             onClick={onSearchClick}
           >
             <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
