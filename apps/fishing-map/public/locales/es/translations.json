@@ -1313,6 +1313,7 @@
     "noEncountersVisible": "Please turn on encounter events visibility.",
     "noEventsIn": "No ha ocurrido ningún evento en tu periodo en ninguna {{regionType}}",
     "noEventsinTimeRange": "No hay eventos completamente contenidos en su periodo.",
+    "noOwners": "There is no owner information for this vessel",
     "noOwnersMatch": "No podemos encontrar otros barcos con este propietario",
     "notMatched": "No hay datos coincidentes",
     "noTrackAvailable": "There is no track available",
