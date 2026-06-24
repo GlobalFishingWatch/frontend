@@ -15,14 +15,13 @@ import cx from 'classnames'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
-import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectScreenshotMode } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/map/controls/ReportControl'
-import { useMapBounds } from 'features/map/map-bounds.hooks'
+import { useMapBoundsLive } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
@@ -79,7 +78,7 @@ const MapControls = ({
   const viewState = useMapViewState()
   const { latitude, longitude, zoom } = viewState
 
-  const { bounds } = useMapBounds()
+  const { bounds } = useMapBoundsLive()
 
   const center = useMemo(
     () => ({
@@ -88,8 +87,6 @@ const MapControls = ({
     }),
     [latitude, longitude]
   )
-  const options = useMemo(() => ({ bounds, center }), [bounds, center])
-  const debouncedOptions = useDebounce(options, 60)
 
   const onZoomInClick = useCallback(() => {
     setMapCoordinates({ zoom: zoom + 1 })
@@ -135,8 +132,8 @@ const MapControls = ({
               className={styles.miniglobe}
               size={60}
               viewportThickness={3}
-              bounds={debouncedOptions.bounds}
-              center={debouncedOptions.center}
+              bounds={bounds}
+              center={center}
             />
           </Suspense>
           {miniGlobeHovered && (
