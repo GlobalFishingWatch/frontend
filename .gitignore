@@ -163,6 +163,7 @@ apps/fishing-map/**/__screenshots__
 # Playwright test artifacts
 test-results/
 .playwright/
+.playwright-mcp/
 playwright-report/
 
 

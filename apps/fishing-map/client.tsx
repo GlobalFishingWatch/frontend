@@ -10,6 +10,23 @@ import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions
 
 import 'utils/polyfills'
 
+// One-time purge of pre-SSR auth artifacts. The app moved from localStorage tokens to
+// cookies; these legacy keys are now inert but can confuse debugging and are the only place
+// the api-client could still read a stale refresh token. Bump AUTH_RESET_VERSION on any
+// future release that must force returning users onto a clean auth state.
+// ponytail: version-gated so it runs once per release, not every boot. Only clears legacy
+// localStorage — never the cookie session — so it cannot log a current user out.
+const AUTH_RESET_VERSION = '2026-06-ssr-cookies'
+try {
+  if (localStorage.getItem('GFW_AUTH_RESET') !== AUTH_RESET_VERSION) {
+    localStorage.removeItem('GFW_API_USER_TOKEN')
+    localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+    localStorage.setItem('GFW_AUTH_RESET', AUTH_RESET_VERSION)
+  }
+} catch {
+  // localStorage unavailable (private mode / blocked) — nothing to clean up.
+}
+
 GFWAPI.configure({
   tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),
   refreshStrategy: () => refreshTokenServerFn(),

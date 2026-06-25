@@ -20,7 +20,7 @@ export const createLocalStorageTokenStorage = (key: string): TokenStorage => ({
 })
 
 export const createCookieTokenStorage = (key: string): TokenStorage => ({
-  get: () => readDocumentCookie({ key }) || '',
+  get: () => (typeof document === 'undefined' ? '' : readDocumentCookie({ key }) || ''),
   set: (value: string) => {
     if (typeof document === 'undefined') return
     if (value) {

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createCookieTokenStorage, GFW_API_CLASS } from './api-client'
+import { createCookieTokenStorage } from './utils/token-storage'
+import { GFW_API_CLASS } from './api-client'
 import { API_GATEWAY, API_VERSION } from './config'
 
 vi.mock('file-saver', () => ({
@@ -583,7 +584,8 @@ describe('api-client', () => {
         const result = await fetchPromise
         expect(result).toEqual({ id: 1 })
         expect(logSpy).toHaveBeenCalledWith(
-          expect.stringContaining('Fetch resource executed without login headers')
+          expect.stringContaining('login failed — fetch continues without session'),
+          expect.anything()
         )
         logSpy.mockRestore()
       })
@@ -1276,8 +1278,8 @@ describe('api-client', () => {
 
         await client.logout()
 
-        expect(logSpy).toHaveBeenCalledWith('GFWAPI: Logout - tokens cleaned')
-        expect(logSpy).toHaveBeenCalledWith('GFWAPI: Logout invalid session api OK')
+        expect(logSpy).toHaveBeenCalledWith('GFWAPI: logout — gateway OK')
+        expect(logSpy).toHaveBeenCalledWith('GFWAPI: invalidateClientSession — clearing local session')
         logSpy.mockRestore()
         warnSpy.mockRestore()
       })
@@ -1292,7 +1294,10 @@ describe('api-client', () => {
         fetchMock.mockRejectedValue(new Error('Network error'))
 
         await expect(client.logout()).rejects.toThrow('Error on the logout proccess')
-        expect(warnSpy).toHaveBeenCalledWith('GFWAPI: Logout invalid session fail')
+        expect(warnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('logout — gateway call failed'),
+          expect.anything()
+        )
         warnSpy.mockRestore()
       })
     })
@@ -1475,6 +1480,39 @@ describe('api-client', () => {
         await expect(client.fetch('/datasets/1')).rejects.toMatchObject({ status: 401 })
         expect(sessionInvalidateStrategy).toHaveBeenCalledTimes(1)
         expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
+      })
+    })
+
+    describe('refresh token with a refreshStrategy', () => {
+      it('ignores localStorage for the refresh token when a refreshStrategy is configured', () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as Storage
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'stale-localstorage-refresh')
+        client.configure({ refreshStrategy: async () => ({ token: 't', refreshToken: 'r' }) })
+
+        // The strategy owns the refresh token — the client must not surface the stale local one.
+        expect(client.refreshToken).toBe('')
+      })
+    })
+
+    describe('legacy localStorage defaults (no configure)', () => {
+      it('reads tokens from localStorage and clears them on logout', async () => {
+        const fetchMock = vi.fn(
+          async () => new Response(JSON.stringify({ ok: true }), { status: 200 })
+        )
+        vi.stubGlobal('fetch', fetchMock)
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as Storage
+        storage.setItem('GFW_API_USER_TOKEN', 'legacy-token')
+        storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'legacy-refresh')
+
+        // The public getter reads straight from localStorage (default storage).
+        expect(client.token).toBe('legacy-token')
+
+        await client.logout()
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
+        expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBeNull()
+        expect(client.token).toBe('')
       })
     })
   })

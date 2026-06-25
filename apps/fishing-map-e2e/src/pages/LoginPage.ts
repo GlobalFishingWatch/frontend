@@ -22,6 +22,7 @@ export class LoginPage {
   readonly guestLoginIcon: Locator
   readonly userLink: Locator
   readonly logoutButton: Locator
+  readonly appContainer: Locator
   readonly TEST_USER_EMAIL = requireEnv('TEST_USER_EMAIL')
   readonly TEST_USER_PASSWORD = requireEnv('TEST_USER_PASSWORD')
   readonly TEST_USER_NAME = requireEnv('TEST_USER_NAME')
@@ -32,6 +33,7 @@ export class LoginPage {
     this.guestLoginIcon = page.getByTestId('sidebar-login-link')
     this.userLink = page.getByTestId('sidebar-user-link')
     this.logoutButton = page.getByTestId('logout-button')
+    this.appContainer = page.getByTestId('app-layout-content')
   }
 
   private async openLoginPopup() {
@@ -130,6 +132,10 @@ export class LoginPage {
 
   async expectGuest() {
     await expect(this.guestLoginIcon).toBeVisible()
+  }
+
+  async expectAppReady() {
+    await expect(this.appContainer).toBeVisible()
   }
 
   async expectUserTokenCleared() {
