@@ -39,9 +39,14 @@ export const loginServerFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }): Promise<UserData | null> => {
     if (!data.accessToken) return null
     const { setCookie } = await import('@tanstack/react-start/server')
-    const tokens = await GFWAPI.exchangeAccessToken(data.accessToken)
-    setAuthCookies(setCookie, tokens)
-    return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })
+    try {
+      const tokens = await GFWAPI.exchangeAccessToken(data.accessToken, SSR_HEADERS)
+      setAuthCookies(setCookie, tokens)
+      return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })
+    } catch (e) {
+      console.error('Failed to exchange access token', e)
+      throw e
+    }
   })
 
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
