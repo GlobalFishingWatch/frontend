@@ -23,6 +23,7 @@ export function configureServerGFWAPI() {
   if (configured) return
   configured = true
   GFWAPI.configure({
+    baseUrl: import.meta.env.VITE_API_GATEWAY,
     tokenStorage: {
       // No holder = called outside a request (boot / non-request code): no token available.
       get: () => authTokenALS.getStore()?.token ?? '',

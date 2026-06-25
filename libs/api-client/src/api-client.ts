@@ -131,18 +131,20 @@ export class GFW_API_CLASS {
     })
   }
 
-  // Opt-in overrides for apps that need a different auth model (e.g. SSR: a cookie
-  // access token + a server-function refresh). Default behavior is unchanged for
-  // every app that does not call this.
   configure({
+    baseUrl,
     tokenStorage,
     refreshStrategy,
     sessionInvalidateStrategy,
   }: {
+    baseUrl?: string
     tokenStorage?: TokenStorage
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
   } = {}) {
+    if (baseUrl) {
+      this.baseUrl = baseUrl
+    }
     if (tokenStorage) {
       this.accessTokenStorage = tokenStorage
     }
@@ -154,6 +156,7 @@ export class GFW_API_CLASS {
     }
     if (this.debug) {
       this.debugLog('GFWAPI: configure()', {
+        baseUrl: Boolean(baseUrl),
         tokenStorage: Boolean(tokenStorage),
         refreshStrategy: Boolean(refreshStrategy),
         sessionInvalidateStrategy: Boolean(sessionInvalidateStrategy),
