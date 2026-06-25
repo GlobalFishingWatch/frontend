@@ -24,6 +24,9 @@
   color: var(--color-secondary-blue);
   padding: 0;
   box-shadow: none;
+  transition:
+    width 220ms var(--ease-out-strong),
+    background-color 220ms var(--ease-out-strong);
 }
 
 .VisualisationChoice .optionActive {
