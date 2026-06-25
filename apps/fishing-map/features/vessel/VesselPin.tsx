@@ -48,7 +48,7 @@ export function VesselPin({
   })
 
   const vesselName = useMemo(
-    () => vessel?.selfReportedInfo[0].shipname?.toLowerCase()?.replace(/\s/g, '-') || '',
+    () => vessel?.selfReportedInfo?.[0].shipname?.toLowerCase()?.replace(/\s/g, '-') || '',
     [vessel]
   )
 
