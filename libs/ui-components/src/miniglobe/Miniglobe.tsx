@@ -32,7 +32,7 @@ const defaultCenter = { latitude: 0, longitude: 0 }
 const worldData = feature(
   jsonData as unknown as Topology,
   jsonData.objects.land as GeometryCollection
-).features.filter((feature) => feature.geometry)
+).features
 
 interface MiniglobeProps {
   center: MiniglobeCenter
