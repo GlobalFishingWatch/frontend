@@ -2,7 +2,7 @@ import { getGuestUser, GFWAPI, readCookieString } from '@globalfishingwatch/api-
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { clearAuthCookies, refreshAuthTokens } from 'server-functions/auth.functions'
+import { clearAuthCookies, refreshAuthTokens, SSR_HEADERS } from 'server-functions/auth.functions'
 
 export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
   const { getRequest, setCookie } = await import('@tanstack/react-start/server')
@@ -12,7 +12,10 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
   // Try the access token if present.
   if (token) {
     try {
-      const user = await GFWAPI.fetchUser({ token })
+      const user = await GFWAPI.fetchUser({
+        token,
+        headers: SSR_HEADERS,
+      })
       return { user }
     } catch (e) {
       // Expired/invalid — fall through to a refresh attempt.
@@ -24,7 +27,10 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
   try {
     const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
     const tokens = await refreshAuthTokens(refreshToken ?? undefined, setCookie)
-    const user = await GFWAPI.fetchUser({ token: tokens.token })
+    const user = await GFWAPI.fetchUser({
+      token: tokens.token,
+      headers: SSR_HEADERS,
+    })
     return { user }
   } catch (e) {
     clearAuthCookies(setCookie)

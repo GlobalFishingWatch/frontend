@@ -241,34 +241,37 @@ export class GFW_API_CLASS {
     }
   }
 
-  exchangeAccessToken(accessToken: string): Promise<UserTokens> {
+  exchangeAccessToken(accessToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
     if (this.debug) {
       this.debugLog('GFWAPI: exchangeAccessToken')
     }
     return fetch(
-      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
+      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true }),
+      {
+        headers,
+      }
     )
       .then(processStatus)
       .then(parseJSON)
   }
 
-  reloadTokens(refreshToken: string): Promise<UserTokens> {
+  reloadTokens(refreshToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
     if (this.debug) {
       this.debugLog('GFWAPI: reloadTokens', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
-      headers: { 'refresh-token': refreshToken },
+      headers: { ...headers, 'refresh-token': refreshToken },
     })
       .then(processStatus)
       .then(parseJSON)
   }
 
-  revokeRefreshToken(refreshToken: string): Promise<Response> {
+  revokeRefreshToken(refreshToken: string, headers: HeadersInit = {}): Promise<Response> {
     if (this.debug) {
       this.debugLog('GFWAPI: revokeRefreshToken', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/logout`, { absolute: true }), {
-      headers: { 'refresh-token': refreshToken },
+      headers: { ...headers, 'refresh-token': refreshToken },
     }).then(processStatus)
   }
 
@@ -574,14 +577,17 @@ export class GFW_API_CLASS {
     }
   }
 
-  async fetchUser({ token }: { token?: string } = {}) {
+  async fetchUser({ token, headers }: { token?: string; headers?: HeadersInit } = {}) {
     if (this.debug) {
       this.debugLog('GFWAPI: fetchUser', { stateless: token != null, hasToken: Boolean(token) })
     }
     try {
       const user = await this._internalFetch<UserData>({
         url: this.generateUrl(`/${AUTH_PATH}/me`),
-        options: { token },
+        options: {
+          token,
+          headers,
+        },
         refreshRetries: 0,
         waitLogin: false,
       })
