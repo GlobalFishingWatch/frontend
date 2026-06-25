@@ -48,6 +48,7 @@ function Search() {
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const [vesselsSelectedDownload, setVesselsSelectedDownload] = useState([])
+  const [ignoreSecondaryDatasetsLoading, setIgnoreSecondaryDatasetsLoading] = useState(false)
 
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -103,7 +104,10 @@ function Search() {
   const isWorkspaceLoading = workspaceStatus !== AsyncReducerStatus.Finished
   const areDatasetsLoading = datasetsStatus !== AsyncReducerStatus.Finished
   const showSpinner = isWorkspaceLoading || (areDatasetsLoading && !isWorkspaceRefreshing)
-  if (showSpinner) {
+  if (!showSpinner && !ignoreSecondaryDatasetsLoading) {
+    setIgnoreSecondaryDatasetsLoading(true)
+  }
+  if (showSpinner && !ignoreSecondaryDatasetsLoading) {
     return (
       <SearchPlaceholder>
         <Spinner />

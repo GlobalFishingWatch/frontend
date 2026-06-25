@@ -137,8 +137,7 @@ function SearchBasic({
             />
           </div>
           <div className={styles.scrollContainer}>
-            {searchStatus === AsyncReducerStatus.Aborted &&
-            searchPagination.loading === false ? null : basicSearchAllowed ? (
+            {basicSearchAllowed ? (
               <ul
                 {...getMenuProps()}
                 className={styles.searchResults}
@@ -178,6 +177,7 @@ function SearchBasic({
                 )}
 
                 {(searchStatus === AsyncReducerStatus.Loading ||
+                  searchStatus === AsyncReducerStatus.Aborted ||
                   (!hasMoreResults && searchStatus === AsyncReducerStatus.Idle)) && (
                   <SearchEmptyState />
                 )}
