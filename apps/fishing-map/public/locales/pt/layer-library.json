@@ -26,7 +26,7 @@
   },
   "dsm-isa-leasing-areas": {
     "description": "Estas representam as áreas actualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nodulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela AIS. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer actividade relacionada com recursos minerais na região.",
-    "moreInfoLink": "",
+    "moreInfoLink": "https://www.isa.org.jm/",
     "name": "Áreas de Licença ISA"
   },
   "ebsas": {

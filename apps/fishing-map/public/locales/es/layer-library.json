@@ -26,7 +26,7 @@
   },
   "dsm-isa-leasing-areas": {
     "description": "Estas representan las áreas actualmente arrendadas por la Autoridad Internacional de los Fondos Marinos (ISA) para la exploración de nódulos polimetálicos, sulfuros polimetálicos y costras de ferromanganeso ricas en cobalto en alta mar. Cada polígono representa un contrato de 15 años con un contratista minero y un país patrocinador para la exploración de minerales. Ninguna de estas áreas está actualmente arrendada para su explotación (es decir, minería comercial), aunque estas son las mismas regiones que serán explotadas si la ISA aprueba los contratos de explotación. La ISA es el organismo intergubernamental de las Naciones Unidas encargado de proteger el fondo marino internacional junto con la gestión de cualquier actividad relacionada con los recursos minerales en la zona.",
-    "moreInfoLink": "",
+    "moreInfoLink": "https://www.isa.org.jm/",
     "name": "Zonas Autorizadas ISA"
   },
   "ebsas": {
