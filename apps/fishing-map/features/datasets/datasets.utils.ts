@@ -158,7 +158,7 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
   if (source.includes('pacioos')) return 'pacioos-logo'
   if (source.includes('gebco')) return 'gebco-logo'
   if (source.includes('geospatial conservation atlas')) return 'gca-logo'
-  if (source.includes('unep')) return 'unep-logo'
+  if (source.includes('unep') || source.includes('oceanplus')) return 'unep-logo'
   if (source.includes('blue habitats')) return 'blue-habitats-logo'
   // Reference
   if (source.includes('protectedplanet')) return 'protected-planet-logo'
@@ -167,6 +167,7 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
   if (source.includes('fao')) return 'fao-logo'
   if (source.includes('mpatlas')) return 'mci-logo'
   if (source.includes('duke')) return 'duke-logo'
+  if (source.includes('isa.org.jm')) return 'isa-logo'
 
   return null
 }
