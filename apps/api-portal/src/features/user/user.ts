@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useRouter } from 'next/router'
+import { useNavigate } from '@tanstack/react-router'
 
 import {
   getAccessTokenFromUrl,
@@ -93,11 +93,11 @@ const updateUserAdditionalFields = async (
 }
 export const useUpdateUserAdditionalInformation = () => {
   const queryClient = useQueryClient()
-  const router = useRouter()
+  const navigate = useNavigate()
   return useMutation(updateUserAdditionalFields, {
     onSuccess: () => {
       queryClient.invalidateQueries(['user'])
-      router.replace('/')
+      navigate({ to: '/' })
     },
   })
 }

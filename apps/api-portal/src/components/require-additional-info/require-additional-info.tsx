@@ -1,6 +1,6 @@
 import type { ReactNode} from 'react';
 import { Fragment, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useNavigate } from '@tanstack/react-router'
 
 import useUser from 'features/user/user'
 
@@ -11,16 +11,16 @@ export interface RequireAdditionalInfoProps {
 
 export function RequireAdditionalInfo({ children }: RequireAdditionalInfoProps) {
   const { isUserApplicationsRequiredInfoCompleted, isFetched, isSuccess } = useUser()
-  const router = useRouter()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (
       isUserApplicationsRequiredInfoCompleted !== undefined &&
       !isUserApplicationsRequiredInfoCompleted
     ) {
-      router.push('/signup')
+      navigate({ to: '/signup' })
     }
-  }, [isUserApplicationsRequiredInfoCompleted, router])
+  }, [isUserApplicationsRequiredInfoCompleted, navigate])
 
   return <Fragment>{children}</Fragment>
 }

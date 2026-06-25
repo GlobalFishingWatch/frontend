@@ -1,14 +1,11 @@
-import React, { Fragment, useEffect } from 'react'
-// import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { Fragment, useEffect } from 'react'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import useUser from 'features/user/user'
 
-import { APPLICATION_NAME, GOOGLE_TAG_MANAGER_ID, PATH_BASENAME } from './data/config'
+import { APPLICATION_NAME } from './data/config'
 import Header from './header/header'
 
 import styles from '../styles/layout.module.css'
@@ -33,25 +30,14 @@ const Layout = ({ children }: any) => {
   const redirectToLogin = true
   const logged = !!user?.id
   const guestUser = user && user.type === GUEST_USER_TYPE
-  const router = useRouter()
   useEffect(() => {
     if (redirectToLogin && !isLoading && ((!user && !logged) || guestUser) && loginLink) {
-      router.push(loginLink)
+      window.location.href = loginLink
     }
-  }, [guestUser, isLoading, logged, loginLink, redirectToLogin, router, user])
+  }, [guestUser, isLoading, logged, loginLink, redirectToLogin, user])
 
   return (
     <Fragment>
-      <Head>
-        <title>Access Tokens - Global Fishing Watch API Documentation</title>
-        <meta
-          name="description"
-          content="You need an acccess token to call Global Fishing Watch API endpoints like Vessel search
-          or 4wings activity tiles. Read more about API access tokens in our documentation"
-        />
-        <meta name="robots" content="noindex" />
-        <link rel="icon" href={`${PATH_BASENAME}/favicon.ico`} />
-      </Head>
       <main className={styles.main}>
         <Header title="Access Tokens" user={user} logout={logout.mutate} />
         <div className={styles.container}>
@@ -65,11 +51,6 @@ const Layout = ({ children }: any) => {
           {!isLoading && user && authorized && <Fragment>{children}</Fragment>}
         </div>
       </main>
-      <noscript
-        dangerouslySetInnerHTML={{
-          __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}" height="0" width="0" style="display: none; visibility: hidden;" />`,
-        }}
-      />
     </Fragment>
   )
 }

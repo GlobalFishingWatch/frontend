@@ -2,7 +2,6 @@ import type { MouseEventHandler } from 'react';
 import { Fragment, useCallback, useEffect,useMemo, useState } from 'react'
 import type { FieldValidationError } from 'lib/types'
 import _ from 'lodash'
-import Link from 'next/link'
 
 import type {
   UserApiAdditionalInformation} from '@globalfishingwatch/api-types';
@@ -58,7 +57,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
         <Fragment>
           For the moment we only allow API for non commercial purposes, if you are interested in a
           commercial option please contact us at{' '}
-          <Link href={`mailto:apis@globalfishingwatch.org`}>apis@globalfishingwatch.org</Link>.
+          <a href={`mailto:apis@globalfishingwatch.org`}>apis@globalfishingwatch.org</a>.
         </Fragment>
       )
     }
