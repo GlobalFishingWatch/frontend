@@ -8,7 +8,6 @@ export default defineConfig([
   // Global ignores
   {
     ignores: [
-      '.next/**',
       '**/node_modules/**',
       // Generated files (e.g. protobuf decoders) are not hand-edited — don't lint them.
       '**/*.gen.js',

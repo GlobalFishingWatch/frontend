@@ -52,7 +52,6 @@ export const config = {
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
-    '**/.next/**/*',
     '**/exported/**/*',
   ],
   languageOptions: {

@@ -1,11 +1,9 @@
 import React, { Fragment, useState } from 'react'
-import Head from 'next/head'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { getLoginUrl, redirectToLogin, useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { Button } from '@globalfishingwatch/ui-components'
 
-import { APPLICATION_NAME } from '../../data/config'
 import Header from '../header/header'
 
 import styles from './layout.module.css'
@@ -26,12 +24,6 @@ export function Layout({ children }: any) {
     <Fragment>
       <Header login={login} loading={loading} onLogoutClick={onLogoutClick} />
       <div className={styles.container}>
-        <Head>
-          <title>{APPLICATION_NAME}</title>
-          <meta name="description" content="User groups admin tool" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-
         {login.logged === false ? (
           <div className={styles.login}>
             {typeof window !== 'undefined' && login.loading === false ? (

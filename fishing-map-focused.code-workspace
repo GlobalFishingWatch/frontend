@@ -71,7 +71,6 @@
       "apps/port-labeler/**": true,
       "apps/track-labeler/**": true,
       "apps/user-groups-admin/**": true,
-      "**/.next/**": true,
       "**/build/**": true,
       "**/dist/**": true,
       "**/.nx/**": true,
