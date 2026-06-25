@@ -296,7 +296,7 @@ export function useFitAreaInViewport(params = defaultParams) {
 const COARSE_SIMPLIFY_TOLERANCE = 0.1
 const FINE_SIMPLIFY_TOLERANCE = 0.001
 
-function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
+export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
   return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
 }
 

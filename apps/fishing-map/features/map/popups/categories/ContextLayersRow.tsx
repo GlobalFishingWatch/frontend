@@ -9,7 +9,11 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
-import { useAreaInViewport, useAreaTooltipSparklineCategory } from './area-tooltip-timeseries.hooks'
+import {
+  useAreaInViewport,
+  useAreaTooltipSparklineCategory,
+  useFitAreaBounds,
+} from './area-tooltip-timeseries.hooks'
 import ContextLayerDownloadPopupButton from './ContextLayerDownloadPopupButton'
 import ContextLayerReportLink from './ContextLayerReportLink'
 import ContextLayerSparkline from './ContextLayerSparkline'
@@ -46,6 +50,7 @@ const ContextLayersRow = ({
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const { category, setPreferredCategory, canSwitch } = useAreaTooltipSparklineCategory()
+  const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
   const areaInViewport = useAreaInViewport(feature, showFeaturesDetails && showSparkline)
   const renderSparkline = showFeaturesDetails && showSparkline && areaInViewport === true
 
@@ -62,6 +67,13 @@ const ContextLayersRow = ({
         <span className={styles.rowText}>{parsedLabel}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
+            <IconButton
+              icon="target"
+              tooltip={t((t) => t.common.fitArea)}
+              size="small"
+              loading={fitAreaLoading}
+              onClick={fitAreaBounds}
+            />
             {!renderSparkline && showReport && (
               <ContextLayerReportLink feature={feature} onClick={handleReportClick} />
             )}

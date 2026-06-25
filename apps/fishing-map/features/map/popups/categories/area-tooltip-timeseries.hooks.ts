@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
+import { useAtomValue } from 'jotai'
 
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { getLayersStateHashAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
   FourwingsLayer,
@@ -21,8 +22,10 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { useMapBoundsLive } from 'features/map/map-bounds.hooks'
+import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { useMapBoundsLive, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { getContextValue } from 'features/map/popups/map-popups.utils'
+import { getSimplificationByDataview } from 'features/reports/report-area/area-reports.hooks'
 import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { getFeaturesFilteredByArea } from 'features/reports/reports-timeseries.hooks'
@@ -53,11 +56,24 @@ export function useAreaTooltipSparklineCategory() {
   }
 }
 
-// Whether the clicked area's bbox is fully contained in the current map viewport.
-// The sparkline reads features from the rendered viewport, so it's only accurate when the
-// whole area fits on screen. Returns undefined while the area geometry is still loading.
-// Pass enabled=false to skip the area-detail fetch (e.g. when no sparkline will be shown).
-// ponytail: simple bbox containment, ignores antimeridian wrap.
+function useAreaSimplification(
+  feature: ContextPickingObject | UserLayerPickingObject
+): string | undefined {
+  const dataviews = useSelector(selectDataviewInstancesResolved)
+  const dataview = dataviews?.find((d) => d.id === feature.dataviewId)
+  return dataview ? String(getSimplificationByDataview(dataview)) : undefined
+}
+
+function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
+  let vWidth = eastV - westV
+  if (vWidth <= 0) vWidth += 360
+  if (vWidth >= 359.95) return true // whole world visible
+  let aWidth = eastA - westA
+  if (aWidth < 0) aWidth += 360
+  const offset = (((westA - westV) % 360) + 360) % 360
+  return aWidth <= vWidth && offset + aWidth <= vWidth + 1e-6
+}
+
 export function useAreaInViewport(
   feature: ContextPickingObject | UserLayerPickingObject,
   enabled = true
@@ -68,18 +84,46 @@ export function useAreaInViewport(
   const areaName = getContextValue(feature) || ''
   const areaDetail = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
   const areaStatus = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
+  const simplify = useAreaSimplification(feature)
   const { bounds } = useMapBoundsLive()
 
   useEffect(() => {
     if (enabled && datasetId && areaId && !areaDetail && areaStatus === undefined) {
-      dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName }))
+      dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify }))
     }
-  }, [enabled, dispatch, datasetId, areaId, areaName, areaDetail, areaStatus])
+  }, [enabled, dispatch, datasetId, areaId, areaName, simplify, areaDetail, areaStatus])
 
   if (!enabled) return undefined
   const b = areaDetail?.bounds
   if (!b || !bounds) return undefined
-  return b[0] >= bounds.west && b[2] <= bounds.east && b[1] >= bounds.south && b[3] <= bounds.north
+  const latContained = b[1] >= bounds.south && b[3] <= bounds.north
+  return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+}
+
+export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
+  const dispatch = useAppDispatch()
+  const fitBounds = useMapFitBounds()
+  const datasetId = feature.datasetId
+  const areaId = String(getAreaIdFromFeature(feature))
+  const areaName = getContextValue(feature) || ''
+  const areaDetail = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
+  const areaStatus = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
+  const simplify = useAreaSimplification(feature)
+
+  const onClick = useCallback(async () => {
+    let bounds = areaDetail?.bounds
+    if (!bounds) {
+      const area = await dispatch(
+        fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
+      ).unwrap()
+      bounds = area?.bounds
+    }
+    if (bounds) {
+      fitBounds(bounds, { fitZoom: true, flyTo: true })
+    }
+  }, [areaDetail, dispatch, datasetId, areaId, areaName, simplify, fitBounds])
+
+  return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
 }
 
 export type AreaTooltipTimeseries = {
@@ -130,7 +174,17 @@ export function useAreaTooltipTimeseries(
   const isLoaded =
     reportLayers.length > 0 &&
     reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
-  const computeHash = `${areaId}|${datasetId}|${instances.map((i) => i.id).join(',')}|${isLoaded}|${!!geometry}|${areaInViewport}`
+
+  const layerIds = useMemo(() => reportLayers.map((l) => l.id), [reportLayers])
+  const layerIdsHash = layerIds.join(',')
+  const layersStateHashAtom = useMemo(
+    () => getLayersStateHashAtom(layerIds),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [layerIdsHash]
+  )
+  const layersStateHash = useAtomValue(layersStateHashAtom)
+
+  const computeHash = `${areaId}|${datasetId}|${layerIdsHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
   const lastHash = useRef('')
 
   useEffect(() => {
