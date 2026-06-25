@@ -4,10 +4,11 @@ import { uniqBy } from 'es-toolkit'
 import { castDraft } from 'immer'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import { getAdvancedSearchQuery, GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type {
   ApiEvent,
   APIPagination,
+  APIVesselSearchPagination,
   Dataset,
   DataviewDatasetConfig,
   DetectionThumbnails,
@@ -16,6 +17,7 @@ import type {
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import {
+  DatasetSubCategory,
   DatasetTypes,
   EndpointId,
   EventTypes,
@@ -54,6 +56,7 @@ import {
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTemporalgridDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { getVesselSearchEndpoint } from 'features/search/search.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -270,6 +273,28 @@ const fetchVesselInfo = async (datasets: Dataset[], vesselIds: string[], signal:
   }
 }
 
+const searchVesselMMSI = async (datasets: Dataset[], mmsis: string[], signal: AbortSignal) => {
+  if (!datasets?.length || !mmsis?.length) {
+    return []
+  }
+  const query = getAdvancedSearchQuery([{ key: 'ssvid', value: mmsis }])
+  const vesselsSearchUrl = getVesselSearchEndpoint(datasets, { mode: 'advanced', query, since: '' })
+  if (!vesselsSearchUrl) {
+    console.warn('No vessel search url found for dataset', datasets)
+    console.warn('and mmsis', mmsis)
+    return
+  }
+  try {
+    const vesselsSearchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(
+      vesselsSearchUrl,
+      { signal }
+    )
+    return vesselsSearchResponse.entries || []
+  } catch (e: any) {
+    console.warn(e)
+  }
+}
+
 export type ActivityProperty = 'hours' | 'detections' | 'events'
 export const fetchHeatmapInteractionThunk = createAsyncThunk<
   { vessels: SublayerVessels[] } | undefined,
@@ -307,6 +332,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
           APIPagination<ExtendedFeatureVessel[]>
         >(interactionUrl, { signal })
         const isSkylightDataset = getIsSkylightDataset(fourWingsDataset?.id)
+        // Real time datasets uses mmsi instead of vessel ids
         const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
           sublayer.flatMap((vessel) => {
             const {
@@ -381,11 +407,17 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
 
         const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
         const topActivityVesselIds = topActivityVessels.flatMap(({ id }) => id || [])
-        const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
+
+        const isRealTimeDataset = fourWingsDataset.subcategory === DatasetSubCategory.RealTime
+        const useVesselMMSI = isRealTimeDataset
+        const vesselsInfo = useVesselMMSI
+          ? await searchVesselMMSI(infoDatasets, topActivityVesselIds, signal)
+          : await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
         const sublayersIds = heatmapFeatures.flatMap(
           (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
         )
+
         const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
           const activityProperty = heatmapProperties?.[i] || 'hours'
           return {
@@ -394,11 +426,15 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
               .flatMap((vessels) => {
                 return vessels.map((vessel) => {
                   const vesselInfo = vesselsInfo?.find((vesselInfo) => {
-                    const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
+                    const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) =>
+                      useVesselMMSI ? s.ssvid : s.id
+                    )
                     return vesselInfoIds.includes(vessel.id)
                   })
                   const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
-                  const trackFromRelatedDataset = infoDataset || vessel.dataset
+                  const trackFromRelatedDataset = isRealTimeDataset
+                    ? vessel.dataset // all-tracks-real-time is only related to the heatmap
+                    : infoDataset || vessel.dataset
                   const trackDatasetId = getRelatedDatasetByType(
                     trackFromRelatedDataset,
                     DatasetTypes.Tracks,
