@@ -149,10 +149,12 @@ export const Route = createRootRoute({
       <RouterErrorBoundary error={error as Error} />
     </RootDocument>
   ),
-  loader: async () => {
+  loader: async ({ location }) => {
+    const userPromise =
+      location.pathname === '/login' ? Promise.resolve({ user: null }) : loadUser()
     const [panelWidths, userState] = await Promise.all([
       loadPanelWidths().catch(() => EMPTY_PANEL_WIDTHS),
-      loadUser().catch(() => ({ user: null })),
+      userPromise.catch(() => ({ user: null })),
     ])
     return {
       asideWidthPct: panelWidths.asideWidthPct,
