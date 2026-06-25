@@ -56,7 +56,7 @@ i18n
   })
 
 i18n.on('languageChanged', (lng) => {
-  if (process.browser) {
+  if (typeof window !== 'undefined') {
     document.documentElement.setAttribute('lang', lng)
   }
 })

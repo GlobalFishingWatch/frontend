@@ -1,66 +1,32 @@
+#################################################################################
+# Actual application to run
+#################################################################################
 FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest AS builder
 
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NX_DAEMON=false
-ENV NX_PARALLEL=1
-ENV NX_ISOLATE_PLUGINS=false
-ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG PUBLIC_URL
 ARG API_GATEWAY
-ARG NEXT_PUBLIC_URL
+ARG GOOGLE_MEASUREMENT_ID
+ARG GOOGLE_TAG_MANAGER_ID
 
+ENV PUBLIC_URL=$PUBLIC_URL
 ENV API_GATEWAY=$API_GATEWAY
-ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
+ENV GOOGLE_MEASUREMENT_ID=$GOOGLE_MEASUREMENT_ID
+ENV GOOGLE_TAG_MANAGER_ID=$GOOGLE_TAG_MANAGER_ID
 
 COPY . .
 
 RUN pnpm install --frozen-lockfile && \
   pnpm exec nx run port-labeler:build
 
-
-#################################################################################
-# Actual application to run
-#################################################################################
-
-# Production image, copy all the files and run next
-FROM node:24-alpine AS production
-WORKDIR /app
-
-ARG APP_NAME=port-labeler
-ENV APP_NAME $APP_NAME
-
-ENV NODE_ENV production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# nx/next sets the distDir in the server.js standalone folder to
-# a relative folder ./../../dist/apps/{$APP_NAME}/.next on
-# build time it's necessary to adjust the dir structure of the
-# output to it
-COPY --from=builder /app/dist/apps/port-labeler/public ./apps/$APP_NAME/public
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/dist/apps/port-labeler/.next/standalone ./
-
-# Had to change the dest dir to ./dist/apps/$APP_NAME/.next/static since
-# it's there where the server looks for the files
-COPY --from=builder --chown=nextjs:nodejs /app/dist/apps/port-labeler/.next/static ./dist/apps/$APP_NAME/.next/static
-
-
-USER nextjs
-
-EXPOSE 3000
-
-ENV PORT 3000
-
-# this is also customized based on the output where the standalone
-# next server files are placed
-WORKDIR /app/apps/$APP_NAME
-
-CMD ["node", "server.js"]
+# Using stable version that uses alpine 3.14 to fix build errors
+# https://github.com/alpinelinux/docker-alpine/issues/182
+FROM nginx:stable-alpine AS production
+RUN apk update && apk upgrade libxml2 libexpat
+COPY --from=builder /app/dist/apps/port-labeler/nginx.conf /etc/nginx/nginx.template
+COPY --from=builder /app/dist/apps/port-labeler/config/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/port-labeler/ /usr/share/nginx/www/
+ENTRYPOINT ["./entrypoint.sh"]

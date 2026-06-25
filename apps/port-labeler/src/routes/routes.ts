@@ -3,9 +3,7 @@ import type { Options, RoutesMap } from 'redux-first-router'
 import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
 
 export const PATH_BASENAME =
-  process.env.NEXT_PUBLIC_URL || process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production'
-    ? '/port-labeler'
-    : ''
+  process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')
 
 export const HOME = 'HOME'
 export type ROUTE_TYPES = typeof HOME

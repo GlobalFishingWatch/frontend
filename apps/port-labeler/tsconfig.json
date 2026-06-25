@@ -1,14 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
       "node",
+      "vite/client",
       "@vitest/browser/matchers",
-      "next",
       "@vitest/browser-playwright",
       "vitest-browser-react",
       "vitest"
@@ -28,11 +28,6 @@
     "strictNullChecks": true,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
@@ -55,33 +50,32 @@
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
       "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"],
-      "assets/*": ["./assets/*"],
-      "data/*": ["./data/*"],
-      "features/*": ["./features/*"],
-      "routes/*": ["./routes/*"],
-      "store": ["./store"],
-      "types": ["./types"],
-      "types/*": ["./types/*"],
-      "utils/*": ["./utils/*"]
+      "assets/*": ["./src/assets/*"],
+      "data/*": ["./src/data/*"],
+      "features/*": ["./src/features/*"],
+      "routes/*": ["./src/routes/*"],
+      "store": ["./src/store"],
+      "types": ["./src/types"],
+      "types/*": ["./src/types/*"],
+      "utils/*": ["./src/utils/*"]
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "eslint.config.js",
-    "types/**/*.d.ts",
-    "features/**/*.d.ts",
-    "vitest.config.mts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "index.d.ts",
+    "eslint.config.js"
   ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
-    ".next",
     "exported",
     "**/resources.d.ts",
     "**/i18n.types.d.ts",
-    "**/__traces__/**"
+    "**/__traces__/**",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "src/**/*.spec.tsx",
+    "src/**/*.test.tsx"
   ]
 }

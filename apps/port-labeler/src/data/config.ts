@@ -2,9 +2,8 @@ export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
-export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID ?? 'GTM-KK5ZFST'
-export const GOOGLE_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID ?? 'G-R3PWRQW70G'
+export const GOOGLE_TAG_MANAGER_ID = process.env.GOOGLE_TAG_MANAGER_ID ?? 'GTM-KK5ZFST'
+export const GOOGLE_MEASUREMENT_ID = process.env.GOOGLE_MEASUREMENT_ID ?? 'G-R3PWRQW70G'
 
 // Params to use replace instead of push for router history to make navigation easier
 export const REPLACE_URL_PARAMS = ['latitude', 'longitude', 'zoom']
@@ -24,4 +23,4 @@ export const DEFAULT_VIEWPORT = {
 }
 
 export const NSLABELS_ENDOPOINT =
-  process.env.NEXT_PUBLIC_API_GATEWAY + '/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'
+  process.env.API_GATEWAY + '/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}'

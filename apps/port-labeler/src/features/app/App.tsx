@@ -1,5 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
+import React, { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
 
 import { Menu, SplitView } from '@globalfishingwatch/ui-components'
 
@@ -13,7 +12,7 @@ import { useReplaceLoginUrl } from 'routes/routes.hook'
 
 import styles from './App.module.css'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/map/Map'))
+const Map = lazy(() => import('features/map/Map'))
 
 declare global {
   interface Window {
@@ -25,7 +24,9 @@ const Main = () => {
   return (
     <div className={styles.main}>
       <div className={styles.mapContainer}>
-        <Map />
+        <Suspense fallback={null}>
+          <Map />
+        </Suspense>
       </div>
     </div>
   )
@@ -65,7 +66,7 @@ function App(): React.ReactElement<any> {
       />
       <Menu
         appSelector={ROOT_DOM_ELEMENT}
-        bgImage={menuBgImage.src}
+        bgImage={menuBgImage}
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
         activeLinkId="map-data"
