@@ -114,11 +114,6 @@
     }
   },
   "generators": {
-    "@nx/next": {
-      "application": {
-        "style": "css"
-      }
-    },
     "@nx/react": {
       "application": {
         "babel": true,

@@ -1,7 +1,7 @@
 {
   "name": "api-portal",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/api-portal",
+  "sourceRoot": "apps/api-portal/src",
   "projectType": "application",
   "targets": {
     "deploy": {
@@ -11,35 +11,44 @@
       }
     },
     "build": {
-      "executor": "@nx/next:build",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/api-portal"
       },
       "configurations": {
-        "production": {}
-      }
-    },
-    "start": {
-      "executor": "@nx/next:server",
-      "options": {
-        "buildTarget": "api-portal:build",
-        "dev": true,
-        "port": 3000
-      },
-      "configurations": {
+        "development": {
+          "mode": "development"
+        },
         "production": {
-          "buildTarget": "api-portal:build:production",
-          "dev": false
+          "mode": "production"
         }
       }
     },
-    "export": {
-      "executor": "@nx/next:export",
+    "start": {
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "api-portal:build:production"
-      }
+        "command": "vite",
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "api-portal:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api-portal:build:development"
+        },
+        "production": {
+          "buildTarget": "api-portal:build:production"
+        }
+      },
+      "dependsOn": ["build"]
     },
     "typecheck": {
       "executor": "nx:run-commands",

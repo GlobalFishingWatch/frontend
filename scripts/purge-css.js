@@ -4,7 +4,7 @@ import { globSync } from 'glob'
 import fs from 'node:fs'
 import { PurgeCSS } from 'purgecss'
 
-const IGNORE_GLOBS = ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.next/**']
+const IGNORE_GLOBS = ['**/node_modules/**', '**/dist/**', '**/build/**']
 
 function parseProjectArg(argv) {
   const projectIndex = argv.indexOf('--project')

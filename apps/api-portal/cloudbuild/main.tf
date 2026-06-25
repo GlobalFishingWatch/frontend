@@ -33,9 +33,9 @@ module "develop" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -63,9 +63,9 @@ module "staging" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
+    "GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -94,10 +94,10 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-    "NEXT_PUBLIC_URL=/our-apis/tokens",
+    "API_GATEWAY=https://gateway.api.globalfishingwatch.org",
+    "GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "PUBLIC_URL=/our-apis/tokens",
   ]
   set_env_vars = [
     "BASIC_AUTH=off"
