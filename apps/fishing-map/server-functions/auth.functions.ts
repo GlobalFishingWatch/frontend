@@ -8,6 +8,11 @@ import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/a
 export type Tokens = { token: string; refreshToken: string }
 export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
 
+const SSR_SUBDOMAIN_SUFFIX =
+  { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
+export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`
+export const SSR_HEADERS = { referer: SSR_REFERER } as HeadersInit
+
 const COOKIE_MAX_AGE_1_YEAR = 60 * 60 * 24 * 365
 
 const accessCookieOptions = {
@@ -36,7 +41,7 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     const { setCookie } = await import('@tanstack/react-start/server')
     const tokens = await GFWAPI.exchangeAccessToken(data.accessToken)
     setAuthCookies(setCookie, tokens)
-    return GFWAPI.fetchUser({ token: tokens.token })
+    return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })
   })
 
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
@@ -50,7 +55,7 @@ export async function refreshAuthTokens(
     error.status = 401
     throw error
   }
-  const tokens = await GFWAPI.reloadTokens(refreshToken)
+  const tokens = await GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
   setAuthCookies(setCookie, tokens)
   return tokens
 }
@@ -76,7 +81,7 @@ export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
     const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
     try {
       if (refreshToken) {
-        await GFWAPI.revokeRefreshToken(refreshToken)
+        await GFWAPI.revokeRefreshToken(refreshToken, SSR_HEADERS)
       }
     } catch (e) {
       // 401 means the refresh token is already invalid/revoked on the gateway — the

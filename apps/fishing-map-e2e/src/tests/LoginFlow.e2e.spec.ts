@@ -129,3 +129,23 @@ test('Login - should fall back to guest when the refresh token is cleared', asyn
 
   await loginPage.expectGuest()
 })
+
+test('Login - should clear the session on logout even without a refresh token', async ({
+  loginPage,
+}) => {
+  await loginPage.login()
+
+  // No refresh token to revoke on the gateway; logout must still clear the local session.
+  await loginPage.clearRefreshToken()
+
+  await loginPage.openUserPanel()
+  await loginPage.logout()
+
+  await loginPage.expectGuest()
+  await loginPage.expectUserTokenCleared()
+})
+
+test('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {
+  await loginPage.expectGuest()
+  await loginPage.expectAppReady()
+})

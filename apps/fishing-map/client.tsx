@@ -10,6 +10,17 @@ import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions
 
 import 'utils/polyfills'
 
+const AUTH_RESET_VERSION = '2026-06-ssr-cookies'
+try {
+  if (localStorage.getItem('GFW_AUTH_RESET') !== AUTH_RESET_VERSION) {
+    localStorage.removeItem('GFW_API_USER_TOKEN')
+    localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+    localStorage.setItem('GFW_AUTH_RESET', AUTH_RESET_VERSION)
+  }
+} catch {
+  // localStorage unavailable (private mode / blocked) — nothing to clean up.
+}
+
 GFWAPI.configure({
   tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),
   refreshStrategy: () => refreshTokenServerFn(),

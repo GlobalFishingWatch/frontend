@@ -11,6 +11,7 @@ import {
   getIsTimeoutError,
   getIsUnauthorizedError,
   isAuthError,
+  isForbidden,
   isSessionError,
   isTransientError,
   parseAPIError,
@@ -77,6 +78,7 @@ export class GFW_API_CLASS {
   logging: Promise<UserData> | null
   private refreshingToken: Promise<UserTokens> | null = null
   private accessTokenStorage: TokenStorage
+  private refreshTokenStorage: TokenStorage
   private refreshStrategy: RefreshStrategy | null = null
   private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
   status: RequestStatus = 'idle'
@@ -96,6 +98,7 @@ export class GFW_API_CLASS {
       refreshToken: refreshTokenStorageKey,
     }
     this.accessTokenStorage = createLocalStorageTokenStorage(tokenStorageKey)
+    this.refreshTokenStorage = createLocalStorageTokenStorage(refreshTokenStorageKey)
     this.logging = null
 
     if (debug) {
@@ -179,37 +182,41 @@ export class GFW_API_CLASS {
   }
 
   get refreshToken() {
-    if (getIsBrowser()) {
-      return localStorage.getItem(this.storageKeys.refreshToken) || ''
+    if (this.refreshStrategy) {
+      return ''
     }
-    return ''
+    return this.refreshTokenStorage.get()
   }
 
   private set refreshToken(refreshToken: string) {
-    if (getIsBrowser()) {
-      if (refreshToken) {
-        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
-      } else {
-        localStorage.removeItem(this.storageKeys.refreshToken)
-      }
+    if (!this.refreshStrategy) {
+      this.refreshTokenStorage.set(refreshToken)
     }
     if (this.debug) {
       this.debugLog('GFWAPI: updated refreshToken with', refreshToken)
     }
   }
 
-  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = 'en' } = {}) {
+  private getStoredLocale(): string {
+    if (getIsBrowser()) {
+      return localStorage.getItem('i18nextLng') || 'en'
+    }
+    return 'en'
+  }
+
+  getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
+    const resolvedLocale = locale || this.getStoredLocale()
     return this.generateUrl(
       `/${API_VERSION}/${AUTH_PATH}/${REGISTER_PATH}?client=${client}&callback=${encodeURIComponent(
         callbackUrl
-      )}&locale=${locale}`,
+      )}&locale=${resolvedLocale}`,
       { absolute: true }
     )
   }
 
   getLoginUrl(
     callbackUrl: string,
-    { client = 'gfw', locale = 'en', hideHeader = false } = {} satisfies {
+    { client = 'gfw', locale = '', hideHeader = false } = {} satisfies {
       client?: string
       locale?: string
       hideHeader?: boolean
@@ -217,7 +224,7 @@ export class GFW_API_CLASS {
   ) {
     const params = new URLSearchParams({
       client,
-      locale,
+      locale: locale || this.getStoredLocale(),
       callback: callbackUrl,
       ...(hideHeader && { hideHeader: 'true' }),
     })
@@ -234,34 +241,37 @@ export class GFW_API_CLASS {
     }
   }
 
-  exchangeAccessToken(accessToken: string): Promise<UserTokens> {
+  exchangeAccessToken(accessToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
     if (this.debug) {
       this.debugLog('GFWAPI: exchangeAccessToken')
     }
     return fetch(
-      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
+      this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true }),
+      {
+        headers,
+      }
     )
       .then(processStatus)
       .then(parseJSON)
   }
 
-  reloadTokens(refreshToken: string): Promise<UserTokens> {
+  reloadTokens(refreshToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
     if (this.debug) {
       this.debugLog('GFWAPI: reloadTokens', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
-      headers: { 'refresh-token': refreshToken },
+      headers: { ...headers, 'refresh-token': refreshToken },
     })
       .then(processStatus)
       .then(parseJSON)
   }
 
-  revokeRefreshToken(refreshToken: string): Promise<Response> {
+  revokeRefreshToken(refreshToken: string, headers: HeadersInit = {}): Promise<Response> {
     if (this.debug) {
       this.debugLog('GFWAPI: revokeRefreshToken', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/logout`, { absolute: true }), {
-      headers: { 'refresh-token': refreshToken },
+      headers: { ...headers, 'refresh-token': refreshToken },
     }).then(processStatus)
   }
 
@@ -299,7 +309,9 @@ export class GFW_API_CLASS {
     return this.withTokenRefreshLock(async () => {
       const rotatedBefore = this.getRotatedRefreshToken(startRefreshToken)
       if (rotatedBefore) {
-        this.debugLog('GFWAPI: refreshTokens — reusing token rotated by another tab (before reload)')
+        this.debugLog(
+          'GFWAPI: refreshTokens — reusing token rotated by another tab (before reload)'
+        )
         return { token: this.token, refreshToken: rotatedBefore }
       }
       try {
@@ -535,7 +547,8 @@ export class GFW_API_CLASS {
         } catch (err: any) {
           this.debugWarn(`GFWAPI: token refresh failed for ${url}`, err)
 
-          const refreshRejected = isSessionError(err) && !getIsTimeoutError(err)
+          const refreshRejected =
+            isSessionError(err) && !isForbidden(err) && !getIsTimeoutError(err)
           if (getIsBrowser() && refreshRejected) {
             this.debugLog('GFWAPI: refresh rejected — invalidating client session')
             this.invalidateClientSession()
@@ -564,14 +577,17 @@ export class GFW_API_CLASS {
     }
   }
 
-  async fetchUser({ token }: { token?: string } = {}) {
+  async fetchUser({ token, headers }: { token?: string; headers?: HeadersInit } = {}) {
     if (this.debug) {
       this.debugLog('GFWAPI: fetchUser', { stateless: token != null, hasToken: Boolean(token) })
     }
     try {
       const user = await this._internalFetch<UserData>({
         url: this.generateUrl(`/${AUTH_PATH}/me`),
-        options: { token },
+        options: {
+          token,
+          headers,
+        },
         refreshRetries: 0,
         waitLogin: false,
       })
@@ -630,7 +646,9 @@ export class GFW_API_CLASS {
             this.debugWarn(`GFWAPI: _login — ${msg}`, e)
             throw new Error(msg, { cause: e })
           }
-          this.debugLog('GFWAPI: _login — access token exchange failed, falling back to stored tokens')
+          this.debugLog(
+            'GFWAPI: _login — access token exchange failed, falling back to stored tokens'
+          )
         }
       }
 
