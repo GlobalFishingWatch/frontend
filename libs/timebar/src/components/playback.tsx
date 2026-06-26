@@ -199,6 +199,7 @@ class Playback extends Component<PlaybackProps> {
 
     return (
       <div
+        data-testid="timebar-playback"
         className={cx('print-hidden', styles.playbackActions, {
           [styles.playbackActionsActive]: playing,
         })}

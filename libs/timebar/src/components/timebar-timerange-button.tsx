@@ -39,6 +39,7 @@ export function TimebarTimeRangeSelector() {
         title={labels.timerange?.title}
         className={cx(styles.uiButton)}
         onClick={toggleTimeRangeSelector}
+        data-testid="timebar-timerange-button"
       >
         <Icon icon="time-range" />
       </button>
