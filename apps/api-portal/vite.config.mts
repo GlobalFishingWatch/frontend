@@ -7,7 +7,8 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
-const basePath = process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : '')
+const basePath =
+  import.meta.env?.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/our-apis' : '')
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
