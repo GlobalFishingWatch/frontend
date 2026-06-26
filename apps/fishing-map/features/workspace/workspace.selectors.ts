@@ -218,6 +218,7 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
 export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSections')
+export const selectTimeMode = selectWorkspaceStateProperty('timeMode')
 
 export type WorkspaceFetchParams = { workspaceId: string; reportId?: string }
 
