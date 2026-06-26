@@ -10,7 +10,6 @@
   width: 100%;
 }
 
-/* Smoothly reveal the sparkline + button when the area finishes loading (0fr -> 1fr) */
 .sparklineReveal {
   display: grid;
   grid-template-rows: 0fr;
@@ -40,15 +39,13 @@
 }
 
 .sparkline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 .sparklineEmpty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 6rem;
-  margin-top: var(--space-S);
   font: var(--font-S);
   color: var(--color-secondary-blue);
   text-align: center;
@@ -72,9 +69,4 @@
 
 .reportButton:hover {
   background-color: var(--color-secondary-blue);
-}
-
-.reportButton:disabled {
-  opacity: var(--opacity-secondary);
-  cursor: not-allowed;
 }

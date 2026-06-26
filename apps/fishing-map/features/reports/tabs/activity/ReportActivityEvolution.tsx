@@ -29,7 +29,7 @@ import {
 import styles from './ReportActivityEvolution.module.css'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
-const noAxesMargin = { top: 0, right: 0, left: 0, bottom: 0 }
+const noAxesMargin = { top: 5, right: 0, left: 0, bottom: 5 }
 
 export type EvolutionTooltipContentProps = {
   active: boolean

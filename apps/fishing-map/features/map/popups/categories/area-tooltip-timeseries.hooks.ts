@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { useAtomValue } from 'jotai'
@@ -40,28 +40,14 @@ export function useAreaTooltipSparklineCategory() {
   const hasActivity = (useSelector(selectActiveActivityDataviews)?.length ?? 0) > 0
   const hasDetections = (useSelector(selectActiveDetectionsDataviews)?.length ?? 0) > 0
   const [preferredCategory, setPreferredCategory] = useState<TooltipCategory>('activity')
-  const category: TooltipCategory =
-    preferredCategory === 'activity'
-      ? hasActivity
-        ? 'activity'
-        : 'detections'
-      : hasDetections
-        ? 'detections'
-        : 'activity'
+  const has = { activity: hasActivity, detections: hasDetections }
+  const other: TooltipCategory = preferredCategory === 'activity' ? 'detections' : 'activity'
+  const category: TooltipCategory = has[preferredCategory] ? preferredCategory : other
   return {
     category,
     setPreferredCategory,
     canSwitch: hasActivity && hasDetections,
-    hasAny: hasActivity || hasDetections,
   }
-}
-
-function useAreaSimplification(
-  feature: ContextPickingObject | UserLayerPickingObject
-): string | undefined {
-  const dataviews = useSelector(selectDataviewInstancesResolved)
-  const dataview = dataviews?.find((d) => d.id === feature.dataviewId)
-  return dataview ? String(getSimplificationByDataview(dataview)) : undefined
 }
 
 function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
@@ -74,24 +60,35 @@ function isLonRangeContained(westV: number, eastV: number, westA: number, eastA:
   return aWidth <= vWidth && offset + aWidth <= vWidth + 1e-6
 }
 
-export function useAreaInViewport(
+function useAreaDetail(
   feature: ContextPickingObject | UserLayerPickingObject,
-  enabled = true
-): boolean | undefined {
+  { fetch = false }: { fetch?: boolean } = {}
+) {
   const dispatch = useAppDispatch()
   const datasetId = feature.datasetId
   const areaId = String(getAreaIdFromFeature(feature))
   const areaName = getContextValue(feature) || ''
+  const dataviews = useSelector(selectDataviewInstancesResolved)
+  const dataview = dataviews?.find((d) => d.id === feature.dataviewId)
+  const simplify = dataview ? String(getSimplificationByDataview(dataview)) : undefined
   const areaDetail = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
   const areaStatus = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
-  const simplify = useAreaSimplification(feature)
-  const { bounds } = useMapBoundsLive()
 
   useEffect(() => {
-    if (enabled && datasetId && areaId && !areaDetail && areaStatus === undefined) {
+    if (fetch && datasetId && areaId && !areaDetail && areaStatus === undefined) {
       dispatch(fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify }))
     }
-  }, [enabled, dispatch, datasetId, areaId, areaName, simplify, areaDetail, areaStatus])
+  }, [fetch, dispatch, datasetId, areaId, areaName, simplify, areaDetail, areaStatus])
+
+  return { datasetId, areaId, areaName, simplify, areaDetail, areaStatus }
+}
+
+export function useAreaInViewport(
+  feature: ContextPickingObject | UserLayerPickingObject,
+  enabled = true
+): boolean | undefined {
+  const { areaDetail } = useAreaDetail(feature, { fetch: enabled })
+  const { bounds } = useMapBoundsLive()
 
   if (!enabled) return undefined
   const b = areaDetail?.bounds
@@ -101,14 +98,9 @@ export function useAreaInViewport(
 }
 
 export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
-  const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const datasetId = feature.datasetId
-  const areaId = String(getAreaIdFromFeature(feature))
-  const areaName = getContextValue(feature) || ''
-  const areaDetail = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
-  const areaStatus = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
-  const simplify = useAreaSimplification(feature)
+  const dispatch = useAppDispatch()
+  const { datasetId, areaId, areaName, simplify, areaDetail, areaStatus } = useAreaDetail(feature)
 
   const onClick = useCallback(async () => {
     let bounds = areaDetail?.bounds
@@ -131,14 +123,9 @@ export type AreaTooltipTimeseries = {
   timeseries: ReportGraphProps | undefined
   start: string
   end: string
-  // undefined while the area geometry is still loading
   areaInViewport: boolean | undefined
 }
 
-// Computes the activity/detections timeseries for a clicked area into local state,
-// reusing the report's getFeaturesFilteredByArea + getTimeseries. Safe to keep separate
-// from the report's reportStateAtom because this sparkline is never shown on the /report
-// route, so the two never run at once.
 export function useAreaTooltipTimeseries(
   feature: ContextPickingObject | UserLayerPickingObject,
   category: TooltipCategory
@@ -154,15 +141,8 @@ export function useAreaTooltipTimeseries(
   const reportLayers = useGetDeckLayers<FourwingsLayer>(ids)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
 
-  const datasetId = feature.datasetId
-  const areaId = String(getAreaIdFromFeature(feature))
-
-  const areaDetail = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
-  const areaStatus = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
-  const geometry = (areaDetail?.geometry ?? (feature as any).geometry) as
-    | Polygon
-    | MultiPolygon
-    | undefined
+  const { datasetId, areaId, areaDetail, areaStatus } = useAreaDetail(feature)
+  const geometry = (areaDetail?.geometry ?? feature.geometry) as Polygon | MultiPolygon | undefined
   const areaInViewport = useAreaInViewport(feature)
 
   const [state, setState] = useState<{
@@ -185,16 +165,9 @@ export function useAreaTooltipTimeseries(
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
   const computeHash = `${areaId}|${datasetId}|${layerIdsHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
-  const lastHash = useRef('')
 
   useEffect(() => {
-    if (
-      !geometry ||
-      !instances.length ||
-      !isLoaded ||
-      !areaInViewport ||
-      computeHash === lastHash.current
-    ) {
+    if (!geometry || !instances.length || !isLoaded || !areaInViewport) {
       return
     }
     let cancelled = false
@@ -212,7 +185,6 @@ export function useAreaTooltipTimeseries(
         }
         const timeseries = getTimeseries({ featuresFiltered, instances })
         if (!cancelled) {
-          lastHash.current = computeHash
           setState({ loading: false, timeseries: timeseries?.[0] })
         }
       } catch (e) {
@@ -227,17 +199,15 @@ export function useAreaTooltipTimeseries(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [computeHash])
 
-  // No layers to compute from: nothing to load, nothing to show
-  if (!instances.length) {
-    return { loading: false, timeseries: undefined, start, end, areaInViewport }
+  const computable = instances.length > 0 && areaInViewport === true
+  const loading = computable
+    ? state.loading || areaStatus === AsyncReducerStatus.Loading
+    : instances.length > 0 && areaInViewport === undefined
+  return {
+    start,
+    end,
+    areaInViewport,
+    loading,
+    timeseries: computable ? state.timeseries : undefined,
   }
-  // Still resolving the area geometry, or area doesn't fit the viewport: don't show a graph
-  if (areaInViewport === undefined) {
-    return { loading: true, timeseries: undefined, start, end, areaInViewport }
-  }
-  if (areaInViewport === false) {
-    return { loading: false, timeseries: undefined, start, end, areaInViewport }
-  }
-  const loading = state.loading || areaStatus === AsyncReducerStatus.Loading
-  return { loading, timeseries: state.timeseries, start, end, areaInViewport }
 }

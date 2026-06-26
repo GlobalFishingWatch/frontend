@@ -26,43 +26,41 @@ const ContextLayerSparkline = ({
   const { t } = useTranslation()
   const { loading, timeseries, start, end } = useAreaTooltipTimeseries(feature, category)
 
-  const label =
-    category === 'detections' ? t((t) => t.common.detections) : t((t) => t.common.activity)
+  const activityLabel = t((t) => t.common.activity)
+  const detectionsLabel = t((t) => t.common.detections)
 
   return (
     <div className={styles.sparklineContainer}>
-      <div>
-        {canSwitch ? (
-          <Choice
-            size="small"
-            activeOption={category}
-            options={[
-              { id: 'activity', label: t((t) => t.common.activity) },
-              { id: 'detections', label: t((t) => t.common.detections) },
-            ]}
-            onSelect={(option) => onSelectCategory(option.id as TooltipCategory)}
-          />
-        ) : (
-          <span className={styles.sparklineLabel}>{label}</span>
-        )}
-      </div>
-      {loading ? (
-        <div className={styles.sparkline} style={{ height: SPARKLINE_HEIGHT }}>
-          <Spinner size="small" />
-        </div>
-      ) : !timeseries?.timeseries?.length ? (
-        <div className={styles.sparklineEmpty}>{t((t) => t.analysis.noDataByArea)}</div>
+      {canSwitch ? (
+        <Choice
+          size="small"
+          activeOption={category}
+          options={[
+            { id: 'activity', label: activityLabel },
+            { id: 'detections', label: detectionsLabel },
+          ]}
+          onSelect={(option) => onSelectCategory(option.id as TooltipCategory)}
+        />
       ) : (
-        <div className={styles.sparkline}>
+        <span className={styles.sparklineLabel}>
+          {category === 'detections' ? detectionsLabel : activityLabel}
+        </span>
+      )}
+      <div className={styles.sparkline} style={{ height: SPARKLINE_HEIGHT }}>
+        {loading ? (
+          <Spinner size="small" />
+        ) : !timeseries?.timeseries?.length ? (
+          <span className={styles.sparklineEmpty}>{t((t) => t.analysis.noDataByArea)}</span>
+        ) : (
           <ReportActivityEvolution
             data={timeseries}
             start={start}
             end={end}
-            height={SPARKLINE_HEIGHT}
+            height="100%"
             hideAxes
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
