@@ -16,6 +16,7 @@ export type GetDatasetConfigCallback = (
 
 export type GetDatasetConfigsCallbacks = {
   track?: GetDatasetConfigCallback
+  trackRealTime?: GetDatasetConfigCallback
   info?: GetDatasetConfigCallback
   events?: GetDatasetConfigCallback
 }
@@ -53,12 +54,21 @@ export const extendDataviewDatasetConfig = (
         : DatasetTypes.Tracks
 
     const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+    const trackRealTimeDatasetConfig = {
+      ...getDatasetConfigByDatasetType(dataview, DatasetTypes.TracksRealTime),
+    }
+
     const hasTrackData =
       trackDatasetType === DatasetTypes.Tracks
         ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value !== undefined
         : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value !== undefined
+    const hasTrackRealTimeData =
+      trackRealTimeDatasetConfig?.params?.find((p) => p.id === 'ssvid')?.value !== undefined
     // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
     const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
+    const trackRealTime = hasTrackRealTimeData
+      ? trackRealTimeDatasetConfig
+      : ({} as DataviewDatasetConfig)
 
     const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
@@ -66,6 +76,7 @@ export const extendDataviewDatasetConfig = (
 
     let preparedInfoDatasetConfigs = [info]
     let preparedTrackDatasetConfigs = [track]
+    let preparedTrackRealTimeDatasetConfigs = [trackRealTime]
     let preparedEventsDatasetConfigs = events
 
     if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
@@ -73,6 +84,12 @@ export const extendDataviewDatasetConfig = (
     }
     if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
       preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
+    }
+    if (callbacks.trackRealTime && preparedTrackRealTimeDatasetConfigs?.length > 0) {
+      preparedTrackRealTimeDatasetConfigs = callbacks.trackRealTime(
+        preparedTrackRealTimeDatasetConfigs,
+        dataview
+      )
     }
     if (callbacks.events && preparedEventsDatasetConfigs?.length > 0) {
       preparedEventsDatasetConfigs = callbacks.events(preparedEventsDatasetConfigs, dataview)
@@ -83,6 +100,7 @@ export const extendDataviewDatasetConfig = (
       datasetsConfig: [
         ...preparedInfoDatasetConfigs,
         ...preparedTrackDatasetConfigs,
+        ...preparedTrackRealTimeDatasetConfigs,
         ...preparedEventsDatasetConfigs,
       ].filter(Boolean),
     }

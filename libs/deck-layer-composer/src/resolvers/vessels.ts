@@ -14,7 +14,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   dataview,
   globalConfig
 ): VesselLayerProps => {
-  const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
+  const trackUrl = resolveDataviewDatasetResource(
+    dataview,
+    globalConfig.timeMode === 'realTime' ? DatasetTypes.TracksRealTime : DatasetTypes.Tracks
+  )?.url
   const { start, end, visibleEvents } = globalConfig
   const strictTimeRange =
     dataview.config?.startDate != null &&

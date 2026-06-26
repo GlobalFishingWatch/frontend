@@ -49,7 +49,11 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import { getIsSkylightDataset, getVesselGroupInDataview } from 'features/datasets/datasets.utils'
+import {
+  getIsSkylightDataset,
+  getVesselGroupInDataview,
+  isRealTimeDataset,
+} from 'features/datasets/datasets.utils'
 import {
   selectActiveDetectionsDataviews,
   selectEventsDataviews,
@@ -72,6 +76,7 @@ type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
   datasetId: string
   infoDataset?: Dataset
   trackDataset?: Dataset
+  trackRealtimeDataset?: Dataset
 }
 
 export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
@@ -408,8 +413,8 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
         const topActivityVesselIds = topActivityVessels.flatMap(({ id }) => id || [])
 
-        const isRealTimeDataset = fourWingsDataset.subcategory === DatasetSubCategory.RealTime
-        const useVesselMMSI = isRealTimeDataset
+        const realTimeDataset = isRealTimeDataset(fourWingsDataset)
+        const useVesselMMSI = realTimeDataset
         const vesselsInfo = useVesselMMSI
           ? await searchVesselMMSI(infoDatasets, topActivityVesselIds, signal)
           : await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
@@ -432,25 +437,34 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
                     return vesselInfoIds.includes(vessel.id)
                   })
                   const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
-                  const trackFromRelatedDataset = isRealTimeDataset
-                    ? vessel.dataset // all-tracks-real-time is only related to the heatmap
-                    : infoDataset || vessel.dataset
+                  const trackFromRelatedDataset = infoDataset || vessel.dataset
                   const trackDatasetId = getRelatedDatasetByType(
                     trackFromRelatedDataset,
                     DatasetTypes.Tracks,
                     { fullDatasetAllowed: !guestUser }
                   )?.id
+                  const trackRealTimeDatasetId = realTimeDataset
+                    ? getRelatedDatasetByType(
+                        vessel.dataset, // all-tracks-real-time is only related to the heatmap,
+                        DatasetTypes.Tracks,
+                        { fullDatasetAllowed: !guestUser }
+                      )?.id
+                    : ''
                   // if (vesselInfo && !trackDatasetId) {
                   //   console.warn('No track dataset found for dataset:', trackFromRelatedDataset)
                   //   console.warn('and vessel:', vessel)
                   // }
                   const trackDataset = selectDatasetById(trackDatasetId as string)(state)
+                  const trackRealtimeDataset = trackRealTimeDatasetId
+                    ? selectDatasetById(trackRealTimeDatasetId as string)(state)
+                    : undefined
                   return {
                     ...vessel,
                     ...(vesselInfo || {}),
                     id: vesselInfo?.selfReportedInfo?.[0]?.id || vessel.id,
                     infoDataset,
                     trackDataset,
+                    trackRealtimeDataset,
                   } as ExtendedFeatureVessel
                 })
               })
