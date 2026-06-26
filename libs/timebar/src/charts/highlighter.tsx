@@ -208,7 +208,7 @@ const Highlighter = ({
   fixed?: boolean
   onToggleFixedTooltip?: (fixed?: boolean) => void
 }) => {
-  const { graphHeight, tooltipContainer, outerStart, outerEnd } = useTimelineContext()
+  const { graphHeight, tooltipContainer } = useTimelineContext()
   const outerScale = useOuterScale()
   const { width, left, center, centerMs, dateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale, dateCallback),
@@ -221,7 +221,7 @@ const Highlighter = ({
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
-  }, [outerStart, outerEnd])
+  }, [outerScale])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {
     return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData, hoveredEventId)
@@ -249,6 +249,7 @@ const Highlighter = ({
       {tooltipContainer !== null &&
         showTooltip &&
         createPortal(
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- click only stops propagation, no interactive semantics
           <div
             data-testid="timebar-highlighter"
             className={cx(styles.tooltipContainer, {

@@ -81,9 +81,9 @@ export type TimebarProps = {
   absoluteEnd: string
   latestAvailableDataDate?: string
   showLast30DaysBtn?: boolean
-  minimumRange?: number
+  minimumRange?: number | null
   minimumRangeUnit?: StickUnit
-  maximumRange?: number
+  maximumRange?: number | null
   maximumRangeUnit?: string
   stickToUnit?: (start: string, end: string) => StickUnit
   // val is used to live edit translations in crowdin

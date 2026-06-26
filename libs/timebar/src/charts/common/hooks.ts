@@ -149,7 +149,9 @@ export const useClusteredChartData = (data: TimebarChartData<any>) => {
   const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)
-  }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
+    // only memoize when delta changes (ie start and end can change with delta staying the same)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, delta])
 }
 
 const EVENT_TYPES_SORT_ORDER = {
