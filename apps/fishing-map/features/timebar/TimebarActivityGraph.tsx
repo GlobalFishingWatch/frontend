@@ -21,7 +21,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
         visualisation === TimebarVisualisations.Environment ? 2 : undefined
       const labels = [
         formatNumber(value.value, maxHighlighterFractionDigits),
-        item?.props.unit || '',
+        item?.props?.unit || '',
         t((t) => t.common.onScreen),
       ]
       if (visualisation === TimebarVisualisations.Environment) {

@@ -4,15 +4,22 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { useTimebarActions, useTimebarState } from '../timebar-context'
 
+import type { LastXOption } from './timerange-selector'
 import TimeRangeSelector from './timerange-selector'
 
 import styles from '../timebar.module.css'
 
+type TimebarTimeRangeSelectorProps = {
+  /** Quick-select "last N units" options. Defaults to 30 days / 3 + 6 months / 1 year. */
+  timeRangeOptions?: LastXOption[]
+}
+
 /** Time-range (calendar) button + its modal. Place inside <Timebar.Controls>. */
-export function TimebarTimeRangeSelector() {
+export function TimebarTimeRangeSelector({ timeRangeOptions }: TimebarTimeRangeSelectorProps = {}) {
   const {
     labels,
     absoluteStart,
+    absoluteEnd,
     latestAvailableDataDate,
     toggleTimeRangeSelector,
     onTimeRangeSelectorSubmit,
@@ -27,11 +34,11 @@ export function TimebarTimeRangeSelector() {
           start={start}
           end={end}
           absoluteStart={absoluteStart}
-          // ponytail: legacy passed state.absoluteEnd (always null) — preserved. Wire context absoluteEnd to fix.
-          absoluteEnd={null as unknown as string}
+          absoluteEnd={absoluteEnd}
           onSubmit={onTimeRangeSelectorSubmit}
           onDiscard={toggleTimeRangeSelector}
           latestAvailableDataDate={latestAvailableDataDate}
+          lastXOptions={timeRangeOptions}
         />
       )}
       <button

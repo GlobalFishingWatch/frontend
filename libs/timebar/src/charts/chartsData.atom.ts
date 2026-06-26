@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { atom, useSetAtom } from 'jotai'
 
 import type { ChartType, TimebarChartData, TimebarChartsData } from '.'
@@ -7,30 +7,20 @@ const chartsDataState = atom({} as TimebarChartsData)
 
 export default chartsDataState
 
-export const useUpdateChartsData = (key: ChartType, data: TimebarChartData<void>) => {
-  const updateChartsData = useSetAtom(chartsDataState)
+export const useUpdateChartsData = (key: ChartType, data: TimebarChartData) => {
+  const setChartsData = useSetAtom(chartsDataState)
 
-  const setChartDataKeyActive = useCallback(
-    ({ key, data, active = true }: { key: ChartType; data: TimebarChartData; active: boolean }) => {
-      updateChartsData((chartsData: TimebarChartsData) => {
-        return {
-          ...chartsData,
-          [key]: {
-            data,
-            active,
-          },
-        }
-      })
-    },
-    [updateChartsData]
-  )
-
+  // Keep this chart's data current (one atom write per data change; stays active while mounted).
   useEffect(() => {
-    setChartDataKeyActive({ key, data, active: true })
+    setChartsData((prev) => ({ ...prev, [key]: { data, active: true } }))
+  }, [key, data, setChartsData])
+
+  // Flag inactive on unmount so the highlighter ignores it (keeps the last data).
+  useEffect(() => {
     return () => {
-      setChartDataKeyActive({ key, data, active: false })
+      setChartsData((prev) => ({ ...prev, [key]: { ...prev[key], active: false } }))
     }
-  }, [data, key, setChartDataKeyActive])
+  }, [key, setChartsData])
 }
 
 export const hoveredEventState = atom(undefined as string | undefined)

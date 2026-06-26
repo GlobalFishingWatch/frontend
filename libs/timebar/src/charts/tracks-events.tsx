@@ -59,14 +59,14 @@ type EventDatum = {
 type LineDatum = { path: Position[]; color: Color }
 
 const getTracksEventsWithCoords = (
-  tracksEvents: TimebarChartData<any>,
+  tracksEvents: TimebarChartData<TrackEventChunkProps>,
   outerScale: TimelineScale,
   graphHeight: number,
   orientation: TrackGraphOrientation
 ) => {
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
-    const trackItemWithCoords: TimebarChartItem<any> = {
+    const trackItemWithCoords: TimebarChartItem<TrackEventChunkProps> = {
       ...trackEvents,
       y: baseTrackY.defaultY,
       chunks: !trackEvents.chunks

@@ -1,10 +1,21 @@
-import { createContext, useContext } from 'react'
 import type * as d3 from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
+
+import { createGuardedContext } from './create-guarded-context'
 
 export type TimelineScale = d3.ScaleTime<number, number>
 
 export type TrackGraphOrientation = 'up' | 'down' | 'mirrored'
+
+// val is used to live edit translations in crowdin
+export type TimebarLocale = 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
+
+export type TimebarMouseLeaveHandler = (...args: unknown[]) => unknown
+export type TimebarMouseMoveHandler = (
+  clientX: number | null,
+  scale: ((arg: d3.NumberValue) => Date) | null,
+  isDay?: boolean
+) => void
 
 /** ISO 8601 date-time string, e.g. "2024-01-01T00:00:00.000Z" */
 export type ISODateString = string
@@ -30,15 +41,10 @@ export type TimelineContextProps = {
   trackGraphOrientation: TrackGraphOrientation
 }
 
-export const TimelineContext = createContext<TimelineContextProps | null>(null)
-
-/** Read the timeline (d3 scale/layout) context. Throws if used outside <Timeline>. */
-export function useTimelineContext() {
-  const context = useContext(TimelineContext)
-  if (context === null) {
-    throw new Error('useTimelineContext must be used within a Timeline provider')
-  }
-  return context
-}
+/** The timeline (d3 scale/layout) context. `useTimelineContext` throws if used outside <Timeline>. */
+export const [TimelineContext, useTimelineContext] = createGuardedContext<TimelineContextProps>(
+  'useTimelineContext',
+  'a Timeline provider'
+)
 
 export default TimelineContext

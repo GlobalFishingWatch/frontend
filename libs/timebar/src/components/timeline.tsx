@@ -12,8 +12,12 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { EVENT_SOURCE } from '../constants'
-import type { TimebarProps } from '../timebar'
-import type { StickUnit, TrackGraphOrientation } from '../timeline-context'
+import type {
+  StickUnit,
+  TimebarMouseLeaveHandler,
+  TimebarMouseMoveHandler,
+  TrackGraphOrientation,
+} from '../timeline-context'
 import TimelineContext from '../timeline-context'
 import { getLast30Days } from '../utils'
 import {
@@ -55,8 +59,8 @@ type TimelineProps = {
     }
   }
   onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
-  onMouseLeave?: TimebarProps['onMouseLeave']
-  onMouseMove?: TimebarProps['onMouseMove']
+  onMouseLeave?: TimebarMouseLeaveHandler
+  onMouseMove?: TimebarMouseMoveHandler
   children?: React.ReactNode
   start: string
   end: string

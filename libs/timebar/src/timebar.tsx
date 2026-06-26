@@ -1,7 +1,6 @@
 import type React from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
-import type { NumberValue } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
@@ -21,7 +20,8 @@ import type { TimebarActionsContextProps, TimebarStateContextProps } from './tim
 import { TimebarActionsContext, TimebarStateContext } from './timebar-context'
 import type { TimebarLabels } from './timebar-labels'
 import { DEFAULT_LABELS } from './timebar-labels'
-import type { StickUnit, TrackGraphOrientation } from './timeline-context'
+import type { StickUnit } from './timeline-context'
+import { useShallowMemo } from './use-shallow-memo'
 import { useResizableHeight } from './useResizableHeight'
 
 import styles from './timebar.module.css'
@@ -69,33 +69,18 @@ export type TimebarProps = {
   children?: React.ReactNode
   bookmarkStart?: string
   bookmarkEnd?: string
-  bookmarkPlacement?: string
-  onMouseLeave?: (...args: unknown[]) => unknown
-  onMouseMove?: (
-    clientX: number | null,
-    scale: ((arg: NumberValue) => Date) | null,
-    isDay?: boolean
-  ) => void
   onBookmarkChange?: (start: string, end: string) => void
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  showLast30DaysBtn?: boolean
   minimumRange?: number | null
   minimumRangeUnit?: StickUnit
   maximumRange?: number | null
   maximumRangeUnit?: string
-  stickToUnit?: (start: string, end: string) => StickUnit
-  // val is used to live edit translations in crowdin
-  locale: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
-  displayWarningWhenInFuture?: boolean
-  trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
-  fullWidth?: boolean
   defaultHeight?: number
-  onGraphClick?: () => void
 }
 
 export function Timebar({
@@ -106,28 +91,18 @@ export function Timebar({
   children,
   bookmarkStart = undefined,
   bookmarkEnd = undefined,
-  bookmarkPlacement = 'top',
-  onMouseLeave,
-  onMouseMove,
   onBookmarkChange,
   absoluteStart,
   absoluteEnd,
   latestAvailableDataDate = '',
-  showLast30DaysBtn = true,
   minimumRange = null,
   minimumRangeUnit = 'day',
   maximumRange = null,
   maximumRangeUnit = 'month',
-  stickToUnit,
-  locale = 'en',
   intervals,
   getCurrentInterval,
-  displayWarningWhenInFuture = true,
-  trackGraphOrientation,
   isResizable = false,
-  fullWidth = false,
   defaultHeight,
-  onGraphClick,
 }: TimebarProps) {
   const labels = labelsProp ?? DEFAULT_LABELS
   const [showTimeRangeSelector, setShowTimeRangeSelector] = useState(false)
@@ -263,73 +238,31 @@ export function Timebar({
     getTime(bookmarkStart) === getTime(start) &&
     getTime(bookmarkEnd) === getTime(end)
 
-  const actionsValue = useMemo<TimebarActionsContextProps>(
-    () => ({
-      notifyChange,
-      onIntervalClick,
-      onPlaybackTick,
-      onTimeRangeSelectorSubmit,
-      onBookmarkChange,
-      setBookmark,
-      toggleTimeRangeSelector,
-      onMouseLeave,
-      onMouseMove,
-      onGraphClick,
-      intervals,
-      getCurrentInterval,
-      labels,
-      locale,
-      absoluteStart,
-      absoluteEnd,
-      latestAvailableDataDate,
-      bookmarkPlacement,
-      isResizable,
-      fullWidth,
-      showLast30DaysBtn,
-      trackGraphOrientation,
-      stickToUnit,
-      displayWarningWhenInFuture,
-    }),
-    [
-      notifyChange,
-      onIntervalClick,
-      onPlaybackTick,
-      onTimeRangeSelectorSubmit,
-      onBookmarkChange,
-      setBookmark,
-      toggleTimeRangeSelector,
-      onMouseLeave,
-      onMouseMove,
-      onGraphClick,
-      intervals,
-      getCurrentInterval,
-      labels,
-      locale,
-      absoluteStart,
-      absoluteEnd,
-      latestAvailableDataDate,
-      bookmarkPlacement,
-      isResizable,
-      fullWidth,
-      showLast30DaysBtn,
-      trackGraphOrientation,
-      stickToUnit,
-      displayWarningWhenInFuture,
-    ]
-  )
+  const actionsValue = useShallowMemo<TimebarActionsContextProps>({
+    notifyChange,
+    onIntervalClick,
+    onPlaybackTick,
+    onTimeRangeSelectorSubmit,
+    onBookmarkChange,
+    setBookmark,
+    toggleTimeRangeSelector,
+    intervals,
+    getCurrentInterval,
+    labels,
+    absoluteStart,
+    absoluteEnd,
+    latestAvailableDataDate,
+  })
 
-  const stateValue = useMemo<TimebarStateContextProps>(
-    () => ({
-      start,
-      end,
-      showTimeRangeSelector,
-      hasBookmark,
-      bookmarkDisabled,
-      bookmarkStart,
-      bookmarkEnd,
-    }),
-    [start, end, showTimeRangeSelector, hasBookmark, bookmarkDisabled, bookmarkStart, bookmarkEnd]
-  )
+  const stateValue = useShallowMemo<TimebarStateContextProps>({
+    start,
+    end,
+    showTimeRangeSelector,
+    hasBookmark,
+    bookmarkDisabled,
+    bookmarkStart,
+    bookmarkEnd,
+  })
 
   return (
     <div className={styles.Timebar} style={isResizable ? { height: `${height}px` } : {}}>

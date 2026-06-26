@@ -13,6 +13,7 @@ import type {
   TimebarChartChunk,
   TimebarChartData,
   TimebarChartItem,
+  TrackChunkProps,
   TrackEventChunkProps,
 } from '@globalfishingwatch/timebar'
 
@@ -33,7 +34,7 @@ const isVesselLayerInstance = (instance: VesselLayer | UserTracksLayer): instanc
   'getVesselTrackSegments' in instance
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
-  return chunk.props?.id || null
+  return (chunk.props as TrackChunkProps)?.id || ''
 }
 
 const hasUniqueChunks = (segments: TrackSegment[]) => {

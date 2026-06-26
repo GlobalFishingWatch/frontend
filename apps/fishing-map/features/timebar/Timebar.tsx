@@ -478,23 +478,17 @@ const TimebarWrapper = () => {
         start={start}
         end={end}
         isResizable={!isSmallScreen}
-        fullWidth={screenshotMode}
         absoluteStart={availableStart}
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
-        onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
-        bookmarkPlacement="bottom"
         minimumRange={1}
         // minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
-        trackGraphOrientation={trackGraphOrientation}
-        locale={i18n.language as Locale}
-        onGraphClick={onToggleFixedTooltip}
       >
         {!screenshotMode && (
           <Fragment>
@@ -522,7 +516,16 @@ const TimebarWrapper = () => {
             {/* {timeMode !== 'realTime' && <Timebar.IntervalSelector />} */}
           </Fragment>
         )}
-        <Timebar.Graph>{!isSmallScreen ? timebarChildren : null}</Timebar.Graph>
+        <Timebar.Graph
+          fullWidth={screenshotMode}
+          bookmarkPlacement="bottom"
+          trackGraphOrientation={trackGraphOrientation}
+          locale={i18n.language as Locale}
+          onMouseMove={onMouseMove}
+          onGraphClick={onToggleFixedTooltip}
+        >
+          {!isSmallScreen ? timebarChildren : null}
+        </Timebar.Graph>
       </Timebar>
       {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />

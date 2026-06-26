@@ -186,30 +186,31 @@ const TimebarWrapper = () => {
           onChange={onTimebarChange}
           isResizable={true}
           labels={timebarLabels}
-          showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
-          trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
           //bookmarkEnd={bookmarkEnd}
           // showLastUpdate={false}
           //onBookmarkChange={dispatchBookmarkTimerange}
-          onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
-            if (clientX === null || scale === null) {
-              if (highlightedTime !== undefined) {
-                dispatch(disableHighlightedTime())
-              }
-              return
-            }
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            dispatch(setHighlightedTime({ start, end }))
-          }}
         >
           <Timebar.Controls>
             <Timebar.TimeRangeSelector />
             <Timebar.Bookmark />
           </Timebar.Controls>
-          <Timebar.Graph>
+          <Timebar.Graph
+            showLast30DaysBtn={false}
+            trackGraphOrientation="up"
+            onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
+              if (clientX === null || scale === null) {
+                if (highlightedTime !== undefined) {
+                  dispatch(disableHighlightedTime())
+                }
+                return
+              }
+              const start = scale(clientX - 10).toISOString()
+              const end = scale(clientX + 10).toISOString()
+              dispatch(setHighlightedTime({ start, end }))
+            }}
+          >
             <DayNightTimebarLayer></DayNightTimebarLayer>
             <VesselEventsPointsGraphDeckGL />
             {/* {

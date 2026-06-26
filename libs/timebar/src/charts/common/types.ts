@@ -34,7 +34,7 @@ export type TimebarChartChunkCluster = {
   numChunks: number
 }
 
-export type TimebarChartChunk<T = any> = {
+export type TimebarChartChunk<T = unknown> = {
   start: number
   end?: number
   id?: string | number
@@ -52,7 +52,7 @@ export type TimebarChartChunk<T = any> = {
 }
 
 export type HighlighterCallbackFnArgs = {
-  chunk: TimebarChartChunk<any>
+  chunk: TimebarChartChunk
   value: TimebarChartValue | undefined
   item?: TimebarChartItem
   itemIndex?: number
@@ -65,7 +65,7 @@ export type HighlighterIconCallback = IconType | ((args: HighlighterCallbackFnAr
 
 export type HighlighterDateCallback = (timestamp: number) => string
 
-export type TimebarChartItem<T = void> = {
+export type TimebarChartItem<T = unknown> = {
   id?: string
   chunks: TimebarChartChunk<T>[]
   color?: string
@@ -74,7 +74,7 @@ export type TimebarChartItem<T = void> = {
   defaultLabel?: string
   getHighlighterLabel?: HighlighterCallback
   getHighlighterIcon?: HighlighterIconCallback
-  props?: any
+  props?: { segmentsOffsetY?: boolean; unit?: string; dataviewId?: string }
   filters?: {
     minSpeedFilter?: number
     maxSpeedFilter?: number
@@ -83,11 +83,11 @@ export type TimebarChartItem<T = void> = {
   }
 }
 
-export type TimebarChartData<T = void> = TimebarChartItem<T>[]
+export type TimebarChartData<T = unknown> = TimebarChartItem<T>[]
 
 export type ChartType = 'tracks' | 'tracksEvents' | 'tracksGraphs' | 'activity'
 
-export type TimebarChartsData = Record<ChartType, { data: TimebarChartData<void>; active: boolean }>
+export type TimebarChartsData = Record<ChartType, { data: TimebarChartData; active: boolean }>
 
 export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 

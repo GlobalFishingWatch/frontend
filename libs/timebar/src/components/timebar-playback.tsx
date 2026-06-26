@@ -1,5 +1,3 @@
-import type { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-
 import { useTimebarActions, useTimebarState } from '../timebar-context'
 
 import Playback from './playback'
@@ -12,7 +10,7 @@ type TimebarPlaybackProps = {
 
 /** Playback controls (play/pause/loop/speed). Reads range + interval from context. */
 export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: TimebarPlaybackProps) {
-  const { labels, absoluteStart, intervals, getCurrentInterval, onPlaybackTick } =
+  const { labels, absoluteStart, absoluteEnd, intervals, getCurrentInterval, onPlaybackTick } =
     useTimebarActions()
   const { start, end } = useTimebarState()
 
@@ -22,14 +20,11 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Tim
       start={start}
       end={end}
       absoluteStart={absoluteStart}
-      // ponytail: preserves legacy behavior — the class always passed state.absoluteEnd, which was
-      // never set (null), so playback never auto-stops at the data end. Wire absoluteEnd from context
-      // here to fix it if desired.
-      absoluteEnd={null as unknown as string}
+      absoluteEnd={absoluteEnd}
       onTick={onPlaybackTick}
       onTogglePlay={onTogglePlay}
       intervals={intervals}
-      getCurrentInterval={getCurrentInterval as typeof getFourwingsInterval}
+      getCurrentInterval={getCurrentInterval}
       disabled={disabled}
       disabledPlaybackTooltip={disabledTooltip}
     />
