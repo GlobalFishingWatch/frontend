@@ -133,6 +133,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   timebarGraph: TimebarGraphs.None,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
+  timeMode: 'historical',
   userTab: UserTab.Info,
   vesselGroupsVisualizationMode: 'footprint',
   visibleEvents: 'all',

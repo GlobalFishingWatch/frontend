@@ -516,3 +516,20 @@ export function isDataviewDeprecated(
     hasDeprecatedVesselGroupVessels
   )
 }
+
+const SUPPORTED_CATEGORIES_REAL_TIME = [
+  DataviewCategory.Basemap,
+  DataviewCategory.Vessels,
+  DataviewCategory.Context,
+  DataviewCategory.User,
+]
+export function isRealTimeDataview(dataview: UrlDataviewInstance) {
+  if (dataview.category === DataviewCategory.Activity) {
+    return dataview.datasets?.some(isRealTimeDataset)
+  }
+  return !dataview.category || SUPPORTED_CATEGORIES_REAL_TIME.includes(dataview.category)
+}
+
+export function isHistoricalDataview(dataview: UrlDataviewInstance) {
+  return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
+}
