@@ -32,7 +32,9 @@ import NavigationWorkspaceButton from 'features/sidebar/buttons/NavigationWorksp
 import SaveReportButton from 'features/sidebar/buttons/SaveReportButton'
 import SaveWorkspaceButton from 'features/sidebar/buttons/SaveWorkspaceButton'
 import ShareWorkspaceButton from 'features/sidebar/buttons/ShareWorkspaceButton'
+import { selectHasTimeModeEnabled } from 'features/sidebar/sidebar.selectors'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import TimeModeSelector from 'features/sidebar/TimeModeSelector'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
@@ -61,6 +63,7 @@ function SidebarHeader() {
   const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const hasTimeModeEnabled = useSelector(selectHasTimeModeEnabled)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
@@ -205,6 +208,7 @@ function SidebarHeader() {
           </Fragment>
         )}
       </div>
+      {hasTimeModeEnabled && <TimeModeSelector />}
       {sectionHeaderComponent}
     </div>
   )
