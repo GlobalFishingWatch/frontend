@@ -1,5 +1,3 @@
-import { truncate } from 'fs/promises'
-
 import React, { Fragment, PureComponent } from 'react'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
@@ -15,8 +13,8 @@ import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingw
 
 import { EVENT_SOURCE } from '../constants'
 import type { TimebarProps } from '../timebar'
-import type { TrackGraphOrientation } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { StickUnit, TrackGraphOrientation } from '../timeline-context'
+import TimelineContext from '../timeline-context'
 import { getLast30Days } from '../utils'
 import {
   clampToAbsoluteBoundaries,
@@ -71,7 +69,7 @@ type TimelineProps = {
   bookmarkStart?: string
   bookmarkEnd?: string
   bookmarkPlacement?: string
-  stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
+  stickToUnit?: (start: string, end: string) => StickUnit
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   locale: string

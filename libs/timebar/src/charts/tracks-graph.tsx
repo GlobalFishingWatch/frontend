@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
@@ -9,7 +9,7 @@ import { scaleSqrt } from 'd3-scale'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
-import TimelineContext from '../timelineContext'
+import { useTimelineContext } from '../timeline-context'
 
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
@@ -25,7 +25,7 @@ type TimebarChartProps = { data: TimebarChartData; steps: TimebarChartSteps }
 const TrackGraph = ({ data, steps }: TimebarChartProps) => {
   const deckRef = useRef<DeckGLRef>(null)
   const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
-    useContext(TimelineContext)
+    useTimelineContext()
   const oldOuterScaleRef = useRef(outerScale)
   const offsetHashRef = useRef(Date.now())
 

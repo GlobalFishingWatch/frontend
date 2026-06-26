@@ -52,6 +52,7 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
+// import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
@@ -211,6 +212,7 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
+  // const timeMode = useSelector(selectTimeMode)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
   const appStore = useAppStore()
@@ -472,40 +474,55 @@ const TimebarWrapper = () => {
       data-testid="timebar-wrapper"
     >
       <Timebar
-        disablePlayback={vesselGroupsFiltering || hasVectorDataviews}
-        disabledPlaybackTooltip={
-          vesselGroupsFiltering
-            ? t((t) => t.timebar.disablePlaybackVesselGroups)
-            : hasVectorDataviews
-              ? t((t) => t.timebar.disablePlaybackVectors)
-              : undefined
-        }
-        showPlayback={!isReportLocation}
-        showButtons={!screenshotMode}
         labels={labels}
         start={start}
         end={end}
         isResizable={!isSmallScreen}
+        fullWidth={screenshotMode}
         absoluteStart={availableStart}
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
         onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
-        onTogglePlay={onTogglePlay}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         bookmarkPlacement="bottom"
         minimumRange={1}
-        // TODO: set this by current active activity dataviews
-        // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        // minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
         trackGraphOrientation={trackGraphOrientation}
         locale={i18n.language as Locale}
         onGraphClick={onToggleFixedTooltip}
       >
-        {!isSmallScreen ? timebarChildren : null}
+        {!screenshotMode && (
+          <Fragment>
+            {!isReportLocation && (
+              <Timebar.Playback
+                disabled={
+                  vesselGroupsFiltering || hasVectorDataviews
+                  // || timeMode === 'realTime'
+                }
+                disabledTooltip={
+                  vesselGroupsFiltering
+                    ? t((t) => t.timebar.disablePlaybackVesselGroups)
+                    : hasVectorDataviews
+                      ? t((t) => t.timebar.disablePlaybackVectors)
+                      : undefined
+                }
+                onTogglePlay={onTogglePlay}
+              />
+            )}
+            <Timebar.Controls>
+              <Timebar.TimeRangeSelector />
+              <Timebar.Bookmark />
+            </Timebar.Controls>
+            <Timebar.IntervalSelector />
+            {/* {timeMode !== 'realTime' && <Timebar.IntervalSelector />} */}
+          </Fragment>
+        )}
+        <Timebar.Graph>{!isSmallScreen ? timebarChildren : null}</Timebar.Graph>
       </Timebar>
       {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />

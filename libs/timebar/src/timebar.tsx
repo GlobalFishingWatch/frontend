@@ -1,34 +1,33 @@
-import React, { Component } from 'react'
+import type React from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cx from 'classnames'
 import type { NumberValue } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import memoize from 'memoize-one'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components'
 
-import IntervalSelector from './components/interval-selector'
-import Playback from './components/playback'
-import Timeline from './components/timeline'
-import TimeRangeSelector from './components/timerange-selector'
+import { TimebarControls } from './components/timebar-controls'
+import { TimebarGraph } from './components/timebar-graph'
+import { TimebarIntervalSelector } from './components/timebar-interval-selector'
+import { TimebarPlayback } from './components/timebar-playback'
+import { TimebarTimeRangeSelector } from './components/timebar-timerange-button'
+import { TimebarBookmark } from './components/timebar-toolbar-bookmark'
 import { getTime } from './utils/internal-utils'
-import {
-  EVENT_INTERVAL_SOURCE,
-  EVENT_SOURCE,
-  MAXIMUM_TIMEBAR_HEIGHT,
-  MINIMUM_TIMEBAR_HEIGHT,
-  TIMEBAR_HEIGHT_STORAGE_KEY,
-} from './constants'
-import type { TrackGraphOrientation } from './timelineContext'
+import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
+import type { TimebarActionsContextProps, TimebarStateContextProps } from './timebar-context'
+import { TimebarActionsContext, TimebarStateContext } from './timebar-context'
+import type { TimebarLabels } from './timebar-labels'
+import { DEFAULT_LABELS } from './timebar-labels'
+import type { StickUnit, TrackGraphOrientation } from './timeline-context'
+import { useResizableHeight } from './useResizableHeight'
 
 import styles from './timebar.module.css'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
-const DEFAULT_HEIGHT = 70
 
 const getRangeMs = (range: number, unit: DateTimeUnit) => {
   const start = DateTime.now()
@@ -63,40 +62,7 @@ const clampToMinAndMax = (
 }
 
 export type TimebarProps = {
-  labels?: {
-    playback?: {
-      playAnimation?: string
-      pauseAnimation?: string
-      toogleAnimationLooping?: string
-      moveBack?: string
-      moveForward?: string
-      changeAnimationSpeed?: string
-    }
-    timerange?: {
-      title?: string
-      start?: string
-      end?: string
-      last30days?: string
-      last3months?: string
-      last6months?: string
-      lastYear?: string
-      done?: string
-    }
-    bookmark?: {
-      goToBookmark?: string
-      deleteBookmark?: string
-    }
-    lastUpdate?: string
-    intervals?: {
-      hour?: string
-      day?: string
-      month?: string
-      year?: string
-    }
-    setBookmark?: string
-    zoomTo?: string
-    timeRange?: string
-  }
+  labels?: TimebarLabels
   start: string
   end: string
   onChange: (event: { start: string; end: string; source?: string; clampToEnd?: boolean }) => void
@@ -114,17 +80,12 @@ export type TimebarProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  showPlayback?: boolean
-  showButtons?: boolean
-  disablePlayback?: boolean
-  disabledPlaybackTooltip?: string
-  onTogglePlay?: (isPlaying: boolean) => void
   showLast30DaysBtn?: boolean
   minimumRange?: number
-  minimumRangeUnit?: string
+  minimumRangeUnit?: StickUnit
   maximumRange?: number
   maximumRangeUnit?: string
-  stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
+  stickToUnit?: (start: string, end: string) => StickUnit
   // val is used to live edit translations in crowdin
   locale: 'en' | 'es' | 'fr' | 'id' | 'pt' | 'val'
   intervals?: FourwingsInterval[]
@@ -132,156 +93,106 @@ export type TimebarProps = {
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation?: TrackGraphOrientation
   isResizable?: boolean
+  fullWidth?: boolean
   defaultHeight?: number
   onGraphClick?: () => void
 }
 
-type TimebarState = {
-  updatedHeight: number
-  showTimeRangeSelector: boolean
-  absoluteEnd: string | null
-  isDragging: boolean
-  startCursorY: number | null
-  startHeight: number | null
-}
-
-export class Timebar extends Component<TimebarProps> {
-  interval: FourwingsInterval | null = null
-  maximumRangeMs: number = Infinity
-  minimumRangeMs: number = -Infinity
-  state: TimebarState
-
-  static defaultProps = {
-    latestAvailableDataDate: '',
-    labels: {
-      playback: {
-        playAnimation: 'Play animation',
-        pauseAnimation: 'Pause animation',
-        toogleAnimationLooping: 'Toggle animation looping',
-        moveBack: 'Move back',
-        moveForward: 'Move forward',
-        changeAnimationSpeed: 'Change animation speed',
-      },
-      timerange: {
-        title: 'Select a time range',
-        start: 'start',
-        end: 'end',
-        last30days: 'Last 30 days',
-        last3months: 'Last 3 months',
-        last6months: 'Last 6 months',
-        lastYear: 'Last year',
-        done: 'Done',
-      },
-      bookmark: {
-        goToBookmark: 'Go to your bookmarked time range',
-        deleteBookmark: 'Delete time range bookmark',
-      },
-      dragLabel: 'Drag to change the time range',
-      lastUpdate: 'Last update',
-      setBookmark: 'Bookmark current time range',
-      intervals: {
-        hour: 'hours',
-        day: 'days',
-        month: 'months',
-        year: 'years',
-      },
-    },
-    bookmarkStart: null,
-    bookmarkEnd: null,
-    showLast30DaysBtn: true,
-    disablePlayback: false,
-    disabledPlaybackTooltip: '',
-    showPlayback: false,
-    onTogglePlay: () => {
-      // do nothing
-    },
-    children: null,
-    onMouseLeave: () => {
-      // do nothing
-    },
-    onMouseMove: () => {
-      // do nothing
-    },
-    bookmarkPlacement: 'top',
-    onBookmarkChange: () => {
-      // do nothing
-    },
-    minimumRange: null,
-    minimumRangeUnit: 'day',
-    maximumRange: null,
-    maximumRangeUnit: 'month',
-    locale: 'en',
-    displayWarningWhenInFuture: true,
-    isResizable: false,
-  }
-
-  constructor(props: TimebarProps) {
-    super(props)
-    this.interval = null
-    const storedHeight =
-      typeof localStorage !== 'undefined' ? localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY) : null
-    const initialHeight = storedHeight
-      ? parseInt(storedHeight)
-      : props.defaultHeight || DEFAULT_HEIGHT
-    this.state = {
-      showTimeRangeSelector: false,
-      absoluteEnd: null,
-      updatedHeight: initialHeight,
-      isDragging: false,
-      startCursorY: null,
-      startHeight: null,
-    }
-  }
-
-  getMaximumRangeMs = memoize((maximumRange, maximumRangeUnit) => {
-    if (maximumRange === null) {
-      return Number.POSITIVE_INFINITY
-    }
-    return getRangeMs(maximumRange, maximumRangeUnit)
+export function Timebar({
+  labels: labelsProp,
+  start,
+  end,
+  onChange,
+  children,
+  bookmarkStart = undefined,
+  bookmarkEnd = undefined,
+  bookmarkPlacement = 'top',
+  onMouseLeave,
+  onMouseMove,
+  onBookmarkChange,
+  absoluteStart,
+  absoluteEnd,
+  latestAvailableDataDate = '',
+  showLast30DaysBtn = true,
+  minimumRange = null,
+  minimumRangeUnit = 'day',
+  maximumRange = null,
+  maximumRangeUnit = 'month',
+  stickToUnit,
+  locale = 'en',
+  intervals,
+  getCurrentInterval,
+  displayWarningWhenInFuture = true,
+  trackGraphOrientation,
+  isResizable = false,
+  fullWidth = false,
+  defaultHeight,
+  onGraphClick,
+}: TimebarProps) {
+  const labels = labelsProp ?? DEFAULT_LABELS
+  const [showTimeRangeSelector, setShowTimeRangeSelector] = useState(false)
+  const { height, isDragging, onResizerMouseDown } = useResizableHeight({
+    isResizable,
+    defaultHeight,
   })
 
-  getMinimumRangeMs = memoize((minimumRange, minimumRangeUnit) => {
-    if (minimumRange === null) {
-      return MINIMUM_RANGE
+  const maximumRangeMs = useMemo(
+    () =>
+      maximumRange === null
+        ? Number.POSITIVE_INFINITY
+        : getRangeMs(maximumRange, maximumRangeUnit as DateTimeUnit),
+    [maximumRange, maximumRangeUnit]
+  )
+  const minimumRangeMs = useMemo(
+    () =>
+      minimumRange === null
+        ? MINIMUM_RANGE
+        : getRangeMs(minimumRange, minimumRangeUnit as DateTimeUnit),
+    [minimumRange, minimumRangeUnit]
+  )
+
+  // Latest props for handlers that need volatile values without re-creating the
+  // (memoized) actions context on every range change. Synced in an effect so we
+  // never write a ref during render; event handlers fire post-commit so they read current values.
+  const latest = useRef({
+    start,
+    end,
+    absoluteStart,
+    absoluteEnd,
+    latestAvailableDataDate,
+    onBookmarkChange,
+  })
+  useEffect(() => {
+    latest.current = {
+      start,
+      end,
+      absoluteStart,
+      absoluteEnd,
+      latestAvailableDataDate,
+      onBookmarkChange,
     }
-    return getRangeMs(minimumRange, minimumRangeUnit)
   })
 
-  componentDidMount() {
-    const { start, end } = this.props
+  const notifyChange = useCallback(
+    (s: string, e: string, source?: string, clampToEnd = false) => {
+      const { clampedStart, clampedEnd } = clampToMinAndMax(
+        s,
+        e,
+        minimumRangeMs,
+        maximumRangeMs,
+        clampToEnd
+      )
+      onChange({ start: clampedStart, end: clampedEnd, source })
+    },
+    [minimumRangeMs, maximumRangeMs, onChange]
+  )
 
-    // TODO stick to day/hour here too
-    this.notifyChange(start, end, EVENT_SOURCE.MOUNT)
-  }
-
-  toggleTimeRangeSelector = () => {
-    this.setState((prevState: TimebarState) => ({
-      showTimeRangeSelector: !prevState.showTimeRangeSelector,
-    }))
-  }
-
-  setBookmark = () => {
-    const { start, end, onBookmarkChange } = this.props
-    if (onBookmarkChange) {
-      onBookmarkChange(start, end)
-    }
-  }
-
-  // setLocale = memoize((locale) => //TODO set DateTime.locale)
-
-  onTimeRangeSelectorSubmit = (start: string, end: string) => {
-    this.notifyChange(start, end, EVENT_SOURCE.TIME_RANGE_SELECTOR)
-    this.setState({
-      showTimeRangeSelector: false,
-    })
-  }
-
-  onIntervalClick = (interval: FourwingsInterval) => {
-    const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = this.props
-    const intervalConfig = CONFIG_BY_INTERVAL[interval]
-    if (intervalConfig) {
+  const onIntervalClick = useCallback(
+    (interval: FourwingsInterval) => {
+      const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = latest.current
+      const intervalConfig = CONFIG_BY_INTERVAL[interval]
+      if (!intervalConfig) return
       const intervalLimit = LIMITS_BY_INTERVAL[interval]
-
       if (intervalLimit) {
         let newStart
         let newEnd
@@ -301,229 +212,145 @@ export class Timebar extends Component<TimebarProps> {
           }).startOf(intervalLimit.unit as DateTimeUnit)
           newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
         }
-        this.notifyChange(
+        notifyChange(
           newStart.toISO() as string,
           newEnd.toISO() as string,
           EVENT_INTERVAL_SOURCE[interval] as string
         )
       } else {
-        this.notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval] as string)
+        notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval] as string)
       }
-    }
-  }
+    },
+    [notifyChange]
+  )
 
-  notifyChange = (start: string, end: string, source?: string, clampToEnd = false) => {
-    const { clampedStart, clampedEnd } = clampToMinAndMax(
-      start,
-      end,
-      this.minimumRangeMs,
-      this.maximumRangeMs,
-      clampToEnd
-    )
-    const { onChange } = this.props
-    const event = {
-      start: clampedStart,
-      end: clampedEnd,
-      source,
-    }
-    onChange(event)
-  }
+  const onPlaybackTick = useCallback(
+    (newStart: string, newEnd: string) => {
+      notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
+    },
+    [notifyChange]
+  )
 
-  onPlaybackTick = (newStart: string, newEnd: string) => {
-    this.notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
-  }
+  const toggleTimeRangeSelector = useCallback(() => {
+    setShowTimeRangeSelector((prev) => !prev)
+  }, [])
 
-  onTogglePlay = (isPlaying: boolean) => {
-    const { onTogglePlay } = this.props
-    if (onTogglePlay) {
-      onTogglePlay(isPlaying)
-    }
-  }
+  const onTimeRangeSelectorSubmit = useCallback(
+    (s: string, e: string) => {
+      notifyChange(s, e, EVENT_SOURCE.TIME_RANGE_SELECTOR)
+      setShowTimeRangeSelector(false)
+    },
+    [notifyChange]
+  )
 
-  handleMouseDown = (e: React.MouseEvent) => {
-    if (this.props.isResizable) {
-      e.preventDefault()
-      e.stopPropagation()
+  const setBookmark = useCallback(() => {
+    latest.current.onBookmarkChange?.(latest.current.start, latest.current.end)
+  }, [])
 
-      this.setState({
-        isDragging: true,
-        startCursorY: e.clientY,
-        startHeight: this.state.updatedHeight,
-      })
+  // Notify once on mount (preserves the class componentDidMount behavior).
+  useEffect(() => {
+    notifyChange(latest.current.start, latest.current.end, EVENT_SOURCE.MOUNT)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-      document.addEventListener('mousemove', this.handleMouseMove)
-      document.addEventListener('mouseup', this.handleMouseUp)
-    }
-  }
+  const hasBookmark =
+    bookmarkStart !== undefined &&
+    bookmarkStart !== null &&
+    bookmarkEnd !== undefined &&
+    bookmarkEnd !== null
+  const bookmarkDisabled =
+    hasBookmark &&
+    getTime(bookmarkStart) === getTime(start) &&
+    getTime(bookmarkEnd) === getTime(end)
 
-  handleMouseMove = (e: MouseEvent) => {
-    if (
-      this.props.isResizable &&
-      this.state.isDragging &&
-      this.state.startCursorY !== null &&
-      this.state.startHeight !== null
-    ) {
-      const cursorYDelta = this.state.startCursorY - e.clientY
-      let newHeight = Math.min(this.state.startHeight + cursorYDelta, MAXIMUM_TIMEBAR_HEIGHT)
-      newHeight = Math.max(MINIMUM_TIMEBAR_HEIGHT, newHeight)
-      this.setState({ updatedHeight: newHeight })
-      localStorage.setItem(TIMEBAR_HEIGHT_STORAGE_KEY, newHeight.toString())
-    }
-  }
-
-  handleMouseUp = () => {
-    if (this.props.isResizable) {
-      this.setState({
-        isDragging: false,
-        startCursorY: null,
-        startHeight: null,
-      })
-      document.removeEventListener('mousemove', this.handleMouseMove)
-      document.removeEventListener('mouseup', this.handleMouseUp)
-    }
-  }
-
-  render() {
-    const {
-      labels = {},
-      start,
-      end,
-      absoluteStart,
-      absoluteEnd,
-      bookmarkStart,
-      bookmarkEnd,
-      bookmarkPlacement,
-      disablePlayback,
-      disabledPlaybackTooltip,
-      showPlayback,
-      showButtons = true,
-      locale,
-      minimumRange,
-      minimumRangeUnit,
-      maximumRange,
-      maximumRangeUnit,
-      stickToUnit,
-      showLast30DaysBtn,
-      displayWarningWhenInFuture,
+  const actionsValue = useMemo<TimebarActionsContextProps>(
+    () => ({
+      notifyChange,
+      onIntervalClick,
+      onPlaybackTick,
+      onTimeRangeSelectorSubmit,
+      onBookmarkChange,
+      setBookmark,
+      toggleTimeRangeSelector,
+      onMouseLeave,
+      onMouseMove,
+      onGraphClick,
       intervals,
       getCurrentInterval,
+      labels,
+      locale,
+      absoluteStart,
+      absoluteEnd,
+      latestAvailableDataDate,
+      bookmarkPlacement,
       isResizable,
-    } = this.props as TimebarProps
+      fullWidth,
+      showLast30DaysBtn,
+      trackGraphOrientation,
+      stickToUnit,
+      displayWarningWhenInFuture,
+    }),
+    [
+      notifyChange,
+      onIntervalClick,
+      onPlaybackTick,
+      onTimeRangeSelectorSubmit,
+      onBookmarkChange,
+      setBookmark,
+      toggleTimeRangeSelector,
+      onMouseLeave,
+      onMouseMove,
+      onGraphClick,
+      intervals,
+      getCurrentInterval,
+      labels,
+      locale,
+      absoluteStart,
+      absoluteEnd,
+      latestAvailableDataDate,
+      bookmarkPlacement,
+      isResizable,
+      fullWidth,
+      showLast30DaysBtn,
+      trackGraphOrientation,
+      stickToUnit,
+      displayWarningWhenInFuture,
+    ]
+  )
 
-    // this.setLocale(locale)
+  const stateValue = useMemo<TimebarStateContextProps>(
+    () => ({
+      start,
+      end,
+      showTimeRangeSelector,
+      hasBookmark,
+      bookmarkDisabled,
+      bookmarkStart,
+      bookmarkEnd,
+    }),
+    [start, end, showTimeRangeSelector, hasBookmark, bookmarkDisabled, bookmarkStart, bookmarkEnd]
+  )
 
-    this.maximumRangeMs = this.getMaximumRangeMs(maximumRange, maximumRangeUnit)
-    this.minimumRangeMs = this.getMinimumRangeMs(minimumRange, minimumRangeUnit)
-
-    const hasBookmark =
-      bookmarkStart !== undefined &&
-      bookmarkStart !== null &&
-      bookmarkEnd !== undefined &&
-      bookmarkEnd !== null
-    const bookmarkDisabled =
-      hasBookmark &&
-      getTime(bookmarkStart) === getTime(start) &&
-      getTime(bookmarkEnd) === getTime(end)
-
-    return (
-      <div
-        className={styles.Timebar}
-        style={isResizable ? { height: `${this.state.updatedHeight}px` } : {}}
-      >
-        {isResizable && (
-          <div
-            role="button"
-            tabIndex={0}
-            className={cx(styles.timebarResizer, { [styles.resizing]: this.state.isDragging })}
-            onMouseDown={this.handleMouseDown}
-          />
-        )}
-        {showPlayback && showButtons && (
-          <Playback
-            labels={labels.playback}
-            start={start}
-            end={end}
-            absoluteStart={absoluteStart}
-            absoluteEnd={this.state.absoluteEnd as string}
-            onTick={this.onPlaybackTick}
-            onTogglePlay={this.onTogglePlay}
-            intervals={intervals}
-            getCurrentInterval={getCurrentInterval}
-            disabled={disablePlayback}
-            disabledPlaybackTooltip={disabledPlaybackTooltip}
-          />
-        )}
-
-        {showButtons && (
-          <div className={cx('print-hidden', styles.timeActions)}>
-            {this.state.showTimeRangeSelector && (
-              <TimeRangeSelector
-                labels={labels.timerange}
-                start={start}
-                end={end}
-                absoluteStart={absoluteStart}
-                absoluteEnd={this.state.absoluteEnd as string}
-                onSubmit={this.onTimeRangeSelectorSubmit}
-                onDiscard={this.toggleTimeRangeSelector}
-                latestAvailableDataDate={this.props.latestAvailableDataDate}
-              />
-            )}
-
-            <button
-              type="button"
-              title={labels.timerange?.title}
-              className={cx(styles.uiButton)}
-              onClick={this.toggleTimeRangeSelector}
-            >
-              <Icon icon="time-range" />
-            </button>
-            <button
-              type="button"
-              title={labels.setBookmark}
-              className={cx('print-hidden', styles.uiButton, styles.bookmark)}
-              onClick={this.setBookmark}
-              disabled={bookmarkDisabled === true}
-            >
-              {hasBookmark ? <Icon icon="bookmark-filled" /> : <Icon icon="bookmark" />}
-            </button>
-          </div>
-        )}
-        <div className={cx('print-hidden', styles.timeActions)}>
-          {intervals && getCurrentInterval && showButtons ? (
-            <IntervalSelector
-              intervals={intervals}
-              getCurrentInterval={getCurrentInterval}
-              labels={labels.intervals}
-              start={start}
-              end={end}
-              onIntervalClick={this.onIntervalClick}
-            />
-          ) : null}
-        </div>
-        <Timeline
-          children={this.props.children}
-          start={start}
-          end={end}
-          labels={labels}
-          fullWidth={!showButtons}
-          showLast30DaysBtn={showLast30DaysBtn}
-          onChange={this.notifyChange}
-          onMouseLeave={this.props.onMouseLeave}
-          onMouseMove={this.props.onMouseMove}
-          absoluteStart={absoluteStart}
-          absoluteEnd={absoluteEnd}
-          onBookmarkChange={this.props.onBookmarkChange}
-          bookmarkStart={bookmarkStart}
-          bookmarkEnd={bookmarkEnd}
-          bookmarkPlacement={bookmarkPlacement}
-          latestAvailableDataDate={this.props.latestAvailableDataDate as string}
-          trackGraphOrientation={this.props.trackGraphOrientation as TrackGraphOrientation}
-          stickToUnit={stickToUnit}
-          displayWarningWhenInFuture={displayWarningWhenInFuture}
-          locale={locale}
-          onGraphClick={this.props.onGraphClick}
+  return (
+    <div className={styles.Timebar} style={isResizable ? { height: `${height}px` } : {}}>
+      {isResizable && (
+        <div
+          role="button"
+          tabIndex={0}
+          className={cx(styles.timebarResizer, { [styles.resizing]: isDragging })}
+          onMouseDown={onResizerMouseDown}
         />
-      </div>
-    )
-  }
+      )}
+      <TimebarActionsContext.Provider value={actionsValue}>
+        <TimebarStateContext.Provider value={stateValue}>{children}</TimebarStateContext.Provider>
+      </TimebarActionsContext.Provider>
+    </div>
+  )
 }
+
+Timebar.Playback = TimebarPlayback
+Timebar.Controls = TimebarControls
+Timebar.TimeRangeSelector = TimebarTimeRangeSelector
+Timebar.Bookmark = TimebarBookmark
+Timebar.IntervalSelector = TimebarIntervalSelector
+Timebar.Graph = TimebarGraph

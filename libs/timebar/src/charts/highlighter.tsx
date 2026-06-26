@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
@@ -8,8 +8,8 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
-import type { TimelineScale } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { TimelineScale } from '../timeline-context'
+import { useTimelineContext } from '../timeline-context'
 import { getDefaultFormat } from '../utils/internal-utils'
 
 import { useOuterScale } from './common/hooks'
@@ -208,7 +208,7 @@ const Highlighter = ({
   fixed?: boolean
   onToggleFixedTooltip?: (fixed?: boolean) => void
 }) => {
-  const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
+  const { graphHeight, tooltipContainer, outerStart, outerEnd } = useTimelineContext()
   const outerScale = useOuterScale()
   const { width, left, center, centerMs, dateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale, dateCallback),

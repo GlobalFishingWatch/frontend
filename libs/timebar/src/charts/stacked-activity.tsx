@@ -1,12 +1,12 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { max } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
 import { area, curveStepAfter, stack, stackOffsetSilhouette } from 'd3-shape'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimelineScale } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { TimelineScale } from '../timeline-context'
+import { useTimelineContext } from '../timeline-context'
 
 import { useTimeseriesToChartData } from './common/hooks'
 import type { HighlighterCallback, HighlighterIconCallback, Timeseries } from './common/types'
@@ -81,7 +81,7 @@ const StackedActivity = ({
   highlighterIconCallback?: HighlighterIconCallback
 }) => {
   // todo replace with outerScale hook
-  const { overallScale, outerWidth, graphHeight, svgTransform } = useContext(TimelineContext)
+  const { overallScale, outerWidth, graphHeight, svgTransform } = useTimelineContext()
   const dataAsTimebarChartData = useTimeseriesToChartData(
     timeseries,
     dataviews,

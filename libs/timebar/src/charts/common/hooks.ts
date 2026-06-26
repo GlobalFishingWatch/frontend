@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { scaleTime } from 'd3-scale'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -6,8 +6,8 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimelineScale } from '../../timelineContext'
-import TimelineContext from '../../timelineContext'
+import type { TimelineScale } from '../../timeline-context'
+import { useTimelineContext } from '../../timeline-context'
 
 import type {
   ActivityTimeseriesFrame,
@@ -38,7 +38,7 @@ export const filterData = (data: TimebarChartData<any>, start: string, end: stri
 }
 
 export const useFilteredChartData = (data: TimebarChartData<any>) => {
-  const { outerStart, outerEnd } = useContext(TimelineContext)
+  const { outerStart, outerEnd } = useTimelineContext()
   const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
 
   const getDataHash = (d: TimebarChartData<any>) => {
@@ -130,13 +130,13 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
 }
 
 const useDelta = () => {
-  const { outerStart, outerEnd } = useContext(TimelineContext)
+  const { outerStart, outerEnd } = useTimelineContext()
   const delta = +new Date(outerEnd) - +new Date(outerStart)
   return delta
 }
 
 export const useOuterScale = () => {
-  const { outerStart, outerEnd, outerWidth } = useContext(TimelineContext)
+  const { outerStart, outerEnd, outerWidth } = useTimelineContext()
   return useMemo(() => {
     return scaleTime()
       .domain([getUTCDate(outerStart), getUTCDate(outerEnd)])
