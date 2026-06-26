@@ -60,9 +60,9 @@ export default defineConfig(({ command, mode }) => {
     define: {
       'process.env': {
         PUBLIC_URL: env.PUBLIC_URL,
-        API_GATEWAY: env.API_GATEWAY,
-        GOOGLE_TAG_MANAGER_ID: env.GOOGLE_TAG_MANAGER_ID,
-        GOOGLE_MEASUREMENT_ID: env.GOOGLE_MEASUREMENT_ID,
+        VITE_API_GATEWAY: env.VITE_API_GATEWAY,
+        VITE_GOOGLE_TAG_MANAGER_ID: env.VITE_GOOGLE_TAG_MANAGER_ID,
+        VITE_GOOGLE_MEASUREMENT_ID: env.VITE_GOOGLE_MEASUREMENT_ID,
       },
     },
   }
