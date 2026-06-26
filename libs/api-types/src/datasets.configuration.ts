@@ -9,6 +9,7 @@ export enum DatasetTypes {
   TemporalContext = 'temporal-context-layer:v1',
   Thumbnails = 'thumbnails:v1',
   Tracks = 'tracks:v1',
+  TracksRealTime = 'tracks-real-time:v1',
   UserContext = 'user-context-layer:v1',
   UserTracks = 'user-tracks:v1',
   Vessels = 'vessels:v1',

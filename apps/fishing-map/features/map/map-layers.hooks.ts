@@ -10,7 +10,10 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
-import { deckLayerInstancesAtom, useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
+import {
+  deckLayerInstancesAtom,
+  useDeckLayerComposer,
+} from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 
@@ -39,6 +42,7 @@ import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
+  selectTimeMode,
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
@@ -93,6 +97,7 @@ export const useGlobalConfigConnect = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
+  const timeMode = useSelector(selectTimeMode)
 
   const onPositionsMaxPointsError = useCallback(
     (layer: FourwingsLayer) => {
@@ -128,11 +133,12 @@ export const useGlobalConfigConnect = () => {
       start,
       token: GFWAPI.token,
       trackGraphExtent,
+      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
-      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
       visibleEvents,
+      timeMode,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -158,6 +164,7 @@ export const useGlobalConfigConnect = () => {
     skipColorDomainSampling,
     showTimeComparison,
     timeComparisonValues,
+    timeMode,
   ])
 }
 

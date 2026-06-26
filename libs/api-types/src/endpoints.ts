@@ -28,6 +28,7 @@ export enum EndpointId {
   // FourwingsStatsCreate = '4wings-stats-create',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
+  TracksRealTime = 'tracks-real-time',
   Thumbnails = 'thumbnails',
   PMTiles = 'pm-tiles',
   UserTracks = 'user-tracks-data',

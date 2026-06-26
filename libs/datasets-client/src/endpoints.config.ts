@@ -1,5 +1,48 @@
 import { EndpointId, THINNING_PARAMS } from '@globalfishingwatch/api-types'
 
+const TRACK_QUERY = [
+  {
+    id: 'dataset',
+    type: 'string',
+    required: true,
+    array: false,
+  },
+  {
+    id: 'start-date',
+    type: 'string',
+    required: false,
+  },
+  {
+    id: 'end-date',
+    type: 'string',
+    required: false,
+  },
+  {
+    id: 'binary',
+    type: 'boolean',
+    default: true,
+  },
+  {
+    id: 'fields',
+    type: 'enum',
+    array: true,
+    enum: ['LAT', 'LON', 'TIMESTAMP', 'SPEED', 'COURSE'],
+  },
+  {
+    id: 'format',
+    type: 'enum',
+    enum: ['POINT', 'LINES', 'VALUEARRAY'],
+    default: 'LINES',
+    description:
+      'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
+  },
+  ...THINNING_PARAMS.map((param) => ({
+    id: `${param}`,
+    type: 'number' as const,
+    required: false,
+  })),
+]
+
 export const TRACK_ENDPOINTS = [
   {
     id: EndpointId.Tracks,
@@ -13,48 +56,24 @@ export const TRACK_ENDPOINTS = [
         type: 'string',
       },
     ],
-    query: [
+    query: TRACK_QUERY,
+  },
+] as const
+
+export const TRACK_REAL_TIME_ENDPOINTS = [
+  {
+    id: EndpointId.TracksRealTime,
+    description: 'Endpoint to retrieve real time vessel track',
+    downloadable: true,
+    method: 'GET',
+    pathTemplate: '/{{apiVersion}}/vessels/{{ssvid}}/tracks',
+    params: [
       {
-        id: 'dataset',
+        id: 'ssvid',
         type: 'string',
-        required: true,
-        array: false,
       },
-      {
-        id: 'start-date',
-        type: 'string',
-        required: false,
-      },
-      {
-        id: 'end-date',
-        type: 'string',
-        required: false,
-      },
-      {
-        id: 'binary',
-        type: 'boolean',
-        default: true,
-      },
-      {
-        id: 'fields',
-        type: 'enum',
-        array: true,
-        enum: ['LAT', 'LON', 'TIMESTAMP', 'SPEED', 'COURSE'],
-      },
-      {
-        id: 'format',
-        type: 'enum',
-        enum: ['POINT', 'LINES', 'VALUEARRAY'],
-        default: 'LINES',
-        description:
-          'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
-      },
-      ...THINNING_PARAMS.map((param) => ({
-        id: `${param}`,
-        type: 'number' as const,
-        required: false,
-      })),
     ],
+    query: TRACK_QUERY,
   },
 ] as const
 
