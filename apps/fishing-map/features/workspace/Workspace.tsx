@@ -5,8 +5,7 @@ import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
 
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Choice, Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -32,7 +31,6 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import WorkspaceTitle from 'features/workspace/WorkspaceTitle'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import type { TimeMode } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ActivitySection from './activity/ActivitySection'
@@ -105,28 +103,9 @@ function Workspace() {
     return <WorkspaceError />
   }
 
-  const options = [
-    {
-      id: 'historical',
-      label: t((t) => t.common.historical),
-    },
-    {
-      id: 'realTime',
-      label: t((t) => t.common.realTime),
-    },
-  ] as ChoiceOption<TimeMode>[]
-
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
       <WorkspaceTitle />
-      <div className={styles.header}>
-        <Choice
-          size="medium"
-          options={options}
-          activeOption={timeMode}
-          onSelect={(option) => replaceQueryParams({ timeMode: option.id })}
-        />
-      </div>
       <Fragment>
         <ActivitySection />
         {timeMode === 'historical' && <DetectionsSection />}
