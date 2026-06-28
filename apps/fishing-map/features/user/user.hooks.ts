@@ -112,7 +112,7 @@ export function useLoginPopupListener() {
             dispatch(setLoggedUser(user))
             trackEvent({
               category: TrackCategory.User,
-              action: 'login',
+              action: 'login_success',
               label: loginSource ?? '',
               other: {
                 user_id: user.id,

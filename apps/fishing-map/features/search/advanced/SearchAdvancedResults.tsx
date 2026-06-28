@@ -436,7 +436,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       }}
       muiTableContainerProps={{
         ref: tableContainerRef,
-        sx: { height: 'calc(100vh - 104px)' },
+        sx: { height: 'calc(100vh - 104px - 1rem)', overflowX: 'scroll' },
         onScroll: fetchMoreOnBottomReached,
       }}
       muiSelectAllCheckboxProps={({ table }) => ({
