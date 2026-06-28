@@ -11,6 +11,7 @@ import { selectDatasetsError, selectDatasetsStatus } from 'features/datasets/dat
 import I18nNumber from 'features/i18n/i18nNumber'
 import SearchAdvanced from 'features/search/advanced/SearchAdvanced'
 import SearchBasic from 'features/search/basic/SearchBasic'
+import { RESULTS_PER_PAGE } from 'features/search/search.config'
 import { selectSearchOption } from 'features/search/search.config.selectors'
 import { useSearch, useSearchConnect } from 'features/search/search.hook'
 import { isAdvancedSearchAllowed, isBasicSearchAllowed } from 'features/search/search.selectors'
@@ -110,6 +111,11 @@ function Search() {
       </SearchPlaceholder>
     )
   }
+  const hasMoreResults =
+    !!searchResultsPagination.since &&
+    searchResults.length < searchResultsPagination.total &&
+    searchResultsPagination.total > RESULTS_PER_PAGE
+  const displayedTotal = hasMoreResults ? searchResultsPagination.total : searchResults.length
 
   const SearchComponent = activeSearchOption === 'basic' ? SearchBasic : SearchAdvanced
 
@@ -135,7 +141,7 @@ function Search() {
             {`${t((t) => t.search.seeing)} `}
             <I18nNumber number={searchResults.length} />
             {` ${t((t) => t.common.of)} `}
-            <I18nNumber number={searchResultsPagination.total} />
+            <I18nNumber number={displayedTotal} />
             {` ${t((t) => t.search.results)} ${
               vesselsSelected.length !== 0
                 ? `(${vesselsSelected.length} ${t((t) => t.selects.selected)})`

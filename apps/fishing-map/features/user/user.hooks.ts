@@ -92,7 +92,7 @@ export function useLoginPopupListener() {
           if (user) {
             trackEvent({
               category: TrackCategory.User,
-              action: 'login',
+              action: 'login_success',
               label: loginSource ?? '',
               other: {
                 user_id: user.id,
