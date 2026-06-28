@@ -7,6 +7,7 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
+import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import {
@@ -49,17 +50,19 @@ const ContextLayersRow = ({
 }: ContextLayersRowProps) => {
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const { category, setPreferredCategory, canSwitch } = useAreaTooltipSparklineCategory()
   const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
-  const areaInViewport = useAreaInViewport(feature, showFeaturesDetails && showSparkline)
-  const renderSparkline = showFeaturesDetails && showSparkline && areaInViewport === true
+  const showSparklinePreview = showFeaturesDetails && showSparkline && !isAnyReportLocation
+  const areaInViewport = useAreaInViewport(feature, showSparklinePreview)
+  const renderSparkline = showSparklinePreview && areaInViewport === true
 
   const parsedLabel = htmlSafeParse(label)
   const showReport = handleReportClick && !isTrackCorrectionOpen
   return (
     <div
       className={cx(styles.row, {
-        [layerStyles.rowColumnDetails]: showFeaturesDetails && showSparkline,
+        [layerStyles.rowColumnDetails]: showSparklinePreview,
       })}
       key={id}
     >
@@ -88,7 +91,7 @@ const ContextLayersRow = ({
           </div>
         )}
       </div>
-      {showFeaturesDetails && showSparkline && (
+      {showSparklinePreview && (
         <div className={cx(layerStyles.sparklineReveal, { [layerStyles.open]: renderSparkline })}>
           <div className={layerStyles.sparklineRevealInner}>
             {renderSparkline && (
