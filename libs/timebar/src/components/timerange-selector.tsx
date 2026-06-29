@@ -43,8 +43,8 @@ type TimeRangeSelectorProps = {
   latestAvailableDataDate?: string
   onDiscard: MouseEventHandler<HTMLDivElement> | undefined
   labels?: Partial<typeof DEFAULT_LABELS>
-  /** Quick-select "last N units" options. Defaults to 30 days / 3 + 6 months / 1 year. */
   lastXOptions?: LastXOption[]
+  showDateInputs?: boolean
 }
 
 /** A "last N units" quick-select option (e.g. last 30 days, last 3 months). */
@@ -86,6 +86,7 @@ function TimeRangeSelector({
   onDiscard,
   labels: labelsProp,
   lastXOptions: lastXOptionsProp,
+  showDateInputs = true,
 }: TimeRangeSelectorProps) {
   const labels = { ...DEFAULT_LABELS, ...labelsProp }
 
@@ -118,12 +119,18 @@ function TimeRangeSelector({
     return { year: date.year, month: date.month, day: date.day }
   })
   const [startInputValids, setStartInputValids] = useState<DateInputValids>(() => ({
-    year: isYearInBounds(DateTime.fromISO(start, { zone: 'utc' }).year, { absoluteStart, absoluteEnd }),
+    year: isYearInBounds(DateTime.fromISO(start, { zone: 'utc' }).year, {
+      absoluteStart,
+      absoluteEnd,
+    }),
     month: true,
     day: true,
   }))
   const [endInputValids, setEndInputValids] = useState<DateInputValids>(() => ({
-    year: isYearInBounds(DateTime.fromISO(end, { zone: 'utc' }).year, { absoluteStart, absoluteEnd }),
+    year: isYearInBounds(DateTime.fromISO(end, { zone: 'utc' }).year, {
+      absoluteStart,
+      absoluteEnd,
+    }),
     month: true,
     day: true,
   }))
@@ -275,162 +282,166 @@ function TimeRangeSelector({
           }}
         >
           <h2 className={styles.title}>{labels.title}</h2>
-          <div className={styles.datesContainer}>
-            <div className={styles.dateContainer}>
-              <label className={styles.dateLabel}>{labels.start}</label>
-              <div className={styles.selectorsContainer}>
-                <div className={classNames(styles.selectorGroup, styles.long)}>
-                  <label className={styles.selectorLabel}>{labels.year}</label>
-                  <input
-                    // eslint-disable-next-line jsx-a11y/no-autofocus
-                    autoFocus
-                    name="start year"
-                    type="number"
-                    min={bounds.min.slice(0, 4)}
-                    max={bounds.max.slice(0, 4)}
-                    value={startInputValues.year}
-                    onChange={(e) => onStartChange(e, 'year')}
-                    onBlur={(e) => onStartBlur(e, 'year')}
-                    step="1"
-                    className={classNames(styles.input, {
-                      [styles.error]: !startValid || !startBeforeEnd,
-                    })}
-                  />
-                </div>
-                <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
-                  <div className={styles.selectorGroup}>
-                    <label
-                      className={classNames(styles.selectorLabel, {
-                        [styles.faded]: disabledFields['MONTH'],
-                      })}
-                    >
-                      {labels.month}
-                    </label>
+          {showDateInputs && (
+            <div className={styles.datesContainer}>
+              <div className={styles.dateContainer}>
+                <label className={styles.dateLabel}>{labels.start}</label>
+                <div className={styles.selectorsContainer}>
+                  <div className={classNames(styles.selectorGroup, styles.long)}>
+                    <label className={styles.selectorLabel}>{labels.year}</label>
                     <input
-                      name="start month"
+                      // eslint-disable-next-line jsx-a11y/no-autofocus
+                      autoFocus
+                      name="start year"
                       type="number"
-                      min="1"
-                      max="12"
-                      value={
-                        disabledFields['MONTH'] && startInputValues.month ? 1 : startInputValues.month
-                      }
-                      onChange={(e) => onStartChange(e, 'month')}
-                      onBlur={(e) => onStartBlur(e, 'month')}
-                      step={'1'}
-                      disabled={disabledFields['MONTH']}
+                      min={bounds.min.slice(0, 4)}
+                      max={bounds.max.slice(0, 4)}
+                      value={startInputValues.year}
+                      onChange={(e) => onStartChange(e, 'year')}
+                      onBlur={(e) => onStartBlur(e, 'year')}
+                      step="1"
                       className={classNames(styles.input, {
                         [styles.error]: !startValid || !startBeforeEnd,
                       })}
                     />
                   </div>
-                </Tooltip>
-                <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
-                  <div className={styles.selectorGroup}>
-                    <label
-                      className={classNames(styles.selectorLabel, {
-                        [styles.faded]: disabledFields['DAY'],
-                      })}
-                    >
-                      {labels.day}
-                    </label>
-                    <input
-                      name="start day"
-                      type="number"
-                      min={'1'}
-                      max={startDate.daysInMonth}
-                      value={
-                        disabledFields['DAY'] && startInputValues.day ? 1 : startInputValues.day
-                      }
-                      onChange={(e) => onStartChange(e, 'day')}
-                      onBlur={(e) => onStartBlur(e, 'day')}
-                      step={'1'}
-                      disabled={disabledFields['DAY']}
-                      className={classNames(styles.input, {
-                        [styles.error]: !startValid || !startBeforeEnd,
-                      })}
-                    />
-                  </div>
-                </Tooltip>
-              </div>
-            </div>
-            <div className={styles.dateContainer}>
-              <label className={styles.dateLabel}>{labels.end}</label>
-              <div className={styles.selectorsContainer}>
-                <div className={classNames(styles.selectorGroup, styles.long)}>
-                  <label className={styles.selectorLabel}>{labels.year}</label>
-                  <input
-                    name="end year"
-                    type="number"
-                    min={FIRST_YEAR_OF_DATA}
-                    max={(new Date().getUTCFullYear() + 1).toString()}
-                    value={endInputValues.year}
-                    onChange={(e) => onEndChange(e, 'year')}
-                    onBlur={(e) => onEndBlur(e, 'year')}
-                    step={'1'}
-                    className={classNames(styles.input, {
-                      [styles.error]: !endValid || !startBeforeEnd,
-                    })}
-                  />
+                  <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
+                    <div className={styles.selectorGroup}>
+                      <label
+                        className={classNames(styles.selectorLabel, {
+                          [styles.faded]: disabledFields['MONTH'],
+                        })}
+                      >
+                        {labels.month}
+                      </label>
+                      <input
+                        name="start month"
+                        type="number"
+                        min="1"
+                        max="12"
+                        value={
+                          disabledFields['MONTH'] && startInputValues.month
+                            ? 1
+                            : startInputValues.month
+                        }
+                        onChange={(e) => onStartChange(e, 'month')}
+                        onBlur={(e) => onStartBlur(e, 'month')}
+                        step={'1'}
+                        disabled={disabledFields['MONTH']}
+                        className={classNames(styles.input, {
+                          [styles.error]: !startValid || !startBeforeEnd,
+                        })}
+                      />
+                    </div>
+                  </Tooltip>
+                  <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
+                    <div className={styles.selectorGroup}>
+                      <label
+                        className={classNames(styles.selectorLabel, {
+                          [styles.faded]: disabledFields['DAY'],
+                        })}
+                      >
+                        {labels.day}
+                      </label>
+                      <input
+                        name="start day"
+                        type="number"
+                        min={'1'}
+                        max={startDate.daysInMonth}
+                        value={
+                          disabledFields['DAY'] && startInputValues.day ? 1 : startInputValues.day
+                        }
+                        onChange={(e) => onStartChange(e, 'day')}
+                        onBlur={(e) => onStartBlur(e, 'day')}
+                        step={'1'}
+                        disabled={disabledFields['DAY']}
+                        className={classNames(styles.input, {
+                          [styles.error]: !startValid || !startBeforeEnd,
+                        })}
+                      />
+                    </div>
+                  </Tooltip>
                 </div>
-                <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
-                  <div className={styles.selectorGroup}>
-                    <label
-                      className={classNames(styles.selectorLabel, {
-                        [styles.faded]: disabledFields['MONTH'],
-                      })}
-                    >
-                      {labels.month}
-                    </label>
+              </div>
+              <div className={styles.dateContainer}>
+                <label className={styles.dateLabel}>{labels.end}</label>
+                <div className={styles.selectorsContainer}>
+                  <div className={classNames(styles.selectorGroup, styles.long)}>
+                    <label className={styles.selectorLabel}>{labels.year}</label>
                     <input
-                      name="end month"
+                      name="end year"
                       type="number"
-                      min="1"
-                      max="12"
-                      value={
-                        disabledFields['MONTH'] && endInputValues.month ? 1 : endInputValues.month
-                      }
-                      onChange={(e) => onEndChange(e, 'month')}
-                      onBlur={(e) => onEndBlur(e, 'month')}
+                      min={FIRST_YEAR_OF_DATA}
+                      max={(new Date().getUTCFullYear() + 1).toString()}
+                      value={endInputValues.year}
+                      onChange={(e) => onEndChange(e, 'year')}
+                      onBlur={(e) => onEndBlur(e, 'year')}
                       step={'1'}
-                      disabled={
-                        disabledFields['MONTH'] ||
-                        (endInputValues.year ?? 0) > parseInt(bounds.max.slice(0, 4))
-                      }
                       className={classNames(styles.input, {
                         [styles.error]: !endValid || !startBeforeEnd,
                       })}
                     />
                   </div>
-                </Tooltip>
-                <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
-                  <div className={styles.selectorGroup}>
-                    <label
-                      className={classNames(styles.selectorLabel, {
-                        [styles.faded]: disabledFields['DAY'],
-                      })}
-                    >
-                      {labels.day}
-                    </label>
-                    <input
-                      name="end day"
-                      type="number"
-                      min={'1'}
-                      max={endDate.daysInMonth}
-                      value={disabledFields['DAY'] && endInputValues.day ? 1 : endInputValues.day}
-                      onChange={(e) => onEndChange(e, 'day')}
-                      onBlur={(e) => onEndBlur(e, 'day')}
-                      step={'1'}
-                      disabled={disabledFields['DAY']}
-                      className={classNames(styles.input, {
-                        [styles.error]: !endValid || !startBeforeEnd,
-                      })}
-                    />
-                  </div>
-                </Tooltip>
+                  <Tooltip content={disabledFields['MONTH'] ? labels.tooLongForMonths : ''}>
+                    <div className={styles.selectorGroup}>
+                      <label
+                        className={classNames(styles.selectorLabel, {
+                          [styles.faded]: disabledFields['MONTH'],
+                        })}
+                      >
+                        {labels.month}
+                      </label>
+                      <input
+                        name="end month"
+                        type="number"
+                        min="1"
+                        max="12"
+                        value={
+                          disabledFields['MONTH'] && endInputValues.month ? 1 : endInputValues.month
+                        }
+                        onChange={(e) => onEndChange(e, 'month')}
+                        onBlur={(e) => onEndBlur(e, 'month')}
+                        step={'1'}
+                        disabled={
+                          disabledFields['MONTH'] ||
+                          (endInputValues.year ?? 0) > parseInt(bounds.max.slice(0, 4))
+                        }
+                        className={classNames(styles.input, {
+                          [styles.error]: !endValid || !startBeforeEnd,
+                        })}
+                      />
+                    </div>
+                  </Tooltip>
+                  <Tooltip content={disabledFields['DAY'] ? labels.tooLongForDays : ''}>
+                    <div className={styles.selectorGroup}>
+                      <label
+                        className={classNames(styles.selectorLabel, {
+                          [styles.faded]: disabledFields['DAY'],
+                        })}
+                      >
+                        {labels.day}
+                      </label>
+                      <input
+                        name="end day"
+                        type="number"
+                        min={'1'}
+                        max={endDate.daysInMonth}
+                        value={disabledFields['DAY'] && endInputValues.day ? 1 : endInputValues.day}
+                        onChange={(e) => onEndChange(e, 'day')}
+                        onBlur={(e) => onEndBlur(e, 'day')}
+                        step={'1'}
+                        disabled={disabledFields['DAY']}
+                        className={classNames(styles.input, {
+                          [styles.error]: !endValid || !startBeforeEnd,
+                        })}
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
               </div>
             </div>
-          </div>
-          <span className={styles.errorMessage}>{errorMessage}</span>
+          )}
+          {showDateInputs && <span className={styles.errorMessage}>{errorMessage}</span>}
           <div className={styles.actions}>
             <Select
               className={classNames(styles.cta, styles.lastX)}
@@ -441,18 +452,20 @@ function TimeRangeSelector({
                 onLastXSelect(selected as LastXOption)
               }}
             />
-            <button
-              type="submit"
-              disabled={!startValid || !endValid || !startBeforeEnd}
-              className={styles.cta}
-              onClick={() => {
-                if (startValid && endValid) {
-                  submit(startDate, endDate)
-                }
-              }}
-            >
-              {labels.done}
-            </button>
+            {showDateInputs && (
+              <button
+                type="submit"
+                disabled={!startValid || !endValid || !startBeforeEnd}
+                className={styles.cta}
+                onClick={() => {
+                  if (startValid && endValid) {
+                    submit(startDate, endDate)
+                  }
+                }}
+              >
+                {labels.done}
+              </button>
+            )}
           </div>
         </form>
       </div>

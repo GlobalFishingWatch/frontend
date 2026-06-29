@@ -10,12 +10,15 @@ import TimeRangeSelector from './timerange-selector'
 import styles from '../timebar.module.css'
 
 type TimebarTimeRangeSelectorProps = {
-  /** Quick-select "last N units" options. Defaults to 30 days / 3 + 6 months / 1 year. */
+  /** Defaults to 30 days / 3 + 6 months / 1 year. */
   timeRangeOptions?: LastXOption[]
+  showDateInputs?: boolean
 }
 
-/** Time-range (calendar) button + its modal. Place inside <Timebar.Controls>. */
-export function TimebarTimeRangeSelector({ timeRangeOptions }: TimebarTimeRangeSelectorProps = {}) {
+export function TimebarTimeRangeSelector({
+  timeRangeOptions,
+  showDateInputs,
+}: TimebarTimeRangeSelectorProps = {}) {
   const {
     labels,
     absoluteStart,
@@ -39,6 +42,7 @@ export function TimebarTimeRangeSelector({ timeRangeOptions }: TimebarTimeRangeS
           onDiscard={toggleTimeRangeSelector}
           latestAvailableDataDate={latestAvailableDataDate}
           lastXOptions={timeRangeOptions}
+          showDateInputs={showDateInputs}
         />
       )}
       <button

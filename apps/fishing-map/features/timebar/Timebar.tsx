@@ -430,7 +430,7 @@ const TimebarWrapper = () => {
     )
   }, [events, hasTrackError, onEventClick, showGraph, t, trackGraphSteps, tracks, tracksGraphsData])
 
-  const timebarChildren = useMemo(() => {
+  const timebarGraphComponent = useMemo(() => {
     return (
       <Fragment>
         {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
@@ -493,11 +493,9 @@ const TimebarWrapper = () => {
         {!screenshotMode && (
           <Fragment>
             {!isReportLocation && (
+              // || timeMode === 'realTime'
               <Timebar.Playback
-                disabled={
-                  vesselGroupsFiltering || hasVectorDataviews
-                  // || timeMode === 'realTime'
-                }
+                disabled={vesselGroupsFiltering || hasVectorDataviews}
                 disabledTooltip={
                   vesselGroupsFiltering
                     ? t((t) => t.timebar.disablePlaybackVesselGroups)
@@ -509,7 +507,9 @@ const TimebarWrapper = () => {
               />
             )}
             <Timebar.Controls>
-              <Timebar.TimeRangeSelector />
+              <Timebar.TimeRangeSelector
+              // showDateInputs={timeMode !== 'realTime'}
+              />
               <Timebar.Bookmark />
             </Timebar.Controls>
             <Timebar.IntervalSelector />
@@ -524,7 +524,7 @@ const TimebarWrapper = () => {
           onMouseMove={onMouseMove}
           onGraphClick={onToggleFixedTooltip}
         >
-          {!isSmallScreen ? timebarChildren : null}
+          {!isSmallScreen ? timebarGraphComponent : null}
         </Timebar.Graph>
       </Timebar>
       {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
