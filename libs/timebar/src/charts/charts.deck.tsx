@@ -11,8 +11,7 @@ import { useOuterScale, useTimebarTimeOrigin } from './charts.hooks'
 import { activeChartLayersState } from './charts-store.atom'
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
-const GRAPH_STYLE = { zIndex: '0' }
-const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0, zIndex: 0 } as const
+const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0 } as const
 
 const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boolean }) => {
   const { outerWidth, graphHeight } = useTimelineContext()
@@ -43,7 +42,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
         layers={layers}
         width={outerWidth}
         height={graphHeight}
-        pickingRadius={4}
+        pickingRadius={10}
         getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         widgets={
           showDeckStats
