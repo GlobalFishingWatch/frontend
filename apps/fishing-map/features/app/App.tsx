@@ -121,11 +121,6 @@ function App() {
   const isAsideResizable =
     !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
 
-  const isPopup = useSearch({ strict: false, select: (s) => s?.isPopup })
-  if ((getIsBrowser() && window.opener) || isPopup) {
-    return null
-  }
-
   return (
     <Fragment>
       <ConfirmLeave />
