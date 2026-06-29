@@ -10,13 +10,20 @@ ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
 
-# Copy only the files pnpm needs to resolve and install the workspace.
-# This layer is cached until the lockfile or a workspace package.json changes,
-# so source edits don't bust the install step.
+# Copy only the manifests pnpm needs to resolve the workspace graph.
+# pnpm-workspace.yaml declares linting and apps/fishing-map as workspace
+# packages, so their package.json files must be present before install.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 COPY linting/package.json linting/
 COPY apps/fishing-map/package.json apps/fishing-map/
-RUN corepack enable && corepack install && pnpm install --frozen-lockfile
+RUN corepack enable && corepack install
+
+# Install dependencies in a dedicated layer, before copying source.
+# This layer is only invalidated when the lockfile or a workspace
+# package.json changes — not on every source edit.
+# ARGs are declared below so different APP_NAME values across parallel
+# matrix jobs do not bust this shared cache entry.
+RUN pnpm install --frozen-lockfile
 
 # All possible build args — each app uses what it needs, unused ones are empty
 ARG APP_NAME
