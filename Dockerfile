@@ -54,7 +54,10 @@ ENV API_GATEWAY=$API_GATEWAY \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .
-RUN NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run ${APP_NAME}:build
+RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
+    NX_CLOUD_ACCESS_TOKEN="$(cat /run/secrets/NX_CLOUD_ACCESS_TOKEN 2>/dev/null || true)" \
+    NODE_OPTIONS='--max-old-space-size=6144' \
+    pnpm exec nx run ${APP_NAME}:build
 
 
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──

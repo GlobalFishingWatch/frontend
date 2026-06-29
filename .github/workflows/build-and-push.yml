@@ -1,4 +1,4 @@
-name: Build and Push to Artifact Registry
+name: Build and Deploy
 
 on:
   push:
@@ -83,8 +83,8 @@ jobs:
             echo "Affected apps to build: $APPS_JSON"
           fi
 
-  build-and-push:
-    name: Build and Push / ${{ matrix.app }}
+  build:
+    name: Build / ${{ matrix.app }}
     runs-on: ubuntu-latest
     needs: detect-affected
     if: needs.detect-affected.outputs.apps != '[]'
@@ -148,13 +148,15 @@ jobs:
             VITE_REPORT_DAYS_LIMIT=366
             VITE_PIPE_DATASET_VERSION=4
             SENTRY_AUTH_TOKEN=${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}
+          secrets: |
+            NX_CLOUD_ACCESS_TOKEN=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,scope=frontend,mode=max
 
   deploy:
     name: Deploy / ${{ matrix.app }}
     runs-on: ubuntu-latest
-    needs: [detect-affected, build-and-push]
+    needs: [detect-affected, build]
     if: needs.detect-affected.outputs.apps != '[]'
     strategy:
       matrix:
