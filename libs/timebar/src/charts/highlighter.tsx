@@ -22,7 +22,7 @@ import type {
   TimebarChartItem,
   TimebarChartsData,
 } from './common/types'
-import chartsDataState, { hoveredEventState } from './chartsData.atom'
+import { activeChartsDataState, hoveredEventState } from './chartsData.atom'
 
 import styles from './highlighter.module.css'
 
@@ -116,7 +116,6 @@ const getHighlighterData = (
   data.forEach((chart, chartIndex) => {
     const chartType = chart[0] as ChartType
     const chartData = chart[1]
-    if (!chartData.active) return
     highlightedChunks[chartType] = []
     chartData.data?.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
@@ -216,8 +215,7 @@ const Highlighter = ({
     [hoverStart, hoverEnd, outerScale, dateCallback]
   )
 
-  // TODO Filter active with selector
-  const chartsData = useAtomValue(chartsDataState)
+  const chartsData = useAtomValue(activeChartsDataState)
   const hoveredEventId = useAtomValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
