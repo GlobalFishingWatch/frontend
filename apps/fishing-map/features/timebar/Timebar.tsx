@@ -26,6 +26,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { selectHasVectorDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -208,6 +209,7 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
+  const debugOptions = useSelector(selectDebugOptions)
   // const timeMode = useSelector(selectTimeMode)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
@@ -530,6 +532,7 @@ const TimebarWrapper = () => {
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
           onGraphClick={onToggleFixedTooltip}
+          showDeckStats={debugOptions.deckStats}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
         </Timebar.Charts.Wrapper>

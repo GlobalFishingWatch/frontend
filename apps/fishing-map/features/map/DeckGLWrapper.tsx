@@ -38,7 +38,7 @@ const DeckGLWrapper = () => {
   const setViewState = useMapSetViewState()
   const dispatch = useAppDispatch()
   const viewState = useMapViewState()
-  const showMapStats = useSelector(selectDebugOptions)?.mapStats
+  const showDeckStats = useSelector(selectDebugOptions)?.deckStats
   const areReportFeaturesLoading = useReportFeaturesLoading()
 
   const onViewStateChange = useCallback(
@@ -65,7 +65,7 @@ const DeckGLWrapper = () => {
   const onExpandedStatsChange = useCallback(
     (expanded: boolean) => {
       if (!expanded) {
-        dispatch(setDebugOption({ option: DebugOption.MapStats, value: false }))
+        dispatch(setDebugOption({ option: DebugOption.DeckStats, value: false }))
       }
     },
     [dispatch]
@@ -131,7 +131,7 @@ const DeckGLWrapper = () => {
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
       widgets={
-        showMapStats
+        showDeckStats
           ? [
               new StatsWidget({
                 initialExpanded: true,

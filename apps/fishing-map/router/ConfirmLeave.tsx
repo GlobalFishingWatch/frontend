@@ -9,11 +9,8 @@ import { ROUTES_WITH_WORKSPACES, SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from './route
 import { selectLocationType } from './routes.selectors'
 import { mapRouteIdToType } from './routes.utils'
 
-/**
- * Replaces the confirmLeave logic from Redux First Router.
- * Uses TanStack Router's useBlocker to prompt the user before
- * leaving workspace routes with unsaved changes.
- */
+const DISABLE_CONFIRM_LEAVE = process.env.DISABLE_CONFIRM_LEAVE === 'true'
+
 export function ConfirmLeave() {
   const suggestWorkspaceSave = useSelector(selectSuggestWorkspaceSave)
   const isGuestUser = useSelector(selectIsGuestUser)
@@ -21,7 +18,7 @@ export function ConfirmLeave() {
 
   useBlocker({
     shouldBlockFn: ({ next }) => {
-      if (isGuestUser || !suggestWorkspaceSave) {
+      if (isGuestUser || !suggestWorkspaceSave || DISABLE_CONFIRM_LEAVE) {
         return false
       }
 

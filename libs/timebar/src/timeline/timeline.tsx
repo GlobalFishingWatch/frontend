@@ -53,6 +53,7 @@ type TimebarTimelineProps = {
   onMouseLeave?: TimebarMouseLeaveHandler
   onMouseMove?: TimebarMouseMoveHandler
   onGraphClick?: (toggle: boolean) => void
+  showDeckStats?: boolean
 }
 
 type Dragging = 'DRAG_START' | 'DRAG_END' | 'DRAG_INNER'
@@ -94,9 +95,9 @@ export const TimebarTimeline = ({
   trackGraphOrientation = 'mirrored',
   stickToUnit,
   displayWarningWhenInFuture = true,
-  onMouseLeave,
   onMouseMove,
   onGraphClick,
+  showDeckStats = false,
 }: TimebarTimelineProps) => {
   const {
     notifyChange,
@@ -537,7 +538,6 @@ export const TimebarTimeline = ({
             }}
             onClick={() => !hasDraggedRef.current && onGraphClick?.(true)}
           >
-            <TimebarDeckglWrapper />
             <TimelineUnits
               labels={labels}
               start={start}
@@ -551,6 +551,7 @@ export const TimebarTimeline = ({
               locale={locale}
             />
             {children}
+            <TimebarDeckglWrapper showDeckStats={showDeckStats} />
           </div>
         </div>
         <div

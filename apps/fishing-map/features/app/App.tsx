@@ -54,7 +54,6 @@ declare global {
     gtag: any
   }
 }
-const FpsView = lazy(() => import('react-fps').then(({ FpsView }) => ({ default: FpsView })))
 
 const rootRoute = getRouteApi('__root__')
 
@@ -179,7 +178,6 @@ function App() {
             />
           </ErrorBoundary>
         </div>
-        {debugOptions.mapStats && <FpsView />}
         <ErrorBoundary>
           <Suspense fallback={null}>
             <ContentPanel

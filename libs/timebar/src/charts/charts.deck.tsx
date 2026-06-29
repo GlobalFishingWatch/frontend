@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
+import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
 import { useAtomValue } from 'jotai'
 
 import { useTimelineContext } from '../timeline/timeline-context'
@@ -13,7 +14,7 @@ const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '0' }
 const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0, zIndex: 0 } as const
 
-const TimebarDeckglWrapper = () => {
+const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boolean }) => {
   const { outerWidth, graphHeight } = useTimelineContext()
   const outerScale = useOuterScale()
   const origin = useTimebarTimeOrigin()
@@ -42,9 +43,17 @@ const TimebarDeckglWrapper = () => {
         layers={layers}
         width={outerWidth}
         height={graphHeight}
-        style={GRAPH_STYLE}
         pickingRadius={4}
         getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
+        widgets={
+          showDeckStats
+            ? [
+                new StatsWidget({
+                  initialExpanded: true,
+                }),
+              ]
+            : []
+        }
       />
     </div>
   )

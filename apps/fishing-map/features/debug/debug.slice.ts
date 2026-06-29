@@ -11,7 +11,7 @@ export enum FeatureFlag {
 
 export enum DebugOption {
   DebugTiles = 'debugTiles',
-  MapStats = 'mapStats',
+  DeckStats = 'deckStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
   ExperimentalLayers = 'experimentalLayers',
@@ -40,7 +40,7 @@ export const debugInitialState: DebugState = {
   },
   options: {
     debugTiles: false,
-    mapStats: false,
+    deckStats: false,
     thinning: true,
     addDatasetIdHash: true,
     experimentalLayers: false,

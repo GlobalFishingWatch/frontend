@@ -36,10 +36,10 @@ const DebugFeatureFlags: React.FC = () => {
       <div className={styles.header}>
         <Switch
           id="option_map_stats"
-          active={debugOptions.mapStats}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.MapStats))}
+          active={debugOptions.deckStats}
+          onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
         />
-        <label htmlFor="option_map_stats">Map stats</label>
+        <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
       </div>
       <p>Show fps and memory stats</p>
       <div className={styles.header}>

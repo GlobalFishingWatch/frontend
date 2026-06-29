@@ -340,9 +340,6 @@ importers:
       react-dropzone:
         specifier: 15.0.0
         version: 15.0.0(react@19.2.6)
-      react-fps:
-        specifier: ^1.0.6
-        version: 1.0.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       react-ga4:
         specifier: 3.0.1
         version: 3.0.1
@@ -13128,13 +13125,6 @@ packages:
     engines: {node: '>= 10.13'}
     peerDependencies:
       react: '>= 16.8 || 18.0.0'
-
-  react-fps@1.0.6:
-    resolution: {integrity: sha512-+3PAuADQHD0vwSO/q1QWroSwWH+xS16KVeXmhdjQU4qM8YiI86djOt403CD6UfjchLpUTiGoprU4dGA/4BJsFA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    peerDependencies:
-      react: '>=16.8.1'
-      react-dom: '>=16.8.1'
 
   react-ga4@3.0.1:
     resolution: {integrity: sha512-GyCc01bSheWXjzGDyHsXMOqk/SP5Cf/JrcJTg4hcpKx4eeSwaJKpJUc+ipF4ffLTZkmabmf3ZGBv4OKHTXNXyA==}
@@ -31571,11 +31561,6 @@ snapshots:
       file-selector: 2.1.2
       prop-types: 15.8.1
       react: 19.2.6
-
-  react-fps@1.0.6(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
-    dependencies:
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
 
   react-ga4@3.0.1: {}
 
