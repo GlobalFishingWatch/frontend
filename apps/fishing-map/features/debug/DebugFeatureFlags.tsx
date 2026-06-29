@@ -120,6 +120,17 @@ const DebugFeatureFlags: React.FC = () => {
           <p>See reports of polygon areas</p>
           <div className={styles.header}>
             <Switch
+              id="option_report_preview"
+              active={featureFlags.reportPreview}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.ReportPreview))}
+            />
+            <label htmlFor="option_report_preview">
+              <strong>Feature flag:</strong> Report preview
+            </label>
+          </div>
+          <p>Show an area report sparkline preview in context layer popups</p>
+          <div className={styles.header}>
+            <Switch
               id="option_hotspot_button"
               active={featureFlags.hotspotButton}
               onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}

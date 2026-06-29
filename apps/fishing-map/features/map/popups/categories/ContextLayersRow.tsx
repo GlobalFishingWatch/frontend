@@ -6,6 +6,7 @@ import cx from 'classnames'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -51,9 +52,11 @@ const ContextLayersRow = ({
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const { reportPreview } = useSelector(selectFeatureFlags)
   const { category, setPreferredCategory, canSwitch } = useAreaTooltipSparklineCategory()
   const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
-  const showSparklinePreview = showFeaturesDetails && showSparkline && !isAnyReportLocation
+  const showSparklinePreview =
+    reportPreview && showFeaturesDetails && showSparkline && !isAnyReportLocation
   const areaInViewport = useAreaInViewport(feature, showSparklinePreview)
   const renderSparkline = showSparklinePreview && areaInViewport === true
 
