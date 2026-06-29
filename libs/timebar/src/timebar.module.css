@@ -31,12 +31,16 @@
   cursor: not-allowed;
 }
 
+.uiButton.noAction {
+  cursor: default;
+}
+
 .uiButton:disabled svg {
   opacity: 0.5;
 }
 
-.uiButton:hover,
-.uiButton:focus {
+.uiButton:not(.noAction):hover,
+.uiButton:not(.noAction):focus {
   background-color: var(--timebar-ui-btn-color-hover);
   outline: none;
 }
