@@ -36,4 +36,3 @@ COPY --from=builder /app/dist/apps/data-download-portal/nginx.conf /etc/nginx/ng
 COPY --from=builder /app/dist/apps/data-download-portal/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/data-download-portal/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
-
