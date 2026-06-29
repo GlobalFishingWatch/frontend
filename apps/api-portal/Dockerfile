@@ -30,4 +30,3 @@ COPY --from=builder /app/dist/apps/api-portal/nginx.conf /etc/nginx/nginx.templa
 COPY --from=builder /app/dist/apps/api-portal/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/api-portal/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
-

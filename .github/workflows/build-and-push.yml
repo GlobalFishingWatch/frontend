@@ -111,14 +111,24 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
 
+      - name: Resolve build target
+        id: target
+        run: |
+          case "${{ matrix.app }}" in
+            fishing-map) echo "target=production-node" >> $GITHUB_OUTPUT ;;
+            *)           echo "target=production-nginx" >> $GITHUB_OUTPUT ;;
+          esac
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/${{ matrix.app }}/Dockerfile
+          file: Dockerfile
+          target: ${{ steps.target.outputs.target }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/${{ matrix.app }}:testing-action
           build-args: |
+            APP_NAME=${{ matrix.app }}
             COMMIT_SHA=${{ github.sha }}
             VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
             VITE_API_VERSION=v3
