@@ -1,7 +1,9 @@
+import { useCallback, useState } from 'react'
 import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
+import { EVENT_SOURCE } from '../constants'
 import { useTimebar } from '../timebar-context'
 
 import type { LastXOption } from './timerange-selector'
@@ -19,17 +21,21 @@ export function TimebarTimeRangeSelector({
   timeRangeOptions,
   showDateInputs,
 }: TimebarTimeRangeSelectorProps = {}) {
-  const {
-    labels,
-    absoluteStart,
-    absoluteEnd,
-    latestAvailableDataDate,
-    toggleTimeRangeSelector,
-    onTimeRangeSelectorSubmit,
-    start,
-    end,
-    showTimeRangeSelector,
-  } = useTimebar()
+  const { labels, absoluteStart, absoluteEnd, latestAvailableDataDate, notifyChange, start, end } =
+    useTimebar()
+  const [showTimeRangeSelector, setShowTimeRangeSelector] = useState(false)
+
+  const toggleTimeRangeSelector = useCallback(() => {
+    setShowTimeRangeSelector((prev) => !prev)
+  }, [])
+
+  const onTimeRangeSelectorSubmit = useCallback(
+    (s: string, e: string) => {
+      notifyChange(s, e, EVENT_SOURCE.TIME_RANGE_SELECTOR)
+      setShowTimeRangeSelector(false)
+    },
+    [notifyChange]
+  )
 
   return (
     <>

@@ -1,12 +1,11 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
 import { TimebarHighlighter } from './charts/highlighter'
 import { TimebarStackedActivity } from './charts/stacked-activity'
@@ -21,12 +20,11 @@ import { TimebarToolbarWrapper } from './components/toolbar-wrapper'
 import { TimebarTimeline } from './timeline/timeline'
 import type { StickUnit } from './timeline/timeline-context'
 import { useResizableHeight } from './utils/use-resizable-height'
-import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
+import { EVENT_SOURCE } from './constants'
 import type { TimebarContextProps } from './timebar-context'
 import { TimebarContext } from './timebar-context'
 import type { TimebarLabels } from './timebar-labels'
 import { DEFAULT_LABELS } from './timebar-labels'
-import { getTime } from './utils'
 
 import styles from './timebar.module.css'
 
@@ -109,7 +107,6 @@ export function Timebar({
   defaultHeight,
 }: TimebarProps) {
   const labels = labelsProp ?? DEFAULT_LABELS
-  const [showTimeRangeSelector, setShowTimeRangeSelector] = useState(false)
   const { height, isDragging, onResizerMouseDown } = useResizableHeight({
     isResizable,
     defaultHeight,
@@ -144,90 +141,16 @@ export function Timebar({
     [minimumRangeMs, maximumRangeMs, onChange]
   )
 
-  const onIntervalClick = useCallback(
-    (interval: FourwingsInterval) => {
-      const intervalConfig = CONFIG_BY_INTERVAL[interval]
-      if (!intervalConfig) return
-      const intervalLimit = LIMITS_BY_INTERVAL[interval]
-      if (intervalLimit) {
-        let newStart
-        let newEnd
-        if (
-          latestAvailableDataDate &&
-          latestAvailableDataDate.slice(0, start.length) >= start &&
-          latestAvailableDataDate.slice(0, start.length) <= end
-        ) {
-          newEnd = DateTime.fromISO(latestAvailableDataDate, { zone: 'utc' })
-            .endOf(interval as DateTimeUnit)
-            .plus({ millisecond: 1 })
-          newStart = newEnd.minus({ [intervalLimit.unit]: 1 })
-        } else {
-          // if present day is out of range we choose the middle point in the timebar
-          newStart = DateTime.fromMillis(getTime(start) + (getTime(end) - getTime(start)) / 2, {
-            zone: 'utc',
-          }).startOf(intervalLimit.unit as DateTimeUnit)
-          newEnd = newStart.plus({ [intervalLimit.unit]: 1 })
-        }
-        notifyChange(
-          newStart.toISO() as string,
-          newEnd.toISO() as string,
-          EVENT_INTERVAL_SOURCE[interval] as string
-        )
-      } else {
-        notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval] as string)
-      }
-    },
-    [notifyChange, start, end, absoluteStart, absoluteEnd, latestAvailableDataDate]
-  )
-
-  const onPlaybackTick = useCallback(
-    (newStart: string, newEnd: string) => {
-      notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
-    },
-    [notifyChange]
-  )
-
-  const toggleTimeRangeSelector = useCallback(() => {
-    setShowTimeRangeSelector((prev) => !prev)
-  }, [])
-
-  const onTimeRangeSelectorSubmit = useCallback(
-    (s: string, e: string) => {
-      notifyChange(s, e, EVENT_SOURCE.TIME_RANGE_SELECTOR)
-      setShowTimeRangeSelector(false)
-    },
-    [notifyChange]
-  )
-
-  const setBookmark = useCallback(() => {
-    onBookmarkChange?.(start, end)
-  }, [onBookmarkChange, start, end])
-
   // Notify once on mount (preserves the class componentDidMount behavior).
   useEffect(() => {
     notifyChange(start, end, EVENT_SOURCE.MOUNT)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const hasBookmark =
-    bookmarkStart !== undefined &&
-    bookmarkStart !== null &&
-    bookmarkEnd !== undefined &&
-    bookmarkEnd !== null
-  const bookmarkDisabled =
-    hasBookmark &&
-    getTime(bookmarkStart) === getTime(start) &&
-    getTime(bookmarkEnd) === getTime(end)
-
   const value = useMemo<TimebarContextProps>(
     () => ({
       notifyChange,
-      onIntervalClick,
-      onPlaybackTick,
-      onTimeRangeSelectorSubmit,
       onBookmarkChange,
-      setBookmark,
-      toggleTimeRangeSelector,
       intervals,
       getCurrentInterval,
       labels,
@@ -236,20 +159,12 @@ export function Timebar({
       latestAvailableDataDate,
       start,
       end,
-      showTimeRangeSelector,
-      hasBookmark,
-      bookmarkDisabled,
       bookmarkStart,
       bookmarkEnd,
     }),
     [
       notifyChange,
-      onIntervalClick,
-      onPlaybackTick,
-      onTimeRangeSelectorSubmit,
       onBookmarkChange,
-      setBookmark,
-      toggleTimeRangeSelector,
       intervals,
       getCurrentInterval,
       labels,
@@ -258,9 +173,6 @@ export function Timebar({
       latestAvailableDataDate,
       start,
       end,
-      showTimeRangeSelector,
-      hasBookmark,
-      bookmarkDisabled,
       bookmarkStart,
       bookmarkEnd,
     ]

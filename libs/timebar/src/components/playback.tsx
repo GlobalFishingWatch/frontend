@@ -4,6 +4,7 @@ import cx from 'classnames'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
+import { EVENT_SOURCE } from '../constants'
 import { useTimebar } from '../timebar-context'
 import { DEFAULT_LABELS } from '../timebar-labels'
 
@@ -27,11 +28,17 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
     absoluteEnd,
     intervals,
     getCurrentInterval,
-    onPlaybackTick,
+    notifyChange,
     start,
     end,
   } = useTimebar()
   const labels = { ...DEFAULT_LABELS.playback, ...labelsProp?.playback }
+  const onPlaybackTick = useCallback(
+    (newStart: string, newEnd: string) => {
+      notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
+    },
+    [notifyChange]
+  )
   const [playing, setPlaying] = useState(false)
   const [speedStep, setSpeedStep] = useState(0)
   const [loop, setLoop] = useState(false)
@@ -111,7 +118,7 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
       if (clamped === 'end') {
         if (loop === true) {
           const currentStartEndDeltaMs =
-            getUTCDate(newStart).getTime() - getUTCDate(newEnd).getTime()
+            getUTCDate(newEnd).getTime() - getUTCDate(newStart).getTime()
           // start again from absoluteStart
           const newEndLoop = getUTCDate(
             getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
