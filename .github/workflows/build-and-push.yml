@@ -53,7 +53,7 @@ jobs:
 
           AFFECTED=$(pnpm exec nx show projects \
             --affected \
-            --base=HEAD~1 \
+            --base=develop \
             --head=HEAD \
             --type app \
             --exclude='linting,port-labeler,*-e2e' \

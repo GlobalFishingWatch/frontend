@@ -4,19 +4,15 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps && rm -rf /var/lib/apt/lists/*
 
-# Enable pnpm via corepack (version pinned in package.json#packageManager)
-COPY package.json .npmrc* ./
-RUN corepack enable && corepack install
-
-# Fetch all packages into the virtual store — cached until lockfile changes
-COPY pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm fetch
-
 ENV NODE_ENV=production
 ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
+
+# Enable pnpm via corepack (version pinned in package.json#packageManager)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
+RUN corepack enable && corepack install
 
 # All possible build args — each app uses what it needs, unused ones are empty
 ARG APP_NAME
@@ -49,7 +45,7 @@ ENV API_GATEWAY=$API_GATEWAY \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .
-RUN pnpm install --frozen-lockfile --offline && \
+RUN pnpm install --frozen-lockfile && \
     NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run ${APP_NAME}:build
 
 
@@ -59,7 +55,7 @@ FROM nginx:stable-alpine AS production-nginx
 RUN apk update && apk upgrade
 
 ARG APP_NAME
-COPY --from=builder /app/dist/apps/${APP_NAME}/nginx.conf          /etc/nginx/nginx.template
+COPY --from=builder /app/dist/apps/${APP_NAME}/nginx.conf           /etc/nginx/nginx.template
 COPY --from=builder /app/dist/apps/${APP_NAME}/config/entrypoint.sh ./entrypoint.sh
 COPY --from=builder /app/dist/apps/${APP_NAME}/                     /usr/share/nginx/www/
 
