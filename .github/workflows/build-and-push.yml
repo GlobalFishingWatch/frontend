@@ -25,7 +25,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
+
+      - name: Fetch develop branch
+        run: git fetch origin develop --depth=1
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -53,7 +56,7 @@ jobs:
 
           AFFECTED=$(pnpm exec nx show projects \
             --affected \
-            --base=develop \
+            --base=origin/develop \
             --head=HEAD \
             --type app \
             --exclude='linting,port-labeler,*-e2e' \
@@ -66,7 +69,12 @@ jobs:
             fi
           done
 
-          APPS_JSON=$(printf '%s\n' "${APPS[@]+"${APPS[@]}"}" | jq -R . | jq -sc .)
+          if [ ${#APPS[@]} -eq 0 ]; then
+            APPS_JSON="[]"
+          else
+            APPS_JSON=$(printf '%s\n' "${APPS[@]}" | jq -R . | jq -sc .)
+          fi
+
           echo "apps=$APPS_JSON" >> $GITHUB_OUTPUT
 
           if [ "$APPS_JSON" = "[]" ]; then
