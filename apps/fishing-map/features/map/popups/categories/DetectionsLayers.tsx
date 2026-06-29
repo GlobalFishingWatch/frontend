@@ -48,6 +48,7 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
+  if (feature.value === undefined) return null
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,
@@ -61,6 +62,7 @@ function DetectionsTooltipRow({
     }))
   }
 
+  console.log('🚀 ~ DetectionsTooltipRow ~ feature.value:', feature)
   return (
     <div className={styles.popupSection}>
       <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
