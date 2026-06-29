@@ -132,3 +132,105 @@ jobs:
             SENTRY_AUTH_TOKEN=${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,scope=frontend,mode=max
+
+  deploy:
+    name: Deploy / ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    needs: [detect-affected, build-and-push]
+    if: needs.detect-affected.outputs.apps != '[]'
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
+      fail-fast: false
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          IMAGE="${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/$APP:testing-action"
+          SECRETS_PATH="projects/706952489382/secrets"
+
+          case "$APP" in
+            fishing-map)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-fish"
+              SET_SECRETS="\
+                BASIC_AUTH_PASS=$SECRETS_PATH/FISHING_MAP_BASIC_AUTH_PASS/versions/latest,\
+                STRAPI_TOKEN=$SECRETS_PATH/FISHING_MAP_STRAPI_TOKEN/versions/latest,\
+                STRAPI_URL=$SECRETS_PATH/FISHING_MAP_STRAPI_URL/versions/latest,\
+                DOWNLOAD_SURVEY_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest,\
+                FEEDBACK_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest,\
+                GFW_API_KEY=$SECRETS_PATH/FISHING_MAP_GFW_API_KEY/versions/latest,\
+                IDENTITY_REVIEW_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID/versions/latest,\
+                MAP_ERRORS_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID/versions/latest,\
+                MIGRAMAR_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MIGRAMAR_SPREADSHEET_ID/versions/latest,\
+                MASTRA_API_URL=$SECRETS_PATH/FISHING_MAP_MASTRA_API_URL/versions/latest,\
+                SENTRY_AUTH_TOKEN=$SECRETS_PATH/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest,\
+                SPREADSHEET_CLIENT_EMAIL=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL/versions/latest,\
+                SPREADSHEET_PRIVATE_KEY=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_PRIVATE_KEY/versions/latest,\
+                TURNING_TIDES_AIS_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_AIS_ID/versions/latest,\
+                TURNING_TIDES_BRAZIL_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_BRAZIL_ID/versions/latest,\
+                TURNING_TIDES_CHILE_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_CHILE_ID/versions/latest,\
+                TURNING_TIDES_PERU_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_PERU_ID/versions/latest,\
+                WORKSPACES_AGENT_ID=$SECRETS_PATH/FISHING_MAP_WORKSPACES_AGENT_ID/versions/latest"
+              ;;
+            api-portal)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-api"
+              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_API_PORTAL/versions/latest"
+              ;;
+            track-labeler)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw"
+              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_TRACK_LABELER/versions/latest"
+              ;;
+            data-download-portal|image-labeler|user-groups-admin)
+              ENV_VARS="BASIC_AUTH=off"
+              SET_SECRETS=""
+              ;;
+            *)
+              echo "Unknown app: $APP — no Cloud Run config defined"
+              exit 1
+              ;;
+          esac
+
+          SET_SECRETS=$(echo "$SET_SECRETS" | tr -d ' \\\n')
+
+          SECRETS_FLAG="--clear-secrets"
+          if [ -n "$SET_SECRETS" ]; then
+            SECRETS_FLAG="--set-secrets=$SET_SECRETS"
+          fi
+
+          gcloud run deploy "dev-ui-$APP" \
+            --project gfw-development \
+            --image "$IMAGE" \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "$ENV_VARS" \
+            $SECRETS_FLAG \
+            --service-account "frontend-dev@gfw-development.iam.gserviceaccount.com"
+
+      - name: Clean old revisions
+        run: |
+          gcloud run revisions list \
+            --project gfw-development \
+            --service "dev-ui-${{ matrix.app }}" \
+            --region us-central1 \
+            --format="value(metadata.name)" \
+            --sort-by="~metadata.creationTimestamp" \
+            | tail -n +4 \
+            | xargs -r -n1 gcloud run revisions delete \
+                --project gfw-development \
+                --region us-central1 \
+                --quiet
