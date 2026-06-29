@@ -1,6 +1,6 @@
 import cx from 'classnames'
 
-import { useTimebarActions, useTimebarState } from '../timebar-context'
+import { useTimebar } from '../timebar-context'
 
 import IntervalSelector from './interval-selector'
 
@@ -8,8 +8,7 @@ import styles from '../timebar.module.css'
 
 /** Interval (hour/day/month/year) selector column. Omit it to hide (e.g. real-time mode). */
 export function TimebarIntervalSelector() {
-  const { intervals, getCurrentInterval, labels, onIntervalClick } = useTimebarActions()
-  const { start, end } = useTimebarState()
+  const { intervals, getCurrentInterval, labels, onIntervalClick, start, end } = useTimebar()
 
   if (!intervals || !getCurrentInterval) return null
 

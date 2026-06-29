@@ -6,6 +6,8 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
 import { getTimebarStepByDelta } from '../utils'
 
 import uiStyles from '../timebar.module.css'
@@ -13,24 +15,8 @@ import styles from './playback.module.css'
 
 const SPEED_STEPS = [1, 2, 3, 5, 10]
 
-const DEFAULT_LABELS = {
-  playAnimation: 'Play animation',
-  pauseAnimation: 'Pause animation',
-  toogleAnimationLooping: 'Toggle animation looping',
-  moveBack: 'Move back',
-  moveForward: 'Move forward',
-  changeAnimationSpeed: 'Change animation speed',
-}
-
 type PlaybackProps = {
-  labels?: {
-    playAnimation?: string
-    pauseAnimation?: string
-    toogleAnimationLooping?: string
-    moveBack?: string
-    moveForward?: string
-    changeAnimationSpeed?: string
-  }
+  labels?: TimebarLabels['playback']
   onTick: (newStart: string, newEnd: string) => void
   start: string
   end: string
@@ -44,7 +30,7 @@ type PlaybackProps = {
 }
 
 function Playback({
-  labels = DEFAULT_LABELS,
+  labels = DEFAULT_LABELS.playback,
   onTick,
   start,
   end,

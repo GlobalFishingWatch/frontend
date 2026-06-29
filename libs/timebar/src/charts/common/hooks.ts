@@ -173,13 +173,10 @@ const EVENT_TYPES_SORT_ORDER = {
   [EventTypes.Encounter]: 5,
 }
 
-export const sortChunksByType = (chunkA: TimebarChartChunk, chunkB: TimebarChartChunk) => {
+const sortChunksByType = (chunkA: TimebarChartChunk, chunkB: TimebarChartChunk) => {
   const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
   const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
-  let result = 0
-  if (first < second) result = -1
-  else if (first > second) result = 1
-  return result
+  return first - second
 }
 
 const sortDataByType = <T>(data: TimebarChartData<T>): TimebarChartData<T> => {

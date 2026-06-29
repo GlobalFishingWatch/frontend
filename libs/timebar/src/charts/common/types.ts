@@ -29,7 +29,7 @@ export type TimebarChartValue = {
   count?: number
 }
 
-export type TimebarChartChunkCluster = {
+type TimebarChartChunkCluster = {
   ids: string[]
   numChunks: number
 }

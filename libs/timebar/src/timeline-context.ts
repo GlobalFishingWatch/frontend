@@ -46,5 +46,3 @@ export const [TimelineContext, useTimelineContext] = createGuardedContext<Timeli
   'useTimelineContext',
   'a Timeline provider'
 )
-
-export default TimelineContext

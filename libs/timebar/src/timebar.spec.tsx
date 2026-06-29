@@ -5,8 +5,6 @@ import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingw
 
 import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
 import { Timebar } from './timebar'
-import type { TimebarActionsContextProps } from './timebar-context'
-import { useTimebarActions } from './timebar-context'
 import { useTimelineContext } from './timeline-context'
 
 // The real ui-components Icon renders an inline SVG data-URI that jsdom can't parse
@@ -186,45 +184,5 @@ describe('Timebar.Graph (timeline scale context)', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() => render(<GraphProbe />)).toThrow(/within a Timeline provider/)
     spy.mockRestore()
-  })
-})
-
-const actionsHolder: { current?: TimebarActionsContextProps } = {}
-function ActionsProbe() {
-  // eslint-disable-next-line react-hooks/immutability -- test probe capturing the context value
-  actionsHolder.current = useTimebarActions()
-  return null
-}
-
-describe('Timebar actions context stability', () => {
-  it('stays stable across volatile state changes and updates on config changes', () => {
-    const onChange = vi.fn()
-    const { rerender } = render(
-      <Timebar {...baseProps} onChange={onChange}>
-        <ActionsProbe />
-      </Timebar>
-    )
-    const first = actionsHolder.current
-
-    // start/end live in the *state* context -> actions reference must not change.
-    rerender(
-      <Timebar
-        {...baseProps}
-        start="2021-01-01T00:00:00.000Z"
-        end="2021-06-01T00:00:00.000Z"
-        onChange={onChange}
-      >
-        <ActionsProbe />
-      </Timebar>
-    )
-    expect(actionsHolder.current).toBe(first)
-
-    // latestAvailableDataDate lives in the actions context -> reference must change.
-    rerender(
-      <Timebar {...baseProps} latestAvailableDataDate="2020-03-01T00:00:00.000Z" onChange={onChange}>
-        <ActionsProbe />
-      </Timebar>
-    )
-    expect(actionsHolder.current).not.toBe(first)
   })
 })

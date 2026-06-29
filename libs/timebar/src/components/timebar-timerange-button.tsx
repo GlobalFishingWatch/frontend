@@ -2,7 +2,7 @@ import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
-import { useTimebarActions, useTimebarState } from '../timebar-context'
+import { useTimebar } from '../timebar-context'
 
 import type { LastXOption } from './timerange-selector'
 import TimeRangeSelector from './timerange-selector'
@@ -26,8 +26,10 @@ export function TimebarTimeRangeSelector({
     latestAvailableDataDate,
     toggleTimeRangeSelector,
     onTimeRangeSelectorSubmit,
-  } = useTimebarActions()
-  const { start, end, showTimeRangeSelector } = useTimebarState()
+    start,
+    end,
+    showTimeRangeSelector,
+  } = useTimebar()
 
   return (
     <>

@@ -1,6 +1,6 @@
 import type React from 'react'
 
-import { useTimebarActions, useTimebarState } from '../timebar-context'
+import { useTimebar } from '../timebar-context'
 import type {
   StickUnit,
   TimebarLocale,
@@ -43,9 +43,18 @@ export function TimebarGraph({
   onMouseMove,
   onGraphClick,
 }: TimebarGraphProps) {
-  const { notifyChange, labels, absoluteStart, absoluteEnd, latestAvailableDataDate, onBookmarkChange } =
-    useTimebarActions()
-  const { start, end, bookmarkStart, bookmarkEnd } = useTimebarState()
+  const {
+    notifyChange,
+    labels,
+    absoluteStart,
+    absoluteEnd,
+    latestAvailableDataDate,
+    onBookmarkChange,
+    start,
+    end,
+    bookmarkStart,
+    bookmarkEnd,
+  } = useTimebar()
 
   return (
     <Timeline

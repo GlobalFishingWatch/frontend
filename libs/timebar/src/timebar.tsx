@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
@@ -16,12 +16,11 @@ import { TimebarTimeRangeSelector } from './components/timebar-timerange-button'
 import { TimebarBookmark } from './components/timebar-toolbar-bookmark'
 import { getTime } from './utils/internal-utils'
 import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
-import type { TimebarActionsContextProps, TimebarStateContextProps } from './timebar-context'
-import { TimebarActionsContext, TimebarStateContext } from './timebar-context'
+import type { TimebarContextProps } from './timebar-context'
+import { TimebarContext } from './timebar-context'
 import type { TimebarLabels } from './timebar-labels'
 import { DEFAULT_LABELS } from './timebar-labels'
 import type { StickUnit } from './timeline-context'
-import { useShallowMemo } from './use-shallow-memo'
 import { useResizableHeight } from './useResizableHeight'
 
 import styles from './timebar.module.css'
@@ -76,7 +75,7 @@ export type TimebarProps = {
   minimumRange?: number | null
   minimumRangeUnit?: StickUnit
   maximumRange?: number | null
-  maximumRangeUnit?: string
+  maximumRangeUnit?: StickUnit
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
   isResizable?: boolean
@@ -126,28 +125,6 @@ export function Timebar({
     [minimumRange, minimumRangeUnit]
   )
 
-  // Latest props for handlers that need volatile values without re-creating the
-  // (memoized) actions context on every range change. Synced in an effect so we
-  // never write a ref during render; event handlers fire post-commit so they read current values.
-  const latest = useRef({
-    start,
-    end,
-    absoluteStart,
-    absoluteEnd,
-    latestAvailableDataDate,
-    onBookmarkChange,
-  })
-  useEffect(() => {
-    latest.current = {
-      start,
-      end,
-      absoluteStart,
-      absoluteEnd,
-      latestAvailableDataDate,
-      onBookmarkChange,
-    }
-  })
-
   const notifyChange = useCallback(
     (s: string, e: string, source?: string, clampToEnd = false) => {
       const { clampedStart, clampedEnd } = clampToMinAndMax(
@@ -164,7 +141,6 @@ export function Timebar({
 
   const onIntervalClick = useCallback(
     (interval: FourwingsInterval) => {
-      const { start, end, absoluteStart, absoluteEnd, latestAvailableDataDate } = latest.current
       const intervalConfig = CONFIG_BY_INTERVAL[interval]
       if (!intervalConfig) return
       const intervalLimit = LIMITS_BY_INTERVAL[interval]
@@ -196,7 +172,7 @@ export function Timebar({
         notifyChange(absoluteStart, absoluteEnd, EVENT_INTERVAL_SOURCE[interval] as string)
       }
     },
-    [notifyChange]
+    [notifyChange, start, end, absoluteStart, absoluteEnd, latestAvailableDataDate]
   )
 
   const onPlaybackTick = useCallback(
@@ -219,12 +195,12 @@ export function Timebar({
   )
 
   const setBookmark = useCallback(() => {
-    latest.current.onBookmarkChange?.(latest.current.start, latest.current.end)
-  }, [])
+    onBookmarkChange?.(start, end)
+  }, [onBookmarkChange, start, end])
 
   // Notify once on mount (preserves the class componentDidMount behavior).
   useEffect(() => {
-    notifyChange(latest.current.start, latest.current.end, EVENT_SOURCE.MOUNT)
+    notifyChange(start, end, EVENT_SOURCE.MOUNT)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -238,31 +214,52 @@ export function Timebar({
     getTime(bookmarkStart) === getTime(start) &&
     getTime(bookmarkEnd) === getTime(end)
 
-  const actionsValue = useShallowMemo<TimebarActionsContextProps>({
-    notifyChange,
-    onIntervalClick,
-    onPlaybackTick,
-    onTimeRangeSelectorSubmit,
-    onBookmarkChange,
-    setBookmark,
-    toggleTimeRangeSelector,
-    intervals,
-    getCurrentInterval,
-    labels,
-    absoluteStart,
-    absoluteEnd,
-    latestAvailableDataDate,
-  })
-
-  const stateValue = useShallowMemo<TimebarStateContextProps>({
-    start,
-    end,
-    showTimeRangeSelector,
-    hasBookmark,
-    bookmarkDisabled,
-    bookmarkStart,
-    bookmarkEnd,
-  })
+  const value = useMemo<TimebarContextProps>(
+    () => ({
+      notifyChange,
+      onIntervalClick,
+      onPlaybackTick,
+      onTimeRangeSelectorSubmit,
+      onBookmarkChange,
+      setBookmark,
+      toggleTimeRangeSelector,
+      intervals,
+      getCurrentInterval,
+      labels,
+      absoluteStart,
+      absoluteEnd,
+      latestAvailableDataDate,
+      start,
+      end,
+      showTimeRangeSelector,
+      hasBookmark,
+      bookmarkDisabled,
+      bookmarkStart,
+      bookmarkEnd,
+    }),
+    [
+      notifyChange,
+      onIntervalClick,
+      onPlaybackTick,
+      onTimeRangeSelectorSubmit,
+      onBookmarkChange,
+      setBookmark,
+      toggleTimeRangeSelector,
+      intervals,
+      getCurrentInterval,
+      labels,
+      absoluteStart,
+      absoluteEnd,
+      latestAvailableDataDate,
+      start,
+      end,
+      showTimeRangeSelector,
+      hasBookmark,
+      bookmarkDisabled,
+      bookmarkStart,
+      bookmarkEnd,
+    ]
+  )
 
   return (
     <div className={styles.Timebar} style={isResizable ? { height: `${height}px` } : {}}>
@@ -274,9 +271,7 @@ export function Timebar({
           onMouseDown={onResizerMouseDown}
         />
       )}
-      <TimebarActionsContext.Provider value={actionsValue}>
-        <TimebarStateContext.Provider value={stateValue}>{children}</TimebarStateContext.Provider>
-      </TimebarActionsContext.Provider>
+      <TimebarContext.Provider value={value}>{children}</TimebarContext.Provider>
     </div>
   )
 }

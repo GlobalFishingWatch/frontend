@@ -10,31 +10,16 @@ import {
   getFourwingsInterval,
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components/select'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { FIRST_YEAR_OF_DATA } from '../constants'
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
 import { getLastX, isYearInBounds } from '../utils'
 
 import styles from './timerange-selector.module.css'
-
-const DEFAULT_LABELS = {
-  title: 'Select a time range',
-  start: 'start',
-  end: 'end',
-  year: 'year',
-  month: 'month',
-  day: 'day',
-  selectAValidDate: 'Please select a valid date',
-  endBeforeStart: 'The end needs to be after the start',
-  tooLongForMonths: 'Your timerange is too long to see individual months',
-  tooLongForDays: 'Your timerange is too long to see individual days',
-  last30days: 'Last 30 days',
-  last3months: 'Last 3 months',
-  last6months: 'Last 6 months',
-  lastYear: 'Last year',
-  done: 'done',
-}
 
 type TimeRangeSelectorProps = {
   onSubmit: (start: string, end: string) => void
@@ -44,7 +29,8 @@ type TimeRangeSelectorProps = {
   absoluteEnd: string
   latestAvailableDataDate?: string
   onDiscard: MouseEventHandler<HTMLDivElement> | undefined
-  labels?: Partial<typeof DEFAULT_LABELS>
+  labels?: TimebarLabels['timerange']
+  /** Quick-select "last N units" options. Defaults to 30 days / 3 + 6 months / 1 year. */
   lastXOptions?: LastXOption[]
   showDateInputs?: boolean
 }
@@ -52,7 +38,7 @@ type TimeRangeSelectorProps = {
 /** A "last N units" quick-select option (e.g. last 30 days, last 3 months). */
 export type LastXOption = {
   id: string
-  label: string
+  label?: string
   num: number
   unit: DateTimeUnit
 }
@@ -90,7 +76,7 @@ function TimeRangeSelector({
   lastXOptions: lastXOptionsProp,
   showDateInputs = true,
 }: TimeRangeSelectorProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = { ...DEFAULT_LABELS.timerange, ...labelsProp }
 
   const bounds = useMemo(
     () => ({
@@ -448,9 +434,9 @@ function TimeRangeSelector({
             <Select
               className={classNames(styles.cta, styles.lastX)}
               direction="top"
-              options={lastXOptions}
-              selectedOption={currentLastXSelectedOption}
-              onSelect={(selected) => {
+              options={lastXOptions as SelectOption[]}
+              selectedOption={currentLastXSelectedOption as SelectOption}
+              onSelect={(selected: SelectOption) => {
                 onLastXSelect(selected as LastXOption)
               }}
             />

@@ -1,4 +1,4 @@
-import { useTimebarActions, useTimebarState } from '../timebar-context'
+import { useTimebar } from '../timebar-context'
 
 import Playback from './playback'
 
@@ -10,9 +10,8 @@ type TimebarPlaybackProps = {
 
 /** Playback controls (play/pause/loop/speed). Reads range + interval from context. */
 export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: TimebarPlaybackProps) {
-  const { labels, absoluteStart, absoluteEnd, intervals, getCurrentInterval, onPlaybackTick } =
-    useTimebarActions()
-  const { start, end } = useTimebarState()
+  const { labels, absoluteStart, absoluteEnd, intervals, getCurrentInterval, onPlaybackTick, start, end } =
+    useTimebar()
 
   return (
     <Playback
