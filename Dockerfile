@@ -10,9 +10,13 @@ ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
 
-# Enable pnpm via corepack (version pinned in package.json#packageManager)
+# Copy only the files pnpm needs to resolve and install the workspace.
+# This layer is cached until the lockfile or a workspace package.json changes,
+# so source edits don't bust the install step.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
-RUN corepack enable && corepack install
+COPY linting/package.json linting/
+COPY apps/fishing-map/package.json apps/fishing-map/
+RUN corepack enable && corepack install && pnpm install --frozen-lockfile
 
 # All possible build args — each app uses what it needs, unused ones are empty
 ARG APP_NAME
@@ -45,8 +49,7 @@ ENV API_GATEWAY=$API_GATEWAY \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .
-RUN pnpm install --frozen-lockfile && \
-    NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run ${APP_NAME}:build
+RUN NODE_OPTIONS='--max-old-space-size=6144' pnpm exec nx run ${APP_NAME}:build
 
 
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──
