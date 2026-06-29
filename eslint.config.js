@@ -7,7 +7,13 @@ import { repoConfig } from '@globalfishingwatch/linting'
 export default defineConfig([
   // Global ignores
   {
-    ignores: ['.next/**', '**/node_modules/**'],
+    ignores: [
+      '**/node_modules/**',
+      // Generated files (e.g. protobuf decoders) are not hand-edited — don't lint them.
+      '**/*.gen.js',
+      '**/*.gen.ts',
+      '**/*.gen.d.ts',
+    ],
   },
   // Configuration for package.json files (dependency checks)
   {

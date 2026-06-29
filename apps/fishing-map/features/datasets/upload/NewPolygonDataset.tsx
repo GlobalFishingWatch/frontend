@@ -196,13 +196,13 @@ function NewPolygonDataset({
       />
       {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
       <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
-        <InputText
+        {/* <InputText
           value={datasetMetadata?.description}
           label={t((t) => t.datasetUpload.datasetDescription)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
-        />
+        /> */}
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"

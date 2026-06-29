@@ -1,5 +1,7 @@
-import { createFileRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+
+import WorkspaceLayout from 'features/workspace/WorkspaceLayout'
 
 export const Route = createFileRoute('/_app/$category/$workspaceId')({
-  component: lazyRouteComponent(() => import('features/workspace/WorkspaceLayout')),
+  component: WorkspaceLayout,
 })

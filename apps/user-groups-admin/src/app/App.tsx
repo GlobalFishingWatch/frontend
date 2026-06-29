@@ -1,12 +1,11 @@
 import { Fragment, useState } from 'react'
-import type { NextPage } from 'next'
 
 import UserGroupDetail from '../components/user-groups/Detail'
 import UserGroupsList from '../components/user-groups/List'
 
 import styles from './app.module.css'
 
-const Home: NextPage = ({ login }: any) => {
+const Home = ({ login }: any) => {
   const [groupId, setGroupId] = useState<number | undefined>()
   return (
     <Fragment>

@@ -2,6 +2,7 @@ import { camelCase } from 'es-toolkit'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE } from '@globalfishingwatch/api-types'
 
 import { getEndpointsByDatasetType } from './endpoints'
 
@@ -57,9 +58,14 @@ export const resolveEndpoint = (
   }
 
   if (datasetConfigParams?.length) {
+    const configType =
+      DATASET_TYPE_TO_CONFIG_TYPE[dataset.type as keyof typeof DATASET_TYPE_TO_CONFIG_TYPE]
+    const datasetConfiguration = configType
+      ? (dataset.configuration?.[configType] as Record<string, unknown> | undefined)
+      : dataset.configuration // legacy flat fallback
     datasetConfigParams?.forEach((param) => {
       const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
-      const value = param.value ?? dataset.configuration?.[datasetConfigurationId]
+      const value = param.value || datasetConfiguration?.[datasetConfigurationId]
       url = url.replace(`{{${param.id}}}`, value as string)
     })
   }

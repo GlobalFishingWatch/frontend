@@ -270,6 +270,10 @@ export const getCommonFiltersInDataview = (
     })
   }
 
+  if (filter === 'depth') {
+    return commonFilters
+  }
+
   return commonFilters.sort(sortFields)
 }
 

@@ -1,11 +1,11 @@
 import { stringify } from 'qs'
-import { serverT } from 'server/i18n'
 
 import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import { API_GATEWAY, API_VERSION, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import type { APIVesselSearchPagination, IdentityVessel } from '@globalfishingwatch/api-types'
 
 import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
+import { serverT } from 'server/i18n'
 import { getVesselShipNameLabel } from 'utils/info'
 
 import type { VesselParams } from '../types'

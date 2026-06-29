@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import cx from 'classnames'
 
 import type { RegionType } from '@globalfishingwatch/api-types'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import EventDetail from 'features/vessel/activity/event/EventDetail'
@@ -25,6 +26,7 @@ interface EventProps {
   regionsPriority?: RegionType[]
   testId?: string
   expanded?: boolean
+  source?: DatasetEventSource
 }
 
 export const EVENT_HEIGHT = 126
@@ -40,6 +42,7 @@ const Event = (props: EventProps) => {
     regionsPriority,
     eventsRef,
     expanded,
+    source,
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   const hasInteraction =
@@ -86,7 +89,7 @@ const Event = (props: EventProps) => {
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />
           <p className={cx(styles.description, { [styles.interactive]: expanded })}>
-            {getEventDescription(event as ActivityEvent, { regionsPriority })}
+            {getEventDescription(event as ActivityEvent, { source, regionsPriority })}
           </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>

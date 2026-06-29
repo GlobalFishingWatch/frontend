@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiFeedbackRouteImport } from './routes/api/feedback'
@@ -36,6 +37,11 @@ import { Route as AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImpor
 import { Route as AppCategoryWorkspaceIdPortsReportPortIdRouteImport } from './routes/_app/$category/$workspaceId/ports-report.$portId'
 import { Route as AppCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport } from './routes/_app/$category/$workspaceId/report/$datasetId/$areaId'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -178,6 +184,7 @@ const AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/user': typeof AppUserRoute
   '/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -232,6 +240,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
   '/_app/user': typeof AppUserRoute
   '/_app/vessel-search': typeof AppVesselSearchRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
     | '/user'
     | '/vessel-search'
     | '/api/corrections'
@@ -288,6 +298,7 @@ export interface FileRouteTypes {
     | '/$category/$workspaceId/report/$datasetId/$areaId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
     | '/user'
     | '/vessel-search'
     | '/api/corrections'
@@ -315,6 +326,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/login'
     | '/_app/user'
     | '/_app/vessel-search'
     | '/api/corrections'
@@ -344,6 +356,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
   ApiFeedbackRoute: typeof ApiFeedbackRoute
@@ -359,6 +372,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -600,6 +620,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,
   ApiFeedbackRoute: ApiFeedbackRoute,

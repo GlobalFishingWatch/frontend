@@ -50,6 +50,7 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectVesselId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { useEventActivityToggle } from './activity/event/event-activity.hooks'
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import type { VesselSection } from './vessel.types'
@@ -80,6 +81,7 @@ const Vessel = () => {
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
     })?.length > 0
+  const [expandedEventGroup] = useEventActivityToggle()
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
   useVesselFitBounds()
   useUpdateVesselEventsVisibility()
@@ -98,7 +100,7 @@ const Vessel = () => {
 
   const isOnlyVMS = useMemo(() => {
     return vesselIdentity?.sourceCode?.every((source) =>
-      source.toUpperCase().includes(VMS_DATASET_ID.toUpperCase())
+      source.toUpperCase().includes(VMS_DATASET_ID)
     )
   }, [vesselIdentity])
 
@@ -255,7 +257,7 @@ const Vessel = () => {
             mountAllTabsOnLoad
             className={styles.tabsContainer}
           />
-          {vesselSection === 'activity' && (
+          {vesselSection === 'activity' && expandedEventGroup != null && (
             <div className="print-hidden" style={{ height: '48vh' }}></div>
           )}
         </Fragment>

@@ -5,15 +5,15 @@ import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Icon, IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/config'
+import { selectReportsStatus } from 'features/reports/reports.slice'
 import LoginLink from 'features/user/LoginLink'
 import {
   selectIsGuestUser,
   selectIsUserExpired,
   selectUserData,
-  selectUserStatus,
 } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceCustomStatus } from 'features/workspace/workspace.selectors'
 import { selectIsUserLocation } from 'router/routes.selectors'
@@ -21,16 +21,17 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './UserButton.module.css'
 
-const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
+const UserButton = ({ className = '' }: { className?: string }) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const isUserLocation = useSelector(selectIsUserLocation)
   const isUserExpired = useSelector(selectIsUserExpired)
   const userData = useSelector(selectUserData)
-  const userStatus = useSelector(selectUserStatus)
   const customStatus = useSelector(selectWorkspaceCustomStatus)
+  const reportStatus = useSelector(selectReportsStatus)
   const isSmallScreen = useSmallScreen()
   const prevStatusRef = useRef(customStatus)
+  const prevReportStatusRef = useRef(reportStatus)
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
@@ -44,27 +45,31 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
     prevStatusRef.current = customStatus
   }, [customStatus, isSmallScreen])
 
+  useEffect(() => {
+    if (
+      !isSmallScreen &&
+      prevReportStatusRef.current === AsyncReducerStatus.LoadingCreate &&
+      reportStatus === AsyncReducerStatus.Finished
+    ) {
+      setIsAnimating(true)
+    }
+    prevReportStatusRef.current = reportStatus
+  }, [reportStatus, isSmallScreen])
+
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-
-  if (userStatus !== AsyncReducerStatus.Finished) {
-    return (
-      <div className={cx(className, styles.wrapper)}>
-        <Spinner size="tiny" />
-      </div>
-    )
-  }
 
   return (
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
         <LoginLink
+          dataTestId="sidebar-login-link"
           tooltip={t((t) => t.common.login)}
           className={styles.loginLinkButton}
           loginSource="user-icon"
         >
-          <Icon icon="user" testId={testId} />
+          <Icon icon="user" />
         </LoginLink>
       ) : (
         <Tooltip
@@ -81,7 +86,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
             to="/user"
             search={{ ...DEFAULT_WORKSPACE_LIST_VIEWPORT }}
             replace
-            data-testid={testId}
+            data-testid="sidebar-user-link"
             className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
           >
             {userData ? initials : <Icon icon="user" className="print-hidden" />}

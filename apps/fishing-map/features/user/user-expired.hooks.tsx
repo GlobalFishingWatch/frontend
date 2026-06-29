@@ -32,6 +32,9 @@ export const useUserExpiredToast = () => {
         autoClose: false,
         closeButton: true,
       })
+    } else if (toastId.current !== undefined) {
+      toast.dismiss(toastId.current)
+      toastId.current = undefined
     }
   }, [isUserExpired])
 }

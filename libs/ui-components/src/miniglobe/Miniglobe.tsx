@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { geoOrthographic, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
-import type { GeometryCollection,Topology } from 'topojson-specification'
+import type { GeometryCollection, Topology } from 'topojson-specification'
 
 import jsonData from './ne_110m_land.json'
 
@@ -18,6 +18,13 @@ export interface MiniglobeCenter {
   latitude: number
   longitude: number
 }
+
+const EDGE_STEPS = 10
+const densifyEdge = (from: number[], to: number[]) =>
+  Array.from({ length: EDGE_STEPS }, (_, i) => {
+    const t = i / EDGE_STEPS
+    return [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]
+  })
 
 const MIN_DEGREES_PATH = 4
 const MAX_DEGREES_PATH = 150
@@ -48,16 +55,18 @@ export function MiniGlobe(props: MiniglobeProps) {
     return projection
   }, [center, size])
 
+  const pathGen = useMemo(() => geoPath().projection(projection), [projection])
+
   const worldComponent = useMemo(
     () => (
       <g className={styles.land}>
         {worldData.map((d, i) => {
-          const path = geoPath().projection(projection)(d)
+          const path = pathGen(d)
           return path && <path key={`path-${i}`} d={path} />
         })}
       </g>
     ),
-    [projection]
+    [pathGen]
   )
 
   const boundsComponent = useMemo(() => {
@@ -73,56 +82,16 @@ export function MiniGlobe(props: MiniglobeProps) {
     const longitudeExtent = east - west
     const latitudeExtent = north - south
 
+    const ring = [
+      ...densifyEdge([west, north], [east, north]),
+      ...densifyEdge([east, north], [east, south]),
+      ...densifyEdge([east, south], [west, south]),
+      ...densifyEdge([west, south], [west, north]),
+      [west, north],
+    ]
     const viewportBoundsGeoJSON = {
       type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          [
-            [west, north],
-            [west + longitudeExtent * 0.1, north],
-            [west + longitudeExtent * 0.2, north],
-            [west + longitudeExtent * 0.3, north],
-            [west + longitudeExtent * 0.4, north],
-            [west + longitudeExtent * 0.5, north],
-            [west + longitudeExtent * 0.6, north],
-            [west + longitudeExtent * 0.7, north],
-            [west + longitudeExtent * 0.8, north],
-            [west + longitudeExtent * 0.9, north],
-            [east, north],
-            [east, north - latitudeExtent * 0.1],
-            [east, north - latitudeExtent * 0.2],
-            [east, north - latitudeExtent * 0.3],
-            [east, north - latitudeExtent * 0.4],
-            [east, north - latitudeExtent * 0.5],
-            [east, north - latitudeExtent * 0.6],
-            [east, north - latitudeExtent * 0.7],
-            [east, north - latitudeExtent * 0.8],
-            [east, north - latitudeExtent * 0.9],
-            [east, south],
-            [east - longitudeExtent * 0.1, south],
-            [east - longitudeExtent * 0.2, south],
-            [east - longitudeExtent * 0.3, south],
-            [east - longitudeExtent * 0.4, south],
-            [east - longitudeExtent * 0.5, south],
-            [east - longitudeExtent * 0.6, south],
-            [east - longitudeExtent * 0.7, south],
-            [east - longitudeExtent * 0.8, south],
-            [east - longitudeExtent * 0.9, south],
-            [west, south],
-            [west, south + latitudeExtent * 0.1],
-            [west, south + latitudeExtent * 0.2],
-            [west, south + latitudeExtent * 0.3],
-            [west, south + latitudeExtent * 0.4],
-            [west, south + latitudeExtent * 0.5],
-            [west, south + latitudeExtent * 0.6],
-            [west, south + latitudeExtent * 0.7],
-            [west, south + latitudeExtent * 0.8],
-            [west, south + latitudeExtent * 0.9],
-            [west, north],
-          ],
-        ],
-      },
+      geometry: { type: 'Polygon', coordinates: [ring] },
     }
 
     const showPoint = latitudeExtent <= MIN_DEGREES_PATH || longitudeExtent <= MIN_DEGREES_PATH
@@ -137,7 +106,7 @@ export function MiniGlobe(props: MiniglobeProps) {
         />
       )
     } else if (showPath) {
-      const path = geoPath().projection(projection)(viewportBoundsGeoJSON as any) || undefined
+      const path = pathGen(viewportBoundsGeoJSON as any) || undefined
       return (
         <path
           key="viewport"
@@ -148,7 +117,7 @@ export function MiniGlobe(props: MiniglobeProps) {
       )
     }
     return null
-  }, [bounds, projection, size, viewportThickness])
+  }, [bounds, pathGen, size, viewportThickness])
 
   return (
     <svg

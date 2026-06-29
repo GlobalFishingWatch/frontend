@@ -56,16 +56,18 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
   const noGuestDatasets = useSelector(selectSearchDatasetsNotGuestAllowedLabels)
   const activeSearchOption = useSelector(searchOptionSelector) || 'basic'
   const isSmallScreen = useSmallScreen()
+  const isSearching =
+    searchStatus === AsyncReducerStatus.Loading || searchStatus === AsyncReducerStatus.Aborted
 
   return (
     <SearchPlaceholder className={className}>
       <div className={styles.container}>
         <VesselSearchImage className={styles.image} />
-        <div className={cx({ [styles.hidden]: searchStatus !== AsyncReducerStatus.Loading })}>
+        <div className={cx({ [styles.hidden]: !isSearching })}>
           {t((t) => t.search.searching)}
           <Spinner className={styles.spinner} />
         </div>
-        <div className={cx({ [styles.hidden]: searchStatus === AsyncReducerStatus.Loading })}>
+        <div className={cx({ [styles.hidden]: isSearching })}>
           {activeSearchOption === 'basic' && (
             <div className={styles.description}>
               {t((t) => t.search.description)}

@@ -67,7 +67,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
     id: dataset.id,
     name: dataset.name,
     public: !isPrivateDataset(dataset),
-    description: dataset.description,
+    // description: dataset.description,
     type: dataset.type,
     filters: dataset.filters,
     category: dataset.category,

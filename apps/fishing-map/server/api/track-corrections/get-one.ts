@@ -1,3 +1,7 @@
+import type {
+  TrackCorrection,
+  TrackCorrectionComment,
+} from 'features/track-correction/track-correction.slice'
 import {
   COMMENTS_SPREADSHEET_TITLE,
   ISSUES_SPREADSHEET_TITLE,
@@ -5,11 +9,6 @@ import {
   parseIssueRow,
 } from 'server/api/track-corrections/utils'
 import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
-
-import type {
-  TrackCorrection,
-  TrackCorrectionComment,
-} from 'features/track-correction/track-correction.slice'
 
 export async function getWorkspaceIssueDetail(workspaceId: string, issueId: string) {
   const spreadsheetDoc = await loadSpreadsheetDocByWorkspace(workspaceId)

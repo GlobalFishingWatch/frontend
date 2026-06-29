@@ -4,7 +4,6 @@ import { atom } from 'jotai'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_VIEWPORT } from 'data/config'
-import { getUrlViewstateNumericParam } from 'utils/url'
 
 // MAP INSTANCE
 export const mapInstanceAtom = atom<Deck<MapView> | undefined>(undefined)
@@ -20,8 +19,11 @@ export const boundsAtom = atom<BoundsAtom>({
 })
 
 // VIEW STATE
+// Keep the initial value deterministic (same on server and client) to avoid SSR
+// hydration mismatches. The viewport from the URL is synced into the atom on the
+// client after mount via useMapViewStateUrlSync.
 export const viewStateAtom = atom<ViewStateMap<MapView>>({
-  longitude: getUrlViewstateNumericParam('longitude') || DEFAULT_VIEWPORT.longitude,
-  latitude: getUrlViewstateNumericParam('latitude') || DEFAULT_VIEWPORT.latitude,
-  zoom: getUrlViewstateNumericParam('zoom') || DEFAULT_VIEWPORT.zoom,
+  longitude: DEFAULT_VIEWPORT.longitude,
+  latitude: DEFAULT_VIEWPORT.latitude,
+  zoom: DEFAULT_VIEWPORT.zoom,
 })

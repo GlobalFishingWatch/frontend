@@ -1,19 +1,20 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getGuestUser } from '@globalfishingwatch/api-client'
 import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
+import { broadcastLogout } from 'features/user/auth-channel'
 import type { LoginSource } from 'features/user/user.types'
 import {
   cleanCurrentWorkspaceData,
   removeGFWStaffOnlyDataviews,
 } from 'features/workspace/workspace.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
+import { logoutServerFn } from 'server-functions/auth.functions'
 import { getIsBrowser } from 'utils/dom'
 
 export interface UserSettings {
@@ -24,7 +25,6 @@ interface UserState {
   logged: boolean
   expired: boolean
   language: Locale
-  status: AsyncReducerStatus
   data: UserData | null
   settings: UserSettings
   loginSource: LoginSource | null
@@ -34,13 +34,10 @@ const initialState: UserState = {
   logged: false,
   expired: false,
   language: Locale.en,
-  status: AsyncReducerStatus.Idle,
   data: null,
   settings: {},
   loginSource: null,
 }
-
-type UserSliceState = { user: UserState }
 
 export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
   'costa rica': 'costa_rica',
@@ -50,37 +47,26 @@ export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
   'ssf-ipnlf': 'coastal_fisheries_indonesia',
 }
 
-export const fetchUserThunk = createAsyncThunk(
-  'user/fetch',
-  async ({ guest, accessToken }: { guest?: boolean; accessToken?: string } = { guest: false }) => {
-    if (guest) {
-      return await GFWAPI.fetchGuestUser()
-    }
+export const logoutUserThunk = createAsyncThunk(
+  'user/logout',
+  async (
+    { logoutServer, broadcast }: { logoutServer?: boolean; broadcast?: boolean } = {},
+    { dispatch }
+  ) => {
     try {
-      const user = await GFWAPI.login({ accessToken })
-
-      return user
+      if (logoutServer) {
+        await logoutServerFn()
+      }
+      if (broadcast) {
+        broadcastLogout()
+      }
+      dispatch(cleanCurrentWorkspaceData())
+      dispatch(removeGFWStaffOnlyDataviews())
     } catch (e: any) {
-      return await GFWAPI.fetchGuestUser()
+      console.warn(e)
     }
-  },
-  {
-    condition: (params, { getState }) => {
-      const { user } = getState() as UserSliceState
-      return user.status !== AsyncReducerStatus.Loading
-    },
   }
 )
-
-export const logoutUserThunk = createAsyncThunk('user/logout', async (_, { dispatch }) => {
-  try {
-    await GFWAPI.logout()
-    dispatch(cleanCurrentWorkspaceData())
-    dispatch(removeGFWStaffOnlyDataviews())
-  } catch (e: any) {
-    console.warn(e)
-  }
-})
 
 const userSlice = createSlice({
   name: 'user',
@@ -103,28 +89,22 @@ const userSlice = createSlice({
     setLoginSource: (state, action: PayloadAction<LoginSource | null>) => {
       state.loginSource = action.payload
     },
+    setLoggedUser: (state, action: PayloadAction<UserData>) => {
+      state.logged = true
+      state.expired = false
+      state.data = action.payload
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserThunk.pending, (state) => {
-      state.status = AsyncReducerStatus.Loading
-    })
-    builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
-      state.status = AsyncReducerStatus.Finished
-      state.logged = true
-      state.data = action.payload
-    })
-    builder.addCase(fetchUserThunk.rejected, (state) => {
-      state.status = AsyncReducerStatus.Error
-    })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
       state.expired = false
-      state.data = null
+      state.data = getGuestUser()
     })
   },
 })
 
-export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource } =
+export const { setUserSetting, setLoginExpired, setUserLanguage, setLoginSource, setLoggedUser } =
   userSlice.actions
 
 export default userSlice.reducer

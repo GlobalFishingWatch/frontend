@@ -278,7 +278,7 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           },
         }
       } else {
-        const dataviewId = portReportDatasetId?.includes(VMS_DATASET_ID)
+        const dataviewId = portReportDatasetId?.includes(VMS_DATASET_ID.toLowerCase())
           ? PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
           : PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG
 

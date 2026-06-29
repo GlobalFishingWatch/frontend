@@ -5,7 +5,6 @@
   "js/ts.tsserver.enableProjectDiagnostics": false,
   "js/ts.disableAutomaticTypeAcquisition": true,
   "files.watcherExclude": {
-    "**/.next/**": true,
     "**/.nitro/**": true,
     "**/.nx/**": true,
     "**/.output/**": true,

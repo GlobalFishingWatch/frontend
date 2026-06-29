@@ -166,7 +166,7 @@ const getRangeBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
   return values
 }
 
-const UNSORTED_FILTERS: SupportedDatasetFilter[] = ['speed', 'elevation', 'vessel-groups']
+const UNSORTED_FILTERS: SupportedDatasetFilter[] = ['speed', 'elevation', 'vessel-groups', 'depth']
 
 function LayerSchemaFilter({
   schemaFilter,

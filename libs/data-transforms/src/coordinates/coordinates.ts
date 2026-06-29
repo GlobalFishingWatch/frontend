@@ -26,10 +26,12 @@ export const toLngLatCoordinates = (lon: unknown, lat: unknown): [number, number
 }
 
 export const parseCoords = (
-  latitude: number | string,
-  longitude: number | string
+  latitude: number | string | null | undefined,
+  longitude: number | string | null | undefined
 ): { latitude: number; longitude: number } | null => {
-  if (!latitude || !longitude) return null
+  if (latitude == null || latitude === '' || longitude == null || longitude === '') {
+    return null
+  }
   if (typeof latitude === 'number' && typeof longitude === 'number') {
     return { latitude, longitude }
   }

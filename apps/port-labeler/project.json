@@ -1,7 +1,7 @@
 {
   "name": "port-labeler",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/port-labeler",
+  "sourceRoot": "apps/port-labeler/src",
   "projectType": "application",
   "targets": {
     "watch-deps": {
@@ -18,64 +18,45 @@
       }
     },
     "build": {
-      "executor": "@nx/next:build",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/port-labeler"
       },
       "configurations": {
-        "production": {}
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
       }
     },
     "start": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx clean-locales port-labeler",
-          "nx serve i18n-labels",
-          "nx serve port-labeler"
-        ],
+        "commands": ["nx serve i18n-labels", "vite"],
+        "cwd": "{projectRoot}",
         "parallel": true
       },
       "continuous": true
     },
-    "clean-locales": {
-      "executor": "nx:run-commands",
-      "outputs": [],
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
       "options": {
-        "command": "rimraf dist/apps/port-labeler/public/locales"
-      }
-    },
-    "serve": {
-      "executor": "@nx/next:server",
-      "options": {
-        "buildTarget": "port-labeler:build",
-        "dev": true,
-        "port": 3000
+        "buildTarget": "port-labeler:build"
       },
       "configurations": {
+        "development": {
+          "buildTarget": "port-labeler:build:development"
+        },
         "production": {
-          "buildTarget": "port-labeler:build:production",
-          "dev": false
+          "buildTarget": "port-labeler:build:production"
         }
-      }
-    },
-    "export": {
-      "executor": "@nx/next:export",
-      "options": {
-        "buildTarget": "port-labeler:build:production"
-      }
-    },
-    "docker-prepare": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": [
-          "cp config/entrypoint.sh dist/apps/port-labeler",
-          "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
-        ]
-      }
+      },
+      "dependsOn": ["build"]
     },
     "typecheck": {
       "executor": "nx:run-commands",

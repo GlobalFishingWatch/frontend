@@ -108,7 +108,7 @@ async function runLoginFlow(email: string, password: string) {
       timeout: NAVIGATION_TIMEOUT_MS,
       waitUntil: 'domcontentloaded',
     })
-    await page.waitForURL('**/auth*', { timeout: NAVIGATION_TIMEOUT_MS })
+    await page.waitForURL('**/auth*', { timeout: NAVIGATION_TIMEOUT_MS, waitUntil: 'commit' })
     log(`Navigated to auth page: ${page.url()}`)
 
     log('Filling in email...')
@@ -140,7 +140,7 @@ async function runLoginFlow(email: string, password: string) {
     log(`Access token captured from callback URL: Yes (length: ${accessToken.length})`)
 
     log('Exchanging access token for API tokens with GFWAPI...')
-    const tokens = await GFWAPI.getTokensWithAccessToken(accessToken)
+    const tokens = await GFWAPI.exchangeAccessToken(accessToken)
 
     log(`Token retrieved: ${tokens.token ? 'Yes (length: ' + tokens.token.length + ')' : 'No'}`)
     log(

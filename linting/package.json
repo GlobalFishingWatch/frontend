@@ -23,7 +23,6 @@
     "index.js",
     "lib.js",
     "legacy.js",
-    "next.js",
     "javascript.js",
     "prettier.js",
     "stylelint.js"
@@ -41,10 +40,8 @@
   "dependencies": {
     "@eslint/compat": "2.x",
     "@eslint/js": "10.x",
-    "@next/eslint-plugin-next": "16.x",
     "@nx/eslint-plugin": "22.x",
     "eslint": "10.x",
-    "eslint-config-next": "16.x",
     "eslint-config-prettier": "10.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",

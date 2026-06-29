@@ -3,14 +3,31 @@ import { hydrateRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/tanstackstart-react'
 import { StartClient } from '@tanstack/react-start/client'
 
-import '@fontsource/roboto/400.css'
-import '@fontsource/roboto/500.css'
+import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client'
 
-// A failed dynamic import usually means the deployed assets changed under us
-// (stale HTML referencing old hashed chunks) — reload to pick up the new build.
-// Do NOT call event.preventDefault(): Vite only rethrows the original error when
-// defaultPrevented is false. Suppressing it makes the import promise resolve with
-// undefined, causing "Cannot read properties of undefined (reading 'default')".
+import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions/auth.functions'
+
+import 'utils/polyfills'
+
+const AUTH_RESET_VERSION = '2026-06-ssr-cookies'
+try {
+  if (localStorage.getItem('GFW_AUTH_RESET') !== AUTH_RESET_VERSION) {
+    localStorage.removeItem('GFW_API_USER_TOKEN')
+    localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+    localStorage.setItem('GFW_AUTH_RESET', AUTH_RESET_VERSION)
+  }
+} catch {
+  // localStorage unavailable (private mode / blocked) — nothing to clean up.
+}
+
+GFWAPI.configure({
+  tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),
+  refreshStrategy: () => refreshTokenServerFn(),
+  sessionInvalidateStrategy: () => clearAuthCookiesServerFn(),
+})
+
+// A failed dynamic import usually means the deployed assets changed between deploys
 window.addEventListener('vite:preloadError', () => {
   window.location.reload()
 })

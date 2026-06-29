@@ -36,6 +36,16 @@ export const useMapBounds = (): { bounds: MiniglobeBounds } => {
   return useMemo(() => ({ bounds }), [bounds])
 }
 
+export const useMapBoundsLive = (): { bounds: MiniglobeBounds | undefined } => {
+  const viewport = useMapViewport()
+  return useMemo(() => {
+    if (!viewport) return { bounds: undefined }
+    const wn = viewport.unproject([0, 0])
+    const es = viewport.unproject([viewport.width, viewport.height])
+    return { bounds: { north: wn[1], south: es[1], west: wn[0], east: es[0] } }
+  }, [viewport])
+}
+
 export type FitBoundsParams = {
   mapDOMId?: string
   mapWidth?: number

@@ -80,6 +80,7 @@ const icons = [
   'home',
   'hycom-logo',
   'info',
+  'isa-logo',
   'language',
   'layers-off',
   'layers-on',

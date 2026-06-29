@@ -43,6 +43,7 @@ export type SupportedEnvDatasetFilter =
   | 'type'
   | 'speed'
   | 'elevation'
+  | 'depth'
   | 'flag'
   | 'vessel_type'
   | 'Height'

@@ -12,7 +12,7 @@ import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { selectUserLogged } from 'features/user/selectors/user.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
@@ -107,7 +107,7 @@ export const useEnsureWorkspaceLoad = () => {
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const fetchWorkspace = useFetchWorkspace()
 
-  const userLogged = useSelector(selectIsUserLogged)
+  const userLogged = useSelector(selectUserLogged)
   const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null
 
   const shouldFetchWorkspace =

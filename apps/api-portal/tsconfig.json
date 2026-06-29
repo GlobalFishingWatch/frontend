@@ -1,14 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
       "node",
+      "vite/client",
       "@vitest/browser/matchers",
-      "next",
       "@vitest/browser-playwright",
       "vitest-browser-react",
       "vitest"
@@ -28,11 +28,6 @@
     "strictNullChecks": true,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
@@ -55,30 +50,29 @@
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
       "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"],
-      "app/*": ["./app/*"],
-      "components/*": ["./components/*"],
-      "features/*": ["./features/*"],
-      "lib/*": ["./lib/*"],
-      "pages/*": ["./pages/*"]
+      "app/*": ["./src/app/*"],
+      "components/*": ["./src/components/*"],
+      "features/*": ["./src/features/*"],
+      "lib/*": ["./src/lib/*"]
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "index.d.ts",
     "eslint.config.js",
-    "types/**/*.d.ts",
-    "features/**/*.d.ts",
-    "vitest.config.mts"
+    "vite.config.mts"
   ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
-    ".next",
     "exported",
     "**/resources.d.ts",
     "**/i18n.types.d.ts",
-    "**/__traces__/**"
+    "**/__traces__/**",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "src/**/*.spec.tsx",
+    "src/**/*.test.tsx"
   ]
 }

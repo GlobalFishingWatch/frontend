@@ -1,4 +1,4 @@
-/*eslint-disable jsdoc/require-param*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-mixed-operators, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, default-case, jsdoc/require-param*/
 import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
@@ -144,18 +144,18 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrackAttribute(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType === 2) {
               if (!(message.value && message.value.length)) message.value = []
-              const end2 = reader.uint32() + reader.pos
+              let end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.value.push(reader.float())
               continue
             }
@@ -231,7 +231,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.DeckTrackAttribute: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrackAttribute()
+      let message = new $root.vessels.DeckTrackAttribute()
       if (object.value) {
         if (!Array.isArray(object.value))
           throw TypeError('.vessels.DeckTrackAttribute.value: array expected')
@@ -255,7 +255,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.value = []
       if (options.defaults) object.size = 0
       if (message.value && message.value.length) {
@@ -474,13 +474,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrackAttributeStruct(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -576,23 +576,23 @@ export const vessels = ($root.vessels = (() => {
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) return 'max depth exceeded'
       if (message.getPath != null && Object.hasOwnProperty.call(message, 'getPath')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getPath, _depth + 1)
         if (error) return 'getPath.' + error
       }
       if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
         if (error) return 'getTimestamp.' + error
       }
       if (message.getSpeed != null && Object.hasOwnProperty.call(message, 'getSpeed')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getSpeed, _depth + 1)
         if (error) return 'getSpeed.' + error
       }
       if (message.getElevation != null && Object.hasOwnProperty.call(message, 'getElevation')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getElevation, _depth + 1)
         if (error) return 'getElevation.' + error
       }
       if (message.getCourse != null && Object.hasOwnProperty.call(message, 'getCourse')) {
-        const error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
+        let error = $root.vessels.DeckTrackAttribute.verify(message.getCourse, _depth + 1)
         if (error) return 'getCourse.' + error
       }
       return null
@@ -612,7 +612,7 @@ export const vessels = ($root.vessels = (() => {
         throw TypeError('.vessels.DeckTrackAttributeStruct: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrackAttributeStruct()
+      let message = new $root.vessels.DeckTrackAttributeStruct()
       if (object.getPath != null) {
         if (!$util.isObject(object.getPath))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getPath: object expected')
@@ -663,7 +663,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.defaults) {
         object.getPath = null
         object.getTimestamp = null
@@ -873,13 +873,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DeckTrack(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 0) break
@@ -890,7 +890,7 @@ export const vessels = ($root.vessels = (() => {
           case 2: {
             if (wireType === 2) {
               if (!(message.startIndices && message.startIndices.length)) message.startIndices = []
-              const end2 = reader.uint32() + reader.pos
+              let end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.startIndices.push(reader.uint32())
               continue
             }
@@ -956,7 +956,7 @@ export const vessels = ($root.vessels = (() => {
           if (!$util.isInteger(message.startIndices[i])) return 'startIndices: integer[] expected'
       }
       if (message.attributes != null && Object.hasOwnProperty.call(message, 'attributes')) {
-        const error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
+        let error = $root.vessels.DeckTrackAttributeStruct.verify(message.attributes, _depth + 1)
         if (error) return 'attributes.' + error
       }
       return null
@@ -975,7 +975,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.DeckTrack: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DeckTrack()
+      let message = new $root.vessels.DeckTrack()
       if (object.length != null)
         if (Number(object.length) !== 0) message.length = object.length >>> 0
       if (object.startIndices) {
@@ -1009,7 +1009,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.startIndices = []
       if (options.defaults) {
         object.length = 0

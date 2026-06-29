@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
@@ -10,9 +10,30 @@ import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import type { WorkspaceViewport } from 'types'
+import { getIsBrowser } from 'utils/dom'
+import { getUrlViewstateNumericParam } from 'utils/url'
 
 export const useMapViewState = () => {
   return useAtomValue(viewStateAtom)
+}
+
+// Runs before paint on the client, no-ops on the server.
+const useIsomorphicLayoutEffect = getIsBrowser() ? useLayoutEffect : useEffect
+
+export const useMapViewStateUrlSync = () => {
+  const setViewState = useSetAtom(viewStateAtom)
+  useIsomorphicLayoutEffect(() => {
+    const longitude = getUrlViewstateNumericParam('longitude')
+    const latitude = getUrlViewstateNumericParam('latitude')
+    const zoom = getUrlViewstateNumericParam('zoom')
+    const urlViewport = Object.fromEntries(
+      Object.entries({ longitude, latitude, zoom }).filter(([, value]) => value !== null)
+    )
+    if (Object.keys(urlViewport).length > 0) {
+      setViewState((prev) => ({ ...prev, ...urlViewport }))
+    }
+    // mount-only: URL viewport is the initial deep-link, not a live source
+  }, [])
 }
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)

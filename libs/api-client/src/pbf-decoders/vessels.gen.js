@@ -1,4 +1,4 @@
-/*eslint-disable jsdoc/require-param*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-mixed-operators, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars, default-case, jsdoc/require-param*/
 import $protobuf from 'protobufjs/minimal.js'
 
 // Common aliases
@@ -129,21 +129,21 @@ export const vessels = ($root.vessels = (() => {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
       if (_depth === undefined) _depth = 0
       if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
-      const end = length === undefined ? reader.len : reader.pos + length,
+      let end = length === undefined ? reader.len : reader.pos + length,
         message = _target || new $root.vessels.Track()
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType === 2) {
               if (!(message.data && message.data.length)) message.data = []
-              const end2 = reader.uint32() + reader.pos
+              let end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.data.push(reader.sint32())
               continue
             }
@@ -211,7 +211,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.Track: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.Track()
+      let message = new $root.vessels.Track()
       if (object.data) {
         if (!Array.isArray(object.data)) throw TypeError('.vessels.Track.data: array expected')
         message.data = Array(object.data.length)
@@ -233,7 +233,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.data = []
       if (message.data && message.data.length) {
         object.data = Array(message.data.length)
@@ -442,13 +442,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.TilesetVesselQuery(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -539,7 +539,7 @@ export const vessels = ($root.vessels = (() => {
       if (message.entries != null && Object.hasOwnProperty.call(message, 'entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
-          const error = $root.vessels.TilesetVesselInfo.verify(message.entries[i], _depth + 1)
+          let error = $root.vessels.TilesetVesselInfo.verify(message.entries[i], _depth + 1)
           if (error) return 'entries.' + error
         }
       }
@@ -559,7 +559,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.TilesetVesselQuery: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.TilesetVesselQuery()
+      let message = new $root.vessels.TilesetVesselQuery()
       if (object.query != null)
         if (typeof object.query !== 'string' || object.query.length)
           message.query = String(object.query)
@@ -598,7 +598,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
         object.query = ''
@@ -845,13 +845,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.TilesetVesselInfo(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -971,7 +971,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.TilesetVesselInfo: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.TilesetVesselInfo()
+      let message = new $root.vessels.TilesetVesselInfo()
       if (object.id != null)
         if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
       if (object.name != null)
@@ -1010,7 +1010,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.defaults) {
         object.id = ''
         object.name = ''
@@ -1195,13 +1195,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DatasetVesselV1Query(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 10: {
             if (wireType !== 2) break
@@ -1265,7 +1265,7 @@ export const vessels = ($root.vessels = (() => {
       if (message.results != null && Object.hasOwnProperty.call(message, 'results')) {
         if (!Array.isArray(message.results)) return 'results: array expected'
         for (let i = 0; i < message.results.length; ++i) {
-          const error = $root.vessels.DatasetVesselQuery.verify(message.results[i], _depth + 1)
+          let error = $root.vessels.DatasetVesselQuery.verify(message.results[i], _depth + 1)
           if (error) return 'results.' + error
         }
       }
@@ -1285,7 +1285,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselV1Query: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DatasetVesselV1Query()
+      let message = new $root.vessels.DatasetVesselV1Query()
       if (object.dataset != null)
         if (typeof object.dataset !== 'string' || object.dataset.length)
           message.dataset = String(object.dataset)
@@ -1318,7 +1318,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.results = []
       if (options.defaults) object.dataset = ''
       if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
@@ -1535,13 +1535,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DatasetVesselQuery(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -1632,7 +1632,7 @@ export const vessels = ($root.vessels = (() => {
       if (message.entries != null && Object.hasOwnProperty.call(message, 'entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
         for (let i = 0; i < message.entries.length; ++i) {
-          const error = $root.vessels.DatasetVesselInfo.verify(message.entries[i], _depth + 1)
+          let error = $root.vessels.DatasetVesselInfo.verify(message.entries[i], _depth + 1)
           if (error) return 'entries.' + error
         }
       }
@@ -1652,7 +1652,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselQuery: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DatasetVesselQuery()
+      let message = new $root.vessels.DatasetVesselQuery()
       if (object.query != null)
         if (typeof object.query !== 'string' || object.query.length)
           message.query = String(object.query)
@@ -1691,7 +1691,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
         object.query = ''
@@ -2012,13 +2012,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.DatasetVesselInfo(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -2158,35 +2158,35 @@ export const vessels = ($root.vessels = (() => {
       if (message.authorizations != null && Object.hasOwnProperty.call(message, 'authorizations')) {
         if (!Array.isArray(message.authorizations)) return 'authorizations: array expected'
         for (let i = 0; i < message.authorizations.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.authorizations[i], _depth + 1)
+          let error = $root.vessels.StartEndValue.verify(message.authorizations[i], _depth + 1)
           if (error) return 'authorizations.' + error
         }
       }
       if (message.extra != null && Object.hasOwnProperty.call(message, 'extra')) {
         if (!Array.isArray(message.extra)) return 'extra: array expected'
         for (let i = 0; i < message.extra.length; ++i) {
-          const error = $root.vessels.Extra.verify(message.extra[i], _depth + 1)
+          let error = $root.vessels.Extra.verify(message.extra[i], _depth + 1)
           if (error) return 'extra.' + error
         }
       }
       if (message.mmsi != null && Object.hasOwnProperty.call(message, 'mmsi')) {
         if (!Array.isArray(message.mmsi)) return 'mmsi: array expected'
         for (let i = 0; i < message.mmsi.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.mmsi[i], _depth + 1)
+          let error = $root.vessels.StartEndValue.verify(message.mmsi[i], _depth + 1)
           if (error) return 'mmsi.' + error
         }
       }
       if (message.callsign != null && Object.hasOwnProperty.call(message, 'callsign')) {
         if (!Array.isArray(message.callsign)) return 'callsign: array expected'
         for (let i = 0; i < message.callsign.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.callsign[i], _depth + 1)
+          let error = $root.vessels.StartEndValue.verify(message.callsign[i], _depth + 1)
           if (error) return 'callsign.' + error
         }
       }
       if (message.flags != null && Object.hasOwnProperty.call(message, 'flags')) {
         if (!Array.isArray(message.flags)) return 'flags: array expected'
         for (let i = 0; i < message.flags.length; ++i) {
-          const error = $root.vessels.StartEndValue.verify(message.flags[i], _depth + 1)
+          let error = $root.vessels.StartEndValue.verify(message.flags[i], _depth + 1)
           if (error) return 'flags.' + error
         }
       }
@@ -2206,7 +2206,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.DatasetVesselInfo: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.DatasetVesselInfo()
+      let message = new $root.vessels.DatasetVesselInfo()
       if (object.id != null)
         if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
       if (object.name != null)
@@ -2298,7 +2298,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.arrays || options.defaults) {
         object.authorizations = []
         object.extra = []
@@ -2533,13 +2533,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.Extra(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -2619,7 +2619,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.Extra: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.Extra()
+      let message = new $root.vessels.Extra()
       if (object.id != null)
         if (typeof object.id !== 'string' || object.id.length) message.id = String(object.id)
       if (object.label != null)
@@ -2642,7 +2642,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.defaults) {
         object.id = ''
         object.label = ''
@@ -2818,13 +2818,13 @@ export const vessels = ($root.vessels = (() => {
         message = _target || new $root.vessels.StartEndValue(),
         value
       while (reader.pos < end) {
-        const start = reader.pos
+        let start = reader.pos
         let tag = reader.tag()
         if (tag === _end) {
           _end = undefined
           break
         }
-        const wireType = tag & 7
+        let wireType = tag & 7
         switch ((tag >>>= 3)) {
           case 1: {
             if (wireType !== 2) break
@@ -2904,7 +2904,7 @@ export const vessels = ($root.vessels = (() => {
       if (!$util.isObject(object)) throw TypeError('.vessels.StartEndValue: object expected')
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const message = new $root.vessels.StartEndValue()
+      let message = new $root.vessels.StartEndValue()
       if (object.start != null)
         if (typeof object.start !== 'string' || object.start.length)
           message.start = String(object.start)
@@ -2929,7 +2929,7 @@ export const vessels = ($root.vessels = (() => {
       if (!options) options = {}
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      const object = {}
+      let object = {}
       if (options.defaults) {
         object.start = ''
         object.end = ''

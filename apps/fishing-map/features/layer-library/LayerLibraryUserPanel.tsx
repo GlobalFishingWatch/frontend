@@ -76,15 +76,15 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     [dispatch, upsertDataviewInstance]
   )
 
-  const onInfoClick = useCallback(
-    (dataset: Dataset) => {
-      openSidePanel({
-        type: 'userDataset',
-        id: dataset.id,
-      })
-    },
-    [openSidePanel]
-  )
+  // const onInfoClick = useCallback(
+  //   (dataset: Dataset) => {
+  //     openSidePanel({
+  //       type: 'userDataset',
+  //       id: dataset.id,
+  //     })
+  //   },
+  //   [openSidePanel]
+  // )
 
   const onUploadClick = useCallback(() => {
     onAddNewClick()
@@ -165,16 +165,15 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                         {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
                       </span>
                       <div>
-                        {(datasetError || datasetDescription) && (
+                        {datasetError ? (
                           <InfoError
                             error={datasetError}
                             loading={datasetImporting}
                             tooltip={infoTooltip}
                             size="default"
-                            onClick={() => !datasetError && onInfoClick(dataset)}
+                            // onClick={() => !datasetError && onInfoClick(dataset)}
                           />
-                        )}
-                        {!datasetError && (
+                        ) : (
                           <IconButton
                             testId={`${dataset.type}-add-to-map-${index}`}
                             icon="view-on-map"

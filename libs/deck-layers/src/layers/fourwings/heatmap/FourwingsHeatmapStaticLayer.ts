@@ -189,6 +189,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         return { ...info, object: undefined } as any
       }
       object.properties.values = [[object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
+      object.sublayers = object.sublayers?.map((sublayer) => ({
+        ...sublayer,
+        value: object.properties?.[HEATMAP_STATIC_PROPERTY_ID],
+      }))
     }
     return { ...info, object }
   }

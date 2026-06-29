@@ -40,6 +40,7 @@ import {
   getBestMatchCriteriaIdentity,
   getOtherVesselNames,
   getSearchIdentityResolved,
+  getVesselIdentityId,
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
@@ -244,7 +245,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'ssvid',
         accessorFn: (vessel: IdentityVesselData) => {
-          const ssvid = getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER
+          const ssvid = getSearchIdentityResolved(vessel).ssvid || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.ssvid
             ? getHighlightedText(ssvid, searchFilters.ssvid || '', styles)
             : ssvid
@@ -254,7 +255,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'imo',
         accessorFn: (vessel: IdentityVesselData) => {
-          const imo = getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER
+          const imo = getSearchIdentityResolved(vessel).imo || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.imo ? getHighlightedText(imo, searchFilters.imo || '', styles) : imo
         },
         header: t((t) => t.vessel.imo),
@@ -262,7 +263,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'callsign',
         accessorFn: (vessel: IdentityVesselData) => {
-          const callsign = getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER
+          const callsign = getSearchIdentityResolved(vessel).callsign || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.callsign
             ? getHighlightedText(callsign, searchFilters.callsign || '', styles)
             : callsign
@@ -273,8 +274,21 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'owner',
         accessorFn: (vessel: IdentityVesselData) => {
+          const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const label =
-            formatInfoField(getVesselProperty(vessel, 'owner'), 'owner') || EMPTY_FIELD_PLACEHOLDER
+            formatInfoField(
+              getVesselProperty(
+                vessel,
+                'owner',
+                bestIdentityMatch
+                  ? {
+                      identityId: getVesselIdentityId(bestIdentityMatch),
+                      identitySource: bestIdentityMatch.identitySource,
+                    }
+                  : undefined
+              ),
+              'owner'
+            ) || EMPTY_FIELD_PLACEHOLDER
           return (
             <AdvancedResultCellWithFilter vessel={vessel} column="owner" onClick={fetchResults}>
               <Tooltip

@@ -52,7 +52,6 @@ export const config = {
     'exported',
     '**/dist/**/*',
     '**/public/**/*',
-    '**/.next/**/*',
     '**/exported/**/*',
   ],
   languageOptions: {
@@ -96,7 +95,7 @@ export const config = {
           ['^(@|@globalfishingwatch)(/.*|$)'],
           // Internal paths.
           [
-            '^(features|store|routes|router|reducers|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
+            '^(features|store|routes|router|reducers|server|server-functions|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
           ['^\\u0000'],

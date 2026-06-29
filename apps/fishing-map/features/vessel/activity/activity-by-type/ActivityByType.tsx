@@ -106,6 +106,7 @@ function ActivityByType() {
             <ActivityGroup
               key={`${eventType}-group`}
               eventType={eventType}
+              eventSource={vesselProfileSource}
               onToggleClick={onToggleExpandedType}
               quantity={events.length}
               expanded={expanded}
@@ -115,6 +116,7 @@ function ActivityByType() {
                 key={`${eventType}-${index}-${event.id}`}
                 event={event}
                 className={styles.event}
+                source={vesselProfileSource}
               />
             ))}
           </Fragment>
@@ -142,6 +144,7 @@ function ActivityByType() {
             <ActivityGroup
               key={eventType}
               eventType={eventType}
+              eventSource={vesselProfileSource}
               onToggleClick={onToggleExpandedType}
               quantity={events.length}
               expanded={expanded}
@@ -180,6 +183,7 @@ function ActivityByType() {
                 }
               )}
               testId={`vv-${event.type}-event-${index}`}
+              source={vesselProfileSource}
             />
           )
         }}

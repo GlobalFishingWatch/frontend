@@ -292,13 +292,13 @@ function NewPointDataset({
       </div>
       <span className={styles.errorMsg}>{timeFilterError}</span>
       <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
-        <InputText
+        {/* <InputText
           value={datasetMetadata?.description}
           label={t((t) => t.datasetUpload.datasetDescription)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
-        />
+        /> */}
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"

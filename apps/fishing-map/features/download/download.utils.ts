@@ -1,5 +1,3 @@
-import { t } from 'i18next'
-
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 import {
@@ -13,6 +11,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
+import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
