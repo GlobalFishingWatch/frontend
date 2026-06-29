@@ -4,6 +4,8 @@ export const DEFAULT_CSS_TRANSITION = '.35s'
 export const DEFAULT_DATE_FORMAT = 'MMM d yyyy'
 export const DEFAULT_FULL_DATE_FORMAT = 'MMM d yyyy HH:mm'
 
+export const FIRST_YEAR_OF_DATA = 2012
+
 export const EVENT_SOURCE = {
   SEEK_MOVE: 'SEEK_MOVE',
   SEEK_RELEASE: 'SEEK_RELEASE',

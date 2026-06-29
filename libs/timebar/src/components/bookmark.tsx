@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import type { ScaleTime } from 'd3-scale'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { getHumanizedDates } from '../utils'
 

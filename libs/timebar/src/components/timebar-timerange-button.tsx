@@ -1,6 +1,6 @@
 import cx from 'classnames'
 
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { useTimebarActions, useTimebarState } from '../timebar-context'
 

@@ -2,7 +2,7 @@ import type { ReactEventHandler } from 'react'
 import React from 'react'
 import cx from 'classnames'
 
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import styles from './timeline-handler.module.css'
 

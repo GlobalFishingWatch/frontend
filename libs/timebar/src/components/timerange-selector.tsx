@@ -10,8 +10,10 @@ import {
   getFourwingsInterval,
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
-import { FIRST_YEAR_OF_DATA, Select, Tooltip } from '@globalfishingwatch/ui-components'
+import { Select } from '@globalfishingwatch/ui-components/select'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
+import { FIRST_YEAR_OF_DATA } from '../constants'
 import { getLastX, isYearInBounds } from '../utils'
 
 import styles from './timerange-selector.module.css'

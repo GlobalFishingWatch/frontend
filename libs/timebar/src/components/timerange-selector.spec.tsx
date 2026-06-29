@@ -5,9 +5,10 @@ import type { LastXOption } from './timerange-selector'
 import TimeRangeSelector from './timerange-selector'
 
 // Stub the ui-components used by the modal so it renders in jsdom.
-vi.mock('@globalfishingwatch/ui-components', () => ({
-  FIRST_YEAR_OF_DATA: '2012',
+vi.mock('@globalfishingwatch/ui-components/tooltip', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+vi.mock('@globalfishingwatch/ui-components/select', () => ({
   Select: ({ options }: { options: LastXOption[] }) => (
     <div data-testid="lastx-select">
       {options.map((o) => (

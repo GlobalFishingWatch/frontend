@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { getTimebarStepByDelta } from '../utils'
 

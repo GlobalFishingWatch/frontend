@@ -5,8 +5,9 @@ import { useAtomValue } from 'jotai'
 import { DateTime } from 'luxon'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { IconType } from '@globalfishingwatch/ui-components'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import type { TimelineScale } from '../timeline-context'
 import { useTimelineContext } from '../timeline-context'

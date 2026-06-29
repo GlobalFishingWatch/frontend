@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import Playback from './playback'
 
 // jsdom can't parse the real Icon's SVG data-URI; stub it.
-vi.mock('@globalfishingwatch/ui-components', () => ({
+vi.mock('@globalfishingwatch/ui-components/icon', () => ({
   Icon: ({ icon }: { icon?: string }) => <i data-icon={icon} />,
 }))
 

@@ -5,7 +5,7 @@ import type {
   ResourceStatus,
   Vessel,
 } from '@globalfishingwatch/api-types'
-import type { IconType } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components/icon'
 
 export type TrackChunkProps = {
   id?: string

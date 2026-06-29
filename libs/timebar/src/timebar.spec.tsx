@@ -12,16 +12,20 @@ import { useTimelineContext } from './timeline-context'
 // The real ui-components Icon renders an inline SVG data-URI that jsdom can't parse
 // (InvalidCharacterError). Stub it so we can test the timebar composition in jsdom.
 // (vitest hoists vi.mock above the imports above, so the stub is applied before they load.)
-vi.mock('@globalfishingwatch/ui-components', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>
-  return {
-    ...actual,
-    Icon: ({ icon }: { icon?: string }) => <i data-icon={icon} />,
-    IconButton: ({ icon, ...rest }: { icon?: string } & Record<string, unknown>) => (
-      <button data-icon={icon} {...rest} />
-    ),
-  }
-})
+vi.mock('@globalfishingwatch/ui-components/icon', () => ({
+  Icon: ({ icon }: { icon?: string }) => <i data-icon={icon} />,
+}))
+vi.mock('@globalfishingwatch/ui-components/icon-button', () => ({
+  IconButton: ({ icon, ...rest }: { icon?: string } & Record<string, unknown>) => (
+    <button data-icon={icon} {...rest} />
+  ),
+}))
+vi.mock('@globalfishingwatch/ui-components/tooltip', () => ({
+  Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+vi.mock('@globalfishingwatch/ui-components/select', () => ({
+  Select: () => <div data-testid="lastx-select" />,
+}))
 
 const ABSOLUTE_START = '2012-01-01T00:00:00.000Z'
 const ABSOLUTE_END = '2026-12-31T23:59:59.999Z'
