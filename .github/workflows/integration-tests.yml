@@ -37,8 +37,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'pnpm'
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: pnpm install --frozen-lockfile
       - name: Cache Playwright browsers
         id: playwright-cache
@@ -65,6 +71,7 @@ jobs:
             --head=HEAD 2>&1 \
             | tee test-output.txt
         env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
           VITE_WORKSPACE_ENV: development
           CI: '1'
