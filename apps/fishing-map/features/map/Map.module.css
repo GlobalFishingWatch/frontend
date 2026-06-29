@@ -29,7 +29,7 @@
 }
 
 :global(.deck-widget-stats) {
-  background-color: var(--color-gradient);
+  background-color: var(--color-background);
   border-radius: var(--border-radius);
   flex-direction: column;
   font: var(--font-S);

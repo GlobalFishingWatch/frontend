@@ -60,9 +60,14 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
     playing,
   })
   useEffect(() => {
+    // While playing, the rAF loop owns the playhead. The committed start/end props lag
+    // the loop (async atom -> render -> effect), so syncing them here would drag the
+    // cursor backward and cause the forward/back jitter. Keep the loop's advanced value;
+    // only adopt props start/end when not playing.
+    const keepPlayhead = latest.current.playing && playing
     latest.current = {
-      start,
-      end,
+      start: keepPlayhead ? latest.current.start : start,
+      end: keepPlayhead ? latest.current.end : end,
       absoluteStart,
       intervals,
       getCurrentInterval,
@@ -113,6 +118,10 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
 
       if (newStart && newEnd) {
         onPlaybackTick(newStart, newEnd)
+        // Optimistically advance the mirror so the next rAF frame builds on the value
+        // just emitted instead of waiting for the async atom -> render -> effect round-trip.
+        latest.current.start = newStart
+        latest.current.end = newEnd
       }
 
       if (clamped === 'end') {
@@ -124,6 +133,8 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
             getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
           ).toISOString()
           onPlaybackTick(absoluteStart, newEndLoop)
+          latest.current.start = absoluteStart
+          latest.current.end = newEndLoop
         } else {
           stop()
         }

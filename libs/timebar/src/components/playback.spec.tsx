@@ -75,6 +75,19 @@ describe('Playback', () => {
     )
   })
 
+  it('advances cumulatively across consecutive steps without a prop resync', () => {
+    // Parent never feeds the emitted range back as props, mimicking the React/atom
+    // round-trip lagging behind the loop. The optimistic mirror write-back must still
+    // make each step build on the previous one (regression guard for the stuck bug).
+    const { onChange } = renderPlayback()
+    onChange.mockClear()
+    const forward = screen.getByTitle('Move forward')
+    fireEvent.click(forward)
+    fireEvent.click(forward)
+    const [first, second] = onChange.mock.calls.map((c) => c[0].start)
+    expect(new Date(second).getTime()).toBeGreaterThan(new Date(first).getTime())
+  })
+
   it('disables play when already stopped at the data end', () => {
     const onTogglePlay = vi.fn()
     renderPlayback(

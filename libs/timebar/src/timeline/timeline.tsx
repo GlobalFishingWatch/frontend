@@ -183,9 +183,13 @@ export const TimebarTimeline = ({
   // Keep the handler mirrors current after every commit.
   useEffect(() => {
     stateRef.current = state
+    // While dragging, the window handlers own start/end (they advance them optimistically).
+    // The committed props lag the drag (async atom -> render -> effect), so syncing them
+    // here would snap the cursor backward and cause jitter. Keep the in-flight value.
+    const keepDragCursor = stateRef.current.dragging !== null
     propsRef.current = {
-      start,
-      end,
+      start: keepDragCursor ? propsRef.current.start : start,
+      end: keepDragCursor ? propsRef.current.end : end,
       absoluteStart,
       absoluteEnd,
       notifyChange,
@@ -193,7 +197,9 @@ export const TimebarTimeline = ({
       stickToUnit,
       latestAvailableDataDate,
     }
-    innerScaleRef.current = innerScale
+    if (!keepDragCursor) {
+      innerScaleRef.current = innerScale
+    }
     outerScaleRef.current = outerScale
   })
 
@@ -334,6 +340,13 @@ export const TimebarTimeline = ({
             absoluteEnd
           )
           notifyChange(newStartClamped, newEndClamped, EVENT_SOURCE.SEEK_MOVE, false)
+          // Optimistically advance the mirrors so the next mousemove anchors on the
+          // emitted position rather than the stale (not-yet-committed) start/end.
+          propsRef.current.start = newStartClamped
+          propsRef.current.end = newEndClamped
+          innerScaleRef.current = scaleTime()
+            .domain([getUTCDate(newStartClamped), getUTCDate(newEndClamped)])
+            .range([0, innerScaleRef.current.range()[1]])
         }
       } else if (isDraggingZoomIn) {
         setStateRaw((prev) => ({ ...prev, handlerMouseX: x, outerDrag: false }))
@@ -444,6 +457,10 @@ export const TimebarTimeline = ({
           EVENT_SOURCE.ZOOM_OUT_MOVE,
           dragging === DRAG_END
         )
+        // Optimistically advance the mirror so the next frame builds on the emitted
+        // range instead of the stale (not-yet-committed) start/end.
+        propsRef.current.start = newStartClamped
+        propsRef.current.end = newEndClamped
       }
 
       raf = window.requestAnimationFrame(onEnterFrame)
