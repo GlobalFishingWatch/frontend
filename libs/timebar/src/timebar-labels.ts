@@ -11,7 +11,6 @@ export const DEFAULT_LABELS = {
   },
   dragLabel: 'Drag to change the time range',
   zoomTo: 'Zoom to',
-  lastUpdate: 'Last update',
   playback: {
     changeAnimationSpeed: 'Change animation speed',
     moveBack: 'Move back',

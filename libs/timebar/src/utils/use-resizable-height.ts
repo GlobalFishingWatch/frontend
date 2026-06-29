@@ -4,7 +4,7 @@ import {
   MAXIMUM_TIMEBAR_HEIGHT,
   MINIMUM_TIMEBAR_HEIGHT,
   TIMEBAR_HEIGHT_STORAGE_KEY,
-} from './constants'
+} from '../constants'
 
 const DEFAULT_HEIGHT = 70
 

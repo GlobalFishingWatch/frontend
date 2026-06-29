@@ -3,8 +3,8 @@ import { renderHook } from '@testing-library/react'
 import { createStore, Provider } from 'jotai'
 import { describe, expect, it } from 'vitest'
 
-import type { TimebarChartData } from './common/types'
-import chartsDataState, { activeChartsDataState, useUpdateChartsData } from './chartsData.atom'
+import type { TimebarChartData } from './charts.types'
+import chartsStore, { activeChartsDataState, useUpdateChartsData } from './charts-store.atom'
 
 const DATA_A: TimebarChartData = [{ color: 'a', chunks: [{ start: 0, end: 10 }] }]
 const DATA_B: TimebarChartData = [{ color: 'b', chunks: [{ start: 5, end: 15 }] }]
@@ -21,16 +21,16 @@ describe('useUpdateChartsData', () => {
       wrapper,
     })
 
-    expect(store.get(chartsDataState).activity).toEqual({ data: DATA_A, active: true })
+    expect(store.get(chartsStore).activity).toEqual({ data: DATA_A, active: true })
 
     rerender({ data: DATA_B })
-    expect(store.get(chartsDataState).activity.data).toBe(DATA_B)
-    expect(store.get(chartsDataState).activity.active).toBe(true)
+    expect(store.get(chartsStore).activity.data).toBe(DATA_B)
+    expect(store.get(chartsStore).activity.active).toBe(true)
 
     unmount()
-    expect(store.get(chartsDataState).activity.active).toBe(false)
+    expect(store.get(chartsStore).activity.active).toBe(false)
     // data is retained after unmount
-    expect(store.get(chartsDataState).activity.data).toBe(DATA_B)
+    expect(store.get(chartsStore).activity.data).toBe(DATA_B)
   })
 
   it('activeChartsDataState excludes inactive charts', () => {

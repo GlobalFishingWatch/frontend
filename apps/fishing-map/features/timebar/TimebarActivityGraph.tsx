@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import cx from 'classnames'
 
 import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
-import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
 
 import { t } from 'features/i18n/i18n'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
@@ -41,11 +41,13 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   //     </div>
   //   )
   // }
-  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) return null
+  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) {
+    return null
+  }
 
   return (
     <div className={cx({ [styles.loading]: loading })}>
-      <TimebarStackedActivity
+      <Timebar.Charts.StackedActivity
         key="stackedActivity"
         timeseries={heatmapActivity}
         dataviews={dataviews}

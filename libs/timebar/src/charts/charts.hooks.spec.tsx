@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { TimelineContextProps } from '../../timeline-context'
-import { TimelineContext } from '../../timeline-context'
+import type { TimelineContextProps } from '../timeline/timeline-context'
+import { TimelineContext } from '../timeline/timeline-context'
 
-import { filterData, useFilteredChartData } from './hooks'
-import type { TimebarChartData } from './types'
+import { filterData, useFilteredChartData } from './charts.hooks'
+import type { TimebarChartData } from './charts.types'
 
 describe('filterData', () => {
   it('keeps only chunks overlapping the range and uses start when end is missing', () => {
@@ -42,7 +42,13 @@ describe('useFilteredChartData', () => {
 
   it('filters to the visible range and dedups no-op updates by reference', () => {
     const data: TimebarChartData = [
-      { color: 'x', chunks: [{ start: 0, end: 100 }, { start: 5000, end: 5010 }] },
+      {
+        color: 'x',
+        chunks: [
+          { start: 0, end: 100 },
+          { start: 5000, end: 5010 },
+        ],
+      },
     ]
     const { result, rerender } = renderHook(({ data }) => useFilteredChartData(data), {
       initialProps: { data },

@@ -4,10 +4,13 @@ import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
+
 import styles from './timeline-handler.module.css'
 
 type HandlerProps = {
-  dragLabel?: string
+  dragLabel?: TimebarLabels['dragLabel']
   onMouseDown: ReactEventHandler
   dragging: boolean
   x: number
@@ -19,7 +22,7 @@ const Handler = (props: HandlerProps) => (
     onMouseDown={props.onMouseDown}
     onTouchStart={props.onMouseDown}
     type="button"
-    title={props.dragLabel || 'Drag to change the time range'}
+    title={props.dragLabel || DEFAULT_LABELS.dragLabel}
     className={cx(styles.handler, {
       [styles._immediate]: props.dragging === true,
     })}

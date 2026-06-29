@@ -12,13 +12,9 @@ import type {
   TrackEventChunkProps,
   TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
-import {
-  Timebar,
-  TimebarHighlighter,
-  TimebarTracksEvents,
-  TimebarTracksGraph,
-} from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
 
+// import { Icon } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
@@ -153,7 +149,7 @@ const TimebarHighlighterWrapper = memo(
     )
 
     return highlightedTime ? (
-      <TimebarHighlighter
+      <Timebar.Charts.Highlighter
         fixed={fixed}
         showTooltip={showTooltip}
         hoverStart={highlightedTime.start}
@@ -172,13 +168,13 @@ const TimebarTracksEventsWrapper = memo(
     tracks,
     onEventClick,
   }: {
-    data: Parameters<typeof TimebarTracksEvents>[0]['data']
-    tracks?: Parameters<typeof TimebarTracksEvents>[0]['tracks']
-    onEventClick?: Parameters<typeof TimebarTracksEvents>[0]['onEventClick']
+    data: Parameters<typeof Timebar.Charts.TracksEvents>[0]['data']
+    tracks?: Parameters<typeof Timebar.Charts.TracksEvents>[0]['tracks']
+    onEventClick?: Parameters<typeof Timebar.Charts.TracksEvents>[0]['onEventClick']
   }) => {
     const { highlightedEventIds } = useHighlightedEventsConnect()
     return (
-      <TimebarTracksEvents
+      <Timebar.Charts.TracksEvents
         tracks={tracks}
         data={data}
         highlightedEventsIds={highlightedEventIds}
@@ -419,7 +415,11 @@ const TimebarWrapper = () => {
     return (
       <Fragment>
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
+          <Timebar.Charts.TracksGraph
+            key="trackGraph"
+            data={tracksGraphsData}
+            steps={trackGraphSteps}
+          />
         )}
         <TimebarTracksEventsWrapper
           tracks={tracks}
@@ -506,17 +506,24 @@ const TimebarWrapper = () => {
                 onTogglePlay={onTogglePlay}
               />
             )}
-            <Timebar.Controls>
+            <Timebar.ToolbarWrapper>
               <Timebar.TimeRangeSelector
-              // showDateInputs={timeMode !== 'realTime'}
+              // showDateInputs={timeMode === 'historical'}
               />
-              <Timebar.Bookmark />
-            </Timebar.Controls>
-            <Timebar.IntervalSelector />
-            {/* {timeMode !== 'realTime' && <Timebar.IntervalSelector />} */}
+              <Timebar.Tools.Bookmark />
+              {/* {timeMode === 'realTime' ? (
+                <Timebar.Tools.Wrapper>
+                  <Icon icon="history" />
+                </Timebar.Tools.Wrapper>
+              ) : (
+                <Timebar.Tools.Bookmark />
+              )} */}
+            </Timebar.ToolbarWrapper>
+            {/* {timeMode === 'historical' && <Timebar.IntervalSelector />} */}
+            {<Timebar.IntervalSelector />}
           </Fragment>
         )}
-        <Timebar.Graph
+        <Timebar.Charts.Wrapper
           fullWidth={screenshotMode}
           bookmarkPlacement="bottom"
           trackGraphOrientation={trackGraphOrientation}
@@ -525,7 +532,7 @@ const TimebarWrapper = () => {
           onGraphClick={onToggleFixedTooltip}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
-        </Timebar.Graph>
+        </Timebar.Charts.Wrapper>
       </Timebar>
       {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />

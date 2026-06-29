@@ -1,7 +1,7 @@
 import type * as d3 from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 
-import { createGuardedContext } from './create-guarded-context'
+import { createGuardedContext } from '../utils/create-guarded-context'
 
 export type TimelineScale = d3.ScaleTime<number, number>
 
@@ -24,19 +24,11 @@ export type ISODateString = string
 export type StickUnit = Extract<DateTimeUnit, 'hour' | 'day' | 'month' | 'year'>
 
 export type TimelineContextProps = {
-  start: ISODateString
-  end: ISODateString
   outerStart: ISODateString
   outerEnd: ISODateString
   outerWidth: number
-  outerHeight: number
   graphHeight: number
-  innerWidth: number
-  innerStartPx: number
-  innerEndPx: number
   overallScale: TimelineScale
-  outerScale: TimelineScale
-  svgTransform: string
   tooltipContainer: Element | null
   trackGraphOrientation: TrackGraphOrientation
 }

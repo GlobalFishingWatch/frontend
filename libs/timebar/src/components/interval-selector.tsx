@@ -1,44 +1,26 @@
 import cx from 'classnames'
 
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { useTimebar } from '../timebar-context'
 
 import styles from './interval-selector.module.css'
 
-type IntervalSelectorProps = {
-  start: string
-  end: string
-  labels?: any
-  intervals: FourwingsInterval[]
-  getCurrentInterval: (
-    start: string,
-    end: string,
-    intervals?: FourwingsInterval[]
-  ) => FourwingsInterval
-  onIntervalClick: (interval: FourwingsInterval) => void
-}
+export function TimebarIntervalSelector() {
+  const { intervals, getCurrentInterval, labels, onIntervalClick, start, end } = useTimebar()
 
-function IntervalSelector({
-  start = '',
-  end = '',
-  getCurrentInterval = getFourwingsInterval,
-  intervals = FOURWINGS_INTERVALS_ORDER,
-  labels = {
-    hour: 'hours',
-    day: 'days',
-    month: 'months',
-    year: 'years',
-  },
-  onIntervalClick,
-}: IntervalSelectorProps) {
+  if (!intervals || !getCurrentInterval) {
+    return null
+  }
+
   const currentInterval = getCurrentInterval(start, end, intervals)
   const intervalsSorted = [...intervals].reverse()
   return (
     <ul className={styles.intervalContainer}>
       {intervalsSorted.map((interval) => {
         const active = currentInterval === interval
-        const intervalLabel = labels?.[interval.toLowerCase()]
-        const titleLabel = labels?.[`${interval.toLowerCase()}Tooltip`]
+        const intervalLabel =
+          labels?.intervals?.[interval.toLowerCase() as keyof typeof labels.intervals]
+        const titleLabel =
+          labels?.intervals?.[`${interval.toLowerCase()}Tooltip` as keyof typeof labels.intervals]
         return (
           <li key={interval} className={styles.intervalBtnContainer}>
             <button
@@ -57,5 +39,3 @@ function IntervalSelector({
     </ul>
   )
 }
-
-export default IntervalSelector

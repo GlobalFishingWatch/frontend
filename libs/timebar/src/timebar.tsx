@@ -8,20 +8,25 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
-import { TimebarControls } from './components/timebar-controls'
-import { TimebarGraph } from './components/timebar-graph'
-import { TimebarIntervalSelector } from './components/timebar-interval-selector'
-import { TimebarPlayback } from './components/timebar-playback'
-import { TimebarTimeRangeSelector } from './components/timebar-timerange-button'
-import { TimebarBookmark } from './components/timebar-toolbar-bookmark'
-import { getTime } from './utils/internal-utils'
+import { TimebarHighlighter } from './charts/highlighter'
+import { TimebarStackedActivity } from './charts/stacked-activity'
+import { TimebarTracksEvents } from './charts/tracks-events'
+import { TimebarTracksGraph } from './charts/tracks-graph'
+import { TimebarBookmarkButton } from './components/bookmark-button'
+import { TimebarIntervalSelector } from './components/interval-selector'
+import { TimebarPlayback } from './components/playback'
+import { TimebarTimeRangeSelector } from './components/timerange-button'
+import { TimebarToolWrapper } from './components/tool-wrapper'
+import { TimebarToolbarWrapper } from './components/toolbar-wrapper'
+import { TimebarTimeline } from './timeline/timeline'
+import type { StickUnit } from './timeline/timeline-context'
+import { useResizableHeight } from './utils/use-resizable-height'
 import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
 import type { TimebarContextProps } from './timebar-context'
 import { TimebarContext } from './timebar-context'
 import type { TimebarLabels } from './timebar-labels'
 import { DEFAULT_LABELS } from './timebar-labels'
-import type { StickUnit } from './timeline-context'
-import { useResizableHeight } from './useResizableHeight'
+import { getTime } from './utils'
 
 import styles from './timebar.module.css'
 
@@ -277,8 +282,17 @@ export function Timebar({
 }
 
 Timebar.Playback = TimebarPlayback
-Timebar.Controls = TimebarControls
-Timebar.TimeRangeSelector = TimebarTimeRangeSelector
-Timebar.Bookmark = TimebarBookmark
 Timebar.IntervalSelector = TimebarIntervalSelector
-Timebar.Graph = TimebarGraph
+Timebar.TimeRangeSelector = TimebarTimeRangeSelector
+Timebar.ToolbarWrapper = TimebarToolbarWrapper
+Timebar.Tools = {
+  Wrapper: TimebarToolWrapper,
+  Bookmark: TimebarBookmarkButton,
+}
+Timebar.Charts = {
+  Wrapper: TimebarTimeline,
+  TracksGraph: TimebarTracksGraph,
+  TracksEvents: TimebarTracksEvents,
+  Highlighter: TimebarHighlighter,
+  StackedActivity: TimebarStackedActivity,
+}

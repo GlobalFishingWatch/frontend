@@ -2,13 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
-import type { TimebarLabels } from '../timebar-labels'
+import { useTimebar } from '../timebar-context'
 import { DEFAULT_LABELS } from '../timebar-labels'
-import { getTimebarStepByDelta } from '../utils'
+
+import { getTimebarStepByDelta } from './playback.utils'
 
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
@@ -16,32 +15,23 @@ import styles from './playback.module.css'
 const SPEED_STEPS = [1, 2, 3, 5, 10]
 
 type PlaybackProps = {
-  labels?: TimebarLabels['playback']
-  onTick: (newStart: string, newEnd: string) => void
-  start: string
-  end: string
-  absoluteStart: string
-  absoluteEnd: string
-  intervals?: FourwingsInterval[]
-  onTogglePlay?: (isPlaying: boolean) => void
-  getCurrentInterval?: typeof getFourwingsInterval
   disabled?: boolean
-  disabledPlaybackTooltip?: string
+  disabledTooltip?: string
+  onTogglePlay?: (isPlaying: boolean) => void
 }
 
-function Playback({
-  labels = DEFAULT_LABELS.playback,
-  onTick,
-  start,
-  end,
-  absoluteStart,
-  absoluteEnd,
-  intervals = FOURWINGS_INTERVALS_ORDER,
-  onTogglePlay,
-  getCurrentInterval = getFourwingsInterval,
-  disabled = false,
-  disabledPlaybackTooltip = '',
-}: PlaybackProps) {
+export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: PlaybackProps) {
+  const {
+    labels: labelsProp,
+    absoluteStart,
+    absoluteEnd,
+    intervals,
+    getCurrentInterval,
+    onPlaybackTick,
+    start,
+    end,
+  } = useTimebar()
+  const labels = { ...DEFAULT_LABELS.playback, ...labelsProp?.playback }
   const [playing, setPlaying] = useState(false)
   const [speedStep, setSpeedStep] = useState(0)
   const [loop, setLoop] = useState(false)
@@ -56,7 +46,7 @@ function Playback({
     absoluteStart,
     intervals,
     getCurrentInterval,
-    onTick,
+    onPlaybackTick,
     onTogglePlay,
     speedStep,
     loop,
@@ -69,7 +59,7 @@ function Playback({
       absoluteStart,
       intervals,
       getCurrentInterval,
-      onTick,
+      onPlaybackTick,
       onTogglePlay,
       speedStep,
       loop,
@@ -87,8 +77,16 @@ function Playback({
 
   const update = useCallback(
     (deltaMultiplicator: number, { byIntervals = false } = {}) => {
-      const { start, end, absoluteStart, intervals, getCurrentInterval, onTick, speedStep, loop } =
-        latest.current
+      const {
+        start,
+        end,
+        absoluteStart,
+        intervals,
+        getCurrentInterval,
+        onPlaybackTick,
+        speedStep,
+        loop,
+      } = latest.current
       if (!start || !end) return
 
       const {
@@ -107,7 +105,7 @@ function Playback({
       })
 
       if (newStart && newEnd) {
-        onTick(newStart, newEnd)
+        onPlaybackTick(newStart, newEnd)
       }
 
       if (clamped === 'end') {
@@ -118,7 +116,7 @@ function Playback({
           const newEndLoop = getUTCDate(
             getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
           ).toISOString()
-          onTick(absoluteStart, newEndLoop)
+          onPlaybackTick(absoluteStart, newEndLoop)
         } else {
           stop()
         }
@@ -200,8 +198,8 @@ function Playback({
       <button
         type="button"
         title={
-          disabled && disabledPlaybackTooltip
-            ? disabledPlaybackTooltip
+          disabled && disabledTooltip
+            ? disabledTooltip
             : playing === true
               ? labels.pauseAnimation
               : labels.playAnimation
@@ -232,5 +230,3 @@ function Playback({
     </div>
   )
 }
-
-export default Playback

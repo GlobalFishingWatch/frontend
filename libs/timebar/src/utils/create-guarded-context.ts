@@ -1,9 +1,5 @@
 import { createContext, useContext } from 'react'
 
-/**
- * Creates a context whose hook throws a clear error when used outside its provider,
- * instead of silently returning an empty/undefined value.
- */
 export function createGuardedContext<T>(hookName: string, provider = 'a <Timebar>') {
   const Context = createContext<T | null>(null)
   const useGuardedContext = () => {

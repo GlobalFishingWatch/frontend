@@ -1,14 +1,18 @@
-import { scaleLinear } from 'd3-scale'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
 
-import { FIRST_YEAR_OF_DATA } from '../constants'
+import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT, FIRST_YEAR_OF_DATA } from '../constants'
 
-import { clampToAbsoluteBoundaries, getDefaultFormat } from './internal-utils'
+export const getTime = (dateISO: string) => getUTCDate(dateISO).getTime()
+
+export const getDeltaMs = (start: string, end: string) => getTime(end) - getTime(start)
+export const getDeltaDays = (start: string, end: string) =>
+  getDeltaMs(start, end) / 1000 / 60 / 60 / 24
+export const isMoreThanADay = (start: string, end: string) => getDeltaDays(start, end) > 1
+export const getDefaultFormat = (start: string, end: string) =>
+  isMoreThanADay(start, end) ? DEFAULT_DATE_FORMAT : DEFAULT_FULL_DATE_FORMAT
 
 type YearBoundsOptions = {
   absoluteStart?: string
@@ -47,91 +51,41 @@ export const getLastX = (num: number, unit: DateTimeUnit, latestAvailableDataDat
     end: latestAvailableDataDateUTC.toISO(),
   }
 }
-
-export const getLast30Days = (latestAvailableDataDate: string) => {
-  return getLastX(30, 'day', latestAvailableDataDate)
+export const stickToClosestUnit = (date: string, unit: DateTimeUnit) => {
+  const mDate = DateTime.fromISO(date, { zone: 'utc' })
+  const mStartOf = mDate.startOf(unit)
+  const mEndOf = mDate.endOf(unit).plus({ millisecond: 1 })
+  const startDeltaMs = getTime(date) - mStartOf.valueOf()
+  const endDeltaMs = mEndOf.valueOf() - getTime(date)
+  const mClosest = startDeltaMs > endDeltaMs ? mEndOf : mStartOf
+  return mClosest.toISO()
 }
 
-const BASE_STEP = 0.001
-const MS_IN_INTERVAL = {
-  HOUR: 1000 * 60 * 60,
-  DAY: 1000 * 60 * 60 * 24,
-  YEAR: 1000 * 60 * 60 * 24 * 365,
-}
+export const clampToAbsoluteBoundaries = (
+  start: string,
+  end: string,
+  desiredDeltaMs: number,
+  absoluteStart: string,
+  absoluteEnd: string
+) => {
+  const startMs = getTime(start)
+  const endMs = getTime(end)
+  const absoluteStartMs = getTime(absoluteStart)
+  const absoluteEndMs = getTime(absoluteEnd) + 1
+  let newStartClamped = start
+  let newEndClamped = end
+  let clamped
 
-type GetStepProps = {
-  start: string
-  end: string
-  absoluteStart: string
-  deltaMultiplicator: number
-  intervals?: FourwingsInterval[]
-  getCurrentInterval?: typeof getFourwingsInterval
-  byIntervals?: boolean
-  speedStep?: number
-}
-
-const getStep = (start: string, end: string, speedStep = 0) => {
-  const baseStepWithSpeed = BASE_STEP * speedStep
-  const startMs = getUTCDate(start).getTime()
-  const endMs = getUTCDate(end).getTime()
-
-  const scale = scaleLinear().range([0, 1]).domain([startMs, endMs])
-  const step = scale.invert(baseStepWithSpeed) - startMs
-  return step
-}
-
-export const getTimebarStepByDelta = ({
-  start,
-  end,
-  absoluteStart,
-  intervals,
-  getCurrentInterval = getFourwingsInterval,
-  deltaMultiplicator,
-  byIntervals = true,
-  speedStep = 0,
-}: GetStepProps) => {
-  if (!start || !end) {
-    return {
-      newStart: start,
-      newEnd: end,
-      clamped: 'none',
-    }
+  // newStart is before absolute start: use abs start as new start and keep the existing duration to get to new end
+  if (startMs < absoluteStartMs) {
+    newStartClamped = absoluteStart
+    newEndClamped = getUTCDate(absoluteStartMs + desiredDeltaMs).toISOString()
+    clamped = 'start'
+    // newEnd is after absolute end: use abs end as new end and keep the existing duration to get back to new start
+  } else if (endMs > absoluteEndMs) {
+    newEndClamped = absoluteEnd
+    newStartClamped = getUTCDate(absoluteEndMs - desiredDeltaMs).toISOString()
+    clamped = 'end'
   }
-
-  let newStartMs
-  let newEndMs
-  const interval = getCurrentInterval(start, end, intervals)
-  if (byIntervals) {
-    const intervalStartMs =
-      interval === 'MONTH'
-        ? DateTime.fromISO(start, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
-        : MS_IN_INTERVAL[interval]
-    const intervalEndMs =
-      interval === 'MONTH'
-        ? DateTime.fromISO(end, { zone: 'utc' }).daysInMonth! * MS_IN_INTERVAL.DAY
-        : MS_IN_INTERVAL[interval]
-    newStartMs = getUTCDate(start).getTime() + intervalStartMs * deltaMultiplicator
-    newEndMs = getUTCDate(end).getTime() + intervalEndMs * deltaMultiplicator
-  } else {
-    const deltaMs = getStep(start, end, speedStep) * deltaMultiplicator
-    newStartMs = getUTCDate(start).getTime() + deltaMs
-    newEndMs = getUTCDate(end).getTime() + deltaMs
-  }
-  const currentStartEndDeltaMs = newEndMs - newStartMs
-  const playbackAbsoluteEnd = getUTCDateTime(Date.now())
-    .endOf(interval.toLowerCase() as DateTimeUnit)
-    .toISO()
-  const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-    getUTCDate(newStartMs).toISOString(),
-    getUTCDate(newEndMs).toISOString(),
-    currentStartEndDeltaMs,
-    absoluteStart,
-    playbackAbsoluteEnd!
-  )
-
-  return {
-    start: newStartClamped,
-    end: newEndClamped,
-    clamped,
-  }
+  return { newStartClamped, newEndClamped, clamped }
 }

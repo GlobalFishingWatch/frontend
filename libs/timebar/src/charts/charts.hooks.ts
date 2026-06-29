@@ -6,8 +6,8 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimelineScale } from '../../timeline-context'
-import { useTimelineContext } from '../../timeline-context'
+import type { TimelineScale } from '../timeline/timeline-context'
+import { useTimelineContext } from '../timeline/timeline-context'
 
 import type {
   ActivityTimeseriesFrame,
@@ -17,7 +17,7 @@ import type {
   TimebarChartData,
   TimebarChartItem,
   TimebarChartValue,
-} from './types'
+} from './charts.types'
 
 export const filterData = <T>(
   data: TimebarChartData<T>,
@@ -152,6 +152,11 @@ export const useOuterScale = () => {
       .domain([getUTCDate(outerStart), getUTCDate(outerEnd)])
       .range([0, outerWidth])
   }, [outerStart, outerEnd, outerWidth])
+}
+
+export const useTimebarTimeOrigin = () => {
+  const { overallScale } = useTimelineContext()
+  return useMemo(() => overallScale.domain()[0]?.getTime() ?? 0, [overallScale])
 }
 
 export const useClusteredChartData = <T>(data: TimebarChartData<T>) => {

@@ -6,8 +6,7 @@ import { useTimebar } from '../timebar-context'
 
 import styles from '../timebar.module.css'
 
-/** "Set bookmark" toolbar button. Place inside <Timebar.Controls>. */
-export function TimebarBookmark() {
+export function TimebarBookmarkButton() {
   const { labels, setBookmark, hasBookmark, bookmarkDisabled } = useTimebar()
 
   return (
