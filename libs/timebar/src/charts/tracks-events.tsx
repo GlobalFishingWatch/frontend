@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { Color, OrthographicViewState, PickingInfo, Position } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
@@ -10,8 +10,8 @@ import type { MjolnirEvent } from 'mjolnir.js'
 import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
-import type { TimelineScale, TrackGraphOrientation } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { TimelineScale, TrackGraphOrientation } from '../timeline-context'
+import { useTimelineContext } from '../timeline-context'
 
 import {
   useClusteredChartData,
@@ -59,14 +59,14 @@ type EventDatum = {
 type LineDatum = { path: Position[]; color: Color }
 
 const getTracksEventsWithCoords = (
-  tracksEvents: TimebarChartData<any>,
+  tracksEvents: TimebarChartData<TrackEventChunkProps>,
   outerScale: TimelineScale,
   graphHeight: number,
   orientation: TrackGraphOrientation
 ) => {
   return tracksEvents.map((trackEvents, trackIndex) => {
     const baseTrackY = getTrackY(tracksEvents.length, trackIndex, graphHeight, orientation)
-    const trackItemWithCoords: TimebarChartItem<any> = {
+    const trackItemWithCoords: TimebarChartItem<TrackEventChunkProps> = {
       ...trackEvents,
       y: baseTrackY.defaultY,
       chunks: !trackEvents.chunks
@@ -119,7 +119,7 @@ const TracksEvents = ({
   highlightedEventsIds?: string[]
   onEventClick?: (event: TimebarChartChunk<TrackEventChunkProps>) => void
 }) => {
-  const { graphHeight, trackGraphOrientation, innerWidth, outerWidth } = useContext(TimelineContext)
+  const { graphHeight, trackGraphOrientation, innerWidth, outerWidth } = useTimelineContext()
   const outerScale = useOuterScale()
 
   const veilWidth = (outerWidth - innerWidth) / 2

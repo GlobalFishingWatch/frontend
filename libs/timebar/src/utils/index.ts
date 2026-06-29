@@ -5,7 +5,8 @@ import { DateTime } from 'luxon'
 import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FIRST_YEAR_OF_DATA } from '@globalfishingwatch/ui-components'
+
+import { FIRST_YEAR_OF_DATA } from '../constants'
 
 import { clampToAbsoluteBoundaries, getDefaultFormat } from './internal-utils'
 
@@ -52,7 +53,7 @@ export const getLast30Days = (latestAvailableDataDate: string) => {
 }
 
 const BASE_STEP = 0.001
-export const MS_IN_INTERVAL = {
+const MS_IN_INTERVAL = {
   HOUR: 1000 * 60 * 60,
   DAY: 1000 * 60 * 60 * 24,
   YEAR: 1000 * 60 * 60 * 24 * 365,
@@ -69,7 +70,7 @@ type GetStepProps = {
   speedStep?: number
 }
 
-export const getStep = (start: string, end: string, speedStep = 0) => {
+const getStep = (start: string, end: string, speedStep = 0) => {
   const baseStepWithSpeed = BASE_STEP * speedStep
   const startMs = getUTCDate(start).getTime()
   const endMs = getUTCDate(end).getTime()
@@ -133,18 +134,4 @@ export const getTimebarStepByDelta = ({
     end: newEndClamped,
     clamped,
   }
-}
-
-export const getPreviousStep = (params: GetStepProps) => {
-  return getTimebarStepByDelta({
-    ...params,
-    deltaMultiplicator: -1,
-  })
-}
-
-export const getNextStep = (params: GetStepProps) => {
-  return getTimebarStepByDelta({
-    ...params,
-    deltaMultiplicator: 1,
-  })
 }

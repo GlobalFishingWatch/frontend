@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import type { DateTimeUnit } from 'luxon'
 
 import { getUnitsPositions } from '../layouts'
-import type { TimelineScale } from '../timelineContext'
+import type { TimelineScale } from '../timeline-context'
 import { clampToAbsoluteBoundaries, getDeltaDays, getDeltaMs } from '../utils/internal-utils'
 
 import styles from './timeline-units.module.css'

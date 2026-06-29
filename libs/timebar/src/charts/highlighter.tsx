@@ -1,15 +1,16 @@
-import { Fragment, useContext, useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 import { DateTime } from 'luxon'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { IconType } from '@globalfishingwatch/ui-components'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
-import type { TimelineScale } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { TimelineScale } from '../timeline-context'
+import { useTimelineContext } from '../timeline-context'
 import { getDefaultFormat } from '../utils/internal-utils'
 
 import { useOuterScale } from './common/hooks'
@@ -21,7 +22,7 @@ import type {
   TimebarChartItem,
   TimebarChartsData,
 } from './common/types'
-import chartsDataState, { hoveredEventState } from './chartsData.atom'
+import { activeChartsDataState, hoveredEventState } from './chartsData.atom'
 
 import styles from './highlighter.module.css'
 
@@ -115,7 +116,6 @@ const getHighlighterData = (
   data.forEach((chart, chartIndex) => {
     const chartType = chart[0] as ChartType
     const chartData = chart[1]
-    if (!chartData.active) return
     highlightedChunks[chartType] = []
     chartData.data?.forEach((item, itemIndex) => {
       const foundChunks = findChunks(centerMs, item, minHighlightChunkDuration)
@@ -208,20 +208,19 @@ const Highlighter = ({
   fixed?: boolean
   onToggleFixedTooltip?: (fixed?: boolean) => void
 }) => {
-  const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
+  const { graphHeight, tooltipContainer } = useTimelineContext()
   const outerScale = useOuterScale()
   const { width, left, center, centerMs, dateLabel } = useMemo(
     () => getCoords(hoverStart, hoverEnd, outerScale, dateCallback),
     [hoverStart, hoverEnd, outerScale, dateCallback]
   )
 
-  // TODO Filter active with selector
-  const chartsData = useAtomValue(chartsDataState)
+  const chartsData = useAtomValue(activeChartsDataState)
   const hoveredEventId = useAtomValue(hoveredEventState)
 
   const minHighlightChunkDuration = useMemo(() => {
     return +outerScale.invert(15) - +outerScale.invert(0)
-  }, [outerStart, outerEnd])
+  }, [outerScale])
 
   const { highlighterData, highlightedChunks } = useMemo(() => {
     return getHighlighterData(centerMs, minHighlightChunkDuration, chartsData, hoveredEventId)
@@ -249,6 +248,7 @@ const Highlighter = ({
       {tooltipContainer !== null &&
         showTooltip &&
         createPortal(
+          // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- click only stops propagation, no interactive semantics
           <div
             data-testid="timebar-highlighter"
             className={cx(styles.tooltipContainer, {

@@ -41,7 +41,7 @@ const TimebarClusterEventsGraph = () => {
 
   const getActivityHighlighterIconLabel: HighlighterIconCallback = useCallback(
     ({ item }: HighlighterCallbackFnArgs) => {
-      const eventType = activeDataviews?.find((d) => d.id === item?.props.dataviewId)?.datasets?.[0]
+      const eventType = activeDataviews?.find((d) => d.id === item?.props?.dataviewId)?.datasets?.[0]
         ?.subcategory as EventType
       return `event-${eventType}` as IconType
     },

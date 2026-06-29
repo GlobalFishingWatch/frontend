@@ -3,7 +3,6 @@ import React, {
   Fragment,
   memo,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -20,7 +19,7 @@ import {
   getTimebarStepByDelta,
   Timebar,
   TimebarHighlighter,
-  TimelineContext,
+  useTimelineContext,
 } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
@@ -51,7 +50,7 @@ const TIMEBAR_DEFAULT_HEIGHT = 300
 
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
-  const { outerScale } = useContext(TimelineContext)
+  const { outerScale } = useTimelineContext()
   const nightSegments = useSelector(selectNightLayer)
   return (
     <div>
@@ -182,32 +181,36 @@ const TimebarWrapper = () => {
         <Timebar
           start={localRange?.start}
           end={localRange?.end}
-          showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={onTimebarChange}
           isResizable={true}
           labels={timebarLabels}
-          showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
-          trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
           //bookmarkEnd={bookmarkEnd}
           // showLastUpdate={false}
           //onBookmarkChange={dispatchBookmarkTimerange}
-          onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
-            if (clientX === null || scale === null) {
-              if (highlightedTime !== undefined) {
-                dispatch(disableHighlightedTime())
-              }
-              return
-            }
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            dispatch(setHighlightedTime({ start, end }))
-          }}
         >
-          <Fragment>
+          <Timebar.Controls>
+            <Timebar.TimeRangeSelector />
+            <Timebar.Bookmark />
+          </Timebar.Controls>
+          <Timebar.Graph
+            showLast30DaysBtn={false}
+            trackGraphOrientation="up"
+            onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
+              if (clientX === null || scale === null) {
+                if (highlightedTime !== undefined) {
+                  dispatch(disableHighlightedTime())
+                }
+                return
+              }
+              const start = scale(clientX - 10).toISOString()
+              const end = scale(clientX + 10).toISOString()
+              dispatch(setHighlightedTime({ start, end }))
+            }}
+          >
             <DayNightTimebarLayer></DayNightTimebarLayer>
             <VesselEventsPointsGraphDeckGL />
             {/* {
@@ -242,7 +245,7 @@ const TimebarWrapper = () => {
                 />
               )}
             </Fragment>
-          </Fragment>
+          </Timebar.Graph>
         </Timebar>
       </div>
       <div className={styles.filtersContainer}>

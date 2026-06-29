@@ -1,5 +1,3 @@
-import { truncate } from 'fs/promises'
-
 import React, { Fragment, PureComponent } from 'react'
 import cx from 'classnames'
 import type { NumberValue, ScaleTime } from 'd3-scale'
@@ -14,9 +12,15 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { EVENT_SOURCE } from '../constants'
-import type { TimebarProps } from '../timebar'
-import type { TrackGraphOrientation } from '../timelineContext'
-import TimelineContext from '../timelineContext'
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
+import type {
+  StickUnit,
+  TimebarMouseLeaveHandler,
+  TimebarMouseMoveHandler,
+  TrackGraphOrientation,
+} from '../timeline-context'
+import { TimelineContext } from '../timeline-context'
 import { getLast30Days } from '../utils'
 import {
   clampToAbsoluteBoundaries,
@@ -37,28 +41,10 @@ const DRAG_START = 'DRAG_START'
 const DRAG_END = 'DRAG_END'
 
 type TimelineProps = {
-  labels: {
-    zoomTo?: string
-    dragLabel?: string
-    lastUpdate?: string
-    bookmark?: {
-      goToBookmark?: string
-      deleteBookmark?: string
-    }
-    timerange?: {
-      title?: string
-      start?: string
-      end?: string
-      last30days?: string
-      last3months?: string
-      last6months?: string
-      lastYear?: string
-      done?: string
-    }
-  }
+  labels: Pick<TimebarLabels, 'bookmark' | 'timerange' | 'dragLabel' | 'zoomTo'>
   onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
-  onMouseLeave?: TimebarProps['onMouseLeave']
-  onMouseMove?: TimebarProps['onMouseMove']
+  onMouseLeave?: TimebarMouseLeaveHandler
+  onMouseMove?: TimebarMouseMoveHandler
   children?: React.ReactNode
   start: string
   end: string
@@ -71,7 +57,7 @@ type TimelineProps = {
   bookmarkStart?: string
   bookmarkEnd?: string
   bookmarkPlacement?: string
-  stickToUnit?: (start: string, end: string) => 'day' | 'hour' | 'month' | 'year'
+  stickToUnit?: (start: string, end: string) => StickUnit
   displayWarningWhenInFuture?: boolean
   trackGraphOrientation: TrackGraphOrientation
   locale: string
@@ -109,24 +95,7 @@ class Timeline extends PureComponent<TimelineProps> {
   state: TimelineState
 
   static defaultProps = {
-    labels: {
-      dragLabel: 'Drag to change the time range',
-      lastUpdate: 'Last update',
-      bookmark: {
-        goToBookmark: 'Go to your bookmarked time range',
-        deleteBookmark: 'Delete time range bookmark',
-      },
-      timerange: {
-        title: 'Select a time range',
-        start: 'start',
-        end: 'end',
-        last30days: 'Last 30 days',
-        last3months: 'Last 3 months',
-        last6months: 'Last 6 months',
-        lastYear: 'Last year',
-        done: 'Done',
-      },
-    },
+    labels: DEFAULT_LABELS,
     showLast30DaysBtn: true,
     bookmarkStart: null,
     bookmarkEnd: null,

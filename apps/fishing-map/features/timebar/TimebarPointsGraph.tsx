@@ -17,7 +17,7 @@ const TimebarPointsGraph = () => {
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ value, item }: HighlighterCallbackFnArgs) => {
-      const currentDataviewId = item?.props.dataviewId
+      const currentDataviewId = item?.props?.dataviewId
       const aggregatedPropertyLabel = dataviews?.find((d) => d.id === currentDataviewId)?.config
         ?.aggregateByProperty
 

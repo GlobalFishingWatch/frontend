@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
@@ -9,7 +9,7 @@ import { scaleSqrt } from 'd3-scale'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
-import TimelineContext from '../timelineContext'
+import { useTimelineContext } from '../timeline-context'
 
 import { useFilteredChartData } from './common/hooks'
 import { getTrackY } from './common/utils'
@@ -25,15 +25,15 @@ type TimebarChartProps = { data: TimebarChartData; steps: TimebarChartSteps }
 const TrackGraph = ({ data, steps }: TimebarChartProps) => {
   const deckRef = useRef<DeckGLRef>(null)
   const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
-    useContext(TimelineContext)
+    useTimelineContext()
   const oldOuterScaleRef = useRef(outerScale)
-  const offsetHashRef = useRef(Date.now())
 
+  // Track the previous scale so the graph div can be offset during a scale transition.
+  // eslint-disable-next-line react-hooks/refs -- intentional previous-value read for the transition offset
   const oldStartX = oldOuterScaleRef.current(getUTCDate(start))
   const startX = outerScale(getUTCDate(start))
   const offsetStartX = startX - oldStartX
   const veilWidth = (outerWidth - innerWidth) / 2
-  offsetHashRef.current = Math.abs(offsetStartX) > veilWidth ? Date.now() : offsetHashRef.current
 
   const filteredGraphsData = useFilteredChartData(data)
   useUpdateChartsData('tracksGraphs', filteredGraphsData)
@@ -59,6 +59,7 @@ const TrackGraph = ({ data, steps }: TimebarChartProps) => {
 
   const layers = useMemo(() => {
     if (!heightScale || !steps.length) return []
+    // eslint-disable-next-line react-hooks/refs -- store current scale as the "previous" for the next render's offset
     oldOuterScaleRef.current = outerScale
     const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
       const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)

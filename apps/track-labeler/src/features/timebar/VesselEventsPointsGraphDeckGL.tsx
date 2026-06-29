@@ -1,11 +1,11 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { OrthographicView } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import DeckGL from '@deck.gl/react'
 
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
-import { TimelineContext } from '@globalfishingwatch/timebar'
+import { useTimelineContext } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
@@ -52,7 +52,7 @@ function getGradientColor(position: number): [number, number, number] {
 }
 
 export const VesselEventsPointsGraphDeckGL = () => {
-  const { outerScale, outerHeight } = useContext(TimelineContext)
+  const { outerScale, outerHeight } = useTimelineContext()
   const timebarMode = useSelector(selectTimebarMode)
   const colorMode = useSelector(selectColorMode)
   const projectColors = useSelector(selectProjectColors)
