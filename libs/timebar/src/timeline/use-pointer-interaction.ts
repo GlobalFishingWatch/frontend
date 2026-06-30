@@ -186,7 +186,9 @@ export function usePointerInteraction({
       })
       const source = resolveDragSource(isZoomOut, dragging)
 
-      notifyChange(sticked.start!, sticked.end!, source)
+      if (sticked.start && sticked.end) {
+        notifyChange(sticked.start, sticked.end, source)
+      }
       endInteraction()
       setState({ dragging: null, handlerMouseX: 0, outerDrag: false })
     }

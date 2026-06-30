@@ -17,7 +17,7 @@ const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
 
 const getSubLayers = (timeseries: Timeseries) =>
-  Object.keys(timeseries?.[0]).filter((k) => k !== 'date' && k !== 'count')
+  Object.keys(timeseries?.[0] ?? {}).filter((k) => k !== 'date' && k !== 'count')
 
 const getEdges = (point: number[], y: (v: number) => number, numSubLayers: number) => {
   const y0 = y(point[0])

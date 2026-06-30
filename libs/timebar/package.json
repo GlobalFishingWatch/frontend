@@ -37,7 +37,6 @@
     "memoize-one": "6.x",
     "react": "19.x",
     "react-dom": "19.x",
-    "resize-observer-polyfill": "1.x",
     "tslib": "2.x",
     "use-debounce": "10.x"
   }

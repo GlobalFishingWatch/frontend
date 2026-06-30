@@ -45,7 +45,7 @@ export function useZoomOutLoop({ stateRef, propsRef, rangeRef, innerScaleRef }: 
             innerScaleRef.current.invert(0).getTime()) *
           progress *
           deltaPxRatio
-        const offsetMs = isNaN(rawOffsetMs) ? 0 : rawOffsetMs
+        const offsetMs = isFinite(rawOffsetMs) ? rawOffsetMs : 0
         let newStart = start
         let newEnd = end
 

@@ -1,6 +1,5 @@
 import type { RefObject } from 'react'
 import { useEffect } from 'react'
-import ResizeObserver from 'resize-observer-polyfill'
 
 import type { SetTimelineState } from './timeline-drag.utils'
 import { INNER_END_RATIO, INNER_START_RATIO } from './timeline-drag.utils'
