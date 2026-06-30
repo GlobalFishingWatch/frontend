@@ -285,13 +285,17 @@ function getLayerHoverFeatures(layer: HighlightableLayer, features: DeckLayerPic
 
 export const useSyncMapHoverHighlightedFeatures = () => {
   const layers = useAtomValue(deckLayerInstancesAtom) as HighlightableLayer[]
-  const hoverFeatures = useMemoCompare(
-    useMapHoverInteraction()?.features ?? EMPTY_HOVER_FEATURES,
+  const clickedEvent = useSelector(selectClickedEvent)
+  const highlightedFeatures = useMemoCompare(
+    [
+      ...((clickedEvent?.features ?? []) as DeckLayerPickingObject[]),
+      ...(useMapHoverInteraction()?.features ?? EMPTY_HOVER_FEATURES),
+    ],
     (previousFeatures, nextFeatures) => {
       return getHoverFeaturesHash(previousFeatures) === getHoverFeaturesHash(nextFeatures)
     }
   )
-  const hoverFeaturesHash = getHoverFeaturesHash(hoverFeatures)
+  const highlightedFeaturesHash = getHoverFeaturesHash(highlightedFeatures)
   const layerHighlightsHashRef = useRef<Record<string, string>>({})
 
   useEffect(() => {
@@ -299,15 +303,15 @@ export const useSyncMapHoverHighlightedFeatures = () => {
       if (typeof layer.setHighlightedFeatures !== 'function' || !layer.state) {
         return
       }
-      const layerHoverFeatures = getLayerHoverFeatures(layer, hoverFeatures)
-      const layerHoverFeaturesHash = getHoverFeaturesHash(layerHoverFeatures)
-      if (layerHighlightsHashRef.current[layer.id] === layerHoverFeaturesHash) {
+      const layerFeatures = getLayerHoverFeatures(layer, highlightedFeatures)
+      const layerFeaturesHash = getHoverFeaturesHash(layerFeatures)
+      if (layerHighlightsHashRef.current[layer.id] === layerFeaturesHash) {
         return
       }
-      layerHighlightsHashRef.current[layer.id] = layerHoverFeaturesHash
-      layer.setHighlightedFeatures(layerHoverFeatures)
+      layerHighlightsHashRef.current[layer.id] = layerFeaturesHash
+      layer.setHighlightedFeatures(layerFeatures)
     })
-  }, [hoverFeatures, hoverFeaturesHash, layers])
+  }, [highlightedFeatures, highlightedFeaturesHash, layers])
 }
 
 const useHotspotOverlayLayer = () => {
