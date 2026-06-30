@@ -70,7 +70,6 @@ import {
   selectWorkspacesListDataview,
 } from './map.selectors'
 import { selectClickedEvent } from './map.slice'
-import { useMapViewState } from './map-viewport.hooks'
 
 export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
@@ -92,7 +91,6 @@ export const useGlobalConfigConnect = () => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
-  const viewState = useMapViewState()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -105,7 +103,6 @@ export const useGlobalConfigConnect = () => {
   const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
-  const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   // const hoverFeatures = useMapHoverInteraction()?.features
   const debugOptions = useSelector(selectDebugOptions)
@@ -126,10 +123,6 @@ export const useGlobalConfigConnect = () => {
     timebarHighlightedTime,
     trackDataviews?.length,
   ])
-
-  const highlightedFeatures = useMemo(() => {
-    return [...(clickedFeatures?.features || [])]
-  }, [clickedFeatures?.features])
 
   // This was the way we managed highlighted features in "@deck.gl/core": "9.1.15"
   // but after upgrading to 9.3 the performance was terrible so had to create the
@@ -167,7 +160,6 @@ export const useGlobalConfigConnect = () => {
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
-      highlightedFeatures,
       highlightedTime,
       highlightEventIds,
       onPositionsMaxPointsError,
@@ -180,7 +172,6 @@ export const useGlobalConfigConnect = () => {
       vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
       visibleEvents,
-      zoom: viewState.zoom,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -190,7 +181,6 @@ export const useGlobalConfigConnect = () => {
     }
     return globalConfig
   }, [
-    viewState.zoom,
     start,
     end,
     debugOptions,
@@ -204,7 +194,6 @@ export const useGlobalConfigConnect = () => {
     visibleEvents,
     vesselsTimebarGraph,
     vesselGroupsVisualizationMode,
-    highlightedFeatures,
     trackGraphExtent,
     onPositionsMaxPointsError,
     skipColorDomainSampling,

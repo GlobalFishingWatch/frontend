@@ -17,11 +17,8 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   globalConfig
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-  const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
-  const highlightEventIds = uniq([
-    ...(globalConfig.highlightEventIds || []),
-    ...(highlightedFeatures || []).map((feature) => feature.id),
-  ])
+  const { start, end, visibleEvents, highlightedTime } = globalConfig
+  const highlightEventIds = uniq([...(globalConfig.highlightEventIds || [])])
   const strictTimeRange =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&

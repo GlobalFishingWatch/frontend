@@ -159,8 +159,11 @@ type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
-  binaryData: UserTrackBinaryData
+  binaryData?: UserTrackBinaryData
+  highlightedFeatures?: UserLayerPickingObject[]
 }
+
+const emptyHighlightedFeatures = [] as UserLayerPickingObject[]
 
 // Start cleanup when module loads
 startCacheCleanup()
@@ -169,6 +172,17 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
   declare state: UserTracksLayerState
+
+  _getHighlightedFeatures() {
+    return this.state?.highlightedFeatures || emptyHighlightedFeatures
+  }
+
+  setHighlightedFeatures(highlightedFeatures: UserLayerPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
+  }
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
     const feature = this.state.rawData?.features[info.index]
@@ -268,7 +282,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getData() {
-    return this.state?.rawData
+    return this.state.rawData
   }
 
   getColor() {
@@ -320,7 +334,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     _: any,
     { layer, sublayer, index }: ContextSublayerCallbackParams<{ index: number }>
   ) => {
-    const { highlightedFeatures, singleTrack } = this.props
+    const { singleTrack } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
     const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
       ?.index as number
     const currentFeature = this.state.rawData?.features?.[featureIndex]
@@ -337,15 +352,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   renderLayers() {
-    const {
-      layers,
-      startTime,
-      endTime,
-      highlightStartTime,
-      highlightEndTime,
-      singleTrack,
-      highlightedFeatures,
-    } = this.props
+    const { layers, startTime, endTime, highlightStartTime, highlightEndTime, singleTrack } =
+      this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
 
     return layers.map((layer) => {
       const sublayer = layer.sublayers?.[0]

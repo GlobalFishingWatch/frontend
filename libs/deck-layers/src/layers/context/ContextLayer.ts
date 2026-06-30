@@ -53,7 +53,7 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
 }
-
+const emptyHighlightedFeatures = [] as ContextPickingObject[]
 export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
   _ContextLayerProps & PropsT
 > {
@@ -84,7 +84,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
   getHighlightLineWidth(

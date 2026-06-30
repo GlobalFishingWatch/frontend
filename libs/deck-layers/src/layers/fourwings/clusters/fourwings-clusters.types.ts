@@ -9,7 +9,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 
-import type { DeckLayerPickingObject, DeckLayerProps, DeckPickingObject } from '../../../types'
+import type { DeckLayerProps, DeckPickingObject } from '../../../types'
 
 export type FourwingsClusterEventType =
   | `${EventTypes.Encounter}`
@@ -31,7 +31,6 @@ export type FourwingsClustersLayerProps = DeckLayerProps<{
   visible: boolean
   clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
   maxZoom: number
-  highlightedFeatures?: DeckLayerPickingObject[]
   temporalAggregation?: boolean
 }>
 

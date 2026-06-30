@@ -15,7 +15,6 @@ import type {
   ColorRampId,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
-  FourwingsPickingObject,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import {
@@ -38,7 +37,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
   {
     start,
     end,
-    highlightedFeatures,
     compareStart,
     compareEnd,
     highlightedTime,
@@ -162,9 +160,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     availableIntervals,
     skipColorDomainSampling,
     ...(visualizationMode === 'positions' && {
-      ...(highlightedFeatures && {
-        highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
-      }),
       ...(highlightedTime?.start && {
         highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
       }),

@@ -1,6 +1,7 @@
 import type { LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { bbox, bboxPolygon, featureCollection, point, rhumbBearing } from '@turf/turf'
+import { uniq } from 'es-toolkit'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
@@ -284,6 +285,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   _getVesselEventLayers(): VesselEventsLayer[] {
     const { visible, visibleEvents, events, highlightEventIds } = this.props
+    const hoveredEventIds = this.state.highlightedFeatures.map((f) => f.id).filter(Boolean)
+    const mergedHighlightEventIds = uniq([...(highlightEventIds || []), ...hoveredEventIds])
     if (!visible) {
       return []
     }
@@ -307,7 +310,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           fetch: fetchWithGFWAPI,
           type,
           visible,
-          highlightEventIds,
+          highlightEventIds: mergedHighlightEventIds,
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
         })

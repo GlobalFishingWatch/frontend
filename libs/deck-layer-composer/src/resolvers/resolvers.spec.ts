@@ -9,7 +9,6 @@ import {
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import type { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapImageLayer,
   BaseMapLabelsLayer,
@@ -32,7 +31,7 @@ import { deckLayerInstancesAtom } from '../hooks/deck-layers-composer.hooks'
 import type { ResolvedDataviewInstance } from '../types/dataviews'
 import type { ResolverGlobalConfig } from '../types/resolvers'
 
-import { dataviewToDeckLayer, getDataviewHighlightedFeatures } from './resolvers'
+import { dataviewToDeckLayer } from './resolvers'
 
 describe('resolvers', () => {
   beforeEach(() => {
@@ -95,72 +94,48 @@ describe('resolvers', () => {
     ...overrides,
   })
 
-  describe('getDataviewHighlightedFeatures', () => {
-    it('should return undefined when no highlighted features in global config', () => {
-      const dataview = createMockDataview({ id: 'test-layer' })
-      const globalConfig = createMockGlobalConfig()
+  const USER_DATASET_ID = 'test-user-dataset'
 
-      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-
-      expect(result).toBeUndefined()
+  const createMockUserDataview = (
+    overrides: Partial<DataviewInstance> = {}
+  ): ResolvedDataviewInstance => {
+    const { config: configOverrides, ...restOverrides } = overrides
+    const dataset = createMockDataset({
+      id: USER_DATASET_ID,
+      type: DatasetTypes.UserContext,
+      endpoints: [
+        {
+          id: EndpointId.ContextTiles,
+          downloadable: true,
+          pathTemplate: 'https://example.com/tiles/{z}/{x}/{y}.pbf',
+          params: [{ id: EndpointId.ContextTiles, label: 'label', type: '4wings-datasets' }],
+          query: [],
+        },
+      ],
     })
 
-    it('should return undefined when highlightedFeatures is undefined', () => {
-      const dataview = createMockDataview({ id: 'test-layer' })
-      const globalConfig = createMockGlobalConfig({ highlightedFeatures: undefined })
-
-      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-
-      expect(result).toBeUndefined()
-    })
-
-    it('should return empty array when highlightedFeatures is empty array', () => {
-      const dataview = createMockDataview({ id: 'test-layer' })
-      const globalConfig = createMockGlobalConfig({ highlightedFeatures: [] })
-
-      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-
-      expect(result).toEqual([])
-    })
-
-    it('should return filtered highlighted features matching dataview id', () => {
-      const dataview = createMockDataview({ id: 'test-layer' })
-      const globalConfig = createMockGlobalConfig({
-        highlightedFeatures: [
-          { layerId: 'test-layer', id: '1' } as DeckLayerPickingObject,
-          { layerId: 'test-layer', id: '2' } as DeckLayerPickingObject,
-          { layerId: 'other-layer', id: '3' } as DeckLayerPickingObject,
-        ],
-      })
-
-      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-
-      expect(result).toHaveLength(2)
-      expect(result).toEqual([
-        expect.objectContaining({ layerId: 'test-layer', id: '1' }),
-        expect.objectContaining({ layerId: 'test-layer', id: '2' }),
-      ])
-    })
-
-    it('should return empty array when no matching highlighted features', () => {
-      const dataview = createMockDataview({ id: 'test-layer' })
-      const globalConfig = createMockGlobalConfig({
-        highlightedFeatures: [
+    return createMockDataview({
+      category: DataviewCategory.User,
+      config: {
+        type: DataviewType.UserContext,
+        layers: [
           {
-            layerId: 'other-layer',
-            object: {},
-            properties: {},
-            id: '3',
-            category: DataviewCategory.Activity,
+            dataset: USER_DATASET_ID,
+            sublayers: [{ id: 'test-sublayer', dataviewId: 'test-dataview' }],
           },
         ],
-      })
-
-      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-
-      expect(result).toHaveLength(0)
+        ...configOverrides,
+      },
+      datasets: [dataset],
+      datasetsConfig: [
+        {
+          datasetId: USER_DATASET_ID,
+          endpoint: EndpointId.ContextTiles,
+        },
+      ],
+      ...restOverrides,
     })
-  })
+  }
 
   describe('dataviewToDeckLayer', () => {
     describe('Basemap layers', () => {
@@ -318,8 +293,7 @@ describe('resolvers', () => {
 
     describe('User layers', () => {
       it('should create UserContextTileLayer for UserContext type', () => {
-        const dataview = createMockDataview({
-          category: DataviewCategory.User,
+        const dataview = createMockUserDataview({
           config: { type: DataviewType.UserContext },
         })
         const globalConfig = createMockGlobalConfig()
@@ -330,8 +304,7 @@ describe('resolvers', () => {
       })
 
       it('should create UserPointsTileLayer for UserPoints type', () => {
-        const dataview = createMockDataview({
-          category: DataviewCategory.User,
+        const dataview = createMockUserDataview({
           config: { type: DataviewType.UserPoints },
         })
         const globalConfig = createMockGlobalConfig()
@@ -342,8 +315,7 @@ describe('resolvers', () => {
       })
 
       it('should create UserTracksLayer for Track type with User category', () => {
-        const dataview = createMockDataview({
-          category: DataviewCategory.User,
+        const dataview = createMockUserDataview({
           config: { type: DataviewType.Track },
         })
         const globalConfig = createMockGlobalConfig()
