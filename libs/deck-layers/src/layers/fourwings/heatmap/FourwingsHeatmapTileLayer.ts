@@ -328,7 +328,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           rampDirty: false,
           viewportLoaded: true,
         })
-      } else {
+      } else if (this.state.rampDirty || !this.state.viewportLoaded) {
         this.setState({ rampDirty: false, viewportLoaded: true })
       }
     })
@@ -682,6 +682,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       minVisibleValue,
       maxVisibleValue,
     } = props
+
     const { tilesCache, colorRanges } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
@@ -765,7 +766,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
-    const zoomOffset = getZoomOffsetByResolution(resolution!, zoom)
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
