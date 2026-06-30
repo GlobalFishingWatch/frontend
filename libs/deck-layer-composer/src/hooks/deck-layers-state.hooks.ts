@@ -3,9 +3,12 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 
+import { DECK_LAYER_LIFECYCLE } from '../types'
+
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = {
   loaded: boolean
+  ready: boolean
   /**
    * `get cacheHash()` needs to be defined internally into the layer instance and is used
    * to detect if the layer has a change that needs to be reflected in react lifecycle
@@ -17,6 +20,14 @@ export const deckLayersStateAtom = atom<DeckLayerState>({})
 
 export const useDeckLayerLoadedState = () => {
   return useAtomValue(deckLayersStateAtom)
+}
+
+function isDeckLayerReady(lifecycle: string | undefined) {
+  return (
+    lifecycle !== undefined &&
+    lifecycle !== DECK_LAYER_LIFECYCLE.NO_STATE &&
+    lifecycle !== DECK_LAYER_LIFECYCLE.INITIALIZED
+  )
 }
 
 export const useSetDeckLayerLoadedState = () => {
@@ -58,6 +69,7 @@ export const useSetDeckLayerLoadedState = () => {
             }
             newLoadedState[layer.id] = {
               loaded: layer.isLoaded,
+              ready: isDeckLayerReady(layer.lifecycle),
               cacheHash,
             }
           })
@@ -66,6 +78,7 @@ export const useSetDeckLayerLoadedState = () => {
             Object.keys(newLoadedState).some(
               (key) =>
                 newLoadedState[key]?.loaded !== loadedState[key]?.loaded ||
+                newLoadedState[key]?.ready !== loadedState[key]?.ready ||
                 newLoadedState[key]?.cacheHash !== loadedState[key]?.cacheHash
             )
           ) {

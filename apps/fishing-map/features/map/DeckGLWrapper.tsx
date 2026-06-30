@@ -96,9 +96,11 @@ const DeckGLWrapper = () => {
   )
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
+
   const onAfterRenderHandler = useCallback(() => {
     setDeckLayerLoadedState(layers)
   }, [layers, setDeckLayerLoadedState])
+
   const layerFilterHandler = useCallback(({ renderPass }: FilterContext) => {
     // This avoids performing the default picking
     // since we are handling it through pickMultipleObjects

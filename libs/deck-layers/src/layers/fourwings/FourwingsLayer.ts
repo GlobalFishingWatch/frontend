@@ -205,8 +205,12 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getZoomOffset() {
+    const zoom = this.context?.viewport?.zoom
+    if (zoom === undefined) {
+      return 0
+    }
     const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
-    return getZoomOffsetByResolution(resolution, this.context.viewport.zoom)
+    return getZoomOffsetByResolution(resolution, zoom)
   }
 
   getLayer() {
