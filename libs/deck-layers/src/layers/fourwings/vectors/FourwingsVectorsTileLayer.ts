@@ -121,7 +121,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {

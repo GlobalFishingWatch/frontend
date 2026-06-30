@@ -137,7 +137,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {
@@ -874,7 +874,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getColorDomain = (): FourwingsTileLayerColorDomain => {
-    const { colorDomain } = this.state
+    const { colorDomain } = this.state || {}
     const modeIsBivariate = this.props.comparisonMode === FourwingsComparisonMode.Bivariate
     if (modeIsBivariate !== Array.isArray(colorDomain?.[0])) {
       return modeIsBivariate ? [[], []] : []
@@ -883,7 +883,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getColorRange = () => {
-    return this.state.colorRanges
+    return this.state?.colorRanges
   }
 
   getColorScale = () => {

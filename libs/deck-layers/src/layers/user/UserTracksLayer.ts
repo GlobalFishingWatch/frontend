@@ -264,11 +264,11 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getError() {
-    return this.state.error
+    return this.state?.error
   }
 
   getData() {
-    return this.state.rawData
+    return this.state?.rawData
   }
 
   getColor() {

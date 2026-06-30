@@ -151,7 +151,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   initializeState(context: LayerContext) {

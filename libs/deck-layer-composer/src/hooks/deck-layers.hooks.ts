@@ -40,7 +40,8 @@ export const useDeckLayers = () => {
 
 export const useGetDeckLayer = <L = AnyDeckLayer>(id: string) => {
   const deckLayers = useDeckLayers()
-  return deckLayers.find((layer) => layer.id === id) as DeckLayerAtom<L>
+  const layer = deckLayers.find((layer) => layer.id === id)
+  return (layer?.ready ? layer : undefined) as DeckLayerAtom<L>
 }
 
 export const useGetDeckLayers = <L = AnyDeckLayer>(ids: string[]) => {
