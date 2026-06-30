@@ -13,7 +13,6 @@ import { useTimelineContext } from '../timeline/timeline-context'
 
 import {
   useClusteredChartData,
-  useFilteredChartData,
   useOuterScale,
   useSortedChartData,
   useTimebarTimeOrigin,
@@ -31,6 +30,7 @@ import { hoveredEventState, useUpdateChartLayers, useUpdateChartsData } from './
 import styles from './tracks-events.module.css'
 
 const MAX_THICK_TRACKS_NUMBER = 2
+const EMPTY_TRACKS: TimebarChartData<TrackChunkProps> = []
 
 const WHITE: Color = [255, 255, 255, 255]
 const TRANSPARENT: Color = [0, 0, 0, 0]
@@ -125,24 +125,23 @@ export const TimebarTracksEvents = ({
     return (d1.getTime() - d0.getTime()) / outerWidth
   }, [outerScale, outerWidth])
 
-  const filteredTracks = useFilteredChartData(tracks || [])
-  useUpdateChartsData('tracks', filteredTracks)
+  const tracksData = tracks || EMPTY_TRACKS
+  useUpdateChartsData('tracks', tracksData)
 
   const sortedTracksEvents = useSortedChartData(data)
   const clusteredTracksEvents = useClusteredChartData(sortedTracksEvents)
-  const filteredTracksEvents = useFilteredChartData(clusteredTracksEvents)
-  useUpdateChartsData('tracksEvents', filteredTracksEvents)
+  useUpdateChartsData('tracksEvents', clusteredTracksEvents)
 
   const updateHoveredEvent = useSetAtom(hoveredEventState)
 
   const lineData = useMemo(() => {
     const tracksWithCoords = getTracksWithCoords(
-      filteredTracks,
+      tracksData,
       origin,
       graphHeight,
       trackGraphOrientation
     )
-    const lineHeight = filteredTracks.length > MAX_THICK_TRACKS_NUMBER ? 1 : 2
+    const lineHeight = tracksData.length > MAX_THICK_TRACKS_NUMBER ? 1 : 2
     const result: LineDatum[] = []
     tracksWithCoords.forEach((track) => {
       const trackColor = toDeckColor(track.color)
@@ -163,7 +162,7 @@ export const TimebarTracksEvents = ({
       })
     })
     return { data: result, lineHeight }
-  }, [filteredTracks, origin, graphHeight, trackGraphOrientation])
+  }, [tracksData, origin, graphHeight, trackGraphOrientation])
 
   const eventGeometry = useMemo(() => {
     const fishing: EventDatum[] = []
@@ -174,7 +173,7 @@ export const TimebarTracksEvents = ({
     const loitering: EventDatum[] = []
 
     const tracksEventsWithCoords = getTracksEventsWithCoords(
-      filteredTracksEvents,
+      clusteredTracksEvents,
       origin,
       graphHeight,
       trackGraphOrientation
@@ -300,7 +299,7 @@ export const TimebarTracksEvents = ({
       })
     })
     return { fishing, gapLines, gapIcons, encounters, ports, loitering }
-  }, [filteredTracksEvents, graphHeight, origin, msPerPx, trackGraphOrientation, useTrackColor])
+  }, [clusteredTracksEvents, graphHeight, origin, msPerPx, trackGraphOrientation, useTrackColor])
 
   // Stable string dep so layers memo doesn't rerun when array reference changes but content is same
   const highlightTrigger = highlightedEventsIds?.join(',')
@@ -346,10 +345,10 @@ export const TimebarTracksEvents = ({
         widthUnits: 'pixels',
         getPath: (d) => d.path as Position[],
         getColor: (d) => (hit(d) ? WHITE : d.baseColor),
-        updateTriggers: { getColor: highlightTrigger },
         getWidth: (d) => d.width as number,
         onHover: onLayerHover,
         onClick: onLayerClick,
+        updateTriggers: { getColor: highlightTrigger },
       }),
 
       new PolygonLayer<EventDatum>({
@@ -361,11 +360,11 @@ export const TimebarTracksEvents = ({
         lineWidthUnits: 'pixels',
         getPolygon: (d) => d.polygon as number[][],
         getFillColor: (d) => (hit(d) ? WHITE : d.baseColor),
-        updateTriggers: { getFillColor: highlightTrigger },
         getLineColor: (d) => d.lineColor,
         getLineWidth: (d) => (d.type === EventTypes.Port ? 1 : 0),
         onHover: onLayerHover,
         onClick: onLayerClick,
+        updateTriggers: { getFillColor: highlightTrigger },
       }),
       new PolygonLayer<EventDatum>({
         id: 'events-stroke',
@@ -377,10 +376,10 @@ export const TimebarTracksEvents = ({
         getPolygon: (d) => d.polygon as number[][],
         getFillColor: TRANSPARENT,
         getLineColor: (d) => (hit(d) ? WHITE : d.lineColor),
-        updateTriggers: { getLineColor: highlightTrigger },
         getLineWidth: 1.5,
         onHover: onLayerHover,
         onClick: onLayerClick,
+        updateTriggers: { getLineColor: highlightTrigger },
       }),
       new PathLayer({
         id: 'events-gap-lines-bg',
@@ -398,11 +397,11 @@ export const TimebarTracksEvents = ({
         getPath: (d: EventDatum) => d.path as Position[],
         getColor: (d) => (hit(d) ? WHITE : d.baseColor),
         getWidth: (d: EventDatum) => d.width as number,
-        updateTriggers: { getColor: highlightTrigger },
         getDashArray: [4, 6],
         extensions: [new PathStyleExtension({ dash: true })],
         onHover: onLayerHover,
         onClick: onLayerClick,
+        updateTriggers: { getColor: highlightTrigger },
       }),
       new PathLayer({
         id: 'events-gap-markers',
@@ -412,9 +411,9 @@ export const TimebarTracksEvents = ({
         getPath: (d: EventDatum) => d.path as Position[],
         getColor: (d) => (hit(d) ? WHITE : d.baseColor),
         getWidth: (d: EventDatum) => d.width as number,
-        updateTriggers: { getColor: highlightTrigger },
         onHover: onLayerHover,
         onClick: onLayerClick,
+        updateTriggers: { getColor: highlightTrigger },
       }),
     ]
   }, [eventGeometry, lineData, highlightTrigger, onLayerHover, onLayerClick])

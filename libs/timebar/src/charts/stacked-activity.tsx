@@ -73,7 +73,6 @@ export const TimebarStackedActivity = ({
     const layerData = series.flatMap((s, sublayerIndex) => {
       if (!dataviews[sublayerIndex]) return []
       const color = hexToDeckColor(dataviews[sublayerIndex]?.config?.color || '#ffffff')
-      // curveStepAfter: each point's value is held forward across [date[i], date[i+1]].
       return s.slice(0, -1).flatMap((point, i) => {
         const x1 = (point as any).data.date - origin
         const x2 = (s[i + 1] as any).data.date - origin
