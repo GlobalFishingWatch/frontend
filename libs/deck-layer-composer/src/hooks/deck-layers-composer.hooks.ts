@@ -39,7 +39,10 @@ export function useDeckLayerComposer({
   })
 
   const dataviewsMergedSorted = useMemo(() => {
-    const dataviewsMerged = getDataviewsResolved(memoDataviews, resolutionConfig) as DataviewInstance[]
+    const dataviewsMerged = getDataviewsResolved(
+      memoDataviews,
+      resolutionConfig
+    ) as DataviewInstance[]
     return getDataviewsSorted(dataviewsMerged)
   }, [memoDataviews, resolutionConfig])
 

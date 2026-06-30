@@ -16,19 +16,22 @@ function isDeckLayerReady(layer: AnyDeckLayer) {
   )
 }
 
-export type DeckLayerAtom<L = AnyDeckLayer> = { id: string; instance: L; loaded: boolean }
+export type DeckLayerAtom<L = AnyDeckLayer> = {
+  id: string
+  instance: L
+  loaded: boolean
+  ready: boolean
+}
 
 export const deckLayersAtom: Atom<DeckLayerAtom<AnyDeckLayer>[]> = atom<DeckLayerAtom[]>((get) => {
   const layerInstances = get(deckLayerInstancesAtom)
   const layerStatus = get(deckLayersStateAtom)
-  if (layerInstances.every(isDeckLayerReady)) {
-    const deckLayers = layerInstances.map((layer) => {
-      const status = layerStatus[layer.id]
-      return { id: layer.id, instance: layer, loaded: status?.loaded }
-    })
-    return deckLayers
-  }
-  return deckLayersAtom ? get(deckLayersAtom) : []
+  return layerInstances.map((layer) => ({
+    id: layer.id,
+    instance: layer,
+    loaded: layerStatus[layer.id]?.loaded ?? false,
+    ready: isDeckLayerReady(layer),
+  }))
 })
 
 export const useDeckLayers = () => {

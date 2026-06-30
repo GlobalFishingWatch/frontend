@@ -83,6 +83,7 @@ export const useTimebarVesselTracksData = () => {
   return useAtomValue(vesselTracksAtom)
 }
 
+type TimebarChartDataProps = { segmentsOffsetY: boolean; color: string }
 type VesselTrackAtom = TimebarChartData<any>
 export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
@@ -92,15 +93,7 @@ export const useTimebarVesselTracks = () => {
 
   const trackLayers = useTimebarLayers()
   const tracksLoaded = useMemo(
-    () =>
-      trackLayers
-        .flatMap((v) => {
-          const loaded = isVesselLayerInstance(v.instance)
-            ? v.instance.getVesselTracksLayersLoaded()
-            : v.instance.isLoaded
-          return loaded ? v.id : []
-        })
-        .join(','),
+    () => trackLayers.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [trackLayers]
   )
   const tracksColorHash = useMemo(
@@ -152,43 +145,47 @@ export const useTimebarVesselTracks = () => {
   useEffect(() => {
     requestAnimationFrame(() => {
       if (trackLayers?.length && timebarVisualisation === TimebarVisualisations.Vessel) {
-        const vesselTracks = trackLayers.flatMap(({ instance }) => {
-          const loaded = isVesselLayerInstance(instance)
-            ? instance.getVesselTracksLayersLoaded()
-            : instance.isLoaded
+        const vesselTracks = trackLayers.flatMap(({ instance, loaded }) => {
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
-          const segments = isVesselLayerInstance(instance)
-            ? instance.getVesselTrackSegments({
-                ...((debugOptions?.vesselsAsPositions || instance?.props.gapSegmentThreshold) && {
-                  includeMiddlePoints: true,
-                }),
-              })
-            : instance.getSegments()
 
-          const trackGraphData: TimebarChartItem<{ color: string }> = {
+          const trackGraphData: TimebarChartItem<TimebarChartDataProps> = {
             id: instance.id,
             color: instance.getColor(),
-            chunks: [] as TimebarChartChunk<{ color: string }>[],
+            chunks: [] as TimebarChartChunk<TimebarChartDataProps>[],
             status,
             props: {
-              segmentsOffsetY: !isVesselLayerInstance(instance) && hasUniqueChunks(segments),
+              segmentsOffsetY: false,
             },
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
 
-          if (segments?.length && status === ResourceStatus.Finished) {
-            trackGraphData.chunks = segments?.map((segment) => {
-              const start = segment[0]?.timestamp
-              const color = segment[0]?.color || instance.getColor()
-              const end = segment[segment.length - 1]?.timestamp
-              return {
-                start,
-                end,
-                props: { color },
-                values: segment,
-              } as TimebarChartChunk<{ color: string }>
-            })
+          if (status === ResourceStatus.Finished) {
+            const segments = isVesselLayerInstance(instance)
+              ? instance.getVesselTrackSegments({
+                  ...((debugOptions?.vesselsAsPositions || instance?.props.gapSegmentThreshold) && {
+                    includeMiddlePoints: true,
+                  }),
+                })
+              : instance.getSegments()
+            if (!trackGraphData.props) {
+              trackGraphData.props = {} as TimebarChartDataProps
+            }
+            trackGraphData.props.segmentsOffsetY =
+              !isVesselLayerInstance(instance) && hasUniqueChunks(segments)
+            if (segments?.length) {
+              trackGraphData.chunks = segments?.map((segment) => {
+                const start = segment[0]?.timestamp
+                const color = segment[0]?.color || instance.getColor()
+                const end = segment[segment.length - 1]?.timestamp
+                return {
+                  start,
+                  end,
+                  props: { color },
+                  values: segment,
+                } as TimebarChartChunk<TimebarChartDataProps>
+              })
+            }
           }
           return trackGraphData
         })
@@ -217,16 +214,7 @@ export const useTimebarVesselTracksGraph = () => {
   const trackLayers = useTimebarLayers()
 
   const tracksLoaded = useMemo(
-    () =>
-      trackLayers
-        .flatMap((v) => {
-          return isVesselLayerInstance(v.instance)
-            ? v.instance.getVesselTracksLayersLoaded()
-            : v.instance.isLoaded
-              ? v.id
-              : []
-        })
-        .join(','),
+    () => trackLayers.flatMap((v) => (v.loaded ? v.id : [])).join(','),
     [trackLayers]
   )
   const tracksColor = useMemo(
@@ -268,10 +256,7 @@ export const useTimebarVesselTracksGraph = () => {
         trackLayers?.length <= 2 &&
         timebarVisualisation === TimebarVisualisations.Vessel
       ) {
-        const vesselTracks = trackLayers.flatMap(({ instance }) => {
-          const loaded = isVesselLayerInstance(instance)
-            ? instance.getVesselTracksLayersLoaded()
-            : instance.isLoaded
+        const vesselTracks = trackLayers.flatMap(({ instance, loaded }) => {
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           const trackGraphData: TimebarChartItem = {
             id: instance.id,
@@ -288,28 +273,30 @@ export const useTimebarVesselTracksGraph = () => {
             },
           }
 
-          const segments = isVesselLayerInstance(instance)
-            ? instance.getVesselTrackSegments({ includeMiddlePoints: true })
-            : instance.getSegments()
+          if (status === ResourceStatus.Finished) {
+            const segments = isVesselLayerInstance(instance)
+              ? instance.getVesselTrackSegments({ includeMiddlePoints: true })
+              : instance.getSegments()
 
-          if (segments?.length && status === ResourceStatus.Finished) {
-            trackGraphData.chunks = segments?.flatMap((segment) => {
-              if (!segment) {
-                return []
-              }
-              return {
-                start: segment[0].timestamp || Number.POSITIVE_INFINITY,
-                // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
-                end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
-                values: segment.map((segmentPoint) => {
-                  const value = (segmentPoint as any)?.[timebarGraph]
-                  return {
-                    timestamp: segmentPoint.timestamp,
-                    value,
-                  }
-                }),
-              } as TimebarChartChunk
-            })
+            if (segments?.length) {
+              trackGraphData.chunks = segments?.flatMap((segment) => {
+                if (!segment) {
+                  return []
+                }
+                return {
+                  start: segment[0].timestamp || Number.POSITIVE_INFINITY,
+                  // TODO This assumes that segments ends at last value's timestamp, which is probably incorrect
+                  end: segment[segment.length - 1].timestamp || Number.NEGATIVE_INFINITY,
+                  values: segment.map((segmentPoint) => {
+                    const value = (segmentPoint as any)?.[timebarGraph]
+                    return {
+                      timestamp: segmentPoint.timestamp,
+                      value,
+                    }
+                  }),
+                } as TimebarChartChunk
+              })
+            }
           }
           return trackGraphData
         })
