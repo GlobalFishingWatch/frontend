@@ -48,7 +48,7 @@ export const useUpdateChartsData = (key: ChartType, data: TimebarChartData, load
   // Flag inactive on unmount so the highlighter ignores it (keeps the last data).
   useEffect(() => {
     return () => {
-      setChartsData((prev) => ({ ...prev, [key]: { ...prev[key], active: false } }))
+      setChartsData((prev) => ({ ...prev, [key]: { ...prev[key], active: false, loading: false } }))
     }
   }, [key, setChartsData])
 }
