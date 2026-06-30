@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { scaleTime } from 'd3-scale'
-import { useDebouncedCallback } from 'use-debounce'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
@@ -39,45 +38,6 @@ export const filterData = <T>(
       chunks: filteredChunks,
     }
   })
-}
-
-const getDataHash = (data: TimebarChartData) =>
-  data
-    .map((item) => {
-      const first = item.chunks[0]
-      const last = item.chunks[item.chunks.length - 1]
-      return [
-        item.color,
-        item.chunks.map((chunk) => (chunk.props as { color?: string } | undefined)?.color).join(),
-        first?.start,
-        first?.values?.[0]?.value,
-        last?.end,
-        last?.values?.[last.values.length - 1]?.value,
-        Object.values(item.filters || {}).join(''),
-      ].join()
-    })
-    .join('|')
-
-export const useFilteredChartData = <T>(data: TimebarChartData<T>) => {
-  const { outerStart, outerEnd } = useTimelineContext()
-  const [filteredData, setFilteredData] = useState<TimebarChartData<T>>([])
-
-  // Debounced so panning/zooming doesn't refilter every frame; the signature check keeps the
-  // same reference (no re-render / layer rebuild) when the visible chunks are unchanged.
-  const updateFilteredData = useDebouncedCallback(
-    (data: TimebarChartData<T>, start: string, end: string) => {
-      const next = filterData(data, start, end)
-      setFilteredData((prev) => (getDataHash(prev) === getDataHash(next) ? prev : next))
-    },
-    100,
-    { maxWait: 1000, leading: true }
-  )
-
-  useEffect(() => {
-    updateFilteredData(data, outerStart, outerEnd)
-  }, [outerStart, outerEnd, data, updateFilteredData])
-
-  return filteredData
 }
 
 const MIN_DISTANCE_PX_TO_CLUSTER = 2

@@ -7,7 +7,7 @@ import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { useTimelineContext } from '../timeline/timeline-context'
 
 import type { TimebarChartData } from '.'
-import { useFilteredChartData, useTimebarTimeOrigin } from './charts.hooks'
+import { useTimebarTimeOrigin } from './charts.hooks'
 import { getTrackY } from './charts.utils'
 import { useUpdateChartLayers, useUpdateChartsData } from './charts-store.atom'
 
@@ -18,8 +18,7 @@ export const TimebarTracksGraph = ({ data, steps }: TimebarChartProps) => {
   const { graphHeight, trackGraphOrientation } = useTimelineContext()
   const origin = useTimebarTimeOrigin()
 
-  const filteredGraphsData = useFilteredChartData(data)
-  useUpdateChartsData('tracksGraphs', filteredGraphsData)
+  useUpdateChartsData('tracksGraphs', data)
 
   const heightScale = useMemo(() => {
     if (!steps?.length) return undefined
@@ -27,13 +26,13 @@ export const TimebarTracksGraph = ({ data, steps }: TimebarChartProps) => {
       trackGraphOrientation === 'down'
         ? Math.min(...steps.map((step) => step.value || 0))
         : Math.max(...steps.map((step) => step.value || 0))
-    const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
+    const { height } = getTrackY(data.length, 0, graphHeight)
     return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
-  }, [filteredGraphsData.length, graphHeight, steps, trackGraphOrientation])
+  }, [data.length, graphHeight, steps, trackGraphOrientation])
 
   const layers = useMemo(() => {
     if (!heightScale || !steps.length) return []
-    const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
+    const layerData = data.flatMap((track, trackIndex) => {
       const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)
       return track.chunks.flatMap((segment) => {
         return (segment.values || [])?.flatMap(({ value = 0, timestamp }, index, array) => {
@@ -87,15 +86,7 @@ export const TimebarTracksGraph = ({ data, steps }: TimebarChartProps) => {
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [
-    heightScale,
-    steps,
-    origin,
-    filteredGraphsData,
-    data.length,
-    graphHeight,
-    trackGraphOrientation,
-  ])
+  }, [heightScale, steps, origin, data, graphHeight, trackGraphOrientation])
 
   useUpdateChartLayers('tracksGraphs', layers)
 
