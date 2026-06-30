@@ -10,6 +10,8 @@ import { useTimelineContext } from '../timeline/timeline-context'
 import { useOuterScale, useTimebarTimeOrigin } from './charts.hooks'
 import { activeChartLayersState } from './charts-store.atom'
 
+import styles from './charts.module.css'
+
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0 } as const
 
@@ -35,7 +37,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
   }
 
   return (
-    <div style={WRAPPER_STYLE}>
+    <div style={WRAPPER_STYLE} className={styles.charts}>
       <DeckGL
         views={VIEW}
         viewState={viewState}
@@ -48,6 +50,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
           showDeckStats
             ? [
                 new StatsWidget({
+                  title: 'Timebar stats',
                   initialExpanded: true,
                 }),
               ]

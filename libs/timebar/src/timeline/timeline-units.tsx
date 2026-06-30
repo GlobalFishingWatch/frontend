@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import type { DateTimeUnit } from 'luxon'
 
+import type { TimebarChangeSource } from '../timebar'
 import type { TimebarLabels } from '../timebar-labels'
-import { DEFAULT_LABELS } from '../timebar-labels'
 import type { TimelineScale } from '../timeline/timeline-context'
 import { clampToAbsoluteBoundaries, getDeltaDays, getDeltaMs } from '../utils'
 
@@ -11,8 +11,8 @@ import { getUnitsPositions } from './timeline-layout'
 import styles from './timeline-units.module.css'
 
 type TimelineUnitsProps = {
-  labels?: TimebarLabels
-  onChange: (start: string, end: string, source?: string, clampToEnd?: boolean) => void
+  labels: TimebarLabels
+  onChange: (start: string, end: string, source?: TimebarChangeSource, clampToEnd?: boolean) => void
   start: string
   end: string
   absoluteStart: string
@@ -24,7 +24,7 @@ type TimelineUnitsProps = {
 }
 
 const TimelineUnits = ({
-  labels: labelsProp,
+  labels,
   onChange,
   start,
   end,
@@ -35,7 +35,6 @@ const TimelineUnits = ({
   outerScale,
   locale,
 }: TimelineUnitsProps) => {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
   const zoomToUnit = useCallback(
     ({ start, end }: { start: string | null; end: string | null }) => {
       if (!start || !end) {

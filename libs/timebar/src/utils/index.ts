@@ -1,9 +1,18 @@
+import { useEffect, useRef } from 'react'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_DATE_FORMAT, DEFAULT_FULL_DATE_FORMAT, FIRST_YEAR_OF_DATA } from '../constants'
+
+export const useLatest = <T>(value: T) => {
+  const ref = useRef(value)
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref
+}
 
 export const getTime = (dateISO: string) => getUTCDate(dateISO).getTime()
 
@@ -24,11 +33,6 @@ export const isYearInBounds = (year: number, options: YearBoundsOptions = {}): b
   const minYear = parseInt(options.absoluteStart?.slice(0, 4) || '') || FIRST_YEAR_OF_DATA
   const maxYear = Math.min(parseInt(options.absoluteEnd?.slice(0, 4) || '') || nextYear, nextYear)
   return year >= minYear && year <= maxYear
-}
-
-export const isValidISODate = (value: string, options?: YearBoundsOptions): boolean => {
-  const parsed = DateTime.fromISO(value, { zone: 'utc' })
-  return parsed.isValid && !isNaN(Date.parse(value)) && isYearInBounds(parsed.year, options)
 }
 
 export const getHumanizedDates = (start: string, end: string, locale: string) => {

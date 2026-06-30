@@ -7,6 +7,8 @@ import { useTimelineContext } from './timeline/timeline-context'
 import { useOuterScale } from './charts'
 import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
 import { Timebar } from './timebar'
+import type { TimebarLabels } from './timebar-labels'
+import { DEFAULT_LABELS } from './timebar-labels'
 
 vi.mock('@globalfishingwatch/ui-components/icon', () => ({
   Icon: ({ icon }: { icon?: string }) => <i data-icon={icon} />,
@@ -143,6 +145,23 @@ describe('Timebar (compound)', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
     expect(() => render(<Timebar.Tools.Bookmark />)).toThrow(/within a <Timebar>/)
     spy.mockRestore()
+  })
+
+  it('deep-merges partial labels over defaults (single source of truth)', () => {
+    render(
+      <Timebar
+        {...baseProps}
+        onChange={vi.fn()}
+        labels={{ playback: { playAnimation: 'GO' } } as TimebarLabels}
+      >
+        <Timebar.Playback />
+      </Timebar>
+    )
+
+    // the one overridden label is applied...
+    expect(screen.getByTitle('GO')).not.toBeNull()
+    // ...and a sibling in the same slice keeps its default (a shallow merge would drop it)
+    expect(screen.getByTitle(DEFAULT_LABELS.playback.moveForward)).not.toBeNull()
   })
 })
 

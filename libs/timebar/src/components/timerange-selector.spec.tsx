@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { DEFAULT_LABELS } from '../timebar-labels'
+
 import type { LastXOption } from './timerange-selector'
 import TimeRangeSelector from './timerange-selector'
 
@@ -38,7 +40,13 @@ describe('TimeRangeSelector', () => {
 
   it('submits the current range when the form is submitted', () => {
     const onSubmit = vi.fn()
-    render(<TimeRangeSelector {...baseProps} onSubmit={onSubmit} labels={{ done: 'Done' }} />)
+    render(
+      <TimeRangeSelector
+        {...baseProps}
+        onSubmit={onSubmit}
+        labels={{ ...DEFAULT_LABELS.timerange, done: 'Done' }}
+      />
+    )
     fireEvent.click(screen.getByText('Done'))
     expect(onSubmit).toHaveBeenCalled()
   })

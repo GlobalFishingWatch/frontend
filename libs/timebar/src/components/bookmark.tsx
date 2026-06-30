@@ -5,7 +5,6 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import type { TimebarLabels } from '../timebar-labels'
-import { DEFAULT_LABELS } from '../timebar-labels'
 import { getHumanizedDates } from '../utils'
 
 import styles from './bookmark.module.css'
@@ -15,7 +14,7 @@ const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
 type BookmarkProps = {
-  labels?: TimebarLabels['bookmark']
+  labels: TimebarLabels['bookmark']
   placement?: string
   bookmarkStart: string
   bookmarkEnd: string
@@ -28,7 +27,7 @@ type BookmarkProps = {
 }
 
 const Bookmark = ({
-  labels: labelsProp,
+  labels,
   placement = 'top',
   scale,
   bookmarkStart,
@@ -39,7 +38,6 @@ const Bookmark = ({
   onDelete,
   locale = 'en',
 }: BookmarkProps) => {
-  const labels = { ...DEFAULT_LABELS.bookmark, ...labelsProp }
   const x = scale(getUTCDate(bookmarkStart))
   const width = scale(getUTCDate(bookmarkEnd)) - x
   const { humanizedStart, humanizedEnd } = getHumanizedDates(bookmarkStart, bookmarkEnd, locale)

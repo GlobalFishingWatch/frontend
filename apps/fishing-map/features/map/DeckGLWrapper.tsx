@@ -134,6 +134,7 @@ const DeckGLWrapper = () => {
         showDeckStats
           ? [
               new StatsWidget({
+                title: 'Map stats',
                 initialExpanded: true,
                 onExpandedChange: onExpandedStatsChange,
               }),

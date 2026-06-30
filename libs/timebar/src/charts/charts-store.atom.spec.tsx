@@ -24,13 +24,13 @@ describe('useUpdateChartsData', () => {
     expect(store.get(chartsStore).activity).toEqual({ data: DATA_A, active: true })
 
     rerender({ data: DATA_B })
-    expect(store.get(chartsStore).activity.data).toBe(DATA_B)
-    expect(store.get(chartsStore).activity.active).toBe(true)
+    expect(store.get(chartsStore).activity!.data).toBe(DATA_B)
+    expect(store.get(chartsStore).activity!.active).toBe(true)
 
     unmount()
-    expect(store.get(chartsStore).activity.active).toBe(false)
+    expect(store.get(chartsStore).activity!.active).toBe(false)
     // data is retained after unmount
-    expect(store.get(chartsStore).activity.data).toBe(DATA_B)
+    expect(store.get(chartsStore).activity!.data).toBe(DATA_B)
   })
 
   it('activeChartsDataState excludes inactive charts', () => {

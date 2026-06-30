@@ -1,0 +1,6 @@
+.charts :global(.deck-widget-stats) {
+  position: fixed;
+  bottom: 11rem;
+  color: var(--color-primary-blue);
+  right: 0;
+}

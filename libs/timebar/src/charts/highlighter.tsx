@@ -261,7 +261,8 @@ export const TimebarHighlighter = ({
           >
             <div
               className={cx(styles.tooltip, {
-                [styles.overflowRight]: window.innerWidth - center < 700,
+                [styles.overflowRight]:
+                  typeof window !== 'undefined' && window.innerWidth - center < 700,
               })}
             >
               <div className={styles.tooltipHeader}>

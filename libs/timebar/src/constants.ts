@@ -1,6 +1,5 @@
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-export const DEFAULT_CSS_TRANSITION = '.35s'
 export const DEFAULT_DATE_FORMAT = 'MMM d yyyy'
 export const DEFAULT_FULL_DATE_FORMAT = 'MMM d yyyy HH:mm'
 

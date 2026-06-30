@@ -6,7 +6,7 @@ import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { EVENT_SOURCE } from '../constants'
 import { useTimebar } from '../timebar-context'
-import { DEFAULT_LABELS } from '../timebar-labels'
+import { useLatest } from '../utils'
 
 import { getTimebarStepByDelta } from './playback.utils'
 
@@ -23,16 +23,17 @@ type PlaybackProps = {
 
 export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: PlaybackProps) {
   const {
-    labels: labelsProp,
+    labels: { playback: labels },
     absoluteStart,
     absoluteEnd,
     intervals,
     getCurrentInterval,
     notifyChange,
-    start,
+    rangeRef,
+    beginInteraction,
+    endInteraction,
     end,
   } = useTimebar()
-  const labels = { ...DEFAULT_LABELS.playback, ...labelsProp?.playback }
   const onPlaybackTick = useCallback(
     (newStart: string, newEnd: string) => {
       notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
@@ -46,10 +47,10 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
   const rafRef = useRef<number | null>(null)
   const lastUpdateMsRef = useRef<number | null>(null)
 
-  // Latest values for the rAF loop, so its callbacks never read stale props/state.
-  const latest = useRef({
-    start,
-    end,
+  // Fresh values for the rAF loop / button handlers, so their callbacks never read
+  // stale state. The live range itself lives in the shared rangeRef (single writer:
+  // notifyChange), so it isn't mirrored here.
+  const latestRef = useLatest({
     absoluteStart,
     intervals,
     getCurrentInterval,
@@ -59,46 +60,23 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
     loop,
     playing,
   })
-  useEffect(() => {
-    // While playing, the rAF loop owns the playhead. The committed start/end props lag
-    // the loop (async atom -> render -> effect), so syncing them here would drag the
-    // cursor backward and cause the forward/back jitter. Keep the loop's advanced value;
-    // only adopt props start/end when not playing.
-    const keepPlayhead = latest.current.playing && playing
-    latest.current = {
-      start: keepPlayhead ? latest.current.start : start,
-      end: keepPlayhead ? latest.current.end : end,
-      absoluteStart,
-      intervals,
-      getCurrentInterval,
-      onPlaybackTick,
-      onTogglePlay,
-      speedStep,
-      loop,
-      playing,
-    }
-  })
 
   const stop = useCallback(() => {
     if (rafRef.current) {
       window.cancelAnimationFrame(rafRef.current)
     }
-    latest.current.onTogglePlay?.(false)
+    endInteraction()
+    latestRef.current.onTogglePlay?.(false)
     setPlaying(false)
-  }, [])
+  }, [endInteraction, latestRef])
 
   const update = useCallback(
     (deltaMultiplicator: number, { byIntervals = false } = {}) => {
-      const {
-        start,
-        end,
-        absoluteStart,
-        intervals,
-        getCurrentInterval,
-        onPlaybackTick,
-        speedStep,
-        loop,
-      } = latest.current
+      const { absoluteStart, intervals, getCurrentInterval, onPlaybackTick, speedStep, loop } =
+        latestRef.current
+      // Live range is the shared truth; notifyChange advances it synchronously, so the
+      // next frame/click reads the value just emitted (no optimistic write-back needed).
+      const { start, end } = rangeRef.current
       if (!start || !end) return
 
       const {
@@ -118,10 +96,6 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
 
       if (newStart && newEnd) {
         onPlaybackTick(newStart, newEnd)
-        // Optimistically advance the mirror so the next rAF frame builds on the value
-        // just emitted instead of waiting for the async atom -> render -> effect round-trip.
-        latest.current.start = newStart
-        latest.current.end = newEnd
       }
 
       if (clamped === 'end') {
@@ -133,8 +107,6 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
             getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
           ).toISOString()
           onPlaybackTick(absoluteStart, newEndLoop)
-          latest.current.start = absoluteStart
-          latest.current.end = newEndLoop
         } else {
           stop()
         }
@@ -165,16 +137,17 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
 
   const togglePlay = useCallback(
     (force?: boolean) => {
-      const playingNext = force === undefined ? !latest.current.playing : force
+      const playingNext = force === undefined ? !latestRef.current.playing : force
       if (!playingNext) {
         stop()
         return
       }
+      beginInteraction()
       startLoop()
-      latest.current.onTogglePlay?.(true)
+      latestRef.current.onTogglePlay?.(true)
       setPlaying(true)
     },
-    [stop, startLoop]
+    [latestRef, beginInteraction, startLoop, stop]
   )
 
   useEffect(() => {

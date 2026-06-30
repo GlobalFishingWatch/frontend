@@ -1,10 +1,10 @@
 import type React from 'react'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import cx from 'classnames'
+import { merge } from 'es-toolkit'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { TimebarHighlighter } from './charts/highlighter'
@@ -25,49 +25,32 @@ import type { TimebarContextProps } from './timebar-context'
 import { TimebarContext } from './timebar-context'
 import type { TimebarLabels } from './timebar-labels'
 import { DEFAULT_LABELS } from './timebar-labels'
+import { useTimebarRange } from './timebar-range'
 
 import styles from './timebar.module.css'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 const MINIMUM_RANGE = ONE_HOUR_MS
-
 const getRangeMs = (range: number, unit: DateTimeUnit) => {
   const start = DateTime.now()
   const end = start.plus({ [unit]: range })
   return end.diff(start).milliseconds
 }
 
-const clampToMinAndMax = (
-  start: string,
-  end: string,
-  minMs: number,
-  maxMs: number,
-  clampToEnd: boolean
-) => {
-  const delta = getUTCDate(end).getTime() - getUTCDate(start).getTime()
-  let clampedEnd = end
-  let clampedStart = start
-  if (delta > maxMs) {
-    if (clampToEnd === true) {
-      clampedEnd = getUTCDate(getUTCDate(start).getTime() + maxMs).toISOString()
-    } else {
-      clampedStart = getUTCDate(getUTCDate(end).getTime() - maxMs).toISOString()
-    }
-  } else if (delta < minMs) {
-    if (clampToEnd === true) {
-      clampedEnd = getUTCDate(getUTCDate(start).getTime() + minMs).toISOString()
-    } else {
-      clampedStart = getUTCDate(getUTCDate(end).getTime() - minMs).toISOString()
-    }
-  }
-  return { clampedStart, clampedEnd }
+export type TimebarChangeSource = (typeof EVENT_SOURCE)[keyof typeof EVENT_SOURCE]
+
+export type TimebarChangeEvent = {
+  start: string
+  end: string
+  source?: TimebarChangeSource
+  clampToEnd?: boolean
 }
 
 export type TimebarProps = {
   labels?: TimebarLabels
   start: string
   end: string
-  onChange: (event: { start: string; end: string; source?: string; clampToEnd?: boolean }) => void
+  onChange: (event: TimebarChangeEvent) => void
   children?: React.ReactNode
   bookmarkStart?: string
   bookmarkEnd?: string
@@ -91,8 +74,8 @@ export function Timebar({
   end,
   onChange,
   children,
-  bookmarkStart = undefined,
-  bookmarkEnd = undefined,
+  bookmarkStart,
+  bookmarkEnd,
   onBookmarkChange,
   absoluteStart,
   absoluteEnd,
@@ -106,7 +89,14 @@ export function Timebar({
   isResizable = false,
   defaultHeight,
 }: TimebarProps) {
-  const labels = labelsProp ?? DEFAULT_LABELS
+  const labels = useMemo<TimebarLabels>(() => {
+    if (labelsProp) {
+      // Deep clone
+      return merge(merge({}, DEFAULT_LABELS), labelsProp)
+    }
+    return DEFAULT_LABELS
+  }, [labelsProp])
+
   const { height, isDragging, onResizerMouseDown } = useResizableHeight({
     isResizable,
     defaultHeight,
@@ -127,19 +117,13 @@ export function Timebar({
     [minimumRange, minimumRangeUnit]
   )
 
-  const notifyChange = useCallback(
-    (s: string, e: string, source?: string, clampToEnd = false) => {
-      const { clampedStart, clampedEnd } = clampToMinAndMax(
-        s,
-        e,
-        minimumRangeMs,
-        maximumRangeMs,
-        clampToEnd
-      )
-      onChange({ start: clampedStart, end: clampedEnd, source })
-    },
-    [minimumRangeMs, maximumRangeMs, onChange]
-  )
+  const { range, rangeRef, notifyChange, beginInteraction, endInteraction } = useTimebarRange({
+    start,
+    end,
+    minimumRangeMs,
+    maximumRangeMs,
+    onChange,
+  })
 
   // Notify once on mount (preserves the class componentDidMount behavior).
   useEffect(() => {
@@ -150,6 +134,9 @@ export function Timebar({
   const value = useMemo<TimebarContextProps>(
     () => ({
       notifyChange,
+      rangeRef,
+      beginInteraction,
+      endInteraction,
       onBookmarkChange,
       intervals,
       getCurrentInterval,
@@ -157,13 +144,16 @@ export function Timebar({
       absoluteStart,
       absoluteEnd,
       latestAvailableDataDate,
-      start,
-      end,
+      start: range.start,
+      end: range.end,
       bookmarkStart,
       bookmarkEnd,
     }),
     [
       notifyChange,
+      rangeRef,
+      beginInteraction,
+      endInteraction,
       onBookmarkChange,
       intervals,
       getCurrentInterval,
@@ -171,8 +161,8 @@ export function Timebar({
       absoluteStart,
       absoluteEnd,
       latestAvailableDataDate,
-      start,
-      end,
+      range.start,
+      range.end,
       bookmarkStart,
       bookmarkEnd,
     ]
