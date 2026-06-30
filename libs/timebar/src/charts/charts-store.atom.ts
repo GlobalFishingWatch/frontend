@@ -5,7 +5,7 @@ import { selectAtom } from 'jotai/utils'
 
 import type { ChartType, TimebarChartData, TimebarChartsData } from '.'
 
-type ChartState = { data?: TimebarChartData; active?: boolean; layers?: Layer[] }
+type ChartState = { data?: TimebarChartData; active?: boolean; layers?: Layer[]; loading?: boolean }
 
 const chartsStore = atom({} as Partial<Record<ChartType, ChartState>>)
 
@@ -32,13 +32,18 @@ const layersEqual = (a: Layer[], b: Layer[]) =>
 
 export const activeChartLayersState = selectAtom(chartsStore, selectLayers, layersEqual)
 
-export const useUpdateChartsData = (key: ChartType, data: TimebarChartData) => {
+const selectAnyLoading = (s: Partial<Record<ChartType, ChartState>>) =>
+  Object.values(s).some((v) => v?.loading)
+
+export const isAnyChartLoading = selectAtom(chartsStore, selectAnyLoading)
+
+export const useUpdateChartsData = (key: ChartType, data: TimebarChartData, loading = false) => {
   const setChartsData = useSetAtom(chartsStore)
 
   // Keep this chart's data current (one atom write per data change; stays active while mounted).
   useEffect(() => {
-    setChartsData((prev) => ({ ...prev, [key]: { ...prev[key], data, active: true } }))
-  }, [key, data, setChartsData])
+    setChartsData((prev) => ({ ...prev, [key]: { ...prev[key], data, loading, active: true } }))
+  }, [key, data, loading, setChartsData])
 
   // Flag inactive on unmount so the highlighter ignores it (keeps the last data).
   useEffect(() => {

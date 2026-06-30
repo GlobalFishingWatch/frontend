@@ -38,11 +38,13 @@ export const TimebarStackedActivity = ({
   dataviews,
   highlighterCallback,
   highlighterIconCallback,
+  loading = false,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterIconCallback
+  loading?: boolean
 }) => {
   const { graphHeight } = useTimelineContext()
   const origin = useTimebarTimeOrigin()
@@ -53,7 +55,7 @@ export const TimebarStackedActivity = ({
     highlighterCallback,
     highlighterIconCallback
   )
-  useUpdateChartsData('activity', dataAsTimebarChartData)
+  useUpdateChartsData('activity', dataAsTimebarChartData, loading)
 
   const subLayers = useMemo(() => getSubLayers(timeseries), [timeseries])
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2

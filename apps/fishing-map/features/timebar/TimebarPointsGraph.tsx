@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import cx from 'classnames'
 
 import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
@@ -9,8 +8,6 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { formatNumber } from 'utils/info'
 
 import { useTimebarPoints } from './timebar-points.hooks'
-
-import styles from './Timebar.module.css'
 
 const TimebarPointsGraph = () => {
   const { loading, points, dataviews } = useTimebarPoints()
@@ -43,15 +40,14 @@ const TimebarPointsGraph = () => {
   }
 
   return (
-    <div className={cx({ [styles.loading]: loading })}>
-      <Timebar.Charts.StackedActivity
-        key="points"
-        timeseries={points}
-        dataviews={dataviews}
-        highlighterCallback={getActivityHighlighterLabel}
-        highlighterIconCallback="dots"
-      />
-    </div>
+    <Timebar.Charts.StackedActivity
+      key="points"
+      timeseries={points}
+      dataviews={dataviews}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback="dots"
+      loading={loading}
+    />
   )
 }
 

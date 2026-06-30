@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import type {
@@ -16,8 +15,6 @@ import { selectActiveActivityDataviewsByVisualisation } from 'features/timebar/t
 import { useClusterEventsGraph } from 'features/timebar/TimebarClusterEventsGraph.hooks'
 import { TimebarVisualisations } from 'types'
 import { formatNumber } from 'utils/info'
-
-import styles from './Timebar.module.css'
 
 const TimebarClusterEventsGraph = () => {
   const activeDataviews = useSelector(
@@ -51,15 +48,14 @@ const TimebarClusterEventsGraph = () => {
   if (!eventsActivity || !eventsActivity.length || !activeDataviews?.length) return null
 
   return (
-    <div className={cx({ [styles.loading]: loading })}>
-      <Timebar.Charts.StackedActivity
-        key="stackedActivity"
-        timeseries={eventsActivity}
-        dataviews={activeDataviews}
-        highlighterCallback={getActivityHighlighterLabel}
-        highlighterIconCallback={getActivityHighlighterIconLabel}
-      />
-    </div>
+    <Timebar.Charts.StackedActivity
+      key="stackedActivity"
+      timeseries={eventsActivity}
+      dataviews={activeDataviews}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback={getActivityHighlighterIconLabel}
+      loading={loading}
+    />
   )
 }
 

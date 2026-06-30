@@ -3,12 +3,13 @@ import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
 import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
+import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 
 import { useTimelineContext } from '../timeline/timeline-context'
 
 import { useOuterScale, useTimebarTimeOrigin } from './charts.hooks'
-import { activeChartLayersState } from './charts-store.atom'
+import { activeChartLayersState, isAnyChartLoading } from './charts-store.atom'
 
 import styles from './charts.module.css'
 
@@ -20,6 +21,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
   const outerScale = useOuterScale()
   const origin = useTimebarTimeOrigin()
   const layers = useAtomValue(activeChartLayersState)
+  const loading = useAtomValue(isAnyChartLoading)
 
   const viewState = useMemo(() => {
     const [d0, d1] = outerScale.domain()
@@ -37,7 +39,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
   }
 
   return (
-    <div style={WRAPPER_STYLE} className={styles.charts}>
+    <div style={WRAPPER_STYLE} className={cx(styles.charts, { [styles.loading]: loading })}>
       <DeckGL
         views={VIEW}
         viewState={viewState}
