@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react'
-import { debounce, uniq } from 'es-toolkit'
+import { useEffect, useMemo, useRef } from 'react'
+import { debounce, isEqual, uniq } from 'es-toolkit'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
 import { DataviewCategory, type DataviewInstance } from '@globalfishingwatch/api-types'
@@ -8,10 +8,17 @@ import { TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
 import type { ResolverGlobalConfig } from '../resolvers'
-import { dataviewToDeckLayer, getDataviewsResolved, getDataviewsSorted } from '../resolvers'
+import { dataviewToDeckLayerResolved, getDataviewsResolved, getDataviewsSorted } from '../resolvers'
 
 // Atom used to have all deck instances available
 export const deckLayerInstancesAtom = atom<AnyDeckLayer[]>([])
+
+type ResolvedDeckLayer = {
+  id: string
+  LayerClass: new (props: any) => AnyDeckLayer
+  props: any
+}
+type CachedDeckLayer = { LayerClass: unknown; props: unknown; instance: AnyDeckLayer }
 
 export function useDeckLayerComposer({
   dataviews,
@@ -46,16 +53,20 @@ export function useDeckLayerComposer({
     return getDataviewsSorted(dataviewsMerged)
   }, [memoDataviews, resolutionConfig])
 
-  const layerInstances = useMemo(() => {
-    const deckLayers = dataviewsMergedSorted?.flatMap((dataview) => {
-      // TODO research if we can use atoms here
-      try {
-        return dataviewToDeckLayer(dataview, memoGlobalConfig)
-      } catch (e) {
-        console.warn(e)
-        return []
-      }
-    })
+  // Pure: resolve each dataview to its layer class + props. No instances created here so the
+  // memo stays side-effect free; instantiation (and reuse) happens in the effect below.
+  const resolvedLayers = useMemo<ResolvedDeckLayer[]>(() => {
+    const resolved =
+      dataviewsMergedSorted?.flatMap((dataview): ResolvedDeckLayer | [] => {
+        // TODO research if we can use atoms here
+        try {
+          const { LayerClass, props } = dataviewToDeckLayerResolved(dataview, memoGlobalConfig)
+          return { id: dataview.id, LayerClass, props }
+        } catch (e) {
+          console.warn(e)
+          return []
+        }
+      }) ?? []
     if (memoGlobalConfig.debugTiles) {
       const uniqueVisualizationModes = uniq([
         dataviewsMergedSorted.filter((d) => d.category === DataviewCategory.Activity).length
@@ -69,19 +80,47 @@ export function useDeckLayerComposer({
           : undefined,
       ]).filter((v) => v !== undefined)
       return [
-        ...deckLayers,
-        ...uniqueVisualizationModes.map(
-          (visualizationMode, index) =>
-            new TilesBoundariesLayer({ id: index.toString(), visualizationMode })
-        ),
-      ] as AnyDeckLayer[]
+        ...resolved,
+        ...uniqueVisualizationModes.map((visualizationMode, index) => ({
+          id: `debug-tiles-${index}`,
+          LayerClass: TilesBoundariesLayer as unknown as ResolvedDeckLayer['LayerClass'],
+          props: { id: index.toString(), visualizationMode },
+        })),
+      ]
     }
-    return deckLayers
+    return resolved
   }, [dataviewsMergedSorted, memoGlobalConfig])
 
+  // Reuse a layer instance when its resolved props haven't changed. Recreating deck layers is cheap
+  // for deck.gl itself, but here instances flow through deckLayerInstancesAtom that many React
+  // selectors (legends, loading state) derive from, so keeping unchanged layers referentially stable
+  // avoids downstream re-renders and the brief window where a fresh instance has no computed state.
+  // Layers whose props genuinely changed (e.g. a vessel track on timebar highlight) still rebuild.
+  const layerCacheRef = useRef<Map<string, CachedDeckLayer>>(new Map())
+  const prevInstancesRef = useRef<AnyDeckLayer[]>([])
+
   useEffect(() => {
-    debouncedSetDeckLayers(layerInstances)
-  }, [layerInstances, debouncedSetDeckLayers])
+    const nextCache = new Map<string, CachedDeckLayer>()
+    const instances = resolvedLayers.map(({ id, LayerClass, props }) => {
+      const cached = layerCacheRef.current.get(id)
+      const instance =
+        cached && cached.LayerClass === LayerClass && isEqual(cached.props, props)
+          ? cached.instance
+          : new LayerClass(props)
+      nextCache.set(id, { LayerClass, props, instance })
+      return instance
+    })
+    layerCacheRef.current = nextCache
+    // Skip the atom update (and the re-render it triggers) when every instance was reused and the
+    // order is unchanged — nothing downstream would differ.
+    const prev = prevInstancesRef.current
+    const unchanged =
+      instances.length === prev.length && instances.every((layer, i) => layer === prev[i])
+    if (!unchanged) {
+      prevInstancesRef.current = instances
+      debouncedSetDeckLayers(instances)
+    }
+  }, [resolvedLayers, debouncedSetDeckLayers])
 
   return deckLayers
 }
