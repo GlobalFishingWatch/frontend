@@ -128,10 +128,6 @@
   cursor: not-allowed;
 }
 
-.blur {
-  filter: blur(6px);
-}
-
 .drag {
   opacity: 1;
   transition: opacity 100ms linear;
@@ -158,11 +154,6 @@
 
 .tagListLabel {
   min-width: max-content;
-}
-
-.infoLogin {
-  margin-top: var(--space-M);
-  color: var(--color-secondary-blue);
 }
 
 .actions .loadingIcon:hover {
@@ -377,4 +368,10 @@
 .flex {
   display: flex;
   align-items: center;
+}
+
+.helpHint {
+  position: absolute;
+  top: 5rem;
+  right: 5rem;
 }

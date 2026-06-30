@@ -79,9 +79,3 @@
 .help {
   cursor: help;
 }
-
-.helpHint {
-  position: absolute;
-  top: 50%;
-  right: 2rem;
-}
