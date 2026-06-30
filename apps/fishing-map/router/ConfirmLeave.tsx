@@ -9,7 +9,7 @@ import { ROUTES_WITH_WORKSPACES, SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from './route
 import { selectLocationType } from './routes.selectors'
 import { mapRouteIdToType } from './routes.utils'
 
-const DISABLE_CONFIRM_LEAVE = process.env.DISABLE_CONFIRM_LEAVE === 'true'
+const SHOW_LEAVE_CONFIRMATION = process.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
 
 export function ConfirmLeave() {
   const suggestWorkspaceSave = useSelector(selectSuggestWorkspaceSave)
@@ -18,7 +18,7 @@ export function ConfirmLeave() {
 
   useBlocker({
     shouldBlockFn: ({ next }) => {
-      if (isGuestUser || !suggestWorkspaceSave || DISABLE_CONFIRM_LEAVE) {
+      if (isGuestUser || !suggestWorkspaceSave || !SHOW_LEAVE_CONFIRMATION) {
         return false
       }
 
