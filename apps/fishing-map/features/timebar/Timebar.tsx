@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -190,6 +190,7 @@ const TimebarWrapper = () => {
 
   const [isMouseInside, setMouseInside] = useState(false)
   const [isMouseClicked, setMouseClicked] = useState(false)
+  const clickTimeRef = useRef(0)
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
@@ -284,6 +285,15 @@ const TimebarWrapper = () => {
     [dispatchDisableHighlightedTime, isMouseClicked]
   )
 
+  const onToggleFixedTooltipFunction = useCallback(
+    (toggle: boolean) => {
+      if (Date.now() - clickTimeRef.current > 100) {
+        onToggleFixedTooltip(toggle)
+      }
+    },
+    [onToggleFixedTooltip]
+  )
+
   const onChange: TimebarProps['onChange'] = useCallback(
     (e) => {
       if (e.start !== start || e.end !== end) {
@@ -360,6 +370,7 @@ const TimebarWrapper = () => {
 
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
+      clickTimeRef.current = Date.now()
       if (event?.coordinates) {
         setMapCoordinates({
           ...viewState,
@@ -531,7 +542,7 @@ const TimebarWrapper = () => {
           trackGraphOrientation={trackGraphOrientation}
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
-          onGraphClick={onToggleFixedTooltip}
+          onGraphClick={onToggleFixedTooltipFunction}
           showDeckStats={debugOptions.deckStats}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
