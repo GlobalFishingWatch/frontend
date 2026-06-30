@@ -78,7 +78,12 @@ export const TimebarTimeline = ({
   const [tooltipContainer, setTooltipContainer] = useState<Element | null>(null)
 
   const setState = useCallback((patch: Partial<TimelineState>) => {
-    setStateRaw((prev) => ({ ...prev, ...patch }))
+    setStateRaw((prev) => {
+      const changed = (Object.keys(patch) as (keyof TimelineState)[]).some(
+        (key) => prev[key] !== patch[key]
+      )
+      return changed ? { ...prev, ...patch } : prev
+    })
   }, [])
 
   // Fresh mirrors read by the window-level handlers / rAF loop. The live range is the
@@ -177,18 +182,29 @@ export const TimebarTimeline = ({
   const isInTheFuture =
     displayWarningWhenInFuture && getUTCDate(start) > getUTCDate(latestAvailableDataDate)
 
+  const timelineContextValue = useMemo(
+    () => ({
+      outerStart: outerStart as string,
+      outerEnd: outerEnd as string,
+      outerWidth,
+      graphHeight: outerHeight,
+      overallScale,
+      tooltipContainer,
+      trackGraphOrientation,
+    }),
+    [
+      outerStart,
+      outerEnd,
+      outerWidth,
+      outerHeight,
+      overallScale,
+      tooltipContainer,
+      trackGraphOrientation,
+    ]
+  )
+
   return (
-    <TimelineContext.Provider
-      value={{
-        outerStart: outerStart as string,
-        outerEnd: outerEnd as string,
-        outerWidth,
-        graphHeight: outerHeight,
-        overallScale,
-        tooltipContainer,
-        trackGraphOrientation,
-      }}
-    >
+    <TimelineContext.Provider value={timelineContextValue}>
       <div
         ref={setNode}
         className={cx(styles.Timeline, {

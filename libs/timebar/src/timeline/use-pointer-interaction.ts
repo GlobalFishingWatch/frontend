@@ -145,7 +145,7 @@ export function usePointerInteraction({
     const onMouseUpWindow = (event: MouseEvent | TouchEvent) => {
       const { notifyChange, stickToUnit } = propsRef.current
       const { start, end } = rangeRef.current
-      const { dragging, outerX, innerStartPx, innerEndPx, outerDrag } = stateRef.current
+      const { dragging, outerX, innerStartPx, innerEndPx } = stateRef.current
 
       if (dragging === null) {
         return

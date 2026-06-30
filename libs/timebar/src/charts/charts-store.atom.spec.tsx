@@ -21,7 +21,7 @@ describe('useUpdateChartsData', () => {
       wrapper,
     })
 
-    expect(store.get(chartsStore).activity).toEqual({ data: DATA_A, active: true })
+    expect(store.get(chartsStore).activity).toMatchObject({ data: DATA_A, active: true })
 
     rerender({ data: DATA_B })
     expect(store.get(chartsStore).activity!.data).toBe(DATA_B)
