@@ -90,9 +90,15 @@ export function useAreaInViewport(
   const { areaDetail } = useAreaDetail(feature, { fetch: enabled })
   const { bounds } = useMapBoundsLive()
 
-  if (!enabled) return undefined
+  if (!enabled) {
+    return undefined
+  }
+
   const b = areaDetail?.bounds
-  if (!b || !bounds) return undefined
+  if (!b || !bounds) {
+    return undefined
+  }
+
   const latContained = b[1] >= bounds.south && b[3] <= bounds.north
   return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
 }

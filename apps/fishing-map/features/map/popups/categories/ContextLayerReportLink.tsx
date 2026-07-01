@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
