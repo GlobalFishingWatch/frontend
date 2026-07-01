@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
 import type { Dataset, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
+  DatasetCategory,
   DatasetStatus,
   DatasetTypes,
   DataviewCategory,
@@ -28,7 +29,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 
 import { deckLayerInstancesAtom } from '../hooks/deck-layers-composer.hooks'
-import type { ResolvedDataviewInstance } from '../types/dataviews'
+import type { ResolvedContextDataviewInstance, ResolvedDataviewInstance } from '../types/dataviews'
 import type { ResolverGlobalConfig } from '../types/resolvers'
 
 import { dataviewToDeckLayer } from './resolvers'
@@ -77,22 +78,31 @@ describe('resolvers', () => {
       ...overrides,
     }) as ResolverGlobalConfig
 
-  const createMockDataset = (overrides: Partial<Dataset> = {}): Dataset => ({
-    type: DatasetTypes.PMTiles,
-    alias: ['test-alias'],
-    id: 'test-id',
-    name: 'test-name',
-    description: 'test-description',
-    status: DatasetStatus.Done,
-    ownerId: 123,
-    ownerType: 'owner-type',
-    createdAt: '2024-01-01T00:00:00.000Z',
-    configuration: {},
-    relatedDatasets: [],
-    fieldsAllowed: [],
-    filters: {},
-    ...overrides,
-  })
+  const createMockDataset = (overrides: Partial<Dataset> = {}): Dataset => {
+    const type = overrides.type ?? DatasetTypes.PMTiles
+
+    return {
+      type,
+      alias: ['test-alias'],
+      id: 'test-id',
+      name: 'test-name',
+      description: 'test-description',
+      category: DatasetCategory.Context,
+      status: DatasetStatus.Done,
+      ownerId: 123,
+      ownerType: 'owner-type',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      configuration: {
+        frontend: {},
+        ...(type === DatasetTypes.UserContext ? { userContextLayerV1: {} } : {}),
+        ...(type === DatasetTypes.PMTiles ? { pmTilesV1: {} } : {}),
+      } as Dataset['configuration'],
+      documentation: {},
+      relatedDatasets: [],
+      filters: {},
+      ...overrides,
+    }
+  }
 
   const USER_DATASET_ID = 'test-user-dataset'
 
@@ -103,15 +113,6 @@ describe('resolvers', () => {
     const dataset = createMockDataset({
       id: USER_DATASET_ID,
       type: DatasetTypes.UserContext,
-      endpoints: [
-        {
-          id: EndpointId.ContextTiles,
-          downloadable: true,
-          pathTemplate: 'https://example.com/tiles/{z}/{x}/{y}.pbf',
-          params: [{ id: EndpointId.ContextTiles, label: 'label', type: '4wings-datasets' }],
-          query: [],
-        },
-      ],
     })
 
     return createMockDataview({
@@ -120,10 +121,11 @@ describe('resolvers', () => {
         type: DataviewType.UserContext,
         layers: [
           {
+            id: 'test-sublayer',
             dataset: USER_DATASET_ID,
-            sublayers: [{ id: 'test-sublayer', dataviewId: 'test-dataview' }],
+            sublayers: [{ id: 'test-sublayer', dataviewId: 'test-dataview', color: '#000000' }],
           },
-        ],
+        ] as ResolvedContextDataviewInstance['config']['layers'],
         ...configOverrides,
       },
       datasets: [dataset],
@@ -131,6 +133,7 @@ describe('resolvers', () => {
         {
           datasetId: USER_DATASET_ID,
           endpoint: EndpointId.ContextTiles,
+          params: [],
         },
       ],
       ...restOverrides,
@@ -182,20 +185,13 @@ describe('resolvers', () => {
           config: {
             type: DataviewType.Bathymetry,
           },
-          datasets: [
-            createMockDataset({
-              endpoints: [
-                {
-                  id: EndpointId.ContextTiles,
-                  downloadable: true,
-                  pathTemplate: 'https://example.com/tiles/{z}/{x}/{y}.png',
-                  params: [
-                    { id: EndpointId.ContextTiles, label: 'label', type: '4wings-datasets' },
-                  ],
-                  query: [],
-                },
-              ],
-            }),
+          datasets: [createMockDataset()],
+          datasetsConfig: [
+            {
+              datasetId: 'test-id',
+              endpoint: EndpointId.PMTiles,
+              params: [{ id: 'file_path', value: 'example/path.pmtiles' }],
+            },
           ],
         })
         const globalConfig = createMockGlobalConfig()
