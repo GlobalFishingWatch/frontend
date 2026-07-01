@@ -34,6 +34,7 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import type { DeckLayerPickingObject } from '../../../types'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
@@ -67,7 +68,7 @@ type FourwingsClustersTileLayerState = {
   clusterIndex: Supercluster
   viewportLoaded: boolean
   data: FourwingsPointFeature[]
-  highlightedFeatures?: FourwingsClustersLayerProps['highlightedFeatures']
+  highlightedFeatures?: DeckLayerPickingObject[]
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
   radiusScale?: ScalePower<number, number>
@@ -107,6 +108,7 @@ const CLUSTER_LAYER_ID = 'clusters'
 const POINTS_LAYER_ID = 'points'
 const MAX_INDIVIDUAL_POINTS = 1000
 const MAX_CLUSTER_EXPANSION_ZOOM = 20
+const emptyHighlightedFeatures = [] as DeckLayerPickingObject[]
 
 export function getFourwingsGeolocation(
   clusterMaxZoomLevels: ClusterMaxZoomLevelConfig,
@@ -173,7 +175,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
   _isIndividualPoints = (data: FourwingsPointFeature[]) => {
@@ -584,10 +586,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   getData() {
-    return this.state.data as FourwingsPointFeature[]
+    return this.state?.data as FourwingsPointFeature[]
   }
 
-  setHighlightedFeatures(highlightedFeatures: FourwingsClustersLayerProps['highlightedFeatures']) {
+  setHighlightedFeatures(
+    highlightedFeatures: FourwingsClustersTileLayerState['highlightedFeatures']
+  ) {
     if (!this.state) {
       return
     }

@@ -71,7 +71,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   getError() {
-    return this?.state.error
+    return this.state?.error
   }
 
   get filtersHash(): string {

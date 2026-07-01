@@ -53,7 +53,10 @@ export type FourwingsVectorsTileLayerState = {
   maxVelocity: number
   rampDirty: boolean
   viewportLoaded: boolean
+  highlightedFeatures?: FourwingsPickingObject[]
 }
+
+const emptyHighlightedFeatures = [] as FourwingsPickingObject[]
 
 export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   BaseFourwingsLayerProps,
@@ -62,7 +65,6 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   data?: DataT
   debugTiles?: boolean
   availableIntervals?: FourwingsInterval[]
-  highlightedFeatures?: FourwingsPickingObject[]
   sublayers: FourwingsDeckVectorSublayer[]
   minVisibleValue?: number
   maxVisibleValue?: number
@@ -103,7 +105,19 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       maxVelocity: 0,
       rampDirty: false,
       viewportLoaded: false,
+      highlightedFeatures: [],
     }
+  }
+
+  _getHighlightedFeatures() {
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
+  }
+
+  setHighlightedFeatures(highlightedFeatures: FourwingsPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
   }
 
   get cacheHash(): string {
@@ -395,6 +409,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
     const { tilesCache, maxVelocity } = this.state
     const { maxRequests, debounceTime, maxZoom } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
 
     const cacheKey = this._getTileDataCacheKey()
     const zoomOffset = this.getZoomOffset()
@@ -417,7 +432,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey, zoomOffset],
-          renderSubLayers: [maxVelocity],
+          renderSubLayers: [maxVelocity, highlightedFeatures],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
@@ -425,6 +440,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
             ...props,
             visible: maxVelocity > 0,
             maxVelocity,
+            highlightedFeatures,
           })
         },
       })
@@ -488,7 +504,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getMaxVelocity = () => {
-    return this.state.maxVelocity
+    return this.state?.maxVelocity
   }
 
   getVisualizationMode = () => {
@@ -496,7 +512,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getColorScale = () => {
-    if (!this.state.maxVelocity) {
+    if (!this.state?.maxVelocity) {
       return {
         colorDomain: [],
         colorRange: [],

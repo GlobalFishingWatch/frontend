@@ -53,7 +53,6 @@ export type ContextLayerProps<Id = ContextLayerId> = DeckLayerProps<{
   id: string
   layers: ContextLayerConfig<Id>[]
   pickable?: boolean
-  highlightedFeatures?: ContextPickingObject[]
 }>
 
 export type ContextFeatureBaseProperties = {

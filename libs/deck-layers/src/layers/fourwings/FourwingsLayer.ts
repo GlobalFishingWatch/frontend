@@ -47,7 +47,6 @@ export type FourwingsLayerProps = Omit<
     },
   'resolution' | 'highlightedFeatures'
 > & {
-  highlightedFeatures?: FourwingsPickingObject[]
   skipColorDomainSampling?: boolean
 }
 
@@ -61,7 +60,7 @@ const defaultProps: DefaultProps<FourwingsLayerProps> = {
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
 }
-
+const emptyHighlightedFeatures = [] as FourwingsPickingObject[]
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
   static defaultProps = defaultProps
@@ -91,7 +90,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
   renderLayers(): AnyFourwingsLayer {

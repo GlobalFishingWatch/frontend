@@ -148,7 +148,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return this.state.highlightedFeatures || []
   }
 
   renderLayers() {
