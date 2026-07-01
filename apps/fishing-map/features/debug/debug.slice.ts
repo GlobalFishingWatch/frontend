@@ -7,6 +7,7 @@ export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
   HotspotButton = 'hotspotButton',
   PolygonsReport = 'polygonsReport',
+  ReportPreview = 'reportPreview',
 }
 
 export enum DebugOption {
@@ -37,6 +38,7 @@ export const debugInitialState: DebugState = {
     workspaceGenerator: false,
     hotspotButton: false,
     polygonsReport: false,
+    reportPreview: false,
   },
   options: {
     debugTiles: false,

@@ -261,6 +261,8 @@
 .rowActions {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
+  line-height: 1;
   margin-left: var(--space-S);
 }
 

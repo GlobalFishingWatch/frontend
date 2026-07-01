@@ -46,7 +46,11 @@ import {
 } from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
-import type { FilterByPolygonMode, FilteredPolygons } from 'features/reports/reports-geo.utils'
+import type {
+  FilterByPolygomParams,
+  FilterByPolygonMode,
+  FilteredPolygons,
+} from 'features/reports/reports-geo.utils'
 import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
 import {
   filterTimeseriesByTimerange,
@@ -184,6 +188,77 @@ const getInstancesFromLayers = memoizeOne(
   ) => reportLayers.map((l) => l.instance)
 )
 
+export async function getFeaturesFilteredByArea({
+  instances,
+  areaId,
+  areaGeometry,
+  filterCellsByPolygon,
+}: {
+  instances: ReportDeckLayer[]
+  areaId: string | number
+  areaGeometry: Polygon | MultiPolygon
+  filterCellsByPolygon: (params: FilterByPolygomParams) => Promise<FilteredPolygons[]>
+}): Promise<FilteredPolygons[][] | null> {
+  const featuresFiltered: FilteredPolygons[][] = []
+  for (const instance of instances) {
+    const isPolygonLayer =
+      instance instanceof UserContextTileLayer || instance instanceof ContextLayer
+    const viewportLoaded =
+      instance instanceof FourwingsLayer
+        ? instance?.getLayer()?.viewportLoaded
+        : isPolygonLayer
+          ? instance.isLoaded
+          : instance?.viewportLoaded
+    if (instance.isLoaded === false || !viewportLoaded) {
+      // Layer is in transitional state - abort and let the caller re-run
+      // when the layer state updates
+      return null
+    }
+
+    const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
+    const hasTimeFilter = instance.props.startTime || instance.props.endTime
+
+    const features = isPolygonLayer
+      ? instance.getRenderedFeatures()
+      : (instance?.getData?.(
+          isUserPointsTileLayer
+            ? {
+                includeNonTemporalFeatures: true,
+                skipTemporalFilter: !hasTimeFilter,
+              }
+            : {}
+        ) as FourwingsFeature[])
+
+    const error = instance?.getError?.()
+    if (error || !features?.length) {
+      featuresFiltered.push([{ contained: [], overlapping: [], error, instanceId: instance.id }])
+    } else {
+      let mode: FilterByPolygonMode = 'cell'
+      if (isPolygonLayer) {
+        mode = 'polygon'
+      } else if (instance.props.category === 'environment') {
+        mode = 'cellCenter'
+      } else if (instance.props.category === 'user' || instance.props.category === 'context') {
+        mode = 'point'
+      }
+
+      const filteredInstanceFeatures =
+        areaId === ENTIRE_WORLD_REPORT_AREA_ID
+          ? ([
+              { contained: features, overlapping: [], instanceId: instance.id },
+            ] as FilteredPolygons[])
+          : await filterCellsByPolygon({
+              layersCells: [features],
+              polygon: areaGeometry,
+              mode,
+              instanceId: instance.id,
+            })
+      featuresFiltered.push(filteredInstanceFeatures)
+    }
+  }
+  return featuresFiltered
+}
+
 const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
@@ -299,67 +374,15 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         return { ...prev, isLoading: true }
       })
       try {
-        const featuresFiltered: FilteredPolygons[][] = []
-        for (const instance of instances) {
-          const isPolygonLayer =
-            instance instanceof UserContextTileLayer || instance instanceof ContextLayer
-          const viewportLoaded =
-            instance instanceof FourwingsLayer
-              ? instance?.getLayer()?.viewportLoaded
-              : isPolygonLayer
-                ? instance.isLoaded
-                : instance?.viewportLoaded
-          if (instance.isLoaded === false || !viewportLoaded) {
-            // Layer is in transitional state - abort and let the effect re-run
-            // when the layer state updates
-            return
-          }
-
-          const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
-          const hasTimeFilter = instance.props.startTime || instance.props.endTime
-
-          const features = isPolygonLayer
-            ? instance.getRenderedFeatures()
-            : (instance?.getData?.(
-                isUserPointsTileLayer
-                  ? {
-                      includeNonTemporalFeatures: true,
-                      skipTemporalFilter: !hasTimeFilter,
-                    }
-                  : {}
-              ) as FourwingsFeature[])
-
-          const error = instance?.getError?.()
-          if (error || !features?.length) {
-            featuresFiltered.push([
-              { contained: [], overlapping: [], error, instanceId: instance.id },
-            ])
-          } else {
-            let mode: FilterByPolygonMode = 'cell'
-            if (isPolygonLayer) {
-              mode = 'polygon'
-            } else if (instance.props.category === 'environment') {
-              mode = 'cellCenter'
-            } else if (
-              instance.props.category === 'user' ||
-              instance.props.category === 'context'
-            ) {
-              mode = 'point'
-            }
-
-            const filteredInstanceFeatures =
-              area.id === ENTIRE_WORLD_REPORT_AREA_ID
-                ? ([
-                    { contained: features, overlapping: [], instanceId: instance.id },
-                  ] as FilteredPolygons[])
-                : await filterCellsByPolygon({
-                    layersCells: [features],
-                    polygon: area.geometry!,
-                    mode,
-                    instanceId: instance.id,
-                  })
-            featuresFiltered.push(filteredInstanceFeatures)
-          }
+        const featuresFiltered = await getFeaturesFilteredByArea({
+          instances,
+          areaId: area.id,
+          areaGeometry: area.geometry!,
+          filterCellsByPolygon,
+        })
+        if (featuresFiltered === null) {
+          // Layers still transitioning - effect will re-run once they settle
+          return
         }
 
         const timeseries = getTimeseries({

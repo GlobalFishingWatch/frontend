@@ -29,6 +29,7 @@ import {
 import styles from './ReportActivityEvolution.module.css'
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
+const noAxesMargin = { top: 5, right: 0, left: 0, bottom: 5 }
 
 export type EvolutionTooltipContentProps = {
   active: boolean
@@ -44,6 +45,8 @@ const ReportActivityEvolution = ({
   TooltipContent,
   removeEmptyValues = false,
   freezeTooltipOnClick = false,
+  height,
+  hideAxes = false,
 }: {
   data?: ReportGraphProps
   start: string
@@ -51,6 +54,8 @@ const ReportActivityEvolution = ({
   TooltipContent?: ReactNode
   removeEmptyValues?: boolean
   freezeTooltipOnClick?: boolean
+  height?: number | string
+  hideAxes?: boolean
 }) => {
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
@@ -168,13 +173,20 @@ const ReportActivityEvolution = ({
   return (
     <div
       className={styles.graph}
+      style={height !== undefined ? { height } : undefined}
       data-test="report-activity-evolution"
       ref={chartRef}
       onClick={handleChartClick}
       role="button"
       tabIndex={0}
     >
-      <ComposedChart responsive width="100%" height="100%" data={dataFormated} margin={graphMargin}>
+      <ComposedChart
+        responsive
+        width="100%"
+        height="100%"
+        data={dataFormated}
+        margin={hideAxes ? noAxesMargin : graphMargin}
+      >
         <CartesianGrid vertical={false} syncWithTicks />
         <XAxis
           domain={domain}
@@ -185,6 +197,7 @@ const ReportActivityEvolution = ({
           axisLine={{
             stroke: paddedDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
           }}
+          hide={hideAxes}
         />
         <YAxis
           scale="linear"
@@ -193,6 +206,7 @@ const ReportActivityEvolution = ({
           tickFormatter={tickFormatter}
           axisLine={false}
           tickLine={false}
+          hide={hideAxes}
         />
         {dataFormated?.length && (
           <Tooltip

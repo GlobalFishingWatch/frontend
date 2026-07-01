@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -23,12 +23,16 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import type { QueryParams } from 'types'
 
+import type { TooltipCategory } from './area-tooltip-timeseries.hooks'
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
 import styles from '../Popup.module.css'
+import layerStyles from './ContextLayers.module.css'
 
 type ContextLayerReportLinkProps = {
   feature: ContextPickingObject | UserLayerPickingObject
+  label?: string
+  reportCategory?: TooltipCategory
   onClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
     feature: ContextPickingObject | UserLayerPickingObject,
@@ -36,7 +40,12 @@ type ContextLayerReportLinkProps = {
   ) => void
 }
 
-const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProps) => {
+const ContextLayerReportLink = ({
+  feature,
+  label,
+  reportCategory,
+  onClick,
+}: ContextLayerReportLinkProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportLayersVisible = useSelector(selectReportLayersVisible)
@@ -94,6 +103,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
 
   const reportLinkSearch = {
     bivariateDataviews: null,
+    ...(reportCategory && { reportCategory }),
     reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
     reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
     reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
@@ -115,19 +125,26 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   return (
     <Fragment>
       <Link
-        className={styles.workspaceLink}
+        className={label ? layerStyles.reportButton : styles.workspaceLink}
         to="/$category/$workspaceId/report/$datasetId/$areaId"
         params={reportLinkParams}
         search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
         data-testid="open-analysis-link"
         onClick={onReportClick}
       >
-        <IconButton
-          icon="analysis"
-          tooltip={t((t) => t.common.analysis)}
-          testId="open-analysis"
-          size="small"
-        />
+        {label ? (
+          <Fragment>
+            <Icon icon="analysis" />
+            {label}
+          </Fragment>
+        ) : (
+          <IconButton
+            icon="analysis"
+            tooltip={t((t) => t.common.analysis)}
+            testId="open-analysis"
+            size="small"
+          />
+        )}
       </Link>
       {addAreaToReport && (
         <Link
