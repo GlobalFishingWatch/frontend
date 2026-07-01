@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch develop branch
-        run: git fetch origin develop --depth=1
+        run: git fetch origin develop --depth=2
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -56,7 +56,7 @@ jobs:
 
           AFFECTED=$(pnpm exec nx show projects \
             --affected \
-            --base=origin/develop \
+            --base=origin/develop~1 \
             --head=HEAD \
             --type app \
             --exclude='linting,port-labeler,*-e2e' \
