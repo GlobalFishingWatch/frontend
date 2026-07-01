@@ -8,7 +8,6 @@ import type {
   Point,
   Polygon,
 } from 'geojson'
-import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import type {
   Dataset,
@@ -16,12 +15,14 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
   getDatasetFilters,
   getDatasetFiltersClean,
   getFilterIdClean,
+  getPolygonsUnion,
   getUTCDate,
   guessColumnsFromFilters,
 } from '@globalfishingwatch/data-transforms'
@@ -39,7 +40,6 @@ import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 import type { FileType } from 'utils/files'
 
-const { union } = polygonClipping
 
 export const MIN_NAME_LENGTH = 3
 
@@ -255,12 +255,12 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
           (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'
             ? ({
                 type: 'MultiPolygon' as const,
-                coordinates: union(
-                  ...(flatten(feature.geometry).features.flatMap((f) =>
+                coordinates: getPolygonsUnion(
+                  flatten(feature.geometry).features.flatMap((f) =>
                     f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
-                      ? [f.geometry.coordinates as Geom]
+                      ? [f.geometry.coordinates as PolygonGeomCoords]
                       : []
-                  ) as [Geom, ...Geom[]])
+                  )
                 ),
               } as AreaGeometry)
             : (feature.geometry as AreaGeometry),

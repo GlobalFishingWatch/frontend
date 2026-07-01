@@ -285,8 +285,6 @@ export function useFetchReportArea() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
-  console.log('🚀 ~ useFetchReportArea ~ areaId:', areaId)
-  console.log('🚀 ~ useFetchReportArea ~ datasetId:', datasetId)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
   const areaDataviews = useSelector(selectReportAreaDataviews)
