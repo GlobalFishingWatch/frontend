@@ -27,7 +27,11 @@ import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.ins
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
-import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
+import {
+  getRelatedIdentityVesselIds,
+  getVesselId,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { getEventLabel } from 'utils/analytics'
@@ -143,6 +147,8 @@ export function usePinVessel({
       }
       if (vesselWithIdentity) {
         const trackDataset = getRelatedDatasetsByType(infoDatasetResolved, DatasetTypes.Tracks)?.[0]
+        // TODO: add another track-real-time dataset type in API to be able to differenciate in the public-global-vessel-identity:v4.0
+        // const trackRealTimeDataset = getRelatedDatasetsByType(infoDatasetResolved, DatasetTypes.TracksRealtime)?.[0]
         const vesselEventsDatasets = getRelatedDatasetsByType(
           infoDatasetResolved,
           DatasetTypes.Events
@@ -152,10 +158,15 @@ export function usePinVessel({
             ? vesselEventsDatasets.map((d) => d.id)
             : []
         const vesselDataviewInstance = getVesselDataviewInstance({
-          vessel: { id: getVesselId(vesselWithIdentity) },
+          vessel: {
+            id: getVesselId(vesselWithIdentity),
+            ssvid: getVesselProperty(vesselWithIdentity, 'ssvid'),
+          },
           datasets: {
             info: infoDatasetResolved?.id,
             track: trackDataset?.id,
+            // trackRealTime: trackRealTimeDataset?.id,
+            trackRealTime: 'public-global-all-tracks-real-time:v4.0',
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },

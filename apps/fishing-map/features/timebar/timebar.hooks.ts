@@ -28,7 +28,7 @@ import {
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
-import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceReady, selectTimeMode } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
@@ -80,6 +80,7 @@ export const useSetTimerange = () => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
+  const timeMode = useSelector(selectTimeMode)
 
   // Debounce the URL write so we only navigate once the user stops scrubbing the
   // timebar, instead of firing a full router.navigate() on every frame (navigation storm).
@@ -117,7 +118,7 @@ export const useSetTimerange = () => {
             .toISO() as string
         }
         const minEnd = getUTCDateTime(newStart).plus({ hours: 24 })
-        if (getUTCDateTime(newEnd) < minEnd) {
+        if (timeMode !== 'realTime' && getUTCDateTime(newEnd) < minEnd) {
           newEnd = minEnd.toISO() as string
         }
         stuckTimerange = { start: newStart, end: newEnd }

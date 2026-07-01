@@ -33,6 +33,8 @@ import { t } from 'features/i18n/i18n'
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
   track?: string
+  trackRealTime?: string
+  ssvid?: string
   info?: string
   events?: string[]
   relatedVesselIds?: string[]
@@ -40,6 +42,7 @@ export type VesselInstanceDatasets = {
 
 const VESSEL_INSTANCE_DATASETS = [
   'track' as keyof VesselInstanceDatasets,
+  'trackRealTime' as keyof VesselInstanceDatasets,
   'info' as keyof VesselInstanceDatasets,
   'events' as keyof VesselInstanceDatasets,
 ]
@@ -60,6 +63,10 @@ export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
 
 export const getIsSkylightDataset = (datasetId: Dataset['id']) =>
   datasetId === SKYLIGHT_VIIRS_DATASET_ID
+
+export function isRealTimeDataset(dataset: Dataset) {
+  return dataset.subcategory === DatasetSubCategory.RealTime
+}
 
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 

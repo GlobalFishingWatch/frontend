@@ -13,8 +13,8 @@ import type {
   TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
+import { Icon } from '@globalfishingwatch/ui-components'
 
-// import { Icon } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
@@ -49,7 +49,7 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
-// import { selectTimeMode } from 'features/workspace/workspace.selectors'
+import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
@@ -211,7 +211,7 @@ const TimebarWrapper = () => {
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const debugOptions = useSelector(selectDebugOptions)
-  // const timeMode = useSelector(selectTimeMode)
+  const timeMode = useSelector(selectTimeMode)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
   const appStore = useAppStore()
@@ -499,14 +499,13 @@ const TimebarWrapper = () => {
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         minimumRange={1}
-        // minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
+        minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
       >
         {!screenshotMode && (
           <Fragment>
-            {!isReportLocation && (
-              // || timeMode === 'realTime'
+            {!isReportLocation && timeMode === 'historical' && (
               <Timebar.Playback
                 disabled={vesselGroupsFiltering || hasVectorDataviews}
                 disabledTooltip={
@@ -519,27 +518,24 @@ const TimebarWrapper = () => {
                 onTogglePlay={onTogglePlay}
               />
             )}
-            <Timebar.ToolbarWrapper>
-              <Timebar.TimeRangeSelector
-              // showDateInputs={timeMode === 'historical'}
-              />
-              <Timebar.Tools.Bookmark />
-              {/* {timeMode === 'realTime' ? (
+            <Timebar.Tools.Wrapper>
+              <Timebar.TimeRangeSelector showDateInputs={timeMode === 'historical'} />
+              {timeMode === 'realTime' ? (
                 <Timebar.Tools.Wrapper>
                   <Icon icon="history" />
                 </Timebar.Tools.Wrapper>
               ) : (
                 <Timebar.Tools.Bookmark />
-              )} */}
-            </Timebar.ToolbarWrapper>
-            {/* {timeMode === 'historical' && <Timebar.IntervalSelector />} */}
-            {<Timebar.IntervalSelector />}
+              )}
+            </Timebar.Tools.Wrapper>
+            {timeMode === 'historical' && <Timebar.IntervalSelector />}
           </Fragment>
         )}
         <Timebar.Charts.Wrapper
           fullWidth={screenshotMode}
           bookmarkPlacement="bottom"
           trackGraphOrientation={trackGraphOrientation}
+          showLast30DaysBtn={timeMode === 'historical'}
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
           onGraphClick={onToggleFixedTooltipFunction}

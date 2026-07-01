@@ -63,18 +63,11 @@ export enum DatasetCategory {
 export type DatasetCategories = `${DatasetCategory}`
 
 export enum DatasetSubCategory {
-  Fishing = 'fishing',
-  Info = 'info',
-  Presence = 'presence',
-  Sar = 'sar',
-  Sentinel2 = 'sentinel-2',
-  Track = 'track',
-  Viirs = 'viirs',
-  User = 'user',
-  UserInteractive = 'user-interactive',
   Animal = 'animal',
   Chlorophyl = 'chlorophyl',
   Currents = 'currents',
+  Fishing = 'fishing',
+  Info = 'info',
   Insight = 'insight',
   Loitering = 'loitering',
   Nitrate = 'nitrate',
@@ -82,10 +75,18 @@ export enum DatasetSubCategory {
   Ph = 'ph',
   Phosphate = 'phosphate',
   Port_visit = 'port_visit',
+  Presence = 'presence',
+  RealTime = 'real-time',
   Salinity = 'salinity',
-  Winds = 'winds',
+  Sar = 'sar',
+  Sentinel2 = 'sentinel-2',
+  Track = 'track',
+  User = 'user',
+  UserInteractive = 'user-interactive',
+  Viirs = 'viirs',
   Water = 'water-temperature',
   Waves = 'waves',
+  Winds = 'winds',
 }
 
 export type DatasetSubCategories = `${DatasetSubCategory}`
