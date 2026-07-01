@@ -6,6 +6,7 @@ import {
   FloatingArrow,
   offset,
   shift,
+  size,
   useFloating,
 } from '@floating-ui/react'
 import cx from 'classnames'
@@ -51,18 +52,26 @@ function PopupWrapper({
   const arrowRef = useRef<SVGSVGElement>(null)
   const clickOutsideRef = useClickedOutside(onClickOutside)
   const { refs, floatingStyles, context } = useFloating({
-    whileElementsMounted: autoUpdate,
+    whileElementsMounted: (reference, floating, update) =>
+      autoUpdate(reference, floating, update, { animationFrame: true }),
     placement: 'top',
     middleware: [
       offset(15),
       flip({
-        fallbackPlacements: ['bottom'],
+        fallbackPlacements: ['bottom', 'left', 'right'],
         boundary: getBoundary(),
         padding: 10,
       }),
       shift({
         boundary: getBoundary(),
         padding: 10,
+      }),
+      size({
+        boundary: getBoundary(),
+        padding: 10,
+        apply({ availableHeight, elements }) {
+          elements.floating.style.setProperty('--popup-available-height', `${availableHeight}px`)
+        },
       }),
       // eslint-disable-next-line react-hooks/refs
       arrow({

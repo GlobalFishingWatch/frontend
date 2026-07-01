@@ -60,6 +60,8 @@
   min-width: var(--sidebar-width);
   border-radius: var(--border-radius-1);
   box-shadow: var(--box-shadow-1);
+  max-height: var(--popup-available-height, 90vh);
+  overflow-y: auto;
 }
 
 .click .loading {

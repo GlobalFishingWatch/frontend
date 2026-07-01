@@ -48,6 +48,7 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
+  if (feature.value === undefined) return null
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,
