@@ -1,5 +1,3 @@
-import { uniq } from 'es-toolkit'
-
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -18,7 +16,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   const { start, end, visibleEvents } = globalConfig
-  const highlightEventIds = uniq([...(globalConfig.highlightEventIds || [])])
   const strictTimeRange =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&
@@ -66,7 +63,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     gapSegmentThreshold: dataview.config?.gapSegmentThreshold,
     events,
     visibleEvents: visibleEvents,
-    highlightEventIds,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),

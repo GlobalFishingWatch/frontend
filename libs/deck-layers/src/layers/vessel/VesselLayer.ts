@@ -51,8 +51,8 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
 }
 
 export type VesselLayerProps = DeckLayerProps<
-  Omit<VesselTrackLayerProps, 'highlightStartTime' | 'highlightEndTime'> &
-    Omit<VesselEventsLayerProps, 'highlightStartTime' | 'highlightEndTime'> &
+  Omit<VesselTrackLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
+    Omit<VesselEventsLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
     _VesselLayerProps
 >
 
@@ -63,6 +63,7 @@ type VesselLayerState = {
   highlightedFeatures: DeckLayerPickingObject[]
   highlightStartTime?: number
   highlightEndTime?: number
+  highlightEventIds?: string[]
 }
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -209,6 +210,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     })
   }
 
+  setHighlightEventIds(highlightEventIds: string[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightEventIds })
+  }
+
   _getVesselTrackLayers() {
     const {
       trackUrl,
@@ -297,7 +305,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventLayers(): VesselEventsLayer[] {
-    const { visible, visibleEvents, events, highlightEventIds } = this.props
+    const { visible, visibleEvents, events } = this.props
+    const { highlightEventIds } = this.state || {}
     const hoveredEventIds = this.state.highlightedFeatures.map((f) => f.id).filter(Boolean)
     const mergedHighlightEventIds = uniq([...(highlightEventIds || []), ...hoveredEventIds])
     if (!visible) {

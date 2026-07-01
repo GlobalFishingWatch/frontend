@@ -32,7 +32,6 @@ export type ResolverGlobalConfig = {
   compareStart?: string
   compareEnd?: string
   trackGraphExtent?: VesselTrackGraphExtent
-  highlightEventIds?: string[]
   visibleEvents: EventTypes[]
   vesselsColorBy: VesselsColorByProperty
   vectorsTemporalAggregation?: boolean
