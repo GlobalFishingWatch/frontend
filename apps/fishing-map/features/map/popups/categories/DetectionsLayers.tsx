@@ -62,7 +62,6 @@ function DetectionsTooltipRow({
     }))
   }
 
-  console.log('🚀 ~ DetectionsTooltipRow ~ feature.value:', feature)
   return (
     <div className={styles.popupSection}>
       <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
