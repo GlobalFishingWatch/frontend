@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - feat/building-in-ga
+      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
