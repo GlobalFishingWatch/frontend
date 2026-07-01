@@ -16,8 +16,6 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -86,24 +84,6 @@ export type DateTimeSeries = {
   date: string
   values: number[]
 }[]
-
-const defaultIds = [] as string[]
-export const useHighlightReportArea = () => {
-  const areaDataviews = useSelector(selectReportAreaDataviews)
-  const ids = areaDataviews?.map((d) => d.id) || defaultIds
-  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
-
-  return useCallback(
-    (area?: ContextFeature) => {
-      areaLayers.forEach((areaLayer) => {
-        if (areaLayer?.instance?.setHighlightedFeatures) {
-          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
-        }
-      })
-    },
-    [areaLayers]
-  )
-}
 
 const defaultParams = {} as FitBoundsParams
 const LAT_LON_TOLERANCE = 1e-6
@@ -305,6 +285,8 @@ export function useFetchReportArea() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
+  console.log('🚀 ~ useFetchReportArea ~ areaId:', areaId)
+  console.log('🚀 ~ useFetchReportArea ~ datasetId:', datasetId)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
   const areaDataviews = useSelector(selectReportAreaDataviews)

@@ -15,7 +15,11 @@ import {
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
-import type { DeckLayerPickingObject, FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  ContextFeature,
+  DeckLayerPickingObject,
+  FourwingsLayer,
+} from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime, HEATMAP_ID, POSITIONS_ID } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
@@ -38,6 +42,8 @@ import {
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useTimebarTracksGraphExtent } from 'features/map/timebar-graph.hooks'
 import {
+  selectReportAreaDataviews,
+  selectReportAreaHighlightedFeature,
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
@@ -263,8 +269,27 @@ function getLayerHoverFeatures(layer: HighlightableLayer, features: DeckLayerPic
   })
 }
 
+function getLayerHighlightedFeatures(
+  layer: HighlightableLayer,
+  features: DeckLayerPickingObject[],
+  reportAreaHighlightedFeature: ContextFeature | undefined,
+  reportAreaDataviewIds: string[]
+) {
+  const layerFeatures = getLayerHoverFeatures(layer, features)
+  if (reportAreaHighlightedFeature && reportAreaDataviewIds.includes(layer.id)) {
+    return [reportAreaHighlightedFeature as DeckLayerPickingObject, ...layerFeatures]
+  }
+  return layerFeatures
+}
+
 export const useSyncMapHoverHighlightedFeatures = () => {
   const layers = useAtomValue(deckLayerInstancesAtom) as HighlightableLayer[]
+  const reportAreaHighlightedFeature = useSelector(selectReportAreaHighlightedFeature)
+  const reportAreaDataviews = useSelector(selectReportAreaDataviews)
+  const reportAreaDataviewIds = useMemo(
+    () => reportAreaDataviews?.map((d) => d.id) ?? [],
+    [reportAreaDataviews]
+  )
   const clickedEvent = useSelector(selectClickedEvent)
   const highlightedFeatures = useMemoCompare(
     [
@@ -283,7 +308,12 @@ export const useSyncMapHoverHighlightedFeatures = () => {
       if (typeof layer.setHighlightedFeatures !== 'function' || !layer.state) {
         return
       }
-      const layerFeatures = getLayerHoverFeatures(layer, highlightedFeatures)
+      const layerFeatures = getLayerHighlightedFeatures(
+        layer,
+        highlightedFeatures,
+        reportAreaHighlightedFeature,
+        reportAreaDataviewIds
+      )
       const layerFeaturesHash = getHoverFeaturesHash(layerFeatures)
       if (layerHighlightsHashRef.current[layer.id] === layerFeaturesHash) {
         return
@@ -291,7 +321,13 @@ export const useSyncMapHoverHighlightedFeatures = () => {
       layerHighlightsHashRef.current[layer.id] = layerFeaturesHash
       layer.setHighlightedFeatures(layerFeatures)
     })
-  }, [highlightedFeatures, highlightedFeaturesHash, layers])
+  }, [
+    highlightedFeatures,
+    highlightedFeaturesHash,
+    layers,
+    reportAreaDataviewIds,
+    reportAreaHighlightedFeature,
+  ])
 }
 
 function toHighlightTimeMillis(time?: { start?: string; end?: string }) {
