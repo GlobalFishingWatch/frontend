@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai'
 
 import {
   deckLayerInstancesAtom,
+  useDeckLayerLoadedState,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
@@ -84,6 +85,7 @@ function toHighlightTimeMillis(time?: { start?: string; end?: string }) {
 
 export const useSyncMapHighlights = () => {
   const layers = useAtomValue(deckLayerInstancesAtom) as SyncableLayer[]
+  const layersLoadedState = useDeckLayerLoadedState()
   const hashRef = useRef<Record<string, LayerHighlightHashes>>({})
 
   const reportAreaHighlightedFeature = useSelector(selectReportAreaHighlightedFeature)
@@ -174,6 +176,7 @@ export const useSyncMapHighlights = () => {
     })
   }, [
     layers,
+    layersLoadedState,
     highlightedFeatures,
     reportAreaDataviewIds,
     reportAreaHighlightedFeature,
