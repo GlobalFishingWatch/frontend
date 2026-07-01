@@ -1,0 +1,256 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY: us-central1-docker.pkg.dev
+  GCP_PROJECT: gfw-int-infrastructure
+  AR_REPOSITORY: frontend
+
+jobs:
+  detect-affected:
+    name: Detect Affected Apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.affected.outputs.apps }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch develop branch
+        run: git fetch origin develop --depth=1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Get affected apps
+        id: affected
+        run: |
+          set -euo pipefail
+
+          AFFECTED=$(pnpm exec nx show projects \
+            --affected \
+            --base=origin/develop \
+            --head=HEAD \
+            --type app \
+            --exclude='linting,port-labeler,*-e2e' \
+            --plain | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
+
+          APPS=()
+          for app in $AFFECTED; do
+            if [ -f "apps/$app/Dockerfile" ]; then
+              APPS+=("$app")
+            fi
+          done
+
+          if [ ${#APPS[@]} -eq 0 ]; then
+            APPS_JSON="[]"
+          else
+            APPS_JSON=$(printf '%s\n' "${APPS[@]}" | jq -R . | jq -sc .)
+          fi
+
+          echo "apps=$APPS_JSON" >> $GITHUB_OUTPUT
+
+          if [ "$APPS_JSON" = "[]" ]; then
+            echo "No affected apps with a Dockerfile found — skipping build"
+          else
+            echo "Affected apps to build: $APPS_JSON"
+          fi
+
+  build:
+    name: Build / ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    needs: detect-affected
+    if: needs.detect-affected.outputs.apps != '[]'
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
+      fail-fast: false
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Fetch build secrets from Secret Manager
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            SENTRY_AUTH_TOKEN:projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
+
+      - name: Resolve build target
+        id: target
+        run: |
+          case "${{ matrix.app }}" in
+            fishing-map) echo "target=production-node" >> $GITHUB_OUTPUT ;;
+            *)           echo "target=production-nginx" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          target: ${{ steps.target.outputs.target }}
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/${{ matrix.app }}:latest-dev
+          build-args: |
+            APP_NAME=${{ matrix.app }}
+            COMMIT_SHA=${{ github.sha }}
+            VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+            VITE_API_VERSION=v3
+            VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G
+            VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST
+            VITE_USE_LOCAL_DATASETS=false
+            VITE_USE_LOCAL_DATAVIEWS=false
+            VITE_WORKSPACE_ENV=development
+            VITE_REPORT_DAYS_LIMIT=366
+            VITE_PIPE_DATASET_VERSION=4
+            SENTRY_AUTH_TOKEN=${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}
+          secrets: |
+            NX_CLOUD_ACCESS_TOKEN=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,scope=frontend,mode=max
+
+  deploy:
+    name: Deploy / ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    needs: [detect-affected, build]
+    if: needs.detect-affected.outputs.apps != '[]'
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
+      fail-fast: false
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          IMAGE="${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/$APP:testing-action"
+          SECRETS_PATH="projects/706952489382/secrets"
+
+          case "$APP" in
+            fishing-map)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-fish"
+              SET_SECRETS="\
+                BASIC_AUTH_PASS=$SECRETS_PATH/FISHING_MAP_BASIC_AUTH_PASS/versions/latest,\
+                STRAPI_TOKEN=$SECRETS_PATH/FISHING_MAP_STRAPI_TOKEN/versions/latest,\
+                STRAPI_URL=$SECRETS_PATH/FISHING_MAP_STRAPI_URL/versions/latest,\
+                DOWNLOAD_SURVEY_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest,\
+                FEEDBACK_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest,\
+                GFW_API_KEY=$SECRETS_PATH/FISHING_MAP_GFW_API_KEY/versions/latest,\
+                IDENTITY_REVIEW_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID/versions/latest,\
+                MAP_ERRORS_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID/versions/latest,\
+                MIGRAMAR_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MIGRAMAR_SPREADSHEET_ID/versions/latest,\
+                MASTRA_API_URL=$SECRETS_PATH/FISHING_MAP_MASTRA_API_URL/versions/latest,\
+                SENTRY_AUTH_TOKEN=$SECRETS_PATH/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest,\
+                SPREADSHEET_CLIENT_EMAIL=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL/versions/latest,\
+                SPREADSHEET_PRIVATE_KEY=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_PRIVATE_KEY/versions/latest,\
+                TURNING_TIDES_AIS_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_AIS_ID/versions/latest,\
+                TURNING_TIDES_BRAZIL_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_BRAZIL_ID/versions/latest,\
+                TURNING_TIDES_CHILE_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_CHILE_ID/versions/latest,\
+                TURNING_TIDES_PERU_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_PERU_ID/versions/latest,\
+                WORKSPACES_AGENT_ID=$SECRETS_PATH/FISHING_MAP_WORKSPACES_AGENT_ID/versions/latest"
+              ;;
+            api-portal)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-api"
+              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_API_PORTAL/versions/latest"
+              ;;
+            track-labeler)
+              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw"
+              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_TRACK_LABELER/versions/latest"
+              ;;
+            data-download-portal|image-labeler|user-groups-admin)
+              ENV_VARS="BASIC_AUTH=off"
+              SET_SECRETS=""
+              ;;
+            *)
+              echo "Unknown app: $APP — no Cloud Run config defined"
+              exit 1
+              ;;
+          esac
+
+          SET_SECRETS=$(echo "$SET_SECRETS" | tr -d ' \\\n')
+
+          SECRETS_FLAG="--clear-secrets"
+          if [ -n "$SET_SECRETS" ]; then
+            SECRETS_FLAG="--set-secrets=$SET_SECRETS"
+          fi
+
+          gcloud run deploy "dev-ui-$APP" \
+            --project gfw-development \
+            --image "$IMAGE" \
+            --region us-central1 \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars "$ENV_VARS" \
+            $SECRETS_FLAG \
+            --service-account "frontend-dev@gfw-development.iam.gserviceaccount.com"
+
+      - name: Clean old revisions
+        run: |
+          gcloud run revisions list \
+            --project gfw-development \
+            --service "dev-ui-${{ matrix.app }}" \
+            --region us-central1 \
+            --format="value(metadata.name)" \
+            --sort-by="~metadata.creationTimestamp" \
+            | tail -n +4 \
+            | xargs -r -n1 gcloud run revisions delete \
+                --project gfw-development \
+                --region us-central1 \
+                --quiet
