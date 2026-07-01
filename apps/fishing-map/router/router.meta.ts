@@ -1,12 +1,20 @@
 import { PATH_BASENAME } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
+import { formatInfoField } from 'utils/info'
 
 export type WorkspaceCategoryDescriptionKey =
   keyof Resources['translations']['workspace']['siteDescription']
 
 const PREFIX = 'GFW'
+const SITE_ORIGIN = 'https://globalfishingwatch.org'
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
+
+const buildCanonicalUrl = (pathname?: string) => {
+  if (!pathname) return `${SITE_ORIGIN}${PATH_BASENAME}`
+  const withBase = pathname.startsWith(PATH_BASENAME) ? pathname : `${PATH_BASENAME}${pathname}`
+  return `${SITE_ORIGIN}${withBase}`
+}
 
 export const getDefaultMeta = (
   title: string,
@@ -43,7 +51,6 @@ export const getDefaultMeta = (
     { name: 'msapplication-config', content: 'icons/browserconfig.xml' },
   ],
   links: [
-    { rel: 'canonical', href: 'https://globalfishingwatch.org/map' },
     { rel: 'shortcut icon', href: `${PATH_BASENAME}/icons/favicon.ico` },
     {
       rel: 'icon',
@@ -92,11 +99,68 @@ export const getRouteHead = ({
   const descriptionResolved = description ?? t((s) => s.workspace.siteDescription.default)
   return {
     meta: [
+      { title: getHeadTitle(categoryResolved) },
+      { name: 'description', content: descriptionResolved },
+    ],
+  }
+}
+
+export type VesselHeadData =
+  | {
+      canonicalPath?: string
+      shipname?: string
+      flag?: string
+      ssvid?: string
+      imo?: string
+    }
+  | undefined
+
+export const getVesselHead = (data?: VesselHeadData) => {
+  const canonical = buildCanonicalUrl(data?.canonicalPath)
+  const links = [{ rel: 'canonical', href: canonical }]
+
+  if (!data?.shipname) {
+    return {
+      ...getRouteHead({ category: t((s) => s.vessel.title) }),
+      links,
+    }
+  }
+
+  const vesselName = formatInfoField(data.shipname, 'shipname') as string
+  const flagLabel = data.flag ? (formatInfoField(data.flag, 'flag') as string) : undefined
+  const identifiers = [
+    data.imo ? `IMO ${data.imo}` : undefined,
+    data.ssvid ? `MMSI ${data.ssvid}` : undefined,
+  ]
+    .filter(Boolean)
+    .join(', ')
+  const title = `${PREFIX} | ${vesselName}${flagLabel ? ` (${flagLabel})` : ''}`
+  const description = `Explore vessel identity, activity and events for ${vesselName}${
+    flagLabel ? ` flagged to ${flagLabel}` : ''
+  }${identifiers ? ` (${identifiers})` : ''} on the Global Fishing Watch map.`
+
+  return {
+    meta: [
+      { title },
+      { name: 'description', content: description },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonical },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
       {
-        title: getHeadTitle(categoryResolved),
-        description: descriptionResolved,
+        'script:ld+json': {
+          '@context': 'https://schema.org',
+          '@type': 'Vehicle',
+          name: vesselName,
+          ...(flagLabel ? { countryOfOrigin: flagLabel } : {}),
+          ...(data.imo ? { vehicleIdentificationNumber: String(data.imo) } : {}),
+          url: canonical,
+        },
       },
     ],
+    links,
   }
 }
 
