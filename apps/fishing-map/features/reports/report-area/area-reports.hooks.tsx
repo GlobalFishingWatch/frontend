@@ -220,15 +220,23 @@ const isAreaCenterInViewport = (
   viewState: ReturnType<typeof useMapViewState>,
   areaCenter: ReturnType<typeof useReportAreaCenter>,
   id?: string
-) =>
-  !!viewState &&
-  !!areaCenter &&
-  isClose(viewState.latitude, areaCenter.latitude) &&
-  isClose(viewState.longitude, areaCenter.longitude) &&
+) => {
+  if (!viewState || !areaCenter) return false
+  const lngClose = isClose(viewState.longitude, areaCenter.longitude)
   // This is needed because depending of the viewport size the zoom can't go to the same value as the area center
-  (id === ENTIRE_WORLD_REPORT_AREA_ID
-    ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
-    : isClose(viewState?.zoom, areaCenter?.zoom, ZOOM_TOLERANCE))
+  const zoomClose =
+    id === ENTIRE_WORLD_REPORT_AREA_ID
+      ? Math.floor(viewState.zoom) <= Math.floor(areaCenter.zoom)
+      : isClose(viewState.zoom, areaCenter.zoom, ZOOM_TOLERANCE)
+  // At low zoom, Web Mercator clamps the center latitude toward the equator, so the map can't
+  // reach areaCenter.latitude for large/high-latitude areas (e.g. RFMOs). Once lng+zoom match,
+  // the fit has been applied, so accept a latitude clamped toward the equator in the same hemisphere.
+  const latClose = isClose(viewState.latitude, areaCenter.latitude)
+  const latClamped =
+    Math.abs(viewState.latitude) <= Math.abs(areaCenter.latitude) + LAT_LON_TOLERANCE &&
+    viewState.latitude * areaCenter.latitude >= 0
+  return lngClose && zoomClose && (latClose || latClamped)
+}
 
 export function useReportAreaInViewport(params = defaultParams) {
   const viewState = useMapViewState()

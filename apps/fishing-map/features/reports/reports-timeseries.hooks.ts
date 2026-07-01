@@ -225,12 +225,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
   )
   const debouncedAreaId = useDebounce(area?.id, debouncedTime)
 
-  const isLoaded = useMemo(() => {
-    const isLoaded =
-      reportLayers.length > 0 &&
-      reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
-    return isLoaded
-  }, [reportLayers])
+  const isLoaded =
+    reportLayers.length > 0 &&
+    reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
   const reportLayersLength = reportLayers.length
 
   // Create processing hash to detect when we need to reprocess
