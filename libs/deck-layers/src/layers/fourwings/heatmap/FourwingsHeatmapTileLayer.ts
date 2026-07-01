@@ -709,10 +709,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const isStartOutRange = startTime < tilesCache.start
-    // mirror the start/end direction: out of range only when the requested compare
-    // window extends beyond the cached one. Using <= here made it always true (the cache
-    // stores compareStart/compareEnd raw, so they equal the props right after an update),
-    // which kept isTimeRangeOutOfCache true forever and looped updateState in compare mode.
     const isCompareStartOutRange = compareStart ? compareStart < tilesCache.compareStart! : false
     const isCompareEndOutRange = compareEnd ? compareEnd > tilesCache.compareEnd! : false
     const isEndOutRange = endTime > tilesCache.end

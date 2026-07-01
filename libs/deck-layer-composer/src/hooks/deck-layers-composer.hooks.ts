@@ -53,12 +53,9 @@ export function useDeckLayerComposer({
     return getDataviewsSorted(dataviewsMerged)
   }, [memoDataviews, resolutionConfig])
 
-  // Pure: resolve each dataview to its layer class + props. No instances created here so the
-  // memo stays side-effect free; instantiation (and reuse) happens in the effect below.
   const resolvedLayers = useMemo<ResolvedDeckLayer[]>(() => {
     const resolved =
       dataviewsMergedSorted?.flatMap((dataview): ResolvedDeckLayer | [] => {
-        // TODO research if we can use atoms here
         try {
           const { LayerClass, props } = dataviewToDeckLayerResolved(dataview, memoGlobalConfig)
           return { id: dataview.id, LayerClass, props }
@@ -91,11 +88,6 @@ export function useDeckLayerComposer({
     return resolved
   }, [dataviewsMergedSorted, memoGlobalConfig])
 
-  // Reuse a layer instance when its resolved props haven't changed. Recreating deck layers is cheap
-  // for deck.gl itself, but here instances flow through deckLayerInstancesAtom that many React
-  // selectors (legends, loading state) derive from, so keeping unchanged layers referentially stable
-  // avoids downstream re-renders and the brief window where a fresh instance has no computed state.
-  // Layers whose props genuinely changed (e.g. a vessel track on timebar highlight) still rebuild.
   const layerCacheRef = useRef<Map<string, CachedDeckLayer>>(new Map())
   const prevInstancesRef = useRef<AnyDeckLayer[]>([])
 
@@ -111,12 +103,10 @@ export function useDeckLayerComposer({
       return instance
     })
     layerCacheRef.current = nextCache
-    // Skip the atom update (and the re-render it triggers) when every instance was reused and the
-    // order is unchanged — nothing downstream would differ.
     const prev = prevInstancesRef.current
-    const unchanged =
-      instances.length === prev.length && instances.every((layer, i) => layer === prev[i])
-    if (!unchanged) {
+    const hasChanges =
+      instances.length !== prev.length || instances.some((layer, i) => layer !== prev[i])
+    if (hasChanges) {
       prevInstancesRef.current = instances
       debouncedSetDeckLayers(instances)
     }
