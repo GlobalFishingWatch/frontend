@@ -134,7 +134,7 @@ jobs:
           file: Dockerfile
           target: ${{ steps.target.outputs.target }}
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/${{ matrix.app }}:testing-action
+          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/${{ matrix.app }}:latest-dev
           build-args: |
             APP_NAME=${{ matrix.app }}
             COMMIT_SHA=${{ github.sha }}
