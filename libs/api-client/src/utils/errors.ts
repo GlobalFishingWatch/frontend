@@ -85,11 +85,14 @@ const NO_SESSION_MESSAGES = [
 ] as const
 
 // Auth/session rejection — incl. server-fn errors that lose `status` after deserialization.
-export function isSessionError(error?: { status?: number; message?: string } | null) {
+export function isSessionError(
+  error?: { status?: number; message?: string; cause?: unknown } | null
+): boolean {
   if (!error) return false
-  if (isAuthError(error) || getIsUnauthorizedError(error)) return true
+  if (isAuthError(error) || Boolean(getIsUnauthorizedError(error))) return true
   const message = error.message ?? ''
-  return NO_SESSION_MESSAGES.some((m) => message.includes(m))
+  if (NO_SESSION_MESSAGES.some((m) => message.includes(m))) return true
+  return isSessionError(error.cause as { status?: number; message?: string } | null)
 }
 
 export const isTransientError = (error?: ResponseError | { status?: number; message?: string }) =>
