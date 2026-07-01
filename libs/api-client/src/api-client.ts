@@ -340,7 +340,19 @@ export class GFW_API_CLASS {
       this.debugAuthState('refreshAPIToken — via refreshStrategy')
       const strategy = this.refreshStrategy
       this.status = 'refreshingToken'
-      this.refreshingToken = this.withTokenRefreshLock(() => strategy()).finally(() => {
+      this.refreshingToken = this.withTokenRefreshLock(async () => {
+        const tokenBefore = this.token
+        try {
+          return await strategy()
+        } catch (e: any) {
+          const tokenAfter = this.token
+          if (isSessionError(e) && tokenAfter && tokenAfter !== tokenBefore) {
+            this.debugLog('GFWAPI: refreshAPIToken — cookies rotated concurrently, reusing session')
+            return { token: tokenAfter, refreshToken: this.refreshToken }
+          }
+          throw e
+        }
+      }).finally(() => {
         this.status = 'idle'
         this.refreshingToken = null
       })

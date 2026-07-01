@@ -1279,7 +1279,9 @@ describe('api-client', () => {
         await client.logout()
 
         expect(logSpy).toHaveBeenCalledWith('GFWAPI: logout — gateway OK')
-        expect(logSpy).toHaveBeenCalledWith('GFWAPI: invalidateClientSession — clearing local session')
+        expect(logSpy).toHaveBeenCalledWith(
+          'GFWAPI: invalidateClientSession — clearing local session'
+        )
         logSpy.mockRestore()
         warnSpy.mockRestore()
       })
@@ -1480,6 +1482,66 @@ describe('api-client', () => {
         await expect(client.fetch('/datasets/1')).rejects.toMatchObject({ status: 401 })
         expect(sessionInvalidateStrategy).toHaveBeenCalledTimes(1)
         expect(storage.getItem('GFW_API_USER_TOKEN')).toBeNull()
+      })
+
+      // Race: an SSR document request (outside this tab's Web Lock) consumes the
+      // single-use refresh token while a strategy refresh replays it. The rejected
+      // refresh must reuse the concurrently rotated session, not invalidate it.
+      it('should reuse a concurrently rotated session when the strategy refresh is rejected', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        const sessionInvalidateStrategy = vi.fn()
+        const refreshStrategy = vi.fn(async () => {
+          storage.setItem('GFW_API_USER_TOKEN', 'rotated-token')
+          const error: any = new Error('Invalid refresh token')
+          error.status = 401
+          throw error
+        })
+        client.configure({ refreshStrategy, sessionInvalidateStrategy })
+
+        fetchMock.mockImplementation((_url, options) => {
+          if (options.headers.Authorization === 'Bearer rotated-token') {
+            return Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 }))
+          }
+          return Promise.resolve(
+            new Response(JSON.stringify({ message: 'Unauthorized' }), {
+              status: 401,
+              statusText: 'Unauthorized',
+            })
+          )
+        })
+
+        const result = await client.fetch('/protected')
+
+        expect(result).toEqual({ ok: true })
+        expect(refreshStrategy).toHaveBeenCalledTimes(1)
+        expect(sessionInvalidateStrategy).not.toHaveBeenCalled()
+        expect(storage.getItem('GFW_API_USER_TOKEN')).toBe('rotated-token')
+      })
+
+      it('should still reject the strategy refresh when the cookies did not rotate', async () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage as any
+        storage.setItem('GFW_API_USER_TOKEN', 'old-token')
+        const sessionInvalidateStrategy = vi.fn()
+        const refreshStrategy = vi.fn(async () => {
+          const error: any = new Error('Invalid refresh token')
+          error.status = 401
+          throw error
+        })
+        client.configure({ refreshStrategy, sessionInvalidateStrategy })
+
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ message: 'Unauthorized' }), {
+            status: 401,
+            statusText: 'Unauthorized',
+          })
+        )
+
+        await expect(client.fetch('/protected')).rejects.toMatchObject({ status: 401 })
+        expect(refreshStrategy).toHaveBeenCalledTimes(1)
+        expect(sessionInvalidateStrategy).toHaveBeenCalledTimes(1)
       })
     })
 
