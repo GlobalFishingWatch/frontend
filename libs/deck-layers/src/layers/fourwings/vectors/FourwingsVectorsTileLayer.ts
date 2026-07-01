@@ -504,7 +504,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getMaxVelocity = () => {
-    return this.state.maxVelocity
+    return this.state?.maxVelocity
   }
 
   getVisualizationMode = () => {
@@ -512,7 +512,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getColorScale = () => {
-    if (!this.state.maxVelocity) {
+    if (!this.state?.maxVelocity) {
       return {
         colorDomain: [],
         colorRange: [],

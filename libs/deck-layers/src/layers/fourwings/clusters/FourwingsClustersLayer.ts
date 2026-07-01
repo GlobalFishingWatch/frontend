@@ -586,7 +586,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   getData() {
-    return this.state.data as FourwingsPointFeature[]
+    return this.state?.data as FourwingsPointFeature[]
   }
 
   setHighlightedFeatures(

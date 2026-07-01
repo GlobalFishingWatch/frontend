@@ -522,17 +522,17 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getColorDomain() {
-    return this.state.colorScale?.colorDomain
+    return this.state?.colorScale?.colorDomain
   }
 
   getColorRange() {
-    return this.state.colorScale?.colorRange
+    return this.state?.colorScale?.colorRange
   }
 
   getColorScale() {
     return {
-      colorDomain: this.state.colorScale?.colorDomain,
-      colorRange: this.state.colorScale?.colorRange.map(
+      colorDomain: this.state?.colorScale?.colorDomain,
+      colorRange: this.state?.colorScale?.colorRange?.map(
         (sublayer) => sublayer as FourwingsColorObject[]
       ),
     }

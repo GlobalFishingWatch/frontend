@@ -185,7 +185,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const feature = this.state.rawData?.features[info.index]
+    const feature = this.state?.rawData?.features[info.index]
     // TODO: support multiple sublayers
     const layer = this.props.layers?.[0]
     const sublayer = layer?.sublayers?.[0]
@@ -282,7 +282,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getData() {
-    return this.state.rawData
+    return this.state?.rawData
   }
 
   getColor() {
@@ -293,7 +293,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   getSegments(
     { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
   ): TrackSegment[] {
-    if (!this.state.rawData) return []
+    if (!this.state?.rawData) {
+      return []
+    }
 
     const segmentsGeo = geoJSONToSegments(this.state.rawData, {
       onlyExtents: !includeMiddlePoints,
@@ -336,9 +338,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   ) => {
     const { singleTrack } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
+    const featureIndex = this.state?.rawDataIndexes?.find(({ length }) => index < length)
       ?.index as number
-    const currentFeature = this.state.rawData?.features?.[featureIndex]
+    const currentFeature = this.state?.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
         feature.id === currentFeature?.properties?.[layer.idProperty || DEFAULT_ID_PROPERTY] ||
