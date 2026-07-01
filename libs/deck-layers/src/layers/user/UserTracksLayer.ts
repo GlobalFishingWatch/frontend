@@ -161,6 +161,8 @@ type UserTracksLayerState = {
   rawDataIndexes: RawDataIndex[]
   binaryData?: UserTrackBinaryData
   highlightedFeatures?: UserLayerPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
 }
 
 const emptyHighlightedFeatures = [] as UserLayerPickingObject[]
@@ -182,6 +184,23 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       return
     }
     this.setState({ highlightedFeatures })
+  }
+
+  _getHighlightTimes() {
+    return {
+      highlightStartTime: this.state.highlightStartTime ?? this.props.highlightStartTime,
+      highlightEndTime: this.state.highlightEndTime ?? this.props.highlightEndTime,
+    }
+  }
+
+  setHighlightedTime({ start, end }: { start?: number; end?: number }) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
@@ -354,8 +373,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   renderLayers() {
-    const { layers, startTime, endTime, highlightStartTime, highlightEndTime, singleTrack } =
-      this.props
+    const { layers, startTime, endTime, singleTrack } = this.props
+    const { highlightStartTime, highlightEndTime } = this._getHighlightTimes()
     const highlightedFeatures = this._getHighlightedFeatures()
 
     return layers.map((layer) => {

@@ -132,17 +132,11 @@ export const getUserCircleProps = ({
 export const resolveDeckUserLayerProps: DeckResolverFunction<
   BaseUserLayerProps,
   ResolvedContextDataviewInstance
-> = (dataview, { start, end, highlightedTime }) => {
+> = (dataview, { start, end }) => {
   const baseLayerProps = {
     id: dataview.id,
     category: dataview.category!,
     subcategory: dataview.config?.type as DeckLayerSubcategory,
-    ...(highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
-    }),
-    ...(highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
-    }),
   }
 
   const baseDataset = dataview.datasets?.find((d) => d.id === dataview.config?.layers?.[0].dataset)

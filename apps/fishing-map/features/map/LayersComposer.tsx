@@ -1,5 +1,6 @@
 import {
   useMapDataviewsLayers,
+  useSyncMapHighlightedTime,
   useSyncMapHoverHighlightedFeatures,
 } from 'features/map/map-layers.hooks'
 
@@ -8,5 +9,6 @@ import {
 export default function LayersComposer() {
   useMapDataviewsLayers()
   useSyncMapHoverHighlightedFeatures()
+  useSyncMapHighlightedTime()
   return null
 }

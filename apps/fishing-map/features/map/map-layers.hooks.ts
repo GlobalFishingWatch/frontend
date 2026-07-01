@@ -9,14 +9,14 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
+import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
 import {
   deckLayerInstancesAtom,
   useDeckLayerComposer,
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { DeckLayerPickingObject, FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime, HEATMAP_ID, POSITIONS_ID } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
@@ -30,10 +30,7 @@ import {
   selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import {
-  selectDataviewInstancesResolvedVisible,
-  selectTrackDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -49,6 +46,10 @@ import { selectReportHotspotSettings } from 'features/reports/tabs/activity/repo
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import {
+  selectTrackCorrectionTimerange,
+  selectTrackCorrectionVesselDataviewId,
+} from 'features/track-correction/track-correction.slice'
+import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
@@ -58,6 +59,7 @@ import {
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectTrackCorrectionId,
 } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -89,14 +91,12 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const trackDataviews = useSelector(selectTrackDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
@@ -108,21 +108,6 @@ export const useGlobalConfigConnect = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
-
-  const highlightedTime = useMemo(() => {
-    if (
-      activityVisualizationMode === 'positions' ||
-      detectionsVisualizationMode === 'positions' ||
-      trackDataviews?.length
-    ) {
-      return timebarHighlightedTime as Partial<TimeRange>
-    }
-  }, [
-    activityVisualizationMode,
-    detectionsVisualizationMode,
-    timebarHighlightedTime,
-    trackDataviews?.length,
-  ])
 
   // This was the way we managed highlighted features in "@deck.gl/core": "9.1.15"
   // but after upgrading to 9.3 the performance was terrible so had to create the
@@ -160,7 +145,6 @@ export const useGlobalConfigConnect = () => {
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
-      highlightedTime,
       highlightEventIds,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
@@ -190,7 +174,6 @@ export const useGlobalConfigConnect = () => {
     detectionsVisualizationMode,
     environmentVisualizationMode,
     highlightEventIds,
-    highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
     vesselGroupsVisualizationMode,
@@ -249,6 +232,14 @@ type HighlightableLayer = {
   state?: unknown
   setHighlightedFeatures?: (features: DeckLayerPickingObject[]) => void
 }
+
+type HighlightedTimeLayer = {
+  id: string
+  state?: unknown
+  setHighlightedTime?: (range: { start?: number; end?: number }) => void
+  getVisualizationMode?: () => string
+}
+
 const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
 
 function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
@@ -301,6 +292,70 @@ export const useSyncMapHoverHighlightedFeatures = () => {
       layer.setHighlightedFeatures(layerFeatures)
     })
   }, [highlightedFeatures, highlightedFeaturesHash, layers])
+}
+
+function toHighlightTimeMillis(time?: { start?: string; end?: string }) {
+  if (!time?.start || !time?.end) {
+    return null
+  }
+  return {
+    start: getUTCDateTime(time.start).toMillis(),
+    end: getUTCDateTime(time.end).toMillis(),
+  }
+}
+
+export const useSyncMapHighlightedTime = () => {
+  const timebarHighlightedTime = useSelector(selectHighlightedTime)
+  const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
+  const trackCorrectionId = useSelector(selectTrackCorrectionId)
+  const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
+  const layers = useAtomValue(deckLayerInstancesAtom) as HighlightedTimeLayer[]
+  const layerHighlightTimeHashRef = useRef<Record<string, string>>({})
+
+  const timebarHighlightedTimeMillis = useMemo(
+    () => toHighlightTimeMillis(timebarHighlightedTime),
+    [timebarHighlightedTime]
+  )
+  const trackCorrectionTimerangeMillis = useMemo(
+    () => toHighlightTimeMillis(trackCorrectionTimerange),
+    [trackCorrectionTimerange]
+  )
+
+  useEffect(() => {
+    layers.forEach((layer) => {
+      if (typeof layer.setHighlightedTime !== 'function' || !layer.state) {
+        return
+      }
+      // Only fourwings positions mode uses time highlight
+      const visualizationMode = layer.getVisualizationMode?.()
+      if (visualizationMode !== undefined && visualizationMode !== POSITIONS_ID) {
+        return
+      }
+
+      let highlightedTimeMillis = timebarHighlightedTimeMillis
+      if (layer.id === trackCorrectionVesselDataviewId && trackCorrectionTimerangeMillis) {
+        highlightedTimeMillis =
+          trackCorrectionId !== 'new' && timebarHighlightedTimeMillis
+            ? timebarHighlightedTimeMillis
+            : trackCorrectionTimerangeMillis
+      }
+
+      const hash = highlightedTimeMillis
+        ? `${highlightedTimeMillis.start}|${highlightedTimeMillis.end}`
+        : ''
+      if (layerHighlightTimeHashRef.current[layer.id] === hash) {
+        return
+      }
+      layerHighlightTimeHashRef.current[layer.id] = hash
+      layer.setHighlightedTime(highlightedTimeMillis ?? { start: undefined, end: undefined })
+    })
+  }, [
+    layers,
+    timebarHighlightedTimeMillis,
+    trackCorrectionTimerangeMillis,
+    trackCorrectionVesselDataviewId,
+    trackCorrectionId,
+  ])
 }
 
 const useHotspotOverlayLayer = () => {

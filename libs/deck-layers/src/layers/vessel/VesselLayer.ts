@@ -51,7 +51,9 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
 }
 
 export type VesselLayerProps = DeckLayerProps<
-  VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+  Omit<VesselTrackLayerProps, 'highlightStartTime' | 'highlightEndTime'> &
+    Omit<VesselEventsLayerProps, 'highlightStartTime' | 'highlightEndTime'> &
+    _VesselLayerProps
 >
 
 type VesselLayerState = {
@@ -59,6 +61,8 @@ type VesselLayerState = {
     [key in EventTypes | 'track']?: string
   }
   highlightedFeatures: DeckLayerPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
 }
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -195,6 +199,16 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return chunks
   }
 
+  setHighlightedTime({ start, end }: { start?: number; end?: number }) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
+  }
+
   _getVesselTrackLayers() {
     const {
       trackUrl,
@@ -202,8 +216,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       startTime,
       endTime,
       color,
-      highlightStartTime,
-      highlightEndTime,
       highlightEventStartTime,
       highlightEventEndTime,
       minSpeedFilter,
@@ -216,6 +228,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackVisualizationMode,
       gapSegmentThreshold,
     } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
@@ -326,8 +339,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, color, name, showVesselIcon } =
-      this.props
+    const { visible, color, name, showVesselIcon } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
     const trackData = this.getVesselTrackData()
 
     if (!visible || !showVesselIcon || !trackData?.length) {
