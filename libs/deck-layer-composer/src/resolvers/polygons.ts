@@ -4,11 +4,7 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import type {
-  LayerGroup,
-  PolygonPickingObject,
-  PolygonsLayerProps,
-} from '@globalfishingwatch/deck-layers'
+import type { LayerGroup, PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
@@ -48,6 +44,5 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
     subcategory: dataview.config?.type,
     color: dataview.config?.color as string,
     group: dataview.config?.group as LayerGroup,
-    highlightedFeatures: globalConfig.highlightedFeatures as PolygonPickingObject[],
   }
 }

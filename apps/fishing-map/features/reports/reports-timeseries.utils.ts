@@ -2,8 +2,9 @@ import { area } from '@turf/turf'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
-import polygonClipping, { type Geom } from 'polygon-clipping'
 
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import { getPolygonsIntersection, getPolygonsUnion } from '@globalfishingwatch/data-transforms'
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextSubLayerConfig,
@@ -33,7 +34,6 @@ import {
 } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 import { getPolygonsTimeseries } from 'features/reports/tabs/others/reports-polygons-timeseries.utils'
 
-const { intersection, union } = polygonClipping
 
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
@@ -113,7 +113,10 @@ export const getPolygonsTimeseriesStats = ({
     const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
     const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
       .map((p) => {
-        const clipped = intersection(p.geometry.coordinates as Geom, reportArea.coordinates as Geom)
+        const clipped = getPolygonsIntersection(
+          p.geometry.coordinates as PolygonGeomCoords,
+          reportArea.coordinates as PolygonGeomCoords
+        )
         if (!clipped.length) return null
         return {
           type: 'Feature' as const,
@@ -123,12 +126,12 @@ export const getPolygonsTimeseriesStats = ({
       })
       .filter((p): p is Feature<MultiPolygon> => p !== null)
 
-    // Single-pass batch union via polygon-clipping sweep-line algorithm
+    // Single-pass batch union of all polygons
     const allPolygons = [...containedPolygons, ...clippedOverlapping]
     let intersectionM2 = 0
     if (allPolygons.length > 0) {
-      const coords = allPolygons.map((p) => p.geometry.coordinates as Geom)
-      const unionCoords = union(coords[0], ...coords)
+      const coords = allPolygons.map((p) => p.geometry.coordinates as PolygonGeomCoords)
+      const unionCoords = getPolygonsUnion(coords)
       intersectionM2 = area({
         type: 'Feature',
         geometry: { type: 'MultiPolygon', coordinates: unionCoords },

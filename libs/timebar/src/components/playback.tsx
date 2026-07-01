@@ -2,13 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
-import type { TimebarLabels } from '../timebar-labels'
-import { DEFAULT_LABELS } from '../timebar-labels'
-import { getTimebarStepByDelta } from '../utils'
+import { EVENT_SOURCE } from '../constants'
+import { useTimebar } from '../timebar-context'
+import { useLatest } from '../utils'
+
+import { getTimebarStepByDelta } from './playback.utils'
 
 import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
@@ -16,32 +16,30 @@ import styles from './playback.module.css'
 const SPEED_STEPS = [1, 2, 3, 5, 10]
 
 type PlaybackProps = {
-  labels?: TimebarLabels['playback']
-  onTick: (newStart: string, newEnd: string) => void
-  start: string
-  end: string
-  absoluteStart: string
-  absoluteEnd: string
-  intervals?: FourwingsInterval[]
-  onTogglePlay?: (isPlaying: boolean) => void
-  getCurrentInterval?: typeof getFourwingsInterval
   disabled?: boolean
-  disabledPlaybackTooltip?: string
+  disabledTooltip?: string
+  onTogglePlay?: (isPlaying: boolean) => void
 }
 
-function Playback({
-  labels = DEFAULT_LABELS.playback,
-  onTick,
-  start,
-  end,
-  absoluteStart,
-  absoluteEnd,
-  intervals = FOURWINGS_INTERVALS_ORDER,
-  onTogglePlay,
-  getCurrentInterval = getFourwingsInterval,
-  disabled = false,
-  disabledPlaybackTooltip = '',
-}: PlaybackProps) {
+export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: PlaybackProps) {
+  const {
+    labels: { playback: labels },
+    absoluteStart,
+    absoluteEnd,
+    intervals,
+    getCurrentInterval,
+    notifyChange,
+    rangeRef,
+    beginInteraction,
+    endInteraction,
+    end,
+  } = useTimebar()
+  const onPlaybackTick = useCallback(
+    (newStart: string, newEnd: string) => {
+      notifyChange(newStart, newEnd, EVENT_SOURCE.PLAYBACK_FRAME)
+    },
+    [notifyChange]
+  )
   const [playing, setPlaying] = useState(false)
   const [speedStep, setSpeedStep] = useState(0)
   const [loop, setLoop] = useState(false)
@@ -49,46 +47,36 @@ function Playback({
   const rafRef = useRef<number | null>(null)
   const lastUpdateMsRef = useRef<number | null>(null)
 
-  // Latest values for the rAF loop, so its callbacks never read stale props/state.
-  const latest = useRef({
-    start,
-    end,
+  // Fresh values for the rAF loop / button handlers, so their callbacks never read
+  // stale state. The live range itself lives in the shared rangeRef (single writer:
+  // notifyChange), so it isn't mirrored here.
+  const latestRef = useLatest({
     absoluteStart,
     intervals,
     getCurrentInterval,
-    onTick,
+    onPlaybackTick,
     onTogglePlay,
     speedStep,
     loop,
     playing,
-  })
-  useEffect(() => {
-    latest.current = {
-      start,
-      end,
-      absoluteStart,
-      intervals,
-      getCurrentInterval,
-      onTick,
-      onTogglePlay,
-      speedStep,
-      loop,
-      playing,
-    }
   })
 
   const stop = useCallback(() => {
     if (rafRef.current) {
       window.cancelAnimationFrame(rafRef.current)
     }
-    latest.current.onTogglePlay?.(false)
+    endInteraction()
+    latestRef.current.onTogglePlay?.(false)
     setPlaying(false)
-  }, [])
+  }, [endInteraction, latestRef])
 
   const update = useCallback(
     (deltaMultiplicator: number, { byIntervals = false } = {}) => {
-      const { start, end, absoluteStart, intervals, getCurrentInterval, onTick, speedStep, loop } =
-        latest.current
+      const { absoluteStart, intervals, getCurrentInterval, onPlaybackTick, speedStep, loop } =
+        latestRef.current
+      // Live range is the shared truth; notifyChange advances it synchronously, so the
+      // next frame/click reads the value just emitted (no optimistic write-back needed).
+      const { start, end } = rangeRef.current
       if (!start || !end) return
 
       const {
@@ -107,18 +95,18 @@ function Playback({
       })
 
       if (newStart && newEnd) {
-        onTick(newStart, newEnd)
+        onPlaybackTick(newStart, newEnd)
       }
 
       if (clamped === 'end') {
         if (loop === true) {
           const currentStartEndDeltaMs =
-            getUTCDate(newStart).getTime() - getUTCDate(newEnd).getTime()
+            getUTCDate(newEnd).getTime() - getUTCDate(newStart).getTime()
           // start again from absoluteStart
           const newEndLoop = getUTCDate(
             getUTCDate(absoluteStart).getTime() + currentStartEndDeltaMs
           ).toISOString()
-          onTick(absoluteStart, newEndLoop)
+          onPlaybackTick(absoluteStart, newEndLoop)
         } else {
           stop()
         }
@@ -149,16 +137,17 @@ function Playback({
 
   const togglePlay = useCallback(
     (force?: boolean) => {
-      const playingNext = force === undefined ? !latest.current.playing : force
+      const playingNext = force === undefined ? !latestRef.current.playing : force
       if (!playingNext) {
         stop()
         return
       }
+      beginInteraction()
       startLoop()
-      latest.current.onTogglePlay?.(true)
+      latestRef.current.onTogglePlay?.(true)
       setPlaying(true)
     },
-    [stop, startLoop]
+    [latestRef, beginInteraction, startLoop, stop]
   )
 
   useEffect(() => {
@@ -200,8 +189,8 @@ function Playback({
       <button
         type="button"
         title={
-          disabled && disabledPlaybackTooltip
-            ? disabledPlaybackTooltip
+          disabled && disabledTooltip
+            ? disabledTooltip
             : playing === true
               ? labels.pauseAnimation
               : labels.playAnimation
@@ -232,5 +221,3 @@ function Playback({
     </div>
   )
 }
-
-export default Playback

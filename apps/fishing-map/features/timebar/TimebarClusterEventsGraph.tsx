@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import type {
@@ -8,7 +7,7 @@ import type {
   HighlighterCallbackFnArgs,
   HighlighterIconCallback,
 } from '@globalfishingwatch/timebar'
-import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
 import type { IconType } from '@globalfishingwatch/ui-components'
 
 import { t } from 'features/i18n/i18n'
@@ -16,8 +15,6 @@ import { selectActiveActivityDataviewsByVisualisation } from 'features/timebar/t
 import { useClusterEventsGraph } from 'features/timebar/TimebarClusterEventsGraph.hooks'
 import { TimebarVisualisations } from 'types'
 import { formatNumber } from 'utils/info'
-
-import styles from './Timebar.module.css'
 
 const TimebarClusterEventsGraph = () => {
   const activeDataviews = useSelector(
@@ -41,8 +38,8 @@ const TimebarClusterEventsGraph = () => {
 
   const getActivityHighlighterIconLabel: HighlighterIconCallback = useCallback(
     ({ item }: HighlighterCallbackFnArgs) => {
-      const eventType = activeDataviews?.find((d) => d.id === item?.props?.dataviewId)?.datasets?.[0]
-        ?.subcategory as EventType
+      const eventType = activeDataviews?.find((d) => d.id === item?.props?.dataviewId)
+        ?.datasets?.[0]?.subcategory as EventType
       return `event-${eventType}` as IconType
     },
     [activeDataviews]
@@ -51,15 +48,14 @@ const TimebarClusterEventsGraph = () => {
   if (!eventsActivity || !eventsActivity.length || !activeDataviews?.length) return null
 
   return (
-    <div className={cx({ [styles.loading]: loading })}>
-      <TimebarStackedActivity
-        key="stackedActivity"
-        timeseries={eventsActivity}
-        dataviews={activeDataviews}
-        highlighterCallback={getActivityHighlighterLabel}
-        highlighterIconCallback={getActivityHighlighterIconLabel}
-      />
-    </div>
+    <Timebar.Charts.StackedActivity
+      key="stackedActivity"
+      timeseries={eventsActivity}
+      dataviews={activeDataviews}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback={getActivityHighlighterIconLabel}
+      loading={loading}
+    />
   )
 }
 

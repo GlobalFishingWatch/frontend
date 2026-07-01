@@ -1,7 +1,7 @@
-import { Fragment, Suspense, useCallback, useState } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { getRouteApi, Outlet, useSearch } from '@tanstack/react-router'
+import { getRouteApi, Outlet } from '@tanstack/react-router'
 
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
@@ -11,6 +11,7 @@ import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import ContentPanel from 'features/content-panel/ContentPanel'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useActivityDownloadTimeoutRefresh } from 'features/download/downloadActivity.hooks'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
@@ -76,6 +77,7 @@ function App() {
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const debugOptions = useSelector(selectDebugOptions)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)

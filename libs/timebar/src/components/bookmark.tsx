@@ -4,6 +4,7 @@ import type { ScaleTime } from 'd3-scale'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 
+import type { TimebarLabels } from '../timebar-labels'
 import { getHumanizedDates } from '../utils'
 
 import styles from './bookmark.module.css'
@@ -13,10 +14,7 @@ const MIN_WIDTH_WITH_OVERFLOW_ARROWS = 52
 const COMPACT_MAX_WIDTH = 240
 
 type BookmarkProps = {
-  labels?: {
-    goToBookmark?: string
-    deleteBookmark?: string
-  }
+  labels: TimebarLabels['bookmark']
   placement?: string
   bookmarkStart: string
   bookmarkEnd: string
@@ -29,10 +27,7 @@ type BookmarkProps = {
 }
 
 const Bookmark = ({
-  labels = {
-    goToBookmark: 'Go to your bookmarked time range',
-    deleteBookmark: 'Delete time range bookmark',
-  },
+  labels,
   placement = 'top',
   scale,
   bookmarkStart,

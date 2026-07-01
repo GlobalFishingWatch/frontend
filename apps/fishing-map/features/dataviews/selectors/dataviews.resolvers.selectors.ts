@@ -37,10 +37,7 @@ import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
-import {
-  selectTrackCorrectionTimerange,
-  selectTrackCorrectionVesselDataviewId,
-} from 'features/track-correction/track-correction.slice'
+import { selectTrackCorrectionVesselDataviewId } from 'features/track-correction/track-correction.slice'
 import {
   selectIsGuestUser,
   selectUserLanguage,
@@ -106,7 +103,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectTrackCorrectionVesselDataviewId,
     selectTrackCorrectionId,
     selectHighlightedTimeForTrackCorrection,
-    selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
     selectUserLanguage,
   ],
@@ -121,7 +117,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionVesselDataviewId,
     trackCorrectionId,
     highlightedTime,
-    trackCorrectionTimerange,
     deprecatedDatasets,
     language
   ): UrlDataviewInstance[] | undefined => {
@@ -177,13 +172,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
             ...dataview,
             config: {
               ...(dataview.config || {}),
-              highlightStartTime: trackCorrectionTimerange.start,
-              highlightEndTime: trackCorrectionTimerange.end,
               showVesselIcon: false,
               ...(trackCorrectionId !== 'new' &&
                 highlightedTime && {
-                  highlightStartTime: highlightedTime.start,
-                  highlightEndTime: highlightedTime.end,
                   showVesselIcon: true,
                 }),
             },

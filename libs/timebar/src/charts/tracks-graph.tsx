@@ -1,51 +1,24 @@
-import { useMemo, useRef } from 'react'
-import type { OrthographicViewState } from '@deck.gl/core'
-import { OrthographicView } from '@deck.gl/core'
+import { useMemo } from 'react'
 import { SolidPolygonLayer } from '@deck.gl/layers'
-import type { DeckGLRef } from '@deck.gl/react'
-import DeckGL from '@deck.gl/react'
 import { scaleSqrt } from 'd3-scale'
 
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
-import { useTimelineContext } from '../timeline-context'
+import { useTimelineContext } from '../timeline/timeline-context'
 
-import { useFilteredChartData } from './common/hooks'
-import { getTrackY } from './common/utils'
 import type { TimebarChartData } from '.'
-import { useUpdateChartsData } from './chartsData.atom'
-
-const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
-const GRAPH_STYLE = { zIndex: '-1' }
+import { useTimebarTimeOrigin } from './charts.hooks'
+import { getTrackY } from './charts.utils'
+import { useUpdateChartLayers, useUpdateChartsData } from './charts-store.atom'
 
 type TimebarChartSteps = { value: number; color: string }[]
 type TimebarChartProps = { data: TimebarChartData; steps: TimebarChartSteps }
 
-const TrackGraph = ({ data, steps }: TimebarChartProps) => {
-  const deckRef = useRef<DeckGLRef>(null)
-  const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
-    useTimelineContext()
-  const oldOuterScaleRef = useRef(outerScale)
+export const TimebarTracksGraph = ({ data, steps }: TimebarChartProps) => {
+  const { graphHeight, trackGraphOrientation } = useTimelineContext()
+  const origin = useTimebarTimeOrigin()
 
-  // Track the previous scale so the graph div can be offset during a scale transition.
-  // eslint-disable-next-line react-hooks/refs -- intentional previous-value read for the transition offset
-  const oldStartX = oldOuterScaleRef.current(getUTCDate(start))
-  const startX = outerScale(getUTCDate(start))
-  const offsetStartX = startX - oldStartX
-  const veilWidth = (outerWidth - innerWidth) / 2
-
-  const filteredGraphsData = useFilteredChartData(data)
-  useUpdateChartsData('tracksGraphs', filteredGraphsData)
-
-  const initialViewState = useMemo(
-    () =>
-      ({
-        target: [outerWidth / 2, graphHeight / 2, 0],
-        zoom: 0,
-      }) as OrthographicViewState,
-    [graphHeight, outerWidth]
-  )
+  useUpdateChartsData('tracksGraphs', data)
 
   const heightScale = useMemo(() => {
     if (!steps?.length) return undefined
@@ -53,20 +26,22 @@ const TrackGraph = ({ data, steps }: TimebarChartProps) => {
       trackGraphOrientation === 'down'
         ? Math.min(...steps.map((step) => step.value || 0))
         : Math.max(...steps.map((step) => step.value || 0))
-    const { height } = getTrackY(filteredGraphsData.length, 0, graphHeight)
+    const { height } = getTrackY(data.length, 0, graphHeight)
     return scaleSqrt([0, domainEnd], [2, height]).clamp(true)
-  }, [filteredGraphsData.length, graphHeight, steps, trackGraphOrientation])
+  }, [data.length, graphHeight, steps, trackGraphOrientation])
 
   const layers = useMemo(() => {
     if (!heightScale || !steps.length) return []
-    // eslint-disable-next-line react-hooks/refs -- store current scale as the "previous" for the next render's offset
-    oldOuterScaleRef.current = outerScale
-    const layerData = filteredGraphsData.flatMap((track, trackIndex) => {
+    const layerData = data.flatMap((track, trackIndex) => {
       const trackY = getTrackY(data.length, trackIndex, graphHeight, trackGraphOrientation)
       return track.chunks.flatMap((segment) => {
         return (segment.values || [])?.flatMap(({ value = 0, timestamp }, index, array) => {
-          const x1 = outerScale(timestamp)
-          const x2 = outerScale(array[index + 1]?.timestamp || Number.POSITIVE_INFINITY)
+          const nextTimestamp = array[index + 1]?.timestamp
+          if (nextTimestamp == null) {
+            return []
+          }
+          const x1 = timestamp - origin
+          const x2 = nextTimestamp - origin
           const height = heightScale(value)
           let y1
           let y2
@@ -111,31 +86,9 @@ const TrackGraph = ({ data, steps }: TimebarChartProps) => {
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [
-    heightScale,
-    steps,
-    outerScale,
-    filteredGraphsData,
-    data.length,
-    graphHeight,
-    trackGraphOrientation,
-  ])
+  }, [heightScale, steps, origin, data, graphHeight, trackGraphOrientation])
 
-  const leftOffset = offsetStartX - veilWidth
+  useUpdateChartLayers('tracksGraphs', layers)
 
-  return (
-    <div style={{ transform: `translateX(${leftOffset}px)`, zIndex: -1 }}>
-      <DeckGL
-        ref={deckRef}
-        views={VIEW}
-        initialViewState={initialViewState}
-        layers={layers}
-        width={outerWidth + veilWidth * 2}
-        height={graphHeight}
-        style={GRAPH_STYLE}
-      />
-    </div>
-  )
+  return null
 }
-
-export default TrackGraph

@@ -1,12 +1,4 @@
-import React, {
-  createRef,
-  Fragment,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { createRef, Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
@@ -15,12 +7,7 @@ import Slider from 'rc-slider'
 
 import { timebar as timebarLabels } from '@globalfishingwatch/i18n-labels'
 import type { TimebarProps } from '@globalfishingwatch/timebar'
-import {
-  getTimebarStepByDelta,
-  Timebar,
-  TimebarHighlighter,
-  useTimelineContext,
-} from '@globalfishingwatch/timebar'
+import { getTimebarStepByDelta, Timebar, useOuterScale } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
@@ -50,7 +37,7 @@ const TIMEBAR_DEFAULT_HEIGHT = 300
 
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
-  const { outerScale } = useTimelineContext()
+  const outerScale = useOuterScale()
   const nightSegments = useSelector(selectNightLayer)
   return (
     <div>
@@ -192,11 +179,11 @@ const TimebarWrapper = () => {
           // showLastUpdate={false}
           //onBookmarkChange={dispatchBookmarkTimerange}
         >
-          <Timebar.Controls>
+          <Timebar.ToolbarWrapper>
             <Timebar.TimeRangeSelector />
-            <Timebar.Bookmark />
-          </Timebar.Controls>
-          <Timebar.Graph
+            <Timebar.Tools.Bookmark />
+          </Timebar.ToolbarWrapper>
+          <Timebar.Charts.Wrapper
             showLast30DaysBtn={false}
             trackGraphOrientation="up"
             onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
@@ -231,7 +218,7 @@ const TimebarWrapper = () => {
               )} */}
             <Fragment>
               {highlightedTime && (
-                <TimebarHighlighter
+                <Timebar.Charts.Highlighter
                   hoverStart={highlightedTime.start}
                   hoverEnd={highlightedTime.end}
                 />
@@ -239,13 +226,13 @@ const TimebarWrapper = () => {
             </Fragment>
             <Fragment>
               {highlightedEvent && (
-                <TimebarHighlighter
+                <Timebar.Charts.Highlighter
                   hoverStart={highlightedEvent.start}
                   hoverEnd={highlightedEvent.end}
                 />
               )}
             </Fragment>
-          </Timebar.Graph>
+          </Timebar.Charts.Wrapper>
         </Timebar>
       </div>
       <div className={styles.filtersContainer}>

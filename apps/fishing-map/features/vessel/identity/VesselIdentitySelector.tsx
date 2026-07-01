@@ -19,6 +19,7 @@ import {
   getVesselIdentity,
   getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './VesselIdentitySelector.module.css'
@@ -30,6 +31,7 @@ const VesselIdentitySelector = () => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const identityId = useSelector(selectVesselIdentityId)
   const { start, end } = useTimerangeConnect()
+  const isClientHydrated = useIsClientHydrated()
 
   const identities = getVesselIdentities(vessel, { identitySource })
   const currentIdentity = getVesselIdentity(vessel, { identitySource, identityId })
@@ -58,7 +60,7 @@ const VesselIdentitySelector = () => {
   const isIdentityInTimerange = isRegistryInTimerange(currentIdentity, start, end)
   return (
     <div>
-      {!isIdentityInTimerange && (
+      {isClientHydrated && !isIdentityInTimerange && (
         <p className={styles.error}>{t((t) => t.vessel.identityDatesOutOfRange)}</p>
       )}
       <ul className={cx(styles.selector, 'print-hidden')}>

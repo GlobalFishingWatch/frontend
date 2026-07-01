@@ -1,6 +1,8 @@
 import type { PickingInfo } from '@deck.gl/core'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
-import polygonClipping from 'polygon-clipping'
+
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import { getPolygonsUnion } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_ID_PROPERTY } from '../../utils'
 import type { FilterExtensionProps } from '../user/user.types'
@@ -14,7 +16,6 @@ import type {
 } from './context.types'
 import { ContextLayerId } from './context.types'
 
-const { union } = polygonClipping
 
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
@@ -162,13 +163,13 @@ export function mergePickedFeatures<T extends Feature>(
     const geometryType = first.geometry?.type
     if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
       const geoms = group.map(
-        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as polygonClipping.Geom
+        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as PolygonGeomCoords
       )
       merged.push({
         ...first,
         geometry: {
           type: 'MultiPolygon',
-          coordinates: union(geoms[0], ...geoms.slice(1)),
+          coordinates: getPolygonsUnion(geoms),
         } as MultiPolygon,
       })
     } else {

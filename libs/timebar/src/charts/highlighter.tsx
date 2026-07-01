@@ -9,11 +9,11 @@ import type { IconType } from '@globalfishingwatch/ui-components/icon'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
-import type { TimelineScale } from '../timeline-context'
-import { useTimelineContext } from '../timeline-context'
-import { getDefaultFormat } from '../utils/internal-utils'
+import type { TimelineScale } from '../timeline/timeline-context'
+import { useTimelineContext } from '../timeline/timeline-context'
+import { getDefaultFormat } from '../utils'
 
-import { useOuterScale } from './common/hooks'
+import { useOuterScale } from './charts.hooks'
 import type {
   ChartType,
   HighlightedChunks,
@@ -21,8 +21,8 @@ import type {
   TimebarChartChunk,
   TimebarChartItem,
   TimebarChartsData,
-} from './common/types'
-import { activeChartsDataState, hoveredEventState } from './chartsData.atom'
+} from './charts.types'
+import { activeChartsDataState, hoveredEventState } from './charts-store.atom'
 
 import styles from './highlighter.module.css'
 
@@ -191,7 +191,7 @@ const getHighlighterData = (
   return { highlighterData, highlightedChunks }
 }
 
-const Highlighter = ({
+export const TimebarHighlighter = ({
   hoverStart,
   hoverEnd,
   onHighlightChunks,
@@ -261,7 +261,8 @@ const Highlighter = ({
           >
             <div
               className={cx(styles.tooltip, {
-                [styles.overflowRight]: window.innerWidth - center < 700,
+                [styles.overflowRight]:
+                  typeof window !== 'undefined' && window.innerWidth - center < 700,
               })}
             >
               <div className={styles.tooltipHeader}>
@@ -319,5 +320,3 @@ const Highlighter = ({
     </Fragment>
   )
 }
-
-export default Highlighter

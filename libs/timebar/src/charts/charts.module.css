@@ -1,0 +1,11 @@
+.loading {
+  filter: blur(5px);
+  opacity: 0.5;
+}
+
+.charts :global(.deck-widget-stats) {
+  position: fixed;
+  bottom: 11rem;
+  color: var(--color-primary-blue);
+  right: 0;
+}

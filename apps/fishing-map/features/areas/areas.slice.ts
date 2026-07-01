@@ -3,12 +3,12 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { circle, flatten } from '@turf/turf'
 import { kebabCase, memoize, uniqBy } from 'es-toolkit'
 import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
-import polygonClipping, { type Geom } from 'polygon-clipping'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
-import { wrapBBoxLongitudes, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import { getPolygonsUnion, wrapBBoxLongitudes, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
@@ -17,8 +17,6 @@ import type { RootState } from 'store'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
-
-const { union } = polygonClipping
 
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
@@ -115,11 +113,10 @@ async function fetchAreaDetail({
   if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
     const geoms = flatten(area.geometry).features.flatMap((f) =>
       f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
-        ? [f.geometry.coordinates as Geom]
+        ? [f.geometry.coordinates as PolygonGeomCoords]
         : []
     )
-    const unioned = union(geoms[0], ...geoms)
-    geometry = { type: 'MultiPolygon', coordinates: unioned }
+    geometry = { type: 'MultiPolygon', coordinates: getPolygonsUnion(geoms) }
   } else {
     geometry = area.geometry as AreaGeometry
   }
@@ -193,11 +190,11 @@ export const fetchAreaDetailThunk = createAsyncThunk(
               (fetchedArea.geometry as any).type === 'Point'
                 ? circle(fetchedArea as any, 1).geometry
                 : (fetchedArea.geometry as Polygon | MultiPolygon)
-            return [geometry.coordinates as Geom]
+            return [geometry.coordinates as PolygonGeomCoords]
           })
           const mergedGeometry: MultiPolygon = {
             type: 'MultiPolygon',
-            coordinates: union(geoms[0], ...geoms),
+            coordinates: getPolygonsUnion(geoms),
           }
           const bounds = wrapGeometryBbox(mergedGeometry)
           return {

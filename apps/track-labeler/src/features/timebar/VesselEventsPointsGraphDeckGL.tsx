@@ -5,7 +5,7 @@ import { ScatterplotLayer } from '@deck.gl/layers'
 import DeckGL from '@deck.gl/react'
 
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
-import { useTimelineContext } from '@globalfishingwatch/timebar'
+import { useOuterScale, useTimelineContext } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useSegmentsLabeledConnect } from '../../features/timebar/timebar.hooks'
@@ -52,7 +52,8 @@ function getGradientColor(position: number): [number, number, number] {
 }
 
 export const VesselEventsPointsGraphDeckGL = () => {
-  const { outerScale, outerHeight } = useTimelineContext()
+  const { graphHeight } = useTimelineContext()
+  const outerScale = useOuterScale()
   const timebarMode = useSelector(selectTimebarMode)
   const colorMode = useSelector(selectColorMode)
   const projectColors = useSelector(selectProjectColors)
@@ -94,8 +95,8 @@ export const VesselEventsPointsGraphDeckGL = () => {
               : 1
 
       const bottom =
-        outerHeight -
-        (Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale) + 15)
+        graphHeight -
+        (Math.abs(yPosition - minValue) * ((graphHeight - 20 - topMargin) / positionScale) + 15)
 
       const getActionColor = (action: ActionType) => {
         if (action === ActionType.selected) return '#ffffff10'
@@ -112,7 +113,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
             : '#8091AB',
         gradient: vesselPoint.outOfRange ? false : colorMode === 'all' || colorMode === 'content',
         yPosition:
-          Math.abs(yPosition - minValue) * ((outerHeight - 20 - topMargin) / positionScale),
+          Math.abs(yPosition - minValue) * ((graphHeight - 20 - topMargin) / positionScale),
       }
     })
 
@@ -130,7 +131,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
         lineWidthMinPixels: 1,
         getPosition: (d) => d.position,
         getFillColor: (d) =>
-          d.gradient ? getGradientColor(d.yPosition / outerHeight) : hexToDeckColor(d.color),
+          d.gradient ? getGradientColor(d.yPosition / graphHeight) : hexToDeckColor(d.color),
         getLineColor: (d) => hexToDeckColor(d.color),
         onClick: handleEventClick,
       }),
@@ -139,7 +140,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
     colorMode,
     maxValue,
     minValue,
-    outerHeight,
+    graphHeight,
     outerScale,
     positionScale,
     projectColors,
@@ -157,7 +158,7 @@ export const VesselEventsPointsGraphDeckGL = () => {
       views={new OrthographicView({ id: 'ortho', flipY: true })}
       initialViewState={{
         // Center the view on the data
-        target: [outerScale.range()[1] / 2, outerHeight / 2, 0],
+        target: [outerScale.range()[1] / 2, graphHeight / 2, 0],
         zoom: 0,
       }}
       getTooltip={({ object }) => {

@@ -1,5 +1,3 @@
-import { uniq } from 'es-toolkit'
-
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -17,11 +15,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   globalConfig
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-  const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
-  const highlightEventIds = uniq([
-    ...(globalConfig.highlightEventIds || []),
-    ...(highlightedFeatures || []).map((feature) => feature.id),
-  ])
+  const { start, end, visibleEvents } = globalConfig
   const strictTimeRange =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&
@@ -34,8 +28,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     strictTimeRange ? (dataview.config?.endDate as string) : end
   ).toMillis()
 
-  const highlightStartTime = dataview.config?.highlightStartTime || highlightedTime?.start
-  const highlightEndTime = dataview.config?.highlightEndTime || highlightedTime?.end
   const events = resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
     const eventType = resource.dataset?.subcategory as EventTypes
     return {
@@ -71,7 +63,6 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     gapSegmentThreshold: dataview.config?.gapSegmentThreshold,
     events,
     visibleEvents: visibleEvents,
-    highlightEventIds,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),
@@ -80,9 +71,5 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
       maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
     }),
-    ...(highlightStartTime && {
-      highlightStartTime: getUTCDateTime(highlightStartTime).toMillis(),
-    }),
-    ...(highlightEndTime && { highlightEndTime: getUTCDateTime(highlightEndTime).toMillis() }),
   }
 }

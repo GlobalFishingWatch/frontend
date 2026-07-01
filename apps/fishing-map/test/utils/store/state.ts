@@ -10429,7 +10429,7 @@ export const REDUX_STORE_DEFAULT_STATE = {
       debugTiles: false,
       experimentalLayers: false,
       hideVesselNames: false,
-      mapStats: false,
+      deckStats: false,
       thinning: true,
       vesselsAsPositions: false,
     },

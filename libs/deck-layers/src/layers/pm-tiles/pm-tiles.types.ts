@@ -25,7 +25,6 @@ export type PMTileLayerProps = DeckLayerProps<{
   pickable?: boolean
   idProperty?: string
   valueProperties?: string[]
-  highlightedFeatures?: PMTilePickingObject[]
   getFillColor?: Accessor<PMTilePickingObject, Color>
   stroked?: boolean
 }> &

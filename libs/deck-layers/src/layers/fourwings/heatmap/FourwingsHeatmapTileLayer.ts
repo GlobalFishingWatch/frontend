@@ -137,7 +137,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {
@@ -328,7 +328,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           rampDirty: false,
           viewportLoaded: true,
         })
-      } else {
+      } else if (this.state.rampDirty || !this.state.viewportLoaded) {
         this.setState({ rampDirty: false, viewportLoaded: true })
       }
     })
@@ -682,6 +682,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       minVisibleValue,
       maxVisibleValue,
     } = props
+
     const { tilesCache, colorRanges } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
     const newSublayerColorRanges = this._getColorRanges()
@@ -708,8 +709,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const isStartOutRange = startTime < tilesCache.start
-    const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
-    const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
+    const isCompareStartOutRange = compareStart ? compareStart < tilesCache.compareStart! : false
+    const isCompareEndOutRange = compareEnd ? compareEnd > tilesCache.compareEnd! : false
     const isEndOutRange = endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
     const isTimeRangeOutOfCache =
@@ -765,7 +766,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const { resolution, comparisonMode } = this.props
     const { colorDomain, colorRanges, tilesCache, scales } = this.state
     const cacheKey = this._getTileDataCacheKey()
-    const zoomOffset = getZoomOffsetByResolution(resolution!, zoom)
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
@@ -874,7 +874,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getColorDomain = (): FourwingsTileLayerColorDomain => {
-    const { colorDomain } = this.state
+    const { colorDomain } = this.state || {}
     const modeIsBivariate = this.props.comparisonMode === FourwingsComparisonMode.Bivariate
     if (modeIsBivariate !== Array.isArray(colorDomain?.[0])) {
       return modeIsBivariate ? [[], []] : []
@@ -883,7 +883,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getColorRange = () => {
-    return this.state.colorRanges
+    return this.state?.colorRanges
   }
 
   getColorScale = () => {

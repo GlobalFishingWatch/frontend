@@ -28,8 +28,12 @@ import type {
   GetViewportDataParams,
 } from './fourwings.types'
 
+export type HighlightedTimeMillis = { start?: number; end?: number }
+
 type FourwingsLayerState = {
   highlightedFeatures?: FourwingsPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
 }
 
 export type FourwingsColorRamp = {
@@ -47,7 +51,6 @@ export type FourwingsLayerProps = Omit<
     },
   'resolution' | 'highlightedFeatures'
 > & {
-  highlightedFeatures?: FourwingsPickingObject[]
   skipColorDomainSampling?: boolean
 }
 
@@ -61,7 +64,7 @@ const defaultProps: DefaultProps<FourwingsLayerProps> = {
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
 }
-
+const emptyHighlightedFeatures = [] as FourwingsPickingObject[]
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
   static defaultProps = defaultProps
@@ -91,15 +94,35 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
+  }
+
+  _getHighlightTimes() {
+    return {
+      highlightStartTime: this.state.highlightStartTime,
+      highlightEndTime: this.state.highlightEndTime,
+    }
+  }
+
+  setHighlightedTime({ start, end }: HighlightedTimeMillis) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
   }
 
   renderLayers(): AnyFourwingsLayer {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
+    const highlightTimes =
+      visualizationMode === POSITIONS_ID ? this._getHighlightTimes() : undefined
     const props = {
       ...this.props,
       highlightedFeatures: this._getHighlightedFeatures(),
+      ...highlightTimes,
     }
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
@@ -205,8 +228,12 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getZoomOffset() {
+    const zoom = this.context?.viewport?.zoom
+    if (zoom === undefined) {
+      return 0
+    }
     const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
-    return getZoomOffsetByResolution(resolution, this.context.viewport.zoom)
+    return getZoomOffsetByResolution(resolution, zoom)
   }
 
   getLayer() {

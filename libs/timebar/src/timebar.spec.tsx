@@ -3,13 +3,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { useTimelineContext } from './timeline/timeline-context'
+import { useOuterScale } from './charts'
 import { EVENT_INTERVAL_SOURCE, EVENT_SOURCE } from './constants'
 import { Timebar } from './timebar'
-import { useTimelineContext } from './timeline-context'
+import type { TimebarLabels } from './timebar-labels'
+import { DEFAULT_LABELS } from './timebar-labels'
 
-// The real ui-components Icon renders an inline SVG data-URI that jsdom can't parse
-// (InvalidCharacterError). Stub it so we can test the timebar composition in jsdom.
-// (vitest hoists vi.mock above the imports above, so the stub is applied before they load.)
 vi.mock('@globalfishingwatch/ui-components/icon', () => ({
   Icon: ({ icon }: { icon?: string }) => <i data-icon={icon} />,
 }))
@@ -47,10 +47,10 @@ describe('Timebar (compound)', () => {
     render(
       <Timebar {...baseProps} {...intervalProps} onChange={vi.fn()}>
         <Timebar.Playback />
-        <Timebar.Controls>
+        <Timebar.ToolbarWrapper>
           <Timebar.TimeRangeSelector />
-          <Timebar.Bookmark />
-        </Timebar.Controls>
+          <Timebar.Tools.Bookmark />
+        </Timebar.ToolbarWrapper>
         <Timebar.IntervalSelector />
       </Timebar>
     )
@@ -107,9 +107,9 @@ describe('Timebar (compound)', () => {
     const onBookmarkChange = vi.fn()
     render(
       <Timebar {...baseProps} onChange={vi.fn()} onBookmarkChange={onBookmarkChange}>
-        <Timebar.Controls>
-          <Timebar.Bookmark />
-        </Timebar.Controls>
+        <Timebar.ToolbarWrapper>
+          <Timebar.Tools.Bookmark />
+        </Timebar.ToolbarWrapper>
       </Timebar>
     )
 
@@ -131,9 +131,9 @@ describe('Timebar (compound)', () => {
   it('renders charts passed to the graph slot', () => {
     render(
       <Timebar {...baseProps} onChange={vi.fn()}>
-        <Timebar.Graph>
+        <Timebar.Charts.Wrapper>
           <div data-testid="graph-child" />
-        </Timebar.Graph>
+        </Timebar.Charts.Wrapper>
       </Timebar>
     )
 
@@ -143,14 +143,32 @@ describe('Timebar (compound)', () => {
   it('throws when a compound member is used outside <Timebar>', () => {
     // The guarded context hooks surface misuse instead of silently reading an empty context.
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    expect(() => render(<Timebar.Bookmark />)).toThrow(/within a <Timebar>/)
+    expect(() => render(<Timebar.Tools.Bookmark />)).toThrow(/within a <Timebar>/)
     spy.mockRestore()
+  })
+
+  it('deep-merges partial labels over defaults (single source of truth)', () => {
+    render(
+      <Timebar
+        {...baseProps}
+        onChange={vi.fn()}
+        labels={{ playback: { playAnimation: 'GO' } } as TimebarLabels}
+      >
+        <Timebar.Playback />
+      </Timebar>
+    )
+
+    // the one overridden label is applied...
+    expect(screen.getByTitle('GO')).not.toBeNull()
+    // ...and a sibling in the same slice keeps its default (a shallow merge would drop it)
+    expect(screen.getByTitle(DEFAULT_LABELS.playback.moveForward)).not.toBeNull()
   })
 })
 
 // A probe chart that reads the d3 timeline/scale context the graphs depend on.
 function GraphProbe() {
-  const { outerScale, overallScale, outerStart, outerEnd } = useTimelineContext()
+  const { overallScale, outerStart, outerEnd } = useTimelineContext()
+  const outerScale = useOuterScale()
   return (
     <div
       data-testid="graph-probe"
@@ -166,9 +184,9 @@ describe('Timebar.Graph (timeline scale context)', () => {
   it('provides the d3 scale context to charts rendered inside the graph slot', () => {
     render(
       <Timebar {...baseProps} onChange={vi.fn()}>
-        <Timebar.Graph>
+        <Timebar.Charts.Wrapper>
           <GraphProbe />
-        </Timebar.Graph>
+        </Timebar.Charts.Wrapper>
       </Timebar>
     )
 

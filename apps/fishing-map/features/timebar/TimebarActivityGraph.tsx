@@ -1,15 +1,12 @@
 import { useCallback } from 'react'
-import cx from 'classnames'
 
 import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
-import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
 
 import { t } from 'features/i18n/i18n'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { TimebarVisualisations } from 'types'
 import { formatNumber } from 'utils/info'
-
-import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
   const { loading, heatmapActivity, dataviews } = useHeatmapActivityGraph()
@@ -41,18 +38,19 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   //     </div>
   //   )
   // }
-  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) return null
+  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) {
+    return null
+  }
 
   return (
-    <div className={cx({ [styles.loading]: loading })}>
-      <TimebarStackedActivity
-        key="stackedActivity"
-        timeseries={heatmapActivity}
-        dataviews={dataviews}
-        highlighterCallback={getActivityHighlighterLabel}
-        highlighterIconCallback="heatmap"
-      />
-    </div>
+    <Timebar.Charts.StackedActivity
+      key="stackedActivity"
+      timeseries={heatmapActivity}
+      dataviews={dataviews}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback="heatmap"
+      loading={loading}
+    />
   )
 }
 

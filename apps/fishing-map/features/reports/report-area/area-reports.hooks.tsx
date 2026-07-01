@@ -16,8 +16,6 @@ import {
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -86,24 +84,6 @@ export type DateTimeSeries = {
   date: string
   values: number[]
 }[]
-
-const defaultIds = [] as string[]
-export const useHighlightReportArea = () => {
-  const areaDataviews = useSelector(selectReportAreaDataviews)
-  const ids = areaDataviews?.map((d) => d.id) || defaultIds
-  const areaLayers = useGetDeckLayers<ContextLayer>(ids)
-
-  return useCallback(
-    (area?: ContextFeature) => {
-      areaLayers.forEach((areaLayer) => {
-        if (areaLayer?.instance?.setHighlightedFeatures) {
-          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
-        }
-      })
-    },
-    [areaLayers]
-  )
-}
 
 const defaultParams = {} as FitBoundsParams
 const LAT_LON_TOLERANCE = 1e-6
@@ -240,15 +220,23 @@ const isAreaCenterInViewport = (
   viewState: ReturnType<typeof useMapViewState>,
   areaCenter: ReturnType<typeof useReportAreaCenter>,
   id?: string
-) =>
-  !!viewState &&
-  !!areaCenter &&
-  isClose(viewState.latitude, areaCenter.latitude) &&
-  isClose(viewState.longitude, areaCenter.longitude) &&
+) => {
+  if (!viewState || !areaCenter) return false
+  const lngClose = isClose(viewState.longitude, areaCenter.longitude)
   // This is needed because depending of the viewport size the zoom can't go to the same value as the area center
-  (id === ENTIRE_WORLD_REPORT_AREA_ID
-    ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
-    : isClose(viewState?.zoom, areaCenter?.zoom, ZOOM_TOLERANCE))
+  const zoomClose =
+    id === ENTIRE_WORLD_REPORT_AREA_ID
+      ? Math.floor(viewState.zoom) <= Math.floor(areaCenter.zoom)
+      : isClose(viewState.zoom, areaCenter.zoom, ZOOM_TOLERANCE)
+  // At low zoom, Web Mercator clamps the center latitude toward the equator, so the map can't
+  // reach areaCenter.latitude for large/high-latitude areas (e.g. RFMOs). Once lng+zoom match,
+  // the fit has been applied, so accept a latitude clamped toward the equator in the same hemisphere.
+  const latClose = isClose(viewState.latitude, areaCenter.latitude)
+  const latClamped =
+    Math.abs(viewState.latitude) <= Math.abs(areaCenter.latitude) + LAT_LON_TOLERANCE &&
+    viewState.latitude * areaCenter.latitude >= 0
+  return lngClose && zoomClose && (latClose || latClamped)
+}
 
 export function useReportAreaInViewport(params = defaultParams) {
   const viewState = useMapViewState()

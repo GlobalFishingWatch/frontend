@@ -1,7 +1,10 @@
 import { DateTime } from 'luxon'
 
-import type { TimelineScale } from '../timeline-context'
-import { getTime } from '../utils/internal-utils'
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
+import { getTime } from '../utils'
+
+import type { TimelineScale } from './timeline-context'
 
 const getUnitLabel = (
   mUnit: DateTime,
@@ -95,7 +98,7 @@ export const getUnitsPositions = (
   absoluteStart: string,
   absoluteEnd: string,
   baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
-  labels: Record<string, any> = { zoomTo: 'Zoom to' },
+  labels: TimebarLabels = DEFAULT_LABELS,
   locale: string
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
@@ -127,9 +130,9 @@ export const getUnitsPositions = (
         x,
         width,
         label: getUnitLabel(mUnit, baseUnit, width, locale),
-        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale)} - ${labels.zoomTo} ${
-          labels.intervals?.[baseUnit] as string
-        }`,
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale)} - ${
+          labels?.zoomTo ?? DEFAULT_LABELS.zoomTo
+        } ${labels?.intervals?.[baseUnit as keyof TimebarLabels['intervals']] ?? ''}`,
         start: mUnit.toISO(),
         end: mUnitNext.toISO(),
       }

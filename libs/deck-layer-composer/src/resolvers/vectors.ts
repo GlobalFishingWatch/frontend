@@ -2,7 +2,6 @@ import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   FourwingsDeckVectorSublayer,
-  FourwingsPickingObject,
   FourwingsVectorsTileLayerProps,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
@@ -17,7 +16,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   ResolvedFourwingsDataviewInstance
 > = (
   dataview,
-  { start, end, highlightedFeatures, debugTiles, vectorsTemporalAggregation }
+  { start, end, debugTiles, vectorsTemporalAggregation }
 ): FourwingsVectorsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
@@ -73,7 +72,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     debugTiles,
     sublayers,
     maxZoom: dataview.config?.maxZoom,
-    highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,
     minVisibleValue: dataview.config?.minVisibleValue,
