@@ -18,7 +18,7 @@ import type { AnyDeckLayer, FourwingsVisualizationMode } from '@globalfishingwat
 
 import type { ResolverGlobalConfig } from '../resolvers'
 import { getDataviewsResolved, getDataviewsSorted } from '../resolvers/dataviews'
-import { dataviewToDeckLayer } from '../resolvers/resolvers'
+import { dataviewToDeckLayer, dataviewToDeckLayerResolved } from '../resolvers/resolvers'
 
 import {
   deckLayerInstancesAtom,
@@ -154,7 +154,7 @@ describe('useDeckLayerComposer', () => {
           createMockResolutionConfig(mockGlobalConfig)
         )
         expect(getDataviewsSorted).toHaveBeenCalled()
-        expect(dataviewToDeckLayer).toHaveBeenCalled()
+        expect(dataviewToDeckLayerResolved).toHaveBeenCalled()
         expect(result.current).toHaveLength(1)
       })
     })
@@ -175,7 +175,7 @@ describe('useDeckLayerComposer', () => {
 
       await waitFor(() => {
         expect(result.current).toHaveLength(1)
-        expect(dataviewToDeckLayer).toHaveBeenCalledTimes(1)
+        expect(dataviewToDeckLayerResolved).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -486,7 +486,7 @@ describe('useDeckLayerComposer', () => {
     it('should update layers when globalConfig changes', async () => {
       const dataviews = [createMockDataview()]
       const initialConfig = createMockGlobalConfig({ start: '2024-01-01' })
-      const mockDataviewToDeckLayer = vi.mocked(dataviewToDeckLayer)
+      const mockDataviewToDeckLayer = vi.mocked(dataviewToDeckLayerResolved)
 
       const { rerender } = renderHook(
         ({ dataviews, globalConfig }) => useDeckLayerComposer({ dataviews, globalConfig }),
@@ -527,7 +527,7 @@ describe('useDeckLayerComposer', () => {
         }
       )
 
-      expect(dataviewToDeckLayer).toHaveBeenCalledTimes(1)
+      expect(dataviewToDeckLayerResolved).toHaveBeenCalledTimes(1)
 
       vi.clearAllMocks()
 
@@ -538,7 +538,7 @@ describe('useDeckLayerComposer', () => {
       })
 
       // useMemoCompare should prevent recomputation
-      expect(dataviewToDeckLayer).not.toHaveBeenCalled()
+      expect(dataviewToDeckLayerResolved).not.toHaveBeenCalled()
     })
   })
 
@@ -553,7 +553,7 @@ describe('useDeckLayerComposer', () => {
 
       // Since debounce is only 1ms, the layers should eventually be set
       // The test just verifies that the hook works with debouncing enabled
-      expect(dataviewToDeckLayer).toHaveBeenCalled()
+      expect(dataviewToDeckLayerResolved).toHaveBeenCalled()
     })
   })
 
@@ -571,7 +571,7 @@ describe('useDeckLayerComposer', () => {
         })
       )
 
-      expect(dataviewToDeckLayer).toHaveBeenCalledWith(
+      expect(dataviewToDeckLayerResolved).toHaveBeenCalledWith(
         expect.objectContaining({ category: DataviewCategory.Activity }),
         expect.any(Object)
       )
@@ -589,7 +589,7 @@ describe('useDeckLayerComposer', () => {
         })
       )
 
-      expect(dataviewToDeckLayer).toHaveBeenCalledWith(
+      expect(dataviewToDeckLayerResolved).toHaveBeenCalledWith(
         expect.objectContaining({ category: DataviewCategory.Detections }),
         expect.any(Object)
       )
@@ -607,7 +607,7 @@ describe('useDeckLayerComposer', () => {
         })
       )
 
-      expect(dataviewToDeckLayer).toHaveBeenCalledWith(
+      expect(dataviewToDeckLayerResolved).toHaveBeenCalledWith(
         expect.objectContaining({ category: DataviewCategory.Environment }),
         expect.any(Object)
       )

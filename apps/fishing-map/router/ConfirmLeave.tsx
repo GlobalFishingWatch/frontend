@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useBlocker } from '@tanstack/react-router'
 
+import { SHOW_LEAVE_CONFIRMATION } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
@@ -8,8 +9,6 @@ import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selecto
 import { ROUTES_WITH_WORKSPACES, SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from './routes'
 import { selectLocationType } from './routes.selectors'
 import { mapRouteIdToType } from './routes.utils'
-
-const SHOW_LEAVE_CONFIRMATION = process.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
 
 export function ConfirmLeave() {
   const suggestWorkspaceSave = useSelector(selectSuggestWorkspaceSave)

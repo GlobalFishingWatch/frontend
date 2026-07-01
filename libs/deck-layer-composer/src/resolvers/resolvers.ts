@@ -45,100 +45,131 @@ import { resolveDeckVectorsLayerProps } from './vectors'
 import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
 
-export const dataviewToDeckLayer = (
+type DeckLayerClass = new (props: any) => AnyDeckLayer
+
+// Resolved layer class + props for a dataview, kept separate from instantiation so the
+// composer can skip recreating a layer when its props haven't changed (see useDeckLayerComposer).
+export type DeckLayerResolved = {
+  LayerClass: DeckLayerClass
+  props: any
+}
+
+export const dataviewToDeckLayerResolved = (
   dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
-): AnyDeckLayer => {
+): DeckLayerResolved => {
   if (dataview.config?.type === DataviewType.Basemap) {
-    const deckLayerProps = resolveDeckBasemapLayerProps(dataview, globalConfig)
-    return new BaseMapLayer(deckLayerProps)
+    return { LayerClass: BaseMapLayer, props: resolveDeckBasemapLayerProps(dataview, globalConfig) }
   }
   if (dataview.config?.type === DataviewType.BasemapImage) {
-    const deckLayerProps = resolveDeckBasemapImageLayerProps(dataview, globalConfig)
-    return new BaseMapImageLayer(deckLayerProps)
+    return {
+      LayerClass: BaseMapImageLayer,
+      props: resolveDeckBasemapImageLayerProps(dataview, globalConfig),
+    }
   }
   if (dataview.config?.type === DataviewType.BasemapLabels) {
-    const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, globalConfig)
-    return new BaseMapLabelsLayer(deckLayerProps)
+    return {
+      LayerClass: BaseMapLabelsLayer,
+      props: resolveDeckBasemapLabelsLayerProps(dataview, globalConfig),
+    }
   }
   if (dataview.config?.type === DataviewType.Bathymetry) {
-    const deckLayerProps = resolveDeckBathymetryContourLayerProps(dataview, globalConfig)
-    return new BathymetryContourLayer(deckLayerProps)
+    return {
+      LayerClass: BathymetryContourLayer,
+      props: resolveDeckBathymetryContourLayerProps(dataview, globalConfig),
+    }
   }
   if (dataview.config?.type === DataviewType.Graticules) {
-    const deckLayerProps = resolveDeckGraticulesLayerProps(dataview, globalConfig)
-    return new GraticulesLayer(deckLayerProps)
+    return {
+      LayerClass: GraticulesLayer,
+      props: resolveDeckGraticulesLayerProps(dataview, globalConfig),
+    }
   }
   if (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
     dataview.config?.type === DataviewType.HeatmapStatic
   ) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(
-      dataview as ResolvedFourwingsDataviewInstance,
-      globalConfig
-    )
-    const layer = new FourwingsLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: FourwingsLayer,
+      props: resolveDeckFourwingsLayerProps(
+        dataview as ResolvedFourwingsDataviewInstance,
+        globalConfig
+      ),
+    }
   }
   if (dataview.config?.type === DataviewType.FourwingsVector) {
-    const deckLayerProps = resolveDeckVectorsLayerProps(
-      dataview as ResolvedFourwingsDataviewInstance,
-      globalConfig
-    )
-    const layer = new FourwingsVectorsTileLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: FourwingsVectorsTileLayer,
+      props: resolveDeckVectorsLayerProps(
+        dataview as ResolvedFourwingsDataviewInstance,
+        globalConfig
+      ),
+    }
   }
   if (dataview.config?.type === DataviewType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(
-      dataview as ResolvedContextDataviewInstance,
-      globalConfig
-    )
-    const layer = new ContextLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: ContextLayer,
+      props: resolveDeckContextLayerProps(
+        dataview as ResolvedContextDataviewInstance,
+        globalConfig
+      ),
+    }
   }
   if (dataview.config?.type === DataviewType.Polygons) {
-    const deckLayerProps = resolveDeckPolygonsLayerProps(dataview, globalConfig)
-    const layer = new PolygonsLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: PolygonsLayer,
+      props: resolveDeckPolygonsLayerProps(dataview, globalConfig),
+    }
   }
   if (dataview.config?.type === DataviewType.UserContext) {
-    const deckLayerProps = resolveDeckUserContextLayerProps(
-      dataview as ResolvedContextDataviewInstance,
-      globalConfig
-    )
-    const layer = new UserContextTileLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: UserContextTileLayer,
+      props: resolveDeckUserContextLayerProps(
+        dataview as ResolvedContextDataviewInstance,
+        globalConfig
+      ),
+    }
   }
   if (dataview.config?.type === DataviewType.UserPoints) {
-    const deckLayerProps = resolveDeckUserPointsLayerProps(
-      dataview as ResolvedContextDataviewInstance,
-      globalConfig
-    )
-    const layer = new UserPointsTileLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: UserPointsTileLayer,
+      props: resolveDeckUserPointsLayerProps(
+        dataview as ResolvedContextDataviewInstance,
+        globalConfig
+      ),
+    }
   }
   if (dataview.config?.type === DataviewType.FourwingsTileCluster) {
-    const deckLayerProps = resolveDeckFourwingsClustersLayerProps(dataview, globalConfig)
-    const layer = new FourwingsClustersLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: FourwingsClustersLayer,
+      props: resolveDeckFourwingsClustersLayerProps(dataview, globalConfig),
+    }
   }
   if (dataview.config?.type === DataviewType.Track) {
     if (dataview.category === DataviewCategory.User) {
-      const deckLayerProps = resolveDeckUserTracksLayerProps(
-        dataview as ResolvedContextDataviewInstance,
-        globalConfig
-      )
-      const layer = new UserTracksLayer(deckLayerProps)
-      return layer
+      return {
+        LayerClass: UserTracksLayer,
+        props: resolveDeckUserTracksLayerProps(
+          dataview as ResolvedContextDataviewInstance,
+          globalConfig
+        ),
+      }
     }
-    const deckLayerProps = resolveDeckVesselLayerProps(dataview, globalConfig)
-    const layer = new VesselLayer(deckLayerProps)
-    return layer
+    return { LayerClass: VesselLayer, props: resolveDeckVesselLayerProps(dataview, globalConfig) }
   }
   if (dataview.config?.type === DataviewType.Workspaces) {
-    const deckLayerProps = resolveDeckWorkspacesLayerProps(dataview, globalConfig)
-    const layer = new WorkspacesLayer(deckLayerProps)
-    return layer
+    return {
+      LayerClass: WorkspacesLayer,
+      props: resolveDeckWorkspacesLayerProps(dataview, globalConfig),
+    }
   }
   throw new Error(`Unknown deck layer generator type: ${dataview.config?.type}`)
+}
+
+export const dataviewToDeckLayer = (
+  dataview: ResolvedDataviewInstance,
+  globalConfig: ResolverGlobalConfig
+): AnyDeckLayer => {
+  const { LayerClass, props } = dataviewToDeckLayerResolved(dataview, globalConfig)
+  return new LayerClass(props)
 }

@@ -709,8 +709,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const isStartOutRange = startTime < tilesCache.start
-    const isCompareStartOutRange = compareStart ? compareStart <= tilesCache.compareStart! : false
-    const isCompareEndOutRange = compareEnd ? compareEnd <= tilesCache.compareEnd! : false
+    const isCompareStartOutRange = compareStart ? compareStart < tilesCache.compareStart! : false
+    const isCompareEndOutRange = compareEnd ? compareEnd > tilesCache.compareEnd! : false
     const isEndOutRange = endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
     const isTimeRangeOutOfCache =

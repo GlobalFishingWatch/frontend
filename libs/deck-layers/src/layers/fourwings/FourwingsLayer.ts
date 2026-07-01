@@ -28,8 +28,12 @@ import type {
   GetViewportDataParams,
 } from './fourwings.types'
 
+export type HighlightedTimeMillis = { start?: number; end?: number }
+
 type FourwingsLayerState = {
   highlightedFeatures?: FourwingsPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
 }
 
 export type FourwingsColorRamp = {
@@ -93,12 +97,32 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
+  _getHighlightTimes() {
+    return {
+      highlightStartTime: this.state.highlightStartTime,
+      highlightEndTime: this.state.highlightEndTime,
+    }
+  }
+
+  setHighlightedTime({ start, end }: HighlightedTimeMillis) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
+  }
+
   renderLayers(): AnyFourwingsLayer {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
+    const highlightTimes =
+      visualizationMode === POSITIONS_ID ? this._getHighlightTimes() : undefined
     const props = {
       ...this.props,
       highlightedFeatures: this._getHighlightedFeatures(),
+      ...highlightTimes,
     }
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)

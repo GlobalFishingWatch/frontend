@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -9,16 +9,10 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ResolverGlobalConfig, TimeRange } from '@globalfishingwatch/deck-layer-composer'
-import {
-  deckLayerInstancesAtom,
-  useDeckLayerComposer,
-  useMapHoverInteraction,
-} from '@globalfishingwatch/deck-layer-composer'
-import type { DeckLayerPickingObject, FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
+import { deckLayerInstancesAtom, useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
-import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
-import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/workspaces'
 import {
@@ -30,10 +24,7 @@ import {
   selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import {
-  selectDataviewInstancesResolvedVisible,
-  selectTrackDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -47,7 +38,6 @@ import {
 import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectHighlightedEvents, selectHighlightedTime } from 'features/timebar/timebar.slice'
 import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
@@ -69,7 +59,6 @@ import {
   selectShowWorkspaceDetail,
   selectWorkspacesListDataview,
 } from './map.selectors'
-import { selectClickedEvent } from './map.slice'
 
 export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
@@ -89,14 +78,11 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const timebarHighlightedTime = useSelector(selectHighlightedTime)
-  const highlightEventIds = useSelector(selectHighlightedEvents)
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-  const trackDataviews = useSelector(selectTrackDataviews)
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
@@ -104,32 +90,9 @@ export const useGlobalConfigConnect = () => {
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const trackGraphExtent = useTimebarTracksGraphExtent()
-  // const hoverFeatures = useMapHoverInteraction()?.features
   const debugOptions = useSelector(selectDebugOptions)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
-
-  const highlightedTime = useMemo(() => {
-    if (
-      activityVisualizationMode === 'positions' ||
-      detectionsVisualizationMode === 'positions' ||
-      trackDataviews?.length
-    ) {
-      return timebarHighlightedTime as Partial<TimeRange>
-    }
-  }, [
-    activityVisualizationMode,
-    detectionsVisualizationMode,
-    timebarHighlightedTime,
-    trackDataviews?.length,
-  ])
-
-  // This was the way we managed highlighted features in "@deck.gl/core": "9.1.15"
-  // but after upgrading to 9.3 the performance was terrible so had to create the
-  // useSyncMapHoverHighlightedFeatures workaround
-  // const highlightedFeatures = useMemo(() => {
-  //   return [...(clickedFeatures?.features || []), ...(hoverFeatures || [])]
-  // }, [clickedFeatures?.features, hoverFeatures])
 
   const onPositionsMaxPointsError = useCallback(
     (layer: FourwingsLayer) => {
@@ -160,8 +123,6 @@ export const useGlobalConfigConnect = () => {
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
-      highlightedTime,
-      highlightEventIds,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
       start,
@@ -189,8 +150,6 @@ export const useGlobalConfigConnect = () => {
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,
-    highlightEventIds,
-    highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
     vesselGroupsVisualizationMode,
@@ -242,65 +201,6 @@ export const useMapDataviewsLayers = () => {
   })
 
   return layers
-}
-
-type HighlightableLayer = {
-  id: string
-  state?: unknown
-  setHighlightedFeatures?: (features: DeckLayerPickingObject[]) => void
-}
-const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
-
-function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
-  return features
-    .map((feature) => {
-      const propertyId =
-        'properties' in feature
-          ? (feature.properties as FourwingsFeatureProperties)?.cellId || ''
-          : 'timestamp' in feature
-            ? (feature.timestamp as number) || ''
-            : ''
-      return `${feature.category}-${feature.layerId}-${feature.id}-${propertyId}`
-    })
-    .join('|')
-}
-
-function getLayerHoverFeatures(layer: HighlightableLayer, features: DeckLayerPickingObject[] = []) {
-  return features.filter((feature) => {
-    if (!feature.layerId) return false
-    return layer.id.includes(feature.layerId) || feature.layerId.includes(layer.id)
-  })
-}
-
-export const useSyncMapHoverHighlightedFeatures = () => {
-  const layers = useAtomValue(deckLayerInstancesAtom) as HighlightableLayer[]
-  const clickedEvent = useSelector(selectClickedEvent)
-  const highlightedFeatures = useMemoCompare(
-    [
-      ...((clickedEvent?.features ?? []) as DeckLayerPickingObject[]),
-      ...(useMapHoverInteraction()?.features ?? EMPTY_HOVER_FEATURES),
-    ],
-    (previousFeatures, nextFeatures) => {
-      return getHoverFeaturesHash(previousFeatures) === getHoverFeaturesHash(nextFeatures)
-    }
-  )
-  const highlightedFeaturesHash = getHoverFeaturesHash(highlightedFeatures)
-  const layerHighlightsHashRef = useRef<Record<string, string>>({})
-
-  useEffect(() => {
-    layers.forEach((layer) => {
-      if (typeof layer.setHighlightedFeatures !== 'function' || !layer.state) {
-        return
-      }
-      const layerFeatures = getLayerHoverFeatures(layer, highlightedFeatures)
-      const layerFeaturesHash = getHoverFeaturesHash(layerFeatures)
-      if (layerHighlightsHashRef.current[layer.id] === layerFeaturesHash) {
-        return
-      }
-      layerHighlightsHashRef.current[layer.id] = layerFeaturesHash
-      layer.setHighlightedFeatures(layerFeatures)
-    })
-  }, [highlightedFeatures, highlightedFeaturesHash, layers])
 }
 
 const useHotspotOverlayLayer = () => {

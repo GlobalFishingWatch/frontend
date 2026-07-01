@@ -51,7 +51,9 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
 }
 
 export type VesselLayerProps = DeckLayerProps<
-  VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+  Omit<VesselTrackLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
+    Omit<VesselEventsLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
+    _VesselLayerProps
 >
 
 type VesselLayerState = {
@@ -59,6 +61,9 @@ type VesselLayerState = {
     [key in EventTypes | 'track']?: string
   }
   highlightedFeatures: DeckLayerPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
+  highlightEventIds?: string[]
 }
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -195,6 +200,23 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return chunks
   }
 
+  setHighlightedTime({ start, end }: { start?: number; end?: number }) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
+  }
+
+  setHighlightEventIds(highlightEventIds: string[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightEventIds })
+  }
+
   _getVesselTrackLayers() {
     const {
       trackUrl,
@@ -202,8 +224,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       startTime,
       endTime,
       color,
-      highlightStartTime,
-      highlightEndTime,
       highlightEventStartTime,
       highlightEventEndTime,
       minSpeedFilter,
@@ -216,6 +236,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackVisualizationMode,
       gapSegmentThreshold,
     } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
@@ -284,7 +305,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventLayers(): VesselEventsLayer[] {
-    const { visible, visibleEvents, events, highlightEventIds } = this.props
+    const { visible, visibleEvents, events } = this.props
+    const { highlightEventIds } = this.state || {}
     const hoveredEventIds = this.state.highlightedFeatures.map((f) => f.id).filter(Boolean)
     const mergedHighlightEventIds = uniq([...(highlightEventIds || []), ...hoveredEventIds])
     if (!visible) {
@@ -326,8 +348,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, color, name, showVesselIcon } =
-      this.props
+    const { visible, color, name, showVesselIcon } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
     const trackData = this.getVesselTrackData()
 
     if (!visible || !showVesselIcon || !trackData?.length) {

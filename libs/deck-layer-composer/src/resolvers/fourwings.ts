@@ -39,7 +39,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     end,
     compareStart,
     compareEnd,
-    highlightedTime,
     onPositionsMaxPointsError,
     skipColorDomainSampling,
   }
@@ -159,14 +158,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     aggregationOperation,
     availableIntervals,
     skipColorDomainSampling,
-    ...(visualizationMode === 'positions' && {
-      ...(highlightedTime?.start && {
-        highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
-      }),
-      ...(highlightedTime?.end && {
-        highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
-      }),
-    }),
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,
