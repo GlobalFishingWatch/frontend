@@ -30,8 +30,8 @@ export type RefreshTiming = {
 
 export const DEFAULT_REFRESH_TIMING: RefreshTiming = {
   graceMs: 45_000,
-  leaseMs: 15_000,
-  reloadTimeoutMs: 8_000,
+  leaseMs: 30_000,
+  reloadTimeoutMs: 20_000,
   pollMs: 300,
   waitDeadlineMs: 20_000,
   // Proactive: the gateway silently expires refresh tokens ~as fast as access tokens
@@ -211,6 +211,15 @@ async function rotate(
       throw new SessionGoneError('Refresh token rejected by the gateway')
     }
     // 5xx/network/timeout: the session survives, waiters retry
+    console.warn(
+      'GFW session: transient reload failure',
+      JSON.stringify({
+        sid: sid.slice(0, 8),
+        status: status ?? null,
+        message: (e as Error).message,
+        tokenAgeMs: Date.now() - lease.rotatedAt,
+      })
+    )
     throw new TransientRefreshError('Token reload failed transiently', { cause: e })
   }
 
