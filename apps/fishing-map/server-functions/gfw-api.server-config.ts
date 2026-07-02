@@ -2,9 +2,9 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 
 import { GFWAPI, readCookieString } from '@globalfishingwatch/api-client'
 
-import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import { USER_SESSION_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 
-type Tokens = { token: string; refreshToken: string }
+type Tokens = { token: string }
 type AuthTokenHolder = { token: string; refreshing?: Promise<Tokens> }
 const authTokenALS = new AsyncLocalStorage<AuthTokenHolder>()
 
@@ -41,14 +41,18 @@ export function configureServerGFWAPI() {
       const promise = (async (): Promise<Tokens> => {
         // Dynamic imports: this module is loaded by start.ts at the start-instance init phase, where
         // loading the server runtime (or other server-only modules) at module-init breaks boot.
-        const [{ getRequest, setCookie }, { refreshAuthTokens }] = await Promise.all([
-          import('@tanstack/react-start/server'),
-          import('server-functions/auth.functions'),
-        ])
+        const [{ getRequest, setCookie }, { refreshSessionTokens, setAccessTokenCookie }] =
+          await Promise.all([
+            import('@tanstack/react-start/server'),
+            import('server-functions/auth.functions'),
+          ])
         const cookie = getRequest()?.headers.get('cookie') ?? ''
-        const refreshToken = readCookieString(cookie, USER_REFRESH_TOKEN_COOKIE_KEY) ?? undefined
+        const sid = readCookieString(cookie, USER_SESSION_COOKIE_KEY) ?? undefined
+        const callerToken =
+          holder?.token || readCookieString(cookie, USER_TOKEN_COOKIE_KEY) || undefined
 
-        const tokens = await refreshAuthTokens(refreshToken, setCookie)
+        const tokens = await refreshSessionTokens(sid, callerToken)
+        setAccessTokenCookie(setCookie, tokens.token)
         if (holder) {
           holder.token = tokens.token
         }

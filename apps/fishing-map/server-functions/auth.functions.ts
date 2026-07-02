@@ -3,9 +3,12 @@ import { createServerFn } from '@tanstack/react-start'
 import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import {
+  USER_REFRESH_TOKEN_COOKIE_KEY,
+  USER_SESSION_COOKIE_KEY,
+  USER_TOKEN_COOKIE_KEY,
+} from 'features/app/app.config'
 
-export type Tokens = { token: string; refreshToken: string }
 export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
 
 const SSR_SUBDOMAIN_SUFFIX =
@@ -22,26 +25,46 @@ const accessCookieOptions = {
   secure: process.env.NODE_ENV === 'production',
 }
 
-const refreshCookieOptions = { ...accessCookieOptions, httpOnly: true }
+const httpOnlyCookieOptions = { ...accessCookieOptions, httpOnly: true }
 
-export const setAuthCookies = (setCookie: CookieSetter, { token, refreshToken }: Tokens) => {
+export const setAccessTokenCookie = (setCookie: CookieSetter, token: string) => {
   setCookie(USER_TOKEN_COOKIE_KEY, token, accessCookieOptions)
-  setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, refreshToken, refreshCookieOptions)
+}
+
+// Sets the session id cookie and actively expires the legacy refresh-token cookie:
+// the refresh token now lives ONLY in the server-side session store.
+export const setSessionCookie = (setCookie: CookieSetter, sid: string) => {
+  setCookie(USER_SESSION_COOKIE_KEY, sid, httpOnlyCookieOptions)
+  setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, '', { ...httpOnlyCookieOptions, maxAge: 0 })
 }
 
 export const clearAuthCookies = (setCookie: CookieSetter) => {
   setCookie(USER_TOKEN_COOKIE_KEY, '', { ...accessCookieOptions, maxAge: 0 })
-  setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, '', { ...refreshCookieOptions, maxAge: 0 })
+  setCookie(USER_SESSION_COOKIE_KEY, '', { ...httpOnlyCookieOptions, maxAge: 0 })
+  setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, '', { ...httpOnlyCookieOptions, maxAge: 0 })
 }
 
 export const loginServerFn = createServerFn({ method: 'POST' })
   .inputValidator((data: { accessToken?: string | null }) => data)
   .handler(async ({ data }): Promise<UserData | null> => {
     if (!data.accessToken) return null
-    const { setCookie } = await import('@tanstack/react-start/server')
+    // Dynamic imports keep server-only modules out of the client/test import graph
+    const [{ setCookie }, { createSessionRecord, getSessionStore }] = await Promise.all([
+      import('@tanstack/react-start/server'),
+      import('server/session'),
+    ])
     try {
       const tokens = await GFWAPI.exchangeAccessToken(data.accessToken, SSR_HEADERS)
-      setAuthCookies(setCookie, tokens)
+      const sid = crypto.randomUUID()
+      const store = await getSessionStore()
+      await store.create(sid, createSessionRecord(tokens))
+      console.log(
+        'GFW session: created',
+        sid.slice(0, 8),
+        `${tokens.refreshToken.slice(0, 6)}…${tokens.refreshToken.slice(-6)} len=${tokens.refreshToken.length}`
+      )
+      setAccessTokenCookie(setCookie, tokens.token)
+      setSessionCookie(setCookie, sid)
       return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })
     } catch (e) {
       console.error('Failed to exchange access token', e)
@@ -49,26 +72,47 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
 
-// Reloads tokens from the given refresh token and persists them. Throws a 401 when there
-// is no refresh token. Shared between the refresh RPC and SSR user resolution
-export async function refreshAuthTokens(
-  refreshToken: string | undefined,
-  setCookie: CookieSetter
-): Promise<Tokens> {
-  if (!refreshToken) {
-    const error = new Error('No refresh token') as Error & { status: number }
+/**
+ * Single serialized token refresh for the session — safe to call from any number of
+ * concurrent contexts (tabs, SSR requests, instances); at most one gateway reload
+ * happens and everyone gets the rotated token. Throws 401 (SessionGoneError) when the
+ * session is missing/revoked and 503 (TransientRefreshError) on gateway/store blips.
+ */
+export async function refreshSessionTokens(
+  sid: string | undefined,
+  callerToken?: string
+): Promise<{ token: string }> {
+  if (!sid) {
+    const error = new Error('No session') as Error & { status: number }
     error.status = 401
     throw error
   }
-  const tokens = await GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
-  setAuthCookies(setCookie, tokens)
-  return tokens
+  const { getFreshTokens, getSessionStore } = await import('server/session')
+  const store = await getSessionStore()
+  return getFreshTokens({
+    store,
+    sid,
+    callerToken,
+    reload: (refreshToken) => GFWAPI.reloadTokens(refreshToken, SSR_HEADERS),
+  })
 }
 
 export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<Tokens> => {
+  async (): Promise<{ token: string }> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens(getCookie(USER_REFRESH_TOKEN_COOKIE_KEY), setCookie)
+    try {
+      const { token } = await refreshSessionTokens(
+        getCookie(USER_SESSION_COOKIE_KEY),
+        getCookie(USER_TOKEN_COOKIE_KEY)
+      )
+      setAccessTokenCookie(setCookie, token)
+      return { token }
+    } catch (e) {
+      if ((e as { status?: number }).status === 401) {
+        clearAuthCookies(setCookie)
+      }
+      throw e
+    }
   }
 )
 
@@ -82,9 +126,17 @@ export const clearAuthCookiesServerFn = createServerFn({ method: 'POST' }).handl
 
 export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
   async (): Promise<boolean> => {
-    const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
+    const [{ getCookie, setCookie }, { getSessionStore }] = await Promise.all([
+      import('@tanstack/react-start/server'),
+      import('server/session'),
+    ])
+    const sid = getCookie(USER_SESSION_COOKIE_KEY)
     try {
+      const store = await getSessionStore()
+      const record = sid ? await store.get(sid) : null
+      if (sid) await store.delete(sid)
+      // Sessions predating the store carry the refresh token in the legacy cookie
+      const refreshToken = record?.refreshToken ?? getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
       if (refreshToken) {
         await GFWAPI.revokeRefreshToken(refreshToken, SSR_HEADERS)
       }

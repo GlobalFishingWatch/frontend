@@ -51,8 +51,11 @@ vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
 })
 
 beforeAll(async () => {
-  // Ensure i18n is initialized before running tests
-  await i18n.changeLanguage('en')
+  // Ensure i18n is initialized before running tests. i18n is initialized as an import
+  // side effect of app code — pure unit tests that import none can skip it.
+  if (i18n.isInitialized) {
+    await i18n.changeLanguage('en')
+  }
 
   // Preload lazy modal chunks used in integration tests
   await Promise.all([
