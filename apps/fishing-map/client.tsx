@@ -27,6 +27,35 @@ GFWAPI.configure({
   sessionInvalidateStrategy: () => clearAuthCookiesServerFn(),
 })
 
+// The gateway silently expires refresh tokens ~with the access token (~30 min), so an
+// idle SPA tab that only 401-refreshes at expiry can lose its session. When the access
+// token enters its last 5.5 minutes, ping the refresh server fn — it lands in the
+// server's proactive-rotation window and rotates once (store lease + navigator.locks
+// dedupe across requests and tabs). Outside that window the ping never fires.
+const KEEPALIVE_CHECK_MS = 60 * 1000
+const KEEPALIVE_MARGIN_MS = 5.5 * 60 * 1000
+const getTokenExpiry = (): number | null => {
+  const token = document.cookie.match(new RegExp(`${USER_TOKEN_COOKIE_KEY}=([^;]+)`))?.[1]
+  if (!token) return null
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null
+  } catch {
+    return null
+  }
+}
+setInterval(() => {
+  const expiry = getTokenExpiry()
+  if (expiry && expiry - Date.now() < KEEPALIVE_MARGIN_MS && navigator.onLine) {
+    navigator.locks
+      .request('gfw-session-keepalive', () => refreshTokenServerFn())
+      .catch(() => {
+        // Dead session (401) already cleared cookies server-side; transient errors retry
+        // on the next tick. Never surface keepalive noise to the user.
+      })
+  }
+}, KEEPALIVE_CHECK_MS)
+
 // A failed dynamic import usually means the deployed assets changed between deploys
 window.addEventListener('vite:preloadError', () => {
   window.location.reload()
