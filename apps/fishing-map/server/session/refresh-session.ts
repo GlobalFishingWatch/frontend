@@ -34,7 +34,11 @@ export const DEFAULT_REFRESH_TIMING: RefreshTiming = {
   reloadTimeoutMs: 8_000,
   pollMs: 300,
   waitDeadlineMs: 20_000,
-  expiryMarginMs: 60_000,
+  // Proactive: the gateway silently expires refresh tokens ~as fast as access tokens
+  // (~30 min, verified 2026-07-02 — 34-min-old first-use token rejected, 1-min-old
+  // accepted). Rotating whenever a request arrives in the last 5 minutes of the access
+  // token's life keeps the refresh token young for every active session.
+  expiryMarginMs: 300_000,
 }
 
 const FALLBACK_TOKEN_TTL_MS = 25 * 60_000
