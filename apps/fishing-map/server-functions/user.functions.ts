@@ -45,7 +45,13 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
   if (!sid) {
     const legacyRefreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
     if (legacyRefreshToken) {
-      sid = await migrateLegacySession(legacyRefreshToken, token, setCookie)
+      try {
+        sid = await migrateLegacySession(legacyRefreshToken, token, setCookie)
+        console.log('GFW session: migrated legacy cookie session', sid.slice(0, 8))
+      } catch (e) {
+        // A store failure must not break SSR — render as guest, keep cookies for retry
+        console.warn('GFW session: legacy migration failed', e)
+      }
     }
   }
 
@@ -82,7 +88,10 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
     // Only a dead session (401) clears cookies; transient gateway/store failures render
     // as guest for this request and the session recovers on the next one.
     if ((e as { status?: number }).status === 401) {
+      console.warn('GFW session: dead session on SSR, clearing cookies', (e as Error).message)
       clearAuthCookies(setCookie)
+    } else {
+      console.warn('GFW session: transient SSR refresh failure', (e as Error).message)
     }
     return { user: getGuestUser() }
   }

@@ -200,6 +200,7 @@ async function rotate(
     throw new TransientRefreshError('Token reload failed transiently', { cause: e })
   }
 
+  console.log('GFW session: rotated tokens', sid.slice(0, 8))
   await store.update(sid, (record) => {
     if (!record) return null
     const rotated = {
