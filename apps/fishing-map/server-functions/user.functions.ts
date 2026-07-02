@@ -1,13 +1,53 @@
+import { createHash } from 'node:crypto'
+
 import { getGuestUser, GFWAPI, readCookieString } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { clearAuthCookies, refreshAuthTokens, SSR_HEADERS } from 'server-functions/auth.functions'
+import {
+  USER_REFRESH_TOKEN_COOKIE_KEY,
+  USER_SESSION_COOKIE_KEY,
+  USER_TOKEN_COOKIE_KEY,
+} from 'features/app/app.config'
+import { createSessionRecord, getSessionStore } from 'server/session'
+import {
+  clearAuthCookies,
+  refreshSessionTokens,
+  setAccessTokenCookie,
+  setSessionCookie,
+  SSR_HEADERS,
+} from 'server-functions/auth.functions'
+
+/**
+ * Migrates a pre-session-store login: the refresh token used to live in an httpOnly
+ * cookie. The sid is derived deterministically from the refresh token so N tabs
+ * racing the migration all converge on the SAME session doc (createIfAbsent keeps the
+ * first write). No gateway call happens here — the first real rotation runs under the
+ * session lock. TODO: remove one release cycle after deploy; stragglers just re-login.
+ */
+async function migrateLegacySession(
+  refreshToken: string,
+  token: string | null,
+  setCookie: (key: string, value: string, options?: Record<string, unknown>) => void
+): Promise<string> {
+  const sid = createHash('sha256').update(refreshToken).digest('base64url').slice(0, 32)
+  const store = await getSessionStore()
+  await store.createIfAbsent(sid, createSessionRecord({ token: token ?? '', refreshToken }, 0))
+  setSessionCookie(setCookie, sid)
+  return sid
+}
 
 export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
   const { getRequest, setCookie } = await import('@tanstack/react-start/server')
   const cookieHeader = getRequest().headers.get('cookie') ?? ''
   const token = readCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
+  let sid = readCookieString(cookieHeader, USER_SESSION_COOKIE_KEY)
+
+  if (!sid) {
+    const legacyRefreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
+    if (legacyRefreshToken) {
+      sid = await migrateLegacySession(legacyRefreshToken, token, setCookie)
+    }
+  }
 
   // Try the access token if present.
   if (token) {
@@ -17,23 +57,33 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
         headers: SSR_HEADERS,
       })
       return { user }
-    } catch (e) {
-      // Expired/invalid — fall through to a refresh attempt.
+    } catch {
+      // Expired/invalid — fall through to a session refresh.
     }
   }
 
-  // Refresh via the refresh cookie. Falls back to the guest user when there is no refresh
-  // cookie (throws 401) or the refresh is dead.
+  if (!sid) {
+    // Not logged in: no cookie writes on anonymous requests
+    if (token) clearAuthCookies(setCookie)
+    return { user: getGuestUser() }
+  }
+
+  // Refresh through the session store — serialized across tabs/requests/instances,
+  // so concurrent SSR document loads can no longer replay a rotated refresh token.
   try {
-    const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
-    const tokens = await refreshAuthTokens(refreshToken ?? undefined, setCookie)
+    const { token: freshToken } = await refreshSessionTokens(sid, token ?? undefined)
+    setAccessTokenCookie(setCookie, freshToken)
     const user = await GFWAPI.fetchUser({
-      token: tokens.token,
+      token: freshToken,
       headers: SSR_HEADERS,
     })
     return { user }
   } catch (e) {
-    clearAuthCookies(setCookie)
+    // Only a dead session (401) clears cookies; transient gateway/store failures render
+    // as guest for this request and the session recovers on the next one.
+    if ((e as { status?: number }).status === 401) {
+      clearAuthCookies(setCookie)
+    }
     return { user: getGuestUser() }
   }
 }

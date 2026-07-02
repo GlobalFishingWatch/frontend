@@ -61,7 +61,8 @@ type InternalFetchOptions<Body = unknown> = {
   waitLogin?: boolean
 }
 
-export type RefreshStrategy = () => Promise<UserTokens>
+// The refresh token is optional: server-session strategies keep it server-side only
+export type RefreshStrategy = () => Promise<{ token: string; refreshToken?: string }>
 export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
@@ -76,7 +77,7 @@ export class GFW_API_CLASS {
   maxRefreshRetries = 1
   maxReloadRetries = 2
   logging: Promise<UserData> | null
-  private refreshingToken: Promise<UserTokens> | null = null
+  private refreshingToken: Promise<{ token: string; refreshToken?: string }> | null = null
   private accessTokenStorage: TokenStorage
   private refreshTokenStorage: TokenStorage
   private refreshStrategy: RefreshStrategy | null = null

@@ -78,6 +78,9 @@ module "develop" {
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
+    "FIRESTORE_PROJECT_ID=gfw-development",
+    "FIRESTORE_SESSIONS_DB=fishing-map-sessions",
+    "SESSIONS_COLLECTION=sessions-dev",
   ]
   set_secrets  = local.generate_secrets.dev
   machine_type = "E2_HIGHCPU_8"
@@ -117,6 +120,9 @@ module "preview-dev" {
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
+    "FIRESTORE_PROJECT_ID=gfw-development",
+    "FIRESTORE_SESSIONS_DB=fishing-map-sessions",
+    "SESSIONS_COLLECTION=sessions-dev",
   ]
   set_secrets = local.generate_secrets.dev
 }
@@ -156,6 +162,9 @@ module "random-forest" {
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
+    "FIRESTORE_PROJECT_ID=gfw-development",
+    "FIRESTORE_SESSIONS_DB=fishing-map-sessions",
+    "SESSIONS_COLLECTION=sessions-dev",
   ]
   set_secrets = local.generate_secrets.dev
 }
@@ -193,6 +202,9 @@ module "staging" {
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
+    "FIRESTORE_PROJECT_ID=gfw-development",
+    "FIRESTORE_SESSIONS_DB=fishing-map-sessions",
+    "SESSIONS_COLLECTION=sessions-sta",
   ]
   set_secrets = local.generate_secrets.sta
 }
@@ -229,7 +241,10 @@ module "production" {
     SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_SENTRY_AUTH_TOKEN"
   }
   set_env_vars = [
-    "BASIC_AUTH=off"
+    "BASIC_AUTH=off",
+    "FIRESTORE_PROJECT_ID=gfw-production",
+    "FIRESTORE_SESSIONS_DB=fishing-map-sessions",
+    "SESSIONS_COLLECTION=sessions-pro",
   ]
   set_secrets = local.generate_secrets.pro
 }
