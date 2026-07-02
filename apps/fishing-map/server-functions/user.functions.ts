@@ -2,11 +2,18 @@ import { getGuestUser, GFWAPI, readCookieString } from '@globalfishingwatch/api-
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { clearAuthCookies, refreshAuthTokens, SSR_HEADERS } from 'server-functions/auth.functions'
+import { SSR_HEADERS } from 'server-functions/auth.functions'
 
 export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
-  const { getRequest, setCookie } = await import('@tanstack/react-start/server')
-  const cookieHeader = getRequest().headers.get('cookie') ?? ''
+  const { getRequest } = await import('@tanstack/react-start/server')
+  return resolveUserStateFromCookies(getRequest().headers.get('cookie') ?? '')
+}
+
+// Pure resolution from the cookie header. Deliberately has no way to set or clear cookies
+// and never calls the token-reload endpoint — see the comment below.
+export async function resolveUserStateFromCookies(
+  cookieHeader: string
+): Promise<{ user: UserData | null }> {
   const token = readCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
 
   // Try the access token if present.
@@ -18,22 +25,20 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
       })
       return { user }
     } catch (e) {
-      // Expired/invalid — fall through to a refresh attempt.
+      // Expired/invalid — fall through to the pending state below.
     }
   }
 
-  // Refresh via the refresh cookie. Falls back to the guest user when there is no refresh
-  // cookie (throws 401) or the refresh is dead.
-  try {
-    const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
-    const tokens = await refreshAuthTokens(refreshToken ?? undefined, setCookie)
-    const user = await GFWAPI.fetchUser({
-      token: tokens.token,
-      headers: SSR_HEADERS,
-    })
-    return { user }
-  } catch (e) {
-    clearAuthCookies(setCookie)
-    return { user: getGuestUser() }
+  // NEVER refresh during SSR: concurrent document requests (tab restore, multi-tab open)
+  // all carry the same refresh cookie, and the gateway revokes ALL the user's tokens when
+  // a rotated refresh token is presented again — no grace window. With a refresh cookie
+  // present, return a pending session (user: null) and let the hydrated client perform the
+  // single refresh, which api-client serializes via navigator.locks + in-flight dedup.
+  // Don't clear cookies either: an expired access token with a live refresh token is the
+  // normal expiry case, not a broken session.
+  const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
+  if (refreshToken) {
+    return { user: null }
   }
+  return { user: getGuestUser() }
 }

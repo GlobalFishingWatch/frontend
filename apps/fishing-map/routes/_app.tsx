@@ -2,7 +2,7 @@ import { Suspense, useEffect, useMemo } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, getRouteApi, useRouter } from '@tanstack/react-router'
 
-import { getGuestUser } from '@globalfishingwatch/api-client'
+import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 
 import { HINTS } from 'data/config'
 import App from 'features/app/App'
@@ -35,10 +35,31 @@ function AppLayout() {
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     syncInitialLocation(router, store)
     store.dispatch(setUserLanguage(getActiveI18nLanguage() as Locale))
-    store.dispatch(setLoggedUser(user || getGuestUser()))
+    // user === null means SSR left the session pending (expired access token with a live
+    // refresh cookie) — resolved client-side in the effect below.
+    if (user) {
+      store.dispatch(setLoggedUser(user))
+    }
     return store
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
+
+  useEffect(() => {
+    if (user) return
+    let cancelled = false
+    // fetchUser triggers the refresh on 401 through api-client's refreshStrategy, which is
+    // guarded by navigator.locks + in-flight dedup — the single place a refresh may happen.
+    GFWAPI.fetchUser()
+      .then((resolvedUser) => {
+        if (!cancelled) store.dispatch(setLoggedUser(resolvedUser))
+      })
+      .catch(() => {
+        if (!cancelled) store.dispatch(setLoggedUser(getGuestUser()))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user, store])
 
   useEffect(() => {
     const unsubscribe = setupRouterSync(router, store)
