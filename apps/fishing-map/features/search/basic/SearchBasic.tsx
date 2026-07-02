@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useIntersectionObserver } from '@researchgate/react-intersection-observer'
@@ -56,7 +56,7 @@ function SearchBasic({
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const [inputValue, setInputValue] = useState(searchQuery || '')
-  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery)
+  const syncedSearchQueryRef = useRef(searchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const searchStatus = useSelector(selectSearchStatus)
@@ -77,10 +77,13 @@ function SearchBasic({
     300
   )
 
-  if (prevSearchQuery !== searchQuery && !debouncedReplaceQuery.isPending()) {
-    setPrevSearchQuery(searchQuery)
+  useEffect(() => {
+    if (searchQuery === syncedSearchQueryRef.current || debouncedReplaceQuery.isPending()) {
+      return
+    }
+    syncedSearchQueryRef.current = searchQuery
     setInputValue(searchQuery || '')
-  }
+  }, [searchQuery, debouncedReplaceQuery])
 
   const onInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -19,6 +19,7 @@ type GetStepProps = {
   start: string
   end: string
   absoluteStart: string
+  absoluteEnd?: string
   deltaMultiplicator: number
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval
@@ -40,6 +41,7 @@ export const getTimebarStepByDelta = ({
   start,
   end,
   absoluteStart,
+  absoluteEnd,
   intervals,
   getCurrentInterval = getFourwingsInterval,
   deltaMultiplicator,
@@ -74,9 +76,11 @@ export const getTimebarStepByDelta = ({
     newEndMs = getUTCDate(end).getTime() + deltaMs
   }
   const currentStartEndDeltaMs = newEndMs - newStartMs
-  const playbackAbsoluteEnd = getUTCDateTime(Date.now())
-    .endOf(interval.toLowerCase() as DateTimeUnit)
-    .toISO()
+  const playbackAbsoluteEnd =
+    absoluteEnd ??
+    getUTCDateTime(Date.now())
+      .endOf(interval.toLowerCase() as DateTimeUnit)
+      .toISO()
   const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
     getUTCDate(newStartMs).toISOString(),
     getUTCDate(newEndMs).toISOString(),
