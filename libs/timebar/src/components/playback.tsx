@@ -30,8 +30,6 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
     getCurrentInterval,
     notifyChange,
     rangeRef,
-    beginInteraction,
-    endInteraction,
     end,
   } = useTimebar()
   const onPlaybackTick = useCallback(
@@ -52,6 +50,7 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
   // notifyChange), so it isn't mirrored here.
   const latestRef = useLatest({
     absoluteStart,
+    absoluteEnd,
     intervals,
     getCurrentInterval,
     onPlaybackTick,
@@ -64,16 +63,23 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
   const stop = useCallback(() => {
     if (rafRef.current) {
       window.cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
     }
-    endInteraction()
     latestRef.current.onTogglePlay?.(false)
     setPlaying(false)
-  }, [endInteraction, latestRef])
+  }, [latestRef])
 
   const update = useCallback(
     (deltaMultiplicator: number, { byIntervals = false } = {}) => {
-      const { absoluteStart, intervals, getCurrentInterval, onPlaybackTick, speedStep, loop } =
-        latestRef.current
+      const {
+        absoluteStart,
+        absoluteEnd,
+        intervals,
+        getCurrentInterval,
+        onPlaybackTick,
+        speedStep,
+        loop,
+      } = latestRef.current
       // Live range is the shared truth; notifyChange advances it synchronously, so the
       // next frame/click reads the value just emitted (no optimistic write-back needed).
       const { start, end } = rangeRef.current
@@ -87,6 +93,7 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
         start,
         end,
         absoluteStart,
+        absoluteEnd,
         intervals,
         byIntervals,
         speedStep: SPEED_STEPS[speedStep],
@@ -142,12 +149,11 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
         stop()
         return
       }
-      beginInteraction()
       startLoop()
       latestRef.current.onTogglePlay?.(true)
       setPlaying(true)
     },
-    [latestRef, beginInteraction, startLoop, stop]
+    [latestRef, startLoop, stop]
   )
 
   useEffect(() => {

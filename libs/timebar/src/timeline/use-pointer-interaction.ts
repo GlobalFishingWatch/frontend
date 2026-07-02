@@ -34,8 +34,6 @@ type Params = {
   innerScaleRef: TimeScaleRef
   outerScaleRef: TimeScaleRef
   setState: SetTimelineState
-  beginInteraction: () => void
-  endInteraction: () => void
   nodeRef: RefObject<HTMLDivElement | null>
   hover: {
     report: (x: number, scale: (arg: NumberValue) => Date, isDay: boolean) => void
@@ -50,8 +48,6 @@ export function usePointerInteraction({
   innerScaleRef,
   outerScaleRef,
   setState,
-  beginInteraction,
-  endInteraction,
   nodeRef,
   hover,
 }: Params) {
@@ -67,10 +63,9 @@ export function usePointerInteraction({
       hasDraggedRef.current = false
       const x = clientX - outerX
 
-      beginInteraction()
       setState({ dragging, handlerMouseX: x })
     },
-    [stateRef, beginInteraction, setState]
+    [stateRef, setState]
   )
 
   useEffect(() => {
@@ -189,18 +184,15 @@ export function usePointerInteraction({
       if (sticked.start && sticked.end) {
         notifyChange(sticked.start, sticked.end, source)
       }
-      endInteraction()
       setState({ dragging: null, handlerMouseX: 0, outerDrag: false })
     }
 
     // touchcancel (and any other aborted gesture) never reaches mouseup, so reset the
-    // interaction guard explicitly. Otherwise interactingRef would stay set and the
-    // timebar would silently stop adopting external range changes.
+    // dragging state explicitly.
     const onInteractionCancel = () => {
       if (stateRef.current.dragging === null) {
         return
       }
-      endInteraction()
       setState({ dragging: null, handlerMouseX: 0, outerDrag: false })
     }
 
@@ -216,7 +208,6 @@ export function usePointerInteraction({
       window.removeEventListener('mouseup', onMouseUpWindow)
       window.removeEventListener('touchend', onMouseUpWindow)
       window.removeEventListener('touchcancel', onInteractionCancel)
-      endInteraction()
     }
     // Mounted once: reads happen through stable refs/callbacks.
     // eslint-disable-next-line react-hooks/exhaustive-deps
