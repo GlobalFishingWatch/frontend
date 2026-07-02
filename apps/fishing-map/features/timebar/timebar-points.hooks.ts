@@ -11,10 +11,10 @@ import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import type { PointsFeaturesToTimeseriesParams } from 'features/reports/tabs/others/reports-points-timeseries.utils'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectTimebarUserDataviewsSelected } from 'features/timebar/timebar.selectors'
 
 import { getGraphDataFromPoints } from './timebar.utils'
@@ -25,11 +25,11 @@ export const useTimebarPoints = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
   const viewport = useSelector(selectViewport)
   const dataviews = useSelector(selectTimebarUserDataviewsSelected)
-  const timerange = useTimerangeConnect()
+  const { start: rangeStart, end: rangeEnd } = useTimebar()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
-  const start = getUTCDate(timerange.start).getTime()
-  const end = getUTCDate(timerange.end).getTime()
+  const start = getUTCDate(rangeStart).getTime()
+  const end = getUTCDate(rangeEnd).getTime()
 
   const datasetImporting = dataviews?.some(
     (dv) => dv.datasets?.[0].status === DatasetStatus.Importing

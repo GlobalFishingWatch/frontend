@@ -14,9 +14,9 @@ import type {
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
@@ -38,9 +38,9 @@ export const useHeatmapActivityGraph = () => {
   }, [viewport])
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
-  const timerange = useTimerangeConnect()
-  const start = getUTCDate(timerange.start).getTime()
-  const end = getUTCDate(timerange.end).getTime()
+  const { start: rangeStart, end: rangeEnd } = useTimebar()
+  const start = getUTCDate(rangeStart).getTime()
+  const end = getUTCDate(rangeEnd).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
   const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
   const chunk = getFourwingsChunk({ start, end, availableIntervals })
@@ -95,6 +95,11 @@ export const useHeatmapActivityGraph = () => {
     id,
     visualizationMode,
     viewportChangeHash,
+    // Chunk bounds only move when the playhead crosses a chunk, so playback frames
+    // don't recompute identical graph data 60 times per second.
+    chunk.bufferedStart,
+    chunk.bufferedEnd,
+    chunk.interval,
     instance?.props.minVisibleValue,
     instance?.props.maxVisibleValue,
   ])
