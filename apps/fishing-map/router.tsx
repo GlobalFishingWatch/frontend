@@ -2,8 +2,8 @@ import * as Sentry from '@sentry/tanstackstart-react'
 import { createRouter, Navigate } from '@tanstack/react-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+import { Spinner } from '@globalfishingwatch/ui-components'
 
-// import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
@@ -42,7 +42,9 @@ export function getCreateRouterOptions() {
     defaultPreload: 'intent' as const,
     trailingSlash: 'never' as const,
     scrollRestoration: true,
-    defaultPendingComponent: () => null,
+    defaultPendingComponent: () => <Spinner />,
+    defaultPendingMs: 0,
+    defaultPendingMinMs: 300,
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
     defaultOnCatch: (error: Error) => {
       reportRouteError(error, 'router-render')

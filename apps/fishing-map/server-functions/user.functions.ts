@@ -2,7 +2,7 @@ import { getGuestUser, GFWAPI, readCookieString } from '@globalfishingwatch/api-
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { SSR_HEADERS } from 'server-functions/auth.functions'
+import { SSR_HEADERS, withTransientRetry } from 'server-functions/auth.functions'
 
 export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
   const { getRequest } = await import('@tanstack/react-start/server')
@@ -16,13 +16,11 @@ export async function resolveUserStateFromCookies(
 ): Promise<{ user: UserData | null }> {
   const token = readCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
 
-  // Try the access token if present.
+  // Try the access token if present. Retried on 5xx/network hiccups so a gateway blip
+  // doesn't degrade a valid session to pending.
   if (token) {
     try {
-      const user = await GFWAPI.fetchUser({
-        token,
-        headers: SSR_HEADERS,
-      })
+      const user = await withTransientRetry(() => GFWAPI.fetchUser({ token, headers: SSR_HEADERS }))
       return { user }
     } catch (e) {
       // Expired/invalid — fall through to the pending state below.

@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
+import { getIsUnauthorizedError, GFWAPI, isTransientError } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
@@ -49,6 +49,41 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
 
+const MAX_TRANSIENT_RETRIES = 2
+
+// A gateway hiccup (5xx/network) must not surface as an auth failure — downstream that
+// gets classified as a dead session and logs the user out.
+export async function withTransientRetry<T>(run: () => Promise<T>, retries = 0): Promise<T> {
+  try {
+    return await run()
+  } catch (e) {
+    if (
+      isTransientError(e as { status?: number; message?: string }) &&
+      retries < MAX_TRANSIENT_RETRIES
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 500 * (retries + 1)))
+      return withTransientRetry(run, retries + 1)
+    }
+    throw e
+  }
+}
+
+const REFRESH_GRACE_PERIOD_MS = 30_000
+const sharedRefreshes = new Map<string, { promise: Promise<Tokens>; expires: number }>()
+
+function reloadTokensShared(refreshToken: string): Promise<Tokens> {
+  const now = Date.now()
+  for (const [key, entry] of sharedRefreshes) {
+    if (entry.expires <= now) sharedRefreshes.delete(key)
+  }
+  const shared = sharedRefreshes.get(refreshToken)
+  if (shared) return shared.promise
+  const promise = withTransientRetry(() => GFWAPI.reloadTokens(refreshToken, SSR_HEADERS))
+  sharedRefreshes.set(refreshToken, { promise, expires: now + REFRESH_GRACE_PERIOD_MS })
+  promise.catch(() => sharedRefreshes.delete(refreshToken))
+  return promise
+}
+
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
 // is no refresh token. Shared between the refresh RPC and SSR user resolution
 export async function refreshAuthTokens(
@@ -60,7 +95,7 @@ export async function refreshAuthTokens(
     error.status = 401
     throw error
   }
-  const tokens = await GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
+  const tokens = await reloadTokensShared(refreshToken)
   setAuthCookies(setCookie, tokens)
   return tokens
 }
