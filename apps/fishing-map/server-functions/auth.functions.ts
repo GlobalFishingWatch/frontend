@@ -58,6 +58,11 @@ export const loginServerFn = createServerFn({ method: 'POST' })
       const sid = crypto.randomUUID()
       const store = await getSessionStore()
       await store.create(sid, createSessionRecord(tokens))
+      console.log(
+        'GFW session: created',
+        sid.slice(0, 8),
+        `${tokens.refreshToken.slice(0, 6)}…${tokens.refreshToken.slice(-6)} len=${tokens.refreshToken.length}`
+      )
       setAccessTokenCookie(setCookie, tokens.token)
       setSessionCookie(setCookie, sid)
       return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })

@@ -193,6 +193,16 @@ async function rotate(
     const status = (e as { status?: number })?.status
     if (status === 401 || status === 403) {
       // Refresh token dead (consumed elsewhere or revoked) → only THIS session dies
+      console.warn(
+        'GFW session: gateway rejected reload',
+        JSON.stringify({
+          sid: sid.slice(0, 8),
+          status,
+          message: (e as Error).message,
+          tokenAgeMs: Date.now() - lease.rotatedAt,
+          tokenFingerprint: `${lease.refreshToken.slice(0, 6)}…${lease.refreshToken.slice(-6)} len=${lease.refreshToken.length}`,
+        })
+      )
       await store.delete(sid).catch(() => {})
       throw new SessionGoneError('Refresh token rejected by the gateway')
     }
