@@ -181,10 +181,18 @@ export type GapsEvent = {
   lonMin: number
 }
 
+export type FishingEventDayNightCategory = 'day' | 'night' | 'over_dawn' | 'over_dusk'
+
 export type FishingEvent = {
   totalDistanceKm: number
   averageSpeedKnots: number
   averageDurationHours: number
+  // Only available in longline fishing events datasets
+  dayNightCategory?: FishingEventDayNightCategory
+  localStartHours?: number
+  localEndHours?: number
+  minTimeToDawnHrs?: number
+  minTimeToDuskHrs?: number
 }
 
 export type Distances = {

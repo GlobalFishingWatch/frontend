@@ -1,0 +1,45 @@
+.bar {
+  display: flex;
+  margin-block: var(--space-S);
+  height: 2.4rem;
+  overflow: hidden;
+}
+
+.barSegment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.4rem;
+  color: var(--color-white);
+  font: var(--font-S);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  color: var(--color-secondary-blue);
+}
+
+.legendDot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.loading {
+  background-color: var(--color-terthiary-blue);
+}
+
+.night {
+  background-color: #000;
+}
+
+.mostlyNight {
+  background-color: #0375b1;
+}
+
+.day {
+  background-color: #f4b145;
+}
