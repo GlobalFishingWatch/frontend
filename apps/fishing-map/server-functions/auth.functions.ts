@@ -11,7 +11,8 @@ export type CookieSetter = (key: string, value: string, options?: Record<string,
 const SSR_SUBDOMAIN_SUFFIX =
   { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
 export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`
-export const SSR_HEADERS = { referer: SSR_REFERER } as HeadersInit
+const STABLE_X_IP = '34.0.0.1'
+export const SSR_HEADERS = { referer: SSR_REFERER, 'x-ip': STABLE_X_IP } as HeadersInit
 
 const COOKIE_MAX_AGE_1_YEAR = 60 * 60 * 24 * 365
 
