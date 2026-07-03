@@ -27,13 +27,14 @@ GFWAPI.configure({
   sessionInvalidateStrategy: () => clearAuthCookiesServerFn(),
 })
 
-// The gateway silently expires refresh tokens ~with the access token (~30 min), so an
-// idle SPA tab that only 401-refreshes at expiry can lose its session. When the access
-// token enters its last 5.5 minutes, ping the refresh server fn — it lands in the
-// server's proactive-rotation window and rotates once (store lease + navigator.locks
-// dedupe across requests and tabs). Outside that window the ping never fires.
+// The gateway silently expires refresh tokens somewhere between 14 and 26 minutes of
+// age, so an idle SPA tab that only 401-refreshes at access-token expiry (30 min) can
+// lose its session. Ping the refresh server fn once the access token is 10 min old (20
+// min left of its 30-min life) — matches the server's proactive-rotation margin, lands
+// well below the confirmed-good 14.2min mark (store lease + navigator.locks dedupe
+// across requests and tabs). Outside that window the ping never fires.
 const KEEPALIVE_CHECK_MS = 60 * 1000
-const KEEPALIVE_MARGIN_MS = 5.5 * 60 * 1000
+const KEEPALIVE_MARGIN_MS = 20 * 60 * 1000
 const getTokenExpiry = (): number | null => {
   const token = document.cookie.match(new RegExp(`${USER_TOKEN_COOKIE_KEY}=([^;]+)`))?.[1]
   if (!token) return null

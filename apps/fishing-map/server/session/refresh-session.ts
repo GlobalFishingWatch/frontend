@@ -34,11 +34,13 @@ export const DEFAULT_REFRESH_TIMING: RefreshTiming = {
   reloadTimeoutMs: 20_000,
   pollMs: 300,
   waitDeadlineMs: 20_000,
-  // Proactive: the gateway silently expires refresh tokens ~as fast as access tokens
-  // (~30 min, verified 2026-07-02 — 34-min-old first-use token rejected, 1-min-old
-  // accepted). Rotating whenever a request arrives in the last 5 minutes of the access
-  // token's life keeps the refresh token young for every active session.
-  expiryMarginMs: 300_000,
+  // Proactive: the gateway silently expires refresh tokens somewhere between 14 and 26
+  // minutes of age (verified 2026-07-02/03 — 14.2min rotates ok, 25.6min+ rejected,
+  // exact cliff unpinned). Access tokens have a fixed 30-min TTL, issued together with
+  // the refresh token on every rotation. A 20-min margin rotates once the access token
+  // is 10 min old, keeping refresh-token age under 10 min — safely below the
+  // confirmed-good 14.2min mark.
+  expiryMarginMs: 1_200_000,
 }
 
 const FALLBACK_TOKEN_TTL_MS = 25 * 60_000
