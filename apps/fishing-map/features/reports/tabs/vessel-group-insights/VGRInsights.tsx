@@ -16,6 +16,7 @@ import VesselGroupReportInsightFishing from './VGRInsightFishing'
 import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'
 import VesselGroupReportInsightGap from './VGRInsightGaps'
 import VesselGroupReportInsightIUU from './VGRInsightIUU'
+import VesselGroupReportInsightLongline from './VGRInsightLongline'
 import VesselGroupReportInsightMOU from './VGRInsightMOU'
 
 import styles from './VGRInsights.module.css'
@@ -64,6 +65,7 @@ const VesselGroupReportInsights = () => {
       </p>
       <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightLongline skip={!vesselDatasets.length} />
       <VesselGroupReportInsightIUU skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFlagChange skip={!vesselDatasets.length} />
       <VesselGroupReportInsightMOU skip={!vesselDatasets.length} />

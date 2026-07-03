@@ -10,8 +10,9 @@ const endpoint = getEndpointByType({
   endpoint: EndpointId.Events,
 })
 
-type VesselEventsApiParams = InferQueryParams<typeof endpoint> & {
+type VesselEventsApiParams = Partial<InferQueryParams<typeof endpoint>> & {
   ids?: string[]
+  'vessel-groups'?: string[]
 }
 
 // Define a service using a base URL and expected endpoints
@@ -26,6 +27,7 @@ export const vesselEventsApi = createApi({
         return [
           queryArgs.ids?.join('-'),
           queryArgs.vessels?.join('-'),
+          queryArgs['vessel-groups']?.join('-'),
           queryArgs.datasets?.join('-'),
           queryArgs['start-date'],
           queryArgs['end-date'],
