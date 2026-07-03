@@ -1278,6 +1278,11 @@
         "black": "black",
         "grey": "grey"
       },
+      "longline": "Longline settings at day and night",
+      "longlineDaySets": "# of day time sets (≥2 hrs overlap with daylight)",
+      "longlineEventsEmpty": "No longline sets detected",
+      "longlineMostlyNightSets": "# of mostly night sets (<2 hrs overlap with daylight)",
+      "longlineNightSets": "# of night sets",
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
