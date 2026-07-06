@@ -21,8 +21,6 @@ function LoginPopupHandler() {
       .then(broadcastLogin)
       .catch((e) => console.warn('Popup login failed', e))
       .finally(() => {
-        console.log('🚀 ~ LoginPopupHandler ~ window:', window)
-        console.log('🚀 ~ LoginPopupHandler ~ window.opener:', window.opener)
         if (window.opener) {
           window.close()
         } else {
