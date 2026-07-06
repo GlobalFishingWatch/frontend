@@ -1,9 +1,6 @@
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetFilterItem,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -59,10 +56,6 @@ export function getSupportedGroupByOptions(
     dataview.config?.datasets?.some((dataset) =>
       GEAR_TYPE_UNSUPPORTED_DATASET_IDS.includes(dataset)
     )
-  )
-  console.log(
-    '🚀 ~ getSupportedGroupByOptions ~ gearTypeUnsupportedDatasets:',
-    gearTypeUnsupportedDatasets
   )
 
   const reportGroupings = getDatasetConfigurationProperty({
