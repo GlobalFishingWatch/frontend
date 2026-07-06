@@ -1,9 +1,6 @@
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetFilterItem,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -14,11 +11,22 @@ import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 
+import { LATEST_DATASETS_VMS } from '../../../../libs/datasets-client/src/migrations/datasets.latest'
+
 import {
   getTemporalResolutionOptions,
   GroupBy,
   TemporalResolution,
 } from './downloadActivity.config'
+
+// VMS datasets that don't have gear type column, so don't support grouping by gearType on download
+export const GEAR_TYPE_UNSUPPORTED_DATASET_IDS = [
+  LATEST_DATASETS_VMS.per.fishing,
+  LATEST_DATASETS_VMS.ecu.fishing,
+  LATEST_DATASETS_VMS.pan.fishing,
+  LATEST_DATASETS_VMS.png.fishing,
+  LATEST_DATASETS_VMS.cri.fishing,
+]
 
 export function getDownloadReportSupported(start: string, end: string) {
   if (!start || !end) {
@@ -44,6 +52,12 @@ export function getSupportedGroupByOptions(
       dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
   )
 
+  const gearTypeUnsupportedDatasets = dataviews.some((dataview) =>
+    dataview.config?.datasets?.some((dataset) =>
+      GEAR_TYPE_UNSUPPORTED_DATASET_IDS.includes(dataset)
+    )
+  )
+
   const reportGroupings = getDatasetConfigurationProperty({
     dataset: vesselDatasets[0],
     property: 'reportGroupings',
@@ -63,7 +77,7 @@ export function getSupportedGroupByOptions(
       }
     }
     if (
-      hasPresenceDataview &&
+      (gearTypeUnsupportedDatasets || hasPresenceDataview) &&
       (option.id === GroupBy.GearType || option.id === GroupBy.FlagAndGearType)
     ) {
       return {
