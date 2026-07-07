@@ -8,6 +8,9 @@ import styles from './ErrorBoundary.module.css'
 // like "'text/html' is not a valid JavaScript MIME type" or "Failed to fetch
 // dynamically imported module". Vite's `vite:preloadError` (handled in client.tsx)
 // covers modulepreload, but a raw `import()` that rejects surfaces here instead.
+// A stale chunk can also load successfully but with corrupted/mismatched content
+// (partial CDN response, cache serving the wrong file for a reused hash), which
+// throws a SyntaxError while the browser parses it instead of rejecting the import.
 const MODULE_LOAD_ERROR_PATTERNS = [
   'is not a valid JavaScript MIME type',
   'Failed to fetch dynamically imported module',
@@ -18,6 +21,9 @@ const MODULE_LOAD_ERROR_PATTERNS = [
 
 function isModuleLoadError(error?: Error) {
   const message = error?.message || ''
+  if (error?.name === 'SyntaxError') {
+    return true
+  }
   return MODULE_LOAD_ERROR_PATTERNS.some((pattern) => message.includes(pattern))
 }
 
