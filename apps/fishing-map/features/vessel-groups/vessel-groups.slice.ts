@@ -151,10 +151,12 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
   ) => {
     try {
       let vesselGroup = selectVesselGroupById(id)(getState() as any)
-      if (!override && !vesselGroup) {
+      if (!override && !vesselGroup?.vessels) {
         const action = await dispatch(fetchVesselGroupByIdThunk(id))
         if (fetchVesselGroupByIdThunk.fulfilled.match(action) && action.payload) {
           vesselGroup = action.payload
+        } else {
+          return rejectWithValue(parseAPIError(action.payload as any))
         }
       }
       if (vesselGroup) {

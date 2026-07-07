@@ -136,12 +136,18 @@ export class GFW_API_CLASS {
     tokenStorage,
     refreshStrategy,
     sessionInvalidateStrategy,
+    debug,
   }: {
     baseUrl?: string
     tokenStorage?: TokenStorage
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
+    debug?: boolean
   } = {}) {
+    if (debug !== undefined) {
+      this.debug = debug
+    }
+
     if (baseUrl) {
       this.baseUrl = baseUrl
     }

@@ -47,46 +47,100 @@ describe('useTimebarRange', () => {
     expect(result.current.rangeRef.current.start).toBe('2019-06-01T00:00:00.000Z')
   })
 
-  it('ignores a prop echo while interacting (no snap-back)', () => {
+  it('ignores a lagged echo of its own emission (no snap-back)', () => {
     const onChange = vi.fn()
     const { result, rerender } = renderHook((props) => useTimebarRange(props), {
       initialProps: { ...baseParams, onChange },
     })
 
     act(() => {
-      result.current.beginInteraction()
       result.current.notifyChange('2020-03-01T00:00:00.000Z', '2020-04-01T00:00:00.000Z')
+      result.current.notifyChange('2020-03-02T00:00:00.000Z', '2020-04-02T00:00:00.000Z')
     })
-    // Parent echoes a stale/lagged value back as props mid-interaction.
-    rerender({ ...baseParams, start: '2020-01-01T00:00:00.000Z', onChange })
+    // Parent echoes the older emission back as props, one commit late.
+    rerender({
+      ...baseParams,
+      start: '2020-03-01T00:00:00.000Z',
+      end: '2020-04-01T00:00:00.000Z',
+      onChange,
+    })
 
-    expect(result.current.rangeRef.current.start).toBe('2020-03-01T00:00:00.000Z')
+    expect(result.current.rangeRef.current.start).toBe('2020-03-02T00:00:00.000Z')
+    expect(result.current.range.start).toBe('2020-03-02T00:00:00.000Z')
   })
 
-  it('adopts the next external change after the interaction ends', () => {
-    // The interaction-guard contract the timeline/playback loops rely on: echoes are
-    // ignored while interacting, but once endInteraction runs the next external prop
-    // change must win again (otherwise bookmarks/URL/presets would be stuck).
+  it('adopts a genuine external change even between emissions (playback running)', () => {
+    // No interaction guard: a workspace load / URL nav arriving mid-playback must win,
+    // and the playback cursor (rangeRef) must continue from it.
     const onChange = vi.fn()
     const { result, rerender } = renderHook((props) => useTimebarRange(props), {
       initialProps: { ...baseParams, onChange },
     })
 
     act(() => {
-      result.current.beginInteraction()
       result.current.notifyChange('2020-03-01T00:00:00.000Z', '2020-04-01T00:00:00.000Z')
+      result.current.notifyChange('2020-03-02T00:00:00.000Z', '2020-04-02T00:00:00.000Z')
     })
-    // Echo while interacting is ignored.
-    rerender({ ...baseParams, start: '2020-01-01T00:00:00.000Z', onChange })
-    expect(result.current.rangeRef.current.start).toBe('2020-03-01T00:00:00.000Z')
+    // Never-emitted value: external change, not an echo.
+    rerender({
+      ...baseParams,
+      start: '2018-05-01T00:00:00.000Z',
+      end: '2018-06-01T00:00:00.000Z',
+      onChange,
+    })
 
-    act(() => {
-      result.current.endInteraction()
-    })
-    // A genuine external change arriving after the gesture is adopted.
-    rerender({ ...baseParams, start: '2018-05-01T00:00:00.000Z', onChange })
     expect(result.current.range.start).toBe('2018-05-01T00:00:00.000Z')
     expect(result.current.rangeRef.current.start).toBe('2018-05-01T00:00:00.000Z')
+  })
+
+  it('keeps range monotonic when lagged echoes arrive between playback steps', () => {
+    const onChange = vi.fn()
+    const { result, rerender } = renderHook((props) => useTimebarRange(props), {
+      initialProps: { ...baseParams, onChange },
+    })
+
+    const starts: string[] = []
+    let prev: { start: string; end: string } | null = null
+    for (let day = 1; day <= 5; day++) {
+      const newStart = `2020-01-0${day}T00:00:00.000Z`
+      const newEnd = `2020-02-0${day}T00:00:00.000Z`
+      act(() => {
+        result.current.notifyChange(newStart, newEnd)
+      })
+      // Parent echoes the previous frame's emission between rAF frames.
+      if (prev) {
+        rerender({ ...baseParams, start: prev.start, end: prev.end, onChange })
+      }
+      starts.push(result.current.rangeRef.current.start)
+      expect(result.current.range.start).toBe(newStart)
+      prev = { start: newStart, end: newEnd }
+    }
+
+    for (let i = 1; i < starts.length; i++) {
+      expect(new Date(starts[i]).getTime()).toBeGreaterThan(new Date(starts[i - 1]).getTime())
+    }
+  })
+
+  it('adopts a snapped value the parent sends back after a release', () => {
+    // On RELEASE sources the app snaps the emitted value to the interval and sends the
+    // snapped (different) value back. It was never emitted, so it must be adopted.
+    const onChange = vi.fn()
+    const { result, rerender } = renderHook((props) => useTimebarRange(props), {
+      initialProps: { ...baseParams, onChange },
+    })
+
+    act(() => {
+      result.current.notifyChange('2020-03-01T11:37:00.000Z', '2020-04-01T15:02:00.000Z')
+    })
+    rerender({
+      ...baseParams,
+      start: '2020-03-01T00:00:00.000Z',
+      end: '2020-04-02T00:00:00.000Z',
+      onChange,
+    })
+
+    expect(result.current.range.start).toBe('2020-03-01T00:00:00.000Z')
+    expect(result.current.rangeRef.current.end).toBe('2020-04-02T00:00:00.000Z')
   })
 
   it('clamps to the minimum range', () => {

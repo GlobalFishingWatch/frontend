@@ -193,11 +193,14 @@ const downloadActivitySlice = createSlice({
     resetDownloadActivityState: (state) => {
       state.areaKey = undefined
       state.status = AsyncReducerStatus.Idle
+      state.error = undefined
       state.fileName = ''
       state.hadTimeoutError = false
     },
     resetDownloadActivityStateKeepPolling: (state) => {
       state.areaKey = undefined
+      state.status = AsyncReducerStatus.Idle
+      state.error = undefined
     },
   },
   extraReducers: (builder) => {

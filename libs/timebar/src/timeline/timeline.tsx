@@ -62,8 +62,6 @@ export const TimebarTimeline = ({
   const {
     notifyChange,
     rangeRef,
-    beginInteraction,
-    endInteraction,
     labels,
     absoluteStart,
     absoluteEnd,
@@ -171,8 +169,6 @@ export const TimebarTimeline = ({
     innerScaleRef,
     outerScaleRef,
     setState,
-    beginInteraction,
-    endInteraction,
     nodeRef,
     hover,
   })
