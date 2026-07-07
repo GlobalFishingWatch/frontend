@@ -59,3 +59,4 @@ docker build -f apps/fishing-map/Dockerfile \
 ```bash
 docker run -p 3003:3000 fishing-map:local
 ```
+
