@@ -135,7 +135,6 @@ test('Login - should clear the session on logout even without a refresh token', 
 }) => {
   await loginPage.login()
 
-  // No refresh token to revoke on the gateway; logout must still clear the local session.
   await loginPage.clearRefreshToken()
 
   await loginPage.openUserPanel()
