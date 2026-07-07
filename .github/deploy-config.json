@@ -1,0 +1,64 @@
+{
+  "fishing-map": {
+    "env_vars": {
+      "BASIC_AUTH": "Restricted",
+      "BASIC_AUTH_USER": "gfw-fish"
+    },
+    "secrets": {
+      "BASIC_AUTH_PASS": "FISHING_MAP_BASIC_AUTH_PASS",
+      "STRAPI_TOKEN": "FISHING_MAP_STRAPI_TOKEN",
+      "STRAPI_URL": "FISHING_MAP_STRAPI_URL",
+      "DOWNLOAD_SURVEY_SPREADSHEET_ID": "FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID",
+      "FEEDBACK_SPREADSHEET_ID": "FISHING_MAP_FEEDBACK_SPREADSHEET_ID",
+      "GFW_API_KEY": "FISHING_MAP_GFW_API_KEY",
+      "IDENTITY_REVIEW_SPREADSHEET_ID": "FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID",
+      "MAP_ERRORS_SPREADSHEET_ID": "FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID",
+      "MIGRAMAR_SPREADSHEET_ID": "FISHING_MAP_MIGRAMAR_SPREADSHEET_ID",
+      "MASTRA_API_URL": "FISHING_MAP_MASTRA_API_URL",
+      "SENTRY_AUTH_TOKEN": "FISHING_MAP_SENTRY_AUTH_TOKEN",
+      "SPREADSHEET_CLIENT_EMAIL": "FISHING_MAP_SPREADSHEET_CLIENT_EMAIL",
+      "SPREADSHEET_PRIVATE_KEY": "FISHING_MAP_SPREADSHEET_PRIVATE_KEY",
+      "TURNING_TIDES_AIS_ID": "FISHING_MAP_TURNING_TIDES_AIS_ID",
+      "TURNING_TIDES_BRAZIL_ID": "FISHING_MAP_TURNING_TIDES_BRAZIL_ID",
+      "TURNING_TIDES_CHILE_ID": "FISHING_MAP_TURNING_TIDES_CHILE_ID",
+      "TURNING_TIDES_PERU_ID": "FISHING_MAP_TURNING_TIDES_PERU_ID",
+      "WORKSPACES_AGENT_ID": "FISHING_MAP_WORKSPACES_AGENT_ID"
+    }
+  },
+  "api-portal": {
+    "env_vars": {
+      "BASIC_AUTH": "Restricted",
+      "BASIC_AUTH_USER": "gfw-api"
+    },
+    "secrets": {
+      "BASIC_AUTH_PASS": "BASIC_AUTH_PASS_API_PORTAL"
+    }
+  },
+  "track-labeler": {
+    "env_vars": {
+      "BASIC_AUTH": "Restricted",
+      "BASIC_AUTH_USER": "gfw"
+    },
+    "secrets": {
+      "BASIC_AUTH_PASS": "BASIC_AUTH_PASS_TRACK_LABELER"
+    }
+  },
+  "data-download-portal": {
+    "env_vars": {
+      "BASIC_AUTH": "off"
+    },
+    "secrets": {}
+  },
+  "image-labeler": {
+    "env_vars": {
+      "BASIC_AUTH": "off"
+    },
+    "secrets": {}
+  },
+  "user-groups-admin": {
+    "env_vars": {
+      "BASIC_AUTH": "off"
+    },
+    "secrets": {}
+  }
+}

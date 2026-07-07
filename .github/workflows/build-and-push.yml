@@ -167,6 +167,9 @@ jobs:
       id-token: write
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -183,48 +186,15 @@ jobs:
           IMAGE="${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/$APP:latest-dev"
           SECRETS_PATH="projects/706952489382/secrets"
 
-          case "$APP" in
-            fishing-map)
-              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-fish"
-              SET_SECRETS="\
-                BASIC_AUTH_PASS=$SECRETS_PATH/FISHING_MAP_BASIC_AUTH_PASS/versions/latest,\
-                STRAPI_TOKEN=$SECRETS_PATH/FISHING_MAP_STRAPI_TOKEN/versions/latest,\
-                STRAPI_URL=$SECRETS_PATH/FISHING_MAP_STRAPI_URL/versions/latest,\
-                DOWNLOAD_SURVEY_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest,\
-                FEEDBACK_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest,\
-                GFW_API_KEY=$SECRETS_PATH/FISHING_MAP_GFW_API_KEY/versions/latest,\
-                IDENTITY_REVIEW_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID/versions/latest,\
-                MAP_ERRORS_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID/versions/latest,\
-                MIGRAMAR_SPREADSHEET_ID=$SECRETS_PATH/FISHING_MAP_MIGRAMAR_SPREADSHEET_ID/versions/latest,\
-                MASTRA_API_URL=$SECRETS_PATH/FISHING_MAP_MASTRA_API_URL/versions/latest,\
-                SENTRY_AUTH_TOKEN=$SECRETS_PATH/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest,\
-                SPREADSHEET_CLIENT_EMAIL=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL/versions/latest,\
-                SPREADSHEET_PRIVATE_KEY=$SECRETS_PATH/FISHING_MAP_SPREADSHEET_PRIVATE_KEY/versions/latest,\
-                TURNING_TIDES_AIS_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_AIS_ID/versions/latest,\
-                TURNING_TIDES_BRAZIL_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_BRAZIL_ID/versions/latest,\
-                TURNING_TIDES_CHILE_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_CHILE_ID/versions/latest,\
-                TURNING_TIDES_PERU_ID=$SECRETS_PATH/FISHING_MAP_TURNING_TIDES_PERU_ID/versions/latest,\
-                WORKSPACES_AGENT_ID=$SECRETS_PATH/FISHING_MAP_WORKSPACES_AGENT_ID/versions/latest"
-              ;;
-            api-portal)
-              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw-api"
-              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_API_PORTAL/versions/latest"
-              ;;
-            track-labeler)
-              ENV_VARS="BASIC_AUTH=Restricted,BASIC_AUTH_USER=gfw"
-              SET_SECRETS="BASIC_AUTH_PASS=$SECRETS_PATH/BASIC_AUTH_PASS_TRACK_LABELER/versions/latest"
-              ;;
-            data-download-portal|image-labeler|user-groups-admin)
-              ENV_VARS="BASIC_AUTH=off"
-              SET_SECRETS=""
-              ;;
-            *)
-              echo "Unknown app: $APP — no Cloud Run config defined"
-              exit 1
-              ;;
-          esac
+          APP_CONFIG=$(jq -r --arg app "$APP" '.[$app] // empty' .github/deploy-config.json)
+          if [ -z "$APP_CONFIG" ]; then
+            echo "Unknown app: $APP — no Cloud Run config defined"
+            exit 1
+          fi
 
-          SET_SECRETS=$(echo "$SET_SECRETS" | tr -d ' \\\n')
+          ENV_VARS=$(echo "$APP_CONFIG" | jq -r '.env_vars | to_entries | map("\(.key)=\(.value)") | join(",")')
+          SET_SECRETS=$(echo "$APP_CONFIG" | jq -r --arg path "$SECRETS_PATH" \
+            '.secrets | to_entries | map("\(.key)=\($path)/\(.value)/versions/latest") | join(",")')
 
           SECRETS_FLAG="--clear-secrets"
           if [ -n "$SET_SECRETS" ]; then
