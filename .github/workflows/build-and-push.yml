@@ -9,17 +9,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-
 jobs:
   detect-affected:
     name: Detect Affected Apps
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.affected.outputs.apps }}
+      apps: ${{ steps.detect.outputs.apps }}
 
     steps:
       - name: Checkout code
@@ -27,54 +22,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch develop branch
-        run: git fetch origin develop --depth=2
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Detect affected apps
+        id: detect
+        uses: ./.github/actions/detect-affected
         with:
-          node-version: "24"
-
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: pnpm install --frozen-lockfile
-
-      - name: Get affected apps
-        id: affected
-        run: |
-          set -euo pipefail
-
-          AFFECTED=$(pnpm exec nx show projects \
-            --affected \
-            --base=origin/develop~1 \
-            --head=HEAD \
-            --type app \
-            --exclude='linting,port-labeler,*-e2e' \
-            --plain | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
-
-          if [ -z "$AFFECTED" ]; then
-            APPS_JSON="[]"
-          else
-            APPS_JSON=$(printf '%s\n' $AFFECTED | jq -R . | jq -sc .)
-          fi
-
-          echo "apps=$APPS_JSON" >> $GITHUB_OUTPUT
-
-          if [ "$APPS_JSON" = "[]" ]; then
-            echo "No affected apps with a Dockerfile found — skipping build"
-          else
-            echo "Affected apps to build: $APPS_JSON"
-          fi
+          base: origin/develop~1
+          head: HEAD
 
   build-and-deploy:
     name: Build and Deploy / ${{ matrix.app }}
@@ -90,8 +43,7 @@ jobs:
       id-token: write
     env:
       IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-dev
-      BUILD_CONFIG: .github/build-config.json
-      DEPLOY_CONFIG: .github/deploy-config.json
+      CONFIG: .github/apps/development.yml
 
     steps:
       - name: Checkout code
@@ -100,21 +52,21 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Build and push
         uses: ./.github/actions/build-and-push
         with:
           app: ${{ matrix.app }}
           image: ${{ env.IMAGE }}
-          build-config: ${{ env.BUILD_CONFIG }}
-          deploy-config: ${{ env.DEPLOY_CONFIG }}
+          config: ${{ env.CONFIG }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
       - name: Deploy
         uses: ./.github/actions/deploy-cloudrun
         with:
           app: ${{ matrix.app }}
           image: ${{ env.IMAGE }}
-          deploy-config: ${{ env.DEPLOY_CONFIG }}
+          config: ${{ env.CONFIG }}
           cloudrun-service-account: frontend-dev@gfw-development.iam.gserviceaccount.com

@@ -1,5 +1,5 @@
 name: Deploy to Cloud Run
-description: Reads per-app config from deploy-config.json and deploys a container image to Cloud Run
+description: Reads per-app config and deploys a container image to Cloud Run
 
 inputs:
   app:
@@ -8,10 +8,10 @@ inputs:
   image:
     description: Full Docker image URI to deploy
     required: true
-  deploy-config:
-    description: Path to the deploy config JSON file (env vars and secrets per app)
+  config:
+    description: Path to the app config YAML file
     required: false
-    default: .github/deploy-config.json
+    default: .github/apps/development.yml
   cloudrun-project:
     description: GCP project hosting the Cloud Run service
     required: false
@@ -22,8 +22,7 @@ inputs:
     default: us-central1
   cloudrun-service-account:
     description: Service account the Cloud Run service runs as
-    required: false
-    default: frontend-dev@gfw-development.iam.gserviceaccount.com
+    required: true
 
 runs:
   using: composite
@@ -37,14 +36,17 @@ runs:
         set -euo pipefail
         APP="${{ inputs.app }}"
 
-        APP_CONFIG=$(jq -r --arg app "$APP" '.[$app] // empty' "${{ inputs.deploy-config }}")
-        if [ -z "$APP_CONFIG" ]; then
-          echo "Unknown app: $APP — no Cloud Run config defined"
-          exit 1
-        fi
+        APP_CONFIG=$(python3 -c "
+        import yaml, json
+        config = yaml.safe_load(open('${{ inputs.config }}'))
+        app = config.get('$APP')
+        if not app:
+          raise SystemExit(f'Unknown app: $APP — no config defined')
+        print(json.dumps(app))
+        ")
 
-        ENV_VARS=$(echo "$APP_CONFIG" | jq -r '.env_vars | to_entries | map("\(.key)=\(.value)") | join(",")')
-        SET_SECRETS=$(echo "$APP_CONFIG" | jq -r '.secrets | to_entries | map("\(.key)=\(.value)") | join(",")')
+        ENV_VARS=$(echo "$APP_CONFIG" | jq -r '.deploy.env_vars | to_entries | map("\(.key)=\(.value)") | join(",")')
+        SET_SECRETS=$(echo "$APP_CONFIG" | jq -r '(.deploy.secrets // {}) | to_entries | map("\(.key)=\(.value)") | join(",")')
 
         SECRETS_FLAG="--clear-secrets"
         if [ -n "$SET_SECRETS" ]; then
