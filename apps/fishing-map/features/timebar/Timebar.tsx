@@ -1,22 +1,20 @@
-import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type {
   HighlightedChunks,
-  TimebarChartChunk,
-  TimebarProps,
-  TrackEventChunkProps,
+  LastXOption,
   TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
   selectLatestAvailableDataDate,
   selectScreenshotMode,
@@ -30,18 +28,20 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
-import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/timebar-graph.hooks'
-import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
-  useDisableHighlightTimeConnect,
   useHighlightedEventsConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
   useTimerangeConnect,
 } from 'features/timebar/timebar.hooks'
+import {
+  useOnTimebarRangeChange,
+  useTimebarBookmark,
+  useTimebarMouseInteractions,
+} from 'features/timebar/timebar-interactions.hooks'
 import {
   useTimebarVesselEvents,
   useTimebarVesselTracks,
@@ -51,11 +51,10 @@ import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGrap
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
-import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
+import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
-import { getUTCDateTime } from 'utils/dates'
 import { upperFirst } from 'utils/info'
 
 import {
@@ -63,7 +62,7 @@ import {
   selectAvailableStart,
   selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
-import { selectHighlightedTime, setHighlightedEvents, setHighlightedTime } from './timebar.slice'
+import { selectHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
 import TimebarPointsGraph from './TimebarPointsGraph'
 import TimebarSettings from './TimebarSettings'
@@ -71,6 +70,18 @@ import TimebarSettings from './TimebarSettings'
 import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
+
+const INTERVAL_DATE_FORMATS: Partial<
+  Record<FourwingsInterval, { format: Intl.DateTimeFormatOptions; showUTCLabel?: boolean }>
+> = {
+  HOUR: {
+    format: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', hour: 'numeric' },
+    showUTCLabel: true,
+  },
+  DAY: { format: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' } },
+  MONTH: { format: { year: 'numeric', month: 'long' } },
+  YEAR: { format: { year: 'numeric' } },
+}
 
 const TimebarHighlighterWrapper = memo(
   ({
@@ -99,55 +110,20 @@ const TimebarHighlighterWrapper = memo(
     // Return precise chunk frame extent
     const activityDateCallback = useCallback(
       (timestamp: number) => {
-        const dateLabel = formatI18nDate(timestamp, {
-          format: DateTime.DATETIME_MED,
-          showUTCLabel: true,
-        })
-        if (interval) {
-          if (interval === 'HOUR') {
-            const HOUR_FORMAT = {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              weekday: 'long',
-              hour: 'numeric',
-            }
-            return formatI18nDate(timestamp, { format: HOUR_FORMAT, showUTCLabel: true })
-          } else if (interval === 'DAY') {
-            const DAY_FORMAT = {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              weekday: 'long',
-            }
-            return formatI18nDate(timestamp, { format: DAY_FORMAT })
-          } else if (interval === 'MONTH') {
-            const MONTH_FORMAT = {
-              year: 'numeric',
-              month: 'long',
-            }
-            return formatI18nDate(timestamp, { format: MONTH_FORMAT })
-          } else if (interval === 'YEAR') {
-            const YEAR_FORMAT = {
-              year: 'numeric',
-            }
-            return formatI18nDate(timestamp, { format: YEAR_FORMAT })
-          }
+        const intervalFormat = interval && INTERVAL_DATE_FORMATS[interval]
+        if (intervalFormat) {
+          return formatI18nDate(timestamp, intervalFormat)
         }
-        return dateLabel
+        return formatI18nDate(timestamp, { format: DateTime.DATETIME_MED, showUTCLabel: true })
       },
       [interval]
     )
 
-    const formatDate = useMemo(
-      () =>
-        timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
-        timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
-        visualizationMode !== 'positions'
-          ? activityDateCallback
-          : undefined,
-      [timebarVisualisation, visualizationMode, activityDateCallback]
-    )
+    const showActivityDate =
+      timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
+      timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
+      visualizationMode !== 'positions'
+    const formatDate = showActivityDate ? activityDateCallback : undefined
 
     return highlightedTime ? (
       <Timebar.Charts.Highlighter
@@ -188,17 +164,11 @@ const TimebarTracksEventsWrapper = memo(
 const TimebarWrapper = () => {
   useTimebarVisualisation()
 
-  const [isMouseInside, setMouseInside] = useState(false)
-  const [isMouseClicked, setMouseClicked] = useState(false)
-  const clickTimeRef = useRef(0)
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
-  const { start, end, onTimebarChange } = useTimerangeConnect()
-  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
+  const { start, end } = useTimerangeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
-  const viewState = useMapViewState()
-  const setMapCoordinates = useSetMapCoordinates()
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
   const timebarGraph = useSelector(selectTimebarGraph)
@@ -209,153 +179,30 @@ const TimebarWrapper = () => {
   const hasVectorDataviews = useSelector(selectHasVectorDataviews)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
-  const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const debugOptions = useSelector(selectDebugOptions)
   const timeMode = useSelector(selectTimeMode)
-  const fitAreaInViewport = useFitAreaInViewport()
-  const dispatch = useAppDispatch()
-  const appStore = useAppStore()
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
   const events = useTimebarVesselEvents()
   const rootElement = useDOMElement()
 
-  const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
-  const onBookmarkChange = useCallback(
-    (start: string, end: string) => {
-      if (!start || !end) {
-        trackEvent({
-          category: TrackCategory.Timebar,
-          action: 'Bookmark timerange',
-          label: 'removed',
-        })
-        setBookmark(null)
-        return
-      }
-      trackEvent({
-        category: TrackCategory.Timebar,
-        action: 'Bookmark timerange',
-        label: getEventLabel([start, end]),
-      })
-      setBookmark({ start, end })
-    },
-    [setBookmark]
-  )
-
+  const { bookmark, onBookmarkChange } = useTimebarBookmark()
   const isSmallScreen = useSmallScreen()
 
-  const onMouseMove = useCallback(
-    (clientX: number | null, scale: ((arg: number) => Date) | null) => {
-      if (clientX === null || clientX === undefined || isNaN(clientX)) {
-        if (!isMouseClicked) {
-          dispatchDisableHighlightedTime()
-        }
-      } else {
-        try {
-          if (!scale || isMouseClicked) return
-          const start = scale(clientX - 10).toISOString()
-          const end = scale(clientX + 10).toISOString()
-          const startDateTime = getUTCDateTime(start)
-          const endDateTime = getUTCDateTime(end)
-          const diff = endDateTime.diff(startDateTime, 'hours')
-          if (diff.hours < 1) {
-            // To ensure at least 1h range is highlighted
-            const hourStart = startDateTime.minus({ hours: diff.hours / 2 }).toISO() as string
-            const hourEnd = endDateTime.plus({ hours: diff.hours / 2 }).toISO() as string
-            dispatch(setHighlightedTime({ start: hourStart, end: hourEnd }))
-          } else {
-            dispatch(setHighlightedTime({ start, end }))
-          }
-        } catch (e: any) {
-          console.warn(clientX, e)
-        }
-      }
-    },
-    [dispatch, dispatchDisableHighlightedTime, isMouseClicked]
-  )
-  const onToggleFixedTooltip = useCallback(
-    (toggle?: boolean) => {
-      const newToggle = toggle !== undefined ? toggle : !isMouseClicked
-      setMouseClicked(newToggle)
-      if (!newToggle) {
-        dispatchDisableHighlightedTime()
-      }
-    },
-    [dispatchDisableHighlightedTime, isMouseClicked]
-  )
-
-  const onToggleFixedTooltipFunction = useCallback(
-    (toggle: boolean) => {
-      if (Date.now() - clickTimeRef.current > 100) {
-        onToggleFixedTooltip(toggle)
-      }
-    },
-    [onToggleFixedTooltip]
-  )
-
-  const onChange: TimebarProps['onChange'] = useCallback(
-    (e) => {
-      if (e.start !== start || e.end !== end) {
-        const gaActions: Record<string, string> = {
-          TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
-          ZOOM_IN_RELEASE: 'Zoom In timerange',
-          ZOOM_OUT_RELEASE: 'Zoom Out timerange',
-          HOUR_INTERVAL_BUTTON: 'Use hour preset',
-          DAY_INTERVAL_BUTTON: 'Use day preset',
-          MONTH_INTERVAL_BUTTON: 'Use month preset',
-          YEAR_INTERVAL_BUTTON: 'Use year preset',
-          SEEK_RELEASE: 'Move timebar slider',
-          BOOKMARK_SELECT: 'Select bookmark period',
-        }
-        if (e.source && gaActions[e.source]) {
-          trackEvent({
-            category: TrackCategory.Timebar,
-            action: gaActions[e.source],
-            label: getEventLabel([e.start, e.end]),
-          })
-        }
-        onTimebarChange(e.start, e.end, e.source)
-        const highlightedTime = selectHighlightedTime(appStore.getState())
-        if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
-          onToggleFixedTooltip(false)
-        }
-        if (reportAreaLocation) {
-          fitAreaInViewport()
-        }
-      }
-    },
-    [
-      start,
-      end,
-      onTimebarChange,
-      appStore,
-      reportAreaLocation,
-      onToggleFixedTooltip,
-      fitAreaInViewport,
-    ]
-  )
-
-  const onMouseEnter = useCallback(() => {
-    setMouseInside(true)
-  }, [])
-
-  const onMouseLeave = useCallback(() => {
-    setMouseInside(false)
-    if (!isMouseClicked) {
-      requestAnimationFrame(() => {
-        dispatch(setHighlightedEvents(undefined))
-      })
-    }
-  }, [dispatch, isMouseClicked])
-
-  const onMouseDown = useCallback(() => {
-    rootElement?.classList.add('dragging')
-  }, [rootElement])
-
-  const onMouseUp = useCallback(() => {
-    rootElement?.classList.remove('dragging')
-  }, [rootElement])
+  const {
+    isMouseInside,
+    isMouseClicked,
+    onMouseMove,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseDown,
+    onMouseUp,
+    onToggleFixedTooltip,
+    onGraphClick,
+    onEventClick,
+  } = useTimebarMouseInteractions(rootElement)
+  const onChange = useOnTimebarRangeChange(onToggleFixedTooltip)
 
   const onTogglePlay = useCallback(
     (isPlaying: boolean) => {
@@ -366,22 +213,6 @@ const TimebarWrapper = () => {
       })
     },
     [start, end]
-  )
-
-  const onEventClick = useCallback(
-    (event: TimebarChartChunk<TrackEventChunkProps>) => {
-      clickTimeRef.current = Date.now()
-      if (event?.coordinates) {
-        setMapCoordinates({
-          ...viewState,
-          latitude: event?.coordinates?.[1],
-          longitude: event.coordinates?.[0],
-          zoom:
-            viewState.zoom < ZOOM_LEVEL_TO_FOCUS_EVENT ? ZOOM_LEVEL_TO_FOCUS_EVENT : viewState.zoom,
-        })
-      }
-    },
-    [viewState, setMapCoordinates]
   )
 
   const showGraph = useMemo(() => {
@@ -402,6 +233,17 @@ const TimebarWrapper = () => {
       elevation: 'down',
     }[timebarGraph] as TrackGraphOrientation
   }, [timebarGraph, tracksGraphsData])
+
+  const realTimeTimerangeOptions = useMemo(
+    (): LastXOption[] =>
+      [1, 2, 3].map((count) => ({
+        id: count === 1 ? 'lastDay' : `last${count}Days`,
+        label: t((t) => t.common.latestDays, { count }),
+        num: count,
+        unit: 'day',
+      })),
+    [t]
+  )
 
   // tracks?.some(({ status }) => status === ResourceStatus.Error) ||
   // tracksEvents?.some(({ status }) => status === ResourceStatus.Error)
@@ -519,7 +361,10 @@ const TimebarWrapper = () => {
               />
             )}
             <Timebar.ToolbarWrapper>
-              <Timebar.TimeRangeSelector showDateInputs={timeMode === 'historical'} />
+              <Timebar.TimeRangeSelector
+                timeRangeOptions={timeMode === 'realTime' ? realTimeTimerangeOptions : undefined}
+                showDateInputs={timeMode === 'historical'}
+              />
               {timeMode === 'realTime' ? (
                 <Timebar.Tools.Wrapper>
                   <Icon icon="history" />
@@ -538,7 +383,7 @@ const TimebarWrapper = () => {
           showLast30DaysBtn={timeMode === 'historical'}
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
-          onGraphClick={onToggleFixedTooltipFunction}
+          onGraphClick={onGraphClick}
           showDeckStats={debugOptions.deckStats}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
