@@ -23,6 +23,10 @@ inputs:
   cloudrun-service-account:
     description: Service account the Cloud Run service runs as
     required: true
+  service-name-prefix:
+    description: Prefix for the Cloud Run service name (e.g. dev-ui, sta-ui, ui)
+    required: false
+    default: dev-ui
 
 runs:
   using: composite
@@ -53,7 +57,7 @@ runs:
           SECRETS_FLAG="--set-secrets=$SET_SECRETS"
         fi
 
-        gcloud run deploy "dev-ui-$APP" \
+        gcloud run deploy "${{ inputs.service-name-prefix }}-$APP" \
           --project "${{ inputs.cloudrun-project }}" \
           --image "${{ inputs.image }}" \
           --region "${{ inputs.region }}" \
@@ -68,7 +72,7 @@ runs:
       run: |
         gcloud run revisions list \
           --project "${{ inputs.cloudrun-project }}" \
-          --service "dev-ui-${{ inputs.app }}" \
+          --service "${{ inputs.service-name-prefix }}-${{ inputs.app }}" \
           --region "${{ inputs.region }}" \
           --format="value(metadata.name)" \
           --sort-by="~metadata.creationTimestamp" \
