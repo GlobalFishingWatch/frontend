@@ -8,10 +8,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  ENVIRONMENT: ${{ github.ref_name == 'main' && 'staging' || 'development' }}
-  SHORT_ENVIRONMENT: ${{ github.ref_name == 'main' && 'sta' || 'dev' }}
-
 jobs:
   detect-affected:
     name: Detect Affected Apps
@@ -45,10 +41,10 @@ jobs:
       contents: read
       id-token: write
     env:
-      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-${{ env.SHORT_ENVIRONMENT }}
-      CONFIG: .github/apps/${{ env.ENVIRONMENT }}.yml
-      SERVICE_NAME_PREFIX: ${{ env.SHORT_ENVIRONMENT }}-ui
-      CLOUDRUN_SA: frontend-${{ env.SHORT_ENVIRONMENT }}@gfw-development.iam.gserviceaccount.com
+      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-${{ github.ref_name == 'main' && 'sta' || 'dev' }}
+      CONFIG: .github/apps/${{ github.ref_name == 'main' && 'staging' || 'development' }}.yml
+      SERVICE_NAME_PREFIX: ${{ github.ref_name == 'main' && 'sta-ui' || 'dev-ui' }}
+      CLOUDRUN_SA: frontend-${{ github.ref_name == 'main' && 'sta' || 'dev' }}@gfw-development.iam.gserviceaccount.com
 
     steps:
       - name: Checkout code
