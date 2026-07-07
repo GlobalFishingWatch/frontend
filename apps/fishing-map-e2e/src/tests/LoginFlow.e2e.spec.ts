@@ -144,6 +144,27 @@ test('Login - should clear the session on logout even without a refresh token', 
   await loginPage.expectUserTokenCleared()
 })
 
+test('Login - concurrent refreshes from two tabs both resolve within the grace window', async ({
+  loginPage,
+}) => {
+  await loginPage.login()
+
+  const newTabPage = await loginPage.newTab()
+  await newTabPage.expectLoggedIn()
+
+  await loginPage.clearUserToken()
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectRefreshTokenPresent()
+
+  await Promise.all([loginPage.reload(), newTabPage.reload()])
+
+  await loginPage.expectLoggedIn()
+  await newTabPage.expectLoggedIn()
+  await loginPage.expectUserTokenPresent()
+
+  await newTabPage.close()
+})
+
 test('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {
   await loginPage.expectGuest()
   await loginPage.expectAppReady()
