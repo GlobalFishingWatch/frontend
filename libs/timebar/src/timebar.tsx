@@ -117,7 +117,7 @@ export function Timebar({
     [minimumRange, minimumRangeUnit]
   )
 
-  const { range, rangeRef, notifyChange, beginInteraction, endInteraction } = useTimebarRange({
+  const { range, rangeRef, notifyChange } = useTimebarRange({
     start,
     end,
     minimumRangeMs,
@@ -135,8 +135,6 @@ export function Timebar({
     () => ({
       notifyChange,
       rangeRef,
-      beginInteraction,
-      endInteraction,
       onBookmarkChange,
       intervals,
       getCurrentInterval,
@@ -152,8 +150,6 @@ export function Timebar({
     [
       notifyChange,
       rangeRef,
-      beginInteraction,
-      endInteraction,
       onBookmarkChange,
       intervals,
       getCurrentInterval,

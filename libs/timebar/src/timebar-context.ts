@@ -16,9 +16,6 @@ export type TimebarContextProps = {
   ) => void
   // Synchronous live range driven by playback/drag loops (single source of truth).
   rangeRef: RefObject<{ start: string; end: string }>
-  // Toggle the interaction guard so lagged parent echoes don't snap the range back.
-  beginInteraction: () => void
-  endInteraction: () => void
   onBookmarkChange?: (start: string, end: string) => void
   intervals?: FourwingsInterval[]
   getCurrentInterval?: typeof getFourwingsInterval

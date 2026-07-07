@@ -10,9 +10,9 @@ import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectTimebarSelectedDataviews } from 'features/timebar/timebar.selectors'
 
 import { getGraphDataFromFourwingsPositions } from './timebar.utils'
@@ -23,11 +23,13 @@ export const useClusterEventsGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
   const viewport = useSelector(selectViewport)
   const dataviews = useSelector(selectTimebarSelectedDataviews)
-  const timerange = useTimerangeConnect()
-  const start = getUTCDate(timerange.start).getTime()
-  const end = getUTCDate(timerange.end).getTime()
+  const { start: rangeStart, end: rangeEnd } = useTimebar()
+  const start = getUTCDate(rangeStart).getTime()
+  const end = getUTCDate(rangeEnd).getTime()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const clusterEventsLayers = useGetDeckLayers<FourwingsClustersLayer>(dataviewIds)
+  const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+  const chunk = getFourwingsChunk({ start, end, availableIntervals })
 
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
@@ -44,18 +46,16 @@ export const useClusterEventsGraph = () => {
 
   const setFourwingsPositionsData = useCallback(
     async (viewportData: FourwingsPointFeature[]) => {
-      const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
-      const { interval } = getFourwingsChunk({ start, end, availableIntervals })
       const data =
         getGraphDataFromFourwingsPositions(viewportData, {
-          start,
-          end,
-          interval,
+          start: chunk.bufferedStart,
+          end: chunk.bufferedEnd,
+          interval: chunk.interval,
           sublayersLength: dataviews.length,
         }) || EMPTY_ACTIVITY_DATA
       setData(data)
     },
-    [dataviews, end, start]
+    [dataviews, chunk.bufferedStart, chunk.bufferedEnd, chunk.interval]
   )
 
   useEffect(() => {
@@ -73,8 +73,18 @@ export const useClusterEventsGraph = () => {
       })
       setFourwingsPositionsData(viewportData)
     }
+    // Chunk bounds only move when the playhead crosses a chunk, so playback frames
+    // don't recompute identical graph data 60 times per second.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, instances, dataviewIds, viewportChangeHash])
+  }, [
+    loaded,
+    instances,
+    dataviewIds,
+    viewportChangeHash,
+    chunk.bufferedStart,
+    chunk.bufferedEnd,
+    chunk.interval,
+  ])
 
   return useMemo(() => ({ loading: !loaded, eventsActivity: data }), [data, loaded])
 }
