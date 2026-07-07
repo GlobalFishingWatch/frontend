@@ -1,0 +1,70 @@
+name: Build and Push Docker Image
+description: Authenticates to GCP, resolves the build target from deploy-config.json, reads build-config.json for env vars and secrets, and builds/pushes a Docker image to Artifact Registry
+
+inputs:
+  app:
+    description: Application name
+    required: true
+  image:
+    description: Full Docker image URI to push (e.g. registry/project/repo/app:tag)
+    required: true
+  build-config:
+    description: Path to the build config JSON file (env vars and secrets)
+    required: false
+    default: .github/build-config.json
+  deploy-config:
+    description: Path to the deploy config JSON file (used to resolve the build target)
+    required: false
+    default: .github/deploy-config.json
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Configure Docker for Artifact Registry
+      shell: bash
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+    - name: Prepare build args
+      id: prepare
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        ARGS="APP_NAME=${{ inputs.app }}
+        COMMIT_SHA=${{ github.sha }}"
+
+        while IFS= read -r line; do
+          ARGS+=$'\n'"$line"
+        done < <(jq -r '.env_vars | to_entries[] | "\(.key)=\(.value)"' "${{ inputs.build-config }}")
+
+        while IFS=$'\t' read -r env_var secret_path; do
+          value=$(gcloud secrets versions access "$secret_path" --quiet)
+          echo "::add-mask::$value"
+          ARGS+=$'\n'"$env_var=$value"
+        done < <(jq -r '.secrets | to_entries[] | [.key, .value] | @tsv' "${{ inputs.build-config }}")
+
+        TARGET=$(jq -r --arg app "${{ inputs.app }}" '.[$app].target' "${{ inputs.deploy-config }}")
+
+        {
+          echo "args<<EOF"
+          echo "$ARGS"
+          echo "EOF"
+          echo "target=$TARGET"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: Dockerfile
+        target: ${{ steps.prepare.outputs.target }}
+        push: true
+        tags: ${{ inputs.image }}
+        build-args: ${{ steps.prepare.outputs.args }}
+        secrets: |
+          NX_CLOUD_ACCESS_TOKEN=${{ env.NX_CLOUD_ACCESS_TOKEN }}
+        cache-from: type=gha,scope=frontend
+        cache-to: type=gha,scope=frontend,mode=max

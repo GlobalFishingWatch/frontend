@@ -10,9 +10,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  REGISTRY: us-central1-docker.pkg.dev
-  GCP_PROJECT: gfw-int-infrastructure
-  AR_REPOSITORY: frontend
+  GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+  GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
   detect-affected:
@@ -62,17 +62,10 @@ jobs:
             --exclude='linting,port-labeler,*-e2e' \
             --plain | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
 
-          APPS=()
-          for app in $AFFECTED; do
-            if [ -f "apps/$app/Dockerfile" ]; then
-              APPS+=("$app")
-            fi
-          done
-
-          if [ ${#APPS[@]} -eq 0 ]; then
+          if [ -z "$AFFECTED" ]; then
             APPS_JSON="[]"
           else
-            APPS_JSON=$(printf '%s\n' "${APPS[@]}" | jq -R . | jq -sc .)
+            APPS_JSON=$(printf '%s\n' $AFFECTED | jq -R . | jq -sc .)
           fi
 
           echo "apps=$APPS_JSON" >> $GITHUB_OUTPUT
@@ -83,8 +76,8 @@ jobs:
             echo "Affected apps to build: $APPS_JSON"
           fi
 
-  build:
-    name: Build / ${{ matrix.app }}
+  build-and-deploy:
+    name: Build and Deploy / ${{ matrix.app }}
     runs-on: ubuntu-latest
     needs: detect-affected
     if: needs.detect-affected.outputs.apps != '[]'
@@ -95,6 +88,10 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-dev
+      BUILD_CONFIG: .github/build-config.json
+      DEPLOY_CONFIG: .github/deploy-config.json
 
     steps:
       - name: Checkout code
@@ -103,124 +100,21 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.GCP_SERVICE_ACCOUNT }}
 
-      - name: Fetch build secrets from Secret Manager
-        id: secrets
-        uses: google-github-actions/get-secretmanager-secrets@v2
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
         with:
-          secrets: |-
-            SENTRY_AUTH_TOKEN:projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
+          app: ${{ matrix.app }}
+          image: ${{ env.IMAGE }}
+          build-config: ${{ env.BUILD_CONFIG }}
+          deploy-config: ${{ env.DEPLOY_CONFIG }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ env.REGISTRY }} --quiet
-
-      - name: Resolve build target
-        id: target
-        run: |
-          case "${{ matrix.app }}" in
-            fishing-map) echo "target=production-node" >> $GITHUB_OUTPUT ;;
-            *)           echo "target=production-nginx" >> $GITHUB_OUTPUT ;;
-          esac
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+      - name: Deploy
+        uses: ./.github/actions/deploy-cloudrun
         with:
-          context: .
-          file: Dockerfile
-          target: ${{ steps.target.outputs.target }}
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/${{ matrix.app }}:latest-dev
-          build-args: |
-            APP_NAME=${{ matrix.app }}
-            COMMIT_SHA=${{ github.sha }}
-            VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
-            VITE_API_VERSION=v3
-            VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G
-            VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST
-            VITE_USE_LOCAL_DATASETS=false
-            VITE_USE_LOCAL_DATAVIEWS=false
-            VITE_WORKSPACE_ENV=development
-            VITE_REPORT_DAYS_LIMIT=366
-            VITE_PIPE_DATASET_VERSION=4
-            SENTRY_AUTH_TOKEN=${{ steps.secrets.outputs.SENTRY_AUTH_TOKEN }}
-          secrets: |
-            NX_CLOUD_ACCESS_TOKEN=${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-          cache-from: type=gha,scope=frontend
-          cache-to: type=gha,scope=frontend,mode=max
-
-  deploy:
-    name: Deploy / ${{ matrix.app }}
-    runs-on: ubuntu-latest
-    needs: [detect-affected, build]
-    if: needs.detect-affected.outputs.apps != '[]'
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
-      fail-fast: false
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-
-      - name: Deploy to Cloud Run
-        run: |
-          set -euo pipefail
-          APP="${{ matrix.app }}"
-          IMAGE="${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.AR_REPOSITORY }}/$APP:latest-dev"
-          SECRETS_PATH="projects/706952489382/secrets"
-
-          APP_CONFIG=$(jq -r --arg app "$APP" '.[$app] // empty' .github/deploy-config.json)
-          if [ -z "$APP_CONFIG" ]; then
-            echo "Unknown app: $APP — no Cloud Run config defined"
-            exit 1
-          fi
-
-          ENV_VARS=$(echo "$APP_CONFIG" | jq -r '.env_vars | to_entries | map("\(.key)=\(.value)") | join(",")')
-          SET_SECRETS=$(echo "$APP_CONFIG" | jq -r --arg path "$SECRETS_PATH" \
-            '.secrets | to_entries | map("\(.key)=\($path)/\(.value)/versions/latest") | join(",")')
-
-          SECRETS_FLAG="--clear-secrets"
-          if [ -n "$SET_SECRETS" ]; then
-            SECRETS_FLAG="--set-secrets=$SET_SECRETS"
-          fi
-
-          gcloud run deploy "dev-ui-$APP" \
-            --project gfw-development \
-            --image "$IMAGE" \
-            --region us-central1 \
-            --platform managed \
-            --allow-unauthenticated \
-            --set-env-vars "$ENV_VARS" \
-            $SECRETS_FLAG \
-            --service-account "frontend-dev@gfw-development.iam.gserviceaccount.com"
-
-      - name: Clean old revisions
-        run: |
-          gcloud run revisions list \
-            --project gfw-development \
-            --service "dev-ui-${{ matrix.app }}" \
-            --region us-central1 \
-            --format="value(metadata.name)" \
-            --sort-by="~metadata.creationTimestamp" \
-            | tail -n +4 \
-            | xargs -r -n1 gcloud run revisions delete \
-                --project gfw-development \
-                --region us-central1 \
-                --quiet
+          app: ${{ matrix.app }}
+          image: ${{ env.IMAGE }}
+          deploy-config: ${{ env.DEPLOY_CONFIG }}
+          cloudrun-service-account: frontend-dev@gfw-development.iam.gserviceaccount.com
