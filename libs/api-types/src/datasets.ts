@@ -81,6 +81,7 @@ export enum DatasetSubCategory {
   Sar = 'sar',
   Sentinel2 = 'sentinel-2',
   Track = 'track',
+  TrackRealTime = 'track-realtime',
   User = 'user',
   UserInteractive = 'user-interactive',
   Viirs = 'viirs',

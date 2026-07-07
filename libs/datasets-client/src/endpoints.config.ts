@@ -36,12 +36,7 @@ const TRACK_QUERY = [
     description:
       'Specific encoding format to use for the track. Possible values lines, points or valueArray. valueArray: is a custom compact format, an array with all the fields serialized. The format is further explained in this issue: valueArray format. lines: Geojson with a single LineString feature containing all the points in the track points: Geojson with a FeatureCollection containing a Point feature for every point in the track',
   },
-  ...THINNING_PARAMS.map((param) => ({
-    id: `${param}`,
-    type: 'number' as const,
-    required: false,
-  })),
-]
+] as const
 
 export const TRACK_ENDPOINTS = [
   {
@@ -56,11 +51,15 @@ export const TRACK_ENDPOINTS = [
         type: 'string',
       },
     ],
-    query: TRACK_QUERY,
+    query: [
+      ...TRACK_QUERY,
+      ...THINNING_PARAMS.map((param) => ({
+        id: `${param}`,
+        type: 'number' as const,
+        required: false,
+      })),
+    ],
   },
-] as const
-
-export const TRACK_REAL_TIME_ENDPOINTS = [
   {
     id: EndpointId.TracksRealTime,
     description: 'Endpoint to retrieve real time vessel track',

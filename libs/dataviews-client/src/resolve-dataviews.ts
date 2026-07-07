@@ -191,9 +191,13 @@ export const mergeWorkspaceUrlDataviewInstances = (
   return [...urlDataviews.new, ...workspaceDataviewInstancesMerged]
 }
 
+type GetDatasetConfigsParams = {
+  endpoint?: EndpointId
+  type: DatasetTypes
+}
 export const getDatasetConfigsByDatasetType = (
   dataview: UrlDataviewInstance,
-  type: DatasetTypes
+  { type, endpoint } = {} as GetDatasetConfigsParams
 ): DataviewDatasetConfig[] => {
   if (!dataview) {
     return []
@@ -202,13 +206,15 @@ export const getDatasetConfigsByDatasetType = (
   const availableDatasetConfigs = dataview.datasetsConfig || []
   const datasets = availableDatasets.filter((dataset) => dataset.type === type)
   const datasetIds = datasets.map((dataset) => dataset.id)
-  const datasetConfigs = availableDatasetConfigs.filter((datasetConfig) =>
-    datasetIds.includes(datasetConfig.datasetId)
+  const datasetConfigs = availableDatasetConfigs.filter(
+    (datasetConfig) =>
+      datasetIds.includes(datasetConfig.datasetId) &&
+      (!endpoint || datasetConfig.endpoint === endpoint)
   )
   if (type === DatasetTypes.Tracks && !datasetConfigs.length) {
     // This supports legacy dataviewInstances with no datasetConfig
     // for example: a pinned vessel with public-global-carriers-tracks:v20201001 dataset
-    // won't work as the defuault dataview now points to public-global-all-tracks
+    // won't work as the default dataview now points to public-global-all-tracks
     const legacyDatasetConfig = availableDatasetConfigs.find(
       (d) => d.endpoint === EndpointId.Tracks
     )
@@ -221,9 +227,9 @@ export const getDatasetConfigsByDatasetType = (
 
 export const getDatasetConfigByDatasetType = (
   dataview: UrlDataviewInstance,
-  type: DatasetTypes
+  params = {} as GetDatasetConfigsParams
 ): DataviewDatasetConfig => {
-  return getDatasetConfigsByDatasetType(dataview, type)[0]
+  return getDatasetConfigsByDatasetType(dataview, params)[0]
 }
 
 /**
@@ -232,17 +238,17 @@ export const getDatasetConfigByDatasetType = (
 const getTrackDataviewDatasetConfigs = (
   dataviewInstance: UrlDataviewInstance
 ): DataviewDatasetConfig[] => {
-  const info = getDatasetConfigByDatasetType(dataviewInstance, DatasetTypes.Vessels)
+  const info = getDatasetConfigByDatasetType(dataviewInstance, { type: DatasetTypes.Vessels })
 
   const trackDatasetType =
     dataviewInstance.datasets && dataviewInstance.datasets?.[0]?.type === DatasetTypes.UserTracks
       ? DatasetTypes.UserTracks
       : DatasetTypes.Tracks
-  const track = { ...getDatasetConfigByDatasetType(dataviewInstance, trackDatasetType) }
+  const track = { ...getDatasetConfigByDatasetType(dataviewInstance, { type: trackDatasetType }) }
 
-  const events = getDatasetConfigsByDatasetType(dataviewInstance, DatasetTypes.Events).filter(
-    (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
-  ) // Loitering
+  const events = getDatasetConfigsByDatasetType(dataviewInstance, {
+    type: DatasetTypes.Events,
+  }).filter((datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value) // Loitering
 
   return [info, track, ...events]
 }

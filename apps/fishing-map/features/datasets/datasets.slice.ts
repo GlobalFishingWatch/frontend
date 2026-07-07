@@ -13,7 +13,6 @@ import type {
   APIPagination,
   Dataset,
   DatasetsMigration,
-  RelatedDataset,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
@@ -32,20 +31,6 @@ import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
-
-const parsePOCsDatasets = (dataset: Dataset) => {
-  // TODO: remove once track-real-time is implemented in the API
-  if (dataset.id === 'public-global-vessel-identity:v4.0') {
-    dataset.relatedDatasets?.push({
-      id: 'public-global-all-tracks-real-time:v4.0',
-      type: 'tracks-real-time:v1',
-    } as RelatedDataset)
-  }
-  if (dataset.id === 'public-global-all-tracks-real-time:v4.0') {
-    dataset.type = 'tracks-real-time:v1' as DatasetTypes
-  }
-  return dataset
-}
 
 function getAPILocale(locale: i18nSupportedLocale) {
   return locale === CROWDIN_SOURCE_LANG || locale === CROWDIN_IN_CONTEXT_LANG
@@ -111,7 +96,7 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
         includes: ['DESCRIPTION'],
       })
       const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
-      return parsePOCsDatasets(dataset)
+      return dataset
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({
@@ -209,9 +194,7 @@ const fetchDatasetsBatch = async ({
     IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
-  const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id).map(
-    parsePOCsDatasets
-  )
+  const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
 
   const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
   const relatedDatasetsIds = uniq(

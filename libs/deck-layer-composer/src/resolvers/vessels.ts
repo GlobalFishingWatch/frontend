@@ -1,7 +1,8 @@
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import {
+  getDatasetConfigByDatasetType,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
@@ -14,10 +15,11 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   dataview,
   globalConfig
 ): VesselLayerProps => {
-  const trackUrl = resolveDataviewDatasetResource(
-    dataview,
-    globalConfig.timeMode === 'realTime' ? DatasetTypes.TracksRealTime : DatasetTypes.Tracks
-  )?.url
+  const trackDatasetConfig = getDatasetConfigByDatasetType(dataview, {
+    type: DatasetTypes.Tracks,
+    endpoint: globalConfig.timeMode === 'realTime' ? EndpointId.TracksRealTime : EndpointId.Tracks,
+  })
+  const trackUrl = resolveDataviewDatasetResource(dataview, trackDatasetConfig.datasetId)?.url
   const { start, end, visibleEvents } = globalConfig
   const strictTimeRange =
     dataview.config?.startDate != null &&

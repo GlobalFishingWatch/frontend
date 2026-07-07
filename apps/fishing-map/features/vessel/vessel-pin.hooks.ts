@@ -11,12 +11,13 @@ import type {
   DataviewInstanceOrigin,
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTracksDatasets } from 'features/datasets/datasets.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   getVesselDataview,
@@ -85,6 +86,7 @@ export function usePinVessel({
     typeof vessel?.dataset === 'string'
       ? vessel?.dataset
       : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
+  const trackDatasets = useSelector(selectTracksDatasets)
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInstanceId = vessel
     ? getVesselId(vessel)
@@ -146,9 +148,21 @@ export function usePinVessel({
         }
       }
       if (vesselWithIdentity) {
-        const trackDataset = getRelatedDatasetsByType(infoDatasetResolved, DatasetTypes.Tracks)?.[0]
-        // TODO: add another track-real-time dataset type in API to be able to differenciate in the public-global-vessel-identity:v4.0
-        // const trackRealTimeDataset = getRelatedDatasetsByType(infoDatasetResolved, DatasetTypes.TracksRealtime)?.[0]
+        const relatedTrackDatasets = getRelatedDatasetsByType(
+          infoDatasetResolved,
+          DatasetTypes.Tracks
+        )?.map((relatedDataset) => {
+          const dataset = trackDatasets.find(
+            (trackDataset) => trackDataset.id === relatedDataset.id
+          )
+          return dataset
+        })
+        const trackDataset = relatedTrackDatasets?.find((relatedTrackDataset) => {
+          return relatedTrackDataset?.subcategory === DatasetSubCategory.Track
+        })
+        const trackRealTimeDataset = relatedTrackDatasets?.find((relatedTrackDataset) => {
+          return relatedTrackDataset?.subcategory === DatasetSubCategory.TrackRealTime
+        })
         const vesselEventsDatasets = getRelatedDatasetsByType(
           infoDatasetResolved,
           DatasetTypes.Events
@@ -165,8 +179,7 @@ export function usePinVessel({
           datasets: {
             info: infoDatasetResolved?.id,
             track: trackDataset?.id,
-            // trackRealTime: trackRealTimeDataset?.id,
-            trackRealTime: 'public-global-all-tracks-real-time:v4.0',
+            trackRealTime: trackRealTimeDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },
