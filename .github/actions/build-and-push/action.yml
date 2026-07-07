@@ -26,16 +26,19 @@ runs:
       shell: bash
       run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Prepare build args
+    - name: Prepare build config
       id: prepare
       shell: bash
       run: |
         set -euo pipefail
 
         APP_CONFIG=$(python3 -c "
-        import yaml, json, sys
+        import yaml, json
         config = yaml.safe_load(open('${{ inputs.config }}'))
-        print(json.dumps(config.get('${{ inputs.app }}')))
+        app = config.get('${{ inputs.app }}')
+        if not app:
+          raise SystemExit(f'Unknown app: ${{ inputs.app }} — no config defined')
+        print(json.dumps(app))
         ")
 
         ARGS="APP_NAME=${{ inputs.app }}"
@@ -45,20 +48,39 @@ runs:
           ARGS+=$'\n'"$line"
         done < <(echo "$APP_CONFIG" | jq -r '.build.env_vars | to_entries[] | "\(.key)=\(.value)"')
 
-        while IFS=$'\t' read -r env_var secret_path; do
-          value=$(gcloud secrets versions access "$secret_path" --quiet)
-          echo "::add-mask::$value"
-          ARGS+=$'\n'"$env_var=$value"
-        done < <(echo "$APP_CONFIG" | jq -r '(.build.secrets // {}) | to_entries[] | [.key, .value] | @tsv')
-
+        SECRET_MAPPINGS=$(echo "$APP_CONFIG" | jq -r '(.build.secrets // {}) | to_entries[] | "\(.key):\(.value)"')
+        SECRET_NAMES=$(echo "$APP_CONFIG" | jq -c '(.build.secrets // {}) | keys')
         TARGET=$(echo "$APP_CONFIG" | jq -r '.target')
 
         {
           echo "args<<EOF"
           echo "$ARGS"
           echo "EOF"
+          echo "secret_mappings<<EOF"
+          echo "$SECRET_MAPPINGS"
+          echo "EOF"
+          echo "secret_names=$SECRET_NAMES"
           echo "target=$TARGET"
         } >> "$GITHUB_OUTPUT"
+
+    - name: Fetch build secrets
+      id: build-secrets
+      if: steps.prepare.outputs.secret_mappings != ''
+      uses: google-github-actions/get-secretmanager-secrets@v2
+      with:
+        secrets: ${{ steps.prepare.outputs.secret_mappings }}
+        export_to_environment: true
+
+    - name: Assemble docker secrets
+      id: docker-secrets
+      shell: bash
+      run: |
+        SECRETS="NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-access-token }}"
+        while IFS= read -r name; do
+          val=$(printenv "$name" || true)
+          [ -n "$val" ] && SECRETS+=$'\n'"$name=$val"
+        done < <(echo '${{ steps.prepare.outputs.secret_names }}' | jq -r '.[]')
+        { echo "value<<EOF"; echo "$SECRETS"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
@@ -67,7 +89,6 @@ runs:
         push: true
         tags: ${{ inputs.image }}
         build-args: ${{ steps.prepare.outputs.args }}
-        secrets: |
-          NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-access-token }}
+        secrets: ${{ steps.docker-secrets.outputs.value }}
         cache-from: type=gha,scope=frontend
         cache-to: type=gha,scope=frontend,mode=max
