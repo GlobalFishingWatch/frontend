@@ -16,6 +16,7 @@ import { TimebarIntervalSelector } from './components/interval-selector'
 import { TimebarPlayback } from './components/playback'
 import { TimebarTimeRangeSelector } from './components/timerange-button'
 import { TimebarToolWrapper } from './components/tool-wrapper'
+import { TimebarToolbarWrapper } from './components/toolbar-wrapper'
 import { TimebarTimeline } from './timeline/timeline'
 import type { StickUnit } from './timeline/timeline-context'
 import { useResizableHeight } from './utils/use-resizable-height'
@@ -181,6 +182,7 @@ export function Timebar({
 Timebar.Playback = TimebarPlayback
 Timebar.IntervalSelector = TimebarIntervalSelector
 Timebar.TimeRangeSelector = TimebarTimeRangeSelector
+Timebar.ToolbarWrapper = TimebarToolbarWrapper
 Timebar.Tools = {
   Wrapper: TimebarToolWrapper,
   Bookmark: TimebarBookmarkButton,

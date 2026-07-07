@@ -518,7 +518,7 @@ const TimebarWrapper = () => {
                 onTogglePlay={onTogglePlay}
               />
             )}
-            <Timebar.Tools.Wrapper>
+            <Timebar.ToolbarWrapper>
               <Timebar.TimeRangeSelector showDateInputs={timeMode === 'historical'} />
               {timeMode === 'realTime' ? (
                 <Timebar.Tools.Wrapper>
@@ -527,7 +527,7 @@ const TimebarWrapper = () => {
               ) : (
                 <Timebar.Tools.Bookmark />
               )}
-            </Timebar.Tools.Wrapper>
+            </Timebar.ToolbarWrapper>
             {timeMode === 'historical' && <Timebar.IntervalSelector />}
           </Fragment>
         )}
