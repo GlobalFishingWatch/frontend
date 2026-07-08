@@ -6,6 +6,8 @@ import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
@@ -27,6 +29,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
+import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
@@ -63,6 +66,7 @@ function VesselGroupReport() {
   const timeRange = useSelector(selectReportVesselGroupTimeRange)
   const reportVesselGraph = useSelector(selectReportVesselGraph)
   const userData = useSelector(selectUserData)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -70,8 +74,15 @@ function VesselGroupReport() {
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
   const bboxHash = bbox ? bbox.join(',') : ''
-  const isOutdated = isOutdatedVesselGroup(vesselGroup)
+  const vesselGroupDatasets =
+    vesselGroup?.vesselsSummary?.datasets ?? (vesselGroup?.vessels || []).map((v) => v.dataset)
+  const hasDeprecatedVessels = hasVesselGroupVesselsDeprecated(
+    vesselGroupDatasets,
+    deprecatedDatasets
+  )
+  const isOutdated = isOutdatedVesselGroup(vesselGroup) || hasDeprecatedVessels
   const onEditClick = useEditVesselGroupModal()
+  const { migrateToLatestVesselGroup, isLoading: isMigrating } = useMigrateToLatestVesselGroup()
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
@@ -173,10 +184,19 @@ function VesselGroupReport() {
       <div className={styles.emptyState}>
         <div className={styles.updateContainer}>
           <label>{t((t) => t.vesselGroupReport.linkDisabled)}</label>
-          {isOwnedByUser && (
-            <Button onClick={() => onEditClick(vesselGroup)}>
+          {isOwnedByUser ? (
+            <Button
+              loading={isMigrating}
+              onClick={() =>
+                hasDeprecatedVessels
+                  ? migrateToLatestVesselGroup(vesselGroup)
+                  : onEditClick(vesselGroup)
+              }
+            >
               {t((t) => t.vesselGroup.clickToUpdate)}
             </Button>
+          ) : (
+            <p>{t((t) => t.vesselGroupReport.notOwner)}</p>
           )}
         </div>
       </div>
