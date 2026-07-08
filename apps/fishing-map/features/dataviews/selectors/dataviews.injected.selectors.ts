@@ -37,7 +37,9 @@ import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstance,
+  getVesselGroupReportSupportsPresence,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectVGRDatasets } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/reports/reports.config'
 import {
   selectPortReportDatasetId,
@@ -177,6 +179,7 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     selectReportVesselGroupId,
     selectPresenceDataview,
     selectFishingDataview,
+    selectVGRDatasets,
   ],
   (
     workspaceDataviewInstancesMerged,
@@ -184,7 +187,8 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     reportCategory,
     reportVesselGroupId,
     presenceDataview,
-    fishingDataview
+    fishingDataview,
+    vesselGroupDatasets
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
@@ -206,7 +210,10 @@ export const selectVGRDataviewInstancesInjected = createSelector(
         }
       }
       if (reportCategory === 'activity') {
-        const activityReportSubCategories: ReportActivitySubCategory[] = ['fishing', 'presence']
+        const supportsPresence = getVesselGroupReportSupportsPresence(vesselGroupDatasets)
+        const activityReportSubCategories: ReportActivitySubCategory[] = supportsPresence
+          ? ['fishing', 'presence']
+          : ['fishing']
         activityReportSubCategories.forEach((category) => {
           const activitySubcategoryInstance = getVesselGroupActivityDataviewInstance({
             vesselGroupId: reportVesselGroupId,

@@ -4,6 +4,7 @@ import type {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers'
 
@@ -40,6 +41,21 @@ export const VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS: VesselGroupActivityDataviewId[]
 
 export function isVesselGroupActivityDataview(dataviewId: string) {
   return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(dataviewId as VesselGroupActivityDataviewId)
+}
+
+// TODO: replace with a proper per-dataset presence support flag once available.
+export const PRESENCE_UNSUPPORTED_VESSEL_GROUP_DATASETS = [
+  'public-vms-bra-vessel-identity',
+  'public-vms-ecu-vessel-identity',
+]
+
+export function getVesselGroupReportSupportsPresence(vesselGroupDatasets: string[] = []): boolean {
+  if (!vesselGroupDatasets.length) {
+    return true
+  }
+  return vesselGroupDatasets.some((datasetId) => {
+    return !PRESENCE_UNSUPPORTED_VESSEL_GROUP_DATASETS.includes(removeDatasetVersion(datasetId))
+  })
 }
 
 export type VesselGroupEventsDataviewId =

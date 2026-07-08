@@ -10,6 +10,8 @@ import {
   getReportSubCategoryFromDataview,
   isSupportedReportDataview,
 } from 'features/reports/report-area/area-reports.utils'
+import { getVesselGroupReportSupportsPresence } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectVGRDatasets } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type {
   AnyReportSubCategory,
   ReportActivitySubCategory,
@@ -58,11 +60,20 @@ export const selectActiveActivityReportSubCategories = createSelector(
     selectActiveReportSubCategoriesByCategory<ReportActivitySubCategory>(
       DataviewCategory.VesselGroups
     ),
+    selectVGRDatasets,
   ],
-  (isVesselGroupReportLocation, activityReportSubCategories, vesselGroupReportSubCategories) => {
-    return isVesselGroupReportLocation
+  (
+    isVesselGroupReportLocation,
+    activityReportSubCategories,
+    vesselGroupReportSubCategories,
+    vesselGroupDatasets
+  ) => {
+    if (!isVesselGroupReportLocation) {
+      return activityReportSubCategories
+    }
+    return getVesselGroupReportSupportsPresence(vesselGroupDatasets)
       ? vesselGroupReportSubCategories
-      : activityReportSubCategories
+      : vesselGroupReportSubCategories.filter((subCategory) => subCategory !== 'presence')
   }
 )
 
