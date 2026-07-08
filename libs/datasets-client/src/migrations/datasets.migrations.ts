@@ -15,15 +15,15 @@ export const LEGACY_DATASETS_TO_LATEST_VMS_FISHING: DatasetsMigration = {
 }
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_PRESENCE: DatasetsMigration = {
-  // 'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
-  'public-bra-onyxsat-fishing-effort:v20211126': LATEST_DATASETS_VMS.bra.presence,
-  'public-chile-fishing-effort:v20211126': LATEST_DATASETS_VMS.chl.presence,
-  'public-costa-rica-fishing-effort:v20211126': LATEST_DATASETS_VMS.cri.presence,
-  'public-ecuador-fishing-effort:v20211126': LATEST_DATASETS_VMS.ecu.presence,
-  'public-norway-fishing-effort:v20220112': LATEST_DATASETS_VMS.nor.presence,
-  'public-panama-fishing-effort:v20211126': LATEST_DATASETS_VMS.pan.presence,
-  'public-peru-fishing-effort:v20211126': LATEST_DATASETS_VMS.per.presence,
-  'public-png-fishing-effort:v20230210': LATEST_DATASETS_VMS.png.presence,
+  // 'public-belize-presence:v20220304': LATEST_DATASETS_VMS.blz.fishing,
+  'public-bra-onyxsat-presence:v20211126': LATEST_DATASETS_VMS.bra.presence,
+  'public-chile-presence:v20211126': LATEST_DATASETS_VMS.chl.presence,
+  'public-costa-rica-presence:v20211126': LATEST_DATASETS_VMS.cri.presence,
+  'public-ecuador-presence:v20211126': LATEST_DATASETS_VMS.ecu.presence,
+  'public-norway-presence:v20220112': LATEST_DATASETS_VMS.nor.presence,
+  'public-panama-presence:v20211126': LATEST_DATASETS_VMS.pan.presence,
+  'public-peru-presence:v20211126': LATEST_DATASETS_VMS.per.presence,
+  'public-png-presence:v20230210': LATEST_DATASETS_VMS.png.presence,
 }
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_IDENTITY: DatasetsMigration = {
