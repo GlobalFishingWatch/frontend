@@ -88,3 +88,15 @@ user-groups-admin:
   deploy:
     env_vars:
       BASIC_AUTH: off
+
+port-labeler:
+  target: production-nginx
+  build:
+    env_vars:
+      API_GATEWAY: https://gateway.api.staging.globalfishingwatch.org
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/BASIC_AUTH_PASS_PORT_LABELER/versions/latest
