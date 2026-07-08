@@ -179,29 +179,6 @@ function VesselGroupReport() {
   )
 
   const isOwnedByUser = vesselGroup?.ownerId === userData?.id
-  if (isOutdated) {
-    return (
-      <div className={styles.emptyState}>
-        <div className={styles.updateContainer}>
-          <label>{t((t) => t.vesselGroupReport.linkDisabled)}</label>
-          {isOwnedByUser ? (
-            <Button
-              loading={isMigrating}
-              onClick={() =>
-                hasDeprecatedVessels
-                  ? migrateToLatestVesselGroup(vesselGroup)
-                  : onEditClick(vesselGroup)
-              }
-            >
-              {t((t) => t.vesselGroup.clickToUpdate)}
-            </Button>
-          ) : (
-            <p>{t((t) => t.vesselGroupReport.notOwner)}</p>
-          )}
-        </div>
-      </div>
-    )
-  }
 
   if (reportStatus === AsyncReducerStatus.Error) {
     return <VesselGroupReportError vesselGroupId={vesselGroupId} />
@@ -209,6 +186,28 @@ function VesselGroupReport() {
 
   return (
     <div className={styles.container}>
+      {isOutdated && (
+        <div className={styles.emptyState}>
+          <div className={styles.updateContainer}>
+            <label>{t((t) => t.vesselGroupReport.linkDisabled)}</label>
+            {isOwnedByUser ? (
+              <Button
+                loading={isMigrating}
+                onClick={() =>
+                  hasDeprecatedVessels
+                    ? migrateToLatestVesselGroup(vesselGroup)
+                    : onEditClick(vesselGroup)
+                }
+              >
+                {t((t) => t.vesselGroup.clickToUpdate)}
+              </Button>
+            ) : (
+              <p>{t((t) => t.vesselGroupReport.notOwner)}</p>
+            )}
+          </div>
+        </div>
+      )}
+
       <Tabs
         tabs={sectionTabs}
         activeTab={reportCategory}
