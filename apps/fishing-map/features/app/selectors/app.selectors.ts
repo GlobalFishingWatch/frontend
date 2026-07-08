@@ -10,14 +10,22 @@ import {
   getLatestEndDateFromDatasets,
 } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectWorkspaceStateProperty } from 'features/workspace/workspace.selectors'
+import { selectRealTimeLatestUpdate } from 'features/timebar/timebar.slice'
+import {
+  selectIsRealTimeMode,
+  selectWorkspaceStateProperty,
+} from 'features/workspace/workspace.selectors'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
+import { getRealTimeLatestAvailableDataDate, getUTCDateTime } from 'utils/dates'
 
 const EMPTY_ARRAY: [] = []
 
 export const selectLatestAvailableDataDate = createSelector(
-  [selectDataviewInstancesResolvedVisible],
-  (dataviews) => {
+  [selectIsRealTimeMode, selectRealTimeLatestUpdate, selectDataviewInstancesResolvedVisible],
+  (isRealTimeMode, realTimeLatestUpdate, dataviews) => {
+    if (isRealTimeMode) {
+      return getRealTimeLatestAvailableDataDate(getUTCDateTime(realTimeLatestUpdate))
+    }
     const activeDatasets = dataviews?.flatMap((dataview) => {
       if (!dataview || dataview.category === DataviewCategory.Context) {
         return EMPTY_ARRAY

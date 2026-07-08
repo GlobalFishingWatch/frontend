@@ -37,7 +37,11 @@ export function useTimebarBookmark() {
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback((start: string, end: string) => {
     if (!start || !end) {
-      trackEvent({ category: TrackCategory.Timebar, action: 'Bookmark timerange', label: 'removed' })
+      trackEvent({
+        category: TrackCategory.Timebar,
+        action: 'Bookmark timerange',
+        label: 'removed',
+      })
       setBookmark(null)
       return
     }
@@ -60,7 +64,9 @@ export function useOnTimebarRangeChange(onToggleFixedTooltip: (toggle?: boolean)
 
   return useCallback<NonNullable<TimebarProps['onChange']>>(
     (e) => {
-      if (e.start === start && e.end === end) return
+      if (e.start === start && e.end === end) {
+        return
+      }
       if (e.source && GA_ACTIONS[e.source]) {
         trackEvent({
           category: TrackCategory.Timebar,
@@ -77,7 +83,15 @@ export function useOnTimebarRangeChange(onToggleFixedTooltip: (toggle?: boolean)
         fitAreaInViewport()
       }
     },
-    [start, end, onTimebarChange, appStore, reportAreaLocation, onToggleFixedTooltip, fitAreaInViewport]
+    [
+      start,
+      end,
+      onTimebarChange,
+      appStore,
+      reportAreaLocation,
+      onToggleFixedTooltip,
+      fitAreaInViewport,
+    ]
   )
 }
 

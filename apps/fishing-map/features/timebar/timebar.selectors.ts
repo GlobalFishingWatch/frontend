@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { DateTime } from 'luxon'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
@@ -28,9 +29,12 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/da
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
-import { getUTCDateTime } from 'utils/dates'
+import { getRealTimeTimerange, getUTCDateTime } from 'utils/dates'
+
+import { selectRealTimeLatestUpdate } from './timebar.slice'
 
 export const selectActiveActivityDataviewsByVisualisation = (
   timebarVisualisation: TimebarVisualisations
@@ -98,23 +102,55 @@ const selectDatasetsExtent = createSelector([selectActiveDatasets], (activeDatas
   })
 })
 
-export const selectAvailableStart = createSelector([selectDatasetsExtent], (datasetsExtent) => {
-  const defaultAvailableStartMs = getUTCDateTime(AVAILABLE_START).toMillis()
-  const availableStart = getUTCDateTime(
-    Math.min(defaultAvailableStartMs, datasetsExtent.extentStart || Infinity)
-  ).toISO() as string
-  return availableStart
-})
+export const selectRealTimeTimerange = createSelector(
+  [selectIsRealTimeMode, selectRealTimeLatestUpdate],
+  (isRealTimeMode, realTimeLatestUpdate) => {
+    if (isRealTimeMode) {
+      return getRealTimeTimerange(DateTime.fromISO(realTimeLatestUpdate))
+    }
+    return null
+  }
+)
 
-export const selectAvailableEnd = createSelector([selectDatasetsExtent], (datasetsExtent) => {
-  const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
-  const availableEndMs = getUTCDateTime(
-    Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd || -Infinity)
-  )
-    .endOf('day')
-    .toISO() as string
-  return availableEndMs
-})
+export const selectAvailableStart = createSelector(
+  [selectRealTimeTimerange, selectDatasetsExtent],
+  (realTimeTimerange, datasetsExtent) => {
+    if (realTimeTimerange) {
+      return realTimeTimerange?.start
+    }
+    const defaultAvailableStartMs = getUTCDateTime(AVAILABLE_START).toMillis()
+    const availableStart = getUTCDateTime(
+      Math.min(defaultAvailableStartMs, datasetsExtent.extentStart || Infinity)
+    ).toISO() as string
+    return availableStart
+  }
+)
+
+export const selectAvailableEnd = createSelector(
+  [selectRealTimeTimerange, selectDatasetsExtent],
+  (realTimeTimerange, datasetsExtent) => {
+    if (realTimeTimerange) {
+      return realTimeTimerange?.end
+    }
+    const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
+    const availableEndMs = getUTCDateTime(
+      Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd || -Infinity)
+    )
+      .endOf('day')
+      .toISO() as string
+    return availableEndMs
+  }
+)
+
+export const selectHasRealTimeDataUpdatesAvailable = createSelector(
+  [selectIsRealTimeMode, selectRealTimeLatestUpdate],
+  (isRealTimeMode, realTimeLatestUpdate) => {
+    if (isRealTimeMode) {
+      return DateTime.fromISO(realTimeLatestUpdate).diffNow().milliseconds > 0
+    }
+    return false
+  }
+)
 
 export const selectTimebarSelectedDataviews = createSelector(
   [

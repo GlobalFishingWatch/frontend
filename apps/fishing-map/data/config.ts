@@ -69,6 +69,10 @@ export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
+
+export const REAL_TIME_DATA_DAYS_AVAILABLE = 3
+export const REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES = 10
+
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(
   { hour: 0, minute: 0, second: 0 },
