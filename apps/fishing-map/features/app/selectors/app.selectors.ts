@@ -16,7 +16,6 @@ import {
   selectWorkspaceStateProperty,
 } from 'features/workspace/workspace.selectors'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
-import { getRealTimeLatestAvailableDataDate, getUTCDateTime } from 'utils/dates'
 
 const EMPTY_ARRAY: [] = []
 
@@ -24,7 +23,7 @@ export const selectLatestAvailableDataDate = createSelector(
   [selectIsRealTimeMode, selectRealTimeLatestUpdate, selectDataviewInstancesResolvedVisible],
   (isRealTimeMode, realTimeLatestUpdate, dataviews) => {
     if (isRealTimeMode) {
-      return getRealTimeLatestAvailableDataDate(getUTCDateTime(realTimeLatestUpdate))
+      return realTimeLatestUpdate
     }
     const activeDatasets = dataviews?.flatMap((dataview) => {
       if (!dataview || dataview.category === DataviewCategory.Context) {

@@ -42,6 +42,7 @@ import {
   useTimebarBookmark,
   useTimebarMouseInteractions,
 } from 'features/timebar/timebar-interactions.hooks'
+import { useRealTimeDataUpdates } from 'features/timebar/timebar-realtime.hooks'
 import {
   useTimebarVesselEvents,
   useTimebarVesselTracks,
@@ -163,6 +164,7 @@ const TimebarTracksEventsWrapper = memo(
 
 const TimebarWrapper = () => {
   useTimebarVisualisation()
+  useRealTimeDataUpdates()
 
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()

@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 
-import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
+import { AVAILABLE_END, AVAILABLE_START, REAL_TIME_DATA_DAYS_AVAILABLE } from 'data/config'
 import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
@@ -32,7 +32,7 @@ import { selectReportCategory } from 'features/reports/reports.selectors'
 import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
-import { getRealTimeTimerange, getUTCDateTime } from 'utils/dates'
+import { getUTCDateTime } from 'utils/dates'
 
 import { selectRealTimeLatestUpdate } from './timebar.slice'
 
@@ -102,11 +102,26 @@ const selectDatasetsExtent = createSelector([selectActiveDatasets], (activeDatas
   })
 })
 
+export const selectRealTimeLatestAvailableTimerange = createSelector(
+  [selectRealTimeLatestUpdate],
+  (realTimeLatestUpdate) => {
+    if (!realTimeLatestUpdate) return null
+
+    return {
+      end: realTimeLatestUpdate,
+      // TODO: use endDate of activity presence dataset
+      start: DateTime.fromISO(realTimeLatestUpdate, { zone: 'utc' })
+        .minus({ days: REAL_TIME_DATA_DAYS_AVAILABLE })
+        .toISO() as string,
+    }
+  }
+)
+
 export const selectRealTimeTimerange = createSelector(
-  [selectIsRealTimeMode, selectRealTimeLatestUpdate],
-  (isRealTimeMode, realTimeLatestUpdate) => {
+  [selectIsRealTimeMode, selectRealTimeLatestAvailableTimerange],
+  (isRealTimeMode, realTimeLatestAvailableTimerange) => {
     if (isRealTimeMode) {
-      return getRealTimeTimerange(DateTime.fromISO(realTimeLatestUpdate))
+      return realTimeLatestAvailableTimerange
     }
     return null
   }
@@ -139,16 +154,6 @@ export const selectAvailableEnd = createSelector(
       .endOf('day')
       .toISO() as string
     return availableEndMs
-  }
-)
-
-export const selectHasRealTimeDataUpdatesAvailable = createSelector(
-  [selectIsRealTimeMode, selectRealTimeLatestUpdate],
-  (isRealTimeMode, realTimeLatestUpdate) => {
-    if (isRealTimeMode) {
-      return DateTime.fromISO(realTimeLatestUpdate).diffNow().milliseconds > 0
-    }
-    return false
   }
 )
 

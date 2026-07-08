@@ -15,7 +15,7 @@ type TimebarSlice = {
   highlightedEvents: string[] | undefined
   highlightedEventSelected: string | undefined
   hasChangedSettingsOnce: boolean
-  realTimeLatestUpdate: string
+  realTimeLatestUpdate: string | undefined
 }
 
 const initialState: TimebarSlice = {
@@ -23,7 +23,7 @@ const initialState: TimebarSlice = {
   highlightedEvents: [],
   highlightedEventSelected: undefined,
   hasChangedSettingsOnce: false,
-  realTimeLatestUpdate: DateTime.now().toISO() as string,
+  realTimeLatestUpdate: undefined,
 }
 
 const slice = createSlice({
