@@ -5,47 +5,34 @@ import { DateTime } from 'luxon'
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
-import { REAL_TIME_DATA_DAYS_AVAILABLE, REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES } from 'data/config'
+import { REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES } from 'data/config'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
 export { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 
 function getFlooredMinute(now: DateTime): number {
-  const localNow = now.toLocal()
+  const utcNow = now.toUTC()
   return (
-    Math.floor(localNow.minute / REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES) *
+    Math.floor(utcNow.minute / REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES) *
     REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES
   )
 }
 
-export function getRealTimeLatestAvailableDataDate(now: DateTime = DateTime.local()): string {
-  const localNow = now.toLocal()
-  return localNow
-    .set({ minute: getFlooredMinute(localNow), second: 0, millisecond: 0 })
+export function getRealTimeLatestAvailableDataDate(now: DateTime = DateTime.utc()): string {
+  const utcNow = now.toUTC()
+  return utcNow
+    .set({ minute: getFlooredMinute(utcNow), second: 0, millisecond: 0 })
     .toISO() as string
 }
 
-export function getMsUntilNextRealTimeUpdate(now: DateTime = DateTime.local()): number {
-  const localNow = now.toLocal()
-  const nextBoundary = localNow.set({
-    minute: getFlooredMinute(localNow) + REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES,
+export function getMsUntilNextRealTimeUpdate(now: DateTime = DateTime.utc()): number {
+  const utcNow = now.toUTC()
+  const nextBoundary = utcNow.set({
+    minute: getFlooredMinute(utcNow) + REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES,
     second: 0,
     millisecond: 0,
   })
-  return nextBoundary.diff(localNow).milliseconds
-}
-
-export function getRealTimeTimerange(now: DateTime = DateTime.local()): {
-  start: string
-  end: string
-} {
-  const latestAvailableDataDate = getRealTimeLatestAvailableDataDate(now)
-  return {
-    start: DateTime.fromISO(latestAvailableDataDate)
-      .minus({ days: REAL_TIME_DATA_DAYS_AVAILABLE })
-      .toISO() as string,
-    end: latestAvailableDataDate,
-  }
+  return nextBoundary.diff(utcNow).milliseconds
 }
 
 type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
