@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Button, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -37,7 +38,6 @@ import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { DatasetSubCategory } from '../../../../../libs/api-types/src/datasets'
 import { ReportCategory } from '../reports.types'
 import { selectReportVesselGroupTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'

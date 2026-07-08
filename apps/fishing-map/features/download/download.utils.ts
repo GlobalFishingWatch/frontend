@@ -1,9 +1,6 @@
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetFilterItem,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -44,6 +41,13 @@ export function getSupportedGroupByOptions(
       dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
   )
 
+  const gearTypeSupportedDatasets = dataviews.every((dataview) =>
+    dataview.config?.datasets?.every((datasetId) => {
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetId)
+      return dataset?.filters.fourwings?.some((f) => f.id.includes('geartype'))
+    })
+  )
+
   const reportGroupings = getDatasetConfigurationProperty({
     dataset: vesselDatasets[0],
     property: 'reportGroupings',
@@ -63,7 +67,7 @@ export function getSupportedGroupByOptions(
       }
     }
     if (
-      hasPresenceDataview &&
+      (!gearTypeSupportedDatasets || hasPresenceDataview) &&
       (option.id === GroupBy.GearType || option.id === GroupBy.FlagAndGearType)
     ) {
       return {
