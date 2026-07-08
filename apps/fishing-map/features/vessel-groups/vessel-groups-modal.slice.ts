@@ -168,7 +168,16 @@ const searchVesselsInVesselGroup = async ({
   let input: ParsedSearchInput | undefined
   if (ids && idField) {
     const property = vesselPropertyToApiSearch(idField as VesselPropertyGuessColumn)
-    const values = uniq(ids)
+    const values = uniq(
+      ids
+        .map((id) =>
+          id
+            .trim()
+            .replace(/[\\%_"]/g, '')
+            .replace(/\s+/g, ' ')
+        )
+        .filter(Boolean)
+    )
     input = { type: 'ids', property, values }
     whereClauses = [`(${values.map((id) => `${property} = "${id}"`).join(' OR ')})`]
   } else if (csvData && csvColumns) {

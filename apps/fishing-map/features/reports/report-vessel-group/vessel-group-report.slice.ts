@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
@@ -120,7 +120,15 @@ export const selectVGRStatus = (state: VesselGroupReportSliceState) =>
 export const selectVGRError = (state: VesselGroupReportSliceState) => state.vesselGroupReport.error
 export const selectVGRData = (state: VesselGroupReportSliceState) =>
   state.vesselGroupReport.vesselGroup
-export const selectVGRVessels = (state: VesselGroupReportSliceState) =>
-  state.vesselGroupReport.vesselGroup?.vessels
+
+export const selectVGRVessels = createSelector([selectVGRData], (vesselGroup) => {
+  return vesselGroup?.vessels
+})
+export const selectVGRDatasets = createSelector([selectVGRData], (vesselGroup) => {
+  return (
+    vesselGroup?.vesselsSummary?.datasets ||
+    uniq((vesselGroup?.vessels || []).map((v) => v.dataset))
+  )
+})
 
 export default vesselGroupReportSlice.reducer
