@@ -234,12 +234,19 @@ function TimeRangeSelector({
 
   const submit = (start: DateTime, end: DateTime) => {
     const disabledFields = getDisabledFields(start, end)
+    const interval = getFourwingsInterval(
+      start.toMillis(),
+      end.toMillis(),
+      FOURWINGS_INTERVALS_ORDER
+    )
+
     // on release, "stick" to day/hour
     const newStart = DateTime.fromObject(
       {
         year: start.year,
         month: disabledFields['MONTH'] ? 1 : start.month,
         day: disabledFields['DAY'] ? 1 : start.day,
+        hour: interval === 'HOUR' ? start.hour : 0,
       },
       { zone: 'utc' }
     ).toISO()
@@ -248,10 +255,11 @@ function TimeRangeSelector({
         year: end.year,
         month: disabledFields['MONTH'] ? 1 : end.month,
         day: disabledFields['DAY'] ? 1 : end.day,
+        hour: interval === 'HOUR' ? end.hour : 0,
       },
       { zone: 'utc' }
     )
-      .startOf('day')
+      .startOf(interval.toLowerCase() as DateTimeUnit)
       .toISO()
 
     if (newStart && newEnd) {
