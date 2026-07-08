@@ -54,7 +54,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const idColumnsOptions = useMemo(
     () =>
       hasVMSSource
-        ? [...ID_COLUMNS_OPTIONS, { id: 'shipname', label: 'Ship name' }]
+        ? [...ID_COLUMNS_OPTIONS, { id: 'shipname', label: 'Shipname' }]
         : ID_COLUMNS_OPTIONS,
     [hasVMSSource]
   )

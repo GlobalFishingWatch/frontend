@@ -30,6 +30,8 @@ import {
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
+export const CHILE_VMS_ID_FIELD = 'shipname'
+
 export type AddVesselGroupVessel =
   | IdentityVesselData
   | VesselGroupVesselIdentity
@@ -53,9 +55,9 @@ export const useMigrateToLatestVesselGroup = () => {
           source?.includes(SelfReportedSource.Chile.toLowerCase())
         )
 
-        const idField = isChileanVMS ? 'shipname' : 'mmsi'
+        const idField = isChileanVMS ? CHILE_VMS_ID_FIELD : 'mmsi'
         const text = vesselGroupVessels.entries
-          ?.map((v) => getVesselProperty(v, isChileanVMS ? 'shipname' : 'ssvid'))
+          ?.map((v) => getVesselProperty(v, isChileanVMS ? CHILE_VMS_ID_FIELD : 'ssvid'))
           .join(',')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {
