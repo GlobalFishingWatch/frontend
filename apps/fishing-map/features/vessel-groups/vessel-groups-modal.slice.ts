@@ -12,7 +12,7 @@ import type {
   IdentityVessel,
   VesselGroup,
 } from '@globalfishingwatch/api-types'
-import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
@@ -38,6 +38,8 @@ import {
 export type { VesselGroupVesselIdentity }
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
+
+export const VMS_PROPERTY_PREFIX = 'selfReportedInfo.'
 
 export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
 
@@ -164,13 +166,29 @@ const searchVesselsInVesselGroup = async ({
   if (!url) {
     throw new Error('Missing search url')
   }
+  const vesselFilterIds = new Set((dataset.filters?.vessels || []).map((filter) => filter.id))
+  const resolveSearchProperty = (property: string) => {
+    if (vesselFilterIds.has(property)) return property
+    const prefixed = `${VMS_PROPERTY_PREFIX}${property}`
+    return vesselFilterIds.has(prefixed) ? prefixed : property
+  }
   let whereClauses: string[] = []
   let input: ParsedSearchInput | undefined
   if (ids && idField) {
     const property = vesselPropertyToApiSearch(idField as VesselPropertyGuessColumn)
-    const values = uniq(ids)
+    const searchProperty = resolveSearchProperty(property)
+    const values = uniq(
+      ids
+        .map((id) =>
+          id
+            .trim()
+            .replace(/[\\%_"]/g, '')
+            .replace(/\s+/g, ' ')
+        )
+        .filter(Boolean)
+    )
     input = { type: 'ids', property, values }
-    whereClauses = [`(${values.map((id) => `${property} = "${id}"`).join(' OR ')})`]
+    whereClauses = [`(${values.map((id) => `${searchProperty} = "${id}"`).join(' OR ')})`]
   } else if (csvData && csvColumns) {
     const rows = csvData.flatMap((row) => {
       const rowValues = csvColumns.flatMap((column) => {
@@ -186,15 +204,19 @@ const searchVesselsInVesselGroup = async ({
     whereClauses = [
       `(${rows
         .map((rowValues) =>
-          rowValues.map(({ property, value }) => `${property} = "${value}"`).join(' AND ')
+          rowValues
+            .map(({ property, value }) => `${resolveSearchProperty(property)} = "${value}"`)
+            .join(' AND ')
         )
         .join(' OR ')})`,
     ]
   }
   if (transmissionDateFrom) {
-    whereClauses.push(`transmissionDateFrom < "${transmissionDateFrom}"`)
+    whereClauses.push(
+      `${resolveSearchProperty('transmissionDateFrom')} < "${transmissionDateFrom}"`
+    )
   } else if (transmissionDateTo) {
-    whereClauses.push(`transmissionDateTo > "${transmissionDateTo}"`)
+    whereClauses.push(`${resolveSearchProperty('transmissionDateTo')} > "${transmissionDateTo}"`)
   }
   if (whereClauses.length) {
     const searchResults = await fetchAllSearchVessels({

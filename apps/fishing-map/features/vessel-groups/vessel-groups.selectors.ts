@@ -18,6 +18,7 @@ import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups
 import {
   MAX_VESSEL_GROUP_VESSELS,
   selectVesselGroupModalCsvData,
+  selectVesselGroupModalSearchIdField,
   selectVesselGroupModalVessels,
   selectVesselGroupsModalSearchText,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -33,12 +34,16 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
 export const selectVesselGroupsModalSearchIds = createSelector(
-  [selectVesselGroupsModalSearchText],
-  (text) => {
+  [selectVesselGroupsModalSearchText, selectVesselGroupModalSearchIdField],
+  (text, idField) => {
     if (!text) {
       return []
     }
-    return text?.split(/[\s|,]+/).filter(Boolean)
+    const separator = idField === 'shipname' ? /[\n,]+/ : /[\s|,]+/
+    return text
+      .split(separator)
+      .map((value) => value.trim())
+      .filter(Boolean)
   }
 )
 

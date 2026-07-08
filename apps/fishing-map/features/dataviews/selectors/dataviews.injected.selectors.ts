@@ -29,6 +29,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import {
+  selectFishingDataview,
   selectPresenceDataview,
   selectVesselTemplateDataviews,
 } from 'features/dataviews/selectors/dataviews.static.selectors'
@@ -175,26 +176,27 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     selectReportCategorySelector,
     selectReportVesselGroupId,
     selectPresenceDataview,
+    selectFishingDataview,
   ],
   (
     workspaceDataviewInstancesMerged,
     isVesselGroupReportLocation,
     reportCategory,
     reportVesselGroupId,
-    presenceDataview
+    presenceDataview,
+    fishingDataview
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
     }
+    const presenceDatasets = presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId)
+    const fishingDatasets = fishingDataview?.datasetsConfig?.map((dataset) => dataset.datasetId)
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isVesselGroupReportLocation) {
       let vesselGroupDataviewInstance = workspaceDataviewInstancesMerged?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
-        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
-          (dataset) => dataset.datasetId
-        )
         vesselGroupDataviewInstance = getVesselGroupDataviewInstance(
           reportVesselGroupId,
           presenceDatasets
@@ -211,6 +213,7 @@ export const selectVGRDataviewInstancesInjected = createSelector(
             color: vesselGroupDataviewInstance?.config?.color,
             colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
             activityType: category,
+            datasets: category === 'presence' ? presenceDatasets : fishingDatasets,
           })
           if (activitySubcategoryInstance) {
             dataviewInstancesInjected.push(activitySubcategoryInstance)
