@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import type { DataviewInstance, VesselGroup } from '@globalfishingwatch/api-types'
+import {
+  type DataviewInstance,
+  SelfReportedSource,
+  type VesselGroup,
+} from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
@@ -42,15 +46,22 @@ export const useMigrateToLatestVesselGroup = () => {
       if (vesselGroup?.id) {
         setIsLoading(true)
         const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroup?.id)
-        const text = vesselGroupVessels.entries?.map((v) => getVesselProperty(v, 'ssvid')).join(',')
         const sources = uniq(
           vesselGroupVessels.entries?.flatMap((v) => deprecatedDatasets[v.dataset] || [])
         )
+        const isChileanVMS = sources.some((source) =>
+          source?.includes(SelfReportedSource.Chile.toLowerCase())
+        )
+
+        const idField = isChileanVMS ? 'shipname' : 'mmsi'
+        const text = vesselGroupVessels.entries
+          ?.map((v) => getVesselProperty(v, isChileanVMS ? 'shipname' : 'ssvid'))
+          .join(',')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {
           dispatch(setVesselGroupModalName(`${t((t) => t.vesselGroup.copyOf)} ${vesselGroup.name}`))
         }
-        dispatch(setVesselGroupSearchIdField('mmsi'))
+        dispatch(setVesselGroupSearchIdField(idField))
         dispatch(setVesselGroupModalSearchText(text))
         dispatch(setVesselGroupsModalOpen(true))
         setIsLoading(false)

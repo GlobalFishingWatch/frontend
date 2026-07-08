@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import papaparse from 'papaparse'
 
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
@@ -26,6 +27,7 @@ import {
   selectVesselGroupModalCsvColumns,
   selectVesselGroupModalCsvData,
   selectVesselGroupModalSearchIdField,
+  selectVesselGroupModalSources,
   selectVesselGroupsModalSearchText,
   setVesselGroupModalCsvColumns,
   setVesselGroupModalCsvData,
@@ -46,7 +48,16 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const [searchText, setSearchText] = useState(sliceSearchText)
   const debouncedSearchText = useDebounce(searchText, 200)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
+  const sources = useSelector(selectVesselGroupModalSources)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
+  const hasVMSSource = (sources || []).some((source) => getIsVMSDataset(source))
+  const idColumnsOptions = useMemo(
+    () =>
+      hasVMSSource
+        ? [...ID_COLUMNS_OPTIONS, { id: 'shipname', label: 'Ship name' }]
+        : ID_COLUMNS_OPTIONS,
+    [hasVMSSource]
+  )
   const hasGroupVesselsToSearch = vesselGroupModalSearchIds && vesselGroupModalSearchIds.length > 0
   const showIdsSection = !selectableColumns.length
   const showDropzoneSection = !vesselGroupModalSearchIds?.length
@@ -107,8 +118,8 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         <div className={styles.ids}>
           <Select
             label={t((t) => t.vesselGroup.idField)}
-            options={ID_COLUMNS_OPTIONS}
-            selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
+            options={idColumnsOptions}
+            selectedOption={idColumnsOptions.find((o) => o.id === searchIdField)}
             onSelect={onIdFieldChange}
           />
           <TextArea
