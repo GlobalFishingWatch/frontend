@@ -16,20 +16,20 @@ export const LEGACY_DATASETS_TO_LATEST_VMS_FISHING: DatasetsMigration = {
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_PRESENCE: DatasetsMigration = {
   // 'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
-  'public-bra-onyxsat-fishing-effort:v20211126': LATEST_DATASETS_VMS.bra.fishing,
-  'public-chile-fishing-effort:v20211126': LATEST_DATASETS_VMS.chl.fishing,
-  'public-costa-rica-fishing-effort:v20211126': LATEST_DATASETS_VMS.cri.fishing,
-  'public-ecuador-fishing-effort:v20211126': LATEST_DATASETS_VMS.ecu.fishing,
-  'public-norway-fishing-effort:v20220112': LATEST_DATASETS_VMS.nor.fishing,
-  'public-panama-fishing-effort:v20211126': LATEST_DATASETS_VMS.pan.fishing,
-  'public-peru-fishing-effort:v20211126': LATEST_DATASETS_VMS.per.fishing,
-  'public-png-fishing-effort:v20230210': LATEST_DATASETS_VMS.png.fishing,
+  'public-bra-onyxsat-fishing-effort:v20211126': LATEST_DATASETS_VMS.bra.presence,
+  'public-chile-fishing-effort:v20211126': LATEST_DATASETS_VMS.chl.presence,
+  'public-costa-rica-fishing-effort:v20211126': LATEST_DATASETS_VMS.cri.presence,
+  'public-ecuador-fishing-effort:v20211126': LATEST_DATASETS_VMS.ecu.presence,
+  'public-norway-fishing-effort:v20220112': LATEST_DATASETS_VMS.nor.presence,
+  'public-panama-fishing-effort:v20211126': LATEST_DATASETS_VMS.pan.presence,
+  'public-peru-fishing-effort:v20211126': LATEST_DATASETS_VMS.per.presence,
+  'public-png-fishing-effort:v20230210': LATEST_DATASETS_VMS.png.presence,
 }
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_IDENTITY: DatasetsMigration = {
   'public-png-vessel-identity-fishing:v20230210': LATEST_DATASETS_VMS.png.identity,
   'public-peru-vessel-identity-fishing:v20211126': LATEST_DATASETS_VMS.per.identity,
-  'public-panama-vessel-identity-fishing:v20211126': LATEST_DATASETS_VMS.pan.fishing,
+  'public-panama-vessel-identity-fishing:v20211126': LATEST_DATASETS_VMS.pan.identity,
   'public-norway-vessel-identity-non-fishing:v20220112': LATEST_DATASETS_VMS.nor.identity,
   'public-norway-vessel-identity-fishing:v20220112': LATEST_DATASETS_VMS.nor.identity,
   'public-ecuador-vessel-identity-non-fishing:v20211126': LATEST_DATASETS_VMS.ecu.identity,
