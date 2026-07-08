@@ -9,7 +9,7 @@ export const LATEST_DATASETS_VMS: Record<
   bra: {
     identity: 'public-vms-bra-vessel-identity:v4.0' as const,
     fishing: 'public-vms-bra-fishing-effort:v4.0' as const,
-    presence: 'public-vms-bra-presence:v4.0' as const,
+    presence: 'public-brazil-opentuna-presence:v20210311' as const, // Not updated in pipe4
   },
   chl: {
     identity: 'public-vms-chl-vessel-identity:v4.0' as const,
@@ -24,7 +24,7 @@ export const LATEST_DATASETS_VMS: Record<
   mne: {
     identity: 'public-vms-mne-vessel-identity:v4.0' as const,
     fishing: 'public-vms-mne-fishing-effort:v4.0' as const,
-    presence: 'public-vms-mne-presence:v4.0' as const,
+    presence: '' as const, // Not available in pipe4
   },
   per: {
     identity: 'public-vms-per-vessel-identity:v4.0' as const,
@@ -44,7 +44,7 @@ export const LATEST_DATASETS_VMS: Record<
   ecu: {
     identity: 'public-vms-ecu-vessel-identity:v4.0' as const,
     fishing: 'public-vms-ecu-fishing-effort:v4.0' as const,
-    presence: 'public-vms-ecu-presence:v4.0' as const,
+    presence: 'public-ecuador-presence:v20211126' as const, // Not updated in pipe4
   },
   cri: {
     identity: 'public-vms-cri-vessel-identity:v4.0' as const,
@@ -52,9 +52,10 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-cri-presence:v4.0' as const,
   },
   blz: {
-    identity: 'public-vms-blz-vessel-identity:v4.0' as const,
-    fishing: 'public-vms-blz-fishing-effort:v4.0' as const,
-    presence: 'public-vms-blz-presence:v4.0' as const,
+    // No longer maintained
+    identity: 'blz_v20220304_vessels_identity_public_fishing' as const,
+    fishing: 'public-belize-fishing-effort:v20220304' as const,
+    presence: 'public-belize-presence:v20220304' as const,
   },
   png: {
     identity: 'public-vms-png-vessel-identity:v4.0' as const,
