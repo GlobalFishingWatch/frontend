@@ -3,11 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import {
-  type DataviewInstance,
-  SelfReportedSource,
-  type VesselGroup,
-} from '@globalfishingwatch/api-types'
+import { type DataviewInstance, type VesselGroup } from '@globalfishingwatch/api-types'
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
@@ -30,7 +27,7 @@ import {
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
-export const CHILE_VMS_ID_FIELD = 'shipname'
+export const VMS_ID_FIELD = 'shipname'
 
 export type AddVesselGroupVessel =
   | IdentityVesselData
@@ -51,13 +48,11 @@ export const useMigrateToLatestVesselGroup = () => {
         const sources = uniq(
           vesselGroupVessels.entries?.flatMap((v) => deprecatedDatasets[v.dataset] || [])
         )
-        const isChileanVMS = sources.some((source) =>
-          source?.includes(SelfReportedSource.Chile.toLowerCase())
-        )
+        const isVMSDataset = sources.some((source) => getIsVMSDataset(source))
 
-        const idField = isChileanVMS ? CHILE_VMS_ID_FIELD : 'mmsi'
+        const idField = isVMSDataset ? VMS_ID_FIELD : 'mmsi'
         const text = vesselGroupVessels.entries
-          ?.map((v) => getVesselProperty(v, isChileanVMS ? CHILE_VMS_ID_FIELD : 'ssvid'))
+          ?.map((v) => getVesselProperty(v, isVMSDataset ? VMS_ID_FIELD : 'ssvid'))
           .join(',')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {

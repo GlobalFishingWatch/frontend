@@ -1401,7 +1401,6 @@
     "addToWorkspace": "Add vessel group to workspace",
     "addVisibleVessels": "Add visible vessels to vessel group",
     "clearFile": "Clear file",
-    "clickToUpdate": "Click to update",
     "clickToUpdateLong": "Click to update your vessel group to view the latest data and features",
     "columnSelection": "Select identifier columns to match with the GFW dataset",
     "columnSelectionTooltip": "Select identifier columns to enable vessel identity review and matching with the GFW dataset",
@@ -1482,7 +1481,6 @@
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
-    "notOwner": "Contact the owner of this vessel group to update the data",
     "user": "User Vessel Group"
   },
   "vesselGroups": {
