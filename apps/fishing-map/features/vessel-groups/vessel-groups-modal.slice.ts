@@ -40,7 +40,7 @@ export type { VesselGroupVesselIdentity }
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
 export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
-
+const VMS_PROPERTY_PREFIX = 'selfReportedInfo.'
 export type VesselGroupCsvData = Record<string, string>
 interface VesselGroupModalState {
   isModalOpen: boolean
@@ -191,10 +191,14 @@ const searchVesselsInVesselGroup = async ({
         .join(' OR ')})`,
     ]
   }
+  const supportsPrefixedTransmissionDate = dataset.filters?.vessels?.some(
+    (filter) => filter.id === `${VMS_PROPERTY_PREFIX}transmissionDateFrom`
+  )
+  const transmissionDatePrefix = supportsPrefixedTransmissionDate ? VMS_PROPERTY_PREFIX : ''
   if (transmissionDateFrom) {
-    whereClauses.push(`transmissionDateFrom < "${transmissionDateFrom}"`)
+    whereClauses.push(`${transmissionDatePrefix}transmissionDateFrom < "${transmissionDateFrom}"`)
   } else if (transmissionDateTo) {
-    whereClauses.push(`transmissionDateTo > "${transmissionDateTo}"`)
+    whereClauses.push(`${transmissionDatePrefix}transmissionDateTo > "${transmissionDateTo}"`)
   }
   if (whereClauses.length) {
     const searchResults = await fetchAllSearchVessels({
