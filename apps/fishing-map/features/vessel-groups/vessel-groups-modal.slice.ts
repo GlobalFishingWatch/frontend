@@ -12,7 +12,7 @@ import type {
   IdentityVessel,
   VesselGroup,
 } from '@globalfishingwatch/api-types'
-import { EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
 import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
