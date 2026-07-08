@@ -47,7 +47,7 @@ import {
   VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
 } from './vessel-group-report.dataviews'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
-import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
+import { selectVGRData, selectVGRDatasets, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
 
 import styles from './VesselGroupReport.module.css'
@@ -74,10 +74,9 @@ function VesselGroupReport() {
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
   const bboxHash = bbox ? bbox.join(',') : ''
-  const vesselGroupDatasets =
-    vesselGroup?.vesselsSummary?.datasets ?? (vesselGroup?.vessels || []).map((v) => v.dataset)
+  const vesselGroupReportDatasets = useSelector(selectVGRDatasets)
   const hasDeprecatedVessels = hasVesselGroupVesselsDeprecated(
-    vesselGroupDatasets,
+    vesselGroupReportDatasets,
     deprecatedDatasets
   )
   const isOutdated = isOutdatedVesselGroup(vesselGroup) || hasDeprecatedVessels
