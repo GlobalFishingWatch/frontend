@@ -185,7 +185,7 @@ function VesselGroupReport() {
 
   return (
     <div className={styles.container}>
-      {isOutdated && (
+      {/* {isOutdated && (
         <div className={styles.emptyState}>
           <div className={styles.updateContainer}>
             <label>{t((t) => t.vesselGroupReport.linkDisabled)}</label>
@@ -205,7 +205,7 @@ function VesselGroupReport() {
             )}
           </div>
         </div>
-      )}
+      )} */}
 
       <Tabs
         tabs={sectionTabs}
