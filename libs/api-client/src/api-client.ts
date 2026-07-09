@@ -503,6 +503,13 @@ export class GFW_API_CLASS {
                 // empty response instead of an raising error
                 if (res.status === 204) return
               })
+            case 'withHeaders':
+              return parseJSON(res)
+                .catch((e) => {
+                  if (res.status === 204) return
+                  throw e
+                })
+                .then((data) => ({ data, headers: res.headers }))
             case 'blob':
               return res.blob()
             case 'text':

@@ -360,6 +360,40 @@ describe('api-client', () => {
         expect(result).toBe(response)
       })
 
+      it('should return data and headers for responseType withHeaders', async () => {
+        const client = createApiClient()
+        const response = new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { 'X-Deprecated-Dataset': 'old-id=new-id' },
+        })
+        fetchMock.mockResolvedValue(response)
+
+        const result = await client.fetch<{ data: { ok: boolean }; headers: Headers }>(
+          '/datasets',
+          { responseType: 'withHeaders' }
+        )
+
+        expect(result).toEqual({ data: { ok: true }, headers: expect.any(Headers) })
+        expect(result.headers.get('X-Deprecated-Dataset')).toBe('old-id=new-id')
+      })
+
+      it('should throw parsed error for responseType withHeaders on 4xx', async () => {
+        const client = createApiClient()
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ message: 'Not found', messages: [] }), {
+            status: 404,
+            statusText: 'Not Found',
+          })
+        )
+
+        await expect(
+          client.fetch('/datasets/999', { responseType: 'withHeaders' })
+        ).rejects.toMatchObject({
+          status: 404,
+          message: 'Not found',
+        })
+      })
+
       it('should return arrayBuffer for responseType arrayBuffer', async () => {
         const client = createApiClient()
         const buffer = new ArrayBuffer(8)
