@@ -188,15 +188,17 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = () => {
-    const { startTime, endTime, strictTimeRange } = this.props
+  _getVesselChunks = (useBuffer = false) => {
+    const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
     }
+    const loadStart = useBuffer ? (bufferedStartTime ?? startTime) : startTime
+    const loadEnd = useBuffer ? (bufferedEndTime ?? endTime) : endTime
 
     const chunks = strictTimeRange
-      ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
-      : getVesselResourceChunks(startTime, endTime)
+      ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
+      : getVesselResourceChunks(loadStart, loadEnd)
     return chunks
   }
 
@@ -247,7 +249,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return []
     }
     const { zoom } = this.context.viewport
-    const chunks = this._getVesselChunks()
+    const chunks = this._getVesselChunks(true)
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []

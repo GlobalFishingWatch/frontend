@@ -128,8 +128,13 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
-      start: timeMode === 'realTime' && realTimeTimerange ? realTimeTimerange.start : start,
-      end: timeMode === 'realTime' && realTimeTimerange ? realTimeTimerange.end : end,
+      start,
+      end,
+      ...(timeMode === 'realTime' &&
+        realTimeTimerange && {
+          bufferedStart: realTimeTimerange.start,
+          bufferedEnd: realTimeTimerange.end,
+        }),
       environmentVisualizationMode,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
