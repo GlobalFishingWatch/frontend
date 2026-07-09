@@ -91,7 +91,7 @@ export type ReportVesselGraph =
 
 export type ReportVesselsState = {
   reportVesselFilter: string | undefined
-  reportVesselGraph: ReportVesselGraph
+  reportVesselGraph: ReportVesselsSubCategory
   reportVesselPage: number
   reportVesselResultsPerPage: number
   reportVesselOrderProperty: ReportVesselOrderProperty | undefined
