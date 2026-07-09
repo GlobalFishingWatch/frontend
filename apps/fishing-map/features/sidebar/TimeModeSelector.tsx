@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
+import { DEFAULT_TIME_RANGE } from 'data/config'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { selectRealTimeLatestAvailableTimerange } from 'features/timebar/timebar.selectors'
 import type { TimeRange } from 'features/timebar/timebar.slice'
@@ -20,7 +21,7 @@ function TimeModeSelector() {
   const { timerange, setTimerange } = useTimerangeConnect()
   const timeMode = useSelector(selectTimeMode)
   const realTimeTimerange = useSelector(selectRealTimeLatestAvailableTimerange)
-  const [previousTimeRange, setPreviousTimeRange] = useState<TimeRange | null>(null)
+  const [previousTimeRange, setPreviousTimeRange] = useState<TimeRange>(DEFAULT_TIME_RANGE)
 
   const options = [
     {
