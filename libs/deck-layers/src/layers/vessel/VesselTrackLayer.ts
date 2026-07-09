@@ -149,7 +149,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
     })
 
     const trackLayers = [
-      ...(visualizationMode !== 'positions'
+      ...(visualizationMode !== 'positions' && visualizationMode !== 'points'
         ? [
             // Transparent thicker layer for interactivity
             new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
@@ -180,7 +180,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
       }),
     ] as LayersList
 
-    if (visualizationMode === 'positions' && this.state.points?.length) {
+    if ((visualizationMode === 'positions' || visualizationMode === 'points') && this.state.points?.length) {
       const pointsLength = this.state.points.length
       const positions = this.state.points.flatMap((point, index) => {
         if (
@@ -210,6 +210,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
           id: `${id}-positions`,
           data: positions,
           iconBorder: false,
+          positionMode: visualizationMode === 'points' ? 'point' : 'icon',
         })
       )
     }

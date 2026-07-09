@@ -138,7 +138,11 @@ export const useGlobalConfigConnect = () => {
       vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
-      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
+      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions
+        ? 'positions'
+        : timeMode === 'realTime'
+          ? 'points'
+          : 'track',
       visibleEvents,
       timeMode,
     }

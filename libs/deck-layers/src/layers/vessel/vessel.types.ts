@@ -13,7 +13,7 @@ export interface VesselDeckLayersEvent {
 }
 
 export type VesselDataType = typeof TRACK_LAYER_TYPE | EventTypes
-export type VesselTrackVisualizationMode = 'track' | 'positions'
+export type VesselTrackVisualizationMode = 'track' | 'positions' | 'points'
 
 export type _VesselLayerProps = {
   name: string

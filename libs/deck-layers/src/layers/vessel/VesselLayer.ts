@@ -371,6 +371,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             name,
             iconSize: 18,
             iconBorder: true,
+            useCollisionFilter: false,
             highlightStartTime,
           })
         ),
