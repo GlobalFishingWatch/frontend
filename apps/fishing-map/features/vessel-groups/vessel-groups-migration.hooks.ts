@@ -35,7 +35,7 @@ export type AddVesselGroupVessel =
   | ReportTableVessel
 
 export const useMigrateToLatestVesselGroup = () => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingGroupId, setLoadingGroupId] = useState<VesselGroup['id'] | null>(null)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -43,7 +43,7 @@ export const useMigrateToLatestVesselGroup = () => {
   const migrateToLatestVesselGroup = useCallback(
     async (vesselGroup: VesselGroup) => {
       if (vesselGroup?.id) {
-        setIsLoading(true)
+        setLoadingGroupId(vesselGroup.id)
         const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroup?.id)
         const sources = uniq(
           vesselGroupVessels.entries?.flatMap((v) => deprecatedDatasets[v.dataset] || [])
@@ -61,7 +61,7 @@ export const useMigrateToLatestVesselGroup = () => {
         dispatch(setVesselGroupSearchIdField(idField))
         dispatch(setVesselGroupModalSearchText(text))
         dispatch(setVesselGroupsModalOpen(true))
-        setIsLoading(false)
+        setLoadingGroupId(null)
       }
     },
     [deprecatedDatasets, dispatch, t]
@@ -77,7 +77,12 @@ export const useMigrateToLatestVesselGroup = () => {
   )
 
   return useMemo(
-    () => ({ migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, isLoading }),
-    [migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, isLoading]
+    () => ({
+      migrateToLatestVesselGroupByDataview,
+      migrateToLatestVesselGroup,
+      loadingGroupId,
+      isLoading: loadingGroupId !== null,
+    }),
+    [migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, loadingGroupId]
   )
 }
