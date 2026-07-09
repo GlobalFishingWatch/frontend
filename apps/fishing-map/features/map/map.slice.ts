@@ -17,7 +17,6 @@ import type {
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import {
-  DatasetSubCategory,
   DatasetTypes,
   EndpointId,
   EventTypes,
@@ -422,7 +421,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersIds = heatmapFeatures.flatMap(
           (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
         )
-
         const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
           const activityProperty = heatmapProperties?.[i] || 'hours'
           return {
@@ -430,12 +428,16 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
             vessels: sublayerVessels
               .flatMap((vessels) => {
                 return vessels.map((vessel) => {
-                  const vesselInfo = vesselsInfo?.find((vesselInfo) => {
-                    const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) =>
-                      useVesselMMSI ? s.ssvid : s.id
-                    )
-                    return vesselInfoIds.includes(vessel.id)
-                  })
+                  const vesselInfo = useVesselMMSI
+                    ? vesselsInfo
+                        ?.flatMap((info) => {
+                          const match = info.selfReportedInfo?.find((s) => s.ssvid === vessel.id)
+                          return match ? [{ info, date: match.transmissionDateFrom || '' }] : []
+                        })
+                        .sort((a, b) => b.date.localeCompare(a.date))[0]?.info
+                    : vesselsInfo?.find((info) =>
+                        info.selfReportedInfo?.some((s) => s.id === vessel.id)
+                      )
                   const infoDataset = selectDatasetById(vesselInfo?.dataset as string)(state)
                   const trackFromRelatedDataset = infoDataset || vessel.dataset
                   const trackDatasetId = getRelatedDatasetByType(
