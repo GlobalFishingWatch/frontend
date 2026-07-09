@@ -501,6 +501,7 @@ export function isDataviewDeprecated(
     : false
   const configEvents = Array.isArray(config?.events) ? config.events : []
   const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
+
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
     dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets

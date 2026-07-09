@@ -51,7 +51,10 @@ export const selectVesselGroupSearchDatasets = createSelector(
   (datasets, privateUserGroups) => {
     const usersDatasetIds = [
       ...privateUserGroups.flatMap((group) => {
-        return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
+        return (PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []).flatMap((id) => [
+          id,
+          id.replace(/^private-/, 'public-'),
+        ])
       }),
       DEFAULT_VESSEL_IDENTITY_ID,
     ]

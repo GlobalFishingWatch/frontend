@@ -34,7 +34,7 @@ import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
-import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
+import { selectVGRData, selectVGRDatasets, selectVGRStatus } from './vessel-group-report.slice'
 
 import styles from './VesselGroupReportTitle.module.css'
 
@@ -49,8 +49,9 @@ export default function VesselGroupReportTitle() {
   const { isLoading, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const vesselGroupReportDatasets = useSelector(selectVGRDatasets)
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    vesselGroup?.vesselsSummary?.datasets,
+    vesselGroupReportDatasets,
     deprecatedDatasets
   )
   const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels
