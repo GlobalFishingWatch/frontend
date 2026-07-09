@@ -145,7 +145,7 @@ export const selectAvailableEnd = createSelector(
   [selectRealTimeTimerange, selectDatasetsExtent],
   (realTimeTimerange, datasetsExtent) => {
     if (realTimeTimerange) {
-      return realTimeTimerange?.end
+      return DateTime.fromISO(realTimeTimerange?.end, { zone: 'utc' }).endOf('day').toISO() as string
     }
     const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
     const availableEndMs = getUTCDateTime(

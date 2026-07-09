@@ -41,6 +41,7 @@ import {
 import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectRealTimeLatestUpdate } from 'features/timebar/timebar.slice'
 import {
   selectTimeMode,
   selectWorkspaceStatus,
@@ -91,6 +92,7 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
+  const realTimeLatestUpdate = useSelector(selectRealTimeLatestUpdate)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const trackGraphExtent = useTimebarTracksGraphExtent()
@@ -126,7 +128,7 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
-      end,
+      end: timeMode === 'realTime' && realTimeLatestUpdate ? realTimeLatestUpdate : end,
       environmentVisualizationMode,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
@@ -165,6 +167,7 @@ export const useGlobalConfigConnect = () => {
     showTimeComparison,
     timeComparisonValues,
     timeMode,
+    realTimeLatestUpdate,
   ])
 }
 

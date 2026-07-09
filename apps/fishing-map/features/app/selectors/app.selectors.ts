@@ -22,7 +22,7 @@ const EMPTY_ARRAY: [] = []
 export const selectLatestAvailableDataDate = createSelector(
   [selectIsRealTimeMode, selectRealTimeLatestUpdate, selectDataviewInstancesResolvedVisible],
   (isRealTimeMode, realTimeLatestUpdate, dataviews) => {
-    if (isRealTimeMode) {
+    if (isRealTimeMode && realTimeLatestUpdate) {
       return realTimeLatestUpdate
     }
     const activeDatasets = dataviews?.flatMap((dataview) => {
