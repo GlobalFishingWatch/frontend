@@ -85,7 +85,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {

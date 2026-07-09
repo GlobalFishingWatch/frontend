@@ -11,11 +11,22 @@ import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 
+import { LATEST_DATASETS_VMS } from '../../../../libs/datasets-client/src/migrations/datasets.latest'
+
 import {
   getTemporalResolutionOptions,
   GroupBy,
   TemporalResolution,
 } from './downloadActivity.config'
+
+// VMS datasets that don't have gear type column, so don't support grouping by gearType on download
+export const GEAR_TYPE_UNSUPPORTED_DATASET_IDS = [
+  LATEST_DATASETS_VMS.per.fishing,
+  LATEST_DATASETS_VMS.ecu.fishing,
+  LATEST_DATASETS_VMS.pan.fishing,
+  LATEST_DATASETS_VMS.png.fishing,
+  LATEST_DATASETS_VMS.cri.fishing,
+]
 
 export function getDownloadReportSupported(start: string, end: string) {
   if (!start || !end) {

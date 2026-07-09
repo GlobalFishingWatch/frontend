@@ -36,10 +36,10 @@ const DebugFeatureFlags: React.FC = () => {
       <div className={styles.header}>
         <Switch
           id="option_map_stats"
-          active={debugOptions.mapStats}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.MapStats))}
+          active={debugOptions.deckStats}
+          onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
         />
-        <label htmlFor="option_map_stats">Map stats</label>
+        <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
       </div>
       <p>Show fps and memory stats</p>
       <div className={styles.header}>
@@ -118,6 +118,17 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>See reports of polygon areas</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_report_preview"
+              active={featureFlags.reportPreview}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.ReportPreview))}
+            />
+            <label htmlFor="option_report_preview">
+              <strong>Feature flag:</strong> Report preview
+            </label>
+          </div>
+          <p>Show an area report sparkline preview in context layer popups</p>
           <div className={styles.header}>
             <Switch
               id="option_hotspot_button"

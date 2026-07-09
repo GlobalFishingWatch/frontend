@@ -68,13 +68,16 @@ export class VesselTrackPositionLayer extends CompositeLayer<
       iconSize = 15,
     } = this.props
 
-    if (!visible || !data || !data?.length) return []
+    if (!visible) return []
+
+    const positions = data ?? []
+    const labelData = name && highlightStartTime ? positions : []
 
     return [
       new VesselPositionIconLayer(
         this.getSubLayerProps({
           id: 'vessel-position-bg',
-          data: data,
+          data: positions,
           extensions: [new CollisionFilterExtension()],
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
@@ -90,7 +93,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
       new VesselPositionIconLayer(
         this.getSubLayerProps({
           id: 'vessel-position',
-          data: data,
+          data: positions,
           extensions: [new CollisionFilterExtension()],
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
@@ -107,7 +110,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             new VesselPositionIconLayer(
               this.getSubLayerProps({
                 id: 'vessel-position-hg',
-                data: data,
+                data: positions,
                 extensions: [new CollisionFilterExtension()],
                 iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
                 iconMapping: VESSEL_SPRITE_ICON_MAPPING,
@@ -122,15 +125,11 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             ),
           ]
         : []),
-      ...(name && highlightStartTime
-        ? [
-            new LabelLayer({
-              id: `${this.props.id}-vessel-position-label`,
-              data: data,
-              getText: () => name,
-            }),
-          ]
-        : []),
+      new LabelLayer({
+        id: `${this.props.id}-vessel-position-label`,
+        data: labelData,
+        getText: () => name,
+      }),
     ]
   }
 }

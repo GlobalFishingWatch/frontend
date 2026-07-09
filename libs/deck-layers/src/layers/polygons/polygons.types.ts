@@ -21,5 +21,4 @@ export type PolygonsLayerProps = DeckLayerProps<{
   color: string
   pickable?: boolean
   group?: LayerGroup
-  highlightedFeatures: PolygonPickingObject[]
 }>

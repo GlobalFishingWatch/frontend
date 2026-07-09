@@ -1,0 +1,83 @@
+name: Deploy to Cloud Run
+description: Reads per-app config and deploys a container image to Cloud Run
+
+inputs:
+  app:
+    description: Application name
+    required: true
+  image:
+    description: Full Docker image URI to deploy
+    required: true
+  config:
+    description: Path to the app config YAML file
+    required: false
+    default: .github/apps/development.yml
+  cloudrun-project:
+    description: GCP project hosting the Cloud Run service
+    required: false
+    default: gfw-development
+  region:
+    description: Cloud Run region
+    required: false
+    default: us-central1
+  cloudrun-service-account:
+    description: Service account the Cloud Run service runs as
+    required: true
+  service-name-prefix:
+    description: Prefix for the Cloud Run service name (e.g. dev-ui, sta-ui, ui)
+    required: false
+    default: dev-ui
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v3
+
+    - name: Deploy to Cloud Run
+      shell: bash
+      run: |
+        set -euo pipefail
+        APP="${{ inputs.app }}"
+
+        APP_CONFIG=$(python3 -c "
+        import yaml, json
+        config = yaml.safe_load(open('${{ inputs.config }}'))
+        app = config.get('$APP')
+        if not app:
+          raise SystemExit(f'Unknown app: $APP — no config defined')
+        print(json.dumps(app))
+        ")
+
+        ENV_VARS=$(echo "$APP_CONFIG" | jq -r '.deploy.env_vars | to_entries | map("\(.key)=\(.value)") | join(",")')
+        SET_SECRETS=$(echo "$APP_CONFIG" | jq -r '(.deploy.secrets // {}) | to_entries | map("\(.key)=\(.value)") | join(",")')
+
+        SECRETS_FLAG="--clear-secrets"
+        if [ -n "$SET_SECRETS" ]; then
+          SECRETS_FLAG="--set-secrets=$SET_SECRETS"
+        fi
+
+        gcloud run deploy "${{ inputs.service-name-prefix }}-$APP" \
+          --project "${{ inputs.cloudrun-project }}" \
+          --image "${{ inputs.image }}" \
+          --region "${{ inputs.region }}" \
+          --platform managed \
+          --allow-unauthenticated \
+          --set-env-vars "$ENV_VARS" \
+          $SECRETS_FLAG \
+          --service-account "${{ inputs.cloudrun-service-account }}"
+
+    - name: Clean old revisions
+      shell: bash
+      run: |
+        gcloud run revisions list \
+          --project "${{ inputs.cloudrun-project }}" \
+          --service "${{ inputs.service-name-prefix }}-${{ inputs.app }}" \
+          --region "${{ inputs.region }}" \
+          --format="value(metadata.name)" \
+          --sort-by="~metadata.creationTimestamp" \
+          | tail -n +4 \
+          | xargs -r -n1 gcloud run revisions delete \
+              --project "${{ inputs.cloudrun-project }}" \
+              --region "${{ inputs.region }}" \
+              --quiet

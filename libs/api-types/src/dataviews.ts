@@ -63,10 +63,6 @@ export type DataviewConfigVessel = {
   highlightEventEndTime?: string
   showVesselIcon?: boolean
 
-  /** Vessels to override the globalconfig start and end */
-  highlightStartTime?: string
-  highlightEndTime?: string
-
   /** Used to store the vessel name */
   name?: string
 

@@ -1,6 +1,7 @@
 import type { LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { bbox, bboxPolygon, featureCollection, point, rhumbBearing } from '@turf/turf'
+import { uniq } from 'es-toolkit'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
@@ -40,6 +41,7 @@ import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
 import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
+import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { VesselTrackLayerProps } from './VesselTrackLayer'
 import { VesselTrackLayer } from './VesselTrackLayer'
@@ -49,7 +51,9 @@ export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
 }
 
 export type VesselLayerProps = DeckLayerProps<
-  VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+  Omit<VesselTrackLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
+    Omit<VesselEventsLayerProps, 'highlightStartTime' | 'highlightEndTime' | 'highlightEventIds'> &
+    _VesselLayerProps
 >
 
 type VesselLayerState = {
@@ -57,6 +61,9 @@ type VesselLayerState = {
     [key in EventTypes | 'track']?: string
   }
   highlightedFeatures: DeckLayerPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
+  highlightEventIds?: string[]
 }
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
@@ -193,6 +200,23 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return chunks
   }
 
+  setHighlightedTime({ start, end }: { start?: number; end?: number }) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
+  }
+
+  setHighlightEventIds(highlightEventIds: string[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightEventIds })
+  }
+
   _getVesselTrackLayers() {
     const {
       trackUrl,
@@ -200,8 +224,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       startTime,
       endTime,
       color,
-      highlightStartTime,
-      highlightEndTime,
       highlightEventStartTime,
       highlightEventEndTime,
       minSpeedFilter,
@@ -214,6 +236,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackVisualizationMode,
       gapSegmentThreshold,
     } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
@@ -282,7 +305,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventLayers(): VesselEventsLayer[] {
-    const { visible, visibleEvents, events, highlightEventIds } = this.props
+    const { visible, visibleEvents, events } = this.props
+    const { highlightEventIds } = this.state || {}
+    const hoveredEventIds = this.state.highlightedFeatures.map((f) => f.id).filter(Boolean)
+    const mergedHighlightEventIds = uniq([...(highlightEventIds || []), ...hoveredEventIds])
     if (!visible) {
       return []
     }
@@ -306,7 +332,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           fetch: fetchWithGFWAPI,
           type,
           visible,
-          highlightEventIds,
+          highlightEventIds: mergedHighlightEventIds,
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
         })
@@ -322,13 +348,18 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, color, name, showVesselIcon } =
-      this.props
+    const { visible, color, name, showVesselIcon } = this.props
+    const { highlightStartTime, highlightEndTime } = this.state || {}
+    const trackData = this.getVesselTrackData()
+
+    if (!visible || !showVesselIcon || !trackData?.length) {
+      return []
+    }
+
     const hoveredFeature = this.state.highlightedFeatures.find(
       (f): f is VesselTrackPickingObject =>
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
     )
-    const trackData = this.getVesselTrackData()
 
     if (hoveredFeature?.interactionType === 'point') {
       return [
@@ -348,58 +379,60 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
     const start = highlightStartTime || hoveredFeature?.timestamp
     const end = highlightEndTime || hoveredFeature?.timestamp
-    if (!visible || !trackData?.length || !end || !start || !showVesselIcon) {
-      return []
+    let data: VesselTrackPositionFeature[] = []
+
+    if (start && end) {
+      const highlightCenter = end - (end - start) / 2
+      let timestampIndex = -1
+      const chunkIndex = trackData.findIndex((chunk) => {
+        if (
+          chunk.attributes &&
+          chunk.attributes.getTimestamp.value[0] < highlightCenter &&
+          chunk.attributes.getTimestamp.value[chunk.attributes.getTimestamp.value.length - 1] >
+            highlightCenter
+        ) {
+          timestampIndex = chunk.attributes.getTimestamp.value.findIndex((t, i) => {
+            return (
+              !chunk.startIndices.includes(i) &&
+              t >= highlightCenter &&
+              chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
+            )
+          })
+          return true
+        } else {
+          return false
+        }
+      })
+
+      if (chunkIndex !== -1 && timestampIndex !== -1) {
+        const coordIndex = timestampIndex * 2
+        const pointCoords = [
+          trackData[chunkIndex].attributes.getPath.value[coordIndex],
+          trackData[chunkIndex].attributes.getPath.value[coordIndex + 1],
+        ]
+        const nextPointCoords = [
+          trackData[chunkIndex].attributes.getPath.value[coordIndex + 2],
+          trackData[chunkIndex].attributes.getPath.value[coordIndex + 3],
+        ]
+        const pointBearing = rhumbBearing(pointCoords, nextPointCoords)
+        const centerPoint = point(pointCoords, {
+          layerId: this.root.id,
+          course: pointBearing,
+          timestamp: trackData[chunkIndex].attributes.getTimestamp.value[timestampIndex],
+          speed: trackData[chunkIndex].attributes.getSpeed.value[timestampIndex],
+          depth: trackData[chunkIndex].attributes.getElevation.value[timestampIndex],
+        })
+        if (centerPoint) {
+          data = [centerPoint]
+        }
+      }
     }
 
-    const highlightCenter = end - (end - start) / 2
-    let timestampIndex = -1
-    const chunkIndex = trackData.findIndex((chunk) => {
-      if (
-        chunk.attributes &&
-        chunk.attributes.getTimestamp.value[0] < highlightCenter &&
-        chunk.attributes.getTimestamp.value[chunk.attributes.getTimestamp.value.length - 1] >
-          highlightCenter
-      ) {
-        timestampIndex = chunk.attributes.getTimestamp.value.findIndex((t, i) => {
-          return (
-            !chunk.startIndices.includes(i) &&
-            t >= highlightCenter &&
-            chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
-          )
-        })
-        return true
-      } else {
-        return false
-      }
-    })
-
-    if (chunkIndex === -1 || timestampIndex === -1) return []
-
-    const coordIndex = timestampIndex * 2
-    const pointCoords = [
-      trackData[chunkIndex].attributes.getPath.value[coordIndex],
-      trackData[chunkIndex].attributes.getPath.value[coordIndex + 1],
-    ]
-    const nextPointCoords = [
-      trackData[chunkIndex].attributes.getPath.value[coordIndex + 2],
-      trackData[chunkIndex].attributes.getPath.value[coordIndex + 3],
-    ]
-    const pointBearing = rhumbBearing(pointCoords, nextPointCoords)
-    const centerPoint = point(pointCoords, {
-      layerId: this.root.id,
-      course: pointBearing,
-      timestamp: trackData[chunkIndex].attributes.getTimestamp.value[timestampIndex],
-      speed: trackData[chunkIndex].attributes.getSpeed.value[timestampIndex],
-      depth: trackData[chunkIndex].attributes.getElevation.value[timestampIndex],
-    })
-
-    if (!centerPoint) return []
     return [
       new VesselTrackPositionLayer(
         this.getSubLayerProps({
           visible,
-          data: [centerPoint],
+          data,
           getColor: color,
           name,
           highlightStartTime,

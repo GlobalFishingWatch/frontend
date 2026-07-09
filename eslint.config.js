@@ -9,6 +9,8 @@ export default defineConfig([
   {
     ignores: [
       '**/node_modules/**',
+      'dist/**',
+      '**/dist/**',
       // Generated files (e.g. protobuf decoders) are not hand-edited — don't lint them.
       '**/*.gen.js',
       '**/*.gen.ts',

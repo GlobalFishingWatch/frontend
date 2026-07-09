@@ -25,6 +25,7 @@
   padding: 3.5rem 3rem 3rem;
   box-shadow: var(--box-shadow-2);
   border-radius: var(--border-radius-1);
+  min-width: 24rem;
 }
 
 .title {

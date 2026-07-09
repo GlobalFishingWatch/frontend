@@ -153,7 +153,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           maxPointSize as number,
         ])
         deferredStateUpdates.scale = scale
-      } else if (this.state.scale) {
+      } else if (this.state?.scale) {
         deferredStateUpdates.scale = undefined
       }
     }
@@ -218,7 +218,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getError() {
-    return this?.state.error
+    return this.state?.error
   }
 
   _getData = (): Feature<Point>[] => {
