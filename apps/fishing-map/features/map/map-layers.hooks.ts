@@ -41,7 +41,7 @@ import {
 import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectRealTimeLatestUpdate } from 'features/timebar/timebar.slice'
+import { selectRealTimeTimerange } from 'features/timebar/timebar.selectors'
 import {
   selectTimeMode,
   selectWorkspaceStatus,
@@ -92,7 +92,7 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
-  const realTimeLatestUpdate = useSelector(selectRealTimeLatestUpdate)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const trackGraphExtent = useTimebarTracksGraphExtent()
@@ -128,11 +128,11 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
-      end: timeMode === 'realTime' && realTimeLatestUpdate ? realTimeLatestUpdate : end,
+      start: timeMode === 'realTime' && realTimeTimerange ? realTimeTimerange.start : start,
+      end: timeMode === 'realTime' && realTimeTimerange ? realTimeTimerange.end : end,
       environmentVisualizationMode,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
-      start,
       token: GFWAPI.token,
       trackGraphExtent,
       vectorsTemporalAggregation: isAnyReportLocation ? false : true,
@@ -167,7 +167,7 @@ export const useGlobalConfigConnect = () => {
     showTimeComparison,
     timeComparisonValues,
     timeMode,
-    realTimeLatestUpdate,
+    realTimeTimerange,
   ])
 }
 

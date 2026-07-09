@@ -112,6 +112,7 @@ export const selectRealTimeLatestAvailableTimerange = createSelector(
       // TODO: use endDate of activity presence dataset
       start: DateTime.fromISO(realTimeLatestUpdate, { zone: 'utc' })
         .minus({ days: REAL_TIME_DATA_DAYS_AVAILABLE })
+        .startOf('day')
         .toISO() as string,
     }
   }
@@ -145,7 +146,9 @@ export const selectAvailableEnd = createSelector(
   [selectRealTimeTimerange, selectDatasetsExtent],
   (realTimeTimerange, datasetsExtent) => {
     if (realTimeTimerange) {
-      return DateTime.fromISO(realTimeTimerange?.end, { zone: 'utc' }).endOf('day').toISO() as string
+      return DateTime.fromISO(realTimeTimerange?.end, { zone: 'utc' })
+        .endOf('day')
+        .toISO() as string
     }
     const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
     const availableEndMs = getUTCDateTime(

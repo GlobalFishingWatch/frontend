@@ -13,24 +13,31 @@ import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
-  globalConfig
+  {
+    start,
+    end,
+    visibleEvents,
+    timeMode,
+    vesselTrackVisualizationMode,
+    trackGraphExtent,
+    vesselsColorBy,
+  }
 ): VesselLayerProps => {
   const trackDatasetConfig = getDatasetConfigByDatasetType(dataview, {
     type: DatasetTypes.Tracks,
-    endpoint: globalConfig.timeMode === 'realTime' ? EndpointId.TracksRealTime : EndpointId.Tracks,
+    endpoint: timeMode === 'realTime' ? EndpointId.TracksRealTime : EndpointId.Tracks,
   })
   const trackUrl = resolveDataviewDatasetResource(dataview, trackDatasetConfig.datasetId)?.url
-  const { start, end, visibleEvents } = globalConfig
-  const strictTimeRange =
+  const hasDataviewDatesConfig =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&
     dataview.config?.endDate != null &&
     dataview.config?.endDate != undefined
   const startTime = getUTCDateTime(
-    strictTimeRange ? (dataview.config?.startDate as string) : start
+    hasDataviewDatesConfig ? (dataview.config?.startDate as string) : start
   ).toMillis()
   const endTime = getUTCDateTime(
-    strictTimeRange ? (dataview.config?.endDate as string) : end
+    hasDataviewDatesConfig ? (dataview.config?.endDate as string) : end
   ).toMillis()
 
   const events = resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
@@ -49,7 +56,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     endTime: endTime,
     startTime: startTime,
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
-    trackVisualizationMode: globalConfig.vesselTrackVisualizationMode || 'track',
+    trackVisualizationMode: vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),
@@ -60,11 +67,11 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
     singleTrack: dataview.config?.singleTrack,
-    strictTimeRange,
+    strictTimeRange: hasDataviewDatesConfig || timeMode === 'realTime',
     trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
-    trackGraphExtent: globalConfig.trackGraphExtent,
+    trackGraphExtent: trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
-    colorBy: globalConfig.vesselsColorBy,
+    colorBy: vesselsColorBy,
     gapSegmentThreshold: dataview.config?.gapSegmentThreshold,
     events,
     visibleEvents: visibleEvents,
