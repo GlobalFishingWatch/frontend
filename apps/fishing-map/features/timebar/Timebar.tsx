@@ -383,6 +383,7 @@ const TimebarWrapper = () => {
           bookmarkPlacement="bottom"
           trackGraphOrientation={trackGraphOrientation}
           showLast30DaysBtn={timeMode === 'historical'}
+          shortestTimeRange={timeMode === 'realTime' ? 'hour' : 'day'}
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
           onGraphClick={onGraphClick}

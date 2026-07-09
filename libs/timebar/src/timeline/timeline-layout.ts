@@ -10,8 +10,10 @@ const getUnitLabel = (
   mUnit: DateTime,
   baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
   availableWidth: number,
-  locale: string
+  locale: string,
+  hourSuffix = false
 ) => {
+  const h = hourSuffix ? "H'h'" : 'H'
   /* eslint key-spacing: 0, no-multi-spaces: 0 */
 
   // TODO: localise
@@ -66,8 +68,8 @@ const getUnitLabel = (
     hour: {
       isFirst: (fm: DateTime) => fm.hour === 0,
       formats: [
-        [999, 'EEE d MMMM yyyy H'],
-        [0, 'H', 'd MMM'],
+        [999, `EEE d MMMM yyyy ${h}`],
+        [0, h, 'd MMM'],
       ],
     },
   }
@@ -99,7 +101,8 @@ export const getUnitsPositions = (
   absoluteEnd: string,
   baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
   labels: TimebarLabels = DEFAULT_LABELS,
-  locale: string
+  locale: string,
+  hourSuffix = false
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
@@ -129,8 +132,8 @@ export const getUnitsPositions = (
         id,
         x,
         width,
-        label: getUnitLabel(mUnit, baseUnit, width, locale),
-        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale)} - ${
+        label: getUnitLabel(mUnit, baseUnit, width, locale, hourSuffix),
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale, hourSuffix)} - ${
           labels?.zoomTo ?? DEFAULT_LABELS.zoomTo
         } ${labels?.intervals?.[baseUnit as keyof TimebarLabels['intervals']] ?? ''}`,
         start: mUnit.toISO(),
