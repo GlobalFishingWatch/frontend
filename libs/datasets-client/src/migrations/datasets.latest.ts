@@ -21,10 +21,11 @@ export const LATEST_DATASETS_VMS: Record<
     fishing: 'public-vms-plw-fishing-effort:v4.0' as const,
     presence: 'public-vms-plw-presence:v4.0' as const,
   },
+  // Not available in pipe4
   mne: {
     identity: 'public-vms-mne-vessel-identity:v4.0' as const,
     fishing: 'public-vms-mne-fishing-effort:v4.0' as const,
-    presence: '' as const, // Not available in pipe4
+    presence: '' as const,
   },
   per: {
     identity: 'public-vms-per-vessel-identity:v4.0' as const,
@@ -52,8 +53,8 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-cri-presence:v4.0' as const,
   },
   blz: {
-    // No longer maintained
-    identity: 'blz_v20220304_vessels_identity_public_fishing' as const,
+    // No longer maintained in pipe 4
+    identity: 'public-belize-vessel-identity-fishing:v20220304' as const,
     fishing: 'public-belize-fishing-effort:v20220304' as const,
     presence: 'public-belize-presence:v20220304' as const,
   },

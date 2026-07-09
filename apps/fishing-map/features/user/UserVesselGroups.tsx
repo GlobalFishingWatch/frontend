@@ -7,7 +7,8 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import { selectDatasetsStatus, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -21,6 +22,7 @@ import {
   getVesselGroupVesselsCount,
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
+import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   selectVesselGroupEditId,
   setVesselGroupsModalOpen,
@@ -44,6 +46,8 @@ function UserVesselGroups() {
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
   const [searchQuery, setSearchQuery] = useState('')
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -94,7 +98,13 @@ function UserVesselGroups() {
                 if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                   return null
                 }
-                const isOutdated = isOutdatedVesselGroup(vesselGroup)
+                const isOutdated =
+                  isOutdatedVesselGroup(vesselGroup) ||
+                  hasVesselGroupVesselsDeprecated(
+                    vesselGroup.vesselsSummary?.datasets,
+                    deprecatedDatasets
+                  )
+
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
                     {isOutdated ? (
@@ -130,10 +140,13 @@ function UserVesselGroups() {
                               : t((t) => t.vesselGroup.edit)
                           }
                           loading={
-                            vesselGroup.id === editingGroupId &&
-                            vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                            (vesselGroup.id === editingGroupId &&
+                              vesselGroupStatus === AsyncReducerStatus.LoadingUpdate) ||
+                            vesselGroup.id === loadingGroupId
                           }
-                          onClick={() => onEditClick(vesselGroup)}
+                          onClick={() => {
+                            migrateToLatestVesselGroup(vesselGroup)
+                          }}
                           className={styles.warningButton}
                         >
                           <Icon icon="warning" />
