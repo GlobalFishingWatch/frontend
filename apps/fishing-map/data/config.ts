@@ -72,7 +72,6 @@ const DEFAULT_DATA_DELAY_DAYS = 3
 
 export const REAL_TIME_DATA_DAYS_AVAILABLE = 3
 export const REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES = 10
-export const REAL_TIME_DATA_UPDATE_INTERVAL_MS = REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES * 60 * 1000
 
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(

@@ -37,6 +37,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
   {
     start,
     end,
+    bufferedStart,
+    bufferedEnd,
     compareStart,
     compareEnd,
     onPositionsMaxPointsError,
@@ -150,6 +152,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     id: dataview.id,
     startTime,
     endTime,
+    ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
+    ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     category: dataview.category!,
     subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,

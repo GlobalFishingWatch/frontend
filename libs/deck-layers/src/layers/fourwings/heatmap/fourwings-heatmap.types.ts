@@ -103,6 +103,8 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   skipColorDomainSampling?: boolean
   highlightedFeatures?: FourwingsPickingObject[]
   intervalCacheMode?: FourwingsIntervalCacheMode
+  bufferedStartTime?: number
+  bufferedEndTime?: number
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &

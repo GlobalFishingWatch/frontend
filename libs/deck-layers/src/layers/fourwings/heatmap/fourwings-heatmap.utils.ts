@@ -3,14 +3,11 @@ import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 
-import type {
-  FourwingsFeature,
-  FourwingsInterval,
-  TileCell,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../../utils'
+import type { GetChunkByIntervalParams } from '../fourwings.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
   getChunkByInterval,
@@ -226,12 +223,7 @@ export const getDataUrl = ({
 
   const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
   const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
-  const end =
-    tomorrow && tomorrow < chunk.end
-      ? tomorrow
-      : intervalCacheMode == 'NONE'
-        ? chunk.end
-        : chunk.bufferedEnd
+  const end = tomorrow && tomorrow < chunk.end ? tomorrow : chunk.bufferedEnd
 
   const params = {
     format: '4WINGS',
@@ -291,21 +283,19 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
-export function getFourwingsChunk({
-  start,
-  end,
-  availableIntervals,
-  chunksBuffer,
-  intervalCacheMode,
-}: {
-  start: number
-  end: number
-  availableIntervals?: FourwingsInterval[]
-  chunksBuffer?: number
-  intervalCacheMode?: FourwingsIntervalCacheMode
-}): FourwingsChunk {
+export function getFourwingsChunk(
+  params: Omit<GetChunkByIntervalParams, 'interval'> & {
+    availableIntervals?: FourwingsInterval[]
+  }
+): FourwingsChunk {
+  const { start, end, availableIntervals, ...rest } = params
   const interval = getFourwingsInterval(start, end, availableIntervals)
-  return getChunkByInterval({ start, end, interval, chunksBuffer, intervalCacheMode })
+  return getChunkByInterval({
+    start,
+    end,
+    interval,
+    ...rest,
+  })
 }
 
 type FourwingsIntervalFrames = {
@@ -394,6 +384,8 @@ export const getTileDataCache = ({
   zoom,
   startTime,
   endTime,
+  bufferedStartTime,
+  bufferedEndTime,
   availableIntervals,
   compareStart,
   compareEnd,
@@ -404,6 +396,8 @@ export const getTileDataCache = ({
   zoom: number
   startTime: number
   endTime: number
+  bufferedStartTime?: number
+  bufferedEndTime?: number
   availableIntervals?: FourwingsInterval[]
   compareStart?: number
   compareEnd?: number
@@ -418,6 +412,8 @@ export const getTileDataCache = ({
     availableIntervals,
     chunksBuffer,
     intervalCacheMode,
+    bufferedStartTime,
+    bufferedEndTime,
   })
   return {
     zoom,

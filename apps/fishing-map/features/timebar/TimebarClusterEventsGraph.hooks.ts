@@ -13,7 +13,10 @@ import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { selectTimebarSelectedDataviews } from 'features/timebar/timebar.selectors'
+import {
+  selectRealTimeTimerange,
+  selectTimebarSelectedDataviews,
+} from 'features/timebar/timebar.selectors'
 import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 
 import { getGraphDataFromFourwingsPositions } from './timebar.utils'
@@ -25,6 +28,7 @@ export const useClusterEventsGraph = () => {
   const viewport = useSelector(selectViewport)
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const { start: rangeStart, end: rangeEnd } = useTimebar()
   const start = getUTCDate(rangeStart).getTime()
   const end = getUTCDate(rangeEnd).getTime()
@@ -35,7 +39,12 @@ export const useClusterEventsGraph = () => {
     start,
     end,
     availableIntervals,
-    ...(isRealTimeMode && { intervalCacheMode: 'NONE' }),
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
   })
 
   const viewportChangeHash = useMemo(() => {

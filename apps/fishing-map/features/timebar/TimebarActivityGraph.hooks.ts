@@ -18,6 +18,7 @@ import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import {
+  selectRealTimeTimerange,
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
@@ -40,6 +41,7 @@ export const useHeatmapActivityGraph = () => {
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
   const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const { start: rangeStart, end: rangeEnd } = useTimebar()
   const start = getUTCDate(rangeStart).getTime()
   const end = getUTCDate(rangeEnd).getTime()
@@ -49,7 +51,12 @@ export const useHeatmapActivityGraph = () => {
     start,
     end,
     availableIntervals,
-    ...(isRealTimeMode && { intervalCacheMode: 'NONE' }),
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
   })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}

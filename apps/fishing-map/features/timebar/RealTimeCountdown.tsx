@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import { REAL_TIME_DATA_UPDATE_INTERVAL_MS } from 'data/config'
+import { REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES } from 'data/config'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getMsUntilNextRealTimeUpdate } from 'utils/dates'
 
@@ -13,6 +13,7 @@ import styles from './RealTimeCountdown.module.css'
 const SIZE = 16
 const STROKE = 2
 const RADIUS = (SIZE - STROKE) / 2
+const REAL_TIME_DATA_UPDATE_INTERVAL_MS = REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES * 60 * 1000
 
 export function RealTimeCountdown() {
   const { t } = useTranslation()
