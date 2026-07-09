@@ -432,7 +432,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
                     ? vesselsInfo
                         ?.flatMap((info) => {
                           const match = info.selfReportedInfo?.find((s) => s.ssvid === vessel.id)
-                          return match ? [{ info, date: match.transmissionDateFrom || '' }] : []
+                          return match ? [{ info, date: match.transmissionDateTo || '' }] : []
                         })
                         .sort((a, b) => b.date.localeCompare(a.date))[0]?.info
                     : vesselsInfo?.find((info) =>
