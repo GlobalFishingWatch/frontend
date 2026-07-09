@@ -1,0 +1,25 @@
+.ring {
+  transform: rotate(-90deg);
+}
+
+.track {
+  stroke: var(--color-white);
+  opacity: var(--opacity-border);
+}
+
+.progress {
+  stroke: var(--color-white);
+  animation-name: drain;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes drain {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: 100;
+  }
+}

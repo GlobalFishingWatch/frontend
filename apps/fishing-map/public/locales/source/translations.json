@@ -956,7 +956,8 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Fit time range to these dates",
     "focusOnThisDay": "Focus time range on this day",
-    "maxTracksNumber": "Track detail not available for more than {{number}} vessels"
+    "maxTracksNumber": "Track detail not available for more than {{number}} vessels",
+    "nextRealTimeUpdate": "Next data update at {{time}}"
   },
   "timebarSettings": {
     "activityDisabled": "Select at least one activity layer",
