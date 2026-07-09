@@ -48,8 +48,7 @@ type _VesselTrackPositionLayerProps = {
   iconBorder?: boolean
   iconSize?: number
   positionMode?: VesselPositionMode
-  dotRadius?: number
-  useCollisionFilter?: boolean
+  pointRadius?: number
   data: VesselTrackPositionFeature[]
   getColor: Accessor<VesselTrackPositionFeature, Color>
   name: string
@@ -72,16 +71,13 @@ export class VesselTrackPositionLayer extends CompositeLayer<
       iconBorder = true,
       iconSize = 15,
       positionMode = 'icon',
-      dotRadius = 2,
-      useCollisionFilter = true,
+      pointRadius = 2,
     } = this.props
 
     if (!visible) return []
 
     const positions = data ?? []
     const labelData = name && highlightStartTime ? positions : []
-    const extensions = useCollisionFilter ? [new CollisionFilterExtension()] : []
-    const collisionProps = useCollisionFilter ? { getCollisionPriority: () => 0 } : {}
 
     if (positionMode === 'point') {
       return [
@@ -91,7 +87,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             data: positions,
             getPosition: (d: VesselTrackPositionFeature) => d.geometry.coordinates,
             getFillColor: getColor,
-            getRadius: dotRadius,
+            getRadius: pointRadius,
             radiusUnits: 'pixels',
             stroked: false,
             pickable: true,
@@ -111,8 +107,6 @@ export class VesselTrackPositionLayer extends CompositeLayer<
         this.getSubLayerProps({
           id: 'vessel-position-bg',
           data: positions,
-          extensions,
-          ...collisionProps,
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
@@ -128,8 +122,6 @@ export class VesselTrackPositionLayer extends CompositeLayer<
         this.getSubLayerProps({
           id: 'vessel-position',
           data: positions,
-          extensions,
-          ...collisionProps,
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
@@ -146,8 +138,6 @@ export class VesselTrackPositionLayer extends CompositeLayer<
               this.getSubLayerProps({
                 id: 'vessel-position-hg',
                 data: positions,
-                extensions,
-          ...collisionProps,
                 iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
                 iconMapping: VESSEL_SPRITE_ICON_MAPPING,
                 getIcon: () => 'vesselHighlight',

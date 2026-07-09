@@ -156,7 +156,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
               ...props,
               id: `${id}-${interactiveLayoutKey}-interactive`,
               data: data as VesselTrackData,
-              getWidth: 10,
+              getWidth: 20,
               getColor: COLOR_TRANSPARENT,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Background, params),
               pickable: true,
