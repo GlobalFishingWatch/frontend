@@ -21,6 +21,8 @@ type TimeMode = 'realTime' | 'historical'
 export type ResolverGlobalConfig = {
   start: string
   end: string
+  bufferedStart?: string
+  bufferedEnd?: string
   token?: string
   debugTiles?: boolean
   bivariateDataviews: [string, string] | null

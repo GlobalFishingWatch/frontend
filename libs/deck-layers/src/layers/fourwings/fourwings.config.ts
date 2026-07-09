@@ -80,24 +80,36 @@ export const getDateInIntervalResolution = (date: number, interval: FourwingsInt
 }
 
 export const CHUNKS_BUFFER = 1
+export type GetChunkByIntervalParams = {
+  start: number
+  end: number
+  bufferedStartTime?: number
+  bufferedEndTime?: number
+  interval: FourwingsInterval
+  chunksBuffer?: number
+  intervalCacheMode?: FourwingsIntervalCacheMode
+}
 // TODO: validate if worth to make this dynamic for the playback
 export const getChunkByInterval = ({
   start,
   end,
+  bufferedStartTime,
+  bufferedEndTime,
   interval,
   chunksBuffer = CHUNKS_BUFFER,
   intervalCacheMode = 'DATE',
-}: {
-  start: number
-  end: number
-  interval: FourwingsInterval
-  chunksBuffer?: number
-  intervalCacheMode?: FourwingsIntervalCacheMode
-}): FourwingsChunk => {
+}: GetChunkByIntervalParams): FourwingsChunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit || intervalCacheMode === 'NONE') {
     const id = intervalCacheMode === 'NONE' ? 'real-time-range' : 'full-time-range'
-    return { id, interval, start, end, bufferedStart: start, bufferedEnd: end }
+    return {
+      id,
+      interval,
+      start,
+      end,
+      bufferedStart: bufferedStartTime ?? start,
+      bufferedEnd: bufferedEndTime ?? end,
+    }
   }
   const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
   const bufferedStartDate = startDate.minus({ [intervalUnit]: chunksBuffer })

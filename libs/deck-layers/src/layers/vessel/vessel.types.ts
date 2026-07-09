@@ -22,6 +22,8 @@ export type _VesselLayerProps = {
   visible: boolean
   showVesselIcon: boolean
   trackVisualizationMode?: VesselTrackVisualizationMode
+  bufferedStartTime?: number
+  bufferedEndTime?: number
 }
 
 // type VesselTrackProperties = {

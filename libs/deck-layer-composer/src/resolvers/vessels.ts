@@ -16,6 +16,8 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   {
     start,
     end,
+    bufferedStart,
+    bufferedEnd,
     visibleEvents,
     timeMode,
     vesselTrackVisualizationMode,
@@ -55,6 +57,8 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     name: dataview.config?.name,
     endTime: endTime,
     startTime: startTime,
+    ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
+    ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
     trackVisualizationMode: vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {

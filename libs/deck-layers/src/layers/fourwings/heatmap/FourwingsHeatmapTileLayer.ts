@@ -531,6 +531,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       extentStart,
       intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
@@ -540,6 +542,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       end: endTime,
       availableIntervals,
       intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
     })
     this.setState({ rampDirty: true })
     const cols: number[] = []
@@ -873,12 +877,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getChunk = () => {
-    const { startTime, endTime, availableIntervals, intervalCacheMode } = this.props
+    const {
+      startTime,
+      endTime,
+      availableIntervals,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    } = this.props
     return getFourwingsChunk({
       start: startTime,
       end: endTime,
       availableIntervals,
       intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
     })
   }
 

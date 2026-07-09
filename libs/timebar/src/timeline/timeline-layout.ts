@@ -8,13 +8,26 @@ import type { TimelineScale } from './timeline-context'
 
 const getUnitLabel = (
   mUnit: DateTime,
-  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
+  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute',
   availableWidth: number,
-  locale: string
+  locale: string,
+  hourSuffix = false
 ) => {
   /* eslint key-spacing: 0, no-multi-spaces: 0 */
-
-  // TODO: localise
+  const AMPM_MIN_WIDTH = 36
+  const hour12 = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12
+  const hourStr = (m: DateTime) => {
+    if (!hour12) return m.toFormat(hourSuffix ? "H'h'" : 'H')
+    return availableWidth >= AMPM_MIN_WIDTH
+      ? m.setLocale(locale).toLocaleString({ hour: 'numeric', hour12: true })
+      : m.toFormat('h')
+  }
+  const minuteStr = (m: DateTime) => {
+    if (!hour12 || availableWidth >= AMPM_MIN_WIDTH) {
+      return m.setLocale(locale).toLocaleString({ hour: 'numeric', minute: '2-digit', hour12 })
+    }
+    return m.toFormat('h:mm')
+  }
 
   const getWeekFmt = (mUnit: DateTime, isFirst = false) => {
     const mWeekEnd = mUnit.plus({ days: 6 })
@@ -66,8 +79,18 @@ const getUnitLabel = (
     hour: {
       isFirst: (fm: DateTime) => fm.hour === 0,
       formats: [
-        [999, 'EEE d MMMM yyyy H'],
-        [0, 'H', 'd MMM'],
+        [999, (m: DateTime) => `${m.setLocale(locale).toFormat('EEE d MMMM yyyy')} ${hourStr(m)}`],
+        [0, (m: DateTime) => hourStr(m), 'd MMM'],
+      ],
+    },
+    minute: {
+      isFirst: (fm: DateTime) => fm.hour === 0 && fm.minute === 0,
+      formats: [
+        [
+          999,
+          (m: DateTime) => `${m.setLocale(locale).toFormat('EEE d MMMM yyyy')} ${minuteStr(m)}`,
+        ],
+        [0, (m: DateTime) => minuteStr(m), 'd MMM'],
       ],
     },
   }
@@ -97,28 +120,32 @@ export const getUnitsPositions = (
   outerEnd: string,
   absoluteStart: string,
   absoluteEnd: string,
-  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour',
+  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute',
   labels: TimebarLabels = DEFAULT_LABELS,
-  locale: string
+  locale: string,
+  hourSuffix = false,
+  minuteStep = 10
 ) => {
   const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
   const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
+  const step = baseUnit === 'minute' ? minuteStep : 1
+  const alignUnit = baseUnit === 'minute' ? 'hour' : baseUnit
 
   // BUFFER ??
-  const mOuterStart = DateTime.fromMillis(startMs, { zone: 'utc' }).startOf(baseUnit)
-  const mOuterEnd = DateTime.fromMillis(endMs, { zone: 'utc' }).endOf(baseUnit)
+  const mOuterStart = DateTime.fromMillis(startMs, { zone: 'utc' }).startOf(alignUnit)
+  const mOuterEnd = DateTime.fromMillis(endMs, { zone: 'utc' }).endOf(alignUnit)
 
   const units = []
   const numUnitsOffset = getTime(outerEnd) > getTime(absoluteEnd) ? 0 : 1
-  const durationUnit = `${baseUnit}s` as 'years' | 'months' | 'weeks' | 'days' | 'hours'
-  const numUnits = mOuterEnd.diff(mOuterStart, durationUnit)?.[durationUnit] + numUnitsOffset
+  const durationUnit = `${baseUnit}s` as 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes'
+  const numUnits = mOuterEnd.diff(mOuterStart, durationUnit)?.[durationUnit] / step + numUnitsOffset
 
   let mUnit = mOuterStart
   if (mUnit.isValid) {
     let x = outerScale(mUnit.toJSDate())
 
     for (let ui = 0; ui <= numUnits; ui += 1) {
-      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: 1 })
+      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: step })
 
       const xNext = outerScale(mUnitNext.toJSDate())
 
@@ -129,8 +156,8 @@ export const getUnitsPositions = (
         id,
         x,
         width,
-        label: getUnitLabel(mUnit, baseUnit, width, locale),
-        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale)} - ${
+        label: getUnitLabel(mUnit, baseUnit, width, locale, hourSuffix),
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale, hourSuffix)} - ${
           labels?.zoomTo ?? DEFAULT_LABELS.zoomTo
         } ${labels?.intervals?.[baseUnit as keyof TimebarLabels['intervals']] ?? ''}`,
         start: mUnit.toISO(),

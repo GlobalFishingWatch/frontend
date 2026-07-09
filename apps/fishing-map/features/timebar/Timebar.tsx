@@ -12,7 +12,6 @@ import type {
   TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
-import { Icon } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import {
@@ -30,6 +29,7 @@ import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/timebar-graph.hooks'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
+import { RealTimeCountdown } from 'features/timebar/RealTimeCountdown'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
 import {
   useHighlightedEventsConnect,
@@ -369,7 +369,7 @@ const TimebarWrapper = () => {
               />
               {timeMode === 'realTime' ? (
                 <Timebar.Tools.Wrapper>
-                  <Icon icon="history" />
+                  <RealTimeCountdown />
                 </Timebar.Tools.Wrapper>
               ) : (
                 <Timebar.Tools.Bookmark />
@@ -383,6 +383,7 @@ const TimebarWrapper = () => {
           bookmarkPlacement="bottom"
           trackGraphOrientation={trackGraphOrientation}
           showLast30DaysBtn={timeMode === 'historical'}
+          shortestTimeRange={timeMode === 'realTime' ? 'hour' : 'day'}
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
           onGraphClick={onGraphClick}
