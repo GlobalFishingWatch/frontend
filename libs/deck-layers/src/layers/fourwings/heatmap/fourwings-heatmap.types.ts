@@ -86,6 +86,7 @@ export type CompareCellParams = {
 
 export type FourwingsHeatmapResolution = 'low' | 'default' | 'high'
 export type FourwingsHeatmapTileData = FourwingsFeature[]
+export type FourwingsIntervalCacheMode = 'DATE' | 'NONE'
 
 export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
   data?: DataT
@@ -101,6 +102,7 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   aggregationOperation?: FourwingsAggregationOperation
   skipColorDomainSampling?: boolean
   highlightedFeatures?: FourwingsPickingObject[]
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &

@@ -7,7 +7,7 @@ import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../utils/dates'
 
-import type { FourwingsChunk } from './fourwings.types'
+import type { FourwingsChunk, FourwingsIntervalCacheMode } from './fourwings.types'
 
 const BASE_API_TILES_URL =
   `${API_GATEWAY}/${API_VERSION}/4wings/tile/{FOURWINGS_VISUALIZATION_MODE}/{z}/{x}/{y}` as const
@@ -56,8 +56,6 @@ export const MAX_RAMP_VALUES = 10000
 export const DYNAMIC_RAMP_CHANGE_THRESHOLD = 50
 export const DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD = 1
 
-export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
-
 export const CHUNKS_BY_INTERVAL: Record<
   FourwingsInterval,
   { unit: DateTimeUnit; value: number } | undefined
@@ -88,15 +86,18 @@ export const getChunkByInterval = ({
   end,
   interval,
   chunksBuffer = CHUNKS_BUFFER,
+  intervalCacheMode = 'DATE',
 }: {
   start: number
   end: number
   interval: FourwingsInterval
   chunksBuffer?: number
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsChunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
-  if (!intervalUnit) {
-    return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
+  if (!intervalUnit || intervalCacheMode === 'NONE') {
+    const id = intervalCacheMode === 'NONE' ? 'real-time-range' : 'full-time-range'
+    return { id, interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
   const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
   const bufferedStartDate = startDate.minus({ [intervalUnit]: chunksBuffer })

@@ -31,6 +31,7 @@ import type {
   FourwingsChunk,
   FourwingsHeatmapResolution,
   FourwingsHeatmapTilesCache,
+  FourwingsIntervalCacheMode,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
@@ -183,6 +184,17 @@ type GetDataUrlParams = {
   extentStart?: number
   mergeSublayerDatasets?: boolean
   temporalAggregation?: boolean
+  intervalCacheMode?: FourwingsIntervalCacheMode
+}
+
+export function getTimeResolved(
+  date: number = DateTime.utc().toMillis(),
+  cacheInterval: FourwingsIntervalCacheMode = 'DATE'
+): string {
+  if (cacheInterval === 'NONE') {
+    return DateTime.fromMillis(date, { zone: 'utc' }).toISO() as string
+  }
+  return getUTCDateTime(date).toISODate() as string
 }
 
 export const getDataUrl = ({
@@ -194,6 +206,7 @@ export const getDataUrl = ({
   mergeSublayerDatasets,
   temporalAggregation = false,
   extentStart,
+  intervalCacheMode = 'DATE',
 }: GetDataUrlParams) => {
   const sublayersArray = sublayers || (sublayer ? [sublayer] : [])
 
@@ -213,7 +226,12 @@ export const getDataUrl = ({
 
   const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
   const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
-  const end = tomorrow && tomorrow < chunk.end ? tomorrow : chunk.bufferedEnd
+  const end =
+    tomorrow && tomorrow < chunk.end
+      ? tomorrow
+      : intervalCacheMode == 'NONE'
+        ? chunk.end
+        : chunk.bufferedEnd
 
   const params = {
     format: '4WINGS',
@@ -227,7 +245,10 @@ export const getDataUrl = ({
     }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
-      'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),
+      'date-range': [
+        getTimeResolved(start < end ? start : end, intervalCacheMode),
+        getTimeResolved(end, intervalCacheMode),
+      ].join(','),
     }),
   }
   const url = `${tilesUrl}?${stringify(params, {
@@ -242,10 +263,6 @@ export interface Bounds {
   south: number
   west: number
   east: number
-}
-
-export function getISODateFromTS(ts: number) {
-  return getUTCDateTime(ts).toISODate()
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
@@ -279,14 +296,16 @@ export function getFourwingsChunk({
   end,
   availableIntervals,
   chunksBuffer,
+  intervalCacheMode,
 }: {
   start: number
   end: number
   availableIntervals?: FourwingsInterval[]
   chunksBuffer?: number
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsChunk {
   const interval = getFourwingsInterval(start, end, availableIntervals)
-  return getChunkByInterval({ start, end, interval, chunksBuffer })
+  return getChunkByInterval({ start, end, interval, chunksBuffer, intervalCacheMode })
 }
 
 type FourwingsIntervalFrames = {
@@ -380,6 +399,7 @@ export const getTileDataCache = ({
   compareEnd,
   chunksBuffer,
   temporalAggregation,
+  intervalCacheMode,
 }: {
   zoom: number
   startTime: number
@@ -389,6 +409,7 @@ export const getTileDataCache = ({
   compareEnd?: number
   chunksBuffer?: number
   temporalAggregation?: boolean
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const { start, end, bufferedStart } = getFourwingsChunk({
@@ -396,6 +417,7 @@ export const getTileDataCache = ({
     end: endTime,
     availableIntervals,
     chunksBuffer,
+    intervalCacheMode,
   })
   return {
     zoom,
