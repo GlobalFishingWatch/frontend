@@ -415,6 +415,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     })
   }
 
+  // TODO: merge with existing getDataUrl and add only the new properties later
   _getDataUrl() {
     const { startTime, endTime, sublayers, extentStart, extentEnd } = this.props
     const supportedPositionProperties = this._getPositionProperties()
@@ -430,6 +431,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       extentEnd && extentEnd < endTime
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
+    // TODO: use intervalCacheMode
     const startIso = getUTCDateTime(start < end ? start : end)
       .startOf('hour')
       .toISO()
@@ -552,10 +554,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   getFourwingsLayers() {
     return this.props.sublayers
-  }
-
-  getTimeseries() {
-    return this.getViewportData()
   }
 
   setHighlightedVessel(vessels: string | string[] | undefined) {

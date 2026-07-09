@@ -853,16 +853,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return sublayers
   }
 
-  getTimeseries() {
-    const data = this.getData()
-    if (data?.length) {
-      const sublayers = this.getFourwingsLayers()
-      const cells = aggregateCellTimeseries(data, sublayers)
-      return cells
-    }
-    return []
-  }
-
   getInterval = () => {
     const { startTime, endTime, availableIntervals } = this.props
     return getFourwingsInterval(startTime, endTime, availableIntervals)

@@ -272,50 +272,6 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (
-  cells: FourwingsFeature[],
-  sublayers: FourwingsDeckSublayer[]
-) => {
-  if (!cells) {
-    return []
-  }
-  return []
-  // TODO: fix this with new Deck.gl data format
-  // What we have from the data is
-  // [{index:number, timeseries: {id: {frame:value, ...}  }}]
-  // What we want for the timebar is
-  // [{date: date, 0:number, 1:number ...}, ...]
-  // const timeseries = cells.reduce(
-  //   (acc: any, { timeseries }) => {
-  //     if (!timeseries) {
-  //       return acc
-  //     }
-  //     sublayers.forEach((sublayer, index) => {
-  //       const sublayerTimeseries = timeseries[sublayer.id]
-  //       if (sublayerTimeseries) {
-  //         const frames = Object.keys(sublayerTimeseries)
-  //         frames.forEach((frame: any) => {
-  //           if (!acc[frame]) {
-  //             // We populate the frame with 0s for all the sublayers
-  //             acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
-  //           }
-  //           acc[frame][index] += sublayerTimeseries[frame]
-  //         })
-  //       }
-  //     })
-  //     return acc
-  //   },
-  //   {} as Record<number, Record<number, number>>
-  // )
-
-  // return Object.entries(timeseries)
-  //   .map(([frame, values]) => ({
-  //     date: parseInt(frame),
-  //     ...(values as any),
-  //   }))
-  //   .sort((a, b) => a.date - b.date)
-}
-
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
 export function getFourwingsChunk({
