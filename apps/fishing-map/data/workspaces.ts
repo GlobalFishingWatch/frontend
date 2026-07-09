@@ -75,20 +75,21 @@ export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = `viirs-match-skylight-v-${PIPE
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
+export const PRESENCE_REALTIME_DATAVIEW_SLUG = `presence-realtime-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = IS_RANDOM_FOREST_ENABLED
   ? ('fishing-map-vessel-track-random-forest' as const)
   : (`fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const)
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
-export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
-export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const
-export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = `gfw-environmental-layer` as const
-export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = `heatmap-environmental-layer` as const
-export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = `heatmap-static-layer` as const
-export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = `activity-template` as const
-export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = `template-for-bigquery-cluster-events` as const
-const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = `default-environmental-layer` as const
+export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
+export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer' as const
+export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
+export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = 'heatmap-environmental-layer' as const
+export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = 'heatmap-static-layer' as const
+export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
+export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
+const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
@@ -111,6 +112,7 @@ export const DEFAULT_IDENTITY_DATASET_ID = `public-global-vessel-identity${DATAS
 
 const PRESENCE_DATAVIEWS = [
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
+  PRESENCE_REALTIME_DATAVIEW_SLUG,
 ]
 
 const DETECTIONS_DATAVIEWS = [
