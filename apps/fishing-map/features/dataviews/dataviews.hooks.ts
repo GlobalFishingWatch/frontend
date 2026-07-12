@@ -62,7 +62,7 @@ export function useMigrateToLatestDataview() {
           dataviewId: dataviewId,
           config: {
             ...(hasDatasets && {
-              datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
+              datasets: datasets?.map((d) => deprecatedDatasets[d.id] || d.id),
             }),
             filters,
           },

@@ -128,9 +128,14 @@ const fetchDatasetsBatch = async ({
   signal,
   useApiCache = false,
 }: FetchDatasetsBatchParams) => {
-  const uniqIds = ids?.length ? ids.filter((id) => forceRefresh || !existingIds.includes(id)) : []
+  const uniqIds = ids?.length
+    ? ids.filter((id) => {
+        return forceRefresh || !existingIds.includes(id)
+      })
+    : []
 
-  if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
+  const requestedIdsAllCached = Boolean(ids?.length) && !uniqIds.length && !forceRefresh
+  if (!uniqIds.length && (fetchUserDatasetsMode === undefined || requestedIdsAllCached)) {
     return {
       datasets: [],
       datasetsDeprecated: {} as DatasetsMigration,
@@ -262,7 +267,6 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
         signal,
         useApiCache,
       })
-
       if (batch.length) {
         dispatch(upsertDatasets(batch))
       }
