@@ -84,6 +84,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         skipEmptyLines: true,
       })
       dispatch(setVesselGroupModalCsvData(data))
+      dispatch(setVesselGroupModalCsvColumns([]))
       setSearchText('')
     },
     [dispatch]
