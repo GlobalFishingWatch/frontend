@@ -5,6 +5,7 @@ import type { LayerCategory } from './dictionary'
 import { getLayerInfo } from './dictionary'
 import type { MapRoute } from './routes'
 import { DEFAULT_BASENAME, matchRoutePath } from './routes'
+import { HIGHLIGHTED_WORKSPACES } from './workspaces'
 
 export type DecodedLayer = {
   id: string
@@ -18,6 +19,8 @@ export type DecodedLayer = {
 
 export type DecodedMapUrl = {
   route: MapRoute
+  /** Curated workspace name (marine-manager, global reports…) when the workspaceId is a known one */
+  workspaceName?: string
   timeRange?: { start?: string; end?: string }
   viewport?: { latitude?: number; longitude?: number; zoom?: number }
   timebarVisualisation?: string
@@ -66,8 +69,11 @@ export const decodeMapUrl = (
     any
   >
 
+  const workspaceName = route.workspaceId && HIGHLIGHTED_WORKSPACES[route.workspaceId]
+
   return {
     route,
+    ...(workspaceName && { workspaceName }),
     ...((start || end) && { timeRange: { start, end } }),
     ...(latitude !== undefined && { viewport: { latitude, longitude, zoom } }),
     ...(timebarVisualisation && { timebarVisualisation }),

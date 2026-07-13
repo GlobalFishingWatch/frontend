@@ -116,42 +116,51 @@ export const buildRoutePath = (navigation: RouteNavigation): string => {
   return path === '' ? '/' : path
 }
 
+// Static-segment patterns listed before parametric ones of the same length,
+// so e.g. /user wins over /$category. Types map each ROUTE_PATHS pattern.
+const ROUTE_PATTERNS: [string, MapRouteType][] = [
+  [ROUTE_PATHS.USER, 'user'],
+  [ROUTE_PATHS.SEARCH, 'vessel-search'],
+  [ROUTE_PATHS.REPORT, 'report'],
+  [ROUTE_PATHS.VESSEL, 'vessel'],
+  [ROUTE_PATHS.WORKSPACES_LIST, 'workspaces-list'],
+  [ROUTE_PATHS.WORKSPACE, 'workspace'],
+  [ROUTE_PATHS.WORKSPACE_SEARCH, 'vessel-search'],
+  [ROUTE_PATHS.WORKSPACE_VESSEL, 'vessel'],
+  [ROUTE_PATHS.WORKSPACE_REPORT, 'report'],
+  [ROUTE_PATHS.WORKSPACE_REPORT_FULL, 'report'],
+  [ROUTE_PATHS.VESSEL_GROUP_REPORT, 'vessel-group-report'],
+  [ROUTE_PATHS.PORT_REPORT, 'ports-report'],
+]
+
+const matchPattern = (pattern: string, segments: string[]): MapRouteParams | undefined => {
+  const patternSegments = pattern.split('/').filter(Boolean)
+  if (patternSegments.length !== segments.length) return undefined
+  const params: Record<string, string> = {}
+  for (let i = 0; i < patternSegments.length; i++) {
+    const patternSegment = patternSegments[i]
+    if (patternSegment.startsWith('$')) {
+      params[patternSegment.slice(1)] = segments[i]
+    } else if (patternSegment !== segments[i]) {
+      return undefined
+    }
+  }
+  return params
+}
+
 /**
- * Matches a pathname (basename already stripped) against the app route patterns
+ * Matches a pathname (basename already stripped) against the ROUTE_PATHS patterns
  */
 export const matchRoutePath = (pathname: string): MapRoute => {
   const segments = pathname.split('/').filter(Boolean).map(decodeURIComponent)
   if (segments.length === 0) {
     return { type: 'workspace' }
   }
-  const [first, second, third, fourth, fifth] = segments
-  if (segments.length === 1) {
-    if (first === 'user') return { type: 'user' }
-    if (first === 'vessel-search') return { type: 'vessel-search' }
-    return { type: 'workspaces-list', category: first }
-  }
-  if (segments.length === 2) {
-    if (first === 'report') return { type: 'report', reportId: second }
-    if (first === 'vessel') return { type: 'vessel', vesselId: second }
-    return { type: 'workspace', category: first, workspaceId: second }
-  }
-  const workspaceParams = { category: first, workspaceId: second }
-  if (segments.length === 3) {
-    if (third === 'vessel-search') return { type: 'vessel-search', ...workspaceParams }
-    if (third === 'report') return { type: 'report', ...workspaceParams }
-    return { type: 'workspace', ...workspaceParams }
-  }
-  if (segments.length === 4) {
-    if (third === 'vessel') return { type: 'vessel', ...workspaceParams, vesselId: fourth }
-    if (third === 'vessel-group-report') {
-      return { type: 'vessel-group-report', ...workspaceParams, vesselGroupId: fourth }
-    }
-    if (third === 'ports-report') {
-      return { type: 'ports-report', ...workspaceParams, portId: fourth }
+  for (const [pattern, type] of ROUTE_PATTERNS) {
+    const params = matchPattern(pattern, segments)
+    if (params) {
+      return { type, ...params }
     }
   }
-  if (segments.length === 5 && third === 'report') {
-    return { type: 'report', ...workspaceParams, datasetId: fourth, areaId: fifth }
-  }
-  return { type: 'workspace', ...workspaceParams }
+  return { type: 'workspace', category: segments[0], workspaceId: segments[1] }
 }

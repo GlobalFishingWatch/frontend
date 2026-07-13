@@ -1,3 +1,5 @@
+import { LAYER_LIBRARY_ID_SEPARATOR } from '@fishing-map/config'
+
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
@@ -12,7 +14,7 @@ const withDataviewId = (instance: any) => {
   if (instance?.dataviewId) {
     return { ...instance, dataviewId: resolveDataviewSlug(String(instance.dataviewId)) }
   }
-  if (instance?.id?.includes('__')) {
+  if (instance?.id?.includes(LAYER_LIBRARY_ID_SEPARATOR)) {
     const { dataviewId } = getLayerInfo(instance.id)
     if (dataviewId) {
       return { ...instance, dataviewId }

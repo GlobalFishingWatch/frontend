@@ -1,5 +1,7 @@
 import { DATASET_PUBLIC_PREFIX, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
+import { CONTEXT_LAYER_INSTANCE_PREFIX } from './dataviews'
+
 // Note: erasable-syntax-only package (loaded by plain node via type stripping) — const object instead of enum
 export const WorkspaceCategory = {
   FishingActivity: 'fishing-activity',
@@ -20,13 +22,14 @@ export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
 export const BASEMAP_LABELS_DATAVIEW_SLUG = 'basemap-labels' as const
 export const EEZ_DATAVIEW_SLUG = 'eez' as const
 export const EEZ_AREAS_12NM_DATAVIEW_SLUG = 'eez-12-nm' as const
-export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez' as const
+export const EEZ_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}eez` as const
 export const MPA_DATAVIEW_SLUG = 'mpa' as const
-export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa' as const
+export const MPA_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}mpa` as const
 export const BASEMAP_LABELS_DATAVIEW_INSTANCE_ID = 'basemap-labels' as const
-export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas' as const
+export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID =
+  `${CONTEXT_LAYER_INSTANCE_PREFIX}protectedseas` as const
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas' as const
-export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo' as const
+export const RFMO_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}rfmo` as const
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas' as const
 export const HIGH_SEAS_POCKETS_DATAVIEW_SLUG = 'high-seas-pocket' as const
 export const PAA_DUKE_DATAVIEW_SLUG = 'paa-duke' as const
@@ -38,7 +41,7 @@ export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
 export const PORTS_AIS_DATAVIEW_SLUG = 'ais-ports' as const
 export const PORTS_VMS_DATAVIEW_SLUG = 'vms-ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
-export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
+export const FAO_AREAS_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}fao-areas` as const
 export const PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG = 'ais-ports-footprint' as const
 export const PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG = 'vms-ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
