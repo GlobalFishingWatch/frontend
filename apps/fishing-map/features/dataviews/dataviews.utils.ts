@@ -10,6 +10,7 @@ import type {
   DataviewInstance,
   DataviewInstanceOrigin,
   DataviewType,
+  Workspace,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -515,5 +516,17 @@ export function isDataviewDeprecated(
     hasVesselEventsDeprecated ||
     hasVesselInfoDeprecated ||
     hasDeprecatedVesselGroupVessels
+  )
+}
+
+export function hasWorkspaceDataviewsDeprecated(
+  workspace: Workspace<any> | undefined,
+  deprecatedDatasets: DatasetsMigration | undefined
+) {
+  if (!workspace?.dataviewInstances?.length || !deprecatedDatasets) {
+    return false
+  }
+  return workspace.dataviewInstances.some((dataviewInstance) =>
+    isDataviewDeprecated(dataviewInstance, deprecatedDatasets)
   )
 }

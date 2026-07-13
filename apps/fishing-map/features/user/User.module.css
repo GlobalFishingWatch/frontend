@@ -80,6 +80,7 @@
 .workspace {
   padding: var(--space-XS) var(--space-XS) 0 0;
   display: flex;
+  align-items: center;
 }
 
 .dataset,

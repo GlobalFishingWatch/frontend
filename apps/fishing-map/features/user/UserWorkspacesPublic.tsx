@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { hasWorkspaceDataviewsDeprecated } from 'features/dataviews/dataviews.utils'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getModalParent } from 'features/modals/modals.utils'
 import EditWorkspace from 'features/workspace/save/WorkspaceEdit'
@@ -33,6 +35,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const workspaces = useSelector(selectUserWorkspaces)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
 
   const loading =
     workspacesStatus === AsyncReducerStatus.Loading ||
@@ -91,6 +94,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
         <ul>
           {workspaces && workspaces?.length > 0 ? (
             workspaces.map((workspace) => {
+              const isOutdated = hasWorkspaceDataviewsDeprecated(workspace, deprecatedDatasets)
               const label = getWorkspaceLabel(workspace as any)
               if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return null
@@ -110,14 +114,27 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     <span className={styles.workspaceTitle} data-test="workspace-name">
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
-                    <IconButton icon="arrow-right" />
+                    {isOutdated ? (
+                      <IconButton
+                        icon="warning"
+                        type={'warning-invert'}
+                        loading={loading}
+                        disabled={loading}
+                        tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
+                        size="small"
+                      />
+                    ) : (
+                      <IconButton icon="arrow-right" />
+                    )}
                   </Link>
-                  <IconButton
-                    icon="edit"
-                    loading={workspace.id === workspacesStatusId && updateLoading}
-                    tooltip={t((t) => t.workspace.editName)}
-                    onClick={() => setEditWorkspace(workspace)}
-                  />
+                  {!isOutdated && (
+                    <IconButton
+                      icon="edit"
+                      loading={workspace.id === workspacesStatusId && updateLoading}
+                      tooltip={t((t) => t.workspace.editName)}
+                      onClick={() => setEditWorkspace(workspace)}
+                    />
+                  )}
                   <IconButton
                     icon="delete"
                     type="warning"
