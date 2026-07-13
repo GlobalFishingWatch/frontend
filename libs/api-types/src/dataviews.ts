@@ -9,25 +9,32 @@ export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
 export type FilterOperators = Record<string, FilterOperator>
 
+/** Determines which deck.gl layer class gets instantiated for a dataview */
 export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
   BasemapImage = 'BASEMAP_IMAGE',
   BasemapLabels = 'BASEMAP_LABELS',
-  CartoPolygons = 'CARTO_POLYGONS',
+  /** Use for static polygon layers as EEZ, Tuna RFMO areas, MPAs, FAO areas, protected-seas, mpatlas */
   Context = 'CONTEXT',
+  /** Use for layers such as currents or winds (uo + uv datasets) */
   FourwingsVector = 'FOURWINGS_VECTORS',
+  /** Use for events layers like encounters or port_visits or loitering or gaps */
   FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
-  GL = 'GL',
   Graticules = 'GRATICULES',
+  /** Use for specific contours bathymetry layer */
   Bathymetry = 'BATHYMETRY',
   Heatmap = 'HEATMAP',
+  /** Use for gridded heatmap layers such as activity or detections or environment
+   * eg: fishing-effort-ais, fishing-effort-vms, presence, viirs, sar, nitrate, chlorophyl, salinity
+   */
   HeatmapAnimated = 'HEATMAP_ANIMATED',
+  /** Use for gridded heatmap layers without any temporal aspect like bathymetry  */
   HeatmapStatic = 'HEATMAP_STATIC',
   Polygons = 'POLYGONS',
-  Ports = 'PORTS',
   Rulers = 'RULERS',
+  /** Use for vessel or user tracks  */
   Track = 'TRACK',
   UserContext = 'USER_CONTEXT',
   UserPoints = 'USER_POINTS',
@@ -103,13 +110,21 @@ export type DataviewConfig<Type = DataviewType> = DataviewConfigVessel & {
   basemap?: string
   /** LayerGroup for deck layers z-index, see libs/deck-layers/src/utils/sort.ts */
   group?: string
-  /** String encoded for url from filters Record */
+  /** String encoded for url from filters like: flag IN ('ESP') AND geartype IN ('fishing') */
   filter?: string
-  /** Record with id filter as key and filters as values */
+  /** Record with id filter as key and filters as values used as source for the string encoded filter
+   * eg: Fishing effort { "distance_from_port_km": "3", "flag": [ "ESP" ], "geartype": [ "fishing" ] }
+   * Presence { "speed": [ "2-4" ] }
+   * Detections { "matched": [true], "radiance": ["0", "326"] }
+   * Encounter events { "encounter_type": [ "FISHING-CARRIER", "CARRIER-FISHING", "FISHING-SUPPORT", "SUPPORT-FISHING" ] }
+   */
   filters?: DataviewDatasetFilter
   /** Used to filter the positions by id */
   filterIds?: string[]
   'vessel-groups'?: string[]
+  /** Used to include or exlude options
+   * eg: { "geartype": "exclude", flag: "include" }
+   */
   filterOperators?: Record<string, FilterOperator>
   /** Min value for filters in environmental layers to perform frontend data filtering */
   minVisibleValue?: number
@@ -136,16 +151,7 @@ export type DataviewConfig<Type = DataviewType> = DataviewConfigVessel & {
 
   /** Used to store the property for aggregating user datasets values in report */
   aggregateByProperty?: string
-  event?:
-    | string
-    // Used in VV
-    | {
-        activeIconsSize?: number
-        activeStrokeColor?: string
-        strokeColor?: string
-        iconsPrefix?: string
-        inactiveIconsSize?: number
-      }
+  event?: string
   pointsToSegmentsSwitchLevel?: number
   showIcons?: boolean
   showAuthorizationStatus?: boolean
@@ -167,6 +173,8 @@ export type DataviewDatasetConfigParam = {
   value: string | number | boolean | string[] | number[]
 }
 
+/**
+ */
 export type DataviewDatasetFilter = Record<string, any>
 export type DatasetsMigration = Record<string, string>
 export type DataviewDatasetConfig = {
@@ -216,6 +224,7 @@ export type DataviewFiltersConfig = {
   incompatibility: Record<string, IncomatibleFilterConfig[]>
 }
 
+/** Groups dataviews by domain, used to sort/filter workspace layers and pick resolver logic within a DataviewType */
 export enum DataviewCategory {
   Activity = 'activity',
   Basemap = 'basemap',
@@ -234,6 +243,7 @@ export enum DataviewCategory {
   Workspaces = 'workspaces',
 }
 
+/** Base layer definition template that any DataviewInstance is going to extend to be used in a workspace  */
 export type Dataview<Type = any, Category = DataviewCategory> = {
   id: number
   slug: string
@@ -255,6 +265,8 @@ export type Dataview<Type = any, Category = DataviewCategory> = {
 }
 
 export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report' | 'comparison'
+
+/** Instance of a dataview that supports overriding the default configuration and customization by the user in the url  */
 export type DataviewInstance<Type = any> = Partial<Omit<Dataview<Type>, 'id' | 'config'>> & {
   id: string
   dataviewId: Dataview['id'] | Dataview['slug']
