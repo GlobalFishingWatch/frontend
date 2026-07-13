@@ -1,6 +1,7 @@
 packages:
   - 'linting'
   - 'apps/fishing-map'
+  - 'apps/fishing-map/config'
 
 allowBuilds:
   '@parcel/watcher': true

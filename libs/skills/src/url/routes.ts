@@ -1,9 +1,11 @@
-export const DEFAULT_BASENAME = '/map'
-export const DEFAULT_WORKSPACE_CATEGORY = 'fishing-activity'
-export const DEFAULT_WORKSPACE_ID = 'default-public'
+import {
+  DEFAULT_PATH_BASENAME,
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  ROUTE_PATHS,
+} from '@fishing-map/config'
 
-export const WORKSPACE_CATEGORIES = ['fishing-activity', 'marine-manager', 'reports'] as const
-export type WorkspaceCategory = (typeof WORKSPACE_CATEGORIES)[number]
+export { DEFAULT_PATH_BASENAME as DEFAULT_BASENAME }
 
 export type MapRouteType =
   | 'workspace'
@@ -52,17 +54,17 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   switch (route.type) {
     case 'workspace':
       if (!route.category && !route.workspaceId) {
-        return { to: '/', params: {} }
+        return { to: ROUTE_PATHS.HOME, params: {} }
       }
-      return { to: '/$category/$workspaceId', params: workspaceParams }
+      return { to: ROUTE_PATHS.WORKSPACE, params: workspaceParams }
     case 'workspaces-list':
-      return { to: '/$category', params: { category } }
+      return { to: ROUTE_PATHS.WORKSPACES_LIST, params: { category } }
     case 'report':
       if (route.reportId) {
-        return { to: '/report/$reportId', params: { reportId: route.reportId } }
+        return { to: ROUTE_PATHS.REPORT, params: { reportId: route.reportId } }
       }
       return {
-        to: '/$category/$workspaceId/report/$datasetId/$areaId',
+        to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
         params: {
           ...workspaceParams,
           datasetId: required(route, 'datasetId'),
@@ -71,26 +73,26 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
       }
     case 'vessel':
       if (!route.category && !route.workspaceId) {
-        return { to: '/vessel/$vesselId', params: { vesselId: required(route, 'vesselId') } }
+        return { to: ROUTE_PATHS.VESSEL, params: { vesselId: required(route, 'vesselId') } }
       }
       return {
-        to: '/$category/$workspaceId/vessel/$vesselId',
+        to: ROUTE_PATHS.WORKSPACE_VESSEL,
         params: { ...workspaceParams, vesselId: required(route, 'vesselId') },
       }
     case 'vessel-search':
-      return { to: '/$category/$workspaceId/vessel-search', params: workspaceParams }
+      return { to: ROUTE_PATHS.WORKSPACE_SEARCH, params: workspaceParams }
     case 'vessel-group-report':
       return {
-        to: '/$category/$workspaceId/vessel-group-report/$vesselGroupId',
+        to: ROUTE_PATHS.VESSEL_GROUP_REPORT,
         params: { ...workspaceParams, vesselGroupId: required(route, 'vesselGroupId') },
       }
     case 'ports-report':
       return {
-        to: '/$category/$workspaceId/ports-report/$portId',
+        to: ROUTE_PATHS.PORT_REPORT,
         params: { ...workspaceParams, portId: required(route, 'portId') },
       }
     case 'user':
-      return { to: '/user', params: {} }
+      return { to: ROUTE_PATHS.USER, params: {} }
     default:
       throw new Error(`Unknown route type "${(route as MapRoute).type}"`)
   }

@@ -1,3 +1,5 @@
+import { DEFAULT_VIEWPORT } from '@fishing-map/config/app'
+import { DEFAULT_PATH_BASENAME } from '@fishing-map/config/routes'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
@@ -28,7 +30,7 @@ export const SHOW_LEAVE_CONFIRMATION = import.meta.env.VITE_SHOW_LEAVE_CONFIRMAT
   ? import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
   : !import.meta.env.DEV
 
-export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || DEFAULT_PATH_BASENAME
 
 export const REPORT_DAYS_LIMIT =
   typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
@@ -77,11 +79,7 @@ export const LAST_DATA_UPDATE = DateTime.fromObject(
   .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO() as string
 
-export const DEFAULT_VIEWPORT = {
-  zoom: 1.49,
-  latitude: 19,
-  longitude: 26,
-}
+export { DEFAULT_VIEWPORT } from '@fishing-map/config/app'
 
 export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
   latitude: 10,

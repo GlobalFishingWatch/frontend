@@ -6,7 +6,42 @@
   "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/esbuild:esbuild",
+      "dependsOn": ["^dist"],
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "libs/skills/dist",
+        "main": "libs/skills/src/index.ts",
+        "tsConfig": "libs/skills/tsconfig.lib.json",
+        "bundle": true,
+        "format": ["esm"],
+        "thirdParty": true,
+        "declaration": false,
+        "deleteOutputPath": true,
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/skills/encode-url",
+            "output": "encode-url"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/skills/decode-url",
+            "output": "decode-url"
+          }
+        ],
+        "esbuildOptions": {
+          "platform": "node",
+          "banner": {
+            "js": "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"
+          },
+          "alias": {
+            "@fishing-map/config": "./apps/fishing-map/config/src/index.ts",
+            "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist/index.js",
+            "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist/index.js"
+          }
+        }
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],

@@ -20,6 +20,7 @@
     "sourceMap": true,
     "target": "es2022",
     "paths": {
+      "@fishing-map/config": ["./apps/fishing-map/config/src/index.ts"],
       "@globalfishingwatch/api-client": ["./libs/api-client/dist/index.d.ts"],
       "@globalfishingwatch/api-types": ["./libs/api-types/dist/index.d.ts"],
       "@globalfishingwatch/data-transforms": ["./libs/data-transforms/dist/index.d.ts"],
@@ -39,7 +40,7 @@
       "@globalfishingwatch/responsive-visualizations": [
         "./libs/responsive-visualizations/dist/index.d.ts"
       ],
-      "@globalfishingwatch/skills": ["./libs/skills/dist/index.d.ts"],
+      "@globalfishingwatch/skills": ["./libs/skills/src/index.ts"],
       "@globalfishingwatch/timebar": ["./libs/timebar/dist/index.d.ts"],
       "@globalfishingwatch/ui-components": ["./libs/ui-components/dist/index.d.ts"],
       "@globalfishingwatch/ui-components/*": ["./libs/ui-components/dist/*"]
