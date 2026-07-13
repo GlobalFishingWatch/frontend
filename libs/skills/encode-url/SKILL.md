@@ -16,6 +16,7 @@ Never hand-build the query string: params are abbreviated (`dataviewInstances`�
 
 1. **Pick the route type** from the user intent (details in [references/routes.md](references/routes.md)):
    - browse/compare activity on the map → `workspace`
+   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md)
    - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`)
    - port activity profile → `ports-report` (needs `portId`)
    - vessel profile → `vessel` (needs `vesselId`)

@@ -1,3 +1,9 @@
+/** Prefix of context layer dataview instance ids (e.g. `context-layer-eez`) */
+export const CONTEXT_LAYER_INSTANCE_PREFIX = 'context-layer-' as const
+
+/** Separator between a layer-library id and its unique suffix (e.g. `fishing-effort-ais__123`) */
+export const LAYER_LIBRARY_ID_SEPARATOR = '__'
+
 // Dataview instance ids used by the default workspace
 export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
 export const REAL_TIME_DATAVIEW_INSTANCE_ID = 'real-time'

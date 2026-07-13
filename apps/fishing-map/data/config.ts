@@ -69,7 +69,7 @@ export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
-export const LAYER_LIBRARY_ID_SEPARATOR = '__'
+export { LAYER_LIBRARY_ID_SEPARATOR } from '@fishing-map/config/dataviews'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
 

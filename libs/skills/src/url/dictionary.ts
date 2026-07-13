@@ -1,5 +1,7 @@
 import * as WORKSPACE_CONFIG from '@fishing-map/config'
 
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '@globalfishingwatch/dataviews-client'
+
 export type LayerCategory = 'activity' | 'detections' | 'events' | 'environment' | 'context'
 
 export type LayerInfo = {
@@ -186,8 +188,16 @@ export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
     category: 'environment',
     dataviewId: WORKSPACE_CONFIG.TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   },
-  currents: { name: 'Currents', category: 'environment', dataviewId: WORKSPACE_CONFIG.CURRENTS_DATAVIEW_SLUG },
-  winds: { name: 'Winds', category: 'environment', dataviewId: WORKSPACE_CONFIG.WINDS_DATAVIEW_SLUG },
+  currents: {
+    name: 'Currents',
+    category: 'environment',
+    dataviewId: WORKSPACE_CONFIG.CURRENTS_DATAVIEW_SLUG,
+  },
+  winds: {
+    name: 'Winds',
+    category: 'environment',
+    dataviewId: WORKSPACE_CONFIG.WINDS_DATAVIEW_SLUG,
+  },
   chlorophyl: {
     name: 'Chlorophyll-a concentration',
     category: 'environment',
@@ -270,8 +280,7 @@ export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
   },
 }
 
-const CONTEXT_LAYER_PREFIX = 'context-layer-'
-const VESSEL_LAYER_PREFIX = 'vessel-'
+const LIBRARY_ID_SUFFIX_REGEX = new RegExp(`${WORKSPACE_CONFIG.LAYER_LIBRARY_ID_SEPARATOR}\\d+$`)
 
 /**
  * Resolves a dataview instance id to layer info. Handles the app id conventions:
@@ -279,16 +288,16 @@ const VESSEL_LAYER_PREFIX = 'vessel-'
  * `vessel-` prefix (vessel track layers)
  */
 export const getLayerInfo = (instanceId: string): LayerInfo => {
-  const baseId = instanceId.replace(/__\d+$/, '')
-  const contextId = baseId.startsWith(CONTEXT_LAYER_PREFIX)
-    ? baseId.replace(CONTEXT_LAYER_PREFIX, '')
+  const baseId = instanceId.replace(LIBRARY_ID_SUFFIX_REGEX, '')
+  const contextId = baseId.startsWith(WORKSPACE_CONFIG.CONTEXT_LAYER_INSTANCE_PREFIX)
+    ? baseId.replace(WORKSPACE_CONFIG.CONTEXT_LAYER_INSTANCE_PREFIX, '')
     : baseId
   if (LAYERS_DICTIONARY[contextId]) {
     return LAYERS_DICTIONARY[contextId]
   }
-  if (baseId.startsWith(VESSEL_LAYER_PREFIX)) {
+  if (baseId.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)) {
     return {
-      name: `Vessel track (${baseId.replace(VESSEL_LAYER_PREFIX, '')})`,
+      name: `Vessel track (${baseId.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '')})`,
       category: 'activity',
     }
   }
