@@ -4,16 +4,17 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import papaparse from 'papaparse'
 
-import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselGroupSearchDatasets } from 'features/datasets/datasets.selectors'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
-import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
+import { CSV_COLUMN_LOOKUP } from 'features/vessel-groups/vessel-groups.config'
 import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
+import { getDatasetsIdFieldOptions } from 'features/vessel-groups/vessel-groups.utils'
 import { readBlobAs } from 'utils/files'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 import { listAsSentence } from 'utils/shared'
@@ -50,14 +51,30 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const sources = useSelector(selectVesselGroupModalSources)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
-  const hasVMSSource = (sources || []).some((source) => getIsVMSDataset(source))
+  const searchDatasets = useSelector(selectVesselGroupSearchDatasets)
+  const sourceDatasets = useMemo(
+    () =>
+      sources?.length
+        ? searchDatasets.filter((dataset) => sources.includes(dataset.id))
+        : searchDatasets,
+    [searchDatasets, sources]
+  )
   const idColumnsOptions = useMemo(
     () =>
-      hasVMSSource
-        ? [...ID_COLUMNS_OPTIONS, { id: 'shipname', label: 'Shipname' }]
-        : ID_COLUMNS_OPTIONS,
-    [hasVMSSource]
+      getDatasetsIdFieldOptions(sourceDatasets).map((option) => ({
+        ...option,
+        label: t((t: any) => t.vessel[option.id], { defaultValue: option.label as string }),
+      })),
+    [sourceDatasets, t]
   )
+
+  useEffect(() => {
+    const isIdFieldAvailable = idColumnsOptions.some((option) => option.id === searchIdField)
+    if (searchIdField && !isIdFieldAvailable && idColumnsOptions.length) {
+      dispatch(setVesselGroupSearchIdField(idColumnsOptions[0].id))
+    }
+  }, [dispatch, idColumnsOptions, searchIdField])
+
   const hasGroupVesselsToSearch = vesselGroupModalSearchIds && vesselGroupModalSearchIds.length > 0
   const showIdsSection = !selectableColumns.length
   const showDropzoneSection = !vesselGroupModalSearchIds?.length
