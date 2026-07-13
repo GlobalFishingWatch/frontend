@@ -11,6 +11,8 @@ import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useReportAreaCenter,
@@ -69,13 +71,16 @@ function VesselGroupLayerPanel({
     useLayerPanelDataviewSort(dataview.id)
   const [colorOpen, setColorOpen] = useState(false)
   const layerActive = dataview?.config?.visible ?? true
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
 
   const [fitBoundsClicked, setfitBoundsClicked] = useState(false)
   const { loaded, bbox } = useVesselGroupBounds(fitBoundsClicked ? dataview?.id : undefined)
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
   const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
-  const isOutdated = isOutdatedVesselGroup(vesselGroup!)
+  const isOutdated =
+    isOutdatedVesselGroup(vesselGroup!) ||
+    hasVesselGroupVesselsDeprecated(vesselGroup!.vesselsSummary?.datasets, deprecatedDatasets)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const isVesselGroupOwner = vesselGroup?.ownerId === userData?.id
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
