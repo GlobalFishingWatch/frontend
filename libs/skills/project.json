@@ -37,6 +37,10 @@
           },
           "alias": {
             "@fishing-map/config": "./apps/fishing-map/config/src/index.ts",
+            "@globalfishingwatch/api-types": "./libs/api-types/dist/index.js",
+            "@globalfishingwatch/api-client": "./libs/api-client/dist/index.js",
+            "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist/index.js",
+            "@globalfishingwatch/deck-loaders": "./libs/deck-loaders/dist/index.js",
             "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist/index.js",
             "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist/index.js"
           }

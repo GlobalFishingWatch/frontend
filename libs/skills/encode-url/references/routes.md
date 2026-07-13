@@ -8,6 +8,7 @@ Source: `apps/fishing-map/routes/_app` (TanStack Router file routes).
 | `workspace`           | `/` or `/$category/$workspaceId`                             | category, workspaceId | Browse/compare layers on the map                                                     |
 | `workspaces-list`     | `/$category`                                                 | category              | List curated workspaces of a category                                                |
 | `report`              | `/$category/$workspaceId/report/$datasetId/$areaId`          | + datasetId, areaId   | Aggregated report over an area (EEZ/FAO/RFMO/MPA)                                    |
+| `report` (global)     | `/$category/$workspaceId/report`                             | — (no datasetId/areaId) | Whole-world aggregated report; omit `datasetId`+`areaId`, category defaults to `reports` |
 | `report` (saved)      | `/report/$reportId`                                          | reportId              | Open a user-saved report                                                             |
 | `vessel`              | `/$category/$workspaceId/vessel/$vesselId`                   | + vesselId            | Vessel profile (identity, track, events)                                             |
 | `vessel-search`       | `/$category/$workspaceId/vessel-search`                      | —                     | Search vessels by name/MMSI/IMO or advanced filters                                  |

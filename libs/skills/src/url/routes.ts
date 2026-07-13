@@ -63,6 +63,12 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
       if (route.reportId) {
         return { to: ROUTE_PATHS.REPORT, params: { reportId: route.reportId } }
       }
+      if (!route.datasetId && !route.areaId) {
+        return {
+          to: ROUTE_PATHS.WORKSPACE_REPORT,
+          params: { category: route.category || 'reports', workspaceId },
+        }
+      }
       return {
         to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
         params: {
