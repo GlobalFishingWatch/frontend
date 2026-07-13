@@ -2,8 +2,24 @@ import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
 import { resolveDataviewSlug } from './config'
+import { getLayerInfo } from './dictionary'
 import type { MapRoute, RouteNavigation } from './routes'
 import { buildRoutePath, DEFAULT_BASENAME, getRouteNavigation } from './routes'
+
+// Layer-library instances (id convention `<libraryId>__<unique>`) require a dataviewId;
+// fill it from the dictionary when missing so agents don't have to know slugs
+const withDataviewId = (instance: any) => {
+  if (instance?.dataviewId) {
+    return { ...instance, dataviewId: resolveDataviewSlug(String(instance.dataviewId)) }
+  }
+  if (instance?.id?.includes('__')) {
+    const { dataviewId } = getLayerInfo(instance.id)
+    if (dataviewId) {
+      return { ...instance, dataviewId }
+    }
+  }
+  return instance
+}
 
 export type MapState = BaseUrlWorkspace & Record<string, unknown>
 
@@ -30,11 +46,7 @@ export const encodeMapUrl = ({
   if (state.dataviewInstances) {
     state = {
       ...state,
-      dataviewInstances: state.dataviewInstances.map((instance: any) =>
-        instance?.dataviewId
-          ? { ...instance, dataviewId: resolveDataviewSlug(String(instance.dataviewId)) }
-          : instance
-      ),
+      dataviewInstances: state.dataviewInstances.map(withDataviewId),
     }
   }
   const query = stringifyWorkspace(state)

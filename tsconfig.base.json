@@ -20,6 +20,7 @@
     "sourceMap": true,
     "target": "es2022",
     "paths": {
+      "@fishing-map/config": ["./apps/fishing-map/config/src/index.ts"],
       "@globalfishingwatch/api-client": ["./libs/api-client/dist/index.d.ts"],
       "@globalfishingwatch/api-client/utils/*": ["./libs/api-client/dist/utils/*.d.ts"],
       "@globalfishingwatch/api-types": ["./libs/api-types/dist/index.d.ts"],
