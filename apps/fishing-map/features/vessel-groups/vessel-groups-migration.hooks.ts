@@ -53,7 +53,7 @@ export const useMigrateToLatestVesselGroup = () => {
         const idField = isVMSDataset ? VMS_ID_FIELD : 'mmsi'
         const text = vesselGroupVessels.entries
           ?.map((v) => getVesselProperty(v, isVMSDataset ? VMS_ID_FIELD : 'ssvid'))
-          .join(',')
+          .join('\n')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {
           dispatch(setVesselGroupModalName(`${t((t) => t.vesselGroup.copyOf)} ${vesselGroup.name}`))
