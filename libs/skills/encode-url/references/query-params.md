@@ -27,12 +27,20 @@ Source: `apps/fishing-map/types/index.ts` (`WorkspaceParam`, `QueryParams`).
   "dataviewId": "apparent-fishing-effort-ais-v-{PIPE_DATASET_VERSION}", // only for layers added on top of defaults; version token resolved by the encoder
   "config": {
     "visible": true,
-    "color": "#9CA4FF", // optional
-    "colorRamp": "lilac", // optional: teal|orange|magenta|yellow|lilac|sky|green|red|salmon
+    "color": "#9CA4FF", // set together with colorRamp — use that ramp's hex (see palette below)
+    "colorRamp": "lilac", // teal|orange|magenta|yellow|lilac|sky|green|red|salmon
     "filters": { "flag": ["FRA"], "geartype": ["trawlers"] }
   }
 }
 ```
+
+`color`/`colorRamp` are one choice, not two. Pick a ramp and set `color` to its paired hex:
+
+| colorRamp | color     | colorRamp | color     | colorRamp | color     |
+| --------- | --------- | --------- | --------- | --------- | --------- |
+| teal      | `#00FFBC` | sky       | `#00EEFF` | green     | `#A6FF59` |
+| lilac     | `#9CA4FF` | red       | `#FF6854` | orange    | `#FFAA0D` |
+| salmon    | `#FFAE9B` | yellow    | `#FFEA00` | magenta   | `#FF64CE` |
 
 To show the SAME dataset twice with different filters (e.g. Spanish vs French fishing), reuse the default instance (`ais`) for one and add a second instance with a unique id (`fishing-effort-ais__<timestamp>`) + `dataviewId`.
 
