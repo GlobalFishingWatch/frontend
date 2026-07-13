@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
 
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 // import { getEventLabel } from 'utils/analytics'
@@ -122,17 +122,20 @@ export default function VesselGroupReportTitle() {
         </a>
         <div className={styles.actions}>
           {showDeprecatedWarning && (
-            <IconButton
-              icon="warning"
-              type="warning-invert"
-              size="small"
+            <Button
+              type="border-secondary"
+              size="medium"
+              tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
               loading={isLoading}
               disabled={isLoading}
-              tooltip={t((t) => t.workspace.deprecatedVesselGroupLayer)}
               onClick={() => {
                 migrateToLatestVesselGroup(vesselGroup)
               }}
-            />
+              className={styles.warningButton}
+            >
+              <Icon icon="warning" />
+              {t((t) => t.vesselGroup.updateRequired)}
+            </Button>
           )}
           <LoginButtonWrapper tooltip="" loginSource="vessel-group-report">
             <Button
