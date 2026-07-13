@@ -1543,6 +1543,7 @@
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",
+    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Please update them from your workspace.",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "user": "User workspace",
     "viewAccess": "View access",
