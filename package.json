@@ -177,11 +177,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@deck.gl/test-utils": "9.3.3",
     "@eslint/compat": "2.1.0",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@globalfishingwatch/linting": "workspace:*",
     "@jscutlery/semver": "6.1.2",
+    "@luma.gl/test-utils": "^9.3.6",
     "@nx/esbuild": "22.7.5",
     "@nx/eslint": "22.7.5",
     "@nx/eslint-plugin": "22.7.5",
