@@ -2,6 +2,8 @@ import { LAYER_LIBRARY_ID_SEPARATOR } from '@fishing-map/config'
 
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { resolveDataviewSlug } from './config'
 import { getLayerInfo } from './dictionary'
@@ -21,6 +23,22 @@ const withDataviewId = (instance: any) => {
     }
   }
   return instance
+}
+
+// Snaps start/end to the fourwings interval resolution the app will render with
+// (month boundaries for ~year ranges, day for short ranges) — same functions the map uses
+const withSnappedTimeRange = (state: MapState): MapState => {
+  const start = typeof state.start === 'string' ? Date.parse(state.start) : NaN
+  const end = typeof state.end === 'string' ? Date.parse(state.end) : NaN
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    return state
+  }
+  const interval = getFourwingsInterval(start, end)
+  return {
+    ...state,
+    start: new Date(getDateInIntervalResolution(start, interval)).toISOString(),
+    end: new Date(getDateInIntervalResolution(end, interval)).toISOString(),
+  }
 }
 
 export type MapState = BaseUrlWorkspace & Record<string, unknown>
@@ -45,6 +63,7 @@ export const encodeMapUrl = ({
   basename = DEFAULT_BASENAME,
 }: EncodeMapUrlInput): EncodeMapUrlResult => {
   const navigation = getRouteNavigation(route)
+  state = withSnappedTimeRange(state)
   if (state.dataviewInstances) {
     state = {
       ...state,
