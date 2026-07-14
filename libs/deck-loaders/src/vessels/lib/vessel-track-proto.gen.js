@@ -298,12 +298,294 @@ export const vessels = ($root.vessels = (() => {
     return DeckTrackAttribute
   })()
 
+  vessels.DeckTrackTimestampAttribute = (function () {
+    /**
+     * Properties of a DeckTrackTimestampAttribute.
+     * @typedef {Object} vessels.DeckTrackTimestampAttribute.$Properties
+     * @property {Array.<number>|null} [value] DeckTrackTimestampAttribute value
+     * @property {number|null} [size] DeckTrackTimestampAttribute size
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+
+    /**
+     * Properties of a DeckTrackTimestampAttribute.
+     * @memberof vessels
+     * @interface IDeckTrackTimestampAttribute
+     * @augments vessels.DeckTrackTimestampAttribute.$Properties
+     * @deprecated Use vessels.DeckTrackTimestampAttribute.$Properties instead.
+     */
+
+    /**
+     * Shape of a DeckTrackTimestampAttribute.
+     * @typedef {vessels.DeckTrackTimestampAttribute.$Properties} vessels.DeckTrackTimestampAttribute.$Shape
+     */
+
+    /**
+     * Constructs a new DeckTrackTimestampAttribute.
+     * @memberof vessels
+     * @classdesc Represents a DeckTrackTimestampAttribute.
+     * @constructor
+     * @param {vessels.DeckTrackTimestampAttribute.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding
+     */
+    function DeckTrackTimestampAttribute(properties) {
+      this.value = []
+      if (properties)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+          if (properties[keys[i]] != null && keys[i] !== '__proto__')
+            this[keys[i]] = properties[keys[i]]
+    }
+
+    /**
+     * DeckTrackTimestampAttribute value.
+     * @member {Array.<number>} value
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @instance
+     */
+    DeckTrackTimestampAttribute.prototype.value = $util.emptyArray
+
+    /**
+     * DeckTrackTimestampAttribute size.
+     * @member {number} size
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @instance
+     */
+    DeckTrackTimestampAttribute.prototype.size = 0
+
+    /**
+     * Creates a new DeckTrackTimestampAttribute instance using the specified properties.
+     * @function create
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {vessels.DeckTrackTimestampAttribute.$Properties=} [properties] Properties to set
+     * @returns {vessels.DeckTrackTimestampAttribute} DeckTrackTimestampAttribute instance
+     * @type {{
+     *   (properties: vessels.DeckTrackTimestampAttribute.$Shape): vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape;
+     *   (properties?: vessels.DeckTrackTimestampAttribute.$Properties): vessels.DeckTrackTimestampAttribute;
+     * }}
+     */
+    DeckTrackTimestampAttribute.create = function create(properties) {
+      return new DeckTrackTimestampAttribute(properties)
+    }
+
+    /**
+     * Encodes the specified DeckTrackTimestampAttribute message. Does not implicitly {@link vessels.DeckTrackTimestampAttribute.verify|verify} messages.
+     * @function encode
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {vessels.DeckTrackTimestampAttribute.$Properties} message DeckTrackTimestampAttribute message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    DeckTrackTimestampAttribute.encode = function encode(message, writer, _depth) {
+      if (!writer) writer = $Writer.create()
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
+      if (message.value != null && message.value.length) {
+        writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
+        for (let i = 0; i < message.value.length; ++i) writer.double(message.value[i])
+        writer.ldelim()
+      }
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+        writer.uint32(/* id 2, wireType 0 =*/ 16).uint32(message.size)
+      if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
+        for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
+      return writer
+    }
+
+    /**
+     * Encodes the specified DeckTrackTimestampAttribute message, length delimited. Does not implicitly {@link vessels.DeckTrackTimestampAttribute.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {vessels.DeckTrackTimestampAttribute.$Properties} message DeckTrackTimestampAttribute message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    DeckTrackTimestampAttribute.encodeDelimited = function encodeDelimited(message, writer) {
+      return this.encode(message, writer && writer.len ? writer.fork() : writer).ldelim()
+    }
+
+    /**
+     * Decodes a DeckTrackTimestampAttribute message from the specified reader or buffer.
+     * @function decode
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape} DeckTrackTimestampAttribute
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    DeckTrackTimestampAttribute.decode = function decode(reader, length, _end, _depth, _target) {
+      if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
+      if (_depth === undefined) _depth = 0
+      if (_depth > $Reader.recursionLimit) throw Error('max depth exceeded')
+      let end = length === undefined ? reader.len : reader.pos + length,
+        message = _target || new $root.vessels.DeckTrackTimestampAttribute(),
+        value
+      while (reader.pos < end) {
+        let start = reader.pos
+        let tag = reader.tag()
+        if (tag === _end) {
+          _end = undefined
+          break
+        }
+        let wireType = tag & 7
+        switch ((tag >>>= 3)) {
+          case 1: {
+            if (wireType === 2) {
+              if (!(message.value && message.value.length)) message.value = []
+              let end2 = reader.uint32() + reader.pos
+              while (reader.pos < end2) message.value.push(reader.double())
+              continue
+            }
+            if (wireType !== 1) break
+            if (!(message.value && message.value.length)) message.value = []
+            message.value.push(reader.double())
+            continue
+          }
+          case 2: {
+            if (wireType !== 0) break
+            if ((value = reader.uint32())) message.size = value
+            else delete message.size
+            continue
+          }
+        }
+        reader.skipType(wireType, _depth, tag)
+        if (!reader.discardUnknown) {
+          $util.makeProp(message, '$unknowns', false)
+          ;(message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos))
+        }
+      }
+      if (_end !== undefined) throw Error('missing end group')
+      return message
+    }
+
+    /**
+     * Decodes a DeckTrackTimestampAttribute message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape} DeckTrackTimestampAttribute
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    DeckTrackTimestampAttribute.decodeDelimited = function decodeDelimited(reader) {
+      if (!(reader instanceof $Reader)) reader = new $Reader(reader)
+      return this.decode(reader, reader.uint32())
+    }
+
+    /**
+     * Verifies a DeckTrackTimestampAttribute message.
+     * @function verify
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    DeckTrackTimestampAttribute.verify = function verify(message, _depth) {
+      if (typeof message !== 'object' || message === null) return 'object expected'
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) return 'max depth exceeded'
+      if (message.value != null && Object.hasOwnProperty.call(message, 'value')) {
+        if (!Array.isArray(message.value)) return 'value: array expected'
+        for (let i = 0; i < message.value.length; ++i)
+          if (typeof message.value[i] !== 'number') return 'value: number[] expected'
+      }
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+        if (!$util.isInteger(message.size)) return 'size: integer expected'
+      return null
+    }
+
+    /**
+     * Creates a DeckTrackTimestampAttribute message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {vessels.DeckTrackTimestampAttribute} DeckTrackTimestampAttribute
+     */
+    DeckTrackTimestampAttribute.fromObject = function fromObject(object, _depth) {
+      if (object instanceof $root.vessels.DeckTrackTimestampAttribute) return object
+      if (!$util.isObject(object))
+        throw TypeError('.vessels.DeckTrackTimestampAttribute: object expected')
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
+      let message = new $root.vessels.DeckTrackTimestampAttribute()
+      if (object.value) {
+        if (!Array.isArray(object.value))
+          throw TypeError('.vessels.DeckTrackTimestampAttribute.value: array expected')
+        message.value = Array(object.value.length)
+        for (let i = 0; i < object.value.length; ++i) message.value[i] = Number(object.value[i])
+      }
+      if (object.size != null) if (Number(object.size) !== 0) message.size = object.size >>> 0
+      return message
+    }
+
+    /**
+     * Creates a plain object from a DeckTrackTimestampAttribute message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {vessels.DeckTrackTimestampAttribute} message DeckTrackTimestampAttribute
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    DeckTrackTimestampAttribute.toObject = function toObject(message, options, _depth) {
+      if (!options) options = {}
+      if (_depth === undefined) _depth = 0
+      if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
+      let object = {}
+      if (options.arrays || options.defaults) object.value = []
+      if (options.defaults) object.size = 0
+      if (message.value && message.value.length) {
+        object.value = Array(message.value.length)
+        for (let j = 0; j < message.value.length; ++j)
+          object.value[j] =
+            options.json && !isFinite(message.value[j])
+              ? String(message.value[j])
+              : message.value[j]
+      }
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+        object.size = message.size
+      return object
+    }
+
+    /**
+     * Converts this DeckTrackTimestampAttribute to JSON.
+     * @function toJSON
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    DeckTrackTimestampAttribute.prototype.toJSON = function toJSON() {
+      return this.constructor.toObject(this, $protobuf.util.toJSONOptions)
+    }
+
+    /**
+     * Gets the type url for DeckTrackTimestampAttribute
+     * @function getTypeUrl
+     * @memberof vessels.DeckTrackTimestampAttribute
+     * @static
+     * @param {string} [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
+     * @returns {string} The type url
+     */
+    DeckTrackTimestampAttribute.getTypeUrl = function getTypeUrl(prefix) {
+      if (prefix === undefined) prefix = 'type.googleapis.com'
+      return prefix + '/vessels.DeckTrackTimestampAttribute'
+    }
+
+    return DeckTrackTimestampAttribute
+  })()
+
   vessels.DeckTrackAttributeStruct = (function () {
     /**
      * Properties of a DeckTrackAttributeStruct.
      * @typedef {Object} vessels.DeckTrackAttributeStruct.$Properties
      * @property {vessels.DeckTrackAttribute.$Properties|null} [getPath] DeckTrackAttributeStruct getPath
-     * @property {vessels.DeckTrackAttribute.$Properties|null} [getTimestamp] DeckTrackAttributeStruct getTimestamp
+     * @property {vessels.DeckTrackTimestampAttribute.$Properties|null} [getTimestamp] DeckTrackAttributeStruct getTimestamp
      * @property {vessels.DeckTrackAttribute.$Properties|null} [getSpeed] DeckTrackAttributeStruct getSpeed
      * @property {vessels.DeckTrackAttribute.$Properties|null} [getElevation] DeckTrackAttributeStruct getElevation
      * @property {vessels.DeckTrackAttribute.$Properties|null} [getCourse] DeckTrackAttributeStruct getCourse
@@ -348,7 +630,7 @@ export const vessels = ($root.vessels = (() => {
 
     /**
      * DeckTrackAttributeStruct getTimestamp.
-     * @member {vessels.DeckTrackAttribute.$Properties|null|undefined} getTimestamp
+     * @member {vessels.DeckTrackTimestampAttribute.$Properties|null|undefined} getTimestamp
      * @memberof vessels.DeckTrackAttributeStruct
      * @instance
      */
@@ -414,7 +696,7 @@ export const vessels = ($root.vessels = (() => {
           _depth + 1
         ).ldelim()
       if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp'))
-        $root.vessels.DeckTrackAttribute.encode(
+        $root.vessels.DeckTrackTimestampAttribute.encode(
           message.getTimestamp,
           writer.uint32(/* id 2, wireType 2 =*/ 18).fork(),
           _depth + 1
@@ -495,7 +777,7 @@ export const vessels = ($root.vessels = (() => {
           }
           case 2: {
             if (wireType !== 2) break
-            message.getTimestamp = $root.vessels.DeckTrackAttribute.decode(
+            message.getTimestamp = $root.vessels.DeckTrackTimestampAttribute.decode(
               reader,
               reader.uint32(),
               undefined,
@@ -580,7 +862,10 @@ export const vessels = ($root.vessels = (() => {
         if (error) return 'getPath.' + error
       }
       if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp')) {
-        let error = $root.vessels.DeckTrackAttribute.verify(message.getTimestamp, _depth + 1)
+        let error = $root.vessels.DeckTrackTimestampAttribute.verify(
+          message.getTimestamp,
+          _depth + 1
+        )
         if (error) return 'getTimestamp.' + error
       }
       if (message.getSpeed != null && Object.hasOwnProperty.call(message, 'getSpeed')) {
@@ -621,7 +906,7 @@ export const vessels = ($root.vessels = (() => {
       if (object.getTimestamp != null) {
         if (!$util.isObject(object.getTimestamp))
           throw TypeError('.vessels.DeckTrackAttributeStruct.getTimestamp: object expected')
-        message.getTimestamp = $root.vessels.DeckTrackAttribute.fromObject(
+        message.getTimestamp = $root.vessels.DeckTrackTimestampAttribute.fromObject(
           object.getTimestamp,
           _depth + 1
         )
@@ -678,7 +963,7 @@ export const vessels = ($root.vessels = (() => {
           _depth + 1
         )
       if (message.getTimestamp != null && Object.hasOwnProperty.call(message, 'getTimestamp'))
-        object.getTimestamp = $root.vessels.DeckTrackAttribute.toObject(
+        object.getTimestamp = $root.vessels.DeckTrackTimestampAttribute.toObject(
           message.getTimestamp,
           options,
           _depth + 1

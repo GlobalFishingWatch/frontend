@@ -1403,7 +1403,6 @@
     "addToWorkspace": "Ajouter un groupe de navires à l'espace de travail",
     "addVisibleVessels": "Ajouter les navires visibles au groupe de navires",
     "clearFile": "Clear file",
-    "clickToUpdate": "Cliquez pour mettre à jour",
     "clickToUpdateLong": "Cliquez pour mettre à jour votre groupe de navires et afficher les dernières données et fonctionnalités",
     "columnSelection": "Select identifier columns to match with the GFW dataset",
     "columnSelectionTooltip": "Select identifier columns to enable vessel identity review and matching with the GFW dataset",
