@@ -24,7 +24,8 @@ export type VesselTrackData = {
     // Populated automatically by deck.gl
     positions?: { value: Float32Array; size: number }
     getPath: { value: Float32Array; size: number }
-    getTimestamp: { value: Float32Array; size: number }
+    // Float64Array is used because ms epoch timestamps exceed float32 precision.
+    getTimestamp: { value: Float64Array; size: number }
     getSpeed: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
     getElevation: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
     // Time gap (in hours) between each point and the next one in the same path; 0 at path

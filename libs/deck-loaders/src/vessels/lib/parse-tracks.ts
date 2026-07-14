@@ -95,8 +95,8 @@ export const parseTrack = (
   const elevationExtent = getExtent(getElevationValues as any, 'elevation')
 
   const timestamps = track.attributes.getTimestamp.value?.length
-    ? new Float32Array(track.attributes.getTimestamp.value)
-    : new Float32Array(defaultAttributesLength)
+    ? new Float64Array(track.attributes.getTimestamp.value)
+    : new Float64Array(defaultAttributesLength)
 
   // getGap stores, per point, the time gap (in hours) to the next point in the same path.
   // The shader and the segment helper compare it against gapSegmentThreshold at render time, so
