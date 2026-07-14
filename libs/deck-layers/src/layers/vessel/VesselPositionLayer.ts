@@ -39,6 +39,7 @@ export type VesselTrackPositionFeature = Feature<
     timestamp: number
     speed: number
     depth: number
+    pointIndex?: number
   }
 >
 export type VesselPositionMode = 'icon' | 'point'
@@ -90,7 +91,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             getRadius: pointRadius,
             radiusUnits: 'pixels',
             stroked: false,
-            pickable: true,
+            pickable: this.props.pickable,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
           })
         ),
@@ -114,7 +115,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getAngle: (d: VesselTrackPositionFeature) => 360 - bearingToAzimuth(d.properties.course),
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: iconSize + 3,
-          pickable: true,
+          pickable: this.props.pickable,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
         })
       ),
