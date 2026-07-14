@@ -1,18 +1,19 @@
 build_env_vars: &build_env_vars
   VITE_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
-  VITE_API_VERSION: v3
   VITE_GOOGLE_MEASUREMENT_ID: G-R3PWRQW70G
   VITE_GOOGLE_TAG_MANAGER_ID: GTM-KK5ZFST
-  VITE_USE_LOCAL_DATASETS: "false"
-  VITE_USE_LOCAL_DATAVIEWS: "false"
-  VITE_WORKSPACE_ENV: development
-  VITE_REPORT_DAYS_LIMIT: "366"
-  VITE_PIPE_DATASET_VERSION: "4"
 
 fishing-map:
   target: production-node
   build:
-    env_vars: *build_env_vars
+    env_vars:
+      <<: *build_env_vars
+      VITE_API_VERSION: v3
+      VITE_USE_LOCAL_DATASETS: "false"
+      VITE_USE_LOCAL_DATAVIEWS: "false"
+      VITE_WORKSPACE_ENV: development
+      VITE_REPORT_DAYS_LIMIT: "366"
+      VITE_PIPE_DATASET_VERSION: "4"
     secrets:
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
@@ -53,7 +54,8 @@ api-portal:
 track-labeler:
   target: production-nginx
   build:
-    env_vars: *build_env_vars
+    env_vars:
+      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
   deploy:
     env_vars:
       BASIC_AUTH: Restricted
@@ -64,7 +66,8 @@ track-labeler:
 data-download-portal:
   target: production-nginx
   build:
-    env_vars: *build_env_vars
+    env_vars:
+      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
   deploy:
     env_vars:
       BASIC_AUTH: off
@@ -72,7 +75,8 @@ data-download-portal:
 image-labeler:
   target: production-nginx
   build:
-    env_vars: *build_env_vars
+    env_vars:
+      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
   deploy:
     env_vars:
       BASIC_AUTH: off
@@ -80,7 +84,20 @@ image-labeler:
 user-groups-admin:
   target: production-nginx
   build:
-    env_vars: *build_env_vars
+    env_vars:
+      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
   deploy:
     env_vars:
       BASIC_AUTH: off
+
+port-labeler:
+  target: production-nginx
+  build:
+    env_vars:
+      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/BASIC_AUTH_PASS_PORT_LABELER/versions/latest

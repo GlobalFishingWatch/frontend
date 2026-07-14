@@ -48,7 +48,7 @@ runs:
           --base=${{ inputs.base }} \
           --head=${{ inputs.head }} \
           --type app \
-          --exclude='linting,port-labeler,*-e2e' \
+          --exclude='linting,*-e2e' \
           --plain | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
 
         if [ -z "$AFFECTED" ]; then
