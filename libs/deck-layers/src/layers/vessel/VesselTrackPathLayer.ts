@@ -8,6 +8,7 @@ import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
+import { toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../utils'
 import { colorToVec, hexToDeckColor } from '../../utils/colors'
@@ -469,14 +470,17 @@ export class VesselTrackPathLayer<
       return
     }
 
+    const timestampBase = (this.props.data as VesselTrackData)?.timestampBase || 0
+    const rebase = (time: number) => (time ? toRelativeTimestamp(time, timestampBase) : time)
+
     model.shaderInputs.setProps({
       track: {
-        startTime,
-        endTime,
-        highlightStartTime,
-        highlightEndTime,
-        highlightEventStartTime,
-        highlightEventEndTime,
+        startTime: rebase(startTime),
+        endTime: rebase(endTime),
+        highlightStartTime: rebase(highlightStartTime),
+        highlightEndTime: rebase(highlightEndTime),
+        highlightEventStartTime: rebase(highlightEventStartTime),
+        highlightEventEndTime: rebase(highlightEventEndTime),
         minSpeedFilter,
         maxSpeedFilter,
         minElevationFilter,
@@ -497,17 +501,17 @@ export class VesselTrackPathLayer<
   }
 
   getSegments(param = {} as GetSegmentsFromDataParams): TrackSegment[] {
-    return getSegmentsFromData(this.props.data as VesselTrackData, param)
+    return getSegmentsFromData(this.getData(), param)
   }
 
   getGraphExtent(graph: 'speed' | 'elevation'): VesselTrackGraphExtent {
     const selector = graph === 'speed' ? 'getSpeed' : 'getElevation'
-    const extent = (this.props.data as VesselTrackData).attributes?.[selector]?.extent
+    const extent = this.getData().attributes?.[selector]?.extent
     return extent
   }
 
   getBbox(params = {} as { startDate?: number | string; endDate?: number | string }) {
-    const data = this.props.data as VesselTrackData
+    const data = this.getData()
     const positions = data.attributes?.getPath?.value
     const positionsSize = data.attributes?.getPath?.size
     const timestamps = data.attributes?.getTimestamp?.value
@@ -517,8 +521,12 @@ export class VesselTrackPathLayer<
       ? getUTCDateTime(params.startDate).toMillis()
       : this.props.startTime
     const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : this.props.endTime
-    const firstPointIndex = timestamps.findIndex((t) => t > startDate)
-    const lastPointIndex = timestamps.findLastIndex((t) => t < endDate)
+    // getTimestamp values are relative to data.timestampBase - rebase the bounds to match.
+    const timestampBase = data.timestampBase ?? 0
+    const relativeStartDate = toRelativeTimestamp(startDate, timestampBase)
+    const relativeEndDate = toRelativeTimestamp(endDate, timestampBase)
+    const firstPointIndex = timestamps.findIndex((t) => t > relativeStartDate)
+    const lastPointIndex = timestamps.findLastIndex((t) => t < relativeEndDate)
     if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
       return null
     }

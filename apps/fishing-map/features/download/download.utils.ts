@@ -52,10 +52,11 @@ export function getSupportedGroupByOptions(
       dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
   )
 
-  const gearTypeUnsupportedDatasets = dataviews.some((dataview) =>
-    dataview.config?.datasets?.some((dataset) =>
-      GEAR_TYPE_UNSUPPORTED_DATASET_IDS.includes(dataset)
-    )
+  const gearTypeSupportedDatasets = dataviews.every((dataview) =>
+    dataview.config?.datasets?.every((datasetId) => {
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetId)
+      return dataset?.filters.fourwings?.some((f) => f.id.includes('geartype'))
+    })
   )
 
   const reportGroupings = getDatasetConfigurationProperty({
@@ -77,7 +78,7 @@ export function getSupportedGroupByOptions(
       }
     }
     if (
-      (gearTypeUnsupportedDatasets || hasPresenceDataview) &&
+      (!gearTypeSupportedDatasets || hasPresenceDataview) &&
       (option.id === GroupBy.GearType || option.id === GroupBy.FlagAndGearType)
     ) {
       return {

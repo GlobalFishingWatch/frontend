@@ -9,6 +9,7 @@ import type {
   VesselTrackData,
   VesselTrackGraphExtent,
 } from '@globalfishingwatch/deck-loaders'
+import { toAbsoluteTimestamp, toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../utils'
 
@@ -100,6 +101,10 @@ export const getSegmentsFromData = memoize(
     const hasGapSupport = !!(gaps && gapSegmentThreshold)
     const totalPoints = timestamps.length / timestampSize
 
+    const timestampBase = (data as VesselTrackData).timestampBase ?? 0
+    const relativeStartTime = startTime ? toRelativeTimestamp(startTime, timestampBase) : startTime
+    const relativeEndTime = endTime ? toRelativeTimestamp(endTime, timestampBase) : endTime
+
     // Pre-compute wrapped longitudes if needed
     const wrappedLongitudes = includeCoordinates
       ? wrapLongitudes(Array.from({ length: totalPoints }, (_, i) => positions[i * pathSize]))
@@ -114,7 +119,7 @@ export const getSegmentsFromData = memoize(
           longitude,
           latitude: positions[index * pathSize + 1],
         }),
-        timestamp: timestamps[index * timestampSize],
+        timestamp: toAbsoluteTimestamp(timestamps[index * timestampSize], timestampBase),
         ...(speedSize && { speed: speeds?.[index * speedSize] || 0 }),
         ...(elevationSize && { elevation: elevations?.[index * elevationSize] || 0 }),
       }
@@ -130,8 +135,8 @@ export const getSegmentsFromData = memoize(
     }
 
     const isTimestampInRange = (timestamp: number, isFirstAfterEndTime: boolean): boolean => {
-      if (startTime && timestamp <= startTime && !isFirstAfterEndTime) return false
-      if (endTime && timestamp >= endTime && !isFirstAfterEndTime) return false
+      if (relativeStartTime && timestamp <= relativeStartTime && !isFirstAfterEndTime) return false
+      if (relativeEndTime && timestamp >= relativeEndTime && !isFirstAfterEndTime) return false
       return true
     }
 
@@ -150,7 +155,7 @@ export const getSegmentsFromData = memoize(
       for (let pointIndex = segmentIndex; pointIndex < segmentEndIndex; pointIndex++) {
         const timestamp = timestamps[pointIndex * timestampSize]
         const isFirstAfterEndTime =
-          endTime && timestamp >= endTime && !firstPointAfterEndTimeIncluded
+          relativeEndTime && timestamp >= relativeEndTime && !firstPointAfterEndTimeIncluded
 
         if (!isTimestampInRange(timestamp, isFirstAfterEndTime)) continue
 

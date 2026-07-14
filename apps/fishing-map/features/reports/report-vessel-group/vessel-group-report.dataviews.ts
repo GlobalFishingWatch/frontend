@@ -95,7 +95,7 @@ export function getReportVesselGroupVisibleDataviews({
     }
     return (
       category === DataviewCategory.VesselGroups &&
-      config?.filters?.['vessel-groups'].includes(reportVesselGroupId)
+      config?.filters?.['vessel-groups']?.includes(reportVesselGroupId)
     )
   })
 }
@@ -127,11 +127,13 @@ export const getVesselGroupActivityDataviewInstance = ({
   color,
   colorRamp,
   activityType,
+  datasets,
 }: {
   vesselGroupId: string
   color?: string
   colorRamp?: ColorRampId
   activityType: ReportActivitySubCategory
+  datasets?: string[]
 }): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -141,6 +143,7 @@ export const getVesselGroupActivityDataviewInstance = ({
         visible: true,
         ...(color && { color }),
         ...(colorRamp && { colorRamp }),
+        ...(datasets?.length && { datasets }),
         filters: {
           'vessel-groups': [vesselGroupId],
         },
