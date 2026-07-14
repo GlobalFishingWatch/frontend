@@ -222,7 +222,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
   }
 
   getSegments(params = {} as GetSegmentsFromDataParams) {
-    return getSegmentsFromData(this.props.data as VesselTrackData, {
+    return getSegmentsFromData(this.getData(), {
       gapSegmentThreshold: this.props.gapSegmentThreshold,
       ...params,
     })

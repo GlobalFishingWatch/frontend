@@ -12,6 +12,8 @@ import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import {
   getVesselGraphExtentClamped,
+  toAbsoluteTimestamp,
+  toRelativeTimestamp,
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
@@ -269,6 +271,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           }),
           fetch: fetchWithGFWAPI,
           loadOptions: {
+            worker: false,
             'vessel-tracks': {
               computeGaps,
             },
@@ -384,18 +387,21 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (start && end) {
       const highlightCenter = end - (end - start) / 2
       let timestampIndex = -1
+      // getTimestamp values are relative to each chunk's own timestampBase
       const chunkIndex = trackData.findIndex((chunk) => {
+        const chunkBase = chunk.timestampBase ?? 0
+        const relativeHighlightCenter = toRelativeTimestamp(highlightCenter, chunkBase)
         if (
           chunk.attributes &&
-          chunk.attributes.getTimestamp.value[0] < highlightCenter &&
+          chunk.attributes.getTimestamp.value[0] < relativeHighlightCenter &&
           chunk.attributes.getTimestamp.value[chunk.attributes.getTimestamp.value.length - 1] >
-            highlightCenter
+            relativeHighlightCenter
         ) {
           timestampIndex = chunk.attributes.getTimestamp.value.findIndex((t, i) => {
             return (
               !chunk.startIndices.includes(i) &&
-              t >= highlightCenter &&
-              chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
+              t >= relativeHighlightCenter &&
+              chunk.attributes.getTimestamp.value[i - 1] < relativeHighlightCenter
             )
           })
           return true
@@ -418,7 +424,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         const centerPoint = point(pointCoords, {
           layerId: this.root.id,
           course: pointBearing,
-          timestamp: trackData[chunkIndex].attributes.getTimestamp.value[timestampIndex],
+          timestamp: toAbsoluteTimestamp(
+            trackData[chunkIndex].attributes.getTimestamp.value[timestampIndex],
+            trackData[chunkIndex].timestampBase ?? 0
+          ),
           speed: trackData[chunkIndex].attributes.getSpeed.value[timestampIndex],
           depth: trackData[chunkIndex].attributes.getElevation.value[timestampIndex],
         })
