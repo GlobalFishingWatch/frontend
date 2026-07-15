@@ -134,12 +134,45 @@ export function useMigrateToLatestDataview() {
     [deleteDataviewInstance, getIsDataviewMigrated, migrateToLatestDataviewInstance]
   )
 
+  const migrateAllDataviewInstances = useCallback(async () => {
+    setIsLoading(true)
+    const migratableDataviewInstances = (deprecatedDataviewInstances || [])
+      .filter(
+        (dataviewInstance) =>
+          LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] &&
+          !MIGRATION_EXCLUDED_CATEGORIES.includes(dataviewInstance.category!)
+      )
+      .toReversed()
+    const migrationTimestamp = Date.now()
+    const dataviewInstances = (
+      await Promise.all(
+        migratableDataviewInstances.map((dataviewInstance, index) => {
+          if (getIsDataviewMigrated(dataviewInstance)) {
+            return [{ id: dataviewInstance.id, config: { visible: false } }]
+          }
+          return getMigratedDataviewInstances(dataviewInstance, migrationTimestamp + index)
+        })
+      )
+    ).flat()
+    if (dataviewInstances.length) {
+      upsertDataviewInstance(dataviewInstances)
+    }
+    setIsLoading(false)
+    return dataviewInstances
+  }, [
+    deprecatedDataviewInstances,
+    getIsDataviewMigrated,
+    getMigratedDataviewInstances,
+    upsertDataviewInstance,
+  ])
+
   return useMemo(
     () => ({
       isLoading,
       getIsDataviewMigrated,
       onMigrateDataviewClick,
+      migrateAllDataviewInstances,
     }),
-    [getIsDataviewMigrated, isLoading, onMigrateDataviewClick]
+    [getIsDataviewMigrated, isLoading, migrateAllDataviewInstances, onMigrateDataviewClick]
   )
 }

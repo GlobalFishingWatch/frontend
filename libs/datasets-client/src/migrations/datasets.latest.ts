@@ -12,9 +12,9 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-brazil-opentuna-presence:v20210311' as const, // Not updated in pipe4
   },
   chl: {
-    identity: 'public-vms-chl-vessel-identity:v4.0' as const,
-    fishing: 'public-vms-chl-fishing-effort:v4.0' as const,
-    presence: 'public-vms-chl-presence:v4.0' as const,
+    identity: 'public-vms-chl-vessel-identity:v4.1' as const,
+    fishing: 'public-vms-chl-fishing-effort:v4.1' as const,
+    presence: 'public-vms-chl-presence:v4.1' as const,
   },
   plw: {
     identity: 'public-vms-plw-vessel-identity:v4.0' as const,
@@ -25,7 +25,7 @@ export const LATEST_DATASETS_VMS: Record<
   mne: {
     identity: 'public-vms-mne-vessel-identity:v4.0' as const,
     fishing: 'public-vms-mne-fishing-effort:v4.0' as const,
-    presence: '' as const,
+    presence: 'public-vms-mne-presence:v4.0' as const,
   },
   per: {
     identity: 'public-vms-per-vessel-identity:v4.0' as const,
@@ -33,9 +33,9 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-per-presence:v4.0' as const,
   },
   pan: {
-    identity: 'public-vms-pan-vessel-identity:v4.0' as const,
-    fishing: 'public-vms-pan-fishing-effort:v4.0' as const,
-    presence: 'public-vms-pan-presence:v4.0' as const,
+    identity: 'public-vms-pan-vessel-identity:v4.1' as const,
+    fishing: 'public-vms-pan-fishing-effort:v4.1' as const,
+    presence: 'public-vms-pan-presence:v4.1' as const,
   },
   nor: {
     identity: 'public-vms-nor-vessel-identity:v4.0' as const,
@@ -53,10 +53,9 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-cri-presence:v4.0' as const,
   },
   blz: {
-    // No longer maintained in pipe 4
-    identity: 'public-belize-vessel-identity-fishing:v20220304' as const,
-    fishing: 'public-belize-fishing-effort:v20220304' as const,
-    presence: 'public-belize-presence:v20220304' as const,
+    identity: 'public-vms-blz-vessel-identity:v4.0' as const,
+    fishing: 'public-belize-fishing-effort:v20220304' as const, // No fishing effort in pipe 4
+    presence: 'public-vms-blz-presence:v4.0' as const,
   },
   png: {
     identity: 'public-vms-png-vessel-identity:v4.0' as const,
