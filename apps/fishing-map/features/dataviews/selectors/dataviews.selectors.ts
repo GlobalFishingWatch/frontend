@@ -285,7 +285,11 @@ export const getIsDataviewReportSupported = (
     return false
   }
   return reportLayers
-    ?.filter((dataview) => isSupportedReportDataview(dataview, featureFlags))
+    ?.filter(
+      (dataview) =>
+        isSupportedReportDataview(dataview, featureFlags) &&
+        dataview.category !== DataviewCategory.VesselGroups
+    )
     .some((dataview) => dataview.id !== currentDataviewId)
 }
 
