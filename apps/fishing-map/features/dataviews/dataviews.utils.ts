@@ -526,7 +526,8 @@ export function hasWorkspaceDataviewsDeprecated(
   if (!workspace?.dataviewInstances?.length || !deprecatedDatasets) {
     return false
   }
-  return workspace.dataviewInstances.some((dataviewInstance) =>
-    isDataviewDeprecated(dataviewInstance, deprecatedDatasets)
+  return workspace.dataviewInstances.some(
+    (dataviewInstance) =>
+      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) && dataviewInstance.config?.visible
   )
 }

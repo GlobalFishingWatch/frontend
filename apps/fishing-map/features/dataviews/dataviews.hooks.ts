@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { isEqual } from 'es-toolkit'
 
 import type { Dataset, DataviewConfig, DataviewInstance } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
@@ -15,6 +16,25 @@ import { isDataviewFilterSupported } from 'features/dataviews/dataviews.filters'
 import { fetchDataviewByIdThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+
+const normalizeDataviewFilters = (filters?: DataviewConfig['filters']) =>
+  Object.entries(filters || {}).reduce(
+    (acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Array.isArray(value) ? [...value].sort() : value
+      }
+      return acc
+    },
+    {} as NonNullable<DataviewConfig['filters']>
+  )
+
+const areDataviewFiltersEqual = (
+  filtersA?: DataviewConfig['filters'],
+  filtersB?: DataviewConfig['filters']
+) => isEqual(normalizeDataviewFilters(filtersA), normalizeDataviewFilters(filtersB))
+
+const areDataviewSourcesEqual = (sourcesA?: string[], sourcesB?: string[]) =>
+  isEqual([...(sourcesA || [])].sort(), [...(sourcesB || [])].sort())
 
 export function useMigrateToLatestDataview() {
   const [isLoading, setIsLoading] = useState(false)
@@ -62,7 +82,7 @@ export function useMigrateToLatestDataview() {
           dataviewId: dataviewId,
           config: {
             ...(hasDatasets && {
-              datasets: datasets?.map((d) => deprecatedDatasets[d.id] || d.id),
+              datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
             }),
             filters,
           },
@@ -88,13 +108,18 @@ export function useMigrateToLatestDataview() {
         return true
       }
 
-      const migratedInstanceExists = workspaceDataviewInstances?.some(
-        (instance) => instance.dataviewId === dataviewId
+      const migratedDatasets = dataviewInstance.config?.datasets?.map(
+        (d) => deprecatedDatasets[d] || d
       )
-
+      const migratedInstanceExists = workspaceDataviewInstances?.some(
+        (instance) =>
+          instance.dataviewId === dataviewId &&
+          areDataviewSourcesEqual(instance.config?.datasets, migratedDatasets) &&
+          areDataviewFiltersEqual(instance.config?.filters, dataviewInstance.config?.filters)
+      )
       return !!migratedInstanceExists
     },
-    [workspaceDataviewInstances]
+    [deprecatedDatasets, workspaceDataviewInstances]
   )
 
   const onMigrateDataviewClick = useCallback(
