@@ -44,7 +44,7 @@ type VesselGroupSliceState = { vesselGroups: VesselGroupsState }
 
 export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
   'workspace-vessel-groups/fetch',
-  async (ids: string[] = [], { signal, rejectWithValue, getState }) => {
+  async (ids: string[] = [], { signal, dispatch, rejectWithValue, getState }) => {
     const vesselGroupsLoaded = (selectAllVesselGroups(getState() as RootState) || [])?.map(
       (vg) => vg.id
     )
@@ -65,6 +65,12 @@ export const fetchWorkspaceVesselGroupsThunk = createAsyncThunk(
         `/vessel-groups?${stringify(vesselGroupsParams, { arrayFormat: 'indices' })}`,
         { signal, cache: 'reload' }
       )
+      const vesselGroupVesselDatasets = uniq(
+        (vesselGroups.entries || []).flatMap((vG) => vG.vesselsSummary?.datasets || [])
+      )
+      if (vesselGroupVesselDatasets.length) {
+        await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
+      }
       return vesselGroups.entries as VesselGroup[]
     } catch (e: any) {
       console.warn(e)

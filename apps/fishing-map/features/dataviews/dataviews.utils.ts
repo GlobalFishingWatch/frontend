@@ -479,6 +479,16 @@ export function hasVesselGroupVesselsDeprecated(
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
+export function hasVesselGroupVesselsDeleted(
+  vesselGroupDatasets: string[] | undefined,
+  deletedDatasets: string[] | undefined
+) {
+  if (!vesselGroupDatasets || !deletedDatasets?.length) {
+    return false
+  }
+  return vesselGroupDatasets.some((dataset) => deletedDatasets.includes(dataset))
+}
+
 export function isDataviewDeprecated(
   dataview: DataviewInstance | UrlDataviewInstance,
   deprecatedDatasets: DatasetsMigration

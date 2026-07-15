@@ -12,8 +12,11 @@ import { Button, IconButton } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  MIGRATION_EXCLUDED_CATEGORIES,
+  useMigrateToLatestDataview,
+} from 'features/dataviews/dataviews.hooks'
+import { selectDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectLocationCategory } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -29,7 +32,10 @@ export const useMigrateWorkspaceToast = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
+  const deprecatedDataviews = useSelector(selectDeprecatedDataviewInstances)
+  const hasDeprecatedDataviewsToMigrate = (deprecatedDataviews || []).some(
+    (dataview) => !MIGRATION_EXCLUDED_CATEGORIES.includes(dataview.category!)
+  )
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const isWorkspaceOwnerOrDefault = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -111,7 +117,7 @@ export const useMigrateWorkspaceToast = () => {
   })
 
   useEffect(() => {
-    if (hasDeprecatedDataviews && isWorkspaceOwnerOrDefault && !migrationToastDiscarded) {
+    if (hasDeprecatedDataviewsToMigrate && isWorkspaceOwnerOrDefault && !migrationToastDiscarded) {
       toastId.current = toast(<ToastContent />, {
         toastId: 'migrateWorkspace',
         autoClose: 10000,
@@ -128,5 +134,5 @@ export const useMigrateWorkspaceToast = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasDeprecatedDataviews])
+  }, [hasDeprecatedDataviewsToMigrate])
 }
