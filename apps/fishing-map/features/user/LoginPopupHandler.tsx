@@ -5,6 +5,7 @@ import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { broadcastLogin } from 'features/user/auth-channel'
+import { getIsLoginPopup } from 'features/user/user.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { loginServerFn } from 'server-functions/auth.functions'
 
@@ -21,7 +22,7 @@ function LoginPopupHandler() {
       .then(broadcastLogin)
       .catch((e) => console.warn('Popup login failed', e))
       .finally(() => {
-        if (window.opener) {
+        if (getIsLoginPopup()) {
           window.close()
         } else {
           navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
