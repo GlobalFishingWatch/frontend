@@ -40,7 +40,10 @@ const areDataviewFiltersEqual = (
 const areDataviewSourcesEqual = (sourcesA?: string[], sourcesB?: string[]) =>
   isEqual([...(sourcesA || [])].sort(), [...(sourcesB || [])].sort())
 
-const MIGRATION_EXCLUDED_CATEGORIES = [DataviewCategory.Vessels, DataviewCategory.VesselGroups]
+export const MIGRATION_EXCLUDED_CATEGORIES = [
+  DataviewCategory.Vessels,
+  DataviewCategory.VesselGroups,
+]
 
 export function useMigrateToLatestDataview() {
   const [isLoading, setIsLoading] = useState(false)

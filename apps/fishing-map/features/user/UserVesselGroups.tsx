@@ -7,8 +7,15 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDatasetsStatus, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
+import {
+  selectDatasetsStatus,
+  selectDeletedDatasets,
+  selectDeprecatedDatasets,
+} from 'features/datasets/datasets.slice'
+import {
+  hasVesselGroupVesselsDeleted,
+  hasVesselGroupVesselsDeprecated,
+} from 'features/dataviews/dataviews.utils'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -47,6 +54,7 @@ function UserVesselGroups() {
   const onEditClick = useEditVesselGroupModal()
   const [searchQuery, setSearchQuery] = useState('')
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const deletedDatasets = useSelector(selectDeletedDatasets)
   const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,10 +112,14 @@ function UserVesselGroups() {
                     vesselGroup.vesselsSummary?.datasets,
                     deprecatedDatasets
                   )
+                const hasDeletedDatasets = hasVesselGroupVesselsDeleted(
+                  vesselGroup.vesselsSummary?.datasets,
+                  deletedDatasets
+                )
 
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
-                    {isOutdated ? (
+                    {isOutdated && !hasDeletedDatasets ? (
                       <span>
                         {getHighlightedText(label as string, searchQuery, styles)}{' '}
                         <span className={styles.secondary}>
@@ -130,14 +142,16 @@ function UserVesselGroups() {
                       </VesselGroupReportLink>
                     )}
                     <div>
-                      {isOutdated ? (
+                      {isOutdated || hasDeletedDatasets ? (
                         <Button
                           type="border-secondary"
                           size="small"
                           tooltip={
-                            isOutdated
-                              ? t((t) => t.vesselGroup.clickToUpdateLong)
-                              : t((t) => t.vesselGroup.edit)
+                            hasDeletedDatasets
+                              ? t((t) => t.workspace.deletedVesselGroupLayer)
+                              : isOutdated
+                                ? t((t) => t.vesselGroup.clickToUpdateLong)
+                                : t((t) => t.vesselGroup.edit)
                           }
                           loading={
                             (vesselGroup.id === editingGroupId &&

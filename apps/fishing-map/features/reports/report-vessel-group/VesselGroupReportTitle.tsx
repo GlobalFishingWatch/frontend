@@ -10,8 +10,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 // import { getEventLabel } from 'utils/analytics'
 // import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
+import { selectDeletedDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import {
+  hasVesselGroupVesselsDeleted,
+  hasVesselGroupVesselsDeprecated,
+} from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
@@ -49,12 +52,15 @@ export default function VesselGroupReportTitle() {
   const { isLoading, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const deletedDatasets = useSelector(selectDeletedDatasets)
   const vesselGroupReportDatasets = useSelector(selectVGRDatasets)
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
     vesselGroupReportDatasets,
     deprecatedDatasets
   )
-  const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels
+  const hasDeletedDatasets = hasVesselGroupVesselsDeleted(vesselGroupReportDatasets, deletedDatasets)
+  const showDeprecatedWarning =
+    isWorkspaceOwner && (hasDeprecatedVesselGroupVessels || hasDeletedDatasets)
   const loading = reportStatus === AsyncReducerStatus.Loading
   const isClientHydrated = useIsClientHydrated()
 
@@ -125,7 +131,11 @@ export default function VesselGroupReportTitle() {
             <Button
               type="border-secondary"
               size="medium"
-              tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
+              tooltip={
+                hasDeletedDatasets
+                  ? t((t) => t.workspace.deletedVesselGroupLayer)
+                  : t((t) => t.vesselGroup.clickToUpdateLong)
+              }
               loading={isLoading}
               disabled={isLoading}
               onClick={() => {
