@@ -139,143 +139,6 @@ export namespace vessels {
   }
 
   /**
-   * Properties of a DeckTrackTimestampAttribute.
-   * @deprecated Use vessels.DeckTrackTimestampAttribute.$Properties instead.
-   */
-  interface IDeckTrackTimestampAttribute extends vessels.DeckTrackTimestampAttribute.$Properties {}
-
-  /** Represents a DeckTrackTimestampAttribute. */
-  class DeckTrackTimestampAttribute {
-    /**
-     * Constructs a new DeckTrackTimestampAttribute.
-     * @param [properties] Properties to set
-     */
-    constructor(properties?: vessels.DeckTrackTimestampAttribute.$Properties)
-
-    /** Unknown fields preserved while decoding */
-    $unknowns?: Uint8Array[]
-
-    /** DeckTrackTimestampAttribute value. */
-    value: number[]
-
-    /** DeckTrackTimestampAttribute size. */
-    size: number
-
-    /**
-     * Creates a new DeckTrackTimestampAttribute instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns DeckTrackTimestampAttribute instance
-     */
-    static create(
-      properties: vessels.DeckTrackTimestampAttribute.$Shape
-    ): vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape
-    static create(
-      properties?: vessels.DeckTrackTimestampAttribute.$Properties
-    ): vessels.DeckTrackTimestampAttribute
-
-    /**
-     * Encodes the specified DeckTrackTimestampAttribute message. Does not implicitly {@link vessels.DeckTrackTimestampAttribute.verify|verify} messages.
-     * @param message DeckTrackTimestampAttribute message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    static encode(
-      message: vessels.DeckTrackTimestampAttribute.$Properties,
-      writer?: $protobuf.Writer
-    ): $protobuf.Writer
-
-    /**
-     * Encodes the specified DeckTrackTimestampAttribute message, length delimited. Does not implicitly {@link vessels.DeckTrackTimestampAttribute.verify|verify} messages.
-     * @param message DeckTrackTimestampAttribute message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    static encodeDelimited(
-      message: vessels.DeckTrackTimestampAttribute.$Properties,
-      writer?: $protobuf.Writer
-    ): $protobuf.Writer
-
-    /**
-     * Decodes a DeckTrackTimestampAttribute message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns {vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape} DeckTrackTimestampAttribute
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    static decode(
-      reader: $protobuf.Reader | Uint8Array,
-      length?: number
-    ): vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape
-
-    /**
-     * Decodes a DeckTrackTimestampAttribute message from the specified reader or buffer, length delimited.
-     * @param reader Reader or buffer to decode from
-     * @returns {vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape} DeckTrackTimestampAttribute
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    static decodeDelimited(
-      reader: $protobuf.Reader | Uint8Array
-    ): vessels.DeckTrackTimestampAttribute & vessels.DeckTrackTimestampAttribute.$Shape
-
-    /**
-     * Verifies a DeckTrackTimestampAttribute message.
-     * @param message Plain object to verify
-     * @returns `null` if valid, otherwise the reason why it is not
-     */
-    static verify(message: { [k: string]: any }): string | null
-
-    /**
-     * Creates a DeckTrackTimestampAttribute message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns DeckTrackTimestampAttribute
-     */
-    static fromObject(object: { [k: string]: any }): vessels.DeckTrackTimestampAttribute
-
-    /**
-     * Creates a plain object from a DeckTrackTimestampAttribute message. Also converts values to other types if specified.
-     * @param message DeckTrackTimestampAttribute
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    static toObject(
-      message: vessels.DeckTrackTimestampAttribute,
-      options?: $protobuf.IConversionOptions
-    ): { [k: string]: any }
-
-    /**
-     * Converts this DeckTrackTimestampAttribute to JSON.
-     * @returns JSON object
-     */
-    toJSON(): { [k: string]: any }
-
-    /**
-     * Gets the type url for DeckTrackTimestampAttribute
-     * @param [prefix] Custom type url prefix, defaults to `"type.googleapis.com"`
-     * @returns The type url
-     */
-    static getTypeUrl(prefix?: string): string
-  }
-
-  namespace DeckTrackTimestampAttribute {
-    /** Properties of a DeckTrackTimestampAttribute. */
-    interface $Properties {
-      /** DeckTrackTimestampAttribute value */
-      value?: number[] | null
-
-      /** DeckTrackTimestampAttribute size */
-      size?: number | null
-
-      /** Unknown fields preserved while decoding */
-      $unknowns?: Uint8Array[]
-    }
-
-    /** Shape of a DeckTrackTimestampAttribute. */
-    type $Shape = vessels.DeckTrackTimestampAttribute.$Properties
-  }
-
-  /**
    * Properties of a DeckTrackAttributeStruct.
    * @deprecated Use vessels.DeckTrackAttributeStruct.$Properties instead.
    */
@@ -296,7 +159,7 @@ export namespace vessels {
     getPath?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getTimestamp. */
-    getTimestamp?: vessels.DeckTrackTimestampAttribute.$Properties | null
+    getTimestamp?: vessels.DeckTrackAttribute.$Properties | null
 
     /** DeckTrackAttributeStruct getSpeed. */
     getSpeed?: vessels.DeckTrackAttribute.$Properties | null
@@ -411,7 +274,7 @@ export namespace vessels {
       getPath?: vessels.DeckTrackAttribute.$Properties | null
 
       /** DeckTrackAttributeStruct getTimestamp */
-      getTimestamp?: vessels.DeckTrackTimestampAttribute.$Properties | null
+      getTimestamp?: vessels.DeckTrackAttribute.$Properties | null
 
       /** DeckTrackAttributeStruct getSpeed */
       getSpeed?: vessels.DeckTrackAttribute.$Properties | null

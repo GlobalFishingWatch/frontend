@@ -82,8 +82,20 @@ export async function fetchWithGFWAPI(
   const loaders = Array.isArray(layer?.props?.loaders) ? (layer.props.loaders as any[]) : []
   const loader = loaders[0]
   if (loader) {
+    const timestampBaseHeader = response.headers.get('timestamp-base')
+    const loadOptions = layer?.props?.loadOptions as any
+    const mergedLoadOptions =
+      timestampBaseHeader != null
+        ? {
+            ...loadOptions,
+            'vessel-tracks': {
+              ...(loadOptions?.['vessel-tracks'] || {}),
+              timestampBase: Number(timestampBaseHeader),
+            },
+          }
+        : loadOptions
     const buffer = await response.arrayBuffer()
-    return parse(buffer, loader, layer?.props?.loadOptions as any)
+    return parse(buffer, loader, mergedLoadOptions)
   }
 
   return response
