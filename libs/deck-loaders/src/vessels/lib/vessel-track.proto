@@ -6,14 +6,9 @@ message DeckTrackAttribute {
   uint32 size = 2;
 }
 
-message DeckTrackTimestampAttribute {
-  repeated double value = 1;
-  uint32 size = 2;
-}
-
 message DeckTrackAttributeStruct {
   DeckTrackAttribute getPath = 1;
-  DeckTrackTimestampAttribute getTimestamp = 2;
+  DeckTrackAttribute getTimestamp = 2;
   DeckTrackAttribute getSpeed = 3;
   DeckTrackAttribute getElevation = 4;
   DeckTrackAttribute getCourse = 5;
