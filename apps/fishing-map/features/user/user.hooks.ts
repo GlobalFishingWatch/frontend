@@ -70,6 +70,16 @@ export function usePopupLogin() {
   }
 }
 
+export function redirectToSettingsPage(e?: React.MouseEvent) {
+  if (!getIsBrowser()) {
+    return
+  }
+  e?.preventDefault()
+  e?.stopPropagation()
+  const settingsUrl = GFWAPI.getSettingsUrl(window.location.href)
+  window.open(settingsUrl, '_blank', 'noopener,noreferrer')
+}
+
 export function useLoginPopupListener() {
   const dispatch = useAppDispatch()
   const fetchWorkspace = useFetchWorkspace()

@@ -23,6 +23,7 @@ import {
   selectUserData,
   selectUserLogged,
 } from 'features/user/selectors/user.selectors'
+import SettingsButton from 'features/user/SettingsButton'
 
 import {
   selectHasAmbassadorBadge,
@@ -115,7 +116,10 @@ function UserInfo() {
             <p>{`${userData.firstName} ${userData.lastName || ''}`}</p>
             <p className={styles.secondary}>{userData.email}</p>
           </div>
-          <LogoutButton />
+          <div className={styles.buttonContainer}>
+            <LogoutButton />
+            <SettingsButton />
+          </div>
         </div>
         <label>{t((t) => t.user.groups)}</label>
         {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
