@@ -66,6 +66,9 @@ export type VesselTrackLoaderParams = {
   // Whether to compute the per-point time gaps (in hours). Skipped entirely when the
   // gap-segment feature is off so we don't pay the cost on every track parse.
   computeGaps?: boolean
+  // Base epoch ms the API rebased getTimestamp values against (from the `timestamp-base`
+  // response header) - see toAbsoluteTimestamp/toRelativeTimestamp below.
+  timestampBase?: number
 }
 
 export function toAbsoluteTimestamp(relativeTimestamp: number, timestampBase: number) {
@@ -78,7 +81,7 @@ export function toRelativeTimestamp(absoluteTimestamp: number, timestampBase: nu
 
 export const parseTrack = (
   arrayBuffer: ArrayBuffer,
-  { computeGaps = false } = {} as VesselTrackLoaderParams
+  { computeGaps = false, timestampBase = 0 } = {} as VesselTrackLoaderParams
 ): VesselTrackData => {
   const track = DeckTrack.decode(new Uint8Array(arrayBuffer)) as unknown as VesselTrackData
   if (!track.attributes.getPath.value.length) {
@@ -103,9 +106,8 @@ export const parseTrack = (
   const elevationExtent = getExtent(getElevationValues as any, 'elevation')
 
   const rawTimestamps = track.attributes.getTimestamp.value
-  const timestampBase = rawTimestamps?.length ? rawTimestamps[0] : 0
   const timestamps = rawTimestamps?.length
-    ? Float32Array.from(rawTimestamps, (t) => t - timestampBase)
+    ? Float32Array.from(rawTimestamps)
     : new Float32Array(defaultAttributesLength)
 
   // getGap stores, per point, the time gap (in hours) to the next point in the same path.
