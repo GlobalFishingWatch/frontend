@@ -41,7 +41,7 @@ export const LEGACY_DATASETS_TO_LATEST_VMS_IDENTITY: DatasetsMigration = {
   'public-chile-vessel-identity-fishing:v20211126': LATEST_DATASETS_VMS.chl.identity,
   'public-brazil-opentuna-vessel-identity-fishing:v20210311': LATEST_DATASETS_VMS.bra.identity,
   'public-bra-onyxsat-vessel-identity-fishing:v20211126': LATEST_DATASETS_VMS.bra.identity,
-  'public-belize-vessel-identity-fishing:v20220304': LATEST_DATASETS_VMS.blz.identity,
+  // 'public-belize-vessel-identity-fishing:v20220304': LATEST_DATASETS_VMS.blz.identity,
   'private-peru-vessel-identity-fishing:v20211126': replaceDatasetPublicToPrivate(
     LATEST_DATASETS_VMS.per.identity
   ),
