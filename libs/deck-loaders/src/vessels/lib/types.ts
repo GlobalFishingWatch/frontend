@@ -19,11 +19,15 @@ export type VesselTrackData = {
   length: number
   // Indices into positions where each path starts
   startIndices: number[]
+  // getTimestamp values are relative to timestampBase as raw epoch ms doesn't fit a Float32Array
+  // use toAbsoluteTimestamp and toRelativeTimestamp helpers in parse-tracks.ts
+  timestampBase: number
   // Flat coordinates array
   attributes: {
     // Populated automatically by deck.gl
     positions?: { value: Float32Array; size: number }
     getPath: { value: Float32Array; size: number }
+    // Relative to timestampBase - see the note on timestampBase above.
     getTimestamp: { value: Float32Array; size: number }
     getSpeed: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
     getElevation: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }

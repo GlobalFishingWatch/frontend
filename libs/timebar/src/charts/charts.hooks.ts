@@ -1,13 +1,12 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { scaleTime } from 'd3-scale'
-import { useDebouncedCallback } from 'use-debounce'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimelineScale } from '../../timelineContext'
-import TimelineContext from '../../timelineContext'
+import type { TimelineScale } from '../timeline/timeline-context'
+import { useTimelineContext } from '../timeline/timeline-context'
 
 import type {
   ActivityTimeseriesFrame,
@@ -17,9 +16,13 @@ import type {
   TimebarChartData,
   TimebarChartItem,
   TimebarChartValue,
-} from './types'
+} from './charts.types'
 
-export const filterData = (data: TimebarChartData<any>, start: string, end: string) => {
+export const filterData = <T>(
+  data: TimebarChartData<T>,
+  start: string,
+  end: string
+): TimebarChartData<T> => {
   const startMillis = getUTCDate(start).getTime()
   const endMillis = getUTCDate(end).getTime()
   return data?.map((item) => {
@@ -37,48 +40,15 @@ export const filterData = (data: TimebarChartData<any>, start: string, end: stri
   })
 }
 
-export const useFilteredChartData = (data: TimebarChartData<any>) => {
-  const { outerStart, outerEnd } = useContext(TimelineContext)
-  const [filteredData, setFilteredData] = useState<TimebarChartData<any>>([])
-
-  const getDataHash = (d: TimebarChartData<any>) => {
-    return d
-      .flatMap((vessel) => [
-        vessel.color,
-        vessel.chunks?.flatMap((chunk) => chunk.props?.color),
-        vessel.chunks[0]?.start,
-        vessel.chunks[0]?.values?.[0]?.value,
-        vessel.chunks[vessel.chunks.length - 1]?.end,
-        vessel.chunks[vessel.chunks.length - 1]?.values?.[vessel.chunks.length - 1]?.value,
-        Object.values(vessel.filters || {}).join(''),
-      ])
-      .join()
-  }
-
-  const debouncedSetFilteredData = useDebouncedCallback(
-    (data, outerStart, outerEnd) => {
-      const newData = filterData(data, outerStart, outerEnd)
-      if (getDataHash(filteredData) !== getDataHash(newData)) {
-        setFilteredData(newData)
-      }
-    },
-    100,
-    { maxWait: 1000, leading: true }
-  )
-
-  useEffect(() => {
-    debouncedSetFilteredData(data, outerStart, outerEnd)
-  }, [outerStart, outerEnd, data, debouncedSetFilteredData])
-
-  return filteredData
-}
-
 const MIN_DISTANCE_PX_TO_CLUSTER = 2
 
-export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineScale) => {
+export const clusterData = <T>(
+  data: TimebarChartData<T>,
+  outerScale: TimelineScale
+): TimebarChartData<T> => {
   return data.map((item) => {
     const aggregatedChunks = item.chunks.reduce(
-      (currentClusteredEvents: TimebarChartChunk[], currentEvent: TimebarChartChunk) => {
+      (currentClusteredEvents: TimebarChartChunk<T>[], currentEvent: TimebarChartChunk<T>) => {
         const lastClusteredEvent = currentClusteredEvents[currentClusteredEvents.length - 1]
         const lastType = lastClusteredEvent ? lastClusteredEvent.type : null
         const lastEnd =
@@ -99,7 +69,7 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
             delete lastClusteredEvent.cluster
           }
           // create new agg event
-          const newClusteredEvent: TimebarChartChunk = {
+          const newClusteredEvent: TimebarChartChunk<T> = {
             ...currentEvent,
             cluster: {
               ids: [currentEvent.id as string],
@@ -115,7 +85,7 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
         }
         return currentClusteredEvents
       },
-      []
+      [] as TimebarChartChunk<T>[]
     )
     const lastChunk = aggregatedChunks[aggregatedChunks.length - 1]
     if (lastChunk && lastChunk.cluster?.numChunks === 1) {
@@ -130,13 +100,13 @@ export const clusterData = (data: TimebarChartData<any>, outerScale: TimelineSca
 }
 
 const useDelta = () => {
-  const { outerStart, outerEnd } = useContext(TimelineContext)
+  const { outerStart, outerEnd } = useTimelineContext()
   const delta = +new Date(outerEnd) - +new Date(outerStart)
   return delta
 }
 
 export const useOuterScale = () => {
-  const { outerStart, outerEnd, outerWidth } = useContext(TimelineContext)
+  const { outerStart, outerEnd, outerWidth } = useTimelineContext()
   return useMemo(() => {
     return scaleTime()
       .domain([getUTCDate(outerStart), getUTCDate(outerEnd)])
@@ -144,12 +114,19 @@ export const useOuterScale = () => {
   }, [outerStart, outerEnd, outerWidth])
 }
 
-export const useClusteredChartData = (data: TimebarChartData<any>) => {
+export const useTimebarTimeOrigin = () => {
+  const { overallScale } = useTimelineContext()
+  return useMemo(() => overallScale.domain()[0]?.getTime() ?? 0, [overallScale])
+}
+
+export const useClusteredChartData = <T>(data: TimebarChartData<T>) => {
   const outerScale = useOuterScale()
   const delta = useDelta()
   return useMemo(() => {
     return clusterData(data, outerScale)
-  }, [data, delta]) // only memoize when delta changes (ie start and end can change with delta staying the same)
+    // only memoize when delta changes (ie start and end can change with delta staying the same)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, delta])
 }
 
 const EVENT_TYPES_SORT_ORDER = {
@@ -161,16 +138,13 @@ const EVENT_TYPES_SORT_ORDER = {
   [EventTypes.Encounter]: 5,
 }
 
-export const sortChunksByType = (chunkA: TimebarChartChunk, chunkB: TimebarChartChunk) => {
+const sortChunksByType = (chunkA: TimebarChartChunk, chunkB: TimebarChartChunk) => {
   const first = chunkA.type ? EVENT_TYPES_SORT_ORDER[chunkA.type] : Number.MAX_SAFE_INTEGER
   const second = chunkB.type ? EVENT_TYPES_SORT_ORDER[chunkB.type] : Number.MAX_SAFE_INTEGER
-  let result = 0
-  if (first < second) result = -1
-  else if (first > second) result = 1
-  return result
+  return first - second
 }
 
-const sortDataByType = (data: TimebarChartData<any>) => {
+const sortDataByType = <T>(data: TimebarChartData<T>): TimebarChartData<T> => {
   return data.map((item) => {
     return {
       ...item,
@@ -179,7 +153,7 @@ const sortDataByType = (data: TimebarChartData<any>) => {
   })
 }
 
-const sortDataByTime = (data: TimebarChartData<any>) => {
+const sortDataByTime = <T>(data: TimebarChartData<T>): TimebarChartData<T> => {
   return data.map((item) => {
     return {
       ...item,
@@ -190,7 +164,7 @@ const sortDataByTime = (data: TimebarChartData<any>) => {
   })
 }
 
-export const useSortedChartData = (data: TimebarChartData<any>, type?: 'byType' | 'byTime') => {
+export const useSortedChartData = <T>(data: TimebarChartData<T>, type?: 'byType' | 'byTime') => {
   // Sort events to pick prioritized event on highlight
   return useMemo(() => {
     return type && type === 'byTime' ? sortDataByTime(data) : sortDataByType(data)

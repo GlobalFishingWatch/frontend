@@ -12,7 +12,6 @@ import type {
   BaseUserLayerProps,
   DeckLayerProps,
   DeckLayerSubcategory,
-  UserLayerPickingObject,
   UserPointsLayerProps,
   UserPolygonsLayerProps,
   UserTrackLayerProps,
@@ -133,17 +132,11 @@ export const getUserCircleProps = ({
 export const resolveDeckUserLayerProps: DeckResolverFunction<
   BaseUserLayerProps,
   ResolvedContextDataviewInstance
-> = (dataview, { highlightedFeatures, start, end, highlightedTime }) => {
+> = (dataview, { start, end }) => {
   const baseLayerProps = {
     id: dataview.id,
     category: dataview.category!,
     subcategory: dataview.config?.type as DeckLayerSubcategory,
-    ...(highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
-    }),
-    ...(highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
-    }),
   }
 
   const baseDataset = dataview.datasets?.find((d) => d.id === dataview.config?.layers?.[0].dataset)
@@ -228,7 +221,6 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     ...baseLayerProps,
     layers,
     ...(timeFilters || {}),
-    highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
   } as DeckLayerProps<BaseUserLayerProps>
 }

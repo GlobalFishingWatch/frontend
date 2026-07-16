@@ -135,7 +135,6 @@ test('Login - should clear the session on logout even without a refresh token', 
 }) => {
   await loginPage.login()
 
-  // No refresh token to revoke on the gateway; logout must still clear the local session.
   await loginPage.clearRefreshToken()
 
   await loginPage.openUserPanel()
@@ -143,6 +142,27 @@ test('Login - should clear the session on logout even without a refresh token', 
 
   await loginPage.expectGuest()
   await loginPage.expectUserTokenCleared()
+})
+
+test('Login - concurrent refreshes from two tabs both resolve within the grace window', async ({
+  loginPage,
+}) => {
+  await loginPage.login()
+
+  const newTabPage = await loginPage.newTab()
+  await newTabPage.expectLoggedIn()
+
+  await loginPage.clearUserToken()
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectRefreshTokenPresent()
+
+  await Promise.all([loginPage.reload(), newTabPage.reload()])
+
+  await loginPage.expectLoggedIn()
+  await newTabPage.expectLoggedIn()
+  await loginPage.expectUserTokenPresent()
+
+  await newTabPage.close()
 })
 
 test('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {

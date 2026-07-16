@@ -7,6 +7,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 
 import { getIsBrowser, logDebugUrl } from './utils/browser'
+import { getEnv } from './utils/env'
 import {
   getIsTimeoutError,
   getIsUnauthorizedError,
@@ -136,12 +137,18 @@ export class GFW_API_CLASS {
     tokenStorage,
     refreshStrategy,
     sessionInvalidateStrategy,
+    debug,
   }: {
     baseUrl?: string
     tokenStorage?: TokenStorage
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
+    debug?: boolean
   } = {}) {
+    if (debug !== undefined) {
+      this.debug = debug
+    }
+
     if (baseUrl) {
       this.baseUrl = baseUrl
     }
@@ -469,9 +476,9 @@ export class GFW_API_CLASS {
         ...(local && {
           'x-gateway-url': API_GATEWAY,
           user: JSON.stringify({
-            id: process.env.REACT_APP_LOCAL_API_USER_ID,
-            type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-            email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+            id: getEnv('VITE_LOCAL_API_USER_ID'),
+            type: getEnv('VITE_LOCAL_API_USER_TYPE'),
+            email: getEnv('VITE_LOCAL_API_USER_EMAIL'),
           }),
         }),
         Authorization: `Bearer ${token ?? this.token}`,
@@ -497,6 +504,13 @@ export class GFW_API_CLASS {
                 // empty response instead of an raising error
                 if (res.status === 204) return
               })
+            case 'withHeaders':
+              return parseJSON(res)
+                .catch((e) => {
+                  if (res.status === 204) return
+                  throw e
+                })
+                .then((data) => ({ data, headers: res.headers }))
             case 'blob':
               return res.blob()
             case 'text':

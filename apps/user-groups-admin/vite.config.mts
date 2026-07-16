@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import 'dotenv/config'
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
@@ -50,12 +49,6 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: '../../dist/apps/user-groups-admin',
     reportCompressedSize: true,
-  },
-
-  define: {
-    'process.env': {
-      API_GATEWAY: process.env.API_GATEWAY,
-    },
   },
 
   // test: {

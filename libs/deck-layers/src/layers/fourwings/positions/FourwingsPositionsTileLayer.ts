@@ -112,7 +112,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {
@@ -238,16 +238,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   _getFillColor = (d: FourwingsPositionFeature): Color => {
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
-    const { highlightStartTime, highlightEndTime } = this.props
-    const date = d.properties.stime * 1000
-    if (
-      highlightStartTime &&
-      highlightEndTime &&
-      date >= highlightStartTime &&
-      date < highlightEndTime
-    ) {
-      return COLOR_HIGHLIGHT_LINE
-    }
 
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return COLOR_TRANSPARENT
@@ -275,6 +265,17 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.state.highlightedVesselIds.size > 0 || this.state.highlightedFeatureIds.size > 0
   }
 
+  _getIsHighlightedTime(d: FourwingsPositionFeature) {
+    const { highlightStartTime, highlightEndTime } = this.props
+    const date = d.properties.stime * 1000
+    return (
+      highlightStartTime &&
+      highlightEndTime &&
+      date >= highlightStartTime &&
+      date < highlightEndTime
+    )
+  }
+
   _getIsHighlightedVessel(d: FourwingsPositionFeature) {
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return false
@@ -289,18 +290,26 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return COLOR_TRANSPARENT
     }
-    return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 0]
+    return [
+      255,
+      255,
+      255,
+      this._getIsHighlightedVessel(d) || this._getIsHighlightedTime(d) ? 255 : 0,
+    ]
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return 0
     }
-    if (this._canShowVesselIcon(d)) {
-      return this._getIsHighlightedVessel(d) ? 22 : 15
-    } else {
-      return this._getIsHighlightedVessel(d) ? 13 : 10
+    return this._canShowVesselIcon(d) ? 15 : 10
+  }
+
+  _getHighlightedIconSize = (d: FourwingsPositionFeature): number => {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return 0
     }
+    return this._canShowVesselIcon(d) ? 22 : 13
   }
 
   _canShowVesselIcon = (d: FourwingsPositionFeature) => {
@@ -444,7 +453,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { sublayers } = this.props
+    const { sublayers, highlightStartTime, highlightEndTime } = this.props
     const { positions, lastPositions, highlightedFeatureIds, highlightedVesselIds } = this.state
     const IconLayerClass = this.getSubLayerClass('icons', IconLayer)
 
@@ -475,7 +484,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
           getColor: [sublayers],
-          getSize: [highlightedFeatureIds, highlightedVesselIds],
         },
       }),
       new IconLayerClass(this.props, {
@@ -486,12 +494,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vesselHighlight' : 'circle'),
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getHighlightColor,
-        getSize: this._getIconSize,
+        getSize: this._getHighlightedIconSize,
         getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         updateTriggers: {
-          getColor: [highlightedFeatureIds, highlightedVesselIds],
-          getSize: [highlightedFeatureIds, highlightedVesselIds],
+          getColor: [
+            highlightedFeatureIds,
+            highlightedVesselIds,
+            highlightStartTime,
+            highlightEndTime,
+          ],
         },
       }),
       ...(lastPositions?.length < 100
@@ -522,17 +534,17 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getColorDomain() {
-    return this.state.colorScale?.colorDomain
+    return this.state?.colorScale?.colorDomain
   }
 
   getColorRange() {
-    return this.state.colorScale?.colorRange
+    return this.state?.colorScale?.colorRange
   }
 
   getColorScale() {
     return {
-      colorDomain: this.state.colorScale?.colorDomain,
-      colorRange: this.state.colorScale?.colorRange.map(
+      colorDomain: this.state?.colorScale?.colorDomain,
+      colorRange: this.state?.colorScale?.colorRange?.map(
         (sublayer) => sublayer as FourwingsColorObject[]
       ),
     }

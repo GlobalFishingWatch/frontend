@@ -14,6 +14,34 @@ ORIGINAL_DIR=$(pwd)
 # Initialize error status
 ERROR_STATUS=0
 
+# Parse flags
+UPGRADE=false
+for arg in "$@"; do
+    case "$arg" in
+        --upgrade|-upgrade)
+            UPGRADE=true
+            ;;
+        -h|--help)
+            echo "Usage: $0 [--upgrade]"
+            echo ""
+            echo "  --upgrade    Run terraform init -upgrade to update providers"
+            echo "               (fixes 'Resource instance managed by newer provider version')"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}${BOLD}Unknown option: $arg${NC}"
+            echo "Usage: $0 [--upgrade]"
+            exit 1
+            ;;
+    esac
+done
+
+INIT_ARGS=()
+if [ "$UPGRADE" = true ]; then
+    INIT_ARGS+=(-upgrade)
+    echo -e "${YELLOW}${BOLD}🔄 Provider upgrade enabled (terraform init -upgrade)${NC}"
+fi
+
 # Cleanup function
 cleanup() {
     echo -e "\n${RED}${BOLD}⚠️  Script interrupted! Cleaning up...${NC}"
@@ -26,7 +54,7 @@ trap cleanup SIGINT SIGTERM
 
 echo -e "\n\n${MAGENTA}${BOLD}🚀 Applying main cloudbuild Terraform configuration...${NC}\n\n"
 cd cloudbuild
-terraform init
+terraform init "${INIT_ARGS[@]}"
 if [ $? -ne 0 ]; then
     echo -e "\n${RED}${BOLD}❌ Error during terraform init in main cloudbuild${NC}"
     ERROR_STATUS=1
@@ -45,7 +73,7 @@ cd "$ORIGINAL_DIR"
 find apps/*/cloudbuild -type f -name "*.tf" -exec dirname {} \; | sort -u | while read -r dir; do
     echo -e "\n\n${YELLOW}${BOLD}⚡ Processing: ${dir}${NC}\n\n"
     cd "$dir"
-    terraform init
+    terraform init "${INIT_ARGS[@]}"
     if [ $? -ne 0 ]; then
         echo -e "\n${RED}${BOLD}❌ Error during terraform init in ${dir}${NC}"
         ERROR_STATUS=1

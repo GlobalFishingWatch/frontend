@@ -49,6 +49,9 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
 
+const REFRESH_DEDUP_TTL_MS = 10_000
+const refreshInFlight = new Map<string, { tokens: Promise<Tokens>; expiresAt: number }>()
+
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
 // is no refresh token. Shared between the refresh RPC and SSR user resolution
 export async function refreshAuthTokens(
@@ -60,7 +63,21 @@ export async function refreshAuthTokens(
     error.status = 401
     throw error
   }
-  const tokens = await GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
+  const now = Date.now()
+  for (const [key, entry] of refreshInFlight) {
+    if (entry.expiresAt <= now) refreshInFlight.delete(key)
+  }
+  let entry = refreshInFlight.get(refreshToken)
+  if (!entry) {
+    const tokens = GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
+    // Don't cache a failed rotation — let the next caller retry against the gateway.
+    tokens.catch(() => refreshInFlight.delete(refreshToken))
+    entry = { tokens, expiresAt: now + REFRESH_DEDUP_TTL_MS }
+    refreshInFlight.set(refreshToken, entry)
+  }
+  const tokens = await entry.tokens
+
+  // Cookies are set per caller — each request has its own setCookie closure.
   setAuthCookies(setCookie, tokens)
   return tokens
 }

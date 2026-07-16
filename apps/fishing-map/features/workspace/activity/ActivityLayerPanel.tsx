@@ -10,6 +10,7 @@ import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { AIS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -246,9 +247,6 @@ function ActivityLayerPanel({
                     }
                     tooltipPlacement="top"
                   />
-                  {dataview.id === 'fishing-ais' && (
-                    <Hint id="filterActivityLayers" className={styles.helpHint} />
-                  )}
                 </div>
               </ExpandedContainer>
             )}
@@ -283,6 +281,9 @@ function ActivityLayerPanel({
               />
             )}
           </div>
+          {dataview.id === AIS_DATAVIEW_INSTANCE_ID && (
+            <Hint id="filterActivityLayers" className={styles.helpHint} />
+          )}
           <IconButton
             icon={
               layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined

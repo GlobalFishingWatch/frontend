@@ -6,7 +6,7 @@ import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-trans
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getUserContextTimeFilterProps } from '@globalfishingwatch/deck-layer-composer'
-import type { IsFeatureInRangeParams } from '@globalfishingwatch/deck-layers'
+import type { ContextFeature, IsFeatureInRangeParams } from '@globalfishingwatch/deck-layers'
 import { isFeatureInRange } from '@globalfishingwatch/deck-layers'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -400,6 +400,16 @@ export const selectReportArea = createSelector(
       return bufferedArea
     }
     return reportArea?.data ? reportArea.data : ENTIRE_WORLD_REPORT_AREA
+  }
+)
+
+export const selectReportAreaHighlightedFeature = createSelector(
+  [selectReportArea, selectHasReportBuffer],
+  (reportArea, hasReportBuffer): ContextFeature | undefined => {
+    if (!reportArea || hasReportBuffer) {
+      return undefined
+    }
+    return reportArea as ContextFeature
   }
 )
 

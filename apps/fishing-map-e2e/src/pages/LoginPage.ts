@@ -33,7 +33,7 @@ export class LoginPage {
     this.guestLoginIcon = page.getByTestId('sidebar-login-link')
     this.userLink = page.getByTestId('sidebar-user-link')
     this.logoutButton = page.getByTestId('logout-button')
-    this.appContainer = page.getByTestId('app-layout-content')
+    this.appContainer = page.locator('#app-layout-content')
   }
 
   private async openLoginPopup() {

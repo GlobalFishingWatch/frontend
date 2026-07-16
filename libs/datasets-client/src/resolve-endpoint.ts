@@ -65,7 +65,7 @@ export const resolveEndpoint = (
       : dataset.configuration // legacy flat fallback
     datasetConfigParams?.forEach((param) => {
       const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
-      const value = param.value || datasetConfiguration?.[datasetConfigurationId]
+      const value = param.value ?? datasetConfiguration?.[datasetConfigurationId]
       url = url.replace(`{{${param.id}}}`, value as string)
     })
   }

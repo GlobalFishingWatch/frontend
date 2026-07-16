@@ -66,11 +66,22 @@ export type VesselTrackLoaderParams = {
   // Whether to compute the per-point time gaps (in hours). Skipped entirely when the
   // gap-segment feature is off so we don't pay the cost on every track parse.
   computeGaps?: boolean
+  // Base epoch ms the API rebased getTimestamp values against (from the `timestamp-base`
+  // response header) - see toAbsoluteTimestamp/toRelativeTimestamp below.
+  timestampBase?: number
+}
+
+export function toAbsoluteTimestamp(relativeTimestamp: number, timestampBase: number) {
+  return relativeTimestamp + timestampBase
+}
+
+export function toRelativeTimestamp(absoluteTimestamp: number, timestampBase: number) {
+  return absoluteTimestamp - timestampBase
 }
 
 export const parseTrack = (
   arrayBuffer: ArrayBuffer,
-  { computeGaps = false } = {} as VesselTrackLoaderParams
+  { computeGaps = false, timestampBase = 0 } = {} as VesselTrackLoaderParams
 ): VesselTrackData => {
   const track = DeckTrack.decode(new Uint8Array(arrayBuffer)) as unknown as VesselTrackData
   if (!track.attributes.getPath.value.length) {
@@ -94,8 +105,9 @@ export const parseTrack = (
   const speedExtent = getExtent(getSpeedValues as any, 'speed')
   const elevationExtent = getExtent(getElevationValues as any, 'elevation')
 
-  const timestamps = track.attributes.getTimestamp.value?.length
-    ? new Float32Array(track.attributes.getTimestamp.value)
+  const rawTimestamps = track.attributes.getTimestamp.value
+  const timestamps = rawTimestamps?.length
+    ? Float32Array.from(rawTimestamps)
     : new Float32Array(defaultAttributesLength)
 
   // getGap stores, per point, the time gap (in hours) to the next point in the same path.
@@ -110,6 +122,8 @@ export const parseTrack = (
     for (let i = 0; i < defaultAttributesLength - 1; i++) {
       const nextStartsNewPath = segmentStartIndices.has(i + 1)
       if (nextStartsNewPath) continue
+      // A difference between two rebased timestamps equals the difference between their
+      // absolute values - no need to convert back for this.
       const current = timestamps[i * timestampSize]
       const next = timestamps[(i + 1) * timestampSize]
       gaps[i] = (next - current) / 3600000
@@ -118,6 +132,7 @@ export const parseTrack = (
 
   return {
     ...track,
+    timestampBase,
     attributes: {
       getPath: {
         value: new Float32Array(track.attributes.getPath.value),

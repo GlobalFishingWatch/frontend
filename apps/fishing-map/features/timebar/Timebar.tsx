@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -12,13 +12,9 @@ import type {
   TrackEventChunkProps,
   TrackGraphOrientation,
 } from '@globalfishingwatch/timebar'
-import {
-  Timebar,
-  TimebarHighlighter,
-  TimebarTracksEvents,
-  TimebarTracksGraph,
-} from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
 
+// import { Icon } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
 import {
@@ -30,6 +26,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { selectHasVectorDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -52,6 +49,7 @@ import {
 } from 'features/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
+// import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
@@ -152,7 +150,7 @@ const TimebarHighlighterWrapper = memo(
     )
 
     return highlightedTime ? (
-      <TimebarHighlighter
+      <Timebar.Charts.Highlighter
         fixed={fixed}
         showTooltip={showTooltip}
         hoverStart={highlightedTime.start}
@@ -171,13 +169,13 @@ const TimebarTracksEventsWrapper = memo(
     tracks,
     onEventClick,
   }: {
-    data: Parameters<typeof TimebarTracksEvents>[0]['data']
-    tracks?: Parameters<typeof TimebarTracksEvents>[0]['tracks']
-    onEventClick?: Parameters<typeof TimebarTracksEvents>[0]['onEventClick']
+    data: Parameters<typeof Timebar.Charts.TracksEvents>[0]['data']
+    tracks?: Parameters<typeof Timebar.Charts.TracksEvents>[0]['tracks']
+    onEventClick?: Parameters<typeof Timebar.Charts.TracksEvents>[0]['onEventClick']
   }) => {
     const { highlightedEventIds } = useHighlightedEventsConnect()
     return (
-      <TimebarTracksEvents
+      <Timebar.Charts.TracksEvents
         tracks={tracks}
         data={data}
         highlightedEventsIds={highlightedEventIds}
@@ -192,6 +190,7 @@ const TimebarWrapper = () => {
 
   const [isMouseInside, setMouseInside] = useState(false)
   const [isMouseClicked, setMouseClicked] = useState(false)
+  const clickTimeRef = useRef(0)
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
@@ -211,6 +210,8 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
+  const debugOptions = useSelector(selectDebugOptions)
+  // const timeMode = useSelector(selectTimeMode)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
   const appStore = useAppStore()
@@ -282,6 +283,15 @@ const TimebarWrapper = () => {
       }
     },
     [dispatchDisableHighlightedTime, isMouseClicked]
+  )
+
+  const onToggleFixedTooltipFunction = useCallback(
+    (toggle: boolean) => {
+      if (Date.now() - clickTimeRef.current > 100) {
+        onToggleFixedTooltip(toggle)
+      }
+    },
+    [onToggleFixedTooltip]
   )
 
   const onChange: TimebarProps['onChange'] = useCallback(
@@ -360,6 +370,7 @@ const TimebarWrapper = () => {
 
   const onEventClick = useCallback(
     (event: TimebarChartChunk<TrackEventChunkProps>) => {
+      clickTimeRef.current = Date.now()
       if (event?.coordinates) {
         setMapCoordinates({
           ...viewState,
@@ -417,7 +428,11 @@ const TimebarWrapper = () => {
     return (
       <Fragment>
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
+          <Timebar.Charts.TracksGraph
+            key="trackGraph"
+            data={tracksGraphsData}
+            steps={trackGraphSteps}
+          />
         )}
         <TimebarTracksEventsWrapper
           tracks={tracks}
@@ -428,7 +443,7 @@ const TimebarWrapper = () => {
     )
   }, [events, hasTrackError, onEventClick, showGraph, t, trackGraphSteps, tracks, tracksGraphsData])
 
-  const timebarChildren = useMemo(() => {
+  const timebarGraphComponent = useMemo(() => {
     return (
       <Fragment>
         {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
@@ -472,16 +487,6 @@ const TimebarWrapper = () => {
       data-testid="timebar-wrapper"
     >
       <Timebar
-        disablePlayback={vesselGroupsFiltering || hasVectorDataviews}
-        disabledPlaybackTooltip={
-          vesselGroupsFiltering
-            ? t((t) => t.timebar.disablePlaybackVesselGroups)
-            : hasVectorDataviews
-              ? t((t) => t.timebar.disablePlaybackVectors)
-              : undefined
-        }
-        showPlayback={!isReportLocation}
-        showButtons={!screenshotMode}
         labels={labels}
         start={start}
         end={end}
@@ -490,22 +495,58 @@ const TimebarWrapper = () => {
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}
         onChange={onChange}
-        onMouseMove={onMouseMove}
         onBookmarkChange={onBookmarkChange}
-        onTogglePlay={onTogglePlay}
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
-        bookmarkPlacement="bottom"
         minimumRange={1}
-        // TODO: set this by current active activity dataviews
-        // minimumRangeUnit={activityCategory === 'fishing' ? 'hour' : 'day'}
+        // minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
-        trackGraphOrientation={trackGraphOrientation}
-        locale={i18n.language as Locale}
-        onGraphClick={onToggleFixedTooltip}
       >
-        {!isSmallScreen ? timebarChildren : null}
+        {!screenshotMode && (
+          <Fragment>
+            {!isReportLocation && (
+              // || timeMode === 'realTime'
+              <Timebar.Playback
+                disabled={vesselGroupsFiltering || hasVectorDataviews}
+                disabledTooltip={
+                  vesselGroupsFiltering
+                    ? t((t) => t.timebar.disablePlaybackVesselGroups)
+                    : hasVectorDataviews
+                      ? t((t) => t.timebar.disablePlaybackVectors)
+                      : undefined
+                }
+                onTogglePlay={onTogglePlay}
+              />
+            )}
+            <Timebar.ToolbarWrapper>
+              <Timebar.TimeRangeSelector
+              // showDateInputs={timeMode === 'historical'}
+              />
+              <Timebar.Tools.Bookmark />
+              {/* {timeMode === 'realTime' ? (
+                <Timebar.Tools.Wrapper>
+                  <Icon icon="history" />
+                </Timebar.Tools.Wrapper>
+              ) : (
+                <Timebar.Tools.Bookmark />
+              )} */}
+            </Timebar.ToolbarWrapper>
+            {/* {timeMode === 'historical' && <Timebar.IntervalSelector />} */}
+            {<Timebar.IntervalSelector />}
+          </Fragment>
+        )}
+        <Timebar.Charts.Wrapper
+          fullWidth={screenshotMode}
+          bookmarkPlacement="bottom"
+          trackGraphOrientation={trackGraphOrientation}
+          locale={i18n.language as Locale}
+          onMouseMove={onMouseMove}
+          onGraphClick={onToggleFixedTooltipFunction}
+          showDeckStats={debugOptions.deckStats}
+        >
+          {!isSmallScreen ? timebarGraphComponent : null}
+        </Timebar.Charts.Wrapper>
       </Timebar>
       {!isSmallScreen && !screenshotMode && <TimebarSettings loading={loading} />}
       <Hint id="changingTheTimeRange" className={styles.helpHint} />

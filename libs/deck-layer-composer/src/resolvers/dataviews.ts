@@ -328,7 +328,6 @@ type ResolverGlobalConfig = {
   visibleEvents?: EventTypes[]
   debug?: boolean
   timeRange?: TimeRange
-  highlightedTime?: Partial<TimeRange>
   highlightedEvent?: ApiEvent
   highlightedEvents?: string[]
   customGeneratorMapping?: Partial<Record<DataviewType, DataviewType>>

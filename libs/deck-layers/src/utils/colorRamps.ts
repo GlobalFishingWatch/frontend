@@ -124,6 +124,9 @@ export const getBlend = (color1: RGBA, color2: RGBA) => {
 }
 
 export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
+  if (!colorRampsIds || colorRampsIds.length < 2 || colorRampsIds.some((id) => !id)) {
+    return []
+  }
   const [ramp1, ramp2] = getBivariateRamp(colorRampsIds)
   return [
     'transparent',

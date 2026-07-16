@@ -66,6 +66,7 @@ export type UserBaseLayerState = {
 
 type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
 
+const emptyHighlightedFeatures = [] as UserLayerPickingObject[]
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps,
 > extends CompositeLayer<PropsT> {
@@ -136,10 +137,7 @@ export abstract class UserBaseLayer<
   }
 
   _getHighlightedFeatures() {
-    return [
-      ...(this.props.highlightedFeatures || []),
-      ...(this.state.highlightedFeatures || []),
-    ].filter(Boolean)
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {

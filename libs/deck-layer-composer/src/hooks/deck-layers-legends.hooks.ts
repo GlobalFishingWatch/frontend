@@ -29,6 +29,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   return deckLayers.flatMap((layer) => {
     if (
       !layer.instance ||
+      !layer.ready ||
       !(
         layer.instance instanceof FourwingsLayer ||
         layer.instance instanceof FourwingsVectorsTileLayer

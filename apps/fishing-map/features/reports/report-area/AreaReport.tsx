@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -15,10 +14,8 @@ import { OUT_OF_TIME_REPORT_AREA_ID } from 'features/reports/report-area/area-re
 import {
   useFetchReportArea,
   useFitAreaInViewport,
-  useHighlightReportArea,
 } from 'features/reports/report-area/area-reports.hooks'
 import {
-  selectHasReportBuffer,
   selectReportArea,
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
@@ -70,7 +67,6 @@ export default function Report() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const highlightArea = useHighlightReportArea()
   const reportCategory = useSelector(selectReportCategory)
   const reportStatus = useSelector(selectReportVesselsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -79,7 +75,6 @@ export default function Report() {
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
-  const hasReportBuffer = useSelector(selectHasReportBuffer)
   const reportDataviews = useSelector(selectReportLayersVisible)
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -135,15 +130,6 @@ export default function Report() {
     // Reacting only to the area status and fitting bounds after load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, reportArea])
-
-  useEffect(() => {
-    if (reportArea && !hasReportBuffer) {
-      highlightArea(reportArea as ContextFeature)
-    }
-    return () => {
-      highlightArea(undefined)
-    }
-  }, [highlightArea, reportArea, hasReportBuffer])
 
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {

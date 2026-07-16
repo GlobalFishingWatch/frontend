@@ -1,13 +1,4 @@
-import React, {
-  createRef,
-  Fragment,
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { createRef, Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import Hotkeys from 'react-hot-keys'
 import { useSelector } from 'react-redux'
 import type { NumberValue } from 'd3-scale'
@@ -16,12 +7,7 @@ import Slider from 'rc-slider'
 
 import { timebar as timebarLabels } from '@globalfishingwatch/i18n-labels'
 import type { TimebarProps } from '@globalfishingwatch/timebar'
-import {
-  getTimebarStepByDelta,
-  Timebar,
-  TimebarHighlighter,
-  TimelineContext,
-} from '@globalfishingwatch/timebar'
+import { getTimebarStepByDelta, Timebar, useOuterScale } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'
 import { useTimebarModeConnect, useTimerangeConnect } from '../../features/timebar/timebar.hooks'
@@ -51,7 +37,7 @@ const TIMEBAR_DEFAULT_HEIGHT = 300
 
 const DayNightTimebarLayer = () => {
   // TODO: Performance issue if we have lot of points
-  const { outerScale } = useContext(TimelineContext)
+  const outerScale = useOuterScale()
   const nightSegments = useSelector(selectNightLayer)
   return (
     <div>
@@ -182,32 +168,36 @@ const TimebarWrapper = () => {
         <Timebar
           start={localRange?.start}
           end={localRange?.end}
-          showPlayback={false}
           absoluteStart={absoluteStart.toISOString()}
           absoluteEnd={absoluteEnd.toISOString()}
           onChange={onTimebarChange}
           isResizable={true}
           labels={timebarLabels}
-          showLast30DaysBtn={false}
           defaultHeight={TIMEBAR_DEFAULT_HEIGHT}
-          trackGraphOrientation={'up'}
           //bookmarkStart={bookmarkStart}
           //bookmarkEnd={bookmarkEnd}
           // showLastUpdate={false}
           //onBookmarkChange={dispatchBookmarkTimerange}
-          onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
-            if (clientX === null || scale === null) {
-              if (highlightedTime !== undefined) {
-                dispatch(disableHighlightedTime())
-              }
-              return
-            }
-            const start = scale(clientX - 10).toISOString()
-            const end = scale(clientX + 10).toISOString()
-            dispatch(setHighlightedTime({ start, end }))
-          }}
         >
-          <Fragment>
+          <Timebar.ToolbarWrapper>
+            <Timebar.TimeRangeSelector />
+            <Timebar.Tools.Bookmark />
+          </Timebar.ToolbarWrapper>
+          <Timebar.Charts.Wrapper
+            showLast30DaysBtn={false}
+            trackGraphOrientation="up"
+            onMouseMove={(clientX: number | null, scale: ((arg: NumberValue) => Date) | null) => {
+              if (clientX === null || scale === null) {
+                if (highlightedTime !== undefined) {
+                  dispatch(disableHighlightedTime())
+                }
+                return
+              }
+              const start = scale(clientX - 10).toISOString()
+              const end = scale(clientX + 10).toISOString()
+              dispatch(setHighlightedTime({ start, end }))
+            }}
+          >
             <DayNightTimebarLayer></DayNightTimebarLayer>
             <VesselEventsPointsGraphDeckGL />
             {/* {
@@ -228,7 +218,7 @@ const TimebarWrapper = () => {
               )} */}
             <Fragment>
               {highlightedTime && (
-                <TimebarHighlighter
+                <Timebar.Charts.Highlighter
                   hoverStart={highlightedTime.start}
                   hoverEnd={highlightedTime.end}
                 />
@@ -236,13 +226,13 @@ const TimebarWrapper = () => {
             </Fragment>
             <Fragment>
               {highlightedEvent && (
-                <TimebarHighlighter
+                <Timebar.Charts.Highlighter
                   hoverStart={highlightedEvent.start}
                   hoverEnd={highlightedEvent.end}
                 />
               )}
             </Fragment>
-          </Fragment>
+          </Timebar.Charts.Wrapper>
         </Timebar>
       </div>
       <div className={styles.filtersContainer}>

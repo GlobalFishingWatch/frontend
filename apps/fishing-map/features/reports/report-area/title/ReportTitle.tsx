@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
 import cx from 'classnames'
 
-import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
 
@@ -45,7 +44,7 @@ import { getCurrentAppUrl } from 'router/routes.utils'
 import type { BufferOperation, BufferUnit } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
 
-import { useFitAreaInViewport, useHighlightReportArea, useReportTitle } from '../area-reports.hooks'
+import { useFitAreaInViewport, useReportTitle } from '../area-reports.hooks'
 
 import { BufferButtonTooltip } from './BufferButonTooltip'
 
@@ -60,7 +59,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const descriptionRef = useRef<HTMLSpanElement>(null)
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
-  const highlightArea = useHighlightReportArea()
   const fitAreaInViewport = useFitAreaInViewport()
   const { closeSidePanel } = useSidePanel()
   const isGlobalReport = useSelector(selectIsGlobalReport)
@@ -156,7 +154,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
 
   const handleConfirmBuffer = useCallback(() => {
     setShowBufferTooltip(false)
-    highlightArea(undefined)
     replaceQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
@@ -169,7 +166,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
   }, [
-    highlightArea,
     replaceQueryParams,
     previewBuffer.value,
     previewBuffer.unit,
@@ -179,9 +175,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
 
   const handleRemoveBuffer = useCallback(() => {
     setShowBufferTooltip(false)
-    if (reportArea) {
-      highlightArea(reportArea as ContextFeature)
-    }
     replaceQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
@@ -189,7 +182,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, highlightArea, replaceQueryParams, reportArea])
+  }, [dispatch, replaceQueryParams])
 
   const reportDescription =
     report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
