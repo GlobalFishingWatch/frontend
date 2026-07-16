@@ -46,9 +46,15 @@ function GenericClusterTooltipRow({
                   if (key === 'count' || key === 'expansionZoom') {
                     return null
                   }
+                  let displayValue: string
+                  try {
+                    displayValue = JSON.stringify(value)
+                  } catch {
+                    displayValue = ''
+                  }
                   return (
                     <li key={key}>
-                      <span className={styles.strong}>{key}</span>: {JSON.stringify(value)}
+                      <span className={styles.strong}>{key}</span>: {displayValue}
                     </li>
                   )
                 })}
