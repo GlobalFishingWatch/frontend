@@ -479,7 +479,7 @@ export function hasVesselGroupVesselsDeprecated(
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
-export function hasVesselGroupVesselsDeleted(
+export function hasVesselGroupDatasetsDeleted(
   vesselGroupDatasets: string[] | undefined,
   deletedDatasets: string[] | undefined
 ) {
@@ -538,6 +538,7 @@ export function hasWorkspaceDataviewsDeprecated(
   }
   return workspace.dataviewInstances.some(
     (dataviewInstance) =>
-      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) && dataviewInstance.config?.visible
+      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) &&
+      (dataviewInstance.config?.visible ?? true)
   )
 }

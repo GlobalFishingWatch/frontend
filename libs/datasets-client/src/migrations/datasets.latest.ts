@@ -51,9 +51,9 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-cri-presence:v4.0' as const,
   },
   blz: {
-    identity: 'public-belize-vessel-identity-fishing:v20220304' as const,
-    fishing: 'public-belize-vessel-identity-fishing:v20220304' as const, // No fishing effort in pipe 4
-    presence: 'public-vms-blz-presence:v20220304' as const,
+    identity: 'public-vms-blz-vessel-identity:v4.0' as const,
+    fishing: 'public-belize-fishing-effort:v20220304' as const, // No fishing effort in pipe 4
+    presence: 'public-vms-blz-presence:v20220304' as const, // Not updated in pipe4
   },
   png: {
     identity: 'public-vms-png-vessel-identity:v4.0' as const,
