@@ -60,12 +60,7 @@
       "utils/*": ["./src/utils/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "index.d.ts",
-    "eslint.config.js"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "index.d.ts", "eslint.config.js"],
   "exclude": [
     "node_modules",
     "jest.config.ts",

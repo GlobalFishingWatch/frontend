@@ -239,6 +239,7 @@
     "@types/upng-js": "^2.1.5",
     "@vitejs/devtools": "^0.3.1",
     "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/browser": "4.1.8",
     "@vitest/browser-playwright": "4.1.8",
     "@vitest/coverage-istanbul": "4.1.8",
     "@vitest/coverage-v8": "4.1.8",
