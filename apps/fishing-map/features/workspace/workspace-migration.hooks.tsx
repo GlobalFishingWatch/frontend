@@ -27,7 +27,7 @@ import { updateCurrentWorkspaceThunk } from './workspace.slice'
 
 import styles from './Workspace.module.css'
 
-let migrationToastDiscarded = false
+const migrationToastDiscardedWorkspaceIds = new Set<string>()
 export const useMigrateWorkspaceToast = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -42,6 +42,7 @@ export const useMigrateWorkspaceToast = () => {
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const locationCategory = useSelector(selectLocationCategory)
   const { migrateAllDataviewInstances } = useMigrateToLatestDataview()
+  const workspaceId = workspace?.id || ''
   const toastId = useRef<any>(undefined)
 
   const closeToast = () => {
@@ -70,7 +71,7 @@ export const useMigrateWorkspaceToast = () => {
         })
       }
     }
-    migrationToastDiscarded = true
+    migrationToastDiscardedWorkspaceIds.add(workspaceId)
     closeToast()
   }
 
@@ -117,14 +118,18 @@ export const useMigrateWorkspaceToast = () => {
   })
 
   useEffect(() => {
-    if (hasDeprecatedDataviewsToMigrate && isWorkspaceOwnerOrDefault && !migrationToastDiscarded) {
+    if (
+      hasDeprecatedDataviewsToMigrate &&
+      isWorkspaceOwnerOrDefault &&
+      !migrationToastDiscardedWorkspaceIds.has(workspaceId)
+    ) {
       toastId.current = toast(<ToastContent />, {
         toastId: 'migrateWorkspace',
         autoClose: 10000,
         closeButton: true,
         onClose: (reason) => {
           if (reason === true || reason === 'click') {
-            migrationToastDiscarded = true
+            migrationToastDiscardedWorkspaceIds.add(workspaceId)
           }
         },
       })
@@ -134,5 +139,5 @@ export const useMigrateWorkspaceToast = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasDeprecatedDataviewsToMigrate])
+  }, [hasDeprecatedDataviewsToMigrate, workspaceId])
 }
