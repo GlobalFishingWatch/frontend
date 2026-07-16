@@ -134,8 +134,7 @@ const fetchDatasetsBatch = async ({
       })
     : []
 
-  const requestedIdsAllCached = Boolean(ids?.length) && !uniqIds.length && !forceRefresh
-  if (!uniqIds.length && (fetchUserDatasetsMode === undefined || requestedIdsAllCached)) {
+  if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
     return {
       datasets: [],
       datasetsDeprecated: {} as DatasetsMigration,
