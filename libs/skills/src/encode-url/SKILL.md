@@ -16,7 +16,7 @@ Never hand-build the query string: params are abbreviated (`dataviewInstances`�
 
 1. **Pick the route type** from the user intent (details in [references/routes.md](references/routes.md)):
    - browse/compare activity on the map → `workspace`
-   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md)
+   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md) only when marine manager is mentioned
    - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`)
 
 - An area report must ALSO include the matching **context layer** as a visible instance so the area outline renders: `context-layer-eez` / `context-layer-fao-areas` / `context-layer-rfmo` / `context-layer-mpa` (pick by area type; dataviewId in [references/layers.md](references/layers.md)), `{ "config": { "visible": true } }`. Missing it drops the area boundary.
@@ -32,7 +32,7 @@ Never hand-build the query string: params are abbreviated (`dataviewInstances`�
 
 2. **Pick layers** as `state.dataviewInstances` using the instance ids in [references/layers.md](references/layers.md). Rules:
    - A layer the user wants: `{ "id": "<instance-id>", "config": { "visible": true, ... } }`.
-   - Default-workspace layers the user does NOT want (`ais`, `vms` are visible by default) must be included with `"config": { "visible": false }` — otherwise the app shows them anyway.
+   - Default-workspace layers the user does NOT want (`ais`, `vms` are visible by default) must be included with `"config": { "visible": false }` — otherwise the app shows them anyway. This `ais`/`vms` default is for `default-public` ONLY — a curated workspace (see [highlighted-workspaces.md](references/highlighted-workspaces.md)) bakes in its own different default ids and must be checked there (or decoded live) before assuming.
    - Generic "fishing" intent → show AIS fishing effort (`ais`) and hide `vms` with `"config": { "visible": false }` unless the user specifically wants VMS. Only keep `vms` visible when asked for VMS/national-fleet data.
    - Layers not in the default workspace need `dataviewId` too (see layers.md). Versioned dataview slugs take the literal `{PIPE_DATASET_VERSION}` token (e.g. `sar-v-{PIPE_DATASET_VERSION}`) — the script resolves it from the `PIPE_DATASET_VERSION` env variable so URLs always target the latest dataset pipeline version.
    - Multiple visible instances of the same category (e.g. two fishing-effort layers filtered per flag): give each a distinct color so they're visually separable. `color` and `colorRamp` are one choice — set both to a matching palette entry (ramp id + its paired hex, table in query-params.md); don't repeat a ramp within the category.
@@ -127,3 +127,9 @@ These exist because the same mistakes recur. They override any instinct to hand-
 ### 5. Multi-country fishing intent = WORKSPACE with one layer per flag, not a multi-area report
 
 - "Fishing of Peru, Argentina, Brazil and Chile" → a `workspace` with one fishing-effort-ais layer per flag, each with `filters.flag` and a distinct color/colorRamp
+
+### 6. Curated workspaces have their own defaults, and their own EEZ may have a national dataset
+
+- Don't carry the `default-public` assumption (`ais`/`vms` visible by default) into a curated workspace — check its real default ids in [highlighted-workspaces.md](references/highlighted-workspaces.md) (or decode the bare workspace URL) and hide the ones the user doesn't want.
+- If the workspace's EEZ has a national fishing-effort dataset (e.g. Ecuador for Galapagos, Brazil), prefer it over plain global `ais` for that flag/region — pattern in [layers.md](references/layers.md#national-fishing-effort-datasets).
+- Set the viewport to the region's center for a curated `workspace` route (not `0,0`) — the "don't set viewport" rule only applies to `report` routes.

@@ -50,6 +50,13 @@ cp -r libs/skills/dist/decode-url ~/.claude/skills/
 cp -r libs/skills/dist/encode-url /path/to/agent/skills/
 ```
 
+Or, for your own `~/.claude/skills/`, one command per skill — builds, wipes the old copy, reinstalls:
+
+```bash
+pnpm nx run skills:claude:encode-url
+pnpm nx run skills:claude:decode-url
+```
+
 ### From the published npm package
 
 ```bash
