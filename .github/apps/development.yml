@@ -54,8 +54,7 @@ api-portal:
 track-labeler:
   target: production-nginx
   build:
-    env_vars:
-      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+    env_vars: *build_env_vars
   deploy:
     env_vars:
       BASIC_AUTH: Restricted
@@ -66,8 +65,7 @@ track-labeler:
 data-download-portal:
   target: production-nginx
   build:
-    env_vars:
-      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+    env_vars: *build_env_vars
   deploy:
     env_vars:
       BASIC_AUTH: off
@@ -75,8 +73,7 @@ data-download-portal:
 image-labeler:
   target: production-nginx
   build:
-    env_vars:
-      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+    env_vars: *build_env_vars
   deploy:
     env_vars:
       BASIC_AUTH: off
@@ -84,8 +81,7 @@ image-labeler:
 user-groups-admin:
   target: production-nginx
   build:
-    env_vars:
-      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+    env_vars: *build_env_vars
   deploy:
     env_vars:
       BASIC_AUTH: off
@@ -93,8 +89,7 @@ user-groups-admin:
 port-labeler:
   target: production-nginx
   build:
-    env_vars:
-      API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+    env_vars: *build_env_vars
   deploy:
     env_vars:
       BASIC_AUTH: Restricted
