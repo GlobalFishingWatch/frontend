@@ -98,7 +98,7 @@ export function useMigrateToLatestDataview() {
               colorRamp: dataviewInstance.config.colorRamp,
             }),
             ...(hasDatasets && {
-              datasets: datasets?.map((d) => deprecatedDatasets[d.id] || d.id),
+              datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
             }),
             filters,
           },
