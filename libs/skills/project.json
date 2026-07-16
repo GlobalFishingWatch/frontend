@@ -88,6 +88,20 @@
       "options": {
         "packageRoot": "libs/skills"
       }
+    },
+    "claude:encode-url": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["dist"],
+      "options": {
+        "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/encode-url && cp -r libs/skills/dist/encode-url ~/.claude/skills/"
+      }
+    },
+    "claude:decode-url": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["dist"],
+      "options": {
+        "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/decode-url && cp -r libs/skills/dist/decode-url ~/.claude/skills/"
+      }
     }
   }
 }
