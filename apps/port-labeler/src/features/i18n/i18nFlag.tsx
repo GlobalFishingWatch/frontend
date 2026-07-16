@@ -1,10 +1,6 @@
-import React, { Fragment } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Fragment } from 'react'
 
-export const useI18nFlag = (iso: string) => {
-  const { t } = useTranslation('flags')
-  return t(iso as any)
-}
+import { useI18nFlag } from './i18nFlag.utils'
 
 const I18nFlag = ({ iso }: { iso: string }) => {
   const flagTranslated = useI18nFlag(iso)
