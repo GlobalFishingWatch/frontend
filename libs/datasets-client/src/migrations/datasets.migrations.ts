@@ -1,6 +1,8 @@
 import type { DatasetsMigration } from '@globalfishingwatch/api-types'
 
-import { LATEST_DATASETS_VMS, replaceDatasetPublicToPrivate } from './datasets.latest'
+import { replaceDatasetPublicToPrivate } from '../datasets.utils'
+
+import { LATEST_DATASETS_VMS } from './datasets.latest'
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_FISHING: DatasetsMigration = {
   // 'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,

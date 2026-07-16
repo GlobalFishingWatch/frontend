@@ -1,5 +1,3 @@
-import { DATASET_PRIVATE_PREFIX, DATASET_PUBLIC_PREFIX } from '../datasets.const'
-
 import type { CountryDatasetId } from './datasets.conventions'
 
 export const LATEST_DATASETS_VMS: Record<
@@ -63,9 +61,3 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-vms-png-presence:v4.0' as const,
   },
 } as const
-
-export const replaceDatasetPublicToPrivate = (dataset: string): string => {
-  return dataset.startsWith(DATASET_PUBLIC_PREFIX)
-    ? dataset.replace(DATASET_PUBLIC_PREFIX, DATASET_PRIVATE_PREFIX)
-    : dataset
-}
