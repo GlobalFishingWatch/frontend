@@ -7,7 +7,7 @@ if (!url) {
   process.exit(1)
 }
 
-const { decodeMapUrl } = await import('@globalfishingwatch/skills')
+const { decodeMapUrl } = await import('@globalfishingwatch/skills/decode-url')
 
 try {
   const result = decodeMapUrl(url)

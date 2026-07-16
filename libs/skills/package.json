@@ -9,15 +9,21 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./encode-url": {
+      "types": "./src/encode-url/index.ts",
+      "default": "./dist/encode-url/index.js"
+    },
+    "./decode-url": {
+      "types": "./src/decode-url/index.ts",
+      "default": "./dist/decode-url/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./src/index.ts",
   "files": [
     "src",
-    "dist",
-    "encode-url",
-    "decode-url"
+    "dist"
   ],
   "repository": {
     "type": "git",

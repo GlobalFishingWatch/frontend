@@ -1,10 +1,11 @@
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 
-import type { LayerCategory } from './dictionary'
-import { getLayerInfo } from './dictionary'
-import type { MapRoute } from './routes'
-import { DEFAULT_BASENAME, matchRoutePath } from './routes'
+import type { LayerCategory } from '../encode-url/dictionary'
+import { getLayerInfo } from '../encode-url/dictionary'
+import type { MapRoute } from '../encode-url/routes'
+import { DEFAULT_BASENAME, matchRoutePath } from '../encode-url/routes'
+
 import { HIGHLIGHTED_WORKSPACES } from './workspaces'
 
 export type DecodedLayer = {

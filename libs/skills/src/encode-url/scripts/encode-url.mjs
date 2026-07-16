@@ -15,7 +15,7 @@ if (!input?.trim()) {
   process.exit(1)
 }
 
-const { encodeMapUrl } = await import('@globalfishingwatch/skills')
+const { encodeMapUrl } = await import('@globalfishingwatch/skills/encode-url')
 
 try {
   const result = encodeMapUrl(JSON.parse(input))
