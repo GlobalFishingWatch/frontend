@@ -4,13 +4,14 @@ import { uniq } from 'es-toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectFeatureFlags } from 'features/debug/debug.slice'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
   isSupportedReportDataview,
 } from 'features/reports/report-area/area-reports.utils'
-import { getVesselGroupReportSupportsPresence } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { getVesselGroupActivityDatasets } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectVGRDatasets } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type {
   AnyReportSubCategory,
@@ -25,6 +26,7 @@ import {
 } from 'router/routes.selectors'
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
+import { selectPresenceDataview } from './dataviews.static.selectors'
 
 export const selectActiveSupportedReportDataviews = createSelector(
   [selectDataviewInstancesResolved, selectFeatureFlags],
@@ -61,17 +63,28 @@ export const selectActiveActivityReportSubCategories = createSelector(
       DataviewCategory.VesselGroups
     ),
     selectVGRDatasets,
+    selectPresenceDataview,
+    selectAllDatasets,
   ],
   (
     isVesselGroupReportLocation,
     activityReportSubCategories,
     vesselGroupReportSubCategories,
-    vesselGroupDatasets
+    vesselGroupDatasets,
+    presenceDataview,
+    allDatasets
   ) => {
     if (!isVesselGroupReportLocation) {
       return activityReportSubCategories
     }
-    return getVesselGroupReportSupportsPresence(vesselGroupDatasets)
+    const supportsPresence =
+      getVesselGroupActivityDatasets({
+        vesselGroupDatasets,
+        activityDatasetIds:
+          presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId) || [],
+        allDatasets,
+      }).length > 0
+    return supportsPresence
       ? vesselGroupReportSubCategories
       : vesselGroupReportSubCategories.filter((subCategory) => subCategory !== 'presence')
   }

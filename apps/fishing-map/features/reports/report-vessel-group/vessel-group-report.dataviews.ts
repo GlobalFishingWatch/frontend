@@ -1,10 +1,15 @@
 import type {
   ColorCyclingType,
+  Dataset,
   DataviewInstance,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
-import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
+import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  getRelatedDatasetByType,
+  removeDatasetVersion,
+  replaceDatasetPrivateToPublic,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers'
 
@@ -43,18 +48,30 @@ export function isVesselGroupActivityDataview(dataviewId: string) {
   return VESSEL_GROUP_ACTIVITY_DATAVIEW_IDS.includes(dataviewId as VesselGroupActivityDataviewId)
 }
 
-// TODO: replace with a proper per-dataset presence support flag once available.
-export const PRESENCE_UNSUPPORTED_VESSEL_GROUP_DATASETS = [
-  'public-vms-bra-vessel-identity',
-  'public-vms-ecu-vessel-identity',
-]
+const normalizeVesselGroupDatasetId = (datasetId: string) =>
+  replaceDatasetPrivateToPublic(removeDatasetVersion(datasetId))
 
-export function getVesselGroupReportSupportsPresence(vesselGroupDatasets: string[] = []): boolean {
-  if (!vesselGroupDatasets.length) {
-    return true
+type VesselGroupActivityDatasetsParams = {
+  vesselGroupDatasets: string[]
+  activityDatasetIds: string[]
+  allDatasets: Dataset[]
+}
+
+export function getVesselGroupActivityDatasets({
+  vesselGroupDatasets = [],
+  activityDatasetIds = [],
+  allDatasets = [],
+}: VesselGroupActivityDatasetsParams): string[] {
+  if (!vesselGroupDatasets.length || !activityDatasetIds.length || !allDatasets.length) {
+    return activityDatasetIds
   }
-  return vesselGroupDatasets.some((datasetId) => {
-    return !PRESENCE_UNSUPPORTED_VESSEL_GROUP_DATASETS.includes(removeDatasetVersion(datasetId))
+  const vesselGroupDatasetIds = vesselGroupDatasets.map(normalizeVesselGroupDatasetId)
+  return activityDatasetIds.filter((datasetId) => {
+    const dataset = allDatasets.find((d) => d.id === datasetId)
+    const identityDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)?.id
+    return identityDatasetId
+      ? vesselGroupDatasetIds.includes(normalizeVesselGroupDatasetId(identityDatasetId))
+      : false
   })
 }
 
