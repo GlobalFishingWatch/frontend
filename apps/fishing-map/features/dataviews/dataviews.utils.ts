@@ -469,7 +469,7 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
   return flattenDatasetFilters?.length > 0
 }
 
-export function hasVesselGroupVesselsDeprecated(
+export function hasVesselGroupDatasetsDeprecated(
   vesselGroupDatasets: string[] | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
@@ -513,7 +513,7 @@ export function isDataviewDeprecated(
   const configEvents = Array.isArray(config?.events) ? config.events : []
   const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
 
-  const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
+  const hasDeprecatedVesselGroupVessels = hasVesselGroupDatasetsDeprecated(
     dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )

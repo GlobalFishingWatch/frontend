@@ -149,26 +149,21 @@ function VesselGroupLayerPanel({
     </Fragment>
   )
 
-  const titleContent =
-    !layerActive || hasDeletedDatasets || isOutdated ? (
+  const titleContent = layerActive ? (
+    <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
       <Tooltip
         content={
-          hasDeletedDatasets
-            ? t((t) => t.workspace.deletedVesselGroupLayer)
-            : isOutdated
-              ? t((t) => t.vesselGroupReport.linkDisabled)
-              : undefined
+          isOutdated || hasDeletedDatasets
+            ? t((t) => t.vesselGroupReport.linkDisabled)
+            : t((t) => t.vesselGroupReport.clickToSee)
         }
       >
         <span>{nameLabel}</span>
       </Tooltip>
-    ) : (
-      <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
-        <Tooltip content={t((t) => t.vesselGroupReport.clickToSee)}>
-          <span>{nameLabel}</span>
-        </Tooltip>
-      </VesselGroupReportLink>
-    )
+    </VesselGroupReportLink>
+  ) : (
+    <span>{nameLabel}</span>
+  )
 
   return (
     <div

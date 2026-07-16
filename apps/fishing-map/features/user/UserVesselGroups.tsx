@@ -20,7 +20,10 @@ import {
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
 } from 'features/vessel-groups/vessel-groups.slice'
-import { getVesselGroupLabel, getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
+import {
+  getVesselGroupLabel,
+  getVesselGroupVesselsCount,
+} from 'features/vessel-groups/vessel-groups.utils'
 import {
   getVesselGroupDatasetStatus,
   useMigrateToLatestVesselGroup,
@@ -137,6 +140,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
+                          icon={<Icon icon="warning" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)
@@ -154,7 +158,6 @@ function UserVesselGroups() {
                           }}
                           className={styles.warningButton}
                         >
-                          <Icon icon="warning" />
                           {t((t) => t.vesselGroup.updateRequired)}
                         </Button>
                       ) : (
