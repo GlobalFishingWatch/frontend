@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux'
 
 import { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import type { Tab } from '@globalfishingwatch/ui-components'
-import { Button, Tabs } from '@globalfishingwatch/ui-components'
+import { Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
+import { hasVesselGroupDatasetsDeprecated } from 'features/dataviews/dataviews.utils'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
@@ -75,7 +75,7 @@ function VesselGroupReport() {
   const setMapCoordinates = useSetMapCoordinates()
   const bboxHash = bbox ? bbox.join(',') : ''
   const vesselGroupReportDatasets = useSelector(selectVGRDatasets)
-  const hasDeprecatedVessels = hasVesselGroupVesselsDeprecated(
+  const hasDeprecatedVessels = hasVesselGroupDatasetsDeprecated(
     vesselGroupReportDatasets,
     deprecatedDatasets
   )

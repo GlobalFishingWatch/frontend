@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import { replaceDatasetPrivateToPublic } from '@globalfishingwatch/datasets-client'
 
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
@@ -53,7 +54,7 @@ export const selectVesselGroupSearchDatasets = createSelector(
       ...privateUserGroups.flatMap((group) => {
         return (PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []).flatMap((id) => [
           id,
-          id.replace(/^private-/, 'public-'),
+          replaceDatasetPrivateToPublic(id),
         ])
       }),
       DEFAULT_VESSEL_IDENTITY_ID,

@@ -18,6 +18,7 @@ export interface ButtonProps {
   size?: ButtonSize
   disabled?: boolean
   loading?: boolean
+  icon?: React.ReactNode
   className?: string
   children: React.ReactNode
   tooltip?: TooltipTypes
@@ -38,6 +39,7 @@ export function Button(props: ButtonProps) {
     size = 'default',
     disabled = false,
     loading = false,
+    icon,
     className,
     children,
     tooltip,
@@ -50,6 +52,22 @@ export function Button(props: ButtonProps) {
     htmlType,
     testId,
   } = props
+  const spinner = (
+    <Spinner
+      size={icon ? 'tiny' : 'small'}
+      color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
+    />
+  )
+  const content = icon ? (
+    <React.Fragment>
+      {loading ? spinner : icon}
+      {children}
+    </React.Fragment>
+  ) : loading ? (
+    spinner
+  ) : (
+    children
+  )
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       {href !== undefined && !disabled ? (
@@ -59,14 +77,7 @@ export function Button(props: ButtonProps) {
           onClick={onClick}
           className={cx(styles.button, styles[type], styles[size], className)}
         >
-          {loading ? (
-            <Spinner
-              size="small"
-              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
-            />
-          ) : (
-            children
-          )}
+          {content}
         </a>
       ) : (
         <button
@@ -80,14 +91,7 @@ export function Button(props: ButtonProps) {
           {...(testId && { 'data-testid': testId })}
           {...(htmlType ? { type: htmlType } : {})}
         >
-          {loading ? (
-            <Spinner
-              size="small"
-              color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
-            />
-          ) : (
-            children
-          )}
+          {content}
         </button>
       )}
     </Tooltip>

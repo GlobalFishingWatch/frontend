@@ -10,6 +10,7 @@ import type {
   DataviewInstance,
   DataviewInstanceOrigin,
   DataviewType,
+  Workspace,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -468,7 +469,7 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
   return flattenDatasetFilters?.length > 0
 }
 
-export function hasVesselGroupVesselsDeprecated(
+export function hasVesselGroupDatasetsDeprecated(
   vesselGroupDatasets: string[] | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
@@ -476,6 +477,16 @@ export function hasVesselGroupVesselsDeprecated(
     return false
   }
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
+}
+
+export function hasVesselGroupDatasetsDeleted(
+  vesselGroupDatasets: string[] | undefined,
+  deletedDatasets: string[] | undefined
+) {
+  if (!vesselGroupDatasets || !deletedDatasets?.length) {
+    return false
+  }
+  return vesselGroupDatasets.some((dataset) => deletedDatasets.includes(dataset))
 }
 
 export function isDataviewDeprecated(
@@ -502,7 +513,7 @@ export function isDataviewDeprecated(
   const configEvents = Array.isArray(config?.events) ? config.events : []
   const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
 
-  const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
+  const hasDeprecatedVesselGroupVessels = hasVesselGroupDatasetsDeprecated(
     dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
@@ -515,5 +526,19 @@ export function isDataviewDeprecated(
     hasVesselEventsDeprecated ||
     hasVesselInfoDeprecated ||
     hasDeprecatedVesselGroupVessels
+  )
+}
+
+export function hasWorkspaceDataviewsDeprecated(
+  workspace: Workspace<any> | undefined,
+  deprecatedDatasets: DatasetsMigration | undefined
+) {
+  if (!workspace?.dataviewInstances?.length || !deprecatedDatasets) {
+    return false
+  }
+  return workspace.dataviewInstances.some(
+    (dataviewInstance) =>
+      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) &&
+      (dataviewInstance.config?.visible ?? true)
   )
 }
