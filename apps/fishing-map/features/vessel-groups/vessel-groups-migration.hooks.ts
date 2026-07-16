@@ -17,7 +17,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDeletedDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
   hasVesselGroupDatasetsDeleted,
-  hasVesselGroupVesselsDeprecated,
+  hasVesselGroupDatasetsDeprecated,
 } from 'features/dataviews/dataviews.utils'
 import { fetchVesselGroupVesselIdentities } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
@@ -40,7 +40,7 @@ export function getVesselGroupDatasetStatus(
   deletedDatasets: string[],
   vesselGroup?: VesselGroup
 ) {
-  const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
+  const hasDeprecatedVesselGroupVessels = hasVesselGroupDatasetsDeprecated(
     vesselGroupDatasets,
     deprecatedDatasets
   )

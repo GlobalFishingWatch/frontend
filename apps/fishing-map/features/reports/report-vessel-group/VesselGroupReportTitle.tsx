@@ -131,12 +131,12 @@ export default function VesselGroupReportTitle() {
               }
               loading={isLoading}
               disabled={isLoading}
+              icon={<Icon icon="warning" />}
               onClick={() => {
                 migrateToLatestVesselGroup(vesselGroup)
               }}
               className={styles.warningButton}
             >
-              <Icon icon="warning" />
               {t((t) => t.vesselGroup.updateRequired)}
             </Button>
           )}
