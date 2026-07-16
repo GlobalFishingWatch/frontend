@@ -1,6 +1,6 @@
 # GFW layers dictionary
 
-Sources: `apps/fishing-map/data/layer-library`, `data/dataviews.ts`, `data/workspaces.ts`.
+Sources: `apps/fishing-map/data/layer-library`, `apps/fishing-map/config/src/workspaces.ts` (instance id constants), `libs/skills/src/url/dictionary.ts` (encoder's id → dataview resolution).
 
 ## Default workspace instances
 
@@ -33,16 +33,16 @@ Dataview slugs are versioned by the dataset pipeline: write the literal `{PIPE_D
 
 ### Activity
 
-| Library id           | dataviewId                                            | Default filters              |
-| -------------------- | ----------------------------------------------------- | ---------------------------- |
+| Library id           | dataviewId                                             | Default filters              |
+| -------------------- | ------------------------------------------------------ | ---------------------------- |
 | `fishing-effort-ais` | `apparent-fishing-effort-ais-v-{PIPE_DATASET_VERSION}` | `distance_from_port_km: "3"` |
 | `fishing-effort-vms` | `apparent-fishing-effort-vms-v-{PIPE_DATASET_VERSION}` |                              |
 | `presence`           | `presence-activity-v-{PIPE_DATASET_VERSION}`           |                              |
 
 ### Detections
 
-| Library id       | dataviewId                                     |
-| ---------------- | ---------------------------------------------- |
+| Library id       | dataviewId                                      |
+| ---------------- | ----------------------------------------------- |
 | `viirs`          | `viirs-match-v-{PIPE_DATASET_VERSION}`          |
 | `viirs-skylight` | `viirs-match-skylight-v-{PIPE_DATASET_VERSION}` |
 | `sar`            | `sar-v-{PIPE_DATASET_VERSION}`                  |
@@ -50,8 +50,8 @@ Dataview slugs are versioned by the dataset pipeline: write the literal `{PIPE_D
 
 ### Events
 
-| Library id    | dataviewId                                          |
-| ------------- | --------------------------------------------------- |
+| Library id    | dataviewId                                           |
+| ------------- | ---------------------------------------------------- |
 | `encounters`  | `encounter-cluster-events-v-{PIPE_DATASET_VERSION}`  |
 | `loitering`   | `loitering-cluster-events-v-{PIPE_DATASET_VERSION}`  |
 | `port-visits` | `port-visit-cluster-events-v-{PIPE_DATASET_VERSION}` |
