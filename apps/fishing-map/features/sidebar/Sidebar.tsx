@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
@@ -49,14 +49,6 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
     }
   }, [dispatch, dataviewsResources])
 
-  const content = useMemo(() => {
-    if (isTrackCorrectionOpen) {
-      return <TrackCorrection />
-    }
-
-    return children
-  }, [isTrackCorrectionOpen, children])
-
   const showTabs =
     !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen && !screenshotMode
   return (
@@ -68,7 +60,8 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
           className={cx('scrollContainer', styles.scrollContainer)}
           data-testid="sidebar-container"
         >
-          {content}
+          {isTrackCorrectionOpen && <TrackCorrection />}
+          <div className={cx({ [styles.hidden]: isTrackCorrectionOpen })}>{children}</div>
         </div>
       </div>
       {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
