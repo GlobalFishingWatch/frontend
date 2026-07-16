@@ -7,7 +7,11 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
+import {
+  selectDatasetsStatus,
+  selectDeletedDatasets,
+  selectDeprecatedDatasets,
+} from 'features/datasets/datasets.slice'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -19,8 +23,11 @@ import {
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
-  isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
+import {
+  getVesselGroupDatasetStatus,
+  useMigrateToLatestVesselGroup,
+} from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   selectVesselGroupEditId,
   setVesselGroupsModalOpen,
@@ -44,6 +51,9 @@ function UserVesselGroups() {
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
   const [searchQuery, setSearchQuery] = useState('')
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const deletedDatasets = useSelector(selectDeletedDatasets)
+  const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -94,10 +104,16 @@ function UserVesselGroups() {
                 if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                   return null
                 }
-                const isOutdated = isOutdatedVesselGroup(vesselGroup)
+                const { isOutdated, hasDeletedDatasets } = getVesselGroupDatasetStatus(
+                  vesselGroup.vesselsSummary?.datasets,
+                  deprecatedDatasets,
+                  deletedDatasets,
+                  vesselGroup
+                )
+
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
-                    {isOutdated ? (
+                    {isOutdated && !hasDeletedDatasets ? (
                       <span>
                         {getHighlightedText(label as string, searchQuery, styles)}{' '}
                         <span className={styles.secondary}>
@@ -120,23 +136,28 @@ function UserVesselGroups() {
                       </VesselGroupReportLink>
                     )}
                     <div>
-                      {isOutdated ? (
+                      {isOutdated || hasDeletedDatasets ? (
                         <Button
                           type="border-secondary"
                           size="small"
+                          icon={<Icon icon="warning" />}
                           tooltip={
-                            isOutdated
-                              ? t((t) => t.vesselGroup.clickToUpdateLong)
-                              : t((t) => t.vesselGroup.edit)
+                            hasDeletedDatasets
+                              ? t((t) => t.workspace.deletedVesselGroupLayer)
+                              : isOutdated
+                                ? t((t) => t.vesselGroup.clickToUpdateLong)
+                                : t((t) => t.vesselGroup.edit)
                           }
                           loading={
-                            vesselGroup.id === editingGroupId &&
-                            vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
+                            (vesselGroup.id === editingGroupId &&
+                              vesselGroupStatus === AsyncReducerStatus.LoadingUpdate) ||
+                            vesselGroup.id === loadingGroupId
                           }
-                          onClick={() => onEditClick(vesselGroup)}
+                          onClick={() => {
+                            migrateToLatestVesselGroup(vesselGroup)
+                          }}
                           className={styles.warningButton}
                         >
-                          <Icon icon="warning" />
                           {t((t) => t.vesselGroup.updateRequired)}
                         </Button>
                       ) : (

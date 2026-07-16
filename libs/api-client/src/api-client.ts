@@ -7,6 +7,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 
 import { getIsBrowser, logDebugUrl } from './utils/browser'
+import { getEnv } from './utils/env'
 import {
   getIsTimeoutError,
   getIsUnauthorizedError,
@@ -475,9 +476,9 @@ export class GFW_API_CLASS {
         ...(local && {
           'x-gateway-url': API_GATEWAY,
           user: JSON.stringify({
-            id: process.env.REACT_APP_LOCAL_API_USER_ID,
-            type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-            email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+            id: getEnv('VITE_LOCAL_API_USER_ID'),
+            type: getEnv('VITE_LOCAL_API_USER_TYPE'),
+            email: getEnv('VITE_LOCAL_API_USER_EMAIL'),
           }),
         }),
         Authorization: `Bearer ${token ?? this.token}`,

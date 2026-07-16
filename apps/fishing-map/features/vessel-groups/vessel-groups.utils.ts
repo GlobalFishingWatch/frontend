@@ -1,17 +1,29 @@
 import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
-import type { IdentityVessel, VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
+import type {
+  Dataset,
+  IdentityVessel,
+  VesselGroup,
+  VesselGroupVessel,
+} from '@globalfishingwatch/api-types'
 import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
   resolveVesselPropertyColumn,
   type VesselPropertyGuessColumn,
 } from '@globalfishingwatch/data-transforms'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 
-import { VESSEL_GROUPS_REPORT_RELEASE_DATE } from './vessel-groups.config'
+import {
+  ID_COLUMNS_OPTIONS,
+  ID_FIELD_SEARCH_CANDIDATES,
+  VESSEL_GROUPS_REPORT_RELEASE_DATE,
+  VMS_PROPERTY_PREFIX,
+} from './vessel-groups.config'
+import type { IdField } from './vessel-groups.slice'
 import type { AddVesselGroupVessel, VesselGroupVesselIdentity } from './vessel-groups.types'
 
 export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
@@ -19,20 +31,45 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
   return `${isPrivate ? `${PRIVATE_ICON} ` : ''}${vesselGroup.name}`
 }
 
-export type VesselPropertyApiSearch = 'id' | 'ssvid' | 'imo' | 'flag' | 'callsign' | 'shipname'
+const ID_FIELD_API_SEARCH_RENAMES = {
+  vesselId: 'id',
+  mmsi: 'ssvid',
+} as const
+
+export type VesselPropertyApiSearch =
+  | Exclude<VesselPropertyGuessColumn | IdField, keyof typeof ID_FIELD_API_SEARCH_RENAMES>
+  | (typeof ID_FIELD_API_SEARCH_RENAMES)[keyof typeof ID_FIELD_API_SEARCH_RENAMES]
 
 export const vesselPropertyToApiSearch = (
-  col: VesselPropertyGuessColumn | 'shipname'
+  col: VesselPropertyGuessColumn | IdField
 ): VesselPropertyApiSearch => {
-  const map: Record<VesselPropertyGuessColumn | 'shipname', VesselPropertyApiSearch> = {
-    vesselId: 'id',
-    mmsi: 'ssvid',
-    imo: 'imo',
-    flag: 'flag',
-    callsign: 'callsign',
-    shipname: 'shipname',
+  if (col === 'vesselId' || col === 'mmsi') {
+    return ID_FIELD_API_SEARCH_RENAMES[col]
   }
-  return map[col]
+  return col
+}
+
+const PRIMARY_ID_FIELDS: IdField[] = ['vesselId', 'mmsi', 'imo', 'ssvid']
+
+// fall back to the weaker identifiers (callsign, shipname, etc) when
+// none of the primary ones (vesselId, mmsi, imo, ssvid) are supported
+export const getDatasetsIdFieldOptions = (datasets: Dataset[]): SelectOption<IdField, string>[] => {
+  const filterIds = new Set(
+    datasets.flatMap((dataset) =>
+      (dataset.filters?.vessels || []).flatMap((filter) => (filter.enabled ? filter.id : []))
+    )
+  )
+  const options = ID_FIELD_SEARCH_CANDIDATES.flatMap((id) => {
+    const property = vesselPropertyToApiSearch(id)
+    const isSupported =
+      filterIds.has(id) ||
+      filterIds.has(property) ||
+      filterIds.has(`${VMS_PROPERTY_PREFIX}${property}`)
+    return isSupported ? [{ id, label: id.toUpperCase() }] : []
+  })
+  const primaryOptions = options.filter((option) => PRIMARY_ID_FIELDS.includes(option.id))
+  const supportedOptions = primaryOptions.length ? primaryOptions : options
+  return supportedOptions.length ? supportedOptions : ID_COLUMNS_OPTIONS
 }
 
 export const normaliseCsvColumns = (columns: string[] | null): VesselPropertyApiSearch[] => {
