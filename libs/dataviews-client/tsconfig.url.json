@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "lib": ["es2020", "dom", "esnext"],
     "module": "es2022",
-    "target": "es6",
+    "target": "es2022",
     "moduleResolution": "bundler",
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
