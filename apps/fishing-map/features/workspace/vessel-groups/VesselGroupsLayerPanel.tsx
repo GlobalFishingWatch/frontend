@@ -11,11 +11,6 @@ import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectDeletedDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import {
-  hasVesselGroupVesselsDeleted,
-  hasVesselGroupVesselsDeprecated,
-} from 'features/dataviews/dataviews.utils'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import {
   useReportAreaCenter,
@@ -24,11 +19,11 @@ import {
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
+import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
 import {
-  getVesselGroupVesselsCount,
-  isOutdatedVesselGroup,
-} from 'features/vessel-groups/vessel-groups.utils'
-import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
+  useMigrateToLatestVesselGroup,
+  useVesselGroupDatasetStatus,
+} from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   setVesselGroupConfirmationMode,
   setVesselGroupEditId,
@@ -74,24 +69,18 @@ function VesselGroupLayerPanel({
     useLayerPanelDataviewSort(dataview.id)
   const [colorOpen, setColorOpen] = useState(false)
   const layerActive = dataview?.config?.visible ?? true
-  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
-  const deletedDatasets = useSelector(selectDeletedDatasets)
-  const hasDeletedDatasets = hasVesselGroupVesselsDeleted(
-    vesselGroup?.vesselsSummary?.datasets,
-    deletedDatasets
-  )
+  const { isOutdated, hasDeprecatedVesselGroupVessels, hasDeletedDatasets } =
+    useVesselGroupDatasetStatus(vesselGroup?.vesselsSummary?.datasets, vesselGroup)
 
   const [fitBoundsClicked, setfitBoundsClicked] = useState(false)
   const { loaded, bbox } = useVesselGroupBounds(fitBoundsClicked ? dataview?.id : undefined)
   const coordinates = useReportAreaCenter(bbox!)
   const setMapCoordinates = useSetMapCoordinates()
   const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
-  const isOutdated =
-    isOutdatedVesselGroup(vesselGroup!) ||
-    hasVesselGroupVesselsDeprecated(vesselGroup!.vesselsSummary?.datasets, deprecatedDatasets)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const isVesselGroupOwner = vesselGroup?.ownerId === userData?.id
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
+  const warningActive = showDeprecatedWarning || hasDeletedDatasets
 
   useEffect(() => {
     if (coordinates && loaded) {
@@ -149,6 +138,38 @@ function VesselGroupLayerPanel({
     return <VesselGroupNotFound dataview={dataview} />
   }
 
+  const nameLabel = vesselGroupLoading ? (
+    t((t) => t.vesselGroup.loadingInfo)
+  ) : (
+    <Fragment>
+      {formatInfoField(vesselGroup?.name, 'shipname')}{' '}
+      {getVesselGroupVesselsCount(vesselGroup) > 0 && (
+        <span className={styles.secondary}>({getVesselGroupVesselsCount(vesselGroup)})</span>
+      )}
+    </Fragment>
+  )
+
+  const titleContent =
+    !layerActive || hasDeletedDatasets || isOutdated ? (
+      <Tooltip
+        content={
+          hasDeletedDatasets
+            ? t((t) => t.workspace.deletedVesselGroupLayer)
+            : isOutdated
+              ? t((t) => t.vesselGroupReport.linkDisabled)
+              : undefined
+        }
+      >
+        <span>{nameLabel}</span>
+      </Tooltip>
+    ) : (
+      <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
+        <Tooltip content={t((t) => t.vesselGroupReport.clickToSee)}>
+          <span>{nameLabel}</span>
+        </Tooltip>
+      </VesselGroupReportLink>
+    )
+
   return (
     <div
       className={cx(
@@ -165,49 +186,7 @@ function VesselGroupLayerPanel({
           <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         )}
         <Title
-          title={
-            layerActive || hasDeletedDatasets ? (
-              isOutdated && !hasDeletedDatasets ? (
-                <Tooltip content={t((t) => t.vesselGroupReport.linkDisabled)}>
-                  <span>
-                    {formatInfoField(vesselGroup?.name, 'shipname')}
-                    <span className={styles.secondary}>
-                      ({getVesselGroupVesselsCount(vesselGroup)})
-                    </span>
-                  </span>
-                </Tooltip>
-              ) : (
-                <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
-                  <Tooltip content={t((t) => t.vesselGroupReport.clickToSee)}>
-                    <span>
-                      {vesselGroupLoading ? (
-                        t((t) => t.vesselGroup.loadingInfo)
-                      ) : (
-                        <Fragment>
-                          {vesselGroup?.name}{' '}
-                          {getVesselGroupVesselsCount(vesselGroup) > 0 && (
-                            <span className={styles.secondary}>
-                              ({getVesselGroupVesselsCount(vesselGroup)})
-                            </span>
-                          )}
-                        </Fragment>
-                      )}
-                    </span>
-                  </Tooltip>
-                </VesselGroupReportLink>
-              )
-            ) : (
-              <span>
-                {vesselGroup?.name}{' '}
-                {getVesselGroupVesselsCount(vesselGroup) > 0 && (
-                  <span className={styles.secondary}>
-                    {' '}
-                    ({getVesselGroupVesselsCount(vesselGroup)})
-                  </span>
-                )}
-              </span>
-            )
-          }
+          title={titleContent}
           className={cx(styles.name, { [styles.disabled]: isOutdated && !hasDeletedDatasets })}
           classNameActive={styles.active}
           dataview={dataview}
@@ -229,33 +208,31 @@ function VesselGroupLayerPanel({
                   />
                 </VesselGroupReportLink>
                 {isVesselGroupOwner && !isOutdated && (
-                  <>
-                    <IconButton
-                      size="small"
-                      icon={'edit'}
-                      type={'default'}
-                      tooltip={t((t) => t.vesselGroup.edit)}
-                      loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
-                      onClick={onEditClick}
-                    />
-                    <IconButton
-                      icon="target"
-                      size="small"
-                      tooltip={t((t) => t.layer.vessel_group_fit_bounds)}
-                      onClick={() => setfitBoundsClicked(true)}
-                      tooltipPlacement="top"
-                      loading={fitBoundsClicked}
-                    />
-                    <LayerProperties
-                      dataview={dataview}
-                      open={colorOpen}
-                      onColorClick={changeInstanceColor}
-                      onToggleClick={onToggleColorOpen}
-                      onClickOutside={closeExpandedContainer}
-                      colorType="fill"
-                    />
-                  </>
+                  <IconButton
+                    size="small"
+                    icon={'edit'}
+                    type={'default'}
+                    tooltip={t((t) => t.vesselGroup.edit)}
+                    loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+                    onClick={onEditClick}
+                  />
                 )}
+                <IconButton
+                  icon="target"
+                  size="small"
+                  tooltip={t((t) => t.layer.vessel_group_fit_bounds)}
+                  onClick={() => setfitBoundsClicked(true)}
+                  tooltipPlacement="top"
+                  loading={fitBoundsClicked}
+                />
+                <LayerProperties
+                  dataview={dataview}
+                  open={colorOpen}
+                  onColorClick={changeInstanceColor}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType="fill"
+                />
               </Fragment>
             )}
             {!readOnly && (
@@ -269,12 +246,8 @@ function VesselGroupLayerPanel({
               (hasDeletedDatasets || (layerActive && (layerError || showDeprecatedWarning))) && (
                 <IconButton
                   icon="warning"
-                  type={showDeprecatedWarning || hasDeletedDatasets ? 'warning-invert' : 'warning'}
-                  onClick={
-                    showDeprecatedWarning || hasDeletedDatasets
-                      ? onUpdateDeprecatedLayerClick
-                      : undefined
-                  }
+                  type={warningActive ? 'warning-invert' : 'warning'}
+                  onClick={warningActive ? onUpdateDeprecatedLayerClick : undefined}
                   loading={isLoading}
                   disabled={isLoading}
                   tooltip={
@@ -291,17 +264,20 @@ function VesselGroupLayerPanel({
               )}
           </Fragment>
         </div>
-        {isVesselGroupOwner && isOutdated && !hasDeletedDatasets && (
-          <IconButton
-            size="small"
-            icon={'warning'}
-            type={'warning'}
-            tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
-            loading={isLoading || vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
-            disabled={isLoading}
-            onClick={onEditClick}
-          />
-        )}
+        {isVesselGroupOwner &&
+          isOutdated &&
+          !hasDeletedDatasets &&
+          !hasDeprecatedVesselGroupVessels && (
+            <IconButton
+              size="small"
+              icon={'warning'}
+              type={'warning'}
+              tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
+              loading={isLoading || vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+              disabled={isLoading}
+              onClick={onEditClick}
+            />
+          )}
         <IconButton
           icon={
             hasDeletedDatasets
@@ -323,7 +299,7 @@ function VesselGroupLayerPanel({
                     : 'default'
                 : 'default'
           }
-          loading={!showDeprecatedWarning && !hasDeletedDatasets && layerActive && !layerLoaded}
+          loading={!warningActive && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
