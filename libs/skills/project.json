@@ -12,6 +12,10 @@
       "options": {
         "outputPath": "libs/skills/dist",
         "main": "libs/skills/src/index.ts",
+        "additionalEntryPoints": [
+          "libs/skills/src/encode-url/index.ts",
+          "libs/skills/src/decode-url/index.ts"
+        ],
         "tsConfig": "libs/skills/tsconfig.lib.json",
         "bundle": true,
         "format": ["esm"],
@@ -20,18 +24,39 @@
         "deleteOutputPath": true,
         "assets": [
           {
-            "glob": "**/*",
-            "input": "libs/skills/encode-url",
+            "glob": "SKILL.md",
+            "input": "libs/skills/src/encode-url",
+            "output": "encode-url"
+          },
+          {
+            "glob": "MAINTENANCE.md",
+            "input": "libs/skills/src/encode-url",
             "output": "encode-url"
           },
           {
             "glob": "**/*",
-            "input": "libs/skills/decode-url",
+            "input": "libs/skills/src/encode-url/scripts",
+            "output": "encode-url/scripts"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/skills/src/encode-url/references",
+            "output": "encode-url/references"
+          },
+          {
+            "glob": "SKILL.md",
+            "input": "libs/skills/src/decode-url",
             "output": "decode-url"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/skills/src/decode-url/scripts",
+            "output": "decode-url/scripts"
           }
         ],
         "esbuildOptions": {
           "platform": "node",
+          "outbase": "libs/skills/src",
           "banner": {
             "js": "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"
           },

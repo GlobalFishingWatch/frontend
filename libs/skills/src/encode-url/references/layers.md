@@ -1,6 +1,6 @@
 # GFW layers dictionary
 
-Sources: `apps/fishing-map/data/layer-library`, `apps/fishing-map/config/src/workspaces.ts` (instance id constants), `libs/skills/src/url/dictionary.ts` (encoder's id → dataview resolution).
+Sources: `apps/fishing-map/data/layer-library`, `apps/fishing-map/config/src/workspaces.ts` (instance id constants), `libs/skills/src/encode-url/dictionary.ts` (encoder's id → dataview resolution).
 
 ## Default workspace instances
 
