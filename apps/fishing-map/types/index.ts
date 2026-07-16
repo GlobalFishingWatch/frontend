@@ -43,32 +43,71 @@ type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
 type BivariateDataviews = [string, string] | null
 
+/** URL query params to setup the workspace state (map, timebar, sidebar).
+ * Default values for each field below are set in DEFAULT_WORKSPACE (data/config.ts) */
 export interface WorkspaceState extends BaseUrlWorkspace {
+  /** Render mode (heatmap resolution or positions) for activity layers on the map */
   activityVisualizationMode?: FourwingsVisualizationMode
+  /** Pair of dataview ids compared with a bivariate (two-color) heatmap legend, null when off */
   bivariateDataviews?: BivariateDataviews
+  /** Dataview categories collapsed in the sidebar layer panel to leave more space for others */
   collapsedSections?: DataviewCategory[]
+  /** Dataview instances added on top of the default workspace ones (layers added by the user or via URL)
+   * used to allow users to customize the workspace with their own layers, colors, etc...
+   */
   dataviewInstances?: UrlDataviewInstance[]
-  daysFromLatest?: number // use latest day as endAt minus the number of days set here
+  /** Sets endAt as latest available data day minus this many days, used to keep the time range pinned to "now" */
+  daysFromLatest?: number
+  /** Render mode (heatmap res or positions) for detections layers on the map */
   detectionsVisualizationMode?: FourwingsVisualizationMode
+  /** Render mode (heatmap res) for environmental layers on the map (no high res supported) */
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  /** User text annotations placed on the map */
   mapAnnotations?: MapAnnotation[]
+  /** Toggles visibility of map annotations without removing them (e.g. for screenshots) */
   mapAnnotationsVisible?: boolean
+  /** User drawn ruler measurements on the map */
   mapRulers?: RulerData[]
+  /** Toggles visibility of map rulers without removing them */
   mapRulersVisible?: boolean
+  /** Disables editing UI, used for shared/embedded read-only workspace views */
   readOnly?: boolean
+  /** Hides interactive actions like buttons, sidebar, etc... for clean screenshots/exports */
   screenshotMode?: boolean
+  /** One-shot flag:
+   * when true, triggers loading vessels for an events/activity report on load
+   * when false, vessels are loaded on demand when user requests it
+   */
   reportLoadVessels?: boolean
+  /** Sidebar panel open/closed */
   sidebarOpen?: boolean
+  /** Secondary graph (speed/depth) drawn on the timebar */
   timebarGraph?: TimebarGraphs
+  /** Id of the environmental dataview rendered in the timebar */
   timebarSelectedEnvId?: string
+  /** Id of the user points dataview rendered in the timebar */
   timebarSelectedUserId?: string
+  /** Id of the vessel group dataview rendered in the timebar */
   timebarSelectedVGId?: string
+  /** What the timebar is currently showing (heatmap, events, vessel track, environment, etc)
+   * changes automatically based on:
+   * - user interaction to render the latest layers
+   * - fallback to the first available layer type when only one layer type is available
+   */
   timebarVisualisation?: TimebarVisualisation
+  /** Render mode (footprint res) for vessel group layers on the map */
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
+  /** Property used to color vessel tracks/points (e.g. by track, by speed) */
   vesselsColorBy?: VesselsColorByProperty
+  /** Event types shown on the map/timebar, or 'all'/'none'
+   * or see EventType in @globalfishingwatch/api-types for the list of available event types
+   */
   visibleEvents?: VisibleEvents
+  /** Skips sampling when computing heatmap color domain, used to obtain always the same results in debug
+   * @default false
+   */
   skipColorDomainSampling?: boolean
-  // Feature flags
+  // Feature flags (internal only, don't even expose to users externally)
   migramarLayer?: boolean
 }
 
