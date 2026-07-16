@@ -1,8 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { isEqual, uniq } from 'es-toolkit'
+import { isEqual } from 'es-toolkit'
 
-import type { Dataset, DataviewConfig, DataviewInstance } from '@globalfishingwatch/api-types'
+import type {
+  Dataset,
+  Dataview,
+  DataviewConfig,
+  DataviewInstance,
+} from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -40,6 +45,25 @@ const areDataviewFiltersEqual = (
 const areDataviewSourcesEqual = (sourcesA?: string[], sourcesB?: string[]) =>
   isEqual([...(sourcesA || [])].sort(), [...(sourcesB || [])].sort())
 
+const getSupportedFilters = (
+  filters: DataviewConfig['filters'] | undefined,
+  dataview: DataviewWithFilters,
+  datasets: Dataset[]
+) =>
+  Object.keys(filters || {}).reduce(
+    (acc, key) => {
+      const allowed = isDataviewFilterSupported(
+        { ...dataview, datasets } as DataviewWithFilters,
+        key as SupportedDatasetFilter
+      )
+      if (allowed) {
+        acc[key] = filters?.[key]
+      }
+      return acc
+    },
+    {} as NonNullable<DataviewConfig['filters']>
+  )
+
 export const MIGRATION_EXCLUDED_CATEGORIES = [
   DataviewCategory.Vessels,
   DataviewCategory.VesselGroups,
@@ -57,12 +81,19 @@ export function useMigrateToLatestDataview() {
   const getMigratedDataviewInstances = useCallback(
     async (
       dataviewInstance: DataviewInstance | UrlDataviewInstance,
-      instanceIdSuffix = Date.now()
+      instanceIdSuffix = Date.now(),
+      dataviewFetchCache?: Map<string, Promise<Dataview>>
     ): Promise<Partial<UrlDataviewInstance>[]> => {
       const dataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] || dataviewInstance.slug
       let dataview = allDataviews.find((d) => d.slug === dataviewId)
       if (dataviewId && !dataview) {
-        dataview = await dispatch(fetchDataviewByIdThunk(dataviewId)).unwrap()
+        if (dataviewFetchCache?.has(dataviewId)) {
+          dataview = await dataviewFetchCache.get(dataviewId)!
+        } else {
+          const fetchPromise = dispatch(fetchDataviewByIdThunk(dataviewId)).unwrap()
+          dataviewFetchCache?.set(dataviewId, fetchPromise)
+          dataview = await fetchPromise
+        }
       }
       let datasets: Dataset[] = dataview?.datasets || []
       if (dataview && !datasets.length) {
@@ -75,18 +106,10 @@ export function useMigrateToLatestDataview() {
       }
       const hasDatasets =
         dataviewInstance.config?.datasets && dataviewInstance.config?.datasets?.length > 0
-      const filters = Object.keys(dataviewInstance.config?.filters || {}).reduce(
-        (acc, key) => {
-          const allowed = isDataviewFilterSupported(
-            { ...dataview, datasets } as DataviewWithFilters,
-            key as SupportedDatasetFilter
-          )
-          if (allowed) {
-            acc[key] = dataviewInstance.config?.filters?.[key]
-          }
-          return acc
-        },
-        {} as NonNullable<DataviewConfig['filters']>
+      const filters = getSupportedFilters(
+        dataviewInstance.config?.filters,
+        dataview as DataviewWithFilters,
+        datasets
       )
       return [
         {
@@ -135,15 +158,23 @@ export function useMigrateToLatestDataview() {
       const migratedDatasets = dataviewInstance.config?.datasets?.map(
         (d) => deprecatedDatasets[d] || d
       )
+      const targetDataview = allDataviews.find((d) => d.slug === dataviewId)
+      const expectedFilters = targetDataview
+        ? getSupportedFilters(
+            dataviewInstance.config?.filters,
+            targetDataview as DataviewWithFilters,
+            targetDataview.datasets || []
+          )
+        : dataviewInstance.config?.filters
       const migratedInstanceExists = workspaceDataviewInstances?.some(
         (instance) =>
           instance.dataviewId === dataviewId &&
           areDataviewSourcesEqual(instance.config?.datasets, migratedDatasets) &&
-          areDataviewFiltersEqual(instance.config?.filters, dataviewInstance.config?.filters)
+          areDataviewFiltersEqual(instance.config?.filters, expectedFilters)
       )
       return !!migratedInstanceExists
     },
-    [deprecatedDatasets, workspaceDataviewInstances]
+    [allDataviews, deprecatedDatasets, workspaceDataviewInstances]
   )
 
   const onMigrateDataviewClick = useCallback(
@@ -168,13 +199,18 @@ export function useMigrateToLatestDataview() {
       )
       .toReversed()
     const migrationTimestamp = Date.now()
+    const dataviewFetchCache = new Map<string, Promise<Dataview>>()
     const dataviewInstances = (
       await Promise.all(
         migratableDataviewInstances.map((dataviewInstance, index) => {
           if (getIsDataviewMigrated(dataviewInstance)) {
             return [{ id: dataviewInstance.id, config: { visible: false } }]
           }
-          return getMigratedDataviewInstances(dataviewInstance, migrationTimestamp + index)
+          return getMigratedDataviewInstances(
+            dataviewInstance,
+            migrationTimestamp + index,
+            dataviewFetchCache
+          )
         })
       )
     ).flat()
