@@ -7,6 +7,11 @@
   "targets": {
     "proto:generate": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/src/pbf-decoders/vessels.gen.js",
+        "{projectRoot}/src/pbf-decoders/vessels.gen.d.ts"
+      ],
       "options": {
         "cwd": "libs/api-client",
         "commands": [
