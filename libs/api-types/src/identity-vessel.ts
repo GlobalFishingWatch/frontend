@@ -85,7 +85,9 @@ export const GEAR_TYPES = [
 ]
 
 export enum VesselIdentitySourceEnum {
+  /** Identity built from self-reported broadcast data (AIS/VMS) */
   SelfReported = 'selfReportedInfo',
+  /** Identity built from public registry data */
   Registry = 'registryInfo',
 }
 
