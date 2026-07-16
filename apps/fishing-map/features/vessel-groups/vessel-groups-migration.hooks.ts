@@ -3,18 +3,27 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
-import { type DataviewInstance, type VesselGroup } from '@globalfishingwatch/api-types'
+import {
+  type DatasetsMigration,
+  type DataviewInstance,
+  type VesselGroup,
+} from '@globalfishingwatch/api-types'
 import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
 // import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { selectDeletedDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import {
+  hasVesselGroupDatasetsDeleted,
+  hasVesselGroupDatasetsDeprecated,
+} from 'features/dataviews/dataviews.utils'
 import { fetchVesselGroupVesselIdentities } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
@@ -24,6 +33,37 @@ import {
   setVesselGroupSearchIdField,
   setVesselGroupsModalOpen,
 } from './vessel-groups-modal.slice'
+
+export function getVesselGroupDatasetStatus(
+  vesselGroupDatasets: string[] | undefined,
+  deprecatedDatasets: DatasetsMigration,
+  deletedDatasets: string[],
+  vesselGroup?: VesselGroup
+) {
+  const hasDeprecatedVesselGroupVessels = hasVesselGroupDatasetsDeprecated(
+    vesselGroupDatasets,
+    deprecatedDatasets
+  )
+  const hasDeletedDatasets = hasVesselGroupDatasetsDeleted(vesselGroupDatasets, deletedDatasets)
+  const isOutdated =
+    (vesselGroup ? isOutdatedVesselGroup(vesselGroup) : false) || hasDeprecatedVesselGroupVessels
+
+  return { isOutdated, hasDeprecatedVesselGroupVessels, hasDeletedDatasets }
+}
+
+export function useVesselGroupDatasetStatus(
+  vesselGroupDatasets: string[] | undefined,
+  vesselGroup?: VesselGroup
+) {
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const deletedDatasets = useSelector(selectDeletedDatasets)
+  return getVesselGroupDatasetStatus(
+    vesselGroupDatasets,
+    deprecatedDatasets,
+    deletedDatasets,
+    vesselGroup
+  )
+}
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 
@@ -35,25 +75,30 @@ export type AddVesselGroupVessel =
   | ReportTableVessel
 
 export const useMigrateToLatestVesselGroup = () => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingGroupId, setLoadingGroupId] = useState<VesselGroup['id'] | null>(null)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const deletedDatasets = useSelector(selectDeletedDatasets)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const migrateToLatestVesselGroup = useCallback(
     async (vesselGroup: VesselGroup) => {
       if (vesselGroup?.id) {
-        setIsLoading(true)
+        setLoadingGroupId(vesselGroup.id)
         const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroup?.id)
         const sources = uniq(
-          vesselGroupVessels.entries?.flatMap((v) => deprecatedDatasets[v.dataset] || [])
+          vesselGroupVessels.entries?.flatMap(
+            (v) =>
+              deprecatedDatasets[v.dataset] ||
+              (deletedDatasets.includes(v.dataset) ? [v.dataset] : [])
+          )
         )
         const isVMSDataset = sources.some((source) => getIsVMSDataset(source))
 
         const idField = isVMSDataset ? VMS_ID_FIELD : 'mmsi'
         const text = vesselGroupVessels.entries
           ?.map((v) => getVesselProperty(v, isVMSDataset ? VMS_ID_FIELD : 'ssvid'))
-          .join(',')
+          .join('\n')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {
           dispatch(setVesselGroupModalName(`${t((t) => t.vesselGroup.copyOf)} ${vesselGroup.name}`))
@@ -61,10 +106,10 @@ export const useMigrateToLatestVesselGroup = () => {
         dispatch(setVesselGroupSearchIdField(idField))
         dispatch(setVesselGroupModalSearchText(text))
         dispatch(setVesselGroupsModalOpen(true))
-        setIsLoading(false)
+        setLoadingGroupId(null)
       }
     },
-    [deprecatedDatasets, dispatch, t]
+    [deletedDatasets, deprecatedDatasets, dispatch, t]
   )
 
   const migrateToLatestVesselGroupByDataview = useCallback(
@@ -77,7 +122,12 @@ export const useMigrateToLatestVesselGroup = () => {
   )
 
   return useMemo(
-    () => ({ migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, isLoading }),
-    [migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, isLoading]
+    () => ({
+      migrateToLatestVesselGroupByDataview,
+      migrateToLatestVesselGroup,
+      loadingGroupId,
+      isLoading: loadingGroupId !== null,
+    }),
+    [migrateToLatestVesselGroupByDataview, migrateToLatestVesselGroup, loadingGroupId]
   )
 }

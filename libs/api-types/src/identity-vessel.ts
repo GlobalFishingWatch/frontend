@@ -157,6 +157,8 @@ export type SelfReportedInfo = VesselInfo & {
   externalId?: string
   sourceFleet?: string
   hull?: string
+  fishingLicenseCode?: string
+  vesselRegistrationCode?: string
 }
 
 export type RegistryImage = {

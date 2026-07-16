@@ -4,14 +4,12 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
 
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 // import { getEventLabel } from 'utils/analytics'
 // import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/data-terminology/DataTerminology'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { hasVesselGroupVesselsDeprecated } from 'features/dataviews/dataviews.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
@@ -22,7 +20,10 @@ import {
 } from 'features/reports/shared/vessels/report-vessels.selectors'
 import LoginButtonWrapper from 'features/user/LoginButtonWrapper'
 import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
-import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
+import {
+  useMigrateToLatestVesselGroup,
+  useVesselGroupDatasetStatus,
+} from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -48,13 +49,11 @@ export default function VesselGroupReportTitle() {
   const userIsVesselGroupOwner = useSelector(selectUserIsVesselGroupOwner)
   const { isLoading, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
-  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const vesselGroupReportDatasets = useSelector(selectVGRDatasets)
-  const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
-    vesselGroupReportDatasets,
-    deprecatedDatasets
-  )
-  const showDeprecatedWarning = isWorkspaceOwner && hasDeprecatedVesselGroupVessels
+  const { hasDeprecatedVesselGroupVessels, hasDeletedDatasets } =
+    useVesselGroupDatasetStatus(vesselGroupReportDatasets)
+  const showDeprecatedWarning =
+    isWorkspaceOwner && (hasDeprecatedVesselGroupVessels || hasDeletedDatasets)
   const loading = reportStatus === AsyncReducerStatus.Loading
   const isClientHydrated = useIsClientHydrated()
 
@@ -122,17 +121,24 @@ export default function VesselGroupReportTitle() {
         </a>
         <div className={styles.actions}>
           {showDeprecatedWarning && (
-            <IconButton
-              icon="warning"
-              type="warning-invert"
-              size="small"
+            <Button
+              type="border-secondary"
+              size="medium"
+              tooltip={
+                hasDeletedDatasets
+                  ? t((t) => t.workspace.deletedVesselGroupLayer)
+                  : t((t) => t.vesselGroup.clickToUpdateLong)
+              }
               loading={isLoading}
               disabled={isLoading}
-              tooltip={t((t) => t.workspace.deprecatedVesselGroupLayer)}
+              icon={<Icon icon="warning" />}
               onClick={() => {
                 migrateToLatestVesselGroup(vesselGroup)
               }}
-            />
+              className={styles.warningButton}
+            >
+              {t((t) => t.vesselGroup.updateRequired)}
+            </Button>
           )}
           <LoginButtonWrapper tooltip="" loginSource="vessel-group-report">
             <Button
