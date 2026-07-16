@@ -5,7 +5,6 @@ import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import 'dotenv/config'
 
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
@@ -59,12 +58,6 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: '../../dist/apps/data-download-portal',
     reportCompressedSize: true,
-  },
-
-  define: {
-    'process.env': {
-      API_GATEWAY: process.env.API_GATEWAY,
-    },
   },
 
   // test: {

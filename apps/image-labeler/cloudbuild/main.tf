@@ -28,7 +28,7 @@ module "develop" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
   ]
   set_env_vars = [
     "BASIC_AUTH=off",
@@ -53,7 +53,7 @@ module "staging" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
+    "VITE_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
   ]
   set_env_vars = [
     "BASIC_AUTH=off",
@@ -79,7 +79,7 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.globalfishingwatch.org",
+    "VITE_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
   ]
   set_env_vars = [
     "BASIC_AUTH=off",

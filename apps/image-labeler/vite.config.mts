@@ -5,7 +5,6 @@ import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import 'dotenv/config'
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
@@ -61,12 +60,6 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: '../../dist/apps/image-labeler',
     reportCompressedSize: true,
-  },
-
-  define: {
-    'process.env': {
-      API_GATEWAY: process.env.API_GATEWAY,
-    },
   },
 
   // test: {
