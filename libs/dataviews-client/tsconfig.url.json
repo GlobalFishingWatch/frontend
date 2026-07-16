@@ -24,7 +24,9 @@
     "outDir": "./src/url-workspace",
     "paths": {
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"]
   },
   "include": ["src/url-workspace/**/*.ts", "src/types.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]

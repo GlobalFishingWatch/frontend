@@ -116,7 +116,7 @@ export default defineConfig(({ command, mode }) => {
       client: {
         build: {
           chunkSizeWarningLimit: 1500,
-          rollupOptions: {
+          rolldownOptions: {
             output: {
               // Prevents Rolldown from reordering inlined chunks in a way that places
               // __exportAll() calls before the var declaration runs (e.g. recharts' YAxis
@@ -158,7 +158,7 @@ export default defineConfig(({ command, mode }) => {
         },
       },
       ssr: {
-        build: { rollupOptions: { input: './server.ts' } },
+        build: { rolldownOptions: { input: './server.ts' } },
       },
     },
     ssr: {

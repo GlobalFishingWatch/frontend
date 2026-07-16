@@ -56,13 +56,7 @@
       "lib/*": ["./src/lib/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "index.d.ts",
-    "eslint.config.js",
-    "vite.config.mts"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "index.d.ts", "eslint.config.js", "vite.config.mts"],
   "exclude": [
     "node_modules",
     "jest.config.ts",
