@@ -1,109 +1,234 @@
-**New Conversation**
+# Use case recipes
 
-user: Fishing of Peru, Argentina, Brazil and Chile
+Real intents → encode-url inputs. Distilled from app-generated URLs.
 
-skill: https://globalfishingwatch.org/map/?dvIn%5B0%5D%5Bcategory%5D=%7E0&dvIn%5B0%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B0%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B0%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B0%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=PER&dvIn%5B0%5D%5BdvId%5D=%7E1&dvIn%5B0%5D%5Bid%5D=fishing-effort-ais__1783952088263&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%23FFAE9B&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=salmon&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=CHL&dvIn%5B1%5D%5BdvId%5D=%7E1&dvIn%5B1%5D%5Bid%5D=fishing-effort-ais__1783952077338&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=BRA&dvIn%5B2%5D%5BdvId%5D=%7E1&dvIn%5B2%5D%5Bid%5D=fishing-effort-ais__1783952066056&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=ARG&dvIn%5B3%5D%5Bid%5D=ais&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B4%5D%5Bid%5D=vms&latitude=-27.693838753047178&longitude=-56.667597722264325&tk%5B0%5D=activity&tk%5B1%5D=apparent-fishing-effort-ais-v-4&zoom=2.943354066031327
+## "Fishing effort by French and Spanish vessels"
 
-user: only in FAO 41 in 2025
+Two instances of the same fishing-effort dataset, one filtered per flag, distinct colors; EEZ boundaries for context; hide VMS.
 
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-fao-major/41?dvIn%5B0%5D%5Bcategory%5D=context&dvIn%5B0%5D%5Bcfg%5D%5Bclr%5D=%23F09300&dvIn%5B0%5D%5BdvId%5D=fao-areas&dvIn%5B0%5D%5Bid%5D=fao-major__1783952141606&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=PER&dvIn%5B1%5D%5BdvId%5D=%7E1&dvIn%5B1%5D%5Bid%5D=fishing-effort-ais__1783952088263&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%23FFAE9B&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=salmon&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=CHL&dvIn%5B2%5D%5BdvId%5D=%7E1&dvIn%5B2%5D%5Bid%5D=fishing-effort-ais__1783952077338&dvIn%5B3%5D%5Bcategory%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B3%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=BRA&dvIn%5B3%5D%5BdvId%5D=%7E1&dvIn%5B3%5D%5Bid%5D=fishing-effort-ais__1783952066056&dvIn%5B4%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B4%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=ARG&dvIn%5B4%5D%5Bid%5D=ais&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B5%5D%5Bid%5D=vms&end=2026-01-01T00%3A00%3A00.000Z&latitude=-33.19500503&longitude=-45.3996&start=2025-01-01T00%3A00%3A00.000Z&tk%5B0%5D=activity&tk%5B1%5D=apparent-fishing-effort-ais-v-4&zoom=2.95602453
+```json
+{
+  "route": { "type": "workspace" },
+  "state": {
+    "dataviewInstances": [
+      { "id": "ais", "config": { "filters": { "flag": ["ESP"], "distance_from_port_km": "3" } } },
+      {
+        "id": "fishing-effort-ais__1783934376888",
+        "dataviewId": "apparent-fishing-effort-ais-v-{PIPE_DATASET_VERSION}",
+        "config": {
+          "color": "#9CA4FF",
+          "colorRamp": "lilac",
+          "filters": { "flag": ["FRA"], "distance_from_port_km": "3" }
+        }
+      },
+      { "id": "context-layer-eez", "config": { "visible": true } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "start": "2025-08-01T00:00:00.000Z",
+    "end": "2026-08-01T00:00:00.000Z",
+    "latitude": 44.97,
+    "longitude": -2.9,
+    "zoom": 5.2
+  }
+}
+```
 
-user: include FAO 87 but only for May 2025
+## "All passenger vessel activity last month"
 
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-fao-major%2Cpublic-fao-major/41%2C87?dvIn%5B0%5D%5Bcategory%5D=context&dvIn%5B0%5D%5Bcfg%5D%5Bclr%5D=%23F09300&dvIn%5B0%5D%5BdvId%5D=fao-areas&dvIn%5B0%5D%5Bid%5D=fao-major__1783952141606&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=PER&dvIn%5B1%5D%5BdvId%5D=%7E1&dvIn%5B1%5D%5Bid%5D=fishing-effort-ais__1783952088263&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%23FFAE9B&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=salmon&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=CHL&dvIn%5B2%5D%5BdvId%5D=%7E1&dvIn%5B2%5D%5Bid%5D=fishing-effort-ais__1783952077338&dvIn%5B3%5D%5Bcategory%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B3%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B3%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=BRA&dvIn%5B3%5D%5BdvId%5D=%7E1&dvIn%5B3%5D%5Bid%5D=fishing-effort-ais__1783952066056&dvIn%5B4%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B4%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=ARG&dvIn%5B4%5D%5Bid%5D=ais&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B5%5D%5Bid%5D=vms&end=2025-06-01T00%3A00%3A00.000Z&latitude=-31.92246361&longitude=-70&start=2025-05-01T00%3A00%3A00.000Z&tk%5B0%5D=activity&tk%5B1%5D=apparent-fishing-effort-ais-v-4&zoom=2.35758637
+Presence layer filtered by vessel type; hide fishing effort defaults; world viewport.
 
-**New Conversation**
+```json
+{
+  "route": { "type": "workspace" },
+  "state": {
+    "dataviewInstances": [
+      {
+        "id": "presence",
+        "config": { "visible": true, "filters": { "vessel_type": ["passenger"] } }
+      },
+      { "id": "ais", "config": { "visible": false } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "start": "2026-06-10T00:00:00.000Z",
+    "end": "2026-07-10T00:00:00.000Z",
+    "latitude": 0,
+    "longitude": 0,
+    "zoom": 0.8
+  }
+}
+```
 
-user: VMS brazil Anchova fishing
+## "Dark vessels around Gabon"
 
-skill: https://globalfishingwatch.org/map/?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-eez&dvIn%5B1%5D%5Bcfg%5D%5Bdss%5D%5B0%5D=public-vms-bra-fishing-effort%3Av4.0&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Btarget_species%5D%5B0%5D=Anchova+%28Pomatomus+saltatrix%29%2C+corvina+%28Micropogonias+furnieri%29%2C+pescada+%28Cynoscion+guatucupa%29%2C+castanha+%28Umbrina+canosai%29%2C+abr%C3%B3tea+%28Urophycis+brasiliensis%29+e+fauna+acompanhante&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Btarget_species%5D%5B1%5D=Anchova%2C+tainha+e+sororoca&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B2%5D%5Bid%5D=ais&latitude=-15.461867607805548&longitude=-39.75000000000002&zoom=3.679393034502835
+All detections layers with `matched=false`, EEZ context, `timebarVisualisation: "heatmapDetections"`, viewport over Gabon. Hide `ais`/`vms`. No time range → app default.
 
-user: only in brazil and last may
+```json
+{
+  "route": { "type": "workspace" },
+  "state": {
+    "dataviewInstances": [
+      { "id": "context-layer-eez", "config": { "visible": true } },
+      {
+        "id": "viirs-skylight",
+        "config": { "visible": true, "filters": { "matched": ["false"] } }
+      },
+      { "id": "sar", "config": { "visible": true, "filters": { "matched": ["false"] } } },
+      { "id": "sentinel2", "config": { "visible": true, "filters": { "matched": ["false"] } } },
+      { "id": "ais", "config": { "visible": false } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "timebarVisualisation": "heatmapDetections",
+    "latitude": -2.69,
+    "longitude": 9.05,
+    "zoom": 6.2
+  }
+}
+```
 
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-eez-areas/8464?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-eez&dvIn%5B1%5D%5Bcfg%5D%5Bdss%5D%5B0%5D=public-vms-bra-fishing-effort%3Av4.0&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Btarget_species%5D%5B0%5D=Anchova+%28Pomatomus+saltatrix%29%2C+corvina+%28Micropogonias+furnieri%29%2C+pescada+%28Cynoscion+guatucupa%29%2C+castanha+%28Umbrina+canosai%29%2C+abr%C3%B3tea+%28Urophycis+brasiliensis%29+e+fauna+acompanhante&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Btarget_species%5D%5B1%5D=Anchova%2C+tainha+e+sororoca&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B2%5D%5Bid%5D=ais&end=2026-06-01T00%3A00%3A00.000Z&latitude=-15.46294863&longitude=-39.74862886&start=2026-05-01T00%3A00%3A00.000Z&zoom=3.78056642
+Variant "VIIRS detections with Chinese flag": only `viirs-skylight` visible with `{ "matched": ["true"], "flag": ["CHN"] }` (flag only exists on matched detections).
 
-**New Conversation**
+## "Encounters in the last 7 days"
 
-user: Global fishing last June
+```json
+{
+  "route": { "type": "workspace" },
+  "state": {
+    "dataviewInstances": [
+      { "id": "encounters", "config": { "visible": true } },
+      { "id": "ais", "config": { "visible": false } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "timebarVisualisation": "events",
+    "start": "2026-07-03T00:00:00.000Z",
+    "end": "2026-07-10T00:00:00.000Z",
+    "latitude": 0,
+    "longitude": 3.8,
+    "zoom": 0.8
+  }
+}
+```
 
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&end=2026-07-01T00%3A00%3A00.000Z&latitude=0&longitude=0&rC=activity&rLV=false&start=2026-06-01T00%3A00%3A00.000Z&tk%5B0%5D=report&zoom=0.8887432488982591
+## "Loitering events around Malvinas on July 5th" (area report)
 
-user: and encounters?
+Report over EEZ area with a 50nm buffer; loitering visible, events timebar.
 
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&end=2026-07-01T00%3A00%3A00.000Z&latitude=0&longitude=0&rC=%7E1&rLV=false&rVP=0&reportEventsPortsFilter=&reportEventsPortsPage=0&start=2026-06-01T00%3A00%3A00.000Z&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=0.8887432488982591
+```json
+{
+  "route": { "type": "report", "datasetId": "public-eez-areas", "areaId": "8389" },
+  "state": {
+    "dataviewInstances": [
+      { "id": "context-layer-eez", "config": { "visible": true } },
+      { "id": "loitering", "config": { "visible": true } },
+      { "id": "port-visits", "config": { "visible": false } },
+      { "id": "encounters", "config": { "visible": false } },
+      { "id": "ais", "config": { "visible": false } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "timebarVisualisation": "events",
+    "start": "2026-07-05T00:00:00.000Z",
+    "end": "2026-07-06T00:00:00.000Z",
+    "reportBufferValue": 50,
+    "reportBufferUnit": "nauticalmiles",
+    "reportBufferOperation": "dissolve",
+    "latitude": -52.24,
+    "longitude": -58.66,
+    "zoom": 4.5
+  }
+}
+```
 
-user: only when vessels meet more than 12 hours
+## "Trawlers activity report in Italy last year"
 
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bduration%5D%5B0%5D=12&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bduration%5D%5B1%5D=48&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B0%5D=FISHING-CARRIER&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B1%5D=CARRIER-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B2%5D=FISHING-SUPPORT&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B3%5D=SUPPORT-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&end=2026-07-01T00%3A00%3A00.000Z&latitude=0&longitude=0&rC=%7E1&rLV=false&rVP=0&reportEventsPortsFilter=&reportEventsPortsPage=0&start=2026-06-01T00%3A00%3A00.000Z&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=0.8887432488982591
+```json
+{
+  "route": { "type": "report", "datasetId": "public-eez-areas", "areaId": "5682" },
+  "state": {
+    "dataviewInstances": [
+      { "id": "context-layer-eez", "config": { "visible": true } },
+      {
+        "id": "ais",
+        "config": { "filters": { "distance_from_port_km": "3", "geartype": ["trawlers"] } }
+      },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "start": "2025-08-01T00:00:00.000Z",
+    "end": "2026-08-01T00:00:00.000Z",
+    "latitude": 40.7,
+    "longitude": 12.44,
+    "zoom": 4.75
+  }
+}
+```
 
-**New Conversation**
+## "Vessels visiting Camarones (Argentina) in July" (ports report)
 
-user: Squid jiggering in IATTC in 2024
+```json
+{
+  "route": { "type": "ports-report", "portId": "arg-camarones" },
+  "state": {
+    "dataviewInstances": [
+      {
+        "id": "port-visits",
+        "config": { "visible": true, "filters": { "port_id": "arg-camarones" } }
+      },
+      { "id": "ais", "config": { "visible": false } },
+      { "id": "vms", "config": { "visible": false } }
+    ],
+    "timebarVisualisation": "events",
+    "portsReportName": "CAMARONES",
+    "portsReportCountry": "ARG",
+    "portsReportDatasetId": "public-global-port-visits-events:v4.0",
+    "start": "2026-07-01T00:00:00.000Z",
+    "end": "2026-08-01T00:00:00.000Z",
+    "latitude": -44.82,
+    "longitude": -65.71,
+    "zoom": 12.7
+  }
+}
+```
 
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-rfmo/IATTC?dvIn%5B0%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B0%5D%5Bcfg%5D%5Bfilters%5D%5Bgeartype%5D%5B0%5D=squid_jigger&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=context-layer-rfmo&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B2%5D%5Bid%5D=vms&end=2025-01-01T00%3A00%3A00.000Z&fTD=&lTD=&latitude=0&longitude=-110.02665&start=2024-01-01T00%3A00%3A00.000Z&zoom=2.43058116
+## "Vessel profile for <name>"
 
-user: and close to Galápagos?
+First find the vessel id via vessel-search, then:
 
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-mpa-all/11753?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-mpa&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bgeartype%5D%5B0%5D=squid_jigger&dvIn%5B1%5D%5Bid%5D=ais&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B2%5D%5Bid%5D=context-layer-rfmo&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B3%5D%5Bid%5D=vms&end=2025-01-01T00%3A00%3A00.000Z&fTD=&lTD=&latitude=0.13501215&longitude=-90.62581635&rBO=dissolve&rBU=nauticalmiles&rBV=100&start=2024-01-01T00%3A00%3A00.000Z&zoom=6.108176
+```json
+{
+  "route": { "type": "vessel", "vesselId": "90a000d54-4c9a-3567-de57-941d018f8117" },
+  "state": {
+    "vesselDatasetId": "public-global-vessel-identity:v4.0",
+    "vesselSelfReportedId": "90a000d54-4c9a-3567-de57-941d018f8117",
+    "vesselIdentitySource": "selfReportedInfo",
+    "visibleEvents": ["fishing", "encounter", "port_visit", "gaps"],
+    "dataviewInstances": [{ "id": "vms", "config": { "visible": false } }],
+    "latitude": -44.23,
+    "longitude": -64.97,
+    "zoom": 8.5
+  }
+}
+```
 
-user: is there fishing from other gear types?
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-mpa-all/11753?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-mpa&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B1%5D%5Bcfg%5D%5Bfilters%5D%5Bgeartype%5D=&dvIn%5B1%5D%5Bid%5D=ais&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B2%5D%5Bid%5D=context-layer-rfmo&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B3%5D%5Bid%5D=vms&end=2025-01-01T00%3A00%3A00.000Z&fTD=&lTD=&latitude=0.13501215&longitude=-90.62581635&rBO=dissolve&rBU=nauticalmiles&rBV=100&start=2024-01-01T00%3A00%3A00.000Z&zoom=6.108176
+## "Search vessel by name / MMSI"
 
-user: are there non-fishing vessels active?
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-mpa-all/11753?dvIn%5B0%5D%5Bcategory%5D=activity&dvIn%5B0%5D%5Bcfg%5D%5Bclr%5D=%23FF64CE&dvIn%5B0%5D%5Bcfg%5D%5BcolorRamp%5D=magenta&dvIn%5B0%5D%5BdvId%5D=presence-activity-v-4&dvIn%5B0%5D%5Bid%5D=presence__1783953264833&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=context-layer-mpa&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bgeartype%5D=&dvIn%5B2%5D%5Bid%5D=ais&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B3%5D%5Bid%5D=context-layer-rfmo&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B4%5D%5Bid%5D=vms&end=2025-01-01T00%3A00%3A00.000Z&fTD=&lTD=&latitude=0.13501215&longitude=-90.62581635&rBO=dissolve&rBU=nauticalmiles&rBV=100&start=2024-01-01T00%3A00%3A00.000Z&zoom=6.108176
+```json
+{ "route": { "type": "vessel-search" }, "state": { "query": "lake aurora" } }
+```
 
-user: any passenger boats?
-skill: https://globalfishingwatch.org/map/fishing-activity/default-public/report/public-mpa-all/11753?dvIn%5B0%5D%5Bcategory%5D=activity&dvIn%5B0%5D%5Bcfg%5D%5Bclr%5D=%23FF64CE&dvIn%5B0%5D%5Bcfg%5D%5BcolorRamp%5D=magenta&dvIn%5B0%5D%5Bcfg%5D%5Bfilters%5D%5Bvessel_type%5D%5B0%5D=passenger&dvIn%5B0%5D%5BdvId%5D=presence-activity-v-4&dvIn%5B0%5D%5Bid%5D=presence__1783953264833&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=context-layer-mpa&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bdistance_from_port_km%5D=3&dvIn%5B2%5D%5Bcfg%5D%5Bfilters%5D%5Bgeartype%5D=&dvIn%5B2%5D%5Bid%5D=ais&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B3%5D%5Bid%5D=context-layer-rfmo&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B4%5D%5Bid%5D=vms&end=2025-01-01T00%3A00%3A00.000Z&fTD=&lTD=&latitude=0.13501215&longitude=-90.62581635&rBO=dissolve&rBU=nauticalmiles&rBV=100&start=2024-01-01T00%3A00%3A00.000Z&zoom=6.108176
+Advanced (owner + flag + active before date):
 
-**New Conversation**
+```json
+{
+  "route": { "type": "vessel-search" },
+  "state": {
+    "searchOption": "advanced",
+    "owner": "andres",
+    "flag": ["PAN"],
+    "transmissionDateTo": "2026-06-01"
+  }
+}
+```
 
-user: I want to compare fishing in Spain with the environmental conditions (like temperature, salinity, bathymetry or currents)
+## "My saved workspaces"
 
-skill: https://globalfishingwatch.org/map/?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-eez&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-salinity%3Av20231213&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B1%5D%5BdvId%5D=%7E3&dvIn%5B1%5D%5Bid%5D=salinity__1783953715943&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%23FF6854&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=red&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-sst%3Av20231213&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B2%5D%5BdvId%5D=%7E3&dvIn%5B2%5D%5Bid%5D=sst__1783953707644&dvIn%5B3%5D%5Bcategory%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B3%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B3%5D%5BdvId%5D=currents&dvIn%5B3%5D%5Bid%5D=currents__1783953698319&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=ais&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B5%5D%5Bid%5D=vms&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=bathymetry&fTD=&lTD=&latitude=41.5484545568935&longitude=-3.8750000000000133&tSEI=ais&tV=%7E2&tk%5B0%5D=environment&tk%5B1%5D=4wings-tiles&tk%5B2%5D=heatmap&tk%5B3%5D=heatmap-environmental-layer&zoom=5.291631798571174
-
-user: and in France?
-
-skill: https://globalfishingwatch.org/map/?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-eez&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-salinity%3Av20231213&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B1%5D%5BdvId%5D=%7E3&dvIn%5B1%5D%5Bid%5D=salinity__1783953715943&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%23FF6854&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=red&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-sst%3Av20231213&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B2%5D%5BdvId%5D=%7E3&dvIn%5B2%5D%5Bid%5D=sst__1783953707644&dvIn%5B3%5D%5Bcategory%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B3%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B3%5D%5BdvId%5D=currents&dvIn%5B3%5D%5Bid%5D=currents__1783953698319&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=ais&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B5%5D%5Bid%5D=vms&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=bathymetry&fTD=&lTD=&latitude=46.41399898427544&longitude=0.3076214797850084&tSEI=ais&tV=%7E2&tk%5B0%5D=environment&tk%5B1%5D=4wings-tiles&tk%5B2%5D=heatmap&tk%5B3%5D=heatmap-environmental-layer&zoom=5.291631798571174
-
-user: only last week
-
-skill: https://globalfishingwatch.org/map/?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=context-layer-eez&dvIn%5B1%5D%5Bcategory%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bclr%5D=%239CA4FF&dvIn%5B1%5D%5Bcfg%5D%5BcolorRamp%5D=lilac&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-salinity%3Av20231213&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B1%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B1%5D%5BdvId%5D=%7E3&dvIn%5B1%5D%5Bid%5D=salinity__1783953715943&dvIn%5B2%5D%5Bcategory%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bclr%5D=%23FF6854&dvIn%5B2%5D%5Bcfg%5D%5BcolorRamp%5D=red&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5BdsId%5D=public-global-sst%3Av20231213&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bept%5D=%7E1&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bid%5D=type&dvIn%5B2%5D%5BdsC%5D%5B0%5D%5Bpms%5D%5B0%5D%5Bval%5D=%7E2&dvIn%5B2%5D%5BdvId%5D=%7E3&dvIn%5B2%5D%5Bid%5D=sst__1783953707644&dvIn%5B3%5D%5Bcategory%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bclr%5D=%2300EEFF&dvIn%5B3%5D%5Bcfg%5D%5BcolorRamp%5D=sky&dvIn%5B3%5D%5BdvId%5D=currents&dvIn%5B3%5D%5Bid%5D=currents__1783953698319&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=ais&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=false&dvIn%5B5%5D%5Bid%5D=vms&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=bathymetry&end=2026-07-10T00%3A00%3A00.000Z&fTD=&lTD=&latitude=46.41399898427544&longitude=0.3076214797850084&start=2026-07-03T00%3A00%3A00.000Z&tSEI=ais&tV=%7E2&tk%5B0%5D=environment&tk%5B1%5D=4wings-tiles&tk%5B2%5D=heatmap&tk%5B3%5D=heatmap-environmental-layer&zoom=5.291631798571174
-
-**New conversation**
-
-user: Marine manager workspaces index
-skill: https://globalfishingwatch.org/map/marine-manager
-
-**New conversation**
-user: Can I see the global encounters evolution?
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B0%5D=FISHING-CARRIER&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B1%5D=CARRIER-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B2%5D=FISHING-SUPPORT&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B3%5D=SUPPORT-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D=&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&latitude=0&longitude=0&rC=%7E1&rLV=false&reportEventsGraph=evolution&reportEventsPortsFilter=&reportEventsPortsPage=0&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=0.8073549220576041
-
-user: and by flag?
-skill:https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B0%5D=FISHING-CARRIER&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B1%5D=CARRIER-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B2%5D=FISHING-SUPPORT&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B3%5D=SUPPORT-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D=&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&latitude=0&longitude=0&rC=%7E1&rLV=false&reportEventsGraph=byFlag&reportEventsPortsFilter=&reportEventsPortsPage=0&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=-0.03133321
-
-user: and by frmo filtered by russia vesels ?
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B0%5D=FISHING-CARRIER&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B1%5D=CARRIER-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B2%5D=FISHING-SUPPORT&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B3%5D=SUPPORT-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=RUS&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&latitude=34.710514588962525&longitude=9.29419016964436&rC=%7E1&rLV=false&reportEventsGraph=byFAO&reportEventsPortsFilter=&reportEventsPortsPage=0&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=1.3437312475389198
-
-user: and the 3th of july?
-skill: https://globalfishingwatch.org/map/reports/default-public/report?dvIn%5B0%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B0%5D%5Bid%5D=ais&dvIn%5B0%5D%5Borigin%5D=%7E0&dvIn%5B1%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B1%5D%5Bid%5D=vms&dvIn%5B1%5D%5Borigin%5D=%7E0&dvIn%5B2%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B2%5D%5Bid%5D=presence&dvIn%5B2%5D%5Borigin%5D=%7E0&dvIn%5B3%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B3%5D%5Bid%5D=sar&dvIn%5B3%5D%5Borigin%5D=%7E0&dvIn%5B4%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B4%5D%5Bid%5D=sentinel2&dvIn%5B4%5D%5Borigin%5D=%7E0&dvIn%5B5%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B5%5D%5Bid%5D=viirs&dvIn%5B5%5D%5Borigin%5D=%7E0&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B0%5D=FISHING-CARRIER&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B1%5D=CARRIER-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B2%5D=FISHING-SUPPORT&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bencounter_type%5D%5B3%5D=SUPPORT-FISHING&dvIn%5B6%5D%5Bcfg%5D%5Bfilters%5D%5Bflag%5D%5B0%5D=RUS&dvIn%5B6%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B6%5D%5Bid%5D=encounters&dvIn%5B6%5D%5Borigin%5D=%7E0&dvIn%5B7%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B7%5D%5Bid%5D=loitering&dvIn%5B7%5D%5Borigin%5D=%7E0&dvIn%5B8%5D%5Bcfg%5D%5Bvis%5D=true&dvIn%5B8%5D%5Bid%5D=port-visits&dvIn%5B8%5D%5Borigin%5D=%7E0&end=2026-07-04T00%3A00%3A00.000Z&latitude=0&longitude=0&rC=%7E1&rLV=false&reportEventsGraph=byFAO&reportEventsPortsFilter=&reportEventsPortsPage=0&start=2026-07-03T00%3A00%3A00.000Z&tV=%7E1&tk%5B0%5D=report&tk%5B1%5D=events&zoom=-0.03133321
-
-**New conversation:**
-user: I want to find vessels
-skill: https://globalfishingwatch.org/map/vessel-search
-
-user: by the name: Sorriso
-skill: https://globalfishingwatch.org/map/vessel-search?fTD=&lTD=&qry=Sorriso&sO=basic
-
-user: i want to see only the ones from Italy
-skill: https://globalfishingwatch.org/map/vessel-search?fTD=&flag%5B0%5D=ITA&lTD=&qry=Sorriso&sO=advanced
-
-**New conversation**
-user: search vessels with the mmsi 247066070
-skill: https://globalfishingwatch.org/map/vessel-search?fTD=&lTD=&qry=&sO=advanced&ssvid=247066070
-
-user: between 1 of january of 2016 and 13 of july of 2018
-skill: https://globalfishingwatch.org/map/vessel-search?fTD=&lTD=&qry=&sO=advanced&ssvid=247066070&transmissionDateFrom=2018-06-01&transmissionDateTo=2016-01-13
-
-**New conversation**
-user: show me my datasets
-skill: https://globalfishingwatch.org/map/user?latitude=10&longitude=-90&userTab=datasets&zoom=1
+```json
+{ "route": { "type": "user" }, "state": { "userTab": "workspaces" } }
+```

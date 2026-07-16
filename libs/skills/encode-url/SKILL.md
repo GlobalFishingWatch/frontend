@@ -19,7 +19,7 @@ Never hand-build the query string: params are abbreviated (`dataviewInstances`�
    - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md)
    - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`)
 
-- An area report must ALSO include the matching **context layer** as a visible instance so the area outline renders: `context-layer-eez` / `context-layer-fao` / `context-layer-rfmo` / `context-layer-mpa` (pick by area type; dataviewId in [references/layers.md](references/layers.md)), `{ "config": { "visible": true } }`. Missing it drops the area boundary.
+- An area report must ALSO include the matching **context layer** as a visible instance so the area outline renders: `context-layer-eez` / `context-layer-fao-areas` / `context-layer-rfmo` / `context-layer-mpa` (pick by area type; dataviewId in [references/layers.md](references/layers.md)), `{ "config": { "visible": true } }`. Missing it drops the area boundary.
 
 - Multiple areas in one report → pass `datasetId`/`areaId` as comma-joined lists of equal length (one datasetId per areaId), e.g. `"datasetId":"public-fao-major,public-fao-major","areaId":"41,87"` → path `/report/public-fao-major%2Cpublic-fao-major/41%2C87`. Adding an area to an existing report = append its dataset+id to both. Re-center viewport (`latitude`/`longitude`/`zoom`) on the combined area set rather than keeping the source values.
   - port activity profile → `ports-report` (needs `portId`)
@@ -80,7 +80,9 @@ Input shape:
 
 `category`/`workspaceId` default to `fishing-activity`/`default-public` when omitted.
 
-Worked examples of real intents → inputs: [references/use-cases.md](references/use-cases.md).
+Worked examples of real intents → inputs: [references/examples.md](references/examples.md). Real conversation transcripts with expected output URLs: [references/examples-conversations.md](references/examples-conversations.md).
+
+A state param not covered in query-params.md may still exist — the app state types carry full JSDoc: `apps/fishing-map/types/index.ts`, `features/reports/reports.types.ts`, `features/vessel/vessel.types.ts`, `features/search/search.types.ts`.
 
 ## Working from an existing map URL
 
