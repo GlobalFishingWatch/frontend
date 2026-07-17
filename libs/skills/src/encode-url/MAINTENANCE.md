@@ -45,6 +45,15 @@ Every enumerated value in `references/query-params.md` is copied from one of the
 | `userTab`                                                                              | `UserTab` enum                                                                                                                                                     | `apps/fishing-map/types/index.ts`                           |
 | URL param abbreviations                                                                | `PARAMS_TO_ABBREVIATED` (params NOT listed there serialize under their full name)                                                                                  | `libs/dataviews-client/src/url-workspace/url-workspace.ts`  |
 
+## Encoder-enforced invariants
+
+`encode.ts` injects these automatically — keep them OUT of SKILL.md workflow rules (agents must not add them by hand), and keep the transforms in sync with app behavior:
+
+- Area `report` routes get the context layer matching each `datasetId` (`AREA_DATASET_CONTEXT_LAYER` map) unless an instance already resolves to that dataview.
+- AIS apparent-fishing-effort instances with a non-empty `config.filters` get `distance_from_port_km: "3"` added unless the key is present (URL filters replace dataview defaults; filterless instances keep the server-side default).
+- Layer-library instance ids get `dataviewId` filled from `dictionary.ts`; `{PIPE_DATASET_VERSION}` tokens resolve from the env.
+- `start`/`end` snap to the fourwings interval resolution.
+
 ## Doc structure invariants
 
 - Each reference file's header names its source-of-truth files.

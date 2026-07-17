@@ -2,6 +2,8 @@
 
 Real intents → encode-url inputs. Distilled from app-generated URLs.
 
+Inputs here omit what the encoder injects on its own: the context layer matching an area report's dataset and `distance_from_port_km: "3"` on filtered AIS fishing-effort layers. Report viewports are omitted too — the app computes them.
+
 ## "Fishing effort by French and Spanish vessels"
 
 Two instances of the same fishing-effort dataset, one filtered per flag, distinct colors; EEZ boundaries for context; hide VMS.
@@ -11,14 +13,14 @@ Two instances of the same fishing-effort dataset, one filtered per flag, distinc
   "route": { "type": "workspace" },
   "state": {
     "dataviewInstances": [
-      { "id": "ais", "config": { "filters": { "flag": ["ESP"], "distance_from_port_km": "3" } } },
+      { "id": "ais", "config": { "filters": { "flag": ["ESP"] } } },
       {
         "id": "fishing-effort-ais__1783934376888",
         "dataviewId": "apparent-fishing-effort-ais-v-{PIPE_DATASET_VERSION}",
         "config": {
           "color": "#9CA4FF",
           "colorRamp": "lilac",
-          "filters": { "flag": ["FRA"], "distance_from_port_km": "3" }
+          "filters": { "flag": ["FRA"] }
         }
       },
       { "id": "context-layer-eez", "config": { "visible": true } },
@@ -110,14 +112,13 @@ Variant "VIIRS detections with Chinese flag": only `viirs-skylight` visible with
 
 ## "Loitering events around Malvinas on July 5th" (area report)
 
-Report over EEZ area with a 50nm buffer; loitering visible, events timebar.
+Report over EEZ area with a 50nm buffer; loitering visible, events timebar. (EEZ context layer + viewport: encoder/app add them.)
 
 ```json
 {
   "route": { "type": "report", "datasetId": "public-eez-areas", "areaId": "8389" },
   "state": {
     "dataviewInstances": [
-      { "id": "context-layer-eez", "config": { "visible": true } },
       { "id": "loitering", "config": { "visible": true } },
       { "id": "port-visits", "config": { "visible": false } },
       { "id": "encounters", "config": { "visible": false } },
@@ -129,10 +130,7 @@ Report over EEZ area with a 50nm buffer; loitering visible, events timebar.
     "end": "2026-07-06T00:00:00.000Z",
     "reportBufferValue": 50,
     "reportBufferUnit": "nauticalmiles",
-    "reportBufferOperation": "dissolve",
-    "latitude": -52.24,
-    "longitude": -58.66,
-    "zoom": 4.5
+    "reportBufferOperation": "dissolve"
   }
 }
 ```
@@ -144,18 +142,11 @@ Report over EEZ area with a 50nm buffer; loitering visible, events timebar.
   "route": { "type": "report", "datasetId": "public-eez-areas", "areaId": "5682" },
   "state": {
     "dataviewInstances": [
-      { "id": "context-layer-eez", "config": { "visible": true } },
-      {
-        "id": "ais",
-        "config": { "filters": { "distance_from_port_km": "3", "geartype": ["trawlers"] } }
-      },
+      { "id": "ais", "config": { "filters": { "geartype": ["trawlers"] } } },
       { "id": "vms", "config": { "visible": false } }
     ],
     "start": "2025-08-01T00:00:00.000Z",
-    "end": "2026-08-01T00:00:00.000Z",
-    "latitude": 40.7,
-    "longitude": 12.44,
-    "zoom": 4.75
+    "end": "2026-08-01T00:00:00.000Z"
   }
 }
 ```
