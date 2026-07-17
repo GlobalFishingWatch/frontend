@@ -29,6 +29,7 @@
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
     "paths": {
+      "@fishing-map/config": ["./config/src/index.ts"],
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["../../libs/data-transforms/src/index.ts"],
@@ -49,6 +50,7 @@
       "@globalfishingwatch/responsive-visualizations/*": [
         "../../libs/responsive-visualizations/src/*"
       ],
+      "@globalfishingwatch/skills": ["../../libs/skills/src/index.ts"],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
