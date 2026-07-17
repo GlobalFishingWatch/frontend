@@ -1,14 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
+import { useSetAtom } from 'jotai'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import type { EncodeMapUrlResult } from '@globalfishingwatch/skills'
+
+import { timerangeState } from 'features/timebar/timebar.hooks'
 
 // Talks to the gfw-agent HTTP API (POST /api/chat). The endpoint is plain,
 // non-streaming JSON with a custom tool-resume loop:
 //   send:   { session_id?, message }        -> { status:'ok', reply } | { status:'pending_tools', tools }
 //   resume: { session_id, tool_results }     -> same shapes, repeat until 'ok'
-// The one client-side tool is `navigate`: the agent hands back a GFW map URL for
-// us to open. In-app we route with TanStack Router so chat state survives.
+// The one client-side tool is `navigate`. Since the agent runs the repo's
+// `encode-url` skill it hands back that skill's `navigation` config:
+//   { navigation: { to, params, search } }
+// We route with it — a TanStack Router config whose `to`/`params` are the app's
+// own route ids, so this is an in-app nav and chat state survives.
 //
 // Conversations live in localStorage (the gfw-agent server is in-memory and
 // ephemeral — it can't list or restore sessions). Each conversation's id doubles
@@ -31,6 +38,8 @@ export type StoredConversation = {
   updatedAt: number
 }
 
+type NavigateInput = { navigation?: EncodeMapUrlResult['navigation'] }
+
 type Tool = { tool_use_id: string; name: string; input: unknown }
 type ChatResponse =
   | { session_id?: string; status: 'ok'; reply?: string }
@@ -50,6 +59,7 @@ async function postChat(payload: Record<string, unknown>): Promise<ChatResponse>
 
 export function useChatAgent() {
   const navigate = useNavigate()
+  const setTimerange = useSetAtom(timerangeState)
   const [conversations, setConversations] = useLocalStorage<StoredConversation[]>(
     CONVERSATIONS_KEY,
     []
@@ -92,30 +102,26 @@ export function useChatAgent() {
     [setConversations]
   )
 
-  // Opens a GFW URL the agent produced. Same-origin -> router nav (keeps chat);
-  // cross-origin (e.g. prod URL while on localhost) -> new tab.
+  // Routes to what the agent produced via the encode-url skill's `navigation`
+  // config (in-app router nav, keeps chat).
   const runNavigate = useCallback(
-    (url: string): { ok: boolean; detail: string } => {
+    (input: NavigateInput): { ok: boolean; detail: string } => {
+      const { navigation } = input
+      if (!navigation?.to) return { ok: false, detail: "navigate called without 'navigation'." }
       try {
-        const u = new URL(url, window.location.origin)
-        if (u.origin === window.location.origin) {
-          // Keep the chat panel open across navigation: the agent's URL replaces
-          // all search params, so re-apply the sidePanel ones from the current URL.
-          const current = new URLSearchParams(window.location.search)
-          for (const key of ['sidePanelContent', 'sidePanelId', 'sidePanelSubcontentId']) {
-            const value = current.get(key)
-            if (value !== null) u.searchParams.set(key, value)
-          }
-          navigate({ href: u.pathname + u.search + u.hash })
-        } else {
-          window.open(u.href, '_blank', 'noopener')
-        }
-        return { ok: true, detail: `Opened ${u.href}` }
+        navigate({
+          to: navigation.to,
+          params: navigation.params ?? {},
+          search: { ...navigation.search, sidePanelContent: 'chat' },
+        } as unknown as Parameters<typeof navigate>[0])
+        const { start, end } = (navigation.search ?? {}) as { start?: string; end?: string }
+        if (start && end) setTimerange({ start, end })
+        return { ok: true, detail: `Navigated to ${navigation.to}` }
       } catch (err) {
-        return { ok: false, detail: `Invalid url ${url}: ${err}` }
+        return { ok: false, detail: `Invalid navigation: ${err}` }
       }
     },
-    [navigate]
+    [navigate, setTimerange]
   )
 
   // Drives one turn to completion: resolves any client-side tools and resumes
@@ -137,19 +143,10 @@ export function useChatAgent() {
         // pending_tools: run each client tool, then resume the turn.
         const toolResults = (data.tools || []).map((tool) => {
           if (tool.name === 'navigate') {
-            const url =
-              tool.input && typeof tool.input === 'object'
-                ? (tool.input as { url?: string }).url
-                : undefined
-            if (!url) {
-              return {
-                tool_use_id: tool.tool_use_id,
-                result: "navigate called without a 'url'.",
-                is_error: true,
-              }
-            }
+            const input =
+              tool.input && typeof tool.input === 'object' ? (tool.input as NavigateInput) : {}
             appendTo(id, title, [{ role: 'system', text: 'Changing view' }])
-            const r = runNavigate(url)
+            const r = runNavigate(input)
             return { tool_use_id: tool.tool_use_id, result: r.detail, is_error: !r.ok }
           }
           return {
