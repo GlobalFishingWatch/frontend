@@ -16,6 +16,10 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
 
+minimumReleaseAgeExclude:
+  - '@tanstack/ai-client@0.22.0'
+  - '@tanstack/ai-react@0.18.0'
+
 patchedDependencies:
   # Moves SIGINT/SIGTERM handlers outside watch-mode so vitest exits cleanly in
   # non-watch CI runs. Remove once @nx/vitest ships the upstream fix.

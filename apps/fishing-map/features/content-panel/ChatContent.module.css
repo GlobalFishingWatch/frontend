@@ -84,6 +84,31 @@
   color: var(--color-white);
 }
 
+.toolChip {
+  margin: 0;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+}
+
+.approval {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  align-items: center;
+}
+
+.approvalActions {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.approvalBtn {
+  font: var(--font-XS);
+  color: var(--color-primary-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .inputRow {
   display: flex;
   align-items: flex-end;
