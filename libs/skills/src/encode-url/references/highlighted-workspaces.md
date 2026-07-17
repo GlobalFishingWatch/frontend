@@ -29,6 +29,13 @@ Any extra `state` (time range, filters, extra layers) applies on top of the cura
 
 "Curated report" = a report workspace exists with the same id (except where noted): `{ "type": "workspace", "category": "reports", "workspaceId": "<report id>" }`.
 
+### Curated workspaces bake in their OWN default layers — don't assume `ais`/`vms`
+
+The default-workspace assumption in [SKILL.md](../SKILL.md) (`ais`/`vms` visible by default, hide what's unwanted) holds only for `default-public`. Each curated workspace is preloaded server-side with its own default instances, under its own ids — not necessarily `ais`/`vms`. Guessing wrong leaves an unwanted layer visible or hides nothing.
+
+- explicitly hide both defaults: `{ "id": "presence", "config": { "visible": false } }`, `{ "id": "fishing", "config": { "visible": false } }`
+- add the filtered layers instead (see the national-dataset pattern in [layers.md](layers.md#national-fishing-effort-datasets))
+
 Example — "show me activity in the Galapagos":
 
 ```json

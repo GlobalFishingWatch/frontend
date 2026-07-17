@@ -39,6 +39,41 @@ Dataview slugs are versioned by the dataset pipeline: write the literal `{PIPE_D
 | `fishing-effort-vms` | `apparent-fishing-effort-vms-v-{PIPE_DATASET_VERSION}` |                              |
 | `presence`           | `presence-activity-v-{PIPE_DATASET_VERSION}`           |                              |
 
+#### National fishing-effort datasets
+
+Some EEZs have a national fishing-effort dataset (mixes VMS + local AIS) that's more complete for that country than the global layer alone. Use it instead of / alongside plain `ais` when the intent is fishing activity of a flag inside that specific EEZ.
+
+Pattern: keep `dataviewId` as the base `vms`/`fishing-effort-vms` dataview, but override `config.datasets` with the national dataset id PLUS the global one, and filter by flag:
+
+```json
+{
+  "id": "fishing-effort-vms__<unique>",
+  "config": {
+    "visible": true,
+    "datasets": ["public-<country>-fishing-effort:v<version>", "public-global-fishing-effort:v3.0"],
+    "filters": { "flag": ["<ISO3>"] }
+  }
+}
+```
+
+Known national dataset ids (source: `gfw-terraform-api-resources/resources/datasets`, `dataviews/shared_countries.tf`) — flag is the ISO3 to filter on:
+
+| Country          | ISO3  | Public dataset id                                                                        |
+| ---------------- | ----- | ---------------------------------------------------------------------------------------- |
+| Belize           | `BLZ` | `public-vms-blz-fishing-effort:v4.0`                                                     |
+| Brazil           | `BRA` | `public-vms-bra-fishing-effort:v4.0`                                                     |
+| Chile            | `CHL` | `public-vms-chl-fishing-effort:v4.1`                                                     |
+| Costa Rica       | `CRI` | `public-vms-cri-fishing-effort:v4.0`                                                     |
+| Ecuador          | `ECU` | `public-vms-ecu-fishing-effort:v4.0`                                                     |
+| Norway           | `NOR` | `public-vms-nor-fishing-effort:v4.0`                                                     |
+| Panama           | `PAN` | `public-vms-pan-fishing-effort:v4.1`                                                     |
+| Peru             | `PER` | `public-vms-per-fishing-effort:v4.0`                                                     |
+| Palau            | `PLW` | `public-vms-plw-fishing-effort:v4.0`                                                     |
+| Papua New Guinea | `PNG` | `public-vms-png-fishing-effort:v4.0`                                                     |
+| Montenegro       | `MNE` | none public — only `private-vms-mne-fishing-effort:v4.0` (not usable in public map URLs) |
+
+Grep the app's dataset registry for others — don't guess an id that isn't confirmed.
+
 ### Detections
 
 | Library id       | dataviewId                                      |

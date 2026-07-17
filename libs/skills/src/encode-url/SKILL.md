@@ -20,6 +20,8 @@ Never hand-build the query string: params are abbreviated (`dataviewInstances`�
    - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`)
 
 - An area report must ALSO include the matching **context layer** as a visible instance so the area outline renders: `context-layer-eez` / `context-layer-fao-areas` / `context-layer-rfmo` / `context-layer-mpa` (pick by area type; dataviewId in [references/layers.md](references/layers.md)), `{ "config": { "visible": true } }`. Missing it drops the area boundary.
+  - An area report must ALSO set `state.reportCategory` to match the layer category being reported on: `activity` (default, fishing/presence) | `detections` (SAR/Sentinel-2/VIIRS) | `events` (encounters/loitering/port visits). Omitting it leaves the report on the `activity` tab even when the visible layer is `sar`/`sentinel2`/etc.
+  - **Dark vessels** = detections not matched to AIS. A "dark vessel" report/query needs: the detections layer (`sar`/`sentinel2`/`viirs-skylight`) with `filters.matched: ["false"]`, `reportCategory: "detections"`, and `timebarVisualisation: "heatmapDetections"`.
 
 - Multiple areas in one report → pass `datasetId`/`areaId` as comma-joined lists of equal length (one datasetId per areaId), e.g. `"datasetId":"public-fao-major,public-fao-major","areaId":"41,87"` → path `/report/public-fao-major%2Cpublic-fao-major/41%2C87`. Adding an area to an existing report = append its dataset+id to both. Re-center viewport (`latitude`/`longitude`/`zoom`) on the combined area set rather than keeping the source values.
   - port activity profile → `ports-report` (needs `portId`)
