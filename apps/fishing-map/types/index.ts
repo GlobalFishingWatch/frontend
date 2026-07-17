@@ -145,6 +145,8 @@ export type SidePanelContent =
   | 'userDataset'
   /** Data terminology explaining concepts and fields */
   | 'dataTerminology'
+  /** Conversational assistant backed by gfw-agent */
+  | 'chat'
 
 /**
  * Track correction identifier

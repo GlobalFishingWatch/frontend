@@ -103,6 +103,15 @@ function HelpHub() {
           </button>
         </li>
         <li>
+          <button
+            type="button"
+            className={cx(styles.link)}
+            onClick={() => openSidePanel({ type: 'chat' })}
+          >
+            {t((t) => t.common.assistant)}
+          </button>
+        </li>
+        <li>
           <a
             href={getVideoTutorialsLink()}
             target="_blank"
