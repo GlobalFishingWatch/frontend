@@ -16,12 +16,7 @@
     "declarationMap": true,
     "inlineSources": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": [
-      "node"
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
