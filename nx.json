@@ -56,6 +56,22 @@
       "options": {
         "testTargetName": "test"
       }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "devTargetName": "dev",
+        "typecheckTargetName": "typecheck"
+      },
+      "include": [
+        "apps/api-portal/**/*",
+        "apps/data-download-portal/**/*",
+        "apps/port-labeler/**/*"
+      ]
     }
   ],
   "targetDefaults": {
@@ -79,7 +95,7 @@
     },
     "@nx/vite:build": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
     "dist": {
@@ -111,6 +127,7 @@
     },
     "build": {
       "cache": true,
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
     "@nx/vitest:test": {

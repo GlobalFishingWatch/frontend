@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/api-portal/src",
   "projectType": "application",
+  "tags": ["app"],
   "targets": {
     "deploy": {
       "executor": "nx:run-commands",
@@ -11,11 +12,11 @@
       }
     },
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build", "^dist"],
+      "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/api-portal"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/api-portal"
+        "outDir": "../../dist/apps/api-portal"
       },
       "configurations": {
         "development": {
@@ -28,27 +29,18 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "command": "vite",
         "cwd": "{projectRoot}"
-      },
-      "continuous": true
+      }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
-      "options": {
-        "buildTarget": "api-portal:build"
-      },
       "configurations": {
-        "development": {
-          "buildTarget": "api-portal:build:development"
-        },
-        "production": {
-          "buildTarget": "api-portal:build:production"
-        }
-      },
-      "dependsOn": ["build"]
+        "development": {},
+        "production": {}
+      }
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -58,11 +50,10 @@
     },
     "typecheck-watch": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "command": "tsc --noEmit --watch --project apps/api-portal/tsconfig.json"
-      },
-      "continuous": true
+      }
     }
-  },
-  "tags": ["app"]
+  }
 }
