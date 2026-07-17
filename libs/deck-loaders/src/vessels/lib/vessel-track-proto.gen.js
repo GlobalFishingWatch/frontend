@@ -7,7 +7,7 @@ const $Reader = $protobuf.Reader,
   $util = $protobuf.util
 
 // Exported root namespace
-const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
+const $root = $protobuf.roots['gfwDeckVessels'] || ($protobuf.roots['gfwDeckVessels'] = {})
 
 export const vessels = ($root.vessels = (() => {
   /**
