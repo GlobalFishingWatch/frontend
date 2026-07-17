@@ -11,7 +11,7 @@
     "jsx": "preserve",
     "lib": ["es2020", "dom", "esnext"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
     "rootDir": ".",
@@ -44,7 +44,10 @@
       "@globalfishingwatch/timebar": ["./libs/timebar/dist/index.d.ts"],
       "@globalfishingwatch/ui-components": ["./libs/ui-components/dist/index.d.ts"],
       "@globalfishingwatch/ui-components/*": ["./libs/ui-components/dist/*"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"]
   },
   "files": [],
   "include": [],

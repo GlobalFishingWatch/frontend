@@ -3,13 +3,14 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/port-labeler/src",
   "projectType": "application",
+  "tags": ["app"],
   "targets": {
     "watch-deps": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "command": "nx watch --projects port-labeler --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
-      },
-      "continuous": true
+      }
     },
     "deploy": {
       "executor": "nx:run-commands",
@@ -18,11 +19,11 @@
       }
     },
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build", "^dist"],
+      "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/port-labeler"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/port-labeler"
+        "outDir": "../../dist/apps/port-labeler"
       },
       "configurations": {
         "development": {
@@ -35,28 +36,19 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "commands": ["nx serve i18n-labels", "vite"],
         "cwd": "{projectRoot}",
         "parallel": true
-      },
-      "continuous": true
+      }
     },
     "preview": {
-      "executor": "@nx/vite:preview-server",
       "defaultConfiguration": "development",
-      "options": {
-        "buildTarget": "port-labeler:build"
-      },
       "configurations": {
-        "development": {
-          "buildTarget": "port-labeler:build:development"
-        },
-        "production": {
-          "buildTarget": "port-labeler:build:production"
-        }
-      },
-      "dependsOn": ["build"]
+        "development": {},
+        "production": {}
+      }
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -66,11 +58,10 @@
     },
     "typecheck-watch": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "command": "tsc --noEmit --watch --project apps/port-labeler/tsconfig.json"
-      },
-      "continuous": true
+      }
     }
-  },
-  "tags": ["app"]
+  }
 }

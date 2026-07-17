@@ -7,6 +7,12 @@
   "targets": {
     "proto:generate": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
+        "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
+        "{projectRoot}/dist/vessels/lib"
+      ],
       "options": {
         "cwd": "libs/deck-loaders",
         "commands": [

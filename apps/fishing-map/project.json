@@ -43,6 +43,36 @@
         "cwd": "apps/fishing-map"
       }
     },
+    "i18n:extract": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
+      ],
+      "outputs": ["{projectRoot}/public/locales"],
+      "options": {
+        "command": "i18next-cli extract",
+        "cwd": "apps/fishing-map"
+      }
+    },
+    "i18n:types": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/public/locales/source/*.json",
+        "{projectRoot}/i18next.config.ts"
+      ],
+      "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
+      "options": {
+        "command": "i18next-cli types",
+        "cwd": "apps/fishing-map"
+      }
+    },
     "i18n": {
       "executor": "nx:run-commands",
       "cache": true,
@@ -56,24 +86,20 @@
       ],
       "outputs": [
         "{projectRoot}/public/locales",
-        "{projectRoot}/features/i18n/i18next.d.ts",
         "{projectRoot}/features/i18n/i18n.types.d.ts"
       ],
       "options": {
-        "commands": ["nx i18n:extract fishing-map", "nx i18n:types fishing-map"],
-        "parallel": false
+        "command": "i18next-cli extract && i18next-cli types",
+        "cwd": "apps/fishing-map"
       }
     },
     "i18n:watch": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
-        "commands": [
-          "nx run fishing-map:i18n:extract:watch",
-          "nx run fishing-map:i18n:types:watch"
-        ],
-        "parallel": true
-      },
-      "continuous": true
+        "command": "i18next-cli types && i18next-cli extract --watch --with-types",
+        "cwd": "apps/fishing-map"
+      }
     },
     "start": {
       "dependsOn": ["prepare-start"],
@@ -226,7 +252,7 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n"],
+      "dependsOn": ["i18n:types"],
       "options": {
         "command": "tsc --noEmit --project  apps/fishing-map/tsconfig.typecheck.json"
       }

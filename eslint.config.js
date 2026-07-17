@@ -2,7 +2,7 @@ import nxPlugin from '@nx/eslint-plugin'
 import { defineConfig } from 'eslint/config'
 import * as jsoncParser from 'jsonc-eslint-parser'
 
-import { repoConfig } from '@globalfishingwatch/linting'
+import { nodeScriptsConfig, repoConfig, routeFilesConfig } from '@globalfishingwatch/linting'
 
 export default defineConfig([
   // Global ignores
@@ -41,4 +41,6 @@ export default defineConfig([
   },
   // GFW shared linting config
   repoConfig,
+  nodeScriptsConfig,
+  routeFilesConfig,
 ])
