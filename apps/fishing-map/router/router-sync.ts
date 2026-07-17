@@ -1,6 +1,7 @@
 import type { AnyRouter, RouterEvents } from '@tanstack/react-router'
 
 import { PATH_BASENAME } from 'data/config'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import type { LinkToPayload } from 'router/routes.types'
@@ -78,6 +79,8 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
 
   // Deduplicate rapid-fire events for the same URL (viewport rAF, timebar rAF, etc.)
   let lastDispatchedHref = router.latestLocation.href
+
+  let lastPathname = router.latestLocation.pathname
 
   // onBeforeNavigate: location sync + history tracking.
   // Runs before TanStack Router renders the new route, so layout components
@@ -180,11 +183,19 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
     }
   )
 
-  // onResolved: only clear the isHistoryNavigation flag from the committed history.
+  // onResolved: only clear the isHistoryNavigation flag from the committed history and reset sidebarscroll
   const unsubscribeResolved = router.subscribe(
     'onResolved',
     (event: RouterEvents['onResolved']) => {
       const navState = (event.toLocation.state || {}) as NavigationState
+
+      if (event.toLocation.pathname !== lastPathname) {
+        lastPathname = event.toLocation.pathname
+        if (!navState.isHistoryNavigation) {
+          resetSidebarScroll()
+        }
+      }
+
       if (navState.isHistoryNavigation) {
         router.navigate({
           replace: true,
