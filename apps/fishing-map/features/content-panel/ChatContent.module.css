@@ -1,0 +1,155 @@
+.chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  padding: var(--space-S);
+  padding-left: var(--space-SM);
+  border-bottom: var(--border);
+}
+
+.title {
+  flex: 1;
+  font: var(--font-M-bold);
+  color: var(--color-primary-blue);
+}
+
+.history {
+  position: relative;
+}
+
+.messages {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding: var(--space-M);
+}
+
+.empty {
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+}
+
+.message {
+  max-width: 85%;
+  padding: var(--space-S) var(--space-SM);
+  border-radius: var(--border-radius);
+  font: var(--font-S);
+}
+
+.message strong,
+.message b {
+  font-weight: bold;
+}
+
+.message > * {
+  margin-block: 0;
+}
+
+.message > * + * {
+  margin-top: var(--space-S);
+}
+
+.user {
+  align-self: flex-end;
+  background-color: var(--color-highlight-blue);
+  color: var(--color-primary-blue);
+  white-space: pre-wrap;
+}
+
+.agent {
+  align-self: flex-start;
+  background-color: var(--color-off-white-0);
+}
+
+.system {
+  align-self: center;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+.error {
+  background-color: var(--color-danger-red);
+  color: var(--color-white);
+}
+
+.inputRow {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-S);
+  padding: var(--space-SM) var(--space-M);
+  border-top: var(--border);
+}
+
+.input {
+  flex: 1;
+  height: auto;
+}
+
+.input textarea {
+  resize: none;
+  max-height: 120px;
+  font: var(--font-M);
+  font-family: inherit;
+}
+
+.historyList {
+  min-width: 240px;
+  max-width: 320px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--space-XS);
+}
+
+.historyEmpty {
+  padding: var(--space-S);
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  border-radius: var(--border-radius);
+}
+
+.historyItem:hover,
+.historyActive {
+  background-color: var(--color-off-white-0);
+}
+
+.historyButton {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-S);
+  text-align: left;
+  cursor: pointer;
+}
+
+.historyTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--font-S);
+  color: var(--color-primary-blue);
+}
+
+.historyTime {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+}
