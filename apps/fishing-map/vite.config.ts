@@ -1,4 +1,3 @@
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
@@ -33,7 +32,6 @@ function staticRouteRules(basePath: string, mode: string) {
 }
 
 export const plugins = [
-  nxViteTsPaths(),
   tanstackStart({
     srcDirectory: '.',
     router: {

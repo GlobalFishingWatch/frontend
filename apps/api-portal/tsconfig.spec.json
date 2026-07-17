@@ -5,7 +5,7 @@
     "module": "commonjs",
     "types": ["jest", "node"],
     "jsx": "react",
-    "rootDir": "src/components"
+    "rootDir": "src"
   },
   "include": [
     "**/*.test.ts",
