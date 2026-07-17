@@ -10,7 +10,7 @@
       "options": {
         "cwd": "libs/api-client",
         "commands": [
-          "pbjs src/pbf-decoders/vessels.proto -t static-module -w esm -o src/pbf-decoders/vessels.gen.js",
+          "pbjs src/pbf-decoders/vessels.proto -t static-module -w esm -r gfwApiVessels -o src/pbf-decoders/vessels.gen.js",
           "pbts src/pbf-decoders/vessels.gen.js -o src/pbf-decoders/vessels.gen.d.ts",
           "prettier --write src/pbf-decoders/vessels.gen.js src/pbf-decoders/vessels.gen.d.ts --config ../../.prettierrc.js",
           "tsc --noEmit -p tsconfig.lib.json"
