@@ -110,9 +110,15 @@ export const getMixedOpacityToWhiteColorRamp = (
   ]
 }
 
+const DEFAULT_BIVARIATE_COLOR_RAMP_ID: ColorRampId = 'teal'
+
+const resolveColorRampId = (id?: ColorRampId): ColorRampId =>
+  id && id in HEATMAP_COLORS_BY_ID ? id : DEFAULT_BIVARIATE_COLOR_RAMP_ID
+
 export const getBivariateRamp = (colorRampsIds: ColorRampId[]) => {
-  return colorRampsIds.map((id) =>
-    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id] || id, COLOR_RAMP_BIVARIATE_NUM_STEPS).map(
+  const [id1, id2] = colorRampsIds
+  return [resolveColorRampId(id1), resolveColorRampId(id2)].map((id) =>
+    getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[id], COLOR_RAMP_BIVARIATE_NUM_STEPS).map(
       (rgba) => rgbaStringToObject(rgba)
     )
   )
@@ -128,6 +134,9 @@ export const getBivariateRampLegend = (colorRampsIds: ColorRampId[]) => {
     return []
   }
   const [ramp1, ramp2] = getBivariateRamp(colorRampsIds)
+  if (!ramp1?.length || !ramp2?.length) {
+    return []
+  }
   return [
     'transparent',
     rgbaToString({ ...getBlend(ramp1[0], ramp2[0]), a: 0.5 }),

@@ -181,3 +181,5 @@ local.globalfishingwatch.org.pem
 .nx/self-healing
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+.nx/migrate-runs

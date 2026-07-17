@@ -383,6 +383,7 @@ See SKILL.md for generic multi-import (name collisions, dep refs). Vite-specific
   2. `git init && git add . && git commit` in Vite app (no git at all)
   3. `git add . && git commit` in TanStack app (git init'd but no commits)
 - Import: `npm exec nx -- import <source> packages/<name> --source=. --ref=main --no-interactive`
+  - Next.js import auto-installed `@nx/eslint`, `@nx/next`
   - React Router 7 import auto-installed `@nx/vite`, `@nx/react`, `@nx/docker` (Dockerfile present)
   - TanStack import auto-installed `@nx/vitest`
 - Post-import fixes:

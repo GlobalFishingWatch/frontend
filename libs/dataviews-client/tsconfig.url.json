@@ -9,7 +9,7 @@
     "jsx": "preserve",
     "lib": ["es2020", "dom", "esnext"],
     "module": "es2022",
-    "target": "es6",
+    "target": "es2022",
     "moduleResolution": "bundler",
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
@@ -24,7 +24,9 @@
     "outDir": "./src/url-workspace",
     "paths": {
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"]
   },
   "include": ["src/url-workspace/**/*.ts", "src/types.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
