@@ -50,7 +50,7 @@
       "@globalfishingwatch/responsive-visualizations/*": [
         "../../libs/responsive-visualizations/src/*"
       ],
-      "@globalfishingwatch/skills": ["../../libs/skills/src/index.ts"],
+      "@globalfishingwatch/skills/*": ["../../libs/skills/src/*"],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
