@@ -141,4 +141,27 @@ export const config = {
   },
 }
 
-export default defineConfig([config])
+// TanStack Router route files only export `Route` by convention; intentionally not a Fast Refresh boundary
+export const routeFilesConfig = {
+  files: ['**/routes/**/*.tsx'],
+  rules: {
+    'react-refresh/only-export-components': 'off',
+  },
+}
+
+// Node-context config/script files (not app source) need Node globals
+export const nodeScriptsConfig = {
+  files: ['**/*.config.{js,cjs,mjs}', '**/scripts/**/*.{js,cjs,mjs}', '**/legacy.js'],
+  languageOptions: {
+    globals: {
+      process: 'readonly',
+      module: 'readonly',
+      require: 'readonly',
+      __dirname: 'readonly',
+      __filename: 'readonly',
+      console: 'readonly',
+    },
+  },
+}
+
+export default defineConfig([config, nodeScriptsConfig])

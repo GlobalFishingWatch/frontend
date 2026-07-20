@@ -1,7 +1,7 @@
 import nxPlugin from '@nx/eslint-plugin'
 import { defineConfig } from 'eslint/config'
 
-import { config } from './lib.js'
+import { config, nodeScriptsConfig, routeFilesConfig } from './lib.js'
 
 /**
  * @typedef {import('eslint').Linter.Config} Config
@@ -17,4 +17,6 @@ export const repoConfig = {
   },
 }
 
-export default defineConfig([repoConfig])
+export { nodeScriptsConfig, routeFilesConfig }
+
+export default defineConfig([repoConfig, nodeScriptsConfig, routeFilesConfig])

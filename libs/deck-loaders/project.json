@@ -7,10 +7,16 @@
   "targets": {
     "proto:generate": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "outputs": [
+        "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
+        "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
+        "{projectRoot}/dist/vessels/lib"
+      ],
       "options": {
         "cwd": "libs/deck-loaders",
         "commands": [
-          "pbjs src/vessels/lib/vessel-track.proto -t static-module -w esm -o src/vessels/lib/vessel-track-proto.gen.js",
+          "pbjs src/vessels/lib/vessel-track.proto -t static-module -w esm -r gfwDeckVessels -o src/vessels/lib/vessel-track-proto.gen.js",
           "pbts src/vessels/lib/vessel-track-proto.gen.js -o src/vessels/lib/vessel-track-proto.gen.d.ts",
           "prettier --write src/vessels/lib/vessel-track-proto.gen.js src/vessels/lib/vessel-track-proto.gen.d.ts --config ../../.prettierrc.js",
           "tsc --noEmit -p tsconfig.lib.json",
