@@ -44,6 +44,11 @@
             "output": "encode-url/references"
           },
           {
+            "glob": "**/*",
+            "input": "libs/skills/src/encode-url/defs",
+            "output": "encode-url/defs"
+          },
+          {
             "glob": "SKILL.md",
             "input": "libs/skills/src/decode-url",
             "output": "decode-url"
