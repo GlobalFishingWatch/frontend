@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ToolCallPart } from '@tanstack/ai'
+import { toolDefinition } from '@tanstack/ai/client'
 import {
   createChatClientOptions,
   fetchServerSentEvents,
@@ -10,9 +11,11 @@ import { useNavigate } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { navigateDef } from '@globalfishingwatch/skills/encode-url/defs/navigate-defs'
 
-import { navigateDef } from 'features/content-panel/navigate-def'
 import { timerangeState } from 'features/timebar/timebar.hooks'
+
+export const navigateDefTool = toolDefinition(navigateDef)
 
 // TanStack AI SSE chat against gfw-agent (POST /api/chat). Client tool `navigate`
 // applies encode-url's `{ to, params, search }` via the app's TanStack Router.
@@ -157,7 +160,7 @@ export function useChatAgentSession({
 
   const navigate = useMemo(
     () =>
-      navigateDef.client(async ({ navigation, path }) => {
+      navigateDefTool.client(async ({ navigation, path }) => {
         if (!navigation?.to) {
           return { ok: false, detail: "navigate called without 'navigation'." }
         }

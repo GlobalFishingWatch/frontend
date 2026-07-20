@@ -45,6 +45,7 @@
         "./libs/responsive-visualizations/dist/*"
       ],
       "@globalfishingwatch/skills": ["./libs/skills/dist/index.d.ts"],
+      "@globalfishingwatch/skills/*": ["./libs/skills/dist/*"],
       "@globalfishingwatch/timebar": ["./libs/timebar/dist/index.d.ts"],
       "@globalfishingwatch/timebar/*": ["./libs/timebar/dist/*"],
       "@globalfishingwatch/ui-components": ["./libs/ui-components/dist/index.d.ts"],
