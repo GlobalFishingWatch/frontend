@@ -48,7 +48,6 @@ jobs:
           app: ${{ env.APP }}
           image: ${{ env.IMAGE }}
           config: .github/apps/development.yml
-          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
       - name: Deploy
         id: deploy
