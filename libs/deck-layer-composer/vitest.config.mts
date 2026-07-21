@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/libs/deck-layer-composer',
   resolve: { tsconfigPaths: true },
-  plugins: [react(), nxCopyAssetsPlugin(['*.md'])],
+  plugins: [react()],
   test: {
     name: 'deck-layer-composer',
     watch: false,

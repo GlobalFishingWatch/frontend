@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/libs/dataviews-client',
   resolve: { tsconfigPaths: true },
-  plugins: [react(), nxCopyAssetsPlugin(['*.md'])],
+  plugins: [react()],
   test: {
     name: 'dataviews-client',
     watch: false,
