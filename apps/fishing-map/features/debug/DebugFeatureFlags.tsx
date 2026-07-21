@@ -142,6 +142,17 @@ const DebugFeatureFlags: React.FC = () => {
           <p>Show the hotspot zone button in the report activity graph</p>
           <div className={styles.header}>
             <Switch
+              id="option_longline_sets_insight"
+              active={featureFlags.longlineSetsInsight}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.LonglineSetsInsight))}
+            />
+            <label htmlFor="option_longline_sets_insight">
+              <strong>Feature flag:</strong> Longline sets insight
+            </label>
+          </div>
+          <p>Show the longline sets insight in the vessel and vessel group profiles</p>
+          <div className={styles.header}>
+            <Switch
               id="option_areas_on_screen"
               active={debugOptions.areasOnScreen}
               onClick={() => dispatch(toggleDebugOption(DebugOption.AreasOnScreen))}

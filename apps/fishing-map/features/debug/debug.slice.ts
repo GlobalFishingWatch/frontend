@@ -8,6 +8,7 @@ export enum FeatureFlag {
   HotspotButton = 'hotspotButton',
   PolygonsReport = 'polygonsReport',
   ReportPreview = 'reportPreview',
+  LonglineSetsInsight = 'longlineSetsInsight',
 }
 
 export enum DebugOption {
@@ -39,6 +40,7 @@ export const debugInitialState: DebugState = {
     hotspotButton: false,
     polygonsReport: false,
     reportPreview: false,
+    longlineSetsInsight: false,
   },
   options: {
     debugTiles: false,
