@@ -21,7 +21,7 @@
           "pbjs src/pbf-decoders/vessels.proto -t static-module -w esm -r gfwApiVessels -o src/pbf-decoders/vessels.gen.js",
           "pbts src/pbf-decoders/vessels.gen.js -o src/pbf-decoders/vessels.gen.d.ts",
           "prettier --write src/pbf-decoders/vessels.gen.js src/pbf-decoders/vessels.gen.d.ts --config ../../.prettierrc.js",
-          "tsc --noEmit -p tsconfig.lib.json",
+          "tsc --noEmit -p tsconfig.lib.json --tsBuildInfoFile ./tsconfig.check.tsbuildinfo",
           "shx mkdir -p dist/pbf-decoders",
           "shx cp src/pbf-decoders/vessels.gen.js dist/pbf-decoders/",
           "shx cp src/pbf-decoders/vessels.gen.d.ts dist/pbf-decoders/"
