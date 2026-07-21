@@ -125,7 +125,7 @@
     },
     "start-proxy": {
       "executor": "nx:run-commands",
-      "dependsOn": ["prepare-start"],
+      "dependsOn": [],
       "options": {
         "commands": ["nx run fishing-map:start", "nx run fishing-map:proxy"],
         "parallel": true
