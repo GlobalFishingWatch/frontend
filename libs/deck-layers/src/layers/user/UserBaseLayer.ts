@@ -8,17 +8,17 @@ import type {
   TileLayerProps,
 } from '@deck.gl/geo-layers'
 import type { GeoJsonProperties } from 'geojson'
-import type { Entries } from 'type-fest'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { DEFAULT_ID_PROPERTY } from '../../utils/layers'
 import type { ContextFeature, ContextSubLayerConfig } from '../context'
 import {
+  getContextFilterOperatorsHash,
   getContextId,
   getValidSublayerFilters,
   hasSublayerFilters,
@@ -416,6 +416,7 @@ export abstract class UserBaseLayer<
     const filtersHash = Object.values(sublayer.filters || {})
       .flatMap((value) => value || [])
       .join('')
+    const filterOperatorsHash = getContextFilterOperatorsHash(sublayer.filterOperators)
     const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
     const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
     const hasTimeFilter = Object.keys(timefilterProps).length > 0
@@ -432,7 +433,7 @@ export abstract class UserBaseLayer<
       hasFilters || hasTimeFilter
         ? {
             getFilterValue: [
-              ...(hasFilters ? [filtersHash] : []),
+              ...(hasFilters ? [filtersHash, filterOperatorsHash] : []),
               ...(hasTimeFilter ? [this.props.startTime!, this.props.endTime!] : []),
             ],
           }

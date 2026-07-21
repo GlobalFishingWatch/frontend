@@ -28,6 +28,14 @@ export const getContextFiltersHash = (filters: ContextSubLayerConfig['filters'])
     .join('-')
 }
 
+export const getContextFilterOperatorsHash = (
+  filterOperators: ContextSubLayerConfig['filterOperators']
+) => {
+  return Object.entries(filterOperators || {})
+    .map(([key, operator]) => `${key}:${operator}`)
+    .join('-')
+}
+
 export function getValidSublayerFilters(sublayer: ContextSubLayerConfig) {
   const filters: ContextLayerConfigFilter = {}
   Object.entries(sublayer.filters || {}).forEach(([key, value]) => {
