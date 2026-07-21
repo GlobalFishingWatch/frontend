@@ -15,14 +15,11 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getModalParent } from 'features/modals/modals.utils'
-import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
 import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
-import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
-import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -30,9 +27,6 @@ import { htmlSafeParse } from 'utils/html-parser'
 import styles from './Workspace.module.css'
 
 function WorkspaceTitle() {
-  useHideLegacyActivityCategoryDataviews()
-  useUserExpiredToast()
-  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
