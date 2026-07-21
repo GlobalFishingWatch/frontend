@@ -8,6 +8,8 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
+      "dependsOn": ["^dist"],
+      "inputs": ["{projectRoot}/src/pbf-decoders/vessels.proto", "{workspaceRoot}/.prettierrc.js"],
       "outputs": [
         "{projectRoot}/src/pbf-decoders/vessels.gen.js",
         "{projectRoot}/src/pbf-decoders/vessels.gen.d.ts",
@@ -29,7 +31,10 @@
     },
     "dist": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["proto:generate"]
+      "dependsOn": ["proto:generate"],
+      "options": {
+        "clean": false
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],

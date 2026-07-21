@@ -17,6 +17,7 @@
     "dist": {
       "executor": "@nx/js:tsc",
       "options": {
+        "clean": false,
         "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
     },

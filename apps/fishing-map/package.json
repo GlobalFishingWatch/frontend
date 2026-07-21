@@ -23,6 +23,20 @@
   ],
   "dependencies": {
     "@fontsource/roboto": "^5.2.10",
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/datasets-client": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/deck-layer-composer": "workspace:^",
+    "@globalfishingwatch/deck-layers": "workspace:^",
+    "@globalfishingwatch/deck-loaders": "workspace:^",
+    "@globalfishingwatch/i18n-labels": "workspace:^",
+    "@globalfishingwatch/ocean-areas": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
+    "@globalfishingwatch/responsive-visualizations": "workspace:^",
+    "@globalfishingwatch/timebar": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^",
     "@sentry/tanstackstart-react": "^10.55.0"
   }
 }

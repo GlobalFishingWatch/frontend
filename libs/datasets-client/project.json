@@ -6,7 +6,10 @@
   "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/js:tsc",
+      "options": {
+        "clean": false
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],

@@ -8,6 +8,7 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
+      "dependsOn": ["^dist"],
       "outputs": [
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
@@ -29,7 +30,10 @@
     },
     "dist": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["proto:generate", "^dist"]
+      "dependsOn": ["proto:generate", "^dist"],
+      "options": {
+        "clean": false
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],
