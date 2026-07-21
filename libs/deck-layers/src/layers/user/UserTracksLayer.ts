@@ -264,11 +264,13 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   _processResponse = async (response: ArrayBuffer, loadOptions: any) => {
     // TODO: support multiple sublayers
     const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters
+    const filterOperators = this.props.layers?.[0]?.sublayers?.[0]?.filterOperators
 
     const userTracksLoadOptions = {
       ...loadOptions,
       userTracks: {
         filters: filters,
+        filterOperators: filterOperators,
         includeCoordinateProperties: this.props.timeFilterType
           ? [COORDINATE_PROPERTY_TIMESTAMP]
           : [],
@@ -382,7 +384,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       // TODO support multiple layers
       // return layer.sublayers.map((sublayer) => {
       const tilesUrl = new URL(layer.tilesUrl)
-      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}`
+      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}-${Object.values(sublayer.filterOperators || {}).join(',')}`
       // tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
 
       const commonProps = {
