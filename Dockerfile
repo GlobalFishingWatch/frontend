@@ -9,6 +9,7 @@ ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
+ENV HUSKY=0
 
 # Copy only what pnpm needs to install — no source files.
 # patches/ is required because pnpm-workspace.yaml references patch files
