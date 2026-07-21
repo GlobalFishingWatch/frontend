@@ -31,6 +31,7 @@ import {
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
 import {
+  getContextFilterOperatorsHash,
   getContextFiltersHash,
   hasSublayerFilters,
   supportDataFilterExtension,
@@ -316,6 +317,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)
+            const filterOperatorsHash = getContextFilterOperatorsHash(sublayer.filterOperators)
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any; dataviewId: string }>(
@@ -340,7 +342,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                   getFillColor: hexToDeckColor(sublayer.color, 0.7),
                   updateTriggers: {
                     getFillColor: [sublayer.color],
-                    getRadius: [filtersHash, zoom],
+                    getRadius: [filtersHash, filterOperatorsHash, zoom],
                     ...updateTrigger,
                   },
                 }

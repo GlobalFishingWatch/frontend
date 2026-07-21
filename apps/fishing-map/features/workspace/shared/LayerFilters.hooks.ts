@@ -291,10 +291,17 @@ export function useLayerFilterHandlers({
 
   const onRemoveFilterClick = (filterKey: string, selection: MultiSelectOption[]) => {
     const filterValue = selection?.length ? selection.map((f) => f.id) : null
-    const filters = dataview.config?.filters || {}
+    const filters = { ...(dataview.config?.filters || {}) }
+    const filterOperators = { ...(dataview.config?.filterOperators || {}) }
+    if (filterValue === null) {
+      delete filters[filterKey]
+      delete filterOperators[filterKey]
+    } else {
+      filters[filterKey] = filterValue
+    }
     onDataviewFilterChange({
       id: dataview.id,
-      config: { filters: { ...filters, [filterKey]: filterValue } },
+      config: { filters, filterOperators },
     })
     trackEvent({
       category: TrackCategory.ActivityData,
