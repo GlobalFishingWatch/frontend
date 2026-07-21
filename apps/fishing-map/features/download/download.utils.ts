@@ -1,6 +1,9 @@
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  LATEST_DATASETS_VMS,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -10,8 +13,6 @@ import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
-
-import { LATEST_DATASETS_VMS } from '../../../../libs/datasets-client/src/migrations/datasets.latest'
 
 import {
   getTemporalResolutionOptions,

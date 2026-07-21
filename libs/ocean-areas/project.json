@@ -6,7 +6,18 @@
   "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc"
+      "executor": "@nx/js:tsc",
+      "options": {
+        "clean": false
+      }
+    },
+    "update-data": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "pnpm update-data",
+        "cwd": "libs/ocean-areas"
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],
