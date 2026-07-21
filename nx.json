@@ -6,22 +6,6 @@
   "tasksRunnerOptions": {
     "default": {
       "options": {
-        "runtimeCacheInputs": [
-          "echo $VITE_PUBLIC_URL",
-          "echo $VITE_API_GATEWAY",
-          "echo $VITE_WORKSPACE_ENV",
-          "echo $VITE_REPORT_DAYS_LIMIT",
-          "echo $VITE_GOOGLE_MEASUREMENT_ID",
-          "echo $VITE_GOOGLE_TAG_MANAGER_ID",
-          "echo $VITE_GOOGLE_ANALYTICS_TEST_MODE",
-          "echo $NEXT_PUBLIC_URL",
-          "echo $NEXT_PUBLIC_API_GATEWAY",
-          "echo $NEXT_PUBLIC_WORKSPACE_ENV",
-          "echo $NEXT_PUBLIC_REPORT_DAYS_LIMIT",
-          "echo $NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
-          "echo $NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY",
-          "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE"
-        ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true
       }
@@ -96,7 +80,7 @@
     "@nx/vite:build": {
       "cache": true,
       "dependsOn": ["^build", "^dist"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production", "envVars"]
     },
     "dist": {
       "dependsOn": ["^dist"],
@@ -128,7 +112,7 @@
     "build": {
       "cache": true,
       "dependsOn": ["^build", "^dist"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production", "envVars"]
     },
     "@nx/vitest:test": {
       "cache": true,
@@ -192,6 +176,13 @@
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "envVars": [
+      { "env": "VITE_API_GATEWAY" },
+      { "env": "VITE_PUBLIC_URL" },
+      { "env": "VITE_WORKSPACE_ENV" },
+      { "env": "VITE_GOOGLE_MEASUREMENT_ID" },
+      { "env": "VITE_GOOGLE_TAG_MANAGER_ID" }
+    ],
     "sharedGlobals": [
       "{workspaceRoot}/nx.json",
       "{workspaceRoot}/babel.config.json",

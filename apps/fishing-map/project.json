@@ -135,7 +135,7 @@
     "build:app": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["production", "^production"],
+      "inputs": ["production", "^production", "envVars"],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "dependsOn": ["prepare-loaders"],
