@@ -56,6 +56,7 @@ export default defineConfig(({ command, mode }) => {
     devtools: command === 'serve',
     resolve: {
       tsconfigPaths: true,
+      dedupe: ['jotai'],
     },
     server: {
       port: 3003,
