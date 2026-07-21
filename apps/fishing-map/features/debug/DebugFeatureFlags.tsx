@@ -1,13 +1,13 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
-import { InputText, Switch } from '@globalfishingwatch/ui-components'
+import { Switch } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import {
   DebugOption,
@@ -15,7 +15,6 @@ import {
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
-  setDebugOption,
   toggleDebugOption,
   toggleFeatureFlag,
 } from './debug.slice'
@@ -29,6 +28,7 @@ const DebugFeatureFlags: React.FC = () => {
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -143,8 +143,8 @@ const DebugFeatureFlags: React.FC = () => {
           <div className={styles.header}>
             <Switch
               id="option_longline_sets_insight"
-              active={featureFlags.longlineSetsInsight}
-              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.LonglineSetsInsight))}
+              active={longlineSetsInsight ?? false}
+              onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
             />
             <label htmlFor="option_longline_sets_insight">
               <strong>Feature flag:</strong> Longline sets insight
