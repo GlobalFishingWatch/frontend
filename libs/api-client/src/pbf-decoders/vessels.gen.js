@@ -91,11 +91,8 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.data != null && message.data.length) {
-        writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
-        for (let i = 0; i < message.data.length; ++i) writer.sint32(message.data[i])
-        writer.ldelim()
-      }
+      if (message.data != null && message.data.length)
+        writer.uint32(/* id 1, wireType 2 =*/ 10).sint32s(message.data)
       if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
         for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
       return writer
@@ -143,8 +140,7 @@ export const vessels = ($root.vessels = (() => {
           case 1: {
             if (wireType === 2) {
               if (!(message.data && message.data.length)) message.data = []
-              let end2 = reader.uint32() + reader.pos
-              while (reader.pos < end2) message.data.push(reader.sint32())
+              reader.sint32s(message.data)
               continue
             }
             if (wireType !== 0) break
@@ -388,15 +384,35 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
+      if (
+        message.query != null &&
+        Object.hasOwnProperty.call(message, 'query') &&
+        message.query !== ''
+      )
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.query)
-      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
+      if (
+        message.total != null &&
+        Object.hasOwnProperty.call(message, 'total') &&
+        message.total !== 0
+      )
         writer.uint32(/* id 2, wireType 0 =*/ 16).uint32(message.total)
-      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
+      if (
+        message.limit != null &&
+        Object.hasOwnProperty.call(message, 'limit') &&
+        message.limit !== 0
+      )
         writer.uint32(/* id 3, wireType 0 =*/ 24).uint32(message.limit)
-      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
+      if (
+        message.offset != null &&
+        Object.hasOwnProperty.call(message, 'offset') &&
+        message.offset !== 0
+      )
         writer.uint32(/* id 4, wireType 0 =*/ 32).uint32(message.offset)
-      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
+      if (
+        message.nextOffset != null &&
+        Object.hasOwnProperty.call(message, 'nextOffset') &&
+        message.nextOffset !== 0
+      )
         writer.uint32(/* id 5, wireType 0 =*/ 40).uint32(message.nextOffset)
       if (message.entries != null && message.entries.length)
         for (let i = 0; i < message.entries.length; ++i)
@@ -792,21 +808,45 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id') && message.id !== '')
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
-      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+      if (
+        message.name != null &&
+        Object.hasOwnProperty.call(message, 'name') &&
+        message.name !== ''
+      )
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.name)
-      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end') && message.end !== '')
         writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.end)
-      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
+      if (
+        message.start != null &&
+        Object.hasOwnProperty.call(message, 'start') &&
+        message.start !== ''
+      )
         writer.uint32(/* id 4, wireType 2 =*/ 34).string(message.start)
-      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
+      if (
+        message.ssvid != null &&
+        Object.hasOwnProperty.call(message, 'ssvid') &&
+        message.ssvid !== ''
+      )
         writer.uint32(/* id 5, wireType 2 =*/ 42).string(message.ssvid)
-      if (message.callsign != null && Object.hasOwnProperty.call(message, 'callsign'))
+      if (
+        message.callsign != null &&
+        Object.hasOwnProperty.call(message, 'callsign') &&
+        message.callsign !== ''
+      )
         writer.uint32(/* id 6, wireType 2 =*/ 50).string(message.callsign)
-      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
+      if (
+        message.vesselId != null &&
+        Object.hasOwnProperty.call(message, 'vesselId') &&
+        message.vesselId !== ''
+      )
         writer.uint32(/* id 7, wireType 2 =*/ 58).string(message.vesselId)
-      if (message.tilesetId != null && Object.hasOwnProperty.call(message, 'tilesetId'))
+      if (
+        message.tilesetId != null &&
+        Object.hasOwnProperty.call(message, 'tilesetId') &&
+        message.tilesetId !== ''
+      )
         writer.uint32(/* id 8, wireType 2 =*/ 66).string(message.tilesetId)
       if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
         for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
@@ -1149,7 +1189,11 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
+      if (
+        message.dataset != null &&
+        Object.hasOwnProperty.call(message, 'dataset') &&
+        message.dataset !== ''
+      )
         writer.uint32(/* id 10, wireType 2 =*/ 82).string(message.dataset)
       if (message.results != null && message.results.length)
         for (let i = 0; i < message.results.length; ++i)
@@ -1481,15 +1525,35 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.query != null && Object.hasOwnProperty.call(message, 'query'))
+      if (
+        message.query != null &&
+        Object.hasOwnProperty.call(message, 'query') &&
+        message.query !== ''
+      )
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.query)
-      if (message.total != null && Object.hasOwnProperty.call(message, 'total'))
+      if (
+        message.total != null &&
+        Object.hasOwnProperty.call(message, 'total') &&
+        message.total !== 0
+      )
         writer.uint32(/* id 2, wireType 0 =*/ 16).uint32(message.total)
-      if (message.limit != null && Object.hasOwnProperty.call(message, 'limit'))
+      if (
+        message.limit != null &&
+        Object.hasOwnProperty.call(message, 'limit') &&
+        message.limit !== 0
+      )
         writer.uint32(/* id 3, wireType 0 =*/ 24).uint32(message.limit)
-      if (message.offset != null && Object.hasOwnProperty.call(message, 'offset'))
+      if (
+        message.offset != null &&
+        Object.hasOwnProperty.call(message, 'offset') &&
+        message.offset !== 0
+      )
         writer.uint32(/* id 4, wireType 0 =*/ 32).uint32(message.offset)
-      if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
+      if (
+        message.nextOffset != null &&
+        Object.hasOwnProperty.call(message, 'nextOffset') &&
+        message.nextOffset !== 0
+      )
         writer.uint32(/* id 5, wireType 0 =*/ 40).uint32(message.nextOffset)
       if (message.entries != null && message.entries.length)
         for (let i = 0; i < message.entries.length; ++i)
@@ -1926,19 +1990,39 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id') && message.id !== '')
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
-      if (message.name != null && Object.hasOwnProperty.call(message, 'name'))
+      if (
+        message.name != null &&
+        Object.hasOwnProperty.call(message, 'name') &&
+        message.name !== ''
+      )
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.name)
-      if (message.imo != null && Object.hasOwnProperty.call(message, 'imo'))
+      if (message.imo != null && Object.hasOwnProperty.call(message, 'imo') && message.imo !== '')
         writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.imo)
-      if (message.ssvid != null && Object.hasOwnProperty.call(message, 'ssvid'))
+      if (
+        message.ssvid != null &&
+        Object.hasOwnProperty.call(message, 'ssvid') &&
+        message.ssvid !== ''
+      )
         writer.uint32(/* id 4, wireType 2 =*/ 34).string(message.ssvid)
-      if (message.vesselId != null && Object.hasOwnProperty.call(message, 'vesselId'))
+      if (
+        message.vesselId != null &&
+        Object.hasOwnProperty.call(message, 'vesselId') &&
+        message.vesselId !== ''
+      )
         writer.uint32(/* id 5, wireType 2 =*/ 42).string(message.vesselId)
-      if (message.type != null && Object.hasOwnProperty.call(message, 'type'))
+      if (
+        message.type != null &&
+        Object.hasOwnProperty.call(message, 'type') &&
+        message.type !== ''
+      )
         writer.uint32(/* id 6, wireType 2 =*/ 50).string(message.type)
-      if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
+      if (
+        message.dataset != null &&
+        Object.hasOwnProperty.call(message, 'dataset') &&
+        message.dataset !== ''
+      )
         writer.uint32(/* id 7, wireType 2 =*/ 58).string(message.dataset)
       if (message.authorizations != null && message.authorizations.length)
         for (let i = 0; i < message.authorizations.length; ++i)
@@ -2490,11 +2574,19 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.id != null && Object.hasOwnProperty.call(message, 'id'))
+      if (message.id != null && Object.hasOwnProperty.call(message, 'id') && message.id !== '')
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.id)
-      if (message.label != null && Object.hasOwnProperty.call(message, 'label'))
+      if (
+        message.label != null &&
+        Object.hasOwnProperty.call(message, 'label') &&
+        message.label !== ''
+      )
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.label)
-      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+      if (
+        message.value != null &&
+        Object.hasOwnProperty.call(message, 'value') &&
+        !Object.is(message.value, 0)
+      )
         writer.uint32(/* id 3, wireType 5 =*/ 29).float(message.value)
       if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
         for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
@@ -2555,7 +2647,7 @@ export const vessels = ($root.vessels = (() => {
           }
           case 3: {
             if (wireType !== 5) break
-            if ((value = reader.float()) !== 0) message.value = value
+            if (!Object.is((value = reader.float()), 0)) message.value = value
             else delete message.value
             continue
           }
@@ -2625,7 +2717,8 @@ export const vessels = ($root.vessels = (() => {
       if (object.label != null)
         if (typeof object.label !== 'string' || object.label.length)
           message.label = String(object.label)
-      if (object.value != null) if (Number(object.value) !== 0) message.value = Number(object.value)
+      if (object.value != null)
+        if (!Object.is(Number(object.value), 0)) message.value = Number(object.value)
       return message
     }
 
@@ -2775,11 +2868,19 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.start != null && Object.hasOwnProperty.call(message, 'start'))
+      if (
+        message.start != null &&
+        Object.hasOwnProperty.call(message, 'start') &&
+        message.start !== ''
+      )
         writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.start)
-      if (message.end != null && Object.hasOwnProperty.call(message, 'end'))
+      if (message.end != null && Object.hasOwnProperty.call(message, 'end') && message.end !== '')
         writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.end)
-      if (message.value != null && Object.hasOwnProperty.call(message, 'value'))
+      if (
+        message.value != null &&
+        Object.hasOwnProperty.call(message, 'value') &&
+        message.value !== ''
+      )
         writer.uint32(/* id 3, wireType 2 =*/ 26).string(message.value)
       if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
         for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])

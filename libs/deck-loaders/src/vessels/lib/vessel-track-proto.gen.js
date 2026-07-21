@@ -100,12 +100,9 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.value != null && message.value.length) {
-        writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
-        for (let i = 0; i < message.value.length; ++i) writer.float(message.value[i])
-        writer.ldelim()
-      }
-      if (message.size != null && Object.hasOwnProperty.call(message, 'size'))
+      if (message.value != null && message.value.length)
+        writer.uint32(/* id 1, wireType 2 =*/ 10).floats(message.value)
+      if (message.size != null && Object.hasOwnProperty.call(message, 'size') && message.size !== 0)
         writer.uint32(/* id 2, wireType 0 =*/ 16).uint32(message.size)
       if (message.$unknowns != null && Object.hasOwnProperty.call(message, '$unknowns'))
         for (let i = 0; i < message.$unknowns.length; ++i) writer.raw(message.$unknowns[i])
@@ -155,8 +152,7 @@ export const vessels = ($root.vessels = (() => {
           case 1: {
             if (wireType === 2) {
               if (!(message.value && message.value.length)) message.value = []
-              let end2 = reader.uint32() + reader.pos
-              while (reader.pos < end2) message.value.push(reader.float())
+              reader.floats(message.value)
               continue
             }
             if (wireType !== 5) break
@@ -823,13 +819,14 @@ export const vessels = ($root.vessels = (() => {
       if (!writer) writer = $Writer.create()
       if (_depth === undefined) _depth = 0
       if (_depth > $util.recursionLimit) throw Error('max depth exceeded')
-      if (message.length != null && Object.hasOwnProperty.call(message, 'length'))
+      if (
+        message.length != null &&
+        Object.hasOwnProperty.call(message, 'length') &&
+        message.length !== 0
+      )
         writer.uint32(/* id 1, wireType 0 =*/ 8).uint32(message.length)
-      if (message.startIndices != null && message.startIndices.length) {
-        writer.uint32(/* id 2, wireType 2 =*/ 18).fork()
-        for (let i = 0; i < message.startIndices.length; ++i) writer.uint32(message.startIndices[i])
-        writer.ldelim()
-      }
+      if (message.startIndices != null && message.startIndices.length)
+        writer.uint32(/* id 2, wireType 2 =*/ 18).uint32s(message.startIndices)
       if (message.attributes != null && Object.hasOwnProperty.call(message, 'attributes'))
         $root.vessels.DeckTrackAttributeStruct.encode(
           message.attributes,
@@ -890,8 +887,7 @@ export const vessels = ($root.vessels = (() => {
           case 2: {
             if (wireType === 2) {
               if (!(message.startIndices && message.startIndices.length)) message.startIndices = []
-              let end2 = reader.uint32() + reader.pos
-              while (reader.pos < end2) message.startIndices.push(reader.uint32())
+              reader.uint32s(message.startIndices)
               continue
             }
             if (wireType !== 0) break
