@@ -18,7 +18,11 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./base.css": "./src/base.css"
+    "./base.css": "./src/base.css",
+    "./*": {
+      "types": "./dist/*/index.d.ts",
+      "default": "./dist/*/index.js"
+    }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
