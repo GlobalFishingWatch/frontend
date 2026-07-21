@@ -203,19 +203,63 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     })
   }
 
+  _getTrackFeatureValueProperty = (
+    feature: UserTrackFeature,
+    featureIndex: number,
+    pathIndex: number,
+    property: string
+  ): string | number | undefined => {
+    if (!property || !feature) {
+      return undefined
+    }
+    const properties = feature.properties as any
+    const featureValue = properties?.[property]
+    if (featureValue !== undefined) {
+      return featureValue
+    }
+    const coordinateValues = properties?.coordinateProperties?.[property]
+    if (coordinateValues === undefined) {
+      return undefined
+    }
+    if (Array.isArray(coordinateValues) && Array.isArray(coordinateValues[0])) {
+      const previousLength =
+        featureIndex > 0 ? (this.state?.rawDataIndexes?.[featureIndex - 1]?.length ?? 0) : 0
+      const lineValues = coordinateValues[pathIndex - previousLength] ?? coordinateValues.flat()
+      return Array.isArray(lineValues) ? lineValues[0] : lineValues
+    }
+    return Array.isArray(coordinateValues) ? coordinateValues[0] : coordinateValues
+  }
+
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const feature = this.state?.rawData?.features[info.index]
+    const featureIndex =
+      info.index >= 0
+        ? this.state?.rawDataIndexes?.find(({ length }) => info.index < length)?.index
+        : undefined
+    const feature =
+      featureIndex !== undefined ? this.state?.rawData?.features[featureIndex] : undefined
     // TODO: support multiple sublayers
     const layer = this.props.layers?.[0]
     const sublayer = layer?.sublayers?.[0]
     const color = sublayer?.color
     if (feature) {
+      const valueProperties = layer.valueProperties || []
+      const properties = valueProperties.reduce(
+        (acc, property) => {
+          acc[property] = this._getTrackFeatureValueProperty(
+            feature,
+            featureIndex as number,
+            info.index,
+            property
+          )
+          return acc
+        },
+        {} as Record<string, string | number | undefined>
+      )
       const object = {
         id: this.props.id,
-        value: layer.valueProperties?.length
-          ? feature?.properties?.coordinateProperties?.[layer.valueProperties[0]]?.[info.index]
-          : undefined,
-        title: getContextId(feature as ContextFeature, layer.idProperty) || info.index,
+        properties,
+        value: valueProperties.length ? properties[valueProperties[0]] : undefined,
+        title: getContextId(feature as ContextFeature, layer.idProperty) || featureIndex,
         color,
         layerId: this.props.id,
         datasetId: this.props.layers[0].datasetId,

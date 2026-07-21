@@ -105,10 +105,6 @@ const getFilteredCoordinates = ({
           coordinateIndex: index,
           multiLineStringIndex,
         })
-        if (currentValue === undefined) {
-          // This means the property is not defined for this coordinate so we can't filter by it
-          return true
-        }
         if (min !== undefined && max !== undefined) {
           if (currentValue === undefined) {
             return false
@@ -270,26 +266,42 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
           return filteredFeatures
         }
 
-        const coordinateProperties = [...filterIds, ...includeCoordinateProperties].reduce(
+        const propertyIds = [...new Set([...filterIds, ...includeCoordinateProperties])]
+        const keptCoordinates: Position[][] = []
+        const coordinateProperties = propertyIds.reduce(
           (acc, property) => {
-            acc[property] = filteredLines.flatMap(
-              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
-            )
+            acc[property] = []
             return acc
           },
           {} as Record<string, (string | number)[][]>
         )
 
+        filteredLines.forEach((line) => {
+          if (!line.coordinates) {
+            return
+          }
+          line.coordinates.forEach((segment, segmentIndex) => {
+            if (segment.length <= 1) {
+              return
+            }
+            keptCoordinates.push(segment)
+            propertyIds.forEach((property) => {
+              coordinateProperties[property].push(
+                (line.coordinateProperties as MultiLineCoordinateProperties)[property][segmentIndex]
+              )
+            })
+          })
+        })
+
+        if (!keptCoordinates.length) {
+          return filteredFeatures
+        }
+
         filteredFeatures.push({
           type: 'Feature',
           geometry: {
             type: 'MultiLineString',
-            coordinates: filteredLines.flatMap((line) => {
-              if (!line.coordinates) {
-                return []
-              }
-              return line.coordinates.filter((c) => c.length > 1)
-            }),
+            coordinates: keptCoordinates,
           } as MultiLineString,
           properties: {
             ...feature.properties,
@@ -297,7 +309,7 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
           } as UserTrackFeatureProperties,
         })
       } else if (hasPropertiesValues) {
-        const featureInFilter = isFeatureInFilters(feature, filters)
+        const featureInFilter = isFeatureInFilters(feature, filters, filterOperators)
         if (featureInFilter) {
           filteredFeatures.push(feature as UserTrackFeature)
         }
