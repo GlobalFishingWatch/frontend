@@ -102,6 +102,8 @@ export default defineConfig(({ command, mode }) => {
           project: 'frontend',
           authToken: env.SENTRY_AUTH_TOKEN,
           telemetry: false,
+          // .git excluded from Docker build context (.dockerignore)
+          release: { name: env.COMMIT_SHA, setCommits: false },
         }),
     ],
     envPrefix: ['VITE_', 'i18n_'],
