@@ -6,6 +6,7 @@ import type { InsightType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { FeatureFlag, selectFeatureFlags } from 'features/debug/debug.slice'
 import InsightMOUList from 'features/vessel/insights/InsightMOUList'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 
@@ -21,6 +22,7 @@ import type { VesselInsight } from './insights.config'
 
 const InsightWrapper = ({ insight }: { insight: VesselInsight }) => {
   const { start, end } = useSelector(selectTimeRange)
+  const featureFlags = useSelector(selectFeatureFlags)
   const vessel = useSelector(selectVesselInfoData)
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -55,7 +57,7 @@ const InsightWrapper = ({ insight }: { insight: VesselInsight }) => {
     )
   }
   if (insight === 'LONGLINE') {
-    return <InsightLongline />
+    return featureFlags[FeatureFlag.LonglineSetsInsight] ? <InsightLongline /> : null
   }
   if (insight === 'VESSEL-IDENTITY-IUU-VESSEL-LIST') {
     return <InsightIUU isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
