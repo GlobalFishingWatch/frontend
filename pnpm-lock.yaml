@@ -320,8 +320,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       protobufjs:
-        specifier: ^8.5.0
-        version: 8.6.3
+        specifier: ^8.6.6
+        version: 8.6.6
       qs:
         specifier: 6.15.2
         version: 6.15.2
@@ -793,7 +793,7 @@ importers:
         version: 16.4.2(@typescript/typescript6@6.0.2)
       protobufjs-cli:
         specifier: 2.5.0
-        version: 2.5.0(protobufjs@8.6.3)
+        version: 2.5.0(protobufjs@8.6.6)
       purgecss:
         specifier: 8.0.0
         version: 8.0.0
@@ -866,7 +866,7 @@ importers:
         version: 10.0.1(eslint@10.4.1(jiti@2.7.0))
       '@nx/eslint-plugin':
         specifier: 22.x
-        version: 22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.60.1(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0)))(@typescript/typescript6@6.0.2)(eslint-config-prettier@10.1.8(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
+        version: 22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.60.1(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0)))(@typescript/typescript6@6.0.2)(debug@4.4.3)(eslint-config-prettier@10.1.8(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
       eslint:
         specifier: 10.x
         version: 10.4.1(jiti@2.7.0)
@@ -12787,8 +12787,8 @@ packages:
     resolution: {integrity: sha512-+k0vdJKNdW+Vu+dYe8tZA/VvQb6XKNWexC6URwBFXxNnjLJz9nQJCemGyNgRAWD+B7+nGNc9qMPGwcD7s4nzUw==}
     engines: {node: '>=12.0.0'}
 
-  protobufjs@8.6.3:
-    resolution: {integrity: sha512-alQyzT0j401LGBtwsqu6uprjR6pfNH1UJf9N6GBFMjIcd+HzTe0/HrjAbFCqun+zvnfLarrxAtMM2xvZ+kFZ5A==}
+  protobufjs@8.6.6:
+    resolution: {integrity: sha512-RkLIhE+Tdc2Kpq1F4Uw6OnpAXPca7B+GSDov/GqGCqNBpVyDskQ9yReZfgM+C7xw9AAix873iQZXbBWXj6NzYQ==}
     engines: {node: '>=12.0.0'}
 
   protocol-buffers-schema@3.6.1:
@@ -18743,13 +18743,13 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@nx/devkit@22.7.5(nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))':
+  '@nx/devkit@22.7.5(nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3))':
     dependencies:
       '@zkochan/js-yaml': 0.0.7
       ejs: 5.0.1
       enquirer: 2.3.6
       minimatch: 10.2.5
-      nx: 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))
+      nx: 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)
       semver: 7.8.5
       tslib: 2.8.1
       yargs-parser: 21.1.1
@@ -18807,10 +18807,10 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/eslint-plugin@22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.60.1(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0)))(@typescript/typescript6@6.0.2)(eslint-config-prettier@10.1.8(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))':
+  '@nx/eslint-plugin@22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(@typescript-eslint/parser@8.60.1(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0)))(@typescript/typescript6@6.0.2)(debug@4.4.3)(eslint-config-prettier@10.1.8(eslint@10.4.1(jiti@2.7.0)))(eslint@10.4.1(jiti@2.7.0))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))':
     dependencies:
       '@nx/devkit': 22.7.5(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
-      '@nx/js': 22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
+      '@nx/js': 22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
       '@phenomnomnominal/tsquery': 6.2.0(@typescript/typescript6@6.0.2)
       '@typescript-eslint/parser': 8.60.1(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0))
       '@typescript-eslint/type-utils': 8.61.0(@typescript/typescript6@6.0.2)(eslint@10.4.1(jiti@2.7.0))
@@ -18917,7 +18917,7 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/js@22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))':
+  '@nx/js@22.7.5(@babel/traverse@7.29.7)(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))':
     dependencies:
       '@babel/core': 7.29.7
       '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7)
@@ -18927,7 +18927,7 @@ snapshots:
       '@babel/preset-typescript': 7.29.7(@babel/core@7.29.7)
       '@babel/runtime': 7.29.7
       '@nx/devkit': 22.7.5(nx@23.1.0(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
-      '@nx/workspace': 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))
+      '@nx/workspace': 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)
       '@zkochan/js-yaml': 0.0.7
       babel-plugin-const-enum: 1.2.0(@babel/core@7.29.7)
       babel-plugin-macros: 3.1.0
@@ -19275,13 +19275,13 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/workspace@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))':
+  '@nx/workspace@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)':
     dependencies:
-      '@nx/devkit': 22.7.5(nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)))
+      '@nx/devkit': 22.7.5(nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3))
       '@zkochan/js-yaml': 0.0.7
       chalk: 4.1.2
       enquirer: 2.3.6
-      nx: 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))
+      nx: 22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3)
       picomatch: 4.0.4
       semver: 7.8.5
       tslib: 2.8.1
@@ -24413,7 +24413,7 @@ snapshots:
 
   axe-core@4.12.1: {}
 
-  axios@1.16.0:
+  axios@1.16.0(debug@4.4.3):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
       form-data: 4.0.5
@@ -29568,7 +29568,7 @@ snapshots:
 
   nwsapi@2.2.24: {}
 
-  nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23)):
+  nx@22.7.5(@swc-node/register@1.11.1(@swc/core@1.15.41(@swc/helpers@0.5.23))(@swc/types@0.1.27)(@typescript/typescript6@6.0.2))(@swc/core@1.15.41(@swc/helpers@0.5.23))(debug@4.4.3):
     dependencies:
       '@emnapi/core': 1.4.5
       '@emnapi/runtime': 1.4.5
@@ -29583,7 +29583,7 @@ snapshots:
       ansi-styles: 4.3.0
       argparse: 2.0.1
       asynckit: 0.4.0
-      axios: 1.16.0
+      axios: 1.16.0(debug@4.4.3)
       balanced-match: 4.0.3
       base64-js: 1.5.1
       bl: 4.1.0
@@ -30647,7 +30647,7 @@ snapshots:
 
   property-information@7.2.0: {}
 
-  protobufjs-cli@2.5.0(protobufjs@8.6.3):
+  protobufjs-cli@2.5.0(protobufjs@8.6.6):
     dependencies:
       chalk: 4.1.2
       escodegen: 1.14.3
@@ -30656,7 +30656,7 @@ snapshots:
       glob: 8.1.0
       jsdoc: 4.0.5
       minimist: 1.2.8
-      protobufjs: 8.6.3
+      protobufjs: 8.6.6
       semver: 7.8.4
       tmp: 0.2.7
       uglify-js: 3.19.3
@@ -30692,7 +30692,7 @@ snapshots:
       '@types/node': 25.9.1
       long: 5.3.2
 
-  protobufjs@8.6.3:
+  protobufjs@8.6.6:
     dependencies:
       long: 5.3.2
 
