@@ -9,99 +9,15 @@ concurrency:
   group: pr-preview-prod-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-env:
-  APP: fishing-map
-  PREVIEW_LABEL: deploy-preview-prod
-  SERVICE_NAME: pr-${{ github.event.pull_request.number }}-pro-ui-fishing-map
-  IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/fishing-map:pr-${{ github.event.pull_request.number }}-pro
-
 jobs:
-  deploy-preview:
-    name: Deploy Preview
-    runs-on: ubuntu-latest
-    if: |
-      github.event.action != 'closed' &&
-      (
-        (github.event.action == 'labeled' && github.event.label.name == 'deploy-preview-prod') ||
-        (github.event.action != 'labeled' && github.event.action != 'unlabeled' && contains(github.event.pull_request.labels.*.name, 'deploy-preview-prod'))
-      )
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Build and push
-        uses: ./.github/actions/build-and-push
-        with:
-          app: ${{ env.APP }}
-          image: ${{ env.IMAGE }}
-          config: .github/apps/production.yml
-          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-
-      - name: Deploy
-        id: deploy
-        uses: ./.github/actions/deploy-cloudrun
-        with:
-          app: ${{ env.APP }}
-          image: ${{ env.IMAGE }}
-          config: .github/apps/production.yml
-          service-name-prefix: pr-${{ github.event.pull_request.number }}-pro-ui
-          cloudrun-project: gfw-production
-          cloudrun-service-account: frontend-pro@gfw-production.iam.gserviceaccount.com
-
-      - name: Comment preview URL on PR
-        uses: marocchino/sticky-pull-request-comment@v3
-        with:
-          header: preview-${{ env.APP }}-prod
-          message: |
-            ## 🚀 Preview deployed: ${{ env.APP }} (production config)
-
-            ${{ steps.deploy.outputs.url }}
-
-            Built from ${{ github.event.pull_request.head.sha }}. Remove the `${{ env.PREVIEW_LABEL }}` label or close this PR to tear it down.
-
-  teardown-preview:
-    name: Teardown Preview
-    runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'unlabeled' && github.event.label.name == 'deploy-preview-prod') ||
-      (github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, 'deploy-preview-prod'))
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v3
-
-      - name: Delete preview Cloud Run service
-        run: |
-          gcloud run services delete "${{ env.SERVICE_NAME }}" \
-            --project gfw-production \
-            --region us-central1 \
-            --quiet || echo "Service ${{ env.SERVICE_NAME }} not found, skipping"
-
-      - name: Remove preview comment
-        uses: marocchino/sticky-pull-request-comment@v3
-        with:
-          header: preview-${{ env.APP }}-prod
-          delete: true
+  pr-preview:
+    uses: ./.github/workflows/_pr-preview.yml
+    with:
+      preview_label: deploy-preview-prod
+      config: .github/apps/production.yml
+      cloudrun_project: gfw-production
+      cloudrun_service_account: frontend-pro@gfw-production.iam.gserviceaccount.com
+      service_name_prefix: pr-${{ github.event.pull_request.number }}-pro-ui
+      image: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/fishing-map:pr-${{ github.event.pull_request.number }}-pro
+      comment_header: preview-fishing-map-prod
+    secrets: inherit
