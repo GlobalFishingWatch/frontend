@@ -9,7 +9,7 @@
       "executor": "nx:run-commands",
       "continuous": true,
       "options": {
-        "command": "nx watch --projects port-labeler --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
+        "command": "nx watch --projects port-labeler --includeDependencies -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
       }
     },
     "deploy": {
