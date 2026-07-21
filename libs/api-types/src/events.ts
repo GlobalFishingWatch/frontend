@@ -189,6 +189,7 @@ export type FishingEvent = {
   averageDurationHours: number
   // Only available in longline fishing events datasets
   dayNightCategory?: FishingEventDayNightCategory
+  fractionAtNight?: number
   localStartHours?: number
   localEndHours?: number
   minTimeToDawnHrs?: number

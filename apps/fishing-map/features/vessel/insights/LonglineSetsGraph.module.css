@@ -32,14 +32,18 @@
   background-color: var(--color-terthiary-blue);
 }
 
-.night {
-  background-color: #000;
+.entirelyNight {
+  background-color: #39394a;
 }
 
 .mostlyNight {
-  background-color: #0375b1;
+  background-color: #0673b3;
 }
 
-.day {
-  background-color: #f4b145;
+.mostlyDay {
+  background-color: #da8902;
+}
+
+.entirelyDay {
+  background-color: #ffbd52;
 }
