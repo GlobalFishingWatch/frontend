@@ -26,7 +26,7 @@
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
     "@globalfishingwatch/datasets-client": "workspace:^",
-    "@nx/vite": "22.x",
+    "@nx/vite": "23.x",
     "@reduxjs/toolkit": "2.x",
     "es-toolkit": "1.x",
     "esbuild": "0.x",
