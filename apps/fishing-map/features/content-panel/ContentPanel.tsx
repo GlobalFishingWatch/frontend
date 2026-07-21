@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
+import { IS_CHATBOT_ENABLED } from 'data/config'
 import ChatContent from 'features/content-panel/ChatContent'
 import DataTerminologyContent from 'features/content-panel/DataTerminologyContent'
 import InfoContainer from 'features/content-panel/InfoContainer'
@@ -98,7 +99,7 @@ function ContentPanel({
       {sidePanelContent === 'datasets' && <InfoContainer />}
       {sidePanelContent === 'userDataset' && <UserDatasetContent />}
       {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
-      {sidePanelContent === 'chat' && <ChatContent />}
+      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContent />}
     </div>
   )
 }

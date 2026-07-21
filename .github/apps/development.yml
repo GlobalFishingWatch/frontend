@@ -15,6 +15,7 @@ fishing-map:
       VITE_REPORT_DAYS_LIMIT: '366'
       VITE_PIPE_DATASET_VERSION: '4'
       VITE_REALTIME_ENABLED: 'false'
+      VITE_CHATBOT_ENABLED: 'false'
     secrets:
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:

@@ -45,6 +45,7 @@ export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID 
   | undefined
 
 export const IS_REALTIME_ENABLED = import.meta.env.VITE_REALTIME_ENABLED === 'true'
+export const IS_CHATBOT_ENABLED = import.meta.env.VITE_CHATBOT_ENABLED === 'true'
 
 // Local storage keys
 export const HINTS = 'hints'

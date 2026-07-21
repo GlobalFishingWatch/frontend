@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { IS_CHATBOT_ENABLED } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
@@ -102,15 +103,17 @@ function HelpHub() {
             {t((t) => t.common.userGuide)}
           </button>
         </li>
-        <li>
-          <button
-            type="button"
-            className={cx(styles.link)}
-            onClick={() => openSidePanel({ type: 'chat' })}
-          >
-            {t((t) => t.common.assistant)}
-          </button>
-        </li>
+        {IS_CHATBOT_ENABLED && (
+          <li>
+            <button
+              type="button"
+              className={cx(styles.link)}
+              onClick={() => openSidePanel({ type: 'chat' })}
+            >
+              {t((t) => t.common.assistant)}
+            </button>
+          </li>
+        )}
         <li>
           <a
             href={getVideoTutorialsLink()}
