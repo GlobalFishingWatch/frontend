@@ -11,6 +11,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
+import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import VesselGroupReportInsightFishing from './VGRInsightFishing'
 import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'
@@ -26,6 +27,7 @@ const VesselGroupReportInsights = () => {
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
 
   if (datasetsWithoutRelatedEvents.length >= 1) {
     return (
@@ -65,7 +67,9 @@ const VesselGroupReportInsights = () => {
       </p>
       <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />
-      <VesselGroupReportInsightLongline skip={!vesselDatasets.length} />
+      {longlineSetsInsight && (
+        <VesselGroupReportInsightLongline skip={!vesselDatasets.length} />
+      )}
       <VesselGroupReportInsightIUU skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFlagChange skip={!vesselDatasets.length} />
       <VesselGroupReportInsightMOU skip={!vesselDatasets.length} />
