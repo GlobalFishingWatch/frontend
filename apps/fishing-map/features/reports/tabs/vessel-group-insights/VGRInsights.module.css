@@ -18,6 +18,12 @@
   margin-block: var(--space-XS);
 }
 
+.vesselRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
 .link {
   text-decoration: underline;
 }
@@ -37,6 +43,7 @@
 .vesselName {
   display: flex;
   align-items: center;
+  gap: var(--space-XS);
 }
 
 .insightContainer {
