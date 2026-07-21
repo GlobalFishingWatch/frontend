@@ -190,7 +190,7 @@ export abstract class UserBaseLayer<
     if (sublayer && hasSublayerFilters(sublayer)) {
       if (
         !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
-        !isFeatureInFilters(object, Object.keys(sublayer.filters || {}), sublayer?.filterOperators)
+        !isFeatureInFilters(object, sublayer.filters, sublayer?.filterOperators)
       ) {
         return { ...info, object: undefined }
       }
@@ -302,26 +302,12 @@ export abstract class UserBaseLayer<
 
   _getSublayerFilterExtensionProps(sublayer: ContextSubLayerConfig): FilterExtensionProps {
     if (hasSublayerFilters(sublayer) && supportDataFilterExtension(sublayer)) {
-      const filterEntries = Object.entries(getValidSublayerFilters(sublayer)) as Entries<
-        typeof sublayer.filters
-      >
-      const hasMultipleFilters = filterEntries.length > 1
-
+      const validFilters = getValidSublayerFilters(sublayer)
       return {
-        extensions: [
-          new DataFilterExtension({
-            filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
-          }),
-        ],
-        filterRange: hasMultipleFilters
-          ? filterEntries.map(() => [1, 1] as [number, number])
-          : ([1, 1] as [number, number]),
-        getFilterValue: (d: UserLayerFeature) => {
-          const filters = filterEntries.map(([id, values]) =>
-            isFeatureInFilter(d, { id, values, operator: sublayer.filterOperators?.[id] }) ? 1 : 0
-          )
-          return hasMultipleFilters ? filters : filters[0]
-        },
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
+        filterRange: [1, 1] as [number, number],
+        getFilterValue: (d: UserLayerFeature) =>
+          isFeatureInFilters(d, validFilters, sublayer.filterOperators) ? 1 : 0,
       }
     }
     return {} as ReturnType<typeof this._getSublayerFilterExtensionProps>
