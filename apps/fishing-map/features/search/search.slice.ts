@@ -24,7 +24,6 @@ import {
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 
-import { IS_RANDOM_FOREST_ENABLED } from 'data/config'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
@@ -153,16 +152,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const effectiveUrl = IS_RANDOM_FOREST_ENABLED
-          ? url.replace('identity%3Av4.0', 'identity-vi-653%3Av1.0')
-          : url
-        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(
-          effectiveUrl,
-          {
-            signal,
-            cache: 'no-cache',
-          }
-        )
+        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
+          signal,
+          cache: 'no-cache',
+        })
         // Not removing duplicates for GFWStaff so they can compare other VS fishing vessels
         const uniqSearchResults = gfwUser
           ? searchResults.entries
