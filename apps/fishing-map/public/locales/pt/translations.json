@@ -233,6 +233,7 @@
     "hideAllHelpHints": "Ignorar Todos",
     "hideHelpHint": "Ignorar",
     "hints": "Precisa de ajuda? Procure nesses pontos",
+    "historical": "Historical",
     "hour": "Hora",
     "hour_one": "Hora",
     "hour_many": "horas",
@@ -249,6 +250,9 @@
     "latestDays_one": "Último {{count}} dia",
     "latestDays_many": "Latest {{count}} days",
     "latestDays_other": "Últimos {{count}} dias",
+    "latestHours_one": "last {{count}} hour",
+    "latestHours_many": "last {{count}} hours",
+    "latestHours_other": "last {{count}} hours",
     "latitude": "Latitude",
     "layerLibrary": "Biblioteca de camadas",
     "layerList": "Lista de camadas",
@@ -262,6 +266,8 @@
     "m/s": "m/s",
     "map": "Mapa",
     "matchedVessels": "Embarcações correspondentes",
+    "messages_one": "message",
+    "messages_other": "messages",
     "meters": "metros",
     "minus": "minus",
     "minute": "minuto",
@@ -294,6 +300,7 @@
     "points_other": "points",
     "presence": "Presença",
     "previously": "Anteriormente",
+    "realTime": "Real time",
     "report": "Relatório",
     "reports": "Relatórios",
     "resetHelpHints": "Mostrar novamente todas as dicas de ajuda",
@@ -951,7 +958,8 @@
     "disablePlaybackVesselGroups": "Não há suporte para reprodução de camadas de grupo de navios",
     "fitOnThisDates": "Ajuste o intervalo de tempo a estas datas",
     "focusOnThisDay": "Focar o intervalo de tempo neste dia",
-    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de {{number}} navios"
+    "maxTracksNumber": "Detalhes do rastreamento não disponíveis para mais de {{number}} navios",
+    "nextRealTimeUpdate": "Next data update at {{time}}"
   },
   "timebarSettings": {
     "activityDisabled": "Selecione pelo menos uma camada de atividade",
@@ -1278,6 +1286,20 @@
         "black": "preto",
         "grey": "cinza"
       },
+      "longline": "Longline settings at day and night",
+      "longlineEntirelyDaySets_one": "{{count}} day set",
+      "longlineEntirelyDaySets_many": "{{count}} day sets",
+      "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyNightSets_one": "{{count}} night set",
+      "longlineEntirelyNightSets_many": "{{count}} night sets",
+      "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEventsEmpty": "No longline sets detected",
+      "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_many": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_many": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
       "MOULists": "Listas de MOU de Tóquio e Paris",
       "MOUListsEmpty": "Embarcação com uma bandeira/bandeiras não presente nas listas negra ou cinza do MOU de Tóquio ou Paris",
       "MOUParisBlackListsCount": "Bandeira presente na lista negra do MOU de Paris ({{flags}})",
@@ -1495,7 +1517,10 @@
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcações detectadas em AMPs de pesca proibida",
       "gaps_one": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado",
       "gaps_many": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado"
+      "gaps_other": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado",
+      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
+      "longline_many": "{{count}} longline sets from {{vessels}} vessels detected",
+      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
     }
   },
   "workspace": {
