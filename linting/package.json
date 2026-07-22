@@ -56,7 +56,7 @@
     "typescript-eslint": "8.x"
   },
   "peerDependencies": {
-    "@nx/eslint-plugin": "22.x"
+    "@nx/eslint-plugin": "23.x"
   },
   "peerDependenciesMeta": {
     "@nx/eslint-plugin": {

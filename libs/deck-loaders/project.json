@@ -8,6 +8,7 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
+      "dependsOn": ["^dist"],
       "outputs": [
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
@@ -19,7 +20,7 @@
           "pbjs src/vessels/lib/vessel-track.proto -t static-module -w esm -r gfwDeckVessels -o src/vessels/lib/vessel-track-proto.gen.js",
           "pbts src/vessels/lib/vessel-track-proto.gen.js -o src/vessels/lib/vessel-track-proto.gen.d.ts",
           "prettier --write src/vessels/lib/vessel-track-proto.gen.js src/vessels/lib/vessel-track-proto.gen.d.ts --config ../../.prettierrc.js",
-          "tsc --noEmit -p tsconfig.lib.json",
+          "tsc --noEmit -p tsconfig.lib.json --tsBuildInfoFile ./tsconfig.check.tsbuildinfo",
           "shx mkdir -p dist/vessels/lib",
           "shx cp src/vessels/lib/vessel-track-proto.gen.js dist/vessels/lib/",
           "shx cp src/vessels/lib/vessel-track-proto.gen.d.ts dist/vessels/lib/"
@@ -29,7 +30,10 @@
     },
     "dist": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["proto:generate", "^dist"]
+      "dependsOn": ["proto:generate", "^dist"],
+      "options": {
+        "clean": false
+      }
     },
     "dev": {
       "dependsOn": ["^dev"],

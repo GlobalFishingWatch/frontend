@@ -8,13 +8,13 @@
     "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx watch --projects=fishing-map --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=fishing-map"
+        "command": "nx watch --projects=fishing-map --includeDependencies -- nx run-many -t dist -p \\$NX_PROJECT_NAME --exclude=fishing-map"
       },
       "continuous": true
     },
     "prepare-start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["prepare-loaders", "i18n-labels:serve"],
+      "dependsOn": ["^dist", "prepare-loaders", "i18n-labels:serve", "watch-deps"],
       "options": {
         "command": "nx run fishing-map:i18n:watch"
       },
@@ -63,10 +63,7 @@
     "i18n:types": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": [
-        "{projectRoot}/public/locales/source/*.json",
-        "{projectRoot}/i18next.config.ts"
-      ],
+      "inputs": ["{projectRoot}/public/locales/source/*.json", "{projectRoot}/i18next.config.ts"],
       "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
       "options": {
         "command": "i18next-cli types",
@@ -84,10 +81,7 @@
         "!{projectRoot}/**/test-results/**",
         "!{projectRoot}/**/__traces__/**"
       ],
-      "outputs": [
-        "{projectRoot}/public/locales",
-        "{projectRoot}/features/i18n/i18n.types.d.ts"
-      ],
+      "outputs": ["{projectRoot}/public/locales", "{projectRoot}/features/i18n/i18n.types.d.ts"],
       "options": {
         "command": "i18next-cli extract && i18next-cli types",
         "cwd": "apps/fishing-map"
@@ -131,7 +125,7 @@
     },
     "start-proxy": {
       "executor": "nx:run-commands",
-      "dependsOn": ["prepare-start"],
+      "dependsOn": [],
       "options": {
         "commands": ["nx run fishing-map:start", "nx run fishing-map:proxy"],
         "parallel": true
@@ -141,7 +135,7 @@
     "build:app": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["production", "^production"],
+      "inputs": ["production", "^production", "envVars"],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "dependsOn": ["prepare-loaders"],
@@ -186,7 +180,7 @@
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders"],
+      "dependsOn": ["^dist", "i18n", "prepare-loaders"],
       "options": {
         "commands": ["nx run fishing-map:typecheck", "nx run fishing-map:build:app"],
         "parallel": false

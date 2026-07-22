@@ -16,7 +16,6 @@ import type {
 } from './context.types'
 import { ContextLayerId } from './context.types'
 
-
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
@@ -25,6 +24,14 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
 export const getContextFiltersHash = (filters: ContextSubLayerConfig['filters']) => {
   return Object.values(filters || {})
     .flatMap((value) => value || [])
+    .join('-')
+}
+
+export const getContextFilterOperatorsHash = (
+  filterOperators: ContextSubLayerConfig['filterOperators']
+) => {
+  return Object.entries(filterOperators || {})
+    .map(([key, operator]) => `${key}:${operator}`)
     .join('-')
 }
 
@@ -54,13 +61,8 @@ export function supportDataFilterExtension(
   const timeFilterSize = timeFilterExtensionProps
     ? getFilterExtensionSize(timeFilterExtensionProps)
     : 0
-  if (getValidSublayerFilters(sublayer).length + timeFilterSize > 4) {
-    console.warn(
-      'Filters for more than 4 categories are not supported by deck.gl, using CPU based filter as fallback'
-    )
-    return false
-  }
-  return true
+  const sublayerFilterSize = hasSublayerFilters(sublayer) ? 1 : 0
+  return sublayerFilterSize + timeFilterSize <= 4
 }
 
 const RFMO_LINKS: Record<string, string> = {

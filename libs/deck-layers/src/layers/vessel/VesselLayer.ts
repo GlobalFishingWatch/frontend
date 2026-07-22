@@ -1,10 +1,11 @@
-import type { LayerProps, PickingInfo } from '@deck.gl/core'
+import type { Layer, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { bbox, bboxPolygon, featureCollection, point, rhumbBearing } from '@turf/turf'
 import { uniq } from 'es-toolkit'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
+import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
@@ -71,6 +72,7 @@ let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
   declare state: VesselLayerState
+  _lastTrackThinningLevel?: ThinningLevels
 
   initializeState() {
     super.initializeState(this.context)
@@ -157,6 +159,34 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return true
   }
 
+  shouldUpdateState({ changeFlags }: UpdateParameters<Layer<VesselLayerProps & LayerProps>>) {
+    if (changeFlags.propsOrDataChanged) {
+      return true
+    }
+    if (changeFlags.viewportChanged) {
+      const viewport = this.internalState?.viewport ?? this.context.viewport
+      if (!viewport) {
+        return false
+      }
+      return (
+        this._getTrackThinningLevel(viewport.zoom, this.props.trackThinningZoomConfig) !==
+        this._lastTrackThinningLevel
+      )
+    }
+    return false
+  }
+
+  _getTrackThinningLevel(
+    zoom: number,
+    trackThinningZoomConfig: VesselTrackLayerProps['trackThinningZoomConfig'] = TRACK_DEFAULT_THINNING_CONFIG
+  ): ThinningLevels {
+    return (
+      Object.entries(trackThinningZoomConfig)
+        .sort(([zoomLevelA], [zoomLevelB]) => parseInt(zoomLevelA) - parseInt(zoomLevelB))
+        .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
+    )
+  }
+
   _getTracksUrl({
     start,
     end,
@@ -173,10 +203,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     const trackUrlObject = new URL(trackUrl)
     trackUrlObject.searchParams.append('start-date', start)
     trackUrlObject.searchParams.append('end-date', end)
-    const thinningLevel =
-      Object.entries(trackThinningZoomConfig)
-        .sort(([zoomLevelA], [zoomLevelB]) => parseInt(zoomLevelA) - parseInt(zoomLevelB))
-        .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
+    const thinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
 
     Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
       trackUrlObject.searchParams.set(key, value?.toString() as string)
@@ -190,7 +217,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = (useBuffer = false) => {
+  _getVesselChunks = ({ withBuffer = false }: { withBuffer?: boolean } = {}) => {
     const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
@@ -251,7 +278,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return []
     }
     const { zoom } = this.context.viewport
-    const chunks = this._getVesselChunks(true)
+    this._lastTrackThinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
+    const chunks = this._getVesselChunks({ withBuffer: true })
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []

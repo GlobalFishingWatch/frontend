@@ -19,6 +19,7 @@
     "dist": {
       "executor": "@nx/js:tsc",
       "options": {
+        "clean": false,
         "main": "libs/i18n-labels/index.ts",
         "rootDir": "libs/i18n-labels",
         "assets": [

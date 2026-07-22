@@ -14,7 +14,8 @@ inputs:
     default: .github/apps/development.yml
   nx-cloud-access-token:
     description: NX Cloud access token passed as a Docker BuildKit secret
-    required: true
+    required: false
+    default: ''
 
 runs:
   using: composite
