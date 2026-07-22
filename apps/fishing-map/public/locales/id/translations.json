@@ -233,6 +233,7 @@
     "hideAllHelpHints": "Abaikan Semua",
     "hideHelpHint": "Abaikan",
     "hints": "Butuh bantuan? Carilah titik-titik ini",
+    "historical": "Historical",
     "hour": "Jam",
     "hour_one": "Jam",
     "hour_many": "hours",
@@ -249,6 +250,9 @@
     "latestDays_one": "Latest {{count}} day",
     "latestDays_many": "Latest {{count}} days",
     "latestDays_other": "Latest {{count}} days",
+    "latestHours_one": "last {{count}} hour",
+    "latestHours_many": "last {{count}} hours",
+    "latestHours_other": "last {{count}} hours",
     "latitude": "Lintang",
     "layerLibrary": "Perpustakaan Lapisan",
     "layerList": "Layer tabel",
@@ -262,6 +266,8 @@
     "m/s": "m/s",
     "map": "Peta",
     "matchedVessels": "Kapal yang cocok",
+    "messages_one": "message",
+    "messages_other": "messages",
     "meters": "meters",
     "minus": "minus",
     "minute": "menit",
@@ -294,6 +300,7 @@
     "points_other": "points",
     "presence": "Kehadiran",
     "previously": "Sebelumnya",
+    "realTime": "Real time",
     "report": "Laporan",
     "reports": "Laporan",
     "resetHelpHints": "Tampilkan kembali semua pentunjuk bantuan",
@@ -951,7 +958,8 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Sesuaikan rentang waktu dengan tanggal ini",
     "focusOnThisDay": "Rentang waktu fokus pada hari ini",
-    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari {{number}} kapal"
+    "maxTracksNumber": "Detail lintasan tidak tersedia untuk lebih dari {{number}} kapal",
+    "nextRealTimeUpdate": "Next data update at {{time}}"
   },
   "timebarSettings": {
     "activityDisabled": "Pilih setidaknya satu lapisan aktivitas",
@@ -1278,6 +1286,20 @@
         "black": "black",
         "grey": "grey"
       },
+      "longline": "Longline settings at day and night",
+      "longlineEntirelyDaySets_one": "{{count}} day set",
+      "longlineEntirelyDaySets_many": "{{count}} day sets",
+      "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyNightSets_one": "{{count}} night set",
+      "longlineEntirelyNightSets_many": "{{count}} night sets",
+      "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEventsEmpty": "No longline sets detected",
+      "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_many": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_many": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
@@ -1495,7 +1517,10 @@
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
       "gaps_many": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
+      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
+      "longline_many": "{{count}} longline sets from {{vessels}} vessels detected",
+      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
     }
   },
   "workspace": {
