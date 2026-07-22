@@ -208,6 +208,7 @@ export const selectSidePanelContent = selectQueryParam('sidePanelContent')
 
 // Feature flags
 export const selectMigramarLayer = selectQueryParam('migramarLayer')
+export const selectLonglineSetsInsight = selectQueryParam('longlineSetsInsight')
 
 // Map state
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')

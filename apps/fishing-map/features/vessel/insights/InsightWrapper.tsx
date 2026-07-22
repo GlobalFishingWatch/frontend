@@ -8,6 +8,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import InsightMOUList from 'features/vessel/insights/InsightMOUList'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
+import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
 
@@ -16,9 +17,12 @@ import InsightFishing from './InsightFishing'
 import InsightFlagChanges from './InsightFlagChanges'
 import InsightGaps from './InsightGaps'
 import InsightIUU from './InsightIUU'
+import InsightLongline from './InsightLongline'
+import type { VesselInsight } from './insights.config'
 
-const InsightWrapper = ({ insight }: { insight: InsightType }) => {
+const InsightWrapper = ({ insight }: { insight: VesselInsight }) => {
   const { start, end } = useSelector(selectTimeRange)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const vessel = useSelector(selectVesselInfoData)
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -30,12 +34,12 @@ const InsightWrapper = ({ insight }: { insight: InsightType }) => {
         vesselId: identity.id,
         datasetId: vessel.dataset.id,
       })),
-      insight,
+      insight: insight as InsightType,
       start,
       end,
     },
     {
-      skip: !identities?.length,
+      skip: !identities?.length || insight === 'LONGLINE',
     }
   )
 
@@ -51,6 +55,9 @@ const InsightWrapper = ({ insight }: { insight: InsightType }) => {
     return (
       <InsightFishing isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
     )
+  }
+  if (insight === 'LONGLINE') {
+    return longlineSetsInsight ? <InsightLongline /> : null
   }
   if (insight === 'VESSEL-IDENTITY-IUU-VESSEL-LIST') {
     return <InsightIUU isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
