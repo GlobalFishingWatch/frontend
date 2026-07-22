@@ -6,6 +6,7 @@ import type { VesselProfileState } from './vessel.types'
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity' as const
 export const DEFAULT_VESSEL_IDENTITY_ID =
   `${DEFAULT_VESSEL_IDENTITY_DATASET}:${PIPE_DATASET_ID}` as const
+export const VESSEL_IDENTITY_ID_V5 = `${DEFAULT_VESSEL_IDENTITY_DATASET}:v5.0` as const
 
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID =
   'POTENTIAL_RELATED_SELF_REPORTED_INFO' as const
