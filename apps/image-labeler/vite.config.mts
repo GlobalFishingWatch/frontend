@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 export default defineConfig(({ command }) => ({
@@ -31,7 +30,6 @@ export default defineConfig(({ command }) => ({
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
-    nxViteTsPaths(),
     viteStaticCopy({
       targets: [
         {
@@ -52,6 +50,7 @@ export default defineConfig(({ command }) => ({
   // },
 
   resolve: {
+    tsconfigPaths: true,
     alias: {
       jimp: new URL('../../node_modules/jimp/dist/esm/index.js', import.meta.url).pathname,
     },

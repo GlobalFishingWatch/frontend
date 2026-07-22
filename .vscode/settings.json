@@ -27,6 +27,8 @@
   "js/ts.updateImportsOnFileMove.enabled": "always",
   "js/ts.suggest.completeFunctionCalls": true,
   "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.experimental.useTsgo": true,
+  "js/ts.tsdk.path": "node_modules/@typescript/native/lib",
   "editor.rulers": [140],
   "editor.formatOnSave": true,
   "eslint.format.enable": true,

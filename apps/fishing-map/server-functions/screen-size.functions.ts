@@ -1,4 +1,4 @@
-import { readCookie } from '@globalfishingwatch/api-client'
+import { readCookie } from '@globalfishingwatch/api-client/utils/cookies'
 
 import { PANEL_WIDTHS_COOKIE_KEY, type PanelWidths } from 'features/app/app.config'
 

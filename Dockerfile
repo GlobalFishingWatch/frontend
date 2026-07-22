@@ -2,13 +2,14 @@ FROM node:24-slim AS builder
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps git && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
+ENV HUSKY=0
 
 # Copy only what pnpm needs to install — no source files.
 # patches/ is required because pnpm-workspace.yaml references patch files

@@ -1,15 +1,9 @@
 import React from 'react'
 import cx from 'classnames'
 
+import type { LogoTypes, SubBrands } from './Logo.types'
+
 import styles from './Logo.module.css'
-
-export enum SubBrands {
-  MarineManager = 'Marine Manager',
-  CarrierVessels = 'Carrier Vessels',
-  PortLabeler = 'Port Labeler'
-}
-
-export type LogoTypes = 'default' | 'invert'
 
 interface LogoProps {
   type?: LogoTypes

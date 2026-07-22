@@ -146,7 +146,12 @@ export const selectTimebarSelectedDataviews = createSelector(
       return environmentalDataviews.filter((d) => d.id === timebarSelectedEnvId)
     }
     if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
-      return vesselGroupDataviews.filter((d) => d.id === timebarSelectedVGId)
+      const selectedVGDataview = vesselGroupDataviews.find((d) => d.id === timebarSelectedVGId)
+      return selectedVGDataview
+        ? [selectedVGDataview]
+        : vesselGroupDataviews[0]
+          ? [vesselGroupDataviews[0]]
+          : []
     }
     if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
       return detectionsDataviews

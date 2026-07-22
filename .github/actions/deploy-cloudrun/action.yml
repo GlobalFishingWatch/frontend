@@ -28,6 +28,11 @@ inputs:
     required: false
     default: dev-ui
 
+outputs:
+  url:
+    description: URL of the deployed Cloud Run service
+    value: ${{ steps.url.outputs.url }}
+
 runs:
   using: composite
   steps:
@@ -66,6 +71,17 @@ runs:
           --set-env-vars "$ENV_VARS" \
           $SECRETS_FLAG \
           --service-account "${{ inputs.cloudrun-service-account }}"
+
+    - name: Get service URL
+      id: url
+      shell: bash
+      run: |
+        set -euo pipefail
+        URL=$(gcloud run services describe "${{ inputs.service-name-prefix }}-${{ inputs.app }}" \
+          --project "${{ inputs.cloudrun-project }}" \
+          --region "${{ inputs.region }}" \
+          --format='value(status.url)')
+        echo "url=$URL" >> "$GITHUB_OUTPUT"
 
     - name: Clean old revisions
       shell: bash

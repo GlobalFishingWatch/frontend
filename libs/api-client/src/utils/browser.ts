@@ -2,15 +2,18 @@ export const getIsBrowser = () => typeof window !== 'undefined'
 
 const DEBUG_URL_COLLAPSE_LENGTH = 80
 
-/** Log a URL; long ones use a collapsed console group with the full URL inside. */
 export function logDebugUrl(prefix: string, url: string) {
-  if (url.length <= DEBUG_URL_COLLAPSE_LENGTH) {
-    console.log(`${prefix}${url}`)
+  let decodedUrl = url
+  try {
+    decodedUrl = decodeURIComponent(url)
+  } catch {
+    // leave the raw url as-is
+  }
+  if (decodedUrl.length <= DEBUG_URL_COLLAPSE_LENGTH) {
+    console.log(`${prefix}${decodedUrl}`)
     return
   }
-  console.groupCollapsed(
-    `${prefix}${decodeURIComponent(url.slice(0, DEBUG_URL_COLLAPSE_LENGTH - 1))} ...`
-  )
-  console.log(decodeURIComponent(url))
+  console.groupCollapsed(`${prefix}${decodedUrl.slice(0, DEBUG_URL_COLLAPSE_LENGTH - 1)} ...`)
+  console.log(decodedUrl)
   console.groupEnd()
 }

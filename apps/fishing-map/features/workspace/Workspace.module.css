@@ -15,6 +15,12 @@
   gap: var(--space-S);
 }
 
+.disclaimerButton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
 .disclaimer a {
   text-decoration: underline;
 }

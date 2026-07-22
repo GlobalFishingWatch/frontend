@@ -3,7 +3,11 @@ import { DateTime } from 'luxon'
 import type { Dataset, DatasetCategory, Dataview, VesselType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import { DATASET_FULL_PREFIX } from './datasets.const'
+import {
+  DATASET_FULL_PREFIX,
+  DATASET_PRIVATE_PREFIX,
+  DATASET_PUBLIC_PREFIX,
+} from './datasets.const'
 import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -12,6 +16,18 @@ export const removeDatasetVersion = (datasetId: string) => {
 
 export const getDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[1] : ''
+}
+
+export const replaceDatasetPublicToPrivate = (dataset: string): string => {
+  return dataset.startsWith(DATASET_PUBLIC_PREFIX)
+    ? dataset.replace(DATASET_PUBLIC_PREFIX, DATASET_PRIVATE_PREFIX)
+    : dataset
+}
+
+export const replaceDatasetPrivateToPublic = (dataset: string): string => {
+  return dataset.startsWith(DATASET_PRIVATE_PREFIX)
+    ? dataset.replace(DATASET_PRIVATE_PREFIX, DATASET_PUBLIC_PREFIX)
+    : dataset
 }
 
 export function findDatasetByType(datasets = [] as Dataset[], type: DatasetTypes) {

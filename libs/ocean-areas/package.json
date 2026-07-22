@@ -21,7 +21,7 @@
     "rfmos": "node --loader ts-node/esm src/scripts/rfmos.ts",
     "locales": "node --loader ts-node/esm src/scripts/locales.ts",
     "ports": "node --loader ts-node/esm src/scripts/ports.ts",
-    "prepare": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
+    "update-data": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
   "dependencies": {
     "@turf/turf": "7.x",

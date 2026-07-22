@@ -15,14 +15,8 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": [
-      "node"
-    ]
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "types": ["node"]
   },
-  "include": [
-    "source/**/*.json",
-    "index.ts",
-    "./types.d.ts"
-  ]
+  "include": ["source/**/*.json", "index.ts", "./types.d.ts"]
 }

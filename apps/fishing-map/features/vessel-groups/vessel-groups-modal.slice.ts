@@ -13,7 +13,6 @@ import type {
   VesselGroup,
 } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
-import type { VesselPropertyGuessColumn } from '@globalfishingwatch/data-transforms'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
@@ -21,6 +20,7 @@ import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
+import { VMS_PROPERTY_PREFIX } from 'features/vessel-groups/vessel-groups.config'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import type { RootState } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -39,7 +39,7 @@ export type { VesselGroupVesselIdentity }
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
-export const VMS_PROPERTY_PREFIX = 'selfReportedInfo.'
+export { VMS_PROPERTY_PREFIX }
 
 export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
 
@@ -175,7 +175,7 @@ const searchVesselsInVesselGroup = async ({
   let whereClauses: string[] = []
   let input: ParsedSearchInput | undefined
   if (ids && idField) {
-    const property = vesselPropertyToApiSearch(idField as VesselPropertyGuessColumn)
+    const property = vesselPropertyToApiSearch(idField)
     const searchProperty = resolveSearchProperty(property)
     const values = uniq(
       ids

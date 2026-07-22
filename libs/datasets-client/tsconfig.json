@@ -15,13 +15,9 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": [
-      "node",
-      "vite/client"
-    ]
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "types": ["node", "vite/client"]
+    
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

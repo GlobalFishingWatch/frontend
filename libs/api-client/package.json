@@ -14,6 +14,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "default": "./dist/utils/*.js"
     }
   },
   "main": "./dist/index.js",
@@ -23,7 +27,7 @@
     "dist"
   ],
   "dependencies": {
-    "@globalfishingwatch/api-types": "^9.0.0-beta.2",
+    "@globalfishingwatch/api-types": "workspace:^",
     "protobufjs": "^8.x",
     "file-saver": "2.x",
     "lodash": "4.x",
