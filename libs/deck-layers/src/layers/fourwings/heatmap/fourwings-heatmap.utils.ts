@@ -186,12 +186,15 @@ type GetDataUrlParams = {
 
 export function getTimeResolved(
   date: number = DateTime.utc().toMillis(),
-  cacheInterval: FourwingsIntervalCacheMode = 'DATE'
+  cacheInterval: FourwingsIntervalCacheMode = 'DATE',
+  roundToUnit: 'day' | 'hour' = 'day'
 ): string {
   if (cacheInterval === 'NONE') {
     return DateTime.fromMillis(date, { zone: 'utc' }).toISO() as string
   }
-  return getUTCDateTime(date).toISODate() as string
+  return roundToUnit === 'day'
+    ? (getUTCDateTime(date).toISODate() as string)
+    : (getUTCDateTime(date).startOf('hour').toISO() as string)
 }
 
 export const getDataUrl = ({

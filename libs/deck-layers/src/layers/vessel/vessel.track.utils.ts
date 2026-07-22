@@ -36,9 +36,8 @@ export function getPositions(
   points: TrackPoint[],
   { startTime, endTime }: { startTime: number; endTime: number }
 ): VesselTrackPositionFeature[] {
-  const pointsLength = points.length
   const startIndex = sortedFirstIndexAfter(points, startTime)
-  const endIndex = Math.min(sortedFirstIndexAtOrAfter(points, endTime), pointsLength - 1)
+  const endIndex = sortedFirstIndexAtOrAfter(points, endTime)
   const positions: VesselTrackPositionFeature[] = []
   for (let index = startIndex; index < endIndex; index++) {
     const point = points[index]

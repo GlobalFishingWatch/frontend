@@ -286,7 +286,7 @@ const searchVesselMMSI = async (datasets: Dataset[], mmsis: string[], signal: Ab
   if (!vesselsSearchUrl) {
     console.warn('No vessel search url found for dataset', datasets)
     console.warn('and mmsis', mmsis)
-    return
+    return []
   }
   try {
     const vesselsSearchResponse = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(
@@ -296,6 +296,7 @@ const searchVesselMMSI = async (datasets: Dataset[], mmsis: string[], signal: Ab
     return vesselsSearchResponse.entries || []
   } catch (e: any) {
     console.warn(e)
+    return []
   }
 }
 

@@ -20,7 +20,7 @@ type ActivityTooltipRowProps = {
   activityType?: DatasetSubCategory
 }
 
-type FeatureUnit = 'hours' | 'messages'
+type FeatureUnit = 'hours' | 'messages' | 'detections'
 
 function ActivityTooltipRow({
   feature,

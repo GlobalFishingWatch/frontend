@@ -31,7 +31,6 @@ import {
   getColorRamp,
   getLayerGroupOffset,
   getSteps,
-  getUTCDateTime,
   GFWMVTLoader,
   LayerGroup,
   VESSEL_SPRITE_ICON_MAPPING,
@@ -47,6 +46,7 @@ import {
 } from '../fourwings.config'
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
+import { getTimeResolved } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
   FourwingsPositionsPickingInfo,
@@ -415,9 +415,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     })
   }
 
-  // TODO: merge with existing getDataUrl and add only the new properties later
   _getDataUrl() {
-    const { startTime, endTime, sublayers, extentStart, extentEnd } = this.props
+    const { startTime, endTime, sublayers, extentStart, extentEnd, intervalCacheMode = 'DATE' } =
+      this.props
     const supportedPositionProperties = this._getPositionProperties()
 
     const vesselGroups = sublayers.flatMap((sublayer) => {
@@ -431,11 +431,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       extentEnd && extentEnd < endTime
         ? DateTime.fromMillis(extentEnd).plus({ day: 1 }).toMillis()
         : endTime
-    // TODO: use intervalCacheMode
-    const startIso = getUTCDateTime(start < end ? start : end)
-      .startOf('hour')
-      .toISO()
-    const endIso = getUTCDateTime(end).startOf('hour').toISO()
+    const startIso = getTimeResolved(start < end ? start : end, intervalCacheMode, 'hour')
+    const endIso = getTimeResolved(end, intervalCacheMode, 'hour')
     const params = {
       datasets: sublayers.map((sublayer) => sublayer.datasets.join(',')),
       filters: sublayers.map((sublayer) => sublayer.filter),

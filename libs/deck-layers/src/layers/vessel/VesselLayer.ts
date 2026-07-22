@@ -222,8 +222,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!startTime || !endTime) {
       return []
     }
-    const loadStart = useBuffer ? (bufferedStartTime ?? startTime) : startTime
-    const loadEnd = useBuffer ? (bufferedEndTime ?? endTime) : endTime
+    const loadStart = withBuffer ? (bufferedStartTime ?? startTime) : startTime
+    const loadEnd = withBuffer ? (bufferedEndTime ?? endTime) : endTime
 
     const chunks = strictTimeRange
       ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
