@@ -27,7 +27,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: var(--border);
+}
+
+.fullProfileMessage .pipe4Disclaimer {
+  padding: var(--space-S);
+  margin-left: 0;
+}
+
+.pipe4DisclaimerLink {
+  color: var(--color-secondary-blue);
+  text-decoration: underline;
+  margin-left: var(--space-S);
 }
 
 .linkTooltip {

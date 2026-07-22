@@ -18,7 +18,11 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./base.css": "./src/base.css"
+    "./base.css": "./src/base.css",
+    "./*": {
+      "types": "./dist/*/index.d.ts",
+      "default": "./dist/*/index.js"
+    }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -28,8 +32,8 @@
   ],
   "dependencies": {
     "@floating-ui/react": "0.x",
-    "@globalfishingwatch/api-types": "^9.0.0-beta.2",
-    "@globalfishingwatch/react-hooks": "^17.0.9",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
     "@tanstack/react-virtual": "3.x",
     "@types/topojson-specification": "1.x",
     "classnames": "2.x",

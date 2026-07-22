@@ -25,12 +25,13 @@ import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {
   const vesselData = useSelector(selectVesselInfoData)
-  const registryDisabled = !vesselData.identities.some(
+  const registryDisabled = !vesselData?.identities?.some(
     (i) => i.identitySource === VesselIdentitySourceEnum.Registry
   )
-  const selfReportedIdentities = vesselData.identities.filter(
-    (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
-  )
+  const selfReportedIdentities =
+    vesselData?.identities?.filter(
+      (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+    ) ?? []
 
   return { registryDisabled, selfReportedIdentities }
 }

@@ -1,0 +1,23 @@
+name: PR Preview (Prod config)
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, labeled, unlabeled, synchronize, reopened, closed]
+
+concurrency:
+  group: pr-preview-prod-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-preview:
+    uses: ./.github/workflows/_pr-preview.yml
+    with:
+      preview_label: deploy-preview-prod
+      config: .github/apps/production.yml
+      cloudrun_project: gfw-production
+      cloudrun_service_account: frontend-pro@gfw-production.iam.gserviceaccount.com
+      service_name_prefix: pr-${{ github.event.pull_request.number }}-pro-ui
+      image: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/fishing-map:pr-${{ github.event.pull_request.number }}-pro
+      comment_header: preview-fishing-map-prod
+    secrets: inherit

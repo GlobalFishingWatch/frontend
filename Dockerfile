@@ -2,13 +2,14 @@ FROM node:24-slim AS builder
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps git && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 ENV NX_DAEMON=false
 ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
+ENV HUSKY=0
 
 # Copy only what pnpm needs to install — no source files.
 # patches/ is required because pnpm-workspace.yaml references patch files
@@ -35,7 +36,6 @@ ARG VITE_USE_LOCAL_DATASETS
 ARG VITE_USE_LOCAL_DATAVIEWS
 ARG VITE_WORKSPACE_ENV
 ARG VITE_REPORT_DAYS_LIMIT
-ARG VITE_RANDOM_FOREST_ENABLED
 ARG COMMIT_SHA
 
 ENV API_GATEWAY=$API_GATEWAY \
@@ -48,7 +48,6 @@ ENV API_GATEWAY=$API_GATEWAY \
     VITE_USE_LOCAL_DATAVIEWS=$VITE_USE_LOCAL_DATAVIEWS \
     VITE_WORKSPACE_ENV=$VITE_WORKSPACE_ENV \
     VITE_REPORT_DAYS_LIMIT=$VITE_REPORT_DAYS_LIMIT \
-    VITE_RANDOM_FOREST_ENABLED=$VITE_RANDOM_FOREST_ENABLED \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .

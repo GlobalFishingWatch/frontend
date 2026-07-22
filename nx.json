@@ -6,22 +6,6 @@
   "tasksRunnerOptions": {
     "default": {
       "options": {
-        "runtimeCacheInputs": [
-          "echo $VITE_PUBLIC_URL",
-          "echo $VITE_API_GATEWAY",
-          "echo $VITE_WORKSPACE_ENV",
-          "echo $VITE_REPORT_DAYS_LIMIT",
-          "echo $VITE_GOOGLE_MEASUREMENT_ID",
-          "echo $VITE_GOOGLE_TAG_MANAGER_ID",
-          "echo $VITE_GOOGLE_ANALYTICS_TEST_MODE",
-          "echo $NEXT_PUBLIC_URL",
-          "echo $NEXT_PUBLIC_API_GATEWAY",
-          "echo $NEXT_PUBLIC_WORKSPACE_ENV",
-          "echo $NEXT_PUBLIC_REPORT_DAYS_LIMIT",
-          "echo $NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
-          "echo $NEXT_PUBLIC_GOOGLE_TAG_MANAGER_KEY",
-          "echo $NEXT_PUBLIC_GOOGLE_ANALYTICS_TEST_MODE"
-        ],
         "canTrackAnalytics": false,
         "showUsageWarnings": true
       }
@@ -42,7 +26,6 @@
       "plugin": "@nx/vite/plugin",
       "options": {
         "buildTargetName": "build",
-        "testTargetName": "test",
         "serveTargetName": "serve",
         "devTargetName": "start",
         "previewTargetName": "vite:preview",
@@ -51,6 +34,28 @@
         "buildDepsTargetName": "build-deps",
         "watchDepsTargetName": "watch-deps"
       }
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testTargetName": "test"
+      }
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "devTargetName": "dev",
+        "typecheckTargetName": "typecheck"
+      },
+      "include": [
+        "apps/api-portal/**/*",
+        "apps/data-download-portal/**/*",
+        "apps/port-labeler/**/*"
+      ]
     }
   ],
   "targetDefaults": {
@@ -74,8 +79,8 @@
     },
     "@nx/vite:build": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": ["^build", "^dist"],
+      "inputs": ["production", "^production", "envVars"]
     },
     "dist": {
       "dependsOn": ["^dist"],
@@ -106,7 +111,8 @@
     },
     "build": {
       "cache": true,
-      "inputs": ["production", "^production"]
+      "dependsOn": ["^build", "^dist"],
+      "inputs": ["production", "^production", "envVars"]
     },
     "@nx/vitest:test": {
       "cache": true,
@@ -170,7 +176,22 @@
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "sharedGlobals": ["{workspaceRoot}/nx.json", "{workspaceRoot}/babel.config.json"],
+    "envVars": [
+      { "env": "VITE_API_GATEWAY" },
+      { "env": "VITE_PUBLIC_URL" },
+      { "env": "VITE_WORKSPACE_ENV" },
+      { "env": "VITE_GOOGLE_MEASUREMENT_ID" },
+      { "env": "VITE_GOOGLE_TAG_MANAGER_ID" }
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/nx.json",
+      "{workspaceRoot}/babel.config.json",
+      "{workspaceRoot}/Dockerfile",
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/tsconfig.base.json"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/*.cy.[jt]s?(x)",

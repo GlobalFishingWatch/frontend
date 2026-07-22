@@ -1,11 +1,10 @@
 import { defineConfig } from 'vite'
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/libs/deck-layers',
-  plugins: [nxViteTsPaths()],
   resolve: {
+    tsconfigPaths: true,
     alias: {
       // wgsl_reflect (luma.gl dep) ships a CJS "main" inside a type:module
       // package, which breaks named exports under vitest SSR — use its ESM build
