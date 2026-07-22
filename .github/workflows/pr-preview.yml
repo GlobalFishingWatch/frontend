@@ -13,7 +13,7 @@ jobs:
   pr-preview:
     uses: ./.github/workflows/_pr-preview.yml
     with:
-      preview_label: deploy-preview
+      preview_label: 🎣👀 deploy-preview-prod
       config: .github/apps/development.yml
       cloudrun_project: gfw-development
       cloudrun_service_account: frontend-dev@gfw-development.iam.gserviceaccount.com
