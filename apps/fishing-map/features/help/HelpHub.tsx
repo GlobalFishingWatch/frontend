@@ -9,6 +9,7 @@ import { IS_CHATBOT_ENABLED } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import hintsConfig from './hints.content'
@@ -20,6 +21,7 @@ function HelpHub() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const isClientHydrated = useIsClientHydrated()
+  const isGFWUser = useSelector(selectIsGFWUser)
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
   const hintsDismissedArray = isClientHydrated ? Object.keys(hintsDismissed || {}) : []
@@ -103,7 +105,7 @@ function HelpHub() {
             {t((t) => t.common.userGuide)}
           </button>
         </li>
-        {IS_CHATBOT_ENABLED && (
+        {IS_CHATBOT_ENABLED && !isGFWUser && (
           <li>
             <button
               type="button"

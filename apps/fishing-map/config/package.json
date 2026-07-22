@@ -27,6 +27,6 @@
     }
   },
   "dependencies": {
-    "@globalfishingwatch/datasets-client": "^3.0.3"
+    "@globalfishingwatch/datasets-client": "workspace:^"
   }
 }

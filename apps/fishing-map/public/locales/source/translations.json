@@ -1,4 +1,16 @@
 {
+  "agent": {
+    "toolBash": "Running command",
+    "toolLoadSkill": "Loading skill",
+    "toolNavigate": "Navigating map",
+    "toolReadSkillResource": "Reading skill resource",
+    "toolRegionLookup": "Looking up region",
+    "toolRunSkillScript": "Running skill script",
+    "toolStateDone": "done",
+    "toolStateFailed": "failed",
+    "toolStateRunning": "running",
+    "toolStateStarting": "starting"
+  },
   "analysis": {
     "activityChange": "Activity change",
     "around": "around",
@@ -159,6 +171,7 @@
     "area_other": "areas",
     "areas": "areas",
     "assistant": "Assistant",
+    "assistantLogin": "Register or log in to use the assistant (free, 2 minutes)",
     "assistantPlaceholder": "Ask about fishing activity, vessels, or areas.",
     "average": "average",
     "averageAbbreviated": "avg.",
@@ -269,9 +282,9 @@
     "m/s": "m/s",
     "map": "Map",
     "matchedVessels": "Matched vessels",
+    "messageAssistant": "Message the assistant…",
     "messages_one": "message",
     "messages_other": "messages",
-    "messageAssistant": "Message the assistant…",
     "meters": "meters",
     "minus": "minus",
     "minute": "minute",

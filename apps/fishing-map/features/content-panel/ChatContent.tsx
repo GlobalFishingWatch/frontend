@@ -1,23 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { UIMessage } from '@tanstack/ai-react'
+import { useSelector } from 'react-redux'
+import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
 
 import { Icon, IconButton, Popover, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
-import {
-  TITLE_MAX,
-  useChatAgentSession,
-  useChatConversations,
-} from 'features/content-panel/chat.hooks'
+import { useChatAgentSession, useChatConversations } from 'features/content-panel/chat.hooks'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import LoginLink from 'features/user/LoginLink'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 
 import styles from './ChatContent.module.css'
 
 const relativeTime = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' })
-function formatUpdatedAt(ts: number) {
-  const diffMs = ts - Date.now()
+function formatUpdatedAt(updatedAt: string) {
+  const diffMs = new Date(updatedAt).getTime() - Date.now()
+  if (!Number.isFinite(diffMs)) return ''
   const minutes = Math.round(diffMs / 60000)
   if (Math.abs(minutes) < 60) return relativeTime.format(minutes, 'minute')
   const hours = Math.round(minutes / 60)
@@ -31,12 +31,62 @@ function roleClass(role: UIMessage['role']): string {
   return styles.system
 }
 
+type TFunction = ReturnType<typeof useTranslation>['t']
+
+function prettify(name: string): string {
+  const spaced = name.replace(/[_-]+/g, ' ').trim()
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+}
+
+// Friendly, translated copy for the agent's known tools — everything else
+// falls back to a prettified (untranslated) version of the raw tool name.
+function toolActionLabel(t: TFunction, name: string): string {
+  switch (name) {
+    case 'navigate':
+      return t((t) => t.agent.toolNavigate)
+    case 'run_skill_script':
+      return t((t) => t.agent.toolRunSkillScript)
+    case 'load_skill':
+      return t((t) => t.agent.toolLoadSkill)
+    case 'read_skill_resource':
+      return t((t) => t.agent.toolReadSkillResource)
+    case 'bash':
+      return t((t) => t.agent.toolBash)
+    case 'gfw_region-id-lookup':
+      return t((t) => t.agent.toolRegionLookup)
+    default:
+      return prettify(name)
+  }
+}
+
+function toolStateLabel(t: TFunction, state?: string): string | undefined {
+  switch (state) {
+    case 'input-streaming':
+      return t((t) => t.agent.toolStateStarting)
+    case 'input-available':
+      return t((t) => t.agent.toolStateRunning)
+    case 'output-available':
+      return t((t) => t.agent.toolStateDone)
+    case 'output-error':
+      return t((t) => t.agent.toolStateFailed)
+    default:
+      return undefined
+  }
+}
+
+function toolLabel(t: TFunction, name: string, state?: string): string {
+  const action = toolActionLabel(t, name)
+  const stateLabel = toolStateLabel(t, state)
+  return stateLabel ? `${action} (${stateLabel})` : action
+}
+
 function MessageParts({ message }: { message: UIMessage }) {
+  const { t } = useTranslation()
   return (
     <>
       {(message.parts ?? []).map((part, idx) => {
         if (part.type === 'text') {
-          const text = part.content
+          const text = part.text
           if (!text) return null
           if (message.role === 'assistant') {
             return <ContentMarkdown key={idx}>{text}</ContentMarkdown>
@@ -45,8 +95,9 @@ function MessageParts({ message }: { message: UIMessage }) {
           const display = text.replace(/\n\n\[current map url: [^\]]+\]$/, '')
           return <span key={idx}>{display}</span>
         }
-        if (part.type === 'tool-call') {
-          const label = part.name === 'navigate' ? 'Changing view' : `${part.name} (${part.state})`
+        if (isToolUIPart(part)) {
+          const name = getToolName(part)
+          const label = toolLabel(t, name, part.state)
           return (
             <p key={idx} className={styles.toolChip}>
               {label}
@@ -61,44 +112,33 @@ function MessageParts({ message }: { message: UIMessage }) {
 
 type SessionProps = {
   threadId: string
-  initialMessages: UIMessage[]
-  titleSeed: string
-  persistConversation: (messages: UIMessage[], title: string) => void
   activate: () => void
+  refreshThreads: () => void
 }
 
-function ChatSession({
-  threadId,
-  initialMessages,
-  titleSeed,
-  persistConversation,
-  activate,
-}: SessionProps) {
+function ChatSession({ threadId, activate, refreshThreads }: SessionProps) {
   const { t } = useTranslation()
-  const { messages, loading, error, send, addToolApprovalResponse, pendingApprovals } =
-    useChatAgentSession({
-      threadId,
-      initialMessages,
-      titleSeed,
-      persistConversation,
-      activate,
-    })
+  const { messages, loading, error, historyError, send } = useChatAgentSession({
+    threadId,
+    activate,
+    refreshThreads,
+  })
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
-  }, [messages, loading, pendingApprovals])
+  }, [messages, loading])
 
-  const onSend = () => {
-    void send(input)
-    setInput('')
+  const onSend = async () => {
+    const ok = await send(input)
+    if (ok) setInput('')
   }
 
   return (
-    <>
+    <Fragment>
       <div className={styles.messages} ref={scrollRef}>
-        {messages.length === 0 && (
+        {messages.length === 0 && !historyError && (
           <p className={styles.empty}>{t((t) => t.common.assistantPlaceholder)}</p>
         )}
         {messages.map((m) => (
@@ -106,36 +146,11 @@ function ChatSession({
             <MessageParts message={m} />
           </div>
         ))}
-        {error && (
-          <div className={cx(styles.message, styles.system, styles.error)}>{error.message}</div>
-        )}
-        {pendingApprovals.map((p) => (
-          <div key={p.approval.id} className={cx(styles.message, styles.system, styles.approval)}>
-            <span>
-              Tool <code>{p.name}</code> requires approval.
-            </span>
-            <span className={styles.approvalActions}>
-              <button
-                type="button"
-                className={styles.approvalBtn}
-                onClick={() =>
-                  void addToolApprovalResponse({ id: p.approval.id, approved: true })
-                }
-              >
-                Approve
-              </button>
-              <button
-                type="button"
-                className={styles.approvalBtn}
-                onClick={() =>
-                  void addToolApprovalResponse({ id: p.approval.id, approved: false })
-                }
-              >
-                Deny
-              </button>
-            </span>
+        {(error || historyError) && (
+          <div className={cx(styles.message, styles.system, styles.error)}>
+            {error?.message ?? historyError}
           </div>
-        ))}
+        )}
         {loading && <Spinner size="small" />}
       </div>
 
@@ -150,7 +165,7 @@ function ChatSession({
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault()
-              onSend()
+              void onSend()
             }
           }}
         />
@@ -158,36 +173,49 @@ function ChatSession({
           icon="arrow-right"
           type="border"
           disabled={loading || !input.trim()}
-          onClick={onSend}
+          onClick={() => void onSend()}
         />
       </div>
-    </>
+    </Fragment>
+  )
+}
+
+function ChatLoginGate() {
+  const { t } = useTranslation()
+  return (
+    <div className={styles.loginGate}>
+      <p className={styles.empty}>{t((t) => t.common.assistantLogin)}</p>
+      <LoginLink className={styles.loginLink} loginSource="assistant">
+        {t((t) => t.common.login)}
+      </LoginLink>
+    </div>
   )
 }
 
 function ChatContent() {
   const { t } = useTranslation()
+  const userData = useSelector(selectUserData)
+  const isGuestUser = useSelector(selectIsGuestUser)
   const { closeSidePanel } = useSidePanel()
   const {
     conversations,
+    threadsError,
     activeId,
-    activeConversation,
     threadId,
+    canUseChat,
     setActiveId,
-    persistConversation,
     activate,
     deleteConversation,
     newConversation,
+    refreshThreads,
   } = useChatConversations()
   const [historyOpen, setHistoryOpen] = useState(false)
-
-  const initialMessages = activeConversation?.messages ?? []
-  const titleSeed = activeConversation?.title ?? ''
 
   const history = useMemo(
     () => (
       <ul className={styles.historyList}>
-        {conversations.length === 0 && (
+        {threadsError && <li className={styles.historyEmpty}>{threadsError}</li>}
+        {!threadsError && conversations.length === 0 && (
           <li className={styles.historyEmpty}>{t((t) => t.common.noConversations)}</li>
         )}
         {conversations.map((c) => (
@@ -216,7 +244,7 @@ function ChatContent() {
         ))}
       </ul>
     ),
-    [conversations, activeId, t, setActiveId, deleteConversation]
+    [conversations, threadsError, activeId, t, setActiveId, deleteConversation]
   )
 
   return (
@@ -224,24 +252,28 @@ function ChatContent() {
       <div className={styles.header}>
         <Icon icon="sparks" />
         <span className={styles.title}>{t((t) => t.common.assistant)}</span>
-        <Popover
-          open={historyOpen}
-          onOpenChange={setHistoryOpen}
-          onClickOutside={() => setHistoryOpen(false)}
-          placement="bottom-end"
-          content={history}
-          className={styles.history}
-        >
-          <div className={styles.historyBtn}>
-            <IconButton icon="history" tooltip={t((t) => t.common.history)} size="medium" />
-          </div>
-        </Popover>
-        <IconButton
-          icon="plus"
-          tooltip={t((t) => t.common.newConversation)}
-          onClick={newConversation}
-          size="medium"
-        />
+        {canUseChat && (
+          <Fragment>
+            <Popover
+              open={historyOpen}
+              onOpenChange={setHistoryOpen}
+              onClickOutside={() => setHistoryOpen(false)}
+              placement="bottom-end"
+              content={history}
+              className={styles.history}
+            >
+              <div className={styles.historyBtn}>
+                <IconButton icon="history" tooltip={t((t) => t.common.history)} size="medium" />
+              </div>
+            </Popover>
+            <IconButton
+              icon="plus"
+              tooltip={t((t) => t.common.newConversation)}
+              onClick={newConversation}
+              size="medium"
+            />
+          </Fragment>
+        )}
         <IconButton
           type="border"
           icon="close"
@@ -250,14 +282,20 @@ function ChatContent() {
         />
       </div>
 
-      <ChatSession
-        key={threadId}
-        threadId={threadId}
-        initialMessages={initialMessages}
-        titleSeed={titleSeed.slice(0, TITLE_MAX)}
-        persistConversation={persistConversation}
-        activate={activate}
-      />
+      {!userData ? (
+        <div className={styles.loginGate}>
+          <Spinner />
+        </div>
+      ) : isGuestUser || !canUseChat ? (
+        <ChatLoginGate />
+      ) : (
+        <ChatSession
+          key={threadId}
+          threadId={threadId}
+          activate={activate}
+          refreshThreads={refreshThreads}
+        />
+      )}
     </div>
   )
 }

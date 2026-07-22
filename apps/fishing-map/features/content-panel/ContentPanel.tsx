@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { IS_CHATBOT_ENABLED } from 'data/config'
-import ChatContent from 'features/content-panel/ChatContent'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import DataTerminologyContent from 'features/content-panel/DataTerminologyContent'
 import InfoContainer from 'features/content-panel/InfoContainer'
 import UserDatasetContent from 'features/content-panel/UserDatasetContent'
@@ -12,6 +13,8 @@ import UserGuideContent from 'features/content-panel/UserGuideContent'
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'
+
+const ChatContent = lazy(() => import('features/content-panel/ChatContent'))
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
@@ -28,6 +31,7 @@ function ContentPanel({
   onPanelWidthChange?: (width: number) => void
 }) {
   const { sidePanelContent } = Route.useSearch()
+  const { closeSidePanel } = useSidePanel()
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
@@ -37,6 +41,12 @@ function ContentPanel({
 
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (sidePanelContent === 'chat' && !IS_CHATBOT_ENABLED) {
+      closeSidePanel()
+    }
+  }, [sidePanelContent, closeSidePanel])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -99,7 +109,11 @@ function ContentPanel({
       {sidePanelContent === 'datasets' && <InfoContainer />}
       {sidePanelContent === 'userDataset' && <UserDatasetContent />}
       {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
-      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContent />}
+      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && (
+        <Suspense fallback={<Spinner />}>
+          <ChatContent />
+        </Suspense>
+      )}
     </div>
   )
 }

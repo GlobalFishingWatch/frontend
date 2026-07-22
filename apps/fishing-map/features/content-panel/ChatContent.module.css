@@ -90,20 +90,19 @@
   color: var(--color-secondary-blue);
 }
 
-.approval {
+.loginGate {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-XS);
   align-items: center;
+  justify-content: center;
+  gap: var(--space-M);
+  padding: var(--space-M);
+  text-align: center;
 }
 
-.approvalActions {
-  display: flex;
-  gap: var(--space-S);
-}
-
-.approvalBtn {
-  font: var(--font-XS);
+.loginLink {
+  font: var(--font-S);
   color: var(--color-primary-blue);
   text-decoration: underline;
   cursor: pointer;

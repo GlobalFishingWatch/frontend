@@ -1,77 +1,40 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { ToolCallPart } from '@tanstack/ai'
-import { toolDefinition } from '@tanstack/ai/client'
-import {
-  createChatClientOptions,
-  fetchServerSentEvents,
-  type UIMessage,
-  useChat,
-} from '@tanstack/ai-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
+import {
+  DefaultChatTransport,
+  lastAssistantMessageIsCompleteWithToolCalls,
+  type UIMessage,
+} from 'ai'
 import { useSetAtom } from 'jotai'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { navigateDef } from '@globalfishingwatch/skills/encode-url/defs/navigate-defs'
 
+import {
+  AGENT_BASE_URL,
+  type AgentThread,
+  authFetch,
+  deleteThread,
+  loadThreadMessages,
+  loadThreads,
+} from 'features/content-panel/chat-agent'
+import { navigateToolInputSchema } from 'features/content-panel/navigate-tool'
 import { timerangeState } from 'features/timebar/timebar.hooks'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 
-export const navigateDefTool = toolDefinition(navigateDef)
-
-// TanStack AI SSE chat against gfw-agent (POST /api/chat). Client tool `navigate`
-// applies encode-url's `{ to, params, search }` via the app's TanStack Router.
-// Conversations live in localStorage; each id is the AG-UI threadId.
-// ponytail: if the agent server restarts it forgets that threadId — the client
-// still shows the transcript but the server loses prior context.
-
-const AGENT_URL = (import.meta.env.VITE_GFW_AGENT_URL || 'http://localhost:8081').replace(
-  /\/+$/,
-  ''
-)
-const CONVERSATIONS_KEY = 'chatConversations'
 const ACTIVE_KEY = 'chatActiveConversationId'
-const MAX_CONVERSATIONS = 30
-const TITLE_MAX = 60
-
-export type StoredConversation = {
-  id: string
-  title: string
-  messages: UIMessage[]
-  updatedAt: number
-}
-
-// Only this module writes CONVERSATIONS_KEY, so the stored shape is already
-// StoredConversation[] — the one thing worth guarding is the key being absent
-// (fresh install) or not yet an array.
-function coerceConversations(raw: unknown): StoredConversation[] {
-  return Array.isArray(raw) ? (raw as StoredConversation[]) : []
-}
-
-function titleFromMessages(messages: UIMessage[], fallback: string): string {
-  if (fallback) return fallback.slice(0, TITLE_MAX)
-  const firstUser = messages.find((m) => m.role === 'user')
-  const textPart = firstUser?.parts?.find((p) => p.type === 'text')
-  const raw = textPart?.content ?? ''
-  const display = raw.replace(/\n\n\[current map url: [^\]]+\]$/, '').trim()
-  return (display || 'Chat').slice(0, TITLE_MAX)
-}
-
-async function resetAgentThread(threadId: string) {
-  try {
-    await fetch(`${AGENT_URL}/api/reset`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ threadId }),
-    })
-  } catch {
-    // best-effort — server may be down
-  }
-}
 
 export function useChatConversations() {
-  const [rawConversations, setRawConversations] = useLocalStorage<unknown>(CONVERSATIONS_KEY, [])
+  const userId = useSelector(selectUserId)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const canUseChat = isGFWUser
   const [activeId, setActiveId] = useLocalStorage<string | null>(ACTIVE_KEY, null)
   const [draftId, setDraftId] = useState(() => crypto.randomUUID())
-  const conversations = useMemo(() => coerceConversations(rawConversations), [rawConversations])
+  const [threads, setThreads] = useState<AgentThread[]>([])
+  const [threadsError, setThreadsError] = useState<string | null>(null)
   const threadId = activeId ?? draftId
 
   // Fresh browser session -> start on a clean conversation (history is kept and
@@ -84,23 +47,36 @@ export function useChatConversations() {
     }
   }, [setActiveId])
 
-  const persistConversation = useCallback(
-    (messages: UIMessage[], title: string) => {
-      setRawConversations((prev: unknown) => {
-        const list = coerceConversations(prev)
-        const existing = list.find((c) => c.id === threadId)
-        const updated: StoredConversation = {
-          id: threadId,
-          title: existing?.title || title,
-          messages,
-          updatedAt: Date.now(),
+  const refreshThreads = useCallback(async () => {
+    if (!canUseChat) return
+    try {
+      setThreads(await loadThreads(String(userId)))
+      setThreadsError(null)
+    } catch (err) {
+      setThreadsError(err instanceof Error ? err.message : 'Failed to load conversations')
+    }
+  }, [canUseChat, userId])
+
+  useEffect(() => {
+    if (!canUseChat) return
+
+    let cancelled = false
+    ;(async () => {
+      try {
+        const next = await loadThreads(String(userId))
+        if (cancelled) return
+        setThreads(next)
+        setThreadsError(null)
+      } catch (err) {
+        if (!cancelled) {
+          setThreadsError(err instanceof Error ? err.message : 'Failed to load conversations')
         }
-        const rest = list.filter((c) => c.id !== threadId)
-        return [updated, ...rest].slice(0, MAX_CONVERSATIONS)
-      })
-    },
-    [setRawConversations, threadId]
-  )
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [canUseChat, userId])
 
   const activate = useCallback(() => {
     if (activeId !== threadId) setActiveId(threadId)
@@ -108,139 +84,179 @@ export function useChatConversations() {
 
   const deleteConversation = useCallback(
     (id: string) => {
-      setRawConversations((prev: unknown) => coerceConversations(prev).filter((c) => c.id !== id))
-      void resetAgentThread(id)
+      if (!canUseChat) return
+      setThreads((prev) => {
+        const next = prev.filter((c) => c.id !== id)
+        void (async () => {
+          const ok = await deleteThread(id, String(userId))
+          if (!ok) {
+            setThreads(prev)
+            toast.error('Could not delete conversation')
+          }
+        })()
+        return next
+      })
       if (id === activeId) setActiveId(null)
     },
-    [activeId, setRawConversations, setActiveId]
+    [activeId, canUseChat, userId, setActiveId]
   )
 
   const newConversation = useCallback(() => {
-    if (activeId) void resetAgentThread(activeId)
     setActiveId(null)
     setDraftId(crypto.randomUUID())
-  }, [activeId, setActiveId])
+  }, [setActiveId])
 
   const activeConversation = useMemo(
-    () => conversations.find((c) => c.id === activeId) ?? null,
-    [conversations, activeId]
+    () => threads.find((c) => c.id === activeId) ?? null,
+    [threads, activeId]
   )
 
   return {
-    conversations,
+    conversations: threads,
+    threadsError,
     activeId,
     activeConversation,
     threadId,
+    canUseChat,
     setActiveId,
-    persistConversation,
     activate,
     deleteConversation,
     newConversation,
+    refreshThreads,
   }
 }
 
 type ChatSessionArgs = {
   threadId: string
-  initialMessages: UIMessage[]
-  titleSeed: string
-  persistConversation: (messages: UIMessage[], title: string) => void
   activate: () => void
+  refreshThreads: () => void
 }
 
-/** One TanStack AI chat bound to a threadId. Remount via key={threadId}. */
-export function useChatAgentSession({
-  threadId,
-  initialMessages,
-  titleSeed,
-  persistConversation,
-  activate,
-}: ChatSessionArgs) {
+/** One AI SDK chat bound to a threadId. Remount via key={threadId}. */
+export function useChatAgentSession({ threadId, activate, refreshThreads }: ChatSessionArgs) {
+  const userId = useSelector(selectUserId)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const canUseChat = isGFWUser
   const routerNavigate = useNavigate()
   const setTimerange = useSetAtom(timerangeState)
+  const [historyError, setHistoryError] = useState<string | null>(null)
+  const statusRef = useRef<string>('ready')
+  const prevStatusRef = useRef<string>('ready')
 
-  const navigate = useMemo(
+  const transport = useMemo(
     () =>
-      navigateDefTool.client(async ({ navigation, path }) => {
-        if (!navigation?.to) {
-          return { ok: false, detail: "navigate called without 'navigation'." }
-        }
-        try {
-          await routerNavigate({
-            to: navigation.to,
-            params: navigation.params ?? {},
-            search: { ...navigation.search, sidePanelContent: 'chat' },
-          } as unknown as Parameters<typeof routerNavigate>[0])
-          const { start, end } = (navigation.search ?? {}) as {
-            start?: string
-            end?: string
-          }
-          if (start && end) setTimerange({ start, end })
+      new DefaultChatTransport({
+        api: `${AGENT_BASE_URL}/chat`,
+        fetch: authFetch,
+        prepareSendMessagesRequest({ messages }) {
           return {
-            ok: true,
-            detail: `Navigated via router to ${navigation.to}; path ${path}`,
+            body: {
+              messages: [messages[messages.length - 1]],
+              memory: { resource: String(userId), thread: threadId },
+            },
           }
-        } catch (err) {
-          return { ok: false, detail: `TanStack Router navigate failed: ${String(err)}` }
-        }
+        },
       }),
-    [routerNavigate, setTimerange]
+    [threadId, userId]
   )
 
-  const chatOptions = useMemo(
-    () =>
-      createChatClientOptions({
-        connection: fetchServerSentEvents(() => `${AGENT_URL}/api/chat`),
-        tools: [navigate],
-        threadId,
-        id: threadId,
-        initialMessages,
-      }),
-    // Remount parent with key={threadId} when switching threads — do not recreate
-    // mid-session from initialMessages changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: thread-scoped
-    [navigate, threadId]
-  )
+  const { messages, sendMessage, status, error, addToolOutput, setMessages } = useChat({
+    transport,
+    // When the last assistant message has ALL its tool-calls with a result
+    // (e.g. after responding to `navigate` with addToolOutput), it automatically
+    // resends to the agent so it CONTINUES the response.
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    // Client-side `navigate` tool: the model calls it, the server does NOT
+    // run it (it has no execute) and the tool-call arrives here.
+    async onToolCall({ toolCall }) {
+      if (toolCall.toolName !== 'navigate') return
+      const parsed = navigateToolInputSchema.safeParse(toolCall.input)
+      if (!parsed.success) {
+        addToolOutput({
+          tool: 'navigate',
+          toolCallId: toolCall.toolCallId,
+          output: {
+            ok: false,
+            detail: `Invalid navigate input: ${parsed.error.issues.map((i) => i.message).join('; ')}`,
+          },
+        })
+        return
+      }
+      const { navigation, path } = parsed.data
+      try {
+        await routerNavigate({
+          to: navigation.to,
+          params: navigation.params ?? {},
+          search: { ...navigation.search, sidePanelContent: 'chat' },
+        } as unknown as Parameters<typeof routerNavigate>[0])
+        const { start, end } = (navigation.search ?? {}) as { start?: string; end?: string }
+        if (start && end) setTimerange({ start, end })
+        addToolOutput({
+          tool: 'navigate',
+          toolCallId: toolCall.toolCallId,
+          output: {
+            ok: true,
+            detail: `Navigated via router to ${navigation.to}; path ${path ?? ''}`,
+          },
+        })
+      } catch (err) {
+        addToolOutput({
+          tool: 'navigate',
+          toolCallId: toolCall.toolCallId,
+          output: { ok: false, detail: `TanStack Router navigate failed: ${String(err)}` },
+        })
+      }
+    },
+  })
 
-  const { messages, sendMessage, isLoading, error, clear, addToolApprovalResponse } =
-    useChat(chatOptions)
+  const loading = status === 'submitted' || status === 'streaming'
 
-  // Persist transcript whenever useChat updates messages.
   useEffect(() => {
-    if (messages.length === 0) return
-    persistConversation(messages, titleFromMessages(messages, titleSeed))
-  }, [messages, persistConversation, titleSeed])
+    statusRef.current = status
+  }, [status])
+
+  // Load the persisted history for this thread from the server whenever it changes.
+  useEffect(() => {
+    if (!canUseChat) return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const history = await loadThreadMessages(threadId, String(userId))
+        if (cancelled) return
+        // Don't clobber an in-flight turn that started while history was loading.
+        if (statusRef.current !== 'ready') return
+        setHistoryError(null)
+        if (history.length > 0) setMessages(history as UIMessage[])
+      } catch (err) {
+        if (!cancelled) {
+          setHistoryError(err instanceof Error ? err.message : 'Failed to load history')
+        }
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- thread-scoped load, re-run only when thread/user change
+  }, [threadId, canUseChat, userId])
+
+  // Refresh titles after a completed send/stream, not after history hydrate.
+  useEffect(() => {
+    const wasBusy = prevStatusRef.current === 'submitted' || prevStatusRef.current === 'streaming'
+    prevStatusRef.current = status
+    if (wasBusy && status === 'ready' && messages.length > 0) void refreshThreads()
+  }, [status, messages.length, refreshThreads])
 
   const send = useCallback(
     async (text: string) => {
       const trimmed = text.trim()
-      if (!trimmed || isLoading) return
+      if (!trimmed || loading || !canUseChat) return false
       activate()
       const content = `${trimmed}\n\n[current map url: ${window.location.href}]`
-      await sendMessage(content)
+      await sendMessage({ text: content })
+      return true
     },
-    [isLoading, activate, sendMessage]
+    [loading, canUseChat, activate, sendMessage]
   )
 
-  const pendingApprovals = useMemo(
-    () =>
-      messages.flatMap((m) =>
-        m.parts.filter(
-          (p): p is ToolCallPart & { approval: NonNullable<ToolCallPart['approval']> } =>
-            p.type === 'tool-call' && p.state === 'approval-requested' && !!p.approval
-        )
-      ),
-    [messages]
-  )
-
-  return {
-    messages,
-    loading: isLoading,
-    error,
-    send,
-    clear,
-    addToolApprovalResponse,
-    pendingApprovals,
-  }
+  return { messages, loading, error, historyError, send, canUseChat }
 }
-
-export { TITLE_MAX, resetAgentThread }
