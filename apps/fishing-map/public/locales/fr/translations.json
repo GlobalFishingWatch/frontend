@@ -233,6 +233,7 @@
     "hideAllHelpHints": "Tout ignorer",
     "hideHelpHint": "Ignorer",
     "hints": "Besoin d'aide ? Recherchez ces points",
+    "historical": "Historical",
     "hour": "Heure",
     "hour_one": "Heure",
     "hour_many": "hours",
@@ -249,6 +250,9 @@
     "latestDays_one": "Dernier {{count}} jour",
     "latestDays_many": "Latest {{count}} days",
     "latestDays_other": "Derniers {{count}} jours",
+    "latestHours_one": "last {{count}} hour",
+    "latestHours_many": "last {{count}} hours",
+    "latestHours_other": "last {{count}} hours",
     "latitude": "Latitude",
     "layerLibrary": "Bibliothèque de calques",
     "layerList": "Liste des calques",
@@ -262,6 +266,8 @@
     "m/s": "m/s",
     "map": "Carte",
     "matchedVessels": "Navires correspondants",
+    "messages_one": "message",
+    "messages_other": "messages",
     "meters": "mètres",
     "minus": "moins",
     "minute": "minute",
@@ -294,6 +300,7 @@
     "points_other": "points",
     "presence": "Présence",
     "previously": "Précédemment",
+    "realTime": "Real time",
     "report": "Rapporter",
     "reports": "Rapports",
     "resetHelpHints": "Afficher à nouveau toutes les astuces",
@@ -951,7 +958,8 @@
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Ajuster la plage de temps à ces dates",
     "focusOnThisDay": "Focus sur la plage de ce jour",
-    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de {{number}} navires"
+    "maxTracksNumber": "Détail des trajectoires non disponible pour plus de {{number}} navires",
+    "nextRealTimeUpdate": "Next data update at {{time}}"
   },
   "timebarSettings": {
     "activityDisabled": "Sélectionnez au moins une couche d'activité",
@@ -1278,6 +1286,20 @@
         "black": "noir",
         "grey": "gris"
       },
+      "longline": "Longline settings at day and night",
+      "longlineEntirelyDaySets_one": "{{count}} day set",
+      "longlineEntirelyDaySets_many": "{{count}} day sets",
+      "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyNightSets_one": "{{count}} night set",
+      "longlineEntirelyNightSets_many": "{{count}} night sets",
+      "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEventsEmpty": "No longline sets detected",
+      "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_many": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_many": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
       "MOULists": "Listes des Mémorandums d'entente de Paris et de Tokyo",
       "MOUListsEmpty": "Battant un ou plusieurs pavillons ne figurant pas sur les listes noires ou grises du Mémorandum d'entente de Tokyo ou de Paris",
       "MOUParisBlackListsCount": "Pavillon figurant sur la liste noire du Mémorandum d'entente de Paris ({{flags}})",
@@ -1495,7 +1517,10 @@
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
       "gaps_one": "{{count}} événement de désactivation de l'AIS détecté pour le navire {{vessels}}",
       "gaps_many": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}"
+      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}",
+      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
+      "longline_many": "{{count}} longline sets from {{vessels}} vessels detected",
+      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
     }
   },
   "workspace": {
