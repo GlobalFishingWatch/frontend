@@ -14,6 +14,7 @@ type GFWOnlyProps = {
   style?: IconProps['style']
   className?: string
   userGroup?: 'gfw' | 'jac' | 'any'
+  children?: React.ReactNode
 }
 
 const defaultIconProps: IconProps = {
@@ -23,42 +24,46 @@ const defaultIconProps: IconProps = {
 }
 
 function GFWOnly(props: GFWOnlyProps) {
-  const { type = 'default', style = {}, className = '', userGroup } = props
+  const { type = 'default', style = {}, className = '', userGroup, children } = props
   const { t } = useTranslation()
   const gfwUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
 
   if (!gfwUser && !jacUser) return null
 
-  let disclaimerText = ''
-  if (userGroup === 'jac') {
-    disclaimerText = t((t) => t.common.onlyVisibleForJAC)
-  } else if (userGroup === 'gfw') {
-    disclaimerText = t((t) => t.common.onlyVisibleForGFW)
-  } else if (userGroup === 'any') {
-    if (gfwUser) {
-      disclaimerText = t((t) => t.common.onlyVisibleForGFW)
-    } else if (jacUser) {
-      disclaimerText = t((t) => t.common.onlyVisibleForJAC)
+  let content: React.ReactNode = ''
+  if (children) {
+    content = children
+  } else {
+    if (userGroup === 'jac') {
+      content = t((t) => t.common.onlyVisibleForJAC)
+    } else if (userGroup === 'gfw') {
+      content = t((t) => t.common.onlyVisibleForGFW)
+    } else if (userGroup === 'any') {
+      if (gfwUser) {
+        content = t((t) => t.common.onlyVisibleForGFW)
+      } else if (jacUser) {
+        content = t((t) => t.common.onlyVisibleForJAC)
+      }
     }
   }
 
   if (type === 'only-icon') {
     return userGroup === 'jac' ? (
-      <span title={disclaimerText}>🔓</span>
+      <span title={content as string}>🔓</span>
     ) : (
       <Icon
         {...defaultIconProps}
         style={{ ...defaultIconProps.style, ...style }}
         className={className}
-        tooltip={disclaimerText}
+        tooltip={content}
       />
     )
   }
   return (
     <span className={cx(styles.GFWOnly, className)}>
       {userGroup === 'jac' ? `🔓` : <Icon {...defaultIconProps} />}
-      {disclaimerText}
+      {content}
     </span>
   )
 }
