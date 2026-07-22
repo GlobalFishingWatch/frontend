@@ -117,8 +117,8 @@ function UserInfo() {
             <p className={styles.secondary}>{userData.email}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <LogoutButton />
             <SettingsButton />
+            <LogoutButton />
           </div>
         </div>
         <label>{t((t) => t.user.groups)}</label>
