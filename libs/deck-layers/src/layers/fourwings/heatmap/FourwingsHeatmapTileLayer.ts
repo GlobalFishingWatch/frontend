@@ -60,7 +60,6 @@ import type {
 import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
 import {
   aggregateCell,
-  aggregateCellTimeseries,
   compareCell,
   filterCells,
   getDataUrl,
@@ -100,6 +99,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         availableIntervals: this.props.availableIntervals,
         compareStart: this.props.compareStart,
         compareEnd: this.props.compareEnd,
+        intervalCacheMode: this.props.intervalCacheMode,
       }),
       colorDomain: [],
       colorRanges: this._getColorRanges(),
@@ -168,6 +168,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       skipColorDomainSampling,
+      intervalCacheMode,
     } = this.props
 
     const currentZoomData = this.getData()
@@ -185,6 +186,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           startTime: this.props.startTime,
           endTime: this.props.endTime,
           availableIntervals: this.props.availableIntervals,
+          intervalCacheMode,
         })?.bufferedStart || 0,
     })
 
@@ -417,6 +419,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       tilesUrl,
       compareStart,
       compareEnd,
+      intervalCacheMode,
     } = this.props
     if (!compareStart || !compareEnd) {
       throw new Error('Missing compare start or end')
@@ -442,6 +445,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         chunk: sublayer.chunk,
         sublayer,
         tilesUrl,
+        intervalCacheMode,
       }) as string
       const response = await GFWAPI.fetch<Response>(url!, {
         signal: tile.signal,
@@ -526,11 +530,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       comparisonMode,
       tilesUrl,
       extentStart,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
+    const chunk = getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    })
     this.setState({ rampDirty: true })
     const cols: number[] = []
     const rows: number[] = []
@@ -544,6 +558,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         sublayer,
         tilesUrl,
         extentStart,
+        intervalCacheMode,
       }) as string
       const response = await GFWAPI.fetch<Response>(url, {
         signal: tile.signal,
@@ -681,6 +696,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       comparisonMode,
       minVisibleValue,
       maxVisibleValue,
+      intervalCacheMode,
     } = props
 
     const { tilesCache, colorRanges } = this.state
@@ -731,6 +747,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         availableIntervals,
         compareStart,
         compareEnd,
+        intervalCacheMode,
       })
     } else if (isTimeRangeOutOfCache && this.state.tilesCacheUpdateTimeout === null) {
       // Coalesces a scrub across several chunk boundaries into one tile
@@ -741,11 +758,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         this.setState({
           tilesCache: getTileDataCache({
             zoom: Math.round(this.context.viewport.zoom),
-            startTime: this.props.startTime,
-            endTime: this.props.endTime,
-            availableIntervals: this.props.availableIntervals,
-            compareStart: this.props.compareStart,
-            compareEnd: this.props.compareEnd,
+            startTime,
+            endTime,
+            availableIntervals,
+            compareStart,
+            compareEnd,
+            intervalCacheMode,
           }),
         })
       }, this.debounceTime)
@@ -853,24 +871,28 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return sublayers
   }
 
-  getTimeseries() {
-    const data = this.getData()
-    if (data?.length) {
-      const sublayers = this.getFourwingsLayers()
-      const cells = aggregateCellTimeseries(data, sublayers)
-      return cells
-    }
-    return []
-  }
-
   getInterval = () => {
     const { startTime, endTime, availableIntervals } = this.props
     return getFourwingsInterval(startTime, endTime, availableIntervals)
   }
 
   getChunk = () => {
-    const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
+    const {
+      startTime,
+      endTime,
+      availableIntervals,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    } = this.props
+    return getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    })
   }
 
   getColorDomain = (): FourwingsTileLayerColorDomain => {

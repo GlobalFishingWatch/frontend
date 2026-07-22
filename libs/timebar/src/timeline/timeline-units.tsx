@@ -21,6 +21,7 @@ type TimelineUnitsProps = {
   outerEnd: string
   outerScale: TimelineScale
   locale: string
+  shortestTimeRange?: 'day' | 'hour'
 }
 
 const TimelineUnits = ({
@@ -34,6 +35,7 @@ const TimelineUnits = ({
   outerEnd,
   outerScale,
   locale,
+  shortestTimeRange = 'day',
 }: TimelineUnitsProps) => {
   const zoomToUnit = useCallback(
     ({ start, end }: { start: string | null; end: string | null }) => {
@@ -53,11 +55,18 @@ const TimelineUnits = ({
   )
 
   const innerDays = getDeltaDays(start, end)
+  const hourSuffix = innerDays * 24 <= 12
 
+  const innerHours = innerDays * 24
   let baseUnit: DateTimeUnit = 'day'
+  let minuteStep = 10
   if (innerDays > 366) baseUnit = 'year'
   else if (innerDays > 31) baseUnit = 'month'
-  else if (innerDays <= 1) baseUnit = 'hour'
+  else if (innerHours <= 1) baseUnit = 'minute'
+  else if (innerHours <= 3) {
+    baseUnit = 'minute'
+    minuteStep = 30
+  } else if (innerDays <= 1) baseUnit = 'hour'
 
   const units = getUnitsPositions(
     outerScale,
@@ -67,7 +76,9 @@ const TimelineUnits = ({
     absoluteEnd,
     baseUnit,
     labels,
-    locale
+    locale,
+    hourSuffix,
+    minuteStep
   )
 
   return (
@@ -86,7 +97,7 @@ const TimelineUnits = ({
             }}
             className={styles.unit}
           >
-            {baseUnit === 'hour' ? (
+            {baseUnit === 'minute' || (baseUnit === 'hour' && shortestTimeRange !== 'hour') ? (
               <div>{d.label}</div>
             ) : (
               <button

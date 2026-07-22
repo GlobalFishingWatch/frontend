@@ -16,9 +16,13 @@ import type { ResolvedDataviewInstance } from './dataviews'
 
 export type TimeRange = { start: string; end: string }
 
+type TimeMode = 'realTime' | 'historical'
+
 export type ResolverGlobalConfig = {
   start: string
   end: string
+  bufferedStart?: string
+  bufferedEnd?: string
   token?: string
   debugTiles?: boolean
   bivariateDataviews: [string, string] | null
@@ -36,6 +40,7 @@ export type ResolverGlobalConfig = {
   vesselsColorBy: VesselsColorByProperty
   vectorsTemporalAggregation?: boolean
   skipColorDomainSampling?: boolean
+  timeMode: TimeMode
 }
 
 export type DeckResolverFunction<

@@ -42,6 +42,8 @@ export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID 
   | string
   | undefined
 
+export const IS_REALTIME_ENABLED = import.meta.env.VITE_REALTIME_ENABLED === 'true'
+
 // Local storage keys
 export const HINTS = 'hints'
 export const USER_SETTINGS = 'userSettings'
@@ -68,6 +70,10 @@ export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
+
+export const REAL_TIME_DATA_DAYS_AVAILABLE = 3
+export const REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES = 10
+
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(
   { hour: 0, minute: 0, second: 0 },
@@ -132,6 +138,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   timebarGraph: TimebarGraphs.None,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
+  timeMode: 'historical',
   userTab: UserTab.Info,
   vesselGroupsVisualizationMode: 'footprint',
   visibleEvents: 'all',

@@ -1,10 +1,11 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
-import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
+import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT, IS_REALTIME_ENABLED } from 'data/config'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
+  REAL_TIME_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
   SENTINEL2_DATAVIEW_INSTANCE_ID,
   VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
@@ -31,8 +32,10 @@ import {
   PORTS_AIS_DATAVIEW_SLUG,
   PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
+  PRESENCE_REALTIME_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
+  TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
@@ -64,6 +67,14 @@ const workspace: Workspace<WorkspaceState> = {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
+    ...(IS_REALTIME_ENABLED
+      ? [
+          {
+            id: REAL_TIME_DATAVIEW_INSTANCE_ID,
+            dataviewId: PRESENCE_REALTIME_DATAVIEW_SLUG,
+          },
+        ]
+      : []),
     {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {

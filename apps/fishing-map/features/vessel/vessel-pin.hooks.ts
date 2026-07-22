@@ -11,12 +11,13 @@ import type {
   DataviewInstanceOrigin,
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTracksDatasets } from 'features/datasets/datasets.selectors'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   getVesselDataview,
@@ -27,7 +28,11 @@ import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.ins
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
-import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
+import {
+  getRelatedIdentityVesselIds,
+  getVesselId,
+  getVesselProperty,
+} from 'features/vessel/vessel.utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { getEventLabel } from 'utils/analytics'
@@ -81,6 +86,7 @@ export function usePinVessel({
     typeof vessel?.dataset === 'string'
       ? vessel?.dataset
       : vessel?.dataset?.id || vesselToResolve?.datasetId || ''
+  const trackDatasets = useSelector(selectTracksDatasets)
   const infoDataset = useSelector(selectDatasetById(infoDatasetId))
   const vesselInstanceId = vessel
     ? getVesselId(vessel)
@@ -142,7 +148,21 @@ export function usePinVessel({
         }
       }
       if (vesselWithIdentity) {
-        const trackDataset = getRelatedDatasetsByType(infoDatasetResolved, DatasetTypes.Tracks)?.[0]
+        const relatedTrackDatasets = getRelatedDatasetsByType(
+          infoDatasetResolved,
+          DatasetTypes.Tracks
+        )?.map((relatedDataset) => {
+          const dataset = trackDatasets.find(
+            (trackDataset) => trackDataset.id === relatedDataset.id
+          )
+          return dataset
+        })
+        const trackDataset = relatedTrackDatasets?.find((relatedTrackDataset) => {
+          return relatedTrackDataset?.subcategory === DatasetSubCategory.Track
+        })
+        const trackRealTimeDataset = relatedTrackDatasets?.find((relatedTrackDataset) => {
+          return relatedTrackDataset?.subcategory === DatasetSubCategory.TrackRealTime
+        })
         const vesselEventsDatasets = getRelatedDatasetsByType(
           infoDatasetResolved,
           DatasetTypes.Events
@@ -152,10 +172,14 @@ export function usePinVessel({
             ? vesselEventsDatasets.map((d) => d.id)
             : []
         const vesselDataviewInstance = getVesselDataviewInstance({
-          vessel: { id: getVesselId(vesselWithIdentity) },
+          vessel: {
+            id: getVesselId(vesselWithIdentity),
+            ssvid: getVesselProperty(vesselWithIdentity, 'ssvid'),
+          },
           datasets: {
             info: infoDatasetResolved?.id,
             track: trackDataset?.id,
+            trackRealTime: trackRealTimeDataset?.id,
             ...(eventsDatasetsId?.length && { events: eventsDatasetsId }),
             relatedVesselIds: getRelatedIdentityVesselIds(vesselWithIdentity),
           },

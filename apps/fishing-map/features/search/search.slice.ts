@@ -74,6 +74,41 @@ type VesselSearchThunk = {
   searchType?: SearchType
 }
 
+export function getVesselSearchEndpoint(
+  datasets: Dataset[],
+  {
+    mode,
+    query,
+    since,
+  }: {
+    query: string
+    mode: SearchType
+    since: string
+  }
+) {
+  if (!datasets?.length) {
+    return null
+  }
+  const dataset = datasets[0]
+  const datasetConfig = {
+    endpoint: EndpointId.VesselSearch,
+    datasetId: dataset?.id,
+    params: [],
+    query: [
+      { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
+      { id: 'datasets', value: datasets.map((d) => d?.id) },
+      {
+        id: mode === 'advanced' ? 'where' : 'query',
+        value: query || '',
+      },
+      { id: 'since', value: since },
+    ],
+  }
+
+  const url = resolveEndpoint(dataset, datasetConfig)
+  return url
+}
+
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async (
@@ -81,7 +116,6 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     { getState, signal, rejectWithValue }
   ) => {
     const state = getState() as SearchSliceState
-    const dataset = datasets[0]
     const currentResults = selectSearchResults(state)
     let advancedQuery
     try {
@@ -132,25 +166,11 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         advancedQuery = getAdvancedSearchQuery(fields, { rootObject })
       }
 
-      const datasetConfig = {
-        endpoint: EndpointId.VesselSearch,
-        datasetId: dataset?.id,
-        params: [],
-        query: [
-          { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
-          { id: 'datasets', value: datasets.map((d) => d?.id) },
-          {
-            id: advancedQuery ? 'where' : 'query',
-            value: advancedQuery || query || '',
-          },
-          { id: 'since', value: since },
-        ],
-      }
-      if (!advancedQuery) {
-        // datasetConfig.query.push({ id: 'match-fields', value: 'SEVERAL_FIELDS' })
-      }
-
-      const url = resolveEndpoint(dataset, datasetConfig)
+      const url = getVesselSearchEndpoint(datasets, {
+        mode: advancedQuery ? 'advanced' : 'basic',
+        query: advancedQuery || query || '',
+        since,
+      })
       if (url) {
         const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
           signal,

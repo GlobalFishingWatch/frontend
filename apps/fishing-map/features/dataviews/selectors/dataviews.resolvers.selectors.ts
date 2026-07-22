@@ -30,6 +30,8 @@ import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   getVesselDataviewInstanceDatasetConfig,
   isDataviewDeprecated,
+  isHistoricalDataview,
+  isRealTimeDataview,
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
@@ -46,6 +48,7 @@ import {
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyVesselLocation,
   selectTrackCorrectionId,
@@ -93,6 +96,7 @@ const selectHighlightedTimeForTrackCorrection = createSelector(
 
 export const selectAllDataviewInstancesResolved = createSelector(
   [
+    selectTimeMode,
     selectDataviewInstancesMergedOrdered,
     selectAllDataviews,
     selectAllDatasets,
@@ -107,6 +111,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectUserLanguage,
   ],
   (
+    timeMode,
     dataviewInstances,
     dataviews,
     datasets,
@@ -220,7 +225,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
           deprecated: dataview.deprecated ?? isDataviewDeprecated(dataview, deprecatedDatasets),
         }
       })
-    return dataviewInstancesResolvedExtendedUniqDeprecated
+
+    return dataviewInstancesResolvedExtendedUniqDeprecated.filter((d) => {
+      return timeMode === 'realTime' ? isRealTimeDataview(d) : isHistoricalDataview(d)
+    })
   }
 )
 

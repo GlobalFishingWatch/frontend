@@ -217,15 +217,17 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = () => {
-    const { startTime, endTime, strictTimeRange } = this.props
+  _getVesselChunks = ({ withBuffer = false }: { withBuffer?: boolean } = {}) => {
+    const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
     }
+    const loadStart = withBuffer ? (bufferedStartTime ?? startTime) : startTime
+    const loadEnd = withBuffer ? (bufferedEndTime ?? endTime) : endTime
 
     const chunks = strictTimeRange
-      ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
-      : getVesselResourceChunks(startTime, endTime)
+      ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
+      : getVesselResourceChunks(loadStart, loadEnd)
     return chunks
   }
 
@@ -277,7 +279,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
     const { zoom } = this.context.viewport
     this._lastTrackThinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
-    const chunks = this._getVesselChunks()
+    const chunks = this._getVesselChunks({ withBuffer: true })
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []
@@ -402,6 +404,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             name,
             iconSize: 18,
             iconBorder: true,
+            useCollisionFilter: false,
             highlightStartTime,
           })
         ),

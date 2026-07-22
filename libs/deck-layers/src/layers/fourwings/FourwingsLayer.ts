@@ -247,12 +247,4 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   getFourwingsLayers() {
     return this.getLayer()?.getFourwingsLayers()
   }
-
-  getTimeseries() {
-    const layer = this.getLayer()
-    if (layer instanceof FourwingsHeatmapStaticLayer) {
-      return []
-    }
-    return layer.getTimeseries()
-  }
 }
