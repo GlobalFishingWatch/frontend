@@ -85,6 +85,7 @@ type NonPersistedWorkspaceStateKey =
   | 'vesselsColorBy'
   | 'skipColorDomainSampling'
   | 'migramarLayer'
+  | 'longlineSetsInsight'
 
 const selectWorkspaceReportState = createSelector(
   [
