@@ -183,17 +183,20 @@ export type GapsEvent = {
 
 export type FishingEventDayNightCategory = 'day' | 'night' | 'over_dawn' | 'over_dusk'
 
+// Only available in longline fishing events datasets
+export type LonglineFishingFields = {
+  dayNightCategory: FishingEventDayNightCategory
+  fractionAtNight: number
+  localStartHours: number
+  localEndHours: number
+  minTimeToDawnHrs: number
+  minTimeToDuskHrs: number
+}
+
 export type FishingEvent = {
   totalDistanceKm: number
   averageSpeedKnots: number
   averageDurationHours: number
-  // Only available in longline fishing events datasets
-  dayNightCategory?: FishingEventDayNightCategory
-  fractionAtNight?: number
-  localStartHours?: number
-  localEndHours?: number
-  minTimeToDawnHrs?: number
-  minTimeToDuskHrs?: number
 }
 
 export type Distances = {
@@ -207,7 +210,7 @@ export type ApiEvent<Vessel = EventVessel> = {
   distances?: Distances
   encounter?: EncounterEvent<Vessel>
   end: number | string // Depends on timestamp format API param
-  fishing?: FishingEvent
+  fishing?: FishingEvent & LonglineFishingFields
   gap?: GapEvent
   gaps?: GapsEvent
   id: string

@@ -10,8 +10,9 @@ const endpoint = getEndpointByType({
   endpoint: EndpointId.Events,
 })
 
-type VesselEventsApiParams = Partial<InferQueryParams<typeof endpoint>> & {
+type VesselEventsApiParams = Omit<InferQueryParams<typeof endpoint>, 'vessels'> & {
   ids?: string[]
+  vessels?: string[]
   'vessel-groups'?: string[]
 }
 

@@ -14,6 +14,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import Event from 'features/vessel/activity/event/Event'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import { LONGLINE_FISHING_EVENTS_DATASET } from 'features/vessel/insights/InsightLongline'
+import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 import LonglineSetsGraph from 'features/vessel/insights/LonglineSetsGraph'
 import type { VesselEvent } from 'features/vessel/vessel.types'
 import VesselLink from 'features/vessel/VesselLink'
@@ -44,7 +45,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   )
 
   const vessels = useMemo(() => {
-    const byVesselId = (data || []).reduce(
+    const byVesselId = (data || []).map(removeNonTunaRFMO).reduce(
       (acc, event) => {
         const { id, name, flag } = event.vessel || {}
         if (!id) return acc

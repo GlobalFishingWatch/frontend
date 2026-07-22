@@ -10,6 +10,7 @@ import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 
 import InsightError from './InsightErrorMessage'
+import { removeNonTunaRFMO } from './insights.utils'
 import LonglineSetsGraph from './LonglineSetsGraph'
 
 import styles from './Insights.module.css'
@@ -46,7 +47,7 @@ const InsightLongline = () => {
       ) : data.length === 0 ? (
         <p className={styles.secondary}>{t((t) => t.vessel.insights.longlineEventsEmpty)}</p>
       ) : (
-        <LonglineSetsGraph data={data} />
+        <LonglineSetsGraph data={data.map(removeNonTunaRFMO)} />
       )}
     </div>
   )
