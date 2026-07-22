@@ -1,0 +1,129 @@
+name: PR Preview (Reusable Workflow)
+
+on:
+  workflow_call:
+    inputs:
+      preview_label:
+        description: 'PR label to trigger preview deploy/teardown'
+        required: true
+        type: string
+      config:
+        description: 'Path to app config YAML file'
+        required: true
+        type: string
+      cloudrun_project:
+        description: 'GCP project for Cloud Run'
+        required: false
+        default: 'gfw-development'
+        type: string
+      cloudrun_service_account:
+        description: 'Service account for Cloud Run'
+        required: true
+        type: string
+      service_name_prefix:
+        description: 'Prefix for Cloud Run service name'
+        required: true
+        type: string
+      image:
+        description: 'Full Docker image URI'
+        required: true
+        type: string
+      comment_header:
+        description: 'Header key for sticky PR comment'
+        required: true
+        type: string
+
+env:
+  APP: fishing-map
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    if: |
+      github.event.action != 'closed' &&
+      (
+        (github.event.action == 'labeled' && github.event.label.name == inputs.preview_label) ||
+        (github.event.action != 'labeled' && github.event.action != 'unlabeled' && contains(github.event.pull_request.labels.*.name, inputs.preview_label))
+      )
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
+        with:
+          app: ${{ env.APP }}
+          image: ${{ inputs.image }}
+          config: ${{ inputs.config }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+      - name: Deploy
+        id: deploy
+        uses: ./.github/actions/deploy-cloudrun
+        with:
+          app: ${{ env.APP }}
+          image: ${{ inputs.image }}
+          config: ${{ inputs.config }}
+          service-name-prefix: ${{ inputs.service_name_prefix }}
+          cloudrun-project: ${{ inputs.cloudrun_project }}
+          cloudrun-service-account: ${{ inputs.cloudrun_service_account }}
+
+      - name: Comment preview URL on PR
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: ${{ inputs.comment_header }}
+          message: |
+            ## 🚀 Preview deployed: ${{ env.APP }}
+
+            ${{ steps.deploy.outputs.url }}
+
+            Built from ${{ github.event.pull_request.head.sha }}. Remove the `${{ inputs.preview_label }}` label or close this PR to tear it down.
+
+  teardown-preview:
+    name: Teardown Preview
+    runs-on: ubuntu-latest
+    if: |
+      (github.event.action == 'unlabeled' && github.event.label.name == inputs.preview_label) ||
+      (github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, inputs.preview_label))
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Delete preview Cloud Run service
+        run: |
+          SERVICE_NAME="${{ inputs.service_name_prefix }}-${{ env.APP }}"
+          gcloud run services delete "$SERVICE_NAME" \
+            --project "${{ inputs.cloudrun_project }}" \
+            --region us-central1 \
+            --quiet || echo "Service $SERVICE_NAME not found, skipping"
+
+      - name: Remove preview comment
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: ${{ inputs.comment_header }}
+          delete: true
