@@ -1,14 +1,13 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { Fragment, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 
 import { type VesselInfo } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import { IS_RANDOM_FOREST_ENABLED } from 'data/config'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { getIsCombinedSourceInTimerange } from 'features/vessel/identity/fields/vessel-identity.utils'
 import VesselIdentityField from 'features/vessel/identity/fields/VesselIdentityField'
 import VesselIdentityGFWExtendedGeartype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedGeartype'
 import VesselIdentityGFWExtendedVesseltype from 'features/vessel/identity/fields/VesselIdentityGFWExtendedVesseltype'
@@ -54,16 +53,10 @@ const VesselIdentityCombinedSourceField = ({
       {[...combinedSource]
         .sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
         .map((source, index) => {
-          const { name, yearTo, yearFrom } = source
-          const startDate = DateTime.fromISO(identity.transmissionDateFrom)
-          const endDate = DateTime.fromISO(identity.transmissionDateTo)
-          const sourceYearFrom = DateTime.fromISO(yearFrom.toString())
-          const sourceYearTo = DateTime.fromISO(yearTo.toString()).endOf('year')
-          const sourceOverlapsTimeRange =
-            sourceYearFrom.toMillis() <= endDate.toMillis() &&
-            sourceYearTo.toMillis() >= startDate.toMillis()
+          const { yearTo, yearFrom, name } = source
+          const isCombinedSourceInTimerange = getIsCombinedSourceInTimerange(identity, source)
 
-          if (!sourceOverlapsTimeRange) {
+          if (!isCombinedSourceInTimerange) {
             return null
           }
 
@@ -92,7 +85,7 @@ const VesselIdentityCombinedSourceField = ({
             )
           }
 
-          if (isGFWUser && IS_RANDOM_FOREST_ENABLED && property === 'shiptypes') {
+          if (isGFWUser && property === 'shiptypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleVesselTypesExpanded(index)} className={styles.expandable}>
