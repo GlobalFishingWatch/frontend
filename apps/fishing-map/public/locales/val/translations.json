@@ -233,6 +233,7 @@
     "hideAllHelpHints": "crwdns59773:0crwdne59773:0",
     "hideHelpHint": "crwdns59775:0crwdne59775:0",
     "hints": "crwdns59777:0crwdne59777:0",
+    "historical": "crwdns131635:0crwdne131635:0",
     "hour": "crwdns59779:0crwdne59779:0",
     "hour_one": "crwdns59781:0crwdne59781:0",
     "hour_many": "crwdns106664:0crwdne106664:0",
@@ -249,6 +250,9 @@
     "latestDays_one": "crwdns83264:0{{count}}crwdne83264:0",
     "latestDays_many": "crwdns106668:0{{count}}crwdne106668:0",
     "latestDays_other": "crwdns83266:0{{count}}crwdne83266:0",
+    "latestHours_one": "crwdns131637:0{{count}}crwdne131637:0",
+    "latestHours_many": "crwdns131639:0{{count}}crwdne131639:0",
+    "latestHours_other": "crwdns131641:0{{count}}crwdne131641:0",
     "latitude": "crwdns59789:0crwdne59789:0",
     "layerLibrary": "crwdns82664:0crwdne82664:0",
     "layerList": "crwdns59791:0crwdne59791:0",
@@ -262,6 +266,8 @@
     "m/s": "crwdns108858:0crwdne108858:0",
     "map": "crwdns59805:0crwdne59805:0",
     "matchedVessels": "crwdns59807:0crwdne59807:0",
+    "messages_one": "crwdns131643:0crwdne131643:0",
+    "messages_other": "crwdns131645:0crwdne131645:0",
     "meters": "crwdns84036:0crwdne84036:0",
     "minus": "crwdns69306:0crwdne69306:0",
     "minute": "crwdns59813:0crwdne59813:0",
@@ -294,6 +300,7 @@
     "points_other": "crwdns106646:0crwdne106646:0",
     "presence": "crwdns59845:0crwdne59845:0",
     "previously": "crwdns69350:0crwdne69350:0",
+    "realTime": "crwdns131647:0crwdne131647:0",
     "report": "crwdns59847:0crwdne59847:0",
     "reports": "crwdns59849:0crwdne59849:0",
     "resetHelpHints": "crwdns59851:0crwdne59851:0",
@@ -951,7 +958,8 @@
     "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
-    "maxTracksNumber": "crwdns60415:0{{number}}crwdne60415:0"
+    "maxTracksNumber": "crwdns60415:0{{number}}crwdne60415:0",
+    "nextRealTimeUpdate": "crwdns131649:0{{time}}crwdne131649:0"
   },
   "timebarSettings": {
     "activityDisabled": "crwdns60417:0crwdne60417:0",
@@ -1278,6 +1286,20 @@
         "black": "crwdns83716:0crwdne83716:0",
         "grey": "crwdns83718:0crwdne83718:0"
       },
+      "longline": "crwdns131601:0crwdne131601:0",
+      "longlineEntirelyDaySets_one": "crwdns131603:0{{count}}crwdne131603:0",
+      "longlineEntirelyDaySets_many": "crwdns131605:0{{count}}crwdne131605:0",
+      "longlineEntirelyDaySets_other": "crwdns131607:0{{count}}crwdne131607:0",
+      "longlineEntirelyNightSets_one": "crwdns131609:0{{count}}crwdne131609:0",
+      "longlineEntirelyNightSets_many": "crwdns131611:0{{count}}crwdne131611:0",
+      "longlineEntirelyNightSets_other": "crwdns131613:0{{count}}crwdne131613:0",
+      "longlineEventsEmpty": "crwdns131615:0crwdne131615:0",
+      "longlineMostlyDaySets_one": "crwdns131617:0{{count}}crwdne131617:0",
+      "longlineMostlyDaySets_many": "crwdns131619:0{{count}}crwdne131619:0",
+      "longlineMostlyDaySets_other": "crwdns131621:0{{count}}crwdne131621:0",
+      "longlineMostlyNightSets_one": "crwdns131623:0{{count}}crwdne131623:0",
+      "longlineMostlyNightSets_many": "crwdns131625:0{{count}}crwdne131625:0",
+      "longlineMostlyNightSets_other": "crwdns131627:0{{count}}crwdne131627:0",
       "MOULists": "crwdns83084:0crwdne83084:0",
       "MOUListsEmpty": "crwdns83086:0crwdne83086:0",
       "MOUParisBlackListsCount": "crwdns83664:0{{flags}}crwdne83664:0",
@@ -1495,7 +1517,10 @@
       "fishingInRfmoWithoutKnownAuthorization_other": "crwdns83858:0{{count}}crwdnd83858:0{{vessels}}crwdne83858:0",
       "gaps_one": "crwdns83860:0{{count}}crwdnd83860:0{{vessels}}crwdne83860:0",
       "gaps_many": "crwdns106736:0{{count}}crwdnd106736:0{{vessels}}crwdne106736:0",
-      "gaps_other": "crwdns83862:0{{count}}crwdnd83862:0{{vessels}}crwdne83862:0"
+      "gaps_other": "crwdns83862:0{{count}}crwdnd83862:0{{vessels}}crwdne83862:0",
+      "longline_one": "crwdns131629:0{{count}}crwdnd131629:0{{vessels}}crwdne131629:0",
+      "longline_many": "crwdns131631:0{{count}}crwdnd131631:0{{vessels}}crwdne131631:0",
+      "longline_other": "crwdns131633:0{{count}}crwdnd131633:0{{vessels}}crwdne131633:0"
     }
   },
   "workspace": {
