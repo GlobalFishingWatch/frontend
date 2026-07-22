@@ -171,6 +171,5 @@ div.modal {
   align-items: flex-end;
   gap: var(--space-S);
   padding: var(--space-S);
-  flex-direction: column;
-  width: 100%;
+  flex-direction: row;
 }

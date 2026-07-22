@@ -2,10 +2,11 @@ import { useTranslation } from 'react-i18next'
 
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
-import { redirectToSettingsPage } from './user.hooks'
+import { useRedirectToSettingsPage } from './user.hooks'
 
 function SettingsButton() {
   const { t } = useTranslation()
+  const redirectToSettingsPage = useRedirectToSettingsPage()
 
   return (
     <Button type="secondary" onClick={redirectToSettingsPage} testId="settings-button">
