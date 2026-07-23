@@ -1,16 +1,4 @@
 {
-  "agent": {
-    "toolBash": "Running command",
-    "toolLoadSkill": "Loading skill",
-    "toolNavigate": "Navigating map",
-    "toolReadSkillResource": "Reading skill resource",
-    "toolRegionLookup": "Looking up region",
-    "toolRunSkillScript": "Running skill script",
-    "toolStateDone": "done",
-    "toolStateFailed": "failed",
-    "toolStateRunning": "running",
-    "toolStateStarting": "starting"
-  },
   "analysis": {
     "activityChange": "Activity change",
     "around": "around",
@@ -148,6 +136,19 @@
     "visualisationActivity": "Activity (heatmap)",
     "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
     "visualisationEvents": "Events (clusters)"
+  },
+  "chat": {
+    "couldNotDeleteConversation": "Could not delete conversation",
+    "toolBash": "Running command",
+    "toolLoadSkill": "Loading skill",
+    "toolNavigate": "Navigating map",
+    "toolReadSkillResource": "Reading skill resource",
+    "toolRegionLookup": "Looking up region",
+    "toolRunSkillScript": "Running skill script",
+    "toolStateDone": "done",
+    "toolStateFailed": "failed",
+    "toolStateRunning": "running",
+    "toolStateStarting": "starting"
   },
   "common": {
     "active": "Active",

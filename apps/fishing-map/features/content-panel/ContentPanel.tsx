@@ -1,10 +1,10 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { IS_CHATBOT_ENABLED } from 'data/config'
+import ChatContainer from 'features/content-panel/chat/ChatContainer'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import DataTerminologyContent from 'features/content-panel/data-terminology/DataTerminologyContent'
 import DatasetInfoContainer from 'features/content-panel/datasets-info/DatasetInfoContainer'
@@ -13,8 +13,6 @@ import UserGuideContent from 'features/content-panel/user-guide/UserGuideContent
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'
-
-const ChatContent = lazy(() => import('features/content-panel/chat/ChatContent'))
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
@@ -109,11 +107,7 @@ function ContentPanel({
       {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
       {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
       {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
-      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && (
-        <Suspense fallback={<Spinner />}>
-          <ChatContent />
-        </Suspense>
-      )}
+      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
     </div>
   )
 }
