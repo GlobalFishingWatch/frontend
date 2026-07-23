@@ -1,6 +1,8 @@
 import type { PickingInfo } from '@deck.gl/core'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
-import polygonClipping from 'polygon-clipping'
+
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import { getPolygonsUnion } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_ID_PROPERTY } from '../../utils'
 import type { FilterExtensionProps } from '../user/user.types'
@@ -14,8 +16,6 @@ import type {
 } from './context.types'
 import { ContextLayerId } from './context.types'
 
-const { union } = polygonClipping
-
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
@@ -24,6 +24,14 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
 export const getContextFiltersHash = (filters: ContextSubLayerConfig['filters']) => {
   return Object.values(filters || {})
     .flatMap((value) => value || [])
+    .join('-')
+}
+
+export const getContextFilterOperatorsHash = (
+  filterOperators: ContextSubLayerConfig['filterOperators']
+) => {
+  return Object.entries(filterOperators || {})
+    .map(([key, operator]) => `${key}:${operator}`)
     .join('-')
 }
 
@@ -53,13 +61,8 @@ export function supportDataFilterExtension(
   const timeFilterSize = timeFilterExtensionProps
     ? getFilterExtensionSize(timeFilterExtensionProps)
     : 0
-  if (getValidSublayerFilters(sublayer).length + timeFilterSize > 4) {
-    console.warn(
-      'Filters for more than 4 categories are not supported by deck.gl, using CPU based filter as fallback'
-    )
-    return false
-  }
-  return true
+  const sublayerFilterSize = hasSublayerFilters(sublayer) ? 1 : 0
+  return sublayerFilterSize + timeFilterSize <= 4
 }
 
 const RFMO_LINKS: Record<string, string> = {
@@ -162,13 +165,13 @@ export function mergePickedFeatures<T extends Feature>(
     const geometryType = first.geometry?.type
     if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
       const geoms = group.map(
-        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as polygonClipping.Geom
+        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as PolygonGeomCoords
       )
       merged.push({
         ...first,
         geometry: {
           type: 'MultiPolygon',
-          coordinates: union(geoms[0], ...geoms.slice(1)),
+          coordinates: getPolygonsUnion(geoms),
         } as MultiPolygon,
       })
     } else {

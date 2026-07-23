@@ -17,7 +17,6 @@ export type FilterExtensionProps = {
 export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
-  highlightedFeatures?: UserLayerPickingObject[]
   /**
    * Global timerange config filter timestamps
    */

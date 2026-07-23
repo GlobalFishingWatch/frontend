@@ -329,7 +329,8 @@ export function getCurrentIdentityVessel(
   vessel: VesselsParamsSupported,
   { identityId, identitySource } = {} as GetVesselIdentityParams
 ) {
-  const vesselData = getVesselIdentity(vessel, { identityId, identitySource })
+  const vesselData =
+    getVesselIdentity(vessel, { identityId, identitySource }) || ({} as VesselDataIdentity)
   const { dataset, registryPublicAuthorizations, registryOwners } = vessel
   return {
     ...vesselData,

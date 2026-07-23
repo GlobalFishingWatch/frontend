@@ -16,36 +16,6 @@ locals {
   }
 }
 
-module "develop" {
-  source            = "../../../cloudbuild-template"
-  project_id        = "gfw-development"
-  short_environment = "dev"
-  app_name          = local.app_name
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-dev"
-  service_account   = local.service_account.dev
-  labels = {
-    environment      = "develop"
-    resource_creator = "engineering"
-    project          = "frontend"
-  }
-  push_config = {
-    branch       = "develop"
-    invert_regex = false
-  }
-  set_env_vars_build = [
-    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
-    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-  ]
-  set_env_vars = [
-    "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw-api"
-  ]
-  set_secrets = [
-    "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_API_PORTAL",
-  ]
-}
-
 module "staging" {
   source            = "../../../cloudbuild-template"
   project_id        = "gfw-development"

@@ -134,8 +134,7 @@ const fetchDatasetsBatch = async ({
       })
     : []
 
-  const requestedIdsAllCached = Boolean(ids?.length) && !uniqIds.length && !forceRefresh
-  if (!uniqIds.length && (fetchUserDatasetsMode === undefined || requestedIdsAllCached)) {
+  if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
     return {
       datasets: [],
       datasetsDeprecated: {} as DatasetsMigration,
@@ -144,10 +143,10 @@ const fetchDatasetsBatch = async ({
     }
   }
 
-  const getAPIDatasetsUrl = (requestIds: string[]) => {
+  const fetchDatasets = (datasetIds: string[]) => {
     const datasetsParams = {
-      ...(requestIds?.length
-        ? { ids: requestIds }
+      ...(datasetIds?.length
+        ? { ids: datasetIds }
         : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
       cache: useApiCache,
       locale: getAPILocale(locale),
@@ -159,24 +158,21 @@ const fetchDatasetsBatch = async ({
       },
       { arrayFormat: 'indices' }
     )
-    return `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}&${includesParam}`
+    const url = `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}&${includesParam}`
+    return GFWAPI.fetch<{ data: APIPagination<Dataset>; headers: Headers }>(url, {
+      signal,
+      responseType: 'withHeaders',
+    })
   }
 
   let requestIds = uniqIds
-  let initialDatasetsResponse: Response
   let deletedDatasetsIds: string[] = []
+  let response: { data: APIPagination<Dataset>; headers: Headers }
   try {
-    initialDatasetsResponse = await GFWAPI.fetch<Response>(getAPIDatasetsUrl(requestIds), {
-      signal,
-      responseType: 'default',
-    })
+    response = await fetchDatasets(requestIds)
   } catch (e: any) {
-    const errorMessage =
-      e instanceof Response
-        ? (await e.json())?.messages?.[0]?.detail || ''
-        : parseAPIErrorMessage(e)
     deletedDatasetsIds =
-      errorMessage
+      parseAPIErrorMessage(e)
         .match(/Deleted datasets:\s*(.+)/i)?.[1]
         .split(',')
         .map((id: string) => id.trim()) || []
@@ -184,15 +180,12 @@ const fetchDatasetsBatch = async ({
       throw e
     }
     requestIds = requestIds.filter((id) => !deletedDatasetsIds.includes(id))
-    initialDatasetsResponse = await GFWAPI.fetch<Response>(getAPIDatasetsUrl(requestIds), {
-      signal,
-      responseType: 'default',
-    })
+    response = await fetchDatasets(requestIds)
   }
+  const { data: initialDatasets, headers: responseHeaders } = response
 
-  const initialDatasets = (await initialDatasetsResponse.json()) as APIPagination<Dataset>
   let datasetsDeprecatedDict: DatasetsMigration = {}
-  const deprecatedDatasetsHeader = initialDatasetsResponse.headers.get(DEPRECATED_DATASETS_HEADER)
+  const deprecatedDatasetsHeader = responseHeaders.get(DEPRECATED_DATASETS_HEADER)
   if (deprecatedDatasetsHeader) {
     datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
       const [newId, oldId] = id.split('=')

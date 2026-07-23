@@ -11,7 +11,8 @@ import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 export const hasDatasetConfigVesselData = (datasetConfig: DataviewDatasetConfig) => {
   return (
     datasetConfig?.query?.find((q) => q.id === 'vessels')?.value ||
-    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value
+    datasetConfig?.params?.find((q) => q.id === 'vesselId')?.value ||
+    datasetConfig?.params?.find((q) => q.id === 'ssvid')?.value
   )
 }
 

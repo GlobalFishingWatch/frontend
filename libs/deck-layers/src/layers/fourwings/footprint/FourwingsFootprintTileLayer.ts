@@ -34,7 +34,6 @@ import type {
 import { FourwingsAggregationOperation } from '../fourwings.types'
 import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
 import {
-  aggregateCellTimeseries,
   getDataUrl,
   getFourwingsChunk,
   getZoomOffsetByResolution,
@@ -85,7 +84,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _onLayerError = (error: Error) => {
@@ -346,16 +345,6 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   getFourwingsLayers() {
     return this.props.sublayers
-  }
-
-  getTimeseries() {
-    const data = this.getData()
-    if (data?.length) {
-      const sublayers = this.getFourwingsLayers()
-      const cells = aggregateCellTimeseries(data, sublayers)
-      return cells
-    }
-    return []
   }
 
   getInterval = () => {

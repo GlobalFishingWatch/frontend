@@ -1,4 +1,4 @@
-import { prepare } from './lib/prepare'
+import { prepare } from './lib/prepare.ts'
 
 prepare({
   type: 'port',
@@ -11,4 +11,6 @@ prepare({
     name: 'name',
     flag: 'flag',
   },
+  filter: (port) =>
+    port.properties ? !port.properties.name.startsWith(port.properties.flag) : false,
 })

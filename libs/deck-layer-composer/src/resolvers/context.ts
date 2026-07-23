@@ -3,7 +3,6 @@ import type {
   ContextLayerConfig,
   ContextLayerId,
   ContextLayerProps,
-  ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 import type { ResolvedContextDataviewInstance } from '../types/dataviews'
@@ -12,7 +11,7 @@ import type { DeckResolverFunction } from '../types/resolvers'
 export const resolveDeckContextLayerProps: DeckResolverFunction<
   ContextLayerProps<ContextLayerId>,
   ResolvedContextDataviewInstance
-> = (dataview, { highlightedFeatures }) => {
+> = (dataview) => {
   const layers = (dataview.config?.layers || [])?.flatMap(
     (layer): ContextLayerConfig<ContextLayerId> | [] => {
       const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
@@ -47,6 +46,5 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     pickable: dataview.config?.pickable ?? true,
-    highlightedFeatures: highlightedFeatures as ContextPickingObject[],
   }
 }

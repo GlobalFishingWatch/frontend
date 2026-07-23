@@ -7,6 +7,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 
 import { getIsBrowser, logDebugUrl } from './utils/browser'
+import { getEnv } from './utils/env'
 import {
   getIsTimeoutError,
   getIsUnauthorizedError,
@@ -27,6 +28,7 @@ import {
   DEBUG_API_REQUESTS,
   GUEST_USER_TYPE,
   REGISTER_PATH,
+  SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
   USER_TOKEN_STORAGE_KEY,
 } from './config'
@@ -136,12 +138,18 @@ export class GFW_API_CLASS {
     tokenStorage,
     refreshStrategy,
     sessionInvalidateStrategy,
+    debug,
   }: {
     baseUrl?: string
     tokenStorage?: TokenStorage
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
+    debug?: boolean
   } = {}) {
+    if (debug !== undefined) {
+      this.debug = debug
+    }
+
     if (baseUrl) {
       this.baseUrl = baseUrl
     }
@@ -232,6 +240,23 @@ export class GFW_API_CLASS {
       ...(hideHeader && { hideHeader: 'true' }),
     })
     return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}?${params.toString()}`, { absolute: true })
+  }
+
+  getSettingsUrl(
+    callbackUrl: string,
+    { client = 'gfw', locale = '' } = {} satisfies {
+      client?: string
+      locale?: string
+    }
+  ) {
+    const params = new URLSearchParams({
+      client,
+      locale: locale || this.getStoredLocale(),
+      callback: callbackUrl,
+    })
+    return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/${SETTINGS_PATH}?${params.toString()}`, {
+      absolute: true,
+    })
   }
 
   getConfig() {
@@ -469,9 +494,9 @@ export class GFW_API_CLASS {
         ...(local && {
           'x-gateway-url': API_GATEWAY,
           user: JSON.stringify({
-            id: process.env.REACT_APP_LOCAL_API_USER_ID,
-            type: process.env.REACT_APP_LOCAL_API_USER_TYPE,
-            email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
+            id: getEnv('VITE_LOCAL_API_USER_ID'),
+            type: getEnv('VITE_LOCAL_API_USER_TYPE'),
+            email: getEnv('VITE_LOCAL_API_USER_EMAIL'),
           }),
         }),
         Authorization: `Bearer ${token ?? this.token}`,
@@ -497,6 +522,13 @@ export class GFW_API_CLASS {
                 // empty response instead of an raising error
                 if (res.status === 204) return
               })
+            case 'withHeaders':
+              return parseJSON(res)
+                .catch((e) => {
+                  if (res.status === 204) return
+                  throw e
+                })
+                .then((data) => ({ data, headers: res.headers }))
             case 'blob':
               return res.blob()
             case 'text':

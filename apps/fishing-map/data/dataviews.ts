@@ -43,6 +43,7 @@ export const LEGACY_TO_LATEST_DATAVIEWS: DatasetsMigration = {
 }
 
 export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
+export const REAL_TIME_DATAVIEW_INSTANCE_ID = 'real-time'
 export const VMS_DATAVIEW_INSTANCE_ID = 'vms'
 export const PRESENCE_DATAVIEW_INSTANCE_ID = 'presence'
 export const SAR_DATAVIEW_INSTANCE_ID = 'sar'

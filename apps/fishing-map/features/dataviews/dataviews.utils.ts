@@ -32,7 +32,11 @@ import {
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
-import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
+import {
+  getActiveDatasetsInDataview,
+  isPrivateDataset,
+  isRealTimeDataset,
+} from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
@@ -134,7 +138,7 @@ export const getVesselInfoDataviewInstanceDatasetConfig = (
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
+  { track, info, events, trackRealTime, ssvid, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
@@ -148,6 +152,13 @@ export const getVesselDataviewInstanceDatasetConfig = (
       datasetId: track,
       params: [{ id: 'vesselId', value: vesselIds }],
       endpoint: EndpointId.Tracks,
+    })
+  }
+  if (trackRealTime && ssvid) {
+    datasetsConfig.push({
+      datasetId: trackRealTime,
+      params: [{ id: 'ssvid', value: ssvid }],
+      endpoint: EndpointId.TracksRealTime,
     })
   }
   if (events) {
@@ -164,6 +175,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
 }
 
 type VesselDataviewInstanceTemplateParams = {
+  vessel: { id: string; ssvid?: string }
   dataviewSlug: Dataview['slug']
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
@@ -179,6 +191,7 @@ const vesselDataviewInstanceTemplate = ({
   highlightEventEndTime,
   color,
   config,
+  vessel,
 }: VesselDataviewInstanceTemplateParams) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
@@ -197,6 +210,7 @@ const vesselDataviewInstanceTemplate = ({
       ...(highlightEventEndTime && {
         highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
       }),
+      ...(vessel?.ssvid && { ssvid: vessel.ssvid }),
       ...config,
     },
   }
@@ -222,7 +236,7 @@ export const getVesselDataviewInstance = ({
   color,
   config,
 }: {
-  vessel: { id: string }
+  vessel: VesselDataviewInstanceTemplateParams['vessel']
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
@@ -239,6 +253,7 @@ export const getVesselDataviewInstance = ({
     ...vesselDataviewInstanceTemplate({
       dataviewSlug: dataviewTemplate,
       datasets,
+      vessel,
       highlightEventStartTime,
       highlightEventEndTime,
       color,
@@ -469,7 +484,7 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
   return flattenDatasetFilters?.length > 0
 }
 
-export function hasVesselGroupVesselsDeprecated(
+export function hasVesselGroupDatasetsDeprecated(
   vesselGroupDatasets: string[] | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
@@ -479,7 +494,7 @@ export function hasVesselGroupVesselsDeprecated(
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
-export function hasVesselGroupVesselsDeleted(
+export function hasVesselGroupDatasetsDeleted(
   vesselGroupDatasets: string[] | undefined,
   deletedDatasets: string[] | undefined
 ) {
@@ -513,7 +528,7 @@ export function isDataviewDeprecated(
   const configEvents = Array.isArray(config?.events) ? config.events : []
   const hasVesselEventsDeprecated = configEvents.some((d) => deprecatedDatasets[d])
 
-  const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
+  const hasDeprecatedVesselGroupVessels = hasVesselGroupDatasetsDeprecated(
     dataview.vesselGroup?.vesselsSummary?.datasets,
     deprecatedDatasets
   )
@@ -529,6 +544,23 @@ export function isDataviewDeprecated(
   )
 }
 
+const SUPPORTED_CATEGORIES_REAL_TIME = [
+  DataviewCategory.Basemap,
+  DataviewCategory.Vessels,
+  DataviewCategory.Context,
+  DataviewCategory.User,
+]
+export function isRealTimeDataview(dataview: UrlDataviewInstance) {
+  if (dataview.category === DataviewCategory.Activity) {
+    return dataview.datasets?.some(isRealTimeDataset)
+  }
+  return !dataview.category || SUPPORTED_CATEGORIES_REAL_TIME.includes(dataview.category)
+}
+
+export function isHistoricalDataview(dataview: UrlDataviewInstance) {
+  return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
+}
+
 export function hasWorkspaceDataviewsDeprecated(
   workspace: Workspace<any> | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
@@ -538,6 +570,7 @@ export function hasWorkspaceDataviewsDeprecated(
   }
   return workspace.dataviewInstances.some(
     (dataviewInstance) =>
-      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) && dataviewInstance.config?.visible
+      isDataviewDeprecated(dataviewInstance, deprecatedDatasets) &&
+      (dataviewInstance.config?.visible ?? true)
   )
 }

@@ -1,0 +1,72 @@
+.rowColumnDetails {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sparklineReveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.sparklineReveal.open {
+  grid-template-rows: 1fr;
+}
+
+.sparklineRevealInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.sparklineContainer {
+  width: 100%;
+  margin-top: var(--space-S);
+}
+
+.sparklineLabel {
+  font: var(--font-S);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+  min-width: 8rem;
+  text-align: center;
+}
+
+.sparkline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.sparklineEmpty {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-align: center;
+}
+
+.reportButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-XS);
+  width: 100%;
+  margin-top: var(--space-S);
+  padding: var(--space-S);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-primary-blue);
+  color: var(--color-white);
+  font: var(--font-S);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.reportButton:hover {
+  background-color: var(--color-secondary-blue);
+}

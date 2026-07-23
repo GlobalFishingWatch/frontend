@@ -30,6 +30,8 @@ import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   getVesselDataviewInstanceDatasetConfig,
   isDataviewDeprecated,
+  isHistoricalDataview,
+  isRealTimeDataview,
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
@@ -37,10 +39,7 @@ import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import { selectHighlightedTime } from 'features/timebar/timebar.slice'
-import {
-  selectTrackCorrectionTimerange,
-  selectTrackCorrectionVesselDataviewId,
-} from 'features/track-correction/track-correction.slice'
+import { selectTrackCorrectionVesselDataviewId } from 'features/track-correction/track-correction.slice'
 import {
   selectIsGuestUser,
   selectUserLanguage,
@@ -49,6 +48,7 @@ import {
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
+import { selectTimeMode } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyVesselLocation,
   selectTrackCorrectionId,
@@ -96,6 +96,7 @@ const selectHighlightedTimeForTrackCorrection = createSelector(
 
 export const selectAllDataviewInstancesResolved = createSelector(
   [
+    selectTimeMode,
     selectDataviewInstancesMergedOrdered,
     selectAllDataviews,
     selectAllDatasets,
@@ -106,11 +107,11 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectTrackCorrectionVesselDataviewId,
     selectTrackCorrectionId,
     selectHighlightedTimeForTrackCorrection,
-    selectTrackCorrectionTimerange,
     selectDeprecatedDatasets,
     selectUserLanguage,
   ],
   (
+    timeMode,
     dataviewInstances,
     dataviews,
     datasets,
@@ -121,7 +122,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionVesselDataviewId,
     trackCorrectionId,
     highlightedTime,
-    trackCorrectionTimerange,
     deprecatedDatasets,
     language
   ): UrlDataviewInstance[] | undefined => {
@@ -177,13 +177,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
             ...dataview,
             config: {
               ...(dataview.config || {}),
-              highlightStartTime: trackCorrectionTimerange.start,
-              highlightEndTime: trackCorrectionTimerange.end,
               showVesselIcon: false,
               ...(trackCorrectionId !== 'new' &&
                 highlightedTime && {
-                  highlightStartTime: highlightedTime.start,
-                  highlightEndTime: highlightedTime.end,
                   showVesselIcon: true,
                 }),
             },
@@ -229,7 +225,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
           deprecated: dataview.deprecated ?? isDataviewDeprecated(dataview, deprecatedDatasets),
         }
       })
-    return dataviewInstancesResolvedExtendedUniqDeprecated
+
+    return dataviewInstancesResolvedExtendedUniqDeprecated.filter((d) => {
+      return timeMode === 'realTime' ? isRealTimeDataview(d) : isHistoricalDataview(d)
+    })
   }
 )
 

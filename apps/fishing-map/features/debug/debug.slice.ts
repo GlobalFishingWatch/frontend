@@ -7,11 +7,12 @@ export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
   HotspotButton = 'hotspotButton',
   PolygonsReport = 'polygonsReport',
+  ReportPreview = 'reportPreview',
 }
 
 export enum DebugOption {
   DebugTiles = 'debugTiles',
-  MapStats = 'mapStats',
+  DeckStats = 'deckStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
   ExperimentalLayers = 'experimentalLayers',
@@ -37,10 +38,11 @@ export const debugInitialState: DebugState = {
     workspaceGenerator: false,
     hotspotButton: false,
     polygonsReport: false,
+    reportPreview: false,
   },
   options: {
     debugTiles: false,
-    mapStats: false,
+    deckStats: false,
     thinning: true,
     addDatasetIdHash: true,
     experimentalLayers: false,

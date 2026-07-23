@@ -5,7 +5,10 @@ import {} from '@globalfishingwatch/dataviews-client'
 
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
-import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectIsTurningTidesWorkspace,
+  selectTimeMode,
+} from 'features/workspace/workspace.selectors'
 
 const TRACK_THINNING_BY_ZOOM_GUEST = {
   0: ThinningLevels.Insane,
@@ -14,9 +17,14 @@ const TRACK_THINNING_BY_ZOOM_GUEST = {
 const TRACK_THINNING_BY_ZOOM_USER = { ...TRACK_THINNING_BY_ZOOM_GUEST, 7: ThinningLevels.Default }
 
 export const selectTrackThinningConfig = createSelector(
-  [selectIsGuestUser, selectDebugOptions, selectIsTurningTidesWorkspace],
-  (guestUser, { thinning, vesselGapsThresholdFilter }, isTurningTidesWorkspace) => {
-    if (!thinning || isTurningTidesWorkspace || vesselGapsThresholdFilter) {
+  [selectIsGuestUser, selectDebugOptions, selectIsTurningTidesWorkspace, selectTimeMode],
+  (guestUser, { thinning, vesselGapsThresholdFilter }, isTurningTidesWorkspace, timeMode) => {
+    if (
+      !thinning ||
+      isTurningTidesWorkspace ||
+      vesselGapsThresholdFilter ||
+      timeMode === 'realTime'
+    ) {
       return { 0: ThinningLevels.None }
     }
     return guestUser ? TRACK_THINNING_BY_ZOOM_GUEST : TRACK_THINNING_BY_ZOOM_USER

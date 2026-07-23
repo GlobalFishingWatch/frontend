@@ -1,6 +1,9 @@
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  LATEST_DATASETS_VMS,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -16,6 +19,15 @@ import {
   GroupBy,
   TemporalResolution,
 } from './downloadActivity.config'
+
+// VMS datasets that don't have gear type column, so don't support grouping by gearType on download
+export const GEAR_TYPE_UNSUPPORTED_DATASET_IDS = [
+  LATEST_DATASETS_VMS.per.fishing,
+  LATEST_DATASETS_VMS.ecu.fishing,
+  LATEST_DATASETS_VMS.pan.fishing,
+  LATEST_DATASETS_VMS.png.fishing,
+  LATEST_DATASETS_VMS.cri.fishing,
+]
 
 export function getDownloadReportSupported(start: string, end: string) {
   if (!start || !end) {

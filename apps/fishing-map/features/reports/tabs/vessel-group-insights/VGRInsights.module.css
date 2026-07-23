@@ -5,7 +5,7 @@
 .disclaimer {
   display: flex;
   align-items: flex-start;
-  margin: var(--space-L) var(--space-M);
+  padding: var(--space-L) var(--space-M);
   font: var(--font-S);
   color: var(--color-secondary-blue);
 }
@@ -16,6 +16,12 @@
 
 .row {
   margin-block: var(--space-XS);
+}
+
+.vesselRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
 }
 
 .link {
@@ -37,6 +43,7 @@
 .vesselName {
   display: flex;
   align-items: center;
+  gap: var(--space-XS);
 }
 
 .insightContainer {

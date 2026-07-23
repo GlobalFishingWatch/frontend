@@ -15,15 +15,14 @@ import type {
   ColorRampId,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
-  FourwingsPickingObject,
   FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
   getUTCDateTime,
-  TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
 } from '@globalfishingwatch/deck-layers'
+import { TIME_COMPARISON_NOT_SUPPORTED_INTERVALS } from '@globalfishingwatch/deck-loaders'
 
 import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
@@ -38,12 +37,13 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
   {
     start,
     end,
-    highlightedFeatures,
+    bufferedStart,
+    bufferedEnd,
     compareStart,
     compareEnd,
-    highlightedTime,
     onPositionsMaxPointsError,
     skipColorDomainSampling,
+    timeMode,
   }
 ): FourwingsLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
@@ -152,6 +152,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     id: dataview.id,
     startTime,
     endTime,
+    ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
+    ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     category: dataview.category!,
     subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
@@ -160,18 +162,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     visualizationMode,
     aggregationOperation,
     availableIntervals,
+    intervalCacheMode: timeMode === 'realTime' ? 'NONE' : 'DATE',
     skipColorDomainSampling,
-    ...(visualizationMode === 'positions' && {
-      ...(highlightedFeatures && {
-        highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
-      }),
-      ...(highlightedTime?.start && {
-        highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
-      }),
-      ...(highlightedTime?.end && {
-        highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
-      }),
-    }),
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,

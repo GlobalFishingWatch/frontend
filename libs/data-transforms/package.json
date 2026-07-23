@@ -21,9 +21,9 @@
     "dist"
   ],
   "dependencies": {
-    "@globalfishingwatch/api-types": "9.x",
-    "@globalfishingwatch/datasets-client": "3.x",
-    "@globalfishingwatch/deck-loaders": "0.x",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/datasets-client": "workspace:^",
+    "@globalfishingwatch/deck-loaders": "workspace:^",
     "@tmcw/togeojson": "7.x",
     "@turf/turf": "7.x",
     "es-toolkit": "1.x",

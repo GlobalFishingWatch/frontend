@@ -1,4 +1,3 @@
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
@@ -33,7 +32,6 @@ function staticRouteRules(basePath: string, mode: string) {
 }
 
 export const plugins = [
-  nxViteTsPaths(),
   tanstackStart({
     srcDirectory: '.',
     router: {
@@ -58,6 +56,7 @@ export default defineConfig(({ command, mode }) => {
     devtools: command === 'serve',
     resolve: {
       tsconfigPaths: true,
+      dedupe: ['jotai'],
     },
     server: {
       port: 3003,
@@ -104,6 +103,8 @@ export default defineConfig(({ command, mode }) => {
           project: 'frontend',
           authToken: env.SENTRY_AUTH_TOKEN,
           telemetry: false,
+          // .git excluded from Docker build context (.dockerignore)
+          release: { name: env.COMMIT_SHA, setCommits: false },
         }),
     ],
     envPrefix: ['VITE_', 'i18n_'],
@@ -116,7 +117,7 @@ export default defineConfig(({ command, mode }) => {
       client: {
         build: {
           chunkSizeWarningLimit: 1500,
-          rollupOptions: {
+          rolldownOptions: {
             output: {
               // Prevents Rolldown from reordering inlined chunks in a way that places
               // __exportAll() calls before the var declaration runs (e.g. recharts' YAxis
@@ -158,7 +159,7 @@ export default defineConfig(({ command, mode }) => {
         },
       },
       ssr: {
-        build: { rollupOptions: { input: './server.ts' } },
+        build: { rolldownOptions: { input: './server.ts' } },
       },
     },
     ssr: {
@@ -173,6 +174,11 @@ export default defineConfig(({ command, mode }) => {
         '@deck.gl/mesh-layers',
         '@deck.gl/react',
         'papaparse',
+        // Keep i18next's classes on Node's native require cache so unrelated lib program
+        // reloads (e.g. editing api-client) don't tear down/rebuild them mid-request and
+        // desync an already-constructed instance from the freshly reloaded prototype.
+        'i18next',
+        'react-i18next',
       ],
     },
   }

@@ -27,6 +27,7 @@ function UserContextTooltipSection({
   const dataviews = useSelector(selectDataviewInstancesResolved) as UrlDataviewInstance[]
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
+  const isSingleArea = features.length === 1
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
@@ -49,6 +50,7 @@ function UserContextTooltipSection({
                     label={label}
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
+                    showSparkline={isSingleArea}
                     handleDownloadClick={(e) => onDownloadClick(e, feature)}
                     handleReportClick={(e) => onReportClick(e, feature)}
                   />

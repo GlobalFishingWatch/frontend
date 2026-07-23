@@ -122,82 +122,83 @@ export const fetchVesselInfoThunk = createAsyncThunk(
   ) => {
     try {
       const state = getState() as any
-      // TODO: skip dataset fetch if already loaded in the
-      // const dataset = selectAllDatasets(state).find((d: Dataset) => d.id === datasetId)
-      const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
       const guestUser = selectIsGuestUser(state)
       const resources = selectResources(state)
       const vesselTemplateDataviews = selectVesselTemplateDataviews(state)
-      if (fetchDatasetByIdThunk.fulfilled.match(action)) {
-        const dataset = action.payload as Dataset
-        // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
-        dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
-        const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id || ''
-        const eventsDatasetsId =
-          getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
-        // When coming from workspace url datasets are already loaded so no need to fetch again
-        const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
-          return selectDatasetById(id)(state) ? [] : [id]
-        })
-        dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
-
-        const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(
-          vesselId,
-          {
-            info: dataset.id,
-          },
-          includeRelatedIdentities
-        )
-        if (guestUser) {
-          // This changes the order of the query params to avoid the cache
-          datasetConfig.query?.push(CACHE_FALSE_PARAM)
+      let dataset = selectDatasetById(datasetId)(state)
+      if (!dataset) {
+        const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
+        if (!fetchDatasetByIdThunk.fulfilled.match(action)) {
+          return rejectWithValue(action.payload)
         }
-        const url = resolveEndpoint(dataset, datasetConfig)
-
-        if (!url) {
-          return rejectWithValue({ message: 'Error resolving endpoint' })
-        }
-
-        const vessel = resources[url]?.data
-          ? (resources[url].data as IdentityVessel)
-          : await GFWAPI.fetch<IdentityVessel>(url, {
-              cache: 'reload',
-            })
-
-        const dataviewId = getVesselDataviewInstance({
-          vessel: { id: vesselId },
-          datasets: {},
-          dataviewTemplates: vesselTemplateDataviews,
-        })?.id
-        if (!dataviewId) {
-          return rejectWithValue({ message: 'Error getting dataview id' })
-        }
-        const resource: Resource = {
-          url: resolveEndpoint(dataset, datasetConfig) as string,
-          dataset: dataset,
-          datasetConfig,
-          dataviewId,
-          data: vessel,
-          status: ResourceStatus.Finished,
-        }
-        dispatch(setResource(resource))
-
-        const identities = getVesselIdentities(vessel)
-        return {
-          id: getVesselProperty(vessel, 'id'),
-          dataset: dataset,
-          datasetId: dataset?.id,
-          combinedSourcesInfo: vessel?.combinedSourcesInfo,
-          registryOwners: vessel?.registryOwners,
-          registryPublicAuthorizations: vessel?.registryPublicAuthorizations,
-          info: datasetId,
-          track: trackDatasetId,
-          events: eventsDatasetsId,
-          identities,
-        } as IdentityVesselData
-      } else {
-        return rejectWithValue(action.payload)
+        dataset = action.payload as Dataset
       }
+
+      // Datasets and dataview needed to mock follow the structure of the map and resolve the generators
+      dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
+      const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id || ''
+      const eventsDatasetsId =
+        getRelatedDatasetsByType(dataset, DatasetTypes.Events)?.map((d) => d.id) || []
+      // When coming from workspace url datasets are already loaded so no need to fetch again
+      const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
+        return selectDatasetById(id)(state) ? [] : [id]
+      })
+      dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
+
+      const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(
+        vesselId,
+        {
+          info: dataset.id,
+        },
+        includeRelatedIdentities
+      )
+      if (guestUser) {
+        // This changes the order of the query params to avoid the cache
+        datasetConfig.query?.push(CACHE_FALSE_PARAM)
+      }
+      const url = resolveEndpoint(dataset, datasetConfig)
+
+      if (!url) {
+        return rejectWithValue({ message: 'Error resolving endpoint' })
+      }
+
+      const vessel = resources[url]?.data
+        ? (resources[url].data as IdentityVessel)
+        : await GFWAPI.fetch<IdentityVessel>(url, {
+            cache: 'reload',
+          })
+
+      const dataviewId = getVesselDataviewInstance({
+        vessel: { id: vesselId },
+        datasets: {},
+        dataviewTemplates: vesselTemplateDataviews,
+      })?.id
+      if (!dataviewId) {
+        return rejectWithValue({ message: 'Error getting dataview id' })
+      }
+      const resource: Resource = {
+        url: resolveEndpoint(dataset, datasetConfig) as string,
+        dataset: dataset,
+        datasetConfig,
+        dataviewId,
+        data: vessel,
+        status: ResourceStatus.Finished,
+      }
+      dispatch(setResource(resource))
+
+      const identities = getVesselIdentities(vessel)
+      return {
+        id: getVesselProperty(vessel, 'id'),
+        dataset: dataset,
+        datasetId: dataset?.id,
+        combinedSourcesInfo: vessel?.combinedSourcesInfo,
+        registryOwners: vessel?.registryOwners,
+        registryPublicAuthorizations: vessel?.registryPublicAuthorizations,
+        info: datasetId,
+        track: trackDatasetId,
+        events: eventsDatasetsId,
+        identities,
+      } as IdentityVesselData
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))

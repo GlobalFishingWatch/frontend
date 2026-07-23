@@ -14,13 +14,15 @@ import type {
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import {
+  selectRealTimeTimerange,
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
+import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 
 import {
   getGraphDataFromFourwingsHeatmap,
@@ -38,12 +40,24 @@ export const useHeatmapActivityGraph = () => {
   }, [viewport])
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
-  const timerange = useTimerangeConnect()
-  const start = getUTCDate(timerange.start).getTime()
-  const end = getUTCDate(timerange.end).getTime()
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
+  const { start: rangeStart, end: rangeEnd } = useTimebar()
+  const start = getUTCDate(rangeStart).getTime()
+  const end = getUTCDate(rangeEnd).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
   const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
-  const chunk = getFourwingsChunk({ start, end, availableIntervals })
+  const chunk = getFourwingsChunk({
+    start,
+    end,
+    availableIntervals,
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
+  })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 
@@ -95,6 +109,11 @@ export const useHeatmapActivityGraph = () => {
     id,
     visualizationMode,
     viewportChangeHash,
+    // Chunk bounds only move when the playhead crosses a chunk, so playback frames
+    // don't recompute identical graph data 60 times per second.
+    chunk.bufferedStart,
+    chunk.bufferedEnd,
+    chunk.interval,
     instance?.props.minVisibleValue,
     instance?.props.maxVisibleValue,
   ])

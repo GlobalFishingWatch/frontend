@@ -51,6 +51,7 @@ export type DataviewConfigVessel = {
   /** Vessel datasets */
   info?: string
   track?: string
+  trackRealTime?: string
   events?: string[]
   relatedVesselIds?: string[]
 
@@ -63,12 +64,11 @@ export type DataviewConfigVessel = {
   highlightEventEndTime?: string
   showVesselIcon?: boolean
 
-  /** Vessels to override the globalconfig start and end */
-  highlightStartTime?: string
-  highlightEndTime?: string
-
   /** Used to store the vessel name */
   name?: string
+
+  /** Used to store the real time id */
+  ssvid?: string
 
   /** Time in hours to mark two points segment as a gap  */
   gapSegmentThreshold?: number
@@ -218,6 +218,8 @@ export type DataviewFiltersConfig = {
 
 export enum DataviewCategory {
   Activity = 'activity',
+  Basemap = 'basemap',
+  Buffer = 'buffer',
   Comparison = 'comparison',
   Context = 'context',
   Detections = 'detections',
@@ -227,10 +229,9 @@ export enum DataviewCategory {
   UserPoints = 'points',
   UserPolygons = 'polygons',
   UserTracks = 'tracks',
-  Vessels = 'vessels',
   VesselGroups = 'vesselGroups',
+  Vessels = 'vessels',
   Workspaces = 'workspaces',
-  Buffer = 'buffer',
 }
 
 export type Dataview<Type = any, Category = DataviewCategory> = {

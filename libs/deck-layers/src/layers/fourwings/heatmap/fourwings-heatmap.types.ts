@@ -15,6 +15,7 @@ import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
   FourwingsDeckSublayer,
+  FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsVisualizationMode,
@@ -85,6 +86,7 @@ export type CompareCellParams = {
 
 export type FourwingsHeatmapResolution = 'low' | 'default' | 'high'
 export type FourwingsHeatmapTileData = FourwingsFeature[]
+export type FourwingsIntervalCacheMode = 'DATE' | 'NONE'
 
 export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
   data?: DataT
@@ -98,8 +100,11 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   compareStart?: number
   compareEnd?: number
   aggregationOperation?: FourwingsAggregationOperation
-  highlightedFeatures?: FourwingsHeatmapPickingObject[]
   skipColorDomainSampling?: boolean
+  highlightedFeatures?: FourwingsPickingObject[]
+  intervalCacheMode?: FourwingsIntervalCacheMode
+  bufferedStartTime?: number
+  bufferedEndTime?: number
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
@@ -147,15 +152,13 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
   tilesCache: FourwingsHeatmapTilesCache
   debugTiles?: boolean
   temporalAggregation?: boolean
-  // highlightedFeatures?: FourwingsPickingObject[]
+  highlightedFeatures?: FourwingsPickingObject[]
 }
 
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
-  'data' | 'availableIntervals' | 'comparisonMode' | 'highlightedFeatures'
-> & {
-  highlightedFeatures: FourwingsHeatmapStaticPickingObject[]
-}
+  'data' | 'availableIntervals' | 'comparisonMode'
+>
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>

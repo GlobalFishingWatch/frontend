@@ -8,17 +8,17 @@ import type {
   TileLayerProps,
 } from '@deck.gl/geo-layers'
 import type { GeoJsonProperties } from 'geojson'
-import type { Entries } from 'type-fest'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import { DEFAULT_ID_PROPERTY } from '../../utils/layers'
 import type { ContextFeature, ContextSubLayerConfig } from '../context'
 import {
+  getContextFilterOperatorsHash,
   getContextId,
   getValidSublayerFilters,
   hasSublayerFilters,
@@ -66,6 +66,7 @@ export type UserBaseLayerState = {
 
 type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
 
+const emptyHighlightedFeatures = [] as UserLayerPickingObject[]
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps,
 > extends CompositeLayer<PropsT> {
@@ -136,10 +137,7 @@ export abstract class UserBaseLayer<
   }
 
   _getHighlightedFeatures() {
-    return [
-      ...(this.props.highlightedFeatures || []),
-      ...(this.state.highlightedFeatures || []),
-    ].filter(Boolean)
+    return this.state.highlightedFeatures || emptyHighlightedFeatures
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
@@ -192,7 +190,7 @@ export abstract class UserBaseLayer<
     if (sublayer && hasSublayerFilters(sublayer)) {
       if (
         !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
-        !isFeatureInFilters(object, Object.keys(sublayer.filters || {}), sublayer?.filterOperators)
+        !isFeatureInFilters(object, sublayer.filters, sublayer?.filterOperators)
       ) {
         return { ...info, object: undefined }
       }
@@ -304,26 +302,12 @@ export abstract class UserBaseLayer<
 
   _getSublayerFilterExtensionProps(sublayer: ContextSubLayerConfig): FilterExtensionProps {
     if (hasSublayerFilters(sublayer) && supportDataFilterExtension(sublayer)) {
-      const filterEntries = Object.entries(getValidSublayerFilters(sublayer)) as Entries<
-        typeof sublayer.filters
-      >
-      const hasMultipleFilters = filterEntries.length > 1
-
+      const validFilters = getValidSublayerFilters(sublayer)
       return {
-        extensions: [
-          new DataFilterExtension({
-            filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
-          }),
-        ],
-        filterRange: hasMultipleFilters
-          ? filterEntries.map(() => [1, 1] as [number, number])
-          : ([1, 1] as [number, number]),
-        getFilterValue: (d: UserLayerFeature) => {
-          const filters = filterEntries.map(([id, values]) =>
-            isFeatureInFilter(d, { id, values, operator: sublayer.filterOperators?.[id] }) ? 1 : 0
-          )
-          return hasMultipleFilters ? filters : filters[0]
-        },
+        extensions: [new DataFilterExtension({ filterSize: 1 })],
+        filterRange: [1, 1] as [number, number],
+        getFilterValue: (d: UserLayerFeature) =>
+          isFeatureInFilters(d, validFilters, sublayer.filterOperators) ? 1 : 0,
       }
     }
     return {} as ReturnType<typeof this._getSublayerFilterExtensionProps>
@@ -418,6 +402,7 @@ export abstract class UserBaseLayer<
     const filtersHash = Object.values(sublayer.filters || {})
       .flatMap((value) => value || [])
       .join('')
+    const filterOperatorsHash = getContextFilterOperatorsHash(sublayer.filterOperators)
     const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
     const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
     const hasTimeFilter = Object.keys(timefilterProps).length > 0
@@ -434,7 +419,7 @@ export abstract class UserBaseLayer<
       hasFilters || hasTimeFilter
         ? {
             getFilterValue: [
-              ...(hasFilters ? [filtersHash] : []),
+              ...(hasFilters ? [filtersHash, filterOperatorsHash] : []),
               ...(hasTimeFilter ? [this.props.startTime!, this.props.endTime!] : []),
             ],
           }

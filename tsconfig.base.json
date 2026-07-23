@@ -11,7 +11,7 @@
     "jsx": "preserve",
     "lib": ["es2020", "dom", "esnext"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noPropertyAccessFromIndexSignature": false,
     "resolveJsonModule": true,
     "rootDir": ".",
@@ -21,6 +21,7 @@
     "target": "es2022",
     "paths": {
       "@globalfishingwatch/api-client": ["./libs/api-client/dist/index.d.ts"],
+      "@globalfishingwatch/api-client/utils/*": ["./libs/api-client/dist/utils/*.d.ts"],
       "@globalfishingwatch/api-types": ["./libs/api-types/dist/index.d.ts"],
       "@globalfishingwatch/data-transforms": ["./libs/data-transforms/dist/index.d.ts"],
       "@globalfishingwatch/data-transforms/*": ["./libs/data-transforms/dist/*"],
@@ -39,10 +40,17 @@
       "@globalfishingwatch/responsive-visualizations": [
         "./libs/responsive-visualizations/dist/index.d.ts"
       ],
+      "@globalfishingwatch/responsive-visualizations/*": [
+        "./libs/responsive-visualizations/dist/*"
+      ],
       "@globalfishingwatch/timebar": ["./libs/timebar/dist/index.d.ts"],
+      "@globalfishingwatch/timebar/*": ["./libs/timebar/dist/*"],
       "@globalfishingwatch/ui-components": ["./libs/ui-components/dist/index.d.ts"],
       "@globalfishingwatch/ui-components/*": ["./libs/ui-components/dist/*"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"]
   },
   "files": [],
   "include": [],

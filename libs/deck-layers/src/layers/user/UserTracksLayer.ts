@@ -159,8 +159,13 @@ type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
-  binaryData: UserTrackBinaryData
+  binaryData?: UserTrackBinaryData
+  highlightedFeatures?: UserLayerPickingObject[]
+  highlightStartTime?: number
+  highlightEndTime?: number
 }
+
+const emptyHighlightedFeatures = [] as UserLayerPickingObject[]
 
 // Start cleanup when module loads
 startCacheCleanup()
@@ -170,19 +175,91 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static defaultProps = defaultProps
   declare state: UserTracksLayerState
 
+  _getHighlightedFeatures() {
+    return this.state?.highlightedFeatures || emptyHighlightedFeatures
+  }
+
+  setHighlightedFeatures(highlightedFeatures: UserLayerPickingObject[]) {
+    if (!this.state) {
+      return
+    }
+    this.setState({ highlightedFeatures })
+  }
+
+  _getHighlightTimes() {
+    return {
+      highlightStartTime: this.state.highlightStartTime ?? this.props.highlightStartTime,
+      highlightEndTime: this.state.highlightEndTime ?? this.props.highlightEndTime,
+    }
+  }
+
+  setHighlightedTime({ start, end }: { start?: number; end?: number }) {
+    if (!this.state) {
+      return
+    }
+    this.setState({
+      highlightStartTime: start,
+      highlightEndTime: end,
+    })
+  }
+
+  _getTrackFeatureValueProperty = (
+    feature: UserTrackFeature,
+    featureIndex: number,
+    pathIndex: number,
+    property: string
+  ): string | number | undefined => {
+    if (!property || !feature) {
+      return undefined
+    }
+    const properties = feature.properties as any
+    const featureValue = properties?.[property]
+    if (featureValue !== undefined) {
+      return featureValue
+    }
+    const coordinateValues = properties?.coordinateProperties?.[property]
+    if (coordinateValues === undefined) {
+      return undefined
+    }
+    if (Array.isArray(coordinateValues) && Array.isArray(coordinateValues[0])) {
+      const previousLength =
+        featureIndex > 0 ? (this.state?.rawDataIndexes?.[featureIndex - 1]?.length ?? 0) : 0
+      const lineValues = coordinateValues[pathIndex - previousLength] ?? coordinateValues.flat()
+      return Array.isArray(lineValues) ? lineValues[0] : lineValues
+    }
+    return Array.isArray(coordinateValues) ? coordinateValues[0] : coordinateValues
+  }
+
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const feature = this.state.rawData?.features[info.index]
+    const featureIndex =
+      info.index >= 0
+        ? this.state?.rawDataIndexes?.find(({ length }) => info.index < length)?.index
+        : undefined
+    const feature =
+      featureIndex !== undefined ? this.state?.rawData?.features[featureIndex] : undefined
     // TODO: support multiple sublayers
     const layer = this.props.layers?.[0]
     const sublayer = layer?.sublayers?.[0]
     const color = sublayer?.color
     if (feature) {
+      const valueProperties = layer.valueProperties || []
+      const properties = valueProperties.reduce(
+        (acc, property) => {
+          acc[property] = this._getTrackFeatureValueProperty(
+            feature,
+            featureIndex as number,
+            info.index,
+            property
+          )
+          return acc
+        },
+        {} as Record<string, string | number | undefined>
+      )
       const object = {
         id: this.props.id,
-        value: layer.valueProperties?.length
-          ? feature?.properties?.coordinateProperties?.[layer.valueProperties[0]]?.[info.index]
-          : undefined,
-        title: getContextId(feature as ContextFeature, layer.idProperty) || info.index,
+        properties,
+        value: valueProperties.length ? properties[valueProperties[0]] : undefined,
+        title: getContextId(feature as ContextFeature, layer.idProperty) || featureIndex,
         color,
         layerId: this.props.id,
         datasetId: this.props.layers[0].datasetId,
@@ -231,11 +308,13 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   _processResponse = async (response: ArrayBuffer, loadOptions: any) => {
     // TODO: support multiple sublayers
     const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters
+    const filterOperators = this.props.layers?.[0]?.sublayers?.[0]?.filterOperators
 
     const userTracksLoadOptions = {
       ...loadOptions,
       userTracks: {
         filters: filters,
+        filterOperators: filterOperators,
         includeCoordinateProperties: this.props.timeFilterType
           ? [COORDINATE_PROPERTY_TIMESTAMP]
           : [],
@@ -264,11 +343,11 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getError() {
-    return this.state.error
+    return this.state?.error
   }
 
   getData() {
-    return this.state.rawData
+    return this.state?.rawData
   }
 
   getColor() {
@@ -279,7 +358,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   getSegments(
     { includeMiddlePoints = false } = {} as Omit<GetSegmentsFromDataParams, 'properties'>
   ): TrackSegment[] {
-    if (!this.state.rawData) return []
+    if (!this.state?.rawData) {
+      return []
+    }
 
     const segmentsGeo = geoJSONToSegments(this.state.rawData, {
       onlyExtents: !includeMiddlePoints,
@@ -320,10 +401,11 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     _: any,
     { layer, sublayer, index }: ContextSublayerCallbackParams<{ index: number }>
   ) => {
-    const { highlightedFeatures, singleTrack } = this.props
-    const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
+    const { singleTrack } = this.props
+    const highlightedFeatures = this._getHighlightedFeatures()
+    const featureIndex = this.state?.rawDataIndexes?.find(({ length }) => index < length)
       ?.index as number
-    const currentFeature = this.state.rawData?.features?.[featureIndex]
+    const currentFeature = this.state?.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
         feature.id === currentFeature?.properties?.[layer.idProperty || DEFAULT_ID_PROPERTY] ||
@@ -337,22 +419,16 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   renderLayers() {
-    const {
-      layers,
-      startTime,
-      endTime,
-      highlightStartTime,
-      highlightEndTime,
-      singleTrack,
-      highlightedFeatures,
-    } = this.props
+    const { layers, startTime, endTime, singleTrack } = this.props
+    const { highlightStartTime, highlightEndTime } = this._getHighlightTimes()
+    const highlightedFeatures = this._getHighlightedFeatures()
 
     return layers.map((layer) => {
       const sublayer = layer.sublayers?.[0]
       // TODO support multiple layers
       // return layer.sublayers.map((sublayer) => {
       const tilesUrl = new URL(layer.tilesUrl)
-      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}`
+      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}-${Object.values(sublayer.filterOperators || {}).join(',')}`
       // tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
 
       const commonProps = {

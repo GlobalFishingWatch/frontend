@@ -3,14 +3,11 @@ import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 
-import type {
-  FourwingsFeature,
-  FourwingsInterval,
-  TileCell,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../../utils'
+import type { GetChunkByIntervalParams } from '../fourwings.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
   getChunkByInterval,
@@ -31,6 +28,7 @@ import type {
   FourwingsChunk,
   FourwingsHeatmapResolution,
   FourwingsHeatmapTilesCache,
+  FourwingsIntervalCacheMode,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
@@ -183,6 +181,20 @@ type GetDataUrlParams = {
   extentStart?: number
   mergeSublayerDatasets?: boolean
   temporalAggregation?: boolean
+  intervalCacheMode?: FourwingsIntervalCacheMode
+}
+
+export function getTimeResolved(
+  date: number = DateTime.utc().toMillis(),
+  cacheInterval: FourwingsIntervalCacheMode = 'DATE',
+  roundToUnit: 'day' | 'hour' = 'day'
+): string {
+  if (cacheInterval === 'NONE') {
+    return DateTime.fromMillis(date, { zone: 'utc' }).toISO() as string
+  }
+  return roundToUnit === 'day'
+    ? (getUTCDateTime(date).toISODate() as string)
+    : (getUTCDateTime(date).startOf('hour').toISO() as string)
 }
 
 export const getDataUrl = ({
@@ -194,6 +206,7 @@ export const getDataUrl = ({
   mergeSublayerDatasets,
   temporalAggregation = false,
   extentStart,
+  intervalCacheMode = 'DATE',
 }: GetDataUrlParams) => {
   const sublayersArray = sublayers || (sublayer ? [sublayer] : [])
 
@@ -227,7 +240,10 @@ export const getDataUrl = ({
     }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
-      'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),
+      'date-range': [
+        getTimeResolved(start < end ? start : end, intervalCacheMode),
+        getTimeResolved(end, intervalCacheMode),
+      ].join(','),
     }),
   }
   const url = `${tilesUrl}?${stringify(params, {
@@ -242,10 +258,6 @@ export interface Bounds {
   south: number
   west: number
   east: number
-}
-
-export function getISODateFromTS(ts: number) {
-  return getUTCDateTime(ts).toISODate()
 }
 
 export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
@@ -272,65 +284,21 @@ export const filterCellsByBounds = (cells: TileCell[], bounds: Bounds) => {
   })
 }
 
-export const aggregateCellTimeseries = (
-  cells: FourwingsFeature[],
-  sublayers: FourwingsDeckSublayer[]
-) => {
-  if (!cells) {
-    return []
-  }
-  return []
-  // TODO: fix this with new Deck.gl data format
-  // What we have from the data is
-  // [{index:number, timeseries: {id: {frame:value, ...}  }}]
-  // What we want for the timebar is
-  // [{date: date, 0:number, 1:number ...}, ...]
-  // const timeseries = cells.reduce(
-  //   (acc: any, { timeseries }) => {
-  //     if (!timeseries) {
-  //       return acc
-  //     }
-  //     sublayers.forEach((sublayer, index) => {
-  //       const sublayerTimeseries = timeseries[sublayer.id]
-  //       if (sublayerTimeseries) {
-  //         const frames = Object.keys(sublayerTimeseries)
-  //         frames.forEach((frame: any) => {
-  //           if (!acc[frame]) {
-  //             // We populate the frame with 0s for all the sublayers
-  //             acc[frame] = Object.fromEntries(sublayers.map((key, index) => [index, 0]))
-  //           }
-  //           acc[frame][index] += sublayerTimeseries[frame]
-  //         })
-  //       }
-  //     })
-  //     return acc
-  //   },
-  //   {} as Record<number, Record<number, number>>
-  // )
-
-  // return Object.entries(timeseries)
-  //   .map(([frame, values]) => ({
-  //     date: parseInt(frame),
-  //     ...(values as any),
-  //   }))
-  //   .sort((a, b) => a.date - b.date)
-}
-
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
-export function getFourwingsChunk({
-  start,
-  end,
-  availableIntervals,
-  chunksBuffer,
-}: {
-  start: number
-  end: number
-  availableIntervals?: FourwingsInterval[]
-  chunksBuffer?: number
-}): FourwingsChunk {
+export function getFourwingsChunk(
+  params: Omit<GetChunkByIntervalParams, 'interval'> & {
+    availableIntervals?: FourwingsInterval[]
+  }
+): FourwingsChunk {
+  const { start, end, availableIntervals, ...rest } = params
   const interval = getFourwingsInterval(start, end, availableIntervals)
-  return getChunkByInterval({ start, end, interval, chunksBuffer })
+  return getChunkByInterval({
+    start,
+    end,
+    interval,
+    ...rest,
+  })
 }
 
 type FourwingsIntervalFrames = {
@@ -419,20 +387,26 @@ export const getTileDataCache = ({
   zoom,
   startTime,
   endTime,
+  bufferedStartTime,
+  bufferedEndTime,
   availableIntervals,
   compareStart,
   compareEnd,
   chunksBuffer,
   temporalAggregation,
+  intervalCacheMode,
 }: {
   zoom: number
   startTime: number
   endTime: number
+  bufferedStartTime?: number
+  bufferedEndTime?: number
   availableIntervals?: FourwingsInterval[]
   compareStart?: number
   compareEnd?: number
   chunksBuffer?: number
   temporalAggregation?: boolean
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const { start, end, bufferedStart } = getFourwingsChunk({
@@ -440,6 +414,9 @@ export const getTileDataCache = ({
     end: endTime,
     availableIntervals,
     chunksBuffer,
+    intervalCacheMode,
+    bufferedStartTime,
+    bufferedEndTime,
   })
   return {
     zoom,

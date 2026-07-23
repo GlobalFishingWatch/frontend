@@ -100,9 +100,7 @@ function ReportEnvironment() {
               )
             })}
             {/* TODO:Migramar show this instead of ReportEnvironmentGraph when dataview is migramar */}
-            {migramarLayer && (
-              <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />
-            )}
+            {migramarLayer && <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />}
           </>
         ) : (
           <Fragment>
@@ -122,8 +120,12 @@ function ReportEnvironment() {
       </div>
       {reportGraphType === 'evolution' && (
         <div className={cx(styles.addLayerContainer)}>
-          <Button type="border-secondary" size="medium" onClick={onAddLayerClick}>
-            <Icon icon="plus" />
+          <Button
+            type="border-secondary"
+            size="medium"
+            icon={<Icon icon="plus" />}
+            onClick={onAddLayerClick}
+          >
             {t((t) => t.layer.add)}
           </Button>
         </div>

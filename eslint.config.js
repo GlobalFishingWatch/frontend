@@ -2,13 +2,15 @@ import nxPlugin from '@nx/eslint-plugin'
 import { defineConfig } from 'eslint/config'
 import * as jsoncParser from 'jsonc-eslint-parser'
 
-import { repoConfig } from '@globalfishingwatch/linting'
+import { nodeScriptsConfig, repoConfig, routeFilesConfig } from '@globalfishingwatch/linting'
 
 export default defineConfig([
   // Global ignores
   {
     ignores: [
       '**/node_modules/**',
+      'dist/**',
+      '**/dist/**',
       // Generated files (e.g. protobuf decoders) are not hand-edited — don't lint them.
       '**/*.gen.js',
       '**/*.gen.ts',
@@ -39,4 +41,6 @@ export default defineConfig([
   },
   // GFW shared linting config
   repoConfig,
+  nodeScriptsConfig,
+  routeFilesConfig,
 ])

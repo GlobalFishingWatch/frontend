@@ -70,10 +70,10 @@
 .viewsHeader {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--space-S);
   align-items: center;
   justify-content: space-between;
   padding-right: var(--space-M);
-  margin-bottom: var(--space-S);
 }
 
 .dataset,
@@ -166,4 +166,11 @@ div.modal {
 
 .loginLinkButton {
   line-height: 1;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-S);
+  flex-direction: row;
 }

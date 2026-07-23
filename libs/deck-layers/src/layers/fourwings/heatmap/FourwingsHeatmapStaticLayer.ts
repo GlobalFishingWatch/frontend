@@ -109,7 +109,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getError(): string {
-    return this.state.error
+    return this.state?.error
   }
 
   _calculateColorDomain = () => {
@@ -358,11 +358,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getColorDomain = () => {
-    return this.state.colorDomain
+    return this.state?.colorDomain
   }
 
   getColorRange = () => {
-    return this.state.colorRanges
+    return this.state?.colorRanges
   }
 
   getColorScale = () => {

@@ -7,6 +7,7 @@ import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
+  FourwingsIntervalCacheMode,
   FourwingsVisualizationMode,
 } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
@@ -16,6 +17,7 @@ export type _FourwingsPositionsTileLayerProps = BaseFourwingsLayerProps & {
   highlightEndTime?: number
   highlightedFeatures?: FourwingsPositionsPickingObject[]
   onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
+  intervalCacheMode?: FourwingsIntervalCacheMode
 }
 
 export type FourwingsPositionsTileLayerProps = _FourwingsPositionsTileLayerProps &

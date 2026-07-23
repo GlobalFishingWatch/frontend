@@ -1,13 +1,13 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
-import { InputText, Switch } from '@globalfishingwatch/ui-components'
+import { Switch } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import {
   DebugOption,
@@ -15,7 +15,6 @@ import {
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
-  setDebugOption,
   toggleDebugOption,
   toggleFeatureFlag,
 } from './debug.slice'
@@ -29,6 +28,7 @@ const DebugFeatureFlags: React.FC = () => {
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -36,10 +36,10 @@ const DebugFeatureFlags: React.FC = () => {
       <div className={styles.header}>
         <Switch
           id="option_map_stats"
-          active={debugOptions.mapStats}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.MapStats))}
+          active={debugOptions.deckStats}
+          onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
         />
-        <label htmlFor="option_map_stats">Map stats</label>
+        <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
       </div>
       <p>Show fps and memory stats</p>
       <div className={styles.header}>
@@ -120,6 +120,17 @@ const DebugFeatureFlags: React.FC = () => {
           <p>See reports of polygon areas</p>
           <div className={styles.header}>
             <Switch
+              id="option_report_preview"
+              active={featureFlags.reportPreview}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.ReportPreview))}
+            />
+            <label htmlFor="option_report_preview">
+              <strong>Feature flag:</strong> Report preview
+            </label>
+          </div>
+          <p>Show an area report sparkline preview in context layer popups</p>
+          <div className={styles.header}>
+            <Switch
               id="option_hotspot_button"
               active={featureFlags.hotspotButton}
               onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}
@@ -129,6 +140,17 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>Show the hotspot zone button in the report activity graph</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_longline_sets_insight"
+              active={longlineSetsInsight ?? false}
+              onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
+            />
+            <label htmlFor="option_longline_sets_insight">
+              <strong>Feature flag:</strong> Longline sets insight
+            </label>
+          </div>
+          <p>Show the longline sets insight in the vessel and vessel group profiles</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"

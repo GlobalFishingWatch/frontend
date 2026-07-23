@@ -43,6 +43,8 @@ type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
 type BivariateDataviews = [string, string] | null
 
+export type TimeMode = 'historical' | 'realTime'
+
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   bivariateDataviews?: BivariateDataviews
@@ -64,12 +66,14 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedUserId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisation
+  timeMode?: TimeMode
   vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   vesselsColorBy?: VesselsColorByProperty
   visibleEvents?: VisibleEvents
   skipColorDomainSampling?: boolean
   // Feature flags
   migramarLayer?: boolean
+  longlineSetsInsight?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>

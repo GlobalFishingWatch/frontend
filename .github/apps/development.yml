@@ -1,0 +1,99 @@
+build_env_vars: &build_env_vars
+  VITE_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+  VITE_GOOGLE_MEASUREMENT_ID: G-R3PWRQW70G
+  VITE_GOOGLE_TAG_MANAGER_ID: GTM-KK5ZFST
+
+fishing-map:
+  target: production-node
+  build:
+    env_vars:
+      <<: *build_env_vars
+      VITE_API_VERSION: v3
+      VITE_USE_LOCAL_DATASETS: 'false'
+      VITE_USE_LOCAL_DATAVIEWS: 'false'
+      VITE_WORKSPACE_ENV: development
+      VITE_REPORT_DAYS_LIMIT: '366'
+      VITE_PIPE_DATASET_VERSION: '4'
+      VITE_REALTIME_ENABLED: 'false'
+    secrets:
+      SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw-fish
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_PASS/versions/latest
+      STRAPI_TOKEN: projects/706952489382/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
+      STRAPI_URL: projects/706952489382/secrets/FISHING_MAP_STRAPI_URL/versions/latest
+      DOWNLOAD_SURVEY_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest
+      FEEDBACK_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest
+      GFW_API_KEY: projects/706952489382/secrets/FISHING_MAP_GFW_API_KEY/versions/latest
+      IDENTITY_REVIEW_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID/versions/latest
+      MAP_ERRORS_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID/versions/latest
+      MIGRAMAR_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_MIGRAMAR_SPREADSHEET_ID/versions/latest
+      MASTRA_API_URL: projects/706952489382/secrets/FISHING_MAP_MASTRA_API_URL/versions/latest
+      SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
+      SPREADSHEET_CLIENT_EMAIL: projects/706952489382/secrets/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL/versions/latest
+      SPREADSHEET_PRIVATE_KEY: projects/706952489382/secrets/FISHING_MAP_SPREADSHEET_PRIVATE_KEY/versions/latest
+      TURNING_TIDES_AIS_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_AIS_ID/versions/latest
+      TURNING_TIDES_BRAZIL_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_BRAZIL_ID/versions/latest
+      TURNING_TIDES_CHILE_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_CHILE_ID/versions/latest
+      TURNING_TIDES_PERU_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_PERU_ID/versions/latest
+      WORKSPACES_AGENT_ID: projects/706952489382/secrets/FISHING_MAP_WORKSPACES_AGENT_ID/versions/latest
+
+api-portal:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw-api
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/BASIC_AUTH_PASS_API_PORTAL/versions/latest
+
+track-labeler:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/BASIC_AUTH_PASS_TRACK_LABELER/versions/latest
+
+data-download-portal:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: off
+
+image-labeler:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: off
+
+user-groups-admin:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: off
+
+port-labeler:
+  target: production-nginx
+  build:
+    env_vars: *build_env_vars
+  deploy:
+    env_vars:
+      BASIC_AUTH: Restricted
+      BASIC_AUTH_USER: gfw
+    secrets:
+      BASIC_AUTH_PASS: projects/706952489382/secrets/BASIC_AUTH_PASS_PORT_LABELER/versions/latest

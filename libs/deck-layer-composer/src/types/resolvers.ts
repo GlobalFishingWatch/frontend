@@ -1,7 +1,6 @@
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import type {
   AnyDeckLayer,
-  DeckLayerPickingObject,
   FOOTPRINT_HIGH_RES_ID,
   FOOTPRINT_ID,
   FourwingsLayer,
@@ -17,10 +16,13 @@ import type { ResolvedDataviewInstance } from './dataviews'
 
 export type TimeRange = { start: string; end: string }
 
+type TimeMode = 'realTime' | 'historical'
+
 export type ResolverGlobalConfig = {
   start: string
   end: string
-  zoom?: number
+  bufferedStart?: string
+  bufferedEnd?: string
   token?: string
   debugTiles?: boolean
   bivariateDataviews: [string, string] | null
@@ -34,13 +36,11 @@ export type ResolverGlobalConfig = {
   compareStart?: string
   compareEnd?: string
   trackGraphExtent?: VesselTrackGraphExtent
-  highlightedTime?: Partial<TimeRange>
-  highlightEventIds?: string[]
   visibleEvents: EventTypes[]
   vesselsColorBy: VesselsColorByProperty
-  highlightedFeatures?: DeckLayerPickingObject[]
   vectorsTemporalAggregation?: boolean
   skipColorDomainSampling?: boolean
+  timeMode: TimeMode
 }
 
 export type DeckResolverFunction<

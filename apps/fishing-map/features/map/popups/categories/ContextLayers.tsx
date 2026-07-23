@@ -24,6 +24,7 @@ type ContextTooltipRowProps = {
 function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
+  const isSingleArea = features.length === 1
   const dataviews = useSelector(selectContextAreasDataviews) as UrlDataviewInstance[]
 
   const trackOnDownloadClick = useCallback(
@@ -74,6 +75,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                     linkHref={linkHref}
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
+                    showSparkline={isSingleArea}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
                     handleReportClick={onReportClick}
                   />

@@ -2,7 +2,6 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -27,7 +26,6 @@ const VesselActivity = () => {
   const activityMode = useSelector(selectVesselActivityMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const eventsLoading = useVesselProfileEventsLoading()
-  const eventsLoadingDebounce = useDebounce(eventsLoading, 400)
   const eventsError = useVesselProfileEventsError()
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const hasVesselEvents =
@@ -55,7 +53,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (hasVesselEvents && eventsLoadingDebounce) {
+  if (hasVesselEvents && eventsLoading) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
@@ -91,14 +89,14 @@ const VesselActivity = () => {
           onSelect={setActivityMode}
         />
       </div>
-      {eventsLoadingDebounce && (
+      {eventsLoading && (
         <div className={styles.placeholder}>
           <Spinner />
         </div>
       )}
       <div className={styles.activityWrapper} id={ACTIVITY_CONTAINER_ID}>
-        {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
-        {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
+        {!eventsLoading && activityMode === 'type' && <ActivityByType />}
+        {!eventsLoading && activityMode === 'voyage' && <ActivityByVoyage />}
       </div>
     </Fragment>
   )

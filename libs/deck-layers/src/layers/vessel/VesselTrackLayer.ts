@@ -10,6 +10,7 @@ import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT, getLayerGroupOffset, LayerGroup } from '../../utils'
 
+import { getPositions } from './vessel.track.utils'
 import type {
   VesselDataType,
   VesselTrackPickingObject,
@@ -33,9 +34,11 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
   state: {
     points: TrackPoint[]
     pointIndex: KDBush
+    positions: VesselTrackPositionFeature[]
   } = {
     points: [],
     pointIndex: new KDBush(0),
+    positions: [],
   }
 
   getPickingInfo = (params: { info: PickingInfo<VesselTrackPickingObject> }) => {
@@ -48,8 +51,9 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
       let closestPoint: TrackPoint | undefined
       let nextPoint: TrackPoint | undefined
       if (info.sourceLayer instanceof VesselTrackPositionLayer) {
-        closestPoint = this.state.points[info.index + 1]
-        nextPoint = this.state.points[info.index + 2]
+        const pointIndex = (info.object?.properties as { pointIndex?: number })?.pointIndex
+        closestPoint = pointIndex !== undefined ? this.state.points[pointIndex] : undefined
+        nextPoint = pointIndex !== undefined ? this.state.points[pointIndex + 1] : undefined
         object.interactionType = 'point'
       } else {
         const nearestIds = around(
@@ -129,6 +133,10 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
           this.setState({
             points: pointsWithCourse,
             pointIndex: new KDBush(pointsWithCourse.length),
+            positions: getPositions(pointsWithCourse, {
+              startTime: this.props.startTime,
+              endTime: this.props.endTime,
+            }),
           })
           pointsWithCourse.forEach(({ longitude, latitude }) => {
             this.state.pointIndex.add(longitude!, latitude!)
@@ -149,16 +157,16 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
     })
 
     const trackLayers = [
-      ...(visualizationMode !== 'positions'
+      ...(visualizationMode !== 'positions' && visualizationMode !== 'points'
         ? [
             // Transparent thicker layer for interactivity
             new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
               ...props,
               id: `${id}-${interactiveLayoutKey}-interactive`,
               data: data as VesselTrackData,
-              getWidth: 10,
+              getWidth: 15,
               getColor: COLOR_TRANSPARENT,
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Background, params),
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
               pickable: true,
               highlightStartTime: undefined,
               highlightEndTime: undefined,
@@ -180,36 +188,18 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
       }),
     ] as LayersList
 
-    if (visualizationMode === 'positions' && this.state.points?.length) {
-      const pointsLength = this.state.points.length
-      const positions = this.state.points.flatMap((point, index) => {
-        if (
-          !point.timestamp ||
-          point.timestamp <= this.props.startTime ||
-          point.timestamp >= this.props.endTime ||
-          index === pointsLength - 1
-        ) {
-          return []
-        }
-        return {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [point.longitude, point.latitude] as Position,
-          },
-          properties: {
-            course: point.course,
-            timestamp: point.timestamp,
-          },
-        } as VesselTrackPositionFeature
-      })
+    if (
+      (visualizationMode === 'positions' || visualizationMode === 'points') &&
+      this.state.points?.length
+    ) {
       trackLayers.push(
         new VesselTrackPositionLayer({
           ...props,
           pickable: true,
           id: `${id}-positions`,
-          data: positions,
+          data: this.state.positions,
           iconBorder: false,
+          positionMode: visualizationMode === 'points' ? 'point' : 'icon',
         })
       )
     }
@@ -222,7 +212,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
   }
 
   getSegments(params = {} as GetSegmentsFromDataParams) {
-    return getSegmentsFromData(this.props.data as VesselTrackData, {
+    return getSegmentsFromData(this.getData(), {
       gapSegmentThreshold: this.props.gapSegmentThreshold,
       ...params,
     })

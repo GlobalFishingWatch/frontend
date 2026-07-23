@@ -41,7 +41,7 @@ function HelpHub() {
   }
 
   const getVideoTutorialsLink = () => {
-    if (i18n.language === 'es') return 'https://globalfishingwatch.org/tutoriales'
+    if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/tutoriales/'
     return 'https://globalfishingwatch.org/tutorials'
   }
 

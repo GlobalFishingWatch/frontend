@@ -3,9 +3,7 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import 'dotenv/config'
 
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
@@ -15,6 +13,7 @@ export default defineConfig(({ command }) => ({
   base: basePath,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
+  resolve: { tsconfigPaths: true },
 
   server: {
     port: 3000,
@@ -36,7 +35,6 @@ export default defineConfig(({ command }) => ({
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
-    nxViteTsPaths(),
     viteStaticCopy({
       targets: [
         {
@@ -59,12 +57,6 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: '../../dist/apps/data-download-portal',
     reportCompressedSize: true,
-  },
-
-  define: {
-    'process.env': {
-      API_GATEWAY: process.env.API_GATEWAY,
-    },
   },
 
   // test: {

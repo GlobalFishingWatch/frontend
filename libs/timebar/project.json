@@ -5,9 +5,19 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "cwd": "libs/timebar",
+        "reportsDirectory": "{projectRoot}/../../coverage/libs/timebar"
+      }
+    },
     "dist": {
       "executor": "@nx/js:tsc",
       "options": {
+        "clean": false,
         "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
     },

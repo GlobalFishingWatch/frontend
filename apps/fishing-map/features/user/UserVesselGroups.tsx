@@ -12,10 +12,6 @@ import {
   selectDeletedDatasets,
   selectDeprecatedDatasets,
 } from 'features/datasets/datasets.slice'
-import {
-  hasVesselGroupVesselsDeleted,
-  hasVesselGroupVesselsDeprecated,
-} from 'features/dataviews/dataviews.utils'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectUserVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
@@ -27,9 +23,11 @@ import {
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
-  isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
-import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
+import {
+  getVesselGroupDatasetStatus,
+  useMigrateToLatestVesselGroup,
+} from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   selectVesselGroupEditId,
   setVesselGroupsModalOpen,
@@ -106,15 +104,11 @@ function UserVesselGroups() {
                 if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                   return null
                 }
-                const isOutdated =
-                  isOutdatedVesselGroup(vesselGroup) ||
-                  hasVesselGroupVesselsDeprecated(
-                    vesselGroup.vesselsSummary?.datasets,
-                    deprecatedDatasets
-                  )
-                const hasDeletedDatasets = hasVesselGroupVesselsDeleted(
+                const { isOutdated, hasDeletedDatasets } = getVesselGroupDatasetStatus(
                   vesselGroup.vesselsSummary?.datasets,
-                  deletedDatasets
+                  deprecatedDatasets,
+                  deletedDatasets,
+                  vesselGroup
                 )
 
                 return (
@@ -146,6 +140,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
+                          icon={<Icon icon="warning" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)
@@ -163,7 +158,6 @@ function UserVesselGroups() {
                           }}
                           className={styles.warningButton}
                         >
-                          <Icon icon="warning" />
                           {t((t) => t.vesselGroup.updateRequired)}
                         </Button>
                       ) : (

@@ -1,5 +1,6 @@
 import type { UserTrack } from '@globalfishingwatch/api-types'
 
+import type { FilterOperators } from './features.utils'
 import type { UserTrackBinaryData, UserTrackData } from './types'
 import { filterTrackByCoordinateProperties } from './utils'
 
@@ -16,6 +17,7 @@ function arrayBufferToJson(arrayBuffer: ArrayBuffer) {
 
 export type ParseUserTrackParams = {
   filters: Record<string, any>
+  filterOperators?: FilterOperators
   workerUrl?: string
   includeCoordinateProperties?: string[]
 }
@@ -32,6 +34,7 @@ export const parseUserTrack = (
   }
   const data = filterTrackByCoordinateProperties(rawData, {
     filters: params.filters,
+    filterOperators: params.filterOperators,
     includeNonTemporalFeatures: true,
     includeCoordinateProperties: params.includeCoordinateProperties || [
       COORDINATE_PROPERTY_TIMESTAMP,

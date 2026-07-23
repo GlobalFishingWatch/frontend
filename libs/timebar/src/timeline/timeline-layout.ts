@@ -1,0 +1,173 @@
+import { DateTime } from 'luxon'
+
+import type { TimebarLabels } from '../timebar-labels'
+import { DEFAULT_LABELS } from '../timebar-labels'
+import { getTime } from '../utils'
+
+import type { TimelineScale } from './timeline-context'
+
+const getUnitLabel = (
+  mUnit: DateTime,
+  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute',
+  availableWidth: number,
+  locale: string,
+  hourSuffix = false
+) => {
+  /* eslint key-spacing: 0, no-multi-spaces: 0 */
+  const AMPM_MIN_WIDTH = 36
+  const hour12 = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions().hour12
+  const hourStr = (m: DateTime) => {
+    if (!hour12) return m.toFormat(hourSuffix ? "H'h'" : 'H')
+    return availableWidth >= AMPM_MIN_WIDTH
+      ? m.setLocale(locale).toLocaleString({ hour: 'numeric', hour12: true })
+      : m.toFormat('h')
+  }
+  const minuteStr = (m: DateTime) => {
+    if (!hour12 || availableWidth >= AMPM_MIN_WIDTH) {
+      return m.setLocale(locale).toLocaleString({ hour: 'numeric', minute: '2-digit', hour12 })
+    }
+    return m.toFormat('h:mm')
+  }
+
+  const getWeekFmt = (mUnit: DateTime, isFirst = false) => {
+    const mWeekEnd = mUnit.plus({ days: 6 })
+    return `${mUnit.toFormat('MMM')} ${mUnit.toFormat('d')}-${mWeekEnd.toFormat('d')} ${
+      isFirst ? mUnit.toFormat('yyyy') : ''
+    }`
+  }
+
+  const FORMATS: {
+    [key: string]: {
+      isFirst: (fm: DateTime) => boolean
+      formats: (number | string | ((mUnit: DateTime) => string))[][]
+    }
+  } = {
+    year: { isFirst: () => false, formats: [[0, 'yyyy']] },
+    month: {
+      isFirst: (fm: DateTime) => fm.month === 1,
+      formats: [
+        [200, 'MMMM yyyy'],
+        [100, 'MMMM', 'MMM yyyy'],
+        [0, 'MMM', 'MMM yy'],
+      ],
+    },
+    week: {
+      isFirst: (fm: DateTime) => {
+        return fm.day === 1
+      },
+      formats: [
+        [
+          0,
+          (mUnit: DateTime) => {
+            return getWeekFmt(mUnit)
+          },
+          (mUnit: DateTime) => {
+            return getWeekFmt(mUnit, true)
+          },
+        ],
+      ],
+    },
+    day: {
+      isFirst: (fm: DateTime) => fm.day === 1,
+      formats: [
+        [999, 'EEE d MMMM yyyy'],
+        [200, 'EEE d MMMM'],
+        [70, 'EEE d', 'MMM 1'],
+        [0, 'd', 'MMM'],
+      ],
+    },
+    hour: {
+      isFirst: (fm: DateTime) => fm.hour === 0,
+      formats: [
+        [999, (m: DateTime) => `${m.setLocale(locale).toFormat('EEE d MMMM yyyy')} ${hourStr(m)}`],
+        [0, (m: DateTime) => hourStr(m), 'd MMM'],
+      ],
+    },
+    minute: {
+      isFirst: (fm: DateTime) => fm.hour === 0 && fm.minute === 0,
+      formats: [
+        [
+          999,
+          (m: DateTime) => `${m.setLocale(locale).toFormat('EEE d MMMM yyyy')} ${minuteStr(m)}`,
+        ],
+        [0, (m: DateTime) => minuteStr(m), 'd MMM'],
+      ],
+    },
+  }
+  const unitFormat = FORMATS[baseUnit]
+  let format
+  for (let i = 0; i < unitFormat.formats.length; i += 1) {
+    const formatMinWidth = unitFormat.formats[i][0] as number
+    if (availableWidth > formatMinWidth) {
+      format = unitFormat.formats[i]
+      break
+    }
+  }
+
+  if (!format) {
+    return mUnit.toISO()
+  }
+  const isFirst = unitFormat.isFirst(mUnit)
+  const finalFormat = isFirst && format[2] ? format[2] : format[1]
+  return typeof finalFormat === 'function'
+    ? finalFormat(mUnit)
+    : mUnit.setLocale(locale).toFormat(finalFormat as string)
+}
+
+export const getUnitsPositions = (
+  outerScale: TimelineScale,
+  outerStart: string,
+  outerEnd: string,
+  absoluteStart: string,
+  absoluteEnd: string,
+  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute',
+  labels: TimebarLabels = DEFAULT_LABELS,
+  locale: string,
+  hourSuffix = false,
+  minuteStep = 10
+) => {
+  const startMs = Math.max(getTime(outerStart), getTime(absoluteStart))
+  const endMs = Math.min(getTime(outerEnd), getTime(absoluteEnd))
+  const step = baseUnit === 'minute' ? minuteStep : 1
+  const alignUnit = baseUnit === 'minute' ? 'hour' : baseUnit
+
+  // BUFFER ??
+  const mOuterStart = DateTime.fromMillis(startMs, { zone: 'utc' }).startOf(alignUnit)
+  const mOuterEnd = DateTime.fromMillis(endMs, { zone: 'utc' }).endOf(alignUnit)
+
+  const units = []
+  const numUnitsOffset = getTime(outerEnd) > getTime(absoluteEnd) ? 0 : 1
+  const durationUnit = `${baseUnit}s` as 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes'
+  const numUnits = mOuterEnd.diff(mOuterStart, durationUnit)?.[durationUnit] / step + numUnitsOffset
+
+  let mUnit = mOuterStart
+  if (mUnit.isValid) {
+    let x = outerScale(mUnit.toJSDate())
+
+    for (let ui = 0; ui <= numUnits; ui += 1) {
+      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: step })
+
+      const xNext = outerScale(mUnitNext.toJSDate())
+
+      const id = mUnit.toISO()
+
+      const width = xNext - x
+      const unit = {
+        id,
+        x,
+        width,
+        label: getUnitLabel(mUnit, baseUnit, width, locale, hourSuffix),
+        hoverLabel: `${getUnitLabel(mUnit, baseUnit, Infinity, locale, hourSuffix)} - ${
+          labels?.zoomTo ?? DEFAULT_LABELS.zoomTo
+        } ${labels?.intervals?.[baseUnit as keyof TimebarLabels['intervals']] ?? ''}`,
+        start: mUnit.toISO(),
+        end: mUnitNext.toISO(),
+      }
+      units.push(unit)
+      mUnit = mUnitNext
+      x = xNext
+    }
+  }
+
+  return units
+}
