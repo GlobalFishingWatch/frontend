@@ -121,19 +121,21 @@ function UserInfo() {
             <LogoutButton />
           </div>
         </div>
-        <label>{t((t) => t.user.groups)}</label>
-        {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
-        <p className={styles.missingGroup}>
-          <Trans i18nKey={(t) => t.user.groupMissing}>
-            Do you belong to a user group that doesn’t appear here?{' '}
-            <a
-              className={styles.link}
-              href={`mailto:${SUPPORT_EMAIL}?subject=Requesting access in user group`}
-            >
-              Request access
-            </a>
-          </Trans>
-        </p>
+        <div className={styles.row}>
+          <label>{t((t) => t.user.groups)}</label>
+          {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
+          <p className={styles.missingGroup}>
+            <Trans i18nKey={(t) => t.user.groupMissing}>
+              Do you belong to a user group that doesn’t appear here?{' '}
+              <a
+                className={styles.link}
+                href={`mailto:${SUPPORT_EMAIL}?subject=Requesting access in user group`}
+              >
+                Request access
+              </a>
+            </Trans>
+          </p>
+        </div>
         {isGFWUser && (
           <Fragment>
             <div className={styles.row}>

@@ -69,10 +69,11 @@
 
 .viewsHeader {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S);
   align-items: center;
   justify-content: space-between;
   padding-right: var(--space-M);
-  margin-bottom: var(--space-S);
 }
 
 .dataset,
@@ -171,6 +172,5 @@ div.modal {
   display: flex;
   align-items: flex-end;
   gap: var(--space-S);
-  padding: var(--space-S);
   flex-direction: row;
 }
