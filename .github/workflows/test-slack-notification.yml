@@ -12,9 +12,8 @@ jobs:
       - name: Send test Slack notification
         uses: slackapi/slack-github-action@v2
         with:
-          channel-id: eng-cloud-build
-          slack-message: |
-            :test_tube: *Test notification* from `${{ github.ref_name }}`
-            @frontend-engineering-team this is a test of the failure notification added in <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|this run>.
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: "eng-cloud-build"
+            text: ":test_tube: *Test notification* from `${{ github.ref_name }}`\n@frontend-engineering-team this is a test of the failure notification added in <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|this run>."
