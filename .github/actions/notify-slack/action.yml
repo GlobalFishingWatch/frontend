@@ -16,12 +16,9 @@ runs:
   using: composite
   steps:
     - name: Post message to Slack
-      uses: slackapi/slack-github-action@v2.0.0
-      with:
-        method: chat.postMessage
-        token: ${{ inputs.token }}
-        payload: |
-          {
-            "channel": "${{ inputs.channel }}",
-            "text": "${{ inputs.message }}"
-          }
+      shell: bash
+      run: |
+        curl -s -X POST https://slack.com/api/chat.postMessage \
+          -H "Content-type: application/json" \
+          -H "Authorization: Bearer ${{ inputs.token }}" \
+          --data "{\"channel\": \"${{ inputs.channel }}\", \"text\": \"${{ inputs.message }}\"}"
