@@ -49,27 +49,30 @@ export const vesselPropertyToApiSearch = (
   return col
 }
 
-const PRIMARY_ID_FIELDS: IdField[] = ['vesselId', 'mmsi', 'imo', 'ssvid']
+const isIdFieldSupportedByDataset = (filterIds: Set<string>, id: IdField) => {
+  const property = vesselPropertyToApiSearch(id)
+  return (
+    filterIds.has(id) ||
+    filterIds.has(property) ||
+    filterIds.has(`${VMS_PROPERTY_PREFIX}${property}`)
+  )
+}
 
-// fall back to the weaker identifiers (callsign, shipname, etc) when
-// none of the primary ones (vesselId, mmsi, imo, ssvid) are supported
+// Only offer the id fields that EVERY selected source dataset supports filtering by
 export const getDatasetsIdFieldOptions = (datasets: Dataset[]): SelectOption<IdField, string>[] => {
-  const filterIds = new Set(
-    datasets.flatMap((dataset) =>
-      (dataset.filters?.vessels || []).flatMap((filter) => (filter.enabled ? filter.id : []))
-    )
+  const datasetsFilterIds = datasets.map(
+    (dataset) =>
+      new Set(
+        (dataset.filters?.vessels || []).flatMap((filter) => (filter.enabled ? filter.id : []))
+      )
   )
   const options = ID_FIELD_SEARCH_CANDIDATES.flatMap((id) => {
-    const property = vesselPropertyToApiSearch(id)
     const isSupported =
-      filterIds.has(id) ||
-      filterIds.has(property) ||
-      filterIds.has(`${VMS_PROPERTY_PREFIX}${property}`)
+      datasetsFilterIds.length > 0 &&
+      datasetsFilterIds.every((filterIds) => isIdFieldSupportedByDataset(filterIds, id))
     return isSupported ? [{ id, label: id.toUpperCase() }] : []
   })
-  const primaryOptions = options.filter((option) => PRIMARY_ID_FIELDS.includes(option.id))
-  const supportedOptions = primaryOptions.length ? primaryOptions : options
-  return supportedOptions.length ? supportedOptions : ID_COLUMNS_OPTIONS
+  return options.length ? options : ID_COLUMNS_OPTIONS
 }
 
 export const normaliseCsvColumns = (columns: string[] | null): VesselPropertyApiSearch[] => {
