@@ -68,9 +68,17 @@ function toolLabel(t: TFunction, name: string, state?: string): string {
 
 function MessageParts({ message }: { message: UIMessage }) {
   const { t } = useTranslation()
+  const parts = message.parts ?? []
+  // Tool chips are transient progress. Show only the last one in the message so
+  // the reader sees just the latest activity (parts aren't array-adjacent — the
+  // SDK interleaves step-start parts — so collapse by "is this the last tool").
+  let lastToolIdx = -1
+  parts.forEach((part, idx) => {
+    if (isToolUIPart(part)) lastToolIdx = idx
+  })
   return (
     <Fragment>
-      {(message.parts ?? []).map((part, idx) => {
+      {parts.map((part, idx) => {
         if (part.type === 'text') {
           const text = part.text
           if (!text) return null
@@ -81,7 +89,19 @@ function MessageParts({ message }: { message: UIMessage }) {
           const display = text.replace(/\n\n\[current map url: [^\]]+\]$/, '')
           return <span key={idx}>{display}</span>
         }
+        if (part.type === 'reasoning') {
+          if (!part.text) return null
+          return (
+            <details key={idx} className={styles.thinking}>
+              <summary>{t((t) => t.chat.thinking)}</summary>
+              <div className={styles.thinkingBlock}>
+                <ContentMarkdown>{part.text}</ContentMarkdown>
+              </div>
+            </details>
+          )
+        }
         if (isToolUIPart(part)) {
+          if (idx !== lastToolIdx) return null
           const name = getToolName(part)
           const label = toolLabel(t, name, part.state)
           return (
@@ -105,16 +125,22 @@ function ChatSession() {
   })
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
+  const inputRowRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const textarea = inputRowRef.current?.querySelector('textarea')
+    if (!textarea) return
+    textarea.style.height = 'auto'
+    textarea.style.height = `${textarea.scrollHeight}px`
+  }, [input])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
   }, [messages, loading])
 
-  const onSend = async () => {
-    const ok = await sendMessage(input)
-    if (ok) {
-      setInput('')
-    }
+  const onSend = () => {
+    setInput('')
+    sendMessage(input)
   }
 
   return (
@@ -136,18 +162,17 @@ function ChatSession() {
         {loading && <Spinner size="small" />}
       </div>
 
-      <div className={styles.inputRow}>
+      <div className={styles.inputRow} ref={inputRowRef}>
         <TextArea
           className={styles.input}
           value={input}
           placeholder={t((t) => t.common.messageAssistant)}
           rows={1}
-          disabled={loading}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey && !loading) {
               e.preventDefault()
-              void onSend()
+              onSend()
             }
           }}
         />
@@ -155,7 +180,7 @@ function ChatSession() {
           icon="arrow-right"
           type="border"
           disabled={loading || !input.trim()}
-          onClick={() => void onSend()}
+          onClick={() => onSend()}
         />
       </div>
     </Fragment>

@@ -139,6 +139,7 @@
   },
   "chat": {
     "couldNotDeleteConversation": "Could not delete conversation",
+    "thinking": "Thinking",
     "toolBash": "Running command",
     "toolLoadSkill": "Loading skill",
     "toolNavigate": "Navigating map",

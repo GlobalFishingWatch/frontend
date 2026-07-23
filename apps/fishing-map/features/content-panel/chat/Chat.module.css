@@ -42,8 +42,8 @@
 .message {
   max-width: 85%;
   padding: var(--space-S) var(--space-SM);
-  border-radius: var(--border-radius);
   font: var(--font-S);
+  border-radius: var(--border-radius-1);
 }
 
 .message strong,
@@ -61,14 +61,16 @@
 
 .user {
   align-self: flex-end;
-  background-color: var(--color-highlight-blue);
+  background-color: var(--color-background);
   color: var(--color-primary-blue);
   white-space: pre-wrap;
+  border-end-end-radius: 0;
 }
 
 .agent {
   align-self: flex-start;
   background-color: var(--color-off-white-0);
+  border-end-start-radius: 0;
 }
 
 .system {
@@ -88,6 +90,21 @@
   margin: 0;
   font: var(--font-XS);
   color: var(--color-secondary-blue);
+}
+
+.thinking {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+}
+
+.thinking summary {
+  cursor: pointer;
+}
+
+.thinkingBlock {
+  margin-top: var(--space-XS);
+  max-height: 20rem;
+  overflow-y: auto;
 }
 
 .loginGate {
@@ -119,11 +136,13 @@
 .input {
   flex: 1;
   height: auto;
+  line-height: 1;
 }
 
 .input textarea {
   resize: none;
   max-height: 120px;
+  overflow-y: auto;
   font: var(--font-M);
   font-family: inherit;
 }

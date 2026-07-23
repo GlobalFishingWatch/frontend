@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
-import { DefaultChatTransport, type UIMessage } from 'ai'
+import {
+  DefaultChatTransport,
+  lastAssistantMessageIsCompleteWithToolCalls,
+  type UIMessage,
+} from 'ai'
 import { useSetAtom } from 'jotai'
 import { AGENT_BASE_URL } from 'queries/chat-api'
 
@@ -61,7 +65,7 @@ export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
 
   const { messages, sendMessage, status, error, addToolOutput, setMessages } = useChat<UIMessage>({
     transport,
-    // sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     async onToolCall({ toolCall }) {
       if (toolCall.toolName !== 'navigate') {
         return

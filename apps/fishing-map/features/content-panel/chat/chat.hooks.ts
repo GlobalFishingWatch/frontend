@@ -39,11 +39,25 @@ export function useChatThreadMessages({ activeThreadId, refreshThreads }: ChatSe
       : 'Failed to load history'
     : null
 
+  const lastThreadId = useRef(activeThreadId)
   useEffect(() => {
-    if (!historyError && status === 'ready' && history) {
+    if (lastThreadId.current !== activeThreadId) {
+      lastThreadId.current = activeThreadId
+      setMessages([])
+    }
+  }, [activeThreadId, setMessages])
+
+  useEffect(() => {
+    if (
+      !historyError &&
+      status === 'ready' &&
+      history &&
+      history.length > 0 &&
+      messages.length === 0
+    ) {
       setMessages(history as UIMessage[])
     }
-  }, [history, historyError, setMessages, status])
+  }, [history, historyError, setMessages, status, messages.length])
 
   useEffect(() => {
     const wasBusy = prevStatus === 'submitted' || prevStatus === 'streaming'
