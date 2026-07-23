@@ -9,11 +9,13 @@ jobs:
     name: Send test Slack notification
     runs-on: ubuntu-latest
     steps:
-      - name: Send test Slack notification
-        uses: archive/github-actions-slack@v2.0.0
+      - name: Notify Slack on failure
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          slack-channel: CQL8ACG8G
-          slack-text: |
-            :test_tube: *Test notification* from `${{ github.ref_name }}`
-            @/frontend-engineering-team this is a test of the failure notification. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            {
+              "channel": "#eng-cloud-build",
+              "text": "🔴 This is a test message from `${{ github.repository }}`\nBranch: `${{ github.ref_name }}`\nCommit: `${{ github.sha }}`\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
