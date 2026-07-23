@@ -232,18 +232,32 @@ const searchVesselsInVesselGroup = async ({
   return { vessels: [], input }
 }
 
+const normalizeMatchValue = (value?: string) =>
+  (value || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\\%_"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+
 const getUnmatchedInputs = (
   vessels: VesselGroupVesselIdentity[],
   input: ParsedSearchInput
 ): string[] => {
   const identities = vessels.flatMap((v) => (v.identity ? getVesselIdentities(v.identity) : []))
   if (input.type === 'ids') {
-    const matched = new Set(identities.map((i) => (i as any)[input.property]).filter(Boolean))
-    return input.values.filter((v) => !matched.has(v))
+    const matched = new Set(
+      identities.map((i) => normalizeMatchValue((i as any)[input.property])).filter(Boolean)
+    )
+    return input.values.filter((v) => !matched.has(normalizeMatchValue(v)))
   }
   return input.rows.flatMap((row) => {
     const matched = identities.some((i) =>
-      row.every(({ property, value }) => (i as any)[property] === value)
+      row.every(
+        ({ property, value }) =>
+          normalizeMatchValue((i as any)[property]) === normalizeMatchValue(value)
+      )
     )
     return matched ? [] : row[0].value
   })
