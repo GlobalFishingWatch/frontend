@@ -67,11 +67,26 @@ export type UserGuideSlug = UserGuideSectionSlug | UserGuideSubSectionSlug
 
 export type UserGuideContent = UserGuideSection[]
 
+export const USER_GUIDE_ROLES = [
+  'Monitoring, Control & Surveillance (MCS)',
+  'Fisheries Management',
+  'Marine Protection (MPAs)',
+  'Port Authorities',
+  'Researchers',
+  'Non-profits',
+  'Journalists',
+  'Private Sector',
+] as const
+
+export type UserGuideRole = (typeof USER_GUIDE_ROLES)[number]
+
 export type UserGuideSection = StrapiBaseAttributes & {
   title: string
   body: string
   slug: UserGuideSectionSlug
   subsections: UserGuideSubSection[]
+  role: UserGuideRole[]
+  exclusive: boolean
 }
 
 export type UserGuideSubSection = StrapiBaseAttributes & {
