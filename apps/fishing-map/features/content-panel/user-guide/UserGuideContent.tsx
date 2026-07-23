@@ -10,10 +10,10 @@ import ContentHeader from 'features/content-panel/ContentHeader'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/content-panel/EmptyContent'
-import TableOfContents from 'features/content-panel/TableOfContents'
+import TableOfContents from 'features/content-panel/user-guide/TableOfContents'
 import { Route } from 'routes/_app'
 
-import styles from './ContentPanel.module.css'
+import styles from '../ContentPanel.module.css'
 
 export const UserGuideContentComponent = () => {
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()

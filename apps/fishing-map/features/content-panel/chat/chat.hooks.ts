@@ -19,8 +19,8 @@ import {
   deleteThread,
   loadThreadMessages,
   loadThreads,
-} from 'features/content-panel/chat-agent'
-import { navigateToolInputSchema } from 'features/content-panel/navigate-tool'
+} from 'features/content-panel/chat/chat-agent'
+import { navigateToolInputSchema } from 'features/content-panel/chat/navigate-tool'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'

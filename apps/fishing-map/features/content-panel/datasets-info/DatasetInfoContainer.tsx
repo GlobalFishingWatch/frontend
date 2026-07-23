@@ -27,9 +27,9 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { Route } from 'routes/_app'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import styles from './ContentPanel.module.css'
+import styles from '../ContentPanel.module.css'
 
-const InfoContainer = () => {
+const DatasetInfoContainer = () => {
   const { ready: i18nReady } = useTranslation()
   const { sidePanelId, sidePanelSubcontentId } = Route.useSearch()
   const { openSidePanel } = useSidePanel()
@@ -142,4 +142,4 @@ const InfoContainer = () => {
   )
 }
 
-export default InfoContainer
+export default DatasetInfoContainer

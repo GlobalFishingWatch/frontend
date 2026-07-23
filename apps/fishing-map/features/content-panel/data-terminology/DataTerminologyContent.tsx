@@ -11,7 +11,7 @@ import EmptyContent from 'features/content-panel/EmptyContent'
 import { Route } from 'routes/_app'
 import type { Locale } from 'types'
 
-import styles from './ContentPanel.module.css'
+import styles from '../ContentPanel.module.css'
 
 const DataTerminologyContent = () => {
   const { sidePanelId } = Route.useSearch()

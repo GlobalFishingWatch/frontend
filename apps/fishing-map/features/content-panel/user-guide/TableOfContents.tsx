@@ -7,7 +7,7 @@ import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
-import styles from './ContentPanel.module.css'
+import styles from '../ContentPanel.module.css'
 
 type TableOfContentsProps = {
   data: UserGuideContent

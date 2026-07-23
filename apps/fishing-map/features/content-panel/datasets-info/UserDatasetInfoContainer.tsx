@@ -8,9 +8,9 @@ import EmptyContent from 'features/content-panel/EmptyContent'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { Route } from 'routes/_app'
 
-import styles from './ContentPanel.module.css'
+import styles from '../ContentPanel.module.css'
 
-const UserDatasetContent = () => {
+const UserDatasetInfoContainer = () => {
   const { sidePanelId } = Route.useSearch()
   const dataset = useSelector(selectDatasetById(sidePanelId as string))
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
@@ -31,4 +31,4 @@ const UserDatasetContent = () => {
   )
 }
 
-export default UserDatasetContent
+export default UserDatasetInfoContainer

@@ -6,7 +6,7 @@ import cx from 'classnames'
 
 import { Icon, IconButton, Popover, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
-import { useChatAgentSession, useChatConversations } from 'features/content-panel/chat.hooks'
+import { useChatAgentSession, useChatConversations } from 'features/content-panel/chat/chat.hooks'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import LoginLink from 'features/user/LoginLink'
