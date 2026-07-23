@@ -87,4 +87,4 @@ jobs:
         with:
           channel: '#eng-cloud-build'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *Build and Deploy failed* on branch `${{ github.ref_name }}`\n@frontend-engineering-team please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: *Build and Deploy failed* on branch `${{ github.ref_name }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
