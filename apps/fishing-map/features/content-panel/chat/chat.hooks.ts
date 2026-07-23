@@ -11,6 +11,8 @@ import { selectUserId } from 'features/user/selectors/user.permissions.selectors
 
 type ChatSessionArgs = Pick<ReturnType<typeof useChatThreads>, 'activeThreadId' | 'refreshThreads'>
 
+export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
+
 export function useChatThreadMessages({ activeThreadId, refreshThreads }: ChatSessionArgs) {
   const userId = useSelector(selectUserId)
 
@@ -70,7 +72,7 @@ export function useChatThreadMessages({ activeThreadId, refreshThreads }: ChatSe
     async (text: string) => {
       const trimmed = text.trim()
       if (!trimmed || loading) return false
-      const content = `${trimmed}\n\n[current map url: ${window.location.href}]`
+      const content = `${trimmed}${MAP_URL_CONTEXT_PREFIX} ${window.location.href}]`
       await sendMessageToSession({ text: content })
       return true
     },

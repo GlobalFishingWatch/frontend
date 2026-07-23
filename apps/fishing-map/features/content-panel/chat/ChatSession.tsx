@@ -2,10 +2,14 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
+import type { TFunction } from 'i18next'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
-import { useChatThreadMessages } from 'features/content-panel/chat/chat.hooks'
+import {
+  MAP_URL_CONTEXT_PREFIX,
+  useChatThreadMessages,
+} from 'features/content-panel/chat/chat.hooks'
 import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 
@@ -17,16 +21,7 @@ function roleClass(role: UIMessage['role']): string {
   return styles.system
 }
 
-type TFunction = ReturnType<typeof useTranslation>['t']
-
-function prettify(name: string): string {
-  const spaced = name.replace(/[_-]+/g, ' ').trim()
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1)
-}
-
-// Friendly, translated copy for the agent's known tools — everything else
-// falls back to a prettified (untranslated) version of the raw tool name.
-function toolActionLabel(t: TFunction, name: string): string {
+function toolActionLabel(t: TFunction, name: string): string | undefined {
   switch (name) {
     case 'navigate':
       return t((t) => t.chat.toolNavigate)
@@ -41,37 +36,58 @@ function toolActionLabel(t: TFunction, name: string): string {
     case 'gfw_region-id-lookup':
       return t((t) => t.chat.toolRegionLookup)
     default:
-      return prettify(name)
+      return undefined
   }
 }
 
 function toolStateLabel(t: TFunction, state?: string): string | undefined {
   switch (state) {
-    case 'input-streaming':
-      return t((t) => t.chat.toolStateStarting)
     case 'input-available':
-      return t((t) => t.chat.toolStateRunning)
+      return '…'
     case 'output-available':
-      return t((t) => t.chat.toolStateDone)
+      return '✓'
     case 'output-error':
-      return t((t) => t.chat.toolStateFailed)
+      return '✗'
     default:
       return undefined
   }
 }
 
-function toolLabel(t: TFunction, name: string, state?: string): string {
-  const action = toolActionLabel(t, name)
-  const stateLabel = toolStateLabel(t, state)
-  return stateLabel ? `${action} (${stateLabel})` : action
+function skillResourceLabel(t: TFunction, basename: string): string | undefined {
+  switch (basename) {
+    case 'layers.md':
+      return t((t) => t.chat.skillLayers)
+    case 'areas.json':
+      return t((t) => t.chat.skillAreas)
+    case 'filters.md':
+      return t((t) => t.chat.skillFilters)
+    case 'query-params.md':
+      return t((t) => t.chat.skillQueryParams)
+    case 'routes.md':
+      return t((t) => t.chat.skillRoutes)
+    default:
+      return undefined
+  }
+}
+
+const SKILL_RESOURCE_FILES = [
+  'layers.md',
+  'areas.json',
+  'filters.md',
+  'query-params.md',
+  'routes.md',
+]
+
+function toolDetail(t: TFunction, input: unknown): string | undefined {
+  if (!input || typeof input !== 'object') return undefined
+  const serialised = JSON.stringify(input)
+  const match = SKILL_RESOURCE_FILES.find((file) => serialised.includes(file))
+  return match ? skillResourceLabel(t, match) : undefined
 }
 
 function MessageParts({ message }: { message: UIMessage }) {
   const { t } = useTranslation()
   const parts = message.parts ?? []
-  // Tool chips are transient progress. Show only the last one in the message so
-  // the reader sees just the latest activity (parts aren't array-adjacent — the
-  // SDK interleaves step-start parts — so collapse by "is this the last tool").
   let lastToolIdx = -1
   parts.forEach((part, idx) => {
     if (isToolUIPart(part)) lastToolIdx = idx
@@ -86,7 +102,7 @@ function MessageParts({ message }: { message: UIMessage }) {
             return <ContentMarkdown key={idx}>{text}</ContentMarkdown>
           }
           // Strip the injected map-url context from the user bubble display.
-          const display = text.replace(/\n\n\[current map url: [^\]]+\]$/, '')
+          const display = text.split(MAP_URL_CONTEXT_PREFIX)[0]
           return <span key={idx}>{display}</span>
         }
         if (part.type === 'reasoning') {
@@ -103,10 +119,15 @@ function MessageParts({ message }: { message: UIMessage }) {
         if (isToolUIPart(part)) {
           if (idx !== lastToolIdx) return null
           const name = getToolName(part)
-          const label = toolLabel(t, name, part.state)
+          const detail = toolDetail(t, part.input)
+          const action = detail ?? toolActionLabel(t, name)
+          const stateLabel = toolStateLabel(t, part.state)
+          if (!action) {
+            return null
+          }
           return (
             <p key={idx} className={styles.toolChip}>
-              {label}
+              {stateLabel ? `${action} ${stateLabel || ''}` : action}
             </p>
           )
         }

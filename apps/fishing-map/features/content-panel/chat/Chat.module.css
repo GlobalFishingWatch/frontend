@@ -87,7 +87,6 @@
 }
 
 .toolChip {
-  margin: 0;
   font: var(--font-XS);
   color: var(--color-secondary-blue);
 }
@@ -105,6 +104,9 @@
   margin-top: var(--space-XS);
   max-height: 20rem;
   overflow-y: auto;
+  padding: var(--space-XS);
+  background-color: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
 }
 
 .loginGate {

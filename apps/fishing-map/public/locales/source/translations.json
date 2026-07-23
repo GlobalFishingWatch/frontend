@@ -139,17 +139,18 @@
   },
   "chat": {
     "couldNotDeleteConversation": "Could not delete conversation",
+    "skillAreas": "Finding area ids",
+    "skillFilters": "Adjusting filters",
+    "skillLayers": "Choosing the right layers",
+    "skillQueryParams": "Adjusting UI",
+    "skillRoutes": "Choosing the right section",
     "thinking": "Thinking",
     "toolBash": "Running command",
     "toolLoadSkill": "Loading skill",
-    "toolNavigate": "Navigating map",
+    "toolNavigate": "Adjusting view",
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
-    "toolRunSkillScript": "Running skill script",
-    "toolStateDone": "done",
-    "toolStateFailed": "failed",
-    "toolStateRunning": "running",
-    "toolStateStarting": "starting"
+    "toolRunSkillScript": "Running skill script"
   },
   "common": {
     "active": "Active",
