@@ -1,0 +1,27 @@
+name: Notify Slack
+description: Posts a message to a Slack channel using the Slack bot
+
+inputs:
+  channel:
+    description: Slack channel ID to post the message to
+    required: true
+  message:
+    description: Message text to post
+    required: true
+  token:
+    description: Slack bot OAuth token (authorization bearer)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Post message to Slack
+      uses: slackapi/slack-github-action@v2.0.0
+      with:
+        method: chat.postMessage
+        token: ${{ inputs.token }}
+        payload: |
+          {
+            "channel": "${{ inputs.channel }}",
+            "text": "${{ inputs.message }}"
+          }

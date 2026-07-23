@@ -72,3 +72,19 @@ jobs:
           config: ${{ env.CONFIG }}
           service-name-prefix: ${{ env.SERVICE_NAME_PREFIX }}
           cloudrun-service-account: ${{ env.CLOUDRUN_SA }}
+
+  notify-failure:
+    name: Notify Slack on failure
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: failure()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Notify Slack
+        uses: ./.github/actions/notify-slack
+        with:
+          channel: '#eng-cloud-build'
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          message: ":red_circle: *Build and Deploy failed* on branch `${{ github.ref_name }}`\n@frontend-engineering-team please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
