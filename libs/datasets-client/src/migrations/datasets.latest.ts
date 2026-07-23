@@ -11,7 +11,7 @@ export const LATEST_DATASETS_VMS: Record<
   },
   chl: {
     identity: 'public-vms-chl-vessel-identity:v4.0' as const,
-    fishing: 'public-vms-chl-fishing-effort:v4.0' as const,
+    fishing: 'public-vms-chl-fishing-effort:v4.1' as const,
     presence: 'public-vms-chl-presence:v4.0' as const,
   },
   plw: {
