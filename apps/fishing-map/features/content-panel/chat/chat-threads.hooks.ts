@@ -19,11 +19,6 @@ const activeThreadAtom = atomWithStorage<ActiveThread>(
   { getOnInit: true }
 )
 
-export function useThreadLoading(threadId: string) {
-  const activeThread = useAtomValue(activeThreadAtom)
-  return activeThread.id === threadId && activeThread.isLoading
-}
-
 export function useSetThreadLoading(threadId: string, loading: boolean) {
   const setActiveThread = useSetAtom(activeThreadAtom)
   useEffect(() => {
@@ -35,7 +30,11 @@ export function useChatThreads() {
   const { t } = useTranslation()
   const userId = useSelector(selectUserId)
   const [activeThread, setActiveThread] = useAtom(activeThreadAtom)
-  const { id: activeThreadId, isNew: isNewThread } = activeThread
+  const {
+    id: activeThreadId,
+    isNew: activeThreadIsNew,
+    isLoading: activeThreadIsLoading,
+  } = activeThread
 
   const {
     data: threads = [],
@@ -89,7 +88,8 @@ export function useChatThreads() {
     threadsLoading,
     refreshThreads,
     activeThreadId,
-    isNewThread,
+    activeThreadIsLoading,
+    activeThreadIsNew,
     setActiveThreadId,
     markThreadStarted,
     deleteThread,

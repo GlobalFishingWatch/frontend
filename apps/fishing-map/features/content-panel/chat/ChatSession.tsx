@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { type UIMessage } from 'ai'
 import { useGetThreadMessagesQuery } from 'queries/chat-api'
@@ -12,14 +13,21 @@ import styles from './Chat.module.css'
 
 function ChatSession() {
   const userId = useSelector(selectUserId)
-  const { activeThreadId, isNewThread, markThreadStarted } = useChatThreads()
+  const { activeThreadId, activeThreadIsNew, markThreadStarted } = useChatThreads()
 
-  const { data: historyMessages, isFetching: historyFetching } = useGetThreadMessagesQuery(
+  const [startedThreadId, setStartedThreadId] = useState<string | null>(null)
+  const skipHistory = activeThreadIsNew || startedThreadId === activeThreadId
+
+  const {
+    data: historyMessages,
+    isLoading: historyLoading,
+    isFetching: historyFetching,
+  } = useGetThreadMessagesQuery(
     { threadId: activeThreadId, resourceId: String(userId) },
-    { skip: isNewThread }
+    { skip: skipHistory }
   )
 
-  if (!isNewThread && historyFetching) {
+  if (!skipHistory && (historyLoading || historyFetching)) {
     return (
       <div className={styles.messages}>
         <Spinner size="small" />
@@ -32,9 +40,10 @@ function ChatSession() {
       key={activeThreadId}
       userId={userId}
       threadId={activeThreadId}
-      initialMessages={isNewThread ? [] : ((historyMessages as UIMessage[]) ?? [])}
-      onSendMessage={() => {
-        if (isNewThread) {
+      initialMessages={skipHistory ? [] : ((historyMessages as UIMessage[]) ?? [])}
+      onFinished={() => {
+        if (activeThreadIsNew) {
+          setStartedThreadId(activeThreadId)
           markThreadStarted()
         }
       }}

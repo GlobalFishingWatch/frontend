@@ -142,11 +142,13 @@ function ChatSessionMessages({
   userId,
   initialMessages,
   onSendMessage,
+  onFinished,
 }: {
   threadId: string
   userId: number | string | undefined
   initialMessages: UIMessage[]
-  onSendMessage: () => void
+  onSendMessage?: () => void
+  onFinished?: () => void
 }) {
   const { t } = useTranslation()
 
@@ -154,6 +156,7 @@ function ChatSessionMessages({
     threadId,
     userId,
     initialMessages,
+    onFinished,
   })
   useSetThreadLoading(threadId, loading)
 
@@ -175,7 +178,7 @@ function ChatSessionMessages({
   const onSend = () => {
     setInput('')
     sendMessage(input)
-    onSendMessage()
+    onSendMessage?.()
   }
 
   return (

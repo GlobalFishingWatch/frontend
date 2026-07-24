@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Icon, IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
 
-import { useChatThreads, useThreadLoading } from 'features/content-panel/chat/chat-threads.hooks'
+import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { getTimeAgo } from 'utils/dates'
 
@@ -14,22 +14,26 @@ import styles from './Chat.module.css'
 function ChatHistoryItem({
   thread,
   active,
+  disabled,
+  loading,
   onSelect,
   onDelete,
 }: {
   thread: { id: string; title: string; updatedAt: string }
   active: boolean
+  disabled: boolean
+  loading: boolean
   onSelect: () => void
   onDelete: () => void
 }) {
   const { t } = useTranslation()
-  const loading = useThreadLoading(thread.id)
-
   return (
     <li className={cx(styles.historyItem, { [styles.historyActive]: active })}>
-      <button type="button" className={styles.historyButton} onClick={onSelect}>
+      <button type="button" className={styles.historyButton} onClick={onSelect} disabled={disabled}>
         <span className={styles.historyTitle}>{thread.title || t((t) => t.common.assistant)}</span>
-        <span className={styles.historyTime}>{getTimeAgo(getUTCDateTime(thread.updatedAt), t)}</span>
+        <span className={styles.historyTime}>
+          {getTimeAgo(getUTCDateTime(thread.updatedAt), t)}
+        </span>
       </button>
       {loading && <Spinner size="tiny" />}
       <IconButton
@@ -52,6 +56,7 @@ function ChatHeader() {
     threadsError,
     threadsLoading,
     activeThreadId,
+    activeThreadIsLoading,
     setActiveThreadId,
     deleteThread,
     newThread,
@@ -78,6 +83,8 @@ function ChatHeader() {
                   key={c.id}
                   thread={c}
                   active={c.id === activeThreadId}
+                  disabled={activeThreadIsLoading && c.id !== activeThreadId}
+                  loading={activeThreadIsLoading && c.id === activeThreadId}
                   onSelect={() => {
                     setActiveThreadId(c.id)
                     setHistoryOpen(false)
@@ -100,6 +107,7 @@ function ChatHeader() {
         </Popover>
         <IconButton
           icon="plus"
+          disabled={activeThreadIsLoading}
           tooltip={t((t) => t.common.newConversation)}
           onClick={newThread}
           size="medium"
