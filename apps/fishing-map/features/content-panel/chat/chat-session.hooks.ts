@@ -15,7 +15,6 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { navigateToolInputSchema } from 'features/content-panel/chat/navigate-tool'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
-import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import type { QueryParams } from 'types'
 
 export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'

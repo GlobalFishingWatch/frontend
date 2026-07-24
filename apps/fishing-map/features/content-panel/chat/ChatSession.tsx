@@ -19,7 +19,7 @@ function ChatSession() {
     { skip: isNewThread }
   )
 
-  if (historyFetching) {
+  if (!isNewThread && historyFetching) {
     return (
       <div className={styles.messages}>
         <Spinner size="small" />
@@ -32,7 +32,7 @@ function ChatSession() {
       key={activeThreadId}
       userId={userId}
       threadId={activeThreadId}
-      initialMessages={(historyMessages as UIMessage[]) ?? []}
+      initialMessages={isNewThread ? [] : ((historyMessages as UIMessage[]) ?? [])}
       onSendMessage={() => {
         if (isNewThread) {
           markThreadStarted()
