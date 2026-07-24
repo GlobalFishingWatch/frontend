@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import type { UIMessage } from 'ai'
-import { useGetThreadMessagesQuery } from 'queries/chat-api'
+import { useGetThreadMessagesQuery, useGetThreadsQuery } from 'queries/chat-api'
 
 import { usePrevious } from '@globalfishingwatch/react-hooks'
 
@@ -31,10 +31,13 @@ export function useChatThreadMessages({ activeThreadId, refreshThreads }: ChatSe
   const prevStatus = usePrevious(status)
   const loading = status === 'submitted' || status === 'streaming'
 
-  const { data: history, error: historyQueryError } = useGetThreadMessagesQuery({
-    threadId: activeThreadId,
-    resourceId: String(userId),
-  })
+  const { data: threads = [] } = useGetThreadsQuery({ resourceId: String(userId) })
+  const threadExists = threads.some((thr) => thr.id === activeThreadId)
+
+  const { data: history, error: historyQueryError } = useGetThreadMessagesQuery(
+    { threadId: activeThreadId, resourceId: String(userId) },
+    { skip: !threadExists }
+  )
   const historyError = historyQueryError
     ? historyQueryError instanceof Error
       ? historyQueryError.message
@@ -42,31 +45,31 @@ export function useChatThreadMessages({ activeThreadId, refreshThreads }: ChatSe
     : null
 
   const lastThreadId = useRef(activeThreadId)
-  useEffect(() => {
-    if (lastThreadId.current !== activeThreadId) {
-      lastThreadId.current = activeThreadId
-      setMessages([])
-    }
-  }, [activeThreadId, setMessages])
+  // useEffect(() => {
+  //   if (lastThreadId.current !== activeThreadId) {
+  //     lastThreadId.current = activeThreadId
+  //     setMessages([])
+  //   }
+  // }, [activeThreadId, setMessages])
 
-  useEffect(() => {
-    if (
-      !historyError &&
-      status === 'ready' &&
-      history &&
-      history.length > 0 &&
-      messages.length === 0
-    ) {
-      setMessages(history as UIMessage[])
-    }
-  }, [history, historyError, setMessages, status, messages.length])
+  // useEffect(() => {
+  //   if (
+  //     !historyError &&
+  //     status === 'ready' &&
+  //     history &&
+  //     history.length > 0 &&
+  //     messages.length === 0
+  //   ) {
+  //     setMessages(history as UIMessage[])
+  //   }
+  // }, [history, historyError, setMessages, status, messages.length])
 
-  useEffect(() => {
-    const wasBusy = prevStatus === 'submitted' || prevStatus === 'streaming'
-    if (wasBusy && status === 'ready' && messages.length > 0) {
-      refreshThreads()
-    }
-  }, [prevStatus, status, messages.length, refreshThreads])
+  // useEffect(() => {
+  //   const wasBusy = prevStatus === 'submitted' || prevStatus === 'streaming'
+  //   if (wasBusy && status === 'ready' && messages.length > 0) {
+  //     refreshThreads()
+  //   }
+  // }, [prevStatus, status, messages.length, refreshThreads])
 
   const sendMessage = useCallback(
     async (text: string) => {

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -14,7 +14,10 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { navigateToolInputSchema } from 'features/content-panel/chat/navigate-tool'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 import type { QueryParams } from 'types'
+
+export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
 
 async function chatFetchWithAuth(
   input: RequestInfo | URL,
@@ -36,36 +39,48 @@ async function chatFetchWithAuth(
   }
 }
 
-type ChatSessionArgs = { activeThreadId: string; userId: number | string | undefined }
+type ChatSessionArgs = {
+  threadId: string
+  userId: number | string | undefined
+  initialMessages: UIMessage[]
+  onFinished?: () => void
+}
 
-export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
+export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
   const setTimerange = useSetAtom(timerangeState)
   const setMapViewState = useSetMapCoordinates()
 
-  const transport = useMemo(
-    () =>
-      new DefaultChatTransport({
-        api: `${AGENT_BASE_URL}/chat`,
-        fetch: chatFetchWithAuth,
-        prepareSendMessagesRequest({ messages }) {
-          return {
-            body: {
-              messages: [messages[messages.length - 1]],
-              memory: {
-                resource: String(userId),
-                thread: activeThreadId,
-              },
+  const transport = useMemo(() => {
+    return new DefaultChatTransport({
+      api: `${AGENT_BASE_URL}/chat`,
+      fetch: chatFetchWithAuth,
+      prepareSendMessagesRequest({ messages }) {
+        return {
+          body: {
+            messages: [messages[messages.length - 1]],
+            memory: {
+              resource: String(userId),
+              thread: threadId,
             },
-          }
-        },
-      }),
-    [activeThreadId, userId]
-  )
+          },
+        }
+      },
+    })
+  }, [threadId, userId])
 
-  const { messages, sendMessage, status, error, addToolOutput, setMessages } = useChat<UIMessage>({
+  const {
+    messages,
+    sendMessage: sendMessageToSession,
+    status,
+    error,
+    addToolOutput,
+  } = useChat<UIMessage>({
+    id: threadId,
+    messages: initialMessages,
     transport,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    onFinish: () => onFinished?.(),
     async onToolCall({ toolCall }) {
       if (toolCall.toolName !== 'navigate') {
         return
@@ -94,11 +109,7 @@ export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
           setTimerange({ start, end })
         }
         if (latitude || longitude || zoom) {
-          setMapViewState({
-            latitude: latitude,
-            longitude: longitude,
-            zoom: zoom,
-          })
+          setMapViewState({ latitude, longitude, zoom })
         }
         reportNavigate({
           ok: true,
@@ -113,5 +124,19 @@ export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
     },
   })
 
-  return { messages, sendMessage, status, error, addToolOutput, setMessages }
+  const loading = status === 'submitted' || status === 'streaming'
+
+  // Inject the current map url as context so the agent knows the map state.
+  const sendMessage = useCallback(
+    async (text: string) => {
+      const trimmed = text.trim()
+      if (!trimmed || loading) return false
+      const content = `${trimmed}${MAP_URL_CONTEXT_PREFIX} ${window.location.href}]`
+      await sendMessageToSession({ text: content })
+      return true
+    },
+    [loading, sendMessageToSession]
+  )
+
+  return { messages, status, loading, error, sendMessage }
 }

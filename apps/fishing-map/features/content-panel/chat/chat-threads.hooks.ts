@@ -2,21 +2,25 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { useAtom } from 'jotai'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/chat-api'
-
-import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 
 const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThreadId'
 
+const activeThreadIdAtom = atomWithStorage<string>(
+  CHAT_ACTIVE_THREAD_KEY,
+  typeof crypto !== 'undefined' ? crypto.randomUUID() : '',
+  createJSONStorage<string>(() => sessionStorage),
+  { getOnInit: true }
+)
+
 export function useChatThreads() {
   const { t } = useTranslation()
   const userId = useSelector(selectUserId)
-  const [activeThreadId, setActiveThreadId] = useSessionStorage<string>(
-    CHAT_ACTIVE_THREAD_KEY,
-    crypto.randomUUID()
-  )
+  const [activeThreadId, setActiveThreadId] = useAtom(activeThreadIdAtom)
 
   const {
     data: threads = [],
@@ -53,17 +57,17 @@ export function useChatThreads() {
     setActiveThreadId(crypto.randomUUID())
   }, [setActiveThreadId])
 
-  const activeThread = useMemo(
-    () => threads.find((c) => c.id === activeThreadId) ?? null,
-    [threads, activeThreadId]
-  )
+  // const activeThread = useMemo(
+  //   () => threads.find((c) => c.id === activeThreadId) ?? null,
+  //   [threads, activeThreadId]
+  // )
 
   return {
     threads,
     threadsError,
     threadsLoading,
     refreshThreads,
-    activeThread,
+    // activeThread,
     activeThreadId,
     setActiveThreadId,
     deleteThread,

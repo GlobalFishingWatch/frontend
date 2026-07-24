@@ -1,17 +1,19 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
 import type { TFunction } from 'i18next'
+import { useGetThreadMessagesQuery, useGetThreadsQuery } from 'queries/chat-api'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
 import {
   MAP_URL_CONTEXT_PREFIX,
-  useChatThreadMessages,
-} from 'features/content-panel/chat/chat.hooks'
-import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
+  useChatSession,
+} from 'features/content-panel/chat/chat-session.hooks'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
+import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 
 import styles from './Chat.module.css'
 
@@ -137,13 +139,23 @@ function MessageParts({ message }: { message: UIMessage }) {
   )
 }
 
-function ChatSession() {
+function ChatSessionMessages({
+  threadId,
+  userId,
+  initialMessages,
+}: {
+  threadId: string
+  userId: number | string | undefined
+  initialMessages: UIMessage[]
+}) {
   const { t } = useTranslation()
-  const { activeThreadId, refreshThreads } = useChatThreads()
-  const { messages, loading, error, historyError, sendMessage } = useChatThreadMessages({
-    activeThreadId,
-    refreshThreads,
+
+  const { messages, loading, error, sendMessage } = useChatSession({
+    threadId,
+    userId,
+    initialMessages,
   })
+
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRowRef = useRef<HTMLDivElement>(null)
@@ -167,7 +179,8 @@ function ChatSession() {
   return (
     <Fragment>
       <div className={styles.messages} ref={scrollRef}>
-        {messages.length === 0 && !historyError && (
+        {loading && messages.length === 0 && <Spinner size="small" />}
+        {!loading && messages.length === 0 && (
           <p className={styles.empty}>{t((t) => t.common.assistantPlaceholder)}</p>
         )}
         {messages.map((m) => (
@@ -175,10 +188,8 @@ function ChatSession() {
             <MessageParts message={m} />
           </div>
         ))}
-        {(error || historyError) && (
-          <div className={cx(styles.message, styles.system, styles.error)}>
-            {error?.message ?? historyError}
-          </div>
+        {error && (
+          <div className={cx(styles.message, styles.system, styles.error)}>{error?.message}</div>
         )}
         {loading && <Spinner size="small" />}
       </div>
@@ -205,6 +216,35 @@ function ChatSession() {
         />
       </div>
     </Fragment>
+  )
+}
+
+function ChatSession({ threadId }: { threadId: string }) {
+  const userId = useSelector(selectUserId)
+
+  const { data: threads = [] } = useGetThreadsQuery({ resourceId: String(userId) })
+  const threadExists = threads.some((thr) => thr.id === threadId)
+
+  const { data: historyMessages, isFetching: historyFetching } = useGetThreadMessagesQuery(
+    { threadId, resourceId: String(userId) },
+    { skip: !threadExists }
+  )
+
+  if (historyFetching) {
+    return (
+      <div className={styles.messages}>
+        <Spinner size="small" />
+      </div>
+    )
+  }
+
+  return (
+    <ChatSessionMessages
+      key={threadId}
+      threadId={threadId}
+      userId={userId}
+      initialMessages={(historyMessages as UIMessage[]) ?? []}
+    />
   )
 }
 

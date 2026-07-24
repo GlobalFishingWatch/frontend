@@ -13,7 +13,7 @@ function ChatContainer() {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { threadsError } = useChatThreads()
+  const { threadsError, activeThreadId } = useChatThreads()
 
   if (isGuestUser) {
     return (
@@ -33,7 +33,11 @@ function ChatContainer() {
   return (
     <div className={styles.chat}>
       <ChatHeader />
-      {threadsError ? <div className={styles.error}>{threadsError}</div> : <ChatSession />}
+      {threadsError ? (
+        <div className={styles.error}>{threadsError}</div>
+      ) : (
+        <ChatSession threadId={activeThreadId} />
+      )}
     </div>
   )
 }
