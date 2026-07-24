@@ -6,11 +6,15 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const tmp = path.join(__dirname, '..', 'dist', 'workers-tmp')
 const base = path.join(__dirname, '..', 'dist', 'workers')
 
-if (!fs.existsSync(base)) {
+if (!fs.existsSync(tmp)) {
   process.exit(0)
 }
+
+fs.rmSync(base, { recursive: true, force: true })
+fs.renameSync(tmp, base)
 
 const dirs = fs.readdirSync(base).filter((n) => {
   const p = path.join(base, n)

@@ -14,12 +14,7 @@ import {
   TAB_ID,
 } from 'features/user/auth-channel'
 import { selectLoginSource } from 'features/user/selectors/user.selectors'
-import {
-  fetchUserThunk,
-  logoutUserThunk,
-  setLoggedUser,
-  setLoginSource,
-} from 'features/user/user.slice'
+import { logoutUserThunk, setLoggedUser, setLoginSource } from 'features/user/user.slice'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,
@@ -37,7 +32,6 @@ import { getIsBrowser } from 'utils/dom'
 
 const IS_POPUP_KEY = 'isPopup'
 const IS_POPUP_VALUE = 'true'
-const SETTINGS_UPDATED_MESSAGE = 'gfw:settings-updated'
 
 export const getIsLoginPopup = () => {
   if (!getIsBrowser()) {
@@ -74,35 +68,6 @@ export function usePopupLogin() {
     // login with usePopupLoginCallback, broadcasts the session, and closes.
     window.open(loginUrl, 'SSO Login', `width=${width},height=${height},left=${left},top=${top}`)
   }
-}
-
-export function useRedirectToSettingsPage() {
-  const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    if (!getIsBrowser()) {
-      return
-    }
-    const settingsOrigin = new URL(GFWAPI.getConfig().baseUrl).origin
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== settingsOrigin || event.data?.type !== SETTINGS_UPDATED_MESSAGE) {
-        return
-      }
-      dispatch(fetchUserThunk())
-    }
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [dispatch])
-
-  return useCallback((e?: React.MouseEvent) => {
-    if (!getIsBrowser()) {
-      return
-    }
-    e?.preventDefault()
-    e?.stopPropagation()
-    const settingsUrl = GFWAPI.getSettingsUrl(window.location.href)
-    window.open(settingsUrl, '_blank')
-  }, [])
 }
 
 export function useLoginPopupListener() {
