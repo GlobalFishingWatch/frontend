@@ -2,10 +2,9 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
-import type { DateTimeUnit } from 'luxon'
 
+import { stickToClosestInterval } from '@globalfishingwatch/data-transforms'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { usePrevious } from '@globalfishingwatch/react-hooks'
 import { EVENT_SOURCE } from '@globalfishingwatch/timebar'
 
@@ -98,25 +97,7 @@ export const useSetTimerange = () => {
     (timerange: TimeRange, stickToInterval = true) => {
       let stuckTimerange = timerange
       if (stickToInterval) {
-        const interval = getFourwingsInterval(
-          timerange.start,
-          timerange.end
-        ).toLowerCase() as DateTimeUnit
-        const stickToClosestInterval = (date: string, unit: DateTimeUnit) => {
-          const mDate = getUTCDateTime(date)
-          const mStartOf = mDate.startOf(unit)
-          const mEndOf = mDate.endOf(unit).plus({ millisecond: 1 })
-          const startDeltaMs = mDate.valueOf() - mStartOf.valueOf()
-          const endDeltaMs = mEndOf.valueOf() - mDate.valueOf()
-          return (startDeltaMs > endDeltaMs ? mEndOf : mStartOf).toISO() as string
-        }
-        const newStart = stickToClosestInterval(timerange.start, interval)
-        let newEnd = stickToClosestInterval(timerange.end, interval)
-        if (newStart === newEnd) {
-          newEnd = getUTCDateTime(newStart)
-            .plus({ [interval]: 1 })
-            .toISO() as string
-        }
+        let { start: newStart, end: newEnd } = stickToClosestInterval(timerange)
         const minEnd = getUTCDateTime(newStart).plus({ hours: 24 })
         if (timeMode !== 'realTime' && getUTCDateTime(newEnd) < minEnd) {
           newEnd = minEnd.toISO() as string
@@ -143,6 +124,7 @@ export const useSetTimerange = () => {
       hintsDismissed?.changingTheTimeRange,
       isWorkspaceMapReady,
       setAtomTimerange,
+      timeMode,
     ]
   )
 

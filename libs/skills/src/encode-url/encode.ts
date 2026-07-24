@@ -7,10 +7,9 @@ import {
   RFMO_DATAVIEW_INSTANCE_ID,
 } from '@fishing-map/config'
 
+import { getUTCDate, stickToClosestInterval } from '@globalfishingwatch/data-transforms'
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
-import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { resolveDataviewSlug } from './config'
 import { getLayerInfo } from './dictionary'
@@ -40,11 +39,11 @@ const withSnappedTimeRange = (state: MapState): MapState => {
   if (!Number.isFinite(start) || !Number.isFinite(end)) {
     return state
   }
-  const interval = getFourwingsInterval(start, end)
+  const { start: newStart, end: newEnd } = stickToClosestInterval({ start, end })
   return {
     ...state,
-    start: new Date(getDateInIntervalResolution(start, interval)).toISOString(),
-    end: new Date(getDateInIntervalResolution(end, interval)).toISOString(),
+    start: getUTCDate(newStart).toISOString(),
+    end: getUTCDate(newEnd).toISOString(),
   }
 }
 
