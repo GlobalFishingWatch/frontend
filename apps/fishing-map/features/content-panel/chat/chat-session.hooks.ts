@@ -12,7 +12,7 @@ import { AGENT_BASE_URL } from 'queries/chat-api'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import { navigateToolInputSchema } from 'features/content-panel/chat/navigate-tool'
-import { useMapSetViewState } from 'features/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import type { QueryParams } from 'types'
 
@@ -41,7 +41,7 @@ type ChatSessionArgs = { activeThreadId: string; userId: number | string | undef
 export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
   const setTimerange = useSetAtom(timerangeState)
-  const setMapViewState = useMapSetViewState()
+  const setMapViewState = useSetMapCoordinates()
 
   const transport = useMemo(
     () =>
@@ -93,11 +93,11 @@ export function useChatSession({ activeThreadId, userId }: ChatSessionArgs) {
         if (start && end) {
           setTimerange({ start, end })
         }
-        if (latitude && longitude && zoom) {
+        if (latitude || longitude || zoom) {
           setMapViewState({
-            latitude: Number(latitude),
-            longitude: Number(longitude),
-            zoom: Number(zoom),
+            latitude: latitude,
+            longitude: longitude,
+            zoom: zoom,
           })
         }
         reportNavigate({
