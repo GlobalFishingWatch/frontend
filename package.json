@@ -55,8 +55,6 @@
     "@mapbox/geojson-area": "0.2.2",
     "@mapbox/point-geometry": "^1.1.0",
     "@mapbox/vector-tile": "2.0.4",
-    "@mastra/client-js": "0.17.2",
-    "@mastra/core": "0.24.9",
     "@math.gl/core": "4.1.0",
     "@math.gl/web-mercator": "4.1.0",
     "@mui/icons-material": "9.0.1",
