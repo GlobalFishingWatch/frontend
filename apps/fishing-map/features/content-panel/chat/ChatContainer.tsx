@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
 import ChatHeader from 'features/content-panel/chat/ChatHeader'
 import ChatSession from 'features/content-panel/chat/ChatSession'
 import LoginLink from 'features/user/LoginLink'
@@ -13,7 +12,6 @@ function ChatContainer() {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { threadsError, activeThreadId } = useChatThreads()
 
   if (isGuestUser) {
     return (
@@ -33,11 +31,7 @@ function ChatContainer() {
   return (
     <div className={styles.chat}>
       <ChatHeader />
-      {threadsError ? (
-        <div className={styles.error}>{threadsError}</div>
-      ) : (
-        <ChatSession threadId={activeThreadId} />
-      )}
+      <ChatSession />
     </div>
   )
 }

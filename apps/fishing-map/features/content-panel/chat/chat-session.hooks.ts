@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
 import {
@@ -7,7 +8,7 @@ import {
   type UIMessage,
 } from 'ai'
 import { useSetAtom } from 'jotai'
-import { AGENT_BASE_URL } from 'queries/chat-api'
+import { AGENT_BASE_URL, chatApi } from 'queries/chat-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
@@ -48,6 +49,7 @@ type ChatSessionArgs = {
 
 export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
+  const dispatch = useDispatch()
   const setTimerange = useSetAtom(timerangeState)
   const setMapViewState = useSetMapCoordinates()
 
@@ -80,7 +82,10 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
     messages: initialMessages,
     transport,
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    onFinish: () => onFinished?.(),
+    onFinish: () => {
+      dispatch(chatApi.util.invalidateTags([{ type: 'ChatThreadMessages', id: threadId }]))
+      onFinished?.()
+    },
     async onToolCall({ toolCall }) {
       if (toolCall.toolName !== 'navigate') {
         return

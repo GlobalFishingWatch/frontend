@@ -19,7 +19,7 @@ type AgentThread = {
 export const chatApi = createApi({
   reducerPath: 'chatApi',
   baseQuery: threadsQuery,
-  tagTypes: ['ChatThread'],
+  tagTypes: ['ChatThread', 'ChatThreadMessages'],
   endpoints: (builder) => ({
     getThreads: builder.query<AgentThread[], { resourceId: string }>({
       query: ({ resourceId }) => ({
@@ -47,6 +47,9 @@ export const chatApi = createApi({
         const data = result.data as { uiMessages?: UIMessage[] | null }
         return { data: data.uiMessages ?? [] }
       },
+      providesTags: (_result, _error, { threadId }) => [
+        { type: 'ChatThreadMessages', id: threadId },
+      ],
     }),
     deleteThread: builder.mutation<boolean, { threadId: string; resourceId: string }>({
       queryFn: async ({ threadId, resourceId }, api) => {

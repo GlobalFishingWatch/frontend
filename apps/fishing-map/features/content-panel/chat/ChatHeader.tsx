@@ -3,13 +3,44 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
 
-import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
+import { useChatThreads, useThreadLoading } from 'features/content-panel/chat/chat-threads.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
 import { getTimeAgo } from 'utils/dates'
 
 import styles from './Chat.module.css'
+
+function ChatHistoryItem({
+  thread,
+  active,
+  onSelect,
+  onDelete,
+}: {
+  thread: { id: string; title: string; updatedAt: string }
+  active: boolean
+  onSelect: () => void
+  onDelete: () => void
+}) {
+  const { t } = useTranslation()
+  const loading = useThreadLoading(thread.id)
+
+  return (
+    <li className={cx(styles.historyItem, { [styles.historyActive]: active })}>
+      <button type="button" className={styles.historyButton} onClick={onSelect}>
+        <span className={styles.historyTitle}>{thread.title || t((t) => t.common.assistant)}</span>
+        <span className={styles.historyTime}>{getTimeAgo(getUTCDateTime(thread.updatedAt), t)}</span>
+      </button>
+      {loading && <Spinner size="tiny" />}
+      <IconButton
+        icon="delete"
+        size="small"
+        tooltip={t((t) => t.common.delete)}
+        onClick={onDelete}
+      />
+    </li>
+  )
+}
 
 function ChatHeader() {
   const { t } = useTranslation()
@@ -43,34 +74,16 @@ function ChatHeader() {
                 <li className={styles.historyEmpty}>{t((t) => t.common.noConversations)}</li>
               )}
               {threads.map((c) => (
-                <li
+                <ChatHistoryItem
                   key={c.id}
-                  className={cx(styles.historyItem, {
-                    [styles.historyActive]: c.id === activeThreadId,
-                  })}
-                >
-                  <button
-                    type="button"
-                    className={styles.historyButton}
-                    onClick={() => {
-                      setActiveThreadId(c.id)
-                      setHistoryOpen(false)
-                    }}
-                  >
-                    <span className={styles.historyTitle}>
-                      {c.title || t((t) => t.common.assistant)}
-                    </span>
-                    <span className={styles.historyTime}>
-                      {getTimeAgo(getUTCDateTime(c.updatedAt), t)}
-                    </span>
-                  </button>
-                  <IconButton
-                    icon="delete"
-                    size="small"
-                    tooltip={t((t) => t.common.delete)}
-                    onClick={() => deleteThread(c.id)}
-                  />
-                </li>
+                  thread={c}
+                  active={c.id === activeThreadId}
+                  onSelect={() => {
+                    setActiveThreadId(c.id)
+                    setHistoryOpen(false)
+                  }}
+                  onDelete={() => deleteThread(c.id)}
+                />
               ))}
             </ul>
           }

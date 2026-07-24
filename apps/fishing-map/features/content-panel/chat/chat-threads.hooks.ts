@@ -1,26 +1,41 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/chat-api'
 
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
 
-const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThreadId'
+const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThread'
 
-const activeThreadIdAtom = atomWithStorage<string>(
+type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
+
+const activeThreadAtom = atomWithStorage<ActiveThread>(
   CHAT_ACTIVE_THREAD_KEY,
-  typeof crypto !== 'undefined' ? crypto.randomUUID() : '',
-  createJSONStorage<string>(() => sessionStorage),
+  { id: typeof crypto !== 'undefined' ? crypto.randomUUID() : '', isNew: true, isLoading: false },
+  createJSONStorage<ActiveThread>(() => sessionStorage),
   { getOnInit: true }
 )
+
+export function useThreadLoading(threadId: string) {
+  const activeThread = useAtomValue(activeThreadAtom)
+  return activeThread.id === threadId && activeThread.isLoading
+}
+
+export function useSetThreadLoading(threadId: string, loading: boolean) {
+  const setActiveThread = useSetAtom(activeThreadAtom)
+  useEffect(() => {
+    setActiveThread((prev) => (prev.id === threadId ? { ...prev, isLoading: loading } : prev))
+  }, [threadId, loading, setActiveThread])
+}
 
 export function useChatThreads() {
   const { t } = useTranslation()
   const userId = useSelector(selectUserId)
-  const [activeThreadId, setActiveThreadId] = useAtom(activeThreadIdAtom)
+  const [activeThread, setActiveThread] = useAtom(activeThreadAtom)
+  const { id: activeThreadId, isNew: isNewThread } = activeThread
 
   const {
     data: threads = [],
@@ -40,7 +55,7 @@ export function useChatThreads() {
   const deleteThread = useCallback(
     (id: string) => {
       if (id === activeThreadId) {
-        setActiveThreadId(crypto.randomUUID())
+        setActiveThread({ id: crypto.randomUUID(), isNew: true, isLoading: false })
       }
       deleteThreadMutation({ threadId: id, resourceId: String(userId) })
         .unwrap()
@@ -50,26 +65,33 @@ export function useChatThreads() {
           }
         })
     },
-    [activeThreadId, deleteThreadMutation, userId, setActiveThreadId, t]
+    [activeThreadId, deleteThreadMutation, userId, setActiveThread, t]
   )
 
   const newThread = useCallback(() => {
-    setActiveThreadId(crypto.randomUUID())
-  }, [setActiveThreadId])
+    setActiveThread({ id: crypto.randomUUID(), isNew: true, isLoading: false })
+  }, [setActiveThread])
 
-  // const activeThread = useMemo(
-  //   () => threads.find((c) => c.id === activeThreadId) ?? null,
-  //   [threads, activeThreadId]
-  // )
+  const setActiveThreadId = useCallback(
+    (id: string) => {
+      setActiveThread({ id, isNew: false, isLoading: false })
+    },
+    [setActiveThread]
+  )
+
+  const markThreadStarted = useCallback(() => {
+    setActiveThread((prev) => ({ ...prev, isNew: false }))
+  }, [setActiveThread])
 
   return {
     threads,
     threadsError,
     threadsLoading,
     refreshThreads,
-    // activeThread,
     activeThreadId,
+    isNewThread,
     setActiveThreadId,
+    markThreadStarted,
     deleteThread,
     newThread,
   }
