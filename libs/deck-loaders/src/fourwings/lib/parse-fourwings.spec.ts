@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
+import { getTimeRangeKey } from '../helpers/time'
 import { getFourwingsValueTimestamp } from '../helpers/timestamps'
 
 import { createHeatmapPbfBuffer, createMockTileBBox } from './fourwings-test-fixtures'
@@ -105,6 +106,32 @@ describe('parse-fourwings', () => {
         )
       )
       expect(expectedTimestamps).toEqual([0, 3_600_000])
+    })
+
+    it('should strip the uint64 no-data value even when noDataValue is missing', () => {
+      // hand rolled: the pbf writer refuses to encode 2 ** 64 - 1, only the reader sees it.
+      // packed field 1, then cellNum 0, startAbs 0, endAbs 1, uint64 max, 20
+      const buffer = new Uint8Array([
+        0x0a, 0x0e, 0x00, 0x00, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01,
+        0x14,
+      ]).buffer
+
+      const result = parseFourwings(buffer, {
+        fourwings: {
+          cols: [113],
+          rows: [53],
+          bufferedStartDate: 0,
+          interval: 'HOUR',
+          sublayers: 1,
+          buffersLength: [1024],
+          tile: createMockTileBBox(),
+          initialTimeRange: { start: 0, end: 2 * 3_600_000 },
+        } as any,
+      })
+
+      expect(result[0].properties.values[0][0]).toBeUndefined()
+      expect(result[0].properties.values[0][1]).toBe(20)
+      expect(result[0].properties.initialValues[getTimeRangeKey(0, 2)][0]).toBe(20)
     })
   })
 })
