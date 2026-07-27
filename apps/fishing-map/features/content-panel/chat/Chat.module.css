@@ -162,6 +162,17 @@
   color: var(--color-white);
 }
 
+.feedback {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-XS);
+}
+
+.feedbackActive {
+  color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}
+
 .toolChip {
   font: var(--font-XS);
   color: var(--color-secondary-blue);

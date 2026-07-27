@@ -7,7 +7,9 @@ import type { TFunction } from 'i18next'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
+import type { FeedbackRating } from 'features/content-panel/chat/chat-session.hooks'
 import {
+  getFeedbackState,
   MAP_URL_CONTEXT_PREFIX,
   useChatSession,
 } from 'features/content-panel/chat/chat-session.hooks'
@@ -166,6 +168,39 @@ function MessageParts({ message }: { message: UIMessage }) {
   )
 }
 
+function MessageFeedback({
+  rating,
+  onRate,
+}: {
+  rating?: FeedbackRating
+  onRate: (rating: FeedbackRating, reason?: string) => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <div className={styles.feedback}>
+      <IconButton
+        icon="thumbs-up"
+        size="small"
+        className={cx({ [styles.feedbackActive]: rating === 'up' })}
+        tooltip={t((t) => t.chat.feedbackUp)}
+        onClick={() => onRate('up')}
+      />
+      <IconButton
+        icon="thumbs-down"
+        size="small"
+        className={cx({ [styles.feedbackActive]: rating === 'down' })}
+        tooltip={t((t) => t.chat.feedbackDown)}
+        onClick={() => {
+          // ponytail: native prompt, swap for a textarea popover if it needs styling
+          const reason = window.prompt(t((t) => t.chat.feedbackDownReason))
+          if (reason === null) return
+          onRate('down', reason)
+        }}
+      />
+    </div>
+  )
+}
+
 function ChatSessionMessages({
   threadId,
   userId,
@@ -181,13 +216,15 @@ function ChatSessionMessages({
 }) {
   const { t } = useTranslation()
 
-  const { messages, loading, error, sendMessage } = useChatSession({
+  const { messages, loading, error, sendMessage, sendFeedback } = useChatSession({
     threadId,
     userId,
     initialMessages,
     onFinished,
   })
   useSetThreadLoading(threadId, loading)
+
+  const { ratings, questionIds, hiddenIds } = getFeedbackState(messages)
 
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -217,11 +254,26 @@ function ChatSessionMessages({
         {!loading && messages.length === 0 && (
           <p className={styles.empty}>{t((t) => t.common.assistantPlaceholder)}</p>
         )}
-        {messages.map((m) => (
-          <div key={m.id} className={cx(styles.message, roleClass(m.role))}>
-            <MessageParts message={m} />
-          </div>
-        ))}
+        {messages.map((m) =>
+          hiddenIds.has(m.id) ? null : (
+            <div key={m.id} className={cx(styles.message, roleClass(m.role))}>
+              <MessageParts message={m} />
+              {m.role === 'assistant' && !loading && (
+                <MessageFeedback
+                  rating={ratings[m.id]}
+                  onRate={(rating, reason) =>
+                    sendFeedback({
+                      answerId: m.id,
+                      questionId: questionIds[m.id],
+                      rating,
+                      reason,
+                    })
+                  }
+                />
+              )}
+            </div>
+          )
+        )}
         {error && (
           <div className={cx(styles.message, styles.system, styles.error)}>{error?.message}</div>
         )}

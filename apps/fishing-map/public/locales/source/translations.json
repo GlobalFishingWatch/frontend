@@ -139,6 +139,9 @@
   },
   "chat": {
     "couldNotDeleteConversation": "Could not delete conversation",
+    "feedbackDown": "This answer was not helpful",
+    "feedbackDownReason": "What was wrong with this answer?",
+    "feedbackUp": "This answer was helpful",
     "skillAreas": "Finding area ids",
     "skillFilters": "Adjusting filters",
     "skillLayers": "Choosing the right layers",

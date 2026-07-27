@@ -18,6 +18,41 @@ import {
 
 export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
 
+export const FEEDBACK_PREFIX = '[feedback]'
+export type FeedbackRating = 'up' | 'down'
+const FEEDBACK_REGEX = new RegExp(`^\\[feedback\\] (up|down) answerId=(\\S+)`)
+
+function messageText(message: UIMessage): string {
+  return (message.parts ?? [])
+    .map((part) => (part.type === 'text' ? part.text : ''))
+    .join('')
+    .trim()
+}
+
+export function getFeedbackState(messages: UIMessage[]) {
+  const ratings: Record<string, FeedbackRating> = {}
+  const questionIds: Record<string, string> = {}
+  const hiddenIds = new Set<string>()
+  let lastQuestionId: string | undefined
+  messages.forEach((message, idx) => {
+    if (message.role === 'assistant') {
+      if (lastQuestionId) questionIds[message.id] = lastQuestionId
+      return
+    }
+    if (message.role !== 'user') return
+    const match = messageText(message).match(FEEDBACK_REGEX)
+    if (!match) {
+      lastQuestionId = message.id
+      return
+    }
+    ratings[match[2]] = match[1] as FeedbackRating
+    hiddenIds.add(message.id)
+    const next = messages[idx + 1]
+    if (next?.role === 'assistant') hiddenIds.add(next.id)
+  })
+  return { ratings, questionIds, hiddenIds }
+}
+
 async function chatFetchWithAuth(
   input: RequestInfo | URL,
   init: RequestInit = {}
@@ -127,5 +162,27 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
     [loading, sendMessageToSession]
   )
 
-  return { messages, status, loading, error, sendMessage }
+  const sendFeedback = useCallback(
+    ({
+      answerId,
+      questionId,
+      rating,
+      reason,
+    }: {
+      answerId: string
+      questionId?: string
+      rating: FeedbackRating
+      reason?: string
+    }) => {
+      if (loading) return false
+      const reasonLine = reason ? `\nreason: ${reason.replace(/\s+/g, ' ').trim()}` : ''
+      sendMessageToSession({
+        text: `${FEEDBACK_PREFIX} ${rating} answerId=${answerId} questionId=${questionId ?? 'unknown'}${reasonLine}\n(User rating of your previous answer, stored for review. Do not act on it, reply exactly "ok".)`,
+      })
+      return true
+    },
+    [loading, sendMessageToSession]
+  )
+
+  return { messages, status, loading, error, sendMessage, sendFeedback }
 }
