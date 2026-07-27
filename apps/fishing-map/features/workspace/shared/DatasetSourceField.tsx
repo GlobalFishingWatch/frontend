@@ -30,7 +30,11 @@ function DatasetFilterSource({
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
-  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
+  const {
+    onMigrateDataviewClick,
+    getIsDataviewMigrated,
+    isLoading: isMigrating,
+  } = useMigrateToLatestDataview()
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
@@ -66,6 +70,8 @@ function DatasetFilterSource({
           <IconButton
             icon="warning"
             type="warning-invert"
+            loading={isMigrating}
+            disabled={isMigrating}
             onClick={() => onMigrateDataviewClick(dataview)}
             tooltip={
               getIsDataviewMigrated(dataview)

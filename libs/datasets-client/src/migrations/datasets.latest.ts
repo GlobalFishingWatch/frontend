@@ -10,9 +10,9 @@ export const LATEST_DATASETS_VMS: Record<
     presence: 'public-brazil-opentuna-presence:v20210311' as const, // Not updated in pipe4
   },
   chl: {
-    identity: 'public-vms-chl-vessel-identity:v4.1' as const,
+    identity: 'public-vms-chl-vessel-identity:v4.0' as const,
     fishing: 'public-vms-chl-fishing-effort:v4.1' as const,
-    presence: 'public-vms-chl-presence:v4.1' as const,
+    presence: 'public-vms-chl-presence:v4.0' as const,
   },
   plw: {
     identity: 'public-vms-plw-vessel-identity:v4.0' as const,
