@@ -147,7 +147,9 @@
     "thinking": "Thinking",
     "toolBash": "Running command",
     "toolLoadSkill": "Loading skill",
-    "toolNavigate": "Adjusting view",
+    "toolNavigate": "",
+    "toolNavigateBack": "Go back to this view",
+    "toolNavigation": "Navigated to view",
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"

@@ -6,15 +6,15 @@ import {
   lastAssistantMessageIsCompleteWithToolCalls,
   type UIMessage,
 } from 'ai'
-import { useSetAtom } from 'jotai'
 import { AGENT_BASE_URL } from 'queries/chat-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
-import { navigateToolInputSchema } from 'features/content-panel/chat/navigate-tool'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { timerangeState } from 'features/timebar/timebar.hooks'
-import type { QueryParams } from 'types'
+import {
+  getNavigateToolLinkProps,
+  navigateToolInputSchema,
+  useApplyNavigateToolMapState,
+} from 'features/content-panel/chat/navigate-tool'
 
 export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
 
@@ -47,8 +47,7 @@ type ChatSessionArgs = {
 
 export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
-  const setTimerange = useSetAtom(timerangeState)
-  const setMapViewState = useSetMapCoordinates()
+  const applyNavigateMapState = useApplyNavigateToolMapState()
 
   const transport = useMemo(() => {
     return new DefaultChatTransport({
@@ -97,19 +96,10 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
       }
       const { navigation, path } = parsed.data
       try {
-        await routerNavigate({
-          to: navigation.to,
-          params: navigation.params ?? {},
-          search: { ...navigation.search, sidePanelContent: 'chat' },
-        } as unknown as Parameters<typeof routerNavigate>[0])
-
-        const { start, end, latitude, longitude, zoom } = (navigation.search ?? {}) as QueryParams
-        if (start && end) {
-          setTimerange({ start, end })
-        }
-        if (latitude || longitude || zoom) {
-          setMapViewState({ latitude, longitude, zoom })
-        }
+        await routerNavigate(
+          getNavigateToolLinkProps(navigation) as unknown as Parameters<typeof routerNavigate>[0]
+        )
+        applyNavigateMapState(navigation.search)
         reportNavigate({
           ok: true,
           detail: `Navigated via router to path: ${path ?? ''}`,

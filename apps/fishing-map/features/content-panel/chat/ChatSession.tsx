@@ -13,7 +13,7 @@ import styles from './Chat.module.css'
 
 function ChatSession() {
   const userId = useSelector(selectUserId)
-  const { activeThreadId, activeThreadIsNew, markThreadStarted } = useChatThreads()
+  const { activeThreadId, activeThreadIsNew, markThreadStarted, threadsLoading } = useChatThreads()
 
   const [startedThreadId, setStartedThreadId] = useState<string | null>(null)
   const skipHistory = activeThreadIsNew || startedThreadId === activeThreadId
@@ -27,7 +27,7 @@ function ChatSession() {
     { skip: skipHistory }
   )
 
-  if (!skipHistory && (historyLoading || historyFetching)) {
+  if (threadsLoading || (!skipHistory && (historyLoading || historyFetching))) {
     return (
       <div className={styles.messages}>
         <Spinner size="small" />

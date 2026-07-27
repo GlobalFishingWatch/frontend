@@ -32,6 +32,7 @@
   flex-direction: column;
   gap: var(--space-S);
   padding: var(--space-M);
+  background: var(--color-background);
 }
 
 .empty {
@@ -43,7 +44,9 @@
   max-width: 85%;
   padding: var(--space-S) var(--space-SM);
   font: var(--font-S);
+  line-height: 1.5;
   border-radius: var(--border-radius-1);
+  border: var(--border);
 }
 
 .message strong,
@@ -59,11 +62,84 @@
   margin-top: var(--space-S);
 }
 
+.message h1,
+.message h2,
+.message h3,
+.message h4 {
+  font: var(--font-S-bold);
+  line-height: 1.5;
+}
+
+.message ol,
+.message ul {
+  padding-left: var(--space-M);
+  list-style: revert;
+}
+
+.message li + li {
+  margin-top: var(--space-XS);
+}
+
+.message code {
+  font-family: monospace;
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  background: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
+}
+
+.message pre {
+  overflow-x: auto;
+  padding: var(--space-XS) var(--space-S);
+  background: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
+}
+
+.message pre code {
+  padding: 0;
+  background: none;
+}
+
+.message hr {
+  border: none;
+  border-top: var(--border);
+}
+
+.message blockquote {
+  border-left: 2px solid var(--color-terthiary-blue);
+  color: var(--color-secondary-blue);
+}
+
+.message table {
+  border-collapse: collapse;
+  font: var(--font-XS);
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.message th,
+.message td {
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+  padding: var(--space-XS) var(--space-S);
+}
+
+.message th {
+  font-weight: bold;
+  color: var(--color-primary-blue);
+  border-bottom: var(--border);
+}
+
+.message tbody tr + tr td {
+  border-top: var(--border);
+}
+
 .user {
   align-self: flex-end;
-  background-color: var(--color-background);
   color: var(--color-primary-blue);
   white-space: pre-wrap;
+  background: var(--color-white);
   border-end-end-radius: 0;
 }
 
@@ -91,6 +167,19 @@
   color: var(--color-secondary-blue);
 }
 
+.toolLink {
+  margin-top: var(--space-S);
+  display: inline-block;
+}
+
+.toolLinkBtn {
+  text-transform: uppercase;
+  padding: var(--space-XS) var(--space-S);
+  background: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
+  cursor: pointer;
+}
+
 .thinking {
   font: var(--font-XS);
   color: var(--color-secondary-blue);
@@ -98,15 +187,32 @@
 
 .thinking summary {
   cursor: pointer;
+  list-style: none;
+  padding-top: var(--space-XS);
+  border-radius: var(--border-radius-0);
+  display: inline-block;
+}
+
+.thinking summary::-webkit-details-marker {
+  display: none;
 }
 
 .thinkingBlock {
   margin-top: var(--space-XS);
   max-height: 20rem;
   overflow-y: auto;
-  padding: var(--space-XS);
+  padding: var(--space-S) var(--space-SM);
+  line-height: 1.5;
   background-color: var(--color-terthiary-blue);
   border-radius: var(--border-radius-0);
+}
+
+.thinkingBlock > * {
+  margin-block: 0;
+}
+
+.thinkingBlock > * + * {
+  margin-top: var(--space-S);
 }
 
 .loginGate {

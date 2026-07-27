@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from '@tanstack/react-router'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
 import type { TFunction } from 'i18next'
@@ -11,6 +12,11 @@ import {
   useChatSession,
 } from 'features/content-panel/chat/chat-session.hooks'
 import { useSetThreadLoading } from 'features/content-panel/chat/chat-threads.hooks'
+import {
+  getNavigateToolLinkProps,
+  navigateToolInputSchema,
+  useApplyNavigateToolMapState,
+} from 'features/content-panel/chat/navigate-tool'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 
 import styles from './Chat.module.css'
@@ -85,6 +91,26 @@ function toolDetail(t: TFunction, input: unknown): string | undefined {
   return match ? skillResourceLabel(t, match) : undefined
 }
 
+function NavigateToolLink({ input }: { input: unknown }) {
+  const { t } = useTranslation()
+  const applyMapState = useApplyNavigateToolMapState()
+  const parsed = navigateToolInputSchema.safeParse(input)
+  if (!parsed.success) return null
+  const { navigation } = parsed.data
+  return (
+    <Link
+      {...(getNavigateToolLinkProps(navigation) as any)}
+      onClick={() => applyMapState(navigation.search)}
+    >
+      {({ isActive }) => (
+        <span className={cx(styles.toolLink, { [styles.toolLinkBtn]: !isActive })}>
+          {isActive ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack)}
+        </span>
+      )}
+    </Link>
+  )
+}
+
 function MessageParts({ message }: { message: UIMessage }) {
   const { t } = useTranslation()
   const parts = message.parts ?? []
@@ -117,8 +143,11 @@ function MessageParts({ message }: { message: UIMessage }) {
           )
         }
         if (isToolUIPart(part)) {
-          if (idx !== lastToolIdx) return null
           const name = getToolName(part)
+          if (name === 'navigate') {
+            return <NavigateToolLink key={idx} input={part.input} />
+          }
+          if (idx !== lastToolIdx) return null
           const detail = toolDetail(t, part.input)
           const action = detail ?? toolActionLabel(t, name)
           const stateLabel = toolStateLabel(t, part.state)
