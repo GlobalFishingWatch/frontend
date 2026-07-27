@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import cx from 'classnames'
-import suncalc from 'suncalc'
+import * as suncalc from 'suncalc'
 
 import { Locale } from '@globalfishingwatch/api-types'
 
@@ -74,25 +74,34 @@ export function SolarStatus({
 
     const date = new Date(timestamp)
     const times = getTimes(date, lat, lon)
-    const nDawn = times.nauticalDawn.getTime()
-    const sRise = times.sunrise.getTime()
-    const sSet = times.sunset.getTime()
-    const nDusk = times.nauticalDusk.getTime()
-
     const labels = STATUS_LABELS[locale] || STATUS_LABELS[Locale.en]
 
+    // Polar day/night: rise/set events don't happen at all
+    if (times.alwaysUp) {
+      return { label: labels.day, icon: 'solar-status-day' }
+    }
+    if (times.alwaysDown) {
+      return { label: labels.night, icon: 'solar-status-night' }
+    }
+
+    // ponytail: any missing event just falls through to night
+    const nDawn = times.nauticalDawn?.getTime()
+    const sRise = times.sunrise?.getTime()
+    const sSet = times.sunset?.getTime()
+    const nDusk = times.nauticalDusk?.getTime()
+
     // 1. Day: Sun is above the horizon
-    if (timestamp >= sRise && timestamp <= sSet) {
+    if (sRise !== undefined && sSet !== undefined && timestamp >= sRise && timestamp <= sSet) {
       return { label: labels.day, icon: 'solar-status-day' }
     }
 
     // 2. During Dawn: Between nautical dawn and sunrise
-    if (timestamp >= nDawn && timestamp < sRise) {
+    if (nDawn !== undefined && sRise !== undefined && timestamp >= nDawn && timestamp < sRise) {
       return { label: labels.dawn, icon: 'solar-status-dawn' }
     }
 
     // 3. During Dusk: Between sunset and nautical dusk
-    if (timestamp > sSet && timestamp <= nDusk) {
+    if (sSet !== undefined && nDusk !== undefined && timestamp > sSet && timestamp <= nDusk) {
       return { label: labels.dusk, icon: 'solar-status-dusk' }
     }
 
