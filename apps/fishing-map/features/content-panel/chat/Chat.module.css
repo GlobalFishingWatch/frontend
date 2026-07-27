@@ -32,7 +32,6 @@
   flex-direction: column;
   gap: var(--space-S);
   padding: var(--space-M);
-  background: var(--color-background);
 }
 
 .empty {
@@ -147,6 +146,7 @@
   align-self: flex-start;
   background-color: var(--color-off-white-0);
   border-end-start-radius: 0;
+  border: none;
 }
 
 .system {
