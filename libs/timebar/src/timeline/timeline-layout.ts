@@ -145,7 +145,7 @@ export const getUnitsPositions = (
     let x = outerScale(mUnit.toJSDate())
 
     for (let ui = 0; ui <= numUnits; ui += 1) {
-      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: step })
+      const mUnitNext = mUnit.plus({ [durationUnit]: step }) as DateTime
 
       const xNext = outerScale(mUnitNext.toJSDate())
 
