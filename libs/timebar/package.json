@@ -8,9 +8,13 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
       "default": "./dist/index.js"
     },
-    "./timebar-settings.css": "./dist/timebar-settings.css"
+    "./timebar-settings.css": {
+      "development": "./src/timebar-settings.css",
+      "default": "./dist/timebar-settings.css"
+    }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

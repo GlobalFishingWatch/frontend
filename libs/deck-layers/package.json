@@ -6,10 +6,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "development": "./src/index.ts",
       "default": "./dist/index.js"
     },
     "./draw": {
       "types": "./dist/draw.d.ts",
+      "development": "./src/draw.ts",
       "default": "./dist/draw.js"
     }
   },

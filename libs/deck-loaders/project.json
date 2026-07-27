@@ -62,37 +62,10 @@
       "continuous": true
     },
     "dist:workers": {
-      "dependsOn": ["build:workers"],
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist/workers"],
       "options": {
-        "command": "node libs/deck-loaders/scripts/clean-workers-output.mjs"
-      }
-    },
-    "build:workers": {
-      "dependsOn": ["^dist"],
-      "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
-      "options": {
-        "main": "libs/deck-loaders/src/**/workers/**.ts",
-        "esbuildOptions": {
-          "outdir": "libs/deck-loaders/dist/workers-tmp",
-          "format": "iife",
-          "define": {
-            "import.meta.env": "\"{}\""
-          }
-        },
-        "outputPath": "libs/deck-loaders/dist/workers-tmp",
-        "generateExportsField": true,
-        "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
-        "watch": false,
-        "target": "esnext",
-        "platform": "browser",
-        "deleteOutputPath": true,
-        "bundle": true,
-        "thirdParty": true,
-        "generatePackageJson": false,
-        "minify": true
+        "command": "node libs/deck-loaders/scripts/build-workers.mjs"
       }
     },
     "publish": {
