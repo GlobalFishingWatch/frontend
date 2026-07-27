@@ -1530,6 +1530,8 @@
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",
     "notFound": "Vessel group not found",
+    "notOwner": "Request owner to update this vessel group report",
+    "updateToViewFullReport": "Update your vessel group to view the full report",
     "user": "User Vessel Group"
   },
   "vesselGroups": {

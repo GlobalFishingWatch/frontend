@@ -114,6 +114,10 @@ build
 libs/api-client/src/pbf-decoders/vessels.gen.js
 libs/api-client/src/pbf-decoders/vessels.gen.d.ts
 
+# Same for `nx run deck-loaders:proto:generate`
+libs/deck-loaders/src/vessels/lib/vessel-track-proto.gen.js
+libs/deck-loaders/src/vessels/lib/vessel-track-proto.gen.d.ts
+
 # Tanstack build / generate output
 **/.output
 

@@ -1432,7 +1432,7 @@
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "copyOf": "Copy of",
-    "createNewGroup": "Upload new group",
+    "createNewGroup": "Create new group",
     "csvFile": "Upload a file",
     "csvLink": "Click to see an example CSV file",
     "csvPlaceholder": "Upload a CSV file with a {{field}} column",

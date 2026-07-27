@@ -113,28 +113,21 @@ function UserVesselGroups() {
 
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
-                    {isOutdated && !hasDeletedDatasets ? (
-                      <span>
+                    <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
+                      <span className={styles.workspaceLink} data-test="workspace-name">
                         {getHighlightedText(label as string, searchQuery, styles)}{' '}
-                        <span className={styles.secondary}>
+                        <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>
-                      </span>
-                    ) : (
-                      <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                        <span className={styles.workspaceLink} data-test="workspace-name">
-                          {getHighlightedText(label as string, searchQuery, styles)}{' '}
-                          <span className={cx(styles.secondary, styles.marginLeft)}>
-                            ({getVesselGroupVesselsCount(vesselGroup)})
-                          </span>
+                        {!isOutdated && !hasDeletedDatasets && (
                           <IconButton
                             icon="analysis"
                             className={styles.right}
                             tooltip={t((t) => t.vesselGroupReport.clickToSee)}
                           />
-                        </span>
-                      </VesselGroupReportLink>
-                    )}
+                        )}
+                      </span>
+                    </VesselGroupReportLink>
                     <div>
                       {isOutdated || hasDeletedDatasets ? (
                         <Button

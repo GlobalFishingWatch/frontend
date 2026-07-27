@@ -53,7 +53,11 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
-  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
+  const {
+    onMigrateDataviewClick,
+    getIsDataviewMigrated,
+    isLoading: isMigrating,
+  } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -180,6 +184,8 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             <IconButton
               icon="warning"
               type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+              loading={showDeprecatedWarning && isMigrating}
+              disabled={showDeprecatedWarning && isMigrating}
               onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
               tooltip={
                 showDeprecatedWarning

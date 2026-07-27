@@ -217,11 +217,13 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
       <div className={cx(styles.flex, styles.expand)}>
         <div className={cx(styles.flex)}>
           <ReportVesselsTablePinAll vessels={allFilteredVessels!} />
-          <VesselGroupAddButton
-            vesselsToResolve={vesselGroupVessels.ids}
-            datasetsToResolve={vesselGroupVessels.datasets}
-            onAddToVesselGroup={onAddToVesselGroup}
-          />
+          {!isVesselGroupReportLocation && (
+            <VesselGroupAddButton
+              vesselsToResolve={vesselGroupVessels.ids}
+              datasetsToResolve={vesselGroupVessels.datasets}
+              onAddToVesselGroup={onAddToVesselGroup}
+            />
+          )}
         </div>
         <Button
           // testId="download-vessel-table-report"
