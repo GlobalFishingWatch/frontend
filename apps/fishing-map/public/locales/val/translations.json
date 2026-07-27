@@ -1506,6 +1506,8 @@
     "linkDisabled": "crwdns83982:0crwdne83982:0",
     "linkToReport": "crwdns83744:0crwdne83744:0",
     "notFound": "crwdns83780:0crwdne83780:0",
+    "notOwner": "crwdns131653:0crwdne131653:0",
+    "updateToViewFullReport": "crwdns131655:0crwdne131655:0",
     "user": "crwdns83782:0crwdne83782:0"
   },
   "vesselGroups": {

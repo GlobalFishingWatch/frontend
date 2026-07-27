@@ -1506,6 +1506,8 @@
     "linkDisabled": "Ce groupe de navires doit être mis à jour avec les dernières données disponibles",
     "linkToReport": "Consultez le rapport de groupe de navires ici",
     "notFound": "Groupe de navires introuvable",
+    "notOwner": "Request owner to update this vessel group report",
+    "updateToViewFullReport": "Update your vessel group to view the full report",
     "user": "Groupe de navires utilisateur"
   },
   "vesselGroups": {
