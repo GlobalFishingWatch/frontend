@@ -5,16 +5,18 @@
   "projectType": "application",
   "tags": ["app"],
   "targets": {
-    "watch-deps": {
+    "types-watch": {
       "executor": "nx:run-commands",
+      "cache": false,
+      "continuous": true,
+      "dependsOn": ["^dist"],
       "options": {
-        "command": "nx watch --projects=fishing-map --includeDependencies -- nx run-many -t dist -p \\$NX_PROJECT_NAME --exclude=fishing-map"
-      },
-      "continuous": true
+        "command": "nx watch --projects=tag:lib -- nx run-many -t dist -p \\$NX_PROJECT_NAME"
+      }
     },
     "prepare-start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["^dist", "prepare-loaders", "i18n-labels:serve", "watch-deps"],
+      "dependsOn": ["^dist", "prepare-loaders", "i18n-labels:serve", "types-watch"],
       "options": {
         "command": "nx run fishing-map:i18n:watch"
       },
