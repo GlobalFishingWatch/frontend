@@ -15,7 +15,9 @@ type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
 const activeThreadAtom = atomWithStorage<ActiveThread>(
   CHAT_ACTIVE_THREAD_KEY,
   { id: typeof crypto !== 'undefined' ? crypto.randomUUID() : '', isNew: true, isLoading: false },
-  createJSONStorage<ActiveThread>(() => sessionStorage),
+  createJSONStorage<ActiveThread>(() =>
+    typeof window === 'undefined' ? (undefined as unknown as Storage) : sessionStorage
+  ),
   { getOnInit: true }
 )
 
