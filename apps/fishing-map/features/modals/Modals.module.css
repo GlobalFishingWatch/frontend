@@ -12,13 +12,6 @@
   padding: 0;
 }
 
-.workspaceGeneratorModal {
-  padding-top: 0;
-  height: 80vh;
-  max-height: 60rem;
-  padding-right: var(--space-M);
-}
-
 @media only screen and (width <= 800px) {
   .layerLibraryModal {
     height: unset;

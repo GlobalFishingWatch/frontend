@@ -5,15 +5,13 @@ import cx from 'classnames'
 
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Choice, IconButton, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { Choice, Logo, SubBrands } from '@globalfishingwatch/ui-components'
 
 import { WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectIsWorkspaceGeneratorEnabled } from 'features/debug/debug.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import { setModalOpen } from 'features/modals/modals.slice'
 import ReportTitle from 'features/reports/report-area/title/ReportTitle'
 import PortReportHeader from 'features/reports/report-port/PortReportHeader'
 import VesselGroupReportTitle from 'features/reports/report-vessel-group/VesselGroupReportTitle'
@@ -36,7 +34,6 @@ import { selectHasTimeModeEnabled } from 'features/sidebar/sidebar.selectors'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import TimeModeSelector from 'features/sidebar/TimeModeSelector'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
@@ -70,13 +67,11 @@ function SidebarHeader() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isClientHydrated = useIsClientHydrated()
-  const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
   const scrollElement = getScrollElement()
@@ -176,13 +171,6 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
-            {isGFWUser && isWorkspaceGeneratorEnabled && (
-              <IconButton
-                icon="magic"
-                size="medium"
-                onClick={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: true }))}
-              />
-            )}
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && !isTrackCorrectionOpen && <SaveWorkspaceButton />}

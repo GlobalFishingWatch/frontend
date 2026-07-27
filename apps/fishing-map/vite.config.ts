@@ -168,7 +168,6 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     ssr: {
-      noExternal: ['@mastra/core', '@mastra/client-js'],
       // Prevent browser-only packages from being bundled into the SSR output.
       external: [
         '@deck.gl-community/editable-layers',

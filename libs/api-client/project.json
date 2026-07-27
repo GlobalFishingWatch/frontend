@@ -34,7 +34,14 @@
       "executor": "@nx/js:tsc",
       "dependsOn": ["proto:generate"],
       "options": {
-        "clean": false
+        "clean": false,
+        "assets": [
+          {
+            "input": "libs/api-client/src/pbf-decoders",
+            "glob": "vessels.gen.{js,d.ts}",
+            "output": "pbf-decoders"
+          }
+        ]
       }
     },
     "dev": {

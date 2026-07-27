@@ -13,7 +13,6 @@ type ModalId =
   | 'datasetUpload'
   | 'editWorkspace'
   | 'createWorkspace'
-  | 'workspaceGenerator'
 
 export type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
@@ -36,7 +35,6 @@ type ModalsOpenState = {
   editWorkspace: boolean
   createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
-  workspaceGenerator: boolean
 }
 
 const initialState: ModalsOpenState = {
@@ -55,7 +53,6 @@ const initialState: ModalsOpenState = {
     type: undefined,
     style: 'default',
   },
-  workspaceGenerator: false,
 }
 
 const modals = createSlice({
@@ -94,8 +91,6 @@ export const selectLayerLibraryModalOpen = (state: RootState) =>
   state.modals.layerLibrary.open !== false
 export const selectLayerLibraryUniqueCategory = (state: RootState) =>
   state.modals.layerLibrary.singleCategory
-export const selectWorkspaceGeneratorModalOpen = (state: RootState) =>
-  state.modals.workspaceGenerator
 export const selectDatasetUploadModalConfig = (state: RootState) => state.modals.datasetUpload
 export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.datasetUpload?.open
 export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.editWorkspace

@@ -19,14 +19,14 @@ export type ReportWorkspace =
   | {
       id: ReportWorkspaceId
       img: string
-      category: WorkspaceCategory.FishingActivity
+      category: typeof WorkspaceCategory.FishingActivity
       reports?: WorkspaceReportLink[]
       visible?: boolean
     }
   | {
       id: ReportWorkspaceId
       img: string
-      category: WorkspaceCategory.Reports
+      category: typeof WorkspaceCategory.Reports
       reportCategory: ReportCategory
       dataviewInstances?: UrlDataviewInstance[]
       visible?: boolean

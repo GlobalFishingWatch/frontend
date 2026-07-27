@@ -1,3 +1,4 @@
+export * from './config'
 export * from './dataviews.utils'
 export * from './resolve-dataviews'
 export * from './resources'

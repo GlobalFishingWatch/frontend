@@ -1,0 +1,32 @@
+{
+  "name": "@fishing-map/config",
+  "version": "1.0.0",
+  "description": "fishing-map app configuration constants, shared as source (no build) inside the monorepo",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./app": {
+      "types": "./src/app.ts",
+      "default": "./src/app.ts"
+    },
+    "./dataviews": {
+      "types": "./src/dataviews.ts",
+      "default": "./src/dataviews.ts"
+    },
+    "./routes": {
+      "types": "./src/routes.ts",
+      "default": "./src/routes.ts"
+    },
+    "./workspaces": {
+      "types": "./src/workspaces.ts",
+      "default": "./src/workspaces.ts"
+    }
+  },
+  "dependencies": {
+    "@globalfishingwatch/datasets-client": "workspace:^"
+  }
+}

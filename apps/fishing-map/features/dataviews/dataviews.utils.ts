@@ -1,3 +1,9 @@
+import {
+  BATHYMETRY_DATAVIEW_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from '@fishing-map/config/dataviews'
 import { kebabCase } from 'es-toolkit'
 
 import type {
@@ -38,13 +44,17 @@ import {
   isRealTimeDataset,
 } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
-// used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
+
+export {
+  BATHYMETRY_DATAVIEW_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from '@fishing-map/config/dataviews'
+
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
-export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
-export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
-export const GAPS_EVENTS_SOURCE_ID = 'gap'
 export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
@@ -57,7 +67,6 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ] as const
 
-export const BATHYMETRY_DATAVIEW_PREFIX = 'bathymetry' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_PREFIX = 'bathymetry-contour' as const
 
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
