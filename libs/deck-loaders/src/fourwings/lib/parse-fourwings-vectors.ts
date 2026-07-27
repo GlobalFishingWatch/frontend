@@ -6,13 +6,13 @@ import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import { CONFIG_BY_INTERVAL } from '../helpers/time'
 
+import { NO_DATA_VALUE_32, NO_DATA_VALUE_64 } from './parse-fourwings'
 import type {
   FourwingsFeature,
   FourwingsVectorsLoaderOptions,
   ParseFourwingsVectorsOptions,
 } from './types'
 
-export const NO_DATA_VALUE = 4294967295
 export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
 export const CELL_NUM_INDEX = 0
@@ -38,7 +38,7 @@ function processVectorValue(
   rawValue: number,
   context: VectorProcessingContext
 ): number | undefined {
-  if (rawValue === context.noDataValue) {
+  if (rawValue === context.noDataValue || rawValue === NO_DATA_VALUE_64) {
     return undefined
   }
   return rawValue * context.scale - context.offset
@@ -92,7 +92,7 @@ function getVectorContext(options: ParseFourwingsVectorsOptions): VectorProcessi
   return {
     scale: options.scale?.[0] ?? SCALE_VALUE,
     offset: options.offset?.[0] ?? OFFSET_VALUE,
-    noDataValue: options.noDataValue?.[0] ?? NO_DATA_VALUE,
+    noDataValue: options.noDataValue?.[0] ?? NO_DATA_VALUE_32,
     unit: options.unit,
   }
 }

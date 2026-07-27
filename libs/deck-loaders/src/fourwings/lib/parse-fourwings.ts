@@ -8,7 +8,8 @@ import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 
 import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
-export const NO_DATA_VALUE = 4294967295
+export const NO_DATA_VALUE_32 = 2 ** 32 - 1
+export const NO_DATA_VALUE_64 = 2 ** 64 - 1
 export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
 export const CELL_NUM_INDEX = 0
@@ -38,6 +39,7 @@ export const getCellTimeseries = (
     rows,
     buffersLength,
   } = data.options?.fourwings || ({} as ParseFourwingsOptions)
+  console.log('🚀 ~ getCellTimeseries ~ noDataValue:', noDataValue)
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start as number) -
@@ -111,13 +113,13 @@ export const getCellTimeseries = (
         const numValuesBySubLayer = new Array(sublayersLength).fill(0)
         const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
         const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
-        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
+        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE_32
 
         // Rest of the processing using 'feature' directly instead of features.get(cellNum)
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = pbf.readVarint()
 
-          if (cellValue !== sublayerNoDataValue) {
+          if (cellValue !== sublayerNoDataValue && cellValue !== NO_DATA_VALUE_64) {
             if (!feature.properties.values[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
               feature.properties.values[subLayerIndex] = new Array(numCellValues)
@@ -153,7 +155,7 @@ export const getCellTimeseries = (
         break
       }
     }
-    if (pbf.pos >= subLayerBreak) {
+    while (pbf.pos >= subLayerBreak) {
       subLayerIndex++
       subLayerBreak += buffersLength[subLayerIndex]
     }
