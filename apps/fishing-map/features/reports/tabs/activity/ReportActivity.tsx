@@ -393,9 +393,7 @@ function ActivityReport() {
       <div className={cx('card', styles.subsection)}>
         <ReportActivityGraph />
       </div>
-      {!isVesselGroupReportLocation && (
-        <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
-      )}
+      <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
     </div>
   )
 }
