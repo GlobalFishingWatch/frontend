@@ -25,6 +25,7 @@
   "dependencies": {
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/auth-middleware": "1.0.0",
     "d3-scale": "4.x",
     "es-toolkit": "1.x",
     "luxon": "3.x",

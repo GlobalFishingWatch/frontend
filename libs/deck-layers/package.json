@@ -30,6 +30,7 @@
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
     "@globalfishingwatch/deck-loaders": "workspace:^",
     "@loaders.gl/core": "4.x",
     "@loaders.gl/loader-utils": "4.x",

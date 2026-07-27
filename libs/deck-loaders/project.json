@@ -12,7 +12,8 @@
       "outputs": [
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
-        "{projectRoot}/dist/vessels/lib"
+        "{projectRoot}/dist/vessels/lib/vessel-track-proto.gen.js",
+        "{projectRoot}/dist/vessels/lib/vessel-track-proto.gen.d.ts"
       ],
       "options": {
         "cwd": "libs/deck-loaders",
