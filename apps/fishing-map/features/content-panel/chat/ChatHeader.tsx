@@ -24,12 +24,18 @@ function ChatHistoryItem({
   disabled: boolean
   loading: boolean
   onSelect: () => void
-  onDelete: () => void
+  onDelete: () => Promise<unknown>
 }) {
   const { t } = useTranslation()
+  const [deleting, setDeleting] = useState(false)
   return (
     <li className={cx(styles.historyItem, { [styles.historyActive]: active })}>
-      <button type="button" className={styles.historyButton} onClick={onSelect} disabled={disabled}>
+      <button
+        type="button"
+        className={styles.historyButton}
+        onClick={onSelect}
+        disabled={disabled || deleting}
+      >
         <span className={styles.historyTitle}>{thread.title || t((t) => t.common.assistant)}</span>
         <span className={styles.historyTime}>
           {getTimeAgo(getUTCDateTime(thread.updatedAt), t)}
@@ -39,8 +45,13 @@ function ChatHistoryItem({
       <IconButton
         icon="delete"
         size="small"
+        loading={deleting}
+        disabled={deleting}
         tooltip={t((t) => t.common.delete)}
-        onClick={onDelete}
+        onClick={() => {
+          setDeleting(true)
+          onDelete().finally(() => setDeleting(false))
+        }}
       />
     </li>
   )

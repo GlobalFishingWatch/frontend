@@ -58,12 +58,15 @@ export function useChatThreads() {
       if (id === activeThreadId) {
         setActiveThread({ id: crypto.randomUUID(), isNew: true, isLoading: false })
       }
-      deleteThreadMutation({ threadId: id, resourceId: String(userId) })
+      return deleteThreadMutation({ threadId: id, resourceId: String(userId) })
         .unwrap()
         .then((ok) => {
           if (!ok) {
             toast.error(t((t) => t.chat.couldNotDeleteConversation))
           }
+        })
+        .catch(() => {
+          toast.error(t((t) => t.chat.couldNotDeleteConversation))
         })
     },
     [activeThreadId, deleteThreadMutation, userId, setActiveThread, t]
