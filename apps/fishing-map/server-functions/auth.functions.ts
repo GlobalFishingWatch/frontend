@@ -35,7 +35,7 @@ export const clearAuthCookies = (setCookie: CookieSetter) => {
 }
 
 export const loginServerFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: { accessToken?: string | null }) => data)
+  .validator((data: { accessToken?: string | null }) => data)
   .handler(async ({ data }): Promise<UserData | null> => {
     if (!data.accessToken) return null
     const { setCookie } = await import('@tanstack/react-start/server')

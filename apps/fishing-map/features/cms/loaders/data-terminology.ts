@@ -12,7 +12,7 @@ const dataTerminology = sdk.collection('data-terminologies')
 export const getDataTerminologyContent = createServerFn({
   method: 'GET',
 })
-  .inputValidator((params: { id: string; locale?: Locale; page?: number }) => params)
+  .validator((params: { id: string; locale?: Locale; page?: number }) => params)
   .handler(({ data: { id, locale } }): Promise<StrapiResponse<DataTerminology>> => {
     return findWithLocaleFallback<DataTerminology>(
       dataTerminology,
