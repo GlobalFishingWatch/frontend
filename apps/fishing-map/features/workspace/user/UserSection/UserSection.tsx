@@ -9,12 +9,11 @@ import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import { selectDatasetsStatus } from 'features/datasets/datasets.slice'
 import { selectCustomUserDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import Hint from 'features/help/Hint'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -26,7 +25,6 @@ import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
 import Section from 'features/workspace/shared/Section'
 import { getEventLabel } from 'utils/analytics'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { getIsBrowser } from 'utils/dom'
 
 import LayerPanel from '../UserLayerPanel'
@@ -58,7 +56,6 @@ export function UserSection(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
   const isSmallScreen = useSmallScreen()
 
-  const datasetsStatus = useSelector(selectDatasetsStatus)
   const dataviewsGrouped = useSelector(selectCustomUserDataviewsGrouped)
   const allDataviews = Object.values(dataviewsGrouped)
   const dataviews = allDataviews.flat()
@@ -179,44 +176,34 @@ export function UserSection(): React.ReactElement<any> {
         </Fragment>
       }
     >
-      {datasetsStatus === AsyncReducerStatus.Loading ? (
-        <div className={cx(styles.emptyStateBig, 'print-hidden')}>
-          <Spinner size="small" />
-        </div>
-      ) : (
-        <Fragment>
-          <SortableContext items={allDataviews.flat()}>
-            {allDataviews.map((dataviews) => {
-              if (!dataviews?.length) return null
-              const visibleDataviews = dataviews.filter(
-                (dataview) => dataview.config?.visible !== false
-              )
-              return dataviews?.map((dataview) => (
-                <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                  <LayerPanel
-                    dataview={dataview}
-                    onToggle={onToggleLayer(dataview)}
-                    mergedDataviewId={
-                      visibleDataviews?.length > 0
-                        ? getMergedDataviewId(visibleDataviews)
-                        : undefined
-                    }
-                  />
-                </LayerPanelContainer>
-              ))
-            })}
-            {guestUser ? (
-              <div className={cx(styles.emptyStateBig, 'print-hidden')}>
-                <RegisterOrLoginToUpload />
-              </div>
-            ) : !dataviews.length ? (
-              <div className={cx(styles.emptyStateBig, 'print-hidden')}>
-                {t((t) => t.workspace.emptyStateUser)}
-              </div>
-            ) : null}
-          </SortableContext>
-        </Fragment>
-      )}
+      <SortableContext items={allDataviews.flat()}>
+        {allDataviews.map((dataviews) => {
+          if (!dataviews?.length) return null
+          const visibleDataviews = dataviews.filter(
+            (dataview) => dataview.config?.visible !== false
+          )
+          return dataviews?.map((dataview) => (
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel
+                dataview={dataview}
+                onToggle={onToggleLayer(dataview)}
+                mergedDataviewId={
+                  visibleDataviews?.length > 0 ? getMergedDataviewId(visibleDataviews) : undefined
+                }
+              />
+            </LayerPanelContainer>
+          ))
+        })}
+        {guestUser ? (
+          <div className={cx(styles.emptyStateBig, 'print-hidden')}>
+            <RegisterOrLoginToUpload />
+          </div>
+        ) : !dataviews.length ? (
+          <div className={cx(styles.emptyStateBig, 'print-hidden')}>
+            {t((t) => t.workspace.emptyStateUser)}
+          </div>
+        ) : null}
+      </SortableContext>
     </Section>
   )
 }
