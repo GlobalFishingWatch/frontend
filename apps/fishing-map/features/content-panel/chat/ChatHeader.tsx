@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Icon, IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useChatThreads } from 'features/content-panel/chat/chat-threads.hooks'
 import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
@@ -75,8 +75,7 @@ function ChatHeader() {
 
   return (
     <div className={styles.header}>
-      <Icon icon="sparks" />
-      <span className={styles.title}>{t((t) => t.common.assistant)}</span>
+      <label className={styles.title}>{t((t) => t.common.assistant)}</label>
       <Fragment>
         <Popover
           open={historyOpen}
