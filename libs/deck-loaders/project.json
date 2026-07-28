@@ -64,7 +64,7 @@
     },
     "dist:workers": {
       "executor": "nx:run-commands",
-      "dependsOn": ["proto:generate", "^dist"],
+      "dependsOn": ["dist"],
       "outputs": ["{projectRoot}/dist/workers"],
       "options": {
         "command": "node libs/deck-loaders/scripts/build-workers.mjs"
