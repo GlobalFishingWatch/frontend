@@ -53,10 +53,10 @@ const ContextLayersRow = ({
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const { reportPreview } = useSelector(selectFeatureFlags)
-  const { category, setPreferredCategory, canSwitch } = useAreaTooltipSparklineCategory()
+  const { category, setPreferredCategory, canSwitch, hasAny } = useAreaTooltipSparklineCategory()
   const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
   const showSparklinePreview =
-    reportPreview && showFeaturesDetails && showSparkline && !isAnyReportLocation
+    reportPreview && showFeaturesDetails && showSparkline && !isAnyReportLocation && hasAny
   const areaInViewport = useAreaInViewport(feature, showSparklinePreview)
   const renderSparkline = showSparklinePreview && areaInViewport === true
 
