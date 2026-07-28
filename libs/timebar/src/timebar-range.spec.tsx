@@ -143,6 +143,35 @@ describe('useTimebarRange', () => {
     expect(result.current.rangeRef.current.end).toBe('2020-04-02T00:00:00.000Z')
   })
 
+  it('adopts an external change equal to a range it emitted earlier', () => {
+    // Fit bounds sets the same range the timebar itself emitted before (ie. the full data
+    // range after a zoom out). The echo of that emission was already consumed, so the new
+    // external change must be adopted, otherwise the units keep rendering the stale range.
+    const onChange = vi.fn()
+    const fullRange = { start: '2012-01-01T00:00:00.000Z', end: '2027-01-01T00:00:00.000Z' }
+    const { result, rerender } = renderHook((props) => useTimebarRange(props), {
+      initialProps: { ...baseParams, onChange },
+    })
+
+    act(() => {
+      result.current.notifyChange(fullRange.start, fullRange.end)
+    })
+    rerender({ ...baseParams, ...fullRange, onChange })
+
+    // Last 30 days, emitted by the timebar and echoed back
+    const last30 = { start: '2026-12-02T00:00:00.000Z', end: '2027-01-01T00:00:00.000Z' }
+    act(() => {
+      result.current.notifyChange(last30.start, last30.end)
+    })
+    rerender({ ...baseParams, ...last30, onChange })
+    expect(result.current.range.start).toBe(last30.start)
+
+    // Fit bounds, external, same range as the earlier emission
+    rerender({ ...baseParams, ...fullRange, onChange })
+    expect(result.current.range.start).toBe(fullRange.start)
+    expect(result.current.rangeRef.current.start).toBe(fullRange.start)
+  })
+
   it('clamps to the minimum range', () => {
     const onChange = vi.fn()
     const { result } = renderHook(() => useTimebarRange({ ...baseParams, onChange }))
