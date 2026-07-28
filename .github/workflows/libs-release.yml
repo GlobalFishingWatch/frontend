@@ -106,6 +106,7 @@ jobs:
         run: |
           pnpm exec nx release ${{ inputs.bump }} \
             --projects=${{ steps.resolve.outputs.list }} \
+            --yes \
             ${{ inputs.dry_run && '--dry-run' || '' }} \
             ${{ inputs.first_release && '--first-release' || '' }}
         env:
