@@ -13,7 +13,7 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import {
   getNavigateToolLinkProps,
   navigateToolInputSchema,
-  useApplyNavigateToolMapState,
+  useNavigateToolMapState,
 } from 'features/content-panel/chat/navigate-tool'
 
 export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
@@ -82,7 +82,7 @@ type ChatSessionArgs = {
 
 export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
-  const applyNavigateMapState = useApplyNavigateToolMapState()
+  const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
 
   const transport = useMemo(() => {
     return new DefaultChatTransport({
@@ -131,6 +131,7 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
       }
       const { navigation, path } = parsed.data
       try {
+        markExplicitSettings(navigation.search)
         await routerNavigate(
           getNavigateToolLinkProps(navigation) as unknown as Parameters<typeof routerNavigate>[0]
         )

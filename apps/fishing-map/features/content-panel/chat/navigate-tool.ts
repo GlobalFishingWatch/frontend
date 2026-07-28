@@ -4,8 +4,12 @@ import { ROUTE_PATHS } from '@fishing-map/config/routes'
 import { useSetAtom } from 'jotai'
 import { z } from 'zod'
 
+import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { timerangeState } from 'features/timebar/timebar.hooks'
+import { setHasChangedSettings } from 'features/timebar/timebar.slice'
 import type { QueryParams } from 'types'
 
 const allowedTos = new Set<string>(Object.values(ROUTE_PATHS))
@@ -13,11 +17,9 @@ const allowedTos = new Set<string>(Object.values(ROUTE_PATHS))
 /** Client-side validation for the agent's `navigate` tool input. */
 export const navigateToolInputSchema = z.object({
   navigation: z.object({
-    to: z
-      .string()
-      .refine((to): to is RoutePathValues => allowedTos.has(to), {
-        message: 'Unknown route path',
-      }),
+    to: z.string().refine((to): to is RoutePathValues => allowedTos.has(to), {
+      message: 'Unknown route path',
+    }),
     params: z.record(z.string(), z.unknown()).optional(),
     search: z.record(z.string(), z.unknown()).optional(),
   }),
@@ -28,18 +30,36 @@ export type NavigateToolInput = z.infer<typeof navigateToolInputSchema>
 export type NavigateToolNavigation = NavigateToolInput['navigation']
 
 export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
+  const search = { ...navigation.search, sidePanelContent: 'chat' }
+  const normalizedSearch = parseWorkspace(stringifyWorkspace(search as QueryParams)) as Record<
+    string,
+    unknown
+  >
+  delete normalizedSearch.tk
   return {
     to: navigation.to,
     params: navigation.params ?? {},
-    search: { ...navigation.search, sidePanelContent: 'chat' },
+    search: normalizedSearch,
   }
 }
 
 /** Map state the router search params don't drive on their own. */
-export function useApplyNavigateToolMapState() {
+export function useNavigateToolMapState() {
+  const dispatch = useAppDispatch()
   const setTimerange = useSetAtom(timerangeState)
   const setMapViewState = useSetMapCoordinates()
-  return useCallback(
+
+  const markExplicitSettings = useCallback(
+    (search: NavigateToolNavigation['search']) => {
+      const { timebarVisualisation } = (search ?? {}) as QueryParams
+      if (timebarVisualisation) {
+        dispatch(setHasChangedSettings())
+      }
+    },
+    [dispatch]
+  )
+
+  const applyNavigateMapState = useCallback(
     (search: NavigateToolNavigation['search']) => {
       const { start, end, latitude, longitude, zoom } = (search ?? {}) as QueryParams
       if (start && end) {
@@ -51,4 +71,6 @@ export function useApplyNavigateToolMapState() {
     },
     [setTimerange, setMapViewState]
   )
+
+  return { markExplicitSettings, applyNavigateMapState }
 }
