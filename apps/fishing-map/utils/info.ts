@@ -38,9 +38,9 @@ export const getVesselShipTypeLabel = (
     translationFn?: TFunction
   }
 ): VesselType => {
-  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype]).filter(
-    (shiptype) => shiptype !== undefined
-  )
+  const shipTypes = uniq(
+    (Array.isArray(shiptype) ? shiptype : [shiptype]).flatMap((type) => type?.split('|') ?? type)
+  ).filter((shiptype) => shiptype !== undefined)
   if (!shipTypes?.length) {
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
@@ -64,7 +64,9 @@ export const getVesselGearTypeLabel = (
   if (geartype === API_LOGIN_REQUIRED) {
     return geartype as RegistryLoginMessage
   }
-  const gearTypes = uniq(Array.isArray(geartype) ? geartype : [geartype])
+  const gearTypes = uniq(
+    (Array.isArray(geartype) ? geartype : [geartype]).flatMap((gear) => gear?.split('|') ?? gear)
+  )
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
   }
