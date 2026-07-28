@@ -1,6 +1,13 @@
 name: libs release
 
 on:
+  # i18n-labels keeps releasing on every change, as it did in its own workflow
+  push:
+    branches:
+      - develop
+    paths:
+      - 'libs/i18n-labels/**'
+      - '!libs/i18n-labels/package.json'
   workflow_dispatch:
     inputs:
       project:
@@ -18,6 +25,7 @@ on:
           - deck-layer-composer
           - deck-layers
           - deck-loaders
+          - i18n-labels
           - ocean-areas
           - react-hooks
           - responsive-visualizations
@@ -81,7 +89,7 @@ jobs:
       - name: Resolve projects to release
         id: resolve
         env:
-          PROJECT: ${{ inputs.project }}
+          PROJECT: ${{ inputs.project || 'i18n-labels' }} # push events only fire for i18n-labels
         run: |
           set -euo pipefail
           if [ "$PROJECT" != 'affected' ]; then
@@ -104,15 +112,19 @@ jobs:
       - name: Release
         if: steps.resolve.outputs.list != ''
         run: |
-          pnpm exec nx release ${{ inputs.bump }} \
+          pnpm exec nx release ${{ inputs.bump || 'patch' }} \
             --projects=${{ steps.resolve.outputs.list }} \
             --yes \
             ${{ inputs.dry_run && '--dry-run' || '' }} \
             ${{ inputs.first_release && '--first-release' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GH_PA_TOKEN }} # nx creates the per-project GitHub releases
 
       - name: Push version commit and tags
         if: steps.resolve.outputs.list != '' && !inputs.dry_run
         run: git push --follow-tags origin HEAD:${{ github.ref_name }}
+
+      # i18n-labels is consumed over jsdelivr, which caches the "latest" tag
+      - name: Purge jsdelivr cache
+        if: contains(steps.resolve.outputs.list, 'i18n-labels') && !inputs.dry_run
+        run: pnpm exec nx run i18n-labels:purge
