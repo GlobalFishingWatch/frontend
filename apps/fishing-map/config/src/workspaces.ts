@@ -16,6 +16,7 @@ export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap' as const
 
 export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public' as const
+export const GAPS_EVENTS_WORKSPACE_ID = 'private_gap_events-public' as const
 
 // Contextual layers dataviews
 export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
