@@ -37,14 +37,21 @@ import { useParams } from '@tanstack/react-router'
 import escapeRegExp from 'lodash/escapeRegExp'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { UserData } from '@globalfishingwatch/api-types'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { DISABLE_DOWNLOAD_SURVEY } from '@globalfishingwatch/ui-components'
 
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
 import { getFlattenedFiles } from '../../utils/folderConfig'
+import DownloadSurveyModal from '../download-survey/download-survey'
 
 import styles from './table.module.scss'
+
+const MULTIPLE_FILES_NOTICE =
+  'We are preparing the files you requested, you will receive an email when they are ready.'
 
 export type TableData = {
   name: string
@@ -212,11 +219,22 @@ type TableProps = {
   columns: Column<TableData>[]
   data: TableData[]
   logged: boolean
+  user: UserData | null
 }
 
-function Table({ columns, data, logged }: TableProps) {
+type SurveyState = {
+  open: boolean
+  showQuestions: boolean
+  notice?: string
+}
+
+const CLOSED_SURVEY: SurveyState = { open: false, showQuestions: false }
+
+function Table({ columns, data, logged, user }: TableProps) {
   const [searchInput, setSearchInput] = useState(false)
   const [downloadLoading, setDownloadLoading] = useState(false)
+  const [survey, setSurvey] = useState<SurveyState>(CLOSED_SURVEY)
+  const [disableDownloadSurvey] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
 
   const initialState = {
@@ -279,6 +297,7 @@ function Table({ columns, data, logged }: TableProps) {
     (path: string) => {
       if (path) {
         setDownloadLoading(true)
+        setSurvey({ open: !disableDownloadSurvey, showQuestions: !disableDownloadSurvey })
         GFWAPI.fetch<{ url: string }>(`/download/datasets/${datasetId}/download?file-path=${path}`)
           .then(({ url }) => {
             const downloadWindow = window.open(url, '_blank')
@@ -293,7 +312,7 @@ function Table({ columns, data, logged }: TableProps) {
           })
       }
     },
-    [datasetId]
+    [datasetId, disableDownloadSurvey]
   )
 
   const onDownloadClick = useCallback(() => {
@@ -306,6 +325,11 @@ function Table({ columns, data, logged }: TableProps) {
     } else {
       const files = selectedFlatRowsCalculated.map((row) => row.path)
       setDownloadLoading(true)
+      setSurvey({
+        open: true,
+        showQuestions: !disableDownloadSurvey,
+        notice: MULTIPLE_FILES_NOTICE,
+      })
       const params = {
         method: 'POST' as const,
         responseType: 'text' as const,
@@ -320,11 +344,8 @@ function Table({ columns, data, logged }: TableProps) {
           console.error(e)
           setDownloadLoading(false)
         })
-      alert(
-        'We are preparing the files you requested, you will receive an email when they are ready'
-      )
     }
-  }, [datasetId, downloadSingleFile, selectedRows])
+  }, [datasetId, disableDownloadSurvey, downloadSingleFile, selectedRows])
 
   const rowSelectedCount = getFlattenedFiles(selectedRows).length
 
@@ -429,6 +450,14 @@ function Table({ columns, data, logged }: TableProps) {
           {logged ? 'Download' : 'Log in to download'}
         </button>
       </div>
+      <DownloadSurveyModal
+        isOpen={survey.open}
+        showQuestions={survey.showQuestions}
+        notice={survey.notice}
+        downloading={downloadLoading}
+        user={user}
+        onClose={() => setSurvey(CLOSED_SURVEY)}
+      />
     </div>
   )
 }

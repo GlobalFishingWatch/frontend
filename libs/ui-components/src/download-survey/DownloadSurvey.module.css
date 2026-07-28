@@ -1,5 +1,5 @@
 .container {
-  min-height: 55rem;
+  min-height: 50rem;
   padding: var(--space-M);
   display: flex;
   flex-direction: column;
