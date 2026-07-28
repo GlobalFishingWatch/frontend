@@ -1,0 +1,117 @@
+name: libs release
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Lib to release'
+        required: true
+        default: affected
+        type: choice
+        options:
+          - affected # libs changed since the last @gfw/* tag
+          - api-client
+          - api-types
+          - data-transforms
+          - datasets-client
+          - dataviews-client
+          - deck-layer-composer
+          - deck-layers
+          - deck-loaders
+          - ocean-areas
+          - react-hooks
+          - responsive-visualizations
+          - skills
+          - timebar
+          - ui-components
+      bump:
+        description: 'Version bump applied to every released project'
+        required: true
+        default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+      dry_run:
+        description: 'Preview only: no commit, no tag, no publish'
+        required: false
+        default: false
+        type: boolean
+      first_release:
+        description: 'Needed while a project has no @gfw/<project>@<version> tag yet: take the current version from disk instead of git tags'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: libs-release
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PA_TOKEN }}
+          fetch-depth: 0 # nx resolves current versions from git tags
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PA_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Resolve projects to release
+        id: resolve
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: |
+          set -euo pipefail
+          if [ "$PROJECT" != 'affected' ]; then
+            LIST="$PROJECT"
+          else
+            BASE=$(git describe --tags --match '@gfw/*' --abbrev=0 2>/dev/null || echo 'HEAD~1')
+            echo "Computing affected libs since $BASE"
+            # --projects='libs/*' mirrors the release "libs" group in nx.json, so apps and
+            # the workspace root never leak into the list
+            LIST=$(pnpm exec nx show projects --affected --base="$BASE" --head=HEAD \
+              --projects='libs/*' --exclude=i18n-labels,linting --json | jq -r 'join(",")')
+          fi
+          echo "Releasing: ${LIST:-<none>}"
+          echo "list=$LIST" >> "$GITHUB_OUTPUT"
+
+      - name: Build dist
+        if: steps.resolve.outputs.list != ''
+        run: pnpm exec nx run-many -t dist --projects=${{ steps.resolve.outputs.list }}
+
+      - name: Release
+        if: steps.resolve.outputs.list != ''
+        run: |
+          pnpm exec nx release ${{ inputs.bump }} \
+            --projects=${{ steps.resolve.outputs.list }} \
+            ${{ inputs.dry_run && '--dry-run' || '' }} \
+            ${{ inputs.first_release && '--first-release' || '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PA_TOKEN }} # nx creates the per-project GitHub releases
+
+      - name: Push version commit and tags
+        if: steps.resolve.outputs.list != '' && !inputs.dry_run
+        run: git push --follow-tags origin HEAD:${{ github.ref_name }}

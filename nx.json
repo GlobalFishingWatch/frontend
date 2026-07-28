@@ -138,12 +138,6 @@
   },
   "release": {
     "projectsRelationship": "independent",
-    "version": {
-      "git": {
-        "commit": false,
-        "tag": false
-      }
-    },
     "releaseTag": {
       "pattern": "@gfw/{projectName}@{version}"
     },
