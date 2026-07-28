@@ -23,32 +23,52 @@ const VesselIdentityGFWExtendedVesseltype = ({
   if (!isGFWUser || !identity.combinedSourcesInfo) {
     return null
   }
-  const { onFishingListSr = [], rfCoarseClass = [] } = identity.combinedSourcesInfo
+  const {
+    onFishingListSr = [],
+    coarseClass = [],
+    fishingSourceAgreement = [],
+    shipnameIndicatesLikelyGear = [],
+  } = identity.combinedSourcesInfo
   const onFishingListInTimerange = onFishingListSr.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
-  const rfCoarseClassInTimerange = rfCoarseClass.find((source) =>
+  const coarseClassInTimerange = coarseClass.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const fishingSourceAgreementInTimerange = fishingSourceAgreement?.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
 
+  const shipnameIndicatesLikelyGearInTimerange = shipnameIndicatesLikelyGear?.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
   return (
     <ul className={styles.extendedInfo}>
       <li>
         <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
       </li>
-      {/* pipe5 missing API properties: shipname_indicates_likely_gear, fishing_source_agreement */}
       <li>
         <Tooltip content="(prodShiptypeNnet)">
           <span className={cx(styles.secondary, styles.help)}>ML coarse class: </span>
         </Tooltip>
-        {rfCoarseClassInTimerange?.value !== undefined
-          ? rfCoarseClassInTimerange.value.toString()
+        {coarseClassInTimerange?.value !== undefined
+          ? coarseClassInTimerange.value.toString()
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
-        <Tooltip content="(prodShiptypeNnet)">
-          <span className={cx(styles.secondary, styles.help)}>On fishing list: </span>
-        </Tooltip>
+        <span className={cx(styles.secondary, styles.help)}>Shipname indicates likely gear: </span>
+        {shipnameIndicatesLikelyGearInTimerange?.value !== undefined
+          ? shipnameIndicatesLikelyGearInTimerange.value.toString()
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>Fishing source agreement: </span>
+        {fishingSourceAgreementInTimerange?.value !== undefined
+          ? fishingSourceAgreementInTimerange.value.toString()
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>On fishing list: </span>
         {onFishingListInTimerange?.value !== undefined
           ? onFishingListInTimerange.value.toString()
           : EMPTY_FIELD_PLACEHOLDER}
