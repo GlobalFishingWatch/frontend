@@ -13,6 +13,7 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import TrackCorrection from 'features/track-correction/TrackCorrection'
+import { selectIsAnySearchLocation } from 'router/routes.selectors'
 
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -32,6 +33,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
+  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
@@ -63,6 +65,7 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
           {isTrackCorrectionOpen && <TrackCorrection />}
           <div className={cx(styles.scrollContent, { [styles.hidden]: isTrackCorrectionOpen })}>
             {children}
+            {!isAnySearchLocation && <div className={styles.bottomSpacer} />}
           </div>
         </div>
       </div>

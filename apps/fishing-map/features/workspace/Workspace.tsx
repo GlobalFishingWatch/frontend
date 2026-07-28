@@ -1,5 +1,4 @@
 import { Fragment, useCallback, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
@@ -43,7 +42,6 @@ import VesselsSection from './vessels/VesselsSection'
 import styles from './Workspace.module.css'
 
 function Workspace() {
-  const { t } = useTranslation()
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
   useMigrateWorkspaceToast()
