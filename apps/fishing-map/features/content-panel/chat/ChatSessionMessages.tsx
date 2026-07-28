@@ -17,7 +17,7 @@ import { useSetThreadLoading } from 'features/content-panel/chat/chat-threads.ho
 import {
   getNavigateToolLinkProps,
   navigateToolInputSchema,
-  useApplyNavigateToolMapState,
+  useNavigateToolMapState,
 } from 'features/content-panel/chat/navigate-tool'
 import ContentMarkdown from 'features/content-panel/ContentMarkdown'
 
@@ -95,14 +95,17 @@ function toolDetail(t: TFunction, input: unknown): string | undefined {
 
 function NavigateToolLink({ input }: { input: unknown }) {
   const { t } = useTranslation()
-  const applyMapState = useApplyNavigateToolMapState()
+  const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
   const parsed = navigateToolInputSchema.safeParse(input)
   if (!parsed.success) return null
   const { navigation } = parsed.data
   return (
     <Link
       {...(getNavigateToolLinkProps(navigation) as any)}
-      onClick={() => applyMapState(navigation.search)}
+      onClick={() => {
+        markExplicitSettings(navigation.search)
+        applyNavigateMapState(navigation.search)
+      }}
     >
       {({ isActive }) => (
         <span className={cx(styles.toolLink, { [styles.toolLinkBtn]: !isActive })}>
