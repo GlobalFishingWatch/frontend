@@ -45,12 +45,12 @@ export const getVesselShipTypeLabel = (
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
   return shipTypes
+    .toSorted((a, b) => a.localeCompare(b))
     ?.map((shiptype) =>
       translationFn((t: any) => t.vessel.vesselTypes[shiptype?.toLowerCase()], {
         defaultValue: upperFirst(shiptype),
       })
     )
-    .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as VesselType
 }
 
@@ -70,15 +70,18 @@ export const getVesselGearTypeLabel = (
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
   }
-  return gearTypes
-    .filter(Boolean)
-    ?.map((gear) =>
-      translationFn((t: any) => t.vessel.gearTypes[gear?.toLowerCase()], {
-        defaultValue: upperFirst(gear),
-      })
-    )
-    .toSorted((a, b) => a.localeCompare(b))
-    .join(joinCharacter) as GearType
+  return (
+    gearTypes
+      .filter(Boolean)
+      // sort raw codes, not labels, to keep the order (graph groups) identical in every language
+      .toSorted((a, b) => a.localeCompare(b))
+      ?.map((gear) =>
+        translationFn((t: any) => t.vessel.gearTypes[gear?.toLowerCase()], {
+          defaultValue: upperFirst(gear),
+        })
+      )
+      .join(joinCharacter) as GearType
+  )
 }
 
 export const getVesselShipNameLabel = (

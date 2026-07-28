@@ -298,6 +298,8 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
   }
 }
 
+const EXACT_MATCH_FILTER_PROPERTIES: FilterProperty[] = ['gear', 'type']
+
 export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTableVessel>(
   vessels: Vessel[],
   filter: string,
@@ -319,19 +321,30 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
   }
 
   return filterBlocks.reduce((vessels, block) => {
-    const propertiesToMatch =
-      block.includes(':') && filterProperties[block.split(':')[0] as FilterProperty]
+    const property = block.includes(':') ? block.split(':')[0].replace('-', '') : undefined
+    const propertiesToMatch = property && filterProperties[property as FilterProperty]
     const words = (propertiesToMatch ? (block.split(':')[1] as FilterProperty) : block)
       .replace('-', '')
       .split('|')
       .map((word) => word.trim())
       .filter((word) => word.length)
-    const matched = words.flatMap((w) =>
-      matchSorter(vessels, w, {
-        keys: propertiesToMatch || Object.values(filterProperties).flat(),
-        threshold: matchSorter.rankings.CONTAINS,
-      })
-    )
+    const matched =
+      propertiesToMatch && EXACT_MATCH_FILTER_PROPERTIES.includes(property as FilterProperty)
+        ? words.flatMap((word) =>
+            vessels.filter((vessel) =>
+              propertiesToMatch.some((key) =>
+                String((vessel as any)[key] ?? '')
+                  .split(', ')
+                  .some((label) => label.toLowerCase() === word.toLowerCase())
+              )
+            )
+          )
+        : words.flatMap((w) =>
+            matchSorter(vessels, w, {
+              keys: propertiesToMatch || Object.values(filterProperties).flat(),
+              threshold: matchSorter.rankings.CONTAINS,
+            })
+          )
     const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
     if (block.startsWith('-')) {
       const uniqMatchedIds = new Set<string>()
