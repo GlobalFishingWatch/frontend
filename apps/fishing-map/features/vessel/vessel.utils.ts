@@ -24,6 +24,7 @@ import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.se
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import type { VesselPropertyApiSearch } from 'features/vessel-groups/vessel-groups.utils'
+import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 type VesselsParamsSupported = IdentityVessel | IdentityVesselData | ExtendedFeatureVessel
@@ -288,14 +289,7 @@ export function getSearchIdentityResolved(
       vesselData = prioritizedIdentity
     }
   }
-  // Get first transmission date from all identity sources
-  const transmissionDateFrom = vesselSelfReportedIdentities
-    ?.flatMap((r) => r.transmissionDateFrom || [])
-    .sort((a, b) => (a < b ? -1 : 1))?.[0]
-  // The same with last transmission date
-  const transmissionDateTo = vesselSelfReportedIdentities
-    ?.flatMap((r) => r.transmissionDateTo || [])
-    .sort((a, b) => (a > b ? -1 : 1))?.[0]
+  const { transmissionDateFrom, transmissionDateTo } = getVesselTransmissionDates(vessel)
 
   const positionsCounter = vesselSelfReportedIdentities.reduce((acc, identity) => {
     return identity.positionsCounter ? acc + identity.positionsCounter : acc
@@ -410,6 +404,44 @@ export function getIdentitySourceLabel(
   if (selfReportedIdentities.length)
     return `${t((t) => t.vessel.infoSources.selfReported)} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
   return EMPTY_FIELD_PLACEHOLDER
+}
+
+// Vessel transmission dates span from the earliest transmissionDateFrom
+// to the latest transmissionDateTo of all the self reported identities
+export function getVesselTransmissionDates(vessel: VesselsParamsSupported | null) {
+  const isBefore = (date: string, than: string) =>
+    getUTCDateTime(date).toMillis() < getUTCDateTime(than).toMillis()
+  const identities = vessel
+    ? getVesselIdentities(vessel, { identitySource: VesselIdentitySourceEnum.SelfReported })
+    : []
+  return identities.reduce(
+    (acc, { transmissionDateFrom: from, transmissionDateTo: to }) => ({
+      transmissionDateFrom:
+        from && (!acc.transmissionDateFrom || isBefore(from, acc.transmissionDateFrom))
+          ? from
+          : acc.transmissionDateFrom,
+      transmissionDateTo:
+        to && (!acc.transmissionDateTo || isBefore(acc.transmissionDateTo, to))
+          ? to
+          : acc.transmissionDateTo,
+    }),
+    { transmissionDateFrom: '', transmissionDateTo: '' }
+  )
+}
+
+export function isTimerangeOutsideTransmissions(
+  timerange: TimeRange | null | undefined,
+  transmissionDateFrom?: string,
+  transmissionDateTo?: string
+) {
+  if (!timerange?.start || !timerange?.end || !transmissionDateFrom || !transmissionDateTo) {
+    return false
+  }
+  const start = getUTCDateTime(timerange.start).toMillis()
+  const end = getUTCDateTime(timerange.end).toMillis()
+  const from = getUTCDateTime(transmissionDateFrom).toMillis()
+  const to = getUTCDateTime(transmissionDateTo).toMillis()
+  return to < start || from > end
 }
 
 export function getSkylightLink({ skylightId }: { skylightId: string }): string {
