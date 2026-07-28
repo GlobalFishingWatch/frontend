@@ -1,7 +1,8 @@
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import {
+  getDatasetConfigByDatasetType,
   resolveDataviewDatasetResource,
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
@@ -12,20 +13,35 @@ import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,
-  globalConfig
+  {
+    start,
+    end,
+    bufferedStart,
+    bufferedEnd,
+    visibleEvents,
+    timeMode,
+    vesselTrackVisualizationMode,
+    trackGraphExtent,
+    vesselsColorBy,
+  }
 ): VesselLayerProps => {
-  const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
-  const { start, end, visibleEvents } = globalConfig
-  const strictTimeRange =
+  const trackDatasetConfig = getDatasetConfigByDatasetType(dataview, {
+    type: DatasetTypes.Tracks,
+    endpoint: timeMode === 'realTime' ? EndpointId.TracksRealTime : EndpointId.Tracks,
+  })
+  const trackUrl = trackDatasetConfig
+    ? resolveDataviewDatasetResource(dataview, trackDatasetConfig.datasetId)?.url
+    : undefined
+  const hasDataviewDatesConfig =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&
     dataview.config?.endDate != null &&
     dataview.config?.endDate != undefined
   const startTime = getUTCDateTime(
-    strictTimeRange ? (dataview.config?.startDate as string) : start
+    hasDataviewDatesConfig ? (dataview.config?.startDate as string) : start
   ).toMillis()
   const endTime = getUTCDateTime(
-    strictTimeRange ? (dataview.config?.endDate as string) : end
+    hasDataviewDatesConfig ? (dataview.config?.endDate as string) : end
   ).toMillis()
 
   const events = resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
@@ -43,8 +59,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     name: dataview.config?.name,
     endTime: endTime,
     startTime: startTime,
+    ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
+    ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
-    trackVisualizationMode: globalConfig.vesselTrackVisualizationMode || 'track',
+    trackVisualizationMode: vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),
@@ -55,11 +73,11 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       trackUrl: GFWAPI.generateUrl(trackUrl, { absolute: true }),
     }),
     singleTrack: dataview.config?.singleTrack,
-    strictTimeRange,
+    strictTimeRange: hasDataviewDatesConfig || timeMode === 'realTime',
     trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
-    trackGraphExtent: globalConfig.trackGraphExtent,
+    trackGraphExtent: trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
-    colorBy: globalConfig.vesselsColorBy,
+    colorBy: vesselsColorBy,
     gapSegmentThreshold: dataview.config?.gapSegmentThreshold,
     events,
     visibleEvents: visibleEvents,

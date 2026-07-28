@@ -21,9 +21,10 @@
   flex: 1;
 }
 
-.updateContainer {
+.updateContainer label {
   display: flex;
-  gap: var(--space-S);
+  padding: var(--space-M);
   flex-direction: column;
   align-items: center;
+  color: var(--color-danger-red);
 }

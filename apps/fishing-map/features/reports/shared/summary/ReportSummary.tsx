@@ -27,11 +27,13 @@ import styles from './ReportSummary.module.css'
 type ReportSummaryProps = {
   activityUnit?: ReportActivityUnit
   reportStatus?: AsyncReducerStatus
+  showTags?: boolean
 }
 
 export default function ReportSummary({
   activityUnit,
   reportStatus = AsyncReducerStatus.Finished,
+  showTags = true,
 }: ReportSummaryProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -70,13 +72,14 @@ export default function ReportSummary({
       )}
       {dataviews?.length > 0 && (
         <div className={cx(styles.tagsContainer)}>
-          {dataviews?.map((dataview) => (
-            <ReportSummaryTags
-              key={dataview.id}
-              dataview={dataview}
-              allowDelete={dataviews.length > 1}
-            />
-          ))}
+          {showTags &&
+            dataviews?.map((dataview) => (
+              <ReportSummaryTags
+                key={dataview.id}
+                dataview={dataview}
+                allowDelete={dataviews.length > 1}
+              />
+            ))}
           {!isPortReportLocation && !isVesselGroupReportLocation && (
             <IconButton
               icon="plus"

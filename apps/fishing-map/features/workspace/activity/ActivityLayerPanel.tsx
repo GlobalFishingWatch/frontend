@@ -82,7 +82,11 @@ function ActivityLayerPanel({
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerLoaded = activityLayer?.loaded
   const layerError = activityLayer?.instance?.getError?.()
-  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
+  const {
+    onMigrateDataviewClick,
+    getIsDataviewMigrated,
+    isLoading: isMigrating,
+  } = useMigrateToLatestDataview()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -267,6 +271,8 @@ function ActivityLayerPanel({
               <IconButton
                 icon="warning"
                 type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+                loading={showDeprecatedWarning && isMigrating}
+                disabled={showDeprecatedWarning && isMigrating}
                 onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
                 tooltip={
                   showDeprecatedWarning

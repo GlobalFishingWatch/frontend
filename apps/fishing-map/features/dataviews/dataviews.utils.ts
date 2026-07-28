@@ -1,3 +1,9 @@
+import {
+  BATHYMETRY_DATAVIEW_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from '@fishing-map/config/dataviews'
 import { kebabCase } from 'es-toolkit'
 
 import type {
@@ -32,15 +38,23 @@ import {
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
-import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
+import {
+  getActiveDatasetsInDataview,
+  isPrivateDataset,
+  isRealTimeDataset,
+} from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
-// used in workspaces with encounter events layers
-export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
+
+export {
+  BATHYMETRY_DATAVIEW_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
+} from '@fishing-map/config/dataviews'
+
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
-export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
-export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
-export const GAPS_EVENTS_SOURCE_ID = 'gap'
 export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
@@ -53,7 +67,6 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ] as const
 
-export const BATHYMETRY_DATAVIEW_PREFIX = 'bathymetry' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_PREFIX = 'bathymetry-contour' as const
 
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
@@ -134,7 +147,7 @@ export const getVesselInfoDataviewInstanceDatasetConfig = (
 
 export const getVesselDataviewInstanceDatasetConfig = (
   vesselId: string,
-  { track, info, events, relatedVesselIds = [] }: VesselInstanceDatasets
+  { track, info, events, trackRealTime, ssvid, relatedVesselIds = [] }: VesselInstanceDatasets
 ) => {
   const datasetsConfig: DataviewDatasetConfig[] = []
   if (info) {
@@ -148,6 +161,13 @@ export const getVesselDataviewInstanceDatasetConfig = (
       datasetId: track,
       params: [{ id: 'vesselId', value: vesselIds }],
       endpoint: EndpointId.Tracks,
+    })
+  }
+  if (trackRealTime && ssvid) {
+    datasetsConfig.push({
+      datasetId: trackRealTime,
+      params: [{ id: 'ssvid', value: ssvid }],
+      endpoint: EndpointId.TracksRealTime,
     })
   }
   if (events) {
@@ -164,6 +184,7 @@ export const getVesselDataviewInstanceDatasetConfig = (
 }
 
 type VesselDataviewInstanceTemplateParams = {
+  vessel: { id: string; ssvid?: string }
   dataviewSlug: Dataview['slug']
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
@@ -179,6 +200,7 @@ const vesselDataviewInstanceTemplate = ({
   highlightEventEndTime,
   color,
   config,
+  vessel,
 }: VesselDataviewInstanceTemplateParams) => {
   return {
     // TODO find the way to use different vessel dataviews, for example
@@ -197,6 +219,7 @@ const vesselDataviewInstanceTemplate = ({
       ...(highlightEventEndTime && {
         highlightEventEndTime: getUTCDateTime(highlightEventEndTime).toISO()!,
       }),
+      ...(vessel?.ssvid && { ssvid: vessel.ssvid }),
       ...config,
     },
   }
@@ -222,7 +245,7 @@ export const getVesselDataviewInstance = ({
   color,
   config,
 }: {
-  vessel: { id: string }
+  vessel: VesselDataviewInstanceTemplateParams['vessel']
   datasets: VesselInstanceDatasets
   highlightEventStartTime?: number
   highlightEventEndTime?: number
@@ -239,6 +262,7 @@ export const getVesselDataviewInstance = ({
     ...vesselDataviewInstanceTemplate({
       dataviewSlug: dataviewTemplate,
       datasets,
+      vessel,
       highlightEventStartTime,
       highlightEventEndTime,
       color,
@@ -527,6 +551,23 @@ export function isDataviewDeprecated(
     hasVesselInfoDeprecated ||
     hasDeprecatedVesselGroupVessels
   )
+}
+
+const SUPPORTED_CATEGORIES_REAL_TIME = [
+  DataviewCategory.Basemap,
+  DataviewCategory.Vessels,
+  DataviewCategory.Context,
+  DataviewCategory.User,
+]
+export function isRealTimeDataview(dataview: UrlDataviewInstance) {
+  if (dataview.category === DataviewCategory.Activity) {
+    return dataview.datasets?.some(isRealTimeDataset)
+  }
+  return !dataview.category || SUPPORTED_CATEGORIES_REAL_TIME.includes(dataview.category)
+}
+
+export function isHistoricalDataview(dataview: UrlDataviewInstance) {
+  return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
 }
 
 export function hasWorkspaceDataviewsDeprecated(

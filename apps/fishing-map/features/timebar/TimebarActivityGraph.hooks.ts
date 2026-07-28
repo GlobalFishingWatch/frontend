@@ -18,9 +18,11 @@ import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import {
+  selectRealTimeTimerange,
   selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from 'features/timebar/timebar.selectors'
+import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 
 import {
   getGraphDataFromFourwingsHeatmap,
@@ -38,12 +40,24 @@ export const useHeatmapActivityGraph = () => {
   }, [viewport])
   const dataviews = useSelector(selectTimebarSelectedDataviews)
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const { start: rangeStart, end: rangeEnd } = useTimebar()
   const start = getUTCDate(rangeStart).getTime()
   const end = getUTCDate(rangeEnd).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
   const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
-  const chunk = getFourwingsChunk({ start, end, availableIntervals })
+  const chunk = getFourwingsChunk({
+    start,
+    end,
+    availableIntervals,
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
+  })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 

@@ -152,7 +152,7 @@ function ActivitySection(): React.ReactElement<any> {
     >
       {dataviews?.map((dataview, index) => {
         const hasDatasetAvailable =
-          getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
+          getDatasetConfigByDatasetType(dataview, { type: DatasetTypes.Fourwings }) !== undefined
         const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
           isPrivateDataset({ id: d.datasetId })
         )

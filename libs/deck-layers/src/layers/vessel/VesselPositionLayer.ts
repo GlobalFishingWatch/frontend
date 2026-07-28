@@ -1,7 +1,7 @@
 import type { Accessor, Color, LayerProps } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { CollisionFilterExtension } from '@deck.gl/extensions'
-import { IconLayer } from '@deck.gl/layers'
+import { IconLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { bearingToAzimuth } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
@@ -39,12 +39,17 @@ export type VesselTrackPositionFeature = Feature<
     timestamp: number
     speed: number
     depth: number
+    pointIndex?: number
   }
 >
+export type VesselPositionMode = 'icon' | 'point'
+
 type _VesselTrackPositionLayerProps = {
   visible: boolean
   iconBorder?: boolean
   iconSize?: number
+  positionMode?: VesselPositionMode
+  pointRadius?: number
   data: VesselTrackPositionFeature[]
   getColor: Accessor<VesselTrackPositionFeature, Color>
   name: string
@@ -66,6 +71,8 @@ export class VesselTrackPositionLayer extends CompositeLayer<
       highlightStartTime,
       iconBorder = true,
       iconSize = 15,
+      positionMode = 'icon',
+      pointRadius = 2,
     } = this.props
 
     if (!visible) return []
@@ -73,12 +80,34 @@ export class VesselTrackPositionLayer extends CompositeLayer<
     const positions = data ?? []
     const labelData = name && highlightStartTime ? positions : []
 
+    if (positionMode === 'point') {
+      return [
+        new ScatterplotLayer(
+          this.getSubLayerProps({
+            id: 'vessel-position-dot',
+            data: positions,
+            getPosition: (d: VesselTrackPositionFeature) => d.geometry.coordinates,
+            getFillColor: getColor,
+            getRadius: pointRadius,
+            radiusUnits: 'pixels',
+            stroked: false,
+            pickable: this.props.pickable,
+            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          })
+        ),
+        new LabelLayer({
+          id: `${this.props.id}-vessel-position-label`,
+          data: labelData,
+          getText: () => name,
+        }),
+      ]
+    }
+
     return [
       new VesselPositionIconLayer(
         this.getSubLayerProps({
           id: 'vessel-position-bg',
           data: positions,
-          extensions: [new CollisionFilterExtension()],
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
@@ -86,7 +115,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getAngle: (d: VesselTrackPositionFeature) => 360 - bearingToAzimuth(d.properties.course),
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: iconSize + 3,
-          pickable: true,
+          pickable: this.props.pickable,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
         })
       ),
@@ -94,7 +123,6 @@ export class VesselTrackPositionLayer extends CompositeLayer<
         this.getSubLayerProps({
           id: 'vessel-position',
           data: positions,
-          extensions: [new CollisionFilterExtension()],
           iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
@@ -111,7 +139,6 @@ export class VesselTrackPositionLayer extends CompositeLayer<
               this.getSubLayerProps({
                 id: 'vessel-position-hg',
                 data: positions,
-                extensions: [new CollisionFilterExtension()],
                 iconAtlas: `${PATH_BASENAME}vessel-sprite.png`,
                 iconMapping: VESSEL_SPRITE_ICON_MAPPING,
                 getIcon: () => 'vesselHighlight',

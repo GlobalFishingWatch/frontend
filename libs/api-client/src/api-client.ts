@@ -28,6 +28,7 @@ import {
   DEBUG_API_REQUESTS,
   GUEST_USER_TYPE,
   REGISTER_PATH,
+  SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
   USER_TOKEN_STORAGE_KEY,
 } from './config'
@@ -239,6 +240,23 @@ export class GFW_API_CLASS {
       ...(hideHeader && { hideHeader: 'true' }),
     })
     return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}?${params.toString()}`, { absolute: true })
+  }
+
+  getSettingsUrl(
+    callbackUrl: string,
+    { client = 'gfw', locale = '' } = {} satisfies {
+      client?: string
+      locale?: string
+    }
+  ) {
+    const params = new URLSearchParams({
+      client,
+      locale: locale || this.getStoredLocale(),
+      callback: callbackUrl,
+    })
+    return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/${SETTINGS_PATH}?${params.toString()}`, {
+      absolute: true,
+    })
   }
 
   getConfig() {

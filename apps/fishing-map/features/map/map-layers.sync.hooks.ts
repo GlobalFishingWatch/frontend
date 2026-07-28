@@ -39,16 +39,30 @@ type LayerHighlightHashes = { features?: string; time?: string; events?: string 
 
 const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
 
+function getFeaturePropertyId(feature: DeckLayerPickingObject) {
+  const properties = feature.properties as
+    | (FourwingsFeatureProperties & { pointIndex?: number })
+    | undefined
+  if (properties?.cellId) {
+    return properties.cellId
+  }
+  if (properties?.pointIndex !== undefined) {
+    return properties.pointIndex
+  }
+  if ('timestamp' in feature && feature.timestamp) {
+    return feature.timestamp as number // vessel track/position
+  }
+  try {
+    return JSON.stringify(properties || {}) // generic fallback
+  } catch {
+    return ''
+  }
+}
+
 function getHoverFeaturesHash(features: DeckLayerPickingObject[] = []) {
   return features
     .map((feature) => {
-      const propertyId =
-        'properties' in feature
-          ? (feature.properties as FourwingsFeatureProperties)?.cellId || ''
-          : 'timestamp' in feature
-            ? (feature.timestamp as number) || ''
-            : ''
-      return `${feature.category}-${feature.layerId}-${feature.id}-${propertyId}`
+      return `${feature.category}-${feature.layerId}-${feature.id}-${getFeaturePropertyId(feature)}`
     })
     .join('|')
 }

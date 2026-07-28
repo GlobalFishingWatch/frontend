@@ -7,7 +7,7 @@ import type { Dataview } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
-import { Button, Spinner, Tabs } from '@globalfishingwatch/ui-components'
+import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { BASEMAP_DATAVIEW_SLUG } from 'data/workspaces'
@@ -18,7 +18,7 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import VesselAreas from 'features/vessel/areas/VesselAreas'
 import Insights from 'features/vessel/insights/Insights'
 import RelatedVessels from 'features/vessel/related-vessels/RelatedVessels'
@@ -42,6 +42,7 @@ import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import { getCurrentIdentityVessel, getVesselIdentities } from 'features/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
+import VesselSubHeader from 'features/vessel/VesselSubHeader'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
@@ -64,7 +65,6 @@ const Vessel = () => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselId = useSelector(selectVesselId)
-  const isGFWUser = useSelector(selectIsGFWUser)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const vesselSection = useSelector(selectVesselSection)
   const vesselArea = useSelector(selectVesselAreaSubsection)
@@ -206,7 +206,7 @@ const Vessel = () => {
     })
   }, [])
 
-  if (infoStatus === AsyncReducerStatus.Loading || isVesselRefreshing) {
+  if (!infoStatus || infoStatus === AsyncReducerStatus.Loading || isVesselRefreshing) {
     return <Spinner />
   }
 
@@ -225,23 +225,8 @@ const Vessel = () => {
 
   return (
     <Fragment>
-      {infoStatus === AsyncReducerStatus.Finished && (
-        <Fragment>
-          {isGFWUser && !includeRelatedIdentities && (
-            <div className={styles.fullProfileMessage}>
-              <div>
-                Identity and activity of a single vessel id (only for GFW users):
-                <br />
-                {vesselId}
-              </div>
-              <Button type="secondary" size="small" className="" onClick={handleFullProfileClick}>
-                See full profile
-              </Button>
-            </div>
-          )}
-          <VesselIdentity />
-        </Fragment>
-      )}
+      <VesselSubHeader />
+      {infoStatus === AsyncReducerStatus.Finished && <VesselIdentity />}
       {guestUser ? (
         <WorkspaceLoginError
           title={t((t) => t.errors.vesselActivityLogin)}

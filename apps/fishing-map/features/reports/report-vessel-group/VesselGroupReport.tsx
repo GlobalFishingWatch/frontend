@@ -30,7 +30,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
-import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
+import { useVesselGroupDatasetStatus } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
@@ -46,7 +46,7 @@ import {
   VESSEL_GROUP_FISHING_ACTIVITY_ID,
   VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
 } from './vessel-group-report.dataviews'
-import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
+import { useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRDatasets, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
 
@@ -80,8 +80,8 @@ function VesselGroupReport() {
     deprecatedDatasets
   )
   const isOutdated = isOutdatedVesselGroup(vesselGroup) || hasDeprecatedVessels
-  const onEditClick = useEditVesselGroupModal()
-  const { migrateToLatestVesselGroup, isLoading: isMigrating } = useMigrateToLatestVesselGroup()
+  const { hasDeletedDatasets } = useVesselGroupDatasetStatus(vesselGroupReportDatasets, vesselGroup)
+  const showOnlyVessels = isOutdated || hasDeletedDatasets
 
   useEffect(() => {
     fetchVesselGroupReport(vesselGroupId)
@@ -145,8 +145,8 @@ function VesselGroupReport() {
 
   const loading = reportStatus === AsyncReducerStatus.Loading
 
-  const sectionTabs: Tab<ReportCategory>[] = useMemo(
-    () => [
+  const sectionTabs: Tab<ReportCategory>[] = useMemo(() => {
+    const tabs: Tab<ReportCategory>[] = [
       {
         id: ReportCategory.VesselGroup,
         title: t((t) => t.common.vessels),
@@ -155,6 +155,7 @@ function VesselGroupReport() {
             loading={loading}
             color={reportDataview?.config?.color}
             activityUnit={reportVesselGraph === 'coverage' ? 'coverage' : undefined}
+            showOnlyTable={showOnlyVessels}
           />
         ),
       },
@@ -173,9 +174,9 @@ function VesselGroupReport() {
         title: t((t) => t.common.events),
         content: <EventsReport />,
       },
-    ],
-    [t, loading, reportDataview?.config?.color, reportVesselGraph]
-  )
+    ]
+    return showOnlyVessels ? tabs.filter((tab) => tab.id === ReportCategory.VesselGroup) : tabs
+  }, [t, loading, reportDataview?.config?.color, reportVesselGraph, showOnlyVessels])
 
   const isOwnedByUser = vesselGroup?.ownerId === userData?.id
 
@@ -185,31 +186,18 @@ function VesselGroupReport() {
 
   return (
     <div className={styles.container}>
-      {/* {isOutdated && (
+      {isOutdated && (
         <div className={styles.emptyState}>
           <div className={styles.updateContainer}>
-            <label>{t((t) => t.vesselGroupReport.linkDisabled)}</label>
-            {isOwnedByUser ? (
-              <Button
-                loading={isMigrating}
-                onClick={() =>
-                  hasDeprecatedVessels
-                    ? migrateToLatestVesselGroup(vesselGroup)
-                    : onEditClick(vesselGroup)
-                }
-              >
-                {t((t) => t.vesselGroup.clickToUpdate)}
-              </Button>
-            ) : (
-              <p>{t((t) => t.vesselGroupReport.notOwner)}</p>
-            )}
+            <label>{t((t) => t.vesselGroupReport.updateToViewFullReport)}</label>
+            {!isOwnedByUser && <p>{t((t) => t.vesselGroupReport.notOwner)}</p>}
           </div>
         </div>
-      )} */}
+      )}
 
       <Tabs
         tabs={sectionTabs}
-        activeTab={reportCategory}
+        activeTab={showOnlyVessels ? ReportCategory.VesselGroup : reportCategory}
         onTabClick={changeTab}
         // mountAllTabsOnLoad
       />

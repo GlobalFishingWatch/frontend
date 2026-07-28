@@ -15,7 +15,11 @@ import { useTimebar } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import type { PointsFeaturesToTimeseriesParams } from 'features/reports/tabs/others/reports-points-timeseries.utils'
-import { selectTimebarUserDataviewsSelected } from 'features/timebar/timebar.selectors'
+import {
+  selectRealTimeTimerange,
+  selectTimebarUserDataviewsSelected,
+} from 'features/timebar/timebar.selectors'
+import { selectIsRealTimeMode } from 'features/workspace/workspace.selectors'
 
 import { getGraphDataFromPoints } from './timebar.utils'
 
@@ -25,6 +29,8 @@ export const useTimebarPoints = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
   const viewport = useSelector(selectViewport)
   const dataviews = useSelector(selectTimebarUserDataviewsSelected)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const { start: rangeStart, end: rangeEnd } = useTimebar()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
@@ -49,6 +55,12 @@ export const useTimebarPoints = () => {
     start,
     end,
     availableIntervals,
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
   })
 
   const instanceCacheHash = useMemo(() => {

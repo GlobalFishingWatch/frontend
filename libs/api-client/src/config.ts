@@ -23,6 +23,7 @@ export const DEBUG_API_REQUESTS: boolean = getEnv('DEBUG_API_REQUESTS') === 'tru
 
 export const AUTH_PATH = 'auth'
 export const REGISTER_PATH = 'registration'
+export const SETTINGS_PATH = 'settings'
 export const GUEST_USER_TYPE = 'guest'
 export const CONCURRENT_ERROR_STATUS = 429
 

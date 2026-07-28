@@ -129,6 +129,8 @@ const icons = [
   'sparks',
   'split',
   'target',
+  'thumbs-down',
+  'thumbs-up',
   'tick',
   'time-range',
   'track',

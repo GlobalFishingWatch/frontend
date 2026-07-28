@@ -16,6 +16,7 @@ export type GetDatasetConfigCallback = (
 
 export type GetDatasetConfigsCallbacks = {
   track?: GetDatasetConfigCallback
+  trackRealTime?: GetDatasetConfigCallback
   info?: GetDatasetConfigCallback
   events?: GetDatasetConfigCallback
 }
@@ -45,27 +46,42 @@ export const extendDataviewDatasetConfig = (
   const { trackDataviews, otherDataviews } = splitTrackDataviews(dataviews)
   // Create dataset configs needed to load all tracks related endpoints
   const trackDataviewsWithDatasetConfigs = trackDataviews.map((dataview) => {
-    const info = getDatasetConfigByDatasetType(dataview, DatasetTypes.Vessels)
+    const info = getDatasetConfigByDatasetType(dataview, { type: DatasetTypes.Vessels })
 
     const trackDatasetType =
       dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
         ? DatasetTypes.UserTracks
         : DatasetTypes.Tracks
 
-    const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
+    const trackDatasetConfig = {
+      ...getDatasetConfigByDatasetType(dataview, { type: trackDatasetType }),
+    }
+    const trackRealTimeDatasetConfig = {
+      ...getDatasetConfigByDatasetType(dataview, {
+        type: DatasetTypes.Tracks,
+        endpoint: EndpointId.TracksRealTime,
+      }),
+    }
+
     const hasTrackData =
       trackDatasetType === DatasetTypes.Tracks
         ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value !== undefined
         : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value !== undefined
+    const hasTrackRealTimeData =
+      trackRealTimeDatasetConfig?.params?.find((p) => p.id === 'ssvid')?.value !== undefined
     // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
     const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
+    const trackRealTime = hasTrackRealTimeData
+      ? trackRealTimeDatasetConfig
+      : ({} as DataviewDatasetConfig)
 
-    const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
+    const events = getDatasetConfigsByDatasetType(dataview, { type: DatasetTypes.Events }).filter(
       (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
     ) // Loitering
 
     let preparedInfoDatasetConfigs = [info]
     let preparedTrackDatasetConfigs = [track]
+    let preparedTrackRealTimeDatasetConfigs = [trackRealTime]
     let preparedEventsDatasetConfigs = events
 
     if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
@@ -73,6 +89,12 @@ export const extendDataviewDatasetConfig = (
     }
     if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
       preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
+    }
+    if (callbacks.trackRealTime && preparedTrackRealTimeDatasetConfigs?.length > 0) {
+      preparedTrackRealTimeDatasetConfigs = callbacks.trackRealTime(
+        preparedTrackRealTimeDatasetConfigs,
+        dataview
+      )
     }
     if (callbacks.events && preparedEventsDatasetConfigs?.length > 0) {
       preparedEventsDatasetConfigs = callbacks.events(preparedEventsDatasetConfigs, dataview)
@@ -83,6 +105,7 @@ export const extendDataviewDatasetConfig = (
       datasetsConfig: [
         ...preparedInfoDatasetConfigs,
         ...preparedTrackDatasetConfigs,
+        ...preparedTrackRealTimeDatasetConfigs,
         ...preparedEventsDatasetConfigs,
       ].filter(Boolean),
     }
@@ -114,94 +137,6 @@ export const getResources = (
   return {
     dataviews,
     resources: trackResources,
-  }
-}
-
-export const _getLegacyResources = (
-  dataviews: UrlDataviewInstance[],
-  callbacks: GetDatasetConfigsCallbacks
-): { resources: Resource[]; dataviews: UrlDataviewInstance[] } => {
-  const { trackDataviews, otherDataviews } = dataviews.reduce(
-    (acc, dataview) => {
-      const isTrack = dataview.config?.type === DataviewType.Track
-      if (isTrack) {
-        acc.trackDataviews.push(dataview)
-      } else {
-        acc.otherDataviews.push(dataview)
-      }
-      return acc
-    },
-    {
-      trackDataviews: [] as UrlDataviewInstance[],
-      otherDataviews: [] as UrlDataviewInstance[],
-    }
-  )
-
-  // Create dataset configs needed to load all tracks related endpoints
-  const trackDataviewsWithDatasetConfigs = trackDataviews.map((dataview) => {
-    const info = getDatasetConfigByDatasetType(dataview, DatasetTypes.Vessels)
-
-    const trackDatasetType =
-      dataview.datasets && dataview.datasets?.[0]?.type === DatasetTypes.UserTracks
-        ? DatasetTypes.UserTracks
-        : DatasetTypes.Tracks
-
-    const trackDatasetConfig = { ...getDatasetConfigByDatasetType(dataview, trackDatasetType) }
-    const hasTrackData =
-      trackDatasetType === DatasetTypes.Tracks
-        ? trackDatasetConfig?.params?.find((p) => p.id === 'vesselId')?.value !== undefined
-        : trackDatasetConfig?.params?.find((p) => p.id === 'id')?.value !== undefined
-    // Cleaning track resources with no data as now now the track is hidden for guest users in VMS full- datasets
-    const track = hasTrackData ? trackDatasetConfig : ({} as DataviewDatasetConfig)
-
-    const events = getDatasetConfigsByDatasetType(dataview, DatasetTypes.Events).filter(
-      (datasetConfig) => datasetConfig.query?.find((q) => q.id === 'vessels')?.value
-    ) // Loitering
-
-    let preparedInfoDatasetConfigs = [info]
-    let preparedTrackDatasetConfigs = [track]
-    let preparedEventsDatasetConfigs = events
-
-    if (callbacks.info && preparedInfoDatasetConfigs?.length > 0) {
-      preparedInfoDatasetConfigs = callbacks.info(preparedInfoDatasetConfigs, dataview)
-    }
-    if (callbacks.track && preparedTrackDatasetConfigs?.length > 0) {
-      preparedTrackDatasetConfigs = callbacks.track(preparedTrackDatasetConfigs, dataview)
-    }
-    if (callbacks.events && preparedEventsDatasetConfigs?.length > 0) {
-      preparedEventsDatasetConfigs = callbacks.events(preparedEventsDatasetConfigs, dataview)
-    }
-
-    const preparedDataview = {
-      ...dataview,
-      datasetsConfig: [
-        ...preparedInfoDatasetConfigs,
-        ...preparedTrackDatasetConfigs,
-        ...preparedEventsDatasetConfigs,
-      ].filter(Boolean),
-    }
-    return preparedDataview
-  })
-
-  // resolve urls for vessels info (tracks and events are fetched within the Deck layers)
-  const trackResources = trackDataviewsWithDatasetConfigs.flatMap((dataview) => {
-    if (!dataview.datasetsConfig) return []
-
-    return dataview.datasetsConfig.flatMap((datasetConfig) => {
-      if (datasetConfig.endpoint === EndpointId.Vessel) {
-        const dataset = dataview.datasets?.find((dataset) => dataset.id === datasetConfig.datasetId)
-        if (!dataset) return []
-        const url = resolveEndpoint(dataset, datasetConfig)
-        if (!url) return []
-        return [{ dataset, datasetConfig, url, dataviewId: dataview.dataviewId as string }]
-      }
-      return []
-    })
-  })
-
-  return {
-    resources: trackResources,
-    dataviews: [...trackDataviewsWithDatasetConfigs, ...otherDataviews],
   }
 }
 

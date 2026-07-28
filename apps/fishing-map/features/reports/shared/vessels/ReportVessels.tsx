@@ -28,11 +28,13 @@ function ReportVessels({
   color,
   title,
   activityUnit,
+  showOnlyTable,
 }: {
   loading?: boolean
   color?: string
   title?: string
   activityUnit?: ReportActivityUnit
+  showOnlyTable?: boolean
 }) {
   const isPrinting = useSelector(selectPrintMode)
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
@@ -46,26 +48,32 @@ function ReportVessels({
 
   return (
     <div className={styles.container}>
-      <div className={styles.titleRow}>
-        {title && <label className={styles.blockTitle}>{title}</label>}
-        <ReportVesselsGraphSelector loading={loading} />
-      </div>
+      {!showOnlyTable && (
+        <div className={styles.titleRow}>
+          {title && <label className={styles.blockTitle}>{title}</label>}
+          <ReportVesselsGraphSelector loading={loading} />
+        </div>
+      )}
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
-          {reportVesselGraph === 'coverage' ? (
-            <VesselGroupReportInsightCoverage />
-          ) : (
-            <ReportVesselsGraph
-              data={aggregatedData!}
-              individualData={individualData}
-              aggregatedValueKey={valueKeys}
-              color={color}
-              property={reportVesselGraph as ReportVesselsSubCategory}
-            />
+          {!showOnlyTable && (
+            <Fragment>
+              {reportVesselGraph === 'coverage' ? (
+                <VesselGroupReportInsightCoverage />
+              ) : (
+                <ReportVesselsGraph
+                  data={aggregatedData!}
+                  individualData={individualData}
+                  aggregatedValueKey={valueKeys}
+                  color={color}
+                  property={reportVesselGraph as ReportVesselsSubCategory}
+                />
+              )}
+              <ReportVesselsFilter filter={filter} />
+            </Fragment>
           )}
-          <ReportVesselsFilter filter={filter} />
           <ReportVesselsTable
             activityUnit={activityUnit}
             allowSorting={activityUnit === undefined}

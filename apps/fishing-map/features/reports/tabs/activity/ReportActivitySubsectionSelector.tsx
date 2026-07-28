@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -14,7 +13,11 @@ import {
   selectHasViirsDataviews,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
-import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
+  selectReportSubCategory,
+} from 'features/reports/reports.selectors'
 import type {
   ReportActivitySubCategory,
   ReportDetectionsSubCategory,
@@ -38,8 +41,12 @@ function ReportActivitySubsectionSelector() {
   const hasViirsDataviews = useSelector(selectHasViirsDataviews)
   const hasSarDataviews = useSelector(selectHasSarDataviews)
   const hasSentinel2Dataviews = useSelector(selectHasSentinel2Dataviews)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const loading = useReportFeaturesLoading()
   const fitAreaInViewport = useFitAreaInViewport()
+
+  const isPresenceDisabled =
+    loading || !hasPresenceDataviews || !activeReportSubCategories?.includes('presence')
 
   const options: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>[] =
     reportCategory === ReportCategory.Activity
@@ -52,7 +59,7 @@ function ReportActivitySubsectionSelector() {
           {
             id: 'presence',
             label: getReportSubCategoryLabel('presence'),
-            disabled: loading || !hasPresenceDataviews,
+            disabled: isPresenceDisabled,
           },
         ] as ChoiceOption<ReportActivitySubCategory>[])
       : ([

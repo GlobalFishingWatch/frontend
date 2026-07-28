@@ -2,6 +2,10 @@
   break-after: avoid;
 }
 
+.header {
+  padding: var(--space-S) var(--space-S) 0 var(--space-S);
+}
+
 .sidebarHeader {
   display: flex;
   align-items: center;

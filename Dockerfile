@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7-labs
 FROM node:24-slim AS builder
 
 WORKDIR /app
@@ -21,6 +22,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 COPY patches/ patches/
 COPY linting/package.json linting/
 COPY apps/fishing-map/package.json apps/fishing-map/
+# libs/* are workspace members too — without their manifests pnpm skips the
+# per-lib node_modules/@globalfishingwatch/* links a lib needs to import a sibling.
+COPY --parents libs/*/package.json ./
 RUN corepack enable && corepack install
 RUN pnpm install --frozen-lockfile
 
@@ -36,7 +40,7 @@ ARG VITE_USE_LOCAL_DATASETS
 ARG VITE_USE_LOCAL_DATAVIEWS
 ARG VITE_WORKSPACE_ENV
 ARG VITE_REPORT_DAYS_LIMIT
-ARG VITE_RANDOM_FOREST_ENABLED
+ARG VITE_REALTIME_ENABLED
 ARG COMMIT_SHA
 
 ENV API_GATEWAY=$API_GATEWAY \
@@ -49,7 +53,7 @@ ENV API_GATEWAY=$API_GATEWAY \
     VITE_USE_LOCAL_DATAVIEWS=$VITE_USE_LOCAL_DATAVIEWS \
     VITE_WORKSPACE_ENV=$VITE_WORKSPACE_ENV \
     VITE_REPORT_DAYS_LIMIT=$VITE_REPORT_DAYS_LIMIT \
-    VITE_RANDOM_FOREST_ENABLED=$VITE_RANDOM_FOREST_ENABLED \
+    VITE_REALTIME_ENABLED=$VITE_REALTIME_ENABLED \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .

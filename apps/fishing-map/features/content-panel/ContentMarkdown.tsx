@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { type ComponentProps, useMemo } from 'react'
 import Markdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
@@ -11,7 +11,17 @@ type ContentMarkdownProps = { children?: string | null }
 
 const ContentMarkdown = ({ children }: ContentMarkdownProps) => {
   const components = useMemo(
-    () => ({ a: MarkdownLink, img: MarkdownImage, iframe: MarkdownIframe }),
+    () => ({
+      a: MarkdownLink,
+      img: MarkdownImage,
+      iframe: MarkdownIframe,
+      // ponytail: inline style instead of a css module, it's the only rule this wrapper needs
+      table: (props: ComponentProps<'table'>) => (
+        <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+          <table {...props} />
+        </div>
+      ),
+    }),
     []
   )
 
