@@ -19,6 +19,7 @@ import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
+export const MULTI_VALUE_SEPARATOR = ', '
 
 export const upperFirst = (text: string) => {
   return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''
@@ -33,7 +34,7 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 
 export const getVesselShipTypeLabel = (
   { shiptypes: shiptype } = {} as Pick<SelfReportedInfo, 'shiptypes'> | { shiptypes: string },
-  { joinCharacter = ', ', translationFn = t } = {} as {
+  { joinCharacter = MULTI_VALUE_SEPARATOR, translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }
@@ -56,7 +57,7 @@ export const getVesselShipTypeLabel = (
 
 export const getVesselGearTypeLabel = (
   { geartypes: geartype } = {} as Pick<VesselDataIdentity, 'geartypes'> | { geartypes: string },
-  { joinCharacter = ', ', translationFn = t } = {} as {
+  { joinCharacter = MULTI_VALUE_SEPARATOR, translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }

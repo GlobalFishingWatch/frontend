@@ -30,7 +30,7 @@ import { FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessel
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, MULTI_VALUE_SEPARATOR } from 'utils/info'
 
 import {
   DEFAULT_BUFFER_OPERATION,
@@ -288,12 +288,12 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
       uniq(identity.geartypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'geartypes'))
-        .join(', ') || OTHERS_CATEGORY_LABEL,
+        .join(MULTI_VALUE_SEPARATOR) || OTHERS_CATEGORY_LABEL,
     shiptype:
       uniq(identity.shiptypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'shiptypes'))
-        .join(', ') || OTHERS_CATEGORY_LABEL,
+        .join(MULTI_VALUE_SEPARATOR) || OTHERS_CATEGORY_LABEL,
     flagTranslated: t((t) => t[identity.flag as string], { ns: 'flags' }),
   }
 }
@@ -334,7 +334,7 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
             vessels.filter((vessel) =>
               propertiesToMatch.some((key) =>
                 String((vessel as any)[key] ?? '')
-                  .split(', ')
+                  .split(MULTI_VALUE_SEPARATOR)
                   .some((label) => label.toLowerCase() === word.toLowerCase())
               )
             )
