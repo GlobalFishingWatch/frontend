@@ -61,7 +61,9 @@ function Sidebar({ onMenuClick, children }: SidebarProps) {
           data-testid="sidebar-container"
         >
           {isTrackCorrectionOpen && <TrackCorrection />}
-          <div className={cx({ [styles.hidden]: isTrackCorrectionOpen })}>{children}</div>
+          <div className={cx(styles.scrollContent, { [styles.hidden]: isTrackCorrectionOpen })}>
+            {children}
+          </div>
         </div>
       </div>
       {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}

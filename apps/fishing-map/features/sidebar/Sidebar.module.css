@@ -23,6 +23,10 @@
   overflow: hidden auto;
 }
 
+.scrollContent {
+  height: 100%;
+}
+
 .placeholder {
   height: calc(100% - var(--header-height));
   flex: 1;
