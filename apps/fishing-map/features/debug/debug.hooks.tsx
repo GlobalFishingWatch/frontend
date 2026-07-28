@@ -9,7 +9,7 @@ let toastDismissed = false
 export const useFeatureFlagsToast = () => {
   const allFeatureFlags = useSelector(selectFeatureFlags)
   const featureFlags = Object.entries(allFeatureFlags)
-    .filter(([flag, value]) => flag !== 'workspaceGenerator' && value === true)
+    .filter(([, value]) => value === true)
     .map(([flag]) => flag) as FeatureFlag[]
   const toastId = useRef<any>(undefined)
   const debugActive = useSelector(selectDebugActive)

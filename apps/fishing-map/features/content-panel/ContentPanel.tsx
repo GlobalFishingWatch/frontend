@@ -3,10 +3,13 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import DataTerminologyContent from 'features/content-panel/DataTerminologyContent'
-import InfoContainer from 'features/content-panel/InfoContainer'
-import UserDatasetContent from 'features/content-panel/UserDatasetContent'
-import UserGuideContent from 'features/content-panel/UserGuideContent'
+import { IS_CHATBOT_ENABLED } from 'data/config'
+import ChatContainer from 'features/content-panel/chat/ChatContainer'
+import { useSidePanel } from 'features/content-panel/contentPanel.hooks'
+import DataTerminologyContent from 'features/content-panel/data-terminology/DataTerminologyContent'
+import DatasetInfoContainer from 'features/content-panel/datasets-info/DatasetInfoContainer'
+import UserDatasetInfoContainer from 'features/content-panel/datasets-info/UserDatasetInfoContainer'
+import UserGuideContent from 'features/content-panel/user-guide/UserGuideContent'
 import { Route } from 'routes/_app'
 
 import styles from './ContentPanel.module.css'
@@ -26,6 +29,7 @@ function ContentPanel({
   onPanelWidthChange?: (width: number) => void
 }) {
   const { sidePanelContent } = Route.useSearch()
+  const { closeSidePanel } = useSidePanel()
   const isSmallScreen = useSmallScreen()
 
   const [isDragging, setIsDragging] = useState(false)
@@ -35,6 +39,12 @@ function ContentPanel({
 
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (sidePanelContent === 'chat' && !IS_CHATBOT_ENABLED) {
+      closeSidePanel()
+    }
+  }, [sidePanelContent, closeSidePanel])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -94,9 +104,10 @@ function ContentPanel({
         onMouseDown={handleMouseDown}
       />
       {sidePanelContent === 'userGuide' && <UserGuideContent />}
-      {sidePanelContent === 'datasets' && <InfoContainer />}
-      {sidePanelContent === 'userDataset' && <UserDatasetContent />}
+      {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
+      {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
       {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
+      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
     </div>
   )
 }

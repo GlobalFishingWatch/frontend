@@ -10419,7 +10419,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
   debug: {
     active: false,
     featureFlags: {
-      workspaceGenerator: false,
       hotspotButton: false,
       polygonsReport: false,
     },
@@ -10480,7 +10479,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
     layerLibrary: { open: false, singleCategory: false },
     screenshot: false,
     vesselCorrection: false,
-    workspaceGenerator: false,
   },
   print: { printMode: false },
   regions: {

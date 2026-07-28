@@ -22,6 +22,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@fishing-map/config": "workspace:*",
     "@fontsource/roboto": "^5.2.10",
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",

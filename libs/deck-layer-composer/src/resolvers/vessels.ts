@@ -29,7 +29,9 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     type: DatasetTypes.Tracks,
     endpoint: timeMode === 'realTime' ? EndpointId.TracksRealTime : EndpointId.Tracks,
   })
-  const trackUrl = resolveDataviewDatasetResource(dataview, trackDatasetConfig.datasetId)?.url
+  const trackUrl = trackDatasetConfig
+    ? resolveDataviewDatasetResource(dataview, trackDatasetConfig.datasetId)?.url
+    : undefined
   const hasDataviewDatesConfig =
     dataview.config?.startDate != null &&
     dataview.config?.startDate != undefined &&

@@ -16,7 +16,6 @@
     "inlineSources": true,
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
     "types": ["node"]
-    
   },
   "include": ["src/**/*.ts"]
 }

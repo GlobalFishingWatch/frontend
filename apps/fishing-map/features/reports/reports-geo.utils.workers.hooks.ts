@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import type { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
 
@@ -32,14 +32,9 @@ function getWorker() {
 }
 
 export function useFilterCellsByPolygonWorker() {
-  const workerRef = useRef<Worker>(getWorker()!)
-
   useEffect(() => {
-    const workerInstance = workerRef.current
     return () => {
-      if (workerInstance) {
-        requests.clear()
-      }
+      requests.clear()
     }
   }, [])
 
@@ -47,7 +42,7 @@ export function useFilterCellsByPolygonWorker() {
     const promise: Promise<FilteredPolygons[]> = new Promise((resolve, reject) => {
       const id = idCounter++
       requests.set(id, { resolve, reject })
-      workerRef.current?.postMessage({ id, params })
+      getWorker().postMessage({ id, params })
     })
     return promise
   }, [])

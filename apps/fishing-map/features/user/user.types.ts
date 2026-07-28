@@ -1,4 +1,5 @@
 export type LoginSource =
+  | 'assistant'
   | 'draw-points'
   | 'draw-polygon'
   | 'layer-download'

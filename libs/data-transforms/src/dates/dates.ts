@@ -1,8 +1,8 @@
 import { toNumber } from 'es-toolkit/compat'
-import type { DateTimeOptions } from 'luxon'
+import type { DateTimeOptions, DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { type FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
@@ -173,4 +173,28 @@ export const formatDateForInterval = (
       break
   }
   return formattedTick
+}
+
+type StickToClosestIntervalParams = {
+  start: string
+  end: string
+}
+export const stickToClosestInterval = ({ start, end }: StickToClosestIntervalParams) => {
+  const interval = getFourwingsInterval(start, end).toLowerCase() as DateTimeUnit
+  const getClosestIntervalDate = (date: string, unit: DateTimeUnit) => {
+    const mDate = getUTCDateTime(date)
+    const mStartOf = mDate.startOf(unit)
+    const mEndOf = mDate.endOf(unit).plus({ millisecond: 1 })
+    const startDeltaMs = mDate.valueOf() - mStartOf.valueOf()
+    const endDeltaMs = mEndOf.valueOf() - mDate.valueOf()
+    return (startDeltaMs > endDeltaMs ? mEndOf : mStartOf).toISO() as string
+  }
+  const newStart = getClosestIntervalDate(start, interval)
+  let newEnd = getClosestIntervalDate(end, interval)
+  if (newStart === newEnd) {
+    newEnd = getUTCDateTime(newStart)
+      .plus({ [interval]: 1 })
+      .toISO() as string
+  }
+  return { start: newStart, end: newEnd }
 }
