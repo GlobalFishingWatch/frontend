@@ -1,5 +1,5 @@
 .container {
-  min-height: 55rem;
+  min-height: 50rem;
   padding: var(--space-M);
   display: flex;
   flex-direction: column;
@@ -10,8 +10,18 @@
   font: var(--font-L);
 }
 
+.notice {
+  margin-top: var(--space-S);
+}
+
 .description {
   color: var(--color-secondary-blue);
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
 }
 
 .textArea {
@@ -21,8 +31,14 @@
 .footer {
   margin-top: auto;
   display: flex;
+  align-items: center;
   gap: var(--space-S);
   justify-content: flex-end;
+}
+
+.error {
+  margin-right: auto;
+  color: var(--color-danger-red);
 }
 
 .disableSection {
@@ -30,6 +46,15 @@
   align-items: center;
   margin-right: auto;
   gap: var(--space-S);
+}
+
+/* Reset the label styles some apps set globally */
+.disableLabel {
+  font: var(--font-S);
+  color: inherit;
+  text-transform: none;
+  margin-bottom: 0;
+  cursor: pointer;
 }
 
 .nonInteractive {

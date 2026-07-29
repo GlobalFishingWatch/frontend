@@ -63,7 +63,7 @@ function DatasetPage() {
   const [dataset, setDataset] = useState<(DownloadDataset & { files: TableData[] }) | null>(null)
   const [error, setError] = useState<ResponseError | undefined>(undefined)
   const [loading, setLoading] = useState(false)
-  const { logged } = useGFWLogin(GFWAPI)
+  const { logged, user } = useGFWLogin(GFWAPI)
 
   useEffect(() => {
     setLoading(true)
@@ -129,7 +129,7 @@ function DatasetPage() {
             </div>
             <div className={styles.files}>
               {dataset && dataset.files?.length > 0 && (
-                <Table columns={columns} data={dataset.files} logged={logged} />
+                <Table columns={columns} data={dataset.files} logged={logged} user={user} />
               )}
               <ApiBanner />
             </div>
