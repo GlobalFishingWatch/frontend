@@ -1,5 +1,6 @@
 import { Bar, BarChart, LabelList, Tooltip, XAxis } from 'recharts'
 
+import { getResponsiveVisualizationItemValue } from '../../lib/values'
 import type {
   ResponsiveVisualizationAggregatedObjectValue,
   ResponsiveVisualizationValue,
@@ -19,6 +20,19 @@ export function AggregatedBarChart({
   customTooltip,
   barValueFormatter,
 }: AggregatedBarChartProps) {
+  const getStackTotal = (payload: any) =>
+    (Array.isArray(valueKeys) ? valueKeys : [valueKeys]).reduce(
+      (acc, key) => acc + (getResponsiveVisualizationItemValue(payload?.[key]) || 0),
+      0
+    )
+
+  const stackTopLabelAccessor = ({ value, payload }: { value: any; payload: any }) => {
+    const segmentTop = Array.isArray(value) ? value[1] : value
+    const total = getStackTotal(payload)
+    if (segmentTop !== total) return ''
+    return barValueFormatter?.(total) ?? total
+  }
+
   return (
     <BarChart
       responsive
@@ -37,8 +51,8 @@ export function AggregatedBarChart({
     >
       {data && <Tooltip content={customTooltip} />}
       {Array.isArray(valueKeys) ? (
-        valueKeys.map((valueKey, index) => {
-          const value = data?.[index]?.[valueKey]
+        valueKeys.map((valueKey) => {
+          const value = data?.find((d) => d?.[valueKey] !== undefined)?.[valueKey]
           const isValueObject = typeof value === 'object'
           const dataKey = isValueObject ? `${valueKey}.value` : valueKey
           const barColor = isValueObject
@@ -55,14 +69,7 @@ export function AggregatedBarChart({
               }}
               isAnimationActive={false}
             >
-              {index === valueKeys.length - 1 && (
-                <LabelList
-                  position="top"
-                  valueAccessor={({ value }: { value: any }) => {
-                    return barValueFormatter?.(value[1]) || value[1]
-                  }}
-                />
-              )}
+              <LabelList position="top" valueAccessor={stackTopLabelAccessor as any} />
             </Bar>
           )
         })
@@ -72,12 +79,7 @@ export function AggregatedBarChart({
           fill={color}
           onClick={(e) => onClick?.((e as any).payload as ResponsiveVisualizationValue)}
         >
-          <LabelList
-            position="top"
-            valueAccessor={({ value }: { value: any }) => {
-              return barValueFormatter?.(value[1]) || value[1]
-            }}
-          />
+          <LabelList position="top" valueAccessor={stackTopLabelAccessor as any} />
         </Bar>
       )}
       <XAxis

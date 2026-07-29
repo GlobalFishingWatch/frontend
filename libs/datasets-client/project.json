@@ -20,6 +20,15 @@
       },
       "continuous": true
     },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "reportsDirectory": "{projectRoot}/../../coverage/libs/datasets-client"
+      }
+    },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],

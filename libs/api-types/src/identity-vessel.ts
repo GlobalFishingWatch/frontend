@@ -244,19 +244,24 @@ export type CombinedSourceInfo = {
 }
 export type VesselCombinedSourcesInfo = {
   vesselId: string
+  atomicClass?: CombinedSourceInfo[]
+  bestVesselClassRf?: CombinedSourceInfo[]
+  coarseClass?: CombinedSourceInfo[]
+  fishingSourceAgreement?: CombinedSourceInfo[]
   geartypes: CombinedSourceInfo[]
-  shiptypes: CombinedSourceInfo[]
-  onFishingListSr?: CombinedSourceInfo[]
+  inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
   inferredVesselClassAgNnet?: CombinedSourceInfo[]
-  prodGeartypeSource?: CombinedSourceInfo[]
-  registryVesselClass?: CombinedSourceInfo[]
-  bestVesselClassRf?: CombinedSourceInfo[]
-  rfCoarseClass?: CombinedSourceInfo[]
-  inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   messyMmsi?: CombinedSourceInfo[]
-  prodShiptypeNnet?: CombinedSourceInfo[]
+  onFishingListSr?: CombinedSourceInfo[]
   prodGeartypeNnet?: CombinedSourceInfo[]
+  prodGeartypeSource?: CombinedSourceInfo[]
+  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
+  prodShiptypeNnet?: CombinedSourceInfo[]
+  registryVesselClass?: CombinedSourceInfo[]
+  shiptypes: CombinedSourceInfo[]
+  vesselClassScore?: CombinedSourceInfo[]
+  vesselClassSourceAgreement?: CombinedSourceInfo[]
 }
 
 export type IdentityVessel = {

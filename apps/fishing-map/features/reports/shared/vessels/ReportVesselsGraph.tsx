@@ -80,7 +80,7 @@ const ReportBarTooltip = (props: any) => {
         <ul className={isOthersCategory ? styles.maxHeight : ''}>
           {tooltipPayload
             .map(({ value, color, payload }, index) => {
-              if (value === 0 || otherLabelCounted) {
+              if (!value || otherLabelCounted) {
                 return null
               }
               if (payload.name === OTHERS_CATEGORY_LABEL && payload.others) {
@@ -246,9 +246,7 @@ export default function ReportVesselsGraph({
         getIndividualData={getIndividualData}
         getAggregatedData={getAggregatedData}
         onAggregatedItemClick={onBarClick}
-        barValueFormatter={(value: any) => {
-          return formatI18nNumber(value).toString()
-        }}
+        barValueFormatter={(value: any) => formatI18nNumber(value).toString()}
         barLabel={
           <ReportGraphTick
             property={property}

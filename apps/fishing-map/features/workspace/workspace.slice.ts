@@ -1,3 +1,4 @@
+import { GAPS_EVENTS_WORKSPACE_ID } from '@fishing-map/config'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
@@ -31,6 +32,7 @@ import {
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS,
 } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -246,6 +248,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(urlDataviewInstances || []).flatMap(({ dataviewId }) => (dataviewId as string) || []),
       ].filter(Boolean)
 
+      // TODO: remove this once the gaps dataset is ready to production and public
+      if (workspaceId === GAPS_EVENTS_WORKSPACE_ID) {
+        dataviewIds.push(TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS)
+      }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)

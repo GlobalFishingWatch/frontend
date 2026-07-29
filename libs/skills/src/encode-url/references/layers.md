@@ -121,7 +121,19 @@ Known national dataset ids (source: `gfw-terraform-api-resources/resources/datas
 | `salinity`, `oxygen`, `nitrate`, `phosphate`, `ph`, `thgt` (wave height)   | `heatmap-environmental-layer` |                         |
 | `marine-ecoregions`, `mangroves`, `seamounts`, `coral-reefs`, `seagrasses` | `gfw-environmental-layer`     |                         |
 
-Environment layers with `heatmap-environmental-layer`/`gfw-environmental-layer` template dataviews also need their dataset in `config.datasets`, e.g. `["public-global-sst:v20231213"]` — dataset ids follow `public-global-<id>:v20231213`.
+These are **template** dataviews: several library layers share one `dataviewId`, so the instance must carry the dataset itself in `datasetsConfig`. Also give the instance a unique id `<libraryId>__<timestamp>` and `category: environment`:
+
+```js
+{
+  id: 'sst__1783953707644',
+  dataviewId: 'heatmap-environmental-layer',
+  category: 'environment',
+  config: { color: '#FF6854', colorRamp: 'red' },
+  datasetsConfig: [
+    { datasetId: 'public-global-sst:v20231213', endpoint: '4wings-tiles', params: [{ id: 'type', value: 'heatmap' }] },
+  ],
+}
+```
 
 ## Vessel track layers
 

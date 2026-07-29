@@ -27,11 +27,18 @@ const VesselIdentityGFWExtendedGeartype = ({
   }
   const {
     geartypes,
+    atomicClass = [],
+    vesselClassScore = [],
+    bestVesselClassRf = [],
     prodGeartypeSource = [],
     inferredVesselClassAgNnet = [],
     registryVesselClass = [],
+    vesselClassSourceAgreement = [],
   } = identity.combinedSourcesInfo
 
+  const atomicClassInTimerange = atomicClass.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
   const inferredVesselClassAgNnetInTimerange = inferredVesselClassAgNnet.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
@@ -41,12 +48,17 @@ const VesselIdentityGFWExtendedGeartype = ({
   const prodGeartypeSourceInTimerange = prodGeartypeSource.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
+  const vesselClassScoreInTimerange = vesselClassScore.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const vesselClassSourceAgreementInTimerange = vesselClassSourceAgreement.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
   return (
     <ul className={styles.extendedInfo}>
       <li>
         <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
       </li>
-      {/* pipe5 missing API properties: rf_atomic_class, rf_vessel_class_score, vessel_class_source_agreement */}
       <li>
         <Tooltip content="(inferredVesselClassAgNnet) Vessel class inferred by the machine learning model.">
           <span className={cx(styles.secondary, styles.help)}>ML vessel class: </span>
@@ -56,11 +68,17 @@ const VesselIdentityGFWExtendedGeartype = ({
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
+        <span className={cx(styles.secondary, styles.help)}>ML atomic class: </span>
+        {atomicClassInTimerange?.value
+          ? formatInfoField(atomicClassInTimerange?.value as string, 'geartypes')
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
         <Tooltip content='(registryVesselClass) Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the "Registry" tab gear, which aggregates at the hull level.'>
           <span className={cx(styles.secondary, styles.help)}>Aggregated registry: </span>
         </Tooltip>
         {registryVesselClassInTimerange?.value
-          ? (formatInfoField(registryVesselClassInTimerange.value as string, 'geartypes') as string)
+          ? registryVesselClassInTimerange.value
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
@@ -70,11 +88,15 @@ const VesselIdentityGFWExtendedGeartype = ({
         {(prodGeartypeSourceInTimerange?.value as string)?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
-        <Tooltip content="(geartype)">
-          <span className={cx(styles.secondary, styles.help)}>Random Forest estimate: </span>
-        </Tooltip>
-        {geartypes?.[sourceIndex]?.name
-          ? (formatInfoField(geartypes?.[sourceIndex]?.name as string, 'geartypes') as string)
+        <span className={cx(styles.secondary, styles.help)}>ML vessel class score </span>
+        {vesselClassScoreInTimerange?.value !== undefined
+          ? vesselClassScoreInTimerange.value
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>Vessel class source agreement: </span>
+        {vesselClassSourceAgreementInTimerange?.value
+          ? vesselClassSourceAgreementInTimerange.value
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
     </ul>

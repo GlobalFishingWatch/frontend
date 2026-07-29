@@ -20,7 +20,11 @@ import type {
   ReportVesselGraph,
   ReportVesselsSubCategory,
 } from 'features/reports/reports.types'
-import { EMPTY_FIELD_PLACEHOLDER, getVesselShipTypeLabel } from 'utils/info'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  getVesselShipTypeLabel,
+  MULTI_VALUE_SEPARATOR,
+} from 'utils/info'
 
 import type { ReportVesselWithDatasets } from '../../report-area/area-reports.selectors'
 import type { ReportTableVessel } from '../vessels/report-vessels.types'
@@ -80,10 +84,10 @@ export function getVesselAggregatedGroupedData(
         dataByKey = groupBy(dataviewData, (vessel) => vessel.flagTranslatedClean)
         break
       case 'vesselType':
-        dataByKey = groupBy(dataviewData, (vessel) => vessel.vesselType.split(', ')[0])
+        dataByKey = groupBy(dataviewData, (vessel) => vessel.vesselType.split(MULTI_VALUE_SEPARATOR)[0])
         break
       case 'geartype':
-        dataByKey = groupBy(dataviewData, (vessel) => vessel.geartype.split(', ')[0])
+        dataByKey = groupBy(dataviewData, (vessel) => vessel.geartype.split(MULTI_VALUE_SEPARATOR)[0])
         break
       case 'source':
         dataByKey = groupBy(dataviewData, (vessel) => vessel.source as string)
@@ -160,12 +164,12 @@ export function getVesselIndividualGroupedData(
     case 'vesselType': {
       vesselsGrouped = groupBy(
         vesselsSorted,
-        (vessel) => vessel.vesselType?.split(', ')[0] as string
+        (vessel) => vessel.vesselType?.split(MULTI_VALUE_SEPARATOR)[0] as string
       )
       break
     }
     case 'geartype': {
-      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.geartype?.split(', ')[0] as string)
+      vesselsGrouped = groupBy(vesselsSorted, (vessel) => vessel.geartype?.split(MULTI_VALUE_SEPARATOR)[0] as string)
       break
     }
     case 'source': {
