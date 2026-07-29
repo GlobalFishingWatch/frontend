@@ -10,6 +10,8 @@ import {
   DATASET_PUBLIC_PREFIX,
 } from '@globalfishingwatch/datasets-client'
 
+import type { WorkspaceEnv } from 'data/workspaces'
+
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
@@ -22,7 +24,7 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
 export const IS_PRODUCTION_BUILD = import.meta.env.PROD
-export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as string | undefined
+export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv | undefined
 export const IS_PRODUCTION_WORKSPACE_ENV =
   WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'
 

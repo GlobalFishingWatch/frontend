@@ -83,6 +83,7 @@ export class GFW_API_CLASS {
   private refreshTokenStorage: TokenStorage
   private refreshStrategy: RefreshStrategy | null = null
   private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
+  private defaultHeaders: HeadersInit = {}
   status: RequestStatus = 'idle'
 
   constructor({
@@ -138,12 +139,14 @@ export class GFW_API_CLASS {
     tokenStorage,
     refreshStrategy,
     sessionInvalidateStrategy,
+    defaultHeaders,
     debug,
   }: {
     baseUrl?: string
     tokenStorage?: TokenStorage
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
+    defaultHeaders?: HeadersInit
     debug?: boolean
   } = {}) {
     if (debug !== undefined) {
@@ -161,6 +164,9 @@ export class GFW_API_CLASS {
     }
     if (sessionInvalidateStrategy) {
       this.sessionInvalidateStrategy = sessionInvalidateStrategy
+    }
+    if (defaultHeaders) {
+      this.defaultHeaders = defaultHeaders
     }
     if (this.debug) {
       this.debugLog('GFWAPI: configure()', {
@@ -489,6 +495,7 @@ export class GFW_API_CLASS {
         }
       }
       const finalHeaders = {
+        ...this.defaultHeaders,
         ...(typeof headers === 'function' ? headers() : headers),
         ...(requestType === 'json' && { 'Content-Type': 'application/json' }),
         ...(local && {

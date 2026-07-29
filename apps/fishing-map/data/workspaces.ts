@@ -10,7 +10,7 @@ import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 // Single source of truth for workspace constants shared with libs/skills
 export * from '@fishing-map/config/workspaces'
 
-type WorkspaceEnv = 'development' | 'production'
+export type WorkspaceEnv = 'development' | 'staging' | 'production'
 export const WORKSPACE_ENV = (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) || (import.meta.env.MODE as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
