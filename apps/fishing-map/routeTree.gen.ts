@@ -9,40 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as AppUserRouteImport } from './routes/_app/user'
-import { Route as AppVesselSearchRouteImport } from './routes/_app/vessel-search'
-import { Route as ApiCorrectionsRouteImport } from './routes/api/corrections'
-import { Route as ApiDownloadSurveyRouteImport } from './routes/api/downloadSurvey'
 import { Route as ApiFeedbackRouteImport } from './routes/api/feedback'
-import { Route as AppCategoryIndexRouteImport } from './routes/_app/$category/index'
-import { Route as AppCategoryWorkspaceIdRouteImport } from './routes/_app/$category/$workspaceId'
-import { Route as AppReportReportIdRouteImport } from './routes/_app/report.$reportId'
-import { Route as AppVesselVesselIdRouteImport } from './routes/_app/vessel.$vesselId'
-import { Route as ApiMigramarAreaIdRouteImport } from './routes/api/migramar/$areaId'
-import { Route as ApiMigramarOptionsRouteImport } from './routes/api/migramar/options'
+import { Route as ApiDownloadSurveyRouteImport } from './routes/api/downloadSurvey'
+import { Route as ApiCorrectionsRouteImport } from './routes/api/corrections'
+import { Route as AppVesselSearchRouteImport } from './routes/_app/vessel-search'
+import { Route as AppUserRouteImport } from './routes/_app/user'
 import { Route as ApiOceanAreasIndexRouteImport } from './routes/api/ocean-areas/index'
-import { Route as ApiOceanAreasNameRouteImport } from './routes/api/ocean-areas/name'
+import { Route as AppCategoryIndexRouteImport } from './routes/_app/$category/index'
 import { Route as ApiOceanAreasSearchRouteImport } from './routes/api/ocean-areas/search'
-import { Route as AppCategoryWorkspaceIdIndexRouteImport } from './routes/_app/$category/$workspaceId/index'
-import { Route as AppCategoryWorkspaceIdVesselSearchRouteImport } from './routes/_app/$category/$workspaceId/vessel-search'
+import { Route as ApiOceanAreasNameRouteImport } from './routes/api/ocean-areas/name'
+import { Route as ApiMigramarOptionsRouteImport } from './routes/api/migramar/options'
+import { Route as ApiMigramarAreaIdRouteImport } from './routes/api/migramar/$areaId'
+import { Route as AppVesselVesselIdRouteImport } from './routes/_app/vessel.$vesselId'
+import { Route as AppReportReportIdRouteImport } from './routes/_app/report.$reportId'
+import { Route as AppCategoryWorkspaceIdRouteImport } from './routes/_app/$category/$workspaceId'
 import { Route as ApiTrackCorrectionsWorkspaceIdIndexRouteImport } from './routes/api/track-corrections/$workspaceId/index'
+import { Route as AppCategoryWorkspaceIdIndexRouteImport } from './routes/_app/$category/$workspaceId/index'
 import { Route as ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport } from './routes/api/track-corrections/$workspaceId/$issueId'
-import { Route as AppCategoryWorkspaceIdPortsReportPortIdRouteImport } from './routes/_app/$category/$workspaceId/ports-report.$portId'
+import { Route as AppCategoryWorkspaceIdVesselSearchRouteImport } from './routes/_app/$category/$workspaceId/vessel-search'
 import { Route as AppCategoryWorkspaceIdReportIndexRouteImport } from './routes/_app/$category/$workspaceId/report/index'
-import { Route as AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport } from './routes/_app/$category/$workspaceId/vessel-group-report.$vesselGroupId'
 import { Route as AppCategoryWorkspaceIdVesselVesselIdRouteImport } from './routes/_app/$category/$workspaceId/vessel.$vesselId'
+import { Route as AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport } from './routes/_app/$category/$workspaceId/vessel-group-report.$vesselGroupId'
+import { Route as AppCategoryWorkspaceIdPortsReportPortIdRouteImport } from './routes/_app/$category/$workspaceId/ports-report.$portId'
 import { Route as AppCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport } from './routes/_app/$category/$workspaceId/report/$datasetId/$areaId'
 
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -50,19 +50,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppUserRoute = AppUserRouteImport.update({
-  id: '/user',
-  path: '/user',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppVesselSearchRoute = AppVesselSearchRouteImport.update({
-  id: '/vessel-search',
-  path: '/vessel-search',
-  getParentRoute: () => AppRoute,
-} as any)
-const ApiCorrectionsRoute = ApiCorrectionsRouteImport.update({
-  id: '/api/corrections',
-  path: '/api/corrections',
+const ApiFeedbackRoute = ApiFeedbackRouteImport.update({
+  id: '/api/feedback',
+  path: '/api/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDownloadSurveyRoute = ApiDownloadSurveyRouteImport.update({
@@ -70,9 +60,24 @@ const ApiDownloadSurveyRoute = ApiDownloadSurveyRouteImport.update({
   path: '/api/downloadSurvey',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiFeedbackRoute = ApiFeedbackRouteImport.update({
-  id: '/api/feedback',
-  path: '/api/feedback',
+const ApiCorrectionsRoute = ApiCorrectionsRouteImport.update({
+  id: '/api/corrections',
+  path: '/api/corrections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppVesselSearchRoute = AppVesselSearchRouteImport.update({
+  id: '/vessel-search',
+  path: '/vessel-search',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUserRoute = AppUserRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => AppRoute,
+} as any)
+const ApiOceanAreasIndexRoute = ApiOceanAreasIndexRouteImport.update({
+  id: '/api/ocean-areas/',
+  path: '/api/ocean-areas/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppCategoryIndexRoute = AppCategoryIndexRouteImport.update({
@@ -80,34 +85,9 @@ const AppCategoryIndexRoute = AppCategoryIndexRouteImport.update({
   path: '/$category/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCategoryWorkspaceIdRoute = AppCategoryWorkspaceIdRouteImport.update({
-  id: '/$category/$workspaceId',
-  path: '/$category/$workspaceId',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppReportReportIdRoute = AppReportReportIdRouteImport.update({
-  id: '/report/$reportId',
-  path: '/report/$reportId',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppVesselVesselIdRoute = AppVesselVesselIdRouteImport.update({
-  id: '/vessel/$vesselId',
-  path: '/vessel/$vesselId',
-  getParentRoute: () => AppRoute,
-} as any)
-const ApiMigramarAreaIdRoute = ApiMigramarAreaIdRouteImport.update({
-  id: '/api/migramar/$areaId',
-  path: '/api/migramar/$areaId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMigramarOptionsRoute = ApiMigramarOptionsRouteImport.update({
-  id: '/api/migramar/options',
-  path: '/api/migramar/options',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiOceanAreasIndexRoute = ApiOceanAreasIndexRouteImport.update({
-  id: '/api/ocean-areas/',
-  path: '/api/ocean-areas/',
+const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
+  id: '/api/ocean-areas/search',
+  path: '/api/ocean-areas/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiOceanAreasNameRoute = ApiOceanAreasNameRouteImport.update({
@@ -115,28 +95,42 @@ const ApiOceanAreasNameRoute = ApiOceanAreasNameRouteImport.update({
   path: '/api/ocean-areas/name',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
-  id: '/api/ocean-areas/search',
-  path: '/api/ocean-areas/search',
+const ApiMigramarOptionsRoute = ApiMigramarOptionsRouteImport.update({
+  id: '/api/migramar/options',
+  path: '/api/migramar/options',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppCategoryWorkspaceIdIndexRoute =
-  AppCategoryWorkspaceIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
-const AppCategoryWorkspaceIdVesselSearchRoute =
-  AppCategoryWorkspaceIdVesselSearchRouteImport.update({
-    id: '/vessel-search',
-    path: '/vessel-search',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
+const ApiMigramarAreaIdRoute = ApiMigramarAreaIdRouteImport.update({
+  id: '/api/migramar/$areaId',
+  path: '/api/migramar/$areaId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppVesselVesselIdRoute = AppVesselVesselIdRouteImport.update({
+  id: '/vessel/$vesselId',
+  path: '/vessel/$vesselId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportReportIdRoute = AppReportReportIdRouteImport.update({
+  id: '/report/$reportId',
+  path: '/report/$reportId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCategoryWorkspaceIdRoute = AppCategoryWorkspaceIdRouteImport.update({
+  id: '/$category/$workspaceId',
+  path: '/$category/$workspaceId',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiTrackCorrectionsWorkspaceIdIndexRoute =
   ApiTrackCorrectionsWorkspaceIdIndexRouteImport.update({
     id: '/api/track-corrections/$workspaceId/',
     path: '/api/track-corrections/$workspaceId/',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AppCategoryWorkspaceIdIndexRoute =
+  AppCategoryWorkspaceIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
 const ApiTrackCorrectionsWorkspaceIdIssueIdRoute =
   ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport.update({
@@ -144,10 +138,10 @@ const ApiTrackCorrectionsWorkspaceIdIssueIdRoute =
     path: '/api/track-corrections/$workspaceId/$issueId',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AppCategoryWorkspaceIdPortsReportPortIdRoute =
-  AppCategoryWorkspaceIdPortsReportPortIdRouteImport.update({
-    id: '/ports-report/$portId',
-    path: '/ports-report/$portId',
+const AppCategoryWorkspaceIdVesselSearchRoute =
+  AppCategoryWorkspaceIdVesselSearchRouteImport.update({
+    id: '/vessel-search',
+    path: '/vessel-search',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
 const AppCategoryWorkspaceIdReportIndexRoute =
@@ -156,16 +150,22 @@ const AppCategoryWorkspaceIdReportIndexRoute =
     path: '/report/',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
+const AppCategoryWorkspaceIdVesselVesselIdRoute =
+  AppCategoryWorkspaceIdVesselVesselIdRouteImport.update({
+    id: '/vessel/$vesselId',
+    path: '/vessel/$vesselId',
+    getParentRoute: () => AppCategoryWorkspaceIdRoute,
+  } as any)
 const AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
   AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update({
     id: '/vessel-group-report/$vesselGroupId',
     path: '/vessel-group-report/$vesselGroupId',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
-const AppCategoryWorkspaceIdVesselVesselIdRoute =
-  AppCategoryWorkspaceIdVesselVesselIdRouteImport.update({
-    id: '/vessel/$vesselId',
-    path: '/vessel/$vesselId',
+const AppCategoryWorkspaceIdPortsReportPortIdRoute =
+  AppCategoryWorkspaceIdPortsReportPortIdRouteImport.update({
+    id: '/ports-report/$portId',
+    path: '/ports-report/$portId',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
 const AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
@@ -358,18 +358,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/': {
@@ -379,25 +379,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/user': {
-      id: '/_app/user'
-      path: '/user'
-      fullPath: '/user'
-      preLoaderRoute: typeof AppUserRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/vessel-search': {
-      id: '/_app/vessel-search'
-      path: '/vessel-search'
-      fullPath: '/vessel-search'
-      preLoaderRoute: typeof AppVesselSearchRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/api/corrections': {
-      id: '/api/corrections'
-      path: '/api/corrections'
-      fullPath: '/api/corrections'
-      preLoaderRoute: typeof ApiCorrectionsRouteImport
+    '/api/feedback': {
+      id: '/api/feedback'
+      path: '/api/feedback'
+      fullPath: '/api/feedback'
+      preLoaderRoute: typeof ApiFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/downloadSurvey': {
@@ -407,11 +393,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiDownloadSurveyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/feedback': {
-      id: '/api/feedback'
-      path: '/api/feedback'
-      fullPath: '/api/feedback'
-      preLoaderRoute: typeof ApiFeedbackRouteImport
+    '/api/corrections': {
+      id: '/api/corrections'
+      path: '/api/corrections'
+      fullPath: '/api/corrections'
+      preLoaderRoute: typeof ApiCorrectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/vessel-search': {
+      id: '/_app/vessel-search'
+      path: '/vessel-search'
+      fullPath: '/vessel-search'
+      preLoaderRoute: typeof AppVesselSearchRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user': {
+      id: '/_app/user'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof AppUserRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/api/ocean-areas/': {
+      id: '/api/ocean-areas/'
+      path: '/api/ocean-areas'
+      fullPath: '/api/ocean-areas/'
+      preLoaderRoute: typeof ApiOceanAreasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/$category/': {
@@ -421,46 +428,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/$category/$workspaceId': {
-      id: '/_app/$category/$workspaceId'
-      path: '/$category/$workspaceId'
-      fullPath: '/$category/$workspaceId'
-      preLoaderRoute: typeof AppCategoryWorkspaceIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/report/$reportId': {
-      id: '/_app/report/$reportId'
-      path: '/report/$reportId'
-      fullPath: '/report/$reportId'
-      preLoaderRoute: typeof AppReportReportIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/vessel/$vesselId': {
-      id: '/_app/vessel/$vesselId'
-      path: '/vessel/$vesselId'
-      fullPath: '/vessel/$vesselId'
-      preLoaderRoute: typeof AppVesselVesselIdRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/api/migramar/$areaId': {
-      id: '/api/migramar/$areaId'
-      path: '/api/migramar/$areaId'
-      fullPath: '/api/migramar/$areaId'
-      preLoaderRoute: typeof ApiMigramarAreaIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/migramar/options': {
-      id: '/api/migramar/options'
-      path: '/api/migramar/options'
-      fullPath: '/api/migramar/options'
-      preLoaderRoute: typeof ApiMigramarOptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/ocean-areas/': {
-      id: '/api/ocean-areas/'
-      path: '/api/ocean-areas'
-      fullPath: '/api/ocean-areas/'
-      preLoaderRoute: typeof ApiOceanAreasIndexRouteImport
+    '/api/ocean-areas/search': {
+      id: '/api/ocean-areas/search'
+      path: '/api/ocean-areas/search'
+      fullPath: '/api/ocean-areas/search'
+      preLoaderRoute: typeof ApiOceanAreasSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/ocean-areas/name': {
@@ -470,11 +442,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOceanAreasNameRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/ocean-areas/search': {
-      id: '/api/ocean-areas/search'
-      path: '/api/ocean-areas/search'
-      fullPath: '/api/ocean-areas/search'
-      preLoaderRoute: typeof ApiOceanAreasSearchRouteImport
+    '/api/migramar/options': {
+      id: '/api/migramar/options'
+      path: '/api/migramar/options'
+      fullPath: '/api/migramar/options'
+      preLoaderRoute: typeof ApiMigramarOptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/migramar/$areaId': {
+      id: '/api/migramar/$areaId'
+      path: '/api/migramar/$areaId'
+      fullPath: '/api/migramar/$areaId'
+      preLoaderRoute: typeof ApiMigramarAreaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/vessel/$vesselId': {
+      id: '/_app/vessel/$vesselId'
+      path: '/vessel/$vesselId'
+      fullPath: '/vessel/$vesselId'
+      preLoaderRoute: typeof AppVesselVesselIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/report/$reportId': {
+      id: '/_app/report/$reportId'
+      path: '/report/$reportId'
+      fullPath: '/report/$reportId'
+      preLoaderRoute: typeof AppReportReportIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/$category/$workspaceId': {
+      id: '/_app/$category/$workspaceId'
+      path: '/$category/$workspaceId'
+      fullPath: '/$category/$workspaceId'
+      preLoaderRoute: typeof AppCategoryWorkspaceIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/api/track-corrections/$workspaceId/': {
+      id: '/api/track-corrections/$workspaceId/'
+      path: '/api/track-corrections/$workspaceId'
+      fullPath: '/api/track-corrections/$workspaceId/'
+      preLoaderRoute: typeof ApiTrackCorrectionsWorkspaceIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/$category/$workspaceId/': {
@@ -484,20 +491,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryWorkspaceIdIndexRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
-    '/_app/$category/$workspaceId/vessel-search': {
-      id: '/_app/$category/$workspaceId/vessel-search'
-      path: '/vessel-search'
-      fullPath: '/$category/$workspaceId/vessel-search'
-      preLoaderRoute: typeof AppCategoryWorkspaceIdVesselSearchRouteImport
-      parentRoute: typeof AppCategoryWorkspaceIdRoute
-    }
-    '/api/track-corrections/$workspaceId/': {
-      id: '/api/track-corrections/$workspaceId/'
-      path: '/api/track-corrections/$workspaceId'
-      fullPath: '/api/track-corrections/$workspaceId/'
-      preLoaderRoute: typeof ApiTrackCorrectionsWorkspaceIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/track-corrections/$workspaceId/$issueId': {
       id: '/api/track-corrections/$workspaceId/$issueId'
       path: '/api/track-corrections/$workspaceId/$issueId'
@@ -505,11 +498,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/$category/$workspaceId/ports-report/$portId': {
-      id: '/_app/$category/$workspaceId/ports-report/$portId'
-      path: '/ports-report/$portId'
-      fullPath: '/$category/$workspaceId/ports-report/$portId'
-      preLoaderRoute: typeof AppCategoryWorkspaceIdPortsReportPortIdRouteImport
+    '/_app/$category/$workspaceId/vessel-search': {
+      id: '/_app/$category/$workspaceId/vessel-search'
+      path: '/vessel-search'
+      fullPath: '/$category/$workspaceId/vessel-search'
+      preLoaderRoute: typeof AppCategoryWorkspaceIdVesselSearchRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
     '/_app/$category/$workspaceId/report/': {
@@ -519,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryWorkspaceIdReportIndexRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
+    '/_app/$category/$workspaceId/vessel/$vesselId': {
+      id: '/_app/$category/$workspaceId/vessel/$vesselId'
+      path: '/vessel/$vesselId'
+      fullPath: '/$category/$workspaceId/vessel/$vesselId'
+      preLoaderRoute: typeof AppCategoryWorkspaceIdVesselVesselIdRouteImport
+      parentRoute: typeof AppCategoryWorkspaceIdRoute
+    }
     '/_app/$category/$workspaceId/vessel-group-report/$vesselGroupId': {
       id: '/_app/$category/$workspaceId/vessel-group-report/$vesselGroupId'
       path: '/vessel-group-report/$vesselGroupId'
@@ -526,11 +526,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
-    '/_app/$category/$workspaceId/vessel/$vesselId': {
-      id: '/_app/$category/$workspaceId/vessel/$vesselId'
-      path: '/vessel/$vesselId'
-      fullPath: '/$category/$workspaceId/vessel/$vesselId'
-      preLoaderRoute: typeof AppCategoryWorkspaceIdVesselVesselIdRouteImport
+    '/_app/$category/$workspaceId/ports-report/$portId': {
+      id: '/_app/$category/$workspaceId/ports-report/$portId'
+      path: '/ports-report/$portId'
+      fullPath: '/$category/$workspaceId/ports-report/$portId'
+      preLoaderRoute: typeof AppCategoryWorkspaceIdPortsReportPortIdRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
     '/_app/$category/$workspaceId/report/$datasetId/$areaId': {

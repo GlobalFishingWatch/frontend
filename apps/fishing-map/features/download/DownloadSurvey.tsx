@@ -37,8 +37,8 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
       sent: t((t) => t.download.survey.sent),
       error: t((t) => t.download.survey.error),
       disable: t((t) => t.common.welcomePopupDisable),
-      dismiss: t((t) => t.common.dismiss),
-      confirm: t((t) => t.common.confirm),
+      skip: t((t) => t.common.skip),
+      send: t((t) => t.common.sendFeedback),
       downloading: t((t) => t.download.downloading),
     }),
     [t]
