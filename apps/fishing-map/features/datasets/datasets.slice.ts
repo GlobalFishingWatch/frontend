@@ -18,6 +18,7 @@ import type {
 import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
+  getIsDatasetVersionDowngrade,
   LEGACY_DATASETS_TO_LATEST_VMS,
 } from '@globalfishingwatch/datasets-client'
 
@@ -188,8 +189,12 @@ const fetchDatasetsBatch = async ({
   const deprecatedDatasetsHeader = responseHeaders.get(DEPRECATED_DATASETS_HEADER)
   if (deprecatedDatasetsHeader) {
     datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
-      const [newId, oldId] = id.split('=')
-      acc[newId] = oldId
+      const [deprecatedId, latestId] = id.split('=')
+      // Pre-released datasets are reported as deprecated by an older version until they go live
+      if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
+        return acc
+      }
+      acc[deprecatedId] = latestId
       return acc
     }, {} as DatasetsMigration)
   }
