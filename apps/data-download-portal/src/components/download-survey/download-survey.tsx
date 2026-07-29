@@ -9,6 +9,8 @@ import { DownloadSurvey, Modal } from '@globalfishingwatch/ui-components'
 
 import { DOWNLOAD_SURVEY_URL } from '../../config'
 
+import styles from './download-survey.module.css'
+
 type SurveyAnswer = DownloadSurveyAnswer & {
   date: string
   name: string
@@ -63,7 +65,13 @@ function DownloadSurveyModal({
   )
 
   return (
-    <Modal appSelector="root" title="Download" isOpen={isOpen} onClose={onClose}>
+    <Modal
+      appSelector="root"
+      title="Download"
+      isOpen={isOpen}
+      onClose={onClose}
+      contentClassName={styles.modalContent}
+    >
       <DownloadSurvey
         onConfirm={onConfirm}
         onClose={onClose}
