@@ -1,0 +1,121 @@
+import { useCallback, useEffect, useState } from 'react'
+import { useSelector, useStore } from 'react-redux'
+
+import { NEW_DATASET_MODAL_ID } from 'data/map/config'
+import {
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/map/datasets/datasets.hook'
+import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
+import type { RootState } from 'reducers'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
+import { getIsBrowser } from 'utils/dom'
+import { getFileType } from 'utils/files'
+
+export function useDatasetDrag() {
+  const store = useStore()
+  const [isDragging, setIsDragging] = useState(false)
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
+
+  const onDragEnter = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragging(true)
+      const datasetModalOpen = selectDatasetUploadModalOpen(store.getState() as RootState)
+      if (isWorkspaceLocation && !datasetModalOpen && e.dataTransfer?.types?.includes('Files')) {
+        dispatchDatasetModalOpen(true)
+        dispatchDatasetModalConfig({ style: 'transparent' })
+      }
+    },
+    [dispatchDatasetModalConfig, dispatchDatasetModalOpen, store, isWorkspaceLocation]
+  )
+
+  const onDragLeave = useCallback(
+    (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!(e as any).fromElement) {
+        setIsDragging(false)
+        dispatchDatasetModalOpen(false)
+        dispatchDatasetModalConfig({ style: 'default' })
+      }
+    },
+    [dispatchDatasetModalConfig, dispatchDatasetModalOpen]
+  )
+
+  const onDrop = useCallback(
+    async (e: DragEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const newDatasetModal = document.getElementById(NEW_DATASET_MODAL_ID)
+      const isInDropArea = newDatasetModal?.contains(e.target as Node)
+      if (!e.currentTarget || !e.dataTransfer || !isInDropArea) {
+        dispatchDatasetModalOpen(false)
+      }
+
+      let isValidFile = false
+      for (const item of e.dataTransfer?.items || []) {
+        if (item.kind === 'file') {
+          const file = item.getAsFile()
+          const { fileType } = file ? await getFileType(file) : { fileType: undefined }
+          if (fileType !== undefined) {
+            isValidFile = true
+            break
+          }
+        }
+      }
+      if (isValidFile) {
+        dispatchDatasetModalConfig({ style: 'default' })
+      }
+
+      setIsDragging(false)
+    },
+    [dispatchDatasetModalConfig, dispatchDatasetModalOpen]
+  )
+
+  useEffect(() => {
+    const eventsConfig: { event: keyof WindowEventMap; callback: any }[] = [
+      { event: 'dragenter', callback: onDragEnter },
+    ]
+    if (getIsBrowser() && isWorkspaceLocation && !datasetModalOpen) {
+      eventsConfig.forEach(({ event, callback }) => {
+        window.addEventListener(event, callback)
+      })
+    }
+    return () => {
+      eventsConfig.forEach(({ event, callback }) => {
+        if (callback) {
+          window.removeEventListener(event, callback)
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datasetModalOpen, isWorkspaceLocation])
+
+  useEffect(() => {
+    const eventsConfig: { event: keyof WindowEventMap; callback: any }[] = [
+      { event: 'drop', callback: onDrop },
+      { event: 'dragleave', callback: onDragLeave },
+    ]
+    if (getIsBrowser() && isDragging) {
+      eventsConfig.forEach(({ event, callback }) => {
+        window.addEventListener(event, callback)
+      })
+    }
+    return () => {
+      if (isDragging) {
+        eventsConfig.forEach(({ event, callback }) => {
+          if (callback) {
+            window.removeEventListener(event, callback)
+          }
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDragging])
+}

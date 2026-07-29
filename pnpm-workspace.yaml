@@ -1,7 +1,7 @@
 packages:
   - 'linting'
-  - 'apps/fishing-map'
-  - 'apps/fishing-map/config'
+  - 'apps/platform'
+  - 'apps/platform/config'
   - 'libs/*'
 
 allowBuilds:

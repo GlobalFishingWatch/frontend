@@ -39,13 +39,13 @@ function getSpriteFilename(url: string): string {
 
 function resolveLocalSpriteUrl(url: string): string {
   const filename = getSpriteFilename(url)
-  const basename = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/map'
+  const basename = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/platform'
   const basePath = /^https?:\/\//i.test(basename)
     ? (() => {
         try {
-          return new URL(basename).pathname || '/map'
+          return new URL(basename).pathname || '/platform'
         } catch {
-          return '/map'
+          return '/platform'
         }
       })()
     : basename

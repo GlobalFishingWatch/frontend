@@ -1,0 +1,122 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import type { Tab } from '@globalfishingwatch/ui-components'
+import { Modal, Tabs } from '@globalfishingwatch/ui-components'
+
+import { ROOT_DOM_ELEMENT } from 'data/map/config'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActiveActivityAndDetectionsDataviews,
+  selectActiveHeatmapAnimatedEnvironmentalDataviews,
+} from 'features/map/dataviews/selectors/dataviews.selectors'
+import { selectDownloadActivityModalOpen } from 'features/map/download/download.selectors'
+import {
+  resetDownloadActivityState,
+  resetDownloadActivityStateKeepPolling,
+  selectDownloadActiveTabId,
+  selectIsDownloadActivityLoading,
+  selectIsDownloadActivityTimeoutError,
+  setDownloadActiveTab,
+} from 'features/map/download/downloadActivity.slice'
+import DownloadActivityEnvironment from 'features/map/download/DownloadActivityEnvironment'
+import DownloadSurvey, { DISABLE_DOWNLOAD_SURVEY } from 'features/map/download/DownloadSurvey'
+import { getModalParent } from 'features/modals/modals.utils'
+
+import { HeatmapDownloadTab } from './downloadActivity.config'
+import DownloadActivityByVessel from './DownloadActivityByVessel'
+import DownloadActivityGridded from './DownloadActivityGridded'
+
+import styles from './DownloadModal.module.css'
+
+function DownloadActivityModal() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const activeTabId = useSelector(selectDownloadActiveTabId)
+  const activityAndDetectionsDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
+  const environmentalDataviews = useSelector(selectActiveHeatmapAnimatedEnvironmentalDataviews)
+  const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
+  const [disableDownloadSurvey, _] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
+  const [showSurvey, setShowSurvey] = useState(false)
+  const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)
+
+  useEffect(() => {
+    if (activityAndDetectionsDataviews.length > 0) {
+      dispatch(setDownloadActiveTab(HeatmapDownloadTab.ByVessel))
+    } else if (environmentalDataviews.length > 0) {
+      dispatch(setDownloadActiveTab(HeatmapDownloadTab.Environment))
+    }
+  }, [activityAndDetectionsDataviews, dispatch, environmentalDataviews])
+
+  const onDownload = useCallback(() => {
+    if (!disableDownloadSurvey) {
+      setShowSurvey(true)
+    }
+  }, [disableDownloadSurvey])
+
+  const tabs = useMemo(() => {
+    return [
+      {
+        id: HeatmapDownloadTab.ByVessel,
+        title: t((t) => t.download.byVessel),
+        content: <DownloadActivityByVessel onDownloadCallback={onDownload} />,
+        disabled: activityAndDetectionsDataviews.length === 0,
+      },
+      {
+        id: HeatmapDownloadTab.Gridded,
+        title: t((t) => t.download.gridded),
+        content: <DownloadActivityGridded onDownloadCallback={onDownload} />,
+        testId: 'activity-modal-gridded-activity',
+        disabled: activityAndDetectionsDataviews.length === 0,
+      },
+      {
+        id: HeatmapDownloadTab.Environment,
+        title: t((t) => t.common.environment),
+        content: <DownloadActivityEnvironment onDownloadCallback={onDownload} />,
+        testId: 'activity-modal-environment',
+        disabled: environmentalDataviews.length === 0,
+      },
+    ] as Tab<HeatmapDownloadTab>[]
+  }, [t, environmentalDataviews, activityAndDetectionsDataviews, onDownload])
+
+  const activeTab = tabs.find((tab) => tab.id === activeTabId)
+
+  const onTabClick = (tab: Tab<HeatmapDownloadTab>) => {
+    dispatch(setDownloadActiveTab(tab?.id))
+  }
+
+  const onClose = () => {
+    if (!isDownloadLoading && !isDownloadTimeoutError) {
+      dispatch(resetDownloadActivityStateKeepPolling())
+    } else {
+      dispatch(resetDownloadActivityState())
+    }
+  }
+
+  return (
+    <Modal
+      appSelector={ROOT_DOM_ELEMENT}
+      title={t((t) => t.download.title)}
+      isOpen={downloadModalOpen}
+      onClose={onClose}
+      contentClassName={styles.modalContent}
+      parentSelector={getModalParent}
+    >
+      {showSurvey ? (
+        <DownloadSurvey onClose={onClose} />
+      ) : (
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab?.id}
+          onTabClick={onTabClick}
+          buttonSize={'default'}
+        />
+      )}
+    </Modal>
+  )
+}
+
+export default DownloadActivityModal

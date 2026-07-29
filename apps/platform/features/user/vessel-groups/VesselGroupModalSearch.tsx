@@ -1,0 +1,257 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import papaparse from 'papaparse'
+
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselGroupSearchDatasets } from 'features/map/datasets/datasets.selectors'
+import FileDropzone from 'features/map/datasets/upload/FileDropzone'
+import { CSV_COLUMN_LOOKUP } from 'features/user/vessel-groups/vessel-groups.config'
+import type { VesselPropertyApiSearch } from 'features/user/vessel-groups/vessel-groups.utils'
+import { getDatasetsIdFieldOptions } from 'features/user/vessel-groups/vessel-groups.utils'
+import { readBlobAs } from 'utils/files'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { listAsSentence } from 'utils/shared'
+
+import {
+  selectVesselGroupModalSelectableColumns,
+  selectVesselGroupsModalSearchIds,
+} from './vessel-groups.selectors'
+import type { VesselGroupCsvData } from './vessel-groups-modal.slice'
+import {
+  selectVesselGroupModalCsvColumns,
+  selectVesselGroupModalCsvData,
+  selectVesselGroupModalSearchIdField,
+  selectVesselGroupModalSources,
+  selectVesselGroupsModalSearchText,
+  setVesselGroupModalCsvColumns,
+  setVesselGroupModalCsvData,
+  setVesselGroupModalSearchText,
+  setVesselGroupSearchIdField,
+} from './vessel-groups-modal.slice'
+
+import styles from './VesselGroupModal.module.css'
+
+function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const [csvName, setCsvName] = useState<string>('')
+  const csvData = useSelector(selectVesselGroupModalCsvData)
+  const selectableColumns = useSelector(selectVesselGroupModalSelectableColumns)
+  const selectedCsvColumns = useSelector(selectVesselGroupModalCsvColumns)
+  const sliceSearchText = useSelector(selectVesselGroupsModalSearchText)
+  const [searchText, setSearchText] = useState(sliceSearchText)
+  const debouncedSearchText = useDebounce(searchText, 200)
+  const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
+  const sources = useSelector(selectVesselGroupModalSources)
+  const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
+  const searchDatasets = useSelector(selectVesselGroupSearchDatasets)
+  const sourceDatasets = useMemo(
+    () =>
+      sources?.length
+        ? searchDatasets.filter((dataset) => sources.includes(dataset.id))
+        : searchDatasets,
+    [searchDatasets, sources]
+  )
+  const idColumnsOptions = useMemo(
+    () =>
+      getDatasetsIdFieldOptions(sourceDatasets).map((option) => ({
+        ...option,
+        label: t((t: any) => t.vessel[option.id], { defaultValue: option.label as string }),
+      })),
+    [sourceDatasets, t]
+  )
+
+  useEffect(() => {
+    const isIdFieldAvailable = idColumnsOptions.some((option) => option.id === searchIdField)
+    if (searchIdField && !isIdFieldAvailable && idColumnsOptions.length) {
+      dispatch(setVesselGroupSearchIdField(idColumnsOptions[0].id))
+    }
+  }, [dispatch, idColumnsOptions, searchIdField])
+
+  const hasGroupVesselsToSearch = vesselGroupModalSearchIds && vesselGroupModalSearchIds.length > 0
+  const showIdsSection = !selectableColumns.length
+  const showDropzoneSection = !vesselGroupModalSearchIds?.length
+  const showDivider = showIdsSection && showDropzoneSection
+
+  useEffect(() => {
+    if (debouncedSearchText) {
+      dispatch(setVesselGroupModalSearchText(debouncedSearchText))
+    } else {
+      dispatch(setVesselGroupModalSearchText(''))
+    }
+  }, [dispatch, debouncedSearchText])
+
+  const onIdsTextareaChange = useCallback((e: any) => {
+    setSearchText(e.target.value)
+  }, [])
+
+  const onCSVLoaded = useCallback(
+    async (file: File) => {
+      setCsvName(file.name)
+      const fileData = await readBlobAs(file, 'text')
+      const { data } = papaparse.parse<VesselGroupCsvData>(fileData, {
+        header: true,
+        skipEmptyLines: true,
+      })
+      dispatch(setVesselGroupModalCsvData(data))
+      dispatch(setVesselGroupModalCsvColumns([]))
+      setSearchText('')
+    },
+    [dispatch]
+  )
+
+  const onCSVCleared = useCallback(() => {
+    setCsvName('')
+    dispatch(setVesselGroupModalCsvData([]))
+    dispatch(setVesselGroupModalCsvColumns([]))
+  }, [dispatch])
+
+  const onIdFieldChange = useCallback(
+    (option: SelectOption) => {
+      dispatch(setVesselGroupSearchIdField(option.id))
+    },
+    [dispatch]
+  )
+
+  const toggleCsvColumn = useCallback(
+    (column: string) => {
+      const newSelectedCsvColumns = selectedCsvColumns?.includes(column)
+        ? (selectedCsvColumns as VesselPropertyApiSearch[]).filter((c) => c !== column)
+        : ([...(selectedCsvColumns || []), column] as VesselPropertyApiSearch[])
+      dispatch(setVesselGroupModalCsvColumns(newSelectedCsvColumns))
+    },
+    [dispatch, selectedCsvColumns]
+  )
+
+  return (
+    <div className={styles.vesselGroupSearchContainer}>
+      {showIdsSection && (
+        <div className={styles.ids}>
+          <Select
+            label={t((t) => t.vesselGroup.idField)}
+            options={idColumnsOptions}
+            selectedOption={idColumnsOptions.find((o) => o.id === searchIdField)}
+            onSelect={onIdFieldChange}
+          />
+          <TextArea
+            className={styles.idsArea}
+            value={searchText}
+            label={
+              t((t) => t.vesselGroup.idsList, {
+                field: searchIdField,
+              }) + (hasGroupVesselsToSearch ? ` (${vesselGroupModalSearchIds?.length})` : '')
+            }
+            placeholder={t((t) => t.vesselGroup.idsPlaceholder, {
+              field: searchIdField,
+            })}
+            onChange={onIdsTextareaChange}
+          />
+        </div>
+      )}
+      {showDivider && <div className={styles.divider} />}
+      {showDropzoneSection && (
+        <div className={styles.dropzoneContainer}>
+          <label>
+            {t((t) => t.vesselGroup.csvFile)}{' '}
+            <a
+              href="https://globalfishingwatch.org/user-guide/#Vessel%20groups"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.dropzoneLink}
+              onClick={() =>
+                trackEvent({
+                  category: TrackCategory.HelpHints,
+                  action: 'click see csv format link in vessel group modal',
+                })
+              }
+            >
+              ({t((t) => t.vesselGroup.csvLink)})
+            </a>
+          </label>
+          <FileDropzone
+            className={cx(styles.dropzone, { [styles.filled]: csvData?.length })}
+            onFileLoaded={onCSVLoaded}
+            onFileCleared={csvName ? onCSVCleared : undefined}
+            error={
+              selectableColumns.length === 0 && csvName
+                ? t((t) => t.vesselGroup.noColumnsToSelect)
+                : undefined
+            }
+            fileTypes={['CSV']}
+            label={
+              csvName
+                ? csvName
+                : t((t) => t.vesselGroup.csvPlaceholder, {
+                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or') ?? '',
+                  })
+            }
+          />
+        </div>
+      )}
+      {selectableColumns.length > 0 && csvData && csvData.length > 0 && (
+        <div className={styles.columnSelectionWrapper}>
+          <label>{t((t) => t.vesselGroup.columnSelection)}</label>
+          <div className={styles.vesselsTableContainer}>
+            <table className={styles.vesselsTable}>
+              <thead>
+                <tr>
+                  {selectableColumns.map((column, index) => {
+                    const isSelected =
+                      selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+                    return (
+                      <th key={index}>
+                        <Checkbox
+                          active={isSelected}
+                          onClick={() => toggleCsvColumn(column)}
+                          label={column}
+                          className={styles.columnCheckbox}
+                          labelClassname={cx(styles.columnHeader, {
+                            [styles.selected]: isSelected,
+                          })}
+                        />
+                      </th>
+                    )
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {csvData.slice(0, 100).map((row, rowIndex) => {
+                  return (
+                    <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
+                      {Object.keys(row).map((column, cellIndex) => {
+                        const isSelectable = selectableColumns.includes(column)
+                        const isSelected =
+                          selectedCsvColumns !== null && selectedCsvColumns.includes(column)
+                        if (!isSelectable) {
+                          return null
+                        }
+                        return (
+                          <td
+                            key={cellIndex}
+                            title={row[column]}
+                            className={cx(styles.columnCell, { [styles.selected]: isSelected })}
+                          >
+                            {row[column] || EMPTY_FIELD_PLACEHOLDER}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default VesselGroupSearch

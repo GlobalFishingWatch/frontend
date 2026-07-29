@@ -1,0 +1,84 @@
+{
+  "name": "platform-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/platform-e2e/src",
+  "projectType": "application",
+  "tags": ["e2e"],
+  "implicitDependencies": ["platform"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/platform-e2e/playwright.config.mts",
+        "grep": "^(?!.*Screenshot comparison).*"
+      },
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/platform-e2e"]
+    },
+    "e2e:local": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/platform-e2e/playwright.config.mts",
+        "grep": "^(?!.*Screenshot comparison).*"
+      },
+      "cache": false,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/platform-e2e"],
+      "dependsOn": [
+        {
+          "projects": "platform",
+          "target": "start"
+        }
+      ],
+      "configurations": {
+        "ui": {
+          "cache": false,
+          "ui": true
+        },
+        "headed": {
+          "cache": false,
+          "headed": true
+        }
+      }
+    },
+    "screenshots": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/platform-e2e/playwright.config.mts",
+        "testFiles": ["src/screenshots/"],
+        "project": ["chromium"],
+        "workers": 2
+      },
+      "cache": false,
+      "configurations": {
+        "update": {
+          "updateSnapshots": true
+        },
+        "ui": {
+          "ui": true,
+          "workers": 1
+        }
+      }
+    },
+    "screenshots:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report apps/platform-e2e/playwright-report"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/platform-e2e/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/platform-e2e/tsconfig.json"
+      },
+      "continuous": true
+    }
+  }
+}

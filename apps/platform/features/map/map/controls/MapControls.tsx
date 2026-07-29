@@ -1,0 +1,213 @@
+import {
+  Fragment,
+  lazy,
+  memo,
+  Suspense,
+  useCallback,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { DataviewType } from '@globalfishingwatch/api-types'
+import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
+import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { selectDataviewInstancesResolved } from 'features/map/dataviews/selectors/dataviews.resolvers.selectors'
+import ReferenceLayersControl from 'features/map/map/controls/ReferenceLayersControl'
+import ReportControls from 'features/map/map/controls/ReportControl'
+import { useMapBoundsLive } from 'features/map/map/map-bounds.hooks'
+import { useMapViewState, useSetMapCoordinates } from 'features/map/map/map-viewport.hooks'
+import { selectScreenshotMode } from 'features/map/workspace/selectors/app.selectors'
+import { useDataviewInstancesConnect } from 'features/map/workspace/workspace.hook'
+import { selectReportAreaStatus } from 'features/reports/report-area/area-reports.selectors'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnyReportLocation,
+  selectIsAnyVesselLocation,
+  selectIsMapDrawing,
+  selectIsWorkspaceLocation,
+} from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './MapControls.module.css'
+
+const MiniGlobeInfo = lazy(() => import('./MiniGlobeInfo'))
+const MapControlScreenshot = lazy(() => import('./MapControlScreenshot'))
+const MapSearch = lazy(() => import('./MapSearch'))
+const Rulers = lazy(() => import('features/map/map/controls/RulersControl'))
+const AnnotationsControl = lazy(() => import('features/map/map/controls/AnnotationsControl'))
+
+const MapControls = ({
+  onMouseEnter,
+}: {
+  onMouseEnter?: () => void
+}): React.ReactElement<any> | null => {
+  const { t } = useTranslation()
+  const [miniGlobeHovered, setMiniGlobeHovered] = useState(false)
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true, // client
+    () => false // server
+  )
+  const resolvedDataviewInstances = useSelector(selectDataviewInstancesResolved)
+  const gfwUser = useSelector(selectIsGFWUser)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const reportAreaStatus = useSelector(selectReportAreaStatus)
+  const isDeckLayersLoading = useIsDeckLayersLoading()
+  const isReportAreaLoading = useMemo(
+    () => isAreaReportLocation && reportAreaStatus === AsyncReducerStatus.Loading,
+    [isAreaReportLocation, reportAreaStatus]
+  )
+  const mapLoading = isDeckLayersLoading || isReportAreaLoading
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isMapDrawing = useSelector(selectIsMapDrawing)
+  const screenshotMode = useSelector(selectScreenshotMode)
+  const showExtendedControls =
+    (isWorkspaceLocation || isAnyVesselLocation || isAnyReportLocation) && !isMapDrawing
+
+  const setMapCoordinates = useSetMapCoordinates()
+  const viewState = useMapViewState()
+  const { latitude, longitude, zoom } = viewState
+
+  const { bounds } = useMapBoundsLive()
+
+  const center = useMemo(
+    () => ({
+      latitude,
+      longitude,
+    }),
+    [latitude, longitude]
+  )
+
+  const onZoomInClick = useCallback(() => {
+    setMapCoordinates({ zoom: zoom + 1 })
+  }, [setMapCoordinates, zoom])
+
+  const onZoomOutClick = useCallback(() => {
+    setMapCoordinates({ zoom: Math.max(zoom - 1, 0) })
+  }, [setMapCoordinates, zoom])
+
+  const basemapDataviewInstance = useMemo(
+    () => resolvedDataviewInstances?.find((d) => d.config?.type === DataviewType.Basemap),
+    [resolvedDataviewInstances]
+  )
+
+  const currentBasemap = useMemo(
+    () => basemapDataviewInstance?.config?.basemap ?? BasemapType.Default,
+    [basemapDataviewInstance?.config?.basemap]
+  )
+
+  const switchBasemap = useCallback(() => {
+    upsertDataviewInstance({
+      id: basemapDataviewInstance?.id,
+      config: {
+        basemap:
+          currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
+      },
+    })
+  }, [basemapDataviewInstance?.id, currentBasemap, upsertDataviewInstance])
+
+  const enterMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(true), [])
+  const leaveMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(false), [])
+
+  if (!isClient) {
+    return null
+  }
+
+  return (
+    <Fragment>
+      <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
+        <div onMouseEnter={enterMiniGlobeHandler} onMouseLeave={leaveMiniGlobeHandler}>
+          <Suspense fallback={null}>
+            <MiniGlobe
+              className={styles.miniglobe}
+              size={60}
+              viewportThickness={3}
+              bounds={bounds}
+              center={center}
+            />
+          </Suspense>
+          {miniGlobeHovered && (
+            <Suspense fallback={null}>
+              <MiniGlobeInfo viewport={viewState} />
+            </Suspense>
+          )}
+        </div>
+        {!screenshotMode && (
+          <div className={cx('print-hidden', styles.controlsNested)}>
+            {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
+              <Suspense fallback={null}>
+                <MapSearch />
+              </Suspense>
+            )}
+            <IconButton
+              icon="plus"
+              type="map-tool"
+              tooltip={t((t) => t.map.zoom_in)}
+              onClick={onZoomInClick}
+              data-testid="map-control-zoom-in"
+            />
+            <IconButton
+              icon="minus"
+              type="map-tool"
+              tooltip={t((t) => t.map.zoom_out)}
+              onClick={onZoomOutClick}
+              data-testid="map-control-zoom-out"
+            />
+            {showExtendedControls && (
+              <Fragment>
+                <Suspense fallback={null}>
+                  <Rulers />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <AnnotationsControl />
+                </Suspense>
+                {gfwUser && <ReportControls disabled={mapLoading} />}
+                <Suspense fallback={null}>
+                  <MapControlScreenshot mapLoading={mapLoading} />
+                </Suspense>
+                <Tooltip
+                  content={
+                    currentBasemap === BasemapType.Default
+                      ? t((t) => t.map.change_basemap_satellite)
+                      : t((t) => t.map.change_basemap_default)
+                  }
+                  placement="left"
+                >
+                  <button
+                    aria-label={
+                      currentBasemap === BasemapType.Default
+                        ? t((t) => t.map.change_basemap_satellite)
+                        : t((t) => t.map.change_basemap_default)
+                    }
+                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                    onClick={switchBasemap}
+                  ></button>
+                </Tooltip>
+              </Fragment>
+            )}
+            {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
+            <IconButton
+              testId="map-loading-spinner"
+              type="map-tool"
+              tooltip={t((t) => t.map.loading)}
+              loading={mapLoading}
+              className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
+            />
+          </div>
+        )}
+      </div>
+    </Fragment>
+  )
+}
+
+export default memo(MapControls)

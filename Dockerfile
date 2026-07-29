@@ -21,7 +21,7 @@ ENV HUSKY=0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 COPY patches/ patches/
 COPY linting/package.json linting/
-COPY apps/fishing-map/package.json apps/fishing-map/
+COPY apps/platform/package.json apps/platform/
 # libs/* are workspace members too — without their manifests pnpm skips the
 # per-lib node_modules/@globalfishingwatch/* links a lib needs to import a sibling.
 COPY --parents libs/*/package.json ./
@@ -78,14 +78,14 @@ COPY --from=builder /app/dist/apps/${APP_NAME}/                     /usr/share/n
 ENTRYPOINT ["./entrypoint.sh"]
 
 
-# ── Production: node (fishing-map and future SSR apps) ───────────────────────
+# ── Production: node (platform and future SSR apps) ───────────────────────
 FROM node:24-alpine AS production-node
 
 RUN apk update && apk upgrade
 
 WORKDIR /app
 
-ARG APP_NAME=fishing-map
+ARG APP_NAME=platform
 COPY --from=builder /app/apps/${APP_NAME}/.output ./output
 
 CMD ["node", "--import", "./output/server/instrument.server.mjs", "--max-http-header-size=40000", "output/server/index.mjs"]

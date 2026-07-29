@@ -1,0 +1,164 @@
+/*
+ * Platform shell: the MainNav rail plus everything else. The rail is always visible now — it used to
+ * live inside the SplitView aside, so collapsing the sidebar hid it.
+ */
+.platformLayout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow-x: clip;
+}
+
+.platformContent {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+/* Plain content layout for pages with no map and no sidebar (/user, /vessel-search). */
+.contentLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--color-white);
+}
+
+.contentScrollContainer {
+  flex: 1;
+  overflow: hidden auto;
+}
+
+.appLayout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow-x: clip;
+}
+
+.appLayoutContent {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  transform: translateZ(0);
+  transition: width 380ms var(--ease-drawer);
+}
+
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * Aside for the map-free shell (StandaloneApp). The map shell gets its aside sizing from SplitView;
+ * with no SplitView the Sidebar needs an explicit full-size box, matching the 100% width that
+ * SplitView already applies to standalone search today.
+ */
+.standaloneAside {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-white);
+}
+
+.mapContainer {
+  height: 100%;
+}
+
+.logo {
+  position: fixed;
+  top: 0;
+  left: 1rem;
+  z-index: 1;
+}
+
+:global(#__root__:not(.printing)) .withTimebar {
+  height: 100%;
+}
+
+:global(#__root__:not(.printing)) .withSmallScreenSwitch {
+  height: calc(100dvh - var(--footer-height) - var(--switch-height));
+}
+
+:global(#__root__:not(.printing)) .withTimebarAndSmallScreenSwitch {
+  height: calc(
+    100dvh - var(--footer-height) - var(--timebar-height-small-screen) - var(--switch-height)
+  );
+}
+
+.toastContainer {
+  max-width: 60%;
+
+  --toastify-toast-width: auto;
+  --toastify-color-light: var(--color-help-yellow);
+  --toastify-text-color-light: var(--color-secondary-blue);
+  --toastify-color-progress-light: linear-gradient(
+    90deg,
+    var(--color-help-yellow),
+    var(--color-secondary-blue)
+  );
+}
+
+@page {
+  size: 21cm 29.7cm;
+  margin: 1cm;
+}
+
+@media print {
+  .splitContainer {
+    --color-primary-blue: black;
+
+    height: auto;
+    background: none;
+    width: 19cm;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: visible;
+  }
+
+  .aside {
+    position: relative;
+    width: 100% !important;
+    overflow: visible;
+    height: auto;
+    background: none;
+  }
+
+  .main {
+    position: relative;
+    width: 100%;
+    height: auto;
+    left: 0 !important;
+    overflow: hidden;
+  }
+
+  .mapContainer,
+  .withTimebar {
+    height: auto;
+    background-color: var(--color-map-background);
+  }
+
+  .mapContainer ~ * {
+    display: none;
+  }
+
+  .splitContainer .aside * {
+    color: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside tspan {
+    fill: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside :global(.recharts-surface) {
+    display: block;
+    width: calc(21cm - 30px);
+  }
+
+  .aside h2 {
+    font: var(--font-L);
+    margin-block: var(--space-S) var(--space-XS);
+    break-after: avoid;
+  }
+}

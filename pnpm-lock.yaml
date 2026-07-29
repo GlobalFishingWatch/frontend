@@ -789,11 +789,8 @@ importers:
         specifier: 2.2.0
         version: 2.2.0(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.10)
 
-  apps/fishing-map:
+  apps/platform:
     dependencies:
-      '@fishing-map/config':
-        specifier: workspace:*
-        version: link:config
       '@fontsource/roboto':
         specifier: ^5.2.10
         version: 5.2.10
@@ -839,18 +836,21 @@ importers:
       '@globalfishingwatch/ui-components':
         specifier: workspace:^
         version: link:../../libs/ui-components
+      '@platform/config':
+        specifier: workspace:*
+        version: link:config
       '@sentry/tanstackstart-react':
         specifier: ^10.55.0
         version: 10.57.0(@opentelemetry/exporter-trace-otlp-http@0.203.0(@opentelemetry/api@1.9.1))(encoding@0.1.13)(react@19.2.8)(rollup@4.61.1)(supports-color@10.2.2)
     devDependencies:
       i18next-cli:
         specifier: ^1.50.1
-        version: 1.62.0(@swc/helpers@0.5.23)(@types/node@26.1.1)(react-dom@19.2.8(react@19.2.8))(typescript@7.0.2)
+        version: 1.67.3(@swc/helpers@0.5.23)(@types/node@26.1.1)(react-dom@19.2.8(react@19.2.8))(typescript@7.0.2)
       source-map-explorer:
         specifier: 2.5.3
         version: 2.5.3
 
-  apps/fishing-map/config:
+  apps/platform/config:
     dependencies:
       '@globalfishingwatch/datasets-client':
         specifier: workspace:^
@@ -1292,9 +1292,9 @@ importers:
 
   libs/skills:
     dependencies:
-      '@fishing-map/config':
+      '@platform/config':
         specifier: workspace:*
-        version: link:../../apps/fishing-map/config
+        version: link:../../apps/platform/config
       tslib:
         specifier: 2.x
         version: 2.8.1
@@ -5659,22 +5659,10 @@ packages:
       chokidar:
         optional: true
 
-  '@swc/core-darwin-arm64@1.15.41':
-    resolution: {integrity: sha512-kREh6J5paQFvP3i7f/4FbqRNOJREutVFVOkder4GVyCBQ39YmER55cW/y1NNjwrchzFqgYswFn0mMDCqbqKzrw==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@swc/core-darwin-arm64@1.15.46':
     resolution: {integrity: sha512-IsISIT22EfktVJrlvIpnAxG2u/A9aob9l99HMlx80x72WlFmFPk1V3UhkEzx86eJP8hw049KTFv/RISho2cq2Q==}
     engines: {node: '>=10'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@swc/core-darwin-x64@1.15.41':
-    resolution: {integrity: sha512-N8B56ESFazZAWZyIkecADSPCwlLEinW7QLMEeotCpv4J7VXwfH+OLkmRL8o96UZ+1355fwHxDTS6/wK7yucvkA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
     os: [darwin]
 
   '@swc/core-darwin-x64@1.15.46':
@@ -5683,24 +5671,11 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@swc/core-linux-arm-gnueabihf@1.15.41':
-    resolution: {integrity: sha512-6XrId2fyle0mS5xxON8rU84mPd2Cq1kDJRj+4BnQKTd7u+2kSA6Ww+JkOP0iTNqOqt9OXhPOEAjBHAuonWcdCg==}
-    engines: {node: '>=10'}
-    cpu: [arm]
-    os: [linux]
-
   '@swc/core-linux-arm-gnueabihf@1.15.46':
     resolution: {integrity: sha512-i8tUGnNjyOgMmfmgFSg4aeJLQoFyfpIHK5FjpQAwpRyQIqEUB2w1e8zIDQzY1WhOxx8NoS1S5iUL813Un4Sf5A==}
     engines: {node: '>=10'}
     cpu: [arm]
     os: [linux]
-
-  '@swc/core-linux-arm64-gnu@1.15.41':
-    resolution: {integrity: sha512-ynLIarxlkVnqHn1D0fKOVht6mNU5ks6lrH+MY3kkS+XFaGGgDxFZVjWKJlkYTKm3RCvBTfA8Ng5fLufXheMRKQ==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-arm64-gnu@1.15.46':
     resolution: {integrity: sha512-c0OnhqzdhfOvv6qhNCcByepB+sNYOGZyhtr2Qa6ZCHvAWTYhSRw4j/u92Stue9PbZ/6q74b9nHzi76+kVzqQHQ==}
@@ -5709,13 +5684,6 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/core-linux-arm64-musl@1.15.41':
-    resolution: {integrity: sha512-dXu/5vd4gh8symyhRF+4G7gOPkjmb4pONhh7sl+6GSiW0LOKZlfu5kXmyFbTz9smOT7jgr002qY9b1nujjXt2A==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
   '@swc/core-linux-arm64-musl@1.15.46':
     resolution: {integrity: sha512-imyRpNEcUzFQFV2LE4jL68ErvmKEuZCbvZru77iQREunJ+bR4i658cupTgtG1mLYM3F1Tzy3Sb9xYb02KghWTg==}
     engines: {node: '>=10'}
@@ -5723,24 +5691,10 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@swc/core-linux-ppc64-gnu@1.15.41':
-    resolution: {integrity: sha512-XGO6zVPXoPE0gf/XnI4jBbafNT13AYgoh6ns0JCSdOetI/kqVf0vhpz7NuNgAzZrMVCsmieqjPoTwViDgh4mOQ==}
-    engines: {node: '>=10'}
-    cpu: [ppc64]
-    os: [linux]
-    libc: [glibc]
-
   '@swc/core-linux-ppc64-gnu@1.15.46':
     resolution: {integrity: sha512-ctEfcl/HcUeomK33cbySiHZm98GEDIxTm1EkpBsYCiHxElYBzvTXVeuQT2YwbUXn9XCrjiw4ipyUNk33k26qRg==}
     engines: {node: '>=10'}
     cpu: [ppc64]
-    os: [linux]
-    libc: [glibc]
-
-  '@swc/core-linux-s390x-gnu@1.15.41':
-    resolution: {integrity: sha512-0WUglRwyZtW+iMi7J3iFdrCxreZZIKf4egTwEQfIYRsqFax69A0OrFj+NIoFSE03xBT/IFRrg+S8K6f9Ky+4hA==}
-    engines: {node: '>=10'}
-    cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
@@ -5751,26 +5705,12 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/core-linux-x64-gnu@1.15.41':
-    resolution: {integrity: sha512-VxkuQK59c0tHm6uJZCUrS3cyA2JhGGfdU6e41SZz0x/JS+4Sm7C1mIc97In14vkZJopEt7yXA2TouCqZDSygEA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
   '@swc/core-linux-x64-gnu@1.15.46':
     resolution: {integrity: sha512-SKxI7J6t90XPl8hRUqtJi9NfGdunN/E/vZMc7Bc0figeRdOPDBT+Tm8g7cx9xM0T0mewh2l+8dewa3Am27/P+A==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
-
-  '@swc/core-linux-x64-musl@1.15.41':
-    resolution: {integrity: sha512-/0qXIu1ZxggLuovLb22vFfKHq2AA4n6Whw5UwmVCHk4pkw7KWnPIQpMCEqUMPsNkFJig7PPp/TSYFu8ZEb2rtQ==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
 
   '@swc/core-linux-x64-musl@1.15.46':
     resolution: {integrity: sha512-qj9T6B7bosI0VEsrWOVXZN1OXxS8Tp63ywyrLxNdOycnUtLdkgYcoBsN5y8ImnDDsnwrEWZOy1e+J4xSe7mA3Q==}
@@ -5779,22 +5719,10 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@swc/core-win32-arm64-msvc@1.15.41':
-    resolution: {integrity: sha512-Y481sMNZM6rECh9VO4+y26N1lWEDAyxnBZskUf37fl90uHE946VHfmiVQWT0uMFOhyJJFovGTRuF4W82dwewUg==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [win32]
-
   '@swc/core-win32-arm64-msvc@1.15.46':
     resolution: {integrity: sha512-8p7l4c3LU+eA5g9Et1JPhNeMC1oQwXTGU+uah8DPIBX7YXzqswvaBtyKVmXefVGi/DJU1x3YJsc3mbAp9aWzSQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
-    os: [win32]
-
-  '@swc/core-win32-ia32-msvc@1.15.41':
-    resolution: {integrity: sha512-BAchBD5qeUzy3hiPSLJtaaoSm4blCLyYffOF1bGE4ETcV+OisqjUAwDQMJj++4bTpvMCDzwC+Bj3PmQyBCtscw==}
-    engines: {node: '>=10'}
-    cpu: [ia32]
     os: [win32]
 
   '@swc/core-win32-ia32-msvc@1.15.46':
@@ -5803,26 +5731,11 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-x64-msvc@1.15.41':
-    resolution: {integrity: sha512-WOkA+fJ/ViVBQDsSV9JC52NACTe5PhlurA6viASDZGb7HR3KS01ZG7RZ+Bg6SVQFIoq3gSbTsskQVe6EbHFAYw==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [win32]
-
   '@swc/core-win32-x64-msvc@1.15.46':
     resolution: {integrity: sha512-Vux7UDzBJYQggSuPfcl2w9iu+IJpgpRCxHzgCaVkELnAXAE4XZMOTX9HNcaNiwfeIDqdu2rkr69RuDm6wY8neA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
-
-  '@swc/core@1.15.41':
-    resolution: {integrity: sha512-03nQq/082QRJJiOvp3FGbgxTGyyxMxohPTjhk/W9bD2J0tk4ukITI7goOhOO2WbaHn/lsPmo/zf8+DIXhwpgYQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@swc/helpers': '>=0.5.17'
-    peerDependenciesMeta:
-      '@swc/helpers':
-        optional: true
 
   '@swc/core@1.15.46':
     resolution: {integrity: sha512-Ri3em2mBpq3h2zSPliCYl63otDGqek8PPEfv2nWgRQEbZ/VBCNyypVTVQ6cEbTCXBhy+WE2T3fQb08moIyuYaw==}
@@ -10214,11 +10127,6 @@ packages:
   i18next-browser-languagedetector@8.2.1:
     resolution: {integrity: sha512-bZg8+4bdmaOiApD7N7BPT9W8MLZG+nPTOFlLiJiT8uzKXFjhxw4v2ierCXOwB5sFDMtuA5G4kgYZ0AznZxQ/cw==}
 
-  i18next-cli@1.62.0:
-    resolution: {integrity: sha512-PN7GgLfYfUlpUdolCGfQQu1kj5kDrQeLzmYVuQegInWs8bcUtZ0yJ1IVGnIiIvNo5pDWKZoqjZL2PVPp4YPGtQ==}
-    engines: {node: '>=22'}
-    hasBin: true
-
   i18next-cli@1.67.3:
     resolution: {integrity: sha512-kW5Hq0kzOGoZQCxOLqtrcj4NqIGmQJkBr5c78XQz3WqBgZuJ1PzvLEEjoXdyDkX1IwPO19OTEv3sOeCCWU+Igg==}
     engines: {node: '>=22'}
@@ -11978,10 +11886,6 @@ packages:
   ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
     engines: {node: '>=10'}
-
-  ora@9.4.0:
-    resolution: {integrity: sha512-84cglkRILFxdtA8hAvLNdMrtBpPNBTrQ9/ulg0FA7xLMnD6mifv+enAIeRmvtv+WgdCE+LPGOfQmtJRrVaIVhQ==}
-    engines: {node: '>=20'}
 
   ora@9.4.1:
     resolution: {integrity: sha512-6VlU9MLXbjVQD04AZCMX28hVtA5bUoadvUqO76MUCVA0ilwJbMiHsITRPfyVm6p/BC0Av/BXMujx39WCe1LEqw==}
@@ -15036,7 +14940,7 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
       '@babel/helper-compilation-targets': 7.29.7
-      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
+      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7(supports-color@7.2.0))(supports-color@10.2.2)
       '@babel/helpers': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
@@ -15186,6 +15090,15 @@ snapshots:
   '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)':
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
+      '@babel/helper-module-imports': 7.29.7(supports-color@10.2.2)
+      '@babel/helper-validator-identifier': 7.29.7
+      '@babel/traverse': 7.29.7(supports-color@10.2.2)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7(supports-color@7.2.0))(supports-color@10.2.2)':
+    dependencies:
+      '@babel/core': 7.29.7(supports-color@7.2.0)
       '@babel/helper-module-imports': 7.29.7(supports-color@10.2.2)
       '@babel/helper-validator-identifier': 7.29.7
       '@babel/traverse': 7.29.7(supports-color@10.2.2)
@@ -20780,96 +20693,41 @@ snapshots:
       - supports-color
     optional: true
 
-  '@swc/core-darwin-arm64@1.15.41':
-    optional: true
-
   '@swc/core-darwin-arm64@1.15.46':
-    optional: true
-
-  '@swc/core-darwin-x64@1.15.41':
     optional: true
 
   '@swc/core-darwin-x64@1.15.46':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.15.41':
-    optional: true
-
   '@swc/core-linux-arm-gnueabihf@1.15.46':
-    optional: true
-
-  '@swc/core-linux-arm64-gnu@1.15.41':
     optional: true
 
   '@swc/core-linux-arm64-gnu@1.15.46':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.15.41':
-    optional: true
-
   '@swc/core-linux-arm64-musl@1.15.46':
-    optional: true
-
-  '@swc/core-linux-ppc64-gnu@1.15.41':
     optional: true
 
   '@swc/core-linux-ppc64-gnu@1.15.46':
     optional: true
 
-  '@swc/core-linux-s390x-gnu@1.15.41':
-    optional: true
-
   '@swc/core-linux-s390x-gnu@1.15.46':
-    optional: true
-
-  '@swc/core-linux-x64-gnu@1.15.41':
     optional: true
 
   '@swc/core-linux-x64-gnu@1.15.46':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.15.41':
-    optional: true
-
   '@swc/core-linux-x64-musl@1.15.46':
-    optional: true
-
-  '@swc/core-win32-arm64-msvc@1.15.41':
     optional: true
 
   '@swc/core-win32-arm64-msvc@1.15.46':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.15.41':
-    optional: true
-
   '@swc/core-win32-ia32-msvc@1.15.46':
-    optional: true
-
-  '@swc/core-win32-x64-msvc@1.15.41':
     optional: true
 
   '@swc/core-win32-x64-msvc@1.15.46':
     optional: true
-
-  '@swc/core@1.15.41(@swc/helpers@0.5.23)':
-    dependencies:
-      '@swc/counter': 0.1.3
-      '@swc/types': 0.1.27
-    optionalDependencies:
-      '@swc/core-darwin-arm64': 1.15.41
-      '@swc/core-darwin-x64': 1.15.41
-      '@swc/core-linux-arm-gnueabihf': 1.15.41
-      '@swc/core-linux-arm64-gnu': 1.15.41
-      '@swc/core-linux-arm64-musl': 1.15.41
-      '@swc/core-linux-ppc64-gnu': 1.15.41
-      '@swc/core-linux-s390x-gnu': 1.15.41
-      '@swc/core-linux-x64-gnu': 1.15.41
-      '@swc/core-linux-x64-musl': 1.15.41
-      '@swc/core-win32-arm64-msvc': 1.15.41
-      '@swc/core-win32-ia32-msvc': 1.15.41
-      '@swc/core-win32-x64-msvc': 1.15.41
-      '@swc/helpers': 0.5.23
 
   '@swc/core@1.15.46(@swc/helpers@0.5.23)':
     dependencies:
@@ -27245,32 +27103,6 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.7
 
-  i18next-cli@1.62.0(@swc/helpers@0.5.23)(@types/node@26.1.1)(react-dom@19.2.8(react@19.2.8))(typescript@7.0.2):
-    dependencies:
-      '@croct/json5-parser': 0.2.2
-      '@swc/core': 1.15.41(@swc/helpers@0.5.23)
-      chokidar: 5.0.0
-      commander: 14.0.3
-      execa: 9.6.1
-      glob: 13.0.6
-      i18next: 26.3.6(typescript@7.0.2)
-      i18next-resources-for-ts: 2.1.0(@swc/helpers@0.5.23)
-      inquirer: 14.0.2(@types/node@26.1.1)
-      jiti: 2.7.0
-      jsonc-parser: 3.3.1
-      magic-string: 0.30.21
-      minimatch: 10.2.5
-      ora: 9.4.0
-      react: 19.2.8
-      react-i18next: 17.0.11(i18next@26.3.6(typescript@7.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
-      yaml: 2.9.0
-    transitivePeerDependencies:
-      - '@swc/helpers'
-      - '@types/node'
-      - react-dom
-      - react-native
-      - typescript
-
   i18next-cli@1.67.3(@swc/helpers@0.5.23)(@types/node@26.1.1)(@typescript/typescript6@6.0.2)(react-dom@19.2.8(react@19.2.8)):
     dependencies:
       '@croct/json5-parser': 0.2.2
@@ -27289,6 +27121,32 @@ snapshots:
       ora: 9.4.1
       react: 19.2.8
       react-i18next: 17.0.11(@typescript/typescript6@6.0.2)(i18next@26.3.6(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      yaml: 2.9.0
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - '@types/node'
+      - react-dom
+      - react-native
+      - typescript
+
+  i18next-cli@1.67.3(@swc/helpers@0.5.23)(@types/node@26.1.1)(react-dom@19.2.8(react@19.2.8))(typescript@7.0.2):
+    dependencies:
+      '@croct/json5-parser': 0.2.2
+      '@swc/core': 1.15.46(@swc/helpers@0.5.23)
+      chokidar: 5.0.0
+      commander: 14.0.3
+      execa: 9.6.1
+      glob: 13.0.6
+      i18next: 26.3.6(typescript@7.0.2)
+      i18next-resources-for-ts: 2.1.0(@swc/helpers@0.5.23)
+      inquirer: 14.0.2(@types/node@26.1.1)
+      jiti: 2.7.0
+      jsonc-parser: 3.3.1
+      magic-string: 0.30.21
+      minimatch: 10.2.5
+      ora: 9.4.1
+      react: 19.2.8
+      react-i18next: 17.0.11(i18next@26.3.6(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
       yaml: 2.9.0
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -29940,17 +29798,6 @@ snapshots:
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
 
-  ora@9.4.0:
-    dependencies:
-      chalk: 5.6.2
-      cli-cursor: 5.0.0
-      cli-spinners: 3.4.0
-      is-interactive: 2.0.0
-      is-unicode-supported: 2.1.0
-      log-symbols: 7.0.1
-      stdin-discarder: 0.3.2
-      string-width: 8.2.1
-
   ora@9.4.1:
     dependencies:
       chalk: 5.6.2
@@ -30614,11 +30461,11 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
       typescript: '@typescript/typescript6@6.0.2'
 
-  react-i18next@17.0.11(i18next@26.3.6(typescript@7.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2):
+  react-i18next@17.0.11(i18next@26.3.6(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 4.0.1
-      i18next: 26.3.6(typescript@7.0.2)
+      i18next: 26.3.6(@typescript/typescript6@6.0.2)
       react: 19.2.8
       use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:

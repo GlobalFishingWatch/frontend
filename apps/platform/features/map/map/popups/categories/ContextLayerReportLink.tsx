@@ -1,0 +1,188 @@
+import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
+
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
+import {
+  getIsDataviewReportSupported,
+  selectReportLayersVisible,
+} from 'features/map/dataviews/selectors/dataviews.selectors'
+import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
+import { selectSidebarOpen } from 'features/map/workspace/selectors/app.selectors'
+import { selectWorkspace } from 'features/map/workspace/workspace.selectors'
+import { cleanCurrentWorkspaceReportState } from 'features/map/workspace/workspace.slice'
+import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
+import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
+import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
+
+import type { TooltipCategory } from './area-tooltip-timeseries.hooks'
+import { getAreaIdFromFeature } from './ContextLayers.hooks'
+
+import styles from '../Popup.module.css'
+import layerStyles from './ContextLayers.module.css'
+
+type ContextLayerReportLinkProps = {
+  feature: ContextPickingObject | UserLayerPickingObject
+  label?: string
+  reportCategory?: TooltipCategory
+  onClick?: (
+    e: React.MouseEvent<Element, MouseEvent>,
+    feature: ContextPickingObject | UserLayerPickingObject,
+    layerSources: string
+  ) => void
+}
+
+const ContextLayerReportLink = ({
+  feature,
+  label,
+  reportCategory,
+  onClick,
+}: ContextLayerReportLinkProps) => {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const reportLayersVisible = useSelector(selectReportLayersVisible)
+  const featureFlags = useSelector(selectFeatureFlags)
+  const isDataviewReportAnalysable = getIsDataviewReportSupported(
+    reportLayersVisible!,
+    featureFlags,
+    feature?.layerId
+  )
+  const workspace = useSelector(selectWorkspace)
+  const isSidebarOpen = useSelector(selectSidebarOpen)
+  const isPointFeature = (feature?.geometry as any)?.type === 'Point'
+  const reportAreaDataset = useSelector(selectReportDatasetId)
+  const reportAreaId = useSelector(selectReportAreaId)
+  const areaId = getAreaIdFromFeature(feature)
+  const reportAreaIds = reportAreaId?.split(',') ?? []
+  const reportAreaDatasetIds = reportAreaDataset?.split(',') ?? []
+  const isSameAreaId = reportAreaIds.includes(areaId?.toString() ?? '')
+  const isSameDataset = reportAreaDatasetIds.includes(feature.datasetId)
+  const isSameArea = isSameAreaId && isSameDataset
+  const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
+  const removeAreaFromReport =
+    reportAreaDataset && reportAreaId && isSameArea && reportAreaIds.length > 1
+
+  if (!isDataviewReportAnalysable && !addAreaToReport && !removeAreaFromReport) {
+    return (
+      <IconButton
+        icon="analysis"
+        disabled={!isDataviewReportAnalysable}
+        size="small"
+        tooltip={t((t) => t.common.analysisNotAvailable)}
+      />
+    )
+  }
+
+  const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const layerSources = (reportLayersVisible ?? [])
+      .map((layer) => (layer.datasets ?? []).map((d) => d.name))
+      .flat()
+      .join(', ')
+    resetSidebarScroll()
+    dispatch(resetReportData())
+    dispatch(cleanCurrentWorkspaceReportState())
+    if (onClick) {
+      onClick(e, feature, layerSources)
+    }
+  }
+
+  const reportLinkParams = {
+    category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+    workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+    datasetId: feature.datasetId,
+    areaId: String(areaId),
+  }
+
+  const reportLinkSearch = {
+    bivariateDataviews: null,
+    ...(reportCategory && { reportCategory }),
+    reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
+    reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
+    reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
+    ...(!isSidebarOpen && { sidebarOpen: true }),
+  }
+
+  const areaIndex = reportAreaIds.indexOf(areaId?.toString() ?? '')
+  const addReportLinkParams = {
+    ...reportLinkParams,
+    datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
+    areaId: [reportAreaId, areaId].join(','),
+  }
+  const removeReportLinkParams = {
+    ...reportLinkParams,
+    datasetId: reportAreaDatasetIds.filter((id, index) => index !== areaIndex).join(','),
+    areaId: reportAreaIds.filter((id, index) => index !== areaIndex).join(','),
+  }
+
+  return (
+    <Fragment>
+      <Link
+        className={label ? layerStyles.reportButton : styles.workspaceLink}
+        to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+        params={reportLinkParams}
+        search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
+        data-testid="open-analysis-link"
+        onClick={onReportClick}
+      >
+        {label ? (
+          <Fragment>
+            <Icon icon="analysis" />
+            {label}
+          </Fragment>
+        ) : (
+          <IconButton
+            icon="analysis"
+            tooltip={t((t) => t.common.analysis)}
+            testId="open-analysis"
+            size="small"
+          />
+        )}
+      </Link>
+      {addAreaToReport && (
+        <Link
+          className={styles.workspaceLink}
+          to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+          params={addReportLinkParams}
+          search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
+          onClick={onReportClick}
+          data-testid="add-area-to-report-link"
+        >
+          <IconButton
+            icon="add-polygon-to-analysis"
+            tooltip={t((t) => t.common.analysisAddArea)}
+            testId="add-analysis"
+            size="small"
+          />
+        </Link>
+      )}
+      {removeAreaFromReport && (
+        <Link
+          className={styles.workspaceLink}
+          to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+          params={removeReportLinkParams}
+          search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
+          onClick={onReportClick}
+          data-testid="remove-area-from-report-link"
+        >
+          <IconButton
+            icon="remove-polygon-from-analysis"
+            tooltip={t((t) => t.common.analysisRemoveArea)}
+            testId="remove-analysis"
+            size="small"
+          />
+        </Link>
+      )}
+    </Fragment>
+  )
+}
+
+export default ContextLayerReportLink

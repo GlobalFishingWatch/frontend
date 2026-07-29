@@ -1,0 +1,133 @@
+import { Fragment, useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+import { uniqBy } from 'es-toolkit'
+
+import { COORDINATE_PROPERTY_TIMESTAMP, getUTCDate } from '@globalfishingwatch/data-transforms'
+import {
+  getDatasetConfigurationProperty,
+  getUserDataviewDataset,
+} from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
+
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useDisableHighlightTimeConnect } from 'features/map/timebar/timebar.hooks'
+import { setHighlightedTime } from 'features/map/timebar/timebar.slice'
+
+import { useUserLayerMetadata } from './user-layer-track-panel.hooks'
+
+import styles from 'features/map/workspace/shared/LayerPanel.module.css'
+
+type UserPanelProps = {
+  dataview: UrlDataviewInstance
+  mergedDataviewId?: string
+}
+
+const SEE_MORE_LENGTH = 5
+
+const getFeatureTimeExtent = (
+  feature: UserTrackFeature,
+  timestampProperty = COORDINATE_PROPERTY_TIMESTAMP
+) => {
+  const times = feature.properties.coordinateProperties?.[timestampProperty]
+  if (!times || !times.length) {
+    return null
+  }
+  const min = Array.isArray(times[0]) ? times[0][0] : times[0]
+  const latestValue = times[times.length - 1]
+  const max = Array.isArray(latestValue)
+    ? (latestValue as number[])[latestValue.length - 1]
+    : latestValue
+  if (!min || !max) {
+    return null
+  }
+  return { start: getUTCDate(min).toISOString(), end: getUTCDate(max).toISOString() }
+}
+
+function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
+  const { t } = useTranslation()
+  const [seeMoreOpen, setSeeMoreOpen] = useState(false)
+  const dispatch = useAppDispatch()
+  const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
+
+  const { data, hasFeaturesColoredByField } = useUserLayerMetadata(dataview, mergedDataviewId)
+  const dataset = getUserDataviewDataset(dataview)
+
+  const onSeeMoreClick = useCallback(() => {
+    setSeeMoreOpen(!seeMoreOpen)
+  }, [seeMoreOpen])
+
+  const onFeatureMouseEnter = useCallback(
+    (feature: UserTrackFeature) => {
+      const extent = getFeatureTimeExtent(feature)
+      if (extent) {
+        dispatch(setHighlightedTime(extent))
+      }
+    },
+    [dispatch]
+  )
+
+  const onFeatureMouseLeave = useCallback(
+    (feature: UserTrackFeature) => {
+      dispatchDisableHighlightedTime()
+    },
+    [dispatchDisableHighlightedTime]
+  )
+
+  if (!hasFeaturesColoredByField || !data?.features) {
+    return null
+  }
+
+  const lineIdProperty = getDatasetConfigurationProperty({
+    dataset,
+    property: 'lineId',
+  }) as string
+
+  const filterValues = dataview.config?.filters?.[lineIdProperty] || []
+
+  const features = uniqBy(data?.features, (f) => {
+    return f.properties?.[lineIdProperty]
+  })
+
+  return (
+    <Fragment>
+      {features.slice(0, seeMoreOpen ? undefined : SEE_MORE_LENGTH).map((feature, index) => {
+        if (
+          !feature.properties?.[lineIdProperty] ||
+          (filterValues?.length && !filterValues.includes(feature.properties?.[lineIdProperty]))
+        ) {
+          return null
+        }
+        return (
+          <div
+            key={index}
+            className={styles.trackColor}
+            onMouseEnter={() => onFeatureMouseEnter(feature)}
+            onMouseLeave={() => onFeatureMouseLeave(feature)}
+            style={
+              {
+                '--color': feature.properties?.color || dataview.config?.color,
+              } as React.CSSProperties
+            }
+          >
+            {feature.properties?.[lineIdProperty]}
+          </div>
+        )
+      })}
+      {features?.length > SEE_MORE_LENGTH && (
+        <button
+          className={cx(styles.link, {
+            [styles.more]: !seeMoreOpen,
+            [styles.less]: seeMoreOpen,
+          })}
+          onClick={onSeeMoreClick}
+        >
+          {seeMoreOpen ? t((t) => t.common.less) : t((t) => t.common.more)}
+        </button>
+      )}
+    </Fragment>
+  )
+}
+
+export default UserLayerTrackPanel

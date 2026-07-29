@@ -1,0 +1,319 @@
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import geojsonArea from '@mapbox/geojson-area'
+import cx from 'classnames'
+
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
+
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/map/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setPrintMode } from 'features/app/print.slice'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { useSidePanel } from 'features/map/content-panel/contentPanel.hooks'
+import { cleanCurrentWorkspaceStateBufferParams } from 'features/map/workspace/workspace.slice'
+import {
+  DEFAULT_BUFFER_VALUE,
+  ENTIRE_WORLD_REPORT_AREA_ID,
+  NAUTICAL_MILES,
+} from 'features/reports/report-area/area-reports.config'
+import {
+  selectIsGlobalReport,
+  selectReportArea,
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/reports/report-area/area-reports.selectors'
+import { getReportAreaStringByLocale } from 'features/reports/report-area/title/report-title.utils'
+import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
+import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
+import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
+import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
+import {
+  resetReportData,
+  selectReportPreviewBuffer,
+  setPreviewBuffer,
+} from 'features/reports/tabs/activity/reports-activity.slice'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
+import type { BufferOperation, BufferUnit } from 'types'
+import { htmlSafeParse } from 'utils/html-parser'
+
+import { useFitAreaInViewport, useReportTitle } from '../area-reports.hooks'
+
+import { BufferButtonTooltip } from './BufferButonTooltip'
+
+import styles from './ReportTitle.module.css'
+
+export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
+  const { t, i18n } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const [showBufferTooltip, setShowBufferTooltip] = useState(false)
+  const [longDescription, setLongDescription] = useState(false)
+  const [expandedDescription, setExpandedDescription] = useState(false)
+  const descriptionRef = useRef<HTMLSpanElement>(null)
+  const dispatch = useAppDispatch()
+  const loading = useReportFeaturesLoading()
+  const fitAreaInViewport = useFitAreaInViewport()
+  const { closeSidePanel } = useSidePanel()
+  const isGlobalReport = useSelector(selectIsGlobalReport)
+  const report = useSelector(selectCurrentReport)
+  const reportArea = useSelector(selectReportArea)
+  const reportTitle = useReportTitle()
+  const previewBuffer = useSelector(selectReportPreviewBuffer)
+  const urlBufferValue = useSelector(selectReportBufferValue)
+  const urlBufferUnit = useSelector(selectReportBufferUnit)
+  const urlBufferOperation = useSelector(selectReportBufferOperation)
+  const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
+  const isClientHydrated = useIsClientHydrated()
+
+  const handleBufferUnitChange = useCallback(
+    (option: ChoiceOption<BufferUnit>) => {
+      dispatch(
+        setPreviewBuffer({
+          unit: option.id,
+          value: previewBuffer.value || DEFAULT_BUFFER_VALUE,
+          operation: previewBuffer.operation || DEFAULT_BUFFER_OPERATION,
+        })
+      )
+    },
+    [dispatch, previewBuffer]
+  )
+  const handleBufferOperationChange = useCallback(
+    (option: ChoiceOption<BufferOperation>) => {
+      dispatch(
+        setPreviewBuffer({
+          operation: option.id,
+          unit: previewBuffer.unit || NAUTICAL_MILES,
+          value: previewBuffer.value || DEFAULT_BUFFER_VALUE,
+        })
+      )
+    },
+    [dispatch, previewBuffer]
+  )
+
+  const handleBufferValueChange = useCallback(
+    (values: number[]) => {
+      const value = Math.round(values[1])
+      const operation = value < 0 ? 'dissolve' : previewBuffer.operation || DEFAULT_BUFFER_OPERATION
+      dispatch(
+        setPreviewBuffer({
+          value,
+          unit: previewBuffer.unit || NAUTICAL_MILES,
+          operation,
+        })
+      )
+    },
+    [previewBuffer, dispatch]
+  )
+
+  useEffect(() => {
+    const onAfterPrint = () => dispatch(setPrintMode(false))
+    window.addEventListener('afterprint', onAfterPrint)
+    return () => window.removeEventListener('afterprint', onAfterPrint)
+  }, [dispatch])
+
+  const onPrintClick = () => {
+    closeSidePanel()
+    fitAreaInViewport()
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click print/save as pdf`,
+    })
+    dispatch(setPrintMode(true))
+    requestAnimationFrame(window.print)
+  }
+
+  const handleTooltipHide = useCallback(() => {
+    setShowBufferTooltip(false)
+    dispatch(
+      setPreviewBuffer({
+        unit: null,
+        value: null,
+        operation: null,
+      })
+    )
+  }, [dispatch])
+
+  const handleTooltipShow = useCallback(() => {
+    setShowBufferTooltip(true)
+    // This is to create the preview buffer on tooltip show
+    dispatch(
+      setPreviewBuffer({
+        value: urlBufferValue || DEFAULT_BUFFER_VALUE,
+        unit: urlBufferUnit || NAUTICAL_MILES,
+        operation: urlBufferOperation || DEFAULT_BUFFER_OPERATION,
+      })
+    )
+  }, [dispatch, urlBufferValue, urlBufferUnit, urlBufferOperation])
+
+  const handleConfirmBuffer = useCallback(() => {
+    setShowBufferTooltip(false)
+    replaceQueryParams({
+      reportBufferValue: previewBuffer.value!,
+      reportBufferUnit: previewBuffer.unit!,
+      reportBufferOperation: previewBuffer.operation!,
+    })
+    dispatch(resetReportData())
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Confirm area buffer`,
+      label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
+    })
+  }, [
+    replaceQueryParams,
+    previewBuffer.value,
+    previewBuffer.unit,
+    previewBuffer.operation,
+    dispatch,
+  ])
+
+  const handleRemoveBuffer = useCallback(() => {
+    setShowBufferTooltip(false)
+    replaceQueryParams({
+      reportBufferValue: undefined,
+      reportBufferUnit: undefined,
+      reportBufferOperation: undefined,
+    })
+    dispatch(resetReportData())
+    dispatch(cleanCurrentWorkspaceStateBufferParams())
+  }, [dispatch, replaceQueryParams])
+
+  const reportDescription =
+    report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
+      ? ''
+      : report?.description.length
+        ? htmlSafeParse(getReportAreaStringByLocale(report?.description, i18n.language))
+        : ''
+
+  const reportAreaSpace =
+    reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
+      ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
+      : null
+
+  useLayoutEffect(() => {
+    if (descriptionRef.current) {
+      setLongDescription(descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight)
+    }
+  }, [descriptionRef, reportDescription])
+
+  const toggleExpandedDescription = useCallback(() => {
+    setExpandedDescription(!expandedDescription)
+  }, [expandedDescription])
+
+  if (!reportTitle) {
+    return (
+      <div className={cx(styles.container, styles.placeholder)}>
+        <ReportTitlePlaceholder />
+      </div>
+    )
+  }
+  const hasLongTitle = typeof reportTitle === 'string' && reportTitle.length > 60
+  const showAreaReportSearch = !isStandaloneReportLocation
+
+  return (
+    <div className={styles.container}>
+      <div className={cx(styles.row, styles.border, { [styles.rowColumn]: hasLongTitle })}>
+        <h1 className={styles.title} data-test="report-title">
+          {reportTitle}
+          {reportAreaSpace !== null && reportAreaSpace !== 0 && (
+            <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
+          )}
+        </h1>
+        <div
+          className={cx(styles.actionsContainer, {
+            [styles.actionsContainerColumn]: isSticky || hasLongTitle,
+          })}
+        >
+          <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
+            {t((t) => t.analysis.linkToReport)}
+          </a>
+          {!isSticky && showAreaReportSearch && (
+            <AreaReportSearch
+              className={cx(styles.areaReportSearch, {
+                [styles.areaReportSearchColumn]: hasLongTitle,
+              })}
+            />
+          )}
+          {!isSticky && (
+            <div className={styles.actions}>
+              {!isGlobalReport && (
+                <Popover
+                  open={showBufferTooltip}
+                  onClickOutside={handleTooltipHide}
+                  className={cx(styles.highlightPanel, styles.bufferContainer, 'print-hidden')}
+                  placement="bottom"
+                  content={
+                    <div className={styles.filterButtonWrapper}>
+                      <BufferButtonTooltip
+                        areaType={reportArea?.properties?.originalGeometryType}
+                        activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                        defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                        activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                        handleRemoveBuffer={handleRemoveBuffer}
+                        handleConfirmBuffer={handleConfirmBuffer}
+                        handleBufferUnitChange={handleBufferUnitChange}
+                        handleBufferValueChange={handleBufferValueChange}
+                        handleBufferOperationChange={handleBufferOperationChange}
+                      />
+                    </div>
+                  }
+                >
+                  <div>
+                    <Button
+                      onClick={handleTooltipShow}
+                      // onHide: handleTooltipHide,
+                      type="border-secondary"
+                      size="medium"
+                      className={styles.actionButton}
+                    >
+                      {t((t) => t.analysis.buffer)}
+                      <Icon icon="expand" type="default" />
+                    </Button>
+                  </div>
+                </Popover>
+              )}
+              <IconButton
+                className={styles.actionButton}
+                type="border"
+                icon="print"
+                tooltip={t((t) => t.analysis.print)}
+                size="medium"
+                tooltipPlacement="bottom"
+                onClick={onPrintClick}
+                disabled={loading}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      {reportDescription && !isSticky && (
+        <Fragment>
+          <span
+            className={cx(styles.description, { [styles.expanded]: expandedDescription })}
+            ref={descriptionRef}
+          >
+            {reportDescription}{' '}
+          </span>
+          {longDescription && (
+            <span
+              className={styles.descriptionToggle}
+              onClick={toggleExpandedDescription}
+              role="button"
+              tabIndex={0}
+            >
+              {expandedDescription
+                ? t((t) => t.vessel.insights.gapsSeeLess)
+                : t((t) => t.common.seeMore)}
+            </span>
+          )}
+        </Fragment>
+      )}
+    </div>
+  )
+}

@@ -92,7 +92,7 @@ export const config = {
           // Packages. `react` related packages come first.
           ['^react', '^@?\\w'],
           // Internal packages.
-          ['^(@|@globalfishingwatch)(/.*|$)'],
+          ['^(@|@globalfishingwatch|@platform/config)(/.*|$)'],
           // Internal paths.
           [
             '^(features|store|routes|router|reducers|server|server-functions|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',

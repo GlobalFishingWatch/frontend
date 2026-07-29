@@ -1,0 +1,147 @@
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { IS_DEVELOPMENT_ENV } from 'data/map/config'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
+import { refreshDatasetsLocaleThunk } from 'features/map/datasets/datasets.slice'
+import { selectBasemapLabelsDataviewInstance } from 'features/map/dataviews/selectors/dataviews.selectors'
+import { useDataviewInstancesConnect } from 'features/map/workspace/workspace.hook'
+import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
+import { Locale } from 'types'
+
+import styles from './LanguageToggle.module.css'
+
+function CrowdinScripts({ enabled }: { enabled: boolean }) {
+  const injectedRef = useRef(false)
+
+  useEffect(() => {
+    if (!enabled || injectedRef.current) return
+    injectedRef.current = true
+
+    const initScript = document.createElement('script')
+    initScript.textContent = `var _jipt = []; _jipt.push(['project', 'gfw-frontend']);`
+    document.head.appendChild(initScript)
+
+    const crowdinScript = document.createElement('script')
+    crowdinScript.src = '//cdn.crowdin.com/jipt/jipt.js'
+    document.head.appendChild(crowdinScript)
+  }, [enabled])
+
+  return null
+}
+
+const LocaleLabels = [
+  { id: Locale.en, label: 'English' },
+  { id: Locale.es, label: 'Español' },
+  { id: Locale.fr, label: 'Français' },
+  // { id: Locale.id, label: 'Bahasa Indonesia' },
+  { id: Locale.pt, label: 'Portuguese' },
+]
+
+type LanguageToggleProps = {
+  className?: string
+  position?: 'bottomRight' | 'rightDown'
+}
+
+const LanguageToggle: React.FC<LanguageToggleProps> = ({
+  position = 'bottomRight',
+  className = '',
+}: LanguageToggleProps) => {
+  const { i18n } = useTranslation()
+  const dispatch = useAppDispatch()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
+  const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
+
+  const toggleLanguage = async (lang: Locale | 'source') => {
+    if (lang === i18n.language) {
+      return
+    }
+    trackEvent({
+      category: TrackCategory.I18n,
+      action: `Change language`,
+      label: lang,
+    })
+
+    setIsLoading(true)
+    const locale = lang === 'source' ? Locale.en : (lang as Locale)
+    await dispatch(refreshDatasetsLocaleThunk(locale))
+    i18n.changeLanguage(lang)
+    if (basemapDataviewInstance?.id) {
+      upsertDataviewInstance({
+        id: basemapDataviewInstance.id as string,
+        config: {
+          locale,
+        },
+      })
+    }
+    setIsLoading(false)
+  }
+
+  return (
+    <div className={cx(styles.languageToggle, className)} data-testid="language-toggle-container">
+      <div className={styles.languageBtn}>
+        <IconButton
+          icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
+          type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          loading={isLoading}
+          disabled={isLoading}
+          testId="language-toggle-button"
+        />
+      </div>
+      <ul className={cx(styles.languages, styles[position])} data-testid="language-menu">
+        {IS_DEVELOPMENT_ENV && (
+          <li>
+            <button
+              onClick={() => toggleLanguage('source')}
+              data-testid="language-option-source"
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === 'source',
+                [styles.warning]: IS_DEVELOPMENT_ENV && i18n.language !== 'source',
+              })}
+            >
+              🚧 Source 🚧
+            </button>
+          </li>
+        )}
+        {LocaleLabels.map(({ id, label }) => (
+          <li key={id}>
+            <button
+              onClick={() => toggleLanguage(id)}
+              data-testid={`language-option-${id}`}
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === id,
+              })}
+            >
+              {label}
+            </button>
+          </li>
+        ))}
+        {hasEditTranslationsPermissions && (
+          <li>
+            <button
+              onClick={() => toggleLanguage(CROWDIN_IN_CONTEXT_LANG as Locale)}
+              data-testid="language-option-edit-translations"
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === CROWDIN_IN_CONTEXT_LANG,
+              })}
+            >
+              Edit translations
+            </button>
+          </li>
+        )}
+      </ul>
+      <CrowdinScripts enabled={i18n.language === CROWDIN_IN_CONTEXT_LANG} />
+    </div>
+  )
+}
+
+export default LanguageToggle

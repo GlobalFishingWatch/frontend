@@ -26,8 +26,9 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | --------------------------------------------------- | -------------------------------------- |
 | [api-portal](apps/api-portal)                       | Api documentation portal               |
 | [data-download-portal](apps/data-download-portal)   | The place to download datasets         |
-| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
-| [fishing-map-e2e](apps/fishing-map-e2e)             | Playwright e2e testing for the map     |
+| [platform](apps/platform)                           | Platform entry point                   |
+| [fishing-map](apps/platform/map)                    | Version 4.0 of the fishing map project |
+| [platform-e2e](apps/platform-e2e)                   | Playwright e2e testing for the map     |
 | [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
 | [track-labeler](apps/track-labeler)                 | Labeling tool for tracks               |
@@ -81,7 +82,7 @@ yarn
 
 ### Developmment
 
-Nx handles every app or library by its own project.json file, see for example [fishing-map](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/project.json):
+Nx handles every app or library by its own project.json file, see for example [fishing-map](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/platform/project.json):
 
 ```bash
 nx start [app-name]

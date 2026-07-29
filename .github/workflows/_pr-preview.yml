@@ -34,7 +34,7 @@ on:
         type: string
 
 env:
-  APP: fishing-map
+  APP: platform
 
 jobs:
   deploy-preview:

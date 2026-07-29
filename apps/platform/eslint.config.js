@@ -1,0 +1,43 @@
+import path from 'node:path'
+
+import rootConfig from '../../eslint.config.js'
+
+const tsconfigPath = path.join(import.meta.dirname, 'tsconfig.json')
+
+export default [
+  {
+    ignores: ['.nitro/**', '.output/**', 'dist/**', 'coverage/**'],
+  },
+  ...rootConfig,
+  // Pin resolver to this app — avoids stale fishing-map tsconfig after rename.
+  {
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: tsconfigPath,
+        },
+      },
+    },
+  },
+  // Detect circular imports in selector files — these cause undefined selectors in the SSR bundle.
+  // Scoped to selectors only because import/no-cycle is slow (full graph traversal per file).
+  {
+    files: ['**/*.selectors.ts', '**/selectors/*.ts'],
+    rules: {
+      'import/no-cycle': ['error', { maxDepth: 10, ignoreExternal: true }],
+    },
+  },
+  {
+    files: ['**/routes/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  // Disable @nx/dependency-checks for platform package.json
+  {
+    files: ['package.json'],
+    rules: {
+      '@nx/dependency-checks': 'off',
+    },
+  },
+]

@@ -1,0 +1,33 @@
+import { Suspense } from 'react'
+import { Outlet } from '@tanstack/react-router'
+import cx from 'classnames'
+
+import { SCROLL_CONTAINER_DOM_ID } from 'features/map/sidebar/sidebar.utils'
+
+import styles from './layouts.module.css'
+
+/**
+ * Layout for platform pages with no map and no sidebar — currently /user and /vessel-search.
+ *
+ * It still provides `SCROLL_CONTAINER_DOM_ID`. That element is an app-wide contract, not a Sidebar
+ * detail: 15 modules reach for it, including router/router-sync.ts (scroll reset on every
+ * navigation), VesselGroupModal and ExpandedContainer. Dropping it here would break those on these
+ * routes.
+ */
+function ContentLayout() {
+  return (
+    <div className={styles.contentLayout}>
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className={cx('scrollContainer', styles.contentScrollContainer)}
+        data-testid="content-container"
+      >
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+
+export default ContentLayout

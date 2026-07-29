@@ -1,0 +1,62 @@
+import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
+
+import type { EventType } from '@globalfishingwatch/api-types'
+import type {
+  HighlighterCallbackFn,
+  HighlighterCallbackFnArgs,
+  HighlighterIconCallback,
+} from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
+import type { IconType } from '@globalfishingwatch/ui-components'
+
+import { t } from 'features/i18n/i18n'
+import { selectActiveActivityDataviewsByVisualisation } from 'features/map/timebar/timebar.selectors'
+import { useClusterEventsGraph } from 'features/map/timebar/TimebarClusterEventsGraph.hooks'
+import { TimebarVisualisations } from 'types'
+import { formatNumber } from 'utils/info'
+
+const TimebarClusterEventsGraph = () => {
+  const activeDataviews = useSelector(
+    selectActiveActivityDataviewsByVisualisation(TimebarVisualisations.Events)
+  )
+  const { loading, eventsActivity } = useClusterEventsGraph()
+
+  const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
+    ({ value }: HighlighterCallbackFnArgs) => {
+      if (!value || !value.value) return ''
+      const labels = [
+        formatNumber(value.value),
+        t((t) => t.common.events, { count: value.value }).toLocaleLowerCase(),
+        t((t) => t.common.onScreen),
+      ]
+
+      return labels.join(' ')
+    },
+    []
+  )
+
+  const getActivityHighlighterIconLabel: HighlighterIconCallback = useCallback(
+    ({ item }: HighlighterCallbackFnArgs) => {
+      const eventType = activeDataviews?.find((d) => d.id === item?.props?.dataviewId)
+        ?.datasets?.[0]?.subcategory as EventType
+      return `event-${eventType}` as IconType
+    },
+    [activeDataviews]
+  )
+
+  if (!eventsActivity || !eventsActivity.length || !activeDataviews?.length) return null
+
+  return (
+    <Timebar.Charts.StackedActivity
+      key="stackedActivity"
+      timeseries={eventsActivity}
+      dataviews={activeDataviews}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback={getActivityHighlighterIconLabel}
+      loading={loading}
+    />
+  )
+}
+
+export default TimebarClusterEventsGraph

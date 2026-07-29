@@ -1,0 +1,254 @@
+import { Fragment, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
+import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import type { AreaKeyId } from 'features/data/areas/areas.slice'
+import UserGuideLink from 'features/help/UserGuideLink'
+import DatasetLabel from 'features/map/datasets/DatasetLabel'
+import { getDatasetsReportNotSupported } from 'features/map/datasets/datasets.permissions'
+import { selectDatasetById } from 'features/map/datasets/datasets.slice'
+import { getActiveDatasetsInDataview } from 'features/map/datasets/datasets.utils'
+import {
+  selectActiveHeatmapDowloadDataviewsByTab,
+  selectActiveHeatmapVesselDatasets,
+} from 'features/map/dataviews/selectors/dataviews.selectors'
+import { selectIsDownloadActivityAreaLoading } from 'features/map/download/download.selectors'
+import type { DateRange, DownloadActivityParams } from 'features/map/download/downloadActivity.slice'
+import {
+  downloadActivityThunk,
+  selectDownloadActivityAreaKey,
+  selectHadDownloadActivityTimeoutError,
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityLoading,
+} from 'features/map/download/downloadActivity.slice'
+import DownloadActivityProductsBanner from 'features/map/download/DownloadActivityProductsBanner'
+import TimelineDatesRange from 'features/map/map/controls/TimelineDatesRange'
+import { useTimerangeConnect } from 'features/map/timebar/timebar.hooks'
+import { getSourcesSelectedInDataview } from 'features/map/workspace/activity/activity.utils'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
+import { selectIsGlobalReport } from 'features/reports/report-area/area-reports.selectors'
+import { selectUserData } from 'features/user/selectors/user.selectors'
+import {
+  selectIsAnyReportLocation,
+  selectUrlBufferOperationQuery,
+  selectUrlBufferUnitQuery,
+  selectUrlBufferValueQuery,
+} from 'router/routes.selectors'
+import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
+import {
+  getDownloadReportSupported,
+  getSupportedGroupByOptions,
+  getSupportedTemporalResolutions,
+} from './download.utils'
+import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
+import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
+import { useActivityDownloadTimeoutRefresh } from './downloadActivity.hooks'
+import ActivityDownloadError from './DownloadActivityError'
+import { DownloadAreaLabel } from './DownloadAreaLabel'
+
+import styles from './DownloadModal.module.css'
+
+function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?: () => void }) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const userData = useSelector(selectUserData)
+  const dataviews = useSelector(selectActiveHeatmapDowloadDataviewsByTab)
+  const vesselDatasets = useSelector(selectActiveHeatmapVesselDatasets)
+  const { start, end, timerange } = useTimerangeConnect()
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
+  const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
+  const hadDownloadTimeoutError = useSelector(selectHadDownloadActivityTimeoutError)
+  const [format, setFormat] = useState(VESSEL_FORMAT_OPTIONS[0].id)
+  const isDownloadReportSupported = getDownloadReportSupported(start, end)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
+  const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
+  const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
+  const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
+  const bufferUnit = useSelector(selectUrlBufferUnitQuery)
+  const bufferValue = useSelector(selectUrlBufferValueQuery)
+  const bufferOperation = useSelector(selectUrlBufferOperationQuery)
+
+  const filteredGroupByOptions = useMemo(
+    () => getSupportedGroupByOptions(getVesselGroupOptions(), vesselDatasets, dataviews),
+    [dataviews, vesselDatasets]
+  )
+  const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id)
+
+  const filteredTemporalResolutionOptions = useMemo(
+    () => getSupportedTemporalResolutions(dataviews, { start, end }),
+    [dataviews, start, end]
+  )
+  const [temporalResolution, setTemporalResolution] = useState(
+    filteredTemporalResolutionOptions[0].id
+  )
+  const downloadAreaName =
+    isAnyReportLocation && isGlobalReport
+      ? t((t) => t.analysis.global)
+      : downloadAreaDataset?.source === DRAW_DATASET_SOURCE
+        ? downloadAreaDataset.name
+        : downloadAreaKey?.areaName
+
+  const onDownloadClick = async () => {
+    const downloadDataviews = dataviews
+      .map((dataview) => {
+        const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d.id || []) || []
+        const activityDatasets = datasets.filter((id: string) => {
+          return id ? checkDatasetReportPermission(id, userData!.permissions) : false
+        })
+        return {
+          filter: dataview.config?.filter || '',
+          filters: dataview.config?.filters || {},
+          ...(dataview.config?.['vessel-groups']?.length && {
+            'vessel-groups': dataview.config?.['vessel-groups'] as string[],
+          }),
+          datasets: activityDatasets,
+        }
+      })
+      .filter((dataview) => dataview.datasets.length > 0)
+
+    trackEvent({
+      category: TrackCategory.DataDownloads,
+      action: `Download ${format.toUpperCase()} file`,
+      label: JSON.stringify({
+        regionName: downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        downloadType: 'active vessels',
+        temporalResolution,
+        groupBy,
+        sourceNames: dataviews.flatMap((dataview) =>
+          getSourcesSelectedInDataview(dataview).map((source) => source.label)
+        ),
+      }),
+    })
+    onDownloadCallback?.()
+
+    const downloadParams: DownloadActivityParams = {
+      areaId: isGlobalReport ? ENTIRE_WORLD_REPORT_AREA_ID : (downloadAreaKey?.areaId as AreaKeyId),
+      datasetId: downloadAreaKey?.datasetId as string,
+      dateRange: timerange as DateRange,
+      areaName: downloadAreaName as string,
+      dataviews: downloadDataviews,
+      format,
+      temporalResolution,
+      spatialAggregation: true,
+      groupBy,
+      bufferUnit,
+      bufferValue,
+      bufferOperation,
+    }
+    const action = await dispatch(downloadActivityThunk(downloadParams))
+
+    trackEvent({
+      category: TrackCategory.DataDownloads,
+      action: `Activity download`,
+      label: getEventLabel([
+        downloadAreaName || EMPTY_FIELD_PLACEHOLDER,
+        ...downloadDataviews
+          .map(({ datasets, filters }) => [datasets.join(','), ...getActivityFilters(filters)])
+          .flat(),
+      ]),
+    })
+
+    return action
+  }
+
+  useActivityDownloadTimeoutRefresh()
+
+  return (
+    <Fragment>
+      <div className={styles.container} data-test="download-activity-byvessel">
+        <div className={styles.info}>
+          <div>
+            <label>{t((t) => t.download.area)}</label>
+            <DownloadAreaLabel name={downloadAreaName} />
+          </div>
+          <div>
+            <label>{t((t) => t.download.timeRange)}</label>
+            <Tag>
+              <TimelineDatesRange />
+            </Tag>
+          </div>
+        </div>
+        <div>
+          <label>{t((t) => t.download.format)}</label>
+          <Choice
+            options={VESSEL_FORMAT_OPTIONS}
+            size="small"
+            testId="report-format"
+            activeOption={format}
+            onSelect={(option) => setFormat(option.id as HeatmapDownloadFormat)}
+          />
+        </div>
+        <div>
+          <label>{t((t) => t.download.groupVesselsBy)}</label>
+          <Choice
+            options={filteredGroupByOptions}
+            size="small"
+            testId="group-vessels-by"
+            activeOption={groupBy}
+            onSelect={(option) => setGroupBy(option.id as GroupBy)}
+          />
+        </div>
+        <div>
+          <label>{t((t) => t.download.temporalResolution)}</label>
+          <Choice
+            options={filteredTemporalResolutionOptions}
+            size="small"
+            testId="group-time-by"
+            activeOption={temporalResolution}
+            onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
+          />
+        </div>
+        <UserGuideLink slug="downloading-data" />
+        <div className={styles.footer}>
+          {!isDownloadReportSupported ? (
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {t((t) => t.download.timerangeTooLong)}
+            </p>
+          ) : datasetsDownloadNotSupported.length > 0 ? (
+            <p className={styles.footerLabel}>
+              {t((t) => t.download.datasetsNotAllowed, {
+                defaultValue: "You don't have permissions to download the following datasets:",
+              })}{' '}
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </p>
+          ) : null}
+          <ActivityDownloadError />
+          <Button
+            testId="download-activity-vessel-button"
+            onClick={onDownloadClick}
+            className={styles.downloadBtn}
+            loading={isDownloadAreaLoading || isDownloadLoading || hadDownloadTimeoutError}
+            disabled={
+              isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
+            }
+            tooltip={!isDownloadReportSupported ? t((t) => t.download.timerangeTooLong) : undefined}
+          >
+            {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
+          </Button>
+        </div>
+      </div>
+      <DownloadActivityProductsBanner format={format} />
+    </Fragment>
+  )
+}
+
+export default DownloadActivityByVessel

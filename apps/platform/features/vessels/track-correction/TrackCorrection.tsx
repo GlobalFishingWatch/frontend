@@ -1,0 +1,50 @@
+import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+
+import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selectors'
+import LoginLink from 'features/user/LoginLink'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import type { TrackCorrection } from 'features/vessels/track-correction/track-correction.slice'
+import {
+  selectIsNewTrackCorrection,
+  selectTrackCorrectionStatus,
+} from 'features/vessels/track-correction/track-selection.selectors'
+import TrackCorrectionEdit from 'features/vessels/track-correction/TrackCorrectionEdit'
+import TrackCorrectionNew from 'features/vessels/track-correction/TrackCorrectionNew'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './TrackCorrection.module.css'
+
+const TrackCorrection = () => {
+  const userData = useSelector(selectUserData)
+  const isGuestUser = useSelector(selectIsGuestUser)
+  const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
+  const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
+  const trackCorrectionStatus = useSelector(selectTrackCorrectionStatus)
+  const { t } = useTranslation()
+
+  if (isGuestUser || !userData)
+    return (
+      <>
+        <h1 className={styles.title}>{t((t) => t.trackCorrection.title)}</h1>
+        <div className={styles.loginRequired}>
+          <Icon type="default" icon="warning" />
+          <Trans i18nKey={(t) => t.trackCorrection.loginRequired}>
+            To suggest and view this correction, you must
+            <LoginLink className={styles.link} loginSource="track-correction">
+              {' '}
+              log in{' '}
+            </LoginLink>
+          </Trans>
+        </div>
+      </>
+    )
+
+  if (!isWorkspaceReady || trackCorrectionStatus !== AsyncReducerStatus.Finished) return <Spinner />
+
+  return isNewTrackCorrection ? <TrackCorrectionNew /> : <TrackCorrectionEdit />
+}
+
+export default TrackCorrection

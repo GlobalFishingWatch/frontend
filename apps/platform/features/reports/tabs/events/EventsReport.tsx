@@ -1,0 +1,221 @@
+import { Fragment, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import type { GetReportEventParams } from 'queries/map/report-events-stats-api'
+import {
+  useGetReportEventsStatsQuery,
+  useGetReportEventsVesselsQuery,
+} from 'queries/map/report-events-stats-api'
+
+import { Button, Icon } from '@globalfishingwatch/ui-components'
+
+import EventsEmptyState from 'assets/images/emptyState-events@2x.png'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useFetchContextDatasetAreas } from 'features/data/areas/areas.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { selectVesselsDatasets } from 'features/map/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/map/datasets/datasets.utils'
+import { selectActiveReportDataviews } from 'features/map/dataviews/selectors/dataviews.selectors'
+import { getDownloadReportSupported } from 'features/map/download/download.utils'
+import { selectReportLoadVessels } from 'features/map/workspace/selectors/app.selectors'
+import { selectTimeRange } from 'features/map/workspace/selectors/app.timebar.selectors'
+import { selectActiveReportSubCategories } from 'features/reports/reports.selectors'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportEventsPlaceholder from 'features/reports/shared/placeholders/ReportEventsPlaceholder'
+import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
+import ReportSummary from 'features/reports/shared/summary/ReportSummary'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
+import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
+import EventReportPorts from 'features/reports/tabs/events/EventReportPorts'
+import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
+import {
+  selectEventsGraphDatasetAreaId,
+  selectFetchEventsStatsParams,
+  selectFetchEventsVesselsParams,
+  selectTotalStatsEvents,
+} from 'features/reports/tabs/events/events-report.selectors'
+import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
+import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
+import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './EventsReport.module.css'
+
+function EventsReport() {
+  const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
+  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const { start, end } = useSelector(selectTimeRange)
+  const vesselDatasets = useSelector(selectVesselsDatasets)
+  const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
+  const fetchEventsVesselsParams = useSelector(selectFetchEventsVesselsParams)
+  const fetchEventsStatsParams = useSelector(selectFetchEventsStatsParams)
+  const totalEvents = useSelector(selectTotalStatsEvents)
+  const reportLoadVessels = useSelector(selectReportLoadVessels)
+  const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
+  const timerangeSupported = getDownloadReportSupported(start, end)
+  const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
+  const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
+  const { updateReportHash, reportOutdated } = useReportHash()
+
+  const { status: vessselStatus } = useGetReportEventsVesselsQuery(
+    fetchEventsVesselsParams as GetReportEventParams,
+    {
+      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated,
+    }
+  )
+
+  const { error: statsError, status: statsStatus } = useGetReportEventsStatsQuery(
+    fetchEventsStatsParams,
+    {
+      skip: !eventsDataview,
+    }
+  )
+
+  useEffect(() => {
+    if (reportLoadVessels && eventsDataview) {
+      updateReportHash()
+      replaceQueryParams({ reportLoadVessels: false })
+    }
+  }, [reportLoadVessels, eventsDataview, updateReportHash])
+
+  const isLoadingStats = statsStatus === 'pending'
+  const isLoadingVessels = vessselStatus === 'pending'
+  const hasEvents =
+    statsStatus === 'fulfilled' ? totalEvents !== undefined && totalEvents > 0 : false
+  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && hasEvents
+
+  const graph = useMemo(() => {
+    if (statsError) {
+      return <p className={styles.error}>{(statsError as any).message}</p>
+    }
+    if (
+      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
+      isLoadingStats
+    ) {
+      return <ReportActivityPlaceholder showHeader={false} loading />
+    }
+    if (!hasEvents) {
+      return (
+        <div className={styles.emptyState}>
+          <img className={styles.emptyStateImage} src={EventsEmptyState} alt="" />
+          {t((t) => t.vessel.noEventsinTimeRange)}
+        </div>
+      )
+    }
+    return <EventsReportGraph />
+  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
+
+  if (!vesselDatasets.length) {
+    return (
+      <Fragment>
+        {showSubsectionSelector && (
+          <div className={styles.selector}>
+            <EventsReportSubsectionSelector />
+          </div>
+        )}
+        <ReportEventsPlaceholder />
+      </Fragment>
+    )
+  }
+
+  if (datasetsWithoutRelatedEvents.length >= 1) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
+          features: t((t) => t.common.events),
+
+          datasets: Array.from(datasetsWithoutRelatedEvents)
+            .map((d) => getDatasetLabel(d))
+            .join(', '),
+        })}
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.section}>
+      {showSubsectionSelector && (
+        <div className={styles.selector}>
+          <EventsReportSubsectionSelector />
+        </div>
+      )}
+      <Fragment>
+        <div className={cx('card', styles.subsection)}>
+          <ReportSummary />
+        </div>
+        <div className={cx('card', styles.subsection)}>
+          <div className={styles.container}>
+            <div className={styles.headerContainer}>
+              <label className={styles.headerContainerLabel}>{t((t) => t.common.events)}</label>
+              {hasEvents && (
+                <EventsReportGraphSelector
+                  disabled={isLoadingVessels || !hasEvents}
+                  containerClassName={styles.graphSelector}
+                />
+              )}
+            </div>
+            {graph}
+          </div>
+        </div>
+        {hasEvents && (
+          <div className={cx('card', styles.subsection)}>
+            {!timerangeSupported ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={cx(styles.cover, styles.error)}>
+                  <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : reportOutdated ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={cx(styles.cover, styles.center, styles.top)}>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: t((t) => t.eventsReport.newTimeRange, {
+                        start: formatI18nDate(start),
+                        end: formatI18nDate(end),
+                      }),
+                    }}
+                  />
+                  <Button
+                    testId="see-vessel-table-events-report"
+                    onClick={() => {
+                      updateReportHash()
+                      trackEvent({
+                        category: TrackCategory.Analysis,
+                        action: 'Click on see vessels button in events activity',
+                      })
+                    }}
+                  >
+                    {t((t) => t.analysis.seeVessels)}
+                  </Button>
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : (
+              <ReportVessels
+                color={eventsDataview?.config?.color}
+                activityUnit="numEvents"
+                title={t((t) => t.common.vessels)}
+                loading={isLoadingVessels}
+              />
+            )}
+          </div>
+        )}
+
+        {showPortsTable && (
+          <div className={cx('card', styles.subsection)}>
+            <div className={styles.container}>
+              <EventReportPorts />
+            </div>
+          </div>
+        )}
+      </Fragment>
+    </div>
+  )
+}
+
+export default EventsReport

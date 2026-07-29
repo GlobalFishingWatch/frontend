@@ -10,5 +10,5 @@
     "noFallthroughCasesInSwitch": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "../../apps/fishing-map/config/src/**/*.ts"]
+  "include": ["src/**/*.ts", "../../apps/platform/config/**/*.ts"]
 }

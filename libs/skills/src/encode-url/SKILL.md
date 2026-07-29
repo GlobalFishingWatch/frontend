@@ -8,7 +8,7 @@ description: Build a GFW map URL (and TanStack Router navigation config) identic
 Turn a navigation intent into `{ navigation, path }`:
 
 - `navigation`: TanStack Router config (`to`, `params`, `search`) — use to navigate from inside the map app.
-- `path`: path + encoded query string (e.g. `/map/fishing-activity/default-public?...`) — for external navigation prepend the origin `https://globalfishingwatch.org`.
+- `path`: path + encoded query string (e.g. `/platform/map/fishing-activity/default-public?...`) — for external navigation prepend the origin `https://globalfishingwatch.org`.
 
 Never hand-build the query string: params are abbreviated (`dataviewInstances`→`dvIn`, `config`→`cfg`, `visible`→`vis`…) and repeated values are tokenized (`~0`). The script does this with the app's own encoder:
 
@@ -45,7 +45,7 @@ Rules for the change:
 
 1. **Pick the route type** from the user intent (details in [references/routes.md](references/routes.md)):
    - browse/compare activity on the map → `workspace`
-   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md) only when marine manager is mentioned; marine-manager workspaces index → static path `/map/marine-manager` (no state/query at all)
+   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md) only when marine manager is mentioned; marine-manager workspaces index → static path `/platform/map/marine-manager` (no state/query at all)
    - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`). Multiple areas in one report → pass `datasetId`/`areaId` as comma-joined lists of equal length (one datasetId per areaId), e.g. `"datasetId":"public-fao-major,public-fao-major","areaId":"41,87"` → path `/report/public-fao-major%2Cpublic-fao-major/41%2C87`. Adding an area to an existing report = append its dataset+id to both.
    - port activity profile → `ports-report` (needs `portId`)
    - vessel profile → `vessel` (needs `vesselId`)

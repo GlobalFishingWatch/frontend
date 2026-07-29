@@ -1,0 +1,42 @@
+import type {
+  TrackCorrection,
+  TrackCorrectionComment,
+} from 'features/vessels/track-correction/track-correction.slice'
+import {
+  COMMENTS_SPREADSHEET_TITLE,
+  getSheetTab,
+  ISSUES_SPREADSHEET_TITLE,
+} from 'server/api/track-corrections/utils'
+import { escapeFormulaString, sanitizeSheetRow } from 'server/api/utils/sanitize'
+import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
+
+export async function createNewIssue(
+  issueBody: TrackCorrection,
+  commentBody: TrackCorrectionComment,
+  workspaceId: string
+) {
+  const spreadsheetDoc = await loadSpreadsheetDocByWorkspace(workspaceId)
+
+  const issuesSheet = getSheetTab(ISSUES_SPREADSHEET_TITLE, spreadsheetDoc)
+  const commentsSheet = getSheetTab(COMMENTS_SPREADSHEET_TITLE, spreadsheetDoc)
+
+  try {
+    await commentsSheet.addRow(sanitizeSheetRow(commentBody))
+
+    const rowData = {
+      ...sanitizeSheetRow(issueBody),
+      issueId: `=HYPERLINK("${escapeFormulaString(issueBody.workspaceLink)}", "${escapeFormulaString(commentBody.issueId)}")`,
+      createdBy: `=HYPERLINK("mailto:${escapeFormulaString(issueBody.userEmail)}", "${escapeFormulaString(commentBody.user)}")`,
+      startDate: `=GET_LATEST_STARTDATE(${issueBody.issueId})`,
+      endDate: `=GET_LATEST_ENDDATE(${issueBody.issueId})`,
+      comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,
+      lastUpdated: `=GET_LAST_UPDATED(${issueBody.issueId})`,
+      resolved: `=GET_IS_RESOLVED(${issueBody.issueId})`,
+      confirmed: `=GET_IS_CONFIRMED(${issueBody.issueId})`,
+    }
+    await issuesSheet.addRow(rowData)
+  } catch (error) {
+    console.error('Error adding row:', error)
+    throw error
+  }
+}

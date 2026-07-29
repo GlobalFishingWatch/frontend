@@ -1,0 +1,134 @@
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { uniq } from 'es-toolkit'
+import { stringify } from 'qs'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
+
+import { getDatasetByIdsThunk } from 'features/map/datasets/datasets.slice'
+import { mergeVesselGroupVesselIdentities } from 'features/user/vessel-groups/vessel-groups.utils'
+import type { VesselGroupVesselIdentity } from 'features/user/vessel-groups/vessel-groups-modal.slice'
+import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessels/vessel/vessel.config'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & {
+  vessels: VesselGroupVesselIdentity[]
+}
+
+interface ReportState {
+  status: AsyncReducerStatus
+  statusId: string
+  error: AsyncError | null
+  vesselGroup: VesselGroupReport | null
+}
+
+type VesselGroupReportSliceState = { vesselGroupReport: ReportState }
+
+const initialState: ReportState = {
+  status: AsyncReducerStatus.Idle,
+  statusId: '',
+  error: null,
+  vesselGroup: null,
+}
+
+type FetchVesselGroupReportThunkParams = {
+  vesselGroupId: string
+}
+
+export async function fetchVesselGroupVesselIdentities(
+  vesselGroupId: string,
+  signal?: AbortSignal
+) {
+  const params = {
+    'vessel-groups': [vesselGroupId],
+    includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+  }
+  return await GFWAPI.fetch<APIPagination<IdentityVessel>>(`/vessels?${stringify(params)}`, {
+    cache: 'reload',
+    signal,
+  })
+}
+
+export const fetchVesselGroupReportThunk = createAsyncThunk(
+  'vessel-group-report/vessels',
+  async (
+    { vesselGroupId }: FetchVesselGroupReportThunkParams,
+    { dispatch, rejectWithValue, signal }
+  ) => {
+    try {
+      const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
+      const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroupId, signal)
+      const groupVessels = vesselGroup.vessels || []
+      const vesselGroupVesselDatasets = uniq(groupVessels.flatMap((v) => v.dataset || []))
+      await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
+      return {
+        ...vesselGroup,
+        vessels: mergeVesselGroupVesselIdentities(groupVessels, vesselGroupVessels.entries),
+      }
+    } catch (e) {
+      console.warn(e)
+      return rejectWithValue(e)
+    }
+  },
+  {
+    condition: (params: FetchVesselGroupReportThunkParams, { getState }) => {
+      const { status, statusId } =
+        (getState() as VesselGroupReportSliceState)?.vesselGroupReport || {}
+      if (
+        status === AsyncReducerStatus.Error ||
+        status === AsyncReducerStatus.Loading ||
+        status === AsyncReducerStatus.Finished
+      ) {
+        return statusId !== params.vesselGroupId
+      }
+      return true
+    },
+  }
+)
+
+const vesselGroupReportSlice = createSlice({
+  name: 'vesselGroupReport',
+  initialState,
+  reducers: {
+    resetVesselGroupReportData: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.vesselGroup = null
+      state.error = null
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchVesselGroupReportThunk.pending, (state, action) => {
+      state.status = AsyncReducerStatus.Loading
+      state.statusId = action.meta.arg.vesselGroupId
+    })
+    builder.addCase(fetchVesselGroupReportThunk.fulfilled, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      state.vesselGroup = action.payload
+    })
+    builder.addCase(fetchVesselGroupReportThunk.rejected, (state, action) => {
+      state.status = AsyncReducerStatus.Error
+      state.error = action.payload as AsyncError
+    })
+  },
+})
+
+export const { resetVesselGroupReportData } = vesselGroupReportSlice.actions
+
+export const selectVGRStatus = (state: VesselGroupReportSliceState) =>
+  state.vesselGroupReport.status
+export const selectVGRError = (state: VesselGroupReportSliceState) => state.vesselGroupReport.error
+export const selectVGRData = (state: VesselGroupReportSliceState) =>
+  state.vesselGroupReport.vesselGroup
+
+export const selectVGRVessels = createSelector([selectVGRData], (vesselGroup) => {
+  return vesselGroup?.vessels
+})
+export const selectVGRDatasets = createSelector([selectVGRData], (vesselGroup) => {
+  return (
+    vesselGroup?.vesselsSummary?.datasets ||
+    uniq((vesselGroup?.vessels || []).map((v) => v.dataset))
+  )
+})
+
+export default vesselGroupReportSlice.reducer

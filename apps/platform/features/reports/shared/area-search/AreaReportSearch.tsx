@@ -1,0 +1,240 @@
+import type { KeyboardEventHandler } from 'react'
+import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
+import cx from 'classnames'
+import type { UseComboboxStateChange } from 'downshift'
+import { useCombobox } from 'downshift'
+
+import type { Dataview } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import { InputText } from '@globalfishingwatch/ui-components'
+
+import { OCEAN_AREAS_DATAVIEWS } from 'data/map/dataviews'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { t as trans } from 'features/i18n/i18n'
+import { selectAllDataviews } from 'features/map/dataviews/dataviews.slice'
+import { getDataviewInstanceFromDataview } from 'features/map/dataviews/dataviews.utils'
+import { selectContextAreasDataviews } from 'features/map/dataviews/selectors/dataviews.categories.selectors'
+import { selectWorkspace } from 'features/map/workspace/workspace.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
+import { useOceanAreas } from 'hooks/ocean-areas'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
+import { getEventLabel } from 'utils/analytics'
+import { formatInfoField, upperFirst } from 'utils/info'
+
+import styles from './AreaReportSearch.module.css'
+
+const MAX_RESULTS_NUMBER = 10
+
+const getItemLabel = (item: OceanArea | null) => {
+  if (!item) return ''
+  const name = item.properties?.name ? formatInfoField(item.properties?.name, 'name') : ''
+  return `${name} (${trans((t: any) => t.layer.areas[item.properties?.type], {
+    defaultValue: upperFirst(item.properties?.type),
+  })})`
+}
+
+function AreaReportSearch({ className }: { className?: string }) {
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
+  const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
+  const [inputSearch, setInputSearch] = useState<string>('')
+  const workspace = useSelector(selectWorkspace)
+  const contextAreasDataviews = useSelector(selectContextAreasDataviews)
+  const allDataviews = useSelector(selectAllDataviews)
+  const { searchOceanAreas } = useOceanAreas()
+
+  const updateMatchingAreas = async (inputValue: string) => {
+    try {
+      const areas = await searchOceanAreas({
+        query: inputValue,
+        locale: i18n.language as OceanAreaLocale,
+      })
+      setAreasMatching((areas || []).slice(0, MAX_RESULTS_NUMBER))
+    } catch (error) {
+      console.error('Error searching ocean areas:', error)
+      setAreasMatching([])
+    }
+  }
+
+  const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {
+    if (inputValue === '') {
+      setSelectedItem(null)
+      setAreasMatching([])
+    } else {
+      updateMatchingAreas(inputValue as string)
+    }
+    setInputSearch(inputValue as string)
+  }
+
+  const navigateToAreaReport = (area: OceanArea) => {
+    const dataview: Dataview | UrlDataviewInstance | undefined =
+      contextAreasDataviews?.find((dataview) => dataview.slug?.includes(area.properties?.type)) ||
+      allDataviews.find(
+        (dataview) =>
+          OCEAN_AREAS_DATAVIEWS.includes(dataview.slug as any) &&
+          dataview.slug?.includes(area.properties?.type)
+      )
+
+    if (dataview) {
+      const datasetId = dataview.datasetsConfig?.[0]?.datasetId
+      if (datasetId) {
+        const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+        const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
+        const newDataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
+
+        const mergeDataviewInstances = (
+          dataviewInstances: QueryParams['dataviewInstances'],
+          newDataviewInstance: UrlDataviewInstance
+        ): UrlDataviewInstance[] => {
+          const prevInstances = dataviewInstances || []
+          const dataviewInstance = prevInstances.find(
+            (d: UrlDataviewInstance) => d.id === dataview?.id
+          )
+          if (dataviewInstance) {
+            return prevInstances.map((d: UrlDataviewInstance) => {
+              if (d.id === dataviewInstance.id) {
+                return {
+                  ...d,
+                  config: {
+                    ...d.config,
+                    visible: true,
+                  },
+                }
+              }
+              return d
+            })
+          }
+          return [...prevInstances, { ...newDataviewInstance, config: { visible: true } }]
+        }
+
+        if (area.properties?.type === 'port') {
+          const portId = area.properties.area != null ? String(area.properties.area) : undefined
+          router.navigate({
+            to: ROUTE_PATHS.PORT_REPORT,
+            params: { category, workspaceId, portId: portId! },
+            search: (prev: QueryParams) => ({
+              ...prev,
+              reportCategory: ReportCategory.Events,
+              portsReportName: area.properties.name,
+              portsReportCountry: area.properties.area?.toString().split('-')[0]?.toUpperCase(),
+              portsReportDatasetId: datasetId,
+              dataviewInstances: mergeDataviewInstances(
+                prev.dataviewInstances,
+                newDataviewInstance
+              ),
+            }),
+          })
+        } else {
+          const areaId = area.properties.area != null ? String(area.properties.area) : undefined
+          router.navigate({
+            to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+            params: { category, workspaceId, datasetId, areaId: areaId! },
+            search: (prev: QueryParams) => ({
+              ...prev,
+              dataviewInstances: mergeDataviewInstances(
+                prev.dataviewInstances,
+                newDataviewInstance
+              ),
+            }),
+          })
+        }
+      } else {
+        console.warn('No datasetId found for area', area)
+      }
+    } else {
+      console.warn('No dataview found for area', area)
+    }
+  }
+
+  const onSelectResult = ({ selectedItem, inputValue = '' }: UseComboboxStateChange<OceanArea>) => {
+    setAreasMatching([])
+    if (selectedItem) {
+      setSelectedItem(selectedItem)
+      navigateToAreaReport(selectedItem)
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: 'Search for an area in report',
+        label: getEventLabel([inputValue, selectedItem?.properties?.name || '']),
+      })
+    } else {
+      setSelectedItem(null)
+    }
+  }
+
+  const { getMenuProps, getInputProps, getItemProps, highlightedIndex, inputValue, isOpen } =
+    useCombobox({
+      inputValue: inputSearch,
+      selectedItem,
+      items: areasMatching,
+      itemToString: getItemLabel,
+      onInputValueChange: onInputChange,
+      onSelectedItemChange: onSelectResult,
+    })
+
+  const onInputBlur = () => {
+    if (inputValue !== getItemLabel(selectedItem)) {
+      setSelectedItem(null)
+      setInputSearch('')
+      setAreasMatching([])
+    }
+  }
+  // eslint-disable-next-line react-hooks/refs
+  const inputProps = getInputProps({ ref: inputRef })
+
+  const handleKeyDown: KeyboardEventHandler = (e) => {
+    if (e.key === 'Escape') {
+      setSelectedItem(null)
+      setInputSearch('')
+      setAreasMatching([])
+      inputRef.current?.blur()
+    }
+    inputProps.onKeyDown?.(e)
+  }
+
+  return (
+    <div
+      className={cx(
+        styles.inputContainer,
+        { [styles.open]: isOpen && areasMatching.length > 0 },
+        'print-hidden',
+        className
+      )}
+    >
+      <div className={styles.comboContainer}>
+        <InputText
+          {...inputProps}
+          className={styles.input}
+          placeholder={t((t) => t.map.search)}
+          onBlur={onInputBlur}
+          onKeyDown={handleKeyDown}
+          inputSize="medium"
+          type="search"
+        />
+        <ul {...getMenuProps()} className={styles.results}>
+          {isOpen &&
+            areasMatching?.map((item, index) => (
+              <li
+                {...getItemProps({ item, index })}
+                key={`${item}${index}`}
+                className={cx(styles.result, {
+                  [styles.highlighted]: highlightedIndex === index,
+                })}
+              >
+                {getItemLabel(item)}
+              </li>
+            ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+export default AreaReportSearch

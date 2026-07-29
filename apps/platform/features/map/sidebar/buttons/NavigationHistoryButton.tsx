@@ -1,0 +1,149 @@
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
+import cx from 'classnames'
+
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { resetAreaDetail } from 'features/data/areas/areas.slice'
+import { useSetMapCoordinates } from 'features/map/map/map-viewport.hooks'
+import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
+import { cleanVesselProfileDataviewInstances } from 'features/map/sidebar/sidebar-header.hooks'
+import { useTimerangeConnect } from 'features/map/timebar/timebar.hooks'
+import { selectLastWorkspaceNavigationProps } from 'features/map/workspace/workspace.selectors'
+import { cleanCurrentWorkspaceReportState } from 'features/map/workspace/workspace.slice'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
+import { EMPTY_SEARCH_FILTERS } from 'features/vessels/search/search.config'
+import { cleanVesselSearchResults } from 'features/vessels/search/search.slice'
+import { useSetTrackCorrectionId } from 'features/vessels/track-correction/track-correction.hooks'
+import {
+  resetTrackCorrection,
+  setTrackCorrectionTimerange,
+} from 'features/vessels/track-correction/track-correction.slice'
+import { setVesselEventId } from 'features/vessels/vessel/vessel.slice'
+import { VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
+import {
+  selectIsAnyReportLocation,
+  selectIsAnyVesselLocation,
+  selectIsRouteWithWorkspace,
+  selectIsVesselGroupReportLocation,
+} from 'router/routes.selectors'
+
+import styles from '../SidebarHeader.module.css'
+
+function NavigationHistoryButton() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const lastWorkspaceNavigationProps = useSelector(selectLastWorkspaceNavigationProps)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const reportAreaIds = useSelector(selectReportAreaIds)
+  const setTrackCorrectionId = useSetTrackCorrectionId()
+  const { setTimerange } = useTimerangeConnect()
+  const setMapCoordinates = useSetMapCoordinates()
+
+  const trackAnalytics = useCallback(() => {
+    const analyticsAction = isAnyVesselLocation
+      ? 'close_vessel_panel'
+      : isAnyReportLocation
+        ? 'close_report_panel'
+        : isVesselGroupReportLocation
+          ? 'close_vessel_group_report_panel'
+          : isRouteWithWorkspace
+            ? 'close_workspace'
+            : ''
+
+    if (analyticsAction) {
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: analyticsAction,
+      })
+    }
+  }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
+
+  if (!lastWorkspaceNavigationProps) {
+    return null
+  }
+
+  const { to, params, search, previousRouteType, isPreviousLocationReport, lastWorkspaceVisited } =
+    lastWorkspaceNavigationProps
+  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
+
+  const onCloseClick = () => {
+    resetSidebarScroll()
+
+    dispatch(cleanVesselSearchResults())
+
+    dispatch(resetReportData())
+    dispatch(resetVesselGroupReportData())
+    dispatch(resetAreaDetail(reportAreaIds))
+    dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(setVesselEventId(null))
+
+    setTrackCorrectionId('')
+    dispatch(resetTrackCorrection())
+    dispatch(
+      setTrackCorrectionTimerange({
+        start: '',
+        end: '',
+      })
+    )
+
+    if (start && end) {
+      setTimerange({
+        start,
+        end,
+      })
+    }
+
+    setMapCoordinates({
+      latitude,
+      longitude,
+      zoom,
+    })
+
+    trackAnalytics()
+  }
+
+  const previousLocation =
+    previousRouteType === VESSEL || previousRouteType === WORKSPACE_VESSEL
+      ? t((t) => t.vessel.title)
+      : isPreviousLocationReport
+        ? t((t) => t.analysis.title)
+        : isVesselGroupReportLocation
+          ? t((t) => t.vesselGroup.vesselGroupProfile)
+          : previousRouteType === WORKSPACES_LIST
+            ? t((t) => t.workspace.list)
+            : t((t) => t.workspace.title)
+
+  const tooltip = t((t) => t.common.navigateBackTo, {
+    section: previousLocation.toLocaleLowerCase(),
+  })
+
+  return (
+    <Link
+      className={cx(styles.workspaceLink, 'print-hidden')}
+      to={to}
+      params={params}
+      state={(state) => ({ ...state, isHistoryNavigation: true })}
+      search={{
+        ...search,
+        ...EMPTY_SEARCH_FILTERS,
+        userTab: undefined,
+        dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
+      }}
+      onClick={onCloseClick}
+    >
+      <IconButton type="border" icon="close" tooltip={tooltip} />
+    </Link>
+  )
+}
+
+export default NavigationHistoryButton
