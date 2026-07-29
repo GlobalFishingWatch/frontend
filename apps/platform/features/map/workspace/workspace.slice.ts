@@ -26,7 +26,6 @@ import { GAPS_EVENTS_WORKSPACE_ID } from '@platform/config'
 
 import type { VALID_PASSWORD } from 'data/map/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
-import { LIBRARY_LAYERS } from 'data/map/layer-library'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   DEFAULT_WORKSPACE_ID,
@@ -43,7 +42,6 @@ import {
 } from 'features/map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/map/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/map/dataviews/dataviews.utils'
-import { mergeDataviewIntancesToUpsert } from 'features/map/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
@@ -139,14 +137,6 @@ type RejectedActionPayload = {
   error: AsyncError
 }
 
-/**
- * Env-specific default workspaces, code-split per env.
- *
- * The pattern is relative to *this file* and cannot use the `data/` path alias, so moving either this
- * module or the target directory silently breaks it: `import.meta.glob` yields `{}` when nothing matches
- * and the literal is invisible to typecheck. The assert below turns that into an immediate, loud failure
- * instead of "There was an error loading the workspace".
- */
 const DEFAULT_WORKSPACES_GLOB = '../../../data/map/default-workspaces'
 
 const workspaceModules = import.meta.glob<{ default: AppWorkspace }>(
@@ -300,6 +290,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
+      // Loaded here rather than statically: the layer library reaches deck-layers, and this slice is in
+      // the reducer map, so a static import lands it in every page's entry chunk. Awaited *before* the
+      // aborted check below so that check is still followed by synchronous work, as it was originally.
+      const { LIBRARY_LAYERS } = await import('data/map/layer-library')
+
       let datasets: Dataset[] = []
       if (!signal.aborted) {
         const dataviewInstances: UrlDataviewInstance[] = [
@@ -400,6 +395,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         })
         // Compute the dataviewInstances with the track config to be upserted by the caller
         if (vesselDataviewsWithTrack?.length) {
+          // workspace.hook reaches map-viewport.hooks (@deck.gl/core) and timebar.hooks
+          // (@globalfishingwatch/timebar); keep both out of the reducer map's static graph.
+          const { mergeDataviewIntancesToUpsert } =
+            await import('features/map/workspace/workspace.hook')
           dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
             vesselDataviewsWithTrack,
             urlDataviewInstances
