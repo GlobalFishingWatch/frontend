@@ -23,3 +23,9 @@ export type PanelWidths = { sidebar?: number; contentPanel?: number; screen?: nu
 export const USER_TOKEN_COOKIE_KEY = 'GFW_API_USER_TOKEN'
 // Refresh token: httpOnly (only the auth server functions touch it).
 export const USER_REFRESH_TOKEN_COOKIE_KEY = 'GFW_API_REFRESH_TOKEN'
+
+const SSR_SUBDOMAIN_SUFFIX =
+  { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
+export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`
+// The gateway grants anonymous access by referer; node fetch sends none, browsers do.
+export const SSR_HEADERS = { referer: SSR_REFERER } as HeadersInit

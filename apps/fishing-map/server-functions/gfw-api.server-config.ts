@@ -2,7 +2,11 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 
 import { GFWAPI, readCookieString } from '@globalfishingwatch/api-client'
 
-import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import {
+  SSR_HEADERS,
+  USER_REFRESH_TOKEN_COOKIE_KEY,
+  USER_TOKEN_COOKIE_KEY,
+} from 'features/app/app.config'
 
 type Tokens = { token: string; refreshToken: string }
 type AuthTokenHolder = { token: string; refreshing?: Promise<Tokens> }
@@ -24,6 +28,7 @@ export function configureServerGFWAPI() {
   configured = true
   GFWAPI.configure({
     baseUrl: import.meta.env.VITE_API_GATEWAY,
+    defaultHeaders: SSR_HEADERS,
     tokenStorage: {
       // No holder = called outside a request (boot / non-request code): no token available.
       get: () => authTokenALS.getStore()?.token ?? '',
