@@ -568,8 +568,10 @@
       "contactPermissionNo": "No, por ahora",
       "contactPermissionYes": "Sí, acepto ser contactado",
       "description": "¿Podrías responder a dos preguntas rápidas? Tarda menos de un minuto y nos ayuda a mejorar la plataforma.",
+      "error": "Something went wrong sending your answer, please try again later.",
       "intentLabel": "¿Cómo piensa utilizar estos datos?",
       "intentPlaceholder": "Escribe tu respuesta aquí",
+      "sent": "Thanks for helping us improve the platform.",
       "title": "Mientras preparamos tu archivo…"
     },
     "temporalResolution": "Agrupar tiempo por",
