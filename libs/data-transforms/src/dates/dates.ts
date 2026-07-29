@@ -153,7 +153,7 @@ export const formatDateForInterval = (
   date: DateTime | SupportedDateType,
   timeChunkInterval: FourwingsInterval
 ) => {
-  const dateTime = DateTime.isDateTime(date) ? date : getUTCDateTime(date)
+  const dateTime = DateTime.isDateTime(date) ? date : getUTCDateTime(date as SupportedDateType)
   let formattedTick
   switch (timeChunkInterval) {
     case 'YEAR':

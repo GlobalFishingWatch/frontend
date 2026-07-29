@@ -228,7 +228,8 @@ export function useMapConnect(): UseMap {
               })),
             ])
           : undefined
-        const { width, height } = map?.transform || {}
+        // container size is the viewport size; map.transform is internal and gone in maplibre v6
+        const { clientWidth: width, clientHeight: height } = map?.getContainer() || {}
         if (width && height && bbox) {
           const [minLng, minLat, maxLng, maxLat] = bbox
           const { latitude, longitude, zoom } = fitBounds({

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { ViewStateChangeEvent } from 'react-map-gl'
+import type { ViewStateChangeEvent } from 'react-map-gl/maplibre'
 import { atom, useAtom } from 'jotai'
 
 import { DEFAULT_VIEWPORT } from 'data/config'

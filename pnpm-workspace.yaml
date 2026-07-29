@@ -7,6 +7,7 @@ packages:
 allowBuilds:
   '@parcel/watcher': true
   '@sentry/cli': true
+  # transitive: i18next-cli and nx's optional swc loader ship native bindings
   '@swc/core': true
   core-js: true
   esbuild: true
