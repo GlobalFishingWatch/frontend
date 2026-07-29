@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -12,7 +12,10 @@ import {
 } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
-import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getVesselTransmissionDates,
+  isTimerangeOutsideTransmissions,
+} from 'features/vessel/vessel.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
@@ -35,36 +38,49 @@ export const useVesselProfileBounds = () => {
   const fitBounds = useMapFitBounds()
   const setTimerange = useSetTimerange()
   const vessel = useSelector(selectVesselInfoData)
-  const transmissionDateFrom = getVesselProperty(vessel, 'transmissionDateFrom')
-  const transmissionDateTo = getVesselProperty(vessel, 'transmissionDateTo')
-  const canFitDates = transmissionDateFrom && transmissionDateTo
+  const urlTimerange = useSelector(selectUrlTimeRange)
+  const { transmissionDateFrom, transmissionDateTo } = getVesselTransmissionDates(vessel)
   const vesselLayer = useVesselProfileLayer()
   const isTrackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   const bounds = useVesselProfileBbox()
+  const pendingFitRef = useRef(false)
+
+  const confirmTimerangeChange = useCallback(() => {
+    if (
+      !isTimerangeOutsideTransmissions(urlTimerange, transmissionDateFrom, transmissionDateTo) ||
+      !window.confirm(t((t) => t.layer.vessel_fit_bounds_out_of_timerange) as string)
+    ) {
+      return
+    }
+    setTimerange({
+      start: getUTCDateTime(transmissionDateFrom).toISO()!,
+      end: getUTCDateTime(transmissionDateTo).toISO()!,
+    })
+  }, [urlTimerange, transmissionDateFrom, transmissionDateTo, t, setTimerange])
 
   const setVesselBounds = useCallback(() => {
-    if (isTrackLoaded) {
-      if (bounds) {
-        fitBounds(bounds, { padding: 60, fitZoom: true })
-      } else if (canFitDates) {
-        if (window.confirm(t((t) => t.layer.vessel_fit_bounds_out_of_timerange) as string)) {
-          setTimerange({
-            start: getUTCDateTime(transmissionDateFrom).toISO()!,
-            end: getUTCDateTime(transmissionDateTo).toISO()!,
-          })
-        }
-      }
+    if (bounds) {
+      fitBounds(bounds, { padding: 60, fitZoom: true })
+      return
     }
-  }, [
-    isTrackLoaded,
-    canFitDates,
-    fitBounds,
-    t,
-    bounds,
-    setTimerange,
-    transmissionDateFrom,
-    transmissionDateTo,
-  ])
+    if (!isTrackLoaded) {
+      pendingFitRef.current = true
+      return
+    }
+    confirmTimerangeChange()
+  }, [bounds, isTrackLoaded, fitBounds, confirmTimerangeChange])
+
+  useEffect(() => {
+    if (!pendingFitRef.current || !isTrackLoaded) {
+      return
+    }
+    pendingFitRef.current = false
+    if (bounds) {
+      fitBounds(bounds, { padding: 60, fitZoom: true })
+    } else {
+      confirmTimerangeChange()
+    }
+  }, [isTrackLoaded, bounds, fitBounds, confirmTimerangeChange])
 
   return useMemo(
     () => ({ setVesselBounds, boundsReady: isTrackLoaded }),
@@ -97,7 +113,7 @@ const useVesselFitTranmissionsBounds = () => {
   const { setTimerange } = useTimerangeConnect()
   const [timerangeBoundsUpdated, seTimerangeBoundsUpdated] = useState(false)
   const [trackBoundsUpdated, setTrackBoundsUpdated] = useState(false)
-  const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
+  const { transmissionDateFrom, transmissionDateTo } = getVesselTransmissionDates(vessel)
 
   // Updates the timerange to the vessel's transmission dates only if not set or are the default of the workspace
   const isDefaultTimerange =

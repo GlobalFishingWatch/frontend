@@ -19,6 +19,7 @@ import { getLatestIdentityPrioritised } from 'features/vessel/vessel.utils'
 import { t } from '../features/i18n/i18n'
 
 export const EMPTY_FIELD_PLACEHOLDER = '---'
+export const MULTI_VALUE_SEPARATOR = ', '
 
 export const upperFirst = (text: string) => {
   return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''
@@ -33,30 +34,30 @@ export const formatNumber = (num: string | number, maximumFractionDigits?: numbe
 
 export const getVesselShipTypeLabel = (
   { shiptypes: shiptype } = {} as Pick<SelfReportedInfo, 'shiptypes'> | { shiptypes: string },
-  { joinCharacter = ', ', translationFn = t } = {} as {
+  { joinCharacter = MULTI_VALUE_SEPARATOR, translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }
 ): VesselType => {
-  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype]).filter(
-    (shiptype) => shiptype !== undefined
-  )
+  const shipTypes = uniq(
+    (Array.isArray(shiptype) ? shiptype : [shiptype]).flatMap((type) => type?.split('|') ?? type)
+  ).filter((shiptype) => shiptype !== undefined)
   if (!shipTypes?.length) {
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
   return shipTypes
+    .toSorted((a, b) => a.localeCompare(b))
     ?.map((shiptype) =>
       translationFn((t: any) => t.vessel.vesselTypes[shiptype?.toLowerCase()], {
         defaultValue: upperFirst(shiptype),
       })
     )
-    .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as VesselType
 }
 
 export const getVesselGearTypeLabel = (
   { geartypes: geartype } = {} as Pick<VesselDataIdentity, 'geartypes'> | { geartypes: string },
-  { joinCharacter = ', ', translationFn = t } = {} as {
+  { joinCharacter = MULTI_VALUE_SEPARATOR, translationFn = t } = {} as {
     joinCharacter?: string
     translationFn?: TFunction
   }
@@ -64,19 +65,24 @@ export const getVesselGearTypeLabel = (
   if (geartype === API_LOGIN_REQUIRED) {
     return geartype as RegistryLoginMessage
   }
-  const gearTypes = uniq(Array.isArray(geartype) ? geartype : [geartype])
+  const gearTypes = uniq(
+    (Array.isArray(geartype) ? geartype : [geartype]).flatMap((gear) => gear?.split('|') ?? gear)
+  )
   if (gearTypes.every((geartype) => geartype === undefined)) {
     return EMPTY_FIELD_PLACEHOLDER as GearType
   }
-  return gearTypes
-    .filter(Boolean)
-    ?.map((gear) =>
-      translationFn((t: any) => t.vessel.gearTypes[gear?.toLowerCase()], {
-        defaultValue: upperFirst(gear),
-      })
-    )
-    .toSorted((a, b) => a.localeCompare(b))
-    .join(joinCharacter) as GearType
+  return (
+    gearTypes
+      .filter(Boolean)
+      // sort raw codes, not labels, to keep the order (graph groups) identical in every language
+      .toSorted((a, b) => a.localeCompare(b))
+      ?.map((gear) =>
+        translationFn((t: any) => t.vessel.gearTypes[gear?.toLowerCase()], {
+          defaultValue: upperFirst(gear),
+        })
+      )
+      .join(joinCharacter) as GearType
+  )
 }
 
 export const getVesselShipNameLabel = (
