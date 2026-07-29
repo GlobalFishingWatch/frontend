@@ -1,14 +1,21 @@
-import { PATH_BASENAME } from 'data/config'
+import { PATH_BASENAME, WORKSPACE_ENV } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
+import { getIsBrowser } from 'utils/dom'
 import { formatInfoField } from 'utils/info'
 
 export type WorkspaceCategoryDescriptionKey =
   keyof Resources['translations']['workspace']['siteDescription']
 
 const PREFIX = 'GFW'
-const SITE_ORIGIN = 'https://globalfishingwatch.org'
+const SITE_ORIGIN =
+  {
+    production: 'https://globalfishingwatch.org',
+    staging: 'https://fishing-map.staging.globalfishingwatch.org',
+    development: 'https://fishing-map.dev.globalfishingwatch.org',
+  }[WORKSPACE_ENV!] ?? (getIsBrowser() ? window.location.origin : 'http://localhost:3003')
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
+const SHARE_IMAGE = `${SITE_ORIGIN}${PATH_BASENAME}/images/gfw.jpg`
 
 const buildCanonicalUrl = (pathname?: string) => {
   if (!pathname) return `${SITE_ORIGIN}${PATH_BASENAME}`
@@ -39,6 +46,12 @@ export const getDefaultMeta = (
       name: 'description',
       content: description,
     },
+    { property: 'og:site_name', content: 'Global Fishing Watch' },
+    { property: 'og:image', content: SHARE_IMAGE },
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: SHARE_IMAGE },
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'theme-color', content: '#163f89' },
     { name: 'application-name', content: 'GFW Fishing map' },
@@ -107,7 +120,8 @@ export const getRouteHead = ({
 
 export type VesselHeadData =
   | {
-      canonicalPath?: string
+      vesselId?: string
+      vesselDatasetId?: string
       shipname?: string
       flag?: string
       ssvid?: string
@@ -116,7 +130,11 @@ export type VesselHeadData =
   | undefined
 
 export const getVesselHead = (data?: VesselHeadData) => {
-  const canonical = buildCanonicalUrl(data?.canonicalPath)
+  const { vesselDatasetId } = data || {}
+  const canonicalQuery = vesselDatasetId ? `?${new URLSearchParams({ vesselDatasetId })}` : ''
+  const canonical = buildCanonicalUrl(
+    data?.vesselId ? `/vessel/${data.vesselId}${canonicalQuery}` : undefined
+  )
   const links = [{ rel: 'canonical', href: canonical }]
 
   if (!data?.shipname) {
@@ -134,7 +152,8 @@ export const getVesselHead = (data?: VesselHeadData) => {
   ]
     .filter(Boolean)
     .join(', ')
-  const title = `${PREFIX} | ${vesselName}${flagLabel ? ` (${flagLabel})` : ''}`
+  const titleDetails = [flagLabel, data.ssvid ? `MMSI ${data.ssvid}` : undefined].filter(Boolean)
+  const title = `${PREFIX} | ${vesselName}${titleDetails.length ? ` (${titleDetails.join(', ')})` : ''}`
   const description = `Explore vessel identity, activity and events for ${vesselName}${
     flagLabel ? ` flagged to ${flagLabel}` : ''
   }${identifiers ? ` (${identifiers})` : ''} on the Global Fishing Watch map.`

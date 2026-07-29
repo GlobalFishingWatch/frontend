@@ -140,12 +140,12 @@ export const getUnitsPositions = (
   const durationUnit = `${baseUnit}s` as 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes'
   const numUnits = mOuterEnd.diff(mOuterStart, durationUnit)?.[durationUnit] / step + numUnitsOffset
 
-  let mUnit = mOuterStart
+  let mUnit = mOuterStart as DateTime
   if (mUnit.isValid) {
     let x = outerScale(mUnit.toJSDate())
 
     for (let ui = 0; ui <= numUnits; ui += 1) {
-      const mUnitNext: DateTime = mUnit.plus({ [durationUnit]: step })
+      const mUnitNext = mUnit.plus({ [durationUnit]: step }) as DateTime
 
       const xNext = outerScale(mUnitNext.toJSDate())
 

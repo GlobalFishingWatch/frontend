@@ -568,8 +568,10 @@
       "contactPermissionNo": "Not right now",
       "contactPermissionYes": "Yes, I’d be happy to be contacted",
       "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
+      "error": "Something went wrong sending your answer, please try again later.",
       "intentLabel": "How do you intend to utilize this data?",
       "intentPlaceholder": "Type your answer here",
+      "sent": "Thanks for helping us improve the platform.",
       "title": "While we prepare your file…"
     },
     "temporalResolution": "Grouper l'heure par",

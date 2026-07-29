@@ -3,15 +3,14 @@ import { createServerFn } from '@tanstack/react-start'
 import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import {
+  SSR_HEADERS,
+  USER_REFRESH_TOKEN_COOKIE_KEY,
+  USER_TOKEN_COOKIE_KEY,
+} from 'features/app/app.config'
 
 export type Tokens = { token: string; refreshToken: string }
 export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
-
-const SSR_SUBDOMAIN_SUFFIX =
-  { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
-export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`
-export const SSR_HEADERS = { referer: SSR_REFERER } as HeadersInit
 
 const COOKIE_MAX_AGE_1_YEAR = 60 * 60 * 24 * 365
 
@@ -35,7 +34,7 @@ export const clearAuthCookies = (setCookie: CookieSetter) => {
 }
 
 export const loginServerFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: { accessToken?: string | null }) => data)
+  .validator((data: { accessToken?: string | null }) => data)
   .handler(async ({ data }): Promise<UserData | null> => {
     if (!data.accessToken) return null
     const { setCookie } = await import('@tanstack/react-start/server')

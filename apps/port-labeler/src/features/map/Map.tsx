@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
-import type { MapboxStyle } from 'react-map-gl'
-import { Map } from 'react-map-gl'
+import type { StyleSpecification } from 'react-map-gl/maplibre'
+import { Map } from 'react-map-gl/maplibre'
 import { useSelector } from 'react-redux'
 import type { RequestParameters } from 'maplibre-gl'
 import maplibregl from 'maplibre-gl'
@@ -82,7 +82,7 @@ const MapWrapper = (): React.ReactElement<any> => {
         longitude={viewport.longitude}
         zoom={viewport.zoom}
         mapLib={maplibregl as any}
-        mapStyle={style as unknown as MapboxStyle}
+        mapStyle={style as unknown as StyleSpecification}
         onMouseDown={onMouseDown as any}
         onMouseMove={onMouseMove as any}
         onMouseUp={onMouseUp as any}
@@ -92,7 +92,7 @@ const MapWrapper = (): React.ReactElement<any> => {
         onMove={onViewportChange}
         transformRequest={transformRequest}
         onError={handleError}
-        customAttribution={'© Copyright Global Fishing Watch 2020'}
+        attributionControl={{ customAttribution: '© Copyright Global Fishing Watch 2020' }}
       ></Map>
       <MapControls bounds={mapBounds}></MapControls>
 

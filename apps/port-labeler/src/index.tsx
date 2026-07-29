@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import { MapProvider } from 'react-map-gl'
+import { MapProvider } from 'react-map-gl/maplibre'
 import { Provider } from 'react-redux'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
