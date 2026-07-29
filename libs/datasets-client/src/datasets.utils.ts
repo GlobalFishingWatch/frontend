@@ -31,8 +31,8 @@ export const getIsDatasetVersionDowngrade = (deprecatedId: string, latestId: str
   if (removeDatasetVersion(deprecatedId) !== removeDatasetVersion(latestId)) {
     return false
   }
-  const from = parseDatasetVersion(deprecatedId)
-  const to = parseDatasetVersion(latestId)
+  const deprecatedVersion = parseDatasetVersion(deprecatedId)
+  const latestVersion = parseDatasetVersion(latestId)
   if (!from.length || !to.length || from.some(isNaN) || to.some(isNaN)) {
     return false
   }
