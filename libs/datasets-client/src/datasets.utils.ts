@@ -33,11 +33,16 @@ export const getIsDatasetVersionDowngrade = (deprecatedId: string, latestId: str
   }
   const deprecatedVersion = parseDatasetVersion(deprecatedId)
   const latestVersion = parseDatasetVersion(latestId)
-  if (!from.length || !to.length || from.some(isNaN) || to.some(isNaN)) {
+  if (
+    !deprecatedVersion.length ||
+    !latestVersion.length ||
+    deprecatedVersion.some(isNaN) ||
+    latestVersion.some(isNaN)
+  ) {
     return false
   }
-  for (let i = 0; i < Math.max(from.length, to.length); i++) {
-    const diff = (from[i] ?? 0) - (to[i] ?? 0)
+  for (let i = 0; i < Math.max(deprecatedVersion.length, latestVersion.length); i++) {
+    const diff = (deprecatedVersion[i] ?? 0) - (latestVersion[i] ?? 0)
     if (diff) {
       return diff > 0
     }
