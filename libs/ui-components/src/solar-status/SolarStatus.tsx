@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import cx from 'classnames'
-import * as suncalc from 'suncalc'
+import { getTimes } from 'suncalc'
 
 import { Locale } from '@globalfishingwatch/api-types'
 
@@ -8,8 +8,6 @@ import { Icon, type IconType } from '../icon'
 import { Tooltip } from '../tooltip'
 
 import styles from './SolarStatus.module.css'
-
-const { getTimes } = suncalc
 
 interface SolarStatusProps {
   lat: number
@@ -84,7 +82,6 @@ export function SolarStatus({
       return { label: labels.night, icon: 'solar-status-night' }
     }
 
-    // ponytail: any missing event just falls through to night
     const nDawn = times.nauticalDawn?.getTime()
     const sRise = times.sunrise?.getTime()
     const sSet = times.sunset?.getTime()
