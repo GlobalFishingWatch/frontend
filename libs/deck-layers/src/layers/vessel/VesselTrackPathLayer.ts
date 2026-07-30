@@ -6,7 +6,6 @@ import type { NumericArray } from '@math.gl/core'
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import { toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
@@ -34,6 +33,23 @@ export type TrackShaderLayoutProps = Pick<
   | 'maxElevationFilter'
   | 'gapSegmentThreshold'
 >
+
+/**
+ * Picks the narrower of two longitude spans: raw (-180..180) and shifted (0..360).
+ */
+export function getNarrowestLonSpan(
+  minLon: number,
+  maxLon: number,
+  minShiftedLon: number,
+  maxShiftedLon: number
+): [number, number] {
+  if (maxShiftedLon - minShiftedLon >= maxLon - minLon) {
+    return [minLon, maxLon]
+  }
+  return minShiftedLon > 180
+    ? [minShiftedLon - 360, maxShiftedLon - 360]
+    : [minShiftedLon, maxShiftedLon]
+}
 
 export function getTrackShaderAttributeFlags(
   props: TrackShaderLayoutProps
@@ -534,18 +550,27 @@ export class VesselTrackPathLayer<
       const index = firstPointIndex
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
-      return wrapBBoxLongitudes([longitude, latitude, longitude, latitude])
+      return [longitude, latitude, longitude, latitude] as Bbox
     }
 
-    const bounds = [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+    let minLon = Infinity
+    let maxLon = -Infinity
+    let minShiftedLon = Infinity
+    let maxShiftedLon = -Infinity
+    let minLat = Infinity
+    let maxLat = -Infinity
     for (let index = firstPointIndex; index <= lastPointIndex + 1; index++) {
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
-      if (longitude < bounds[0]) bounds[0] = longitude
-      if (longitude > bounds[2]) bounds[2] = longitude
-      if (latitude < bounds[1]) bounds[1] = latitude
-      if (latitude > bounds[3]) bounds[3] = latitude
+      if (longitude < minLon) minLon = longitude
+      if (longitude > maxLon) maxLon = longitude
+      const shiftedLon = longitude < 0 ? longitude + 360 : longitude
+      if (shiftedLon < minShiftedLon) minShiftedLon = shiftedLon
+      if (shiftedLon > maxShiftedLon) maxShiftedLon = shiftedLon
+      if (latitude < minLat) minLat = latitude
+      if (latitude > maxLat) maxLat = latitude
     }
-    return wrapBBoxLongitudes(bounds)
+    const [west, east] = getNarrowestLonSpan(minLon, maxLon, minShiftedLon, maxShiftedLon)
+    return [west, minLat, east, maxLat] as Bbox
   }
 }

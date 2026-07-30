@@ -62,7 +62,11 @@ import {
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { selectLocationCategory } from 'router/routes.selectors'
+import {
+  selectLocationCategory,
+  selectLonglineSetsInsight,
+  selectMigramarLayer,
+} from 'router/routes.selectors'
 import type { WorkspaceState } from 'types'
 
 /** Makes every key required while still allowing undefined values **/
@@ -84,8 +88,6 @@ type NonPersistedWorkspaceStateKey =
   | 'timebarSelectedVGId'
   | 'vesselsColorBy'
   | 'skipColorDomainSampling'
-  | 'migramarLayer'
-  | 'longlineSetsInsight'
 
 const selectWorkspaceReportState = createSelector(
   [
@@ -191,6 +193,8 @@ const selectWorkspaceAppState = createSelector(
     selectCollapsedSections,
     selectTimeMode,
     selectWorkspaceReportState,
+    selectLonglineSetsInsight,
+    selectMigramarLayer,
   ],
   (
     activityCategory,
@@ -211,7 +215,9 @@ const selectWorkspaceAppState = createSelector(
     vesselGroupsVisualizationMode,
     collapsedSections,
     timeMode,
-    reportState
+    reportState,
+    longlineSetsInsight,
+    migramarLayer
   ): Complete<Omit<WorkspaceState, NonPersistedWorkspaceStateKey>> & Complete<ReportState> => {
     return {
       activityCategory,
@@ -232,6 +238,8 @@ const selectWorkspaceAppState = createSelector(
       environmentVisualizationMode,
       vesselGroupsVisualizationMode,
       daysFromLatest,
+      longlineSetsInsight,
+      migramarLayer,
       ...reportState,
     }
   }
