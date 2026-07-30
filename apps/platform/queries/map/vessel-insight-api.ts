@@ -1,13 +1,12 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import {
   type InsightResponse,
   type InsightType,
   type VesselGroupInsightResponse,
 } from '@globalfishingwatch/api-types'
-
-import type { RootState } from 'reducers'
 
 export type BaseInsightParams = {
   insight: InsightType
@@ -61,9 +60,13 @@ export const vesselInsightApi = createApi({
   }),
 })
 
+const injectedVesselInsightApi = injectQueryApi(vesselInsightApi)
+
 export const { useGetVesselInsightQuery, useGetVesselGroupInsightQuery } = vesselInsightApi
 
-export const selectVesselGroupInsightApiSlice = (state: RootState) => state.vesselInsightApi
+export const selectVesselGroupInsightApiSlice = injectedVesselInsightApi.selector(
+  (state) => state.vesselInsightApi
+)
 
 export const selectVesselGroupInsight = (params: VesselGroupInsightParams) =>
   vesselInsightApi.endpoints.getVesselGroupInsight.select(params)

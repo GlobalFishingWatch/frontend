@@ -1,0 +1,197 @@
+import { Fragment, useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
+
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetStatus } from '@globalfishingwatch/api-types'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
+import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+
+import {
+  getDataviewInstanceByDataset,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/_map/datasets/datasets.hook'
+import {
+  deleteDatasetThunk,
+  fetchAllDatasetsThunk,
+  selectDatasetsStatus,
+  selectDatasetsStatusId,
+} from 'features/_map/datasets/datasets.slice'
+import { getDatasetLabel, getDatasetTypeIcon } from 'features/_map/datasets/datasets.utils'
+import InfoError from 'features/_map/workspace/shared/InfoError'
+import { selectLastVisitedWorkspace } from 'features/_map/workspace/workspace.selectors'
+import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { sortByCreationDate } from 'utils/dates'
+import { getHighlightedText } from 'utils/text'
+
+import styles from './User.module.css'
+
+function UserDatasets() {
+  const datasets = useSelector(selectUserDatasets)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const datasetStatusId = useSelector(selectDatasetsStatusId)
+  const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' }))
+  }, [dispatch])
+
+  const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }
+
+  const onNewDatasetClick = useCallback(async () => {
+    dispatchDatasetModalOpen(true)
+  }, [dispatchDatasetModalOpen])
+
+  const onDatasetClick = useCallback(
+    (dataset: Dataset) => {
+      const dataviewInstanceWithDataset = getDataviewInstanceByDataset(dataset)
+      if (!dataviewInstanceWithDataset) {
+        return
+      }
+      const {
+        to = ROUTE_PATHS.MAP,
+        params,
+        search = { dataviewInstances: [] },
+      } = lastVisitedWorkspace || {}
+
+      router.navigate({
+        to: toValidRoutePath(to, params),
+        params,
+        search: {
+          ...search,
+          dataviewInstances: [...(search.dataviewInstances || []), dataviewInstanceWithDataset],
+        },
+      })
+    },
+    [lastVisitedWorkspace, router]
+  )
+
+  const onEditClick = useCallback(
+    (dataset: Dataset) => {
+      dispatchDatasetModalOpen(true)
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        type: getDatasetConfigurationProperty({ dataset, property: 'geometryType' }),
+      })
+    },
+    [dispatchDatasetModalOpen, dispatchDatasetModalConfig]
+  )
+
+  const onDeleteClick = useCallback(
+    (dataset: Dataset) => {
+      const confirmation = window.confirm(`${t((t) => t.dataset.confirmRemove)}\n${dataset.name}`)
+      if (confirmation) {
+        dispatch(deleteDatasetThunk(dataset.id))
+      }
+    },
+    [dispatch, t]
+  )
+
+  const loading = datasetsStatus === AsyncReducerStatus.Loading
+
+  return (
+    <Fragment>
+      <div className={styles.search}>
+        <InputText
+          type="search"
+          value={searchQuery}
+          onChange={onSearchQueryChange}
+          placeholder="Search"
+        />
+      </div>
+      <div className={styles.views}>
+        <div className={styles.viewsHeader}>
+          <label>{t((t) => t.user.datasets)}</label>
+          <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
+            {t((t) => t.dataset.new) as string}
+          </Button>
+        </div>
+        {loading ? (
+          <div className={styles.placeholder} data-testid="datasets-spinner">
+            <Spinner size="small" />
+          </div>
+        ) : (
+          <ul>
+            {datasets && datasets.length > 0 ? (
+              sortByCreationDate<Dataset>(datasets).map((dataset) => {
+                const label = getDatasetLabel(dataset)
+                if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
+                  return null
+                }
+                const datasetError = dataset.status === DatasetStatus.Error
+                const datasetImporting = dataset.status === DatasetStatus.Importing
+                const infoTooltip: string = datasetImporting
+                  ? t((t) => t.dataset.importing)
+                  : datasetError
+                    ? `${t((t) => t.errors.uploadError)} - ${getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''}`
+                    : ''
+                const datasetIcon = getDatasetTypeIcon(dataset)
+                return (
+                  <li className={styles.dataset} key={dataset.id}>
+                    <span>
+                      {datasetIcon && (
+                        <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                      )}
+                      {getHighlightedText(label as string, searchQuery, styles)}
+                    </span>
+                    <div>
+                      {!datasetError && (
+                        <IconButton
+                          icon="arrow-right"
+                          onClick={() => onDatasetClick(dataset)}
+                          tooltip={t((t) => t.user.seeDataset)}
+                        />
+                      )}
+                      {(datasetError || datasetImporting) && (
+                        <InfoError
+                          error={datasetError}
+                          loading={datasetImporting}
+                          tooltip={infoTooltip}
+                        />
+                      )}
+                      {!datasetImporting && !datasetError && (
+                        <IconButton
+                          icon="edit"
+                          tooltip={t((t) => t.dataset.edit)}
+                          onClick={() => onEditClick(dataset)}
+                        />
+                      )}
+                      <IconButton
+                        testId={`delete-dataset-${dataset.id}`}
+                        icon="delete"
+                        type="warning"
+                        loading={dataset.id === datasetStatusId}
+                        tooltip={t((t) => t.dataset.remove)}
+                        onClick={() => onDeleteClick(dataset)}
+                      />
+                    </div>
+                  </li>
+                )
+              })
+            ) : (
+              <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
+            )}
+          </ul>
+        )}
+      </div>
+    </Fragment>
+  )
+}
+
+export default UserDatasets

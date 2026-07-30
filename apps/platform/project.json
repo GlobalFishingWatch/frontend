@@ -39,7 +39,12 @@
     "check-store-graph": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["default"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/check-store-graph.mjs",
+        "{workspaceRoot}/libs/*/src/**/*",
+        "{workspaceRoot}/libs/*/package.json"
+      ],
       "outputs": [],
       "options": {
         "command": "node scripts/check-store-graph.mjs"
@@ -183,7 +188,9 @@
             "shx cp instrument.server.mjs .output/server"
           ],
           "parallel": false,
-          "env": { "ANALYZE": "true" }
+          "env": {
+            "ANALYZE": "true"
+          }
         }
       }
     },

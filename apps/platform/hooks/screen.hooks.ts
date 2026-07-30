@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CaptureResult } from '@zumer/snapdom'
 
-import { useDeckMap } from 'features/map/map/map-context.hooks'
+import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { getSafeElementById } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {

@@ -1,4 +1,4 @@
-import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
+import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components/dom-ids'
 
 import { getIsBrowser, getSafeElementById } from 'utils/dom'
 

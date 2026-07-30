@@ -13,8 +13,8 @@ import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
-import { mapInstanceAtom } from 'features/map/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/map/map/map-viewport.hooks'
+import { mapInstanceAtom } from 'features/_map/map/map.atoms'
+import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
 import { UserTab } from 'types'

@@ -6,7 +6,7 @@ import {
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
-import { selectDataviewBySlug } from 'features/map/dataviews/dataviews.slice'
+import { selectDataviewBySlug } from 'features/_map/dataviews/dataviews.slice'
 
 const selectEezDataview = selectDataviewBySlug(EEZ_DATAVIEW_SLUG)
 const selectMpaDataview = selectDataviewBySlug(MPA_DATAVIEW_SLUG)

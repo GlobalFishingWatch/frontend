@@ -4,6 +4,7 @@ import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import {
   DatasetTypes,
@@ -12,11 +13,11 @@ import {
   type StatsParams,
   type StatType,
 } from '@globalfishingwatch/api-types'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getUTCDate } from '@globalfishingwatch/data-transforms/dates'
 import { getDatasetsExtent, getEndpointByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimeRange } from 'features/map/timebar/timebar.slice'
+import type { TimeRange } from 'features/_map/timebar/timebar.slice'
 
 type FetchDataviewStatsParams = {
   timerange: TimeRange
@@ -97,6 +98,6 @@ export const dataviewStatsApi = createApi({
   }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+injectQueryApi(dataviewStatsApi)
+
 export const { useGetStatsByDataviewQuery } = dataviewStatsApi

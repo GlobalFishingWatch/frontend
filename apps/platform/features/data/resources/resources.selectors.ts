@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { EventType } from '@globalfishingwatch/api-types'
 import { DatasetCategory } from '@globalfishingwatch/api-types'
 
-import { selectVisibleEvents } from 'features/map/workspace/selectors/app.selectors'
+import { selectVisibleEvents } from 'features/_map/workspace/selectors/app.selectors'
 
 import { selectResources } from './resources.slice'
 

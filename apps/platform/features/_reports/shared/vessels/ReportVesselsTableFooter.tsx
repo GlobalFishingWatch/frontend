@@ -1,0 +1,237 @@
+import { Fragment, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { uniq } from 'es-toolkit'
+import papaparse from 'papaparse'
+
+import { Button, IconButton } from '@globalfishingwatch/ui-components'
+
+import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
+import { selectVGRData } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+import {
+  REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+  REPORT_VESSELS_PER_PAGE,
+} from 'features/_reports/reports.config'
+import { selectReportVesselFilter } from 'features/_reports/reports.config.selectors'
+import {
+  selectReportCategory,
+  selectReportSubCategory,
+  selectReportUnit,
+  selectReportVesselGraph,
+} from 'features/_reports/reports.selectors'
+import { ReportCategory } from 'features/_reports/reports.types'
+import VesselGroupAddButton from 'features/_user/vessel-groups/VesselGroupAddButton'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
+
+import {
+  selectReportVessels,
+  selectReportVesselsFiltered,
+  selectReportVesselsPagination,
+} from './report-vessels.selectors'
+import ReportVesselsTablePinAll from './ReportVesselsTablePin'
+
+import styles from './ReportVesselsTableFooter.module.css'
+
+type ReportVesselsTableFooterProps = {
+  activityUnit?: string
+}
+
+export default function ReportVesselsTableFooter({ activityUnit }: ReportVesselsTableFooterProps) {
+  const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const reportCategory = useSelector(selectReportCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
+  const reportAreaName = useSelector(selectReportAreaName)
+  const reportUnit = useSelector(selectReportUnit)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const vesselGroup = useSelector(selectVGRData)
+  const allVessels = useSelector(selectReportVessels)
+  const allFilteredVessels = useSelector(selectReportVesselsFiltered)
+  const reportVesselFilter = useSelector(selectReportVesselFilter)
+  const pagination = useSelector(selectReportVesselsPagination)
+  const reportVesselGraph = useSelector(selectReportVesselGraph)
+  const { start, end } = useSelector(selectTimeRange)
+
+  const vesselGroupVessels = useMemo(() => {
+    const vessels = reportVesselFilter ? allFilteredVessels : allVessels
+    if (!vessels?.length) {
+      return { ids: [], datasets: [] }
+    }
+    return {
+      ids: vessels?.flatMap((v) => v.id || v.id || []),
+      datasets: uniq(vessels.flatMap((v) => v.datasetId || [])),
+    }
+  }, [allFilteredVessels, allVessels, reportVesselFilter])
+
+  if (!allVessels?.length) return null
+
+  const extendedFields = reportCategory !== ReportCategory.Events
+
+  const onDownloadVesselsClick = async () => {
+    const vessels = allVessels
+      ?.toSorted((a, b) => (b.value || 0) - (a.value || 0))
+      .map((vessel) => {
+        return {
+          name: vessel.shipName,
+          MMSI: vessel.ssvid,
+          flag: vessel.flag,
+          'flag translated': vessel.flagTranslated,
+          'GFW vessel type': vessel.vesselType,
+          ...(extendedFields && { 'GFW gear type': vessel.geartype }),
+          ...(activityUnit && {
+            [`Total ${reportSubCategory} ${reportUnit}s`]:
+              reportVesselGraph === 'coverage'
+                ? vessel.value !== -1
+                  ? vessel.value
+                  : undefined
+                : vessel.value,
+          }),
+          vesselId: vessel.id,
+          dataset: vessel.datasetId,
+        }
+      })
+    if (vessels?.length) {
+      const csv = papaparse.unparse(vessels)
+      const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
+      const fileName = isVesselGroupReportLocation
+        ? vesselGroup?.name
+        : [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
+            .filter(Boolean)
+            .join('-')
+      const { saveAs } = await import('file-saver')
+      saveAs(blob, `${fileName}.csv`)
+      trackEvent({
+        category: TrackCategory.VesselGroupReport,
+        action: 'vessel_report_download_csv',
+        label: getEventLabel([
+          `Groupd id: ${vesselGroup?.id}`,
+          `start date: ${start}`,
+          `end date: ${end}`,
+        ]),
+        value: `number of vessels identities: ${vessels.length}`,
+      })
+    }
+  }
+
+  const onPrevPageClick = () => {
+    replaceQueryParams({ reportVesselPage: pagination.page - 1 })
+  }
+  const onNextPageClick = () => {
+    replaceQueryParams({ reportVesselPage: pagination.page + 1 })
+  }
+  const onShowMoreClick = () => {
+    replaceQueryParams({
+      reportVesselResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
+    })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show more vessels`,
+    })
+  }
+  const onShowLessClick = () => {
+    replaceQueryParams({
+      reportVesselResultsPerPage: REPORT_VESSELS_PER_PAGE,
+      reportVesselPage: 0,
+    })
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Click on show less vessels`,
+    })
+  }
+
+  const onAddToVesselGroup = () => {
+    // dispatch(setVesselGroupConfirmationMode('saveAndSeeInWorkspace'))
+    trackEvent({
+      category: TrackCategory.VesselGroups,
+      action: 'add_to_vessel_group',
+      label: 'report',
+    })
+  }
+
+  const isShowingMore = pagination.resultsPerPage === REPORT_SHOW_MORE_VESSELS_PER_PAGE
+  const hasLessVesselsThanAPage =
+    pagination.page === 0 && pagination?.resultsNumber < pagination?.resultsPerPage
+  const isLastPaginationPage =
+    pagination?.offset + pagination?.resultsPerPage >= pagination?.totalFiltered
+
+  return (
+    <div className={cx(styles.footer, 'print-hidden')}>
+      <div className={cx(styles.flex, styles.expand)}>
+        <Fragment>
+          <div className={styles.flex}>
+            <IconButton
+              icon="arrow-left"
+              disabled={pagination?.page === 0}
+              className={cx({ [styles.disabled]: pagination?.page === 0 })}
+              onClick={onPrevPageClick}
+              size="medium"
+            />
+            <span className={styles.noWrap}>
+              {`${pagination?.offset + 1} - ${
+                isLastPaginationPage
+                  ? pagination?.totalFiltered
+                  : pagination?.offset + pagination?.resultsPerPage
+              }`}{' '}
+            </span>
+            <IconButton
+              icon="arrow-right"
+              onClick={onNextPageClick}
+              disabled={isLastPaginationPage || hasLessVesselsThanAPage}
+              className={cx({
+                [styles.disabled]: isLastPaginationPage || hasLessVesselsThanAPage,
+              })}
+              size="medium"
+            />
+          </div>
+          {pagination.total > REPORT_VESSELS_PER_PAGE && (
+            <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
+              <label className={styles.pointer}>
+                {t((t) => t.analysis.resultsPerPage, {
+                  results: String(
+                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
+                  ),
+                })}
+              </label>
+            </button>
+          )}
+          <span className={cx(styles.noWrap, styles.right)} translate="no">
+            {reportVesselFilter && (
+              <Fragment>
+                <I18nNumber number={pagination.totalFiltered} /> {t((t) => t.common.of)}{' '}
+              </Fragment>
+            )}
+            <I18nNumber number={pagination.total} />{' '}
+            {t((t) => t.common.vessel, {
+              count: pagination?.total,
+            })}
+          </span>
+        </Fragment>
+      </div>
+      <div className={cx(styles.flex, styles.expand)}>
+        <div className={cx(styles.flex)}>
+          <ReportVesselsTablePinAll vessels={allFilteredVessels!} />
+          {!isVesselGroupReportLocation && (
+            <VesselGroupAddButton
+              vesselsToResolve={vesselGroupVessels.ids}
+              datasetsToResolve={vesselGroupVessels.datasets}
+              onAddToVesselGroup={onAddToVesselGroup}
+            />
+          )}
+        </div>
+        <Button
+          // testId="download-vessel-table-report"
+          onClick={onDownloadVesselsClick}
+        >
+          {t((t) => t.analysis.downloadVesselsList)}
+        </Button>
+      </div>
+    </div>
+  )
+}

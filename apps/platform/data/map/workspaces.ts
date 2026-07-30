@@ -1,6 +1,8 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { BasemapType } from '@globalfishingwatch/deck-layers'
+// Leaf subpath rather than the package root: BasemapType is needed as a *value* here, and the root
+// barrel pulls all of deck.gl into the reducer map (this module is reachable from 9 slices).
+import { BasemapType } from '@globalfishingwatch/deck-layers/constants'
 import * as WORKSPACES_CONFIG from '@platform/config/map/workspaces'
 
 import { PRESENCE_REALTIME_DATAVIEW_SLUG } from 'data/map/dataset-ids'
@@ -15,8 +17,6 @@ export * from 'data/map/dataset-ids'
 // Re-exported so existing `from 'data/map/workspaces'` imports keep working. Modules that only need the
 // env string should import 'data/workspace-env' directly to avoid pulling deck-layers in.
 export * from 'data/workspace-env'
-
-
 
 export const TEMPLATE_DATAVIEW_SLUGS = [
   WORKSPACES_CONFIG.TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
@@ -35,7 +35,6 @@ export const VESSEL_TEMPLATE_DATAVIEW_SLUGS = [
   WORKSPACES_CONFIG.TEMPLATE_VESSEL_DATAVIEW_SLUG,
   // WORKSPACES_CONFIG.TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS,
 ]
-
 
 const PRESENCE_DATAVIEWS = [
   WORKSPACES_CONFIG.PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,

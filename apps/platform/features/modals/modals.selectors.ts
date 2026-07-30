@@ -5,18 +5,16 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   WorkspaceCategory,
 } from 'data/map/workspaces'
-import {
-  selectDownloadActivityModalOpen,
-  selectDownloadTrackModalOpen,
-} from 'features/map/download/download.selectors'
+import { selectDownloadActivityModalOpen } from 'features/_map/download/download.selectors'
+import { selectVesselGroupModalOpen } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import {
   selectDatasetUploadModalOpen,
+  selectDownloadTrackModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,
   selectVesselCorrectionModalOpen,
 } from 'features/modals/modals.slice'
-import { selectVesselGroupModalOpen } from 'features/user/vessel-groups/vessel-groups-modal.slice'
 import type { WelcomeContentKey } from 'features/welcome/welcome.content'
 import {
   selectIsAnyVesselLocation,

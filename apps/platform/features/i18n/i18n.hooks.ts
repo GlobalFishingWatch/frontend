@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { setUserLanguage } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { setUserLanguage } from 'features/user/user.slice'
 import type { Locale } from 'types'
 import { getIsBrowser } from 'utils/dom'
 

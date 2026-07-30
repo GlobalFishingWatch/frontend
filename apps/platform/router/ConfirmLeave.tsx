@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux'
 import { useBlocker } from '@tanstack/react-router'
 
 import { SHOW_LEAVE_CONFIRMATION } from 'data/map/config'
+import { selectSuggestWorkspaceSave } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { t } from 'features/i18n/i18n'
-import { selectSuggestWorkspaceSave } from 'features/map/workspace/workspace.selectors'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 
 import { ROUTES_WITH_WORKSPACES, SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from './routes'
 import { selectLocationType } from './routes.selectors'

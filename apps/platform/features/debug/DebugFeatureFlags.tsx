@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux'
 
 import { Switch } from '@globalfishingwatch/ui-components'
 
+import { selectIsTurningTidesWorkspace } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsTurningTidesWorkspace } from 'features/map/workspace/workspace.selectors'
-import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectLonglineSetsInsight } from 'router/routes.selectors'
 

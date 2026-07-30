@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { lowerCase } from 'es-toolkit'
 
-import WorkspacesList from 'features/map/workspaces-list/WorkspacesList'
+import WorkspacesList from 'features/_map/workspaces-list/WorkspacesList'
 import type { WorkspaceCategoryDescriptionKey } from 'router/router.meta'
 import { getWorkspaceHead } from 'router/router.meta'
 

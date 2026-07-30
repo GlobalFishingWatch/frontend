@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import AreaReport from 'features/_reports/report-area/AreaReport'
 import { t } from 'features/i18n/i18n'
-import AreaReport from 'features/reports/report-area/AreaReport'
 import { getRouteHead } from 'router/router.meta'
 import { validateReportSearchParams } from 'router/routes.search'
 

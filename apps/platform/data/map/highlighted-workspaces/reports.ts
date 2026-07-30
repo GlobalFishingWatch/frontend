@@ -7,7 +7,7 @@ import {
   REPORT_DATAVIEW_INSTANCES,
 } from 'data/map/highlighted-workspaces/report.dataviews'
 import { WorkspaceCategory } from 'data/map/workspaces'
-import { ReportCategory } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/_reports/reports.types'
 
 import type workspaceTranslations from '../../../public/locales/source/workspaces.json'
 

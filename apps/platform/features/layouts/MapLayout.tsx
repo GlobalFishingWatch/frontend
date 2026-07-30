@@ -2,18 +2,20 @@ import { Fragment, Suspense, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
 
-import { Logo, SplitView } from '@globalfishingwatch/ui-components'
+import { Logo } from '@globalfishingwatch/ui-components/logo'
+import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
-import ErrorBoundary from 'features/app/ErrorBoundary'
-import { t } from 'features/i18n/i18n'
-import Main from 'features/layouts/MapMainLayout'
-import ContentPanel from 'features/map/content-panel/ContentPanel'
-import Sidebar from 'features/map/sidebar/Sidebar'
+import ContentPanel from 'features/_map/content-panel/ContentPanel'
+import BasemapLabelsLocaleSync from 'features/_map/dataviews/BasemapLabelsLocaleSync'
+import Sidebar from 'features/_map/sidebar/Sidebar'
 import {
   selectReadOnly,
   selectScreenshotMode,
   selectSidebarOpen,
-} from 'features/map/workspace/selectors/app.selectors'
+} from 'features/_map/workspace/selectors/app.selectors'
+import ErrorBoundary from 'features/app/ErrorBoundary'
+import { t } from 'features/i18n/i18n'
+import Main from 'features/layouts/MapMainLayout'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
@@ -97,6 +99,7 @@ function MapLayout() {
 
   return (
     <Fragment>
+      <BasemapLabelsLocaleSync />
       <ConfirmVesselProfileLeave />
       <a
         href="https://globalfishingwatch.org"

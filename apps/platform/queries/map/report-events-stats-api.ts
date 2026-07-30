@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { DateTime } from 'luxon'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import {
   DatasetTypes,
@@ -13,9 +14,8 @@ import {
   type StatsIncludes,
 } from '@globalfishingwatch/api-types'
 import { getEndpointByType } from '@globalfishingwatch/datasets-client'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
-import type { RootState } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
 import { getEncounterTypesFromIds } from 'utils/encounter-types'
 
@@ -277,9 +277,13 @@ export const reportEventsStatsApi = createApi({
   }),
 })
 
+const injectedReportEventsStatsApi = injectQueryApi(reportEventsStatsApi)
+
 export const { useGetReportEventsStatsQuery, useGetReportEventsVesselsQuery } = reportEventsStatsApi
 
-export const selectReportEventsStatsApiSlice = (state: RootState) => state.reportEventsStatsApi
+export const selectReportEventsStatsApiSlice = injectedReportEventsStatsApi.selector(
+  (state) => state.reportEventsStatsApi
+)
 
 export const selectReportEventsStats = (params: GetReportEventParams) =>
   reportEventsStatsApi.endpoints.getReportEventsStats.select(params)

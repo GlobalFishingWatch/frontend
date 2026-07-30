@@ -6,8 +6,8 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Logo, Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/map/config'
+import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import { selectScreenshotMode } from 'features/map/workspace/selectors/app.selectors'
 import { Locale } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
 

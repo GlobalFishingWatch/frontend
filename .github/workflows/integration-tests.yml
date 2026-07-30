@@ -41,8 +41,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Guards the store's eager import graph: deck.gl and friends must not be statically reachable
-      # from the eagerly-registered slices, or every page pays for the map in its entry chunk.
+      # Guards two separate import graphs: the eagerly-registered slices, and routes/_platform.tsx (the
+      # layout every page renders under). deck.gl and friends must not be statically reachable from
+      # either, or the landing page and /user pay for the map in their entry chunk.
       # Deliberately not continue-on-error — a regression here is silent in every other check.
       - name: Check store import graph
         run: pnpm exec nx run platform:check-store-graph

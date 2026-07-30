@@ -4,10 +4,10 @@ import type { NavigateOptions } from '@tanstack/react-router'
 import { useRouter, useSearch } from '@tanstack/react-router'
 
 import { SHOW_LEAVE_CONFIRMATION } from 'data/map/config'
+import { selectSuggestWorkspaceSave } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectSuggestWorkspaceSave } from 'features/map/workspace/workspace.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectIsRouteWithWorkspace } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 

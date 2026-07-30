@@ -11,17 +11,23 @@
  *   routes/_map.tsx                             -> 343 modules,  28 feature dirs
  *   features/sidebar/Sidebar.tsx alone          -> 259 modules,  24 feature dirs
  *
- * i.e. Sidebar (rendered by BOTH shells) is what pulls features/map, features/timebar and
- * features/reports into the map-free shell.
+ * i.e. Sidebar (rendered by BOTH shells) is what pulls features/_map, features/timebar and
+ * features/_reports into the map-free shell.
  *
  * READ THIS BEFORE OPTIMISING: per-import weights DO NOT ADD UP. They overlap heavily, because almost
  * everything routes through the dataview/workspace selector hub
  * (app.selectors -> dataviews.instances.selectors -> area-reports.utils). Two measured examples:
  *   - moving AVAILABLE_WORKSPACES_CATEGORIES out of a 109-module selectors file into a 21-module leaf
  *     changed CategoryTabs' union by ZERO
- *   - removing both map hooks from CategoryTabs takes it 166 -> 139 and features/map is STILL reachable
+ *   - removing both map hooks from CategoryTabs takes it 166 -> 139 and features/_map is STILL reachable
  * So always measure the UNION for the entry you care about, never the sum of its imports. Until the
  * selector hub is split, no component reading workspace or dataview state can be map-free.
+ *
+ * NOTE: this script resolves @globalfishingwatch/* and @platform/* as opaque externals, so it counts
+ * only apps/platform modules and every number here UNDERCOUNTS the real graph. That is fine for
+ * comparing app-side entries against each other, which is all this script is for.
+ * check-store-graph.mjs has the resolver that crosses into workspace packages — use it to answer
+ * "what does this entry actually ship".
  *
  * Usage: node scripts/reachable-features.mjs routes/_map.tsx [more entries relative to apps/platform]
  */
@@ -46,7 +52,13 @@ const PREFIX = [
   'types',
   'utils',
 ]
-const EXACT = { middlewares: 1, queries: 1, reducers: 1, store: 1, types: 1 }
+const EXACT = {
+  middlewares: 'store/middlewares',
+  queries: 'queries',
+  reducers: 'store/reducers',
+  store: 'store/store',
+  types: 'types',
+}
 const EXT = ['.ts', '.tsx', '.mts', '.js', '.json']
 
 const rf = (b) => {
@@ -60,7 +72,7 @@ const rf = (b) => {
 }
 const resolveSpec = (spec, from) => {
   if (spec.startsWith('.')) return rf(resolve(dirname(from), spec))
-  if (EXACT[spec]) return rf(resolve(APP, spec))
+  if (EXACT[spec]) return rf(resolve(APP, EXACT[spec]))
   for (const p of PREFIX) if (spec.startsWith(p + '/')) return rf(resolve(APP, spec))
   return null
 }

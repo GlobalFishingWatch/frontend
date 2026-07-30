@@ -1,0 +1,59 @@
+import { type IdentityVessel, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+
+import type { TurningTidesWorkspaceId } from 'features/_vessels/track-correction/track-correction.config'
+import { isRegistryInTimerange } from 'features/_vessels/vessel/identity/vessel-identity.utils'
+import type { VesselIdentityProperty } from 'features/_vessels/vessel/vessel.utils'
+import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
+
+const CUSTOM_TURNING_TIDES_DATASET_PROPERTIES: Record<
+  TurningTidesWorkspaceId,
+  VesselIdentityProperty[]
+> = {
+  'tt-brazil-public': ['codMarinha'],
+  'tt-chile-public': ['matricula'],
+  'tt-peru-public': ['nationalId'],
+  'tt_ais-public': ['ssvid'],
+  'tt_ais_v_2_1-public': ['ssvid'],
+  'tt_vms_v_2_1-public': ['ssvid'],
+}
+
+const CUSTOM_TURNING_TIDES_SOURCECODE_PROPERTIES: Record<string, VesselIdentityProperty[]> = {
+  'VMS Chile': ['matricula'],
+  'VMS Brazil': ['codMarinha'],
+  'VMS Brazil Onyxsat': ['codMarinha'],
+  'VMS Peru': ['nationalId'],
+}
+
+export function getCustomVesselPropertiesByWorkspaceId(
+  workspaceId: TurningTidesWorkspaceId,
+  vesselInfo: IdentityVessel,
+  {
+    start,
+    end,
+  }: {
+    start: string
+    end: string
+  }
+) {
+  let customProperties = CUSTOM_TURNING_TIDES_DATASET_PROPERTIES[workspaceId]
+
+  const sourceCode = vesselInfo?.selfReportedInfo?.[0]?.sourceCode
+  if (typeof sourceCode === 'string' && CUSTOM_TURNING_TIDES_SOURCECODE_PROPERTIES[sourceCode]) {
+    customProperties = CUSTOM_TURNING_TIDES_SOURCECODE_PROPERTIES[sourceCode]
+  }
+  if (!workspaceId || !vesselInfo || !customProperties) {
+    return {}
+  }
+  return Object.fromEntries(
+    customProperties.map((property) => {
+      const identities = getVesselIdentities(vesselInfo, {
+        identitySource: VesselIdentitySourceEnum.SelfReported,
+      })
+      const identity =
+        start && end
+          ? identities.find((v) => isRegistryInTimerange(v, start, end))
+          : identities[identities.length - 1]
+      return [property, (identity as any)[property] || '']
+    })
+  )
+}

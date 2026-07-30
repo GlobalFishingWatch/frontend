@@ -4,13 +4,13 @@ import { getRouteApi, useRouter } from '@tanstack/react-router'
 import { getGuestUser } from '@globalfishingwatch/api-client'
 
 import { HINTS } from 'data/map/config'
-import { hydrateHintsDismissed } from 'features/hints/hints.slice'
-import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import {
   getPersistedHistoryNavigation,
   hydrateWorkspaceHistoryNavigation,
-} from 'features/map/workspace/workspace.slice'
-import { setLoggedUser, setUserLanguage } from 'features/user/user.slice'
+} from 'features/_map/workspace/workspace.slice'
+import { setLoggedUser, setUserLanguage } from 'features/_user/user.slice'
+import { hydrateHintsDismissed } from 'features/hints/hints.slice'
+import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync, syncInitialLocation } from 'router/router-sync'
 import { makeStore } from 'store'

@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import type { UIMessage } from 'ai'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 
@@ -68,5 +69,7 @@ export const chatApi = createApi({
     }),
   }),
 })
+
+injectQueryApi(chatApi)
 
 export const { useGetThreadsQuery, useGetThreadMessagesQuery, useDeleteThreadMutation } = chatApi

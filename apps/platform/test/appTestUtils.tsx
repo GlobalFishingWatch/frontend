@@ -11,15 +11,15 @@ import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/map/config'
-import { setLoggedUser } from 'features/user/user.slice'
+import { setLoggedUser } from 'features/_user/user.slice'
 import type { AppRouterContext } from 'router/app-router-context'
 import type { LocationState } from 'router/location.slice'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
 
 import { getCreateRouterOptions } from '../router'
-import type { AppStore } from '../store'
-import { makeStore } from '../store'
+import type { AppStore } from '../store/store'
+import { makeStore } from '../store/store'
 
 export interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore

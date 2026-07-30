@@ -1,5 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import { type ApiEvents, DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import type { InferQueryParams } from '@globalfishingwatch/datasets-client'
@@ -53,6 +54,6 @@ export const vesselEventsApi = createApi({
   }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+injectQueryApi(vesselEventsApi)
+
 export const { useGetVesselEventsQuery } = vesselEventsApi

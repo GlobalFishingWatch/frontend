@@ -11,10 +11,10 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
-import type { MapAnnotation } from 'features/map/map/overlays/annotations/annotations.types'
-import type { ReportState, ReportStateProperty } from 'features/reports/reports.types'
-import type { VesselSearchState, VesselSearchStateProperty } from 'features/vessels/search/search.types'
-import type { VesselProfileState, VesselProfileStateProperty } from 'features/vessels/vessel/vessel.types'
+import type { MapAnnotation } from 'features/_map/map/overlays/annotations/annotations.types'
+import type { ReportState, ReportStateProperty } from 'features/_reports/reports.types'
+import type { VesselSearchState, VesselSearchStateProperty } from 'features/_vessels/search/search.types'
+import type { VesselProfileState, VesselProfileStateProperty } from 'features/_vessels/vessel/vessel.types'
 
 export { Locale } from '@globalfishingwatch/api-types'
 

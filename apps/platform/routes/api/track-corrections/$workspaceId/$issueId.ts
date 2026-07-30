@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import type {
   TrackCorrection,
   TrackCorrectionComment,
-} from 'features/vessels/track-correction/track-correction.slice'
+} from 'features/_vessels/track-correction/track-correction.slice'
 
 export type ErrorAPIResponse = {
   success: boolean

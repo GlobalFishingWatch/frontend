@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
+import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import type { RootState } from 'reducers'
 
 type DebugMenu = [boolean, () => void]

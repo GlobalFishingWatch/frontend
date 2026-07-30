@@ -1,8 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
+import { injectQueryApi } from 'queries/inject-api'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
-import { getDataTerminologyContent } from 'features/cms/loaders/data-terminology'
 import type { DataTerminology } from 'features/cms/loaders/data-terminology.types'
 
 type DataTerminologyParams = { id: string; locale: Locale }
@@ -11,6 +11,9 @@ export const dataTerminologyApi = createApi({
   reducerPath: 'dataTerminologyApi',
   baseQuery: async (args: DataTerminologyParams) => {
     try {
+      // Loaded here, not statically: store.ts imports this module's middleware via the queries barrel,
+      // so a static import puts @strapi/client in the entry chunk of every page.
+      const { getDataTerminologyContent } = await import('features/cms/loaders/data-terminology')
       const response = await getDataTerminologyContent({ data: args })
       return { data: response?.data?.[0] ?? null }
     } catch (e) {
@@ -23,5 +26,7 @@ export const dataTerminologyApi = createApi({
     }),
   }),
 })
+
+injectQueryApi(dataTerminologyApi)
 
 export const { useGetDataTerminologyContentQuery } = dataTerminologyApi

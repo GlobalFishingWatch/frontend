@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import { SCROLL_CONTAINER_DOM_ID } from 'features/map/sidebar/sidebar.utils'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 
 import styles from './layouts.module.css'
 

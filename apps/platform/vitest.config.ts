@@ -31,13 +31,20 @@ const PREFIX_ALIAS_DIRS = [
   'types',
   'utils',
 ]
-const EXACT_ALIAS_MODULES = ['middlewares', 'queries', 'reducers', 'store', 'types']
+// Exact aliases whose file lives at a different path than the bare name (see tsconfig paths).
+const EXACT_ALIAS_MODULES: Record<string, string> = {
+  middlewares: 'store/middlewares',
+  queries: 'queries',
+  reducers: 'store/reducers',
+  store: 'store/store',
+  types: 'types',
+}
 
 const tsconfigPathAliases = [
   // Exact matches first so `types` does not get shadowed by the `types/` prefix rule.
-  ...EXACT_ALIAS_MODULES.map((name) => ({
+  ...Object.entries(EXACT_ALIAS_MODULES).map(([name, path]) => ({
     find: new RegExp(`^${name}$`),
-    replacement: `${__dirname}/${name}`,
+    replacement: `${__dirname}/${path}`,
   })),
   ...PREFIX_ALIAS_DIRS.map((dir) => ({
     find: new RegExp(`^${dir}/`),

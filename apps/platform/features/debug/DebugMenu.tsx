@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
 
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 
 import DebugDataviews from './DebugDataviews'
 import DebugFeatureFlags from './DebugFeatureFlags'

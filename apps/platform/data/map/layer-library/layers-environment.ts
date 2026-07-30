@@ -1,4 +1,4 @@
-import { LayerGroup } from '@globalfishingwatch/deck-layers'
+import { LayerGroup } from '@globalfishingwatch/deck-layers/constants'
 
 import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
@@ -9,7 +9,7 @@ import {
   TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   WINDS_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
-import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/map/dataviews/dataviews.utils'
+import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/_map/dataviews/dataviews.utils'
 
 const heatmapDatasetConfig = {
   params: [

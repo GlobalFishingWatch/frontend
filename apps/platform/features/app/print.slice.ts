@@ -1,7 +1,7 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import type { RootState } from 'reducers'
+import { rootReducer } from 'reducers'
 
 const printSlice = createSlice({
   name: 'print',
@@ -14,6 +14,16 @@ const printSlice = createSlice({
 })
 
 export const { setPrintMode } = printSlice.actions
-export const selectPrintMode = (state: RootState): boolean => state.print.printMode
+
+const injectedPrintSlice = rootReducer.inject(printSlice)
+
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof printSlice> {}
+}
+
+export const selectPrintMode = injectedPrintSlice.selector(
+  (state): boolean => state.print.printMode
+)
 
 export default printSlice.reducer

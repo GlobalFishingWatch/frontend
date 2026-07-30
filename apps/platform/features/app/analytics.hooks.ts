@@ -6,7 +6,7 @@ import { useParams, useRouterState } from '@tanstack/react-router'
 import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwatch/react-hooks'
 
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/map/config'
-import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { mapRoutePathToType } from 'router/routes.utils'
 
 const GOOGLE_ANALYTICS_DEBUG_MODE =

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import PortsReport from 'features/_reports/report-port/PortsReport'
 import { t } from 'features/i18n/i18n'
-import PortsReport from 'features/reports/report-port/PortsReport'
 import { getRouteHead } from 'router/router.meta'
 import { validateReportSearchParams } from 'router/routes.search'
 

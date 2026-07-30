@@ -3,16 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
+import { refreshDatasetsLocaleThunk } from 'features/_map/datasets/datasets.slice'
+import { selectHasEditTranslationsPermissions } from 'features/_user/selectors/user.permissions.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
-import { refreshDatasetsLocaleThunk } from 'features/map/datasets/datasets.slice'
-import { selectBasemapLabelsDataviewInstance } from 'features/map/dataviews/selectors/dataviews.selectors'
-import { useDataviewInstancesConnect } from 'features/map/workspace/workspace.hook'
-import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
@@ -57,9 +55,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState(false)
 
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
-  const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
 
   const toggleLanguage = async (lang: Locale | 'source') => {
     if (lang === i18n.language) {
@@ -75,14 +71,6 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
     const locale = lang === 'source' ? Locale.en : (lang as Locale)
     await dispatch(refreshDatasetsLocaleThunk(locale))
     i18n.changeLanguage(lang)
-    if (basemapDataviewInstance?.id) {
-      upsertDataviewInstance({
-        id: basemapDataviewInstance.id as string,
-        config: {
-          locale,
-        },
-      })
-    }
     setIsLoading(false)
   }
 

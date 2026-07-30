@@ -12,9 +12,9 @@ import { getActiveI18nState } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
 
 import { setRouterRef } from './router/router-ref'
+import { makeStore } from './store/store'
+import { getDehydratedReduxState, serializeReduxState } from './store/store.dehydrated-state'
 import { routeTree } from './routeTree.gen'
-import { makeStore } from './store'
-import { getDehydratedReduxState, serializeReduxState } from './store.dehydrated-state'
 
 const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr) as QueryParams

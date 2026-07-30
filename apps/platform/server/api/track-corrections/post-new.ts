@@ -1,7 +1,7 @@
 import type {
   TrackCorrection,
   TrackCorrectionComment,
-} from 'features/vessels/track-correction/track-correction.slice'
+} from 'features/_vessels/track-correction/track-correction.slice'
 import {
   COMMENTS_SPREADSHEET_TITLE,
   getSheetTab,

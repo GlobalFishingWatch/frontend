@@ -2,8 +2,8 @@ import type { Store as JotaiStore } from 'jotai/vanilla/store'
 import { expect, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import { mapInstanceAtom } from 'features/map/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/map/map/map-viewport.hooks'
+import { mapInstanceAtom } from 'features/_map/map/map.atoms'
+import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 
 import type { render } from '../appTestUtils'
 
