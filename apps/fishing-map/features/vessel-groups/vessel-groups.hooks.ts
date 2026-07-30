@@ -7,7 +7,14 @@ import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 // import { VesselLastIdentity } from 'features/search/search.slice'
 // import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
+import { PRESENCE_DATAVIEW_SLUG } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectPresenceDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
+import {
+  getVesselGroupActivityDataview,
+  getVesselGroupDataviewInstance,
+} from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
@@ -27,6 +34,24 @@ import {
 export type { AddVesselGroupVessel }
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
+
+export const useVesselGroupDataviewInstance = () => {
+  const presenceDataviews = useSelector(selectPresenceDataviews)
+  const allDatasets = useSelector(selectAllDatasets)
+
+  return useCallback(
+    (vesselGroupId: string, vesselGroupDatasets: string[] = []) => {
+      const { dataviewSlug, datasets } = getVesselGroupActivityDataview({
+        vesselGroupDatasets,
+        activityDataviews: presenceDataviews,
+        allDatasets,
+        fallbackDataviewSlug: PRESENCE_DATAVIEW_SLUG,
+      })
+      return getVesselGroupDataviewInstance(vesselGroupId, datasets, dataviewSlug)
+    },
+    [presenceDataviews, allDatasets]
+  )
+}
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()
