@@ -1,11 +1,15 @@
 import { expect, test } from 'playwright/test'
 
+import { appPath } from '../paths'
+
 test('WS01 - Save workspace', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
   await page.goto(
-    '/map/fishing-activity/deep-sea-mining-public?zoom=1.4&latitude=-13.322088344162196&longitude=-68.31476421655266&start=2020-04-03T22%3A00%3A00.000Z&end=2021-04-03T22%3A00%3A00.000Z&dvIn[0][id]=context-layer-eez&dvIn[0][cfg][vis]=true'
+    appPath(
+      '/map/fishing-activity/deep-sea-mining-public?zoom=1.4&latitude=-13.322088344162196&longitude=-68.31476421655266&start=2020-04-03T22%3A00%3A00.000Z&end=2021-04-03T22%3A00%3A00.000Z&dvIn[0][id]=context-layer-eez&dvIn[0][cfg][vis]=true'
+    )
   )
 
   // LOGIN

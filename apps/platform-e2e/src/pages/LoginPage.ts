@@ -7,6 +7,7 @@ import {
 } from '../../../platform/features/app/cookies.config'
 import { waitForHydration } from '../helpers/hydration'
 import { disableWelcomePopups } from '../helpers/modals'
+import { MAP_PATH } from '../paths'
 
 function requireEnv(name: string): string {
   const value = process.env[name]
@@ -82,7 +83,7 @@ export class LoginPage {
   async newTab() {
     const tab = await this.context.newPage()
     await disableWelcomePopups(tab)
-    await tab.goto('/')
+    await tab.goto(MAP_PATH)
     await waitForHydration(tab)
     return new LoginPage(tab, this.context)
   }

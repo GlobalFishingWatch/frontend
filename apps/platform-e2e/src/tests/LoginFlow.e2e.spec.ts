@@ -1,7 +1,8 @@
 import { test } from '../fixtures'
+import { MAP_PATH } from '../paths'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/')
+  await page.goto(MAP_PATH)
 })
 
 test('Login - should allow a user to log in and log out', async ({ loginPage }) => {

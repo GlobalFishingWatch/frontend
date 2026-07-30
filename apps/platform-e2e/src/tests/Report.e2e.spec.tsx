@@ -1,10 +1,12 @@
 import { expect, test } from 'playwright/test'
 
+import { MAP_PATH } from '../paths'
+
 test('Report01 - Create report area', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
-  await page.goto('/')
+  await page.goto(MAP_PATH)
   // close welcome modal
   await page.getByTestId('modal-close-button').click()
   await page.waitForLoadState('networkidle')
@@ -42,7 +44,7 @@ test.skip('Report02 - View full report area', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
-  await page.goto('/')
+  await page.goto(MAP_PATH)
 
   // close welcome modal
   await page.getByTestId('modal-close-button').click()

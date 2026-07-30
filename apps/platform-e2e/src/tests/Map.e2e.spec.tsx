@@ -1,10 +1,12 @@
 import test, { expect } from 'playwright/test'
 
+import { MAP_PATH } from '../paths'
+
 test('Map01 - should select a vessel from map tile', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
-  await page.goto('/')
+  await page.goto(MAP_PATH)
 
   // close welcome modal
   await page.getByTestId('modal-close-button').click()
@@ -34,7 +36,7 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
-  await page.goto('/')
+  await page.goto(MAP_PATH)
 
   // close welcome modal
   await page.getByRole('button', { name: 'Close' }).click()
@@ -67,7 +69,7 @@ test.skip('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
-  await page.goto('/')
+  await page.goto(MAP_PATH)
 
   // close welcome modal
   await page.getByRole('button', { name: 'Close' }).click()

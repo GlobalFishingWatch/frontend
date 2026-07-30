@@ -6,58 +6,45 @@
   "tags": ["e2e"],
   "implicitDependencies": ["platform"],
   "targets": {
-    "e2e": {
-      "executor": "@nx/playwright:playwright",
+    "test": {
       "options": {
-        "config": "apps/platform-e2e/playwright.config.mts",
         "grep": "^(?!.*Screenshot comparison).*"
-      },
-      "cache": true,
-      "inputs": ["default", "^production"],
-      "outputs": ["{workspaceRoot}/dist/.playwright/apps/platform-e2e"]
+      }
     },
-    "e2e:local": {
-      "executor": "@nx/playwright:playwright",
-      "options": {
-        "config": "apps/platform-e2e/playwright.config.mts",
-        "grep": "^(?!.*Screenshot comparison).*"
-      },
+    "test:local": {
+      "command": "playwright test",
       "cache": false,
-      "inputs": ["default", "^production"],
-      "outputs": ["{workspaceRoot}/dist/.playwright/apps/platform-e2e"],
       "dependsOn": [
         {
           "projects": "platform",
           "target": "start"
         }
       ],
+      "options": {
+        "cwd": "{projectRoot}",
+        "grep": "^(?!.*Screenshot comparison).*"
+      },
       "configurations": {
         "ui": {
-          "cache": false,
           "ui": true
         },
         "headed": {
-          "cache": false,
           "headed": true
         }
       }
     },
     "screenshots": {
-      "executor": "@nx/playwright:playwright",
-      "options": {
-        "config": "apps/platform-e2e/playwright.config.mts",
-        "testFiles": ["src/screenshots/"],
-        "project": ["chromium"],
-        "workers": 2
-      },
+      "command": "playwright test src/screenshots/ --project=chromium --workers=2",
       "cache": false,
+      "options": {
+        "cwd": "{projectRoot}"
+      },
       "configurations": {
         "update": {
-          "updateSnapshots": true
+          "command": "playwright test src/screenshots/ --project=chromium --workers=2 --update-snapshots"
         },
         "ui": {
-          "ui": true,
-          "workers": 1
+          "command": "playwright test src/screenshots/ --project=chromium --workers=1 --ui"
         }
       }
     },

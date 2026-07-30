@@ -11,45 +11,52 @@ This project contains end-to-end tests for the Fishing Map application using [Pl
 
 ### Available Targets
 
-#### `e2e` - Standard E2E Run
+#### `test` - Standard E2E Run
 
 Runs all tests with caching enabled. Best for CI/CD and regular test runs.
 
 ```bash
-nx e2e platform-e2e
+nx test platform-e2e
 ```
 
-#### `e2e:local` - Local Development
+#### `test:local` - Local Development
 
 Runs all tests without caching and automatically starts the `platform` server. Useful for local development when you want fresh runs.
 
 ```bash
-nx e2e:local platform-e2e
+nx test:local platform-e2e
 ```
 
-#### `e2e:local` with configurations
+#### `test:local` with configurations
 
 Opens Playwright's interactive UI for debugging and watching tests run.
 
 ```bash
-nx e2e:local platform-e2e -c ui
+nx test:local platform-e2e -c ui
 ```
 
 Runs tests with visible browser windows. Useful for debugging visual issues.
 
 ```bash
-nx e2e:local platform-e2e -c headed
+nx test:local platform-e2e -c headed
 ```
 
 ### Browser Selection
 
-**Run tests in specific browser:**
+By default (and in CI), tests run in Chromium, Firefox, and WebKit.
+
+For local runs, set `PLAYWRIGHT_BROWSER=chromium` in `apps/platform-e2e/.env` (see `.env.sample`) to only use Chromium:
 
 ```bash
-nx e2e platform-e2e --browser="chromium"
-nx e2e platform-e2e --browser="firefox"
-nx e2e platform-e2e --browser="webkit"
-nx e2e platform-e2e --browser="all"  # Run in all browsers
+PLAYWRIGHT_BROWSER=chromium nx test platform-e2e
+```
+
+Other values: `firefox`, `webkit`, `all`, or a comma-separated list (`chromium,firefox`).
+
+You can also pass Playwright’s project flag:
+
+```bash
+nx test platform-e2e -- --project=chromium
 ```
 
 ### Debugging Options
@@ -57,19 +64,19 @@ nx e2e platform-e2e --browser="all"  # Run in all browsers
 **Debug mode (opens Playwright Inspector):**
 
 ```bash
-nx e2e platform-e2e --debug
+nx test platform-e2e --debug
 ```
 
 **Run only failed tests from last run:**
 
 ```bash
-nx e2e platform-e2e --lastFailed
+nx test platform-e2e --lastFailed
 ```
 
 **Stop after N failures:**
 
 ```bash
-nx e2e platform-e2e --maxFailures=3
+nx test platform-e2e --maxFailures=3
 ```
 
 ### Performance & Parallelization
@@ -77,22 +84,22 @@ nx e2e platform-e2e --maxFailures=3
 **Control number of workers:**
 
 ```bash
-nx e2e platform-e2e --workers=2
-nx e2e platform-e2e --workers="50%"  # Use 50% of CPU cores
+nx test platform-e2e --workers=2
+nx test platform-e2e --workers="50%"  # Use 50% of CPU cores
 ```
 
 **Run tests sequentially:**
 
 ```bash
-nx e2e platform-e2e --workers=1
+nx test platform-e2e --workers=1
 ```
 
 **Shard tests (for CI parallelization):**
 
 ```bash
-nx e2e platform-e2e --shard="1/3"  # Run shard 1 of 3
-nx e2e platform-e2e --shard="2/3"  # Run shard 2 of 3
-nx e2e platform-e2e --shard="3/3"  # Run shard 3 of 3
+nx test platform-e2e --shard="1/3"  # Run shard 1 of 3
+nx test platform-e2e --shard="2/3"  # Run shard 2 of 3
+nx test platform-e2e --shard="3/3"  # Run shard 3 of 3
 ```
 
 ### Timeouts & Retries
@@ -100,19 +107,19 @@ nx e2e platform-e2e --shard="3/3"  # Run shard 3 of 3
 **Set test timeout:**
 
 ```bash
-nx e2e platform-e2e --timeout=60000  # 60 seconds
+nx test platform-e2e --timeout=60000  # 60 seconds
 ```
 
 **Set global timeout (max time for entire test suite):**
 
 ```bash
-nx e2e platform-e2e --globalTimeout=3600000  # 1 hour
+nx test platform-e2e --globalTimeout=3600000  # 1 hour
 ```
 
 **Set retry count:**
 
 ```bash
-nx e2e platform-e2e --retries=2
+nx test platform-e2e --retries=2
 ```
 
 ### Other Useful Options
@@ -120,31 +127,31 @@ nx e2e platform-e2e --retries=2
 **List tests without running:**
 
 ```bash
-nx e2e platform-e2e --list
+nx test platform-e2e --list
 ```
 
 **Quiet mode (suppress output):**
 
 ```bash
-nx e2e platform-e2e --quiet
+nx test platform-e2e --quiet
 ```
 
 **Update snapshots:**
 
 ```bash
-nx e2e platform-e2e --updateSnapshots
+nx test platform-e2e --updateSnapshots
 ```
 
 **Ignore snapshot failures:**
 
 ```bash
-nx e2e platform-e2e --ignoreSnapshots
+nx test platform-e2e --ignoreSnapshots
 ```
 
 **Run each test N times:**
 
 ```bash
-nx e2e platform-e2e --repeatEach=3
+nx test platform-e2e --repeatEach=3
 ```
 
 ## Configuration
@@ -152,13 +159,13 @@ nx e2e platform-e2e --repeatEach=3
 - **Playwright Config**: `playwright.config.mts`
 - **Test Directory**: `src/`
 - **Test Pattern**: `*.e2e.spec.{ts,tsx}`
-- **Base URL**: `http://localhost:3003` (configurable via `PLAYWRIGHT_BASE_URL` env var)
+- **Base URL**: `http://localhost:3003` (via `PLAYWRIGHT_BASE_URL`); app paths use `/platform` basename (`PLAYWRIGHT_PATH_BASENAME`), e.g. `/platform/map`
 
 ## Dependencies
 
-The `e2e:local` target automatically starts the `platform` app server using Nx's `dependsOn` feature. Nx will start the server before running tests. The server runs in the background and tests will connect to it once it's ready.
+The `test:local` target automatically starts the `platform` app server using Nx's `dependsOn` feature. Nx will start the server before running tests. The server runs in the background and tests will connect to it once it's ready.
 
-For the `e2e` target, ensure the `platform` server is already running before executing tests.
+For the `test` target, ensure the `platform` server is already running before executing tests.
 
 ## CI/CD
 
