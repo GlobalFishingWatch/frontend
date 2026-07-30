@@ -24,9 +24,9 @@ import { selectFourwingsDatasets } from 'features/map/datasets/datasets.selector
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/map/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/map/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/map/dataviews/dataviews.utils'
-import { toggleEditorMenu } from 'features/map/editor/editor.slice'
 import { useDataviewInstancesConnect } from 'features/map/workspace/workspace.hook'
 import { selectWorkspaceStatus } from 'features/map/workspace/workspace.selectors'
+import { toggleEditorMenu } from 'features/modals/modals.slice'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

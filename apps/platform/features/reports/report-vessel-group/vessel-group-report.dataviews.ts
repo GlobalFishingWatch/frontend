@@ -11,7 +11,8 @@ import {
   replaceDatasetPrivateToPublic,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers'
+// Leaf subpath: this module is reached from five dataview selector modules that are always loaded.
+import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers/constants'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/map/config'
 import {

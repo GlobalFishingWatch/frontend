@@ -40,6 +40,7 @@ import {
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/map/dataviews/selectors/dataviews.static.selectors'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessels/vessel/vessel.config'
 import { getVesselIdentities, getVesselProperty } from 'features/vessels/vessel/vessel.utils'
@@ -256,6 +257,10 @@ const vesselSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
+    builder.addCase(workspaceTabClicked, (state) => {
+      state.eventId = null
+    })
     builder.addCase(fetchVesselInfoThunk.pending, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
       const isRefresh = action.meta?.arg?.isRefresh

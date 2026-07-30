@@ -53,12 +53,6 @@ import {
   getVesselGroupInDataview,
   isRealTimeDataset,
 } from 'features/map/datasets/datasets.utils'
-import {
-  selectActiveDetectionsDataviews,
-  selectEventsDataviews,
-  selectVesselGroupDataviews,
-} from 'features/map/dataviews/selectors/dataviews.categories.selectors'
-import { selectActiveTemporalgridDataviews } from 'features/map/dataviews/selectors/dataviews.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { getVesselSearchEndpoint } from 'features/vessels/search/search.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessels/vessel/vessel.config'
@@ -68,6 +62,17 @@ import type { AppDispatch } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const MAX_TOOLTIP_LIST = 5
+
+/**
+ * Loaded on demand from the thunks below. These two modules are the reducer map's only entry into the
+ * dataview selector cluster, which reaches deck-layer-composer, @turf/turf, match-sorter and
+ * deck-layers — a static import here puts all four in the entry chunk of every page, map or not.
+ *
+ * Same module instance as a static import would give, so reselect memoization is unaffected.
+ */
+const loadCategorySelectors = () =>
+  import('features/map/dataviews/selectors/dataviews.categories.selectors')
+const loadDataviewSelectors = () => import('features/map/dataviews/selectors/dataviews.selectors')
 
 type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
   id: string
@@ -317,6 +322,8 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
     { getState, signal, dispatch, rejectWithValue }
   ) => {
     try {
+      const [{ selectActiveTemporalgridDataviews }, { selectVesselGroupDataviews }] =
+        await Promise.all([loadDataviewSelectors(), loadCategorySelectors()])
       const state = getState() as any
       const guestUser = selectIsGuestUser(state)
       const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
@@ -489,6 +496,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
     { signal, getState, dispatch, rejectWithValue }
   ) => {
     try {
+      const { selectEventsDataviews } = await loadCategorySelectors()
       const state = getState() as RootState
       const guestUser = selectIsGuestUser(state)
       const eventDataviews = selectEventsDataviews(state) || []
@@ -750,6 +758,7 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
   'map/fetchDetectionThumbnails',
   async ({ detectionFeatures }, { signal, getState, rejectWithValue, dispatch }) => {
     try {
+      const { selectActiveDetectionsDataviews } = await loadCategorySelectors()
       const state = getState() as any
       const detectionsDataviews = selectActiveDetectionsDataviews(state) || []
       const thumbnails = await Promise.all(
@@ -804,6 +813,7 @@ export const fetchBQEventThunk = createAsyncThunk<
   }
 >('map/fetchBQEvent', async (eventFeature, { signal, getState, rejectWithValue }) => {
   try {
+    const { selectEventsDataviews } = await loadCategorySelectors()
     const state = getState() as any
     const eventDataviews = selectEventsDataviews(state) || []
     const dataview = eventDataviews.find((d) => d.id === eventFeature.generatorId)

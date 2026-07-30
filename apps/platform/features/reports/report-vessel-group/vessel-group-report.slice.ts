@@ -6,6 +6,7 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 
 import { getDatasetByIdsThunk } from 'features/map/datasets/datasets.slice'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
 import { mergeVesselGroupVesselIdentities } from 'features/user/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/user/vessel-groups/vessel-groups-modal.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessels/vessel/vessel.config'
@@ -98,6 +99,12 @@ const vesselGroupReportSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
+    builder.addCase(workspaceTabClicked, (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.vesselGroup = null
+      state.error = null
+    })
     builder.addCase(fetchVesselGroupReportThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
       state.statusId = action.meta.arg.vesselGroupId

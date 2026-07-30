@@ -6,6 +6,8 @@ import {
   EventTypes,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+// Leaf subpath, not the package root: this module defines the URL search schemas for every route, so it
+// is in the always-loaded graph. The root barrel would put all of deck.gl in every page's entry chunk.
 import {
   COLOR_BY,
   FOOTPRINT_HIGH_RES_ID,
@@ -13,7 +15,7 @@ import {
   FOURWINGS_VISUALIZATION_MODES,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-} from '@globalfishingwatch/deck-layers'
+} from '@globalfishingwatch/deck-layers/constants'
 
 import {
   REPORT_ACTIVITY_GRAPHS,

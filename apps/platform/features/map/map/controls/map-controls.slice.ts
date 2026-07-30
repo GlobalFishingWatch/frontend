@@ -1,9 +1,9 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 
 import type { RulerData } from '@globalfishingwatch/deck-layers'
 
-import type { RootState } from 'reducers'
+import { rootReducer } from 'reducers'
 
 import type { MapAnnotation } from '../overlays/annotations/annotations.types'
 
@@ -76,7 +76,21 @@ const slice = createSlice({
 
 export const { setMapControlValue, setMapControlEditing, resetMapControlValue } = slice.actions
 
-const selectMapControls = (state: RootState) => state.mapControls
+/**
+ * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
+ * Importing this module performs the injection, so the chunk that needs the slice registers it.
+ *
+ * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered slice,
+ * so a read between inject() and the next dispatched action is safe.
+ */
+const injectedMapControlsSlice = rootReducer.inject(slice)
+
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof slice> {}
+}
+
+const selectMapControls = injectedMapControlsSlice.selector((state) => state.mapControls)
 export const selectMapControlEditing = (control: MapControl) =>
   createSelector([selectMapControls], (mapControls) => {
     return mapControls[control].isEditing

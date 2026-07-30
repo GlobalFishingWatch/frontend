@@ -11,6 +11,7 @@ import {
   getBigQueryEventsDataviewInstance,
 } from 'features/map/dataviews/dataviews.utils'
 import { useDataviewInstancesConnect } from 'features/map/workspace/workspace.hook'
+import { closeBigQueryModal } from 'features/modals/modals.slice'
 
 import type { CreateBigQueryDataset } from './bigquery.slice'
 import {
@@ -19,7 +20,6 @@ import {
   selectCreationStatus,
   selectRunCost,
   selectRunCostStatus,
-  setBigQueryMode,
 } from './bigquery.slice'
 
 export function useBigQueryModal() {
@@ -64,7 +64,7 @@ export function useBigQueryModal() {
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
-      dispatch(setBigQueryMode({ active: false }))
+      dispatch(closeBigQueryModal())
     } else {
       const error = action.payload as ParsedAPIError
       setError(error.message)

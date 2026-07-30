@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapViewProps, ViewStateMap, WebMercatorViewport } from '@deck.gl/core'
+import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
-import { debounce, throttle } from 'es-toolkit'
+import { debounce } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { boundsAtom, viewStateAtom } from 'features/map/map/map.atoms'
+import { viewStateAtom } from 'features/map/map/map.atoms'
 import { useDeckMap } from 'features/map/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
@@ -35,42 +35,9 @@ export const useMapViewStateUrlSync = () => {
     // mount-only: URL viewport is the initial deep-link, not a live source
   }, [])
 }
-export const useMapSetViewState = () => {
-  const setViewState = useSetAtom(viewStateAtom)
-  return useMemo(
-    () =>
-      throttle((coordinates: Partial<ViewStateMap<MapView>>) => {
-        const cleanCoordinates = Object.fromEntries(
-          Object.entries(coordinates).filter(([key, value]) => value !== undefined)
-        )
-        setViewState((prev) => ({ ...prev, ...cleanCoordinates }))
-      }, 1),
-    [setViewState]
-  )
-}
-
-// Hook to set only the map coordinates (longitude, latitude and zoom)
-// this doesn't update any of the deckgl view state properties
-export function useSetMapCoordinates() {
-  const setMapViewState = useMapSetViewState()
-  const { isTransitioning } = useAtomValue(boundsAtom)
-  const deckMap = useDeckMap()
-  return useCallback(
-    (coordinates: Partial<ViewStateMap<MapView>>) => {
-      if (!isTransitioning) {
-        setMapViewState(coordinates)
-        if (deckMap) {
-          const viewState = Object.fromEntries(
-            Object.entries(coordinates).filter(([key, value]) => value !== undefined)
-          ) as ViewStateMap<MapView>
-          // Can't find why this is needed to properly update the view state
-          deckMap.setProps({ viewState })
-        }
-      }
-    },
-    [deckMap, isTransitioning, setMapViewState]
-  )
-}
+// Moved to map-view-state.hooks so always-loaded callers (MainNav) can set the camera without pulling
+// @deck.gl/core, which this module imports as a value for MAP_VIEW. Re-exported for existing consumers.
+export { useMapSetViewState, useSetMapCoordinates } from 'features/map/map/map-view-state.hooks'
 
 const VIEW_STATE_URL_DEBOUNCE = 300
 

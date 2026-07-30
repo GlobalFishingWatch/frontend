@@ -46,7 +46,7 @@ import {
 import { HeatmapDownloadTab } from 'features/map/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/map/download/downloadActivity.slice'
 import { selectWorkspaceDataviewInstances } from 'features/map/workspace/workspace.selectors'
-import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
+import { isSupportedReportDataview } from 'features/reports/report-dataview-category.utils'
 import { selectReportCategory, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectIsVesselGroupReportLocation, selectVesselId } from 'router/routes.selectors'

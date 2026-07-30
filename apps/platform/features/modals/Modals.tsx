@@ -9,15 +9,7 @@ import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { WorkspaceCategory } from 'data/map/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
-import {
-  selectBigQueryActive,
-  selectTurningTidesActive,
-  toggleBigQueryModal,
-  toggleTurningTidesModal,
-} from 'features/map/bigquery/bigquery.slice'
-import { selectDownloadTrackModalOpen } from 'features/map/download/download.selectors'
 import { selectDownloadActivityAreaKey } from 'features/map/download/downloadActivity.slice'
-import { selectEditorActive, toggleEditorMenu } from 'features/map/editor/editor.slice'
 import CreateWorkspaceModal from 'features/map/workspace/save/WorkspaceCreateModal'
 import EditWorkspaceModal from 'features/map/workspace/save/WorkspaceEditModal'
 import { selectReadOnly } from 'features/map/workspace/selectors/app.selectors'
@@ -25,9 +17,16 @@ import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selecto
 import { setWorkspaceSuggestSave } from 'features/map/workspace/workspace.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import {
+  selectBigQueryModalOpen,
   selectDatasetUploadModalOpen,
+  selectDownloadTrackModalOpen,
+  selectEditorMenuOpen,
   selectLayerLibraryModalOpen,
+  selectTurningTidesModalOpen,
   setModalOpen,
+  toggleBigQueryModal,
+  toggleEditorMenu,
+  toggleTurningTidesModal,
 } from 'features/modals/modals.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
@@ -63,19 +62,19 @@ const DebugMenuConfig = {
 const EditorMenuConfig = {
   key: 'e',
   dispatchToggle: toggleEditorMenu,
-  selectMenuActive: selectEditorActive,
+  selectMenuActive: selectEditorMenuOpen,
 }
 
 const BigQueryMenuConfig = {
   key: 'b',
   dispatchToggle: toggleBigQueryModal,
-  selectMenuActive: selectBigQueryActive,
+  selectMenuActive: selectBigQueryModalOpen,
 }
 
 const TurningTidesMenuConfig = {
   key: 't',
   dispatchToggle: toggleTurningTidesModal,
-  selectMenuActive: selectTurningTidesActive,
+  selectMenuActive: selectTurningTidesModalOpen,
 }
 
 const ResetWorkspaceConfig = {

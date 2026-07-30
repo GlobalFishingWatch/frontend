@@ -13,6 +13,17 @@ type ModalId =
   | 'datasetUpload'
   | 'editWorkspace'
   | 'createWorkspace'
+  | 'downloadTrack'
+
+/**
+ * Which GFW-only secret menu is open.
+ *
+ * These flags live here rather than in editor.slice / bigquery.slice because Modals.tsx is rendered by
+ * PlatformLayout on every route: reading them from those slices put both in the always-loaded graph and
+ * blocked them from being lazily injected. Those slices keep their own data and react to the actions
+ * below — see their extraReducers.
+ */
+export type BigQueryModalMode = 'default' | 'turning-tides'
 
 export type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
@@ -35,6 +46,9 @@ type ModalsOpenState = {
   editWorkspace: boolean
   createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
+  editor: boolean
+  bigQuery: BigQueryModalMode | false
+  downloadTrack: boolean
 }
 
 const initialState: ModalsOpenState = {
@@ -53,6 +67,9 @@ const initialState: ModalsOpenState = {
     type: undefined,
     style: 'default',
   },
+  editor: false,
+  bigQuery: false,
+  downloadTrack: false,
 }
 
 const modals = createSlice({
@@ -80,10 +97,34 @@ const modals = createSlice({
     setDatasetUploadConfig: (state, action: PayloadAction<DatasetUploadConfig>) => {
       state.datasetUpload = { ...state.datasetUpload, ...action.payload }
     },
+    toggleEditorMenu: (state) => {
+      state.editor = !state.editor
+    },
+    /**
+     * Deliberately preserves the previous `active = !active; mode = 'default'` semantics: hitting the
+     * BigQuery combo while the Turning Tides modal is open closes *both* rather than switching modes.
+     * Odd, but it is what shipped, so it is not changed here.
+     */
+    toggleBigQueryModal: (state) => {
+      state.bigQuery = state.bigQuery !== false ? false : 'default'
+    },
+    toggleTurningTidesModal: (state) => {
+      state.bigQuery = state.bigQuery !== false ? false : 'turning-tides'
+    },
+    closeBigQueryModal: (state) => {
+      state.bigQuery = false
+    },
   },
 })
 
-export const { setModalOpen, setDatasetUploadConfig } = modals.actions
+export const {
+  closeBigQueryModal,
+  setDatasetUploadConfig,
+  setModalOpen,
+  toggleBigQueryModal,
+  toggleEditorMenu,
+  toggleTurningTidesModal,
+} = modals.actions
 
 export const selectFeedbackModalOpen = (state: RootState) => state.modals.feedback
 export const selectLayerLibraryModal = (state: RootState) => state.modals.layerLibrary.open
@@ -97,5 +138,15 @@ export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.e
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
+export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
+/**
+ * Previously derived from downloadTrack.slice's `ids.length > 0`. It lives here because Modals.tsx and
+ * modals.selectors are always loaded, and deriving it kept downloadTrack.slice eagerly registered. The
+ * two sites that open/close the modal dispatch this alongside the slice action they already dispatch.
+ */
+export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
+export const selectBigQueryModalOpen = (state: RootState) => state.modals.bigQuery === 'default'
+export const selectTurningTidesModalOpen = (state: RootState) =>
+  state.modals.bigQuery === 'turning-tides'
 
 export default modals.reducer

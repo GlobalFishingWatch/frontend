@@ -3,7 +3,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DatasetAreaDetail } from 'features/data/areas/areas.slice'
 import { selectAreas } from 'features/data/areas/areas.slice'
 import { selectDownloadActivityAreaKey } from 'features/map/download/downloadActivity.slice'
-import { selectDownloadTrackIds } from 'features/map/download/downloadTrack.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectDownloadActivityArea = createSelector(
@@ -22,10 +21,6 @@ export const selectIsDownloadActivityAreaLoading = createSelector(
     return area?.status === AsyncReducerStatus.Loading
   }
 )
-
-export const selectDownloadTrackModalOpen = createSelector([selectDownloadTrackIds], (trackIds) => {
-  return trackIds && trackIds?.length > 0
-})
 
 export const selectDownloadActivityModalOpen = createSelector(
   [selectDownloadActivityAreaKey],

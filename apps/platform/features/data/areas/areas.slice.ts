@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { circle, flatten } from '@turf/turf'
 import { kebabCase, memoize, uniqBy } from 'es-toolkit'
 import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
 
@@ -111,6 +110,8 @@ async function fetchAreaDetail({
   }
   let geometry: AreaGeometry
   if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
+    // Loaded on demand so the reducer map does not drag @turf/turf into every page's entry chunk
+    const { flatten } = await import('@turf/turf')
     const geoms = flatten(area.geometry).features.flatMap((f) =>
       f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
         ? [f.geometry.coordinates as PolygonGeomCoords]
@@ -183,6 +184,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
             })
           )
         )
+        const { circle } = await import('@turf/turf')
         try {
           const geoms = areas.flatMap((fetchedArea) => {
             if (!fetchedArea?.geometry) return []

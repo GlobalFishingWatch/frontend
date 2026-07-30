@@ -36,6 +36,11 @@ import {
 import { useMapFitBounds } from 'features/map/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map/map-context.hooks'
 import { useMapDrawConnect } from 'features/map/map/map-draw.hooks'
+import type { InteractionPromise } from 'features/map/map/map-interactions.atoms'
+import {
+  interactionPromisesAtom,
+  useCancelInteractionPromises,
+} from 'features/map/map/map-interactions.atoms'
 import { useMapAnnotation } from 'features/map/map/overlays/annotations/annotations.hooks'
 import { useMapErrorNotification } from 'features/map/map/overlays/error-notification/error-notification.hooks'
 import { overlaysCursorAtom } from 'features/map/map/overlays/overlays-hooks'
@@ -86,42 +91,9 @@ function useGetAreClusterTilesLoading() {
   )
 }
 
-type InteractionPromise = Promise<unknown> & { abort: () => void }
-const initialInteractionPromises = {
-  activity: undefined,
-  events: undefined,
-  detectionPositions: undefined,
-}
-const interactionPromisesAtom = atom<{
-  activity: InteractionPromise | undefined
-  events: InteractionPromise | undefined
-  detectionPositions: InteractionPromise | undefined
-}>(initialInteractionPromises)
-
-export const useCancelInteractionPromises = () => {
-  const [interactionPromises, setInteractionPromises] = useAtom(interactionPromisesAtom)
-
-  const cancelPendingInteractionRequests = useCallback(() => {
-    const promisesRef = [
-      interactionPromises.activity,
-      interactionPromises.events,
-      interactionPromises.detectionPositions,
-    ]
-    promisesRef.forEach((p) => {
-      if (p) {
-        p.abort()
-      }
-    })
-    setInteractionPromises(initialInteractionPromises)
-  }, [
-    interactionPromises.events,
-    interactionPromises.activity,
-    interactionPromises.detectionPositions,
-    setInteractionPromises,
-  ])
-
-  return cancelPendingInteractionRequests
-}
+// Moved to map-interactions.atoms so MainNav can cancel pending requests without loading this module.
+// Re-exported for existing consumers (`export ... from` alone would not bind them locally).
+export { useCancelInteractionPromises } from 'features/map/map/map-interactions.atoms'
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()

@@ -10,8 +10,8 @@ import { LAYERS_LIBRARY_DETECTIONS } from 'data/map/layer-library/layers-detecti
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSidePanel } from 'features/map/content-panel/contentPanel.hooks'
 import { selectDataviewInstancesResolved } from 'features/map/dataviews/selectors/dataviews.resolvers.selectors'
-import { useSetMapCoordinates } from 'features/map/map/map-viewport.hooks'
-import { useTimerangeConnect } from 'features/map/timebar/timebar.hooks'
+import { useSetMapCoordinates } from 'features/map/map/map-view-state.hooks'
+import { useTimerangeConnect } from 'features/map/timebar/timerange.hooks'
 import { selectUserLogged } from 'features/user/selectors/user.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {

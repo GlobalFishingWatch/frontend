@@ -15,8 +15,9 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import HelpHub from 'features/hints/HelpHub'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import { useClickedEventConnect } from 'features/map/map/map-interactions.hooks'
-import { useSetMapCoordinates } from 'features/map/map/map-viewport.hooks'
+import { setClickedEvent } from 'features/map/map/map.slice'
+import { useCancelInteractionPromises } from 'features/map/map/map-interactions.atoms'
+import { useSetMapCoordinates } from 'features/map/map/map-view-state.hooks'
 import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
 import { selectWorkspaceCategory } from 'features/map/workspace/selectors/app.workspace.selectors'
 import { selectLastVisitedWorkspace, selectWorkspace } from 'features/map/workspace/workspace.selectors'
@@ -27,14 +28,11 @@ import {
 import { cleanReportPayload, cleanReportQuery } from 'features/map/workspace/workspace.utils'
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/map/workspaces-list/workspaces-list.config'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
 import WhatsNew from 'features/nav/WhatsNew'
-import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
-import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { EMPTY_SEARCH_FILTERS } from 'features/vessels/search/search.config'
-import { cleanVesselSearchResults } from 'features/vessels/search/search.slice'
-import { setVesselEventId } from 'features/vessels/vessel/vessel.slice'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import {
   selectIsAnySearchLocation,
@@ -56,7 +54,7 @@ type MainNavProps = {
 function MainNav({ onMenuClick }: MainNavProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchClickedEvent } = useClickedEventConnect()
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isClientHydrated = useIsClientHydrated()
@@ -80,13 +78,16 @@ function MainNav({ onMenuClick }: MainNavProps) {
   const onCategoryClick = useCallback(
     (category: WorkspaceCategory) => {
       setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
-      dispatchClickedEvent(null)
+      // Inlines what dispatchClickedEvent(null) did, minus the whole interaction pipeline: that hook
+      // pulls deck-layer-composer and every overlay hook into this always-rendered component.
+      cancelPendingInteractionRequests()
+      dispatch(setClickedEvent(null))
       trackEvent({
         category: TrackCategory.General,
         action: `clicked on ${category}`,
       })
     },
-    [setMapCoordinates, dispatchClickedEvent]
+    [setMapCoordinates, cancelPendingInteractionRequests, dispatch]
   )
 
   const onSearchClick = useCallback(() => {
@@ -98,11 +99,11 @@ function MainNav({ onMenuClick }: MainNavProps) {
 
   const onWorkspaceClick = useCallback(() => {
     resetSidebarScroll()
-    dispatch(cleanVesselSearchResults())
-    dispatch(resetReportData())
-    dispatch(resetVesselGroupReportData())
+    // One leaf action; search, report, vesselGroupReport and vessel reset themselves via extraReducers.
+    // Importing those four slices here put them all in the always-loaded graph, since MainNav renders on
+    // every route. workspace stays direct — it is permanently eager anyway.
+    dispatch(workspaceTabClicked())
     dispatch(cleanCurrentWorkspaceReportState())
-    dispatch(setVesselEventId(null))
     dispatch(resetWorkspaceHistoryNavigation())
   }, [dispatch])
 

@@ -42,7 +42,11 @@
       "inputs": ["default"],
       "outputs": [],
       "options": {
-        "command": "node scripts/check-store-graph.mjs"
+        "commands": [
+          "node scripts/check-store-graph.mjs",
+          "node scripts/check-store-graph.mjs --from routes/_platform.tsx"
+        ],
+        "parallel": false
       }
     },
     "clean-test-artifacts": {
@@ -183,7 +187,9 @@
             "shx cp instrument.server.mjs .output/server"
           ],
           "parallel": false,
-          "env": { "ANALYZE": "true" }
+          "env": {
+            "ANALYZE": "true"
+          }
         }
       }
     },

@@ -1,5 +1,6 @@
 import { execSync, spawn } from 'node:child_process'
 import path from 'node:path'
+import { setTimeout } from 'node:timers'
 import { fileURLToPath } from 'node:url'
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')

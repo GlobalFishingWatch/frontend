@@ -7,6 +7,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDatasetsDownloadTrackSupported } from 'features/map/datasets/datasets.permissions'
 import { setDownloadTrackVessel } from 'features/map/download/downloadTrack.slice'
 import type { VesselLayerPanelProps } from 'features/map/workspace/vessels/VesselLayerPanel'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 
@@ -41,6 +42,8 @@ function VesselDownloadButton({
         datasets: datasetId,
       })
     )
+    // Open flag lives in modals.slice so Modals.tsx does not have to reach into downloadTrack.slice.
+    dispatch(setModalOpen({ id: 'downloadTrack', open: true }))
   }
 
   return (

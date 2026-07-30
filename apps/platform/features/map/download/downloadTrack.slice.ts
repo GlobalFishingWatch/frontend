@@ -1,4 +1,4 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 
@@ -7,7 +7,7 @@ import type { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-
 
 import type { DateRange } from 'features/map/download/downloadActivity.slice'
 import { logoutUserThunk } from 'features/user/user.slice'
-import type { RootState } from 'reducers'
+import { rootReducer } from 'reducers'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
@@ -152,10 +152,34 @@ const downloadTrackSlice = createSlice({
 export const { resetDownloadTrackStatus, clearDownloadTrackVessel, setDownloadTrackVessel } =
   downloadTrackSlice.actions
 
-export const selectDownloadTrackIds = (state: RootState) => state.downloadTrack.ids
-export const selectDownloadTrackName = (state: RootState) => state.downloadTrack.name
-export const selectDownloadTrackDataset = (state: RootState) => state.downloadTrack.datasets
-export const selectDownloadTrackStatus = (state: RootState) => state.downloadTrack.status
-export const selectDownloadTrackRateLimit = (state: RootState) => state.downloadTrack.rateLimit
+/**
+ * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
+ * Importing this module performs the injection, so the chunk that needs the slice registers it.
+ *
+ * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered slice,
+ * so a read between inject() and the next dispatched action is safe.
+ */
+const injectedDownloadTrackSlice = rootReducer.inject(downloadTrackSlice)
+
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof downloadTrackSlice> {}
+}
+
+export const selectDownloadTrackIds = injectedDownloadTrackSlice.selector(
+  (state) => state.downloadTrack.ids
+)
+export const selectDownloadTrackName = injectedDownloadTrackSlice.selector(
+  (state) => state.downloadTrack.name
+)
+export const selectDownloadTrackDataset = injectedDownloadTrackSlice.selector(
+  (state) => state.downloadTrack.datasets
+)
+export const selectDownloadTrackStatus = injectedDownloadTrackSlice.selector(
+  (state) => state.downloadTrack.status
+)
+export const selectDownloadTrackRateLimit = injectedDownloadTrackSlice.selector(
+  (state) => state.downloadTrack.rateLimit
+)
 
 export default downloadTrackSlice.reducer

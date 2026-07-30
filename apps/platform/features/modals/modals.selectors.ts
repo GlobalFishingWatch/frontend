@@ -5,12 +5,10 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   WorkspaceCategory,
 } from 'data/map/workspaces'
-import {
-  selectDownloadActivityModalOpen,
-  selectDownloadTrackModalOpen,
-} from 'features/map/download/download.selectors'
+import { selectDownloadActivityModalOpen } from 'features/map/download/download.selectors'
 import {
   selectDatasetUploadModalOpen,
+  selectDownloadTrackModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
   selectScreenshotModalOpen,

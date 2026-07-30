@@ -37,7 +37,7 @@ import {
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
-} from 'features/reports/report-area/area-reports.selectors'
+} from 'features/reports/report-area/area-reports.buffer.selectors'
 import {
   selectPortReportCountry,
   selectPortReportDatasetId,

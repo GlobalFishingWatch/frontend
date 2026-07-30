@@ -5,10 +5,12 @@ import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui
 
 import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'
-import { cleanAggregateByPropertyDataviewFromReport } from 'features/reports/report-area/area-reports.utils'
+import {
+  cleanAggregateByPropertyDataviewFromReport,
+  cleanDatasetComparisonDataviewInstances,
+} from 'features/reports/report-dataview-cleaners'
 import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
 import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
-import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import type { QueryParams, WorkspaceState } from 'types'
 
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5

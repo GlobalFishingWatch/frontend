@@ -3,7 +3,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
+// Leaf subpath: this module is always loaded (MainNav -> app.timebar.selectors), and the composer root
+// barrel pulls the whole deck layer pipeline.
+import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer/dataview-resolvers'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/map/config'
 import { selectFeatureFlags } from 'features/debug/debug.slice'
@@ -11,7 +13,7 @@ import { selectDataviewInstancesResolved } from 'features/map/dataviews/selector
 import {
   isPointsDataviewReportSupported,
   isPolygonsDataviewReportSupported,
-} from 'features/reports/report-area/area-reports.utils'
+} from 'features/reports/report-dataview-category.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportDatasetId } from 'features/reports/reports.selectors'

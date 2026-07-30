@@ -13,13 +13,16 @@ import type {
   Workspace,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getEncounteredVesselDataviewInstanceId,
   getVesselDataviewInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
+// Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
+// (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/constants'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,

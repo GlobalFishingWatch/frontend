@@ -45,6 +45,21 @@ import {
 } from './area-reports.config'
 import type { ReportVesselWithDatasets } from './area-reports.selectors'
 
+/**
+ * Re-exported so consumers that already import these from here keep working. Modules in the
+ * always-loaded route graph (the dataview selectors) must import from report-dataview-category.utils
+ * directly instead — this module pulls @turf/turf and match-sorter.
+ */
+export {
+  getReportCategoryFromDataview,
+  getReportSubCategoryFromDataview,
+  isContextDataviewReportSupported,
+  isPointsDataviewReportSupported,
+  isPolygonsDataviewReportSupported,
+  isSupportedComparisonDataview,
+  isSupportedReportDataview,
+} from 'features/reports/report-dataview-category.utils'
+
 export const tickFormatter = (tick: number) => {
   return new Intl.NumberFormat('en', {
     notation: 'compact',
@@ -83,112 +98,13 @@ export const formatTooltipValue = (value: number, unit: string, asDifference = f
   return valueLabel
 }
 
-const SUPPORTED_REPORT_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-  DataviewCategory.VesselGroups,
-  DataviewCategory.Events,
-  DataviewCategory.Context,
-  DataviewCategory.User,
-]
-const SUPPORTED_REPORT_TYPES = [
-  DataviewType.HeatmapAnimated,
-  DataviewType.HeatmapStatic,
-  DataviewType.FourwingsTileCluster,
-  DataviewType.FourwingsVector,
-  DataviewType.Context,
-  DataviewType.Polygons,
-  DataviewType.UserPoints,
-  DataviewType.UserContext,
-]
-const SUPPORTED_COMPARISON_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-]
-const SUPPORTED_COMPARISON_TYPES = [
-  DataviewType.HeatmapAnimated,
-  DataviewType.FourwingsVector,
-  DataviewType.FourwingsTileCluster,
-]
 
-export const isPointsDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
-  return dataview.config?.type === DataviewType.UserPoints
-}
 
-export const isPolygonsDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
-  const dataset = dataview.datasets?.[0]
-  if (!dataset) {
-    return false
-  }
-  return (
-    dataview.config?.type === DataviewType.Polygons ||
-    dataview.config?.type === DataviewType.UserContext ||
-    dataview.config?.type === DataviewType.Context
-  )
-}
 
-export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
-  return isPointsDataviewReportSupported(dataview) || isPolygonsDataviewReportSupported(dataview)
-}
 
-export const isSupportedReportDataview = (
-  dataview: Dataview | UrlDataviewInstance,
-  featureFlags: Record<FeatureFlag, boolean>
-) => {
-  const { category, config } = dataview
-  if (!category || !config?.visible || !config?.type) {
-    return false
-  }
-  let reportTypes = SUPPORTED_REPORT_TYPES
-  if (!featureFlags.polygonsReport) {
-    reportTypes = reportTypes.filter(
-      (t) =>
-        t !== DataviewType.Polygons && t !== DataviewType.UserContext && t !== DataviewType.Context
-    )
-  }
-  return SUPPORTED_REPORT_CATEGORIES.includes(category) && reportTypes.includes(config?.type)
-}
 
-export const isSupportedComparisonDataview = (dataview: Dataview | UrlDataviewInstance) => {
-  const { category, config } = dataview
-  if (!category || !config?.type) {
-    return false
-  }
-  return (
-    SUPPORTED_COMPARISON_CATEGORIES.includes(category) &&
-    SUPPORTED_COMPARISON_TYPES.includes(config?.type)
-  )
-}
 
-export const getReportCategoryFromDataview = (
-  dataview: Dataview | UrlDataviewInstance
-): ReportCategory => {
-  if (
-    isContextDataviewReportSupported(dataview) &&
-    dataview.category !== DataviewCategory.Environment
-  ) {
-    return ReportCategory.Others
-  }
-  return dataview.category as unknown as ReportCategory
-}
 
-export const getReportSubCategoryFromDataview = (
-  dataview: Dataview | UrlDataviewInstance
-): ReportActivitySubCategory | ReportDetectionsSubCategory => {
-  // Workaround to display BQ datasets as fishing ones (e.g. turning-tides)
-  if (
-    dataview.datasets?.[0]?.category === DatasetCategory.Activity &&
-    dataview.datasets?.[0]?.subcategory === 'user'
-  ) {
-    return 'fishing' as ReportActivitySubCategory
-  }
-
-  return dataview.datasets?.[0]?.subcategory as
-    | ReportActivitySubCategory
-    | ReportDetectionsSubCategory
-}
 
 type BufferedAreaParams = {
   area: Area<FeatureCollection<AreaGeometry>> | undefined
@@ -362,16 +278,6 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
   }, vessels) as Vessel[]
 }
 
-export function cleanAggregateByPropertyDataviewFromReport(dataview: UrlDataviewInstance) {
-  if (!dataview.config?.aggregateByProperty) {
-    return dataview
-  }
-
-  return {
-    ...dataview,
-    config: {
-      ...dataview.config,
-      aggregateByProperty: undefined,
-    },
-  }
-}
+// cleanAggregateByPropertyDataviewFromReport moved to features/reports/report-dataview-cleaners.ts —
+// workspace.utils.ts is its only consumer, and importing it from here dragged @turf/turf and
+// match-sorter into the reducer map.

@@ -3,7 +3,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { RulerData } from '@globalfishingwatch/deck-layers'
-import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers'
+// Leaf subpath: PlatformLayout reads selectReadOnly from this module, so it is in the always-loaded
+// graph and the root barrel would put all of deck.gl in every page's entry chunk.
+import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers/constants'
 
 import {
   getActiveActivityDatasetsInDataviews,

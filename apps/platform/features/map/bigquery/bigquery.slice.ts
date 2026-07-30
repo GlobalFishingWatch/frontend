@@ -1,12 +1,17 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import type { WithSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { kebabCase } from 'es-toolkit'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { RelatedDataset } from '@globalfishingwatch/api-types'
 
 import { fetchDatasetByIdThunk } from 'features/map/datasets/datasets.slice'
-import type { RootState } from 'reducers'
+import {
+  closeBigQueryModal,
+  toggleBigQueryModal,
+  toggleTurningTidesModal,
+} from 'features/modals/modals.slice'
+import { rootReducer } from 'reducers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type BigQueryVisualisation = '4wings' | 'events'
@@ -104,18 +109,13 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   }
 )
 
-export type BigQueryMode = 'default' | 'turning-tides'
 interface BigQueryState {
-  mode: BigQueryMode
-  active: boolean
   creationStatus: AsyncReducerStatus
   runCostStatus: AsyncReducerStatus
   runCost: RunCostResponse | null
 }
 
 const initialState: BigQueryState = {
-  mode: 'default',
-  active: false,
   creationStatus: AsyncReducerStatus.Idle,
   runCostStatus: AsyncReducerStatus.Idle,
   runCost: null,
@@ -124,30 +124,20 @@ const initialState: BigQueryState = {
 const bigQuerySlice = createSlice({
   name: 'bigQuery',
   initialState,
-  reducers: {
-    toggleBigQueryModal: (state) => {
-      state.active = !state.active
-      state.mode = 'default'
-      if (!state.active) {
-        state.runCostStatus = AsyncReducerStatus.Idle
-      }
-    },
-    toggleTurningTidesModal: (state) => {
-      state.active = !state.active
-      state.mode = 'turning-tides'
-      if (!state.active) {
-        state.runCostStatus = AsyncReducerStatus.Idle
-      }
-    },
-    setBigQueryMode: (state, action: PayloadAction<{ mode?: BigQueryMode; active?: boolean }>) => {
-      state.mode = action.payload.mode ?? state.mode
-      state.active = action.payload.active ?? state.active
-      if (!state.active) {
-        state.runCostStatus = AsyncReducerStatus.Idle
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    /**
+     * Whether the modal is open now lives in modals.slice, so this slice can no longer decide "was it
+     * just closed?" itself. Resetting on every open/close is equivalent in practice: the status is
+     * already Idle whenever the modal opens (the previous close set it), so only the close path can
+     * observe a change — which is exactly what the old `if (!state.active)` guard did.
+     */
+    builder.addMatcher(
+      isAnyOf(toggleBigQueryModal, toggleTurningTidesModal, closeBigQueryModal),
+      (state) => {
+        state.runCostStatus = AsyncReducerStatus.Idle
+      }
+    )
     builder.addCase(fetchBigQueryRunCostThunk.pending, (state, action) => {
       state.runCostStatus = AsyncReducerStatus.Loading
       state.runCost = null
@@ -179,15 +169,26 @@ const bigQuerySlice = createSlice({
   },
 })
 
-export const { setBigQueryMode, toggleBigQueryModal, toggleTurningTidesModal } =
-  bigQuerySlice.actions
+/**
+ * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
+ * Importing this module performs the injection, so the chunk that needs the slice registers it.
+ *
+ * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered slice,
+ * so a read between inject() and the next dispatched action is safe.
+ */
+const injectedBigQuerySlice = rootReducer.inject(bigQuerySlice)
 
-export const selectBigQueryActive = (state: RootState) =>
-  state.bigQuery.active && state.bigQuery.mode === 'default'
-export const selectTurningTidesActive = (state: RootState) =>
-  state.bigQuery.active && state.bigQuery.mode === 'turning-tides'
-export const selectRunCost = (state: RootState) => state.bigQuery.runCost
-export const selectRunCostStatus = (state: RootState) => state.bigQuery.runCostStatus
-export const selectCreationStatus = (state: RootState) => state.bigQuery.creationStatus
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof bigQuerySlice> {}
+}
+
+export const selectRunCost = injectedBigQuerySlice.selector((state) => state.bigQuery.runCost)
+export const selectRunCostStatus = injectedBigQuerySlice.selector(
+  (state) => state.bigQuery.runCostStatus
+)
+export const selectCreationStatus = injectedBigQuerySlice.selector(
+  (state) => state.bigQuery.creationStatus
+)
 
 export default bigQuerySlice.reducer

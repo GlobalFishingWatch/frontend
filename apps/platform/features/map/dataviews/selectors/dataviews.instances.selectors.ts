@@ -16,7 +16,7 @@ import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
-} from 'features/reports/report-area/area-reports.utils'
+} from 'features/reports/report-dataview-category.utils'
 import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,

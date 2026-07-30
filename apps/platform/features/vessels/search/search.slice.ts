@@ -25,6 +25,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 import { selectDatasetById } from 'features/map/datasets/datasets.slice'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
 import { ADVANCED_SEARCH_FIELDS } from 'features/vessels/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/vessels/search/search.config'
 import type { VesselSearchState } from 'features/vessels/search/search.types'
@@ -259,6 +260,15 @@ const searchSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
+    builder.addCase(workspaceTabClicked, (state) => {
+      state.status = initialState.status
+      state.suggestion = initialState.suggestion
+      state.suggestionClicked = false
+      state.data = castDraft(initialState.data)
+      state.pagination = paginationInitialState
+      state.selectedVessels = initialState.selectedVessels
+    })
     builder.addCase(fetchVesselSearchThunk.pending, (state, action) => {
       state.status = AsyncReducerStatus.Loading
       state.pagination.loading = action.meta.arg.since ? true : false

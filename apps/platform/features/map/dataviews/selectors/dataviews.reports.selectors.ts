@@ -10,7 +10,7 @@ import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
   isSupportedReportDataview,
-} from 'features/reports/report-area/area-reports.utils'
+} from 'features/reports/report-dataview-category.utils'
 import { getVesselGroupActivityDatasets } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectVGRDatasets } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type {

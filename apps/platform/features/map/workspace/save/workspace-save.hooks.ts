@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useTimerangeConnect } from 'features/map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/map/timebar/timerange.hooks'
 import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'
 import {
   selectCreateWorkspaceModalOpen,

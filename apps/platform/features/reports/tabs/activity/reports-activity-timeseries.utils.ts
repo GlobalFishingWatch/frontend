@@ -346,10 +346,6 @@ export const formatEvolutionData = (
     })
 }
 
-export function cleanDatasetComparisonDataviewInstances(
-  dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
-) {
-  return dataviewInstances?.filter(
-    (dataviewInstance) => !dataviewInstance?.id?.includes(DATASET_COMPARISON_SUFFIX)
-  )
-}
+// cleanDatasetComparisonDataviewInstances moved to features/reports/report-dataview-cleaners.ts —
+// workspace.utils.ts is its only consumer, and importing it from here dragged simple-statistics and
+// deck-layers into the reducer map.

@@ -1,12 +1,5 @@
 export const REDUX_STORE_DEFAULT_STATE = {
   areas: {},
-  bigQuery: {
-    active: false,
-    creationStatus: 'idle',
-    mode: 'default',
-    runCost: null,
-    runCostStatus: 'idle',
-  },
   datasets: {
     currentRequestIds: [],
     deprecatedDatasets: {},
@@ -10439,8 +10432,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
     hadTimeoutError: false,
     status: 'idle',
   },
-  downloadTrack: { datasets: '', error: null, ids: [], name: '', rateLimit: {}, status: 'idle' },
-  editor: { active: false, dataviews: { status: 'idle' } },
   hints: {
     hintsDismissed: {
       areaSearch: true,
@@ -10466,21 +10457,18 @@ export const REDUX_STORE_DEFAULT_STATE = {
     hovered: null,
     loaded: true,
   },
-  mapControls: {
-    annotations: { isEditing: false, value: null },
-    errorNotification: { isEditing: false, value: null },
-    rulers: { isEditing: false, value: null },
-  },
   modals: {
+    bigQuery: false,
     createWorkspace: false,
     datasetUpload: { open: false, style: 'default' },
+    downloadTrack: false,
     editWorkspace: false,
+    editor: false,
     feedback: false,
     layerLibrary: { open: false, singleCategory: false },
     screenshot: false,
     vesselCorrection: false,
   },
-  print: { printMode: false },
   regions: {
     currentRequestIds: [],
     entities: {},
@@ -10488,15 +10476,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
     ids: [],
     status: 'idle',
     statusId: null,
-  },
-  report: {
-    data: null,
-    error: null,
-    hotspotSettings: { area: 50000, enabled: false, unit: 'kilometers' },
-    isPinningVessels: false,
-    previewBuffer: { operation: null, unit: null, value: null },
-    reportRequestHash: '',
-    status: 'idle',
   },
   reportEventsStatsApi: {
     config: {
@@ -10517,7 +10496,6 @@ export const REDUX_STORE_DEFAULT_STATE = {
   },
   reports: { entities: {}, error: '', ids: [], status: 'idle' },
   resources: {},
-  screenshot: { screenshotAreaId: 'app-layout-content' },
   search: {
     data: [],
     pagination: { loading: false, since: '', total: 0 },

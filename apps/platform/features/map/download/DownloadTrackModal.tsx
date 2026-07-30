@@ -9,7 +9,6 @@ import { Button, Choice, Icon, Modal, Tag } from '@globalfishingwatch/ui-compone
 import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDownloadTrackModalOpen } from 'features/map/download/download.selectors'
 import type { DateRange } from 'features/map/download/downloadActivity.slice'
 import type { DownloadTrackParams } from 'features/map/download/downloadTrack.slice'
 import {
@@ -24,6 +23,7 @@ import {
 } from 'features/map/download/downloadTrack.slice'
 import TimelineDatesRange from 'features/map/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/map/timebar/timebar.hooks'
+import { selectDownloadTrackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { getModalParent } from 'features/modals/modals.utils'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -80,6 +80,7 @@ function DownloadTrackModal() {
 
   const onClose = () => {
     dispatch(clearDownloadTrackVessel())
+    dispatch(setModalOpen({ id: 'downloadTrack', open: false }))
   }
 
   const isDownloadRatioExceeded = rateLimit?.remaining === 0

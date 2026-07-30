@@ -37,12 +37,16 @@ const APP_ROOT = resolve(REPO_ROOT, 'apps/platform')
  */
 const ALWAYS_LOADED = ['routes/__root.tsx']
 
+/**
+ * Only slices still registered in reducers.ts belong here. A lazily-injected slice imports `rootReducer`
+ * and therefore reducers.ts, so listing one drags the entire eager map in and makes this entry useless
+ * as a measure of the always-loaded cost.
+ */
 const EAGER_SLICES = [
   'router/location.slice.ts',
   'features/user/user.slice.ts',
   'features/modals/modals.slice.ts',
   'features/hints/hints.slice.ts',
-  'features/app/print.slice.ts',
   'features/debug/debug.slice.ts',
   'features/map/datasets/datasets.slice.ts',
   'features/map/dataviews/dataviews.slice.ts',
@@ -72,6 +76,20 @@ const FORBIDDEN = [
   'simple-statistics',
   'match-sorter',
 ]
+
+/**
+ * Leaf subpath exports of otherwise-forbidden packages, mapped to their source file.
+ *
+ * These are resolved and traversed as ordinary files rather than allowlisted, so if one of them ever
+ * grows a runtime import of the heavy package the BFS finds it and this check still fails. An allowlist
+ * would silently go blind instead.
+ */
+const LEAF_SUBPATHS = {
+  '@globalfishingwatch/deck-layers/constants': 'libs/deck-layers/src/constants.ts',
+  '@globalfishingwatch/timebar/constants': 'libs/timebar/src/constants.ts',
+  '@globalfishingwatch/deck-layer-composer/dataview-resolvers':
+    'libs/deck-layer-composer/src/resolvers/dataviews.ts',
+}
 
 // Mirrors compilerOptions.paths in apps/platform/tsconfig.json. Longest prefix wins.
 const PATH_ALIASES = [
@@ -117,6 +135,10 @@ function resolveSpecifier(spec, fromFile) {
     const found = resolveFile(resolve(dirname(fromFile), spec))
     return found ? { kind: 'file', path: found } : null
   }
+  if (Object.hasOwn(LEAF_SUBPATHS, spec)) {
+    const found = resolveFile(resolve(REPO_ROOT, LEAF_SUBPATHS[spec]))
+    return found ? { kind: 'file', path: found } : null
+  }
   if (Object.hasOwn(PATH_EXACT, spec)) {
     const found = resolveFile(resolve(APP_ROOT, PATH_EXACT[spec]))
     return found ? { kind: 'file', path: found } : null
@@ -126,6 +148,12 @@ function resolveSpecifier(spec, fromFile) {
       const found = resolveFile(resolve(APP_ROOT, target + spec.slice(prefix.length)))
       return found ? { kind: 'file', path: found } : null
     }
+  }
+  // Stylesheets and assets carry no JS, so `import 'pkg/thing.css'` does not pull pkg's runtime graph.
+  // Counting it as a package import reported @globalfishingwatch/timebar as reachable from
+  // routes/_platform.tsx when all it costs there is a file of CSS custom properties.
+  if (/\.(css|scss|sass|less|png|jpe?g|gif|svg|webp|avif|woff2?|ttf|eot)(\?.*)?$/.test(spec)) {
+    return null
   }
   // Bare specifier: a package. Keep the scope+name, drop any subpath.
   const parts = spec.split('/')
@@ -181,8 +209,14 @@ function runtimeSpecifiers(file) {
 const visited = new Set(ENTRIES)
 const externals = new Map() // package name -> importing file (first one seen)
 const parent = new Map() // file -> file that pulled it in, for blame paths
+const importers = new Map() // file or package -> every in-graph file importing it
 const unresolved = []
 const queue = [...ENTRIES]
+
+const addImporter = (key, file) => {
+  if (!importers.has(key)) importers.set(key, new Set())
+  importers.get(key).add(file)
+}
 
 while (queue.length) {
   const file = queue.shift()
@@ -201,13 +235,36 @@ while (queue.length) {
     }
     if (target.kind === 'external') {
       if (!externals.has(target.name)) externals.set(target.name, file)
+      addImporter(target.name, file)
       continue
     }
+    addImporter(target.path, file)
     if (visited.has(target.path)) continue
     visited.add(target.path)
     parent.set(target.path, file)
     queue.push(target.path)
   }
+}
+
+/**
+ * `--importers <module-or-package>` lists every in-graph module importing it. `parent` only records the
+ * first edge BFS happened to take, so chain output alone hides the other N-1 edges you also have to cut.
+ */
+const importersArg = process.argv.indexOf('--importers')
+if (importersArg !== -1) {
+  const needle = process.argv[importersArg + 1]
+  const matches = [...importers.entries()].filter(([key]) =>
+    key.startsWith('@') || !key.includes('/') ? key === needle : key.includes(needle)
+  )
+  if (!matches.length) {
+    console.log(`no in-graph importers of "${needle}" (not reachable, or misspelled)`)
+    process.exit(0)
+  }
+  for (const [key, files] of matches) {
+    console.log(`\n${key.startsWith('/') ? relative(REPO_ROOT, key) : key} <- ${files.size} importer(s)`)
+    for (const f of [...files].sort()) console.log(`  ${relative(REPO_ROOT, f)}`)
+  }
+  process.exit(0)
 }
 
 /** Import chain from the entry down to `file`, for blame output. */

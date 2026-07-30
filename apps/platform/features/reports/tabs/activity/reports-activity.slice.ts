@@ -1,4 +1,4 @@
-import type { PayloadAction } from '@reduxjs/toolkit'
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
@@ -13,10 +13,12 @@ import {
   TemporalResolution,
 } from 'features/map/download/downloadActivity.config'
 import type { DateRange } from 'features/map/download/downloadActivity.slice'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
 import {
   ENTIRE_WORLD_REPORT_AREA_ID,
   KILOMETERS,
 } from 'features/reports/report-area/area-reports.config'
+import { rootReducer } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -228,6 +230,15 @@ const reportSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
+    builder.addCase(workspaceTabClicked, (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.reportRequestHash = ''
+      state.previewBuffer = { ...previewBufferInitialState }
+      state.hotspotSettings = { ...initialHotspotSettings }
+    })
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
     })
@@ -257,14 +268,32 @@ export const {
   setReportHotspotSettings,
 } = reportSlice.actions
 
-export const selectReportVesselsStatus = (state: ReportSliceState) => state.report.status
-export const selectReportVesselsError = (state: ReportSliceState) => state.report.error
-export const selectReportVesselsData = (state: ReportSliceState) => state.report.data
+/**
+ * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
+ * Freed by the MainNav reset inversion: reducers.ts is now this slice's only always-loaded importer.
+ */
+const injectedReportSlice = rootReducer.inject(reportSlice)
 
-export const selectReportPreviewBuffer = (state: ReportSliceState) => state.report.previewBuffer
-export const selectReportIsPinningVessels = (state: ReportSliceState) =>
-  state.report.isPinningVessels
-export const selectReportRequestHash = (state: ReportSliceState) => state.report.reportRequestHash
-export const selectReportHotspotSettings = (state: ReportSliceState) => state.report.hotspotSettings
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof reportSlice> {}
+}
+
+export const selectReportVesselsStatus = injectedReportSlice.selector((state) => state.report.status)
+export const selectReportVesselsError = injectedReportSlice.selector((state) => state.report.error)
+export const selectReportVesselsData = injectedReportSlice.selector((state) => state.report.data)
+
+export const selectReportPreviewBuffer = injectedReportSlice.selector(
+  (state) => state.report.previewBuffer
+)
+export const selectReportIsPinningVessels = injectedReportSlice.selector(
+  (state) => state.report.isPinningVessels
+)
+export const selectReportRequestHash = injectedReportSlice.selector(
+  (state) => state.report.reportRequestHash
+)
+export const selectReportHotspotSettings = injectedReportSlice.selector(
+  (state) => state.report.hotspotSettings
+)
 
 export default reportSlice.reducer

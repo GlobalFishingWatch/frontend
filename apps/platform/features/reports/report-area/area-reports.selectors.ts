@@ -19,6 +19,11 @@ import { selectActiveReportDataviews } from 'features/map/dataviews/selectors/da
 import { selectTimeRange } from 'features/map/workspace/selectors/app.timebar.selectors'
 import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selectors'
 import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/reports/report-area/area-reports.buffer.selectors'
+import {
   ENTIRE_WORLD_REPORT_AREA,
   ENTIRE_WORLD_REPORT_AREA_ID,
   OUT_OF_TIME_REPORT_AREA_ID,
@@ -61,28 +66,18 @@ import {
 } from '../reports.config.selectors'
 import type { ReportTimeComparisonValues } from '../tabs/activity/reports-activity.types'
 
+// Moved to area-reports.buffer.selectors so app.workspace.selectors (reached from MainNav) can read the
+// buffer config without pulling this module's deck-layers / composer / turf / match-sorter imports.
+export {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/reports/report-area/area-reports.buffer.selectors'
+
 const EMPTY_ARRAY: [] = []
 
-export const selectReportBufferValue = createSelector(
-  [selectReportBufferValueSelector, selectUrlBufferValueQuery],
-  (workspaceBufferValue, urlBufferValue): number => {
-    return workspaceBufferValue || urlBufferValue
-  }
-)
 
-export const selectReportBufferUnit = createSelector(
-  [selectReportBufferUnitSelector, selectUrlBufferUnitQuery],
-  (workspaceBufferUnit, urlBufferUnit): BufferUnit => {
-    return workspaceBufferUnit || urlBufferUnit
-  }
-)
 
-export const selectReportBufferOperation = createSelector(
-  [selectReportBufferOperationSelector, selectUrlBufferOperationQuery],
-  (workspaceBufferOperation, urlBufferOperation): BufferOperation => {
-    return workspaceBufferOperation || urlBufferOperation
-  }
-)
 
 type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property
