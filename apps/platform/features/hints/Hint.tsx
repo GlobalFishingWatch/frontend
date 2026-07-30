@@ -8,9 +8,9 @@ import { Icon } from '@globalfishingwatch/ui-components/icon'
 import type { PopoverProps } from '@globalfishingwatch/ui-components/popover'
 import { Popover } from '@globalfishingwatch/ui-components/popover'
 
+import { selectReadOnly, selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReadOnly, selectScreenshotMode } from 'features/map/workspace/selectors/app.selectors'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'

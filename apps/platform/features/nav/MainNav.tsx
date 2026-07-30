@@ -12,32 +12,32 @@ import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import type { WorkspaceCategory } from 'data/map/workspaces'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import { setClickedEvent } from 'features/_map/map/map.slice'
+import { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
+import {
+  selectLastVisitedWorkspace,
+  selectWorkspace,
+  selectWorkspaceCategory,
+} from 'features/_map/workspace/workspace.selectors'
+import {
+  cleanCurrentWorkspaceReportState,
+  resetWorkspaceHistoryNavigation,
+} from 'features/_map/workspace/workspace.slice'
+import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
+import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
+import { selectUserData } from 'features/_user/selectors/user.selectors'
+import UserButton from 'features/_user/UserButton'
+import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import HelpHub from 'features/hints/HelpHub'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
-import { setClickedEvent } from 'features/map/map/map.slice'
-import { useCancelInteractionPromises } from 'features/map/map/map-interactions.atoms'
-import { useSetMapCoordinates } from 'features/map/map/map-view-state.hooks'
-import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
-import {
-  selectLastVisitedWorkspace,
-  selectWorkspace,
-  selectWorkspaceCategory,
-} from 'features/map/workspace/workspace.selectors'
-import {
-  cleanCurrentWorkspaceReportState,
-  resetWorkspaceHistoryNavigation,
-} from 'features/map/workspace/workspace.slice'
-import { cleanReportPayload, cleanReportQuery } from 'features/map/workspace/workspace.utils'
-import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/map/workspaces-list/workspaces-list.config'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import WhatsNew from 'features/nav/WhatsNew'
-import { selectUserData } from 'features/user/selectors/user.selectors'
-import UserButton from 'features/user/UserButton'
-import { EMPTY_SEARCH_FILTERS } from 'features/vessels/search/search.config'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import {
   selectIsAnySearchLocation,

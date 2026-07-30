@@ -7,12 +7,15 @@ import { Modal } from '@globalfishingwatch/ui-components/modal'
 
 import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { WorkspaceCategory } from 'data/map/workspaces'
+import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import { selectIsWorkspaceReady } from 'features/_map/workspace/workspace.selectors'
+import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
+import GFWOnly from 'features/_user/GFWOnly'
+import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
+import { selectVesselGroupModalOpen } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
-import { selectDownloadActivityAreaKey } from 'features/map/download/downloadActivity.slice'
-import { selectReadOnly } from 'features/map/workspace/selectors/app.selectors'
-import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selectors'
-import { setWorkspaceSuggestSave } from 'features/map/workspace/workspace.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import {
   selectBigQueryModalOpen,
@@ -28,9 +31,6 @@ import {
   toggleEditorMenu,
   toggleTurningTidesModal,
 } from 'features/modals/modals.slice'
-import GFWOnly from 'features/user/GFWOnly'
-import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
-import { selectVesselGroupModalOpen } from 'features/user/vessel-groups/vessel-groups-modal.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
@@ -41,18 +41,18 @@ import { getModalParent } from './modals.utils'
 
 import styles from './Modals.module.css'
 
-const CreateWorkspaceModal = lazy(() => import('features/map/workspace/save/WorkspaceCreateModal'))
-const EditWorkspaceModal = lazy(() => import('features/map/workspace/save/WorkspaceEditModal'))
-const NewDataset = lazy(() => import('features/map/datasets/upload/NewDataset'))
-const BigQueryModal = lazy(() => import('features/map/bigquery/BigQueryModal'))
-const TurningTidesModal = lazy(() => import('features/map/bigquery/TurningTidesModal'))
-const LayerLibrary = lazy(() => import('features/map/layer-library/LayerLibrary'))
+const CreateWorkspaceModal = lazy(() => import('features/_map/workspace/save/WorkspaceCreateModal'))
+const EditWorkspaceModal = lazy(() => import('features/_map/workspace/save/WorkspaceEditModal'))
+const NewDataset = lazy(() => import('features/_map/datasets/upload/NewDataset'))
+const BigQueryModal = lazy(() => import('features/_map/bigquery/BigQueryModal'))
+const TurningTidesModal = lazy(() => import('features/_map/bigquery/TurningTidesModal'))
+const LayerLibrary = lazy(() => import('features/_map/layer-library/LayerLibrary'))
 const DebugMenu = lazy(() => import('features/debug/DebugMenu'))
-const DownloadActivityModal = lazy(() => import('features/map/download/DownloadActivityModal'))
-const DownloadTrackModal = lazy(() => import('features/map/download/DownloadTrackModal'))
-const EditorMenu = lazy(() => import('features/map/editor/EditorMenu'))
+const DownloadActivityModal = lazy(() => import('features/_map/download/DownloadActivityModal'))
+const DownloadTrackModal = lazy(() => import('features/_map/download/DownloadTrackModal'))
+const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
-const VesselGroupModal = lazy(() => import('features/user/vessel-groups/VesselGroupModal'))
+const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 
 const DebugMenuConfig = {
   key: 'd',

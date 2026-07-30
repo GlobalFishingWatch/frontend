@@ -1,8 +1,8 @@
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import type { GetDatasetConfigCallback } from '@globalfishingwatch/dataviews-client'
 
-import { hasDatasetConfigVesselData } from 'features/map/datasets/datasets.permissions'
-import { CACHE_FALSE_PARAM } from 'features/vessels/vessel/vessel.config'
+import { hasDatasetConfigVesselData } from 'features/_map/datasets/datasets.permissions'
+import { CACHE_FALSE_PARAM } from 'features/_vessels/vessel/vessel.config'
 
 export const infoDatasetConfigsCallback = (guestUser: boolean): GetDatasetConfigCallback => {
   return ([info]: DataviewDatasetConfig[]): DataviewDatasetConfig[] => {

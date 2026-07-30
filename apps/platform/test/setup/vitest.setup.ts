@@ -2,7 +2,7 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
-import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
+import type * as ReportsGeoUtilsModule from 'features/_reports/reports-geo.utils'
 import { getIsBrowser } from 'utils/dom'
 
 import { TEST_END_DATE } from './config'
@@ -36,9 +36,9 @@ const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'sentinel2'
 
 // Mock Web Workers to prevent blocking in tests
 // This is needed for filterCellsByPolygonWorker used in reports
-vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
+vi.mock('features/_reports/reports-geo.utils.workers.hooks', async () => {
   const { filterByPolygon } = await vi.importActual<typeof ReportsGeoUtilsModule>(
-    'features/reports/reports-geo.utils'
+    'features/_reports/reports-geo.utils'
   )
 
   return {
@@ -56,7 +56,7 @@ beforeAll(async () => {
 
   // Preload lazy modal chunks used in integration tests
   await Promise.all([
-    import('features/map/layer-library/LayerLibrary'),
+    import('features/_map/layer-library/LayerLibrary'),
     import('features/feedback/FeedbackModal'),
   ])
 

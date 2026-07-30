@@ -1,0 +1,99 @@
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { trackEvent } from '@globalfishingwatch/react-hooks'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
+import { categoryToDataviewMap, ReportCategory } from 'features/_reports/reports.types'
+import ReportSummaryActivity from 'features/_reports/shared/summary/ReportSummaryActivity'
+import ReportSummaryEvents from 'features/_reports/shared/summary/ReportSummaryEvents'
+import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
+import type { ReportActivityUnit } from 'features/_reports/tabs/activity/reports-activity.types'
+import { TrackCategory } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
+import {
+  selectIsPortReportLocation,
+  selectIsVesselGroupReportLocation,
+} from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './ReportSummary.module.css'
+
+type ReportSummaryProps = {
+  activityUnit?: ReportActivityUnit
+  reportStatus?: AsyncReducerStatus
+  showTags?: boolean
+}
+
+export default function ReportSummary({
+  activityUnit,
+  reportStatus = AsyncReducerStatus.Finished,
+  showTags = true,
+}: ReportSummaryProps) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const reportCategory = useSelector(selectReportCategory)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+
+  const onAddLayerClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Open panel to add a report layer`,
+    })
+
+    const open = categoryToDataviewMap[reportCategory]
+    if (open) {
+      dispatch(setModalOpen({ id: 'layerLibrary', open, singleCategory: true }))
+    }
+  }, [dispatch, reportCategory])
+
+  return (
+    <div className={styles.summaryWrapper} data-testid="report-summary">
+      {(reportCategory === ReportCategory.Activity ||
+        reportCategory === ReportCategory.Detections) && (
+        <div className={styles.summaryContainer}>
+          <ReportSummaryActivity
+            activityUnit={activityUnit || 'hour'}
+            reportStatus={reportStatus}
+          />
+        </div>
+      )}
+      {reportCategory === ReportCategory.Events && (
+        <div className={styles.summaryContainer}>
+          <ReportSummaryEvents />
+        </div>
+      )}
+      {dataviews?.length > 0 && (
+        <div className={cx(styles.tagsContainer)}>
+          {showTags &&
+            dataviews?.map((dataview) => (
+              <ReportSummaryTags
+                key={dataview.id}
+                dataview={dataview}
+                allowDelete={dataviews.length > 1}
+              />
+            ))}
+          {!isPortReportLocation && !isVesselGroupReportLocation && (
+            <IconButton
+              icon="plus"
+              type="border"
+              size="small"
+              tooltip={t((t) => t.layer.add)}
+              tooltipPlacement="top"
+              onClick={onAddLayerClick}
+              className={'print-hidden'}
+              testId="report-summary-add-layer-button"
+            />
+          )}
+        </div>
+      )}
+    </div>
+  )
+}

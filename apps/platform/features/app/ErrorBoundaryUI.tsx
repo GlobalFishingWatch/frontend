@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 
 import { Button } from '@globalfishingwatch/ui-components/button'
 
+import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
-import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getIsBrowser } from 'utils/dom'
 
 import { useAppDispatch } from './app.hooks'

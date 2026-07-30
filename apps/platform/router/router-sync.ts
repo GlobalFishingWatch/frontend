@@ -1,9 +1,9 @@
 import type { AnyRouter, RouterEvents } from '@tanstack/react-router'
 
 import { PATH_BASENAME } from 'data/map/config'
-import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
-import type { LastWorkspaceVisited } from 'features/map/workspace/workspace.slice'
-import { setWorkspaceHistoryNavigation } from 'features/map/workspace/workspace.slice'
+import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
+import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
+import { setWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.slice'
 import type { LinkToPayload } from 'router/routes.types'
 import type { AppStore } from 'store'
 import type { QueryParams } from 'types'

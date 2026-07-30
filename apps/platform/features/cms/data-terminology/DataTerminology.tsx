@@ -4,9 +4,9 @@ import cx from 'classnames'
 import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
+import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
-import { useSidePanel } from 'features/map/content-panel/contentPanel.hooks'
 
 import styles from './DataTerminology.module.css'
 

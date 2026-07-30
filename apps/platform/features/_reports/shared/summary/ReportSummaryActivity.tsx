@@ -1,0 +1,196 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { sum } from 'es-toolkit'
+
+import type { Locale } from '@globalfishingwatch/api-types'
+
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
+import { selectReportDataviewsWithPermissions } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportAreaId, selectReportCategory } from 'features/_reports/reports.selectors'
+import { ReportCategory } from 'features/_reports/reports.types'
+import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
+import {
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
+} from 'features/_reports/reports-timeseries.hooks'
+import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
+import { getReportSourcesWithVessels } from 'features/_reports/shared/summary/report-summary.utils'
+import {
+  getReportRequestHash,
+  selectReportRequestHash,
+} from 'features/_reports/tabs/activity/reports-activity.slice'
+import type { ReportActivityUnit } from 'features/_reports/tabs/activity/reports-activity.types'
+import { useTimeCompareTimeDescription } from 'features/_reports/tabs/activity/reports-activity-timecomparison.hooks'
+import { formatEvolutionData } from 'features/_reports/tabs/activity/reports-activity-timeseries.utils'
+import {
+  selectReportActivityDatasetIdsWithVessels,
+  selectReportVesselsHours,
+  selectReportVesselsNumber,
+} from 'features/_reports/tabs/activity/vessels/report-activity-vessels.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
+import { listAsSentence } from 'utils/shared'
+
+const HOUR_ROUNDING_THRESHOLD = 5
+
+export default function ReportSummaryActivity({
+  activityUnit,
+  reportStatus = AsyncReducerStatus.Finished,
+}: {
+  activityUnit: ReportActivityUnit
+  reportStatus?: AsyncReducerStatus
+}) {
+  const { t, i18n } = useTranslation()
+  const timerange = useTimerangeConnect()
+  const reportCategory = useSelector(selectReportCategory)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
+  const reportVessels = useSelector(selectReportVesselsNumber)
+  const datasetIdsWithVessels = useSelector(selectReportActivityDatasetIdsWithVessels)
+  const timeseriesLoading = useReportFeaturesLoading()
+  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const reportHours = useSelector(selectReportVesselsHours) as number
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const reportRequestHash = useSelector(selectReportRequestHash)
+  const areaId = useSelector(selectReportAreaId)
+  const reportOutdated =
+    reportRequestHash !==
+    getReportRequestHash({
+      datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
+      filters: (reportDataviews as any[]).map((d) => d.filter),
+      dateRange: timerange,
+      areaId,
+    })
+  const timeCompareTimeDescription = useTimeCompareTimeDescription()
+
+  const activitySummary = useMemo(() => {
+    if (!dataviews.length || !layersTimeseriesFiltered?.length) return
+
+    if (timeCompareTimeDescription) {
+      return timeCompareTimeDescription
+    }
+    const datasetTitles = dataviews?.map((dataview) =>
+      getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+    )
+    const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
+    const datasetTitle = sameTitleDataviews
+      ? datasetTitles?.[0]
+      : reportCategory === ReportCategory.Activity
+        ? `<strong>${t((t) => t.common.activity).toLowerCase()}</strong>`
+        : undefined
+
+    if (
+      reportHours &&
+      reportStatus === AsyncReducerStatus.Finished &&
+      reportCategory !== ReportCategory.Detections &&
+      !reportOutdated
+    ) {
+      return t((t) => t.analysis.summary, {
+        vessels: formatI18nNumber(reportVessels || 0, {
+          locale: i18n.language as Locale,
+        }).toString(),
+
+        activityQuantity: formatI18nNumber(Math.floor(reportHours), {
+          locale: i18n.language as Locale,
+        }).toString(),
+
+        activityUnit: t((t) => t.common[activityUnit], {
+          defaultValue: 'hours',
+          count: Math.floor(reportHours),
+        }),
+
+        activityType: datasetTitle || '',
+        start: formatI18nDate(timerange?.start),
+        end: formatI18nDate(timerange?.end),
+
+        sources: ` (${listAsSentence(
+          getReportSourcesWithVessels(
+            dataviews.flatMap((dataview) => getSourcesSelectedInDataview(dataview)),
+            datasetIdsWithVessels
+          )
+        )})`,
+      })
+    }
+    if (
+      (!timeseriesLoading && layersTimeseriesFiltered !== undefined) ||
+      (reportCategory === ReportCategory.Detections &&
+        reportStatus === AsyncReducerStatus.Finished &&
+        reportHours)
+    ) {
+      const firstTimeseries = (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
+      const formattedTimeseries = formatEvolutionData(firstTimeseries, {
+        start: timerange?.start,
+        end: timerange?.end,
+        timeseriesInterval: firstTimeseries?.interval,
+      })
+      const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
+      const timeseriesMaxHours = sum(
+        formattedTimeseries?.map((t) => sum(t.range?.map((r) => r?.[1] || 0) || [])) || []
+      )
+      const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
+      let activityQuantity =
+        !timeseriesLoading && layersTimeseriesFiltered?.[0]
+          ? `<span>${formatI18nNumber(
+              timeseriesHours > HOUR_ROUNDING_THRESHOLD
+                ? timeseriesHours.toFixed()
+                : timeseriesHours,
+              {
+                locale: i18n.language as Locale,
+              }
+            )}</span>`
+          : 0
+      if (
+        reportCategory === ReportCategory.Detections &&
+        reportStatus === AsyncReducerStatus.Finished &&
+        reportHours
+      ) {
+        activityQuantity = formatI18nNumber(Math.floor(reportHours), {
+          locale: i18n.language as Locale,
+        }) as string
+      }
+      const activityUnitLabel =
+        reportCategory === ReportCategory.Activity
+          ? `<strong>${t((t) => t.common[activityUnit], {
+              defaultValue: 'hours',
+              count: Math.floor(reportHours),
+            })}</strong> ${
+              Math.round(timeseriesImprecision)
+                ? `<a href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/" target="_blank"
+                rel="noopener noreferrer" style="cursor: help" title="${t((t) => t.common.learnMore)}">± ${Math.round(timeseriesImprecision)}%</a> `
+                : ''
+            }${t((t) => t.common.of)}`
+          : ''
+
+      return t((t) => t.analysis.summaryNoVessels, {
+        activityQuantity: activityQuantity as string,
+        activityUnit: activityUnitLabel,
+        activityType: datasetTitle ?? '',
+        start: formatI18nDate(timerange?.start),
+        end: formatI18nDate(timerange?.end),
+      })
+    }
+  }, [
+    dataviews,
+    timeCompareTimeDescription,
+    reportCategory,
+    t,
+    reportHours,
+    reportStatus,
+    reportOutdated,
+    timeseriesLoading,
+    layersTimeseriesFiltered,
+    reportVessels,
+    i18n.language,
+    activityUnit,
+    timerange?.start,
+    timerange?.end,
+    datasetIdsWithVessels,
+  ])
+
+  return activitySummary ? htmlSafeParse(activitySummary) : <ReportSummaryPlaceholder />
+}

@@ -1,0 +1,80 @@
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
+
+import { Icon } from '@globalfishingwatch/ui-components'
+
+import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
+import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
+import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
+import { MIN_INSIGHTS_YEAR } from 'features/_vessels/vessel/insights/insights.config'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { selectLonglineSetsInsight } from 'router/routes.selectors'
+
+import VesselGroupReportInsightFishing from './VGRInsightFishing'
+import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'
+import VesselGroupReportInsightGap from './VGRInsightGaps'
+import VesselGroupReportInsightIUU from './VGRInsightIUU'
+import VesselGroupReportInsightLongline from './VGRInsightLongline'
+import VesselGroupReportInsightMOU from './VGRInsightMOU'
+
+import styles from './VGRInsights.module.css'
+
+const VesselGroupReportInsights = () => {
+  const { t } = useTranslation()
+  const { start, end } = useSelector(selectTimeRange)
+  const vesselDatasets = useSelector(selectVesselsDatasets)
+  const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
+
+  if (datasetsWithoutRelatedEvents.length >= 1) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
+          features: t((t) => t.common.insights),
+
+          datasets: Array.from(datasetsWithoutRelatedEvents)
+            .map((d) => getDatasetLabel(d))
+            .join(', '),
+        })}
+      </div>
+    )
+  }
+
+  if (DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR) {
+    return (
+      <div className={styles.disclaimer}>
+        <Icon icon="warning" type="warning" />
+        {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
+          year: String(MIN_INSIGHTS_YEAR),
+        })}
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.container}>
+      <h2 className="print-only">{t((t) => t.vessel.sectionInsights)}</h2>
+      <p className={styles.title}>
+        {t((t) => t.vesselGroup.insightSectionTitle, {
+          start: formatI18nDate(start),
+          end: formatI18nDate(end),
+        })}
+        <DataTerminology terminologyKey="insightsVesselGroups" />
+      </p>
+      <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />
+      {longlineSetsInsight && (
+        <VesselGroupReportInsightLongline skip={!vesselDatasets.length} />
+      )}
+      <VesselGroupReportInsightIUU skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightFlagChange skip={!vesselDatasets.length} />
+      <VesselGroupReportInsightMOU skip={!vesselDatasets.length} />
+    </div>
+  )
+}
+
+export default VesselGroupReportInsights

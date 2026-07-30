@@ -9,7 +9,7 @@ import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
-} from 'features/map/dataviews/dataviews.utils'
+} from 'features/_map/dataviews/dataviews.utils'
 
 export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
   {

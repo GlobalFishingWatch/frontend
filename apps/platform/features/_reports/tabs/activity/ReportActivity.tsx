@@ -1,0 +1,404 @@
+import { Fragment, useEffect, useMemo, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { isEqual } from 'es-toolkit'
+
+import {
+  getIsConcurrentError,
+  getIsTimeoutError,
+  isAuthError,
+} from '@globalfishingwatch/api-client'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Button } from '@globalfishingwatch/ui-components'
+
+import { SUPPORT_EMAIL } from 'data/map/config'
+import DatasetLabel from 'features/_map/datasets/DatasetLabel'
+import { getDatasetsReportNotSupported } from 'features/_map/datasets/datasets.permissions'
+import { getIsBQEditorDataset } from 'features/_map/datasets/datasets.utils'
+import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { getDownloadReportSupported } from 'features/_map/download/download.utils'
+import { selectReportLoadVessels } from 'features/_map/workspace/selectors/app.selectors'
+import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
+import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
+import type { LastReportStorage } from 'features/_reports/report-area/area-reports.config'
+import { LAST_REPORTS_STORAGE_KEY } from 'features/_reports/report-area/area-reports.config'
+import { useFetchReportVessel } from 'features/_reports/report-area/area-reports.hooks'
+import { selectReportDataviewsWithPermissions } from 'features/_reports/report-area/area-reports.selectors'
+import { parseReportUrl } from 'features/_reports/report-area/area-reports.utils'
+import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportAreaId,
+  selectReportCategory,
+  selectReportDatasetId,
+} from 'features/_reports/reports.selectors'
+import { ReportCategory } from 'features/_reports/reports.types'
+import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'
+import ReportSummary from 'features/_reports/shared/summary/ReportSummary'
+import ReportVessels from 'features/_reports/shared/vessels/ReportVessels'
+import ReportDownload from 'features/_reports/tabs/activity/download/ReportDownload'
+import ReportActivityGraph from 'features/_reports/tabs/activity/ReportActivityGraph'
+import {
+  getReportRequestHash,
+  selectReportRequestHash,
+  setReportRequestHash,
+} from 'features/_reports/tabs/activity/reports-activity.slice'
+import { selectHasReportVessels } from 'features/_reports/tabs/activity/vessels/report-activity-vessels.selectors'
+// import { REPORT_BUFFER_GENERATOR_ID } from 'features/_map/map/map.config'
+import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useFetchDataviewResources } from 'features/data/resources/resources.hooks'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
+
+import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
+
+import styles from 'features/_reports/report-area/AreaReport.module.css'
+
+function ActivityReport() {
+  useFetchDataviewResources()
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
+  const timerange = useSelector(selectTimeRange)
+  const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
+  const guestUser = useSelector(selectIsGuestUser)
+  const datasetId = useSelector(selectReportDatasetId)
+  const areaId = useSelector(selectReportAreaId)
+  const reportRequestHash = useSelector(selectReportRequestHash)
+  const reportCategory = useSelector(selectReportCategory)
+  const userData = useSelector(selectUserData)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
+  const dataviews = useSelector(selectActiveReportDataviews)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
+  const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
+    dataviews,
+    userData?.permissions || []
+  )
+  const timerangeTooLong = !getDownloadReportSupported(timerange.start, timerange.end)
+  const { status: reportStatus, error: statusError, dispatchFetchReport } = useFetchReportVessel()
+  const dispatchTimeoutRef = useRef<NodeJS.Timeout>(undefined)
+  const hasVessels = useSelector(selectHasReportVessels)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const reportActivityGraph = useSelector(selectReportActivityGraph)
+  const reportLoadVessels = useSelector(selectReportLoadVessels)
+  // TODO get this from datasets config
+  const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
+
+  const reportLoading = reportStatus === AsyncReducerStatus.Loading
+  const reportError = reportStatus === AsyncReducerStatus.Error
+  const reportLoaded = reportStatus === AsyncReducerStatus.Finished
+  const reportOutdated =
+    reportRequestHash !== '' &&
+    reportRequestHash !==
+      getReportRequestHash({
+        datasets: reportDataviews.flatMap(({ datasets }) => datasets?.map((d) => d.id) || []),
+        filters: (reportDataviews as any[]).map((d) => d.filter),
+        dateRange: timerange,
+        areaId,
+      })
+  const hasAuthError = reportError && isAuthError(statusError)
+
+  const { currentReportUrl } = statusError?.metadata || ({} as { currentReportUrl: string })
+  const lastReport = currentReportUrl
+    ? lastReports.find((report) => {
+        const currentReportParams = parseReportUrl(currentReportUrl)
+        const reportParams = parseReportUrl(report.reportUrl)
+        return isEqual(currentReportParams, reportParams)
+      })
+    : undefined
+  const concurrentReportError = getIsConcurrentError(statusError!)
+  const isSameWorkspaceReport =
+    concurrentReportError && window?.location.href === lastReport?.workspaceUrl
+  const isBQEditorDataset = dataviews.some((dataview) =>
+    dataview.datasets?.some((dataset) => getIsBQEditorDataset(dataset))
+  )
+
+  const isTimeoutError = getIsTimeoutError(statusError!)
+  useEffect(() => {
+    if (isTimeoutError || isSameWorkspaceReport) {
+      dispatchTimeoutRef.current = setTimeout(() => {
+        dispatchFetchReport()
+      }, 1000 * 30) // retrying each 30 secs
+    }
+    return () => {
+      if (dispatchTimeoutRef.current) {
+        clearTimeout(dispatchTimeoutRef.current)
+      }
+    }
+  }, [dispatchFetchReport, isSameWorkspaceReport, isTimeoutError])
+
+  useEffect(() => {
+    if (reportLoadVessels && reportDataviews?.length) {
+      dispatch(setReportRequestHash(''))
+      dispatchFetchReport()
+      replaceQueryParams({ reportLoadVessels: false })
+    }
+  }, [dispatch, dispatchFetchReport, reportLoadVessels, reportDataviews])
+
+  const ReportVesselError = useMemo(() => {
+    if (hasAuthError || guestUser) {
+      const errorMsg = guestUser
+        ? isVesselGroupReportLocation
+          ? t((t) => t.errors.vesselGroupReportLogin)
+          : t((t) => t.errors.reportLogin)
+        : t((t) => t.errors.privateReport, {
+            defaultValue:
+              "Your account doesn't have permissions to see the vessels active in this area",
+          })
+      return (
+        <ReportVesselsPlaceholder animate={false}>
+          <div className={styles.cover}>
+            <WorkspaceLoginError
+              loginSource="report-private"
+              title={errorMsg}
+              emailSubject={`Requesting access for ${datasetId}-${areaId} report`}
+            />
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+    if (statusError) {
+      if (concurrentReportError) {
+        if (isSameWorkspaceReport) {
+          return <ReportVesselsPlaceholder animate={false} />
+        }
+        return (
+          <ReportVesselsPlaceholder animate={false}>
+            <div className={styles.cover}>
+              <p className={styles.error}>
+                {t((t) => t.analysis.errorConcurrentReport)}
+                <p className={styles.link}>
+                  {lastReport && (
+                    <a href={lastReport.workspaceUrl}>
+                      {t((t) => t.analysis.errorConcurrentReportLink)}
+                    </a>
+                  )}
+                </p>
+              </p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+
+      if (
+        statusError.status === 413 ||
+        (statusError.status === 422 && statusError.message === 'Geometry too large')
+      ) {
+        return (
+          <ReportVesselsPlaceholder animate={false}>
+            <div className={styles.cover}>
+              <p className={styles.error}>{t((t) => t.analysis.errorTooComplex)}</p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      if (isTimeoutError) {
+        return (
+          <ReportVesselsPlaceholder animate={false}>
+            <div className={styles.cover}>
+              <p className={cx(styles.center, styles.top)}>{t((t) => t.analysis.timeoutError)}</p>
+            </div>
+          </ReportVesselsPlaceholder>
+        )
+      }
+      return (
+        <ReportVesselsPlaceholder animate={false}>
+          <div className={styles.cover}>
+            <p className={styles.error}>{statusError.message}</p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+
+    if (!reportDataviews?.length) {
+      return <p className={styles.error}>{t((t) => t.analysis.datasetsNotAllowedAll)} </p>
+    }
+    return (
+      <p className={styles.error}>
+        <span>
+          {t((t) => t.errors.generic)} <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        </span>
+      </p>
+    )
+  }, [
+    areaId,
+    concurrentReportError,
+    datasetId,
+    guestUser,
+    hasAuthError,
+    isSameWorkspaceReport,
+    isTimeoutError,
+    isVesselGroupReportLocation,
+    lastReport,
+    reportDataviews?.length,
+    statusError,
+    t,
+  ])
+
+  const ReportComponent = useMemo(() => {
+    if (isBQEditorDataset) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            Reports for BQ editor datasets are not supported yet.
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+    if (workspaceStatus === AsyncReducerStatus.Loading) {
+      return <ReportVesselsPlaceholder className="print-hidden" />
+    }
+    if (timerangeTooLong) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.error)}>
+            <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+
+    if (reportError || (!reportLoading && !reportDataviews?.length)) {
+      return ReportVesselError
+    }
+
+    if (reportActivityGraph !== 'evolution') {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            <p>{htmlSafeParse(t((t) => t.analysis.onlyEvolutionSupported))}</p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+
+    if (
+      (reportOutdated || reportStatus === AsyncReducerStatus.Idle) &&
+      !reportLoading &&
+      !hasAuthError
+    ) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            <p>
+              {htmlSafeParse(
+                t((t) => t.analysis.newTimeRange, {
+                  start: formatI18nDate(timerange?.start),
+                  end: formatI18nDate(timerange?.end),
+                })
+              )}
+            </p>
+            <Button
+              testId="see-vessel-table-activity-report"
+              onClick={() => {
+                dispatch(setReportRequestHash(''))
+                dispatchFetchReport()
+                trackEvent({
+                  category: TrackCategory.Analysis,
+                  action: 'Click on see vessels button in report activity',
+                })
+              }}
+            >
+              {t((t) => t.analysis.seeVessels)}
+            </Button>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+
+    if (reportLoaded) {
+      return hasVessels ? (
+        <Fragment>
+          <ReportVessels
+            title={
+              isVesselGroupReportLocation
+                ? undefined
+                : reportCategory === ReportCategory.Detections
+                  ? t((t) => t.common.matchedVessels)
+                  : t((t) => t.common.vessels)
+            }
+            activityUnit={
+              isVesselGroupReportLocation
+                ? undefined
+                : reportCategory === ReportCategory.Activity
+                  ? 'hour'
+                  : 'detection'
+            }
+          />
+          <ReportDownload />
+        </Fragment>
+      ) : (
+        <div className={styles.error}>
+          {datasetsDownloadNotSupported.length > 0 ? (
+            <p className={styles.secondary}>
+              {t((t) => t.analysis.datasetsNotAllowed)}{' '}
+              {datasetsDownloadNotSupported.map((dataset, index) => (
+                <Fragment>
+                  <DatasetLabel key={dataset} dataset={{ id: dataset }} />
+                  {index < datasetsDownloadNotSupported.length - 1 && ', '}
+                </Fragment>
+              ))}
+            </p>
+          ) : (
+            <p>{t((t) => t.analysis.noDataByArea)}</p>
+          )}
+        </div>
+      )
+    }
+
+    return <ReportVesselsPlaceholder animate={false} className="print-hidden" />
+  }, [
+    isBQEditorDataset,
+    workspaceStatus,
+    timerangeTooLong,
+    reportError,
+    reportLoading,
+    reportDataviews?.length,
+    reportActivityGraph,
+    reportOutdated,
+    reportStatus,
+    hasAuthError,
+    reportLoaded,
+    t,
+    ReportVesselError,
+    timerange,
+    dispatch,
+    dispatchFetchReport,
+    hasVessels,
+    isVesselGroupReportLocation,
+    reportCategory,
+    datasetsDownloadNotSupported,
+  ])
+
+  return (
+    <div className={styles.section}>
+      {activeReportSubCategories && activeReportSubCategories.length > 1 && (
+        <div className={styles.subsectionSelectorContainer}>
+          <ReportActivitySubsectionSelector />
+        </div>
+      )}
+      <div className={cx('card', styles.subsection, styles.front)}>
+        <ReportSummary
+          activityUnit={activityUnit}
+          reportStatus={reportStatus}
+          // without tags in vessel goup reports because filtering doesn't work in injected dataviews
+          showTags={!isVesselGroupReportLocation}
+        />
+      </div>
+      <div className={cx('card', styles.subsection)}>
+        <ReportActivityGraph />
+      </div>
+      <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
+    </div>
+  )
+}
+
+export default ActivityReport

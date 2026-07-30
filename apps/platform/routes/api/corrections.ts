@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
-import type { InfoCorrectionSendFormat } from 'features/vessels/vessel/vesselCorrection/VesselCorrection.types'
+import type { InfoCorrectionSendFormat } from 'features/_vessels/vessel/vesselCorrection/VesselCorrection.types'
 
 const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.IDENTITY_REVIEW_SPREADSHEET_ID || ''
 

@@ -4,13 +4,13 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
-import Footer from 'features/map/footer/Footer'
-import { selectScreenshotMode } from 'features/map/workspace/selectors/app.selectors'
+import Footer from 'features/_map/footer/Footer'
+import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import {
   selectIsWorkspaceReady,
   selectWorkspaceStatus,
-} from 'features/map/workspace/workspace.selectors'
-import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
+} from 'features/_map/workspace/workspace.selectors'
+import { selectShowTimeComparison } from 'features/_reports/report-area/area-reports.selectors'
 import { VESSEL, WORKSPACE_VESSEL } from 'router/routes'
 import {
   selectIsAnyAreaReportLocation,
@@ -25,8 +25,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 // .mapContainer/.withTimebar, so these classes must stay in one CSS module.
 import styles from 'features/layouts/layouts.module.css'
 
-const Map = lazy(() => import('features/map/map/Map'))
-const Timebar = lazy(() => import('features/map/timebar/Timebar'))
+const Map = lazy(() => import('features/_map/map/Map'))
+const Timebar = lazy(() => import('features/_map/timebar/Timebar'))
 
 const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)

@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux'
 
 import type { Regions } from '@globalfishingwatch/api-types'
 
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectRegionsDatasets } from 'features/data/regions/regions.selectors'
 import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/data/regions/regions.slice'
-import { selectAllDatasets } from 'features/map/datasets/datasets.slice'
 
 export function useRegionTranslationsById() {
   const regionsDatasets = useSelector(selectRegionsDatasets)

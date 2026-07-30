@@ -6,7 +6,7 @@ import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types
 import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
 import { REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES } from 'data/map/config'
-import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'
+import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 
 export { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 

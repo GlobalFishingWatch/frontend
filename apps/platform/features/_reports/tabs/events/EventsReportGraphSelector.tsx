@@ -1,0 +1,97 @@
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice } from '@globalfishingwatch/ui-components'
+
+import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
+import { selectIsGlobalReport } from 'features/_reports/report-area/area-reports.selectors'
+import {
+  REPORT_EVENTS_GRAPH_EVOLUTION,
+  REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+  REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
+  REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+} from 'features/_reports/reports.config'
+import { selectReportEventsGraph } from 'features/_reports/reports.config.selectors'
+import type { ReportEventsGraph } from 'features/_reports/reports.types'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
+
+type EventsReportGraphSelectorProps = {
+  disabled: boolean
+  containerClassName?: string
+}
+
+function EventsReportGraphSelector({
+  disabled = false,
+  containerClassName,
+}: EventsReportGraphSelectorProps) {
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const reportEventsGraph = useSelector(selectReportEventsGraph)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const { t } = useTranslation()
+  const fitAreaInViewport = useFitAreaInViewport()
+
+  const options: ChoiceOption<ReportEventsGraph>[] = [
+    {
+      id: REPORT_EVENTS_GRAPH_EVOLUTION,
+      label: t((t) => t.analysis.evolution),
+      disabled,
+    },
+    {
+      id: REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
+      label: t((t) => t.analysis.groupByFlag),
+      disabled,
+    },
+    ...(isGlobalReport && !isPortReportLocation
+      ? [
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
+            label: t((t) => t.analysis.groupByRFMO),
+            disabled,
+          },
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
+            label: t((t) => t.analysis.groupByFAO),
+            disabled,
+          },
+          {
+            id: REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
+            label: t((t) => t.analysis.groupByEEZ),
+            disabled,
+          },
+        ]
+      : []),
+  ]
+
+  const onSelect = (option: ChoiceOption<ReportEventsGraph>) => {
+    if (reportEventsGraph !== option.id) {
+      fitAreaInViewport()
+      replaceQueryParams({ reportEventsGraph: option.id })
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `Click on ${option.id} activity graph`,
+      })
+    }
+  }
+
+  const selectedOption = reportEventsGraph
+    ? options.find((o) => o.id === reportEventsGraph)
+    : options[0]
+
+  return (
+    <Choice
+      size="small"
+      options={options}
+      activeOption={selectedOption?.id}
+      onSelect={onSelect}
+      containerClassName={containerClassName}
+    />
+  )
+}
+
+export default EventsReportGraphSelector

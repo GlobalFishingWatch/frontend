@@ -3,10 +3,10 @@ import { useBlocker, useRouter } from '@tanstack/react-router'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
+import { selectVesselProfileDataviewIntance } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { selectHasVesselProfileInstancePinned } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { t } from 'features/i18n/i18n'
-import { selectVesselProfileDataviewIntance } from 'features/map/dataviews/selectors/dataviews.instances.selectors'
-import { selectHasVesselProfileInstancePinned } from 'features/map/dataviews/selectors/dataviews.selectors'
-import { cleanVesselProfileDataviewInstances } from 'features/map/sidebar/sidebar-header.hooks'
 import type { QueryParams } from 'types'
 
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'

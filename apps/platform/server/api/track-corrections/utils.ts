@@ -3,7 +3,7 @@ import type { GoogleSpreadsheet, GoogleSpreadsheetRow } from 'google-spreadsheet
 import type {
   TrackCorrection,
   TrackCorrectionComment,
-} from 'features/vessels/track-correction/track-correction.slice'
+} from 'features/_vessels/track-correction/track-correction.slice'
 
 export const ISSUES_SPREADSHEET_TITLE = 'issues'
 export const COMMENTS_SPREADSHEET_TITLE = 'comments'

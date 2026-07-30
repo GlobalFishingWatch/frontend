@@ -3,12 +3,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { ThinningLevels } from '@globalfishingwatch/api-client'
 import {} from '@globalfishingwatch/dataviews-client'
 
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectIsTurningTidesWorkspace,
   selectTimeMode,
-} from 'features/map/workspace/workspace.selectors'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+} from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 
 const TRACK_THINNING_BY_ZOOM_GUEST = {
   0: ThinningLevels.Insane,

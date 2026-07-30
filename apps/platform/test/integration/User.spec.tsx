@@ -2,7 +2,7 @@ import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { setLoginExpired } from 'features/user/user.slice'
+import { setLoginExpired } from 'features/_user/user.slice'
 import { makeStore } from 'store'
 
 describe('User expiration', () => {

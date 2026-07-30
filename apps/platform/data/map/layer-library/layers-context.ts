@@ -20,7 +20,7 @@ import {
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
-import { PORTS_LAYER_ID } from 'features/map/map/map.config'
+import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
 
 export const OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID = 'offshore-fixed-infrastructure'
 

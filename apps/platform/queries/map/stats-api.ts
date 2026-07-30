@@ -17,7 +17,7 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms/dates'
 import { getDatasetsExtent, getEndpointByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { TimeRange } from 'features/map/timebar/timebar.slice'
+import type { TimeRange } from 'features/_map/timebar/timebar.slice'
 
 type FetchDataviewStatsParams = {
   timerange: TimeRange

@@ -1,8 +1,8 @@
 import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 
+import type { GetDatasetLabelParams } from 'features/_map/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
-import type { GetDatasetLabelParams } from 'features/map/datasets/datasets.utils'
 
 export const getDatasetSourceTranslated = (
   dataset?: GetDatasetLabelParams | GetDatasetLabelParams[]

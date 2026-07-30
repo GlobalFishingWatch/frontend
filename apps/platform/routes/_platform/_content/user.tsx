@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import User from 'features/_user/User'
 import { t } from 'features/i18n/i18n'
-import User from 'features/user/User'
 import { getRouteHead } from 'router/router.meta'
 
 export const Route = createFileRoute('/_platform/_content/user')({

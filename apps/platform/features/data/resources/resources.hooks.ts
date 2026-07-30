@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux'
 
 import type { Resource } from '@globalfishingwatch/api-types'
 
+import { selectDataviewsResources } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/data/resources/resources.slice'
-import { selectDataviewsResources } from 'features/map/dataviews/selectors/dataviews.resolvers.selectors'
 
 const useFetchResources = (resources: Resource[]) => {
   const dispatch = useAppDispatch()

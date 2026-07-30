@@ -21,19 +21,19 @@ import {
   REPORT_ACTIVITY_GRAPHS,
   REPORT_EVENTS_GRAPHS,
   REPORT_VESSEL_GRAPHS,
-} from 'features/reports/reports.config'
+} from 'features/_reports/reports.config'
 import {
   REPORT_VESSEL_ORDER_DIRECTIONS,
   REPORT_VESSEL_ORDER_PROPERTIES,
   ReportCategory,
-} from 'features/reports/reports.types'
-import { SEARCH_TYPES } from 'features/vessels/search/search.config'
+} from 'features/_reports/reports.types'
+import { SEARCH_TYPES } from 'features/_vessels/search/search.config'
 import {
   VESSEL_AREA_SUBSECTIONS,
   VESSEL_PROFILE_ACTIVITY_MODES,
   VESSEL_RELATED_SUBSECTIONS,
   VESSEL_SECTIONS,
-} from 'features/vessels/vessel/vessel.types'
+} from 'features/_vessels/vessel/vessel.types'
 import type { QueryParams } from 'types'
 import {
   BUFFER_OPERATIONS,
