@@ -34,6 +34,7 @@ import {
 } from 'router/routes'
 import {
   selectIsRouteWithWorkspace,
+  selectLocationCategory,
   selectLocationQuery,
   selectLocationType,
   selectReportId,
@@ -106,6 +107,13 @@ export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (works
 export const selectCurrentWorkspaceCategory = createSelector([selectWorkspace], (workspace) => {
   return workspace?.category || DEFAULT_WORKSPACE_CATEGORY
 })
+
+export const selectWorkspaceCategory = createSelector(
+  [selectLocationCategory, selectWorkspace],
+  (locationCategory, workspace) => {
+    return locationCategory || workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+  }
+)
 
 export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace) => {
   return workspace?.ownerType === 'super-user'

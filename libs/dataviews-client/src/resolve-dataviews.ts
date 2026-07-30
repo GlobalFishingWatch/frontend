@@ -2,7 +2,6 @@ import { uniqBy } from 'es-toolkit'
 
 import type {
   Dataset,
-  DatasetFilter,
   DatasetFilterOperation,
   Dataview,
   DataviewDatasetConfig,
@@ -20,7 +19,7 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { isNumeric } from '@globalfishingwatch/data-transforms/filter-tracks-coordinates'
 import {
   getFlattenDatasetFilters,
   removeDatasetVersion,

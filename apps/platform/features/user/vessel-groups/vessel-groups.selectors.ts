@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectVesselsDatasets } from 'features/map/datasets/datasets.selectors'

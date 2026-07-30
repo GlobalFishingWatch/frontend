@@ -12,7 +12,7 @@ import {
   type StatsParams,
   type StatType,
 } from '@globalfishingwatch/api-types'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getUTCDate } from '@globalfishingwatch/data-transforms/dates'
 import { getDatasetsExtent, getEndpointByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 

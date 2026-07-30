@@ -40,10 +40,8 @@ import {
   useTimebarVesselTracksGraph,
 } from 'features/map/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/map/timebar/TimebarClusterEventsGraph'
-import {
-  selectLatestAvailableDataDate,
-  selectScreenshotMode,
-} from 'features/map/workspace/selectors/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/map/workspace/selectors/app.data-date.selectors'
+import { selectScreenshotMode } from 'features/map/workspace/selectors/app.selectors'
 import {
   selectTimebarGraph,
   selectTimebarVisualisation,

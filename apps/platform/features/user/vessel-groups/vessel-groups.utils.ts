@@ -10,7 +10,7 @@ import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatc
 import {
   resolveVesselPropertyColumn,
   type VesselPropertyGuessColumn,
-} from '@globalfishingwatch/data-transforms'
+} from '@globalfishingwatch/data-transforms/schema'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'

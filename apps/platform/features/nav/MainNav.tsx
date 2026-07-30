@@ -19,8 +19,11 @@ import { setClickedEvent } from 'features/map/map/map.slice'
 import { useCancelInteractionPromises } from 'features/map/map/map-interactions.atoms'
 import { useSetMapCoordinates } from 'features/map/map/map-view-state.hooks'
 import { resetSidebarScroll } from 'features/map/sidebar/sidebar.utils'
-import { selectWorkspaceCategory } from 'features/map/workspace/selectors/app.workspace.selectors'
-import { selectLastVisitedWorkspace, selectWorkspace } from 'features/map/workspace/workspace.selectors'
+import {
+  selectLastVisitedWorkspace,
+  selectWorkspace,
+  selectWorkspaceCategory,
+} from 'features/map/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   resetWorkspaceHistoryNavigation,

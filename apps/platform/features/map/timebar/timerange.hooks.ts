@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { debounce } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
-import { stickToClosestInterval } from '@globalfishingwatch/data-transforms'
+import { stickToClosestInterval } from '@globalfishingwatch/data-transforms/dates'
 // Leaf subpath, not the package root: the root barrel is the Timebar UI and drags the whole thing into
 // every page via workspace.hook. This module only needs the change-source constants.
 import { EVENT_SOURCE } from '@globalfishingwatch/timebar/constants'

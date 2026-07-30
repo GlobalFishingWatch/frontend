@@ -6,13 +6,13 @@ import { Button, InputText } from '@globalfishingwatch/ui-components'
 
 import { VALID_PASSWORD } from 'data/map/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useFetchWorkspace } from 'features/map/workspace/workspace.hook'
 import {
   isWorkspacePasswordProtected,
   selectWorkspacePassword,
 } from 'features/map/workspace/workspace.selectors'
 import { fetchWorkspaceThunk, setWorkspacePassword } from 'features/map/workspace/workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from 'features/map/workspace/workspace.utils'
+import { useFetchWorkspace } from 'features/map/workspace/workspace-load.hook'
 import { selectWorkspaceId } from 'router/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'

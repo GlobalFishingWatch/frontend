@@ -65,6 +65,8 @@ import type { ReportState } from 'features/reports/reports.types'
 import { selectLocationCategory } from 'router/routes.selectors'
 import type { WorkspaceState } from 'types'
 
+export { selectWorkspaceCategory } from 'features/map/workspace/workspace.selectors'
+
 /** Makes every key required while still allowing undefined values **/
 type Complete<T> = { [K in keyof T]-?: T[K] | undefined }
 
@@ -234,13 +236,6 @@ const selectWorkspaceAppState = createSelector(
       daysFromLatest,
       ...reportState,
     }
-  }
-)
-
-export const selectWorkspaceCategory = createSelector(
-  [selectLocationCategory, selectWorkspace],
-  (locationCategory, workspace) => {
-    return locationCategory || workspace?.category || DEFAULT_WORKSPACE_CATEGORY
   }
 )
 

@@ -1,7 +1,7 @@
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
 import { useActivityDownloadTimeoutRefresh } from 'features/map/download/downloadActivity.hooks'
-import { useEnsureWorkspaceLoad } from 'features/map/workspace/workspace.hook'
+import { useEnsureWorkspaceLoad } from 'features/map/workspace/workspace-load.hook'
 import { useLoginPopupListener } from 'features/user/user.hooks'
 import { useFetchTrackCorrections } from 'features/vessels/track-correction/track-correction.hooks'
 import { useBeforeUnload } from 'router/routes.hook'

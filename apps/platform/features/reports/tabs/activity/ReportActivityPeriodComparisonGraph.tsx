@@ -16,7 +16,7 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_GRADIENT, COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n, { t } from 'features/i18n/i18n'
-import { selectLatestAvailableDataDate } from 'features/map/workspace/selectors/app.selectors'
+import { selectLatestAvailableDataDate } from 'features/map/workspace/selectors/app.data-date.selectors'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'

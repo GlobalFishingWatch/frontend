@@ -7,9 +7,9 @@ import { trackEvent } from '@globalfishingwatch/react-hooks'
 import { PATH_BASENAME } from 'data/map/config'
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useFetchWorkspace } from 'features/map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/map/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/map/workspace/workspace.slice'
+import { useFetchWorkspace } from 'features/map/workspace/workspace-load.hook'
 import {
   AUTH_CHANNEL_NAME,
   LOGIN_MESSAGE,

@@ -35,13 +35,7 @@ import {
 } from 'data/map/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/map/workspaces-vms'
 import { fetchDatasetsByIdsThunk } from 'features/map/datasets/datasets.slice'
-import {
-  getDatasetsInDataviews,
-  getLatestEndDateFromDatasets,
-  getVesselGroupsInDataviews,
-} from 'features/map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/map/dataviews/dataviews.slice'
-import { getVesselDataviewInstanceDatasetConfig } from 'features/map/dataviews/dataviews.utils'
 import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
@@ -294,6 +288,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       // the reducer map, so a static import lands it in every page's entry chunk. Awaited *before* the
       // aborted check below so that check is still followed by synchronous work, as it was originally.
       const { LIBRARY_LAYERS } = await import('data/map/layer-library')
+      const { getDatasetsInDataviews, getLatestEndDateFromDatasets, getVesselGroupsInDataviews } =
+        await import('features/map/datasets/datasets.utils')
+      const { getVesselDataviewInstanceDatasetConfig } =
+        await import('features/map/dataviews/dataviews.utils')
 
       let datasets: Dataset[] = []
       if (!signal.aborted) {

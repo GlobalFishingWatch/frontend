@@ -8,7 +8,7 @@ import type {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import type {
   GetDatasetConfigsCallbacks,

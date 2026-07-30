@@ -13,7 +13,7 @@ import type {
   VesselGroup,
 } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
-import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 

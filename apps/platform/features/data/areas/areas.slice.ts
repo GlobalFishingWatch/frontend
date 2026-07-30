@@ -7,7 +7,6 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
-import { getPolygonsUnion, wrapBBoxLongitudes, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 import { t } from 'features/i18n/i18n'
@@ -112,6 +111,7 @@ async function fetchAreaDetail({
   if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
     // Loaded on demand so the reducer map does not drag @turf/turf into every page's entry chunk
     const { flatten } = await import('@turf/turf')
+    const { getPolygonsUnion } = await import('@globalfishingwatch/data-transforms/union')
     const geoms = flatten(area.geometry).features.flatMap((f) =>
       f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
         ? [f.geometry.coordinates as PolygonGeomCoords]
@@ -125,6 +125,10 @@ async function fetchAreaDetail({
   if (!geometry) {
     console.warn('No geometry found for area', area)
   }
+  // Same reason as the @turf/turf import above: wrap-longitudes reaches turf
+  const { wrapBBoxLongitudes, wrapGeometryBbox } = await import(
+    '@globalfishingwatch/data-transforms/wrap-longitudes'
+  )
   const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
   // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
   // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
@@ -185,6 +189,10 @@ export const fetchAreaDetailThunk = createAsyncThunk(
           )
         )
         const { circle } = await import('@turf/turf')
+        const { getPolygonsUnion } = await import('@globalfishingwatch/data-transforms/union')
+        const { wrapGeometryBbox } = await import(
+          '@globalfishingwatch/data-transforms/wrap-longitudes'
+        )
         try {
           const geoms = areas.flatMap((fetchedArea) => {
             if (!fetchedArea?.geometry) return []

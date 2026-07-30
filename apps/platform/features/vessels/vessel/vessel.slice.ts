@@ -35,10 +35,6 @@ import {
 } from 'features/map/datasets/datasets.slice'
 import type { VesselInstanceDatasets } from 'features/map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/map/dataviews/dataviews.slice'
-import {
-  getVesselDataviewInstance,
-  getVesselInfoDataviewInstanceDatasetConfig,
-} from 'features/map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/map/dataviews/selectors/dataviews.static.selectors'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -122,6 +118,8 @@ export const fetchVesselInfoThunk = createAsyncThunk(
     { dispatch, rejectWithValue, getState }
   ) => {
     try {
+      const { getVesselDataviewInstance, getVesselInfoDataviewInstanceDatasetConfig } =
+        await import('features/map/dataviews/dataviews.utils')
       const state = getState() as any
       const guestUser = selectIsGuestUser(state)
       const resources = selectResources(state)

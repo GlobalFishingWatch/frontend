@@ -14,6 +14,11 @@
       "types": "./dist/dates/index.d.ts",
       "development": "./src/dates/index.ts",
       "default": "./dist/dates/index.js"
+    },
+    "./*": {
+      "types": "./dist/*/index.d.ts",
+      "development": "./src/*/index.ts",
+      "default": "./dist/*/index.js"
     }
   },
   "main": "./dist/index.js",

@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EndpointId, EventTypes } from '@globalfishingwatch/api-types'
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
   getIsVesselDataviewInstanceId,

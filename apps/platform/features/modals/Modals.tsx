@@ -10,17 +10,17 @@ import { WorkspaceCategory } from 'data/map/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectDownloadActivityAreaKey } from 'features/map/download/downloadActivity.slice'
-import CreateWorkspaceModal from 'features/map/workspace/save/WorkspaceCreateModal'
-import EditWorkspaceModal from 'features/map/workspace/save/WorkspaceEditModal'
 import { selectReadOnly } from 'features/map/workspace/selectors/app.selectors'
 import { selectIsWorkspaceReady } from 'features/map/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/map/workspace/workspace.slice'
 import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/modals.selectors'
 import {
   selectBigQueryModalOpen,
+  selectCreateWorkspaceModalOpen,
   selectDatasetUploadModalOpen,
   selectDownloadTrackModalOpen,
   selectEditorMenuOpen,
+  selectEditWorkspaceModalOpen,
   selectLayerLibraryModalOpen,
   selectTurningTidesModalOpen,
   setModalOpen,
@@ -41,6 +41,8 @@ import { getModalParent } from './modals.utils'
 
 import styles from './Modals.module.css'
 
+const CreateWorkspaceModal = lazy(() => import('features/map/workspace/save/WorkspaceCreateModal'))
+const EditWorkspaceModal = lazy(() => import('features/map/workspace/save/WorkspaceEditModal'))
 const NewDataset = lazy(() => import('features/map/datasets/upload/NewDataset'))
 const BigQueryModal = lazy(() => import('features/map/bigquery/BigQueryModal'))
 const TurningTidesModal = lazy(() => import('features/map/bigquery/TurningTidesModal'))
@@ -102,6 +104,8 @@ const AppModals = () => {
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
+  const editWorkspaceModalOpen = useSelector(selectEditWorkspaceModalOpen)
+  const createWorkspaceModalOpen = useSelector(selectCreateWorkspaceModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
@@ -216,8 +220,16 @@ const AppModals = () => {
           <NewDataset />
         </Suspense>
       )}
-      <EditWorkspaceModal />
-      <CreateWorkspaceModal />
+      {editWorkspaceModalOpen && (
+        <Suspense fallback={null}>
+          <EditWorkspaceModal />
+        </Suspense>
+      )}
+      {createWorkspaceModalOpen && (
+        <Suspense fallback={null}>
+          <CreateWorkspaceModal />
+        </Suspense>
+      )}
       {downloadActivityAreaKey && (
         <Suspense fallback={null}>
           <DownloadActivityModal />

@@ -23,7 +23,7 @@ import {
   EventVesselTypeEnum,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getUTCDate } from '@globalfishingwatch/data-transforms/dates'
 import {
   getRelatedDatasetByType,
   getRelatedDatasetsByType,
@@ -48,11 +48,6 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/map/datasets/datasets.slice'
-import {
-  getIsSkylightDataset,
-  getVesselGroupInDataview,
-  isRealTimeDataset,
-} from 'features/map/datasets/datasets.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { getVesselSearchEndpoint } from 'features/vessels/search/search.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessels/vessel/vessel.config'
@@ -73,6 +68,7 @@ export const MAX_TOOLTIP_LIST = 5
 const loadCategorySelectors = () =>
   import('features/map/dataviews/selectors/dataviews.categories.selectors')
 const loadDataviewSelectors = () => import('features/map/dataviews/selectors/dataviews.selectors')
+const loadDatasetsUtils = () => import('features/map/datasets/datasets.utils')
 
 type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
   id: string
@@ -322,8 +318,11 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
     { getState, signal, dispatch, rejectWithValue }
   ) => {
     try {
-      const [{ selectActiveTemporalgridDataviews }, { selectVesselGroupDataviews }] =
-        await Promise.all([loadDataviewSelectors(), loadCategorySelectors()])
+      const [
+        { selectActiveTemporalgridDataviews },
+        { selectVesselGroupDataviews },
+        { getIsSkylightDataset, isRealTimeDataset },
+      ] = await Promise.all([loadDataviewSelectors(), loadCategorySelectors(), loadDatasetsUtils()])
       const state = getState() as any
       const guestUser = selectIsGuestUser(state)
       const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
@@ -496,7 +495,10 @@ export const fetchClusterEventThunk = createAsyncThunk(
     { signal, getState, dispatch, rejectWithValue }
   ) => {
     try {
-      const { selectEventsDataviews } = await loadCategorySelectors()
+      const [{ selectEventsDataviews }, { getVesselGroupInDataview }] = await Promise.all([
+        loadCategorySelectors(),
+        loadDatasetsUtils(),
+      ])
       const state = getState() as RootState
       const guestUser = selectIsGuestUser(state)
       const eventDataviews = selectEventsDataviews(state) || []
