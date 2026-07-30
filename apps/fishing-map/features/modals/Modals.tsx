@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useEffect, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -15,12 +15,7 @@ import {
   toggleBigQueryModal,
   toggleTurningTidesModal,
 } from 'features/bigquery/bigquery.slice'
-import {
-  FeatureFlag,
-  selectDebugActive,
-  toggleDebugMenu,
-  toggleFeatureFlag,
-} from 'features/debug/debug.slice'
+import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
@@ -28,7 +23,6 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import {
   selectDatasetUploadModalOpen,
   selectLayerLibraryModalOpen,
-  selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
 import GFWOnly from 'features/user/GFWOnly'
@@ -53,7 +47,6 @@ const BigQueryModal = lazy(() => import('features/bigquery/BigQueryModal'))
 const TurningTidesModal = lazy(() => import('features/bigquery/TurningTidesModal'))
 const LayerLibrary = lazy(() => import('features/layer-library/LayerLibrary'))
 const DebugMenu = lazy(() => import('features/debug/DebugMenu'))
-const WorkspaceGenerator = lazy(() => import('features/workspace-generator/WorkspaceGenerator'))
 const DownloadActivityModal = lazy(() => import('features/download/DownloadActivityModal'))
 const DownloadTrackModal = lazy(() => import('features/download/DownloadTrackModal'))
 const EditorMenu = lazy(() => import('features/editor/EditorMenu'))
@@ -103,17 +96,6 @@ const AppModals = () => {
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
   const [turningTidesActive, dispatchTurningTidesMenu] = useSecretMenu(TurningTidesMenuConfig)
-
-  const workspaceGeneratorConfig = useMemo(
-    () => ({
-      keys: 'iaiaia',
-      onToggle: () => dispatch(toggleFeatureFlag(FeatureFlag.WorkspaceGenerator)),
-      selectMenuActive: selectWorkspaceGeneratorModalOpen,
-    }),
-    [dispatch]
-  )
-  const [workspaceGeneratorActive, dispatchWorkspaceGeneratorMenu] =
-    useSecretMenu(workspaceGeneratorConfig)
 
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
@@ -229,21 +211,6 @@ const AppModals = () => {
             </Suspense>
           </Modal>
         </Fragment>
-      )}
-      {isGFWUser && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          isOpen={workspaceGeneratorActive && !anyAppModalOpen}
-          shouldCloseOnEsc
-          onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
-          contentClassName={styles.workspaceGeneratorModal}
-          header={false}
-          parentSelector={getModalParent}
-        >
-          <Suspense fallback={null}>
-            <WorkspaceGenerator />
-          </Suspense>
-        </Modal>
       )}
       {!isVesselGroupModalOpen && isDatasetUploadModalOpen && (
         <Suspense fallback={null}>

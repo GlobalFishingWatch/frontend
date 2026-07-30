@@ -10,7 +10,10 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
-import { deckLayerInstancesAtom, useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
+import {
+  deckLayerInstancesAtom,
+  useDeckLayerComposer,
+} from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 
@@ -38,7 +41,9 @@ import {
 import { hotspotGeometryAtom } from 'features/reports/reports-hotspot.hooks'
 import { selectReportHotspotSettings } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectRealTimeTimerange } from 'features/timebar/timebar.selectors'
 import {
+  selectTimeMode,
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
@@ -87,12 +92,14 @@ export const useGlobalConfigConnect = () => {
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
   const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const debugOptions = useSelector(selectDebugOptions)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
+  const timeMode = useSelector(selectTimeMode)
 
   const onPositionsMaxPointsError = useCallback(
     (layer: FourwingsLayer) => {
@@ -121,18 +128,28 @@ export const useGlobalConfigConnect = () => {
       bivariateDataviews,
       debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
+      start,
       end,
+      ...(timeMode === 'realTime' &&
+        realTimeTimerange && {
+          bufferedStart: realTimeTimerange.start,
+          bufferedEnd: realTimeTimerange.end,
+        }),
       environmentVisualizationMode,
       onPositionsMaxPointsError,
       skipColorDomainSampling,
-      start,
       token: GFWAPI.token,
       trackGraphExtent,
+      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
-      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
-      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
+      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions
+        ? 'positions'
+        : timeMode === 'realTime'
+          ? 'points'
+          : 'track',
       visibleEvents,
+      timeMode,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -158,6 +175,8 @@ export const useGlobalConfigConnect = () => {
     skipColorDomainSampling,
     showTimeComparison,
     timeComparisonValues,
+    timeMode,
+    realTimeTimerange,
   ])
 }
 

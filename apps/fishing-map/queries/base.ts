@@ -10,7 +10,7 @@ export function getQueryParamsResolved(params: Record<string, any>) {
 
 export const gfwBaseQuery =
   <Response = any>(
-    { baseUrl, method }: { baseUrl: string; method?: 'GET' | 'POST' } = {
+    { baseUrl, method }: { baseUrl: string; method?: 'GET' | 'POST' | 'DELETE' } = {
       baseUrl: '',
       method: 'GET',
     }

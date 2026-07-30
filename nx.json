@@ -138,38 +138,28 @@
   },
   "release": {
     "projectsRelationship": "independent",
-    "version": {
-      "git": {
-        "commit": false,
-        "tag": false
-      }
-    },
     "releaseTag": {
       "pattern": "@gfw/{projectName}@{version}"
     },
+    "changelog": {
+      "projectChangelogs": {
+        "file": false,
+        "createRelease": false
+      }
+    },
     "groups": {
       "libs": {
-        "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
-        "changelog": {
-          "projectChangelogs": {
-            "createRelease": "github",
-            "file": false
-          }
-        },
+        "projects": ["libs/*", "!libs/i18n-labels"],
         "version": {
-          "generatorOptions": {
-            "currentVersionResolver": "git-tag",
-            "fallbackCurrentVersionResolver": "disk",
-            "preserveLocalDependencyProtocols": false
-          }
+          "currentVersionResolver": "git-tag",
+          "fallbackCurrentVersionResolver": "disk",
+          "preserveLocalDependencyProtocols": false
         }
       },
       "i18n-labels": {
         "projects": ["i18n-labels"],
         "version": {
-          "generatorOptions": {
-            "currentVersionResolver": "disk"
-          }
+          "currentVersionResolver": "disk"
         }
       }
     }

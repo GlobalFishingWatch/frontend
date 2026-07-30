@@ -13,7 +13,10 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useTimebarUserPointsConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import {
+  getVesselTransmissionDates,
+  isTimerangeOutsideTransmissions,
+} from 'features/vessel/vessel.utils'
 import type { Bbox } from 'types'
 
 type FitBoundsProps = {
@@ -121,14 +124,21 @@ const useLayerFitBounds = () => {
           if (bbox) {
             fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
           } else {
-            const transmissionDateFrom = infoResource?.data
-              ? getVesselProperty(infoResource?.data, 'transmissionDateFrom')
-              : ''
-            const transmissionDateTo = infoResource?.data
-              ? getVesselProperty(infoResource?.data, 'transmissionDateTo')
-              : ''
+            const { transmissionDateFrom, transmissionDateTo } = getVesselTransmissionDates(
+              infoResource?.data ?? null
+            )
             if (infoResource && (!transmissionDateFrom || !transmissionDateTo)) {
               console.warn("transmissionDates not available, can't fit time", infoResource)
+              return
+            }
+            if (
+              infoResource &&
+              !isTimerangeOutsideTransmissions(
+                { start, end },
+                transmissionDateFrom,
+                transmissionDateTo
+              )
+            ) {
               return
             }
             if (window.confirm(t((t) => t.layer.vessel_fit_bounds_out_of_timerange) as string)) {

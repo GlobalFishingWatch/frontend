@@ -99,6 +99,7 @@ export const useMigrateWorkspaceToast = () => {
           disabled={loading}
           onClick={async () => {
             setLoading(true)
+            toast.update(toastId.current, { autoClose: false })
             await onMigrateAllClickRef.current()
             setLoading(false)
           }}

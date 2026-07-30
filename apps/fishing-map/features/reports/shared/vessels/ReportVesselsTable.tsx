@@ -33,7 +33,7 @@ import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, MULTI_VALUE_SEPARATOR } from 'utils/info'
 
 import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
@@ -254,16 +254,21 @@ export default function ReportVesselsTable({
                 >
                   <span>{flagTranslated}</span>
                 </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={cx(styles.pointer, {
-                    [styles.border]: !isLastRow,
-                  })}
-                  title={`${t((t) => t.analysis.clickToFilterBy)} ${type}`}
-                  onClick={() => onFilterClick(`${'type'}:${type}`)}
-                >
-                  {type}
+                <div className={cx({ [styles.border]: !isLastRow })}>
+                  {type.split(MULTI_VALUE_SEPARATOR).map((typeLabel, index) => (
+                    <Fragment key={typeLabel}>
+                      {index > 0 && MULTI_VALUE_SEPARATOR}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className={styles.pointer}
+                        title={`${t((t) => t.analysis.clickToFilterBy)} ${typeLabel}`}
+                        onClick={() => onFilterClick(`type:${typeLabel}`)}
+                      >
+                        {typeLabel}
+                      </span>
+                    </Fragment>
+                  ))}
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>

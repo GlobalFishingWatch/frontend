@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import { DateTime } from 'luxon'
 
 import type { RootState } from 'reducers'
 
@@ -14,6 +15,7 @@ type TimebarSlice = {
   highlightedEvents: string[] | undefined
   highlightedEventSelected: string | undefined
   hasChangedSettingsOnce: boolean
+  realTimeLatestUpdate: string | undefined
 }
 
 const initialState: TimebarSlice = {
@@ -21,6 +23,7 @@ const initialState: TimebarSlice = {
   highlightedEvents: [],
   highlightedEventSelected: undefined,
   hasChangedSettingsOnce: false,
+  realTimeLatestUpdate: undefined,
 }
 
 const slice = createSlice({
@@ -42,6 +45,9 @@ const slice = createSlice({
     setHasChangedSettings: (state) => {
       state.hasChangedSettingsOnce = true
     },
+    setRealTimeLatestUpdate: (state, action: PayloadAction<string>) => {
+      state.realTimeLatestUpdate = action.payload
+    },
   },
 })
 
@@ -51,6 +57,7 @@ export const {
   setHighlightedEvents,
   disableHighlightedTime,
   setHasChangedSettings,
+  setRealTimeLatestUpdate,
 } = slice.actions
 
 export default slice.reducer
@@ -61,6 +68,7 @@ export const selectHighlightedEventSelected = (state: RootState) =>
 export const selectHoveredHighlightedEvents = (state: RootState) => state.timebar.highlightedEvents
 export const selectHasChangedSettingsOnce = (state: RootState) =>
   state.timebar.hasChangedSettingsOnce
+export const selectRealTimeLatestUpdate = (state: RootState) => state.timebar.realTimeLatestUpdate
 
 export const selectHighlightedEvents = createSelector(
   selectHighlightedEventSelected,

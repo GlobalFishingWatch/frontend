@@ -47,6 +47,7 @@ export function useAreaTooltipSparklineCategory() {
     category,
     setPreferredCategory,
     canSwitch: hasActivity && hasDetections,
+    hasAny: hasActivity || hasDetections,
   }
 }
 

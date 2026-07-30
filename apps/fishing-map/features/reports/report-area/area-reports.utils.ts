@@ -30,7 +30,7 @@ import { FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessel
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, MULTI_VALUE_SEPARATOR } from 'utils/info'
 
 import {
   DEFAULT_BUFFER_OPERATION,
@@ -288,15 +288,17 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
       uniq(identity.geartypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'geartypes'))
-        .join(', ') || OTHERS_CATEGORY_LABEL,
+        .join(MULTI_VALUE_SEPARATOR) || OTHERS_CATEGORY_LABEL,
     shiptype:
       uniq(identity.shiptypes || [])
         .sort()
         .map((g) => formatInfoField(g, 'shiptypes'))
-        .join(', ') || OTHERS_CATEGORY_LABEL,
+        .join(MULTI_VALUE_SEPARATOR) || OTHERS_CATEGORY_LABEL,
     flagTranslated: t((t) => t[identity.flag as string], { ns: 'flags' }),
   }
 }
+
+const EXACT_MATCH_FILTER_PROPERTIES: FilterProperty[] = ['gear', 'type']
 
 export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTableVessel>(
   vessels: Vessel[],
@@ -319,19 +321,30 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
   }
 
   return filterBlocks.reduce((vessels, block) => {
-    const propertiesToMatch =
-      block.includes(':') && filterProperties[block.split(':')[0] as FilterProperty]
+    const property = block.includes(':') ? block.split(':')[0].replace('-', '') : undefined
+    const propertiesToMatch = property && filterProperties[property as FilterProperty]
     const words = (propertiesToMatch ? (block.split(':')[1] as FilterProperty) : block)
       .replace('-', '')
       .split('|')
       .map((word) => word.trim())
       .filter((word) => word.length)
-    const matched = words.flatMap((w) =>
-      matchSorter(vessels, w, {
-        keys: propertiesToMatch || Object.values(filterProperties).flat(),
-        threshold: matchSorter.rankings.CONTAINS,
-      })
-    )
+    const matched =
+      propertiesToMatch && EXACT_MATCH_FILTER_PROPERTIES.includes(property as FilterProperty)
+        ? words.flatMap((word) =>
+            vessels.filter((vessel) =>
+              propertiesToMatch.some((key) =>
+                String((vessel as any)[key] ?? '')
+                  .split(MULTI_VALUE_SEPARATOR)
+                  .some((label) => label.toLowerCase() === word.toLowerCase())
+              )
+            )
+          )
+        : words.flatMap((w) =>
+            matchSorter(vessels, w, {
+              keys: propertiesToMatch || Object.values(filterProperties).flat(),
+              threshold: matchSorter.rankings.CONTAINS,
+            })
+          )
     const uniqMatched = block.includes('|') ? Array.from(new Set([...matched])) : matched
     if (block.startsWith('-')) {
       const uniqMatchedIds = new Set<string>()

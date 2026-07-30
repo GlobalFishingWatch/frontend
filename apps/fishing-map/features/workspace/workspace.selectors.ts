@@ -218,6 +218,14 @@ export const selectWorkspaceVisibleEventsArray = createSelector(
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
 export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSections')
+export const selectTimeMode = selectWorkspaceStateProperty('timeMode')
+
+export const selectMigramarLayer = selectWorkspaceStateProperty('migramarLayer')
+export const selectLonglineSetsInsight = selectWorkspaceStateProperty('longlineSetsInsight')
+
+export const selectIsRealTimeMode = createSelector([selectTimeMode], (timeMode) => {
+  return timeMode === 'realTime'
+})
 
 export type WorkspaceFetchParams = { workspaceId: string; reportId?: string }
 

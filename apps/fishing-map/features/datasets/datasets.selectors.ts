@@ -33,6 +33,7 @@ const selectDatasetsByType = (type: DatasetTypes) => {
 
 export const selectFourwingsDatasets = selectDatasetsByType(DatasetTypes.Fourwings)
 export const selectVesselsDatasets = selectDatasetsByType(DatasetTypes.Vessels)
+export const selectTracksDatasets = selectDatasetsByType(DatasetTypes.Tracks)
 
 export const selectVesselGroupCompatibleDatasets = createSelector(
   [selectVesselsDatasets, selectDeprecatedDatasets],

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -16,7 +16,6 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import IdentityTabRegistry from './tabs/IdentityTabRegistry'
 import IdentityTabWrapper from './tabs/IdentityTabWrapper'
@@ -25,12 +24,13 @@ import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {
   const vesselData = useSelector(selectVesselInfoData)
-  const registryDisabled = !vesselData.identities.some(
+  const registryDisabled = !vesselData?.identities?.some(
     (i) => i.identitySource === VesselIdentitySourceEnum.Registry
   )
-  const selfReportedIdentities = vesselData.identities.filter(
-    (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
-  )
+  const selfReportedIdentities =
+    vesselData?.identities?.filter(
+      (i) => i.identitySource === VesselIdentitySourceEnum.SelfReported
+    ) ?? []
 
   return { registryDisabled, selfReportedIdentities }
 }
@@ -39,7 +39,6 @@ export function useVesselIdentityTabs() {
   const { t } = useTranslation()
   const identitySource = useSelector(selectVesselIdentitySource)
   const { registryDisabled, selfReportedIdentities } = useVesselIdentities()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
@@ -80,14 +79,6 @@ export function useVesselIdentityTabs() {
     ],
     [identitySource, isVMS, registryDisabled, selfReportedIdentities, t]
   )
-
-  useEffect(() => {
-    if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
-      replaceQueryParams({
-        vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-      })
-    }
-  }, [identitySource, registryDisabled])
 
   return useMemo(
     () => ({ identityTabs, selfReportedIdentities, registryDisabled }),

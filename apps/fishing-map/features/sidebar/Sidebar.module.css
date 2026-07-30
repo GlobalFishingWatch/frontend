@@ -23,6 +23,14 @@
   overflow: hidden auto;
 }
 
+.scrollContent {
+  height: 100%;
+}
+
+.bottomSpacer {
+  height: var(--space-M);
+}
+
 .placeholder {
   height: calc(100% - var(--header-height));
   flex: 1;

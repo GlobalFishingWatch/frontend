@@ -26,7 +26,6 @@ import { Route as ApiMigramarOptionsRouteImport } from './routes/api/migramar/op
 import { Route as ApiOceanAreasIndexRouteImport } from './routes/api/ocean-areas/index'
 import { Route as ApiOceanAreasNameRouteImport } from './routes/api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './routes/api/ocean-areas/search'
-import { Route as ApiWorkspacesGeneratorIndexRouteImport } from './routes/api/workspaces-generator/index'
 import { Route as AppCategoryWorkspaceIdIndexRouteImport } from './routes/_app/$category/$workspaceId/index'
 import { Route as AppCategoryWorkspaceIdVesselSearchRouteImport } from './routes/_app/$category/$workspaceId/vessel-search'
 import { Route as ApiTrackCorrectionsWorkspaceIdIndexRouteImport } from './routes/api/track-corrections/$workspaceId/index'
@@ -121,18 +120,11 @@ const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
   path: '/api/ocean-areas/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiWorkspacesGeneratorIndexRoute =
-  ApiWorkspacesGeneratorIndexRouteImport.update({
-    id: '/api/workspaces-generator/',
-    path: '/api/workspaces-generator/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AppCategoryWorkspaceIdIndexRoute =
-  AppCategoryWorkspaceIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
+const AppCategoryWorkspaceIdIndexRoute = AppCategoryWorkspaceIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCategoryWorkspaceIdRoute,
+} as any)
 const AppCategoryWorkspaceIdVesselSearchRoute =
   AppCategoryWorkspaceIdVesselSearchRouteImport.update({
     id: '/vessel-search',
@@ -157,12 +149,11 @@ const AppCategoryWorkspaceIdPortsReportPortIdRoute =
     path: '/ports-report/$portId',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
-const AppCategoryWorkspaceIdReportIndexRoute =
-  AppCategoryWorkspaceIdReportIndexRouteImport.update({
-    id: '/report/',
-    path: '/report/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
+const AppCategoryWorkspaceIdReportIndexRoute = AppCategoryWorkspaceIdReportIndexRouteImport.update({
+  id: '/report/',
+  path: '/report/',
+  getParentRoute: () => AppCategoryWorkspaceIdRoute,
+} as any)
 const AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
   AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update({
     id: '/vessel-group-report/$vesselGroupId',
@@ -199,7 +190,6 @@ export interface FileRoutesByFullPath {
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/$category/': typeof AppCategoryIndexRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
-  '/api/workspaces-generator/': typeof ApiWorkspacesGeneratorIndexRoute
   '/$category/$workspaceId/vessel-search': typeof AppCategoryWorkspaceIdVesselSearchRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/$category/$workspaceId/': typeof AppCategoryWorkspaceIdIndexRoute
@@ -226,7 +216,6 @@ export interface FileRoutesByTo {
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/$category': typeof AppCategoryIndexRoute
   '/api/ocean-areas': typeof ApiOceanAreasIndexRoute
-  '/api/workspaces-generator': typeof ApiWorkspacesGeneratorIndexRoute
   '/$category/$workspaceId/vessel-search': typeof AppCategoryWorkspaceIdVesselSearchRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/$category/$workspaceId': typeof AppCategoryWorkspaceIdIndexRoute
@@ -256,7 +245,6 @@ export interface FileRoutesById {
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/_app/$category/': typeof AppCategoryIndexRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
-  '/api/workspaces-generator/': typeof ApiWorkspacesGeneratorIndexRoute
   '/_app/$category/$workspaceId/vessel-search': typeof AppCategoryWorkspaceIdVesselSearchRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/_app/$category/$workspaceId/': typeof AppCategoryWorkspaceIdIndexRoute
@@ -286,7 +274,6 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/search'
     | '/$category/'
     | '/api/ocean-areas/'
-    | '/api/workspaces-generator/'
     | '/$category/$workspaceId/vessel-search'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/$category/$workspaceId/'
@@ -313,7 +300,6 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/search'
     | '/$category'
     | '/api/ocean-areas'
-    | '/api/workspaces-generator'
     | '/$category/$workspaceId/vessel-search'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/$category/$workspaceId'
@@ -342,7 +328,6 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/search'
     | '/_app/$category/'
     | '/api/ocean-areas/'
-    | '/api/workspaces-generator/'
     | '/_app/$category/$workspaceId/vessel-search'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/_app/$category/$workspaceId/'
@@ -365,7 +350,6 @@ export interface RootRouteChildren {
   ApiOceanAreasNameRoute: typeof ApiOceanAreasNameRoute
   ApiOceanAreasSearchRoute: typeof ApiOceanAreasSearchRoute
   ApiOceanAreasIndexRoute: typeof ApiOceanAreasIndexRoute
-  ApiWorkspacesGeneratorIndexRoute: typeof ApiWorkspacesGeneratorIndexRoute
   ApiTrackCorrectionsWorkspaceIdIssueIdRoute: typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   ApiTrackCorrectionsWorkspaceIdIndexRoute: typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
 }
@@ -491,13 +475,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiOceanAreasSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/workspaces-generator/': {
-      id: '/api/workspaces-generator/'
-      path: '/api/workspaces-generator'
-      fullPath: '/api/workspaces-generator/'
-      preLoaderRoute: typeof ApiWorkspacesGeneratorIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app/$category/$workspaceId/': {
       id: '/_app/$category/$workspaceId/'
       path: '/'
@@ -574,27 +551,21 @@ interface AppCategoryWorkspaceIdRouteChildren {
   AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute: typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
 }
 
-const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren =
-  {
-    AppCategoryWorkspaceIdVesselSearchRoute:
-      AppCategoryWorkspaceIdVesselSearchRoute,
-    AppCategoryWorkspaceIdIndexRoute: AppCategoryWorkspaceIdIndexRoute,
-    AppCategoryWorkspaceIdPortsReportPortIdRoute:
-      AppCategoryWorkspaceIdPortsReportPortIdRoute,
-    AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
-      AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute,
-    AppCategoryWorkspaceIdVesselVesselIdRoute:
-      AppCategoryWorkspaceIdVesselVesselIdRoute,
-    AppCategoryWorkspaceIdReportIndexRoute:
-      AppCategoryWorkspaceIdReportIndexRoute,
-    AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
-      AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
-  }
+const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren = {
+  AppCategoryWorkspaceIdVesselSearchRoute: AppCategoryWorkspaceIdVesselSearchRoute,
+  AppCategoryWorkspaceIdIndexRoute: AppCategoryWorkspaceIdIndexRoute,
+  AppCategoryWorkspaceIdPortsReportPortIdRoute: AppCategoryWorkspaceIdPortsReportPortIdRoute,
+  AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
+    AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute,
+  AppCategoryWorkspaceIdVesselVesselIdRoute: AppCategoryWorkspaceIdVesselVesselIdRoute,
+  AppCategoryWorkspaceIdReportIndexRoute: AppCategoryWorkspaceIdReportIndexRoute,
+  AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
+    AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
+}
 
-const AppCategoryWorkspaceIdRouteWithChildren =
-  AppCategoryWorkspaceIdRoute._addFileChildren(
-    AppCategoryWorkspaceIdRouteChildren,
-  )
+const AppCategoryWorkspaceIdRouteWithChildren = AppCategoryWorkspaceIdRoute._addFileChildren(
+  AppCategoryWorkspaceIdRouteChildren
+)
 
 interface AppRouteChildren {
   AppUserRoute: typeof AppUserRoute
@@ -629,11 +600,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
-  ApiWorkspacesGeneratorIndexRoute: ApiWorkspacesGeneratorIndexRoute,
-  ApiTrackCorrectionsWorkspaceIdIssueIdRoute:
-    ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
-  ApiTrackCorrectionsWorkspaceIdIndexRoute:
-    ApiTrackCorrectionsWorkspaceIdIndexRoute,
+  ApiTrackCorrectionsWorkspaceIdIssueIdRoute: ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
+  ApiTrackCorrectionsWorkspaceIdIndexRoute: ApiTrackCorrectionsWorkspaceIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

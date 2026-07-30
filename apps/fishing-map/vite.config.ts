@@ -59,6 +59,11 @@ export default defineConfig(({ command, mode }) => {
       dedupe: ['jotai'],
     },
     server: {
+      // Dev resolves libs through their `development` export condition (src), so the d.ts/js
+      // that `types-watch` keeps re-emitting into libs/*/dist is irrelevant here
+      watch: {
+        ignored: ['**/libs/*/dist/**', '**/libs/*/src/**/*.gen.*'],
+      },
       port: 3003,
       strictPort: true,
       allowedHosts: ['local.globalfishingwatch.org'],
@@ -163,7 +168,6 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     ssr: {
-      noExternal: ['@mastra/core', '@mastra/client-js'],
       // Prevent browser-only packages from being bundled into the SSR output.
       external: [
         '@deck.gl-community/editable-layers',

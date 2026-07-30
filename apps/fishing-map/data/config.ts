@@ -1,3 +1,5 @@
+import { DEFAULT_VIEWPORT } from '@fishing-map/config/app'
+import { DEFAULT_PATH_BASENAME } from '@fishing-map/config/routes'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
@@ -7,6 +9,8 @@ import {
   DATASET_PRIVATE_PREFIX,
   DATASET_PUBLIC_PREFIX,
 } from '@globalfishingwatch/datasets-client'
+
+import type { WorkspaceEnv } from 'data/workspaces'
 
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
@@ -20,7 +24,7 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
 export const IS_PRODUCTION_BUILD = import.meta.env.PROD
-export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as string | undefined
+export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv | undefined
 export const IS_PRODUCTION_WORKSPACE_ENV =
   WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'
 
@@ -28,7 +32,7 @@ export const SHOW_LEAVE_CONFIRMATION = import.meta.env.VITE_SHOW_LEAVE_CONFIRMAT
   ? import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
   : !import.meta.env.DEV
 
-export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || DEFAULT_PATH_BASENAME
 
 export const REPORT_DAYS_LIMIT =
   typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
@@ -41,7 +45,9 @@ export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID 
 export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID as
   | string
   | undefined
-export const IS_RANDOM_FOREST_ENABLED = import.meta.env.VITE_RANDOM_FOREST_ENABLED === 'true'
+
+export const IS_REALTIME_ENABLED = import.meta.env.VITE_REALTIME_ENABLED === 'true'
+export const IS_CHATBOT_ENABLED = WORKSPACE_ENV === 'development'
 
 // Local storage keys
 export const HINTS = 'hints'
@@ -66,9 +72,13 @@ export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
-export const LAYER_LIBRARY_ID_SEPARATOR = '__'
+export { LAYER_LIBRARY_ID_SEPARATOR } from '@fishing-map/config/dataviews'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
+
+export const REAL_TIME_DATA_DAYS_AVAILABLE = 3
+export const REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES = 10
+
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(
   { hour: 0, minute: 0, second: 0 },
@@ -77,11 +87,7 @@ export const LAST_DATA_UPDATE = DateTime.fromObject(
   .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO() as string
 
-export const DEFAULT_VIEWPORT = {
-  zoom: 1.49,
-  latitude: 19,
-  longitude: 26,
-}
+export { DEFAULT_VIEWPORT } from '@fishing-map/config/app'
 
 export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
   latitude: 10,
@@ -133,6 +139,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   sidebarOpen: true,
   timebarGraph: TimebarGraphs.None,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
+  timeMode: 'historical',
   userTab: UserTab.Info,
   vesselGroupsVisualizationMode: 'footprint',
   visibleEvents: 'all',

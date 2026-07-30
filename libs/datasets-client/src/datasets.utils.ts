@@ -18,6 +18,38 @@ export const getDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[1] : ''
 }
 
+const parseDatasetVersion = (datasetId: string) =>
+  getDatasetVersion(datasetId)?.replace(/^v/, '').split('.').map(Number) ?? []
+
+/**
+ * the API reports pre-released datasets as deprecated by the current latest version
+ */
+export const getIsDatasetVersionDowngrade = (deprecatedId: string, latestId: string) => {
+  if (!deprecatedId || !latestId) {
+    return false
+  }
+  if (removeDatasetVersion(deprecatedId) !== removeDatasetVersion(latestId)) {
+    return false
+  }
+  const deprecatedVersion = parseDatasetVersion(deprecatedId)
+  const latestVersion = parseDatasetVersion(latestId)
+  if (
+    !deprecatedVersion.length ||
+    !latestVersion.length ||
+    deprecatedVersion.some(isNaN) ||
+    latestVersion.some(isNaN)
+  ) {
+    return false
+  }
+  for (let i = 0; i < Math.max(deprecatedVersion.length, latestVersion.length); i++) {
+    const diff = (deprecatedVersion[i] ?? 0) - (latestVersion[i] ?? 0)
+    if (diff) {
+      return diff > 0
+    }
+  }
+  return false
+}
+
 export const replaceDatasetPublicToPrivate = (dataset: string): string => {
   return dataset.startsWith(DATASET_PUBLIC_PREFIX)
     ? dataset.replace(DATASET_PUBLIC_PREFIX, DATASET_PRIVATE_PREFIX)

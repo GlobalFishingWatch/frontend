@@ -1,8 +1,8 @@
 import type { Layer, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { bbox, bboxPolygon, featureCollection, point, rhumbBearing } from '@turf/turf'
+import { bbox, featureCollection, point, rhumbBearing } from '@turf/turf'
 import { uniq } from 'es-toolkit'
-import type { BBox, Position } from 'geojson'
+import type { Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
@@ -68,6 +68,33 @@ type VesselLayerState = {
   highlightEndTime?: number
   highlightEventIds?: string[]
 }
+/**
+ * Each bbox is shifted by ±360 when that keeps the union narrower,
+ * so tracks crossing the antimeridian don't span the whole world.
+ */
+export function mergeBboxes(bboxes: Bbox[]): Bbox {
+  return bboxes.reduce((merged, current) => {
+    const [west, south, east, north] = current
+    const candidates: Bbox[] = [
+      current,
+      [west + 360, south, east + 360, north],
+      [west - 360, south, east - 360, north],
+    ]
+    const best = candidates.reduce((a, b) =>
+      Math.max(merged[2], b[2]) - Math.min(merged[0], b[0]) <
+      Math.max(merged[2], a[2]) - Math.min(merged[0], a[0])
+        ? b
+        : a
+    )
+    return [
+      Math.min(merged[0], best[0]),
+      Math.min(merged[1], best[1]),
+      Math.max(merged[2], best[2]),
+      Math.max(merged[3], best[3]),
+    ] as Bbox
+  })
+}
+
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
@@ -217,15 +244,17 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = () => {
-    const { startTime, endTime, strictTimeRange } = this.props
+  _getVesselChunks = ({ withBuffer = false }: { withBuffer?: boolean } = {}) => {
+    const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
     }
+    const loadStart = withBuffer ? (bufferedStartTime ?? startTime) : startTime
+    const loadEnd = withBuffer ? (bufferedEndTime ?? endTime) : endTime
 
     const chunks = strictTimeRange
-      ? [{ start: getUTCDateTime(startTime).toISO()!, end: getUTCDateTime(endTime).toISO()! }]
-      : getVesselResourceChunks(startTime, endTime)
+      ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
+      : getVesselResourceChunks(loadStart, loadEnd)
     return chunks
   }
 
@@ -277,7 +306,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
     const { zoom } = this.context.viewport
     this._lastTrackThinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
-    const chunks = this._getVesselChunks()
+    const chunks = this._getVesselChunks({ withBuffer: true })
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []
@@ -402,6 +431,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             name,
             iconSize: 18,
             iconBorder: true,
+            useCollisionFilter: false,
             highlightStartTime,
           })
         ),
@@ -551,7 +581,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!trackLayerBboxes.length) return null
     if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
 
-    return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
+    return mergeBboxes(trackLayerBboxes as Bbox[])
   }
 
   getVesselEventsBounds() {

@@ -206,9 +206,6 @@ export const selectTrackCorrectionId = selectQueryParam('trackCorrectionId')
 export const selectSidePanelId = selectQueryParam('sidePanelId')
 export const selectSidePanelContent = selectQueryParam('sidePanelContent')
 
-// Feature flags
-export const selectMigramarLayer = selectQueryParam('migramarLayer')
-
 // Map state
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')

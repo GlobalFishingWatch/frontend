@@ -1,3 +1,4 @@
+import { GAPS_EVENTS_WORKSPACE_ID } from '@fishing-map/config'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
@@ -24,18 +25,14 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 
 import type { VALID_PASSWORD } from 'data/config'
-import {
-  DEFAULT_TIME_RANGE,
-  IS_RANDOM_FOREST_ENABLED,
-  PRIVATE_SUFIX,
-  WORKSPACE_HISTORY_NAVIGATION,
-} from 'data/config'
+import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/config'
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS,
 } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -50,7 +47,6 @@ import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
-import { RF_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -252,6 +248,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(urlDataviewInstances || []).flatMap(({ dataviewId }) => (dataviewId as string) || []),
       ].filter(Boolean)
 
+      // TODO: remove this once the gaps dataset is ready to production and public
+      if (workspaceId === GAPS_EVENTS_WORKSPACE_ID) {
+        dataviewIds.push(TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS)
+      }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
@@ -285,9 +285,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
-        if (IS_RANDOM_FOREST_ENABLED) {
-          datasetsIds.push(RF_VESSEL_IDENTITY_ID)
-        }
         const vesselGroupsIds = getVesselGroupsInDataviews(
           [...dataviews, ...dataviewInstances],
           guestUser

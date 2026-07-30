@@ -54,13 +54,38 @@ import {
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
+import type { ReportState } from 'features/reports/reports.types'
 import {
   selectCollapsedSections,
   selectDaysFromLatest,
+  selectLonglineSetsInsight,
+  selectMigramarLayer,
+  selectTimeMode,
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'router/routes.selectors'
+import type { WorkspaceState } from 'types'
+
+/** Makes every key required while still allowing undefined values **/
+type Complete<T> = { [K in keyof T]-?: T[K] | undefined }
+
+/** WorkspaceState that does not persist in workspace.state */
+type NonPersistedWorkspaceStateKey =
+  | 'dataviewInstances'
+  | 'dataviewInstancesOrder'
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | 'start'
+  | 'end'
+  | 'readOnly'
+  | 'screenshotMode'
+  | 'reportLoadVessels'
+  | 'timebarSelectedUserId'
+  | 'timebarSelectedVGId'
+  | 'vesselsColorBy'
+  | 'skipColorDomainSampling'
 
 const selectWorkspaceReportState = createSelector(
   [
@@ -89,13 +114,12 @@ const selectWorkspaceReportState = createSelector(
     selectReportEventsPortsPage,
     selectReportEventsPortsResultsPerPage,
     selectReportComparisonDataviewIds,
-    selectCollapsedSections,
   ],
   (
     reportActivityGraph,
     reportAreaBounds,
     reportCategory,
-    reportResultsPerPage,
+    reportVesselResultsPerPage,
     reportTimeComparison,
     reportVesselFilter,
     reportVesselGraph,
@@ -107,9 +131,35 @@ const selectWorkspaceReportState = createSelector(
     reportDetectionsSubCategory,
     reportEventsSubCategory,
     reportVesselsSubCategory,
-    portReportName,
-    portReportCountry,
-    portReportDatasetId,
+    portsReportName,
+    portsReportCountry,
+    portsReportDatasetId,
+    reportVesselOrderProperty,
+    reportVesselOrderDirection,
+    reportEventsGraph,
+    reportEventsPortsFilter,
+    reportEventsPortsPage,
+    reportEventsPortsResultsPerPage,
+    reportComparisonDataviewIds
+  ): Complete<ReportState> => ({
+    reportActivityGraph,
+    reportAreaBounds,
+    reportCategory,
+    reportVesselResultsPerPage,
+    reportTimeComparison,
+    reportVesselFilter,
+    reportVesselGraph,
+    reportVesselPage,
+    reportBufferValue,
+    reportBufferUnit,
+    reportBufferOperation,
+    reportActivitySubCategory,
+    reportDetectionsSubCategory,
+    reportEventsSubCategory,
+    reportVesselsSubCategory,
+    portsReportName,
+    portsReportCountry,
+    portsReportDatasetId,
     reportVesselOrderProperty,
     reportVesselOrderDirection,
     reportEventsGraph,
@@ -117,34 +167,6 @@ const selectWorkspaceReportState = createSelector(
     reportEventsPortsPage,
     reportEventsPortsResultsPerPage,
     reportComparisonDataviewIds,
-    collapsedSections
-  ) => ({
-    ...(reportActivityGraph && { reportActivityGraph }),
-    ...(reportAreaBounds && { reportAreaBounds }),
-    ...(reportCategory && { reportCategory }),
-    ...(reportResultsPerPage && { reportResultsPerPage }),
-    ...(reportTimeComparison && { reportTimeComparison }),
-    ...(reportVesselFilter && { reportVesselFilter }),
-    ...(reportVesselGraph && { reportVesselGraph }),
-    ...(reportVesselPage && { reportVesselPage }),
-    ...(reportBufferValue && { reportBufferValue }),
-    ...(reportBufferUnit && { reportBufferUnit }),
-    ...(reportBufferOperation && { reportBufferOperation }),
-    ...(reportActivitySubCategory && { reportActivitySubCategory }),
-    ...(reportDetectionsSubCategory && { reportDetectionsSubCategory }),
-    ...(reportEventsSubCategory && { reportEventsSubCategory }),
-    ...(reportVesselsSubCategory && { reportVesselsSubCategory }),
-    ...(portReportName && { portReportName }),
-    ...(portReportCountry && { portReportCountry }),
-    ...(portReportDatasetId && { portReportDatasetId }),
-    ...(reportVesselOrderProperty && { reportVesselOrderProperty }),
-    ...(reportVesselOrderDirection && { reportVesselOrderDirection }),
-    ...(reportEventsGraph && { reportEventsGraph }),
-    ...(reportEventsPortsFilter && { reportEventsPortsFilter }),
-    ...(reportEventsPortsPage && { reportEventsPortsPage }),
-    ...(reportEventsPortsResultsPerPage && { reportEventsPortsResultsPerPage }),
-    ...(reportComparisonDataviewIds && { reportComparisonDataviewIds }),
-    ...(collapsedSections && { collapsedSections }),
   })
 )
 
@@ -161,12 +183,16 @@ const selectWorkspaceAppState = createSelector(
     selectTimebarSelectedEnvId,
     selectTimebarVisualisation,
     selectVisibleEvents,
-    selectWorkspaceReportState,
     selectDaysFromLatest,
     selectActivityVisualizationMode,
     selectDetectionsVisualizationMode,
     selectEnvironmentVisualizationMode,
     selectVesselGroupsVisualizationMode,
+    selectCollapsedSections,
+    selectTimeMode,
+    selectWorkspaceReportState,
+    selectLonglineSetsInsight,
+    selectMigramarLayer,
   ],
   (
     activityCategory,
@@ -180,16 +206,21 @@ const selectWorkspaceAppState = createSelector(
     timebarSelectedEnvId,
     timebarVisualisation,
     visibleEvents,
-    reportState,
     daysFromLatest,
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,
-    vesselGroupsVisualizationMode
-  ) => {
+    vesselGroupsVisualizationMode,
+    collapsedSections,
+    timeMode,
+    reportState,
+    longlineSetsInsight,
+    migramarLayer
+  ): Complete<Omit<WorkspaceState, NonPersistedWorkspaceStateKey>> & Complete<ReportState> => {
     return {
       activityCategory,
       bivariateDataviews,
+      collapsedSections,
       mapAnnotations,
       mapAnnotationsVisible,
       mapRulers,
@@ -198,13 +229,16 @@ const selectWorkspaceAppState = createSelector(
       timebarGraph,
       timebarSelectedEnvId,
       timebarVisualisation,
+      timeMode,
       visibleEvents,
       activityVisualizationMode,
       detectionsVisualizationMode,
       environmentVisualizationMode,
       vesselGroupsVisualizationMode,
-      ...reportState,
       daysFromLatest,
+      longlineSetsInsight,
+      migramarLayer,
+      ...reportState,
     }
   }
 )

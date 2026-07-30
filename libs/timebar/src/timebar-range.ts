@@ -76,8 +76,12 @@ export const useTimebarRange = ({
   )
 
   useEffect(() => {
+    const echoIndex = emittedRef.current.indexOf(`${start}|${end}`)
+    if (echoIndex !== -1) {
+      emittedRef.current = emittedRef.current.slice(echoIndex + 1)
+      return
+    }
     if (start === rangeRef.current.start && end === rangeRef.current.end) return
-    if (emittedRef.current.includes(`${start}|${end}`)) return
     emittedRef.current = []
     rangeRef.current = { start, end }
     setRange({ start, end })

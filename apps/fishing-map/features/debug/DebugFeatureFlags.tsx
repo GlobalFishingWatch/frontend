@@ -1,12 +1,14 @@
 import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
-import { InputText, Switch } from '@globalfishingwatch/ui-components'
+import { Switch } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
-import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectIsTurningTidesWorkspace,
+  selectLonglineSetsInsight,
+} from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
@@ -15,7 +17,6 @@ import {
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
-  setDebugOption,
   toggleDebugOption,
   toggleFeatureFlag,
 } from './debug.slice'
@@ -29,6 +30,7 @@ const DebugFeatureFlags: React.FC = () => {
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -140,6 +142,17 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>Show the hotspot zone button in the report activity graph</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_longline_sets_insight"
+              active={longlineSetsInsight ?? false}
+              onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
+            />
+            <label htmlFor="option_longline_sets_insight">
+              <strong>Feature flag:</strong> Longline sets insight
+            </label>
+          </div>
+          <p>Show the longline sets insight in the vessel and vessel group profiles</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"

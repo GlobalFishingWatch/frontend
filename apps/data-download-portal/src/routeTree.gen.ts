@@ -10,22 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ReportReportIdRouteImport } from './routes/report.$reportId'
 import { Route as DatasetsDatasetIdRouteImport } from './routes/datasets.$datasetId'
+import { Route as ReportReportIdRouteImport } from './routes/report.$reportId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReportReportIdRoute = ReportReportIdRouteImport.update({
-  id: '/report/$reportId',
-  path: '/report/$reportId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DatasetsDatasetIdRoute = DatasetsDatasetIdRouteImport.update({
   id: '/datasets/$datasetId',
   path: '/datasets/$datasetId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportReportIdRoute = ReportReportIdRouteImport.update({
+  id: '/report/$reportId',
+  path: '/report/$reportId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -68,18 +68,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/report/$reportId': {
-      id: '/report/$reportId'
-      path: '/report/$reportId'
-      fullPath: '/report/$reportId'
-      preLoaderRoute: typeof ReportReportIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/datasets/$datasetId': {
       id: '/datasets/$datasetId'
       path: '/datasets/$datasetId'
       fullPath: '/datasets/$datasetId'
       preLoaderRoute: typeof DatasetsDatasetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report/$reportId': {
+      id: '/report/$reportId'
+      path: '/report/$reportId'
+      fullPath: '/report/$reportId'
+      preLoaderRoute: typeof ReportReportIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

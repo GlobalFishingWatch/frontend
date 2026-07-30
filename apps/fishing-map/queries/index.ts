@@ -1,3 +1,4 @@
+import { chatApi } from './chat-api'
 import { dataTerminologyApi } from './data-terminology-api'
 import { reportEventsStatsApi } from './report-events-stats-api'
 import { vesselSearchApi } from './search-api'
@@ -7,6 +8,7 @@ import { vesselEventsApi } from './vessel-events-api'
 import { vesselInsightApi } from './vessel-insight-api'
 
 export const queriesApiReducers = {
+  [chatApi.reducerPath]: chatApi.reducer,
   [dataviewStatsApi.reducerPath]: dataviewStatsApi.reducer,
   [reportEventsStatsApi.reducerPath]: reportEventsStatsApi.reducer,
   [userGuideApi.reducerPath]: userGuideApi.reducer,
@@ -17,6 +19,7 @@ export const queriesApiReducers = {
 }
 
 export const queriesApiMiddlewares = [
+  chatApi.middleware,
   dataviewStatsApi.middleware,
   reportEventsStatsApi.middleware,
   userGuideApi.middleware,

@@ -13,7 +13,8 @@
       "outputs": [
         "{projectRoot}/src/pbf-decoders/vessels.gen.js",
         "{projectRoot}/src/pbf-decoders/vessels.gen.d.ts",
-        "{projectRoot}/dist/pbf-decoders"
+        "{projectRoot}/dist/pbf-decoders/vessels.gen.js",
+        "{projectRoot}/dist/pbf-decoders/vessels.gen.d.ts"
       ],
       "options": {
         "cwd": "libs/api-client",
@@ -33,7 +34,14 @@
       "executor": "@nx/js:tsc",
       "dependsOn": ["proto:generate"],
       "options": {
-        "clean": false
+        "clean": false,
+        "assets": [
+          {
+            "input": "libs/api-client/src/pbf-decoders",
+            "glob": "vessels.gen.{js,d.ts}",
+            "output": "pbf-decoders"
+          }
+        ]
       }
     },
     "dev": {

@@ -4,7 +4,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
-  WorkspaceGenerator = 'workspaceGenerator',
   HotspotButton = 'hotspotButton',
   PolygonsReport = 'polygonsReport',
   ReportPreview = 'reportPreview',
@@ -35,7 +34,6 @@ interface DebugState {
 export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
-    workspaceGenerator: false,
     hotspotButton: false,
     polygonsReport: false,
     reportPreview: false,

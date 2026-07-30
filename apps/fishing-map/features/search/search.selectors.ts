@@ -3,8 +3,8 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
-import { IS_RANDOM_FOREST_ENABLED, PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
-import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
+import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { PIPE_5_WORKSPACE_ID } from 'data/workspaces'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -19,6 +19,8 @@ import { selectSearchSources } from 'features/search/search.config.selectors'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { DEFAULT_VESSEL_IDENTITY_ID, VESSEL_IDENTITY_ID_V5 } from 'features/vessel/vessel.config'
+import { selectWorkspaceId } from 'router/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
 
@@ -30,6 +32,7 @@ const selectSearchDatasetsInWorkspace = createSelector(
     selectPrivateUserGroups,
     selectSearchSources,
     selectDeprecatedDatasets,
+    selectWorkspaceId,
   ],
   (
     dataviews,
@@ -37,7 +40,8 @@ const selectSearchDatasetsInWorkspace = createSelector(
     allDatasets,
     privateUserGroups,
     searchSources,
-    deprecatedDatasets
+    deprecatedDatasets,
+    workspaceId
   ) => {
     const datasetsIds = [
       ...getDatasetsInDataviews(dataviews),
@@ -49,7 +53,14 @@ const selectSearchDatasetsInWorkspace = createSelector(
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
-    const filteredDatasets = vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
+    // In the pipe 5 workspace the vessel identity dataset is searched in its v5 version
+    const searchDatasetsIds =
+      workspaceId === PIPE_5_WORKSPACE_ID
+        ? datasets.map((id) => (id === DEFAULT_VESSEL_IDENTITY_ID ? VESSEL_IDENTITY_ID_V5 : id))
+        : datasets
+    const filteredDatasets = vesselsDatasets.filter((dataset) =>
+      searchDatasetsIds.includes(dataset.id)
+    )
 
     // Remove public-... datasets if a corresponding private-... dataset exists
     const privateDatasetsIds = filteredDatasets.flatMap((d) =>
@@ -64,18 +75,6 @@ const selectSearchDatasetsInWorkspace = createSelector(
       }
       return true
     })
-    if (IS_RANDOM_FOREST_ENABLED) {
-      const filteredDatasetsPrioritisedRF = filteredDatasetsPrioritised.map((d) => {
-        if (d.id === DEFAULT_IDENTITY_DATASET_ID) {
-          const datasetRF = allDatasets.find(
-            (d) => d.id === 'public-global-vessel-identity-vi-653:v1.0'
-          )
-          return datasetRF || d
-        }
-        return d
-      })
-      return filteredDatasetsPrioritisedRF
-    }
     return filteredDatasetsPrioritised
   }
 )

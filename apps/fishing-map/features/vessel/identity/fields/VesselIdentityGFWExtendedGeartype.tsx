@@ -1,13 +1,12 @@
-import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import { IS_RANDOM_FOREST_ENABLED } from 'data/config'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
+import { getIsCombinedSourceInTimerange } from 'features/vessel/identity/fields/vessel-identity.utils'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from '../VesselIdentity.module.css'
@@ -28,112 +27,78 @@ const VesselIdentityGFWExtendedGeartype = ({
   }
   const {
     geartypes,
-    inferredLowActivityVesselClassAgRf,
-    inferredVesselClassAgNnet,
-    messyMmsi,
-    prodGeartypeNnet,
-    prodGeartypeSource,
-    registryVesselClass,
-    rfCoarseClass,
+    atomicClass = [],
+    vesselClassScore = [],
+    bestVesselClassRf = [],
+    prodGeartypeSource = [],
+    inferredVesselClassAgNnet = [],
+    registryVesselClass = [],
+    vesselClassSourceAgreement = [],
   } = identity.combinedSourcesInfo
 
-  const prodGeartypeNnetSort = (prodGeartypeNnet || [])
-    .filter(Boolean)
-    .sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
-
+  const atomicClassInTimerange = atomicClass.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const inferredVesselClassAgNnetInTimerange = inferredVesselClassAgNnet.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const registryVesselClassInTimerange = registryVesselClass.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const prodGeartypeSourceInTimerange = prodGeartypeSource.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const vesselClassScoreInTimerange = vesselClassScore.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const vesselClassSourceAgreementInTimerange = vesselClassSourceAgreement.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
   return (
     <ul className={styles.extendedInfo}>
-      {isGFWUser && (
-        <Fragment>
-          <li>
-            <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
-          </li>
-          <li>
-            <Tooltip content="(inferredVesselClassAgNnet) Vessel class inferred by the machine learning model.">
-              <span className={cx(styles.secondary, styles.help)}>Machine learning estimate: </span>
-            </Tooltip>
-            {inferredVesselClassAgNnet?.[sourceIndex]?.value
-              ? formatInfoField(
-                  inferredVesselClassAgNnet?.[sourceIndex]?.value as string,
-                  'geartypes'
-                )
-              : EMPTY_FIELD_PLACEHOLDER}
-          </li>
-          <li>
-            <Tooltip content='(registryVesselClass) Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the "Registry" tab gear, which aggregates at the hull level.'>
-              <span className={cx(styles.secondary, styles.help)}>Aggregated registry: </span>
-            </Tooltip>
-            {registryVesselClass?.[sourceIndex]?.value
-              ? (formatInfoField(
-                  registryVesselClass?.[sourceIndex]?.value as string,
-                  'geartypes'
-                ) as string)
-              : EMPTY_FIELD_PLACEHOLDER}
-          </li>
-          <li>
-            <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">
-              <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
-            </Tooltip>
-            {(prodGeartypeSource?.[sourceIndex]?.value as string)?.toLowerCase() ||
-              EMPTY_FIELD_PLACEHOLDER}
-          </li>
-          {IS_RANDOM_FOREST_ENABLED && (
-            <Fragment>
-              <li>
-                <Tooltip content="(prodGeartypeNnet)">
-                  <span className={cx(styles.secondary, styles.help)}>
-                    Previous GFW best gear type:{' '}
-                  </span>
-                </Tooltip>
-                {prodGeartypeNnetSort?.[0]?.value !== undefined
-                  ? prodGeartypeNnetSort?.[0]?.value.toString()
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </li>
-              <li>
-                <Tooltip content="(geartype)">
-                  <span className={cx(styles.secondary, styles.help)}>
-                    Random Forest estimate:{' '}
-                  </span>
-                </Tooltip>
-                {geartypes?.[sourceIndex]?.name
-                  ? (formatInfoField(
-                      geartypes?.[sourceIndex]?.name as string,
-                      'geartypes'
-                    ) as string)
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </li>
-              <li>
-                <Tooltip content="(rfCoarseClass)">
-                  <span className={cx(styles.secondary, styles.help)}>RF coarse class: </span>
-                </Tooltip>
-                {rfCoarseClass?.[sourceIndex]?.value
-                  ? (rfCoarseClass?.[sourceIndex]?.value as string).toLowerCase()
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </li>
-              <li>
-                <Tooltip content="(inferredLowActivityVesselClassAgRf)">
-                  <span className={cx(styles.secondary, styles.help)}>
-                    Inferred low activity vessel class:
-                  </span>
-                </Tooltip>
-                {inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value
-                  ? (
-                      inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value as string
-                    ).toLowerCase()
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </li>
-              <li>
-                <Tooltip content="(messyMmsi)">
-                  <span className={cx(styles.secondary, styles.help)}>Messy MMSI: </span>
-                </Tooltip>
-                {messyMmsi?.[sourceIndex]?.value !== undefined
-                  ? messyMmsi?.[sourceIndex]?.value?.toString()
-                  : EMPTY_FIELD_PLACEHOLDER}
-              </li>
-            </Fragment>
-          )}
-        </Fragment>
-      )}
+      <li>
+        <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
+      </li>
+      <li>
+        <Tooltip content="(inferredVesselClassAgNnet) Vessel class inferred by the machine learning model.">
+          <span className={cx(styles.secondary, styles.help)}>ML vessel class: </span>
+        </Tooltip>
+        {inferredVesselClassAgNnetInTimerange?.value
+          ? formatInfoField(inferredVesselClassAgNnetInTimerange?.value as string, 'geartypes')
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>ML atomic class: </span>
+        {atomicClassInTimerange?.value
+          ? formatInfoField(atomicClassInTimerange?.value as string, 'geartypes')
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content='(registryVesselClass) Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the "Registry" tab gear, which aggregates at the hull level.'>
+          <span className={cx(styles.secondary, styles.help)}>Aggregated registry: </span>
+        </Tooltip>
+        {registryVesselClassInTimerange?.value
+          ? registryVesselClassInTimerange.value
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">
+          <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
+        </Tooltip>
+        {(prodGeartypeSourceInTimerange?.value as string)?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>ML vessel class score </span>
+        {vesselClassScoreInTimerange?.value !== undefined
+          ? vesselClassScoreInTimerange.value
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <span className={cx(styles.secondary, styles.help)}>Vessel class source agreement: </span>
+        {vesselClassSourceAgreementInTimerange?.value
+          ? vesselClassSourceAgreementInTimerange.value
+          : EMPTY_FIELD_PLACEHOLDER}
+      </li>
     </ul>
   )
 }
