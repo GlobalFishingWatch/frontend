@@ -120,12 +120,11 @@ const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
   path: '/api/ocean-areas/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppCategoryWorkspaceIdIndexRoute =
-  AppCategoryWorkspaceIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
+const AppCategoryWorkspaceIdIndexRoute = AppCategoryWorkspaceIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCategoryWorkspaceIdRoute,
+} as any)
 const AppCategoryWorkspaceIdVesselSearchRoute =
   AppCategoryWorkspaceIdVesselSearchRouteImport.update({
     id: '/vessel-search',
@@ -150,12 +149,11 @@ const AppCategoryWorkspaceIdPortsReportPortIdRoute =
     path: '/ports-report/$portId',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
-const AppCategoryWorkspaceIdReportIndexRoute =
-  AppCategoryWorkspaceIdReportIndexRouteImport.update({
-    id: '/report/',
-    path: '/report/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
+const AppCategoryWorkspaceIdReportIndexRoute = AppCategoryWorkspaceIdReportIndexRouteImport.update({
+  id: '/report/',
+  path: '/report/',
+  getParentRoute: () => AppCategoryWorkspaceIdRoute,
+} as any)
 const AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
   AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update({
     id: '/vessel-group-report/$vesselGroupId',
@@ -553,27 +551,21 @@ interface AppCategoryWorkspaceIdRouteChildren {
   AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute: typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
 }
 
-const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren =
-  {
-    AppCategoryWorkspaceIdVesselSearchRoute:
-      AppCategoryWorkspaceIdVesselSearchRoute,
-    AppCategoryWorkspaceIdIndexRoute: AppCategoryWorkspaceIdIndexRoute,
-    AppCategoryWorkspaceIdPortsReportPortIdRoute:
-      AppCategoryWorkspaceIdPortsReportPortIdRoute,
-    AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
-      AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute,
-    AppCategoryWorkspaceIdVesselVesselIdRoute:
-      AppCategoryWorkspaceIdVesselVesselIdRoute,
-    AppCategoryWorkspaceIdReportIndexRoute:
-      AppCategoryWorkspaceIdReportIndexRoute,
-    AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
-      AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
-  }
+const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren = {
+  AppCategoryWorkspaceIdVesselSearchRoute: AppCategoryWorkspaceIdVesselSearchRoute,
+  AppCategoryWorkspaceIdIndexRoute: AppCategoryWorkspaceIdIndexRoute,
+  AppCategoryWorkspaceIdPortsReportPortIdRoute: AppCategoryWorkspaceIdPortsReportPortIdRoute,
+  AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
+    AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute,
+  AppCategoryWorkspaceIdVesselVesselIdRoute: AppCategoryWorkspaceIdVesselVesselIdRoute,
+  AppCategoryWorkspaceIdReportIndexRoute: AppCategoryWorkspaceIdReportIndexRoute,
+  AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
+    AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
+}
 
-const AppCategoryWorkspaceIdRouteWithChildren =
-  AppCategoryWorkspaceIdRoute._addFileChildren(
-    AppCategoryWorkspaceIdRouteChildren,
-  )
+const AppCategoryWorkspaceIdRouteWithChildren = AppCategoryWorkspaceIdRoute._addFileChildren(
+  AppCategoryWorkspaceIdRouteChildren
+)
 
 interface AppRouteChildren {
   AppUserRoute: typeof AppUserRoute
@@ -608,10 +600,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
-  ApiTrackCorrectionsWorkspaceIdIssueIdRoute:
-    ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
-  ApiTrackCorrectionsWorkspaceIdIndexRoute:
-    ApiTrackCorrectionsWorkspaceIdIndexRoute,
+  ApiTrackCorrectionsWorkspaceIdIssueIdRoute: ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
+  ApiTrackCorrectionsWorkspaceIdIndexRoute: ApiTrackCorrectionsWorkspaceIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

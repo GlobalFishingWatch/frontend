@@ -1,11 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import {
-  FISHING_DATAVIEW_SLUG_ALL,
-  PRESENCE_DATAVIEW_SLUG,
-  VESSEL_TEMPLATE_DATAVIEW_SLUGS,
-} from 'data/workspaces'
+import { DatasetSubCategory } from '@globalfishingwatch/api-types'
+
+import { VESSEL_TEMPLATE_DATAVIEW_SLUGS } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 
 const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
@@ -23,10 +22,21 @@ export const selectVesselTemplateDataviews = createSelector(
   }
 )
 
-export const selectPresenceDataview = createSelector([selectAllDataviews], (dataviews = []) => {
-  return dataviews.find((dataview) => dataview.slug === PRESENCE_DATAVIEW_SLUG)
-})
+const selectActivityDataviewsBySubcategory = (subcategory: DatasetSubCategory) =>
+  createSelector([selectAllDataviews, selectAllDatasets], (dataviews = [], allDatasets = []) => {
+    return dataviews.filter((dataview) =>
+      dataview.datasetsConfig?.some(
+        (datasetConfig) =>
+          allDatasets.find((dataset) => dataset.id === datasetConfig.datasetId)?.subcategory ===
+          subcategory
+      )
+    )
+  })
 
-export const selectFishingDataview = createSelector([selectAllDataviews], (dataviews = []) => {
-  return dataviews.find((dataview) => dataview.slug === FISHING_DATAVIEW_SLUG_ALL)
-})
+export const selectPresenceDataviews = selectActivityDataviewsBySubcategory(
+  DatasetSubCategory.Presence
+)
+
+export const selectFishingDataviews = selectActivityDataviewsBySubcategory(
+  DatasetSubCategory.Fishing
+)
