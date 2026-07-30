@@ -11,6 +11,11 @@
       "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./fourwings/helpers": {
+      "types": "./dist/fourwings/helpers/index.d.ts",
+      "development": "./src/fourwings/helpers/index.ts",
+      "default": "./dist/fourwings/helpers/index.js"
     }
   },
   "main": "./dist/index.js",

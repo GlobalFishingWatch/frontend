@@ -14,9 +14,8 @@ import {
   type StatsIncludes,
 } from '@globalfishingwatch/api-types'
 import { getEndpointByType } from '@globalfishingwatch/datasets-client'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
-import type { RootState } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
 import { getEncounterTypesFromIds } from 'utils/encounter-types'
 

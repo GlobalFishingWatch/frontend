@@ -16,8 +16,9 @@
  *   node scripts/check-store-graph.mjs            # check, exit 1 on violation
  *   node scripts/check-store-graph.mjs --report   # print the graph and why each offender is reachable
  */
-import { readFileSync, existsSync, statSync } from 'node:fs'
-import { dirname, resolve, relative } from 'node:path'
+import { existsSync, readFileSync, statSync } from 'node:fs'
+import { dirname, relative, resolve } from 'node:path'
+
 // Root package.json aliases `typescript` -> `@typescript/typescript6`; import via the alias.
 import ts from 'typescript'
 
@@ -70,6 +71,7 @@ const FORBIDDEN = [
   '@deck.gl/',
   '@globalfishingwatch/deck-layers',
   '@globalfishingwatch/deck-layer-composer',
+  '@globalfishingwatch/deck-loaders',
   '@globalfishingwatch/timebar',
   '@turf/turf',
   '@strapi/client',
@@ -89,6 +91,8 @@ const LEAF_SUBPATHS = {
   '@globalfishingwatch/timebar/constants': 'libs/timebar/src/constants.ts',
   '@globalfishingwatch/deck-layer-composer/dataview-resolvers':
     'libs/deck-layer-composer/src/resolvers/dataviews.ts',
+  '@globalfishingwatch/deck-loaders/fourwings/helpers':
+    'libs/deck-loaders/src/fourwings/helpers/index.ts',
 }
 
 // Mirrors compilerOptions.paths in apps/platform/tsconfig.json. Longest prefix wins.
@@ -261,7 +265,9 @@ if (importersArg !== -1) {
     process.exit(0)
   }
   for (const [key, files] of matches) {
-    console.log(`\n${key.startsWith('/') ? relative(REPO_ROOT, key) : key} <- ${files.size} importer(s)`)
+    console.log(
+      `\n${key.startsWith('/') ? relative(REPO_ROOT, key) : key} <- ${files.size} importer(s)`
+    )
     for (const f of [...files].sort()) console.log(`  ${relative(REPO_ROOT, f)}`)
   }
   process.exit(0)
