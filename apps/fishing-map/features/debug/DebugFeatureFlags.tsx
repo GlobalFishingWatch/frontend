@@ -5,9 +5,11 @@ import { Switch } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
-import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectIsTurningTidesWorkspace,
+  selectLonglineSetsInsight,
+} from 'features/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import {
   DebugOption,

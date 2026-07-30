@@ -27,7 +27,7 @@ import {
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import ReportPolygonsGraph from 'features/reports/tabs/others/ReportPolygonsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { selectMigramarLayer } from 'router/routes.selectors'
+import { selectMigramarLayer } from 'features/workspace/workspace.selectors'
 
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'

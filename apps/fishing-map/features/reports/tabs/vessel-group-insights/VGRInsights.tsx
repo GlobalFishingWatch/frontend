@@ -11,7 +11,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/shared/vessels/report-vessels.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
-import { selectLonglineSetsInsight } from 'router/routes.selectors'
+import { selectLonglineSetsInsight } from 'features/workspace/workspace.selectors'
 
 import VesselGroupReportInsightFishing from './VGRInsightFishing'
 import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'

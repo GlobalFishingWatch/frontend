@@ -8,7 +8,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import InsightMOUList from 'features/vessel/insights/InsightMOUList'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
-import { selectLonglineSetsInsight } from 'router/routes.selectors'
+import { selectLonglineSetsInsight } from 'features/workspace/workspace.selectors'
 
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
 

@@ -58,15 +58,13 @@ import type { ReportState } from 'features/reports/reports.types'
 import {
   selectCollapsedSections,
   selectDaysFromLatest,
+  selectLonglineSetsInsight,
+  selectMigramarLayer,
   selectTimeMode,
   selectWorkspace,
 } from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import {
-  selectLocationCategory,
-  selectLonglineSetsInsight,
-  selectMigramarLayer,
-} from 'router/routes.selectors'
+import { selectLocationCategory } from 'router/routes.selectors'
 import type { WorkspaceState } from 'types'
 
 /** Makes every key required while still allowing undefined values **/
