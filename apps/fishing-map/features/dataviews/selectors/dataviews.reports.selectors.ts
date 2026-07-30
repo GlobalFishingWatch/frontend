@@ -4,15 +4,13 @@ import { uniq } from 'es-toolkit'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectFeatureFlags } from 'features/debug/debug.slice'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
   isSupportedReportDataview,
 } from 'features/reports/report-area/area-reports.utils'
-import { getVesselGroupActivityDatasets } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectVGRDatasets } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectVGRPresenceDataview } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import type {
   AnyReportSubCategory,
   ReportActivitySubCategory,
@@ -26,7 +24,6 @@ import {
 } from 'router/routes.selectors'
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
-import { selectPresenceDataview } from './dataviews.static.selectors'
 
 export const selectActiveSupportedReportDataviews = createSelector(
   [selectDataviewInstancesResolved, selectFeatureFlags],
@@ -62,28 +59,18 @@ export const selectActiveActivityReportSubCategories = createSelector(
     selectActiveReportSubCategoriesByCategory<ReportActivitySubCategory>(
       DataviewCategory.VesselGroups
     ),
-    selectVGRDatasets,
-    selectPresenceDataview,
-    selectAllDatasets,
+    selectVGRPresenceDataview,
   ],
   (
     isVesselGroupReportLocation,
     activityReportSubCategories,
     vesselGroupReportSubCategories,
-    vesselGroupDatasets,
-    presenceDataview,
-    allDatasets
+    presenceDataview
   ) => {
     if (!isVesselGroupReportLocation) {
       return activityReportSubCategories
     }
-    const supportsPresence =
-      getVesselGroupActivityDatasets({
-        vesselGroupDatasets,
-        activityDatasetIds:
-          presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId) || [],
-        allDatasets,
-      }).length > 0
+    const supportsPresence = presenceDataview.datasets.length > 0
     return supportsPresence
       ? vesselGroupReportSubCategories
       : vesselGroupReportSubCategories.filter((subCategory) => subCategory !== 'presence')
