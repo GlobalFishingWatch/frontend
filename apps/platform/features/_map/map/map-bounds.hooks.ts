@@ -75,7 +75,8 @@ export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParam
     height,
     padding,
   })
-  return { latitude, longitude, zoom }
+  const wrappedLongitude = ((((longitude + 180) % 360) + 360) % 360) - 180
+  return { latitude, longitude: wrappedLongitude, zoom }
 }
 
 export const FLY_TO_TRANSITION = 2000
