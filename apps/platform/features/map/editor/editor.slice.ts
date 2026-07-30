@@ -74,15 +74,6 @@ const editorSlice = createSlice({
   },
 })
 
-// The menu's open flag lives in modals.slice (selectEditorMenuOpen / toggleEditorMenu): Modals.tsx is
-// always loaded, and reading it from here kept this slice out of the lazy-injection set.
-/**
- * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
- * Importing this module performs the injection, so the chunk that needs the slice registers it.
- *
- * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered slice,
- * so a read between inject() and the next dispatched action is safe.
- */
 const injectedEditorSlice = rootReducer.inject(editorSlice)
 
 declare module 'reducers' {

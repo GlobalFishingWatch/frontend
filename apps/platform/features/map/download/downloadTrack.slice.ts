@@ -152,13 +152,6 @@ const downloadTrackSlice = createSlice({
 export const { resetDownloadTrackStatus, clearDownloadTrackVessel, setDownloadTrackVessel } =
   downloadTrackSlice.actions
 
-/**
- * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
- * Importing this module performs the injection, so the chunk that needs the slice registers it.
- *
- * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered slice,
- * so a read between inject() and the next dispatched action is safe.
- */
 const injectedDownloadTrackSlice = rootReducer.inject(downloadTrackSlice)
 
 declare module 'reducers' {

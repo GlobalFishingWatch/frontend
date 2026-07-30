@@ -1,64 +1,95 @@
 # Google Analytics `trackEvent` Inventory
 
-> **platform** (frontend monorepo) — Generated: 2026-05-13
+> **platform** (frontend monorepo) — Regenerated: 2026-07-30
+>
+> Paths are relative to `apps/platform/`. All events go through `trackEvent` from
+> [features/app/analytics.hooks.ts](apps/platform/features/app/analytics.hooks.ts) (a typed
+> `trackEventBase<TrackCategory>`).
+
+## `TrackCategory` values
+
+`features/app/analytics.hooks.ts:15`
+
+| Enum member | GA value |
+| --- | --- |
+| `General` | `general` |
+| `ActivityData` | `activity_data` |
+| `Analysis` | `analysis` |
+| `DataDownloads` | `data_downloads` |
+| `EnvironmentalData` | `environmental_data` |
+| `GlobalReports` | `global_reports` |
+| `HelpHints` | `help_hints` |
+| `I18n` | `internationalization` |
+| `ReferenceLayer` | `reference_layer` |
+| `SearchVessel` | `search_vessel` |
+| `Timebar` | `timebar` |
+| `Tracks` | `tracks` |
+| `User` | `user` |
+| `VesselGroups` | `vessel_groups` |
+| `VesselGroupReport` | `vessel_group_report` |
+| `VesselProfile` | `vessel_profile` |
+| `WorkspaceManagement` | `workspace_management` |
+| `MapInteraction` | `map_interaction` |
 
 ---
 
 ## Analytics & Page Tracking
 
-- **`app/analytics.hooks.ts:52`**
+- **`features/app/analytics.hooks.ts:58`** — `General`
   - Action: `'general'`
-  - Label: _n/a_ (uses `other` with `pagetype`, `language`, `user_login_state`, `user_id`, `organization_type`, `country`, `user_cohort`, `user_group`)
+  - `other`: `pagetype` (`locationType`, or `locationType (locationCategory)` for `WORKSPACES_LIST`), `language`, `user_login_state`; when logged in also `user_id`, `organization_type`, `organization_type_hashed`, `country`, `user_cohort`, `user_group`
+  - _(`customer_email` / `customer_email_hashed` are commented out)_
 
 ---
 
-## User Management
+## User
 
-- **`user/user.slice.ts:65`**
-  - Action: `'login'`
-  - Label: _n/a_ (uses `other` with `user_id`)
+- **`features/user/LoginLink.tsx:33`** — `User`
+  - Action: `` `Clicked login button${loginSource ? ` from ${loginSource}` : ''}` ``
+
+- **`features/user/user.hooks.ts:113`** — `User`
+  - Action: `'login_success'`
+  - Label: `loginSource ?? ''`
+  - `other`: `{ user_id }` _(`email` commented out)_
 
 ---
 
-## Sidebar
+## Nav & Sidebar
 
-- **`sidebar/SidebarHeader.tsx:118`**
+- **`features/nav/MainNav.tsx:88`** — `General`
+  - Action: `` `clicked on ${category}` ``
+
+- **`features/nav/MainNav.tsx:97`** — `SearchVessel`
+  - Action: `'Click search icon to open search panel'`
+
+- **`features/map/sidebar/SidebarHeader.tsx:127`** — `SearchVessel`
   - Action: `'Toggle search type to filter results'`
   - Label: `option.id`
 
-- **`sidebar/CategoryTabs.tsx:98`**
-  - Action: `` `clicked on ${category}` ``
+- **`features/map/sidebar/buttons/ShareWorkspaceButton.tsx:46`** — category varies (`trackEventCategories[location]`: `WorkspaceManagement` for `MAP`/`WORKSPACE`, `Analysis` for `REPORT`/`WORKSPACE_REPORT`, `VesselProfile` for `VESSEL`/`WORKSPACE_VESSEL`)
+  - Action: `` `Click share ${trackEventActions[location]}'}` `` — one of `Click share workspace'}` / `Click share report'}`
+  - ⚠️ Stray `'}` in the template literal leaks into the GA action string. Bug, not intentional.
 
-- **`sidebar/CategoryTabs.tsx:107`**
-  - Action: `'Click search icon to open search panel'`
-
-- **`sidebar/buttons/ShareWorkspaceButton.tsx:45`**
-  - Action: `` `Click share ${trackEventActions[location]}` ``
-
-- **`sidebar/buttons/NavigationHistoryButton.tsx:71`**
-  - Action (dynamic, one of):
-    - `close_vessel_panel`
-    - `close_report_panel`
-    - `close_vessel_group_report_panel`
-    - `close_workspace`
+- **`features/map/sidebar/buttons/NavigationHistoryButton.tsx:64`** — `VesselProfile`
+  - Action (dynamic, first match wins; event skipped when none): `close_vessel_panel`, `close_report_panel`, `close_vessel_group_report_panel`, `close_workspace`
 
 ---
 
 ## Workspace Management
 
-- **`workspaces-list/WorkspaceWizard.tsx:85`**
+- **`features/map/workspaces-list/WorkspaceWizard.tsx:96`** — `WorkspaceManagement`
   - Action: `'Uses marine manager workspace wizard'`
   - Label: `getEventLabel([inputSearch, selectedItem?.properties?.name || ''])`
 
-- **`workspaces-list/WorkspacesList.tsx:43`**
+- **`features/map/workspaces-list/WorkspacesList.tsx:41`** — `GlobalReports`
   - Action: `` `Clicked highlighted ${workspace.reportCategory} workspace` ``
   - Label: `workspace.name`
 
-- **`workspace/save/WorkspaceCreateModal.tsx:171`**
+- **`features/map/workspace/save/WorkspaceCreateModal.tsx:203`** — `WorkspaceManagement`
   - Action: `'Save current workspace'`
-  - Label: `workspace?.name ?? 'Unknown'`
+  - Label: `workspaceUpdated?.name ?? 'Unknown'`
 
-- **`workspace/save/WorkspaceEdit.tsx:97`**
+- **`features/map/workspace/save/WorkspaceEdit.tsx:109`** — `WorkspaceManagement`
   - Action: `'Edit current workspace'`
   - Label: `dispatchedAction.payload?.name ?? 'Unknown'`
 
@@ -66,39 +97,39 @@
 
 ## Downloads
 
-- **`download/DownloadTrackModal.tsx:73`**
+- **`features/map/download/DownloadTrackModal.tsx:74`** — `DataDownloads`
   - Action: `'Track download'`
   - Label: `downloadTrackName`
 
-- **`download/DownloadActivityGridded.tsx:164`**
+- **`features/map/download/DownloadActivityGridded.tsx:165`** — `DataDownloads`
   - Action: `'Download GeoTIFF file'`
-  - Label: `JSON.stringify({regionName, downloadType: 'gridded activity', groupBy, temporalResolution, spatialResolution, sourceNames})`
+  - Label: `JSON.stringify({ regionName, downloadType: 'gridded activity', groupBy, temporalResolution, spatialResolution, sourceNames })`
 
-- **`download/DownloadActivityGridded.tsx:179`**
+- **`features/map/download/DownloadActivityGridded.tsx:180`** — `DataDownloads`
   - Action: `` `Download ${format} file` ``
-  - Label: `JSON.stringify({regionName, downloadType: 'gridded activity', spatialResolution, groupBy, temporalResolution, sourceNames})`
+  - Label: `JSON.stringify({ regionName, downloadType: 'gridded activity', spatialResolution, groupBy, temporalResolution, sourceNames })`
 
-- **`download/DownloadActivityGridded.tsx:212`**
+- **`features/map/download/DownloadActivityGridded.tsx:213`** — `DataDownloads`
   - Action: `'Activity download'`
   - Label: `getEventLabel([downloadParams.areaName, ...downloadDataviews.map(...)])`
 
-- **`download/DownloadActivityEnvironment.tsx:141`**
+- **`features/map/download/DownloadActivityEnvironment.tsx:142`** — `DataDownloads`
   - Action: `'Download GeoTIFF file'`
-  - Label: `JSON.stringify({regionName, downloadType: 'environment', spatialResolution, temporalResolution, sourceNames})`
+  - Label: `JSON.stringify({ regionName, downloadType: 'environment', spatialResolution, temporalResolution, sourceNames })`
 
-- **`download/DownloadActivityEnvironment.tsx:155`**
+- **`features/map/download/DownloadActivityEnvironment.tsx:156`** — `DataDownloads`
   - Action: `` `Download ${format} file` ``
-  - Label: `JSON.stringify({regionName, downloadType: 'environment', spatialResolution, temporalResolution, sourceNames})`
+  - Label: `JSON.stringify({ regionName, downloadType: 'environment', spatialResolution, temporalResolution, sourceNames })`
 
-- **`download/DownloadActivityEnvironment.tsx:186`**
+- **`features/map/download/DownloadActivityEnvironment.tsx:187`** — `DataDownloads`
   - Action: `'Activity download'`
   - Label: `getEventLabel([downloadParams.areaName, ...downloadDataviews.map(...)])`
 
-- **`download/DownloadActivityByVessel.tsx:122`**
+- **`features/map/download/DownloadActivityByVessel.tsx:123`** — `DataDownloads`
   - Action: `` `Download ${format.toUpperCase()} file` ``
-  - Label: `JSON.stringify({regionName, downloadType: 'active vessels', temporalResolution, groupBy, sourceNames})`
+  - Label: `JSON.stringify({ regionName, downloadType: 'active vessels', temporalResolution, groupBy, sourceNames })`
 
-- **`download/DownloadActivityByVessel.tsx:153`**
+- **`features/map/download/DownloadActivityByVessel.tsx:154`** — `DataDownloads`
   - Action: `'Activity download'`
   - Label: `getEventLabel([downloadAreaName || EMPTY_FIELD_PLACEHOLDER, ...downloadDataviews.map(...)])`
 
@@ -106,197 +137,187 @@
 
 ## Datasets & Reference Layers
 
-- **`datasets/datasets.hook.ts:220`**
+- **`features/map/datasets/datasets.hook.ts:228`** — `ReferenceLayer`
   - Action: `'Start uploading user dataset'`
 
-- **`datasets/upload/NewDataset.tsx:138`**
+- **`features/map/datasets/upload/NewDataset.tsx:137`** — `User`
   - Action: `` `Confirm ${datasetMetadata.configuration?.frontend?.geometryType} upload` ``
   - Label: `datasetMetadata?.name`
 
-- **`layer-library/LayerLibraryUserPanel.tsx:89`**
+- **`features/map/layer-library/LayerLibraryUserPanel.tsx:98`** — `ReferenceLayer`
   - Action: `'Draw a custom reference layer - Start'`
 
-- **`layer-library/LayerLibraryItem.tsx:96`**
+- **`features/map/layer-library/LayerLibraryItem.tsx:96`** — `EnvironmentalData`
   - Action: `` `add ${category} layer to workspace` ``
   - Label: ``getEventLabel([`layer_id: ${id}`])``
 
-- **`map/overlays/draw/DrawDialog.tsx:118`**
+- **`features/map/map/overlays/draw/DrawDialog.tsx:118`** — `ReferenceLayer`
   - Action: `'Draw a custom reference layer - Click dismiss'`
 
-- **`map/overlays/draw/DrawDialog.tsx:173`**
+- **`features/map/map/overlays/draw/DrawDialog.tsx:166`** — `ReferenceLayer`
   - Action: `'Draw a custom reference layer - Click save'`
 
-- **`map/overlays/draw/DrawDialog.tsx:184`**
+- **`features/map/map/overlays/draw/DrawDialog.tsx:177`** — `ReferenceLayer`
   - Action: `'Draw a custom reference layer - Click + icon'`
 
 ---
 
 ## Workspace Sections (Layer Toggling)
 
-- **`workspace/vessel-groups/VesselGroupsSection.tsx:48`**
+- **`features/map/workspace/vessel-groups/VesselGroupsSection.tsx:48`** — `VesselGroups`
   - Action: `'Click to add vessel group to workspace'`
 
-- **`workspace/vessel-groups/VesselGroupsSection.tsx:55`**
+- **`features/map/workspace/vessel-groups/VesselGroupsSection.tsx:55`** — `ReferenceLayer`
   - Action: `'Open panel to add a reference layer'`
-  - Label: _n/a_ (value: `userDatasets.length`)
+  - Value: `userDatasets.length`
 
-- **`workspace/user/UserSection/UserSection.tsx:69`**
+- **`features/map/workspace/user/UserSection/UserSection.tsx:79`** — `ReferenceLayer`
   - Action: `'Draw a custom reference layer - Start'`
 
-- **`workspace/user/UserSection/UserSection.tsx:80`**
+- **`features/map/workspace/user/UserSection/UserSection.tsx:90`** — `ReferenceLayer`
   - Action: `'Open panel to upload new reference layer'`
-  - Label: _n/a_ (value: `userDatasets.length`)
+  - Value: `userDatasets.length`
 
-- **`workspace/user/UserSection/UserSection.tsx:89`**
+- **`features/map/workspace/user/UserSection/UserSection.tsx:99`** — `ReferenceLayer`
   - Action: `'Open panel to add a reference layer'`
-  - Label: _n/a_ (value: `userDatasets.length`)
+  - Value: `userDatasets.length`
 
-- **`workspace/user/UserSection/UserSection.tsx:105`**
+- **`features/map/workspace/user/UserSection/UserSection.tsx:115`** — `ReferenceLayer`
   - Action: `'Toggle reference layer'`
   - Label: `getEventLabel([action, layerTitle])`
 
-- **`workspace/context-areas/ContextAreaSection.tsx:39`**
+- **`features/map/workspace/context-areas/ContextAreaSection.tsx:39`** — `ReferenceLayer`
   - Action: `'Open panel to add a reference layer'`
-  - Label: _n/a_ (value: `userDatasets.length`)
+  - Value: `userDatasets.length`
 
-- **`workspace/context-areas/ContextAreaSection.tsx:55`**
+- **`features/map/workspace/context-areas/ContextAreaSection.tsx:55`** — `ReferenceLayer`
   - Action: `'Toggle reference layer'`
   - Label: `getEventLabel([action, layerTitle])`
 
-- **`workspace/events/EventsSection.tsx:41`**
+- **`features/map/workspace/events/EventsSection.tsx:41`** — `ActivityData`
   - Action: `` `Toggle ${dataview.category} layer` ``
   - Label: `getEventLabel([action, dataview.id])`
 
-- **`workspace/detections/DetectionsSection.tsx:72`**
+- **`features/map/workspace/detections/DetectionsSection.tsx:72`** — `ActivityData`
   - Action: `'Click on bivariate option'`
   - Label: `getEventLabel(['combine', dataview1.name ?? dataview1.id, getActivitySources(dataview1), ...getActivityFilters(dataview1.config?.filters), dataview2.name ?? dataview2.id, getActivitySources(dataview2), ...getActivityFilters(dataview2.config?.filters)])`
 
-- **`workspace/detections/DetectionsSection.tsx:93`**
+- **`features/map/workspace/detections/DetectionsSection.tsx:93`** — `ActivityData`
   - Action: `` `Toggle ${dataview.category} layer` ``
   - Label: `getEventLabel([action, getActivitySources(dataview), ...getActivityFilters(dataview.config?.filters)])`
 
-- **`workspace/activity/ActivitySection.tsx:78`**
+- **`features/map/workspace/activity/ActivitySection.tsx:80`** — `ActivityData`
   - Action: `'Click on bivariate option'`
   - Label: `getEventLabel(['combine', dataview1.name ?? dataview1.id, getActivitySources(dataview1), ...getActivityFilters(dataview1.config?.filters), dataview2.name ?? dataview2.id, getActivitySources(dataview2), ...getActivityFilters(dataview2.config?.filters)])`
 
-- **`workspace/activity/ActivitySection.tsx:99`**
+- **`features/map/workspace/activity/ActivitySection.tsx:101`** — `ActivityData`
   - Action: `` `Toggle ${dataview.category} layer` ``
   - Label: `getEventLabel([action, getActivitySources(dataview), ...getActivityFilters(dataview.config?.filters)])`
 
-- **`workspace/activity/ActivityLayerPanel.tsx:112`**
+- **`features/map/workspace/activity/ActivityLayerPanel.tsx:117`** — `ActivityData`
   - Action: `'Click on bivariate option'`
   - Label: `getEventLabel(['split', dataview.name ?? dataview.id ?? bivariateDataviews[0], getActivitySources(dataview), ...getActivityFilters(dataview.config?.filters), bivariateDataviews[1]])`
 
-- **`workspace/shared/LayerFilters.tsx:59`**
-  - Action: `` `Click on ${filterKey} filter` ``
-  - Label: `label` _(variable)_
-
-- **`workspace/shared/LayerFilters.tsx:372`**
-  - Action: `` `Click on ${filterKey} filter` ``
-  - Label: `getEventLabel(['deselect', getActivitySources(dataview), ...getActivityFilters({ [filterKey]: filterValue ?? [] })])`
-
-- **`workspace/shared/LayerFilters.tsx:394`**
-  - Action: `` `Click on ${filterKey} filter` ``
-  - Label: `getEventLabel(['clear', getActivitySources(dataview)])`
-
-- **`workspace/shared/InfoModal.tsx:91`**
-  - Action: `'clicked on info popup'`
-  - Label: `` `${dataview.name} - ${dataset?.name}` ``
-
-- **`workspace/vessels/VesselInfoCorrection.tsx:23`**
+- **`features/map/workspace/vessels/VesselInfoCorrection.tsx:23`** — `VesselProfile`
   - Action: `'click vessel correction modal'`
 
-- **`workspace/vessels/VesselsSection.tsx:119`**
+- **`features/map/workspace/vessels/VesselsSection.tsx:123`** — `VesselGroups`
   - Action: `'add_to_vessel_group_from_workspace'`
   - Label: `` `${vesselGroupId}` ``
 
-- **`workspace/vessels/VesselsSection.tsx:150`**
+- **`features/map/workspace/vessels/VesselsSection.tsx:154`** — `SearchVessel`
   - Action: `'Click search icon to open search panel'`
+
+### Layer filters
+
+All three share Action `` `Click on ${filterKey} filter` `` under `ActivityData`.
+
+- **`features/map/workspace/shared/LayerFilters.utils.ts:17`** — `trackEventCb(filterKey, label)`, a 200 ms-debounced helper. Called from
+  [LayerFilters.tsx](apps/platform/features/map/workspace/shared/LayerFilters.tsx) and
+  [LayerFiltersGap.tsx:51](apps/platform/features/map/workspace/shared/LayerFiltersGap.tsx#L51)
+  (gap filter builds its label from `getActivitySources` + `getActivityFilters({ gapSegmentThreshold })`).
+  - Label: caller-supplied
+
+- **`features/map/workspace/shared/LayerFilters.hooks.ts:306`**
+  - Label: `getEventLabel(['deselect', getActivitySources(dataview), ...getActivityFilters({ [filterKey]: filterValue ?? [] })])`
+
+- **`features/map/workspace/shared/LayerFilters.hooks.ts:328`**
+  - Label: `getEventLabel(['clear', getActivitySources(dataview)])`
 
 ---
 
 ## Environmental
 
-- **`workspace/environmental/EnvironmentalSection.tsx:59`**
+- **`features/map/workspace/environmental/EnvironmentalSection.tsx:59`** — `EnvironmentalData`
   - Action: `'Open panel to add a environmental dataset'`
-  - Label: _n/a_ (value: `userDatasets.length`)
+  - Value: `userDatasets.length`
 
-- **`workspace/environmental/EnvironmentalSection.tsx:73`**
+- **`features/map/workspace/environmental/EnvironmentalSection.tsx:73`** — `EnvironmentalData`
   - Action: `'Toggle environmental layer'`
   - Label: `getEventLabel([action, layerTitle])`
 
-- **`workspace/environmental/HistogramRangeFilter.tsx:52`**
+- **`features/map/workspace/environmental/HistogramRangeFilter.tsx:52`** — `EnvironmentalData`
   - Action: `'Filter environmental layer'`
-  - Label: `getEventLabel([dataview.name as string, ...rangeSelected.map((r) => r.toString())])`
+  - Label: `getEventLabel([dataview.name, ...rangeSelected.map((r) => r.toString())])`
 
 ---
 
 ## Vessel Profile
 
-- **`vessel/VesselHeader.tsx:67`**
-  - Action: `'click_vessel_header_actions'`
-  - Label: `label` _(variable)_
-
-- **`vessel/VesselHeader.tsx:75`**
-  - Action: `'add_to_vessel_group_from_vessel_profile'`
-  - Label: `` `${vesselGroupId}` `` _(value: number of vessel identities in group)_
-
-- **`vessel/Vessel.tsx:198`**
+- **`features/vessels/vessel/Vessel.tsx:192`** — `VesselProfile`
   - Action: `` `click_${tab.id}_tab` ``
 
-- **`vessel/VesselLink.tsx:105`**
+- **`features/vessels/vessel/VesselHeader.tsx:71`** — `VesselProfile`
+  - Action: `'click_vessel_header_actions'`
+
+- **`features/vessels/vessel/VesselHeader.tsx:79`** — `VesselGroups`
+  - Action: `'add_to_vessel_group_from_vessel_profile'`
+  - Label: `` `${vesselGroupId}` ``
+  - Value: `` `number of vessel identities in group: ${vesselsCount}` ``
+
+- **`features/vessels/vessel/VesselLink.tsx:107`** — `SearchVessel`
   - Action: `'vessel profile link click'`
   - Label: `` `vesselId: ${vesselId} | datasetId: ${datasetId} | source: ${identity?.sourceCode?.join(', ')}` ``
 
-- **`vessel/VesselPin.tsx:181`**
+- **`features/vessels/vessel/vessel-pin.hooks.ts:201`** — `Tracks`
   - Action: `'Click in vessel from grid cell panel'`
   - Label: `getEventLabel([infoDataset?.id || '', getVesselId(vesselWithIdentity)])`
 
-- **`vessel/identity/VesselIdentity.tsx:83`**
+- **`features/vessels/vessel/identity/VesselIdentity.tsx:21`** — `VesselProfile`
   - Action: `'click_vessel_source_tab'`
   - Label: `tab.id`
 
-- **`vessel/identity/VesselIdentity.tsx:131`**
-  - Action: `'vessel_identity_download'`
-  - Label: `identitySource`
-
-- **`vessel/identity/VesselIdentity.tsx:349`**
-  - Action: `'click_marine_traffic_link'`
-
-- **`vessel/identity/VesselIdentity.tsx:362`**
-  - Action: `'click_skylight_link'`
-
-- **`vessel/identity/VesselIdentity.tsx:375`**
-  - Action: `'click_triton_link'`
-
-- **`vessel/identity/VesselIdentity.tsx:388`**
-  - Action: `'click_cravt_link'`
-
-- **`vessel/identity/VesselIdentitySelector.tsx:58`**
+- **`features/vessels/vessel/identity/VesselIdentitySelector.tsx:51`** — `VesselProfile`
   - Action: `` `change_timeperiod_${identitySource}_tab` ``
   - Label: `` `${identityIndex + 1} | ${start} - ${end}` ``
 
-- **`vessel/identity/DataTerminology.tsx:47`**
-  - Action: `` `open_vessel_info_${vesselSection}_tab` ``
-  - Label: `terminologyKey`
+- **`features/vessels/vessel/identity/tabs/IdentityTabWrapper.tsx:104`** — `VesselProfile`
+  - Action: `'vessel_identity_download'`
+  - Label: `identitySource`
 
-- **`vessel/vesselCorrection/VesselCorrectionModal.tsx:115`**
+- **`features/vessels/vessel/identity/VesselExternalToolLinks.tsx`** — `VesselProfile`, one per outbound link
+  - `:29` Action: `'click_marine_traffic_link'`
+  - `:43` Action: `'click_skylight_link'`
+  - `:54` Action: `'click_triton_link'`
+  - `:64` Action: `'click_cravt_link'`
+
+- **`features/vessels/vessel/vesselCorrection/VesselCorrectionModal.tsx:117`** — `VesselProfile`
   - Action: `'send_vessel_info_correction'`
 
-- **`vessel/related-vessels/RelatedVessels.tsx:43`**
+- **`features/vessels/vessel/related-vessels/RelatedVessels.tsx:43`** — `VesselProfile`
   - Action: `` `click_${option.id}_related_vessels_tab` ``
 
-- **`vessel/areas/VesselAreas.tsx:167`**
+- **`features/vessels/vessel/areas/VesselAreas.tsx:162`** — `VesselProfile`
   - Action: `` `click_${option.id}_areas_tab` ``
 
-- **`vessel/activity/VesselActivity.tsx:38`**
+- **`features/vessels/vessel/activity/VesselActivity.tsx:36`** — `VesselProfile`
   - Action: `` `click_activity_by_${option.id}_summary_tab` ``
 
-- **`vessel/activity/VesselActivityDownload.tsx:43`**
+- **`features/vessels/vessel/activity/VesselActivityDownload.tsx:43`** — `VesselProfile`
   - Action: `'vessel_events_download'`
   - Label: `` `${vesselSection}_tab` ``
 
-- **`vessel/activity/activity-by-type/ActivityByType.tsx:68`**
+- **`features/vessels/vessel/activity/activity-by-type/ActivityByType.tsx:68`** — `VesselProfile`
   - Action: `'View list of events by activity type'`
   - Label: `JSON.stringify({ type })`
 
@@ -304,177 +325,181 @@
 
 ## Vessel Groups
 
-- **`vessel-groups/VesselGroupModal.tsx:228`**
+- **`features/user/vessel-groups/VesselGroupModal.tsx:231`** — `VesselGroups`
   - Action: `` `match vessels from ${ids ? 'IDs' : csvData && 'CSV'} to create a vessel group` ``
   - Label: ``getEventLabel([transmissionDateFrom && `active after: ${transmissionDateFrom}`, transmissionDateTo && `active before: ${transmissionDateTo}`, datasets && `datasets: ${datasets.join(', ')}`, searchIdField && `id field: ${searchIdField}`])``
 
-- **`vessel-groups/VesselGroupModal.tsx:427`**
+- **`features/user/vessel-groups/VesselGroupModal.tsx:430`** — `VesselGroups`
   - Action: `` `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group` ``
-  - Label: ``getEventLabel([`vessel_id: ${vesselGroupId}`, calculateVMSVesselsPercentage(vesselGroupVessels)])`` _(value: number of vessels)_
+  - Label: ``getEventLabel([`vessel_id: ${vesselGroupId}`, calculateVMSVesselsPercentage(vesselGroupVessels)])``
+  - Value: `` `number of vessels: ${vessels.length}` ``
 
-- **`vessel-groups/VesselGroupModalSearch.tsx:140`**
+- **`features/user/vessel-groups/VesselGroupModalSearch.tsx:169`** — `HelpHints`
   - Action: `'click see csv format link in vessel group modal'`
 
 ---
 
 ## Search
 
-- **`search/search.hook.ts:167`**
+- **`features/vessels/search/search.hook.ts:166`** — `SearchVessel`
   - Action: `searchType === 'basic' ? 'Search specific vessel' : 'add_filters_and_hit_search_in_advanced_search'`
-  - Label: `query` _(value: `total`)_
+  - Label: `query`
+  - Value: `total`
 
-- **`search/search.hook.ts:252`**
+- **`features/vessels/search/search.hook.ts:251`** — `SearchVessel`
   - Action: `'Add filters to refine Advanced Search'`
   - Label: `` `name: ${debouncedQuery} | MMSI: ${searchFilters.ssvid} | IMO: ${searchFilters.imo} | Call Sign: ${searchFilters.callsign} | Owner: ${searchFilters.owner} | Info source: ${searchFilters.infoSource} | Sources: ${searchFilters.sources} | Flag: ${searchFilters.flag} | Active After: ${searchFilters.transmissionDateFrom} | Active Before: ${searchFilters.transmissionDateTo}` ``
 
-- **`search/SearchActions.tsx:68`**
+- **`features/vessels/search/SearchActions.tsx:72`** — `SearchVessel`
   - Action: `'Click view on map'`
   - Label: `` `${activeSearchOption} search` ``
 
-- **`search/SearchActions.tsx:87`**
+- **`features/vessels/search/SearchActions.tsx:100`** — `VesselGroups`
   - Action: `vesselGroupId === NEW_VESSEL_GROUP_ID ? 'create_new_vessel_group_from_search' : 'add_vessels_to_vessel_group_from_search'`
-  - Label: `` `${activeSearchOption} search` `` _(value: number of vessel added to group)_
+  - Label: `` `${activeSearchOption} search` ``
+  - Value: `` `number of vessel added to group: ${vesselsSelected.length}` ``
 
-- **`search/SearchDownload.tsx:42`**
+- **`features/vessels/search/SearchDownload.tsx:41`** — `DataDownloads`
   - Action: `'Download CSV list of vessels from advanced search'`
-  - Label: `JSON.stringify(vesselsParsed.map({name, mmsi, imo, callsign, owner, flag, vessel type, gear type, transmissions, activeAfter, activeBefore, sources}))`
+  - Label: `JSON.stringify(vesselsParsed.map({ name, mmsi, imo, callsign, owner, flag, 'vessel type', 'gear type', transmissions, activeAfter, activeBefore, sources }))`
 
 ---
 
 ## Map Popups
 
-- **`map/popups/categories/VesselsTable.tsx`**
+- **`features/map/map/popups/categories/VesselsTable.tsx:74`** — `MapInteraction`
   - Action: `` `Clicked see vessel from ${feature?.category}` ``
   - Label: ``getEventLabel([`source: ${source}`])``
 
-  - Action: `click_skylight_search_from_popup`
+- **`features/map/map/popups/categories/VesselsTable.tsx:192`** — `MapInteraction`
+  - Action: `'click_skylight_search_from_popup'`
 
-  - Action: `click_skylight_link_from_popup`
+- **`features/map/map/popups/categories/VesselsTable.tsx:206`** — `MapInteraction`
+  - Action: `'click_skylight_link_from_popup'`
 
-- **`map/popups/categories/ContextLayers.tsx:30`**
+- **`features/map/map/popups/categories/ContextLayers.tsx:32`** — `DataDownloads`
   - Action: `'Click on polygon, click on download icon'`
 
-- **`map/popups/categories/ContextLayers.hooks.ts:68`**
+- **`features/map/map/popups/categories/ContextLayers.hooks.ts:69`** — `Analysis`
   - Action: `'Open report'`
   - Label: `getEventLabel([value?.toString(), layerSources ? 'active layer sources: ' + layerSources : ''])`
 
-- **`map/popups/categories/EventsPortVisitTooltipRow.tsx:46`**
+- **`features/map/map/popups/categories/EventsPortVisitTooltipRow.tsx:46`** — `GlobalReports`
   - Action: `'Clicked see port report'`
   - Label: ``getEventLabel([` dataset: ${port?.datasetId} `, ` port_id: ${port?.id} `].filter(Boolean))``
 
-- **`map/popups/categories/EventsGapTooltipRow.tsx:50`**
+- **`features/map/map/popups/categories/EventsGapTooltipRow.tsx:56`** — `VesselProfile`
   - Action: `'Clicked see gap event'`
   - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
-- **`map/popups/categories/EventsEncounterTooltipRow.tsx:64`**
+- **`features/map/map/popups/categories/EventsEncounterTooltipRow.tsx:64`** — `GlobalReports`
   - Action: `'Clicked see encounter event'`
   - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
-- **`map/popups/categories/EventsClusterRow.tsx:48`**
+- **`features/map/map/popups/categories/EventsClusterRow.tsx:48`** — `VesselProfile`
   - Action: `'Clicked see loitering event'`
   - Label: ``getEventLabel([` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(Boolean))``
 
-- **`map/map-interactions.hooks.ts:305`** — fires one event per clicked feature, built by `getAnalyticsEvent(feature)` in [`map/map-interaction.utils.ts:29`](apps/platform/features/map/map-interaction.utils.ts#L29). For every event:
-  - Action: `'map_interaction'` _(constant — `TrackCategory.MapInteraction`)_
-  - Category: `` `Map click on ${feature.category}` `` _(e.g. `Map click on activity`, `Map click on vessels`, `Map click on events`, `Map click on context`, `Map click on user`, `Map click on workspaces`, `Map click on detections`)_
+- **`features/map/map/map-interactions.hooks.ts:279`** — fires one event per clicked feature, built by `getAnalyticsEvent(feature)` in [features/map/map/map-interaction.utils.ts:29](apps/platform/features/map/map/map-interaction.utils.ts#L29). Note `category`/`action` are inverted relative to every other call site:
+  - Action: `'map_interaction'` _(the constant `TrackCategory.MapInteraction`)_
+  - Category: `` `Map click on ${feature.category}` `` _(e.g. `Map click on activity`, `vessels`, `events`, `context`, `user`, `workspaces`, `detections`)_
   - Label _(varies by `feature.category`)_:
     - **Activity / Detections** (positions mode): `` `visualization_mode: positions | vessel_name: ${feature.title} | vessel_id: ${feature.properties.id}` ``
     - **Activity / Detections** (other modes): `` `visualization_mode: ${feature.visualizationMode} | time_interval: ${feature.interval}` ``
     - **Vessels**: `` `event_type: ${feature.type} | vessel_id: ${feature.vesselId}` ``
     - **Events**: `` `event_type: ${feature.eventType} | datasetId : ${feature.datasetId}` ``
-    - **Context / User**: `` `${feature.value}` ``
+    - **Context / User**: `` `${getContextValue(feature)}` ``
     - **Workspaces**: `` `${feature.properties.category} | ${feature.properties.label}` ``
+    - anything else: `''`
 
 ---
 
 ## Timebar
 
-- **`timebar/Timebar.tsx:211`**
-  - Action: `'Bookmark timerange'`
-  - Label: `'removed'`
+All `Timebar`.
 
-- **`timebar/Timebar.tsx:219`**
-  - Action: `'Bookmark timerange'`
-  - Label: `getEventLabel([start, end])`
-
-- **`timebar/Timebar.tsx:276`**
-  - Action: `gaActions[e.source]` _(dynamic)_
-  - Label: `getEventLabel([e.start, e.end])`
-
-- **`timebar/Timebar.tsx:331`**
+- **`features/map/timebar/Timebar.tsx:209`**
   - Action: `` `Click on ${isPlaying ? 'Play' : 'Pause'}` ``
   - Label: `getEventLabel([start ?? '', end ?? ''])`
 
-- **`timebar/TimebarSettings.tsx:94`**
+- **`features/map/timebar/timebar-interactions.hooks.ts:40`**
+  - Action: `'Bookmark timerange'`
+  - Label: `'removed'`
+
+- **`features/map/timebar/timebar-interactions.hooks.ts:48`**
+  - Action: `'Bookmark timerange'`
+  - Label: `getEventLabel([start, end])`
+
+- **`features/map/timebar/timebar-interactions.hooks.ts:71`**
+  - Action: `GA_ACTIONS[e.source]` (`:24`), one of: `Configure timerange using calendar option`, `Zoom In timerange`, `Zoom Out timerange`, `Use hour preset`, `Use day preset`, `Use month preset`, `Use year preset`, `Move timebar slider`, `Select bookmark period`
+  - Label: `getEventLabel([e.start, e.end])`
+
+- **`features/map/timebar/TimebarSettings.tsx:93`**
   - Action: `'Open timebar settings'`
   - Label: ``getEventLabel([`visualization: ${timebarVisualisation}`])``
 
-- **`timebar/TimebarSettings.tsx:107`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${section}` ``
+- **`features/map/timebar/TimebarSettings.tsx:106`**
+  - Action: `'select_timebar_settings'` · Label: `` `${section}` ``
 
-- **`timebar/TimebarSettings.tsx:117`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${TimebarVisualisations.Environment} - ${environmentalDataviewId}` ``
+- **`features/map/timebar/TimebarSettings.tsx:116`**
+  - Action: `'select_timebar_settings'` · Label: `` `${TimebarVisualisations.Environment} - ${environmentalDataviewId}` ``
 
-- **`timebar/TimebarSettings.tsx:126`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${TimebarVisualisations.Points} - ${userPointsDataviewId}` ``
+- **`features/map/timebar/TimebarSettings.tsx:125`**
+  - Action: `'select_timebar_settings'` · Label: `` `${TimebarVisualisations.Points} - ${userPointsDataviewId}` ``
 
-- **`timebar/TimebarSettings.tsx:136`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${TimebarVisualisations.VesselGroup} - ${vesselGroupDataviewId}` ``
+- **`features/map/timebar/TimebarSettings.tsx:135`**
+  - Action: `'select_timebar_settings'` · Label: `` `${TimebarVisualisations.VesselGroup} - ${vesselGroupDataviewId}` ``
 
-- **`timebar/TimebarSettings.tsx:145`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${TimebarVisualisations.Vessel} - ${TimebarGraphs.None}` ``
+- **`features/map/timebar/TimebarSettings.tsx:144`**
+  - Action: `'select_timebar_settings'` · Label: `` `${TimebarVisualisations.Vessel} - ${TimebarGraphs.None}` ``
 
-- **`timebar/TimebarSettings.tsx:155`**
-  - Action: `'select_timebar_settings'`
-  - Label: `` `${TimebarVisualisations.Vessel} - ${timebarGraph}` ``
+- **`features/map/timebar/TimebarSettings.tsx:154`**
+  - Action: `'select_timebar_settings'` · Label: `` `${TimebarVisualisations.Vessel} - ${timebarGraph}` ``
 
 ---
 
 ## Reports — Activity
 
-- **`reports/tabs/activity/ReportActivity.tsx:304`**
+All `Analysis`.
+
+- **`features/reports/tabs/activity/ReportActivity.tsx:304`**
   - Action: `'Click on see vessels button in report activity'`
 
-- **`reports/tabs/activity/ReportActivitySubsectionSelector.tsx:98`**
+- **`features/reports/tabs/activity/ReportActivitySubsectionSelector.tsx:106`**
   - Action: `` `activity_tab_toggle_${option.id}` ``
 
-- **`reports/tabs/activity/ReportActivityGraphSelector.tsx:107`**
+- **`features/reports/tabs/activity/ReportActivityGraphSelector.tsx:107`**
   - Action: `` `Click on ${option.id} activity graph` ``
 
-- **`reports/tabs/activity/ReportActivityPeriodComparison.tsx:39`**
+- **`features/reports/tabs/activity/ReportActivityPeriodComparison.tsx:39`**
   - Action: `"Select comparison date in 'period comparison'"`
-  - Label: `JSON.stringify({date: date.target.value, regionName: reportArea?.name, sourceNames: dataviews.flatMap(...)})`
+  - Label: `JSON.stringify({ date, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityPeriodComparison.tsx:54`**
+- **`features/reports/tabs/activity/ReportActivityPeriodComparison.tsx:54`**
   - Action: `"Select baseline date in 'period comparison'"`
-  - Label: `JSON.stringify({date: date.target.value, regionName: reportArea?.name, sourceNames: dataviews.flatMap(...)})`
+  - Label: `JSON.stringify({ date, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityPeriodComparison.tsx:69`**
+- **`features/reports/tabs/activity/ReportActivityPeriodComparison.tsx:69`**
   - Action: `"Select duration in 'period comparison'"`
-  - Label: `JSON.stringify({duration: duration?.target?.value + ' ' + durationTypeOption?.label, regionName: reportArea?.name, sourceNames: dataviews.flatMap(...)})`
+  - Label: `JSON.stringify({ duration, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityPeriodComparison.tsx:84`**
+- **`features/reports/tabs/activity/ReportActivityPeriodComparison.tsx:84`**
   - Action: `"Select duration in 'period comparison'"`
-  - Label: `JSON.stringify({duration: timeComparison?.duration + ' ' + duration?.label, regionName: reportArea?.name, sourceNames: dataviews.flatMap(...)})`
+  - Label: `JSON.stringify({ duration, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityBeforeAfter.tsx:37`**
+- **`features/reports/tabs/activity/ReportActivityBeforeAfter.tsx:37`**
   - Action: `"Select date in 'before/after'"`
-  - Label: `JSON.stringify({date, regionName, sourceNames})`
+  - Label: `JSON.stringify({ date, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityBeforeAfter.tsx:52`**
+- **`features/reports/tabs/activity/ReportActivityBeforeAfter.tsx:52`**
   - Action: `"Select duration in 'before/after'"`
-  - Label: `JSON.stringify({duration, durationAmount, durationType, regionName, sourceNames})`
+  - Label: `JSON.stringify({ duration, durationAmount, durationType, regionName, sourceNames })`
 
-- **`reports/tabs/activity/ReportActivityBeforeAfter.tsx:69`**
+- **`features/reports/tabs/activity/ReportActivityBeforeAfter.tsx:69`**
   - Action: `"Select duration in 'before/after'"`
-  - Label: `JSON.stringify({duration, durationAmount, durationType, regionName, sourceNames})`
+  - Label: `JSON.stringify({ duration, durationAmount, durationType, regionName, sourceNames })`
 
-- **`reports/tabs/activity/download/ReportDownload.tsx:23`**
+- **`features/reports/tabs/activity/download/ReportDownload.tsx:23`**
   - Action: `'Download report'`
   - Label: `areaId?.toString()`
 
@@ -482,77 +507,80 @@
 
 ## Reports — Events
 
-- **`reports/tabs/events/EventsReportGraphSelector.tsx:71`**
+- **`features/reports/tabs/events/EventsReportGraphSelector.tsx:75`** — `Analysis`
   - Action: `` `Click on ${option.id} activity graph` ``
 
-- **`reports/tabs/events/EventsReportSubsectionSelector.tsx:74`**
+- **`features/reports/tabs/events/EventsReportSubsectionSelector.tsx:74`** — `VesselGroupReport`
   - Action: `` `vessel_group_profile_events_tab_${option.id}_graph` ``
 
-- **`reports/tabs/events/EventsReport.tsx:184`**
+- **`features/reports/tabs/events/EventsReport.tsx:188`** — `Analysis`
   - Action: `'Click on see vessels button in events activity'`
 
-- **`reports/tabs/events/EventsReportDownload.tsx:43`**
+- **`features/reports/tabs/events/EventsReportDownload.tsx:42`** — `Analysis`
   - Action: `'events_report_download'`
   - Label: `` `${reportEventsSubCategory}_tab` ``
 
-- **`reports/tabs/events/EventReportPorts.tsx:68`**
+- **`features/reports/tabs/events/EventReportPorts.tsx:67`** — `GlobalReports`
   - Action: `'Clicked see ports after events'`
 
 ---
 
 ## Reports — Environment
 
-- **`reports/tabs/environment/ReportEnvironmentGraphSelector.tsx:61`**
+Both `Analysis`.
+
+- **`features/reports/tabs/environment/ReportEnvironmentGraphSelector.tsx:61`**
   - Action: `` `Click on ${option.id} environmental graph` ``
 
-- **`reports/tabs/environment/ReportEnvironment.tsx:47`**
+- **`features/reports/tabs/environment/ReportEnvironment.tsx:55`**
   - Action: `'Open panel to add a report layer'`
 
 ---
 
 ## Reports — Vessels (Shared)
 
-- **`reports/shared/vessels/ReportVesselsTable.tsx:71`**
+- **`features/reports/shared/vessels/ReportVesselsTable.tsx:71`** — `GlobalReports`
   - Action: `'redirect to vessel profile'`
   - Label: `shipName`
 
-- **`reports/shared/vessels/ReportVesselsTable.tsx:93`**
+- **`features/reports/shared/vessels/ReportVesselsTable.tsx:93`** — `VesselGroupReport`
   - Action: `'vessel_report_pin_vessel'`
   - Label: `vesselId`
 
-- **`reports/shared/vessels/ReportVesselsTableFooter.tsx:109`**
+- **`features/reports/shared/vessels/ReportVesselsTableFooter.tsx:109`** — `VesselGroupReport`
   - Action: `'vessel_report_download_csv'`
-  - Label: ``getEventLabel([`Groupd id: ${vesselGroup?.id}`, `start date: ${start}`, `end date: ${end}`])`` _(value: number of vessel identities)_
+  - Label: ``getEventLabel([`Groupd id: ${vesselGroup?.id}`, `start date: ${start}`, `end date: ${end}`])`` _(typo `Groupd` is in the source)_
+  - Value: `` `number of vessels identities: ${vessels.length}` ``
 
-- **`reports/shared/vessels/ReportVesselsTableFooter.tsx:133`**
+- **`features/reports/shared/vessels/ReportVesselsTableFooter.tsx:133`** — `Analysis`
   - Action: `'Click on show more vessels'`
 
-- **`reports/shared/vessels/ReportVesselsTableFooter.tsx:143`**
+- **`features/reports/shared/vessels/ReportVesselsTableFooter.tsx:143`** — `Analysis`
   - Action: `'Click on show less vessels'`
 
-- **`reports/shared/vessels/ReportVesselsTableFooter.tsx:151`**
+- **`features/reports/shared/vessels/ReportVesselsTableFooter.tsx:151`** — `VesselGroups`
   - Action: `'add_to_vessel_group'`
   - Label: `'report'`
 
-- **`reports/shared/vessels/ReportVesselsGraphSelector.tsx:113`**
+- **`features/reports/shared/vessels/ReportVesselsGraphSelector.tsx:106`** — `Analysis`
   - Action: `` `vessel_report_group_by_${option.id}` ``
 
-- **`reports/shared/vessels/ReportVesselsFilter.tsx:49`**
+- **`features/reports/shared/vessels/ReportVesselsFilter.tsx:49`** — `Analysis`
   - Action: `` `Type search into vessel list from ${locationType}` ``
   - Label: `debouncedQuery`
 
-- **`reports/shared/summary/ReportSummary.tsx:47`**
+- **`features/reports/shared/summary/ReportSummary.tsx:46`** — `Analysis`
   - Action: `'Open panel to add a report layer'`
 
-- **`reports/shared/new-report-modal/NewAreaReportModal.tsx:92`**
+- **`features/reports/shared/new-report-modal/NewAreaReportModal.tsx:86`** — `WorkspaceManagement`
   - Action: `'Edit current report'`
   - Label: `dispatchedAction.payload?.name ?? 'Unknown'`
 
-- **`reports/shared/new-report-modal/NewAreaReportModal.tsx:128`**
+- **`features/reports/shared/new-report-modal/NewAreaReportModal.tsx:122`** — `Analysis`
   - Action: `'Save current report'`
   - Label: `name || 'Unknown'`
 
-- **`reports/shared/area-search/AreaReportSearch.tsx:155`**
+- **`features/reports/shared/area-search/AreaReportSearch.tsx:162`** — `Analysis`
   - Action: `'Search for an area in report'`
   - Label: `getEventLabel([inputValue, selectedItem?.properties?.name || ''])`
 
@@ -560,13 +588,15 @@
 
 ## Reports — Area
 
-- **`reports/report-area/AreaReport.tsx:180`**
+All `Analysis`.
+
+- **`features/reports/report-area/AreaReport.tsx:171`**
   - Action: `` `Click on ${option.id} report` ``
 
-- **`reports/report-area/title/ReportTitle.tsx:113`**
+- **`features/reports/report-area/title/ReportTitle.tsx:124`**
   - Action: `'Click print/save as pdf'`
 
-- **`reports/report-area/title/ReportTitle.tsx:154`**
+- **`features/reports/report-area/title/ReportTitle.tsx:163`**
   - Action: `'Confirm area buffer'`
   - Label: `` `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}` ``
 
@@ -574,94 +604,128 @@
 
 ## Reports — Vessel Group
 
-- **`reports/report-vessel-group/VesselGroupReportLink.tsx:25`**
+- **`features/reports/report-vessel-group/VesselGroupReportLink.tsx:24`** — `Analysis`
   - Action: `'access_vessel_group_profile'`
-  - Label: _n/a_ (uses `other` with `vesselGroupId`)
+  - `other`: `{ vesselGroupId }`
 
-- **`reports/report-vessel-group/VesselGroupReport.tsx:114`**
+- **`features/reports/report-vessel-group/VesselGroupReport.tsx:124`** — `VesselGroupReport`
   - Action: `` `access_vessel_group_${tab.id}_tab` ``
   - Label: `getEventLabel([vesselGroup?.id, timeRange?.start || '', timeRange?.end || ''])`
+  - Value: `` `number of vessels: ${vesselGroup?.vessels?.length}` ``
 
 ---
 
 ## Reports — VGR Insights
 
-- **`reports/tabs/vessel-group-insights/VGRInsightMOU.tsx:48`**
-  - Action: `'vessel_group_profile_insights_mou_go_to_vessel'`
-  - Label: `vesselId`
+All `VesselGroupReport`.
 
-- **`reports/tabs/vessel-group-insights/VGRInsightMOU.tsx:120`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `` `${country} ${list} expanded` ``
+- **`.../VGRInsightMOU.tsx:48`** — Action: `'vessel_group_profile_insights_mou_go_to_vessel'` · Label: `vesselId`
+- **`.../VGRInsightMOU.tsx:120`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `` `${country} ${list} expanded` ``
+- **`.../VGRInsightIUU.tsx:39`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'IUU expanded'`
+- **`.../VGRInsightGaps.tsx:46`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'gaps expanded'`
+- **`.../VGRInsightGaps.tsx:55`** — Action: `'vessel_group_profile_insights_gaps_go_to_vessel'` · Label: `vesselId`
+- **`.../VGRInsightFlagChange.tsx:46`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'flag changes expanded'`
+- **`.../VGRInsightFlagChange.tsx:55`** — Action: `'vessel_group_profile_insights_flag_changes_go_to_vessel'` · Label: `vesselId`
+- **`.../VGRInsightFishing.tsx:61`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'fishing in no-take MPAs expanded'`
+- **`.../VGRInsightFishing.tsx:77`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'fishing Regional Fisheries Bodies (RFMOs) expanded'`
+- **`.../VGRInsightFishing.tsx:86`** — Action: `'vessel_group_profile_insights_fishing_go_to_vessel'` · Label: `vesselId`
+- **`.../VGRInsightLongline.tsx:72`** — Action: `'vessel_group_profile_insights_tab_expand_insights'` · Label: `'longline sets expanded'` **(new)**
+- **`.../VGRInsightLongline.tsx:81`** — Action: `'vessel_group_profile_insights_longline_go_to_vessel'` · Label: `vesselId` **(new)**
 
-- **`reports/tabs/vessel-group-insights/VGRInsightIUU.tsx:39`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `'IUU expanded'`
+_All under `features/reports/tabs/vessel-group-insights/`._
 
-- **`reports/tabs/vessel-group-insights/VGRInsightGaps.tsx:46`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `'gaps expanded'`
+---
 
-- **`reports/tabs/vessel-group-insights/VGRInsightGaps.tsx:55`**
-  - Action: `'vessel_group_profile_insights_gaps_go_to_vessel'`
-  - Label: `vesselId`
+## CMS
 
-- **`reports/tabs/vessel-group-insights/VGRInsightFlagChange.tsx:46`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `'flag changes expanded'`
-
-- **`reports/tabs/vessel-group-insights/VGRInsightFlagChange.tsx:55`**
-  - Action: `'vessel_group_profile_insights_flag_changes_go_to_vessel'`
-  - Label: `vesselId`
-
-- **`reports/tabs/vessel-group-insights/VGRInsightFishing.tsx:61`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `'fishing in no-take MPAs expanded'`
-
-- **`reports/tabs/vessel-group-insights/VGRInsightFishing.tsx:77`**
-  - Action: `'vessel_group_profile_insights_tab_expand_insights'`
-  - Label: `'fishing Regional Fisheries Bodies (RFMOs) expanded'`
-
-- **`reports/tabs/vessel-group-insights/VGRInsightFishing.tsx:86`**
-  - Action: `'vessel_group_profile_insights_fishing_go_to_vessel'`
-  - Label: `vesselId`
+- **`features/cms/data-terminology/DataTerminology.tsx:40`** — `HelpHints`
+  - Action: `` `open_data_terminology_${terminologyKey}` ``
+  - Label: `terminologyKey`
 
 ---
 
 ## i18n
 
-- **`i18n/LanguageToggle.tsx:38`**
+- **`features/i18n/LanguageToggle.tsx:68`** — `I18n`
   - Action: `'Change language'`
   - Label: `lang`
 
 ---
 
-## Help
+## Help & Hints
 
-- **`help/UserGuideLink.tsx:76`**
+All `HelpHints`.
+
+- **`features/help/UserGuideLink.tsx:31`**
   - Action: `'redirect to user guide to specific section'`
   - Label: `` `${i18n.language} - ${section}` ``
 
-- **`help/HelpHub.tsx:30`**
+- **`features/hints/HelpHub.tsx:33`**
   - Action: `"restore help hints after they've been dismissed"`
   - Label: `` `percentage of hints seen: ${percentageOfHintsSeen.toString()}%` ``
 
-- **`help/HelpHub.tsx:56`**
+- **`features/hints/HelpHub.tsx:52`**
   - Action: `` `redirect to ${destination}` ``
   - Label: `i18n.language`
 
-- **`help/Hint.tsx:36`**
-  - Action: `'Dismiss one specific help hint'`
-  - Label: `id`
+- **`features/hints/HelpHub.tsx:98`**
+  - Action: `'Open user guide modal'` **(new)**
 
-- **`help/Hint.tsx:48`**
-  - Action: `'Dismiss all help hints before viewing all'`
-  - Label: `id`
+- **`features/hints/Hint.tsx:36`**
+  - Action: `'Dismiss one specific help hint'` · Label: `id`
 
-- **`help/Hint.tsx:57`**
-  - Action: `'Click on a help hint to view supporting information'`
-  - Label: `id`
+- **`features/hints/Hint.tsx:48`**
+  - Action: `'Dismiss all help hints before viewing all'` · Label: `id`
 
-- **`help/Hint.tsx:65`**
-  - Action: `'clicked on help hint popup'`
-  - Label: `id`
+- **`features/hints/Hint.tsx:57`**
+  - Action: `'Click on a help hint to view supporting information'` · Label: `id`
+
+- **`features/hints/Hint.tsx:65`**
+  - Action: `'clicked on help hint popup'` · Label: `id`
+
+---
+
+## Changes since the 2026-05-13 inventory
+
+### Files moved (feature-folder restructure)
+
+| Old | New |
+| --- | --- |
+| `user/user.slice.ts` | `features/user/user.hooks.ts` |
+| `sidebar/CategoryTabs.tsx` | `features/nav/MainNav.tsx` |
+| `sidebar/*` | `features/map/sidebar/*` |
+| `workspaces-list/*`, `workspace/*`, `download/*`, `datasets/*`, `layer-library/*`, `timebar/*` | under `features/map/` |
+| `vessel/*`, `search/*` | under `features/vessels/` |
+| `vessel-groups/*` | `features/user/vessel-groups/` |
+| `vessel/identity/DataTerminology.tsx` | `features/cms/data-terminology/DataTerminology.tsx` |
+| `vessel/identity/VesselIdentity.tsx` (links + download) | `identity/VesselExternalToolLinks.tsx`, `identity/tabs/IdentityTabWrapper.tsx` |
+| `vessel/VesselPin.tsx` | `features/vessels/vessel/vessel-pin.hooks.ts` |
+| `help/HelpHub.tsx`, `help/Hint.tsx` | `features/hints/` |
+| `workspace/shared/LayerFilters.tsx` (2 of 3 events) | `LayerFilters.hooks.ts` + `LayerFilters.utils.ts` |
+| `timebar/Timebar.tsx` (bookmark + range change) | `features/map/timebar/timebar-interactions.hooks.ts` |
+
+### Events added
+
+- `Clicked login button[ from <source>]` (`User`) — `features/user/LoginLink.tsx`
+- `Open user guide modal` (`HelpHints`) — `features/hints/HelpHub.tsx:98`
+- `vessel_group_profile_insights_tab_expand_insights` / `..._longline_go_to_vessel` — `VGRInsightLongline.tsx`
+
+### Events removed
+
+- `clicked on info popup` — `workspace/shared/InfoModal.tsx` deleted
+- `open_vessel_info_${vesselSection}_tab` — replaced by `open_data_terminology_${terminologyKey}`
+- `update_time_range_from_vessel_group_report` — commented out at `VesselGroupReport.tsx:106`
+- `print_vessel_group_profile` — commented out at `VesselGroupReportTitle.tsx:69`
+
+### Events changed
+
+- `login` → `login_success`, now with `label: loginSource` (`features/user/user.hooks.ts:113`)
+- `access_vessel_group_${tab.id}_tab` gained `value: number of vessels: N`
+- `Save current workspace` label is now `workspaceUpdated?.name` (was `workspace?.name`)
+- `Search`/`vessel group` value fields are now descriptive strings (`number of vessels: N`) rather than bare numbers
+
+### Known defects
+
+- `ShareWorkspaceButton.tsx:48` — action template ends in a stray `'}`, so GA records `Click share workspace'}`.
+- `ReportVesselsTableFooter.tsx:111` — label contains `Groupd id:` (typo for `Group id:`).
+- `map-interaction.utils.ts:65` — `category` and `action` are swapped relative to every other call site; map-click events land in GA with `category = "Map click on <x>"` and `action = "map_interaction"`.

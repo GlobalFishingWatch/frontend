@@ -13,14 +13,6 @@ import { selectIsRealTimeMode } from 'features/map/workspace/workspace.selectors
 
 const EMPTY_ARRAY: [] = []
 
-/**
- * Split out of app.selectors so that module stays a leaf.
- *
- * PlatformLayout reads selectReadOnly from app.selectors, which puts it in every page's entry chunk.
- * This selector is the only one there that reaches the dataview resolver cluster (and through it
- * datasets.utils and timebar.slice), so it lives here and is imported only by the map and report
- * components that actually need it.
- */
 export const selectLatestAvailableDataDate = createSelector(
   [selectIsRealTimeMode, selectRealTimeLatestUpdate, selectDataviewInstancesResolvedVisible],
   (isRealTimeMode, realTimeLatestUpdate, dataviews) => {

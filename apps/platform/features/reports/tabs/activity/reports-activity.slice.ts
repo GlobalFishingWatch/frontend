@@ -268,10 +268,6 @@ export const {
   setReportHotspotSettings,
 } = reportSlice.actions
 
-/**
- * Lazily registered — see features/map/map/controls/screenshot.slice.ts for the reference pattern.
- * Freed by the MainNav reset inversion: reducers.ts is now this slice's only always-loaded importer.
- */
 const injectedReportSlice = rootReducer.inject(reportSlice)
 
 declare module 'reducers' {
@@ -279,7 +275,9 @@ declare module 'reducers' {
   export interface LazyLoadedSlices extends WithSlice<typeof reportSlice> {}
 }
 
-export const selectReportVesselsStatus = injectedReportSlice.selector((state) => state.report.status)
+export const selectReportVesselsStatus = injectedReportSlice.selector(
+  (state) => state.report.status
+)
 export const selectReportVesselsError = injectedReportSlice.selector((state) => state.report.error)
 export const selectReportVesselsData = injectedReportSlice.selector((state) => state.report.data)
 
