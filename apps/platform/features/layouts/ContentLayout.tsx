@@ -2,6 +2,8 @@ import { Suspense } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
 
+import { Logo } from '@globalfishingwatch/ui-components/logo'
+
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 
 import styles from './layouts.module.css'
@@ -17,6 +19,11 @@ import styles from './layouts.module.css'
 function ContentLayout() {
   return (
     <div className={styles.contentLayout}>
+      <div className={cx(styles.contentHeader)}>
+        <a href="https://globalfishingwatch.org">
+          <Logo />
+        </a>
+      </div>
       <div
         id={SCROLL_CONTAINER_DOM_ID}
         className={cx('scrollContainer', styles.contentScrollContainer)}

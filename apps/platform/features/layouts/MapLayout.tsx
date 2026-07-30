@@ -103,7 +103,7 @@ function MapLayout() {
       <ConfirmVesselProfileLeave />
       <a
         href="https://globalfishingwatch.org"
-        className={screenshotMode ? styles.logo : 'print-only'}
+        className={screenshotMode ? styles.fixedLogo : 'print-only'}
       >
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>

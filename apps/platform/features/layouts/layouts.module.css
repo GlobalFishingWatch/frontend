@@ -7,6 +7,7 @@
   height: 100%;
   width: 100%;
   overflow-x: clip;
+  background: var(--color-background);
 }
 
 .platformContent {
@@ -21,7 +22,13 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: var(--color-white);
+}
+
+.contentHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-S);
+  height: var(--header-height);
 }
 
 .contentScrollContainer {
@@ -66,7 +73,7 @@
   height: 100%;
 }
 
-.logo {
+.fixedLogo {
   position: fixed;
   top: 0;
   left: 1rem;
