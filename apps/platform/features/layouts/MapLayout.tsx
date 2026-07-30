@@ -2,7 +2,8 @@ import { Fragment, Suspense, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
 
-import { Logo, SplitView } from '@globalfishingwatch/ui-components'
+import { Logo } from '@globalfishingwatch/ui-components/logo'
+import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { t } from 'features/i18n/i18n'

@@ -1,7 +1,10 @@
 import type { ColorCyclingType, Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components/color-bar-options'
+import {
+  FillColorBarOptions,
+  LineColorBarOptions,
+} from '@globalfishingwatch/ui-components/color-bar-options'
 
 import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import type { AppWorkspace } from 'features/map/workspaces-list/workspaces-list.slice'

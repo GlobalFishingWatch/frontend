@@ -5,9 +5,10 @@ import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
-import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import { selectWorkspaceCustomStatus } from 'features/map/workspace/workspace.selectors'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import LoginLink from 'features/user/LoginLink'

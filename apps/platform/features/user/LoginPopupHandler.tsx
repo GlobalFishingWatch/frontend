@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { broadcastLogin } from 'features/user/auth-channel'
 import { getIsLoginPopup } from 'features/user/user.hooks'

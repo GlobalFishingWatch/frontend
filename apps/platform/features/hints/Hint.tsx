@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { PopoverProps } from '@globalfishingwatch/ui-components'
-import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import type { PopoverProps } from '@globalfishingwatch/ui-components/popover'
+import { Popover } from '@globalfishingwatch/ui-components/popover'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'

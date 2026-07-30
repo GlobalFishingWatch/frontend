@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

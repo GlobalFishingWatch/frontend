@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
-import { Modal } from '@globalfishingwatch/ui-components'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
 
 import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { WorkspaceCategory } from 'data/map/workspaces'

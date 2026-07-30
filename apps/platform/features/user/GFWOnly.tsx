@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { IconProps } from '@globalfishingwatch/ui-components'
-import { Icon } from '@globalfishingwatch/ui-components'
+import type { IconProps } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 

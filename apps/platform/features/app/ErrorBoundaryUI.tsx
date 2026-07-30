@@ -2,7 +2,7 @@ import { Fragment, lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
 
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGFWUser, selectUserData } from 'features/user/selectors/user.selectors'

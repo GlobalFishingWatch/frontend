@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { Outlet } from '@tanstack/react-router'
 
-import { Menu } from '@globalfishingwatch/ui-components'
+import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/map/config'

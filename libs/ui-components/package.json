@@ -20,6 +20,16 @@
       "default": "./dist/index.js"
     },
     "./base.css": "./src/base.css",
+    "./dom-ids": {
+      "types": "./dist/dom-ids.d.ts",
+      "development": "./src/dom-ids.ts",
+      "default": "./dist/dom-ids.js"
+    },
+    "./color-bar-options": {
+      "types": "./dist/color-bar/color-bar-options.d.ts",
+      "development": "./src/color-bar/color-bar-options.ts",
+      "default": "./dist/color-bar/color-bar-options.js"
+    },
     "./*": {
       "types": "./dist/*/index.d.ts",
       "development": "./src/*/index.ts",

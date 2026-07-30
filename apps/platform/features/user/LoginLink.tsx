@@ -1,6 +1,6 @@
 import { forwardRef, useCallback } from 'react'
 
-import { Tooltip } from '@globalfishingwatch/ui-components'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'

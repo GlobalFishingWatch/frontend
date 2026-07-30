@@ -4,13 +4,12 @@ import cx from 'classnames'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { Choice } from '../choice'
+import { MAIN_DOM_ID, SIDEBAR_DOM_ID, SPLIT_VIEW_DOM_ID } from '../dom-ids'
 import { Icon } from '../icon'
 
 import styles from './SplitView.module.css'
 
-export const SPLIT_VIEW_DOM_ID = 'app-layout-content'
-export const MAIN_DOM_ID = 'app-main'
-export const SIDEBAR_DOM_ID = 'app-sidebar'
+export { MAIN_DOM_ID, SIDEBAR_DOM_ID, SPLIT_VIEW_DOM_ID }
 
 const MIN_ASIDE_PCT = 33
 const MAX_ASIDE_PCT = 66

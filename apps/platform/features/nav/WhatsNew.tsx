@@ -2,7 +2,7 @@ import { useEffect, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import packageJson from '../../package.json'
 

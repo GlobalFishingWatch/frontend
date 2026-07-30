@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import type { IconType } from '@globalfishingwatch/ui-components'
-import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components/icon'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import type { WorkspaceCategory } from 'data/map/workspaces'
