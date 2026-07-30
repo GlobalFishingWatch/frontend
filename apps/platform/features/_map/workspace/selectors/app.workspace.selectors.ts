@@ -62,7 +62,11 @@ import {
 } from 'features/_reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/_reports/reports.selectors'
 import type { ReportState } from 'features/_reports/reports.types'
-import { selectLocationCategory } from 'router/routes.selectors'
+import {
+  selectLocationCategory,
+  selectLonglineSetsInsight,
+  selectMigramarLayer,
+} from 'router/routes.selectors'
 import type { WorkspaceState } from 'types'
 
 export { selectWorkspaceCategory } from 'features/_map/workspace/workspace.selectors'
@@ -86,8 +90,6 @@ type NonPersistedWorkspaceStateKey =
   | 'timebarSelectedVGId'
   | 'vesselsColorBy'
   | 'skipColorDomainSampling'
-  | 'migramarLayer'
-  | 'longlineSetsInsight'
 
 const selectWorkspaceReportState = createSelector(
   [
@@ -193,6 +195,8 @@ const selectWorkspaceAppState = createSelector(
     selectCollapsedSections,
     selectTimeMode,
     selectWorkspaceReportState,
+    selectLonglineSetsInsight,
+    selectMigramarLayer,
   ],
   (
     activityCategory,
@@ -213,7 +217,9 @@ const selectWorkspaceAppState = createSelector(
     vesselGroupsVisualizationMode,
     collapsedSections,
     timeMode,
-    reportState
+    reportState,
+    longlineSetsInsight,
+    migramarLayer
   ): Complete<Omit<WorkspaceState, NonPersistedWorkspaceStateKey>> & Complete<ReportState> => {
     return {
       activityCategory,
@@ -234,6 +240,8 @@ const selectWorkspaceAppState = createSelector(
       environmentVisualizationMode,
       vesselGroupsVisualizationMode,
       daysFromLatest,
+      longlineSetsInsight,
+      migramarLayer,
       ...reportState,
     }
   }
