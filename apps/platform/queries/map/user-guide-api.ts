@@ -1,4 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
+import { injectQueryApi } from 'queries/inject-api'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
@@ -25,5 +26,7 @@ export const userGuideApi = createApi({
     }),
   }),
 })
+
+injectQueryApi(userGuideApi)
 
 export const { useGetUserGuideQuery } = userGuideApi

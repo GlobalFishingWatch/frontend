@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import {
@@ -53,6 +54,6 @@ export const vesselSearchApi = createApi({
   }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+injectQueryApi(vesselSearchApi)
+
 export const { useSearchByOwnerQuery } = vesselSearchApi

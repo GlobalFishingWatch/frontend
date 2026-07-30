@@ -4,6 +4,7 @@ import { uniq } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
+import { injectQueryApi } from 'queries/inject-api'
 
 import {
   DatasetTypes,
@@ -97,6 +98,6 @@ export const dataviewStatsApi = createApi({
   }),
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+injectQueryApi(dataviewStatsApi)
+
 export const { useGetStatsByDataviewQuery } = dataviewStatsApi

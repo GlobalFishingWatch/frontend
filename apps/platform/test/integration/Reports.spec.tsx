@@ -110,7 +110,11 @@ const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, time
         throw new Error('Params not available yet')
       }
 
-      const statsQueryState = selectReportEventsStats(params)(state)
+      // reportEventsStatsApi is lazily injected, so RootState types its key as optional. Importing
+      // selectReportEventsStats has already run the injection, so the key is present at runtime.
+      const statsQueryState = selectReportEventsStats(params)(
+        state as Parameters<ReturnType<typeof selectReportEventsStats>>[0]
+      )
 
       if (statsQueryState?.status !== 'fulfilled' && statsQueryState?.status !== 'rejected') {
         throw new Error('Stats query not loaded yet')

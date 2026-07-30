@@ -1,5 +1,4 @@
 import { combineSlices } from '@reduxjs/toolkit'
-import { queriesApiReducers } from 'queries'
 
 import areasReducer from 'features/data/areas/areas.slice'
 import regionsReducer from 'features/data/regions/regions.slice'
@@ -28,22 +27,12 @@ import locationReducer from 'router/location.slice'
  * Slices that are injected at runtime rather than registered here.
  *
  * Each lazy slice augments this interface from its own file, next to its `rootReducer.inject()` call —
- * see features/map/map/controls/screenshot.slice.ts for the reference implementation. Members land in
- * the state type as optional, which is what makes `strict` + `strictNullChecks` flag unguarded reads of
- * a slice whose route has not loaded yet.
+ * see features/map/map/controls/screenshot.slice.ts for the reference implementation.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface LazyLoadedSlices {}
 
-/**
- * combineSlices rather than combineReducers so slices can be `.inject()`ed later without a
- * replaceReducer: the returned reducer keeps a stable identity and closes over a mutable reducer map.
- *
- * Every slice is still registered eagerly here — this commit is behaviourally a no-op. Moving the map
- * slices behind a route boundary is the next step.
- */
 export const rootReducer = combineSlices({
-  ...queriesApiReducers,
   areas: areasReducer,
   datasets: datasetsReducer,
   dataviews: dataviewsReducer,

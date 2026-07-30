@@ -1,8 +1,13 @@
-import type { Action, Middleware, ThunkAction, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit'
+import type {
+  Action,
+  Middleware,
+  ThunkAction,
+  ThunkDispatch,
+  UnknownAction,
+} from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
-import { queriesApiMiddlewares } from 'queries'
-import { QUERY_REDUCER_PATHS } from 'queries/reducer-paths'
+import { queriesDynamicMiddleware, QUERY_REDUCER_PATHS } from 'queries/inject-api'
 
 import { rootReducer } from './reducers'
 
@@ -48,7 +53,7 @@ export const makeStore = (
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
-        ...queriesApiMiddlewares,
+        queriesDynamicMiddleware.middleware,
         logoutUserMiddleware,
         ...(middlewares || [])
       ),

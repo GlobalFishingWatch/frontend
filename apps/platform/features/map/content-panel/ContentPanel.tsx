@@ -1,18 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
-import ChatContainer from 'features/map/content-panel/chat/ChatContainer'
 import { useSidePanel } from 'features/map/content-panel/contentPanel.hooks'
-import DataTerminologyContent from 'features/map/content-panel/data-terminology/DataTerminologyContent'
-import DatasetInfoContainer from 'features/map/content-panel/datasets-info/DatasetInfoContainer'
-import UserDatasetInfoContainer from 'features/map/content-panel/datasets-info/UserDatasetInfoContainer'
-import UserGuideContent from 'features/map/content-panel/user-guide/UserGuideContent'
 import { useAppSearch } from 'router/routes.hook'
 
 import styles from './ContentPanel.module.css'
+
+const ChatContainer = lazy(() => import('features/map/content-panel/chat/ChatContainer'))
+const DataTerminologyContent = lazy(
+  () => import('features/map/content-panel/data-terminology/DataTerminologyContent')
+)
+const DatasetInfoContainer = lazy(
+  () => import('features/map/content-panel/datasets-info/DatasetInfoContainer')
+)
+const UserDatasetInfoContainer = lazy(
+  () => import('features/map/content-panel/datasets-info/UserDatasetInfoContainer')
+)
+const UserGuideContent = lazy(
+  () => import('features/map/content-panel/user-guide/UserGuideContent')
+)
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
@@ -103,11 +112,13 @@ function ContentPanel({
         className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
         onMouseDown={handleMouseDown}
       />
-      {sidePanelContent === 'userGuide' && <UserGuideContent />}
-      {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
-      {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
-      {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
-      {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
+      <Suspense fallback={null}>
+        {sidePanelContent === 'userGuide' && <UserGuideContent />}
+        {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
+        {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
+        {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
+        {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
+      </Suspense>
     </div>
   )
 }

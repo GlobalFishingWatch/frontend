@@ -10,9 +10,7 @@ import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 export type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
 export type ScrenshotDOMArea =
-  | typeof SPLIT_VIEW_DOM_ID
-  | typeof MAP_CONTAINER_ID
-  | typeof MAIN_DOM_ID
+  typeof SPLIT_VIEW_DOM_ID | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
 
 export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   map: MAP_CONTAINER_ID,
@@ -61,9 +59,6 @@ export const { setScreenshotAreaId } = screenshotSlice.actions
  * shell, so pages without a map should not pay for it. Importing this module performs the injection —
  * that is the point, the chunk that needs the slice is the chunk that registers it.
  *
- * `.selector()` wraps root state in a Proxy that yields `initialState` for a not-yet-registered
- * slice, so a read between inject() and the next dispatched action is safe. (inject() itself does not
- * dispatch, so the state key does not materialise until then.)
  */
 const injectedScreenshotSlice = rootReducer.inject(screenshotSlice)
 
