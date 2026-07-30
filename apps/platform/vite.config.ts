@@ -37,6 +37,8 @@ export const plugins = [
     srcDirectory: '.',
     router: {
       routesDirectory: 'routes',
+      generatedRouteTree: 'routes/routeTree.gen.ts',
+      routeFileIgnorePattern: 'routeTree\\.gen',
       basepath: basePath,
     },
     spa: {
