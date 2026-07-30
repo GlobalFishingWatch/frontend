@@ -8,6 +8,7 @@ import ErrorBoundary from 'features/app/ErrorBoundary'
 import { t } from 'features/i18n/i18n'
 import Main from 'features/layouts/MapMainLayout'
 import ContentPanel from 'features/map/content-panel/ContentPanel'
+import BasemapLabelsLocaleSync from 'features/map/dataviews/BasemapLabelsLocaleSync'
 import Sidebar from 'features/map/sidebar/Sidebar'
 import {
   selectReadOnly,
@@ -97,6 +98,7 @@ function MapLayout() {
 
   return (
     <Fragment>
+      <BasemapLabelsLocaleSync />
       <ConfirmVesselProfileLeave />
       <a
         href="https://globalfishingwatch.org"
