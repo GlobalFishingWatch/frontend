@@ -21,13 +21,19 @@ import { formatInfoField } from 'utils/info'
 
 import styles from './RelatedVessels.module.css'
 
-type OwnerVesselsProps = { owner: string; dataset: string; ignoreVessel?: string }
-const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
+type OwnerVesselsProps = {
+  owner: string
+  ownerFlag?: string
+  dataset: string
+  ignoreVessel?: string
+}
+const OwnerVessels = ({ owner, ownerFlag, dataset, ignoreVessel }: OwnerVesselsProps) => {
   const { t } = useTranslation()
 
   const { data, isFetching } = useSearchByOwnerQuery(
     {
       owner,
+      ownerFlag,
       datasets: [dataset],
     },
     {
@@ -73,7 +79,7 @@ const RelatedOwnerVessels = () => {
     vesselData?.registryOwners || [],
     timerange
   ) as VesselRegistryOwner[]
-  const uniqOwners = uniqBy(filteredOwners, (o) => o.name)
+  const uniqOwners = uniqBy(filteredOwners, (o) => `${o.name}-${o.flag}`)
   const vesselId = getVesselProperty(vesselData, 'id')
 
   if (!uniqOwners?.length) {
@@ -84,12 +90,20 @@ const RelatedOwnerVessels = () => {
     <ul className={styles.vesselsList}>
       {uniqOwners?.map((owner) => {
         return (
-          <li key={`${owner.name}-${owner.dateFrom}-${owner.dateTo}`} className={styles.vessel}>
+          <li
+            key={`${owner.name}-${owner.flag}-${owner.dateFrom}-${owner.dateTo}`}
+            className={styles.vessel}
+          >
             {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')}){' '}
             <span className={styles.secondary}>
               <I18nDate date={owner.dateFrom} /> - <I18nDate date={owner.dateTo} />
             </span>
-            <OwnerVessels owner={owner.name} dataset={dataset} ignoreVessel={vesselId} />
+            <OwnerVessels
+              owner={owner.name}
+              ownerFlag={owner.flag}
+              dataset={dataset}
+              ignoreVessel={vesselId}
+            />
           </li>
         )
       })}
