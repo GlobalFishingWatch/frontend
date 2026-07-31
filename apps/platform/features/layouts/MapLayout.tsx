@@ -82,16 +82,17 @@ function MapLayout() {
     return t((t) => t.common.layerList)
   }, [locationType, isAreaReportLocation])
 
+  const RAIL = 'var(--sidebar-tabs-width)'
   let asideWidth = '50%'
 
   if (screenshotMode) {
     asideWidth = '0'
   } else if (readOnly) {
-    asideWidth = isAreaReportLocation ? '45%' : '34rem'
+    asideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = isPrinting ? '34rem' : '40rem'
+    asideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
   }
 
   const isAsideResizable =
