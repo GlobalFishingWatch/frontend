@@ -23,9 +23,9 @@ import { getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
 
-import EncounterIcon from './icons/event-encounter.svg'
-import LoiteringIcon from './icons/event-loitering.svg'
-import PortVisitIcon from './icons/event-port.svg'
+import EncounterIcon from './icons/event-encounter.svg?react'
+import LoiteringIcon from './icons/event-loitering.svg?react'
+import PortVisitIcon from './icons/event-port.svg?react'
 
 import styles from './EventsReportGraph.module.css'
 
