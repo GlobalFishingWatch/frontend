@@ -4,14 +4,21 @@ import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
+import { FISHING_DATAVIEW_SLUG_ALL, PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
-import { getDatasetByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import { getDatasetByIdsThunk, selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import {
+  selectFishingDataviews,
+  selectPresenceDataviews,
+} from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { mergeVesselGroupVesselIdentities } from 'features/_user/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { getVesselGroupActivityDataview } from './vessel-group-report.dataviews'
 
 export type VesselGroupReport = Omit<VesselGroup, 'vessels'> & {
   vessels: VesselGroupVesselIdentity[]
@@ -137,5 +144,27 @@ export const selectVGRDatasets = createSelector([selectVGRData], (vesselGroup) =
     uniq((vesselGroup?.vessels || []).map((v) => v.dataset))
   )
 })
+
+export const selectVGRPresenceDataview = createSelector(
+  [selectVGRDatasets, selectPresenceDataviews, selectAllDatasets],
+  (vesselGroupDatasets, presenceDataviews, allDatasets) =>
+    getVesselGroupActivityDataview({
+      vesselGroupDatasets,
+      activityDataviews: presenceDataviews,
+      allDatasets,
+      fallbackDataviewSlug: PRESENCE_DATAVIEW_SLUG,
+    })
+)
+
+export const selectVGRFishingDataview = createSelector(
+  [selectVGRDatasets, selectFishingDataviews, selectAllDatasets],
+  (vesselGroupDatasets, fishingDataviews, allDatasets) =>
+    getVesselGroupActivityDataview({
+      vesselGroupDatasets,
+      activityDataviews: fishingDataviews,
+      allDatasets,
+      fallbackDataviewSlug: FISHING_DATAVIEW_SLUG_ALL,
+    })
+)
 
 export default vesselGroupReportSlice.reducer

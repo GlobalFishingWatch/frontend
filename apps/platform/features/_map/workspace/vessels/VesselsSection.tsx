@@ -16,7 +16,6 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/works
 import { getDataviewsSources } from 'features/_map/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
-import { selectPresenceDataview } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import {
   hasTracksWithNoData,
   useTimebarVesselTracksData,
@@ -25,12 +24,17 @@ import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import LayerPanelContainer from 'features/_map/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
-import { getVesselGroupDataviewInstance } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import LoginLink from 'features/_user/LoginLink'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
-import { NEW_VESSEL_GROUP_ID } from 'features/_user/vessel-groups/vessel-groups.hooks'
-import { selectWorkspaceVessselGroupsIds } from 'features/_user/vessel-groups/vessel-groups.selectors'
+import {
+  NEW_VESSEL_GROUP_ID,
+  useVesselGroupDataviewInstance,
+} from 'features/_user/vessel-groups/vessel-groups.hooks'
+import {
+  selectAllVisibleVesselGroups,
+  selectWorkspaceVessselGroupsIds,
+} from 'features/_user/vessel-groups/vessel-groups.selectors'
 import { selectVesselGroupsStatus } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { setVesselGroupConfirmationMode } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton from 'features/_user/vessel-groups/VesselGroupAddButton'
@@ -74,7 +78,8 @@ function VesselsSection(): React.ReactElement<any> {
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
-  const presenceDataview = useSelector(selectPresenceDataview)
+  const vesselGroups = useSelector(selectAllVisibleVesselGroups)
+  const getVesselGroupDataviewInstance = useVesselGroupDataviewInstance()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
@@ -107,11 +112,11 @@ function VesselsSection(): React.ReactElement<any> {
       dispatch(setVesselGroupConfirmationMode('update'))
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
-        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
-          (dataset) => dataset.datasetId
-        )
         const dataviewInstance = !isVesselGroupInWorkspace
-          ? getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
+          ? getVesselGroupDataviewInstance(
+              vesselGroupId,
+              vesselGroups?.find(({ id }) => id === vesselGroupId)?.vesselsSummary?.datasets
+            )
           : undefined
         const dataviewsToDelete = dataviews.flatMap((d) =>
           d.config?.visible ? { id: d.id, deleted: true } : []
@@ -127,7 +132,14 @@ function VesselsSection(): React.ReactElement<any> {
         })
       }
     },
-    [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace, presenceDataview]
+    [
+      dataviews,
+      dispatch,
+      upsertDataviewInstance,
+      vesselGroupsInWorkspace,
+      vesselGroups,
+      getVesselGroupDataviewInstance,
+    ]
   )
 
   const onSetSortOrderClick = useCallback(() => {

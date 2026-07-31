@@ -4,13 +4,18 @@ import { useSelector } from 'react-redux'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { selectPresenceDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
+import {
+  getVesselGroupActivityDataview,
+  getVesselGroupDataviewInstance,
+} from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   getVesselGroupLabel,
   getVesselGroupVesselsCount,
 } from 'features/_user/vessel-groups/vessel-groups.utils'
-// import { VesselLastIdentity } from 'features/_vessels/search/search.slice'
-// import { ReportVesselWithDatasets } from 'features/_reports/report-area/area-reports.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { sortByCreationDate } from 'utils/dates'
 
@@ -27,6 +32,24 @@ import {
 export type { AddVesselGroupVessel }
 
 export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
+
+export const useVesselGroupDataviewInstance = () => {
+  const presenceDataviews = useSelector(selectPresenceDataviews)
+  const allDatasets = useSelector(selectAllDatasets)
+
+  return useCallback(
+    (vesselGroupId: string, vesselGroupDatasets: string[] = []) => {
+      const { dataviewSlug, datasets } = getVesselGroupActivityDataview({
+        vesselGroupDatasets,
+        activityDataviews: presenceDataviews,
+        allDatasets,
+        fallbackDataviewSlug: PRESENCE_DATAVIEW_SLUG,
+      })
+      return getVesselGroupDataviewInstance(vesselGroupId, datasets, dataviewSlug)
+    },
+    [presenceDataviews, allDatasets]
+  )
+}
 
 export const useVesselGroupsOptions = () => {
   const { t } = useTranslation()

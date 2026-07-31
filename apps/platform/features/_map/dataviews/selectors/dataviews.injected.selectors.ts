@@ -19,7 +19,6 @@ import {
   PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
-import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
@@ -29,19 +28,17 @@ import {
   PORT_VISITS_REPORT_DATAVIEW_ID,
 } from 'features/_map/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
-import {
-  selectFishingDataview,
-  selectPresenceDataview,
-  selectVesselTemplateDataviews,
-} from 'features/_map/dataviews/selectors/dataviews.static.selectors'
+import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { getNextColor } from 'features/_map/workspace/workspace.utils'
 import {
-  getVesselGroupActivityDatasets,
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
   getVesselGroupEventsDataviewInstance,
 } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectVGRDatasets } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+import {
+  selectVGRFishingDataview,
+  selectVGRPresenceDataview,
+} from 'features/_reports/report-vessel-group/vessel-group-report.slice'
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/_reports/reports.config'
 import {
   selectPortReportDatasetId,
@@ -178,10 +175,8 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
     selectReportVesselGroupId,
-    selectPresenceDataview,
-    selectFishingDataview,
-    selectVGRDatasets,
-    selectAllDatasets,
+    selectVGRPresenceDataview,
+    selectVGRFishingDataview,
   ],
   (
     workspaceDataviewInstancesMerged,
@@ -189,36 +184,25 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     reportCategory,
     reportVesselGroupId,
     presenceDataview,
-    fishingDataview,
-    vesselGroupDatasets,
-    allDatasets
+    fishingDataview
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
     }
-    const presenceDatasets =
-      presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId) || []
-    const fishingDatasets =
-      fishingDataview?.datasetsConfig?.map((dataset) => dataset.datasetId) || []
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isVesselGroupReportLocation) {
-      const vesselGroupPresenceDatasets = getVesselGroupActivityDatasets({
-        vesselGroupDatasets,
-        activityDatasetIds: presenceDatasets,
-        allDatasets,
-      })
-      const vesselGroupFishingDatasets = getVesselGroupActivityDatasets({
-        vesselGroupDatasets,
-        activityDatasetIds: fishingDatasets,
-        allDatasets,
-      })
+      const { dataviewSlug: presenceDataviewSlug, datasets: vesselGroupPresenceDatasets } =
+        presenceDataview
+      const { dataviewSlug: fishingDataviewSlug, datasets: vesselGroupFishingDatasets } =
+        fishingDataview
       let vesselGroupDataviewInstance = workspaceDataviewInstancesMerged?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
         vesselGroupDataviewInstance = getVesselGroupDataviewInstance(
           reportVesselGroupId,
-          vesselGroupPresenceDatasets.length ? vesselGroupPresenceDatasets : presenceDatasets
+          vesselGroupPresenceDatasets,
+          presenceDataviewSlug
         )
         if (vesselGroupDataviewInstance) {
           dataviewInstancesInjected.push(vesselGroupDataviewInstance)
@@ -235,12 +219,10 @@ export const selectVGRDataviewInstancesInjected = createSelector(
             color: vesselGroupDataviewInstance?.config?.color,
             colorRamp: vesselGroupDataviewInstance?.config?.colorRamp as ColorRampId,
             activityType: category,
+            presenceDataviewId: presenceDataviewSlug,
+            fishingDataviewId: fishingDataviewSlug,
             datasets:
-              category === 'presence'
-                ? vesselGroupPresenceDatasets
-                : vesselGroupFishingDatasets.length
-                  ? vesselGroupFishingDatasets
-                  : fishingDatasets,
+              category === 'presence' ? vesselGroupPresenceDatasets : vesselGroupFishingDatasets,
           })
           if (activitySubcategoryInstance) {
             dataviewInstancesInjected.push(activitySubcategoryInstance)
