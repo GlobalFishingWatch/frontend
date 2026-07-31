@@ -45,6 +45,7 @@ import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspacesListLocation,
   selectIsWorkspaceVesselLocation,
 } from 'router/routes.selectors'
 import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
@@ -86,6 +87,7 @@ function MainNav({ onMenuClick }: MainNavProps) {
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
   const userData = useSelector(selectUserData)
 
@@ -173,10 +175,14 @@ function MainNav({ onMenuClick }: MainNavProps) {
     }
   }
 
-  const isSectionActive = (section: NavItem) =>
-    isItemActive(section) || !!section.subsections?.some(isItemActive)
-
-  const activeSectionId = navSections.find(isSectionActive)?.id
+  // Only a section whose *subsection* matches the current route opens on its own.
+  const activeSectionId = navSections.find((section) =>
+    section.subsections?.some((subsection) =>
+      subsection.params?.category
+        ? isWorkspacesListLocation && locationCategory === subsection.params.category
+        : isItemActive(subsection)
+    )
+  )?.id
   const expandedSectionId = openSectionId ?? activeSectionId
 
   const renderItemContent = (item: NavItem, label: string) => {
