@@ -118,18 +118,16 @@
 }
 
 .tabLabel {
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 auto;
+  width: calc(
+    var(--nav-expanded-width) - var(--sidebar-tabs-width) - var(--size-S) - var(--space-XS)
+  );
   line-height: normal;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   opacity: 0;
-
-  /* Closing */
-  transition:
-    opacity 150ms linear,
-    white-space 0s allow-discrete;
+  transition: opacity 150ms linear;
 }
 
 .sectionToggle {
@@ -213,6 +211,9 @@
 
 .subsectionTab .tabLabel {
   padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
+  width: calc(
+    var(--nav-expanded-width) - var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS)
+  );
 }
 
 .MainNav:not(.railCollapsed):hover .panel,
@@ -233,9 +234,6 @@
   opacity: 1;
   white-space: normal;
   text-overflow: clip;
-  transition:
-    opacity 150ms linear,
-    white-space 0s 200ms allow-discrete;
 }
 
 .MainNav:not(.railCollapsed):hover .tab:not(.user, .secondary),
