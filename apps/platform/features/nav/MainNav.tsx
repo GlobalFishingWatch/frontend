@@ -12,7 +12,6 @@ import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import type { WorkspaceCategory } from 'data/map/workspaces'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { setClickedEvent } from 'features/_map/map/map.slice'
 import { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
 import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
@@ -26,14 +25,14 @@ import {
   cleanCurrentWorkspaceReportState,
   resetWorkspaceHistoryNavigation,
 } from 'features/_map/workspace/workspace.slice'
-import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
-import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import type { NavItem } from 'features/nav/nav.config'
 import { getNavSections, isRouted, PLATFORM_MODE } from 'features/nav/nav.config'
+import type { NavLinkContext } from 'features/nav/nav.links'
+import { getNavLinkProps, isNavItemCurrentLocation } from 'features/nav/nav.links'
 import NavBottom from 'features/nav/NavBottom'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import {
@@ -43,8 +42,6 @@ import {
   selectIsWorkspacesListLocation,
   selectIsWorkspaceVesselLocation,
 } from 'router/routes.selectors'
-import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
-import type { QueryParams } from 'types'
 
 import styles from './MainNav.module.css'
 
@@ -136,6 +133,16 @@ function MainNav({ onMenuClick }: MainNavProps) {
     dispatch(resetWorkspaceHistoryNavigation())
   }, [dispatch])
 
+  const navLinkContext: NavLinkContext = {
+    workspace,
+    lastVisitedWorkspace,
+    isWorkspaceLocation,
+    isWorkspaceVesselLocation,
+    onWorkspaceClick,
+    onSearchClick,
+    onCategoryClick,
+  }
+
   const isItemActive = (item: NavItem): boolean => {
     switch (item.id) {
       case 'workspace':
@@ -222,8 +229,7 @@ function MainNav({ onMenuClick }: MainNavProps) {
       )
     }
 
-    // Not routed yet or already on the workspace it links to: inert row.
-    if (!isRouted(item) || (item.id === 'workspace' && isWorkspaceLocation)) {
+    if (!isRouted(item) || isNavItemCurrentLocation(item, navLinkContext)) {
       return (
         <span className={cx(styles.tabContent, styles.disabled)} aria-disabled>
           {content}
@@ -231,74 +237,15 @@ function MainNav({ onMenuClick }: MainNavProps) {
       )
     }
 
-    if (item.id === 'workspace') {
-      return (
-        <NavLink
-          className={styles.tabContent}
-          to={
-            lastVisitedWorkspace
-              ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
-              : ROUTE_PATHS.WORKSPACE
-          }
-          params={
-            lastVisitedWorkspace
-              ? cleanReportPayload(lastVisitedWorkspace.params || {})
-              : {
-                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                }
-          }
-          search={
-            lastVisitedWorkspace
-              ? {
-                  ...cleanReportQuery(lastVisitedWorkspace.search || {}),
-                  ...EMPTY_SEARCH_FILTERS,
-                  userTab: undefined,
-                }
-              : (prev: QueryParams) => ({
-                  ...cleanReportQuery(prev),
-                  dataviewInstances: (prev.dataviewInstances || []).filter(
-                    (dataviewInstance) => dataviewInstance.origin !== 'report'
-                  ),
-                  ...EMPTY_SEARCH_FILTERS,
-                  userTab: undefined,
-                })
-          }
-          replace
-          onClick={onWorkspaceClick}
-        >
-          {content}
-        </NavLink>
-      )
-    }
-
-    if (item.id === 'search') {
-      const workspaceScoped = isWorkspaceLocation || isWorkspaceVesselLocation
-      return (
-        <NavLink
-          className={styles.tabContent}
-          to={workspaceScoped ? ROUTE_PATHS.WORKSPACE_SEARCH : ROUTE_PATHS.SEARCH}
-          params={{
-            category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-            workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          }}
-          search={workspaceScoped ? (prev: QueryParams) => prev : {}}
-          replace={!workspaceScoped}
-          onClick={onSearchClick}
-        >
-          {content}
-        </NavLink>
-      )
-    }
-
-    const category = item.params?.category
+    const { to, params, search, replace, onClick } = getNavLinkProps(item, navLinkContext)
     return (
       <NavLink
         className={styles.tabContent}
-        to={item.to as string}
-        params={item.params}
-        search={{}}
-        onClick={category ? () => onCategoryClick(category as WorkspaceCategory) : undefined}
+        to={to}
+        params={params}
+        search={search}
+        replace={replace}
+        onClick={onClick}
       >
         {content}
       </NavLink>
@@ -312,7 +259,7 @@ function MainNav({ onMenuClick }: MainNavProps) {
     const label = item.label
     const tooltip = PLATFORM_MODE
       ? undefined
-      : item.id === 'workspace' && isWorkspaceLocation
+      : isNavItemCurrentLocation(item, navLinkContext)
         ? t((t) => t.common.seeMyWorkspace)
         : label
     const content = renderItemContent(item, label)
