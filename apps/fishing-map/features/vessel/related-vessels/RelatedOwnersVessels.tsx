@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { uniqBy } from 'es-toolkit'
+import { uniq, uniqBy } from 'es-toolkit'
 import { useSearchByOwnerQuery } from 'queries/search-api'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -21,13 +21,19 @@ import { formatInfoField } from 'utils/info'
 
 import styles from './RelatedVessels.module.css'
 
-type OwnerVesselsProps = { owner: string; dataset: string; ignoreVessel?: string }
-const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
+type OwnerVesselsProps = {
+  owner: string
+  ownerFlag?: string
+  dataset: string
+  ignoreVessel?: string
+}
+const OwnerVessels = ({ owner, ownerFlag, dataset, ignoreVessel }: OwnerVesselsProps) => {
   const { t } = useTranslation()
 
   const { data, isFetching } = useSearchByOwnerQuery(
     {
       owner,
+      ownerFlag,
       datasets: [dataset],
     },
     {
@@ -73,7 +79,7 @@ const RelatedOwnerVessels = () => {
     vesselData?.registryOwners || [],
     timerange
   ) as VesselRegistryOwner[]
-  const uniqOwners = uniqBy(filteredOwners, (o) => o.name)
+  const uniqOwners = uniqBy(filteredOwners, (o) => `${o.name}-${o.flag}`)
   const vesselId = getVesselProperty(vesselData, 'id')
 
   if (!uniqOwners?.length) {
@@ -83,13 +89,45 @@ const RelatedOwnerVessels = () => {
   return (
     <ul className={styles.vesselsList}>
       {uniqOwners?.map((owner) => {
+        const ownerRecords = filteredOwners.filter(
+          (o) => o.name === owner.name && o.flag === owner.flag
+        )
+        const sources = uniq(ownerRecords.flatMap((o) => o.sourceCode ?? []))
+        const ssvids = uniq(ownerRecords.map((o) => o.ssvid).filter(Boolean))
+        const tooltip =
+          sources.length || ssvids.length ? (
+            <div>
+              {sources.length > 0 && (
+                <div>
+                  {t((t) => t.vessel.source)}: {sources.join(', ')}
+                </div>
+              )}
+              {ssvids.length > 0 && (
+                <div>
+                  {t((t) => t.vessel.mmsi)}: {ssvids.join(', ')}
+                </div>
+              )}
+            </div>
+          ) : null
         return (
-          <li key={`${owner.name}-${owner.dateFrom}-${owner.dateTo}`} className={styles.vessel}>
-            {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')}){' '}
+          <li
+            key={`${owner.name}-${owner.flag}-${owner.dateFrom}-${owner.dateTo}`}
+            className={styles.vessel}
+          >
+            <Tooltip content={tooltip}>
+              <span className={cx({ [styles.help]: tooltip !== null })}>
+                {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')})
+              </span>
+            </Tooltip>{' '}
             <span className={styles.secondary}>
               <I18nDate date={owner.dateFrom} /> - <I18nDate date={owner.dateTo} />
             </span>
-            <OwnerVessels owner={owner.name} dataset={dataset} ignoreVessel={vesselId} />
+            <OwnerVessels
+              owner={owner.name}
+              ownerFlag={owner.flag}
+              dataset={dataset}
+              ignoreVessel={vesselId}
+            />
           </li>
         )
       })}
