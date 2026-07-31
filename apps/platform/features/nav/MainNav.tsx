@@ -1,5 +1,5 @@
 import type { ComponentProps, ComponentType, MouseEvent, ReactNode } from 'react'
-import { Fragment, lazy, Suspense, useCallback, useRef, useState } from 'react'
+import { Fragment, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link, useMatchRoute } from '@tanstack/react-router'
@@ -7,6 +7,7 @@ import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
@@ -27,19 +28,13 @@ import {
 } from 'features/_map/workspace/workspace.slice'
 import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
-import { selectUserData } from 'features/_user/selectors/user.selectors'
-import UserButton from 'features/_user/UserButton'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import HelpHub from 'features/hints/HelpHub'
-// import HelpModal from 'features/help/HelpModal'
-import LanguageToggle from 'features/i18n/LanguageToggle'
-import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import type { NavItem } from 'features/nav/nav.config'
 import { getNavSections, isRouted, PLATFORM_MODE } from 'features/nav/nav.config'
-import WhatsNew from 'features/nav/WhatsNew'
+import NavBottom from 'features/nav/NavBottom'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import {
   selectIsAnySearchLocation,
@@ -52,8 +47,6 @@ import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from './MainNav.module.css'
-
-const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 
 const HOVER_INTENT_MS = 300
 
@@ -89,9 +82,6 @@ function MainNav({ onMenuClick }: MainNavProps) {
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isUserLocation = useSelector(selectIsUserLocation)
-  const userData = useSelector(selectUserData)
-
-  const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
   const [openSectionId, setOpenSectionId] = useState<string | null>(null)
   const [railCollapsed, setRailCollapsed] = useState(!PLATFORM_MODE)
@@ -118,12 +108,6 @@ function MainNav({ onMenuClick }: MainNavProps) {
     setOpenSectionId(null)
     expandRail()
   }, [cancelHoverOpen, expandRail])
-
-  const onFeedbackClick = useCallback(() => {
-    if (userData) {
-      dispatch(setModalOpen({ id: 'feedback', open: true }))
-    }
-  }, [dispatch, userData])
 
   const onCategoryClick = useCallback(
     (category: WorkspaceCategory) => {
@@ -190,12 +174,53 @@ function MainNav({ onMenuClick }: MainNavProps) {
       <Fragment>
         {item.icon && (
           <span className={styles.tabIcon}>
-            <Icon icon={item.icon} />
+            {item.loading ? <Spinner size="small" inline /> : <Icon icon={item.icon} />}
           </span>
         )}
         <span className={styles.tabLabel}>{label}</span>
       </Fragment>
     )
+
+    if (item.href) {
+      return (
+        <a
+          className={styles.tabContent}
+          href={item.href}
+          target="_blank"
+          rel="noreferrer"
+          data-testid={item.testId}
+        >
+          {content}
+        </a>
+      )
+    }
+
+    if (item.onClick) {
+      return (
+        <span
+          role="button"
+          tabIndex={0}
+          className={styles.tabContent}
+          onClick={item.onClick}
+          data-testid={item.testId}
+        >
+          {content}
+        </span>
+      )
+    }
+
+    if (item.subsections && !isRouted(item)) {
+      return (
+        <span
+          role="button"
+          tabIndex={0}
+          className={styles.tabContent}
+          onClick={() => setOpenSectionId(expandedSectionId === item.id ? '' : item.id)}
+        >
+          {content}
+        </span>
+      )
+    }
 
     // Not routed yet or already on the workspace it links to: inert row.
     if (!isRouted(item) || (item.id === 'workspace' && isWorkspaceLocation)) {
@@ -307,10 +332,56 @@ function MainNav({ onMenuClick }: MainNavProps) {
     )
   }
 
+  const renderSection = (section: NavItem) => {
+    const expanded = expandedSectionId === section.id
+    return (
+      <li
+        key={section.id}
+        className={styles.section}
+        onMouseEnter={() => openSectionOnHover(section.id)}
+        onMouseLeave={cancelHoverOpen}
+      >
+        {renderRow(section, {
+          toggle: section.subsections && (
+            <IconButton
+              className={cx(styles.sectionToggle, {
+                [styles.sectionToggleOpen]: expanded,
+              })}
+              icon={expanded ? 'arrow-top' : 'arrow-down'}
+              size="small"
+              testId={`toggle-${section.id}`}
+              onClick={() => {
+                setOpenSectionId(expanded ? '' : section.id)
+                expandRail()
+              }}
+            />
+          ),
+        })}
+        {section.subsections && (
+          <div
+            className={cx(styles.subsectionsWrapper, {
+              [styles.subsectionsOpen]: expanded,
+            })}
+            inert={!expanded}
+          >
+            <ul className={styles.subsections}>
+              {section.subsections.map((subsection) => (
+                <li key={subsection.id}>{renderRow(subsection, { isSubsection: true })}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </li>
+    )
+  }
+
   return (
     <Fragment>
       <nav
-        className={cx('print-hidden', styles.MainNav, { [styles.railCollapsed]: railCollapsed })}
+        className={cx('print-hidden', styles.MainNav, {
+          [styles.platform]: PLATFORM_MODE,
+          [styles.railCollapsed]: railCollapsed,
+        })}
         onClickCapture={collapseRail}
         onMouseLeave={onRailLeave}
         onFocus={expandRail}
@@ -334,105 +405,11 @@ function MainNav({ onMenuClick }: MainNavProps) {
                 </div>
               </li>
             )}
-            {navSections.map((section) => {
-              const expanded = expandedSectionId === section.id
-              return (
-                <li
-                  key={section.id}
-                  className={styles.section}
-                  onMouseEnter={() => openSectionOnHover(section.id)}
-                  onMouseLeave={cancelHoverOpen}
-                >
-                  {renderRow(section, {
-                    toggle: section.subsections && (
-                      <IconButton
-                        className={cx(styles.sectionToggle, {
-                          [styles.sectionToggleOpen]: expanded,
-                        })}
-                        icon={expanded ? 'arrow-top' : 'arrow-down'}
-                        size="small"
-                        testId={`toggle-${section.id}`}
-                        onClick={() => {
-                          setOpenSectionId(expanded ? '' : section.id)
-                          expandRail()
-                        }}
-                      />
-                    ),
-                  })}
-                  {section.subsections && (
-                    <div
-                      className={cx(styles.subsectionsWrapper, {
-                        [styles.subsectionsOpen]: expanded,
-                      })}
-                      inert={!expanded}
-                    >
-                      <ul className={styles.subsections}>
-                        {section.subsections.map((subsection) => (
-                          <li key={subsection.id}>
-                            {renderRow(subsection, { isSubsection: true })}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </li>
-              )
-            })}
+            {navSections.map(renderSection)}
           </ul>
-          <ul className={styles.bottom}>
-            <li className={cx(styles.tab, styles.secondary)}>
-              <WhatsNew />
-            </li>
-            <li className={cx(styles.tab, styles.secondary)}>
-              <HelpHub />
-            </li>
-            <li className={cx(styles.tab, styles.secondary)}>
-              <div className={cx(styles.linksToggle)}>
-                <div className={styles.linksBtn}>
-                  <IconButton icon="feedback" testId="feedback-button" />
-                </div>
-                <ul className={styles.links} data-testid="feedback-menu">
-                  <li>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      className={cx(styles.link)}
-                      onClick={onFeedbackClick}
-                      data-testid="open-feedback-modal"
-                    >
-                      {t((t) => t.feedback.logAnIssue)}
-                    </span>
-                  </li>
-                  <li>
-                    <a
-                      href={'https://feedback.globalfishingwatch.org/'}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={cx(styles.link)}
-                    >
-                      {t((t) => t.feedback.requestAnImprovement)}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
-            <li className={cx(styles.tab, styles.secondary)}>
-              <LanguageToggle />
-            </li>
-            <li className={cx(styles.tab, styles.user, { [styles.current]: isUserLocation })}>
-              <UserButton className={styles.tabContent} />
-            </li>
-          </ul>
+          <NavBottom renderSection={renderSection} />
         </div>
       </nav>
-      {modalFeedbackOpen && (
-        <Suspense fallback={null}>
-          <FeedbackModal
-            isOpen={modalFeedbackOpen}
-            onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
-          />
-        </Suspense>
-      )}
     </Fragment>
   )
 }
