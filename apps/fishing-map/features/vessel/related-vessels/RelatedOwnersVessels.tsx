@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { uniqBy } from 'es-toolkit'
+import { uniq, uniqBy } from 'es-toolkit'
 import { useSearchByOwnerQuery } from 'queries/search-api'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import I18nDate from 'features/i18n/i18nDate'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -89,12 +89,36 @@ const RelatedOwnerVessels = () => {
   return (
     <ul className={styles.vesselsList}>
       {uniqOwners?.map((owner) => {
+        const ownerRecords = filteredOwners.filter(
+          (o) => o.name === owner.name && o.flag === owner.flag
+        )
+        const sources = uniq(ownerRecords.flatMap((o) => o.sourceCode ?? []))
+        const ssvids = uniq(ownerRecords.map((o) => o.ssvid).filter(Boolean))
+        const tooltip =
+          sources.length || ssvids.length ? (
+            <div>
+              {sources.length > 0 && (
+                <div>
+                  {t((t) => t.vessel.source)}: {sources.join(', ')}
+                </div>
+              )}
+              {ssvids.length > 0 && (
+                <div>
+                  {t((t) => t.vessel.mmsi)}: {ssvids.join(', ')}
+                </div>
+              )}
+            </div>
+          ) : null
         return (
           <li
             key={`${owner.name}-${owner.flag}-${owner.dateFrom}-${owner.dateTo}`}
             className={styles.vessel}
           >
-            {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')}){' '}
+            <Tooltip content={tooltip}>
+              <span className={cx({ [styles.help]: tooltip !== null })}>
+                {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')})
+              </span>
+            </Tooltip>{' '}
             <span className={styles.secondary}>
               <I18nDate date={owner.dateFrom} /> - <I18nDate date={owner.dateTo} />
             </span>
