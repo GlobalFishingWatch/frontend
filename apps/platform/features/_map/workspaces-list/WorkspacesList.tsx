@@ -10,6 +10,7 @@ import { fetchWorkspacesThunk } from 'features/_map/workspaces-list/workspaces-l
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { isValidLocationCategory, selectLocationCategory } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
@@ -56,7 +57,7 @@ function WorkspacesList() {
       <div className={styles.placeholder}>
         <h2>{t((t) => t.errors.pageNotFound)}</h2>
         <p>🙈</p>
-        <Link className={styles.linkButton} to="/" search={{}} replace>
+        <Link className={styles.linkButton} to={ROUTE_PATHS.MAP} search={{}} replace>
           {t((t) => t.common.seeDefault)}
         </Link>
       </div>
@@ -93,11 +94,11 @@ function WorkspacesList() {
           let linkReplace = false
 
           if (id === DEFAULT_WORKSPACE_ID) {
-            linkPath = '/'
+            linkPath = ROUTE_PATHS.MAP
             linkSearch = {}
             linkReplace = true
           } else if (highlightedWorkspace.category === WorkspaceCategory.Reports) {
-            linkPath = '/$category/$workspaceId/report'
+            linkPath = ROUTE_PATHS.WORKSPACE_REPORT
             linkParams = {
               category: WorkspaceCategory.Reports,
               workspaceId: DEFAULT_WORKSPACE_ID,
@@ -111,7 +112,7 @@ function WorkspacesList() {
               reportLoadVessels: true,
             }
           } else {
-            linkPath = '/$category/$workspaceId'
+            linkPath = ROUTE_PATHS.WORKSPACE
             linkParams = {
               category:
                 highlightedWorkspace.category ||
