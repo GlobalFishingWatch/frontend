@@ -74,7 +74,7 @@
 
   .aside,
   .main {
-    width: 100vw;
+    width: 100%;
     height: calc(100% - 3.6rem);
     transition: none;
   }
@@ -87,8 +87,8 @@
     position: absolute;
     background: var(--color-white);
     padding: var(--space-XS);
-    width: 100vw;
-    transform: translateX(100vw);
+    width: 100%;
+    transform: translateX(100%);
     left: 0;
     bottom: -3.6rem;
     height: 3.6rem;

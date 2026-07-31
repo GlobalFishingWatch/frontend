@@ -1,26 +1,75 @@
 .MainNav {
+  position: relative;
+  flex: 0 0 var(--sidebar-tabs-width);
+  width: var(--sidebar-tabs-width);
+  z-index: 2;
+}
+
+.panel {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: var(--sidebar-tabs-width);
   display: flex;
   flex-direction: column;
   border-right: var(--border);
 
-  /*
-   * Width used to come from Sidebar's flex parent, whose content sibling took
-   * calc(100% - var(--sidebar-tabs-width)). Now that the nav is a top-level rail it must state it.
-   */
-  flex: 0 0 var(--sidebar-tabs-width);
-  width: var(--sidebar-tabs-width);
+  /* Closing */
+  transition:
+    width 200ms var(--ease-drawer),
+    background-color 100ms var(--ease-drawer) 100ms,
+    filter 100ms var(--ease-drawer) 100ms;
+  overflow: visible;
+}
+
+/*
+ * Vertical rhythm is `gap` all the way down — rows carry no vertical margin. Margins here collapsed
+ * differently depending on what followed a row, so the gap between two sections depended on whether the
+ * first one had subsections; flex containers plus one gap value give every row the same spacing.
+ */
+.sections {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-block: var(--space-XS);
+}
+
+.bottom {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-top: var(--space-XS);
+}
+
+/*
+ * No `gap` here on purpose: it would apply between the row and the subsections wrapper even while that
+ * wrapper is collapsed to zero height, making sections with subsections taller than the rest. The list
+ * carries that spacing itself, so it only exists when the section is open.
+ */
+.section {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
 }
 
 .tab {
-  width: var(--size-M);
-  height: var(--size-M);
-  margin: var(--space-XS);
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: calc(var(--sidebar-tabs-width) / 2);
+
+  /* Min, not fixed: an expanded label wraps to as many lines as it needs and the pill grows with it. */
+  min-height: var(--size-M);
+  margin: 0 var(--space-XS);
+  border-radius: calc(var(--size-M) / 2);
   transition: var(--transition-spring);
   color: var(--color-secondary-blue);
+}
+
+.section .tab {
+  padding-block: var(--space-XS);
 }
 
 .user {
@@ -29,6 +78,7 @@
   margin: 0;
   border-radius: 0;
   border-top: var(--border);
+  justify-content: center;
 }
 
 .tab:active:not(:has(:active)) {
@@ -42,6 +92,8 @@
 }
 
 .tab.secondary {
+  width: calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  justify-content: center;
   border-bottom: none;
 }
 
@@ -51,13 +103,14 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
   line-height: 0;
+  overflow: hidden;
   transition: var(--transition-spring);
 }
 
 .tabContent.disabled {
   cursor: default;
+  opacity: 0.5;
 }
 
 .tab.current .tabContent,
@@ -65,8 +118,155 @@
   color: var(--color-primary-blue);
 }
 
-.separator {
+.tabIcon {
+  flex: 0 0 calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Single line while the rail is collapsed — there the label has no width to wrap into. */
+.tabLabel {
   flex: 1;
+  min-width: 0;
+  line-height: normal;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  opacity: 0;
+
+  /* Closing: back to one line at once, before the rail starts narrowing. */
+  transition:
+    opacity 150ms linear,
+    white-space 0s allow-discrete;
+}
+
+.sectionToggle {
+  display: none;
+  margin-right: var(--space-XS);
+}
+
+.tab .sectionToggle {
+  background-color: transparent;
+  border-bottom-color: transparent;
+  opacity: 0;
+}
+
+.tab:hover .sectionToggle,
+.tab .sectionToggleOpen {
+  opacity: var(--opacity-secondary);
+}
+
+.tab .sectionToggle:hover:not(:disabled) {
+  background-color: transparent;
+  border-bottom-color: transparent;
+  opacity: 1;
+}
+
+.subsectionsWrapper {
+  display: grid;
+  margin-left: calc(var(--sidebar-tabs-width) / 2);
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms var(--ease-out-strong);
+}
+
+.MainNav:not(.railCollapsed):hover .subsectionsOpen,
+.MainNav:not(.railCollapsed):has(:focus-visible) .subsectionsOpen {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subsectionsWrapper {
+    transition: none;
+  }
+}
+
+.subsections {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-left: var(--space-S);
+}
+
+.subsectionTab {
+  position: relative;
+  margin-left: 0;
+}
+
+/*
+ * The gap under the section row lives inside the clipped list, on its first row: as padding on the list
+ * or a margin on the wrapper's grid item it still took up space while the section was closed.
+ */
+.subsections > li:first-child .subsectionTab {
+  margin-top: var(--space-XS);
+}
+
+.subsectionTab::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(var(--space-S) * -1);
+  width: var(--space-S);
+  border-top: var(--border);
+}
+
+.subsectionTab::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-S) * -1);
+  top: calc(var(--space-XS) * -1);
+  bottom: 0;
+  border-left: var(--border);
+}
+
+.subsections > li:last-child .subsectionTab::after {
+  bottom: 50%;
+}
+
+.subsectionTab .tabLabel {
+  padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
+}
+
+.MainNav:not(.railCollapsed):hover .panel,
+.MainNav:not(.railCollapsed):has(:focus-visible) .panel {
+  width: var(--nav-expanded-width);
+  background-color: var(--color-white);
+  filter: var(--filter-drop-shadow-2);
+
+  /* Opening */
+  transition:
+    width 200ms var(--ease-drawer),
+    background-color 100ms var(--ease-drawer),
+    filter 100ms var(--ease-drawer);
+}
+
+/*
+ * Wrapping waits for the width to finish: switched on immediately, a multi-word label wraps to three lines
+ * against the 4.8rem rail and shoves everything below it down until the panel catches up.
+ */
+.MainNav:not(.railCollapsed):hover .tabLabel,
+.MainNav:not(.railCollapsed):has(:focus-visible) .tabLabel {
+  opacity: 1;
+  white-space: normal;
+  text-overflow: clip;
+  transition:
+    opacity 150ms linear,
+    white-space 0s 200ms allow-discrete;
+}
+
+/*
+ * Circles while the rail is an icon strip (the row is as wide as it is tall), softened rectangles once it
+ * expands. The bottom group's icon buttons and the flush user footer keep their own shapes.
+ */
+.MainNav:not(.railCollapsed):hover .tab:not(.user, .secondary),
+.MainNav:not(.railCollapsed):has(:focus-visible) .tab:not(.user, .secondary) {
+  border-radius: var(--border-radius-0);
+}
+
+.MainNav:not(.railCollapsed):hover .sectionToggle,
+.MainNav:not(.railCollapsed):has(:focus-visible) .sectionToggle {
+  display: flex;
 }
 
 .userButton,
