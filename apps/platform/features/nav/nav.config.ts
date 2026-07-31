@@ -27,6 +27,16 @@ export function isRouted(item: NavItem): boolean {
   return !!item.to && ROUTED_PATHS.has(item.to)
 }
 
+// TODO PLATFORM: maybe remove this if workspaces are linked in home
+const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
+  AVAILABLE_WORKSPACES_CATEGORIES.map((category) => ({
+    id: `category-${category}`,
+    ...(icons && { icon: `category-${category}` as IconType }),
+    label: t((s) => s.workspace.categories[category]),
+    to: ROUTE_PATHS.WORKSPACES_LIST,
+    params: { category },
+  }))
+
 const getCurrentNavSections = (t: TFunc): NavItem[] => [
   {
     id: 'workspace',
@@ -41,13 +51,7 @@ const getCurrentNavSections = (t: TFunc): NavItem[] => [
     label: t((s) => s.workspace.categories.search),
     to: ROUTE_PATHS.SEARCH,
   },
-  ...AVAILABLE_WORKSPACES_CATEGORIES.map((category): NavItem => ({
-    id: `category-${category}`,
-    icon: `category-${category}` as IconType,
-    label: t((s) => s.workspace.categories[category]),
-    to: ROUTE_PATHS.WORKSPACES_LIST,
-    params: { category },
-  })),
+  ...getCategoryItems(t),
 ]
 
 const getPlatformNavSections = (t: TFunc): NavItem[] => [
@@ -68,6 +72,7 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
     icon: 'map',
     label: t((s) => s.nav.map),
     to: ROUTE_PATHS.MAP,
+    subsections: getCategoryItems(t, { icons: false }),
   },
   {
     id: 'areas',
