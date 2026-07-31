@@ -289,6 +289,6 @@
   }
 
   .panel {
-    width: 100vw;
+    width: calc(100vw - var(--sidebar-tabs-width));
   }
 }

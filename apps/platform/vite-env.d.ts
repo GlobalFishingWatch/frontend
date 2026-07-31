@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_GOOGLE_ANALYTICS_TEST_MODE?: string
   readonly VITE_GOOGLE_MEASUREMENT_ID?: string
   readonly VITE_GOOGLE_TAG_MANAGER_ID?: string
+  readonly VITE_PLATFORM_MODE?: string
   readonly VITE_PIPE_DATASET_VERSION?: string
   readonly VITE_PIPE_DATASET_MINOR_VERSION?: string
   readonly VITE_REPORT_DAYS_LIMIT?: string

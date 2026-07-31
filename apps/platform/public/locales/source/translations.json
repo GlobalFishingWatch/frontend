@@ -337,7 +337,6 @@
     "seeDefault": "See default workspace",
     "seeMore": "See more",
     "seeMyWorkspace": "My workspace",
-    "seeWorkspace": "See your workspace",
     "send": "Send",
     "sentinel2": "Imagery detections (Optical)",
     "setNewPassword": "Set a new password",
@@ -908,6 +907,22 @@
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
   "mmsi_other": "MMSIs",
+  "nav": {
+    "api": "API",
+    "areas": "Areas",
+    "dataAvailability": "Data Availability",
+    "datasets": "Datasets",
+    "datasetsAndApi": "Datasets & API",
+    "helpAndResources": "Help & Resources",
+    "home": "Home",
+    "map": "Map",
+    "platformAndDataUpdates": "Platform and Data Updates",
+    "ports": "Ports",
+    "toolsAndFeatures": "Tools & Features",
+    "topics": "Topics",
+    "useCases": "Use Cases",
+    "vessels": "Vessels"
+  },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
