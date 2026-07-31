@@ -8,10 +8,6 @@ import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/w
 
 export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
 
-/**
- * The component's own `t`, not the global one: SSR builds a fresh i18next instance per request
- * (see features/i18n/i18n.server.ts), so a module-scope `t` would resolve against the wrong one.
- */
 type TFunc = ReturnType<typeof useTranslation>['t']
 
 export type NavItem = {
