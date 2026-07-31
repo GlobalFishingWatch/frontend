@@ -1,0 +1,97 @@
+import type { WorkspaceCategory } from 'data/map/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import type {
+  selectLastVisitedWorkspace,
+  selectWorkspace,
+} from 'features/_map/workspace/workspace.selectors'
+import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
+import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
+import type { NavItem } from 'features/nav/nav.config'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
+import type { QueryParams } from 'types'
+
+/** Live state and side effects a row's link may depend on. */
+export type NavLinkContext = {
+  workspace: ReturnType<typeof selectWorkspace>
+  lastVisitedWorkspace: ReturnType<typeof selectLastVisitedWorkspace>
+  isWorkspaceLocation: boolean
+  isWorkspaceVesselLocation: boolean
+  onWorkspaceClick: () => void
+  onSearchClick: () => void
+  onCategoryClick: (category: WorkspaceCategory) => void
+}
+
+export type NavLinkProps = {
+  to: string
+  params?: Record<string, string>
+  search?: unknown
+  replace?: boolean
+  onClick?: () => void
+}
+
+const workspaceParams = (workspace: NavLinkContext['workspace']) => ({
+  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+})
+
+/**
+ * Rows whose target depends on live state, keyed by nav item id. Everything else links straight to
+ * its `to`/`params` — see `getNavLinkProps`.
+ */
+const NAV_LINK_RESOLVERS: Record<string, (ctx: NavLinkContext) => NavLinkProps> = {
+  // Back to the workspace the user came from, minus any report state.
+  workspace: ({ workspace, lastVisitedWorkspace, onWorkspaceClick }) => ({
+    to: lastVisitedWorkspace
+      ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
+      : ROUTE_PATHS.WORKSPACE,
+    params: lastVisitedWorkspace
+      ? cleanReportPayload(lastVisitedWorkspace.params || {})
+      : workspaceParams(workspace),
+    search: lastVisitedWorkspace
+      ? {
+          ...cleanReportQuery(lastVisitedWorkspace.search || {}),
+          ...EMPTY_SEARCH_FILTERS,
+          userTab: undefined,
+        }
+      : (prev: QueryParams) => ({
+          ...cleanReportQuery(prev),
+          dataviewInstances: (prev.dataviewInstances || []).filter(
+            (dataviewInstance) => dataviewInstance.origin !== 'report'
+          ),
+          ...EMPTY_SEARCH_FILTERS,
+          userTab: undefined,
+        }),
+    replace: true,
+    onClick: onWorkspaceClick,
+  }),
+  // Search stays inside the workspace (keeping its state) when there is one.
+  search: ({ workspace, isWorkspaceLocation, isWorkspaceVesselLocation, onSearchClick }) => {
+    const workspaceScoped = isWorkspaceLocation || isWorkspaceVesselLocation
+    return {
+      to: workspaceScoped ? ROUTE_PATHS.WORKSPACE_SEARCH : ROUTE_PATHS.SEARCH,
+      params: workspaceParams(workspace),
+      search: workspaceScoped ? (prev: QueryParams) => prev : {},
+      replace: !workspaceScoped,
+      onClick: onSearchClick,
+    }
+  },
+}
+
+export function getNavLinkProps(item: NavItem, ctx: NavLinkContext): NavLinkProps {
+  const resolver = NAV_LINK_RESOLVERS[item.id]
+  if (resolver) {
+    return resolver(ctx)
+  }
+  const category = item.params?.category
+  return {
+    to: item.to as string,
+    params: item.params,
+    search: {},
+    onClick: category ? () => ctx.onCategoryClick(category as WorkspaceCategory) : undefined,
+  }
+}
+
+/** Rows linking to where the user already is: inert row, and a tooltip saying so. */
+export function isNavItemCurrentLocation(item: NavItem, ctx: NavLinkContext): boolean {
+  return item.id === 'workspace' && ctx.isWorkspaceLocation
+}
