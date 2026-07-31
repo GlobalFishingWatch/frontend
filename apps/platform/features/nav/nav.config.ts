@@ -18,6 +18,14 @@ export type NavItem = {
   /** Route path pattern. Not a ROUTE_PATHS value → rendered disabled. */
   to?: string
   params?: Record<string, string>
+  /** External link. Takes precedence over `to`. */
+  href?: string
+  /** Acts instead of navigating. Takes precedence over `to`. */
+  onClick?: () => void
+  /** Extra test id on the clickable element, on top of the row's `link-${id}`. */
+  testId?: string
+  /** Swaps the row icon for a spinner (e.g. while the language switch refreshes datasets). */
+  loading?: boolean
   subsections?: NavItem[]
 }
 
@@ -132,3 +140,40 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
 
 export const getNavSections = (t: TFunc) =>
   PLATFORM_MODE ? getPlatformNavSections(t) : getCurrentNavSections(t)
+
+export const getPlatformBottomSections = (
+  t: TFunc,
+  handlers: { onAssistantClick: () => void; onLogIssueClick: () => void }
+) => ({
+  assistant: {
+    id: 'assistant',
+    icon: 'magic',
+    label: t((s) => s.common.assistant),
+    onClick: handlers.onAssistantClick,
+  } as NavItem,
+  feedback: {
+    id: 'feedback',
+    icon: 'feedback',
+    label: t((s) => s.common.feedback),
+    subsections: [
+      {
+        id: 'log-an-issue',
+        label: t((s) => s.feedback.logAnIssue),
+        testId: 'open-feedback-modal',
+        onClick: handlers.onLogIssueClick,
+      },
+      {
+        id: 'request-an-improvement',
+        label: t((s) => s.feedback.requestAnImprovement),
+        href: 'https://feedback.globalfishingwatch.org/',
+      },
+    ],
+  } as NavItem,
+  settings: {
+    id: 'settings',
+    icon: 'settings',
+    label: t((s) => s.nav.settings),
+    // PLATFORM TODO: disabled until the route lands.
+    to: '/settings',
+  } as NavItem,
+})

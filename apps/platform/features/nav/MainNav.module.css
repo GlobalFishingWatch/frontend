@@ -60,6 +60,78 @@
   padding-block: var(--space-XS);
 }
 
+.userButton,
+.userButton a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 0;
+}
+
+/* Platform mode expands the panel, so the user row is a row too, not a 4.8rem square. */
+.platform .tab.user {
+  width: auto;
+  height: auto;
+  min-height: var(--size-M);
+  margin: 0 var(--space-XS);
+  border-radius: calc(var(--size-M) / 2);
+  border-top: none;
+  justify-content: flex-start;
+  padding-block: var(--space-XS);
+  position: relative;
+  margin-top: var(--space-XS);
+}
+
+.platform .tab.user > * {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: none;
+}
+
+/* Full-bleed divider above the user row (the row itself is inset by its margin). */
+.platform .tab.user::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-XS) * -1);
+  left: calc(var(--space-XS) * -1);
+  right: calc(var(--space-XS) * -1);
+  border-top: var(--border);
+}
+
+.platform .tab.user a {
+  justify-content: flex-start;
+}
+
+.platform [data-nav-icon] {
+  flex: 0 0 calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Shrinks to 0 in the collapsed rail, so no fixed width or clipping ancestor needed. */
+.platform [data-nav-label] {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  line-height: normal;
+  opacity: 0;
+  transition: opacity 150ms linear;
+}
+
+.platform:not(.railCollapsed):hover [data-nav-label],
+.platform:not(.railCollapsed):has(:focus-visible) [data-nav-label] {
+  opacity: 1;
+}
+
 .user {
   width: calc(var(--sidebar-tabs-width) - 1px);
   height: var(--sidebar-tabs-width);
@@ -244,16 +316,6 @@
 .MainNav:not(.railCollapsed):hover .sectionToggle,
 .MainNav:not(.railCollapsed):has(:focus-visible) .sectionToggle {
   display: flex;
-}
-
-.userButton,
-.userButton a {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  line-height: 0;
 }
 
 .linksToggle {

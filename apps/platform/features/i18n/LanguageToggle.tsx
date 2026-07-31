@@ -1,21 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
-import { refreshDatasetsLocaleThunk } from 'features/_map/datasets/datasets.slice'
-import { selectHasEditTranslationsPermissions } from 'features/_user/selectors/user.permissions.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
-import { Locale } from 'types'
+import { useLanguageOptions } from 'features/i18n/language.hooks'
 
 import styles from './LanguageToggle.module.css'
 
-function CrowdinScripts({ enabled }: { enabled: boolean }) {
+export function CrowdinScripts({ enabled }: { enabled: boolean }) {
   const injectedRef = useRef(false)
 
   useEffect(() => {
@@ -34,14 +29,6 @@ function CrowdinScripts({ enabled }: { enabled: boolean }) {
   return null
 }
 
-const LocaleLabels = [
-  { id: Locale.en, label: 'English' },
-  { id: Locale.es, label: 'Español' },
-  { id: Locale.fr, label: 'Français' },
-  // { id: Locale.id, label: 'Bahasa Indonesia' },
-  { id: Locale.pt, label: 'Portuguese' },
-]
-
 type LanguageToggleProps = {
   className?: string
   position?: 'bottomRight' | 'rightDown'
@@ -52,27 +39,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   className = '',
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
-  const dispatch = useAppDispatch()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
-
-  const toggleLanguage = async (lang: Locale | 'source') => {
-    if (lang === i18n.language) {
-      return
-    }
-    trackEvent({
-      category: TrackCategory.I18n,
-      action: `Change language`,
-      label: lang,
-    })
-
-    setIsLoading(true)
-    const locale = lang === 'source' ? Locale.en : (lang as Locale)
-    await dispatch(refreshDatasetsLocaleThunk(locale))
-    i18n.changeLanguage(lang)
-    setIsLoading(false)
-  }
+  const { options, toggleLanguage, isLoading } = useLanguageOptions()
 
   return (
     <div className={cx(styles.languageToggle, className)} data-testid="language-toggle-container">
@@ -86,46 +53,20 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         />
       </div>
       <ul className={cx(styles.languages, styles[position])} data-testid="language-menu">
-        {IS_DEVELOPMENT_ENV && (
-          <li>
-            <button
-              onClick={() => toggleLanguage('source')}
-              data-testid="language-option-source"
-              className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === 'source',
-                [styles.warning]: IS_DEVELOPMENT_ENV && i18n.language !== 'source',
-              })}
-            >
-              🚧 Source 🚧
-            </button>
-          </li>
-        )}
-        {LocaleLabels.map(({ id, label }) => (
+        {options.map(({ id, label, testId }) => (
           <li key={id}>
             <button
               onClick={() => toggleLanguage(id)}
-              data-testid={`language-option-${id}`}
+              data-testid={testId}
               className={cx(styles.language, {
                 [styles.currentLanguage]: i18n.language === id,
+                [styles.warning]: id === 'source' && i18n.language !== 'source',
               })}
             >
               {label}
             </button>
           </li>
         ))}
-        {hasEditTranslationsPermissions && (
-          <li>
-            <button
-              onClick={() => toggleLanguage(CROWDIN_IN_CONTEXT_LANG as Locale)}
-              data-testid="language-option-edit-translations"
-              className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === CROWDIN_IN_CONTEXT_LANG,
-              })}
-            >
-              Edit translations
-            </button>
-          </li>
-        )}
       </ul>
       <CrowdinScripts enabled={i18n.language === CROWDIN_IN_CONTEXT_LANG} />
     </div>

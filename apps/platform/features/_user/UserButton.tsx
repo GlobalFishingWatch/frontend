@@ -22,7 +22,13 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './UserButton.module.css'
 
-const UserButton = ({ className = '' }: { className?: string }) => {
+const UserButton = ({
+  className = '',
+  withLabel = false,
+}: {
+  className?: string
+  withLabel?: boolean
+}) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
   const isUserLocation = useSelector(selectIsUserLocation)
@@ -60,6 +66,9 @@ const UserButton = ({ className = '' }: { className?: string }) => {
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
+  const label = userData
+    ? [userData.firstName, userData.lastName].filter(Boolean).join(' ') || userData.email
+    : t((t) => t.common.user)
 
   return (
     <div className={cx(className, styles.wrapper)}>
@@ -70,7 +79,10 @@ const UserButton = ({ className = '' }: { className?: string }) => {
           className={styles.loginLinkButton}
           loginSource="user-icon"
         >
-          <Icon icon="user" />
+          <span data-nav-icon>
+            <Icon icon="user" />
+          </span>
+          {withLabel && <span data-nav-label>{t((t) => t.common.login)}</span>}
         </LoginLink>
       ) : (
         <Tooltip
@@ -89,7 +101,10 @@ const UserButton = ({ className = '' }: { className?: string }) => {
             data-testid="sidebar-user-link"
             className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
           >
-            {userData ? initials : <Icon icon="user" className="print-hidden" />}
+            <span data-nav-icon>
+              {userData ? initials : <Icon icon="user" className="print-hidden" />}
+            </span>
+            {withLabel && <span data-nav-label>{label}</span>}
           </Link>
         </Tooltip>
       )}
