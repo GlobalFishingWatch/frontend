@@ -103,6 +103,12 @@
   border: 0;
 }
 
+.content div:has(> iframe) {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
 .content h2 {
   color: var(--color-primary-blue) !important;
   font: var(--font-XL);
