@@ -1,0 +1,192 @@
+/*
+ * The pre-platform rail: fixed width, icon-only, never expands. Row primitives are duplicated from
+ * PlatformNav.module.css on purpose — this file is expected to be deleted wholesale with
+ * LegacyNav.tsx, and sharing them would tie the platform nav's styling to a doomed consumer.
+ */
+.LegacyNav {
+  position: relative;
+  flex: 0 0 var(--sidebar-tabs-width);
+  width: var(--sidebar-tabs-width);
+  z-index: 2;
+}
+
+.panel {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: var(--sidebar-tabs-width);
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border);
+  overflow: visible;
+}
+
+.sections {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-block: var(--space-XS);
+}
+
+.bottom {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-top: var(--space-XS);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+/* ── Rows ─────────────────────────────────────────────────────────────────── */
+
+.tab {
+  display: flex;
+  align-items: center;
+  min-height: var(--size-M);
+  margin: 0 var(--space-XS);
+  border-radius: calc(var(--size-M) / 2);
+  transition: var(--transition-spring);
+  color: var(--color-secondary-blue);
+}
+
+.section .tab {
+  padding-block: var(--space-XS);
+}
+
+.tab:active:not(:has(:active)) {
+  transform: scale(0.86);
+  transition: var(--transition-press);
+}
+
+.tab.current,
+.tab:not(.current):hover {
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
+}
+
+.tab.secondary {
+  width: calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  justify-content: center;
+  border-bottom: none;
+}
+
+.tabContent {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  overflow: hidden;
+  transition: var(--transition-spring);
+}
+
+.tabContent.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.tab.current .tabContent,
+.tab:hover > .tabContent {
+  color: var(--color-primary-blue);
+}
+
+/* UserButton lives in another CSS module and marks its icon with this attribute. */
+.LegacyNav [data-nav-icon] {
+  flex: 0 0 calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user {
+  width: 100%;
+  height: var(--sidebar-tabs-width);
+  margin: 0;
+  border-radius: 0;
+  border-top: var(--border);
+  justify-content: center;
+}
+
+.user > .tabContent {
+  overflow: visible;
+}
+
+/* ── Feedback flyout ──────────────────────────────────────────────────────── */
+
+.linksToggle {
+  transition: all 200ms linear;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Widens the hover target so the pointer can cross the gap into .links. */
+.linksToggle:hover::before {
+  content: '';
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+}
+
+.links {
+  display: none;
+  position: absolute;
+  padding: var(--space-S) 0;
+  z-index: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: var(--color-white);
+  filter: var(--filter-drop-shadow-2);
+  width: max-content;
+  transform: translateY(50%);
+  bottom: 50%;
+  left: var(--sidebar-tabs-width);
+  border-radius: var(--border-radius-1);
+}
+
+.links > li {
+  width: 100%;
+}
+
+.linksToggle:hover .links {
+  display: flex;
+}
+
+.link {
+  width: 100%;
+  color: var(--color-secondary-blue);
+  display: block;
+  padding: var(--space-XS) var(--space-M);
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.links > li:not(:last-of-type) > .link::after {
+  content: '';
+  height: 1px;
+  bottom: 0;
+  position: absolute;
+  left: var(--space-M);
+  right: 0;
+  background-color: var(--color-border);
+}
+
+.link:hover {
+  color: var(--color-primary-blue);
+  background-color: var(--color-terthiary-blue);
+}

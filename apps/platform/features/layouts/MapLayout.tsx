@@ -46,6 +46,7 @@ declare global {
 }
 
 const rootRoute = getRouteApi('__root__')
+const RAIL = 'var(--sidebar-tabs-width)'
 
 function MapLayout() {
   const sidebarOpen = useSelector(selectSidebarOpen)
@@ -82,7 +83,6 @@ function MapLayout() {
     return t((t) => t.common.layerList)
   }, [locationType, isAreaReportLocation])
 
-  const RAIL = 'var(--sidebar-tabs-width)'
   let asideWidth = '50%'
 
   if (screenshotMode) {

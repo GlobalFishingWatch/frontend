@@ -12,8 +12,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
-import hintsConfig from './hints.content'
-import { resetHints, selectHintsDismissed } from './hints.slice'
+import hintsConfig from '../hints/hints.content'
+import { resetHints, selectHintsDismissed } from '../hints/hints.slice'
 
 import styles from './Hint.module.css'
 

@@ -24,6 +24,7 @@ import {
   selectDownloadTrackModalOpen,
   selectEditorMenuOpen,
   selectEditWorkspaceModalOpen,
+  selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
   selectTurningTidesModalOpen,
   setModalOpen,
@@ -53,6 +54,7 @@ const DownloadTrackModal = lazy(() => import('features/_map/download/DownloadTra
 const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
+const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 
 const DebugMenuConfig = {
   key: 'd',
@@ -107,6 +109,7 @@ const AppModals = () => {
   const editWorkspaceModalOpen = useSelector(selectEditWorkspaceModalOpen)
   const createWorkspaceModalOpen = useSelector(selectCreateWorkspaceModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
+  const feedbackModalOpen = useSelector(selectFeedbackModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
@@ -238,6 +241,14 @@ const AppModals = () => {
       {downloadTrackModalOpen && (
         <Suspense fallback={null}>
           <DownloadTrackModal />
+        </Suspense>
+      )}
+      {feedbackModalOpen && (
+        <Suspense fallback={null}>
+          <FeedbackModal
+            isOpen
+            onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
+          />
         </Suspense>
       )}
       {!readOnly && isWorkspaceReady && (

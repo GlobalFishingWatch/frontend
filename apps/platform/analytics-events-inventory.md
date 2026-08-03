@@ -10,26 +10,26 @@
 
 `features/app/analytics.hooks.ts:15`
 
-| Enum member | GA value |
-| --- | --- |
-| `General` | `general` |
-| `ActivityData` | `activity_data` |
-| `Analysis` | `analysis` |
-| `DataDownloads` | `data_downloads` |
-| `EnvironmentalData` | `environmental_data` |
-| `GlobalReports` | `global_reports` |
-| `HelpHints` | `help_hints` |
-| `I18n` | `internationalization` |
-| `ReferenceLayer` | `reference_layer` |
-| `SearchVessel` | `search_vessel` |
-| `Timebar` | `timebar` |
-| `Tracks` | `tracks` |
-| `User` | `user` |
-| `VesselGroups` | `vessel_groups` |
-| `VesselGroupReport` | `vessel_group_report` |
-| `VesselProfile` | `vessel_profile` |
+| Enum member           | GA value               |
+| --------------------- | ---------------------- |
+| `General`             | `general`              |
+| `ActivityData`        | `activity_data`        |
+| `Analysis`            | `analysis`             |
+| `DataDownloads`       | `data_downloads`       |
+| `EnvironmentalData`   | `environmental_data`   |
+| `GlobalReports`       | `global_reports`       |
+| `HelpHints`           | `help_hints`           |
+| `I18n`                | `internationalization` |
+| `ReferenceLayer`      | `reference_layer`      |
+| `SearchVessel`        | `search_vessel`        |
+| `Timebar`             | `timebar`              |
+| `Tracks`              | `tracks`               |
+| `User`                | `user`                 |
+| `VesselGroups`        | `vessel_groups`        |
+| `VesselGroupReport`   | `vessel_group_report`  |
+| `VesselProfile`       | `vessel_profile`       |
 | `WorkspaceManagement` | `workspace_management` |
-| `MapInteraction` | `map_interaction` |
+| `MapInteraction`      | `map_interaction`      |
 
 ---
 
@@ -660,15 +660,15 @@ All `HelpHints`.
   - Action: `'redirect to user guide to specific section'`
   - Label: `` `${i18n.language} - ${section}` ``
 
-- **`features/hints/HelpHub.tsx:33`**
+- **`features/nav/HelpHub.tsx:33`**
   - Action: `"restore help hints after they've been dismissed"`
   - Label: `` `percentage of hints seen: ${percentageOfHintsSeen.toString()}%` ``
 
-- **`features/hints/HelpHub.tsx:52`**
+- **`features/nav/HelpHub.tsx:52`**
   - Action: `` `redirect to ${destination}` ``
   - Label: `i18n.language`
 
-- **`features/hints/HelpHub.tsx:98`**
+- **`features/nav/HelpHub.tsx:98`**
   - Action: `'Open user guide modal'` **(new)**
 
 - **`features/hints/Hint.tsx:36`**
@@ -689,25 +689,25 @@ All `HelpHints`.
 
 ### Files moved (feature-folder restructure)
 
-| Old | New |
-| --- | --- |
-| `user/user.slice.ts` | `features/_user/user.hooks.ts` |
-| `sidebar/CategoryTabs.tsx` | `features/nav/MainNav.tsx` |
-| `sidebar/*` | `features/_map/sidebar/*` |
-| `workspaces-list/*`, `workspace/*`, `download/*`, `datasets/*`, `layer-library/*`, `timebar/*` | under `features/_map/` |
-| `vessel/*`, `search/*` | under `features/_vessels/` |
-| `vessel-groups/*` | `features/_user/vessel-groups/` |
-| `vessel/identity/DataTerminology.tsx` | `features/cms/data-terminology/DataTerminology.tsx` |
-| `vessel/identity/VesselIdentity.tsx` (links + download) | `identity/VesselExternalToolLinks.tsx`, `identity/tabs/IdentityTabWrapper.tsx` |
-| `vessel/VesselPin.tsx` | `features/_vessels/vessel/vessel-pin.hooks.ts` |
-| `help/HelpHub.tsx`, `help/Hint.tsx` | `features/hints/` |
-| `workspace/shared/LayerFilters.tsx` (2 of 3 events) | `LayerFilters.hooks.ts` + `LayerFilters.utils.ts` |
-| `timebar/Timebar.tsx` (bookmark + range change) | `features/_map/timebar/timebar-interactions.hooks.ts` |
+| Old                                                                                            | New                                                                            |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `user/user.slice.ts`                                                                           | `features/_user/user.hooks.ts`                                                 |
+| `sidebar/CategoryTabs.tsx`                                                                     | `features/nav/MainNav.tsx`                                                     |
+| `sidebar/*`                                                                                    | `features/_map/sidebar/*`                                                      |
+| `workspaces-list/*`, `workspace/*`, `download/*`, `datasets/*`, `layer-library/*`, `timebar/*` | under `features/_map/`                                                         |
+| `vessel/*`, `search/*`                                                                         | under `features/_vessels/`                                                     |
+| `vessel-groups/*`                                                                              | `features/_user/vessel-groups/`                                                |
+| `vessel/identity/DataTerminology.tsx`                                                          | `features/cms/data-terminology/DataTerminology.tsx`                            |
+| `vessel/identity/VesselIdentity.tsx` (links + download)                                        | `identity/VesselExternalToolLinks.tsx`, `identity/tabs/IdentityTabWrapper.tsx` |
+| `vessel/VesselPin.tsx`                                                                         | `features/_vessels/vessel/vessel-pin.hooks.ts`                                 |
+| `help/HelpHub.tsx`, `help/Hint.tsx`                                                            | `features/hints/`                                                              |
+| `workspace/shared/LayerFilters.tsx` (2 of 3 events)                                            | `LayerFilters.hooks.ts` + `LayerFilters.utils.ts`                              |
+| `timebar/Timebar.tsx` (bookmark + range change)                                                | `features/_map/timebar/timebar-interactions.hooks.ts`                          |
 
 ### Events added
 
 - `Clicked login button[ from <source>]` (`User`) — `features/_user/LoginLink.tsx`
-- `Open user guide modal` (`HelpHints`) — `features/hints/HelpHub.tsx:98`
+- `Open user guide modal` (`HelpHints`) — `features/nav/HelpHub.tsx:98`
 - `vessel_group_profile_insights_tab_expand_insights` / `..._longline_go_to_vessel` — `VGRInsightLongline.tsx`
 
 ### Events removed
