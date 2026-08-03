@@ -4,10 +4,10 @@ import {
   findDatasetByType,
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
-  getDatasetRangeSteps,
   getFlattenDatasetFilters,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
+import { getDatasetRangeSteps } from '@globalfishingwatch/datasets-client/datasets.ranges'
 import type {
   BaseUserLayerProps,
   DeckLayerProps,
