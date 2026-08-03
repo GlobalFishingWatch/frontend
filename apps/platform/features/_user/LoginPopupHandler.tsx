@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 
 import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
@@ -13,7 +12,6 @@ import { loginServerFn } from 'server-functions/auth.functions'
 // Skip mounting the entire <App /> and just manage the login
 function LoginPopupHandler() {
   const handled = useRef(false)
-  const navigate = useNavigate()
 
   useEffect(() => {
     const accessToken = getAccessTokenFromUrl()
@@ -31,7 +29,7 @@ function LoginPopupHandler() {
           window.location.replace(`${PATH_BASENAME.replace(/\/$/, '')}${ROUTE_PATHS.MAP}`)
         }
       })
-  }, [navigate])
+  }, [])
 
   return <Spinner />
 }
