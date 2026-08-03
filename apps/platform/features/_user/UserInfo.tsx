@@ -122,7 +122,7 @@ function UserInfo() {
             <p className={styles.secondary}>{userData.email}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <SettingsButton />
+            {/* <SettingsButton /> */}
             <LogoutButton />
           </div>
         </div>
