@@ -33,7 +33,6 @@
 .downloadFooterContainer {
   height: 0;
   overflow: hidden;
-  background-image: url('../../assets/images/download-popup.jpg');
   background-size: cover;
   transition: height 300ms ease-in-out;
   border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);

@@ -12,6 +12,7 @@ import { TrackField } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
+import trackFootprintBgImage from 'assets/images/track-footprint-bg.png'
 import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
 
 import styles from './TrackFootprint.module.css'
@@ -184,7 +185,10 @@ function TrackFootprint({
 
   return (
     <Tooltip content={error && t((t) => t.vessel.noTrackAvailable)}>
-      <div className={styles.map}>
+      <div
+        className={styles.map}
+        style={{ backgroundImage: `url(${trackFootprintBgImage})` }}
+      >
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
           width={footprintWidth}

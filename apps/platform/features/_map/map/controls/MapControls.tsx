@@ -17,6 +17,8 @@ import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
+import basemapDefaultImage from 'assets/images/basemap-default.jpg'
+import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import ReferenceLayersControl from 'features/_map/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/_map/map/controls/ReportControl'
@@ -189,7 +191,14 @@ const MapControls = ({
                         ? t((t) => t.map.change_basemap_satellite)
                         : t((t) => t.map.change_basemap_default)
                     }
-                    className={cx(styles.basemapSwitcher, styles[currentBasemap])}
+                    className={styles.basemapSwitcher}
+                    style={{
+                      backgroundImage: `url(${
+                        currentBasemap === BasemapType.Default
+                          ? basemapSatelliteImage
+                          : basemapDefaultImage
+                      })`,
+                    }}
                     onClick={switchBasemap}
                   ></button>
                 </Tooltip>
