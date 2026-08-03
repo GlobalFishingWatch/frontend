@@ -1,36 +1,50 @@
-import { type ComponentProps, useMemo } from 'react'
-import Markdown from 'react-markdown'
-import rehypeRaw from 'rehype-raw'
-import remarkGfm from 'remark-gfm'
+import { type ComponentProps } from 'react'
+import { streamingMarkdownExtension } from '@tanstack/markdown/extensions/streaming'
+import { Markdown, type MarkdownComponents } from '@tanstack/markdown/react'
 
+import { highlightMarkdownCode } from 'features/_map/content-panel/markdown-highlighter'
 import MarkdownIframe from 'features/_map/content-panel/MarkdownIframe'
 import MarkdownImage from 'features/_map/content-panel/MarkdownImage'
 import MarkdownLink from 'features/_map/content-panel/MarkdownLink'
 
-type ContentMarkdownProps = { children?: string | null }
+import './ContentMarkdownHighlight.css'
 
-const ContentMarkdown = ({ children }: ContentMarkdownProps) => {
-  const components = useMemo(
-    () => ({
-      a: MarkdownLink,
-      img: MarkdownImage,
-      iframe: MarkdownIframe,
-      // ponytail: inline style instead of a css module, it's the only rule this wrapper needs
-      table: (props: ComponentProps<'table'>) => (
-        <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
-          <table {...props} />
-        </div>
-      ),
-    }),
-    []
-  )
+type ContentMarkdownProps = {
+  children?: string | null
+  variant?: 'default' | 'chat'
+}
 
+const chatExtensions = [streamingMarkdownExtension()]
+
+const components = {
+  a: MarkdownLink,
+  img: MarkdownImage,
+  iframe: MarkdownIframe,
+  table: (props: ComponentProps<'table'>) => (
+    <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+      <table {...props} />
+    </div>
+  ),
+} satisfies MarkdownComponents
+
+const ContentMarkdown = ({ children, variant = 'default' }: ContentMarkdownProps) => {
   if (!children) return null
 
+  const isChat = variant === 'chat'
+
   return (
-    <Markdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} components={components}>
-      {children}
-    </Markdown>
+    <div className="content-markdown">
+      <Markdown
+        components={components}
+        highlighter={highlightMarkdownCode}
+        allowHtml={!isChat}
+        extensions={isChat ? chatExtensions : undefined}
+        frontmatter={!isChat}
+        headingIds={!isChat}
+      >
+        {children}
+      </Markdown>
+    </div>
   )
 }
 

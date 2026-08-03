@@ -85,7 +85,7 @@ function ChatHeader() {
           content={
             <ul className={styles.historyList}>
               {threadsError && <li className={styles.historyEmpty}>{threadsError}</li>}
-              {!threadsError && threads.length === 0 && (
+              {!threadsLoading && !threadsError && threads.length === 0 && (
                 <li className={styles.historyEmpty}>{t((t) => t.common.noConversations)}</li>
               )}
               {threads.map((c) => (

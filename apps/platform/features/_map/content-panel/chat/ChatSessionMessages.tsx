@@ -130,7 +130,11 @@ function MessageParts({ message }: { message: UIMessage }) {
           const text = part.text
           if (!text) return null
           if (message.role === 'assistant') {
-            return <ContentMarkdown key={idx}>{text}</ContentMarkdown>
+            return (
+              <ContentMarkdown key={idx} variant="chat">
+                {text}
+              </ContentMarkdown>
+            )
           }
           // Strip the injected map-url context from the user bubble display.
           const display = text.split(MAP_URL_CONTEXT_PREFIX)[0]
@@ -142,7 +146,7 @@ function MessageParts({ message }: { message: UIMessage }) {
             <details key={idx} className={styles.thinking}>
               <summary>{t((t) => t.chat.thinking)}</summary>
               <div className={styles.thinkingBlock}>
-                <ContentMarkdown>{part.text}</ContentMarkdown>
+                <ContentMarkdown variant="chat">{part.text}</ContentMarkdown>
               </div>
             </details>
           )
