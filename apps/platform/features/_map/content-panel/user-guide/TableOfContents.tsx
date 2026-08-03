@@ -55,7 +55,7 @@ function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfCo
     [filteredSections, searchQuery]
   )
   return (
-    <div className={styles.tableOfContentsContainer}>
+    <div className={styles.tableOfContentsContainer + ' ' + styles.notranslate} translate="no">
       <InputText
         onChange={(e) => setSearchQuery(e.target.value)}
         value={searchQuery}
