@@ -46,6 +46,10 @@
   color: var(--color-secondary-blue);
 }
 
+.help {
+  cursor: help;
+}
+
 .tooltipContainer {
   background-color: var(--color-white);
   border: var(--border);
