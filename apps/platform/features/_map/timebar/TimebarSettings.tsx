@@ -7,11 +7,11 @@ import cx from 'classnames'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 
-import AreaIcon from 'assets/icons/timebar-area.svg'
-import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg'
-import TrackPositionsIcon from 'assets/icons/timebar-track-positions.svg'
-import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg'
-import TracksIcon from 'assets/icons/timebar-tracks.svg'
+import AreaIcon from 'assets/icons/timebar-area.svg?react'
+import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg?react'
+import TrackPositionsIcon from 'assets/icons/timebar-track-positions.svg?react'
+import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg?react'
+import TracksIcon from 'assets/icons/timebar-tracks.svg?react'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,

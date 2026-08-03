@@ -1,10 +1,11 @@
 import type { useTranslation } from 'react-i18next'
-
-import type { IconType } from '@globalfishingwatch/ui-components/icon'
+import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import type { IconType } from '@globalfishingwatch/ui-components/icon'
+
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
+import type { LanguageOption } from 'features/i18n/language.hooks'
 
 export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
 
@@ -15,8 +16,14 @@ export type NavItem = {
   id: string
   label: string
   icon?: IconType
-  /** Route path pattern. Not a ROUTE_PATHS value → rendered disabled. */
-  to?: string
+  /** A real, registered route. Typed, so a typo here is a compile error. */
+  to?: RoutePathValues
+  /**
+   * PLATFORM TODO: a route the platform will have but does not yet. Documents the intended target
+   * while keeping the row disabled — deliberately untyped, since it matches no route today. Move
+   * the value to `to` when the route lands.
+   */
+  plannedTo?: string
   params?: Record<string, string>
   /** External link. Takes precedence over `to`. */
   href?: string
@@ -29,40 +36,23 @@ export type NavItem = {
   subsections?: NavItem[]
 }
 
-const ROUTED_PATHS = new Set<string>(Object.values(ROUTE_PATHS))
+export type RoutedNavItem = NavItem & { to: RoutePathValues }
 
-export function isRouted(item: NavItem): boolean {
-  return !!item.to && ROUTED_PATHS.has(item.to)
+export function isRouted(item: NavItem): item is RoutedNavItem {
+  return item.to !== undefined
 }
 
 // TODO PLATFORM: maybe remove this if workspaces are linked in home
-const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
+export const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
   AVAILABLE_WORKSPACES_CATEGORIES.map((category) => ({
     id: `category-${category}`,
     ...(icons && { icon: `category-${category}` as IconType }),
-    label: t((s) => s.workspace.categories[category]),
+    label: t((s) => s.workspace.categories[category], { defaultValue: category }),
     to: ROUTE_PATHS.WORKSPACES_LIST,
     params: { category },
   }))
 
-const getCurrentNavSections = (t: TFunc): NavItem[] => [
-  {
-    id: 'workspace',
-    icon: 'workspace',
-    label: t((s) => s.common.map),
-    to: ROUTE_PATHS.WORKSPACE,
-    params: { category: DEFAULT_WORKSPACE_CATEGORY, workspaceId: DEFAULT_WORKSPACE_ID },
-  },
-  {
-    id: 'search',
-    icon: 'category-search',
-    label: t((s) => s.workspace.categories.search),
-    to: ROUTE_PATHS.SEARCH,
-  },
-  ...getCategoryItems(t),
-]
-
-const getPlatformNavSections = (t: TFunc): NavItem[] => [
+export const getPlatformNavSections = (t: TFunc): NavItem[] => [
   {
     id: 'home',
     icon: 'home',
@@ -73,7 +63,7 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'topics',
     icon: 'topics',
     label: t((s) => s.nav.topics),
-    to: '/topics',
+    plannedTo: '/topics',
   },
   {
     id: 'map',
@@ -86,7 +76,7 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'areas',
     icon: 'areas',
     label: t((s) => s.nav.areas),
-    to: '/areas',
+    plannedTo: '/areas',
   },
   {
     id: 'vessels',
@@ -100,20 +90,20 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'ports',
     icon: 'ports',
     label: t((s) => s.nav.ports),
-    to: '/ports',
+    plannedTo: '/ports',
   },
   {
     id: 'datasets-and-api',
     icon: 'datasets',
     label: t((s) => s.nav.datasetsAndApi),
-    to: '/datasets-and-api',
+    plannedTo: '/datasets-and-api',
     subsections: [
-      { id: 'datasets', label: t((s) => s.nav.datasets), to: '/datasets-and-api/datasets' },
-      { id: 'api', label: t((s) => s.nav.api), to: '/datasets-and-api/api' },
+      { id: 'datasets', label: t((s) => s.nav.datasets), plannedTo: '/datasets-and-api/datasets' },
+      { id: 'api', label: t((s) => s.nav.api), plannedTo: '/datasets-and-api/api' },
       {
         id: 'data-availability',
         label: t((s) => s.nav.dataAvailability),
-        to: '/datasets-and-api/data-availability',
+        plannedTo: '/datasets-and-api/data-availability',
       },
     ],
   },
@@ -121,36 +111,46 @@ const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'help-and-resources',
     icon: 'help-section',
     label: t((s) => s.nav.helpAndResources),
-    to: '/help-and-resources',
+    plannedTo: '/help-and-resources',
     subsections: [
       {
         id: 'user-guide',
         label: t((s) => s.nav.toolsAndFeatures),
-        to: '/help-and-resources/user-guide',
+        plannedTo: '/help-and-resources/user-guide',
       },
-      { id: 'use-cases', label: t((s) => s.nav.useCases), to: '/help-and-resources/use-cases' },
+      {
+        id: 'use-cases',
+        label: t((s) => s.nav.useCases),
+        plannedTo: '/help-and-resources/use-cases',
+      },
       {
         id: 'platform-and-data-updates',
         label: t((s) => s.nav.platformAndDataUpdates),
-        to: '/help-and-resources/platform-and-data-updates',
+        plannedTo: '/help-and-resources/platform-and-data-updates',
       },
     ],
   },
 ]
 
-export const getNavSections = (t: TFunc) =>
-  PLATFORM_MODE ? getPlatformNavSections(t) : getCurrentNavSections(t)
-
 export const getPlatformBottomSections = (
   t: TFunc,
-  handlers: { onAssistantClick: () => void; onLogIssueClick: () => void }
-) => ({
+  handlers: {
+    onAssistantClick: () => void
+    onLogIssueClick: () => void
+    language: {
+      options: LanguageOption[]
+      currentLanguage: string
+      isLoading: boolean
+      toggleLanguage: (id: LanguageOption['id']) => void
+    }
+  }
+): Record<'assistant' | 'feedback' | 'language' | 'settings', NavItem> => ({
   assistant: {
     id: 'assistant',
     icon: 'magic',
     label: t((s) => s.common.assistant),
     onClick: handlers.onAssistantClick,
-  } as NavItem,
+  },
   feedback: {
     id: 'feedback',
     icon: 'feedback',
@@ -168,12 +168,27 @@ export const getPlatformBottomSections = (
         href: 'https://feedback.globalfishingwatch.org/',
       },
     ],
-  } as NavItem,
+  },
+  language: {
+    id: 'language',
+    icon: 'language',
+    label:
+      handlers.language.options.find(({ id }) => id === handlers.language.currentLanguage)?.label ??
+      t((s) => s.nav.language),
+    loading: handlers.language.isLoading,
+    subsections: handlers.language.options
+      .filter(({ id }) => id !== handlers.language.currentLanguage)
+      .map(({ id, label, testId }) => ({
+        id: `language-${id}`,
+        label,
+        testId,
+        onClick: () => !handlers.language.isLoading && handlers.language.toggleLanguage(id),
+      })),
+  },
   settings: {
     id: 'settings',
     icon: 'settings',
     label: t((s) => s.nav.settings),
-    // PLATFORM TODO: disabled until the route lands.
-    to: '/settings',
-  } as NavItem,
+    plannedTo: '/settings',
+  },
 })

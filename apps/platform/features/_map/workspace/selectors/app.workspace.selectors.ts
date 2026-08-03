@@ -29,6 +29,8 @@ import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.s
 import {
   selectCollapsedSections,
   selectDaysFromLatest,
+  selectLonglineSetsInsight,
+  selectMigramarLayer,
   selectTimeMode,
   selectWorkspace,
 } from 'features/_map/workspace/workspace.selectors'
@@ -62,11 +64,7 @@ import {
 } from 'features/_reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/_reports/reports.selectors'
 import type { ReportState } from 'features/_reports/reports.types'
-import {
-  selectLocationCategory,
-  selectLonglineSetsInsight,
-  selectMigramarLayer,
-} from 'router/routes.selectors'
+import { selectLocationCategory } from 'router/routes.selectors'
 import type { WorkspaceState } from 'types'
 
 export { selectWorkspaceCategory } from 'features/_map/workspace/workspace.selectors'

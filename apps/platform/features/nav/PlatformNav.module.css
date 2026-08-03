@@ -1,0 +1,261 @@
+.PlatformNav {
+  position: relative;
+  flex: 0 0 var(--sidebar-tabs-width);
+  width: var(--sidebar-tabs-width);
+  z-index: 2;
+}
+
+.panel {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: var(--sidebar-tabs-width);
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border);
+  overflow: visible;
+
+  /* Closing */
+  transition:
+    width 200ms var(--ease-drawer),
+    background-color 100ms var(--ease-drawer) 100ms,
+    filter 100ms var(--ease-drawer) 100ms;
+}
+
+.expanded .panel {
+  width: var(--nav-expanded-width);
+  background-color: var(--color-white);
+  filter: var(--filter-drop-shadow-2);
+
+  /* Opening */
+  transition:
+    width 200ms var(--ease-drawer),
+    background-color 100ms var(--ease-drawer),
+    filter 100ms var(--ease-drawer);
+}
+
+.sections {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-block: var(--space-XS);
+}
+
+.bottom {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-top: var(--space-XS);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  min-height: var(--size-M);
+  margin: 0 var(--space-XS);
+  border-radius: calc(var(--size-M) / 2);
+  transition: var(--transition-spring);
+  color: var(--color-secondary-blue);
+}
+
+.section .tab {
+  padding-block: var(--space-XS);
+}
+
+.tab:active:not(:has(:active)) {
+  transform: scale(0.86);
+  transition: var(--transition-press);
+}
+
+.tab.current,
+.tab:not(.current):hover {
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
+}
+
+.expanded .tab:not(.user) {
+  border-radius: var(--border-radius-0);
+}
+
+.tabContent {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  line-height: 0;
+  overflow: hidden;
+  transition: var(--transition-spring);
+}
+
+.tabContent.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* The avatar/initials must not be clipped by the row. */
+.user > .tabContent {
+  overflow: visible;
+}
+
+.tab:has(> .sectionToggle) > .tabContent {
+  width: auto;
+}
+
+.tab.current .tabContent,
+.tab:hover > .tabContent {
+  color: var(--color-primary-blue);
+}
+
+.PlatformNav [data-nav-icon] {
+  flex: 0 0 calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PlatformNav [data-nav-label] {
+  flex: 0 0 auto;
+  width: calc(
+    var(--nav-expanded-width) - var(--sidebar-tabs-width) - var(--size-S) - var(--space-XS)
+  );
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  line-height: normal;
+  opacity: 0;
+  transition: opacity 150ms linear;
+}
+
+.subsectionTab [data-nav-label] {
+  padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
+  width: calc(
+    var(--nav-expanded-width) - var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS)
+  );
+}
+
+.expanded [data-nav-label] {
+  opacity: 1;
+}
+
+.expanded .section [data-nav-label] {
+  white-space: normal;
+  text-overflow: clip;
+}
+
+.sectionToggle {
+  display: none;
+  margin-right: var(--space-XS);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  color: inherit;
+}
+
+.expanded .sectionToggle {
+  display: flex;
+}
+
+.tab:hover .sectionToggle,
+.PlatformNav [data-expanded] .sectionToggle {
+  opacity: var(--opacity-secondary);
+}
+
+.tab .sectionToggle:hover,
+.tab .sectionToggle[data-focus-visible],
+.tab .tabContent[data-focus-visible] .sectionToggle {
+  opacity: 1;
+}
+
+.subsectionsWrapper {
+  height: var(--disclosure-panel-height, 0);
+  overflow: hidden;
+  margin-left: calc(var(--sidebar-tabs-width) / 2);
+  transition: height 200ms var(--ease-out-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subsectionsWrapper {
+    transition: none;
+  }
+}
+
+.subsections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  padding-left: var(--space-S);
+}
+
+.subsectionTab {
+  position: relative;
+  margin-left: 0;
+}
+
+.subsections > li:first-child .subsectionTab {
+  margin-top: var(--space-XS);
+}
+
+.subsectionTab::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(var(--space-S) * -1);
+  width: var(--space-S);
+  border-top: var(--border);
+}
+
+.subsectionTab::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-S) * -1);
+  top: calc(var(--space-XS) * -1);
+  bottom: 0;
+  border-left: var(--border);
+}
+
+.subsections > li:last-child .subsectionTab::after {
+  bottom: 50%;
+}
+
+.tab.user {
+  position: relative;
+  min-height: var(--size-M);
+  margin: var(--space-XS) var(--space-XS) 0;
+  border-radius: calc(var(--size-M) / 2);
+  justify-content: flex-start;
+  padding-block: var(--space-XS);
+}
+
+.tab.user > * {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: none;
+}
+
+.tab.user > *,
+.tab.user > * > * {
+  justify-content: flex-start;
+}
+
+.tab.user::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-XS) * -1);
+  left: calc(var(--space-XS) * -1);
+  right: calc(var(--space-XS) * -1);
+  border-top: var(--border);
+}

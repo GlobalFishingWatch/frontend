@@ -9,10 +9,3 @@ declare module 'workerize-loader!*' {
   function createInstance<T>(): Workerized<T>
   export = createInstance
 }
-
-declare module '*.svg' {
-  import type { FC, SVGProps } from 'react'
-
-  const content: FC<SVGProps<SVGElement>>
-  export default content
-}

@@ -1,13 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
-// import { VesselLastIdentity } from 'features/search/search.slice'
-// import { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
-import { PRESENCE_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectPresenceDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import {

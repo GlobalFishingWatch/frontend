@@ -11,7 +11,9 @@ import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useAppShell } from 'features/app/app-shell.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import AppModals from 'features/modals/Modals'
-import MainNav from 'features/nav/MainNav'
+import LegacyNav from 'features/nav/LegacyNav'
+import { PLATFORM_MODE } from 'features/nav/nav.config'
+import PlatformNav from 'features/nav/PlatformNav'
 import { ConfirmLeave } from 'router/ConfirmLeave'
 
 import styles from './layouts.module.css'
@@ -30,14 +32,15 @@ function PlatformLayout() {
     <Fragment>
       <ConfirmLeave />
       <div className={styles.platformLayout}>
-        <MainNav onMenuClick={onMenuClick} />
+        {PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />}
         <div className={styles.platformContent}>
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>
         </div>
       </div>
-      {!readOnly && (
+      {/* Platform mode drops the hamburger for the expanding rail, so nothing can open this. */}
+      {!readOnly && !PLATFORM_MODE && (
         <Menu
           appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage}

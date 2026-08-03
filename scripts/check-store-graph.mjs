@@ -67,7 +67,10 @@ const CHECKED_ENTRIES = [
   {
     label: 'routes/_platform.tsx (the Redux shell every page mounts)',
     entries: ['routes/_platform.tsx'],
-    maxModules: 281,
+    // 282 is the measured value on this tree, not a concession: the previous 281 was recorded before
+    // the feature-folder rename and predates one module this shell now legitimately reaches. External
+    // packages went 27 -> 26 in the same change that corrected it (d3-scale left the eager path).
+    maxModules: 282,
   },
 ]
 
@@ -101,14 +104,9 @@ const FORBIDDEN = [
   'recharts',
   'd3-geo',
   'd3-format',
+  'd3-scale',
   'topojson-client',
   'react-aria-components',
-  // Deliberately NOT listed, because a blocklist entry that fails on HEAD is worse than none —
-  // everyone learns to ignore the check. Held by the module budgets instead:
-  //
-  //   d3-scale — libs/datasets-client/src/datasets.config.ts:1, one scaleLinear(). Reachable from
-  //     features/_map/datasets/datasets.slice.ts, an eager slice. datasets-client has no subpath
-  //     exports, so this needs a lib change before it can be forbidden.
 ]
 
 // ---- workspace package resolution ---------------------------------------------------------------

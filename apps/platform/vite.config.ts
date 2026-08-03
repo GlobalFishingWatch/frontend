@@ -47,7 +47,7 @@ export const plugins = [
   }),
   react(),
   svgr({
-    include: ['**/*.svg', '**/*.svg?react'],
+    include: ['**/*.svg?react'],
   }),
 ]
 

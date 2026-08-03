@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="vite-plugin-svgr/client" />
 
 /** Injected by Vite `define` at build time. Omitted when the define is not applied. */
 declare const __BUILD_ID__: string | undefined

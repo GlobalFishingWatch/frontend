@@ -6,9 +6,9 @@ import type { InsightType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { selectLonglineSetsInsight } from 'features/_map/workspace/workspace.selectors'
 import InsightMOUList from 'features/_vessels/vessel/insights/InsightMOUList'
 import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
-import { selectLonglineSetsInsight } from 'router/routes.selectors'
 
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
 
