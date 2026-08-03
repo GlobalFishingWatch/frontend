@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { getAccessTokenFromUrl } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
+import { PATH_BASENAME } from 'data/config'
 import { broadcastLogin } from 'features/user/auth-channel'
 import { getIsLoginPopup } from 'features/user/user.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -26,7 +27,8 @@ function LoginPopupHandler() {
           window.close()
         }
         if (!window.closed) {
-          navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
+          // Full page load, not a client navigation: the session only exists as cookies
+          window.location.replace(`${PATH_BASENAME.replace(/\/$/, '')}${ROUTE_PATHS.HOME}`)
         }
       })
   }, [navigate])
