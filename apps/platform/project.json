@@ -264,7 +264,7 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n:types"],
+      "dependsOn": ["i18n:types", "^dist"],
       "options": {
         "command": "tsc --noEmit --project  apps/platform/tsconfig.typecheck.json"
       }
