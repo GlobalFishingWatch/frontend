@@ -1,11 +1,11 @@
-import type { MouseEvent, ReactNode } from 'react'
+import type { FocusEvent } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Button, Disclosure, DisclosurePanel } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
-import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
@@ -26,14 +26,24 @@ import { useIsNavItemActive, useNavLinkContext, useOpenFeedbackModal } from 'fea
 import { getNavLinkProps, NavLink } from 'features/nav/nav.links'
 import { selectIsUserLocation, selectIsWorkspacesListLocation } from 'router/routes.selectors'
 
-import styles from './MainNav.module.css'
+import styles from './PlatformNav.module.css'
 
 const HOVER_INTENT_MS = 300
 
 /**
- * The platform rail: a collapsed strip of icons that expands into a labelled flyout on hover or
- * keyboard focus, with sections that can hold subsections. The pre-platform nav is a separate
- * component ([[LegacyNav]]) — it is a flat icon rail with none of this machinery.
+ * The platform rail: a strip of icons that expands into a labelled flyout, with sections that hold
+ * subsections. [[LegacyNav]] is the pre-platform nav — a flat icon rail with none of this.
+ *
+ * Two pieces of state, and only two:
+ *  - `railExpanded` — is the flyout open. Owned here rather than by CSS `:hover`, so that everything
+ *    derived from it (which panels are reachable, `aria-expanded`, the chevron) agrees with what is
+ *    on screen. CSS reads the `.expanded` class.
+ *  - `openSectionId` — which section is unfolded. `''` means the user closed everything; `null` means
+ *    they have not chosen, so the section matching the current route unfolds.
+ *
+ * Panel visibility, focusability and height animation come from react-aria's Disclosure: it sets
+ * `hidden="until-found"` when collapsed and publishes `--disclosure-panel-height` for the CSS
+ * transition. Nothing here hand-rolls `inert` or `aria-expanded`.
  */
 function PlatformNav() {
   const { t } = useTranslation()
@@ -53,19 +63,8 @@ function PlatformNav() {
     isLoading: isLanguageLoading,
   } = useLanguageOptions()
 
-  // '' is "the user closed everything"; null is "nothing chosen yet", which falls back to the
-  // section matching the current route. They are not interchangeable — see `expandedSectionId`.
+  const [railExpanded, setRailExpanded] = useState(false)
   const [openSectionId, setOpenSectionId] = useState<string | null>(null)
-  // Suppresses the flyout after a click, until the pointer leaves the rail.
-  const [hoverExpandDisabled, setHoverExpandDisabled] = useState(false)
-  // Capture phase, so it runs before the row's own handler. Rows that only expand a section are
-  // exempt: collapsing the flyout on the very click meant to open it would swallow the toggle.
-  const onNavClickCapture = useCallback((event: MouseEvent<HTMLElement>) => {
-    if ((event.target as HTMLElement).closest(`.${styles.sectionToggle}, [data-nav-toggle]`)) return
-    setHoverExpandDisabled(true)
-    setOpenSectionId('')
-  }, [])
-  const allowHoverExpand = useCallback(() => setHoverExpandDisabled(false), [])
 
   const hoverOpenTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
   const cancelHoverOpen = useCallback(() => clearTimeout(hoverOpenTimeout.current), [])
@@ -75,62 +74,84 @@ function PlatformNav() {
   }, [])
   useEffect(() => () => clearTimeout(hoverOpenTimeout.current), [])
 
-  const onRailLeave = useCallback(() => {
+  // ponytail: no pointerType filter, so a touch tap expands the rail and it stays expanded until the
+  // next tap outside — matching what sticky `:hover` did before. Gate on 'mouse' once touch gets a
+  // deliberate design.
+  const expandRail = useCallback(() => setRailExpanded(true), [])
+
+  const collapseRail = useCallback(() => {
     cancelHoverOpen()
+    setRailExpanded(false)
     setOpenSectionId(null)
-    allowHoverExpand()
-  }, [cancelHoverOpen, allowHoverExpand])
+  }, [cancelHoverOpen])
 
-  const bottomSections = useMemo(
-    () =>
-      getPlatformBottomSections(t, {
-        onAssistantClick: () => openSidePanel({ type: 'chat' }),
-        onLogIssueClick: openFeedbackModal,
-      }),
-    [t, openSidePanel, openFeedbackModal]
+  // Only collapse when focus actually leaves the rail, not when it moves between rows inside it.
+  const onBlur = useCallback(
+    (event: FocusEvent<HTMLElement>) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) {
+        collapseRail()
+      }
+    },
+    [collapseRail]
   )
 
-  const languageSection: NavItem = useMemo(
-    () => ({
-      id: 'language',
-      icon: 'language',
-      label:
-        languageOptions.find(({ id }) => id === currentLanguage)?.label ?? t((t) => t.nav.language),
-      loading: isLanguageLoading,
-      subsections: languageOptions
-        .filter(({ id }) => id !== currentLanguage)
-        .map(({ id, label, testId }) => ({
-          id: `language-${id}`,
-          label,
-          testId,
-          onClick: () => !isLanguageLoading && toggleLanguage(id),
-        })),
-    }),
-    [languageOptions, currentLanguage, isLanguageLoading, toggleLanguage, t]
-  )
+  /** Navigating or acting closes the flyout; toggling a section must not. */
+  const onNavigate = useCallback(() => {
+    cancelHoverOpen()
+    setRailExpanded(false)
+    setOpenSectionId('')
+  }, [cancelHoverOpen])
 
-  // Only a section whose *subsection* matches the current route opens on its own.
-  const activeSectionId = navSections.find((section) =>
+  const bottomSections = useMemo(() => {
+    const sections = getPlatformBottomSections(t, {
+      onAssistantClick: () => openSidePanel({ type: 'chat' }),
+      onLogIssueClick: openFeedbackModal,
+      language: {
+        options: languageOptions,
+        currentLanguage,
+        isLoading: isLanguageLoading,
+        toggleLanguage,
+      },
+    })
+    return [
+      ...(IS_CHATBOT_ENABLED && isGFWUser ? [sections.assistant] : []),
+      sections.feedback,
+      sections.language,
+      sections.settings,
+    ]
+  }, [
+    isGFWUser,
+    languageOptions,
+    currentLanguage,
+    isLanguageLoading,
+    toggleLanguage,
+    openFeedbackModal,
+    openSidePanel,
+    t,
+  ])
+
+  // Only a section whose *subsection* matches the current route unfolds on its own.
+  const routeSectionId = [...navSections, ...bottomSections].find((section) =>
     section.subsections?.some((subsection) =>
       subsection.params?.category
         ? isWorkspacesListLocation && locationCategory === subsection.params.category
         : isItemActive(subsection)
     )
   )?.id
-  const expandedSectionId = openSectionId ?? activeSectionId
+  const isSectionExpanded = (id: string) => railExpanded && (openSectionId ?? routeSectionId) === id
+
+  const renderIconAndLabel = (item: NavItem) => (
+    <Fragment>
+      {item.icon && (
+        <span data-nav-icon>
+          {item.loading ? <Spinner size="small" inline /> : <Icon icon={item.icon} />}
+        </span>
+      )}
+      <span data-nav-label>{item.label}</span>
+    </Fragment>
+  )
 
   const renderItemContent = (item: NavItem) => {
-    const content = (
-      <Fragment>
-        {item.icon && (
-          <span data-nav-icon>
-            {item.loading ? <Spinner size="small" inline /> : <Icon icon={item.icon} />}
-          </span>
-        )}
-        <span data-nav-label>{item.label}</span>
-      </Fragment>
-    )
-
     if (item.href) {
       return (
         <a
@@ -138,9 +159,10 @@ function PlatformNav() {
           href={item.href}
           target="_blank"
           rel="noreferrer"
+          onClick={onNavigate}
           data-testid={item.testId}
         >
-          {content}
+          {renderIconAndLabel(item)}
         </a>
       )
     }
@@ -150,28 +172,13 @@ function PlatformNav() {
         <button
           type="button"
           className={styles.tabContent}
-          onClick={item.onClick}
+          onClick={() => {
+            item.onClick?.()
+            onNavigate()
+          }}
           data-testid={item.testId}
         >
-          {content}
-        </button>
-      )
-    }
-
-    if (item.subsections && !isRouted(item)) {
-      const expanded = expandedSectionId === item.id && !hoverExpandDisabled
-      return (
-        <button
-          type="button"
-          data-nav-toggle
-          aria-expanded={expanded}
-          className={styles.tabContent}
-          onClick={() => {
-            setOpenSectionId(expanded ? '' : item.id)
-            allowHoverExpand()
-          }}
-        >
-          {content}
+          {renderIconAndLabel(item)}
         </button>
       )
     }
@@ -180,22 +187,27 @@ function PlatformNav() {
     if (!isRouted(item)) {
       return (
         <span className={cx(styles.tabContent, styles.disabled)} aria-disabled>
-          {content}
+          {renderIconAndLabel(item)}
         </span>
       )
     }
 
+    const { onClick, ...linkProps } = getNavLinkProps(item, navLinkContext)
     return (
-      <NavLink className={styles.tabContent} {...getNavLinkProps(item, navLinkContext)}>
-        {content}
+      <NavLink
+        className={styles.tabContent}
+        {...linkProps}
+        onClick={() => {
+          onClick?.()
+          onNavigate()
+        }}
+      >
+        {renderIconAndLabel(item)}
       </NavLink>
     )
   }
 
-  const renderRow = (
-    item: NavItem,
-    { toggle, isSubsection }: { toggle?: ReactNode; isSubsection?: boolean } = {}
-  ) => (
+  const renderRow = (item: NavItem, { isSubsection = false } = {}) => (
     <div
       data-testid={`link-${item.id}`}
       className={cx(styles.tab, {
@@ -204,12 +216,20 @@ function PlatformNav() {
       })}
     >
       {renderItemContent(item)}
-      {toggle}
     </div>
   )
 
   const renderSection = (section: NavItem) => {
-    const expanded = expandedSectionId === section.id
+    if (!section.subsections) {
+      return (
+        <li key={section.id} className={styles.section}>
+          {renderRow(section)}
+        </li>
+      )
+    }
+
+    const expanded = isSectionExpanded(section.id)
+    const chevron = <Icon icon={expanded ? 'arrow-top' : 'arrow-down'} />
     return (
       <li
         key={section.id}
@@ -217,64 +237,67 @@ function PlatformNav() {
         onMouseEnter={() => openSectionOnHover(section.id)}
         onMouseLeave={cancelHoverOpen}
       >
-        {renderRow(section, {
-          toggle: section.subsections && (
-            <IconButton
-              className={cx(styles.sectionToggle, {
-                [styles.sectionToggleOpen]: expanded,
-              })}
-              icon={expanded ? 'arrow-top' : 'arrow-down'}
-              size="small"
-              testId={`toggle-${section.id}`}
-              onClick={() => {
-                setOpenSectionId(expanded ? '' : section.id)
-                allowHoverExpand()
-              }}
-            />
-          ),
-        })}
-        {section.subsections && (
+        <Disclosure
+          isExpanded={expanded}
+          onExpandedChange={(isOpen) => {
+            setOpenSectionId(isOpen ? section.id : '')
+            expandRail()
+          }}
+        >
           <div
-            className={cx(styles.subsectionsWrapper, {
-              [styles.subsectionsOpen]: expanded,
-            })}
-            // Visibility is CSS (`:not(.hoverExpandDisabled):hover`), so `expanded` alone would leave
-            // links tabbable while the flyout is shut. Both conditions, or keyboard lands on nothing.
-            inert={!expanded || hoverExpandDisabled}
+            className={cx(styles.tab, { [styles.current]: isItemActive(section) })}
+            data-testid={`link-${section.id}`}
           >
+            {isRouted(section) ? (
+              <Fragment>
+                {renderItemContent(section)}
+                <Button
+                  slot="trigger"
+                  className={styles.sectionToggle}
+                  data-testid={`toggle-${section.id}`}
+                >
+                  {chevron}
+                </Button>
+              </Fragment>
+            ) : (
+              <Button slot="trigger" className={styles.tabContent}>
+                {renderIconAndLabel(section)}
+                <span className={styles.sectionToggle} data-testid={`toggle-${section.id}`}>
+                  {chevron}
+                </span>
+              </Button>
+            )}
+          </div>
+          <DisclosurePanel className={styles.subsectionsWrapper}>
             <ul className={styles.subsections}>
               {section.subsections.map((subsection) => (
                 <li key={subsection.id}>{renderRow(subsection, { isSubsection: true })}</li>
               ))}
             </ul>
-          </div>
-        )}
+          </DisclosurePanel>
+        </Disclosure>
       </li>
     )
   }
 
   return (
     <nav
-      className={cx('print-hidden', styles.MainNav, styles.platform, {
-        [styles.hoverExpandDisabled]: hoverExpandDisabled,
-      })}
-      onClickCapture={onNavClickCapture}
-      onMouseLeave={onRailLeave}
-      onFocus={allowHoverExpand}
+      className={cx('print-hidden', styles.PlatformNav, { [styles.expanded]: railExpanded })}
+      onPointerEnter={expandRail}
+      onPointerLeave={collapseRail}
+      onFocus={expandRail}
+      onBlur={onBlur}
     >
       <div className={styles.panel}>
         <ul className={styles.sections}>{navSections.map(renderSection)}</ul>
         <ul className={styles.bottom}>
-          {IS_CHATBOT_ENABLED && isGFWUser && renderSection(bottomSections.assistant)}
-          {renderSection(bottomSections.feedback)}
-          {renderSection(languageSection)}
-          <CrowdinScripts enabled={currentLanguage === CROWDIN_IN_CONTEXT_LANG} />
-          {renderSection(bottomSections.settings)}
+          {bottomSections.map(renderSection)}
           <li className={cx(styles.tab, styles.user, { [styles.current]: isUserLocation })}>
             <UserButton className={styles.tabContent} withLabel />
           </li>
         </ul>
       </div>
+      <CrowdinScripts enabled={currentLanguage === CROWDIN_IN_CONTEXT_LANG} />
     </nav>
   )
 }

@@ -1,9 +1,3 @@
-/*
- * The platform rail. Expansion is driven by the `.expanded` class, which PlatformNav sets from React
- * state — deliberately NOT from `:hover` / `:has(:focus-visible)`. When CSS owned that, React could
- * not know whether the flyout was actually visible, so `inert`, `aria-expanded` and the chevron
- * direction were all guesses, and hidden subsection links stayed in the tab order.
- */
 .PlatformNav {
   position: relative;
   flex: 0 0 var(--sidebar-tabs-width);
@@ -64,8 +58,6 @@
   flex: 0 0 auto;
 }
 
-/* ── Rows ─────────────────────────────────────────────────────────────────── */
-
 .tab {
   display: flex;
   align-items: center;
@@ -90,7 +82,6 @@
   background-color: rgba(var(--primary-blue-rgb), 0.1);
 }
 
-/* Pill in the collapsed rail, full-bleed once the panel is wide. */
 .expanded .tab:not(.user) {
   border-radius: var(--border-radius-0);
 }
@@ -111,16 +102,20 @@
   opacity: 0.5;
 }
 
+/* The avatar/initials must not be clipped by the row. */
+.user > .tabContent {
+  overflow: visible;
+}
+
+.tab:has(> .sectionToggle) > .tabContent {
+  width: auto;
+}
+
 .tab.current .tabContent,
 .tab:hover > .tabContent {
   color: var(--color-primary-blue);
 }
 
-/*
- * One icon/label mechanism for every row, nav-owned or not: UserButton lives in another CSS module
- * and marks its parts with the same attributes. Scoped to the nav so the two nav modules cannot
- * collide on these global attribute selectors.
- */
 .PlatformNav [data-nav-icon] {
   flex: 0 0 calc(var(--sidebar-tabs-width) - var(--space-XS) * 2);
   display: flex;
@@ -128,12 +123,6 @@
   justify-content: center;
 }
 
-/*
- * Fixed width, NOT flex-basis: the label must lay out at its final width even while the panel is
- * still animating open. Sized off the parent, a wrapping label reflows every frame of the
- * transition — 3 lines, then 2 — and drags the row height with it. `.tabContent`'s overflow clips
- * the overhang in the collapsed rail.
- */
 .PlatformNav [data-nav-label] {
   flex: 0 0 auto;
   width: calc(
@@ -148,20 +137,21 @@
   transition: opacity 150ms linear;
 }
 
+.subsectionTab [data-nav-label] {
+  padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
+  width: calc(
+    var(--nav-expanded-width) - var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS)
+  );
+}
+
 .expanded [data-nav-label] {
   opacity: 1;
 }
 
-/*
- * Nav labels wrap rather than truncate once there is room. Scoped to .section deliberately: the user
- * row sits outside it, and a wrapped full name would make the bottom bar taller than every other row.
- */
 .expanded .section [data-nav-label] {
   white-space: normal;
   text-overflow: clip;
 }
-
-/* ── Section expand/collapse ──────────────────────────────────────────────── */
 
 .sectionToggle {
   display: none;
@@ -178,20 +168,16 @@
 }
 
 .tab:hover .sectionToggle,
-[data-expanded] .sectionToggle {
+.PlatformNav [data-expanded] .sectionToggle {
   opacity: var(--opacity-secondary);
 }
 
-.sectionToggle:hover,
-.sectionToggle[data-focus-visible] {
+.tab .sectionToggle:hover,
+.tab .sectionToggle[data-focus-visible],
+.tab .tabContent[data-focus-visible] .sectionToggle {
   opacity: 1;
 }
 
-/*
- * react-aria's DisclosurePanel publishes --disclosure-panel-height (scrollHeight in px while
- * animating, then `auto`), and sets hidden="until-found" once collapsed — which is what keeps the
- * links out of the tab order and find-in-page working.
- */
 .subsectionsWrapper {
   height: var(--disclosure-panel-height, 0);
   overflow: hidden;
@@ -221,7 +207,6 @@
   margin-top: var(--space-XS);
 }
 
-/* Elbow connector into each subsection row… */
 .subsectionTab::before {
   content: '';
   position: absolute;
@@ -231,7 +216,6 @@
   border-top: var(--border);
 }
 
-/* …and the vertical trunk they hang off, stopping halfway down the last row. */
 .subsectionTab::after {
   content: '';
   position: absolute;
@@ -245,16 +229,6 @@
   bottom: 50%;
 }
 
-.subsectionTab [data-nav-label] {
-  padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
-  width: calc(
-    var(--nav-expanded-width) - var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS)
-  );
-}
-
-/* ── User row ─────────────────────────────────────────────────────────────── */
-
-/* A row like any other, not the 4.8rem square the legacy rail uses. */
 .tab.user {
   position: relative;
   min-height: var(--size-M);
@@ -269,15 +243,14 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   background: none;
 }
 
-.user > .tabContent {
-  overflow: visible;
+.tab.user > *,
+.tab.user > * > * {
+  justify-content: flex-start;
 }
 
-/* Full-bleed divider above the user row (the row itself is inset by its margin). */
 .tab.user::before {
   content: '';
   position: absolute;

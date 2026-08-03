@@ -15,7 +15,7 @@ import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import hintsConfig from '../hints/hints.content'
 import { resetHints, selectHintsDismissed } from '../hints/hints.slice'
 
-import styles from './Hint.module.css'
+import styles from '../hints/Hint.module.css'
 
 function HelpHub() {
   const { t, i18n } = useTranslation()

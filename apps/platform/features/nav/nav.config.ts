@@ -4,11 +4,10 @@ import type { IconType } from '@globalfishingwatch/ui-components/icon'
 import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
+import type { LanguageOption } from 'features/i18n/language.hooks'
 
-// export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
-export const PLATFORM_MODE = false
+export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
 
 type TFunc = ReturnType<typeof useTranslation>['t']
 
@@ -44,7 +43,7 @@ export function isRouted(item: NavItem): item is RoutedNavItem {
 }
 
 // TODO PLATFORM: maybe remove this if workspaces are linked in home
-const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
+export const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
   AVAILABLE_WORKSPACES_CATEGORIES.map((category) => ({
     id: `category-${category}`,
     ...(icons && { icon: `category-${category}` as IconType }),
@@ -52,23 +51,6 @@ const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
     to: ROUTE_PATHS.WORKSPACES_LIST,
     params: { category },
   }))
-
-export const getCurrentNavSections = (t: TFunc): NavItem[] => [
-  {
-    id: 'workspace',
-    icon: 'workspace',
-    label: t((s) => s.common.map),
-    to: ROUTE_PATHS.WORKSPACE,
-    params: { category: DEFAULT_WORKSPACE_CATEGORY, workspaceId: DEFAULT_WORKSPACE_ID },
-  },
-  {
-    id: 'search',
-    icon: 'category-search',
-    label: t((s) => s.workspace.categories.search),
-    to: ROUTE_PATHS.SEARCH,
-  },
-  ...getCategoryItems(t),
-]
 
 export const getPlatformNavSections = (t: TFunc): NavItem[] => [
   {
@@ -152,8 +134,17 @@ export const getPlatformNavSections = (t: TFunc): NavItem[] => [
 
 export const getPlatformBottomSections = (
   t: TFunc,
-  handlers: { onAssistantClick: () => void; onLogIssueClick: () => void }
-): Record<'assistant' | 'feedback' | 'settings', NavItem> => ({
+  handlers: {
+    onAssistantClick: () => void
+    onLogIssueClick: () => void
+    language: {
+      options: LanguageOption[]
+      currentLanguage: string
+      isLoading: boolean
+      toggleLanguage: (id: LanguageOption['id']) => void
+    }
+  }
+): Record<'assistant' | 'feedback' | 'language' | 'settings', NavItem> => ({
   assistant: {
     id: 'assistant',
     icon: 'magic',
@@ -177,6 +168,22 @@ export const getPlatformBottomSections = (
         href: 'https://feedback.globalfishingwatch.org/',
       },
     ],
+  },
+  language: {
+    id: 'language',
+    icon: 'language',
+    label:
+      handlers.language.options.find(({ id }) => id === handlers.language.currentLanguage)?.label ??
+      t((s) => s.nav.language),
+    loading: handlers.language.isLoading,
+    subsections: handlers.language.options
+      .filter(({ id }) => id !== handlers.language.currentLanguage)
+      .map(({ id, label, testId }) => ({
+        id: `language-${id}`,
+        label,
+        testId,
+        onClick: () => !handlers.language.isLoading && handlers.language.toggleLanguage(id),
+      })),
   },
   settings: {
     id: 'settings',

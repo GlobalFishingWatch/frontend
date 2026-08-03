@@ -94,6 +94,10 @@
   opacity: 0.5;
 }
 
+.user > .tabContent {
+  overflow: visible;
+}
+
 .tab.current .tabContent,
 .tab:hover > .tabContent {
   color: var(--color-primary-blue);
@@ -114,10 +118,6 @@
   border-radius: 0;
   border-top: var(--border);
   justify-content: center;
-}
-
-.user > .tabContent {
-  overflow: visible;
 }
 
 /* ── Feedback flyout ──────────────────────────────────────────────────────── */

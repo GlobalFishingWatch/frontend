@@ -6,18 +6,20 @@ import cx from 'classnames'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import UserButton from 'features/_user/UserButton'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import HelpHub from 'features/nav/HelpHub'
 import type { NavItem } from 'features/nav/nav.config'
-import { getCurrentNavSections, isRouted } from 'features/nav/nav.config'
+import { getCategoryItems, isRouted } from 'features/nav/nav.config'
 import { useIsNavItemActive, useNavLinkContext, useOpenFeedbackModal } from 'features/nav/nav.hooks'
 import { getNavLinkProps, isNavItemCurrentLocation, NavLink } from 'features/nav/nav.links'
 import WhatsNew from 'features/nav/WhatsNew'
 import { selectIsUserLocation } from 'router/routes.selectors'
 
-import styles from './MainNav.module.css'
+import styles from './LegacyNav.module.css'
 
 type LegacyNavProps = {
   onMenuClick: () => void
@@ -25,11 +27,29 @@ type LegacyNavProps = {
 
 function LegacyNav({ onMenuClick }: LegacyNavProps) {
   const { t } = useTranslation()
-  const navSections = useMemo(() => getCurrentNavSections(t), [t])
   const navLinkContext = useNavLinkContext()
   const isItemActive = useIsNavItemActive()
   const isUserLocation = useSelector(selectIsUserLocation)
   const openFeedbackModal = useOpenFeedbackModal()
+
+  const navSections = useMemo((): NavItem[] => {
+    return [
+      {
+        id: 'workspace',
+        icon: 'workspace',
+        label: t((s) => s.common.map),
+        to: ROUTE_PATHS.WORKSPACE,
+        params: { category: DEFAULT_WORKSPACE_CATEGORY, workspaceId: DEFAULT_WORKSPACE_ID },
+      },
+      {
+        id: 'search',
+        icon: 'category-search',
+        label: t((s) => s.workspace.categories.search),
+        to: ROUTE_PATHS.SEARCH,
+      },
+      ...getCategoryItems(t),
+    ]
+  }, [t])
 
   const renderRow = (item: NavItem) => {
     const isCurrentLocation = isNavItemCurrentLocation(item, navLinkContext)
@@ -64,8 +84,7 @@ function LegacyNav({ onMenuClick }: LegacyNavProps) {
   }
 
   return (
-    // hoverExpandDisabled is permanent here: the rail never expands, so no flyout rules apply.
-    <nav className={cx('print-hidden', styles.MainNav, styles.hoverExpandDisabled)}>
+    <nav className={cx('print-hidden', styles.LegacyNav)}>
       <div className={styles.panel}>
         <ul className={styles.sections}>
           <li className={styles.section}>
@@ -93,9 +112,7 @@ function LegacyNav({ onMenuClick }: LegacyNavProps) {
           </li>
           <li className={cx(styles.tab, styles.secondary)}>
             <div className={styles.linksToggle}>
-              <div className={styles.linksBtn}>
-                <IconButton icon="feedback" testId="feedback-button" />
-              </div>
+              <IconButton icon="feedback" testId="feedback-button" />
               <ul className={styles.links} data-testid="feedback-menu">
                 <li>
                   <button
