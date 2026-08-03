@@ -143,6 +143,11 @@
   column-gap: var(--space-M);
 }
 
+/* Needed for screenshots (snapdom) */
+.filters > .filters {
+  width: 100%;
+}
+
 .tagList {
   width: 100%;
   white-space: normal;
