@@ -33,7 +33,7 @@ const ContentMarkdown = ({ children, variant = 'default' }: ContentMarkdownProps
   const isChat = variant === 'chat'
 
   return (
-    <div className="content-markdown">
+    <div className="content-markdown notranslate" translate="no">
       <Markdown
         components={components}
         highlighter={highlightMarkdownCode}
