@@ -1,11 +1,13 @@
 import type {
   ColorCyclingType,
   Dataset,
+  Dataview,
   DataviewInstance,
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import {
+  DATASET_PRIVATE_PREFIX,
   getRelatedDatasetByType,
   removeDatasetVersion,
   replaceDatasetPrivateToPublic,
@@ -76,6 +78,58 @@ export function getVesselGroupActivityDatasets({
   })
 }
 
+export type VesselGroupActivityDataview = {
+  dataviewSlug: string
+  datasets: string[]
+}
+
+type VesselGroupActivityDataviewParams = {
+  vesselGroupDatasets: string[]
+  activityDataviews: Dataview[]
+  allDatasets: Dataset[]
+  fallbackDataviewSlug: string
+}
+
+const getIsPrivateDataset = (datasetId: string) => datasetId.startsWith(DATASET_PRIVATE_PREFIX)
+
+export function getVesselGroupActivityDataview({
+  vesselGroupDatasets = [],
+  activityDataviews = [],
+  allDatasets = [],
+  fallbackDataviewSlug,
+}: VesselGroupActivityDataviewParams): VesselGroupActivityDataview {
+  const activityDataviewsDatasets = activityDataviews.map((dataview) => ({
+    dataviewSlug: dataview.slug,
+    datasetIds: dataview.datasetsConfig?.map((datasetConfig) => datasetConfig.datasetId) || [],
+  }))
+  const fallback = {
+    dataviewSlug: fallbackDataviewSlug,
+    datasets:
+      activityDataviewsDatasets.find(({ dataviewSlug }) => dataviewSlug === fallbackDataviewSlug)
+        ?.datasetIds || [],
+  }
+  if (!vesselGroupDatasets.length || !allDatasets.length) {
+    return fallback
+  }
+  const matches = activityDataviewsDatasets.flatMap(({ dataviewSlug, datasetIds }) => {
+    const datasets = getVesselGroupActivityDatasets({
+      vesselGroupDatasets,
+      activityDatasetIds: datasetIds,
+      allDatasets,
+    })
+    return datasets.length ? { dataviewSlug, datasets } : []
+  })
+  if (!matches.length) {
+    return fallback
+  }
+  // match needed as the normalized identity dataset for vessel groups dont have public/private distinction
+  const isPrivateVesselGroup = vesselGroupDatasets.some(getIsPrivateDataset)
+  const preferredMatch = matches.find(({ datasets }) =>
+    isPrivateVesselGroup ? datasets.some(getIsPrivateDataset) : !datasets.some(getIsPrivateDataset)
+  )
+  return preferredMatch || matches[0]
+}
+
 export type VesselGroupEventsDataviewId =
   `${typeof VESSEL_GROUP_DATAVIEW_PREFIX}${ReportEventsSubCategory}`
 
@@ -136,7 +190,8 @@ export function getReportVesselGroupVisibleDataviews({
 
 export const getVesselGroupDataviewInstance = (
   vesselGroupId: string,
-  datasets: string[] = [DEFAULT_PRESENCE_DATASET_ID]
+  datasets: string[] = [DEFAULT_PRESENCE_DATASET_ID],
+  dataviewId: string = PRESENCE_DATAVIEW_SLUG
 ): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -151,7 +206,7 @@ export const getVesselGroupDataviewInstance = (
         },
         datasets,
       },
-      dataviewId: PRESENCE_DATAVIEW_SLUG,
+      dataviewId,
     }
   }
 }
@@ -162,12 +217,16 @@ export const getVesselGroupActivityDataviewInstance = ({
   colorRamp,
   activityType,
   datasets,
+  presenceDataviewId = PRESENCE_DATAVIEW_SLUG,
+  fishingDataviewId = FISHING_DATAVIEW_SLUG_ALL,
 }: {
   vesselGroupId: string
   color?: string
   colorRamp?: ColorRampId
   activityType: ReportActivitySubCategory
   datasets?: string[]
+  presenceDataviewId?: string
+  fishingDataviewId?: string
 }): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -182,7 +241,7 @@ export const getVesselGroupActivityDataviewInstance = ({
           'vessel-groups': [vesselGroupId],
         },
       },
-      dataviewId: activityType === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG_ALL,
+      dataviewId: activityType === 'presence' ? presenceDataviewId : fishingDataviewId,
     }
   }
 }

@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
+import { uniq } from 'es-toolkit'
 
 import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -20,7 +21,6 @@ import {
 import { AVAILABLE_END, AVAILABLE_START, ROOT_DOM_ELEMENT } from 'data/map/config'
 import { selectVesselGroupSearchDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
-import { selectPresenceDataview } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import {
   mergeDataviewIntancesToUpsert,
@@ -28,7 +28,6 @@ import {
 } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
-import { getVesselGroupDataviewInstance } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import {
   fetchVesselGroupReportThunk,
   resetVesselGroupReportData,
@@ -59,6 +58,7 @@ import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
+import { useVesselGroupDataviewInstance } from './vessel-groups.hooks'
 import type { IdField, UpdateVesselGroupThunkParams } from './vessel-groups.slice'
 import {
   createVesselGroupThunk,
@@ -146,7 +146,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
-  const presenceDataview = useSelector(selectPresenceDataview)
+  const getVesselGroupDataviewInstance = useVesselGroupDataviewInstance()
   const selectableColumns = useSelector(selectVesselGroupModalSelectableColumns)
   const query = useSelector(selectLocationQuery)
   const datasetsWithoutRelatedEvents = useSelector(
@@ -379,11 +379,12 @@ function VesselGroupModal(): React.ReactElement<any> {
           ? (dispatchedAction.payload?.payload as VesselGroup)?.id
           : dispatchedAction.payload?.id
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
-        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
-          (dataset) => dataset.datasetId
-        )
         const dataviewInstance = !isVesselGroupInWorkspace
-          ? getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
+          ? // vesselsSummary is not available yet for the group just created, use the vessels sent
+            getVesselGroupDataviewInstance(
+              vesselGroupId,
+              uniq(vessels.flatMap((vessel) => vessel.dataset || []))
+            )
           : undefined
 
         if (isVesselGroupReportLocation && vesselGroupId !== editingVesselGroupId) {
@@ -458,7 +459,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       searchQuery,
       upsertDataviewInstance,
       replaceQueryParams,
-      presenceDataview,
+      getVesselGroupDataviewInstance,
     ]
   )
 
