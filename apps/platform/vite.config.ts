@@ -167,7 +167,11 @@ export default defineConfig(({ command, mode }) => {
         },
       },
       ssr: {
-        build: { rolldownOptions: { input: './server.ts' } },
+        build: {
+          rolldownOptions: {
+            input: './server.ts',
+          },
+        },
       },
     },
     ssr: {

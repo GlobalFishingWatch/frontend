@@ -1,6 +1,7 @@
 import type { FocusEvent } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Button, Disclosure, DisclosurePanel } from 'react-aria-components'
+import { Button as AriaButton } from 'react-aria-components/Button'
+import { Disclosure, DisclosurePanel } from 'react-aria-components/Disclosure'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -251,21 +252,21 @@ function PlatformNav() {
             {isRouted(section) ? (
               <Fragment>
                 {renderItemContent(section)}
-                <Button
+                <AriaButton
                   slot="trigger"
                   className={styles.sectionToggle}
                   data-testid={`toggle-${section.id}`}
                 >
                   {chevron}
-                </Button>
+                </AriaButton>
               </Fragment>
             ) : (
-              <Button slot="trigger" className={styles.tabContent}>
+              <AriaButton slot="trigger" className={styles.tabContent}>
                 {renderIconAndLabel(section)}
                 <span className={styles.sectionToggle} data-testid={`toggle-${section.id}`}>
                   {chevron}
                 </span>
-              </Button>
+              </AriaButton>
             )}
           </div>
           <DisclosurePanel className={styles.subsectionsWrapper}>
