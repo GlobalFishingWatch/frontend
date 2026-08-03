@@ -1,5 +1,4 @@
-import { expect, test } from 'playwright/test'
-
+import { expect, test } from '../fixtures'
 import { appPath } from '../paths'
 
 test('Search01 - Basic vessel search', async ({ page }) => {
@@ -13,8 +12,6 @@ test('Search01 - Basic vessel search', async ({ page }) => {
   )
   await page.waitForLoadState('networkidle')
 
-  await page.getByTestId('modal-close-button').click()
-
   await page.waitForLoadState('networkidle')
 
   // Typing is not triggering the search event. Nor adding QRY to the URL.
@@ -22,7 +19,7 @@ test('Search01 - Basic vessel search', async ({ page }) => {
   //await page.waitForLoadState('networkidle')
   //await page.waitForTimeout(5000)
 
-  expect(page.getByText('616852000')).toBeVisible()
+  await expect(page.getByText('616852000')).toBeVisible()
 
   await page.locator('[data-testid="link-vessel-profile"]').first().click()
 
