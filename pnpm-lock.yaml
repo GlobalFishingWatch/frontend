@@ -130,6 +130,12 @@ importers:
       '@svgr/webpack':
         specifier: 8.1.0
         version: 8.1.0(@typescript/typescript6@6.0.2)(supports-color@7.2.0)
+      '@tanstack/highlight':
+        specifier: ^0.0.9
+        version: 0.0.9
+      '@tanstack/markdown':
+        specifier: ^0.0.12
+        version: 0.0.12(react@19.2.8)
       '@tanstack/react-devtools':
         specifier: 0.10.9
         version: 0.10.9(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(csstype@3.2.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(solid-js@1.9.13)
@@ -5781,9 +5787,24 @@ packages:
     peerDependencies:
       solid-js: '>=1.9.7'
 
+  '@tanstack/highlight@0.0.9':
+    resolution: {integrity: sha512-vWuVpuSprbsEq5gle5vp2CEBNVue65m09idkbv0rcCPFn3XnxzZg1Q9kownk24iCag6tJdfd/gtKSwllPbQvSA==}
+    engines: {node: '>=18'}
+
   '@tanstack/history@1.162.0':
     resolution: {integrity: sha512-79pf/RkhteYZTRgcR4F9kbk84P2N8rugQJswxfIqovlbRiT3yI7eBE+5QorIrZaOKktsgzRlXh1l/du/xpl4iA==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/markdown@0.0.12':
+    resolution: {integrity: sha512-xQdEIMzbMe5Bl4Wy+CE67nCkeoBUdMkUGa9iYDySV+6TvFBbZZEZmXwL/2JK2ZAJGpuC/XxVtNvRz5Ysdgf+Ww==}
+    peerDependencies:
+      octane: '>=0.1.12'
+      react: '>=18'
+    peerDependenciesMeta:
+      octane:
+        optional: true
+      react:
+        optional: true
 
   '@tanstack/match-sorter-utils@8.19.4':
     resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
@@ -8391,6 +8412,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cross-spawn@6.0.6:
     resolution: {integrity: sha512-VqCUuhcd1iB+dsv8gxPttb5iZh/D0iubSP21g36KXdEuf6I5JiioesUVjpCdHV9MZRUfVFlvwtIUyPfxo5trtw==}
@@ -14940,7 +14962,7 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/generator': 7.29.7
       '@babel/helper-compilation-targets': 7.29.7
-      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7(supports-color@7.2.0))(supports-color@10.2.2)
+      '@babel/helper-module-transforms': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)
       '@babel/helpers': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
@@ -15090,15 +15112,6 @@ snapshots:
   '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7(supports-color@10.2.2))(supports-color@10.2.2)':
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
-      '@babel/helper-module-imports': 7.29.7(supports-color@10.2.2)
-      '@babel/helper-validator-identifier': 7.29.7
-      '@babel/traverse': 7.29.7(supports-color@10.2.2)
-    transitivePeerDependencies:
-      - supports-color
-
-  '@babel/helper-module-transforms@7.29.7(@babel/core@7.29.7(supports-color@7.2.0))(supports-color@10.2.2)':
-    dependencies:
-      '@babel/core': 7.29.7(supports-color@7.2.0)
       '@babel/helper-module-imports': 7.29.7(supports-color@10.2.2)
       '@babel/helper-validator-identifier': 7.29.7
       '@babel/traverse': 7.29.7(supports-color@10.2.2)
@@ -20796,7 +20809,13 @@ snapshots:
       - csstype
       - utf-8-validate
 
+  '@tanstack/highlight@0.0.9': {}
+
   '@tanstack/history@1.162.0': {}
+
+  '@tanstack/markdown@0.0.12(react@19.2.8)':
+    optionalDependencies:
+      react: 19.2.8
 
   '@tanstack/match-sorter-utils@8.19.4':
     dependencies:
