@@ -21,9 +21,14 @@ import {
   selectIsGFWUser,
   selectUserData,
   selectUserLogged,
+<<<<<<< HEAD:apps/platform/features/_user/UserInfo.tsx
 } from 'features/_user/selectors/user.selectors'
 import SettingsButton from 'features/_user/SettingsButton'
 import { getModalParent } from 'features/modals/modals.utils'
+=======
+} from 'features/user/selectors/user.selectors'
+import SettingsButton from 'features/user/SettingsButton'
+>>>>>>> edcd7db8d1 (restore user settings button):apps/fishing-map/features/user/UserInfo.tsx
 
 import {
   selectHasAmbassadorBadge,
