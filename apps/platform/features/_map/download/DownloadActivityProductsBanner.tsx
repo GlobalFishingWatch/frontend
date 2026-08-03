@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { Button } from '@globalfishingwatch/ui-components'
 
+import downloadPopupImage from 'assets/images/download-popup.jpg'
 import type { HeatmapDownloadFormat } from 'features/_map/download/downloadActivity.config'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 
@@ -20,7 +21,10 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
 
   return (
-    <div className={cx(styles.downloadFooterContainer, styles.open)}>
+    <div
+      className={cx(styles.downloadFooterContainer, styles.open)}
+      style={{ backgroundImage: `url(${downloadPopupImage})` }}
+    >
       {!isDownloadReportSupported ? (
         <div className={styles.downloadFooter}>
           <p className={styles.downloadLabel}>{t((t) => t.download.fullDataset)}</p>

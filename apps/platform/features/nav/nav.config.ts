@@ -1,8 +1,8 @@
 import type { useTranslation } from 'react-i18next'
-import type { RoutePathValues } from '@platform/config/routes'
-import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { IconType } from '@globalfishingwatch/ui-components/icon'
+import type { RoutePathValues } from '@platform/config/routes'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
 import type { LanguageOption } from 'features/i18n/language.hooks'

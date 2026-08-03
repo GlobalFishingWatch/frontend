@@ -50,14 +50,6 @@
   border-color: rgba(var(--white-rgb), 0.3);
 }
 
-.basemapSwitcher.basemap_default {
-  background-image: url('../../../assets/images/basemap-satellite.jpg');
-}
-
-.basemapSwitcher.satellite {
-  background-image: url('../../../assets/images/basemap-default.jpg');
-}
-
 .active,
 .active:hover,
 .active:focus {
