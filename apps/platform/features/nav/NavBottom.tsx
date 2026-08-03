@@ -11,11 +11,11 @@ import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import UserButton from 'features/_user/UserButton'
 import { useAppDispatch } from 'features/app/app.hooks'
-import HelpHub from 'features/hints/HelpHub'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
 import { useLanguageOptions } from 'features/i18n/language.hooks'
 import LanguageToggle, { CrowdinScripts } from 'features/i18n/LanguageToggle'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import HelpHub from 'features/nav/HelpHub'
 import type { NavItem } from 'features/nav/nav.config'
 import { getPlatformBottomSections, PLATFORM_MODE } from 'features/nav/nav.config'
 import WhatsNew from 'features/nav/WhatsNew'
@@ -53,23 +53,13 @@ function NavBottom({ renderSection }: NavBottomProps) {
   const sections = getPlatformBottomSections(t, {
     onAssistantClick: () => openSidePanel({ type: 'chat' }),
     onLogIssueClick: onFeedbackClick,
+    language: {
+      options: languageOptions,
+      currentLanguage,
+      isLoading: isLanguageLoading,
+      toggleLanguage,
+    },
   })
-
-  const languageSection: NavItem = {
-    id: 'language',
-    icon: 'language',
-    label:
-      languageOptions.find(({ id }) => id === currentLanguage)?.label ?? t((t) => t.nav.language),
-    loading: isLanguageLoading,
-    subsections: languageOptions
-      .filter(({ id }) => id !== currentLanguage)
-      .map(({ id, label, testId }) => ({
-        id: `language-${id}`,
-        label,
-        testId,
-        onClick: () => !isLanguageLoading && toggleLanguage(id),
-      })),
-  }
 
   return (
     <Fragment>
@@ -78,7 +68,7 @@ function NavBottom({ renderSection }: NavBottomProps) {
           <Fragment>
             {IS_CHATBOT_ENABLED && isGFWUser && renderSection(sections.assistant)}
             {renderSection(sections.feedback)}
-            {renderSection(languageSection)}
+            {renderSection(sections.language)}
             <CrowdinScripts enabled={currentLanguage === CROWDIN_IN_CONTEXT_LANG} />
             {renderSection(sections.settings)}
           </Fragment>
