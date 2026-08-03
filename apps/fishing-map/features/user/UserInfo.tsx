@@ -23,8 +23,8 @@ import {
   selectUserData,
   selectUserLogged,
 } from 'features/user/selectors/user.selectors'
-import SettingsButton from 'features/user/SettingsButton'
 
+// import SettingsButton from 'features/user/SettingsButton'
 import {
   selectHasAmbassadorBadge,
   selectHasFeedbackProviderBadge,
@@ -117,7 +117,7 @@ function UserInfo() {
             <p className={styles.secondary}>{userData.email}</p>
           </div>
           <div className={styles.buttonContainer}>
-            <SettingsButton />
+            {/* <SettingsButton /> */}
             <LogoutButton />
           </div>
         </div>
