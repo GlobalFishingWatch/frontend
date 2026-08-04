@@ -1,7 +1,7 @@
 api-portal:
   - apps/api-portal/**/*
-fishing-map:
-  - apps/fishing-map/**/*
+platform:
+  - apps/platform/**/*
 image-labeler:
   - apps/image-labeler/**/*
 port-labeler:

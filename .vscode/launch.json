@@ -7,12 +7,12 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "fishing-map",
+      "name": "platform",
       "runtimeExecutable": "nx",
-      "runtimeArgs": ["start", "fishing-map"],
+      "runtimeArgs": ["start", "platform"],
       "console": "integratedTerminal",
       "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
-      "cwd": "${workspaceFolder}/apps/fishing-map"
+      "cwd": "${workspaceFolder}/apps/platform"
     },
     {
       "name": "Debug Tests - Fishing Map",
@@ -20,7 +20,7 @@
       "request": "launch",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
       "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/apps/fishing-map",
+      "cwd": "${workspaceRoot}/apps/platform",
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"

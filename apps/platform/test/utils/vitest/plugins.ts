@@ -1,0 +1,80 @@
+import * as fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+import type { IncomingMessage, ServerResponse } from 'http'
+import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
+
+// Derived rather than hardcoded so the platform basepath only has to change in one place.
+import { basePath } from '../../../vite.config'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const TOKENS_PATH = path.resolve(__dirname, '../../.auth/tokens.json')
+
+// Plugin to serve public assets from /map path, this is needed because not having events-color-sprite.png causes timebar to throw an error an not load any events
+export const publicAssetsPlugin = (): Plugin => ({
+  name: 'public-assets',
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url?.startsWith(`${basePath}/`)) {
+          req.url = req.url.replace(`${basePath}/`, '/')
+        }
+        next()
+      }
+    )
+  },
+  configurePreviewServer(server: PreviewServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url?.startsWith(`${basePath}/`)) {
+          req.url = req.url.replace(`${basePath}/`, '/')
+        }
+        next()
+      }
+    )
+  },
+})
+
+// Plugin to serve auth tokens file to browser tests
+export const authTokensPlugin = (): Plugin => ({
+  name: 'auth-tokens',
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url === '/.auth/tokens.json') {
+          if (fs.existsSync(TOKENS_PATH)) {
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            const tokens = fs.readFileSync(TOKENS_PATH, 'utf-8')
+            res.end(tokens)
+          } else {
+            res.statusCode = 404
+            res.end(JSON.stringify({ token: '', refreshToken: '' }))
+          }
+          return
+        }
+        next()
+      }
+    )
+  },
+  configurePreviewServer(server: PreviewServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url === '/.auth/tokens.json') {
+          if (fs.existsSync(TOKENS_PATH)) {
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            const tokens = fs.readFileSync(TOKENS_PATH, 'utf-8')
+            res.end(tokens)
+          } else {
+            res.statusCode = 404
+            res.end(JSON.stringify({ token: '', refreshToken: '' }))
+          }
+          return
+        }
+        next()
+      }
+    )
+  },
+})

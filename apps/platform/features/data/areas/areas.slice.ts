@@ -1,0 +1,404 @@
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { kebabCase, memoize, uniqBy } from 'es-toolkit'
+import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
+
+import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
+import { EndpointId } from '@globalfishingwatch/api-types'
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+
+import { fetchDatasetByIdThunk, selectDatasetById } from 'features/_map/datasets/datasets.slice'
+import { t } from 'features/i18n/i18n'
+import type { RootState } from 'store'
+import type { Bbox } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { listAsSentence } from 'utils/shared'
+
+export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
+
+export interface DatasetArea {
+  id: string
+  label: string
+  bbox?: Bbox
+}
+
+export interface DatasetAreaList {
+  status: AsyncReducerStatus
+  data: DrawnDatasetGeometry | DatasetArea[]
+}
+
+export type AreaGeometry = Polygon | MultiPolygon
+export interface Area<Geometry = AreaGeometry> {
+  type: 'Feature'
+  id: string
+  geometry: Geometry | undefined
+  bounds: Bbox | undefined
+  name: string
+  properties: Record<any, any>
+}
+export interface DatasetAreaDetail {
+  status: AsyncReducerStatus
+  data: Area | null
+}
+
+export const initialDatasetAreaDetail: DatasetAreaDetail = {
+  status: AsyncReducerStatus.Idle,
+  data: null,
+}
+
+type DatasetAreas = {
+  list: DatasetAreaList
+  detail: Record<string, DatasetAreaDetail>
+}
+type AreasState = Record<string, DatasetAreas>
+
+const initialState: AreasState = {}
+
+export type AreaKeyId = string | number
+export type AreaKeys = { datasetId: string; areaId: AreaKeyId; areaName: string | undefined }
+type FetchAreaDetailThunkParam = {
+  datasetId: string
+  areaId: AreaKeyId
+  areaName?: string
+  simplify?: string
+}
+
+async function fetchAreaDetail({
+  dataset,
+  areaId,
+  signal,
+  simplify,
+  areaName,
+}: {
+  dataset: Dataset
+  areaId: AreaKeyId
+  areaName?: string
+  signal?: AbortSignal
+  simplify?: string
+}) {
+  const datasetConfig = {
+    datasetId: dataset?.id,
+    endpoint: EndpointId.ContextFeature,
+    params: [{ id: 'id', value: areaId }],
+  }
+  const endpoint = resolveEndpoint(dataset, {
+    ...datasetConfig,
+    query: simplify ? [{ id: 'simplify', value: parseFloat(simplify) }] : [],
+  })
+  if (!endpoint) {
+    console.warn('No endpoint found for area detail fetch')
+    return
+  }
+  let area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry | GeometryCollection>>(
+    endpoint,
+    { signal }
+  )
+  if (!area.geometry) {
+    const endpointNoSimplified = resolveEndpoint(dataset, datasetConfig) as string
+    area = await GFWAPI.fetch<TileContextAreaFeature<AreaGeometry | GeometryCollection>>(
+      endpointNoSimplified,
+      {
+        signal,
+      }
+    )
+    if (!area.geometry) {
+      console.warn('Area has no geometry, even calling the endpoint without simplification')
+    }
+  }
+  let geometry: AreaGeometry
+  if ((area.geometry as GeometryCollection).type === 'GeometryCollection') {
+    // Loaded on demand so the reducer map does not drag @turf/turf into every page's entry chunk
+    const { flatten } = await import('@turf/turf')
+    const { getPolygonsUnion } = await import('@globalfishingwatch/data-transforms/union')
+    const geoms = flatten(area.geometry).features.flatMap((f) =>
+      f.geometry.type === 'Polygon' || f.geometry.type === 'MultiPolygon'
+        ? [f.geometry.coordinates as PolygonGeomCoords]
+        : []
+    )
+    geometry = { type: 'MultiPolygon', coordinates: getPolygonsUnion(geoms) }
+  } else {
+    geometry = area.geometry as AreaGeometry
+  }
+
+  if (!geometry) {
+    console.warn('No geometry found for area', area)
+  }
+  // Same reason as the @turf/turf import above: wrap-longitudes reaches turf
+  const { wrapBBoxLongitudes, wrapGeometryBbox } = await import(
+    '@globalfishingwatch/data-transforms/wrap-longitudes'
+  )
+  const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
+  // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
+  // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
+  if (area.geometry) {
+    area.geometry.bbox = bounds
+  }
+  return {
+    id: area.id,
+    name: areaName || area.value || area.properties.value || area.properties.name || area.id,
+    bounds,
+    type: area.type as 'Feature',
+    geometry,
+    properties: area.properties,
+  }
+}
+
+export const fetchAreaDetailThunk = createAsyncThunk(
+  'areas/fetch',
+  async (
+    {
+      datasetId,
+      areaId,
+      areaName,
+      simplify,
+    }: FetchAreaDetailThunkParam = {} as FetchAreaDetailThunkParam,
+    { signal, getState, rejectWithValue, dispatch }
+  ) => {
+    try {
+      const isMultipleDatasets = datasetId.includes(',')
+      if (isMultipleDatasets) {
+        const datasetIds = datasetId.split(',')
+        const datasetsPromises = await Promise.all(
+          datasetIds.map(async (datasetId) => {
+            let dataset = selectDatasetById(datasetId)(getState() as RootState)
+            if (!dataset) {
+              // It needs to be request when it hasn't been loaded yet
+              const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
+              if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+                dataset = action.payload
+              }
+            }
+            return dataset
+          })
+        )
+        const datasets = datasetsPromises.flat()
+
+        const simplifies = simplify?.split(',')
+        const areaIds = areaId?.toString().split(',')
+        const areas = await Promise.all(
+          datasets.map((dataset, index) =>
+            fetchAreaDetail({
+              dataset,
+              areaName,
+              areaId: areaIds[index],
+              simplify: simplifies?.[index],
+              signal,
+            })
+          )
+        )
+        const { circle } = await import('@turf/turf')
+        const { getPolygonsUnion } = await import('@globalfishingwatch/data-transforms/union')
+        const { wrapGeometryBbox } = await import(
+          '@globalfishingwatch/data-transforms/wrap-longitudes'
+        )
+        try {
+          const geoms = areas.flatMap((fetchedArea) => {
+            if (!fetchedArea?.geometry) return []
+            const geometry =
+              (fetchedArea.geometry as any).type === 'Point'
+                ? circle(fetchedArea as any, 1).geometry
+                : (fetchedArea.geometry as Polygon | MultiPolygon)
+            return [geometry.coordinates as PolygonGeomCoords]
+          })
+          const mergedGeometry: MultiPolygon = {
+            type: 'MultiPolygon',
+            coordinates: getPolygonsUnion(geoms),
+          }
+          const bounds = wrapGeometryBbox(mergedGeometry)
+          return {
+            id: areaId?.toString(),
+            name:
+              areaName ||
+              `${t((t) => t.common.unionOf)} ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
+            bounds,
+            geometry: mergedGeometry,
+            properties: { areaIds, datasetIds },
+          }
+        } catch (e) {
+          console.error('Error merging areas', e)
+        }
+      }
+      let dataset = selectDatasetById(datasetId)(getState() as RootState)
+      if (!dataset) {
+        const action = await dispatch(fetchDatasetByIdThunk({ id: datasetId }))
+        if (fetchDatasetByIdThunk.fulfilled.match(action)) {
+          dataset = action.payload
+        }
+      }
+      const area = await fetchAreaDetail({ dataset, areaId, areaName, signal, simplify })
+      return area
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: ({ datasetId, areaId }: FetchAreaDetailThunkParam, { getState }) => {
+      const { areas } = getState() as { areas: AreasState }
+      const fetchStatus = areas[datasetId]?.detail?.[areaId]?.status
+      if (
+        fetchStatus === AsyncReducerStatus.Finished ||
+        fetchStatus === AsyncReducerStatus.Loading
+      ) {
+        return false
+      }
+      return true
+    },
+  }
+)
+
+type FetchDatasetAreasThunkParam = {
+  datasetId: string
+  include?: string[]
+  areaType?: 'user' | 'context'
+}
+export const fetchDatasetAreasThunk = createAsyncThunk(
+  'areas/datasetFetch',
+  async (
+    {
+      datasetId,
+      include = ['bbox'],
+      areaType = 'user',
+    }: FetchDatasetAreasThunkParam = {} as FetchDatasetAreasThunkParam,
+    { signal, rejectWithValue }
+  ) => {
+    try {
+      const isContextLayer = areaType === 'context'
+      const endpointPath = isContextLayer ? '/context-layers' : '/user-context-layers'
+      const datasetAreas = await GFWAPI.fetch<DatasetArea[] | DrawnDatasetGeometry>(
+        `/datasets/${datasetId}${endpointPath}${
+          include?.length && !isContextLayer ? `?includes=${include.join(',')}&cache=false` : ''
+        }`,
+        { signal, cache: 'no-cache' }
+      )
+      if ((datasetAreas as DrawnDatasetGeometry).type === 'FeatureCollection') {
+        return datasetAreas
+      }
+      const areasWithSlug = (datasetAreas as DatasetArea[]).map((area) => ({
+        ...area,
+        slug: kebabCase(area.label),
+      }))
+      return uniqBy(areasWithSlug, (a) => a.slug)
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: ({ datasetId }: FetchDatasetAreasThunkParam, { getState }) => {
+      const { areas } = getState() as { areas: AreasState }
+      const fetchStatus = areas[datasetId]?.list?.status
+      if (
+        fetchStatus === AsyncReducerStatus.Finished ||
+        fetchStatus === AsyncReducerStatus.Loading
+      ) {
+        return false
+      }
+      return true
+    },
+  }
+)
+
+const areasSlice = createSlice({
+  name: 'areas',
+  initialState,
+  reducers: {
+    resetAreaList: (state, action: PayloadAction<{ datasetId: string }>) => {
+      const { datasetId } = action.payload
+      if (state[datasetId]?.list) {
+        state[datasetId].list = {
+          status: AsyncReducerStatus.Idle,
+          data: [],
+        }
+      }
+    },
+    resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: string }>) => {
+      const { datasetId, areaId } = action.payload
+      if (state[datasetId]?.detail?.[areaId]) {
+        state[datasetId].detail[areaId] = { ...initialDatasetAreaDetail }
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
+      const { datasetId, areaId, areaName } = action.meta.arg as FetchAreaDetailThunkParam
+      const area = {
+        status: AsyncReducerStatus.Loading,
+        data: { ...(areaName && { name: areaName }) } as Area,
+      }
+      if (state[datasetId]?.detail?.[areaId]) {
+        state[datasetId].detail[areaId] = area
+      } else {
+        state[datasetId] = {
+          list: {} as DatasetAreaList,
+          detail: {
+            [areaId]: area,
+          },
+        }
+      }
+    })
+    builder.addCase(fetchAreaDetailThunk.fulfilled, (state, action) => {
+      const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
+      state[datasetId].detail[areaId] = {
+        status: AsyncReducerStatus.Finished,
+        data: { ...(state[datasetId]?.detail?.[areaId]?.data || ({} as Area)), ...action.payload },
+      }
+    })
+    builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {
+      const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
+      state[datasetId].detail[areaId].status = AsyncReducerStatus.Error
+    })
+    builder.addCase(fetchDatasetAreasThunk.pending, (state, action) => {
+      const list = {
+        status: AsyncReducerStatus.Loading,
+        data: [],
+      }
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      if (state[datasetId]?.list) {
+        state[datasetId].list = list
+      } else {
+        state[datasetId] = {
+          list,
+          detail: {},
+        }
+      }
+    })
+    builder.addCase(fetchDatasetAreasThunk.fulfilled, (state, action) => {
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      state[datasetId].list = {
+        status: AsyncReducerStatus.Finished,
+        data: action.payload,
+      }
+    })
+    builder.addCase(fetchDatasetAreasThunk.rejected, (state, action) => {
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      state[datasetId].list.status = AsyncReducerStatus.Error
+    })
+  },
+})
+
+export const { resetAreaList, resetAreaDetail } = areasSlice.actions
+
+export const selectAreas = (state: { areas: AreasState }) => state.areas
+const selectDatasetAreaById = memoize((id: string) =>
+  createSelector([selectAreas], (areas) => areas?.[id])
+)
+
+export const selectDatasetAreasById = memoize((id: string) =>
+  createSelector([selectDatasetAreaById(id)], (area): DatasetAreaList => area?.list)
+)
+
+export const selectDatasetAreaStatus = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): AsyncReducerStatus => {
+      return area?.detail?.[areaId]?.status
+    })
+)
+export const selectDatasetAreaDetail = memoize(
+  ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
+    createSelector([selectDatasetAreaById(datasetId)], (area): Area | null => {
+      return area?.detail?.[areaId]?.data
+    })
+)
+
+export default areasSlice.reducer

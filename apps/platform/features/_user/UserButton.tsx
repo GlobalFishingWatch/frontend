@@ -1,0 +1,122 @@
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
+import cx from 'classnames'
+
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
+
+import { selectWorkspaceCustomStatus } from 'features/_map/workspace/workspace.selectors'
+import { selectReportsStatus } from 'features/_reports/reports.slice'
+import LoginLink from 'features/_user/LoginLink'
+import {
+  selectIsGuestUser,
+  selectIsUserExpired,
+  selectUserData,
+} from 'features/_user/selectors/user.selectors'
+import { selectIsUserLocation } from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './UserButton.module.css'
+
+const UserButton = ({
+  className = '',
+  withLabel = false,
+}: {
+  className?: string
+  withLabel?: boolean
+}) => {
+  const { t } = useTranslation()
+  const guestUser = useSelector(selectIsGuestUser)
+  const isUserLocation = useSelector(selectIsUserLocation)
+  const isUserExpired = useSelector(selectIsUserExpired)
+  const userData = useSelector(selectUserData)
+  const customStatus = useSelector(selectWorkspaceCustomStatus)
+  const reportStatus = useSelector(selectReportsStatus)
+  const isSmallScreen = useSmallScreen()
+  const prevStatusRef = useRef(customStatus)
+  const prevReportStatusRef = useRef(reportStatus)
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  useEffect(() => {
+    if (
+      !isSmallScreen &&
+      prevStatusRef.current === AsyncReducerStatus.Loading &&
+      customStatus === AsyncReducerStatus.Finished
+    ) {
+      setIsAnimating(true)
+    }
+    prevStatusRef.current = customStatus
+  }, [customStatus, isSmallScreen])
+
+  useEffect(() => {
+    if (
+      !isSmallScreen &&
+      prevReportStatusRef.current === AsyncReducerStatus.LoadingCreate &&
+      reportStatus === AsyncReducerStatus.Finished
+    ) {
+      setIsAnimating(true)
+    }
+    prevReportStatusRef.current = reportStatus
+  }, [reportStatus, isSmallScreen])
+
+  const initials = userData?.firstName
+    ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
+    : ''
+  const label = userData
+    ? [userData.firstName, userData.lastName].filter(Boolean).join(' ') || userData.email
+    : t((t) => t.common.user)
+
+  return (
+    <div className={cx(className, styles.wrapper)}>
+      {guestUser || isUserExpired ? (
+        <LoginLink
+          dataTestId="sidebar-login-link"
+          tooltip={t((t) => t.common.login)}
+          className={styles.loginLinkButton}
+          loginSource="user-icon"
+        >
+          <span data-nav-icon>
+            <Icon icon="user" />
+          </span>
+          {withLabel && <span data-nav-label>{t((t) => t.common.login)}</span>}
+        </LoginLink>
+      ) : (
+        <Tooltip
+          content={
+            isUserLocation ? undefined : (
+              <div>
+                {userData?.email && <p>{userData.email}</p>}
+                <p className={styles.secondary}>{t((t) => t.user.profileTooltip)}</p>
+              </div>
+            )
+          }
+        >
+          <Link
+            to="/user"
+            replace
+            data-testid="sidebar-user-link"
+            className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
+          >
+            <span data-nav-icon>
+              {userData ? initials : <Icon icon="user" className="print-hidden" />}
+            </span>
+            {withLabel && <span data-nav-label>{label}</span>}
+          </Link>
+        </Tooltip>
+      )}
+      <span
+        aria-hidden
+        className={cx(styles.saveIcon, { [styles.animating]: isAnimating })}
+        onAnimationEnd={() => setIsAnimating(false)}
+      >
+        <IconButton icon="workspace" type="map-tool" />
+      </span>
+    </div>
+  )
+}
+
+export default UserButton

@@ -3,7 +3,7 @@ import { DateTime, Duration } from 'luxon'
 
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
+import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
 import { getUTCDateTime } from '../../utils/dates'
 

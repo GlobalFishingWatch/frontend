@@ -1,0 +1,37 @@
+import type { ThunkDispatch } from '@reduxjs/toolkit'
+import { isRejectedWithValue } from '@reduxjs/toolkit'
+import type { Middleware } from 'redux'
+
+import type { UpdateWorkspaceThunkRejectError } from 'features/_map/workspace/workspace.slice'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import { setLoginExpired } from 'features/_user/user.slice'
+import type { RootState } from 'reducers'
+import type { AsyncError } from 'utils/async-slice'
+
+export const logoutUserMiddleware: Middleware =
+  ({
+    getState,
+    dispatch,
+  }: {
+    getState: () => RootState
+    dispatch: ThunkDispatch<RootState, any, any>
+  }) =>
+  (next) =>
+  (action) => {
+    if (isRejectedWithValue(action)) {
+      const state = getState()
+      const isGuestUser = selectIsGuestUser(state)
+      const payload = action.payload as AsyncError &
+        UpdateWorkspaceThunkRejectError & {
+          refreshError?: boolean
+          error?: { refreshError?: boolean; isWorkspaceWrongPassword?: boolean }
+        }
+      const refreshError = payload?.refreshError || payload?.error?.refreshError
+      const isWrongPassword =
+        payload?.isWorkspaceWrongPassword || payload?.error?.isWorkspaceWrongPassword
+      if (!isGuestUser && refreshError && !isWrongPassword) {
+        dispatch(setLoginExpired(true))
+      }
+    }
+    next(action)
+  }

@@ -1,0 +1,11 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+import Search from 'features/_vessels/search/Search'
+import { getSearchHead } from 'router/router.meta'
+import { validateSearchQueryParams } from 'router/routes.search'
+
+export const Route = createFileRoute('/_platform/_map/map/$category/$workspaceId/vessel-search')({
+  component: Search,
+  validateSearch: validateSearchQueryParams,
+  head: () => getSearchHead(),
+})

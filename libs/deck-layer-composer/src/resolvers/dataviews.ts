@@ -30,7 +30,9 @@ import type {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
-import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
+// Leaf subpath for the *value* import: apps reach groupContextDataviews from this module in their
+// always-loaded graph, and the deck-layers root barrel would pull all of deck.gl in with it.
+import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers/constants'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 

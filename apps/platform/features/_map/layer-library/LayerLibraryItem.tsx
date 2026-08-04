@@ -1,0 +1,145 @@
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
+
+import type { Dataview } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
+import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
+
+import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
+import type { LibraryLayer } from 'data/map/layer-library'
+import { LAYER_LIBRARY_EVENTS_IDS } from 'data/map/layer-library/layers-events'
+import { fetchDatasetsByIdsThunk, selectDatasetById } from 'features/_map/datasets/datasets.slice'
+import {
+  getDatasetsInDataviews,
+  getDatasetSourceIcon,
+  getDatasetTypeIcon,
+} from 'features/_map/datasets/datasets.utils'
+import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
+import { getNextColor } from 'features/_map/workspace/workspace.utils'
+import GFWOnly from 'features/_user/GFWOnly'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
+import { getEventLabel } from 'utils/analytics'
+import { getHighlightedText } from 'utils/text'
+
+import styles from './LayerLibraryItem.module.css'
+
+type LayerLibraryItemProps = { layer: LibraryLayer; highlightedText?: string }
+
+const FILL_DATAVIEWS = [DataviewType.Heatmap, DataviewType.HeatmapAnimated]
+
+const LayerLibraryItem = (props: LayerLibraryItemProps) => {
+  const { layer, highlightedText = '' } = props
+  const {
+    id,
+    category,
+    dataviewId,
+    config,
+    previewImageUrl,
+    dataview,
+    name,
+    description,
+    moreInfoLink,
+    datasetsConfig,
+    onlyGFWUser,
+  } = layer
+  const [loading, setLoading] = useState(false)
+  const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
+  const datasetId = dataview.datasetsConfig?.[0].datasetId || ''
+  const dataset = useSelector(selectDatasetById(datasetId))
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const datasetTypeIcon = getDatasetTypeIcon(dataset)
+  const datasetSourceIcon = getDatasetSourceIcon(dataset)
+  const allDataviews = useSelector(selectAllDataviews)
+
+  const onAddToWorkspaceClick = async () => {
+    const usedColors = uniq((dataviews || []).flatMap((dataview) => dataview.config?.color || []))
+    const isDefaultColorUnused = !usedColors.includes(config?.color as string)
+    const firstUnusedColor = getNextColor(
+      FILL_DATAVIEWS.includes(dataview.config?.type) ? 'fill' : 'line',
+      usedColors
+    )
+    const supportsColorChange = ![...LAYER_LIBRARY_EVENTS_IDS, 'currents', 'winds'].includes(id)
+    const apiDataview = allDataviews.find((d) => d.slug === dataviewId || d.id === dataviewId)
+    if (!apiDataview) {
+      setLoading(true)
+      const action = dispatch(fetchDataviewsByIdsThunk([dataviewId]))
+      const resolvedAction = await action
+      if (fetchDataviewsByIdsThunk.fulfilled.match(resolvedAction)) {
+        const dataviews = resolvedAction.payload as Dataview[]
+        const datasets = getDatasetsInDataviews(dataviews)
+        await dispatch(fetchDatasetsByIdsThunk({ ids: datasets }))
+      }
+      setLoading(false)
+    }
+    upsertDataviewInstance({
+      id: `${id}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
+      category,
+      dataviewId,
+      datasetsConfig,
+      config: {
+        ...config,
+        ...(supportsColorChange && {
+          color: isDefaultColorUnused ? config?.color : firstUnusedColor?.value,
+          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedColor?.id,
+        }),
+      },
+    })
+    trackEvent({
+      category: TrackCategory.EnvironmentalData,
+      action: `add ${category} layer to workspace`,
+      label: getEventLabel([`layer_id: ${id}`]),
+    })
+    dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+    dispatch(setWorkspaceSuggestSave(true))
+  }
+
+  return (
+    <li className={styles.layer} key={id}>
+      <div className={styles.container}>
+        <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
+        <div className={styles.content}>
+          <h2 className={styles.title}>
+            {getHighlightedText(name as string, highlightedText, styles)}
+          </h2>
+          <p className={styles.description}>
+            {getHighlightedText(description as string, highlightedText, styles)}
+          </p>
+          <div className={styles.actions}>
+            {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
+            {datasetSourceIcon ? (
+              moreInfoLink ? (
+                <Tooltip content={t((t) => t.common.seeMore)}>
+                  <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
+                    <Icon icon={datasetSourceIcon} type="original-colors" />
+                  </a>
+                </Tooltip>
+              ) : (
+                <Icon icon={datasetSourceIcon} type="original-colors" />
+              )
+            ) : null}
+            {onlyGFWUser && <GFWOnly userGroup="gfw" />}
+            <Button
+              className={styles.cta}
+              onClick={onAddToWorkspaceClick}
+              loading={loading}
+              testId={`add-layer-${id}-button`}
+            >
+              {t((t) => t.workspace.addLayer)}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </li>
+  )
+}
+
+export default LayerLibraryItem

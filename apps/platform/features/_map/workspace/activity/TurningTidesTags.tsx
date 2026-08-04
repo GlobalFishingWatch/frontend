@@ -1,0 +1,66 @@
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { uniqBy } from 'es-toolkit'
+
+import {
+  getVesselIdFromInstanceId,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import type { TagItem } from '@globalfishingwatch/ui-components'
+import { TagList } from '@globalfishingwatch/ui-components'
+
+import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+
+import styles from '../shared/LayerFilters.module.css'
+
+type LayerFiltersProps = {
+  dataview: UrlDataviewInstance
+}
+
+function TurningTidesTags({ dataview }: LayerFiltersProps) {
+  const { t } = useTranslation()
+  const vesselDataviews = useSelector(selectVesselsDataviews)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+
+  const vesselsTags = uniqBy(
+    (dataview.config?.filters?.id || []).map((id: string) => ({
+      id: getVesselIdFromInstanceId(id),
+      label:
+        vesselDataviews.find((v) => v.id.includes(id) || v.config?.relatedVesselIds?.includes(id))
+          ?.config?.name || id,
+    })),
+    (t: TagItem) => t.label
+  )
+
+  const onRemoveFilterClick = (tag: TagItem, tags: TagItem[]) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        filters: {
+          ...(dataview.config?.filters || {}),
+          id: tags?.length ? tags.map((t) => t.id) : undefined,
+        },
+      },
+    })
+  }
+
+  if (!vesselsTags?.length) {
+    return null
+  }
+
+  return (
+    <div className={cx(styles.filter)}>
+      <label>{t((t) => t.common.vessels)}</label>
+      <TagList
+        tags={vesselsTags}
+        color={dataview.config?.color}
+        className={styles.tagList}
+        onRemove={onRemoveFilterClick}
+      />
+    </div>
+  )
+}
+
+export default TurningTidesTags

@@ -3,7 +3,7 @@ name: i18n-labels stable
 on:
   push:
     tags:
-      - "@gfw/fishing-map@*"
+      - "@gfw/platform@*"
   workflow_dispatch:
 
 concurrency:

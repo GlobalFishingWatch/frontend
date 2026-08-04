@@ -1,0 +1,284 @@
+import { useMemo, useState, useTransition } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import type { SupportedEnvDatasetFilter } from '@globalfishingwatch/datasets-client'
+import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
+import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
+import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
+import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import { isHistogramDataviewSupported } from 'features/_map/workspace/shared/layer-properties.utils'
+import ActivityFilters from 'features/_map/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
+import MapLegend from 'features/_map/workspace/shared/MapLegend'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+
+import DatasetNotFound from '../shared/DatasetNotFound'
+import InfoButton from '../shared/InfoButton'
+import LayerProperties from '../shared/LayerProperties'
+import LayerSwitch from '../shared/LayerSwitch'
+import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import styles from 'features/_map/workspace/shared/LayerPanel.module.css'
+
+type LayerPanelProps = {
+  dataview: UrlDataviewInstance
+  onToggle?: () => void
+}
+
+function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
+  const [isPending, startTransition] = useTransition()
+  const [filterOpen, setFiltersOpen] = useState(false)
+  const { t } = useTranslation()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const [colorOpen, setColorOpen] = useState(false)
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const readOnly = useSelector(selectReadOnly)
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
+  const dataviewId = useActivityDataviewId(dataview)
+  const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
+  const layerError = activityLayer?.instance?.getError?.()
+
+  const datasetFields: { field: SupportedEnvDatasetFilter; label: string }[] = useMemo(
+    () => [
+      { field: 'type', label: t((t) => t.layer.type) },
+      { field: 'flag', label: t((t) => t.layer.flagState) },
+      { field: 'vessel_type', label: t((t) => t.vessel.vesselType) },
+      { field: 'speed', label: t((t) => t.layer.speed) },
+      { field: 'Height', label: t((t) => t.layer.height) },
+      { field: 'REALM', label: t((t) => t.layer.REALM) },
+      { field: 'genus', label: t((t) => t.layer.genus) },
+      { field: 'specie', label: t((t) => t.layer.specie) },
+      { field: 'period', label: t((t) => t.layer.period) },
+      { field: 'scenario', label: t((t) => t.layer.scenario) },
+      { field: 'depth', label: t((t) => t.layer.depth) },
+    ],
+    [t]
+  )
+
+  const layerActive = dataview?.config?.visible ?? true
+  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+
+  const changeColor = (color: ColorBarOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        color: color.value,
+        colorRamp: color.id,
+      },
+    })
+    setColorOpen(false)
+  }
+  const onToggleColorOpen = () => {
+    setColorOpen(!colorOpen)
+  }
+
+  const closeExpandedContainer = () => {
+    setColorOpen(false)
+    setFiltersOpen(false)
+  }
+
+  const onToggleFilterOpen = () => {
+    if (!filterOpen) {
+      startTransition(() => {
+        setFiltersOpen(true)
+      })
+    } else {
+      setFiltersOpen(false)
+    }
+  }
+
+  const dataset = dataview.datasets?.find(
+    (d) =>
+      d.type === DatasetTypes.Fourwings ||
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.UserTracks ||
+      d.type === DatasetTypes.PMTiles
+  )
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings
+
+  if (!dataset || dataset.status === 'deleted') {
+    return <DatasetNotFound dataview={dataview} />
+  }
+
+  const title = dataset?.name
+  const showFilters =
+    isHistogramDataviewSupported(dataview) ||
+    getFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
+
+  const layerRange = getEnvironmentalDatasetRange(dataset)
+  const showMinVisibleFilter =
+    dataview.config?.minVisibleValue !== undefined
+      ? dataview.config?.minVisibleValue !== layerRange.min
+      : false
+  const showMaxVisibleFilter =
+    dataview.config?.maxVisibleValue !== undefined
+      ? dataview.config?.maxVisibleValue !== layerRange.max
+      : false
+  const hasFilters = dataview.config?.filters && Object.keys(dataview.config?.filters).length > 0
+  const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
+  const showSortHandler = items.length > 1 && !readOnly
+
+  return (
+    <div
+      className={cx(styles.LayerPanel, {
+        [styles.expandedContainerOpen]: colorOpen || filterOpen,
+        'print-hidden': !layerActive,
+      })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+    >
+      <div className={styles.header}>
+        <LayerSwitch
+          active={layerActive}
+          disabled={dataset?.status === DatasetStatus.Error}
+          className={styles.switch}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+        />
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
+          {layerActive && showFilters && (
+            <ExpandedContainer
+              visible={filterOpen}
+              onClickOutside={closeExpandedContainer}
+              component={
+                <ActivityFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+              }
+            >
+              <div className={styles.filterButtonWrapper}>
+                <IconButton
+                  icon={filterOpen ? 'filter-on' : 'filter-off'}
+                  loading={isPending}
+                  size="small"
+                  onClick={onToggleFilterOpen}
+                  tooltip={
+                    filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                  }
+                  tooltipPlacement="top"
+                />
+              </div>
+            </ExpandedContainer>
+          )}
+          {layerActive && !isBathymetryDataview(dataview) && (
+            <LayerProperties
+              dataview={dataview}
+              open={colorOpen}
+              colorType="fill"
+              onColorClick={changeColor}
+              onToggleClick={onToggleColorOpen}
+              onClickOutside={closeExpandedContainer}
+            />
+          )}
+          <InfoButton dataview={dataview} />
+          {!readOnly && (
+            <Remove
+              dataview={dataview}
+              loading={!showSortHandler && layerActive && !layerLoaded}
+              testId={`environmental-layer-panel-remove-${dataview.id}`}
+            />
+          )}
+          {showSortHandler && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              loading={layerActive && !layerLoaded}
+              className={styles.dragger}
+            />
+          )}
+          {!readOnly && layerError && (
+            <IconButton
+              icon={'warning'}
+              type={'warning'}
+              tooltip={
+                isGFWUser
+                  ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                  : t((t) => t.errors.layerLoading)
+              }
+              size="small"
+            />
+          )}
+        </div>
+        <IconButton
+          icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
+          type={layerError ? 'warning' : 'default'}
+          loading={layerActive && !layerLoaded}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
+      </div>
+      {layerActive && (
+        <div className={styles.properties}>
+          <div className={styles.filters}>
+            <div className={styles.filters}>
+              <OutOfTimerangeDisclaimer dataview={dataview} />
+              {datasetFields.map(({ field, label }) => (
+                <DatasetSchemaField key={field} dataview={dataview} field={field} label={label} />
+              ))}
+              {showVisibleFilterValues && (
+                <DatasetSchemaField
+                  key={'visibleValues'}
+                  dataview={dataview}
+                  field={'visibleValues'}
+                  label={t((t) => t.common.visibleValues)}
+                />
+              )}
+            </div>
+          </div>
+          {layerActive && hasLegend && (
+            <div
+              className={cx(styles.drag, {
+                [styles.dragging]: isSorting && activeIndex > -1,
+              })}
+            >
+              <MapLegend dataview={dataview} />
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default EnvironmentalLayerPanel

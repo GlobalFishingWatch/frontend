@@ -10,7 +10,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 
 import { parseCoords } from '../coordinates'
-import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
+import { COORDINATES_PROPERTIES_ID } from '../segments/segments.config'
 
 import { GUESS_COLUMN_DICT } from './guess-columns'
 

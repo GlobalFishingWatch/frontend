@@ -56,6 +56,13 @@
         "apps/data-download-portal/**/*",
         "apps/port-labeler/**/*"
       ]
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "test",
+        "ciTargetName": "test-ci"
+      }
     }
   ],
   "targetDefaults": {

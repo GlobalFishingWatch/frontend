@@ -9,7 +9,7 @@ description: Decode a GFW map URL into structured context of what the user is cu
 node scripts/decode-url.mjs '<url or path>'
 ```
 
-Accepts a full URL (`https://globalfishingwatch.org/map/...`) or just the path. Output:
+Accepts a full URL (`https://globalfishingwatch.org/platform/...`) or just the path. Output:
 
 ```json
 {

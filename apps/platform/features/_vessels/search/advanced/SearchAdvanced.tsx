@@ -1,0 +1,175 @@
+import type { ChangeEvent } from 'react'
+import { lazy, Suspense, useCallback } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
+import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+
+import LoginLink from 'features/_user/LoginLink'
+import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import SearchAdvancedFilters from 'features/_vessels/search/advanced/SearchAdvancedFilters'
+import type { SearchComponentProps } from 'features/_vessels/search/basic/SearchBasic'
+import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
+import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
+import {
+  useSearchConnect,
+  useSearchFiltersConnect,
+  useSearchFiltersErrors,
+} from 'features/_vessels/search/search.hook'
+import { isAdvancedSearchAllowed } from 'features/_vessels/search/search.selectors'
+import {
+  cleanVesselSearchResults,
+  selectSearchStatus,
+  selectSearchStatusCode,
+} from 'features/_vessels/search/search.slice'
+import SearchPlaceholder, {
+  SearchEmptyState,
+  SearchNoResultsState,
+} from 'features/_vessels/search/SearchPlaceholders'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
+
+import SearchError from '../basic/SearchError'
+
+import styles from 'features/_vessels/search/advanced/SearchAdvanced.module.css'
+
+const SearchAdvancedResults = lazy(() => import('./SearchAdvancedResults'))
+
+function SearchAdvanced({
+  onSuggestionClick,
+  fetchMoreResults,
+  fetchResults,
+}: SearchComponentProps) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
+  const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
+  const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
+  const searchStatus = useSelector(selectSearchStatus)
+  const searchQuery = useSelector(selectSearchQuery)
+  const searchStatusCode = useSelector(selectSearchStatusCode)
+  const { hasFilters } = useSearchFiltersConnect()
+  const searchFilterErrors = useSearchFiltersErrors()
+  const isGFWUser = useSelector(selectIsGFWUser)
+  const ref = useEventKeyListener(['Enter'], fetchResults)
+
+  const resetSearchState = useCallback(() => {
+    replaceQueryParams(EMPTY_SEARCH_FILTERS)
+    dispatch(cleanVesselSearchResults())
+  }, [dispatch])
+
+  if (!advancedSearchAllowed) {
+    return (
+      <SearchPlaceholder>
+        <Trans i18nKey={(t) => t.search.advancedDisabled}>
+          You need to
+          <LoginLink className={styles.link} loginSource="search-advanced">
+            login
+          </LoginLink>
+          to use advanced search
+        </Trans>
+      </SearchPlaceholder>
+    )
+  }
+
+  const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    replaceQueryParams({ query: e.target.value })
+  }
+
+  const handleSearchIdChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchFilters({ id: e.target.value })
+  }
+
+  const hasSearchFilterErrors = Object.keys(searchFilterErrors).length > 0
+
+  return (
+    <div className={styles.advancedLayout}>
+      <div className={cx('card', styles.form)}>
+        <div className={styles.formFields} ref={ref}>
+          {isGFWUser && (
+            <div>
+              <label>Vessel ID (ONLY FOR GFW USERS)</label>
+              <InputText
+                onChange={handleSearchIdChange}
+                id="id"
+                value={searchFilters.id || ''}
+                className={styles.input}
+              />
+            </div>
+          )}
+          <InputText
+            onChange={handleSearchQueryChange}
+            id="name"
+            value={searchQuery || ''}
+            label={t((t) => t.common.name)}
+            className={styles.input}
+            autoFocus
+          />
+          <SearchAdvancedFilters />
+          {searchQuery &&
+            searchSuggestion &&
+            searchSuggestion !== searchQuery &&
+            !searchSuggestionClicked && (
+              <div>
+                {t((t) => t.search.suggestion)}{' '}
+                <button onClick={onSuggestionClick} className={styles.suggestion}>
+                  {' '}
+                  {searchSuggestion}{' '}
+                </button>{' '}
+                ?
+              </div>
+            )}
+        </div>
+        <div className={styles.formFooter}>
+          <IconButton type="border" size="medium" icon="delete" onClick={resetSearchState} />
+          <Button
+            className={styles.confirmButton}
+            onClick={fetchResults}
+            disabled={
+              (!hasFilters && !searchQuery) || hasSearchFilterErrors || searchStatusCode === 401
+            }
+            tooltip={
+              hasSearchFilterErrors
+                ? t((t) => t.search.notValidFilterSelection, {
+                    defaultValue:
+                      "At least one of your selected sources doesn't allow one of your filters",
+                  })
+                : ''
+            }
+            loading={
+              searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted
+            }
+          >
+            {t((t) => t.search.title)}
+          </Button>
+        </div>
+      </div>
+      <div className={cx('card', styles.scrollContainer)}>
+        {searchStatus === AsyncReducerStatus.Aborted &&
+        searchPagination.loading === false ? null : (
+          <div className={styles.searchResults}>
+            <Suspense fallback={null}>
+              <SearchAdvancedResults
+                fetchResults={fetchResults}
+                fetchMoreResults={fetchMoreResults}
+              />
+            </Suspense>
+            {(searchStatus === AsyncReducerStatus.Idle ||
+              searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
+            {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
+              <SearchNoResultsState />
+            )}
+            {searchStatus === AsyncReducerStatus.Error && <SearchError />}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default SearchAdvanced

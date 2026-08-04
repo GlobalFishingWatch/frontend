@@ -8,6 +8,11 @@
       "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./dataview-resolvers": {
+      "types": "./dist/resolvers/dataviews.d.ts",
+      "development": "./src/resolvers/dataviews.ts",
+      "default": "./dist/resolvers/dataviews.js"
     }
   },
   "main": "./dist/index.js",

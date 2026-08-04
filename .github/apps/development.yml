@@ -3,7 +3,7 @@ build_env_vars: &build_env_vars
   VITE_GOOGLE_MEASUREMENT_ID: G-R3PWRQW70G
   VITE_GOOGLE_TAG_MANAGER_ID: GTM-KK5ZFST
 
-fishing-map:
+platform:
   target: production-node
   build:
     env_vars:

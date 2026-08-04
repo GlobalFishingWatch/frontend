@@ -1,0 +1,54 @@
+import { useTranslation } from 'react-i18next'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
+
+import styles from './Insights.module.css'
+
+const InsightCoverage = ({
+  insightData,
+  isLoading,
+  error,
+}: {
+  insightData?: InsightResponse
+  isLoading: boolean
+  error: ParsedAPIError
+}) => {
+  const { t } = useTranslation()
+  return (
+    <div id="coverage" className={styles.insightContainer}>
+      <div className={styles.insightTitle}>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.coverage)}</label>
+        </Tooltip>
+        <DataTerminology terminologyKey="insightsCoverage" />
+      </div>
+      {isLoading ? (
+        <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
+      ) : error ? (
+        <InsightError error={error} />
+      ) : insightData?.coverage?.percentage ? (
+        <div className={styles.coverageBar}>
+          <div
+            className={styles.coverageIndicator}
+            style={{ left: `${Math.round(insightData.coverage.percentage)}%` }}
+          >
+            <span className={styles.coverageLabel}>
+              {Math.round(insightData.coverage.percentage)}%
+            </span>
+            <span className={styles.coverageDot} />
+          </div>
+        </div>
+      ) : (
+        EMPTY_FIELD_PLACEHOLDER
+      )}
+    </div>
+  )
+}
+
+export default InsightCoverage

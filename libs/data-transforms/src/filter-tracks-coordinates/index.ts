@@ -12,7 +12,7 @@ import type {
 import {
   COORDINATE_PROPERTY_TIMESTAMP,
   COORDINATES_PROPERTIES_ID,
-} from '../segments/segments-to-geojson'
+} from '../segments/segments.config'
 
 import { isNumeric } from './utils'
 

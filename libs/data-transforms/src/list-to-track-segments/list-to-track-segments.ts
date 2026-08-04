@@ -5,7 +5,7 @@ import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
-import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
+import { COORDINATES_PROPERTIES_ID } from '../segments/segments.config'
 import type { SegmentColumns } from '../types'
 
 type Args = SegmentColumns & {

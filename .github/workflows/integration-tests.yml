@@ -40,6 +40,14 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Guards two separate import graphs: the eagerly-registered slices, and routes/_platform.tsx (the
+      # layout every page renders under). deck.gl and friends must not be statically reachable from
+      # either, or the landing page and /user pay for the map in their entry chunk.
+      # Deliberately not continue-on-error — a regression here is silent in every other check.
+      - name: Check store import graph
+        run: pnpm exec nx run platform:check-store-graph
+
       - name: Cache Playwright browsers
         id: playwright-cache
         uses: actions/cache@v4
@@ -83,7 +91,7 @@ jobs:
             # We track which targets are :test targets, accumulate output per-project
             # using the prefix, and detect pass/fail per project.
             /^> nx run / {
-              # $4 is e.g. "fishing-map:test" — split to get just the project name
+              # $4 is e.g. "platform:test" — split to get just the project name
               split($4, parts, ":")
               proj = parts[1]
               if (parts[2] == "test") {

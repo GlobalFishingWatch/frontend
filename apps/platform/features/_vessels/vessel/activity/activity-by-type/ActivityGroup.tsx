@@ -1,0 +1,60 @@
+import { Fragment, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
+
+import type { EventType } from '@globalfishingwatch/api-types'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import EventIcon from 'features/_vessels/vessel/activity/event/EventIcon'
+import I18nNumber from 'features/i18n/i18nNumber'
+
+import styles from '../ActivityGroupedList.module.css'
+
+interface ActivityGroupProps {
+  eventType: EventType
+  eventSource?: DatasetEventSource
+  onToggleClick?: (type: EventType) => void
+  quantity: number
+  expanded: boolean
+  className?: string
+}
+
+const ActivityGroup: React.FC<ActivityGroupProps> = ({
+  eventType,
+  onToggleClick = () => {},
+  quantity,
+  expanded,
+  eventSource,
+  className,
+}): React.ReactElement<any> => {
+  const { t } = useTranslation()
+
+  const onToggle = useCallback(() => onToggleClick(eventType), [eventType, onToggleClick])
+
+  return (
+    <Fragment>
+      <li
+        className={cx(styles.eventGroup, { [styles.open]: expanded }, className)}
+        data-testid={`vv-list-${eventType}`}
+      >
+        <div className={styles.header} onClick={onToggle}>
+          <EventIcon type={eventType} />
+          <p className={styles.title}>
+            <I18nNumber number={quantity} />{' '}
+            {t((t) => t.event[eventType], {
+              defaultValue: eventType,
+              count: quantity,
+              source: eventSource === 'VMS' ? t((t) => t.common.vms) : t((t) => t.common.ais),
+            })}
+          </p>
+          <div className={cx(styles.actions, 'print-hidden')}>
+            <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>
+          </div>
+        </div>
+      </li>
+    </Fragment>
+  )
+}
+
+export default ActivityGroup

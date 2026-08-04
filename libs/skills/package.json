@@ -30,7 +30,7 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
-    "@fishing-map/config": "workspace:*",
+    "@platform/config": "workspace:*",
     "tslib": "2.x",
     "zod": "^4.3.6"
   }

@@ -1,0 +1,177 @@
+import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import type { MultiSelectOption } from '@globalfishingwatch/api-client'
+import type {
+  DatasetConfiguration,
+  DatasetFilterType,
+  UserContextLayerV1Configuration,
+} from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  MAX_FILTERS_ENUM_VALUES,
+  MAX_FILTERS_ENUM_VALUES_EXCEEDED,
+} from '@globalfishingwatch/data-transforms'
+import {
+  getDatasetConfiguration,
+  getFlattenDatasetFilters,
+} from '@globalfishingwatch/datasets-client'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+
+import DatasetFieldLabel from 'features/_map/datasets/upload/DatasetFieldLabel'
+import type { DatasetMetadata } from 'features/_map/datasets/upload/NewDataset'
+import { sortFields } from 'utils/shared'
+
+export function useDatasetMetadata() {
+  const [datasetMetadata, setDatasetMetadataState] = useState({} as DatasetMetadata)
+
+  const setDatasetMetadata = useCallback((newFields: Partial<DatasetMetadata>) => {
+    setDatasetMetadataState((meta = {} as DatasetMetadata) => ({
+      ...meta,
+      ...(newFields as DatasetMetadata),
+    }))
+  }, [])
+
+  const setDatasetMetadataConfig = useCallback((newConfig: DatasetConfiguration['frontend']) => {
+    setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+      const configurationByType =
+        meta.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
+      const contextConfig = getDatasetConfiguration(meta, configurationByType)
+      const frontendConfig = getDatasetConfiguration(meta)
+      const idProperty = contextConfig?.idProperty
+      const valuePropertyId = (contextConfig as UserContextLayerV1Configuration)?.valuePropertyId
+      return {
+        ...meta,
+        configuration: {
+          ...meta?.configuration,
+          [configurationByType]: {
+            ...(meta?.configuration?.[configurationByType] || {}),
+            idProperty,
+            valuePropertyId,
+          },
+          frontend: {
+            ...frontendConfig,
+            ...newConfig,
+          },
+        },
+      }
+    })
+  }, [])
+
+  return useMemo(
+    () => ({
+      datasetMetadata,
+      setDatasetMetadata,
+      setDatasetMetadataConfig,
+    }),
+    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig]
+  )
+}
+
+const DISCARDED_FIELDS = ['gfw_id']
+type FieldOption = (SelectOption | MultiSelectOption) & { type?: DatasetFilterType }
+export function useDatasetMetadataOptions(
+  datasetMetadata?: DatasetMetadata,
+  filterTypes = [] as DatasetFilterType[]
+) {
+  const { t } = useTranslation()
+  const filters = datasetMetadata?.filters
+  const fieldsOptions: FieldOption[] = useMemo(() => {
+    if (!filters) {
+      return []
+    }
+    const flattenedFilters = getFlattenDatasetFilters(filters)
+    const options = flattenedFilters.flatMap((filter) => {
+      if (filterTypes.length > 0 && !filterTypes.includes(filter.type)) {
+        return []
+      }
+      return {
+        id: filter.id,
+        type: filter.type,
+        label: <DatasetFieldLabel field={filter.id} fieldFilter={filter} />,
+        labelString: filter.id,
+      }
+    })
+
+    return options.sort(sortFields)
+  }, [filterTypes, filters])
+
+  const getSelectedOption = useCallback(
+    (
+      option: string | string[],
+      options?: FieldOption[] | FieldOption[]
+    ): FieldOption | FieldOption[] | undefined => {
+      const opts = options ?? fieldsOptions
+      if (option) {
+        if (Array.isArray(option)) {
+          return opts.filter((o) => option.includes(o.id)) || ([] as SelectOption[])
+        }
+        return opts.find((o) => o.id === option)
+      }
+    },
+    [fieldsOptions]
+  )
+
+  const filtersFieldsOptions: FieldOption[] = useMemo(() => {
+    const options =
+      datasetMetadata?.filters?.userContextLayers &&
+      datasetMetadata?.filters?.userContextLayers?.length > 0
+        ? datasetMetadata.filters.userContextLayers.flatMap((filter) => {
+            if (
+              (filterTypes.length > 0 && !filterTypes.includes(filter.type as DatasetFilterType)) ||
+              DISCARDED_FIELDS.includes(filter.id)
+            ) {
+              return []
+            }
+            const isEnumAllowed =
+              filter?.type === 'boolean' ||
+              (filter?.type === 'string' && filter?.enum && filter?.enum?.length > 0)
+            const isRangeAllowed = filter?.type === 'range' && filter.enum?.length === 2
+            const isMaxValuesExceeded = filter.enum?.[0] === MAX_FILTERS_ENUM_VALUES_EXCEEDED
+            return isEnumAllowed || isRangeAllowed
+              ? {
+                  id: filter.id,
+                  label: (
+                    <DatasetFieldLabel
+                      field={
+                        filter.id +
+                        (isMaxValuesExceeded
+                          ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
+                              max: String(MAX_FILTERS_ENUM_VALUES),
+                            })}`
+                          : '')
+                      }
+                      fieldFilter={filter}
+                    />
+                  ),
+                  type: filter.type,
+                  disableSelection: isMaxValuesExceeded,
+                  tooltip: isMaxValuesExceeded
+                    ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
+                        max: String(MAX_FILTERS_ENUM_VALUES),
+                      })
+                    : undefined,
+                }
+              : []
+          })
+        : []
+    return options
+      .filter((o) => {
+        const { latitude, longitude, timestamp } = getDatasetConfiguration(
+          datasetMetadata,
+          'frontend'
+        )
+        return (
+          o.id !== latitude?.toString() &&
+          o.id !== longitude?.toString() &&
+          o.id !== timestamp?.toString()
+        )
+      })
+      .sort(sortFields)
+  }, [datasetMetadata, filterTypes, t])
+
+  return useMemo(
+    () => ({ fieldsOptions, getSelectedOption, filtersFieldsOptions }),
+    [fieldsOptions, filtersFieldsOptions, getSelectedOption]
+  )
+}

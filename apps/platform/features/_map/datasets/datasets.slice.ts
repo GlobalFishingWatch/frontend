@@ -1,0 +1,544 @@
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
+import { kebabCase, memoize, uniq, uniqBy, without } from 'es-toolkit'
+import { stringify } from 'qs'
+
+import {
+  GFWAPI,
+  parseAPIError,
+  parseAPIErrorMessage,
+  parseAPIErrorStatus,
+} from '@globalfishingwatch/api-client'
+import type {
+  APIPagination,
+  Dataset,
+  DatasetsMigration,
+  UploadResponse,
+} from '@globalfishingwatch/api-types'
+import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
+import {
+  getDatasetConfiguration,
+  getIsDatasetVersionDowngrade,
+  LEGACY_DATASETS_TO_LATEST_VMS,
+} from '@globalfishingwatch/datasets-client'
+
+import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/map/config'
+import i18n from 'features/i18n/i18n'
+import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
+import { CROWDIN_IN_CONTEXT_LANG, CROWDIN_SOURCE_LANG } from 'features/i18n/i18n.config'
+import type { RootState } from 'store'
+import type { AsyncError, AsyncReducer } from 'utils/async-slice'
+import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
+
+export const DATASETS_USER_SOURCE_ID = 'user'
+export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
+
+function getAPILocale(locale: i18nSupportedLocale) {
+  return locale === CROWDIN_SOURCE_LANG || locale === CROWDIN_IN_CONTEXT_LANG
+    ? Locale.en.toUpperCase()
+    : locale.toUpperCase()
+}
+
+export const getDatasetByIdsThunk = createAsyncThunk(
+  'datasets/getByIds',
+  async (
+    {
+      ids,
+      includeRelated = true,
+      locale = i18n.language as Locale,
+    }: { ids: string[]; includeRelated?: boolean; locale?: Locale },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const state = getState() as RootState
+      const datasetsToRequest: string[] = []
+      let datasets = ids.flatMap((datasetId) => {
+        const dataset = selectDatasetById(datasetId)(state)
+        if (!dataset) {
+          datasetsToRequest.push(datasetId)
+        }
+        return (dataset as Dataset) || []
+      })
+
+      if (datasetsToRequest.length) {
+        const action = await dispatch(
+          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated, locale })
+        )
+        if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
+          datasets = datasets.concat(
+            action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
+          )
+        }
+      }
+      return datasets
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${ids.join(', ')} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
+  }
+)
+
+export const fetchDatasetByIdThunk = createAsyncThunk<
+  Dataset,
+  { id: string; locale?: i18nSupportedLocale; useApiCache?: boolean },
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'datasets/fetchById',
+  async ({ id, locale = i18n.language as Locale, useApiCache = false }, { rejectWithValue }) => {
+    try {
+      const includesParam = stringify({
+        cache: useApiCache,
+        locale: getAPILocale(locale),
+        includes: ['DESCRIPTION'],
+      })
+      const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
+      return dataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${id} - ${parseAPIErrorMessage(e)}`,
+      })
+    }
+  }
+)
+
+type FetchUserDatasetsMode = 'all' | 'user-only'
+
+type FetchDatasetsBatchParams = {
+  existingIds: string[]
+  fetchUserDatasetsMode?: FetchUserDatasetsMode
+  forceRefresh?: boolean
+  ids: string[]
+  locale: Locale | 'source' | 'val'
+  signal: AbortSignal
+  useApiCache?: boolean
+}
+
+const fetchDatasetsBatch = async ({
+  existingIds,
+  fetchUserDatasetsMode,
+  forceRefresh = false,
+  ids,
+  locale = i18n.language as Locale,
+  signal,
+  useApiCache = false,
+}: FetchDatasetsBatchParams) => {
+  const uniqIds = ids?.length
+    ? ids.filter((id) => {
+        return forceRefresh || !existingIds.includes(id)
+      })
+    : []
+
+  if (!uniqIds.length && fetchUserDatasetsMode === undefined) {
+    return {
+      datasets: [],
+      datasetsDeprecated: {} as DatasetsMigration,
+      deletedDatasetsIds: [] as string[],
+      relatedIds: [],
+    }
+  }
+
+  const fetchDatasets = (datasetIds: string[]) => {
+    const datasetsParams = {
+      ...(datasetIds?.length
+        ? { ids: datasetIds }
+        : { 'logged-user': fetchUserDatasetsMode === 'user-only' }),
+      cache: useApiCache,
+      locale: getAPILocale(locale),
+      ...DEFAULT_PAGINATION_PARAMS,
+    }
+    const includesParam = stringify(
+      {
+        includes: ['I18N', 'DESCRIPTION'],
+      },
+      { arrayFormat: 'indices' }
+    )
+    const url = `/datasets?${stringify(datasetsParams, { arrayFormat: 'comma' })}&${includesParam}`
+    return GFWAPI.fetch<{ data: APIPagination<Dataset>; headers: Headers }>(url, {
+      signal,
+      responseType: 'withHeaders',
+    })
+  }
+
+  let requestIds = uniqIds
+  let deletedDatasetsIds: string[] = []
+  let response: { data: APIPagination<Dataset>; headers: Headers }
+  try {
+    response = await fetchDatasets(requestIds)
+  } catch (e: any) {
+    deletedDatasetsIds =
+      parseAPIErrorMessage(e)
+        .match(/Deleted datasets:\s*(.+)/i)?.[1]
+        .split(',')
+        .map((id: string) => id.trim()) || []
+    if (!deletedDatasetsIds.length) {
+      throw e
+    }
+    requestIds = requestIds.filter((id) => !deletedDatasetsIds.includes(id))
+    response = await fetchDatasets(requestIds)
+  }
+  const { data: initialDatasets, headers: responseHeaders } = response
+
+  let datasetsDeprecatedDict: DatasetsMigration = {}
+  const deprecatedDatasetsHeader = responseHeaders.get(DEPRECATED_DATASETS_HEADER)
+  if (deprecatedDatasetsHeader) {
+    datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
+      const [deprecatedId, latestId] = id.split('=')
+      // Pre-released datasets are reported as deprecated by an older version until they go live
+      if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
+        return acc
+      }
+      acc[deprecatedId] = latestId
+      return acc
+    }, {} as DatasetsMigration)
+  }
+
+  const mockedDatasets =
+    IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
+      ? await import('./datasets.mock')
+      : { default: [] }
+  const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
+
+  const currentIds = uniq([...existingIds, ...datasets.map((d) => d.id)])
+  const relatedDatasetsIds = uniq(
+    datasets.flatMap((dataset) => dataset.relatedDatasets?.flatMap(({ id }) => id || []) || [])
+  )
+  const relatedIds = without(relatedDatasetsIds, ...currentIds)
+
+  return { datasetsDeprecated: datasetsDeprecatedDict, datasets, relatedIds, deletedDatasetsIds }
+}
+
+const MAX_RELATED_FETCH_DEPTH = 5
+
+export const fetchDatasetsByIdsThunk = createAsyncThunk<
+  Dataset[],
+  {
+    ids: string[]
+    fetchUserDatasetsMode?: FetchUserDatasetsMode
+    forceRefresh?: boolean
+    includeRelated?: boolean
+    locale?: i18nSupportedLocale
+    useApiCache?: boolean
+  },
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'datasets/fetch',
+  async (
+    {
+      ids,
+      fetchUserDatasetsMode = 'user-only',
+      forceRefresh = false,
+      includeRelated = true,
+      locale = i18n.language as Locale,
+      useApiCache = false,
+    },
+    { signal, rejectWithValue, getState, dispatch }
+  ) => {
+    const state = getState() as DatasetsSliceState
+    const existingIds = selectIds(state) as string[]
+    const existingRequestedDatasets = ids.flatMap((id) => {
+      const dataset = selectById(state, id) as Dataset
+      return dataset ? [dataset] : []
+    })
+    if (
+      !forceRefresh &&
+      ids.length > 0 &&
+      ids.length === existingRequestedDatasets.length &&
+      fetchUserDatasetsMode === 'user-only'
+    ) {
+      return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
+    }
+    try {
+      const {
+        datasets: batch,
+        datasetsDeprecated,
+        relatedIds,
+        deletedDatasetsIds,
+      } = await fetchDatasetsBatch({
+        ids,
+        existingIds,
+        fetchUserDatasetsMode,
+        forceRefresh,
+        locale,
+        signal,
+        useApiCache,
+      })
+      if (batch.length) {
+        dispatch(upsertDatasets(batch))
+      }
+      if (Object.keys(datasetsDeprecated).length) {
+        dispatch(setDeprecatedDatasets(datasetsDeprecated))
+      }
+      if (deletedDatasetsIds.length) {
+        dispatch(setDeletedDatasets(deletedDatasetsIds))
+      }
+
+      if (includeRelated && relatedIds.length >= 1) {
+        let frontier = relatedIds
+        let bgExistingIds = selectIds(state) as string[]
+
+        for (let depth = 1; depth < MAX_RELATED_FETCH_DEPTH; depth++) {
+          const {
+            datasets: relatedBatch,
+            datasetsDeprecated: relatedDeprecated,
+            relatedIds: nextRelatedIds,
+            deletedDatasetsIds: relatedDeletedIds,
+          } = await fetchDatasetsBatch({
+            ids: frontier,
+            existingIds: bgExistingIds,
+            locale,
+            signal,
+            useApiCache,
+          })
+
+          if (relatedBatch.length) {
+            dispatch(upsertDatasets(relatedBatch))
+          }
+          if (Object.keys(relatedDeprecated).length) {
+            dispatch(setDeprecatedDatasets(relatedDeprecated))
+          }
+          if (relatedDeletedIds.length) {
+            dispatch(setDeletedDatasets(relatedDeletedIds))
+          }
+
+          bgExistingIds = uniq([...bgExistingIds, ...relatedBatch.map((d) => d.id)])
+          if (!nextRelatedIds.length) {
+            break
+          }
+          frontier = nextRelatedIds
+        }
+      }
+
+      return uniqBy([...batch, ...existingRequestedDatasets], (dataset) => dataset.id)
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  }
+)
+
+export const fetchAllDatasetsThunk = createAsyncThunk<
+  any,
+  { fetchUserDatasetsMode?: FetchUserDatasetsMode; locale?: Locale } | undefined,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'datasets/all',
+  ({ fetchUserDatasetsMode, locale = i18n.language as Locale } = {}, { dispatch }) => {
+    return dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode, locale }))
+  }
+)
+
+export type UpsertDataset = {
+  dataset: Partial<Dataset>
+  file?: File
+  createAsPublic?: boolean
+  addIdSuffix?: boolean
+}
+export const upsertDatasetThunk = createAsyncThunk<
+  Dataset,
+  UpsertDataset,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'datasets/create',
+  async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
+    try {
+      let filePath
+      const configurationByType =
+        dataset.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
+      const { idProperty, filePath: datasetFilePath } = getDatasetConfiguration(
+        dataset,
+        configurationByType
+      )
+      const { format } = getDatasetConfiguration(dataset, 'userContextLayerV1')
+      if (file) {
+        const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
+          method: 'POST',
+          body: {
+            contentType:
+              format && format.toUpperCase() === 'GEOJSON' ? 'application/json' : file.type,
+          } as any,
+        })
+        filePath = path
+        await fetch(url, { method: 'PUT', body: file })
+      }
+
+      const suffix = addIdSuffix ? `-${Date.now()}` : ''
+      const generatedId = dataset.id || `${kebabCase(dataset.name || '')}${suffix}`
+      const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
+      const { id: originalId, ...rest } = dataset
+      const isPatchDataset = originalId !== undefined
+
+      const datasetWithFilePath = {
+        ...rest,
+        description: dataset.description || dataset.name,
+        source: dataset.source || DATASETS_USER_SOURCE_ID,
+        // Needed to start polling the dataset in useAutoRefreshImportingDataset
+        ...(isPatchDataset && file && { status: 'importing' }),
+        configuration: {
+          ...dataset.configuration,
+          [configurationByType]: {
+            ...dataset.configuration?.[configurationByType],
+            // Properties that are to be used as SQL params on the server
+            // need to be lowercase
+            idProperty: idProperty?.toLowerCase() || '',
+            filePath: filePath || datasetFilePath,
+          },
+        },
+      }
+      delete (datasetWithFilePath as any).public
+
+      const upsertUrl = isPatchDataset ? `/datasets/${dataset.id}` : `/datasets`
+      const createdDataset = await GFWAPI.fetch<Dataset>(upsertUrl, {
+        method: isPatchDataset ? 'PATCH' : 'POST',
+        body: isPatchDataset ? (datasetWithFilePath as any) : { ...datasetWithFilePath, id },
+      })
+      return createdDataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  }
+)
+
+export const updateDatasetThunk = createAsyncThunk<
+  Dataset,
+  Partial<Dataset>,
+  {
+    rejectValue: AsyncError
+  }
+>(
+  'datasets/update',
+  async (partialDataset, { rejectWithValue }) => {
+    try {
+      const { id, configuration, ...rest } = partialDataset
+      const updatedDataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}`, {
+        method: 'PATCH',
+        body: { ...rest, configuration } as any,
+      })
+      return updatedDataset
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  },
+  {
+    condition: (partialDataset) => {
+      if (!partialDataset || !partialDataset.id) {
+        console.warn('To update the dataset you need the id')
+        return false
+      }
+    },
+  }
+)
+
+export const deleteDatasetThunk = createAsyncThunk<
+  Dataset,
+  string,
+  {
+    rejectValue: AsyncError
+  }
+>('datasets/delete', async (id: string, { rejectWithValue }) => {
+  try {
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}`, {
+      method: 'DELETE',
+    })
+    return { ...dataset, id }
+  } catch (e: any) {
+    console.warn(e)
+    return rejectWithValue(parseAPIError(e))
+  }
+})
+
+export interface DatasetsState extends AsyncReducer<Dataset> {
+  deprecatedDatasets: DatasetsMigration
+  deletedDatasets: string[]
+}
+
+export type DatasetsSliceState = { datasets: DatasetsState }
+
+export const refreshDatasetsLocaleThunk = createAsyncThunk<
+  void,
+  Locale,
+  { rejectValue: AsyncError }
+>('datasets/refreshLocale', async (locale, { getState, dispatch }) => {
+  const state = getState() as DatasetsSliceState
+  const ids = (state.datasets.ids as string[]) || []
+  if (!ids.length) {
+    return
+  }
+  await dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
+})
+
+const initialState: DatasetsState = {
+  ...asyncInitialState,
+  deprecatedDatasets: {},
+  deletedDatasets: [],
+}
+
+const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
+  name: 'datasets',
+  initialState,
+  reducers: {
+    setDeprecatedDatasets: (
+      state: { deprecatedDatasets: DatasetsMigration },
+      action: PayloadAction<DatasetsMigration>
+    ) => {
+      state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
+    },
+    setDeletedDatasets: (state: { deletedDatasets: string[] }, action: PayloadAction<string[]>) => {
+      state.deletedDatasets = uniq([...state.deletedDatasets, ...(action.payload || [])])
+    },
+    upsertDatasets: (state: DatasetsState, action: PayloadAction<Dataset[]>) => {
+      entityAdapter.upsertMany(state, action.payload)
+    },
+  },
+  thunks: {
+    fetchThunk: fetchDatasetsByIdsThunk,
+    fetchByIdThunk: fetchDatasetByIdThunk,
+    updateThunk: updateDatasetThunk,
+    createThunk: upsertDatasetThunk,
+    deleteThunk: deleteDatasetThunk,
+  },
+})
+
+export const { setDeprecatedDatasets, setDeletedDatasets, upsertDatasets } = datasetSlice.actions
+export const {
+  selectAll: selectAllDatasets,
+  selectById,
+  selectIds,
+} = entityAdapter.getSelectors((state: DatasetsSliceState) => state.datasets)
+
+export const selectDatasetById = memoize((id: string) =>
+  createSelector([(state: DatasetsSliceState) => state], (state) => selectById(state, id))
+)
+
+export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
+export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
+export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
+export const selectSliceDeprecatedDatasets = (state: DatasetsSliceState) =>
+  state.datasets.deprecatedDatasets
+export const selectDeletedDatasets = (state: DatasetsSliceState) => state.datasets.deletedDatasets
+
+export const selectDeprecatedDatasets = createSelector(
+  [selectSliceDeprecatedDatasets],
+  (deprecatedDatasets) => {
+    return {
+      ...deprecatedDatasets,
+      ...LEGACY_DATASETS_TO_LATEST_VMS,
+    }
+  }
+)
+
+export default datasetSlice.reducer

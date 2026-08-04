@@ -1,0 +1,383 @@
+import { Fragment, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+  getDatasetGeometryType,
+  getUserDataviewDataset,
+} from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  UserContextTileLayer,
+  UserPointsTileLayer,
+  type UserTracksLayer,
+} from '@globalfishingwatch/deck-layers'
+import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
+import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import {
+  useAutoRefreshImportingDataset,
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/_map/datasets/datasets.hook'
+import {
+  getDatasetLabel,
+  getIsBQEditorDataset,
+  isPrivateDataset,
+} from 'features/_map/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
+import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginRequired'
+import FitBounds from 'features/_map/workspace/shared/FitBounds'
+import InfoError from 'features/_map/workspace/shared/InfoError'
+import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import {
+  POINT_PROPERTIES,
+  POLYGON_PROPERTIES,
+} from 'features/_map/workspace/shared/layer-properties.utils'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/_map/workspace/workspace.selectors'
+import GFWOnly from 'features/_user/GFWOnly'
+import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
+
+import DatasetNotFound from '../shared/DatasetNotFound'
+import DatasetSchemaField from '../shared/DatasetSchemaField'
+import ExpandedContainer from '../shared/ExpandedContainer'
+import Filters from '../shared/LayerFilters'
+import LayerProperties from '../shared/LayerProperties'
+import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
+import LayerSwitch from '../shared/LayerSwitch'
+import Remove from '../shared/Remove'
+import Title from '../shared/Title'
+
+import { useUserLayerMetadata } from './user-layer-track-panel.hooks'
+import UserLayerTrackPanel from './UserLayerTrackPanel'
+
+import styles from 'features/_map/workspace/shared/LayerPanel.module.css'
+
+type UserPanelProps = {
+  dataview: UrlDataviewInstance
+  mergedDataviewId?: string
+  onToggle?: () => void
+}
+
+function UserPanel({
+  dataview,
+  mergedDataviewId,
+  onToggle,
+}: UserPanelProps): React.ReactElement<any> {
+  const { t } = useTranslation()
+  const { openSidePanel } = useSidePanel()
+
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
+  const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
+  const { dispatchSetMapDrawing, dispatchSetMapDrawEditDataset } = useMapDrawConnect()
+  const [filterOpen, setFiltersOpen] = useState(false)
+  const [propertiesOpen, setPropertiesOpen] = useState(false)
+  const userId = useSelector(selectUserId)
+  const guestUser = useSelector(selectIsGuestUser)
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
+  const layerActive = dataview?.config?.visible ?? true
+  const dataset = getUserDataviewDataset(dataview)
+  const datasetGeometryType = getDatasetGeometryType(dataset)
+  const { instance, loaded, hasFeaturesColoredByField, error } = useUserLayerMetadata(
+    dataview,
+    mergedDataviewId
+  )
+  const layerLoaded = loaded && !error
+  const layerLoadedDebounced = useDebounce(layerLoaded, 300)
+  const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const isBaseUserLayer =
+    instance instanceof UserPointsTileLayer || instance instanceof UserContextTileLayer
+
+  useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
+
+  const {
+    items,
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    style,
+    isSorting,
+    activeIndex,
+  } = useLayerPanelDataviewSort(dataview.id)
+
+  const { filtersAllowed } = getFiltersInDataview(dataview)
+  const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
+  const hasSchemaFilterSelection = filtersAllowed.some(
+    (schema) => schema.optionsSelected?.length > 0
+  )
+  const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
+  const hasLegend = polygonColor !== undefined
+  const changeColor = (color: ColorBarOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        color: color.value,
+        colorRamp: color.id,
+      },
+    })
+    setPropertiesOpen(false)
+  }
+  const changeThickness = (thickness: ThicknessSelectorOption) => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        thickness: thickness.value,
+      },
+    })
+    setPropertiesOpen(false)
+  }
+
+  const onEditClick = () => {
+    if (datasetGeometryType === 'draw') {
+      dispatchSetMapDrawEditDataset(dataset?.id)
+      const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+      dispatchSetMapDrawing(geometryType as DrawFeatureType)
+    } else {
+      dispatchDatasetModalOpen(true)
+      const { geometryType } = getDatasetConfiguration(dataset)
+      dispatchDatasetModalConfig({
+        id: dataset?.id,
+        dataviewId: dataview.id,
+        type: geometryType,
+      })
+    }
+  }
+  const onToggleColorOpen = () => {
+    setPropertiesOpen(!propertiesOpen)
+  }
+
+  const onToggleFilterOpen = () => {
+    setFiltersOpen(!filterOpen)
+  }
+
+  const closeExpandedContainer = () => {
+    setFiltersOpen(false)
+    setPropertiesOpen(false)
+  }
+
+  const isUserLayer = !guestUser && dataset?.ownerId === userId
+  const isBQEditorLayer = getIsBQEditorDataset(dataset)
+  const showSortHandler = items.length > 1
+
+  if (!dataset) {
+    const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+      isPrivateDataset({ id: d.datasetId })
+    )
+    return (guestUser || isWorkspaceRefreshing) && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
+    ) : (
+      <DatasetNotFound dataview={dataview} />
+    )
+  }
+
+  const title = dataset
+    ? getDatasetLabel(dataset)
+    : t((t: any) => t.dataview[dataview?.id].title, {
+        defaultValue: dataview?.name || dataview?.id,
+      })
+  const datasetError = dataset.status === DatasetStatus.Error
+  const datasetDescription = dataset.description !== dataset.name
+
+  const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
+
+  return (
+    <div
+      className={cx(styles.LayerPanel, {
+        [styles.expandedContainerOpen]: filterOpen || propertiesOpen,
+        'print-hidden': !layerActive,
+      })}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+    >
+      <div className={styles.header}>
+        <LayerSwitch
+          disabled={dataset?.status === DatasetStatus.Error}
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
+          onToggle={onToggle}
+          color={hasFeaturesColoredByField ? COLOR_SECONDARY_BLUE : undefined}
+          testId={`context-layer-${dataview.id}`}
+        />
+        {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
+          <GFWOnly
+            type="only-icon"
+            style={{ transform: 'none' }}
+            className={styles.gfwIcon}
+            userGroup="gfw"
+          />
+        )}
+        <Title
+          title={title}
+          className={styles.name}
+          classNameActive={styles.active}
+          dataview={dataview}
+          onToggle={onToggle}
+          showIcon
+        />
+        <div
+          className={cx(
+            'print-hidden',
+            styles.actions,
+            { [styles.active]: layerActive },
+            styles.hideUntilHovered
+          )}
+        >
+          {layerActive && !error && (
+            <>
+              {isUserLayer && !isBQEditorLayer && (
+                <IconButton
+                  testId={`user-layer-edit-${dataset.id}`}
+                  icon="edit"
+                  size="small"
+                  disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
+                  tooltip={
+                    datasetGeometryType === 'draw'
+                      ? t((t) => t.layer.editDraw)
+                      : t((t) => t.dataset.edit)
+                  }
+                  tooltipPlacement="top"
+                  onClick={onEditClick}
+                />
+              )}
+              <Fragment>
+                <LayerProperties
+                  dataview={dataview}
+                  open={propertiesOpen}
+                  disabled={hasFeaturesColoredByField}
+                  onColorClick={changeColor}
+                  onThicknessClick={changeThickness}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType={
+                    dataview.config?.type === DataviewType.HeatmapStatic ||
+                    dataview.config?.type === DataviewType.HeatmapAnimated
+                      ? 'fill'
+                      : 'line'
+                  }
+                  properties={
+                    dataview?.config?.type === DataviewType.UserContext
+                      ? POLYGON_PROPERTIES
+                      : POINT_PROPERTIES
+                  }
+                />
+              </Fragment>
+              <FitBounds
+                hasError={Boolean(error)}
+                layer={instance as UserTracksLayer}
+                disabled={isBaseUserLayer ? false : layerLoading}
+                dataviewId={dataview.id}
+              />
+              {hasSchemaFilters &&
+                !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
+                  <ExpandedContainer
+                    visible={filterOpen}
+                    onClickOutside={closeExpandedContainer}
+                    component={
+                      <Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+                    }
+                  >
+                    <div className={styles.filterButtonWrapper}>
+                      <IconButton
+                        icon={filterOpen ? 'filter-on' : 'filter-off'}
+                        size="small"
+                        onClick={onToggleFilterOpen}
+                        tooltip={
+                          filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                        }
+                        tooltipPlacement="top"
+                      />
+                    </div>
+                  </ExpandedContainer>
+                )}
+            </>
+          )}
+          {datasetError && (
+            <InfoError
+              error={datasetError}
+              loading={dataset.status === DatasetStatus.Importing}
+              tooltip={error || t((t) => t.layer.seeDescription)}
+              size="small"
+              // onClick={() =>
+              //   !datasetError &&
+              //   openSidePanel({
+              //     type: 'userDataset',
+              //     id: dataset.id,
+              //   })
+              // }
+            />
+          )}
+          <Remove
+            testId={`user-layer-remove-${dataset.id}`}
+            dataview={dataview}
+            loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
+          />
+          {showSortHandler && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon={error ? 'warning' : 'drag'}
+              type={error ? 'warning' : 'default'}
+              tooltip={error ? error : ''}
+              className={error ? styles.disabled : styles.dragger}
+            />
+          )}
+        </div>
+        <IconButton
+          testId={`user-layer-status-${dataset.id}`}
+          icon={layerActive ? (error ? 'warning' : 'more') : undefined}
+          type={error ? 'warning' : 'default'}
+          loading={layerLoading || dataset?.status === DatasetStatus.Importing}
+          className={cx('print-hidden', styles.shownUntilHovered)}
+          size="small"
+        />
+      </div>
+      {layerActive && hasLayerProperties && (
+        <div
+          className={cx(styles.properties, styles.dataWarning, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
+          {hasSchemaFilterSelection && (
+            <div className={styles.filters}>
+              <div className={styles.filters}>
+                {filtersAllowed.map(({ id, label }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+                ))}
+              </div>
+            </div>
+          )}
+          {hasFeaturesColoredByField && <UserLayerTrackPanel dataview={dataview} />}
+        </div>
+      )}
+      {layerActive && hasLegend && (
+        <div
+          className={cx(styles.properties, styles.drag, {
+            [styles.dragging]: isSorting && activeIndex > -1,
+          })}
+        >
+          <div id={`legend_${dataview.id}`}></div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default UserPanel

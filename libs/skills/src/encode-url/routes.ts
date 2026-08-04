@@ -3,7 +3,7 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   ROUTE_PATHS,
-} from '@fishing-map/config'
+} from '@platform/config'
 
 export { DEFAULT_PATH_BASENAME as DEFAULT_BASENAME }
 
@@ -45,7 +45,7 @@ const required = (route: MapRoute, param: keyof MapRouteParams): string => {
 
 /**
  * Returns the TanStack Router `to` pattern and `params` for a route,
- * matching the file routes in apps/fishing-map/routes/_app
+ * matching the file routes in apps/platform/routes/_app
  */
 export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   const category = route.category || DEFAULT_WORKSPACE_CATEGORY
@@ -54,7 +54,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   switch (route.type) {
     case 'workspace':
       if (!route.category && !route.workspaceId) {
-        return { to: ROUTE_PATHS.HOME, params: {} }
+        return { to: ROUTE_PATHS.MAP, params: {} }
       }
       return { to: ROUTE_PATHS.WORKSPACE, params: workspaceParams }
     case 'workspaces-list':
@@ -119,6 +119,7 @@ export const buildRoutePath = (navigation: RouteNavigation): string => {
 // Static-segment patterns listed before parametric ones of the same length,
 // so e.g. /user wins over /$category. Types map each ROUTE_PATHS pattern.
 const ROUTE_PATTERNS: [string, MapRouteType][] = [
+  [ROUTE_PATHS.MAP, 'workspace'],
   [ROUTE_PATHS.USER, 'user'],
   [ROUTE_PATHS.SEARCH, 'vessel-search'],
   [ROUTE_PATHS.REPORT, 'report'],
@@ -154,6 +155,8 @@ const matchPattern = (pattern: string, segments: string[]): MapRouteParams | und
 export const matchRoutePath = (pathname: string): MapRoute => {
   const segments = pathname.split('/').filter(Boolean).map(decodeURIComponent)
   if (segments.length === 0) {
+    // The platform root. It currently 404s straight to the default workspace map, so reporting a
+    // workspace matches what the user actually lands on. Revisit when a landing page exists.
     return { type: 'workspace' }
   }
   for (const [pattern, type] of ROUTE_PATTERNS) {
@@ -162,5 +165,10 @@ export const matchRoutePath = (pathname: string): MapRoute => {
       return { type, ...params }
     }
   }
-  return { type: 'workspace', category: segments[0], workspaceId: segments[1] }
+  // Unrecognised shape. Map URLs are '/map/<category>/<workspaceId>', so the workspace params are
+  // offset by the '/map' segment; anything else has no workspace to report.
+  if (segments[0] === 'map') {
+    return { type: 'workspace', category: segments[1], workspaceId: segments[2] }
+  }
+  return { type: 'workspace' }
 }

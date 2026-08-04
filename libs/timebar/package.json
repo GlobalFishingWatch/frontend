@@ -11,6 +11,11 @@
       "development": "./src/index.ts",
       "default": "./dist/index.js"
     },
+    "./constants": {
+      "types": "./dist/constants.d.ts",
+      "development": "./src/constants.ts",
+      "default": "./dist/constants.js"
+    },
     "./timebar-settings.css": {
       "development": "./src/timebar-settings.css",
       "default": "./dist/timebar-settings.css"
