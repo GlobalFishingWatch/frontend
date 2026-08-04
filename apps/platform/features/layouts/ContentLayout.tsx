@@ -1,12 +1,17 @@
 import { Suspense } from 'react'
-import { Outlet } from '@tanstack/react-router'
+import { getRouteApi, Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 
+import ContentPanel from 'features/_map/content-panel/ContentPanel'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
+import ErrorBoundary from 'features/app/ErrorBoundary'
+import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 
 import styles from './layouts.module.css'
+
+const rootRoute = getRouteApi('__root__')
 
 /**
  * Layout for platform pages with no map and no sidebar — currently /user and /vessel-search.
@@ -17,22 +22,37 @@ import styles from './layouts.module.css'
  * routes.
  */
 function ContentLayout() {
+  const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
+  const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
+  const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
+
   return (
-    <div className={styles.contentLayout}>
-      <div className={cx(styles.contentHeader)}>
-        <a href="https://globalfishingwatch.org">
-          <Logo />
-        </a>
+    <div className={styles.appLayout}>
+      <div className={styles.contentLayout}>
+        <div className={cx(styles.contentHeader)}>
+          <a href="https://globalfishingwatch.org">
+            <Logo />
+          </a>
+        </div>
+        <div
+          id={SCROLL_CONTAINER_DOM_ID}
+          className={cx('scrollContainer', styles.contentScrollContainer)}
+          data-testid="content-container"
+        >
+          <Suspense fallback={null}>
+            <Outlet />
+          </Suspense>
+        </div>
       </div>
-      <div
-        id={SCROLL_CONTAINER_DOM_ID}
-        className={cx('scrollContainer', styles.contentScrollContainer)}
-        data-testid="content-container"
-      >
+      <ErrorBoundary>
         <Suspense fallback={null}>
-          <Outlet />
+          <ContentPanel
+            initialPanelWidth={contentPanelWidth ?? undefined}
+            initialScreenWidth={screenWidth ?? undefined}
+            onPanelWidthChange={onContentPanelWidthChange}
+          />
         </Suspense>
-      </div>
+      </ErrorBoundary>
     </div>
   )
 }
