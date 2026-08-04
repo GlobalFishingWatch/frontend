@@ -2,12 +2,14 @@ export const AUTH_CHANNEL_NAME = 'gfw-auth'
 export const LOGIN_MESSAGE = 'LOGIN_SUCCESS'
 export const LOGOUT_MESSAGE = 'LOGOUT'
 
+export const SETTINGS_UPDATED_MESSAGE = 'gfw:settings-updated'
+export const SESSION_ENDED_MESSAGE = 'gfw:session-ended'
+
 // Per-document id so a tab can ignore its own LOGOUT echo
 export const TAB_ID = `${Date.now()}-${Math.random()}`
 
 export type AuthChannelMessage =
-  | { type: typeof LOGIN_MESSAGE; user?: unknown }
-  | { type: typeof LOGOUT_MESSAGE; senderId: string }
+  { type: typeof LOGIN_MESSAGE; user?: unknown } | { type: typeof LOGOUT_MESSAGE; senderId: string }
 
 function postAuthMessage(message: AuthChannelMessage) {
   if (typeof BroadcastChannel === 'undefined') return

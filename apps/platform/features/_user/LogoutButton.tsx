@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
-import { getGuestUser } from '@globalfishingwatch/api-client'
+import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { selectLastWorkspaceNavigationProps } from 'features/_map/workspace/workspace.selectors'
@@ -24,6 +24,16 @@ function LogoutButton() {
 
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
+
+    const width = 500
+    const height = 750
+    const left = window.screenX + (window.outerWidth - width) / 2
+    const top = window.screenY + (window.outerHeight - height) / 2
+    window.open(
+      GFWAPI.getLogoutSessionUrl(),
+      'gfwSignOut',
+      `width=${width},height=${height},left=${left},top=${top}`
+    )
 
     await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
 

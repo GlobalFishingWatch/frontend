@@ -27,6 +27,7 @@ import {
   AUTH_PATH,
   DEBUG_API_REQUESTS,
   GUEST_USER_TYPE,
+  LOGOUT_SESSION_PATH,
   REGISTER_PATH,
   SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
@@ -263,6 +264,22 @@ export class GFW_API_CLASS {
     return this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/${SETTINGS_PATH}?${params.toString()}`, {
       absolute: true,
     })
+  }
+
+  getLogoutSessionUrl(
+    { client = 'gfw', locale = '' } = {} satisfies {
+      client?: string
+      locale?: string
+    }
+  ) {
+    const params = new URLSearchParams({
+      client,
+      locale: locale || this.getStoredLocale(),
+    })
+    return this.generateUrl(
+      `/${API_VERSION}/${AUTH_PATH}/${LOGOUT_SESSION_PATH}?${params.toString()}`,
+      { absolute: true }
+    )
   }
 
   getConfig() {

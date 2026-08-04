@@ -12,10 +12,17 @@ import {
   AUTH_CHANNEL_NAME,
   LOGIN_MESSAGE,
   LOGOUT_MESSAGE,
+  SESSION_ENDED_MESSAGE,
+  SETTINGS_UPDATED_MESSAGE,
   TAB_ID,
 } from 'features/_user/auth-channel'
 import { selectLoginSource } from 'features/_user/selectors/user.selectors'
-import { logoutUserThunk, setLoggedUser, setLoginSource } from 'features/_user/user.slice'
+import {
+  fetchUserThunk,
+  logoutUserThunk,
+  setLoggedUser,
+  setLoginSource,
+} from 'features/_user/user.slice'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,
@@ -68,6 +75,39 @@ export function usePopupLogin() {
     // login with usePopupLoginCallback, broadcasts the session, and closes.
     window.open(loginUrl, 'SSO Login', `width=${width},height=${height},left=${left},top=${top}`)
   }
+}
+
+/**
+ * The gateway settings page (opened by SettingsButton) posts back to its opener when the user
+ * updates their profile or ends their session there — deleting the account must not leave this tab
+ * logged in. Mounted app-wide instead of inside SettingsButton because the popup outlives the
+ * user menu that renders the button.
+ */
+export function useSettingsMessageListener() {
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (!getIsBrowser()) {
+      return
+    }
+    const settingsOrigin = new URL(GFWAPI.getConfig().baseUrl).origin
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.origin !== settingsOrigin) {
+        return
+      }
+      if (event.data?.type === SETTINGS_UPDATED_MESSAGE) {
+        dispatch(fetchUserThunk())
+      }
+      if (event.data?.type === SESSION_ENDED_MESSAGE) {
+        // The gateway session is already gone; this clears ours (refresh token + cookies) and
+        // syncs the other tabs.
+        await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
+        dispatch(setLoggedUser(getGuestUser()))
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [dispatch])
 }
 
 export function useLoginPopupListener() {
