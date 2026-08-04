@@ -190,7 +190,10 @@ function MessageFeedback({
         size="small"
         className={cx({ [styles.feedbackActive]: rating === 'up' })}
         tooltip={t((t) => t.chat.feedbackUp)}
-        onClick={() => onRate('up')}
+        onClick={() => {
+          const reason = window.prompt(t((t) => t.chat.feedbackUpReason))
+          onRate('up', reason || '')
+        }}
       />
       <IconButton
         icon="thumbs-down"

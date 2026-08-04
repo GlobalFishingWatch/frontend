@@ -142,6 +142,7 @@
     "feedbackDown": "This answer was not helpful",
     "feedbackDownReason": "What was wrong with this answer?",
     "feedbackUp": "This answer was helpful",
+    "feedbackUpReason": "What was helpful about this answer?",
     "skillAreas": "Finding area ids",
     "skillFilters": "Adjusting filters",
     "skillLayers": "Choosing the right layers",
