@@ -39,11 +39,12 @@
   margin-top: var(--space-S);
 }
 
-.cta {
+.cta,
+.cta:visited {
   padding: var(--space-S) var(--space-M);
   border-radius: var(--border-radius-1);
   background: var(--color-primary-blue);
-  color: var(--color-white) !important;
+  color: var(--color-white);
   font: var(--font-M);
   text-transform: uppercase;
 }
