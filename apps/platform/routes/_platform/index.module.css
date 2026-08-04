@@ -41,9 +41,9 @@
 
 .cta {
   padding: var(--space-S) var(--space-M);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-1);
   background: var(--color-primary-blue);
-  color: var(--color-white);
+  color: var(--color-white) !important;
   font: var(--font-M);
   text-transform: uppercase;
 }

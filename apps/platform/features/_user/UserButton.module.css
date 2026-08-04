@@ -1,6 +1,7 @@
 .wrapper {
   position: relative;
-  background-color: var(--color-background);
+
+  /* background-color: var(--color-background); */
   z-index: 5;
   transition: var(--transition);
 }
@@ -14,7 +15,7 @@
 }
 
 .wrapper:hover {
-  background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, var(--color-background));
+  /* background-color: color-mix(in srgb, rgba(var(--primary-blue-rgb)) 10%, var(--color-background)); */
 }
 
 .loginLinkButton {
