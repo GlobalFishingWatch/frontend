@@ -13,6 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { MAP, ROUTES_WITH_WORKSPACES } from 'router/routes'
 import { mapRoutePathToType, ROUTE_PATHS } from 'router/routes.utils'
 
+import { openAuthPopup } from './auth-channel'
 import { logoutUserThunk, setLoggedUser } from './user.slice'
 
 function LogoutButton() {
@@ -25,15 +26,7 @@ function LogoutButton() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
 
-    const width = 500
-    const height = 750
-    const left = window.screenX + (window.outerWidth - width) / 2
-    const top = window.screenY + (window.outerHeight - height) / 2
-    window.open(
-      GFWAPI.getLogoutSessionUrl(),
-      'gfwSignOut',
-      `width=${width},height=${height},left=${left},top=${top}`
-    )
+    openAuthPopup(GFWAPI.getLogoutSessionUrl(), 'gfwSignOut')
 
     await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
 

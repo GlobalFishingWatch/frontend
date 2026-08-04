@@ -166,6 +166,44 @@ test('Login - concurrent refreshes from two tabs both resolve within the grace w
   await newTabPage.close()
 })
 
+test('Login - logout should also end the gateway SSO session', async ({ loginPage }) => {
+  await loginPage.login()
+  await loginPage.expectGatewaySessionPresent()
+
+  await loginPage.openUserPanel()
+  const settingsUrl = await loginPage.getSettingsUrl()
+
+  await loginPage.logout()
+
+  await loginPage.expectGuest()
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectGatewaySessionCleared()
+
+  await loginPage.expectSettingsRequiresLogin(settingsUrl)
+})
+
+test('Login - a session ended on the gateway settings page logs the app out', async ({
+  loginPage,
+}) => {
+  await loginPage.login()
+  await loginPage.openUserPanel()
+
+  await loginPage.emitGatewaySessionEnded()
+
+  await loginPage.expectGuest()
+  await loginPage.expectUserTokenCleared()
+  await loginPage.expectRefreshTokenCleared()
+})
+
+test('Login - should log in in the same tab when popups are blocked', async ({ loginPage }) => {
+  await loginPage.loginWithPopupsBlocked()
+
+  await loginPage.expectLoggedIn()
+  await loginPage.expectUserTokenPresent()
+  await loginPage.openUserPanel()
+  await loginPage.expectUserVisible()
+})
+
 test('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {
   await loginPage.expectGuest()
   await loginPage.expectAppReady()

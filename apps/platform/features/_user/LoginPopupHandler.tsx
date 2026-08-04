@@ -5,7 +5,7 @@ import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { PATH_BASENAME } from 'data/map/config'
 import { broadcastLogin } from 'features/_user/auth-channel'
-import { getIsLoginPopup } from 'features/_user/user.hooks'
+import { getIsLoginPopup, REDIRECT_KEY } from 'features/_user/user.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { loginServerFn } from 'server-functions/auth.functions'
 
@@ -17,16 +17,21 @@ function LoginPopupHandler() {
     const accessToken = getAccessTokenFromUrl()
     if (!accessToken || handled.current) return
     handled.current = true
+
+    const redirect = new URLSearchParams(window.location.search).get(REDIRECT_KEY)
     loginServerFn({ data: { accessToken } })
       .then(broadcastLogin)
       .catch((e) => console.warn('Popup login failed', e))
       .finally(() => {
-        if (getIsLoginPopup()) {
+        if (!redirect && getIsLoginPopup()) {
           window.close()
         }
         if (!window.closed) {
-          // Full page load, not a client navigation: the session only exists as cookies
-          window.location.replace(`${PATH_BASENAME.replace(/\/$/, '')}${ROUTE_PATHS.MAP}`)
+          const safeRedirect =
+            redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : null
+          window.location.replace(
+            safeRedirect ?? `${PATH_BASENAME.replace(/\/$/, '')}${ROUTE_PATHS.MAP}`
+          )
         }
       })
   }, [])

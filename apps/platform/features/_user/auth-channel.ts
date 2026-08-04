@@ -8,6 +8,19 @@ export const SESSION_ENDED_MESSAGE = 'gfw:session-ended'
 // Per-document id so a tab can ignore its own LOGOUT echo
 export const TAB_ID = `${Date.now()}-${Math.random()}`
 
+const POPUP_WIDTH = 500
+const POPUP_HEIGHT = 750
+
+export function openAuthPopup(url: string, name: string) {
+  const left = window.screenX + (window.outerWidth - POPUP_WIDTH) / 2
+  const top = window.screenY + (window.outerHeight - POPUP_HEIGHT) / 2
+  return window.open(
+    url,
+    name,
+    `width=${POPUP_WIDTH},height=${POPUP_HEIGHT},left=${left},top=${top}`
+  )
+}
+
 export type AuthChannelMessage =
   { type: typeof LOGIN_MESSAGE; user?: unknown } | { type: typeof LOGOUT_MESSAGE; senderId: string }
 

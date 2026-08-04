@@ -12,6 +12,7 @@ import {
   AUTH_CHANNEL_NAME,
   LOGIN_MESSAGE,
   LOGOUT_MESSAGE,
+  openAuthPopup,
   SESSION_ENDED_MESSAGE,
   SETTINGS_UPDATED_MESSAGE,
   TAB_ID,
@@ -40,6 +41,8 @@ import { getIsBrowser } from 'utils/dom'
 const IS_POPUP_KEY = 'isPopup'
 const IS_POPUP_VALUE = 'true'
 
+export const REDIRECT_KEY = 'redirect'
+
 export const getIsLoginPopup = () => {
   if (!getIsBrowser()) {
     return false
@@ -67,22 +70,19 @@ export function usePopupLogin() {
       hideHeader: true,
     })
 
-    const width = 500
-    const height = 750
-    const left = window.screenX + (window.outerWidth - width) / 2
-    const top = window.screenY + (window.outerHeight - height) / 2
-    // The opener listens via useLoginPopupListener (BroadcastChannel); the popup completes
-    // login with usePopupLoginCallback, broadcasts the session, and closes.
-    window.open(loginUrl, 'SSO Login', `width=${width},height=${height},left=${left},top=${top}`)
+    const popup = openAuthPopup(loginUrl, 'SSO Login')
+    if (popup) {
+      return
+    }
+    const fallbackParams = new URLSearchParams({
+      [REDIRECT_KEY]: `${window.location.pathname}${window.location.search}`,
+    })
+    window.location.href = GFWAPI.getLoginUrl(
+      `${window.location.origin}${loginPath}?${fallbackParams.toString()}`
+    )
   }
 }
 
-/**
- * The gateway settings page (opened by SettingsButton) posts back to its opener when the user
- * updates their profile or ends their session there — deleting the account must not leave this tab
- * logged in. Mounted app-wide instead of inside SettingsButton because the popup outlives the
- * user menu that renders the button.
- */
 export function useSettingsMessageListener() {
   const dispatch = useAppDispatch()
 
@@ -99,8 +99,6 @@ export function useSettingsMessageListener() {
         dispatch(fetchUserThunk())
       }
       if (event.data?.type === SESSION_ENDED_MESSAGE) {
-        // The gateway session is already gone; this clears ours (refresh token + cookies) and
-        // syncs the other tabs.
         await dispatch(logoutUserThunk({ logoutServer: true, broadcast: true }))
         dispatch(setLoggedUser(getGuestUser()))
       }
