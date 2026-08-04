@@ -6,7 +6,7 @@
   },
   "bathymetry-contour": {
     "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
-    "moreInfoLink": "",
+    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
     "name": "Contorno de batimetría"
   },
   "chlorophyl": {
