@@ -182,13 +182,17 @@ const getInteractionEndpointDatasetConfig = (
   const start = getUTCDate(mainFeature?.startTime).toISOString()
   const end = getUTCDate(mainFeature?.endTime).toISOString()
 
-  // get corresponding dataviews
-  const featuresDataviews = features.flatMap((feature) => {
+  // get corresponding dataviews, keeping track of the feature each one belongs to
+  // as sublayers without a matching dataview are discarded and would shift the indexes
+  const featuresSublayerDataviews = features.flatMap((feature, featureIndex) => {
     if (!feature.sublayers?.length) return []
     return feature.sublayers.flatMap((sublayer) => {
-      return temporalgridDataviews.find((dataview) => dataview.id === sublayer.id) || []
+      const dataview = temporalgridDataviews.find((dataview) => dataview.id === sublayer.id)
+      return dataview ? { dataview, featureIndex } : []
     })
   })
+  const featuresDataviews = featuresSublayerDataviews.map(({ dataview }) => dataview)
+  const featuresIndexes = featuresSublayerDataviews.map(({ featureIndex }) => featureIndex)
   const fourWingsDataset = featuresDataviews[0]?.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings
   ) as Dataset
@@ -227,7 +231,7 @@ const getInteractionEndpointDatasetConfig = (
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
-  return { featuresDataviews, fourWingsDataset, datasetConfig }
+  return { featuresDataviews, featuresIndexes, fourWingsDataset, datasetConfig }
 }
 
 const getVesselInfoEndpoint = (vesselDatasets: Dataset[], vesselIds: string[]) => {
@@ -331,7 +335,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         console.warn('fetchInteraction not possible, 0 features')
         return
       }
-      const { featuresDataviews, fourWingsDataset, datasetConfig } =
+      const { featuresDataviews, featuresIndexes, fourWingsDataset, datasetConfig } =
         getInteractionEndpointDatasetConfig(heatmapFeatures, [
           ...temporalgridDataviews,
           ...vesselGroupDataviews,
@@ -342,25 +346,28 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersVesselsIdsResponse = await GFWAPI.fetch<
           APIPagination<ExtendedFeatureVessel[]>
         >(interactionUrl, { signal })
-        const isSkylightDataset = getIsSkylightDataset(fourWingsDataset?.id)
+        const requestedDatasets = featuresDataviews.flatMap((dv) => dv.config?.datasets || [])
         // Real time datasets uses mmsi instead of vessel ids
-        const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
-          sublayer.flatMap((vessel) => {
-            const {
-              id: vesselId,
-              vessel_id,
-              ...rest
-            } = vessel as ExtendedFeatureVessel & {
-              vessel_id: string
-            }
-            // vessel_id needed for VIIRS layers
-            const id = vesselId || vessel_id
-            // Skylight migh don't have a vessel_id, but still can use the skylight_id
-            if (!id && !isSkylightDataset) {
-              return []
-            }
-            return { ...rest, id }
-          })
+        const sublayersVesselsIds = (sublayersVesselsIdsResponse.entries || []).map(
+          (sublayer, index) => {
+            const isSkylightDataset = getIsSkylightDataset(requestedDatasets[index])
+            return (sublayer || []).flatMap((vessel) => {
+              const {
+                id: vesselId,
+                vessel_id,
+                ...rest
+              } = vessel as ExtendedFeatureVessel & {
+                vessel_id: string
+              }
+              // vessel_id needed for VIIRS layers
+              const id = vesselId || vessel_id
+              // Skylight migh don't have a vessel_id, but still can use the skylight_id
+              if (!id && !isSkylightDataset) {
+                return []
+              }
+              return { ...rest, id }
+            })
+          }
         )
 
         let startingIndex = 0
@@ -380,7 +387,7 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
 
         const topActivityVessels = vesselsBySource
           .map((source, i) => {
-            const activityProperty = heatmapProperties?.[i] || 'hours'
+            const activityProperty = heatmapProperties?.[featuresIndexes[i]] || 'hours'
             return source
               .flatMap((source) => source)
               .sort((a, b) => b[activityProperty]! - a[activityProperty]!)
@@ -425,13 +432,10 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
           ? await searchVesselMMSI(infoDatasets, topActivityVesselIds, signal)
           : await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
-        const sublayersIds = heatmapFeatures.flatMap(
-          (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
-        )
         const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
-          const activityProperty = heatmapProperties?.[i] || 'hours'
+          const activityProperty = heatmapProperties?.[featuresIndexes[i]] || 'hours'
           return {
-            sublayerId: sublayersIds[i],
+            sublayerId: featuresDataviews[i].id,
             vessels: sublayerVessels
               .flatMap((vessels) => {
                 return vessels.map((vessel) => {
