@@ -1,8 +1,7 @@
-import { expect, test } from 'playwright/test'
-
+import { expect, test } from '../fixtures'
 import { appPath } from '../paths'
 
-test('WS01 - Save workspace', async ({ page }) => {
+test('WS01 - Save workspace', async ({ page, loginPage }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
@@ -12,27 +11,8 @@ test('WS01 - Save workspace', async ({ page }) => {
     )
   )
 
-  // LOGIN
-
-  await page.getByTestId('modal-close-button').click()
-  await page.waitForLoadState('networkidle')
-  await page.getByText('Dismiss', { exact: true }).first().click()
-
-  // Click the login button and wait for the auth popup window
-  const [popup] = await Promise.all([page.waitForEvent('popup'), page.getByText('login').click()])
-  await popup.waitForLoadState()
-  await popup.locator('#email').fill(process.env.TEST_USER_EMAIL || '')
-  await popup.locator('#password').fill(process.env.TEST_USER_PASSWORD || '')
-  await popup.getByRole('button', { name: 'Login' }).click()
-
-  await page.getByTestId('sidebar-login-icon').click()
-
-  //Close modal was popping up after login, so we need to close it again
-  await page.getByTestId('modal-close-button').click()
-
-  await page.getByTestId('link-workspace').click()
-
-  await page.waitForURL('**/map/fishing-activity/deep-sea-mining-public*')
+  // Login runs in a popup and broadcasts back, so the workspace stays loaded.
+  await loginPage.login()
 
   await page.waitForLoadState('networkidle')
 
@@ -40,13 +20,11 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   await page.getByText('Save as a new workspace').click()
 
-  expect(page.getByText('Save the current workspace')).toBeVisible()
+  await expect(page.getByText('Save the current workspace')).toBeVisible()
 
   await page.getByTestId('create-workspace-name').fill('E2E Test Workspace')
 
-  await page.getByText('Static (Apr 3 2020 - Apr 3 2021)').click()
-
-  await page.getByText('Dynamic').click()
+  await expect(page.getByText('Dynamic')).toBeVisible()
 
   await page.getByLabel('Days from latest data update (1-100)').clear()
   await page.getByLabel('Days from latest data update (1-100)').fill('90')
@@ -57,9 +35,7 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   await page.waitForTimeout(5000) // Wait for the workspace to be saved and appear in the list
 
-  // nothing to close await page.getByRole('button', { name: 'close' }).click()
-
-  await page.getByTestId('sidebar-login-icon').click()
+  await loginPage.openUserPanel()
 
   await page.getByTestId('user-workspace').click()
 
@@ -73,5 +49,5 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   await page.waitForTimeout(5000) // Wait for the workspace to be removed
 
-  expect(page.getByText('E2E Test Workspace')).not.toBeVisible()
+  await expect(page.getByText('E2E Test Workspace')).not.toBeVisible()
 })

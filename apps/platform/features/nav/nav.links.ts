@@ -1,6 +1,7 @@
 import type { ComponentProps, ComponentType, ReactNode } from 'react'
-import { ROUTE_PATHS } from '@platform/config/routes'
 import { Link } from '@tanstack/react-router'
+
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { WorkspaceCategory } from 'data/map/workspaces'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'

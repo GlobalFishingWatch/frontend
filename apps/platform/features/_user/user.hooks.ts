@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
@@ -99,12 +99,8 @@ export function useLoginPopupListener() {
     workspace,
   ])
 
-  useEffect(() => {
-    if (getIsLoginPopup() || typeof BroadcastChannel === 'undefined') {
-      return
-    }
-    const channel = new BroadcastChannel(AUTH_CHANNEL_NAME)
-    const handleMessage = async (event: MessageEvent) => {
+  const handleMessage = useCallback(
+    async (event: MessageEvent) => {
       if (event.data?.type === LOGIN_MESSAGE) {
         try {
           const user = event.data.user
@@ -131,11 +127,25 @@ export function useLoginPopupListener() {
         dispatch(setLoggedUser(getGuestUser()))
       }
       return
+    },
+    [dispatch, reloadDataAfterLogin, loginSource]
+  )
+
+  // The handler lives in a ref so the channel is created once
+  const handleMessageRef = useRef(handleMessage)
+  // eslint-disable-next-line react-hooks/refs
+  handleMessageRef.current = handleMessage
+
+  useEffect(() => {
+    if (getIsLoginPopup() || typeof BroadcastChannel === 'undefined') {
+      return
     }
-    channel.addEventListener('message', handleMessage)
+    const channel = new BroadcastChannel(AUTH_CHANNEL_NAME)
+    const listener = (event: MessageEvent) => handleMessageRef.current(event)
+    channel.addEventListener('message', listener)
     return () => {
-      channel.removeEventListener('message', handleMessage)
+      channel.removeEventListener('message', listener)
       channel.close()
     }
-  }, [dispatch, reloadDataAfterLogin, loginSource])
+  }, [])
 }

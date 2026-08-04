@@ -15,6 +15,7 @@ export async function disableWelcomePopups(page: Page) {
     window.localStorage.setItem('WelcomePopup', hidden)
     window.localStorage.setItem('VesselProfilePopup', hidden)
     window.localStorage.setItem('MarineManagerPopup', hidden)
+    window.localStorage.setItem('DeepSeaMiningPopup', hidden)
     window.localStorage.setItem('HighlightPopup', '"sentinel2"')
     window.localStorage.setItem('i18nextLng', '"en"')
     window.localStorage.setItem('hints', hints)

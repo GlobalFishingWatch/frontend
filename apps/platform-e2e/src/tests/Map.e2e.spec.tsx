@@ -1,5 +1,5 @@
-import test, { expect } from 'playwright/test'
-
+import { expect, test } from '../fixtures'
+import { clickMapUntilVisible } from '../helpers/map'
 import { MAP_PATH } from '../paths'
 
 test('Map01 - should select a vessel from map tile', async ({ page }) => {
@@ -8,10 +8,7 @@ test('Map01 - should select a vessel from map tile', async ({ page }) => {
 
   await page.goto(MAP_PATH)
 
-  // close welcome modal
-  await page.getByTestId('modal-close-button').click()
   await page.waitForLoadState('networkidle')
-  await page.getByText('Dismiss').first().click()
 
   await page.getByText('month').first().click()
 
@@ -22,14 +19,15 @@ test('Map01 - should select a vessel from map tile', async ({ page }) => {
   expect(page.url()).toContain('end=2026-01-01T')
 
   await page.waitForLoadState('networkidle')
-  await page.click('#view-mapViewport', { position: { x: 8, y: 385 } })
 
-  await page.waitForLoadState('networkidle')
-
-  expect(page.locator('#map-container').getByText('Apparent fishing effort (VMS)')).toBeVisible()
+  await clickMapUntilVisible(
+    page,
+    { x: 8, y: 385 },
+    page.locator('#map-container').getByText('Apparent fishing effort (VMS)')
+  )
   // Weak and wrong conditions
-  //expect(page.getByText('1,305.77 hours')).toBeVisible()
-  //expect(page.getByText('Rolton')).toBeVisible()
+  //await expect(page.getByText('1,305.77 hours')).toBeVisible()
+  //await expect(page.getByText('Rolton')).toBeVisible()
 })
 
 test('Map02 - Filter map by flag ', async ({ page }) => {
@@ -37,10 +35,6 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
   await page.goto(MAP_PATH)
-
-  // close welcome modal
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').first().click()
 
   await page.locator('[data-test="activity-layer-panel-ais"]').hover()
   await page.locator('[data-test="activity-layer-panel-ais"]').getByLabel('Open filters').click()
@@ -54,15 +48,14 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
 
   await page.waitForLoadState('networkidle')
 
-  await page.click('#view-mapViewport', { position: { x: 5, y: 385 } })
-
-  //avoid hard timeout
-  await page.waitForTimeout(5000)
-
-  expect(page.locator('#map-container').getByText('Apparent fishing effort (AIS)')).toBeVisible()
-  expect(page.locator('#map-container').getByText('VEN')).not.toBeVisible()
-  expect(page.locator('#map-container').getByText('MEX')).not.toBeVisible()
-  expect(page.locator('#map-container').getByText('PAN').first()).toBeVisible()
+  await clickMapUntilVisible(
+    page,
+    { x: 5, y: 385 },
+    page.locator('#map-container').getByText('Apparent fishing effort (AIS)')
+  )
+  await expect(page.locator('#map-container').getByText('VEN')).not.toBeVisible()
+  await expect(page.locator('#map-container').getByText('MEX')).not.toBeVisible()
+  await expect(page.locator('#map-container').getByText('PAN').first()).toBeVisible()
 })
 
 test.skip('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
@@ -70,10 +63,6 @@ test.skip('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
   await page.goto(MAP_PATH)
-
-  // close welcome modal
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
 
   await page
     .locator('section')
@@ -102,7 +91,7 @@ test.skip('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
 
   await page.waitForTimeout(2000)
 
-  expect(page.locator('#map-container').getByText('Vessel presence')).toBeVisible()
-  expect(page.locator('#map-container').getByText('Cargo')).not.toBeVisible()
-  expect(page.locator('#map-container').getByText('Passenger').first()).toBeVisible()
+  await expect(page.locator('#map-container').getByText('Vessel presence')).toBeVisible()
+  await expect(page.locator('#map-container').getByText('Cargo')).not.toBeVisible()
+  await expect(page.locator('#map-container').getByText('Passenger').first()).toBeVisible()
 })
