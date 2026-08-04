@@ -28,6 +28,7 @@
 .contentHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 var(--space-S);
   height: var(--header-height);
 }

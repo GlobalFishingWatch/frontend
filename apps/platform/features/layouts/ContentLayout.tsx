@@ -5,9 +5,11 @@ import cx from 'classnames'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 
 import ContentPanel from 'features/_map/content-panel/ContentPanel'
+import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import styles from './layouts.module.css'
 
@@ -22,6 +24,7 @@ const rootRoute = getRouteApi('__root__')
  * routes.
  */
 function ContentLayout() {
+  const isClientHydrated = useIsClientHydrated()
   const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
   const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
   const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
@@ -33,6 +36,7 @@ function ContentLayout() {
           <a href="https://globalfishingwatch.org">
             <Logo />
           </a>
+          {isClientHydrated && <NavigationHistoryButton />}
         </div>
         <div
           id={SCROLL_CONTAINER_DOM_ID}
