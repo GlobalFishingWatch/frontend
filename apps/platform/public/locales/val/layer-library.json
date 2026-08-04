@@ -1,247 +1,247 @@
 {
   "bathymetry": {
-    "description": "crwdns82478:0crwdne82478:0",
-    "moreInfoLink": "crwdns82480:0crwdne82480:0",
-    "name": "crwdns82476:0crwdne82476:0"
+    "description": "crwdns137945:0crwdne137945:0",
+    "moreInfoLink": "crwdns137947:0crwdne137947:0",
+    "name": "crwdns137949:0crwdne137949:0"
   },
   "bathymetry-contour": {
-    "description": "crwdns106560:0crwdne106560:0",
-    "moreInfoLink": "crwdns106562:0crwdne106562:0",
-    "name": "crwdns106564:0crwdne106564:0"
+    "description": "crwdns137951:0crwdne137951:0",
+    "moreInfoLink": "crwdns137953:0crwdne137953:0",
+    "name": "crwdns137955:0crwdne137955:0"
   },
   "chlorophyl": {
-    "description": "crwdns82484:0crwdne82484:0",
-    "moreInfoLink": "crwdns82486:0crwdne82486:0",
-    "name": "crwdns82482:0crwdne82482:0"
+    "description": "crwdns137957:0crwdne137957:0",
+    "moreInfoLink": "crwdns137959:0crwdne137959:0",
+    "name": "crwdns137961:0crwdne137961:0"
   },
   "coral-reefs": {
-    "description": "crwdns82490:0crwdne82490:0",
-    "moreInfoLink": "crwdns82492:0crwdne82492:0",
-    "name": "crwdns82488:0crwdne82488:0"
+    "description": "crwdns137963:0crwdne137963:0",
+    "moreInfoLink": "crwdns137965:0crwdne137965:0",
+    "name": "crwdns137967:0crwdne137967:0"
   },
   "currents": {
-    "description": "crwdns94194:0crwdne94194:0",
-    "moreInfoLink": "crwdns94196:0crwdne94196:0",
-    "name": "crwdns94198:0crwdne94198:0"
+    "description": "crwdns137969:0crwdne137969:0",
+    "moreInfoLink": "crwdns137971:0crwdne137971:0",
+    "name": "crwdns137973:0crwdne137973:0"
   },
   "dsm-isa-leasing-areas": {
-    "description": "crwdns84221:0crwdne84221:0",
-    "moreInfoLink": "crwdns84223:0crwdne84223:0",
-    "name": "crwdns84225:0crwdne84225:0"
+    "description": "crwdns137975:0crwdne137975:0",
+    "moreInfoLink": "crwdns137977:0crwdne137977:0",
+    "name": "crwdns137979:0crwdne137979:0"
   },
   "ebsas": {
-    "description": "crwdns108986:0crwdne108986:0",
-    "moreInfoLink": "crwdns108988:0crwdne108988:0",
-    "name": "crwdns108990:0crwdne108990:0"
+    "description": "crwdns137981:0crwdne137981:0",
+    "moreInfoLink": "crwdns137983:0crwdne137983:0",
+    "name": "crwdns137985:0crwdne137985:0"
   },
   "eez": {
-    "description": "crwdns82496:0crwdne82496:0",
-    "moreInfoLink": "crwdns82498:0crwdne82498:0",
-    "name": "crwdns82494:0crwdne82494:0"
+    "description": "crwdns137987:0crwdne137987:0",
+    "moreInfoLink": "crwdns137989:0crwdne137989:0",
+    "name": "crwdns137991:0crwdne137991:0"
   },
   "eez-areas-12nm": {
-    "description": "crwdns87858:0crwdne87858:0",
-    "moreInfoLink": "crwdns87860:0crwdne87860:0",
-    "name": "crwdns87862:0crwdne87862:0"
+    "description": "crwdns137993:0crwdne137993:0",
+    "moreInfoLink": "crwdns137995:0crwdne137995:0",
+    "name": "crwdns137997:0crwdne137997:0"
   },
   "encounters": {
-    "description": "crwdns82502:0crwdne82502:0",
-    "moreInfoLink": "crwdns82504:0crwdne82504:0",
-    "name": "crwdns82500:0crwdne82500:0"
+    "description": "crwdns137999:0crwdne137999:0",
+    "moreInfoLink": "crwdns138001:0crwdne138001:0",
+    "name": "crwdns138003:0crwdne138003:0"
   },
   "fao-major": {
-    "description": "crwdns82508:0crwdne82508:0",
-    "moreInfoLink": "crwdns82510:0crwdne82510:0",
-    "name": "crwdns82506:0crwdne82506:0"
+    "description": "crwdns138005:0crwdne138005:0",
+    "moreInfoLink": "crwdns138007:0crwdne138007:0",
+    "name": "crwdns138009:0crwdne138009:0"
   },
   "fishing-effort-ais": {
-    "description": "crwdns84638:0crwdne84638:0",
-    "moreInfoLink": "crwdns84640:0crwdne84640:0",
-    "name": "crwdns84642:0crwdne84642:0"
+    "description": "crwdns138011:0crwdne138011:0",
+    "moreInfoLink": "crwdns138013:0crwdne138013:0",
+    "name": "crwdns138015:0crwdne138015:0"
   },
   "fishing-effort-vms": {
-    "description": "crwdns84644:0crwdne84644:0",
-    "moreInfoLink": "crwdns84646:0crwdne84646:0",
-    "name": "crwdns84648:0crwdne84648:0"
+    "description": "crwdns138017:0crwdne138017:0",
+    "moreInfoLink": "crwdns138019:0crwdne138019:0",
+    "name": "crwdns138021:0crwdne138021:0"
   },
   "gfcm-fao": {
-    "description": "crwdns87864:0crwdne87864:0",
-    "moreInfoLink": "crwdns87866:0crwdne87866:0",
-    "name": "crwdns87868:0crwdne87868:0"
+    "description": "crwdns138023:0crwdne138023:0",
+    "moreInfoLink": "crwdns138025:0crwdne138025:0",
+    "name": "crwdns138027:0crwdne138027:0"
   },
   "graticules": {
-    "description": "crwdns82520:0crwdne82520:0",
-    "moreInfoLink": "crwdns82522:0crwdne82522:0",
-    "name": "crwdns82518:0crwdne82518:0"
+    "description": "crwdns138029:0crwdne138029:0",
+    "moreInfoLink": "crwdns138031:0crwdne138031:0",
+    "name": "crwdns138033:0crwdne138033:0"
   },
   "high-seas": {
-    "description": "crwdns82526:0crwdne82526:0",
-    "moreInfoLink": "crwdns82528:0crwdne82528:0",
-    "name": "crwdns82524:0crwdne82524:0"
+    "description": "crwdns138035:0crwdne138035:0",
+    "moreInfoLink": "crwdns138037:0crwdne138037:0",
+    "name": "crwdns138039:0crwdne138039:0"
   },
   "high-seas-pockets": {
-    "description": "crwdns87870:0crwdne87870:0",
-    "moreInfoLink": "crwdns87872:0crwdne87872:0",
-    "name": "crwdns87884:0crwdne87884:0"
+    "description": "crwdns138041:0crwdne138041:0",
+    "moreInfoLink": "crwdns138043:0crwdne138043:0",
+    "name": "crwdns138045:0crwdne138045:0"
   },
   "immas": {
-    "description": "crwdns108992:0crwdne108992:0",
-    "moreInfoLink": "crwdns108994:0crwdne108994:0",
-    "name": "crwdns108996:0crwdne108996:0"
+    "description": "crwdns138047:0crwdne138047:0",
+    "moreInfoLink": "crwdns138049:0crwdne138049:0",
+    "name": "crwdns138051:0crwdne138051:0"
   },
   "loitering": {
-    "description": "crwdns83784:0crwdne83784:0",
-    "moreInfoLink": "crwdns83786:0crwdne83786:0",
-    "name": "crwdns83788:0crwdne83788:0"
+    "description": "crwdns138053:0crwdne138053:0",
+    "moreInfoLink": "crwdns138055:0crwdne138055:0",
+    "name": "crwdns138057:0crwdne138057:0"
   },
   "mangroves": {
-    "description": "crwdns82532:0crwdne82532:0",
-    "moreInfoLink": "crwdns82534:0crwdne82534:0",
-    "name": "crwdns82530:0crwdne82530:0"
+    "description": "crwdns138059:0crwdne138059:0",
+    "moreInfoLink": "crwdns138061:0crwdne138061:0",
+    "name": "crwdns138063:0crwdne138063:0"
   },
   "marine-ecoregions": {
-    "description": "crwdns82538:0crwdne82538:0",
-    "moreInfoLink": "crwdns82540:0crwdne82540:0",
-    "name": "crwdns82536:0crwdne82536:0"
+    "description": "crwdns138065:0crwdne138065:0",
+    "moreInfoLink": "crwdns138067:0crwdne138067:0",
+    "name": "crwdns138069:0crwdne138069:0"
   },
   "mpa": {
-    "description": "crwdns82544:0crwdne82544:0",
-    "moreInfoLink": "crwdns82546:0crwdne82546:0",
-    "name": "crwdns82542:0crwdne82542:0"
+    "description": "crwdns138071:0crwdne138071:0",
+    "moreInfoLink": "crwdns138073:0crwdne138073:0",
+    "name": "crwdns138075:0crwdne138075:0"
   },
   "mpatlas": {
-    "description": "crwdns84722:0crwdne84722:0",
-    "moreInfoLink": "crwdns84724:0crwdne84724:0",
-    "name": "crwdns84726:0crwdne84726:0"
+    "description": "crwdns138077:0crwdne138077:0",
+    "moreInfoLink": "crwdns138079:0crwdne138079:0",
+    "name": "crwdns138081:0crwdne138081:0"
   },
   "nitrate": {
-    "description": "crwdns82550:0crwdne82550:0",
-    "moreInfoLink": "crwdns82552:0crwdne82552:0",
-    "name": "crwdns82548:0crwdne82548:0"
+    "description": "crwdns138083:0crwdne138083:0",
+    "moreInfoLink": "crwdns138085:0crwdne138085:0",
+    "name": "crwdns138087:0crwdne138087:0"
   },
   "offshore-fixed-infrastructure": {
-    "description": "crwdns83378:0crwdne83378:0",
-    "moreInfoLink": "crwdns83380:0crwdne83380:0",
-    "name": "crwdns83382:0crwdne83382:0"
+    "description": "crwdns138089:0crwdne138089:0",
+    "moreInfoLink": "crwdns138091:0crwdne138091:0",
+    "name": "crwdns138093:0crwdne138093:0"
   },
   "oxygen": {
-    "description": "crwdns82556:0crwdne82556:0",
-    "moreInfoLink": "crwdns82558:0crwdne82558:0",
-    "name": "crwdns82554:0crwdne82554:0"
+    "description": "crwdns138095:0crwdne138095:0",
+    "moreInfoLink": "crwdns138097:0crwdne138097:0",
+    "name": "crwdns138099:0crwdne138099:0"
   },
   "paa-duke": {
-    "description": "crwdns87876:0crwdne87876:0",
-    "moreInfoLink": "crwdns87878:0crwdne87878:0",
-    "name": "crwdns87886:0crwdne87886:0"
+    "description": "crwdns138101:0crwdne138101:0",
+    "moreInfoLink": "crwdns138103:0crwdne138103:0",
+    "name": "crwdns138105:0crwdne138105:0"
   },
   "ph": {
-    "description": "crwdns82562:0crwdne82562:0",
-    "moreInfoLink": "crwdns82564:0crwdne82564:0",
-    "name": "crwdns82560:0crwdne82560:0"
+    "description": "crwdns138107:0crwdne138107:0",
+    "moreInfoLink": "crwdns138109:0crwdne138109:0",
+    "name": "crwdns138111:0crwdne138111:0"
   },
   "phosphate": {
-    "description": "crwdns82568:0crwdne82568:0",
-    "moreInfoLink": "crwdns82570:0crwdne82570:0",
-    "name": "crwdns82566:0crwdne82566:0"
+    "description": "crwdns138113:0crwdne138113:0",
+    "moreInfoLink": "crwdns138115:0crwdne138115:0",
+    "name": "crwdns138117:0crwdne138117:0"
   },
   "port-locations": {
-    "description": "crwdns87964:0crwdne87964:0",
-    "moreInfoLink": "crwdns87966:0crwdne87966:0",
-    "name": "crwdns87968:0crwdne87968:0"
+    "description": "crwdns138119:0crwdne138119:0",
+    "moreInfoLink": "crwdns138121:0crwdne138121:0",
+    "name": "crwdns138123:0crwdne138123:0"
   },
   "port-locations-vms": {
-    "description": "crwdns112424:0crwdne112424:0",
-    "moreInfoLink": "crwdns112426:0crwdne112426:0",
-    "name": "crwdns112428:0crwdne112428:0"
+    "description": "crwdns138125:0crwdne138125:0",
+    "moreInfoLink": "crwdns138127:0crwdne138127:0",
+    "name": "crwdns138129:0crwdne138129:0"
   },
   "port-visits": {
-    "description": "crwdns83790:0crwdne83790:0",
-    "moreInfoLink": "crwdns83792:0crwdne83792:0",
-    "name": "crwdns83794:0crwdne83794:0"
+    "description": "crwdns138131:0crwdne138131:0",
+    "moreInfoLink": "crwdns138133:0crwdne138133:0",
+    "name": "crwdns138135:0crwdne138135:0"
   },
   "presence": {
-    "description": "crwdns82574:0crwdne82574:0",
-    "moreInfoLink": "crwdns82576:0crwdne82576:0",
-    "name": "crwdns82572:0crwdne82572:0"
+    "description": "crwdns138137:0crwdne138137:0",
+    "moreInfoLink": "crwdns138139:0crwdne138139:0",
+    "name": "crwdns138141:0crwdne138141:0"
   },
   "protectedseas": {
-    "description": "crwdns82580:0crwdne82580:0",
-    "moreInfoLink": "crwdns82582:0crwdne82582:0",
-    "name": "crwdns82578:0crwdne82578:0"
+    "description": "crwdns138143:0crwdne138143:0",
+    "moreInfoLink": "crwdns138145:0crwdne138145:0",
+    "name": "crwdns138147:0crwdne138147:0"
   },
   "rfmo": {
-    "description": "crwdns82586:0crwdne82586:0",
-    "moreInfoLink": "crwdns82588:0crwdne82588:0",
-    "name": "crwdns82584:0crwdne82584:0"
+    "description": "crwdns138149:0crwdne138149:0",
+    "moreInfoLink": "crwdns138151:0crwdne138151:0",
+    "name": "crwdns138153:0crwdne138153:0"
   },
   "salinity": {
-    "description": "crwdns82592:0crwdne82592:0",
-    "moreInfoLink": "crwdns82594:0crwdne82594:0",
-    "name": "crwdns82590:0crwdne82590:0"
+    "description": "crwdns138155:0crwdne138155:0",
+    "moreInfoLink": "crwdns138157:0crwdne138157:0",
+    "name": "crwdns138159:0crwdne138159:0"
   },
   "sar": {
-    "description": "crwdns82598:0crwdne82598:0",
-    "moreInfoLink": "crwdns82600:0crwdne82600:0",
-    "name": "crwdns82596:0crwdne82596:0"
+    "description": "crwdns138161:0crwdne138161:0",
+    "moreInfoLink": "crwdns138163:0crwdne138163:0",
+    "name": "crwdns138165:0crwdne138165:0"
   },
   "seagrasses": {
-    "description": "crwdns82604:0crwdne82604:0",
-    "moreInfoLink": "crwdns82606:0crwdne82606:0",
-    "name": "crwdns82602:0crwdne82602:0"
+    "description": "crwdns138167:0crwdne138167:0",
+    "moreInfoLink": "crwdns138169:0crwdne138169:0",
+    "name": "crwdns138171:0crwdne138171:0"
   },
   "seamounts": {
-    "description": "crwdns82610:0crwdne82610:0",
-    "moreInfoLink": "crwdns82612:0crwdne82612:0",
-    "name": "crwdns82608:0crwdne82608:0"
+    "description": "crwdns138173:0crwdne138173:0",
+    "moreInfoLink": "crwdns138175:0crwdne138175:0",
+    "name": "crwdns138177:0crwdne138177:0"
   },
   "sentinel2": {
-    "description": "crwdns94118:0crwdne94118:0",
-    "moreInfoLink": "crwdns94120:0crwdne94120:0",
-    "name": "crwdns94122:0crwdne94122:0"
+    "description": "crwdns138179:0crwdne138179:0",
+    "moreInfoLink": "crwdns138181:0crwdne138181:0",
+    "name": "crwdns138183:0crwdne138183:0"
   },
   "species": {
-    "description": "crwdns83158:0crwdne83158:0",
-    "moreInfoLink": "crwdns83160:0crwdne83160:0",
-    "name": "crwdns83156:0crwdne83156:0"
+    "description": "crwdns138185:0crwdne138185:0",
+    "moreInfoLink": "crwdns138187:0crwdne138187:0",
+    "name": "crwdns138189:0crwdne138189:0"
   },
   "sst": {
-    "description": "crwdns82616:0crwdne82616:0",
-    "moreInfoLink": "crwdns82618:0crwdne82618:0",
-    "name": "crwdns82614:0crwdne82614:0"
+    "description": "crwdns138191:0crwdne138191:0",
+    "moreInfoLink": "crwdns138193:0crwdne138193:0",
+    "name": "crwdns138195:0crwdne138195:0"
   },
   "sst-anomalies": {
-    "description": "crwdns82622:0crwdne82622:0",
-    "moreInfoLink": "crwdns82624:0crwdne82624:0",
-    "name": "crwdns82620:0crwdne82620:0"
+    "description": "crwdns138197:0crwdne138197:0",
+    "moreInfoLink": "crwdns138199:0crwdne138199:0",
+    "name": "crwdns138201:0crwdne138201:0"
   },
   "sst-anomalies-max": {
-    "description": "crwdns82628:0crwdne82628:0",
-    "moreInfoLink": "crwdns82630:0crwdne82630:0",
-    "name": "crwdns82626:0crwdne82626:0"
+    "description": "crwdns138203:0crwdne138203:0",
+    "moreInfoLink": "crwdns138205:0crwdne138205:0",
+    "name": "crwdns138207:0crwdne138207:0"
   },
   "sst-anomalies-min": {
-    "description": "crwdns82634:0crwdne82634:0",
-    "moreInfoLink": "crwdns82636:0crwdne82636:0",
-    "name": "crwdns82632:0crwdne82632:0"
+    "description": "crwdns138209:0crwdne138209:0",
+    "moreInfoLink": "crwdns138211:0crwdne138211:0",
+    "name": "crwdns138213:0crwdne138213:0"
   },
   "thgt": {
-    "description": "crwdns82640:0crwdne82640:0",
-    "moreInfoLink": "crwdns82642:0crwdne82642:0",
-    "name": "crwdns82638:0crwdne82638:0"
+    "description": "crwdns138215:0crwdne138215:0",
+    "moreInfoLink": "crwdns138217:0crwdne138217:0",
+    "name": "crwdns138219:0crwdne138219:0"
   },
   "viirs": {
-    "description": "crwdns82646:0crwdne82646:0",
-    "moreInfoLink": "crwdns82648:0crwdne82648:0",
-    "name": "crwdns82644:0crwdne82644:0"
+    "description": "crwdns138221:0crwdne138221:0",
+    "moreInfoLink": "crwdns138223:0crwdne138223:0",
+    "name": "crwdns138225:0crwdne138225:0"
   },
   "viirs-skylight": {
-    "description": "crwdns94124:0crwdne94124:0",
-    "moreInfoLink": "crwdns94126:0crwdne94126:0",
-    "name": "crwdns94128:0crwdne94128:0"
+    "description": "crwdns138227:0crwdne138227:0",
+    "moreInfoLink": "crwdns138229:0crwdne138229:0",
+    "name": "crwdns138231:0crwdne138231:0"
   },
   "winds": {
-    "description": "crwdns108822:0crwdne108822:0",
-    "moreInfoLink": "crwdns108824:0crwdne108824:0",
-    "name": "crwdns108826:0crwdne108826:0"
+    "description": "crwdns138233:0crwdne138233:0",
+    "moreInfoLink": "crwdns138235:0crwdne138235:0",
+    "name": "crwdns138237:0crwdne138237:0"
   }
 }
