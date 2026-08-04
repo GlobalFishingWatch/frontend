@@ -295,13 +295,3 @@
 .nextSectionLinkAlignRight {
   margin-left: auto;
 }
-
-@media only screen and (width <= 720px) {
-  .panelResizer {
-    display: none;
-  }
-
-  .panel {
-    width: 100%;
-  }
-}

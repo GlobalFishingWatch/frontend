@@ -141,6 +141,7 @@ function MapLayout() {
           <Suspense fallback={null}>
             <ContentPanel
               initialPanelWidth={contentPanelWidth ?? undefined}
+              initialScreenWidth={screenWidth ?? undefined}
               onPanelWidthChange={onContentPanelWidthChange}
             />
           </Suspense>

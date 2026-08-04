@@ -32,14 +32,16 @@ const clampPanelWidth = (width: number) =>
 
 function ContentPanel({
   initialPanelWidth,
+  initialScreenWidth,
   onPanelWidthChange,
 }: {
   initialPanelWidth?: number
+  initialScreenWidth?: number
   onPanelWidthChange?: (width: number) => void
 }) {
   const { sidePanelContent } = useAppSearch()
   const { closeSidePanel } = useSidePanel()
-  const isSmallScreen = useSmallScreen()
+  const isSmallScreen = useSmallScreen(undefined, { initialScreenWidth })
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(
@@ -97,8 +99,8 @@ function ContentPanel({
       style={
         (isSmallScreen
           ? {
-              width: `100vw`,
-              '--panel-width': `100vw`,
+              width: `100%`,
+              '--panel-width': `100%`,
             }
           : {
               width: `${panelWidth}px`,
@@ -106,12 +108,14 @@ function ContentPanel({
             }) as React.CSSProperties
       }
     >
-      <div
-        role="button"
-        tabIndex={0}
-        className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
-        onMouseDown={handleMouseDown}
-      />
+      {!isSmallScreen && (
+        <div
+          role="button"
+          tabIndex={0}
+          className={cx(styles.panelResizer, { [styles.resizing]: isDragging })}
+          onMouseDown={handleMouseDown}
+        />
+      )}
       <Suspense fallback={null}>
         {sidePanelContent === 'userGuide' && <UserGuideContent />}
         {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
