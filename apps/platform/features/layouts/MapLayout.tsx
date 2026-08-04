@@ -5,7 +5,6 @@ import { getRouteApi, Outlet } from '@tanstack/react-router'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
-import ContentPanel from 'features/_map/content-panel/ContentPanel'
 import BasemapLabelsLocaleSync from 'features/_map/dataviews/BasemapLabelsLocaleSync'
 import Sidebar from 'features/_map/sidebar/Sidebar'
 import {
@@ -61,8 +60,6 @@ function MapLayout() {
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const sidebarWidthPct = rootRoute.useLoaderData({ select: (d) => d?.asideWidthPct })
   const onSidebarWidthChange = usePersistedPanelWidth('sidebar')
-  const contentPanelWidth = rootRoute.useLoaderData({ select: (d) => d?.contentPanelWidth })
-  const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
   const screenWidth = rootRoute.useLoaderData({ select: (d) => d?.screenWidth })
   const onScreenWidthChange = usePersistedPanelWidth('screen')
   const { replaceQueryParams } = useReplaceQueryParams()
@@ -137,15 +134,6 @@ function MapLayout() {
             />
           </ErrorBoundary>
         </div>
-        <ErrorBoundary>
-          <Suspense fallback={null}>
-            <ContentPanel
-              initialPanelWidth={contentPanelWidth ?? undefined}
-              initialScreenWidth={screenWidth ?? undefined}
-              onPanelWidthChange={onContentPanelWidthChange}
-            />
-          </Suspense>
-        </ErrorBoundary>
       </div>
     </Fragment>
   )
