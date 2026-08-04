@@ -3,6 +3,7 @@
   height: 100%;
   flex-shrink: 0;
   background-color: white;
+  max-width: calc(100% - var(--sidebar-tabs-width));
   transition:
     transform 380ms var(--ease-drawer),
     margin-right 380ms var(--ease-drawer),
