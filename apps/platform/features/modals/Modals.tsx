@@ -127,41 +127,45 @@ const AppModals = () => {
 
   return (
     <Fragment>
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title={t((t) => t.common.layerLibrary, {
-          defaultValue: 'Layer Library',
-        })}
-        isOpen={isLayerLibraryModalOpen}
-        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
-        contentClassName={styles.layerLibraryModal}
-        size="fullscreen"
-        parentSelector={getModalParent}
-        shouldCloseOnEsc
-      >
-        <Suspense fallback={null}>
-          <LayerLibrary />
-        </Suspense>
-      </Modal>
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title={
-          <Fragment>
-            Secret debug menu 🤖
-            {isGFWUser && <GFWOnly userGroup="gfw" />}
-          </Fragment>
-        }
-        isOpen={debugActive && !anyAppModalOpen}
-        shouldCloseOnEsc
-        onClose={dispatchToggleDebugMenu}
-        contentClassName={styles.debugMenuModal}
-        parentSelector={getModalParent}
-      >
-        <Suspense fallback={null}>
-          <DebugMenu />
-        </Suspense>
-      </Modal>
-      {isGFWUser && (
+      {isLayerLibraryModalOpen && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title={t((t) => t.common.layerLibrary, {
+            defaultValue: 'Layer Library',
+          })}
+          isOpen
+          onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
+          contentClassName={styles.layerLibraryModal}
+          size="fullscreen"
+          parentSelector={getModalParent}
+          shouldCloseOnEsc
+        >
+          <Suspense fallback={null}>
+            <LayerLibrary />
+          </Suspense>
+        </Modal>
+      )}
+      {debugActive && !anyAppModalOpen && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title={
+            <Fragment>
+              Secret debug menu 🤖
+              {isGFWUser && <GFWOnly userGroup="gfw" />}
+            </Fragment>
+          }
+          isOpen
+          shouldCloseOnEsc
+          onClose={dispatchToggleDebugMenu}
+          contentClassName={styles.debugMenuModal}
+          parentSelector={getModalParent}
+        >
+          <Suspense fallback={null}>
+            <DebugMenu />
+          </Suspense>
+        </Modal>
+      )}
+      {isGFWUser && editorActive && !anyAppModalOpen && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={
@@ -170,7 +174,7 @@ const AppModals = () => {
               <GFWOnly userGroup="gfw" />
             </Fragment>
           }
-          isOpen={editorActive && !anyAppModalOpen}
+          isOpen
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
           parentSelector={getModalParent}
