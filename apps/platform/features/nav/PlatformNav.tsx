@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
@@ -45,6 +46,9 @@ const HOVER_INTENT_MS = 300
  * Panel visibility, focusability and height animation come from react-aria's Disclosure: it sets
  * `hidden="until-found"` when collapsed and publishes `--disclosure-panel-height` for the CSS
  * transition. Nothing here hand-rolls `inert` or `aria-expanded`.
+ *
+ * Below the small-screen breakpoint there is no hover to expand with, so pointer/focus expansion is
+ * not wired up at all and the rail opens from an explicit toggle row instead.
  */
 function PlatformNav() {
   const { t } = useTranslation()
@@ -64,15 +68,21 @@ function PlatformNav() {
     isLoading: isLanguageLoading,
   } = useLanguageOptions()
 
+  const isSmallScreen = useSmallScreen()
+
   const [railExpanded, setRailExpanded] = useState(false)
   const [openSectionId, setOpenSectionId] = useState<string | null>(null)
 
   const hoverOpenTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
   const cancelHoverOpen = useCallback(() => clearTimeout(hoverOpenTimeout.current), [])
-  const openSectionOnHover = useCallback((id: string) => {
-    clearTimeout(hoverOpenTimeout.current)
-    hoverOpenTimeout.current = setTimeout(() => setOpenSectionId(id), HOVER_INTENT_MS)
-  }, [])
+  const openSectionOnHover = useCallback(
+    (id: string) => {
+      if (isSmallScreen) return
+      clearTimeout(hoverOpenTimeout.current)
+      hoverOpenTimeout.current = setTimeout(() => setOpenSectionId(id), HOVER_INTENT_MS)
+    },
+    [isSmallScreen]
+  )
   useEffect(() => () => clearTimeout(hoverOpenTimeout.current), [])
 
   // ponytail: no pointerType filter, so a touch tap expands the rail and it stays expanded until the
@@ -86,6 +96,14 @@ function PlatformNav() {
     setOpenSectionId(null)
   }, [cancelHoverOpen])
 
+  const toggleRail = useCallback(() => {
+    if (railExpanded) {
+      collapseRail()
+    } else {
+      expandRail()
+    }
+  }, [railExpanded, collapseRail, expandRail])
+
   // Only collapse when focus actually leaves the rail, not when it moves between rows inside it.
   const onBlur = useCallback(
     (event: FocusEvent<HTMLElement>) => {
@@ -95,6 +113,10 @@ function PlatformNav() {
     },
     [collapseRail]
   )
+
+  const hoverExpandProps = isSmallScreen
+    ? {}
+    : { onPointerEnter: expandRail, onPointerLeave: collapseRail, onFocus: expandRail }
 
   /** Navigating or acting closes the flyout; toggling a section must not. */
   const onNavigate = useCallback(() => {
@@ -284,12 +306,25 @@ function PlatformNav() {
   return (
     <nav
       className={cx('print-hidden', styles.PlatformNav, { [styles.expanded]: railExpanded })}
-      onPointerEnter={expandRail}
-      onPointerLeave={collapseRail}
-      onFocus={expandRail}
+      {...hoverExpandProps}
       onBlur={onBlur}
     >
       <div className={styles.panel}>
+        {isSmallScreen && (
+          <div className={cx(styles.tab, styles.railToggle)}>
+            <button
+              type="button"
+              className={styles.tabContent}
+              onClick={toggleRail}
+              aria-expanded={railExpanded}
+              data-testid="nav-rail-toggle"
+            >
+              <span data-nav-icon>
+                <Icon icon={railExpanded ? 'arrow-left' : 'arrow-right'} />
+              </span>
+            </button>
+          </div>
+        )}
         <ul className={styles.sections}>{navSections.map(renderSection)}</ul>
         <ul className={styles.bottom}>
           {bottomSections.map(renderSection)}

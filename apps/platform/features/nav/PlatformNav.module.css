@@ -58,6 +58,12 @@
   flex: 0 0 auto;
 }
 
+.railToggle {
+  flex: 0 0 auto;
+  margin-top: var(--space-XS);
+  color: var(--color-primary-blue);
+}
+
 .tab {
   display: flex;
   align-items: center;
