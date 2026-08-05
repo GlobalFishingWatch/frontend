@@ -1,21 +1,24 @@
 name: Build and Deploy (Production)
 
+# Releases are triggered by hand from the GitHub Releases UI.
+# Listening on the release event rather than on tag pushes keeps `nx release` lib tags out of production
 on:
-  push:
-    tags:
-      - '@gfw/*@*'
+  release:
+    types: [published]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.release.tag_name }}
   cancel-in-progress: false
 
 jobs:
   deploy:
+    if: '!github.event.release.prerelease'
     uses: ./.github/workflows/_build-and-deploy.yml
     permissions:
       contents: read
       id-token: write
     with:
+      release-tag: ${{ github.event.release.tag_name }}
       env-suffix: pro
       config: .github/apps/production.yml
       service-prefix: ui

@@ -36,7 +36,7 @@ jobs:
     name: Resolve Apps
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.branch.outputs.apps || steps.tag.outputs.apps }}
+      apps: ${{ steps.affected.outputs.apps || steps.release.outputs.apps }}
 
     steps:
       - name: Checkout code
@@ -46,22 +46,22 @@ jobs:
 
       # Branch pushes deploy every app the push touched
       - name: Detect affected apps
-        id: branch
-        if: github.ref_type == 'branch'
+        id: affected
+        if: inputs.release-tag == ''
         uses: ./.github/actions/detect-affected
         with:
           base: origin/${{ github.ref_name }}~1
           head: HEAD
 
-      # Tag pushes deploy the single app named in the tag. Libs release into the
+      # Releases deploy the single app named in the tag. Libs release into the
       # same @gfw/<project>@<version> namespace, so a name with no entry in the
       # config is not an app: skip it instead of failing the run.
-      - name: Resolve app from tag
-        id: tag
-        if: github.ref_type == 'tag'
+      - name: Resolve app from release tag
+        id: release
+        if: inputs.release-tag != ''
         shell: bash
         env:
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ inputs.release-tag }}
           CONFIG: ${{ inputs.config }}
         run: |
           set -euo pipefail
@@ -70,6 +70,11 @@ jobs:
           export APP
           if [ "$APP" = "$TAG" ] || [ -z "$APP" ]; then
             echo "::error::Tag '$TAG' does not match @gfw/<app>@<version>"
+            exit 1
+          fi
+          # A missing config is a broken checkout, not a non-app: fail, never skip
+          if [ ! -f "$CONFIG" ]; then
+            echo "::error::Config '$CONFIG' not found at $TAG"
             exit 1
           fi
           if python3 -c "import os, sys, yaml; sys.exit(0 if os.environ['APP'] in yaml.safe_load(open(os.environ['CONFIG'])) else 1)"; then
