@@ -40,27 +40,28 @@
       "dependsOn": ["^dev"],
       "executor": "@nx/js:tsc",
       "cache": false,
+      "continuous": true,
       "options": {
         "watch": true
-      },
-      "continuous": true
+      }
     },
     "test": {
-      "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/deck-loaders"
+      ],
       "options": {
-        "command": "vitest run --config=vitest.config.ts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-loaders"
+        "command": "vitest run --config=vitest.config.mts",
+        "coverage.reportsDirectory": "../../../coverage/libs/deck-loaders"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/deck-loaders/vitest.config.ts",
-        "watch": true
-      },
-      "continuous": true
+        "watch": true,
+        "config": "./vitest.config.ts"
+      }
     },
     "dist:workers": {
       "executor": "nx:run-commands",

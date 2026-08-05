@@ -15,18 +15,20 @@
       "dependsOn": ["^dev"],
       "executor": "@nx/js:tsc",
       "cache": false,
+      "continuous": true,
       "options": {
         "watch": true
-      },
-      "continuous": true
+      }
     },
     "test": {
-      "executor": "@nx/vitest:test",
       "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/datasets-client"
+      ],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/datasets-client"
+        "coverage.reportsDirectory": "../../../coverage/libs/datasets-client"
       }
     },
     "publish": {

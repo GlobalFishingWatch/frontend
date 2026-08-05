@@ -48,10 +48,10 @@
       "dependsOn": ["^dev"],
       "executor": "@nx/js:tsc",
       "cache": false,
+      "continuous": true,
       "options": {
         "watch": true
-      },
-      "continuous": true
+      }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
@@ -61,22 +61,23 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
       "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/api-client"
+      ],
       "options": {
-        "command": "vitest run --config=vitest.config.ts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/api-client"
+        "command": "vitest run --config=vitest.config.mts",
+        "coverage.reportsDirectory": "../../../coverage/libs/api-client"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/api-client/vitest.config.ts",
-        "watch": true
-      },
-      "continuous": true
+        "watch": true,
+        "config": "./vitest.config.ts"
+      }
     }
   }
 }

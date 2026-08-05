@@ -15,28 +15,29 @@
       "dependsOn": ["^dev"],
       "executor": "@nx/js:tsc",
       "cache": false,
+      "continuous": true,
       "options": {
         "watch": true
-      },
-      "continuous": true
+      }
     },
     "test": {
-      "executor": "@nx/vitest:test",
       "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/deck-layers"
+      ],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-layers"
+        "coverage.reportsDirectory": "../../../coverage/libs/deck-layers"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/deck-layers/vitest.config.mts",
-        "watch": true
-      },
-      "continuous": true
+        "watch": true,
+        "config": "./vitest.config.mts"
+      }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
