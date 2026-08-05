@@ -1,5 +1,4 @@
-import type { RoutePathKey, RoutePathValues } from '@platform/config/routes'
-import { PATH_KEY_TO_ROUTE_TYPE, ROUTE_PATHS } from '@platform/config/routes'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/map/config'
 import { getIsBrowser } from 'utils/dom'
@@ -16,43 +15,13 @@ import { MAP } from './routes'
 export { ROUTE_PATHS } from '@platform/config/routes'
 export type { RoutePathValues } from '@platform/config/routes'
 
-/** TanStack Router does not have WORKSPACE_REPORT_DATASET - only report index and report/$datasetId/$areaId */
-export type ValidRoutePathValues = Exclude<
-  RoutePathValues,
-  typeof ROUTE_PATHS.WORKSPACE_REPORT_DATASET
->
-
-/**
- * TanStack Router only has report routes with areaId (/$datasetId/$areaId).
- * WORKSPACE_REPORT_DATASET (/$datasetId) is not a valid route.
- * This normalizes paths for Link/navigate: when we have datasetId but no areaId,
- * fall back to report index; when we have areaId, use the full path.
- */
-export function toValidRoutePath(
-  path: RoutePathValues,
-  params?: { datasetId?: string; areaId?: string; [key: string]: string | undefined }
-): ValidRoutePathValues {
-  if (path === ROUTE_PATHS.WORKSPACE_REPORT_DATASET) {
-    if (params?.areaId) {
-      return ROUTE_PATHS.WORKSPACE_REPORT_FULL
-    }
-    return ROUTE_PATHS.WORKSPACE_REPORT
-  }
-  return path as ValidRoutePathValues
-}
-
 // ============================================================================
 // Legacy Route Type Mapping (for backward compatibility)
 // ============================================================================
 
-// Keyed by route *path* pattern, built by inverting ROUTE_PATHS through the exhaustive
-// PATH_KEY_TO_ROUTE_TYPE map in @platform/config/routes.
-const ROUTE_PATH_TO_TYPE: Record<string, ROUTE_TYPES> = Object.entries(ROUTE_PATHS).reduce(
-  (acc, [key, path]) => {
-    acc[path] = PATH_KEY_TO_ROUTE_TYPE[key as RoutePathKey]
-    return acc
-  },
-  {} as Record<string, ROUTE_TYPES>
+// Keyed by route *path* pattern. Paths and route types are 1:1, so this is just ROUTE_PATHS inverted.
+const ROUTE_PATH_TO_TYPE: Record<string, ROUTE_TYPES> = Object.fromEntries(
+  Object.entries(ROUTE_PATHS).map(([key, path]) => [path, key as ROUTE_TYPES])
 )
 
 /**

@@ -1,7 +1,7 @@
-import { PATH_KEY_TO_ROUTE_TYPE, ROUTE_PATHS, ROUTE_TYPES } from '@platform/config/routes'
+import { ROUTE_PATHS, ROUTE_TYPES } from '@platform/config/routes'
 
 export type { RoutePathKey, RoutePathValues } from '@platform/config/routes'
-export { PATH_KEY_TO_ROUTE_TYPE, ROUTE_PATHS, ROUTE_TYPES }
+export { ROUTE_PATHS, ROUTE_TYPES }
 
 export const {
   LANDING,

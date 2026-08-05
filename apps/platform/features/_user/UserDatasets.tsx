@@ -27,7 +27,7 @@ import InfoError from 'features/_map/workspace/shared/InfoError'
 import { selectLastVisitedWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -71,7 +71,7 @@ function UserDatasets() {
       } = lastVisitedWorkspace || {}
 
       router.navigate({
-        to: toValidRoutePath(to, params),
+        to,
         params,
         search: {
           ...search,

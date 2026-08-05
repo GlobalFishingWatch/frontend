@@ -127,7 +127,7 @@ const ContextLayerReportLink = ({
     <Fragment>
       <Link
         className={label ? layerStyles.reportButton : styles.workspaceLink}
-        to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+        to={ROUTE_PATHS.WORKSPACE_REPORT}
         params={reportLinkParams}
         search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
         data-testid="open-analysis-link"
@@ -150,7 +150,7 @@ const ContextLayerReportLink = ({
       {addAreaToReport && (
         <Link
           className={styles.workspaceLink}
-          to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+          to={ROUTE_PATHS.WORKSPACE_REPORT}
           params={addReportLinkParams}
           search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
           onClick={onReportClick}
@@ -167,7 +167,7 @@ const ContextLayerReportLink = ({
       {removeAreaFromReport && (
         <Link
           className={styles.workspaceLink}
-          to={ROUTE_PATHS.WORKSPACE_REPORT_FULL}
+          to={ROUTE_PATHS.WORKSPACE_REPORT}
           params={removeReportLinkParams}
           search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
           onClick={onReportClick}

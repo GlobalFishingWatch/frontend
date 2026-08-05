@@ -39,10 +39,9 @@ import { Route as PlatformMapMapVesselVesselIdRouteImport } from './_platform/_m
 import { Route as PlatformMapMapCategoryWorkspaceIdIndexRouteImport } from './_platform/_map/map/$category/$workspaceId/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdVesselSearchRouteImport } from './_platform/_map/map/$category/$workspaceId/vessel-search'
 import { Route as PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRouteImport } from './_platform/_map/map/$category/$workspaceId/ports-report.$portId'
-import { Route as PlatformMapMapCategoryWorkspaceIdReportIndexRouteImport } from './_platform/_map/map/$category/$workspaceId/report/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport } from './_platform/_map/map/$category/$workspaceId/vessel-group-report.$vesselGroupId'
 import { Route as PlatformMapMapCategoryWorkspaceIdVesselVesselIdRouteImport } from './_platform/_map/map/$category/$workspaceId/vessel.$vesselId'
-import { Route as PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport } from './_platform/_map/map/$category/$workspaceId/report/$datasetId/$areaId'
+import { Route as PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125RouteImport } from './_platform/_map/map/$category/$workspaceId/report.{-$datasetId}.{-$areaId}'
 
 const PlatformRoute = PlatformRouteImport.update({
   id: '/_platform',
@@ -204,12 +203,6 @@ const PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute =
     path: '/ports-report/$portId',
     getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
   } as any)
-const PlatformMapMapCategoryWorkspaceIdReportIndexRoute =
-  PlatformMapMapCategoryWorkspaceIdReportIndexRouteImport.update({
-    id: '/report/',
-    path: '/report/',
-    getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-  } as any)
 const PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
   PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update(
     {
@@ -224,12 +217,14 @@ const PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute =
     path: '/vessel/$vesselId',
     getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
   } as any)
-const PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
-  PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport.update({
-    id: '/report/$datasetId/$areaId',
-    path: '/report/$datasetId/$areaId',
-    getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-  } as any)
+const PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route =
+  PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125RouteImport.update(
+    {
+      id: '/report/{-$datasetId}/{-$areaId}',
+      path: '/report/{-$datasetId}/{-$areaId}',
+      getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof PlatformIndexRoute
@@ -261,8 +256,7 @@ export interface FileRoutesByFullPath {
   '/map/$category/$workspaceId/ports-report/$portId': typeof PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute
   '/map/$category/$workspaceId/vessel-group-report/$vesselGroupId': typeof PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute
   '/map/$category/$workspaceId/vessel/$vesselId': typeof PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute
-  '/map/$category/$workspaceId/report/': typeof PlatformMapMapCategoryWorkspaceIdReportIndexRoute
-  '/map/$category/$workspaceId/report/$datasetId/$areaId': typeof PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute
+  '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -292,8 +286,7 @@ export interface FileRoutesByTo {
   '/map/$category/$workspaceId/ports-report/$portId': typeof PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute
   '/map/$category/$workspaceId/vessel-group-report/$vesselGroupId': typeof PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute
   '/map/$category/$workspaceId/vessel/$vesselId': typeof PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute
-  '/map/$category/$workspaceId/report': typeof PlatformMapMapCategoryWorkspaceIdReportIndexRoute
-  '/map/$category/$workspaceId/report/$datasetId/$areaId': typeof PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute
+  '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -329,8 +322,7 @@ export interface FileRoutesById {
   '/_platform/_map/map/$category/$workspaceId/ports-report/$portId': typeof PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute
   '/_platform/_map/map/$category/$workspaceId/vessel-group-report/$vesselGroupId': typeof PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute
   '/_platform/_map/map/$category/$workspaceId/vessel/$vesselId': typeof PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute
-  '/_platform/_map/map/$category/$workspaceId/report/': typeof PlatformMapMapCategoryWorkspaceIdReportIndexRoute
-  '/_platform/_map/map/$category/$workspaceId/report/$datasetId/$areaId': typeof PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute
+  '/_platform/_map/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -364,8 +356,7 @@ export interface FileRouteTypes {
     | '/map/$category/$workspaceId/ports-report/$portId'
     | '/map/$category/$workspaceId/vessel-group-report/$vesselGroupId'
     | '/map/$category/$workspaceId/vessel/$vesselId'
-    | '/map/$category/$workspaceId/report/'
-    | '/map/$category/$workspaceId/report/$datasetId/$areaId'
+    | '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -395,8 +386,7 @@ export interface FileRouteTypes {
     | '/map/$category/$workspaceId/ports-report/$portId'
     | '/map/$category/$workspaceId/vessel-group-report/$vesselGroupId'
     | '/map/$category/$workspaceId/vessel/$vesselId'
-    | '/map/$category/$workspaceId/report'
-    | '/map/$category/$workspaceId/report/$datasetId/$areaId'
+    | '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
   id:
     | '__root__'
     | '/_platform'
@@ -431,8 +421,7 @@ export interface FileRouteTypes {
     | '/_platform/_map/map/$category/$workspaceId/ports-report/$portId'
     | '/_platform/_map/map/$category/$workspaceId/vessel-group-report/$vesselGroupId'
     | '/_platform/_map/map/$category/$workspaceId/vessel/$vesselId'
-    | '/_platform/_map/map/$category/$workspaceId/report/'
-    | '/_platform/_map/map/$category/$workspaceId/report/$datasetId/$areaId'
+    | '/_platform/_map/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -662,13 +651,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRouteImport
       parentRoute: typeof PlatformMapMapCategoryWorkspaceIdRoute
     }
-    '/_platform/_map/map/$category/$workspaceId/report/': {
-      id: '/_platform/_map/map/$category/$workspaceId/report/'
-      path: '/report'
-      fullPath: '/map/$category/$workspaceId/report/'
-      preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdReportIndexRouteImport
-      parentRoute: typeof PlatformMapMapCategoryWorkspaceIdRoute
-    }
     '/_platform/_map/map/$category/$workspaceId/vessel-group-report/$vesselGroupId': {
       id: '/_platform/_map/map/$category/$workspaceId/vessel-group-report/$vesselGroupId'
       path: '/vessel-group-report/$vesselGroupId'
@@ -683,11 +665,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdVesselVesselIdRouteImport
       parentRoute: typeof PlatformMapMapCategoryWorkspaceIdRoute
     }
-    '/_platform/_map/map/$category/$workspaceId/report/$datasetId/$areaId': {
-      id: '/_platform/_map/map/$category/$workspaceId/report/$datasetId/$areaId'
-      path: '/report/$datasetId/$areaId'
-      fullPath: '/map/$category/$workspaceId/report/$datasetId/$areaId'
-      preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport
+    '/_platform/_map/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': {
+      id: '/_platform/_map/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
+      path: '/report/{-$datasetId}/{-$areaId}'
+      fullPath: '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
+      preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125RouteImport
       parentRoute: typeof PlatformMapMapCategoryWorkspaceIdRoute
     }
   }
@@ -713,8 +695,7 @@ interface PlatformMapMapCategoryWorkspaceIdRouteChildren {
   PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute: typeof PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute
   PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute: typeof PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute
   PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute: typeof PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute
-  PlatformMapMapCategoryWorkspaceIdReportIndexRoute: typeof PlatformMapMapCategoryWorkspaceIdReportIndexRoute
-  PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute: typeof PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute
+  PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route: typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 
 const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWorkspaceIdRouteChildren =
@@ -729,10 +710,8 @@ const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWork
       PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute,
     PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute:
       PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute,
-    PlatformMapMapCategoryWorkspaceIdReportIndexRoute:
-      PlatformMapMapCategoryWorkspaceIdReportIndexRoute,
-    PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
-      PlatformMapMapCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
+    PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route:
+      PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route,
   }
 
 const PlatformMapMapCategoryWorkspaceIdRouteWithChildren =

@@ -1,3 +1,5 @@
+import { interpolatePath } from '@tanstack/router-core'
+
 import {
   DEFAULT_PATH_BASENAME,
   DEFAULT_WORKSPACE_CATEGORY,
@@ -63,6 +65,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
       if (route.reportId) {
         return { to: ROUTE_PATHS.REPORT, params: { reportId: route.reportId } }
       }
+      // datasetId/areaId are optional path params: without them this is the global report.
       if (!route.datasetId && !route.areaId) {
         return {
           to: ROUTE_PATHS.WORKSPACE_REPORT,
@@ -70,7 +73,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
         }
       }
       return {
-        to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+        to: ROUTE_PATHS.WORKSPACE_REPORT,
         params: {
           ...workspaceParams,
           datasetId: required(route, 'datasetId'),
@@ -107,16 +110,26 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   }
 }
 
+const OPTIONAL_PARAM = /^\{-\$(.+)\}$/
+
+/** `$name` is a required param segment, `{-$name}` an optional one (dropped when the param is missing). */
+const parseParamSegment = (segment: string): { name: string; optional: boolean } | undefined => {
+  const optional = segment.match(OPTIONAL_PARAM)
+  if (optional) return { name: optional[1], optional: true }
+  if (segment.startsWith('$')) return { name: segment.slice(1), optional: false }
+  return undefined
+}
+
+/** Same interpolation the app's router does, so `{-$optional}` segments and param encoding match. */
 export const buildRoutePath = (navigation: RouteNavigation): string => {
-  const path = navigation.to
-    .split('/')
-    .map((segment) =>
-      segment.startsWith('$')
-        ? encodeURIComponent(navigation.params[segment.slice(1)] || '')
-        : segment
-    )
-    .join('/')
-  return path === '' ? '/' : path
+  const { interpolatedPath, isMissingParams } = interpolatePath({
+    path: navigation.to,
+    params: navigation.params,
+  })
+  if (isMissingParams) {
+    throw new Error(`missing params for route "${navigation.to}"`)
+  }
+  return interpolatedPath || '/'
 }
 
 // Static-segment patterns listed before parametric ones of the same length,
@@ -132,7 +145,6 @@ const ROUTE_PATTERNS: [string, MapRouteType][] = [
   [ROUTE_PATHS.WORKSPACE_SEARCH, 'vessel-search'],
   [ROUTE_PATHS.WORKSPACE_VESSEL, 'vessel'],
   [ROUTE_PATHS.WORKSPACE_REPORT, 'report'],
-  [ROUTE_PATHS.WORKSPACE_REPORT_FULL, 'report'],
   [ROUTE_PATHS.VESSEL_GROUP_REPORT, 'vessel-group-report'],
   [ROUTE_PATHS.PORT_REPORT, 'ports-report'],
 ]
@@ -149,13 +161,21 @@ const LEGACY_ROUTE_PATTERNS: [string, MapRouteType][] = [
 
 const matchPattern = (pattern: string, segments: string[]): MapRouteParams | undefined => {
   const patternSegments = pattern.split('/').filter(Boolean)
-  if (patternSegments.length !== segments.length) return undefined
+  // Optional params only ever trail (`/report/{-$datasetId}/{-$areaId}`), so a shorter pathname is
+  // just the pattern with its last N segments dropped.
+  const optionalCount = patternSegments.filter((segment) => OPTIONAL_PARAM.test(segment)).length
+  if (
+    segments.length > patternSegments.length ||
+    segments.length < patternSegments.length - optionalCount
+  ) {
+    return undefined
+  }
   const params: Record<string, string> = {}
-  for (let i = 0; i < patternSegments.length; i++) {
-    const patternSegment = patternSegments[i]
-    if (patternSegment.startsWith('$')) {
-      params[patternSegment.slice(1)] = segments[i]
-    } else if (patternSegment !== segments[i]) {
+  for (let i = 0; i < segments.length; i++) {
+    const param = parseParamSegment(patternSegments[i])
+    if (param) {
+      params[param.name] = segments[i]
+    } else if (patternSegments[i] !== segments[i]) {
       return undefined
     }
   }
