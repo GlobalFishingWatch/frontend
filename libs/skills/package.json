@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/skills",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Agent skills for the GFW map: encode/decode app URLs for chatbot navigation",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
