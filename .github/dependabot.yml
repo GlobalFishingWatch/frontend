@@ -6,11 +6,30 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: maplibre-gl
+      - dependency-name: '@maplibre/*'
+      - dependency-name: '@vis.gl/react-maplibre'
+      - dependency-name: react-ga4
     groups:
-      production:
+      production-minor-and-patch:
         dependency-type: production
-      development:
+        update-types:
+          - minor
+          - patch
+      production-major:
+        dependency-type: production
+        update-types:
+          - major
+      development-minor-and-patch:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
+      development-major:
+        dependency-type: development
+        update-types:
+          - major
       production-security:
         applies-to: security-updates
         dependency-type: production
