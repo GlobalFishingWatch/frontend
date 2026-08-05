@@ -4,3 +4,30 @@
   gap: var(--space-L);
   padding: var(--space-M);
 }
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.title {
+  font: var(--font-L-bold);
+  color: var(--color-primary-blue);
+}
+
+.description {
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+}
+
+.seeMore {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  width: max-content;
+}
+
+.seeMore:hover {
+  color: var(--color-primary-blue);
+  border-bottom: var(--border-thick);
+}
