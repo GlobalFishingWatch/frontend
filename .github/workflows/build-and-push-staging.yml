@@ -9,82 +9,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detect-affected:
-    name: Detect Affected Apps
-    runs-on: ubuntu-latest
-    outputs:
-      apps: ${{ steps.detect.outputs.apps }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 2
-
-      - name: Detect affected apps
-        id: detect
-        uses: ./.github/actions/detect-affected
-        with:
-          base: origin/${{ github.ref_name }}~1
-          head: HEAD
-
-  build-and-deploy:
-    name: Build and Deploy / ${{ matrix.app }}
-    runs-on: ubuntu-latest
-    needs: detect-affected
-    if: needs.detect-affected.outputs.apps != '[]'
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.detect-affected.outputs.apps) }}
-      fail-fast: false
+  deploy:
+    uses: ./.github/workflows/_build-and-deploy.yml
     permissions:
       contents: read
       id-token: write
-    env:
-      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-sta
-      CONFIG: .github/apps/staging.yml
-      SERVICE_NAME_PREFIX: sta-ui
-      CLOUDRUN_SA: frontend-sta@gfw-development.iam.gserviceaccount.com
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
-      - name: Build and push
-        uses: ./.github/actions/build-and-push
-        with:
-          app: ${{ matrix.app }}
-          image: ${{ env.IMAGE }}
-          config: ${{ env.CONFIG }}
-          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-
-      - name: Deploy
-        uses: ./.github/actions/deploy-cloudrun
-        with:
-          app: ${{ matrix.app }}
-          image: ${{ env.IMAGE }}
-          config: ${{ env.CONFIG }}
-          service-name-prefix: ${{ env.SERVICE_NAME_PREFIX }}
-          cloudrun-service-account: ${{ env.CLOUDRUN_SA }}
-
-  notify-failure:
-    name: Notify Slack on failure
-    runs-on: ubuntu-latest
-    needs: build-and-deploy
-    if: failure()
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Notify Slack
-        uses: ./.github/actions/notify-slack
-        with:
-          channel: '#eng-cloud-build'
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *Build and Deploy (Staging) failed* on branch `${{ github.ref_name }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+    with:
+      env-suffix: sta
+      config: .github/apps/staging.yml
+      service-prefix: sta-ui
+      cloudrun-project: gfw-development
+      environment: staging
+    secrets: inherit
