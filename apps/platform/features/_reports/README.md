@@ -109,7 +109,7 @@
 
 ### 1. DeckGLWrapper (Map Rendering)
 
-`apps/fishing-map/features/_map/DeckGLWrapper.tsx`
+`apps/platform/features/_map/DeckGLWrapper.tsx`
 
 **What happens:**
 
@@ -131,7 +131,7 @@
 
 ### 3. Report Timeseries Hook (Consumer)
 
-`apps/fishing-map/features/_reports/reports-timeseries.hooks.ts`
+`apps/platform/features/_reports/reports-timeseries.hooks.ts`
 
 **What happens:**
 

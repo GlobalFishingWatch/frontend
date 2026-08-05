@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
     bucket = "gfw-int-infrastructure-tfstate-us-central1"
-    prefix = "cloudbuild-frontend/fishing-map"
+    prefix = "cloudbuild-frontend/platform"
   }
 }

@@ -3,13 +3,13 @@
 ## Running tests locally
 
 ```bash
-nx test fishing-map
+nx test platform
 ```
 
 With Vitest UI (interactive browser):
 
 ```bash
-nx test:ui fishing-map
+nx test:ui platform
 ```
 
 ## Replicating the CI environment locally
@@ -17,7 +17,7 @@ nx test:ui fishing-map
 Tests run in CI inside `mcr.microsoft.com/playwright:v1.58.2-noble` (Linux/Noble) with only Chromium and no auth credentials. To reproduce a CI failure locally:
 
 ```bash
-nx test:ci fishing-map
+nx test:ci platform
 ```
 
 This runs the exact same Docker image and flags as CI (`--browser=chromium`). Requires Docker to be running.
@@ -36,7 +36,7 @@ After a run (local or CI), artifacts are written to `test/integration/`:
 ### Viewing a trace
 
 ```bash
-npx playwright show-trace "apps/fishing-map/test/integration/__traces__/<spec>/<trace-file>.trace.zip"
+npx playwright show-trace "apps/platform/test/integration/__traces__/<spec>/<trace-file>.trace.zip"
 ```
 
 The Playwright Trace Viewer shows:
@@ -49,7 +49,7 @@ The Playwright Trace Viewer shows:
 Example for the vessel popup test:
 
 ```bash
-npx playwright show-trace "apps/fishing-map/test/integration/__traces__/Vessels.spec.tsx/fishing-map-chromium-Vessel-map-popup-should-open-vessel-popup-on-vessel-click-and-be-able-to-navigate-to-vessel-viewer-0-0.trace.zip"
+npx playwright show-trace "apps/platform/test/integration/__traces__/Vessels.spec.tsx/platform-chromium-Vessel-map-popup-should-open-vessel-popup-on-vessel-click-and-be-able-to-navigate-to-vessel-viewer-0-0.trace.zip"
 ```
 
 ### Downloading CI traces
@@ -109,16 +109,16 @@ globalSetup: './test/auth-setup.ts',
 ```bash
 # This will authenticate and run tests
 # Dev server starts automatically if needed
-nx test fishing-map
+nx test platform
 
 # Or with UI
-nx test:ui fishing-map
+nx test:ui platform
 ```
 
 **How it works:**
 
 - Global setup checks if dev server is running at `http://localhost:3003`
-- If not running, it starts the dev server automatically using `nx start fishing-map`
+- If not running, it starts the dev server automatically using `nx start platform`
 - Waits for server to be ready (up to 2 minutes)
 - Authenticates and saves tokens to `.auth/tokens.json` (ignored by git)
 - Tests run with authentication
@@ -191,11 +191,11 @@ The iframe architecture prevents external navigation. Clicking login links cause
 
 **✅ Do this instead:**
 
-| Scenario                        | Approach                                                             |
-| ------------------------------- | -------------------------------------------------------------------- |
-| **Verify login UI**             | Test that login buttons/links exist and are visible                  |
-| **Test authenticated features** | Use pre-authentication (tokens injected via global setup)            |
-| **Test full OAuth flow**        | Use Playwright E2E tests in [fishing-map-e2e](../../fishing-map-e2e) |
+| Scenario                        | Approach                                                       |
+| ------------------------------- | -------------------------------------------------------------- |
+| **Verify login UI**             | Test that login buttons/links exist and are visible            |
+| **Test authenticated features** | Use pre-authentication (tokens injected via global setup)      |
+| **Test full OAuth flow**        | Use Playwright E2E tests in [platform-e2e](../../platform-e2e) |
 
 **Example:**
 

@@ -22,17 +22,16 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## Applications
 
-|                                                     |                                        |
-| --------------------------------------------------- | -------------------------------------- |
-| [api-portal](apps/api-portal)                       | Api documentation portal               |
-| [data-download-portal](apps/data-download-portal)   | The place to download datasets         |
-| [platform](apps/platform)                           | Platform entry point                   |
-| [fishing-map](apps/platform/map)                    | Version 4.0 of the fishing map project |
-| [platform-e2e](apps/platform-e2e)                   | Playwright e2e testing for the map     |
-| [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
-| [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
-| [track-labeler](apps/track-labeler)                 | Labeling tool for tracks               |
-| [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
+|                                                     |                                                 |
+| --------------------------------------------------- | ----------------------------------------------- |
+| [api-portal](apps/api-portal)                       | Api documentation portal                        |
+| [data-download-portal](apps/data-download-portal)   | The place to download datasets                  |
+| [platform](apps/platform)                           | Platform entry point (includes fishing-map app) |
+| [platform-e2e](apps/platform-e2e)                   | Playwright e2e testing for the map              |
+| [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images              |
+| [port-labeler](apps/port-labeler)                   | Labeling tool for ports                         |
+| [track-labeler](apps/track-labeler)                 | Labeling tool for tracks                        |
+| [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease            |
 
 To create a new application using a template with sidebar + map + timebar just run:
 
@@ -82,7 +81,7 @@ yarn
 
 ### Developmment
 
-Nx handles every app or library by its own project.json file, see for example [fishing-map](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/platform/project.json):
+Nx handles every app or library by its own project.json file, see for example [platform](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/platform/project.json):
 
 ```bash
 nx start [app-name]
@@ -109,7 +108,7 @@ docker compose up [app-name] --build
 
 ### Publishing
 
-TODO
+Use [libs-release](.github/workflows/libs-release.yml) workflow
 
 ### API DOCS
 
@@ -120,7 +119,7 @@ https://gateway.api.dev.globalfishingwatch.org/swagger?version=3
 To replicate the prod build and serve it locally:
 
 ```bash
-nx build-serve [app-name]
+nx serve [app-name]
 ```
 
 ## Generating release notes for github releases
