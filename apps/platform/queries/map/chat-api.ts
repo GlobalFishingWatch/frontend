@@ -6,8 +6,7 @@ import { injectQueryApi } from 'queries/inject-api'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 
 export const AGENT_ID = 'main-agent'
-// export const AGENT_BASE_URL = `${API_GATEWAY}/${API_VERSION}/agent/workspace-navigator-agent`
-export const AGENT_BASE_URL = `http://localhost:4111`
+export const AGENT_BASE_URL = `${API_GATEWAY}/${API_VERSION}/agent/workspace-navigator-agent`
 
 const threadsQuery = gfwBaseQuery({ baseUrl: `${AGENT_BASE_URL}/threads` })
 const deleteThreadQuery = gfwBaseQuery({ baseUrl: `${AGENT_BASE_URL}/threads`, method: 'DELETE' })
