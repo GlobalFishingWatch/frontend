@@ -29,5 +29,8 @@ type InjectableApi = {
  */
 export function injectQueryApi<Api extends InjectableApi>(api: Api) {
   queriesDynamicMiddleware.addMiddleware(api.middleware)
-  return rootReducer.inject({ reducerPath: api.reducerPath, reducer: api.reducer })
+  return rootReducer.inject(
+    { reducerPath: api.reducerPath, reducer: api.reducer },
+    { overrideExisting: true }
+  )
 }

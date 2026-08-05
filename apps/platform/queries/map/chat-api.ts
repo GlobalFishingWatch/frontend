@@ -6,7 +6,8 @@ import { injectQueryApi } from 'queries/inject-api'
 import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 
 export const AGENT_ID = 'main-agent'
-export const AGENT_BASE_URL = `${API_GATEWAY}/${API_VERSION}/agent/workspace-navigator-agent`
+// export const AGENT_BASE_URL = `${API_GATEWAY}/${API_VERSION}/agent/workspace-navigator-agent`
+export const AGENT_BASE_URL = `http://localhost:4111`
 
 const threadsQuery = gfwBaseQuery({ baseUrl: `${AGENT_BASE_URL}/threads` })
 const deleteThreadQuery = gfwBaseQuery({ baseUrl: `${AGENT_BASE_URL}/threads`, method: 'DELETE' })
@@ -45,8 +46,9 @@ export const chatApi = createApi({
           if (result.error.status === 404) return { data: [] }
           return { error: result.error }
         }
-        const data = result.data as { uiMessages?: UIMessage[] | null }
-        return { data: data.uiMessages ?? [] }
+        // Empty/204 responses come back with no body at all.
+        const data = result.data as { uiMessages?: UIMessage[] | null } | undefined
+        return { data: data?.uiMessages ?? [] }
       },
       providesTags: (_result, _error, { threadId }) => [
         { type: 'ChatThreadMessages', id: threadId },
