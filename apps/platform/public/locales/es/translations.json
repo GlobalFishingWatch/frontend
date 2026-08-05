@@ -143,6 +143,7 @@
     "feedbackDownReason": "¿Qué estaba mal con esta respuesta?",
     "feedbackUp": "Esta respuesta fue útil",
     "feedbackUpReason": "¿Qué ha sido útil de esta respuesta?",
+    "requestBlocked": "Request blocked.",
     "skillAreas": "Buscando identificadores de área",
     "skillFilters": "Ajustando filtros",
     "skillLayers": "Eligiendo las capas correctas",
