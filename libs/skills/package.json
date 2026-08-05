@@ -29,9 +29,7 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "dependencies": {
-    "@platform/config": "workspace:*",
-    "tslib": "2.x",
-    "zod": "^4.3.6"
+  "devDependencies": {
+    "@platform/config": "workspace:*"
   }
 }

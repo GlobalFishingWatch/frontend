@@ -1294,16 +1294,10 @@ importers:
         version: 2.8.1
 
   libs/skills:
-    dependencies:
+    devDependencies:
       '@platform/config':
         specifier: workspace:*
         version: link:../../apps/platform/config
-      tslib:
-        specifier: 2.x
-        version: 2.8.1
-      zod:
-        specifier: ^4.3.6
-        version: 4.4.3
 
   libs/timebar:
     dependencies:
