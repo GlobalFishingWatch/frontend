@@ -25,6 +25,8 @@ type LayerPropertiesProps = {
   className?: string
   disabled?: boolean
   properties?: LayerPropertiesOption[]
+  colorBarOptions?: ColorBarOption[]
+  selectedColor?: string
 }
 
 const LayerProperties = (props: LayerPropertiesProps) => {
@@ -39,6 +41,8 @@ const LayerProperties = (props: LayerPropertiesProps) => {
     className,
     disabled,
     properties = ['color'],
+    colorBarOptions = colorType === 'line' ? LineColorBarOptions : FillColorBarOptions,
+    selectedColor = dataview.config?.color,
   } = props
   const { t } = useTranslation()
   const isOnlyColor = properties.length === 1 && properties[0] === 'color'
@@ -51,8 +55,8 @@ const LayerProperties = (props: LayerPropertiesProps) => {
         <div>
           {!isOnlyColor && <label>{t((t) => t.layer.properties.color)}</label>}
           <ColorBar
-            colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
-            selectedColor={dataview.config?.color}
+            colorBarOptions={colorBarOptions}
+            selectedColor={selectedColor}
             onColorClick={onColorClick}
             swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
             hueBarTooltip={t((t) => t.layer.colorSelectCustom)}

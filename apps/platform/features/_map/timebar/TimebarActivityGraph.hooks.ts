@@ -6,9 +6,11 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
+  useGetDeckLayerLegend,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/constants'
 import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,
@@ -60,6 +62,7 @@ export const useHeatmapActivityGraph = () => {
   })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
+  const legend = useGetDeckLayerLegend(id)
 
   const setFourwingsPositionsData = async (viewportData: FourwingsPositionFeature[]) => {
     const data =
@@ -118,8 +121,25 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
+  // Multi hue layers are colored by value in the graph, asking the layer for the very color it paints
+  // that value with. Only the resolved sublayers are checked, a multi hue ramp falls back to the layer
+  // color when another heatmap layer is visible. The legend color domain is the invalidation signal,
+  // it changes with the values on screen
+  const colorScales = useMemo(() => {
+    const sublayers = instance?.props?.sublayers
+    if (!sublayers?.length || !legend?.domain?.length) {
+      return undefined
+    }
+    const scales = sublayers.map((sublayer, index) =>
+      isMultiHueColorRampId(sublayer.colorRamp)
+        ? (value: number) => instance.getColorByValue?.(value, index)
+        : undefined
+    )
+    return scales.some(Boolean) ? scales : undefined
+  }, [instance, legend?.domain])
+
   return useMemo(
-    () => ({ loading: !loaded, heatmapActivity: data, dataviews }),
-    [data, loaded, dataviews]
+    () => ({ loading: !loaded, heatmapActivity: data, dataviews, colorScales }),
+    [data, loaded, dataviews, colorScales]
   )
 }

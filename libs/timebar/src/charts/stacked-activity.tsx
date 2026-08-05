@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { Color } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 import { max } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
@@ -36,12 +37,15 @@ const getEdges = (point: number[], y: (v: number) => number, numSubLayers: numbe
 export const TimebarStackedActivity = ({
   timeseries,
   dataviews,
+  colorScales,
   highlighterCallback,
   highlighterIconCallback,
   loading = false,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
+  // per sublayer value to color scale, colors the graph as the map does. Flat layer color when missing
+  colorScales?: (((value: number) => Color | undefined) | undefined)[]
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterIconCallback
   loading?: boolean
@@ -71,8 +75,11 @@ export const TimebarStackedActivity = ({
       .range([MARGIN_TOP, graphHeight / 2 - MARGIN_BOTTOM / 2])
 
     const layerData = series.flatMap((s, sublayerIndex) => {
-      if (!dataviews[sublayerIndex]) return []
-      const color = hexToDeckColor(dataviews[sublayerIndex]?.config?.color || '#ffffff')
+      const dataview = dataviews[sublayerIndex]
+      if (!dataview) return []
+      const color = hexToDeckColor(dataview.config?.color || '#ffffff')
+      // when given, the sublayer is colored by value with the map color scale instead of a flat color
+      const colorScale = colorScales?.[sublayerIndex]
       return s.slice(0, -1).flatMap((point, i) => {
         const x1 = (point as any).data.date - origin
         const x2 = (s[i + 1] as any).data.date - origin
@@ -82,7 +89,11 @@ export const TimebarStackedActivity = ({
         if (isNaN(x1) || isNaN(x2) || isNaN(yLo) || isNaN(yHi)) {
           return []
         }
-        return { polygon: [x1, yLo, x2, yLo, x2, yHi, x1, yHi], color }
+        const value = (point as unknown as number[])[1] - (point as unknown as number[])[0]
+        return {
+          polygon: [x1, yLo, x2, yLo, x2, yHi, x1, yHi],
+          color: colorScale?.(value) ?? color,
+        }
       })
     })
 
@@ -96,7 +107,7 @@ export const TimebarStackedActivity = ({
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [timeseries, subLayers, dataviews, graphHeight, middleY, origin])
+  }, [timeseries, subLayers, dataviews, colorScales, graphHeight, middleY, origin])
 
   useUpdateChartLayers('activity', layers)
 

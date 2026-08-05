@@ -41,6 +41,36 @@ export type ColorRampWhiteId =
 
 export type ColorRampsIds = ColorRampId | ColorRampWhiteId
 
+export const SPECTRAL_COLOR_RAMP_ID = 'spectral'
+export const SPECTRAL_REVERSED_COLOR_RAMP_ID = 'spectral_reversed'
+
+// RdYlBu (Opaque and multi hue, it only reads correctly when a single heatmap layer is visible.
+export const SPECTRAL_COLOR_RAMP = [
+  '#313695',
+  '#4575b4',
+  '#74add1',
+  '#abd9e9',
+  '#e0f3f8',
+  '#fee090',
+  '#fdae61',
+  '#f46d43',
+  '#d73027',
+  '#a50026',
+]
+
+export const SPECTRAL_REVERSED_COLOR_RAMP = [...SPECTRAL_COLOR_RAMP].reverse()
+
+export const MULTI_HUE_COLOR_RAMPS = {
+  [SPECTRAL_COLOR_RAMP_ID]: SPECTRAL_COLOR_RAMP,
+  [SPECTRAL_REVERSED_COLOR_RAMP_ID]: SPECTRAL_REVERSED_COLOR_RAMP,
+}
+
+export type MultiHueColorRampId = keyof typeof MULTI_HUE_COLOR_RAMPS
+export type AnyColorRampId = ColorRampId | MultiHueColorRampId
+
+export const isMultiHueColorRampId = (rampId?: string): rampId is MultiHueColorRampId =>
+  !!rampId && rampId in MULTI_HUE_COLOR_RAMPS
+
 export const HEATMAP_COLORS_BY_ID: Record<ColorRampId, string> = {
   teal: '#00FFBC',
   magenta: '#FF64CE',
@@ -169,13 +199,15 @@ export function getColorRamp<T extends 'rgba' | 'object' | 'array' = 'object'>({
   whiteEnd = false,
   format = 'object' as T,
 }: {
-  rampId: ColorRampId
+  rampId: AnyColorRampId
   whiteEnd?: boolean
   format?: T
 }): GetColorRampReturn<T> {
-  const ramp = whiteEnd
-    ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId] || rampId)
-    : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId] || rampId)
+  const ramp = isMultiHueColorRampId(rampId)
+    ? MULTI_HUE_COLOR_RAMPS[rampId].map((color) => `rgba(${hexToRgbString(color)}, 1)`)
+    : whiteEnd
+      ? getMixedOpacityToWhiteColorRamp(HEATMAP_COLORS_BY_ID[rampId] || rampId)
+      : getColorRampByOpacitySteps(HEATMAP_COLORS_BY_ID[rampId] || rampId)
   if (rampId === 'bathymetry') ramp.reverse()
   if (format === 'rgba') return ramp as GetColorRampReturn<T>
   if (format === 'array')

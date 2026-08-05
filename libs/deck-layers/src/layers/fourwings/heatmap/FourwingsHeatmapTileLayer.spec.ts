@@ -130,6 +130,25 @@ describe('FourwingsHeatmapTileLayer', () => {
     })
   })
 
+  describe('getColorByValue', () => {
+    it('returns the deck color the layer paints a value with', () => {
+      const layer = makeLayer()
+      const domain = [0, 1, 2, 4, 8, 16, 32, 64, 128, 256]
+      layer.state.scales = layer._getColorScales(domain, layer.state.colorRanges)
+      const [r, g, b, a] = layer.getColorByValue(8) as number[]
+      const scaled = layer.state.scales[0](8)
+      expect([r, g, b]).toEqual([scaled.r, scaled.g, scaled.b])
+      // alpha comes back in the 0-255 range deck expects
+      expect(a).toBe(Math.round(scaled.a * 255))
+    })
+
+    it('returns undefined without scales', () => {
+      const layer = makeLayer()
+      layer.state.scales = []
+      expect(layer.getColorByValue(8)).toBeUndefined()
+    })
+  })
+
   describe('_getTimeCompareSublayers', () => {
     const compareProps = {
       comparisonMode: FourwingsComparisonMode.TimeCompare,

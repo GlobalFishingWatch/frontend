@@ -7,6 +7,7 @@ import cx from 'classnames'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 
 import { IconButton } from '../icon-button'
+import { Tooltip } from '../tooltip'
 
 import type { ColorBarOption } from './color-bar-options'
 import { FillColorBarOptions } from './color-bar-options'
@@ -34,7 +35,7 @@ export function ColorBar(props: ColorBarProps) {
     swatchesTooltip = '',
   } = props
   const [currentValue, setCurrentValue] = useState<Color>(
-    parseColor(selectedColor || '#ff0000')
+    parseColor(selectedColor?.startsWith('#') ? selectedColor : '#ff0000')
       .toFormat('hsl')
       .withChannelValue('saturation', 100)
       .withChannelValue('lightness', 70)
@@ -61,18 +62,29 @@ export function ColorBar(props: ColorBarProps) {
         <ul className={cx(styles.listContainer, className)}>
           {colorBarOptions.map((color) => {
             const disabledColor =
-              disabledColors.includes(color.id) || disabledColors.includes(color.value)
+              color.disabled ||
+              disabledColors.includes(color.id) ||
+              disabledColors.includes(color.value)
             return (
               <li key={color.id} className={styles.colorContainer}>
-                <button
-                  className={cx(styles.color, {
-                    [styles.colorActive]:
-                      selectedColor === color.id || selectedColor === color.value,
-                    [styles.colorDisabled]: disabledColor,
-                  })}
-                  style={{ backgroundColor: color.value }}
-                  onClick={(e) => onColorClick && !disabledColor && onColorClick(color, e)}
-                ></button>
+                <Tooltip content={color.tooltip}>
+                  <button
+                    className={cx(styles.color, {
+                      [styles.colorGradient]: !!color.colors?.length,
+                      [styles.colorActive]:
+                        selectedColor === color.id || selectedColor === color.value,
+                      [styles.colorDisabled]: disabledColor,
+                    })}
+                    style={
+                      color.colors?.length
+                        ? {
+                            backgroundImage: `linear-gradient(to right, ${color.colors.join(',')})`,
+                          }
+                        : { backgroundColor: color.value }
+                    }
+                    onClick={(e) => onColorClick && !disabledColor && onColorClick(color, e)}
+                  ></button>
+                </Tooltip>
               </li>
             )
           })}

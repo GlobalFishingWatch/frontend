@@ -32,7 +32,10 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 // Leaf subpath for the *value* import: apps reach groupContextDataviews from this module in their
 // always-loaded graph, and the deck-layers root barrel would pull all of deck.gl in with it.
-import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers/constants'
+import {
+  FourwingsComparisonMode,
+  isMultiHueColorRampId,
+} from '@globalfishingwatch/deck-layers/constants'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 
@@ -89,6 +92,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
   comparisonMode?: FourwingsComparisonMode
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
+  allowMultiHueColorRamp?: boolean
   color?: string
 }
 
@@ -143,6 +147,7 @@ export function getFourwingsDataviewsResolved(
     visualizationMode = 'heatmap',
     comparisonMode = FourwingsComparisonMode.Compare,
     colorRampWhiteEnd = false,
+    allowMultiHueColorRamp = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
 ) {
   const dataviewsFiltered = [] as UrlDataviewInstance[]
@@ -161,7 +166,13 @@ export function getFourwingsDataviewsResolved(
       config: {
         type: dataviewsToMerge[0]?.config?.type,
         maxZoom: dataviewsToMerge[0]?.config?.maxZoom,
-        sublayers: dataviewsToMerge.flatMap(getFourwingsDataviewSublayers),
+        sublayers: dataviewsToMerge
+          .flatMap(getFourwingsDataviewSublayers)
+          .map((sublayer) =>
+            !allowMultiHueColorRamp && isMultiHueColorRampId(sublayer.colorRamp)
+              ? { ...sublayer, colorRamp: sublayer.color }
+              : sublayer
+          ),
         minVisibleValue: dataviewsToMerge[0].config?.minVisibleValue,
         maxVisibleValue: dataviewsToMerge[0].config?.maxVisibleValue,
         colorRampWhiteEnd,
@@ -472,6 +483,7 @@ export function getDataviewsResolved(
       getFourwingsDataviewsResolved(d, {
         colorRampWhiteEnd:
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+        allowMultiHueColorRamp: singleHeatmapDataview,
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )

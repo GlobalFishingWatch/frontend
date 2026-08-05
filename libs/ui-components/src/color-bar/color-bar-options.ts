@@ -1,6 +1,9 @@
 export type ColorBarOption = {
   id: string
   value: string
+  colors?: string[]
+  disabled?: boolean
+  tooltip?: string
 }
 
 export const FILL_COLOR_BAR_OPTIONS: ColorBarOption[] = [

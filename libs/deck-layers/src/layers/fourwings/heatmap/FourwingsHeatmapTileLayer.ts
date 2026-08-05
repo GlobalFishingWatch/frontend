@@ -1,4 +1,11 @@
-import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
+import type {
+  Color,
+  DefaultProps,
+  Layer,
+  LayerContext,
+  LayersList,
+  UpdateParameters,
+} from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type {
   _Tile2DHeader as Tile2DHeader,
@@ -913,5 +920,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       colorRange: this.getColorRange(),
       colorDomain: this.getColorDomain(),
     } as FourwingsTileLayerColorScale
+  }
+
+  getColorByValue = (value: number, sublayerIndex = 0): Color | undefined => {
+    const color = this.state?.scales?.[sublayerIndex]?.(value)
+    return color ? [color.r, color.g, color.b, Math.round(color.a * 255)] : undefined
   }
 }

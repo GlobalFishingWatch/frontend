@@ -3,17 +3,22 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import type { SupportedEnvDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import {
+  isMultiHueColorRampId,
+  MULTI_HUE_COLOR_RAMPS,
+} from '@globalfishingwatch/deck-layers/constants'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { FillColorBarOptions, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
+import { selectIsSingleHeatmapDataview } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
@@ -82,14 +87,32 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
 
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+  const isSingleHeatmapDataview = useSelector(selectIsSingleHeatmapDataview)
+
+  const colorBarOptions = useMemo(() => {
+    if (dataview.config?.type !== DataviewType.HeatmapAnimated) {
+      return FillColorBarOptions
+    }
+    return [
+      ...FillColorBarOptions,
+      ...Object.entries(MULTI_HUE_COLOR_RAMPS).map(([id, colors]) => ({
+        id,
+        value: id,
+        colors,
+        disabled: !isSingleHeatmapDataview,
+        tooltip: isSingleHeatmapDataview
+          ? undefined
+          : t((t) => t.layer.colorSelectSpectralDisabled),
+      })),
+    ]
+  }, [dataview.config?.type, isSingleHeatmapDataview, t])
 
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
-      config: {
-        color: color.value,
-        colorRamp: color.id,
-      },
+      config: isMultiHueColorRampId(color.id)
+        ? { colorRamp: color.id }
+        : { color: color.value, colorRamp: color.id },
     })
     setColorOpen(false)
   }
@@ -204,6 +227,12 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               dataview={dataview}
               open={colorOpen}
               colorType="fill"
+              colorBarOptions={colorBarOptions}
+              selectedColor={
+                isSingleHeatmapDataview && isMultiHueColorRampId(dataview.config?.colorRamp)
+                  ? dataview.config?.colorRamp
+                  : dataview.config?.color
+              }
               onColorClick={changeColor}
               onToggleClick={onToggleColorOpen}
               onClickOutside={closeExpandedContainer}
