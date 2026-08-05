@@ -11,7 +11,7 @@ import type { QueryParams } from 'types'
 
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import { mapRoutePathToType, type RoutePathValues, toValidRoutePath } from './routes.utils'
+import { mapRoutePathToType, type RoutePathValues } from './routes.utils'
 
 function stripAppPrefix(routeId: string): string {
   return routeId.replace(/^\/_app/, '') || '/'
@@ -72,7 +72,7 @@ export function ConfirmVesselProfileLeave() {
         ])
         setTimeout(() => {
           router.navigate({
-            to: toValidRoutePath(stripAppPrefix(next.routeId) as RoutePathValues, next.params),
+            to: stripAppPrefix(next.routeId) as RoutePathValues,
             params: next.params,
             state: (state) => ({ ...state, isHistoryNavigation: true }),
             search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },

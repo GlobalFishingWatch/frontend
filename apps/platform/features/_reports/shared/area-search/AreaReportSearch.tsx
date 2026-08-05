@@ -135,7 +135,7 @@ function AreaReportSearch({ className }: { className?: string }) {
         } else {
           const areaId = area.properties.area != null ? String(area.properties.area) : undefined
           router.navigate({
-            to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+            to: ROUTE_PATHS.WORKSPACE_REPORT,
             params: { category, workspaceId, datasetId, areaId: areaId! },
             search: (prev: QueryParams) => ({
               ...prev,

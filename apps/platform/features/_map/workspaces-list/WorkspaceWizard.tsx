@@ -196,7 +196,7 @@ function WorkspaceWizard() {
       return null
     }
     return {
-      to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+      to: ROUTE_PATHS.WORKSPACE_REPORT,
       params: {
         ...linkToAreaProps.params,
         datasetId,
