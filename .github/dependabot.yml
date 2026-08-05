@@ -1,0 +1,19 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      production:
+        dependency-type: production
+      development:
+        dependency-type: development
+      production-security:
+        applies-to: security-updates
+        dependency-type: production
+      development-security:
+        applies-to: security-updates
+        dependency-type: development
