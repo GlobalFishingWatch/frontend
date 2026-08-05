@@ -223,8 +223,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _getData = (): Feature<Point>[] => {
+    const viewport = this.context?.viewport
+    if (!viewport) {
+      return []
+    }
     // Use Math.round() to match deck.gl's tile zoom selection logic
-    const roundedZoom = Math.round(this.context.viewport.zoom)
+    const roundedZoom = Math.round(viewport.zoom)
     const zoom =
       roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
     return (this.getLayerInstance()?.state.tileset?.tiles || []).flatMap((tile) => {
@@ -234,7 +238,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
               ? (transformTileCoordsToWGS84(
                   feature,
                   tile.bbox as GeoBoundingBox,
-                  this.context.viewport
+                  viewport
                 ) as Feature<Point>)
               : []
           })
@@ -280,7 +284,11 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getViewportData = (params: GetUserPointsDataParams = {}) => {
-    return filteredPositionsByViewport(this.getData(params), this.context.viewport)
+    const viewport = this.context?.viewport
+    if (!viewport) {
+      return []
+    }
+    return filteredPositionsByViewport(this.getData(params), viewport)
   }
 
   getColor() {

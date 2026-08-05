@@ -76,6 +76,9 @@ export function filterByPolygon({
           return acc
         }
         const coordinates = (cell as FourwingsFeature)?.coordinates
+        if (!coordinates || coordinates.length < 6) {
+          return acc
+        }
 
         const minX = coordinates[0]
         const minY = coordinates[1]
