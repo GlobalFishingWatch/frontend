@@ -9,7 +9,7 @@ export default [
     ignores: ['.nitro/**/*', '.output/**/*', 'dist/**/*', 'coverage/**/*'],
   },
   ...rootConfig,
-  // Pin resolver to this app — avoids stale fishing-map tsconfig after rename.
+  // Pin resolver to this app — avoids stale platform tsconfig after rename.
   {
     settings: {
       'import/resolver': {

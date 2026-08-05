@@ -166,7 +166,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Feedback</h2>
         <p>Help us improve the Global Fishing platform through the built-in feedback form in the left sidebar or by sending feedback to <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Register for free access to additional features</h2>
-        <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
+        <p>Register for a free Global Fishing Watch <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org${PATH_BASENAME}/map">account</a> to access advanced search options, analysis features, and data downloads. Registration takes two minutes.</p>
       `,
     },
     es: {
@@ -185,7 +185,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Comentarios</h2>
         <p>Ayúdenos a mejorar la plataforma Global Fishing a través del formulario de comentarios integrado en la barra lateral izquierda o enviando comentarios a <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a></p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Regístrese para tener acceso gratuito a todas las funciones</h2>
-        <p><a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">Regístrese para obtener una cuenta gratuita de Global Fishing Watch</ a > para acceder a funciones de análisis avanzado, descargas de datos y opciones de búsqueda avanzada. El registro demora dos minutos. </p>
+        <p><a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org${PATH_BASENAME}/map">Regístrese para obtener una cuenta gratuita de Global Fishing Watch</ a > para acceder a funciones de análisis avanzado, descargas de datos y opciones de búsqueda avanzada. El registro demora dos minutos. </p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Mapa anterior de Global Fishing Watch</h2>
         <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Acceda aquí a la versión anterior del mapa de Global Fishing Watch</a> para migrar los espacios de trabajo hasta el 18 de octubre de 2021.</p>
       `,
@@ -205,7 +205,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Retour d’expérience</h2>
         <p>Aidez-nous à améliorer la carte de Global Fishing Watch en envoyant votre retour d’expérience à <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> ou via le formulaire de retour d’expérience disponible en bas à gauche de l’écran.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Enregistrez-vous pour l’accès à toutes les fonctionnalités</h2>
-        <p>Vous pouvez vous <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">créer un compte Global Fishing Watch</a> gratuitement pour accéder aux fonctionnalités avancées d’analyse, téléchargement de données et enregistrement d’espaces de travail. </p>
+        <p>Vous pouvez vous <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org${PATH_BASENAME}/map">créer un compte Global Fishing Watch</a> gratuitement pour accéder aux fonctionnalités avancées d’analyse, téléchargement de données et enregistrement d’espaces de travail. </p>
       `,
     },
     id: {
@@ -223,7 +223,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Umpan balik</h2>
         <p>Bantu kami meningkatkan perbaikan peta Global Fishing Watch dengan mengirimkan umpan balik ke <a href="mailto:support@globalfishingwatch.org">support@globalfishingwatch.org</a> atau melalui formulir umpan balik di sebelah sisi kiri pada peta.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Daftar untuk akses gratis ke semua fitur</h2>
-        <p>Daftarkan <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">akun</a> Global Fishing Watch gratis untuk mengakses fitur analisis lanjutan, unduhan data, dan menyimpan ruang kerja Anda. Pendaftaran memakan waktu dua menit.</p>
+        <p>Daftarkan <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org${PATH_BASENAME}/map">akun</a> Global Fishing Watch gratis untuk mengakses fitur analisis lanjutan, unduhan data, dan menyimpan ruang kerja Anda. Pendaftaran memakan waktu dua menit.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Peta Global Fishing Watch sebelumnya</h2>
         <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Akses peta Global Fishing Watch sebelumnya di sini untuk memigrasikan ruang kerja hingga 18 Oktober 2021.</a></p>
       `,
@@ -243,7 +243,7 @@ const WELCOME_POPUP_CONTENT: {
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-email-orange.png">Retorno</h2>
         <p>Ajude-nos a melhorar o mapa do Global Fishing Watch enviando seus comentários e sugestões para support@globalfishingwatch.org ou através do formulário de comentários no painel lateral esquerdo do mapa.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/icon-graph-orange-1.png">Registre-se para ter acesso a todas as funcionalidades</h2>
-        <p>Registre-se para obter uma <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org/map">conta</a> gratuita do Global Fishing Watch para acessar recursos de análise avançada, downloads de dados e opções de pesquisa avançada. O registro leva dois minutos.</p>
+        <p>Registre-se para obter uma <a href="https://gateway.api.globalfishingwatch.org/auth?client=gfw&callback=https://globalfishingwatch.org${PATH_BASENAME}/map">conta</a> gratuita do Global Fishing Watch para acessar recursos de análise avançada, downloads de dados e opções de pesquisa avançada. O registro leva dois minutos.</p>
         <h2><img src="https://globalfishingwatch.org/wp-content/uploads/GFW_GLOBE_Orange-1.png">Mapa anterior do Global Fishing Watch</h2>
         <p><a href="https://globalfishingwatch.org/legacy-map/?utm_source=map3_welcome_page&utm_medium=map_2_link&utm_campaign=sunsetting_map2">Acesse o mapa anterior</a> do Global Fishing Watch para migrar os espaços de trabalho até 18 de outubro de 2021.</p>
       `,
@@ -258,8 +258,8 @@ const WELCOME_POPUP_CONTENT: {
         <h2>Prepared by Benioff Ocean Science Laboratory, UCSB</h2>
         <p>Recent efforts to find new sources of minerals have led some countries and private companies to turn their attention to the deep seabed. The industry is still in its infancy, but exploration licences have been granted by the International Seabed Authority, an organization created by the United Nations to manage all mineral-related activities in areas beyond national jurisdiction, while ensuring the effective protection of the marine environment from harmful effects that may arise from these activities. The Authority has already granted over 1.5 million square kilometers of license areas for mining exploration in the Pacific, Atlantic and Indian Oceans to at least 22 mining contractors, laying the groundwork for future exploitation.</p>
         <p>The international seabed and its resources are the “common heritage of mankind” and should benefit humankind as a whole. This creates complex governance and regulatory challenges, including for benefit-sharing given the recent market downturns for the seabed minerals being targeted– such as cobalt and nickel– that call into question the economic viability of this potential industry. This is further compounded by significant environmental and socio-economic risks. Concerns raised regarding the impacts of seabed mining include significant damage to unique, slow-to-recover deep-sea ecosystems; risks to the productivity and quality of economically-important fisheries; and threats to sources of marine genetic resources and underwater cultural heritage. </p>
-        <p>This report summarizes the activity of vessels known to historically or actively engage in deep-sea mineral activities in regions containing International Seabed Authority (ISA) license areas, including the Eastern and Western Pacific, Atlantic and Indian Oceans. As commercial mining has not yet begun, <a href="https://globalfishingwatch.org/map/report/deep_sea_mining-public" rel="noopener noreferrer" target="_blank">this report</a> and these data in Deep-Sea Mining Watch depict only exploration activity. </p>
-        <p>Click here to view a report summarizing activity specific to the <a href="https://globalfishingwatch.org/map/report/clarion_clipperton-public?daysFromLatest=365" rel="noopener noreferrer" target="_blank">Clarion-Clipperton Zone</a>.</p>
+        <p>This report summarizes the activity of vessels known to historically or actively engage in deep-sea mineral activities in regions containing International Seabed Authority (ISA) license areas, including the Eastern and Western Pacific, Atlantic and Indian Oceans. As commercial mining has not yet begun, <a href="https://globalfishingwatch.org${PATH_BASENAME}/report/deep_sea_mining-public" rel="noopener noreferrer" target="_blank">this report</a> and these data in Deep-Sea Mining Watch depict only exploration activity. </p>
+        <p>Click here to view a report summarizing activity specific to the <a href="https://globalfishingwatch.org${PATH_BASENAME}/report/clarion_clipperton-public?daysFromLatest=365" rel="noopener noreferrer" target="_blank">Clarion-Clipperton Zone</a>.</p>
         <ul>To learn more about the potential impacts from mining, explore the following resources:
           <li>Amon, D. J., Gollner, S., Morato, T., Smith, C. R., Chen, C., Christiansen, S., ... & Pickens, C. (2022). Assessment of scientific gaps related to the effective environmental management of deep-seabed mining. Marine Policy, 138, 105006. https://doi.org/10.1016/j.marpol.2022.105006</li>
           <li>Levin, L. A., Amon, D. J., & Lily, H. (2020). Challenges to the sustainability of deep-seabed mining. Nature Sustainability, 3(10), 784-7. https://doi.org/10.1038/s41893-020-0558-x</li>

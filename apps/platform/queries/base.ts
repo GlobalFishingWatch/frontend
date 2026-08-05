@@ -30,7 +30,7 @@ export const gfwBaseQuery =
         method,
         body,
       })
-      return { data }
+      return { data: (data ?? null) as Response }
     } catch (gfwApiError: any) {
       return {
         error: parseAPIError(gfwApiError),

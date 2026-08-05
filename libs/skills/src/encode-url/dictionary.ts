@@ -11,7 +11,7 @@ export type LayerInfo = {
 }
 
 /**
- * Dataview instance ids used by the fishing-map default workspace and layer library.
+ * Dataview instance ids used by the platform default workspace and layer library.
  * Ids and slugs come from @platform/config (single source of truth with the app)
  */
 export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {

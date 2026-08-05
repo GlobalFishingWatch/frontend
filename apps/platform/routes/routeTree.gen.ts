@@ -26,12 +26,16 @@ import { Route as ApiOceanAreasIndexRouteImport } from './api/ocean-areas/index'
 import { Route as ApiOceanAreasNameRouteImport } from './api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './api/ocean-areas/search'
 import { Route as PlatformMapMapIndexRouteImport } from './_platform/_map/map/index'
+import { Route as PlatformMapMapUserRouteImport } from './_platform/_map/map/user'
+import { Route as PlatformMapMapVesselSearchRouteImport } from './_platform/_map/map/vessel-search'
 import { Route as PlatformMapReportReportIdRouteImport } from './_platform/_map/report.$reportId'
 import { Route as PlatformMapVesselVesselIdRouteImport } from './_platform/_map/vessel.$vesselId'
 import { Route as ApiTrackCorrectionsWorkspaceIdIndexRouteImport } from './api/track-corrections/$workspaceId/index'
 import { Route as ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport } from './api/track-corrections/$workspaceId/$issueId'
 import { Route as PlatformMapMapCategoryIndexRouteImport } from './_platform/_map/map/$category/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdRouteImport } from './_platform/_map/map/$category/$workspaceId'
+import { Route as PlatformMapMapReportReportIdRouteImport } from './_platform/_map/map/report.$reportId'
+import { Route as PlatformMapMapVesselVesselIdRouteImport } from './_platform/_map/map/vessel.$vesselId'
 import { Route as PlatformMapMapCategoryWorkspaceIdIndexRouteImport } from './_platform/_map/map/$category/$workspaceId/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdVesselSearchRouteImport } from './_platform/_map/map/$category/$workspaceId/vessel-search'
 import { Route as PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRouteImport } from './_platform/_map/map/$category/$workspaceId/ports-report.$portId'
@@ -123,6 +127,17 @@ const PlatformMapMapIndexRoute = PlatformMapMapIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PlatformMapMapRoute,
 } as any)
+const PlatformMapMapUserRoute = PlatformMapMapUserRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
+const PlatformMapMapVesselSearchRoute =
+  PlatformMapMapVesselSearchRouteImport.update({
+    id: '/vessel-search',
+    path: '/vessel-search',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
 const PlatformMapReportReportIdRoute =
   PlatformMapReportReportIdRouteImport.update({
     id: '/report/$reportId',
@@ -157,6 +172,18 @@ const PlatformMapMapCategoryWorkspaceIdRoute =
   PlatformMapMapCategoryWorkspaceIdRouteImport.update({
     id: '/$category/$workspaceId',
     path: '/$category/$workspaceId',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
+const PlatformMapMapReportReportIdRoute =
+  PlatformMapMapReportReportIdRouteImport.update({
+    id: '/report/$reportId',
+    path: '/report/$reportId',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
+const PlatformMapMapVesselVesselIdRoute =
+  PlatformMapMapVesselVesselIdRouteImport.update({
+    id: '/vessel/$vesselId',
+    path: '/vessel/$vesselId',
     getParentRoute: () => PlatformMapMapRoute,
   } as any)
 const PlatformMapMapCategoryWorkspaceIdIndexRoute =
@@ -218,12 +245,16 @@ export interface FileRoutesByFullPath {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/map/user': typeof PlatformMapMapUserRoute
+  '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
+  '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
+  '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
   '/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -246,11 +277,15 @@ export interface FileRoutesByTo {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas': typeof ApiOceanAreasIndexRoute
+  '/map/user': typeof PlatformMapMapUserRoute
+  '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/map': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
+  '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
+  '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
   '/map/$category': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -278,12 +313,16 @@ export interface FileRoutesById {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/_platform/_map/map/user': typeof PlatformMapMapUserRoute
+  '/_platform/_map/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/_platform/_map/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/_platform/_map/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   '/_platform/_map/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
   '/_platform/_map/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
+  '/_platform/_map/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
+  '/_platform/_map/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
   '/_platform/_map/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/_platform/_map/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/_platform/_map/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -309,12 +348,16 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/map/user'
+    | '/map/vessel-search'
     | '/report/$reportId'
     | '/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/map/'
     | '/api/track-corrections/$workspaceId/'
     | '/map/$category/$workspaceId'
+    | '/map/report/$reportId'
+    | '/map/vessel/$vesselId'
     | '/map/$category/'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId/'
@@ -337,11 +380,15 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas'
+    | '/map/user'
+    | '/map/vessel-search'
     | '/report/$reportId'
     | '/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/map'
     | '/api/track-corrections/$workspaceId'
+    | '/map/report/$reportId'
+    | '/map/vessel/$vesselId'
     | '/map/$category'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId'
@@ -368,12 +415,16 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/_platform/_map/map/user'
+    | '/_platform/_map/map/vessel-search'
     | '/_platform/_map/report/$reportId'
     | '/_platform/_map/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
     | '/_platform/_map/map/'
     | '/api/track-corrections/$workspaceId/'
     | '/_platform/_map/map/$category/$workspaceId'
+    | '/_platform/_map/map/report/$reportId'
+    | '/_platform/_map/map/vessel/$vesselId'
     | '/_platform/_map/map/$category/'
     | '/_platform/_map/map/$category/$workspaceId/vessel-search'
     | '/_platform/_map/map/$category/$workspaceId/'
@@ -520,6 +571,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformMapMapIndexRouteImport
       parentRoute: typeof PlatformMapMapRoute
     }
+    '/_platform/_map/map/user': {
+      id: '/_platform/_map/map/user'
+      path: '/user'
+      fullPath: '/map/user'
+      preLoaderRoute: typeof PlatformMapMapUserRouteImport
+      parentRoute: typeof PlatformMapMapRoute
+    }
+    '/_platform/_map/map/vessel-search': {
+      id: '/_platform/_map/map/vessel-search'
+      path: '/vessel-search'
+      fullPath: '/map/vessel-search'
+      preLoaderRoute: typeof PlatformMapMapVesselSearchRouteImport
+      parentRoute: typeof PlatformMapMapRoute
+    }
     '/_platform/_map/report/$reportId': {
       id: '/_platform/_map/report/$reportId'
       path: '/report/$reportId'
@@ -560,6 +625,20 @@ declare module '@tanstack/react-router' {
       path: '/$category/$workspaceId'
       fullPath: '/map/$category/$workspaceId'
       preLoaderRoute: typeof PlatformMapMapCategoryWorkspaceIdRouteImport
+      parentRoute: typeof PlatformMapMapRoute
+    }
+    '/_platform/_map/map/report/$reportId': {
+      id: '/_platform/_map/map/report/$reportId'
+      path: '/report/$reportId'
+      fullPath: '/map/report/$reportId'
+      preLoaderRoute: typeof PlatformMapMapReportReportIdRouteImport
+      parentRoute: typeof PlatformMapMapRoute
+    }
+    '/_platform/_map/map/vessel/$vesselId': {
+      id: '/_platform/_map/map/vessel/$vesselId'
+      path: '/vessel/$vesselId'
+      fullPath: '/map/vessel/$vesselId'
+      preLoaderRoute: typeof PlatformMapMapVesselVesselIdRouteImport
       parentRoute: typeof PlatformMapMapRoute
     }
     '/_platform/_map/map/$category/$workspaceId/': {
@@ -662,15 +741,23 @@ const PlatformMapMapCategoryWorkspaceIdRouteWithChildren =
   )
 
 interface PlatformMapMapRouteChildren {
+  PlatformMapMapUserRoute: typeof PlatformMapMapUserRoute
+  PlatformMapMapVesselSearchRoute: typeof PlatformMapMapVesselSearchRoute
   PlatformMapMapIndexRoute: typeof PlatformMapMapIndexRoute
   PlatformMapMapCategoryWorkspaceIdRoute: typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
+  PlatformMapMapReportReportIdRoute: typeof PlatformMapMapReportReportIdRoute
+  PlatformMapMapVesselVesselIdRoute: typeof PlatformMapMapVesselVesselIdRoute
   PlatformMapMapCategoryIndexRoute: typeof PlatformMapMapCategoryIndexRoute
 }
 
 const PlatformMapMapRouteChildren: PlatformMapMapRouteChildren = {
+  PlatformMapMapUserRoute: PlatformMapMapUserRoute,
+  PlatformMapMapVesselSearchRoute: PlatformMapMapVesselSearchRoute,
   PlatformMapMapIndexRoute: PlatformMapMapIndexRoute,
   PlatformMapMapCategoryWorkspaceIdRoute:
     PlatformMapMapCategoryWorkspaceIdRouteWithChildren,
+  PlatformMapMapReportReportIdRoute: PlatformMapMapReportReportIdRoute,
+  PlatformMapMapVesselVesselIdRoute: PlatformMapMapVesselVesselIdRoute,
   PlatformMapMapCategoryIndexRoute: PlatformMapMapCategoryIndexRoute,
 }
 

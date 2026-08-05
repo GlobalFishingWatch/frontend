@@ -9,7 +9,7 @@ locals {
         invert_regex = false
       }
       env = {
-        PLAYWRIGHT_BASE_URL = "https://fishing-map.staging.globalfishingwatch.org/map"
+        PLAYWRIGHT_BASE_URL = "https://fishing-map.staging.globalfishingwatch.org/platform/map"
       }
       testing_account_email    = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_EMAIL_STA/versions/latest"
       testing_account_password = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_PASSWORD_STA/versions/latest"
@@ -23,7 +23,7 @@ locals {
         invert_regex = false
       }
       env = {
-        PLAYWRIGHT_BASE_URL = "https://globalfishingwatch.org/map"
+        PLAYWRIGHT_BASE_URL = "https://globalfishingwatch.org/platform/map"
       }
       testing_account_email    = "projects/674016975526/secrets/E2E_TEST_ACCOUNT_EMAIL/versions/latest"
       testing_account_password = "projects/674016975526/secrets/E2E_TEST_ACCOUNT_PASSWORD/versions/latest"

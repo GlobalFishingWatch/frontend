@@ -160,6 +160,8 @@ export const nodeScriptsConfig = {
       __dirname: 'readonly',
       __filename: 'readonly',
       console: 'readonly',
+      URL: 'readonly',
+      URLSearchParams: 'readonly',
     },
   },
 }

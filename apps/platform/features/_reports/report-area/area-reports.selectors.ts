@@ -76,9 +76,6 @@ export {
 
 const EMPTY_ARRAY: [] = []
 
-
-
-
 type ReportVesselWithMeta = ReportVessel & {
   // Merging detections or hours depending on the activity unit into the same property
   value: number
@@ -338,7 +335,7 @@ const selectReportBufferArea = createSelector(
     if (bufferedArea?.geometry) {
       const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
       // bbox is needed inside Area geometry to computeTimeseries
-      // fishing-map/features/_reports/report-area/reports-timeseries.hooks.ts
+      // platform/features/_reports/report-area/reports-timeseries.hooks.ts
       bufferedArea.geometry.bbox = bounds
     }
     return bufferedArea

@@ -2,7 +2,7 @@ import { DEFAULT_WORKSPACE_ID } from '@platform/config'
 
 /**
  * Curated public workspace names, to describe what the user is looking at.
- * Sources: apps/platform/data/highlighted-workspaces/{marine-manager,reports}.ts
+ * Sources: apps/platform/data/map/highlighted-workspaces/{marine-manager,reports}.ts
  * + public/locales/source/workspaces.json
  */
 export const HIGHLIGHTED_WORKSPACES: Record<string, string> = {

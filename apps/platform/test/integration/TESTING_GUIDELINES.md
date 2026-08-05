@@ -4,7 +4,7 @@
 
 Integration tests verify that different parts of the Fishing Map application work together correctly. These tests run in a browser environment using Vitest Browser Mode and test complete user workflows from UI interaction to state management.
 
-**Location:** `/apps/fishing-map/test/integration/`
+**Location:** `/apps/platform/test/integration/`
 
 **Technology Stack:**
 
@@ -936,16 +936,16 @@ await waitForLocationType(store, WORKSPACE_REPORT)
 
 ```bash
 # Run all tests
-nx test fishing-map
+nx test platform
 
 # Run with interactive UI (recommended for debugging)
-nx test:ui fishing-map
+nx test:ui platform
 
 # Run specific test file
-nx test fishing-map Vessels.spec.tsx
+nx test platform Vessels.spec.tsx
 
 # Run in CI environment (Docker)
-nx test:ci fishing-map
+nx test:ci platform
 ```
 
 ### Reading Test Artifacts
@@ -958,7 +958,7 @@ After a test failure, artifacts are saved to:
 **View a trace file:**
 
 ```bash
-npx playwright show-trace "apps/fishing-map/test/integration/__traces__/Vessels.spec.tsx/trace-file.trace.zip"
+npx playwright show-trace "apps/platform/test/integration/__traces__/Vessels.spec.tsx/trace-file.trace.zip"
 ```
 
 The trace viewer shows:

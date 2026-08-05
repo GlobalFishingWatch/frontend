@@ -140,11 +140,14 @@ function RootComponent() {
 }
 
 export const Route = createRootRoute({
-  beforeLoad: ({ location }) => {
-    // Legacy '/index' path. Targets the map explicitly: with the platform basepath, '/' is the
-    // platform root, which is no longer the map.
-    if (location.pathname === '/index') {
-      throw redirect({ to: ROUTE_PATHS.MAP, search: location.search })
+  beforeLoad: ({ location, search }) => {
+    if (location.pathname === '/index' || location.pathname === '/map/index') {
+      throw redirect({
+        to: ROUTE_PATHS.MAP,
+        search,
+        replace: true,
+        statusCode: 308, // Permanent Redirect
+      })
     }
   },
   errorComponent: ({ error }) => (
