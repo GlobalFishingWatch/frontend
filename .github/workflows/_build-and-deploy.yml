@@ -1,0 +1,175 @@
+name: Build and Deploy (shared)
+
+on:
+  workflow_call:
+    inputs:
+      env-suffix:
+        description: Service account suffix — dev, sta or pro
+        type: string
+        required: true
+      config:
+        description: Path to the per-app config YAML
+        type: string
+        required: true
+      service-prefix:
+        description: Cloud Run service name prefix (dev-ui, sta-ui, ui)
+        type: string
+        required: true
+      cloudrun-project:
+        description: GCP project hosting the Cloud Run services
+        type: string
+        required: true
+      environment:
+        description: GitHub environment gating the deploy
+        type: string
+        required: true
+      release-tag:
+        description: |
+          Release tag (@gfw/<app>@<version>) to deploy a single app from.
+          Left empty, every app affected by the push is deployed instead.
+        type: string
+        required: false
+        default: ''
+      apps:
+        description: |
+          JSON array of apps to deploy, skipping resolution entirely.
+          Used by the flag environments, which only ever deploy platform.
+        type: string
+        required: false
+        default: ''
+      image-tag:
+        description: |
+          Image tag to build and deploy. Defaults to latest-<env-suffix>.
+          Flag environments override it so they never overwrite the base env's image.
+        type: string
+        required: false
+        default: ''
+      build-args:
+        description: |
+          Newline-separated KEY=VALUE build args overriding the config's.
+          Every KEY needs a matching ARG in the Dockerfile or docker drops it.
+        type: string
+        required: false
+        default: ''
+    outputs:
+      apps:
+        description: JSON array of the apps this run deployed
+        value: ${{ jobs.resolve.outputs.apps }}
+
+jobs:
+  resolve:
+    name: Resolve Apps
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ inputs.apps || steps.affected.outputs.apps || steps.release.outputs.apps }}
+
+    steps:
+      # Nothing to resolve when the caller named the apps outright
+      - name: Checkout code
+        if: inputs.apps == ''
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      # Branch pushes deploy every app the push touched
+      - name: Detect affected apps
+        id: affected
+        if: inputs.apps == '' && inputs.release-tag == ''
+        uses: ./.github/actions/detect-affected
+        with:
+          base: origin/${{ github.ref_name }}~1
+          head: HEAD
+
+      # Releases deploy the single app named in the tag. Libs release into the
+      # same @gfw/<project>@<version> namespace, so a name with no entry in the
+      # config is not an app: skip it instead of failing the run.
+      - name: Resolve app from release tag
+        id: release
+        if: inputs.apps == '' && inputs.release-tag != ''
+        shell: bash
+        env:
+          TAG: ${{ inputs.release-tag }}
+          CONFIG: ${{ inputs.config }}
+        run: |
+          set -euo pipefail
+          APP="${TAG#@gfw/}"
+          APP="${APP%@*}"
+          export APP
+          if [ "$APP" = "$TAG" ] || [ -z "$APP" ]; then
+            echo "::error::Tag '$TAG' does not match @gfw/<app>@<version>"
+            exit 1
+          fi
+          # A missing config is a broken checkout, not a non-app: fail, never skip
+          if [ ! -f "$CONFIG" ]; then
+            echo "::error::Config '$CONFIG' not found at $TAG"
+            exit 1
+          fi
+          if python3 -c "import os, sys, yaml; sys.exit(0 if os.environ['APP'] in yaml.safe_load(open(os.environ['CONFIG'])) else 1)"; then
+            echo "apps=[\"$APP\"]" >> "$GITHUB_OUTPUT"
+            echo "Deploying $APP from tag $TAG"
+          else
+            echo "::notice::'$APP' has no entry in $CONFIG — not a deployable app, skipping"
+            echo "apps=[]" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-deploy:
+    name: Build and Deploy / ${{ inputs.service-prefix }} / ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    needs: resolve
+    if: needs.resolve.outputs.apps != '[]' && needs.resolve.outputs.apps != ''
+    environment: ${{ inputs.environment }}
+    strategy:
+      matrix:
+        app: ${{ fromJson(needs.resolve.outputs.apps) }}
+      fail-fast: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
+      CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Build and push
+        uses: ./.github/actions/build-and-push
+        with:
+          app: ${{ matrix.app }}
+          image: ${{ env.IMAGE }}
+          config: ${{ inputs.config }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          extra-build-args: ${{ inputs.build-args }}
+
+      - name: Deploy
+        uses: ./.github/actions/deploy-cloudrun
+        with:
+          app: ${{ matrix.app }}
+          image: ${{ env.IMAGE }}
+          config: ${{ inputs.config }}
+          service-name-prefix: ${{ inputs.service-prefix }}
+          cloudrun-service-account: ${{ env.CLOUDRUN_SA }}
+          cloudrun-project: ${{ inputs.cloudrun-project }}
+
+  notify-failure:
+    name: Notify Slack on failure
+    runs-on: ubuntu-latest
+    needs: [resolve, build-and-deploy]
+    if: failure()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Notify Slack
+        uses: ./.github/actions/notify-slack
+        with:
+          channel: '#eng-cloud-build'
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          message: ":red_circle: *${{ github.workflow }} failed* on `${{ github.ref_name }}` (`${{ inputs.service-prefix }}`)\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
