@@ -47,11 +47,6 @@ on:
         required: false
         default: false
         type: boolean
-      first_release:
-        description: 'Needed while a project has no @gfw/<project>@<version> tag yet: take the current version from disk instead of git tags'
-        required: false
-        default: false
-        type: boolean
 
 concurrency:
   group: libs-release
@@ -105,6 +100,19 @@ jobs:
           echo "Releasing: ${LIST:-<none>}"
           echo "list=$LIST" >> "$GITHUB_OUTPUT"
 
+          # nx resolves current versions from git tags, so a project with no
+          # @gfw/<project>@<version> tag yet needs --first-release to fall back to
+          # the version on disk. The flag applies to the whole run, so one untagged
+          # project is enough to require it.
+          FIRST_RELEASE=false
+          for PROJECT_NAME in ${LIST//,/ }; do
+            if [ -z "$(git tag -l "@gfw/$PROJECT_NAME@*")" ]; then
+              echo "No @gfw/$PROJECT_NAME@* tag found, releasing from the version on disk"
+              FIRST_RELEASE=true
+            fi
+          done
+          echo "first_release=$FIRST_RELEASE" >> "$GITHUB_OUTPUT"
+
       - name: Build dist
         if: steps.resolve.outputs.list != ''
         run: pnpm exec nx run-many -t dist --projects=${{ steps.resolve.outputs.list }}
@@ -116,7 +124,7 @@ jobs:
             --projects=${{ steps.resolve.outputs.list }} \
             --yes \
             ${{ inputs.dry_run && '--dry-run' || '' }} \
-            ${{ inputs.first_release && '--first-release' || '' }}
+            ${{ steps.resolve.outputs.first_release == 'true' && '--first-release' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
