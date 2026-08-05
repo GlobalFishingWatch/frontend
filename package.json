@@ -21,8 +21,7 @@
     "libs:dev": "nx run-many -t dev --projects=tag:lib",
     "clean": "pnpm clean:cache && pnpm clean:deps",
     "clean:deps": "rimraf -rf ./pnpm-lock.yaml && touch pnpm-lock.yaml && rimraf -rf ./node_modules && pnpm store prune && pnpm install",
-    "clean:cache": "rimraf -rf .nx && rimraf -rf ./dist",
-    "purge": "node scripts/purge-css.js"
+    "clean:cache": "rimraf -rf .nx && rimraf -rf ./dist"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.40",
@@ -272,7 +271,6 @@
     "prettier": "3.9.6",
     "prettier-eslint": "17.1.1",
     "protobufjs-cli": "2.6.1",
-    "purgecss": "8.0.0",
     "rollup-plugin-visualizer": "7.0.1",
     "sass": "1.102.0",
     "shx": "0.4.0",
