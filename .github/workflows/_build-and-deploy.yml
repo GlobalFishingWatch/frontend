@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       env-suffix:
-        description: Image tag and service account suffix — dev, sta or pro
+        description: Service account suffix — dev, sta or pro
         type: string
         required: true
       config:
@@ -30,16 +30,43 @@ on:
         type: string
         required: false
         default: ''
+      apps:
+        description: |
+          JSON array of apps to deploy, skipping resolution entirely.
+          Used by the flag environments, which only ever deploy platform.
+        type: string
+        required: false
+        default: ''
+      image-tag:
+        description: |
+          Image tag to build and deploy. Defaults to latest-<env-suffix>.
+          Flag environments override it so they never overwrite the base env's image.
+        type: string
+        required: false
+        default: ''
+      build-args:
+        description: |
+          Newline-separated KEY=VALUE build args overriding the config's.
+          Every KEY needs a matching ARG in the Dockerfile or docker drops it.
+        type: string
+        required: false
+        default: ''
+    outputs:
+      apps:
+        description: JSON array of the apps this run deployed
+        value: ${{ jobs.resolve.outputs.apps }}
 
 jobs:
   resolve:
     name: Resolve Apps
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.affected.outputs.apps || steps.release.outputs.apps }}
+      apps: ${{ inputs.apps || steps.affected.outputs.apps || steps.release.outputs.apps }}
 
     steps:
+      # Nothing to resolve when the caller named the apps outright
       - name: Checkout code
+        if: inputs.apps == ''
         uses: actions/checkout@v7
         with:
           fetch-depth: 2
@@ -47,7 +74,7 @@ jobs:
       # Branch pushes deploy every app the push touched
       - name: Detect affected apps
         id: affected
-        if: inputs.release-tag == ''
+        if: inputs.apps == '' && inputs.release-tag == ''
         uses: ./.github/actions/detect-affected
         with:
           base: origin/${{ github.ref_name }}~1
@@ -58,7 +85,7 @@ jobs:
       # config is not an app: skip it instead of failing the run.
       - name: Resolve app from release tag
         id: release
-        if: inputs.release-tag != ''
+        if: inputs.apps == '' && inputs.release-tag != ''
         shell: bash
         env:
           TAG: ${{ inputs.release-tag }}
@@ -86,7 +113,7 @@ jobs:
           fi
 
   build-and-deploy:
-    name: Build and Deploy / ${{ matrix.app }}
+    name: Build and Deploy / ${{ inputs.service-prefix }} / ${{ matrix.app }}
     runs-on: ubuntu-latest
     needs: resolve
     if: needs.resolve.outputs.apps != '[]' && needs.resolve.outputs.apps != ''
@@ -99,7 +126,7 @@ jobs:
       contents: read
       id-token: write
     env:
-      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:latest-${{ inputs.env-suffix }}
+      IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
       CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
 
     steps:
@@ -119,6 +146,7 @@ jobs:
           image: ${{ env.IMAGE }}
           config: ${{ inputs.config }}
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          extra-build-args: ${{ inputs.build-args }}
 
       - name: Deploy
         uses: ./.github/actions/deploy-cloudrun
@@ -144,4 +172,4 @@ jobs:
         with:
           channel: '#eng-cloud-build'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *${{ github.workflow }} failed* on `${{ github.ref_name }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: *${{ github.workflow }} failed* on `${{ github.ref_name }}` (`${{ inputs.service-prefix }}`)\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
