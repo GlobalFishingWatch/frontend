@@ -9,7 +9,7 @@ import { TimebarVisualisations } from 'types'
 import { formatNumber } from 'utils/info'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
-  const { loading, heatmapActivity, dataviews, colorScales } = useHeatmapActivityGraph()
+  const { loading, heatmapActivity, dataviews, colorScale } = useHeatmapActivityGraph()
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ value, item }: HighlighterCallbackFnArgs) => {
@@ -47,7 +47,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       key="stackedActivity"
       timeseries={heatmapActivity}
       dataviews={dataviews}
-      colorScales={colorScales}
+      colorScale={colorScale}
       highlighterCallback={getActivityHighlighterLabel}
       highlighterIconCallback="heatmap"
       loading={loading}

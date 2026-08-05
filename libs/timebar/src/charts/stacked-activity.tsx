@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import type { Color } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 import { max } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
@@ -11,7 +10,12 @@ import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
 import { useTimelineContext } from '../timeline/timeline-context'
 
 import { useTimebarTimeOrigin, useTimeseriesToChartData } from './charts.hooks'
-import type { HighlighterCallback, HighlighterIconCallback, Timeseries } from './charts.types'
+import type {
+  HighlighterCallback,
+  HighlighterIconCallback,
+  TimebarColorScale,
+  Timeseries,
+} from './charts.types'
 import { useUpdateChartLayers, useUpdateChartsData } from './charts-store.atom'
 
 const MARGIN_BOTTOM = 20
@@ -37,15 +41,14 @@ const getEdges = (point: number[], y: (v: number) => number, numSubLayers: numbe
 export const TimebarStackedActivity = ({
   timeseries,
   dataviews,
-  colorScales,
+  colorScale,
   highlighterCallback,
   highlighterIconCallback,
   loading = false,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
-  // per sublayer value to color scale, colors the graph as the map does. Flat layer color when missing
-  colorScales?: (((value: number) => Color | undefined) | undefined)[]
+  colorScale?: TimebarColorScale
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterIconCallback
   loading?: boolean
@@ -78,7 +81,6 @@ export const TimebarStackedActivity = ({
       const dataview = dataviews[sublayerIndex]
       if (!dataview) return []
       const color = hexToDeckColor(dataview.config?.color || '#ffffff')
-      const colorScale = colorScales?.[sublayerIndex]
       return s.slice(0, -1).flatMap((point, i) => {
         const x1 = (point as any).data.date - origin
         const x2 = (s[i + 1] as any).data.date - origin
@@ -106,7 +108,7 @@ export const TimebarStackedActivity = ({
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [timeseries, subLayers, dataviews, colorScales, graphHeight, middleY, origin])
+  }, [timeseries, subLayers, dataviews, colorScale, graphHeight, middleY, origin])
 
   useUpdateChartLayers('activity', layers)
 

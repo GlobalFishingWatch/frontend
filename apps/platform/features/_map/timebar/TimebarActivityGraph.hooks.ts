@@ -1,9 +1,11 @@
 import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useAtomValue } from 'jotai'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
+  deckLayerInstancesAtom,
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
   useGetDeckLayerLegend,
@@ -15,7 +17,7 @@ import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
-import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import type { ActivityTimeseriesFrame, TimebarColorScale } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
 import {
@@ -29,9 +31,11 @@ import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selector
 import {
   getGraphDataFromFourwingsHeatmap,
   getGraphDataFromFourwingsPositions,
+  getLegendColorScale,
 } from './timebar.utils'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
+const lastLegendRampByLayer = new Map<string, { domain: number[]; colors: string[] }>()
 
 export const useHeatmapActivityGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
@@ -63,6 +67,24 @@ export const useHeatmapActivityGraph = () => {
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
   const legend = useGetDeckLayerLegend(id)
+  const layerInstances = useAtomValue(deckLayerInstancesAtom)
+
+  const colorScale: TimebarColorScale = useMemo(() => {
+    const layer = (instance ?? layerInstances.find((layer) => layer.id === id)) as
+      FourwingsLayer | undefined
+    const sublayers = layer?.props?.sublayers
+    if (sublayers?.length !== 1 || !isMultiHueColorRampId(sublayers[0].colorRamp)) {
+      return undefined
+    }
+    const domain = legend?.domain as number[] | undefined
+    const colors = (legend?.ranges as string[][])?.[0]
+    if (domain?.length && colors?.length) {
+      lastLegendRampByLayer.set(id, { domain, colors })
+    }
+    const ramp = lastLegendRampByLayer.get(id)
+    const legendScale = ramp && getLegendColorScale(ramp.domain, ramp.colors)
+    return (value: number) => layer?.getColorByValue?.(value) ?? legendScale?.(value)
+  }, [instance, layerInstances, id, legend?.domain, legend?.ranges])
 
   const setFourwingsPositionsData = async (viewportData: FourwingsPositionFeature[]) => {
     const data =
@@ -121,21 +143,8 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  const colorScales = useMemo(() => {
-    const sublayers = instance?.props?.sublayers
-    if (!sublayers?.length || !legend?.domain?.length) {
-      return undefined
-    }
-    const scales = sublayers.map((sublayer, index) =>
-      isMultiHueColorRampId(sublayer.colorRamp)
-        ? (value: number) => instance.getColorByValue?.(value, index)
-        : undefined
-    )
-    return scales.some(Boolean) ? scales : undefined
-  }, [instance, legend?.domain])
-
   return useMemo(
-    () => ({ loading: !loaded, heatmapActivity: data, dataviews, colorScales }),
-    [data, loaded, dataviews, colorScales]
+    () => ({ loading: !loaded, heatmapActivity: data, dataviews, colorScale }),
+    [data, loaded, dataviews, colorScale]
   )
 }
