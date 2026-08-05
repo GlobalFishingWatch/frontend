@@ -1,0 +1,34 @@
+.title {
+  font: var(--font-XL-bold);
+  color: var(--color-primary-blue);
+}
+
+.thumbnail {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-top: var(--space-SM);
+  border-radius: var(--border-radius-0);
+}
+
+.description {
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+  margin-top: var(--space-S);
+}
+
+.subsection {
+  margin-top: var(--space-M);
+  scroll-margin-top: var(--space-M);
+}
+
+.subsectionTitle {
+  font: var(--font-L-bold);
+  color: var(--color-primary-blue);
+}
+
+.empty {
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+  padding: var(--space-L);
+}
