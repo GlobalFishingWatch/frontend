@@ -159,7 +159,10 @@ function ActivityByType() {
         }}
         itemContent={(index, groupIndex) => {
           const event = events[index]
-          const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
+          if (!event) {
+            return null
+          }
+          const expanded = selectedEventId ? event.id.includes(selectedEventId) : false
           return (
             <Event
               event={event}
