@@ -167,9 +167,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
+      # One develop push fans out to three dev envs that share a ref and an
+      # env-suffix, so only the image tag tells them apart. sta and pro are already
+      # named by their ref (main, or the release tag).
+      - name: Name the environment
+        id: env
+        shell: bash
+        env:
+          TAG: ${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
+          SUFFIX: ${{ inputs.env-suffix }}
+          REF: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          case "$SUFFIX" in
+            dev*) echo "name=${TAG#latest-}" >> "$GITHUB_OUTPUT" ;;
+            *)    echo "name=$REF"           >> "$GITHUB_OUTPUT" ;;
+          esac
+
       - name: Notify Slack
         uses: ./.github/actions/notify-slack
         with:
           channel: '#eng-cloud-build'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *${{ github.workflow }} failed* on `${{ github.ref_name }}` (`${{ inputs.service-prefix }}`)\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: *Build and Deploy failed* on `${{ steps.env.outputs.name }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
