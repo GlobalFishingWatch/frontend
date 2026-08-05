@@ -27,7 +27,7 @@
     "dist"
   ],
   "dependencies": {
-    "@deck.gl-community/editable-layers": "9.3.7",
+    "@deck.gl-community/editable-layers": "9.3.8",
     "@deck.gl/core": "9.3.7",
     "@deck.gl/extensions": "9.3.7",
     "@deck.gl/geo-layers": "9.3.7",
