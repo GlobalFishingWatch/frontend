@@ -118,3 +118,41 @@ module "production" {
   ]
   set_secrets = local.generate_secrets.pro
 }
+
+module "fishing-map-production" {
+  source            = "../../../cloudbuild-template"
+  project_id        = "gfw-production"
+  short_environment = "pro"
+  description       = "Deploy to production when pushing new tag @gfw/fishing-map@x.x.x"
+  app_name          = "fishing-map"
+  machine_type      = "E2_HIGHCPU_8"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/fishing-map:latest-pro"
+  service_account   = local.service_account.pro
+  labels = {
+    environment      = "production"
+    resource_creator = "engineering"
+    project          = "frontend"
+  }
+  push_config = {
+    tag          = "^@gfw/fishing-map@\\d+\\.\\d+\\.\\d+(\\.\\d+)?$"
+    invert_regex = false
+  }
+  set_env_vars_build = [
+    "VITE_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-WXTMN69",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=production",
+    "VITE_REPORT_DAYS_LIMIT=366",
+  ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_SENTRY_AUTH_TOKEN"
+  }
+  set_env_vars = [
+    "BASIC_AUTH=off"
+  ]
+  set_secrets = local.generate_secrets.pro
+}
+
