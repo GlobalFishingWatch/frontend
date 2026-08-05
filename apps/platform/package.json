@@ -9,7 +9,6 @@
     "i18n:extract": "i18next-cli extract",
     "i18n:extract:watch": "i18next-cli extract --watch --with-types",
     "i18n:types": "i18next-cli types",
-    "test": "npx vitest",
     "test:e2e": "npx playwright test"
   },
   "devDependencies": {
