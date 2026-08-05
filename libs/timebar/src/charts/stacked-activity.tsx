@@ -78,7 +78,6 @@ export const TimebarStackedActivity = ({
       const dataview = dataviews[sublayerIndex]
       if (!dataview) return []
       const color = hexToDeckColor(dataview.config?.color || '#ffffff')
-      // when given, the sublayer is colored by value with the map color scale instead of a flat color
       const colorScale = colorScales?.[sublayerIndex]
       return s.slice(0, -1).flatMap((point, i) => {
         const x1 = (point as any).data.date - origin

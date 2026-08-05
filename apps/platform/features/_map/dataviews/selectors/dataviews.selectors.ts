@@ -187,7 +187,6 @@ export const selectActiveHeatmapAnimatedEnvironmentalDataviews = createSelector(
   }
 )
 
-// Mirrors the singleHeatmapDataview check in getDataviewsResolved: activity + detections + animated environment
 export const selectIsSingleHeatmapDataview = createSelector(
   [selectActiveActivityAndDetectionsDataviews, selectActiveHeatmapAnimatedEnvironmentalDataviews],
   (activityAndDetectionsDataviews = [], environmentalDataviews = []) => {

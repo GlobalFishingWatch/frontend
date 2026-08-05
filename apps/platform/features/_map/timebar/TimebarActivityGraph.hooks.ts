@@ -121,10 +121,6 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  // Multi hue layers are colored by value in the graph, asking the layer for the very color it paints
-  // that value with. Only the resolved sublayers are checked, a multi hue ramp falls back to the layer
-  // color when another heatmap layer is visible. The legend color domain is the invalidation signal,
-  // it changes with the values on screen
   const colorScales = useMemo(() => {
     const sublayers = instance?.props?.sublayers
     if (!sublayers?.length || !legend?.domain?.length) {
