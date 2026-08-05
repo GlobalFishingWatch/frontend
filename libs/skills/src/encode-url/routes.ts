@@ -5,7 +5,7 @@ import {
   ROUTE_PATHS,
 } from '@platform/config'
 
-export { DEFAULT_PATH_BASENAME as DEFAULT_BASENAME }
+export const DEFAULT_BASENAME: string = DEFAULT_PATH_BASENAME
 
 export type MapRouteType =
   | 'workspace'

@@ -7,20 +7,20 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./encode-url": {
-      "types": "./src/encode-url/index.ts",
+      "types": "./dist/encode-url/index.d.ts",
       "default": "./dist/encode-url/index.js"
     },
     "./decode-url": {
-      "types": "./src/decode-url/index.ts",
+      "types": "./dist/decode-url/index.d.ts",
       "default": "./dist/decode-url/index.js"
     }
   },
   "main": "./dist/index.js",
-  "types": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "src",
     "dist"
@@ -30,6 +30,9 @@
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "devDependencies": {
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/datasets-client": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
     "@platform/config": "workspace:*"
   }
 }

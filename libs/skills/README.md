@@ -27,7 +27,7 @@ const { navigation, path } = encodeMapUrl({ route: { type: 'workspace' }, state:
 pnpm nx dist skills   # build (also builds dataviews-client deps)
 ```
 
-This produces `libs/skills/dist/`: a combined `index.js`, plus one self-contained folder per skill (`encode-url/`, `decode-url/`) — each with its own `index.js` bundle alongside its `SKILL.md`, `scripts/`, and `references/`.
+This produces `libs/skills/dist/`: a combined `index.js`, plus one self-contained folder per skill (`encode-url/`, `decode-url/`) — each with its own `index.js` bundle and `index.d.ts` alongside its `SKILL.md`, `scripts/`, and `references/`.
 
 Skill scripts run with plain `node` (>= 23) and import their own skill's bundle as `@globalfishingwatch/skills/<skill-name>`, resolved by `scripts/register-gfw-resolver.mjs` from (in order): a sibling `index.js` (dist output), a `../../dist/<skill-name>/index.js` in this monorepo (unbuilt source layout), or — once installed as an npm package — normal `node_modules` resolution via the package's `exports` map.
 

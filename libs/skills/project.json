@@ -5,7 +5,7 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
+    "bundle": {
       "executor": "@nx/esbuild:esbuild",
       "dependsOn": ["^dist"],
       "outputs": ["{options.outputPath}"],
@@ -73,32 +73,32 @@
         }
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
+    "types": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "cache": true,
+      "outputs": ["{projectRoot}/dist/**/*.d.ts"],
       "options": {
-        "watch": true
-      },
-      "continuous": true
+        "command": "dts-bundle-generator --config libs/skills/dts-bundle.config.cjs"
+      }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["bundle", "types"],
       "options": {
         "packageRoot": "libs/skills"
       }
     },
     "claude:encode-url": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["bundle"],
       "options": {
         "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/encode-url && cp -r libs/skills/dist/encode-url ~/.claude/skills/"
       }
     },
     "claude:decode-url": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["bundle"],
       "options": {
         "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/decode-url && cp -r libs/skills/dist/decode-url ~/.claude/skills/"
       }

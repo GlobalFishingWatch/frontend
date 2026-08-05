@@ -33,9 +33,9 @@ const withDataviewId = (instance: any) => {
 // Snaps start/end to the fourwings interval resolution the app will render with
 // (month boundaries for ~year ranges, day for short ranges) — same functions the map uses
 const withSnappedTimeRange = (state: MapState): MapState => {
-  const start = typeof state.start === 'string' ? Date.parse(state.start) : NaN
-  const end = typeof state.end === 'string' ? Date.parse(state.end) : NaN
-  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+  const start = typeof state.start === 'string' ? state.start : ''
+  const end = typeof state.end === 'string' ? state.end : ''
+  if (!Number.isFinite(Date.parse(start)) || !Number.isFinite(Date.parse(end))) {
     return state
   }
   const { start: newStart, end: newEnd } = stickToClosestInterval({ start, end })

@@ -236,6 +236,7 @@
     "circular-dependency-plugin": "5.2.2",
     "decompress": "4.2.1",
     "dotenv": "17.4.2",
+    "dts-bundle-generator": "^9.5.1",
     "esbuild": "0.28.1",
     "eslint": "10.8.0",
     "eslint-config-prettier": "10.1.8",
