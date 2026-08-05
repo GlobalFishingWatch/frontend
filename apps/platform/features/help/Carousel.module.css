@@ -1,0 +1,20 @@
+.carousel {
+  display: flex;
+  gap: var(--space-SM);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: var(--space-SM);
+  padding-bottom: var(--space-S);
+}
+
+.carousel > * {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+@media print {
+  .carousel {
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
+}

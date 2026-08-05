@@ -111,7 +111,7 @@ export const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'help-and-resources',
     icon: 'help-section',
     label: t((s) => s.nav.helpAndResources),
-    plannedTo: '/help-and-resources',
+    to: ROUTE_PATHS.HELP_HUB,
     subsections: [
       {
         id: 'user-guide',

@@ -28,7 +28,10 @@ function ContentLayout() {
           <a href="https://globalfishingwatch.org">
             <Logo />
           </a>
-          {isClientHydrated && <NavigationHistoryButton />}
+          {
+            // TODO: remove this button when migrated to platform
+            isClientHydrated && <NavigationHistoryButton />
+          }
         </div>
         <div
           id={SCROLL_CONTAINER_DOM_ID}

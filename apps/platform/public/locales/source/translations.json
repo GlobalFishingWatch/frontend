@@ -771,6 +771,23 @@
     "convenedBy": "Founding partners",
     "supportBy": "Supported by"
   },
+  "helpHub": {
+    "sections": {
+      "platformAndUpdates": {
+        "description": "",
+        "title": ""
+      },
+      "toolsAndFeatures": {
+        "description": "",
+        "title": ""
+      },
+      "useCases": {
+        "description": "",
+        "title": ""
+      }
+    },
+    "title": ""
+  },
   "hours": "",
   "layer": {
     "activityFitBounds": "Center view on activity",

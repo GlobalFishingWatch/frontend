@@ -17,6 +17,7 @@ import { Route as PlatformMapRouteImport } from './_platform/_map'
 import { Route as ApiCorrectionsRouteImport } from './api/corrections'
 import { Route as ApiDownloadSurveyRouteImport } from './api/downloadSurvey'
 import { Route as ApiFeedbackRouteImport } from './api/feedback'
+import { Route as PlatformContentHelpAndResourcesRouteImport } from './_platform/_content/help-and-resources'
 import { Route as PlatformContentUserRouteImport } from './_platform/_content/user'
 import { Route as PlatformContentVesselSearchRouteImport } from './_platform/_content/vessel-search'
 import { Route as PlatformMapMapRouteImport } from './_platform/_map/map'
@@ -81,6 +82,12 @@ const ApiFeedbackRoute = ApiFeedbackRouteImport.update({
   path: '/api/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlatformContentHelpAndResourcesRoute =
+  PlatformContentHelpAndResourcesRouteImport.update({
+    id: '/help-and-resources',
+    path: '/help-and-resources',
+    getParentRoute: () => PlatformContentRoute,
+  } as any)
 const PlatformContentUserRoute = PlatformContentUserRouteImport.update({
   id: '/user',
   path: '/user',
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
+  '/help-and-resources': typeof PlatformContentHelpAndResourcesRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
   '/map': typeof PlatformMapMapRouteWithChildren
@@ -270,6 +278,7 @@ export interface FileRoutesByTo {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
+  '/help-and-resources': typeof PlatformContentHelpAndResourcesRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
   '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
@@ -305,6 +314,7 @@ export interface FileRoutesById {
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
   '/_platform/': typeof PlatformIndexRoute
+  '/_platform/_content/help-and-resources': typeof PlatformContentHelpAndResourcesRoute
   '/_platform/_content/user': typeof PlatformContentUserRoute
   '/_platform/_content/vessel-search': typeof PlatformContentVesselSearchRoute
   '/_platform/_map/map': typeof PlatformMapMapRouteWithChildren
@@ -340,6 +350,7 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
+    | '/help-and-resources'
     | '/user'
     | '/vessel-search'
     | '/map'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
+    | '/help-and-resources'
     | '/user'
     | '/vessel-search'
     | '/api/migramar/$areaId'
@@ -407,6 +419,7 @@ export interface FileRouteTypes {
     | '/api/downloadSurvey'
     | '/api/feedback'
     | '/_platform/'
+    | '/_platform/_content/help-and-resources'
     | '/_platform/_content/user'
     | '/_platform/_content/vessel-search'
     | '/_platform/_map/map'
@@ -507,6 +520,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/feedback'
       preLoaderRoute: typeof ApiFeedbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_platform/_content/help-and-resources': {
+      id: '/_platform/_content/help-and-resources'
+      path: '/help-and-resources'
+      fullPath: '/help-and-resources'
+      preLoaderRoute: typeof PlatformContentHelpAndResourcesRouteImport
+      parentRoute: typeof PlatformContentRoute
     }
     '/_platform/_content/user': {
       id: '/_platform/_content/user'
@@ -694,11 +714,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface PlatformContentRouteChildren {
+  PlatformContentHelpAndResourcesRoute: typeof PlatformContentHelpAndResourcesRoute
   PlatformContentUserRoute: typeof PlatformContentUserRoute
   PlatformContentVesselSearchRoute: typeof PlatformContentVesselSearchRoute
 }
 
 const PlatformContentRouteChildren: PlatformContentRouteChildren = {
+  PlatformContentHelpAndResourcesRoute: PlatformContentHelpAndResourcesRoute,
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
 }
