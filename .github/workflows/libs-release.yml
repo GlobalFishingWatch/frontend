@@ -1,4 +1,5 @@
 name: libs release
+run-name: libs release ${{ inputs.project || 'i18n-labels' }} (${{ inputs.bump || 'patch' }})${{ inputs.dry_run && ' [dry run]' || '' }}
 
 on:
   # i18n-labels keeps releasing on every change, as it did in its own workflow
@@ -131,6 +132,15 @@ jobs:
       - name: Push version commit and tags
         if: steps.resolve.outputs.list != '' && !inputs.dry_run
         run: git push --follow-tags origin HEAD:${{ github.ref_name }}
+
+      - name: Summarize released versions
+        if: steps.resolve.outputs.list != '' && !inputs.dry_run
+        run: |
+          set -euo pipefail
+          {
+            echo '### Released'
+            git tag --points-at HEAD --list '@gfw/*' | sed 's/^/- `/;s/$/`/'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # i18n-labels is consumed over jsdelivr, which caches the "latest" tag
       - name: Purge jsdelivr cache
