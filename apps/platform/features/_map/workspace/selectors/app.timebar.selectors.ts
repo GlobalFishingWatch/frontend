@@ -4,9 +4,9 @@ import { DEFAULT_TIME_RANGE } from 'data/map/config'
 import {
   selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselsDataviews,
-  selectEnvironmentalDataviews,
   selectVesselGroupDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
 import {
   selectWorkspaceStateProperty,
@@ -36,10 +36,15 @@ export const selectTimebarVisualisation = createSelector(
 
 const selectTimebarSelectedEnvIdSelector = selectWorkspaceStateProperty('timebarSelectedEnvId')
 export const selectTimebarSelectedEnvId = createSelector(
-  [selectTimebarSelectedEnvIdSelector, selectTimebarVisualisation, selectEnvironmentalDataviews],
+  [
+    selectTimebarSelectedEnvIdSelector,
+    selectTimebarVisualisation,
+    selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+  ],
   (timebarSelectedEnvId, timebarVisualisation, envDataviews): string => {
     if (timebarVisualisation === TimebarVisualisations.Environment) {
-      return timebarSelectedEnvId || envDataviews[0]?.id
+      const isAvailable = envDataviews.some((d) => d.id === timebarSelectedEnvId)
+      return isAvailable ? timebarSelectedEnvId : envDataviews[0]?.id
     }
     return timebarSelectedEnvId
   }
@@ -54,7 +59,8 @@ export const selectTimebarSelectedUserId = createSelector(
   ],
   (timebarSelectedUserId, timebarVisualisation, userPointsDataviews): string => {
     if (timebarVisualisation === TimebarVisualisations.Points) {
-      return timebarSelectedUserId || userPointsDataviews[0]?.id
+      const isAvailable = userPointsDataviews.some((d) => d.id === timebarSelectedUserId)
+      return isAvailable ? timebarSelectedUserId : userPointsDataviews[0]?.id
     }
     return timebarSelectedUserId
   }
