@@ -4,19 +4,37 @@ import cx from 'classnames'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from '../ContentPanel.module.css'
 
+export type TableOfContentsSection = {
+  id: string
+  slug?: string
+  title: string
+  body?: string
+  subsections?: {
+    id: string
+    slug?: string
+    title: string
+  }[]
+}
+
 type TableOfContentsProps = {
-  data: UserGuideContent
+  data: TableOfContentsSection[]
   activeId?: string
+  className?: string
   onClick?: (id: string) => void
   onSubTopicClick?: (sectionId: string, subId: string) => void
 }
 
-function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfContentsProps) {
+function TableOfContents({
+  data,
+  activeId,
+  className,
+  onClick,
+  onSubTopicClick,
+}: TableOfContentsProps) {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
@@ -55,7 +73,10 @@ function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfCo
     [filteredSections, searchQuery]
   )
   return (
-    <div className={styles.tableOfContentsContainer + ' ' + styles.notranslate} translate="no">
+    <div
+      className={cx(styles.tableOfContentsContainer, styles.notranslate, className)}
+      translate="no"
+    >
       <InputText
         onChange={(e) => setSearchQuery(e.target.value)}
         value={searchQuery}
