@@ -13,6 +13,8 @@ export const ROUTE_PATHS = {
   REPORT: '/report/$reportId' as const,
   VESSEL: '/vessel/$vesselId' as const,
   HELP_HUB: '/help-and-resources' as const,
+  HELP_HUB_SECTION: '/help-and-resources/$sectionSlug' as const,
+  HELP_HUB_TOPIC: '/help-and-resources/$sectionSlug/$topicSlug' as const,
   // Map
   MAP: '/map' as const,
   WORKSPACES_LIST: '/map/$category' as const,
