@@ -1,41 +1,61 @@
 api-portal:
-  - apps/api-portal/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/api-portal/**/*
 platform:
-  - apps/platform/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/platform/**/*
 image-labeler:
-  - apps/image-labeler/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/image-labeler/**/*
 port-labeler:
-  - apps/port-labeler/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/port-labeler/**/*
 track-labeler:
-  - apps/track-labeler/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/track-labeler/**/*
 user-groups-admin:
-  - apps/user-groups-admin/**/*
+  - changed-files:
+      - any-glob-to-any-file: apps/user-groups-admin/**/*
 
 api-client:
-  - libs/api-client/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/api-client/**/*
 api-types:
-  - libs/api-types/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/api-types/**/*
 data-transforms:
-  - libs/data-transforms/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/data-transforms/**/*
 datasets-client:
-  - libs/datasets-client/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/datasets-client/**/*
 dataviews-client:
-  - libs/dataviews-client/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/dataviews-client/**/*
 deck-layer-composer:
-  - libs/deck-layer-composer/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/deck-layer-composer/**/*
 deck-layers:
-  - libs/deck-layers/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/deck-layers/**/*
 deck-loaders:
-  - libs/deck-loaders/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/deck-loaders/**/*
 i18n-labels:
-  - libs/i18n-labels/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/i18n-labels/**/*
 ocean-areas:
-  - libs/ocean-areas/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/ocean-areas/**/*
 react-hooks:
-  - libs/react-hooks/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/react-hooks/**/*
 responsive-visualizations:
-  - libs/responsive-visualizations/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/responsive-visualizations/**/*
 timebar:
-  - libs/timebar/**/*
+  - changed-files:
+      - any-glob-to-any-file: libs/timebar/**/*
 ui-components:
-  - ui-components/**/*
+  - changed-files:
+      - any-glob-to-any-file: ui-components/**/*
