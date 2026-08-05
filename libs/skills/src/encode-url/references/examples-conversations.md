@@ -2,6 +2,8 @@
 
 Real conversation transcripts with the exact output URLs the encoder must produce — use them to verify encoder behavior and to learn the follow-up patterns (preserve state, minimal delta).
 
+These URLs were copied from the browser, so three harmless normalizations differ from raw encoder output: the browser writes `%7E` where the encoder emits `~` (both unreserved, equivalent), `+` where the encoder emits `%20` for spaces, and index routes show a trailing slash (`/platform/map/` vs `/platform/map`). Ignore those three when round-tripping; treat any other difference as drift.
+
 **New Conversation**
 
 user: Fishing of Peru, Argentina, Brazil and Chile

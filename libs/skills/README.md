@@ -4,8 +4,8 @@ Agent skills for GFW applications, shareable across repos. Each skill lives in `
 
 ## Skills
 
-- [encode-url](src/encode-url/SKILL.md) — build a fishing-map URL + TanStack Router navigation config from a navigation intent (route, layers, filters, time range, viewport).
-- [decode-url](src/decode-url/SKILL.md) — decode a fishing-map URL into structured context of what the user is seeing.
+- [encode-url](src/encode-url/SKILL.md) — build a platform URL + TanStack Router navigation config from a navigation intent (route, layers, filters, time range, viewport).
+- [decode-url](src/decode-url/SKILL.md) — decode a platform URL into structured context of what the user is seeing.
 
 Both use the real `parseWorkspace`/`stringifyWorkspace` from `@globalfishingwatch/dataviews-client`, so URLs match the app byte-for-byte. `encode-url` owns the shared logic (layer dictionary, route matching) and `decode-url` imports it from there.
 

@@ -62,13 +62,13 @@
           },
           "alias": {
             "@platform/config": "./apps/platform/config/index.ts",
-            "@globalfishingwatch/api-types": "./libs/api-types/dist/index.js",
-            "@globalfishingwatch/api-client": "./libs/api-client/dist/index.js",
-            "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist/index.js",
+            "@globalfishingwatch/api-types": "./libs/api-types/dist",
+            "@globalfishingwatch/api-client": "./libs/api-client/dist",
+            "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist",
             "@globalfishingwatch/deck-layers": "./libs/deck-layers/dist/layers/fourwings/fourwings.config.js",
-            "@globalfishingwatch/deck-loaders": "./libs/deck-loaders/dist/index.js",
-            "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist/index.js",
-            "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist/index.js"
+            "@globalfishingwatch/deck-loaders": "./libs/deck-loaders/dist",
+            "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist",
+            "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist"
           }
         }
       }

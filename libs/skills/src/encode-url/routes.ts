@@ -45,7 +45,7 @@ const required = (route: MapRoute, param: keyof MapRouteParams): string => {
 
 /**
  * Returns the TanStack Router `to` pattern and `params` for a route,
- * matching the file routes in apps/platform/routes/_app
+ * matching the file routes in apps/platform/routes/_platform
  */
 export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   const category = route.category || DEFAULT_WORKSPACE_CATEGORY
@@ -86,6 +86,9 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
         params: { ...workspaceParams, vesselId: required(route, 'vesselId') },
       }
     case 'vessel-search':
+      if (!route.category && !route.workspaceId) {
+        return { to: ROUTE_PATHS.SEARCH, params: {} }
+      }
       return { to: ROUTE_PATHS.WORKSPACE_SEARCH, params: workspaceParams }
     case 'vessel-group-report':
       return {
@@ -134,6 +137,16 @@ const ROUTE_PATTERNS: [string, MapRouteType][] = [
   [ROUTE_PATHS.PORT_REPORT, 'ports-report'],
 ]
 
+// Pre-standalone paths the app still serves as 308 redirects (routes/_platform/_map/map/{user,
+// vessel-search,report.$reportId,vessel.$vesselId}.tsx). Matched before ROUTE_PATTERNS, because
+// '/map/user' would otherwise read as the '/map/$category' workspaces list.
+const LEGACY_ROUTE_PATTERNS: [string, MapRouteType][] = [
+  ['/map/user', 'user'],
+  ['/map/vessel-search', 'vessel-search'],
+  ['/map/report/$reportId', 'report'],
+  ['/map/vessel/$vesselId', 'vessel'],
+]
+
 const matchPattern = (pattern: string, segments: string[]): MapRouteParams | undefined => {
   const patternSegments = pattern.split('/').filter(Boolean)
   if (patternSegments.length !== segments.length) return undefined
@@ -159,7 +172,7 @@ export const matchRoutePath = (pathname: string): MapRoute => {
     // workspace matches what the user actually lands on. Revisit when a landing page exists.
     return { type: 'workspace' }
   }
-  for (const [pattern, type] of ROUTE_PATTERNS) {
+  for (const [pattern, type] of [...LEGACY_ROUTE_PATTERNS, ...ROUTE_PATTERNS]) {
     const params = matchPattern(pattern, segments)
     if (params) {
       return { type, ...params }

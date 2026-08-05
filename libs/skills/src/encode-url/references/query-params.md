@@ -2,8 +2,8 @@
 
 Pass these unabbreviated in `state` — the encoder abbreviates them.
 Source of truth (params documented with JSDoc — read these when a param is missing here):
-`apps/fishing-map/types/index.ts` (`WorkspaceState`/`AppState`/`QueryParams`), `apps/fishing-map/features/reports/reports.types.ts` (`ReportState`), `apps/fishing-map/features/vessel/vessel.types.ts` (`VesselProfileState`), `apps/fishing-map/features/search/search.types.ts` (`VesselSearchState`).
-Defaults live in `DEFAULT_WORKSPACE` (`apps/fishing-map/data/config.ts`) and `DEFAULT_REPORT_STATE` (`features/reports/reports.config.ts`).
+`apps/platform/types/index.ts` (`WorkspaceState`/`AppState`/`QueryParams`), `apps/platform/features/_reports/reports.types.ts` (`ReportState`), `apps/platform/features/_vessels/vessel/vessel.types.ts` (`VesselProfileState`), `apps/platform/features/_vessels/search/search.types.ts` (`VesselSearchState`).
+Defaults live in `DEFAULT_WORKSPACE` (`apps/platform/data/map/config.ts`) and `DEFAULT_REPORT_STATE` (`features/_reports/reports.config.ts`).
 
 ## Core (all routes)
 
