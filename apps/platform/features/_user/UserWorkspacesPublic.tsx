@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { Button, Icon, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
@@ -76,7 +75,6 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
       </div>
       {editWorkspace && (
         <Modal
-          appSelector={ROOT_DOM_ELEMENT}
           title={t((t) => t.workspace.edit)}
           isOpen
           shouldCloseOnEsc

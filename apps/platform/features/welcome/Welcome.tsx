@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Logo, Modal } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { Locale } from 'types'
@@ -80,7 +79,6 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
   return (
     <Modal
       header={false}
-      appSelector={ROOT_DOM_ELEMENT}
       shouldCloseOnEsc
       isOpen={welcomePopup?.visible}
       onClose={() => {

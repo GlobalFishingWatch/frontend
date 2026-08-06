@@ -16,7 +16,6 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/map/layer-library/layers-context'
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/workspaces'
 import { useAddDataset } from 'features/_map/datasets/datasets.hook'
@@ -345,7 +344,6 @@ function LayerPanel({
                     {t((t) => t.common.learnMore)}
                   </button>
                   <Modal
-                    appSelector={ROOT_DOM_ELEMENT}
                     title={title}
                     isOpen={modalDataWarningOpen}
                     onClose={onDataWarningModalClose}

@@ -11,7 +11,6 @@ import type {
 } from '@globalfishingwatch/ui-components'
 import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { getModalParent } from 'features/modals/modals.utils'
@@ -134,7 +133,6 @@ const MapControlScreenshot = ({
         />
       )}
       <Modal
-        appSelector={ROOT_DOM_ELEMENT}
         title={t((t) => t.map.screenshotPreview)}
         isOpen={modalOpen}
         onClose={handleModalClose}
