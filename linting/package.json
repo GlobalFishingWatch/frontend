@@ -50,7 +50,7 @@
     "eslint-plugin-react-refresh": "0.x",
     "prettier": "3.x",
     "prettier-eslint": "16.x",
-    "stylelint": "^17.6.0",
+    "stylelint": "^17.14.1",
     "stylelint-config-css-modules": "4.x",
     "stylelint-config-standard": "40.x",
     "typescript-eslint": "8.x"
