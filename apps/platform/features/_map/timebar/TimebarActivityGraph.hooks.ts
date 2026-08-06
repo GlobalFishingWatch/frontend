@@ -9,9 +9,13 @@ import {
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
 } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  FourwingsColorObject,
+  FourwingsLayer,
+  FourwingsTileLayerColorDomain,
+} from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
-import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
+import { isMultiHueColorRampId, rgbaToString } from '@globalfishingwatch/deck-layers/utils'
 import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,
@@ -30,9 +34,11 @@ import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selector
 import {
   getGraphDataFromFourwingsHeatmap,
   getGraphDataFromFourwingsPositions,
+  getLegendColorScale,
 } from './timebar.utils'
 
 const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
+const lastLegendRampByLayer = new Map<string, { domain: number[]; colors: string[] }>()
 
 export const useHeatmapActivityGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
@@ -65,11 +71,10 @@ export const useHeatmapActivityGraph = () => {
   const { loaded, instance } = fourwingsActivityLayer || {}
   const layerInstances = useAtomValue(deckLayerInstancesAtom)
 
-  const colorDomainHash = (
-    (instance?.getColorScale?.()?.colorDomain as number[] | number[][]) ?? []
-  )
-    .flat()
-    .join(',')
+  const colorDomainHash = [
+    ...((instance?.getColorScale?.()?.colorDomain as FourwingsTileLayerColorDomain) ?? []).flat(),
+    instance?.props?.sublayers?.[0]?.colorRamp,
+  ].join(',')
 
   const colorScale: TimebarColorScale = useMemo(() => {
     const layer = (instance ?? layerInstances.find((layer) => layer.id === id)) as
@@ -78,7 +83,16 @@ export const useHeatmapActivityGraph = () => {
     if (sublayers?.length !== 1 || !isMultiHueColorRampId(sublayers[0].colorRamp)) {
       return undefined
     }
-    return (value: number) => layer?.getColorByValue?.(value)
+
+    const { colorDomain, colorRange } = layer?.getColorScale?.() ?? {}
+    const domain = colorDomain as number[] | undefined
+    const colors = (colorRange as FourwingsColorObject[][] | undefined)?.[0]?.map(rgbaToString)
+    if (domain?.length && colors?.length) {
+      lastLegendRampByLayer.set(id, { domain, colors })
+    }
+    const ramp = lastLegendRampByLayer.get(id)
+    const legendScale = ramp && getLegendColorScale(ramp.domain, ramp.colors)
+    return (value: number) => layer?.getColorByValue?.(value) ?? legendScale?.(value)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instance, layerInstances, id, colorDomainHash])
 
