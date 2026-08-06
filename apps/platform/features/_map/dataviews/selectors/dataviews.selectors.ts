@@ -10,6 +10,7 @@ import {
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
+  getIsSingleHeatmapDataview,
   getMergedDataviewId,
   getVesselDataviewInstanceId,
 } from '@globalfishingwatch/dataviews-client'
@@ -36,6 +37,7 @@ import {
   selectVGRFootprintDataview,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselProfileDataviewInstancesInjected } from 'features/_map/dataviews/selectors/dataviews.injected.selectors'
+import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
@@ -188,10 +190,8 @@ export const selectActiveHeatmapAnimatedEnvironmentalDataviews = createSelector(
 )
 
 export const selectIsSingleHeatmapDataview = createSelector(
-  [selectActiveActivityAndDetectionsDataviews, selectActiveHeatmapAnimatedEnvironmentalDataviews],
-  (activityAndDetectionsDataviews = [], environmentalDataviews = []) => {
-    return activityAndDetectionsDataviews.length + environmentalDataviews.length === 1
-  }
+  [selectDataviewInstancesResolvedVisible],
+  (dataviews = []) => getIsSingleHeatmapDataview(dataviews)
 )
 
 export const selectActiveHeatmapDowloadDataviews = createSelector(
