@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "@platform/config": "workspace:*",
-    "@fontsource/roboto": "^5.2.10",
+    "@fontsource/roboto": "^5.3.0",
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
@@ -37,6 +37,6 @@
     "@globalfishingwatch/responsive-visualizations": "workspace:^",
     "@globalfishingwatch/timebar": "workspace:^",
     "@globalfishingwatch/ui-components": "workspace:^",
-    "@sentry/tanstackstart-react": "^10.55.0"
+    "@sentry/tanstackstart-react": "^10.69.0"
   }
 }
