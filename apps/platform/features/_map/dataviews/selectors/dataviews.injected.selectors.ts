@@ -9,7 +9,7 @@ import {
   mergeWorkspaceUrlDataviewInstances,
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
-import type { ColorRampId } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'

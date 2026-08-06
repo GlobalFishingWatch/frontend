@@ -3,7 +3,7 @@ import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
 
 import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
-import type { DeckLayerSubcategory, DeckPickingObject } from '../../types'
+import type { DeckLayerSubcategory, DeckPickingObject } from '#types'
 
 import type { TRACK_LAYER_TYPE } from './vessel.config'
 

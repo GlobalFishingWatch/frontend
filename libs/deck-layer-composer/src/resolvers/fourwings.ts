@@ -12,7 +12,6 @@ import {
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 import type {
-  ColorRampId,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsVisualizationMode,
@@ -20,8 +19,9 @@ import type {
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
-  getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import { TIME_COMPARISON_NOT_SUPPORTED_INTERVALS } from '@globalfishingwatch/deck-loaders'
 
 import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'

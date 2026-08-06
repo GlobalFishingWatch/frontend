@@ -14,8 +14,10 @@ import {
 import { kinks } from '@turf/turf'
 import type { Feature, Point, Polygon, Position } from 'geojson'
 
-import type { DeckLayerCategory } from '../../types'
-import { COLOR_HIGHLIGHT_LINE, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import type { DeckLayerCategory } from '#types'
+import { getLayerGroupOffset } from '#utils'
 
 import type { DrawLayerMode } from './draw.modes'
 import {

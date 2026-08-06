@@ -5,7 +5,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 
 // Direct module, not the utils barrel: the barrel re-exports ./layers (@deck.gl/extensions) and ./stats
 // (simple-statistics), which would make this config module un-importable from a leaf entry point.
-import { hexToDeckColor } from '../../utils/colors'
+import { hexToDeckColor } from '#utils/colors'
 
 export const TRACK_LAYER_TYPE = 'track'
 export const EVENT_LAYER_TYPE = 'event'

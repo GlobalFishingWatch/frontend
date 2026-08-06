@@ -1,19 +1,22 @@
 import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useAtomValue } from 'jotai'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
+  deckLayerInstancesAtom,
   getAvailableIntervalsInDataviews,
   useGetDeckLayer,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
 import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
-import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import type { ActivityTimeseriesFrame, TimebarColorScale } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
 import {
@@ -60,6 +63,24 @@ export const useHeatmapActivityGraph = () => {
   })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
+  const layerInstances = useAtomValue(deckLayerInstancesAtom)
+
+  const colorDomainHash = (
+    (instance?.getColorScale?.()?.colorDomain as number[] | number[][]) ?? []
+  )
+    .flat()
+    .join(',')
+
+  const colorScale: TimebarColorScale = useMemo(() => {
+    const layer = (instance ?? layerInstances.find((layer) => layer.id === id)) as
+      FourwingsLayer | undefined
+    const sublayers = layer?.props?.sublayers
+    if (sublayers?.length !== 1 || !isMultiHueColorRampId(sublayers[0].colorRamp)) {
+      return undefined
+    }
+    return (value: number) => layer?.getColorByValue?.(value)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instance, layerInstances, id, colorDomainHash])
 
   const setFourwingsPositionsData = async (viewportData: FourwingsPositionFeature[]) => {
     const data =
@@ -119,7 +140,7 @@ export const useHeatmapActivityGraph = () => {
   ])
 
   return useMemo(
-    () => ({ loading: !loaded, heatmapActivity: data, dataviews }),
-    [data, loaded, dataviews]
+    () => ({ loading: !loaded, heatmapActivity: data, dataviews, colorScale }),
+    [data, loaded, dataviews, colorScale]
   )
 }

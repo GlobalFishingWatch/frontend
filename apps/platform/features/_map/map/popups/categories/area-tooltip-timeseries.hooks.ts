@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
 import { useAtomValue } from 'jotai'
 
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { getLayersStateHashAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type {
@@ -11,11 +13,13 @@ import type {
   UserLayerPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
+import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useMapBoundsLive, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
@@ -34,20 +38,51 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
-export type TooltipCategory = 'activity' | 'detections'
+export type TooltipCategory = 'activity' | 'detections' | 'environment'
+
+export type TooltipSparklineOption = {
+  /** 'activity' | 'detections' for merged heatmaps, dataview id for environmental ones */
+  id: string
+  label: string
+  category: TooltipCategory
+}
 
 export function useAreaTooltipSparklineCategory() {
-  const hasActivity = (useSelector(selectActiveActivityDataviews)?.length ?? 0) > 0
-  const hasDetections = (useSelector(selectActiveDetectionsDataviews)?.length ?? 0) > 0
-  const [preferredCategory, setPreferredCategory] = useState<TooltipCategory>('activity')
-  const has = { activity: hasActivity, detections: hasDetections }
-  const other: TooltipCategory = preferredCategory === 'activity' ? 'detections' : 'activity'
-  const category: TooltipCategory = has[preferredCategory] ? preferredCategory : other
+  const { t } = useTranslation()
+  const activityDataviews = useSelector(selectActiveActivityDataviews)
+  const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const environmentalDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
+  const [preferredId, setPreferredId] = useState<string>('activity')
+
+  const options = useMemo(() => {
+    const options: TooltipSparklineOption[] = []
+    if (activityDataviews?.length) {
+      options.push({ id: 'activity', label: t((t) => t.common.activity), category: 'activity' })
+    }
+    if (detectionsDataviews?.length) {
+      options.push({
+        id: 'detections',
+        label: t((t) => t.common.detections),
+        category: 'detections',
+      })
+    }
+    environmentalDataviews?.forEach((dataview) => {
+      const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+      options.push({
+        id: dataview.id,
+        label: dataset ? getDatasetLabel(dataset) : (dataview.name ?? dataview.id),
+        category: 'environment',
+      })
+    })
+    return options
+  }, [activityDataviews, detectionsDataviews, environmentalDataviews, t])
+
   return {
-    category,
-    setPreferredCategory,
-    canSwitch: hasActivity && hasDetections,
-    hasAny: hasActivity || hasDetections,
+    option: options.find(({ id }) => id === preferredId) ?? options[0],
+    options,
+    setPreferredCategory: setPreferredId,
+    canSwitch: options.length > 1,
+    hasAny: options.length > 0,
   }
 }
 
@@ -135,16 +170,18 @@ export type AreaTooltipTimeseries = {
 
 export function useAreaTooltipTimeseries(
   feature: ContextPickingObject | UserLayerPickingObject,
-  category: TooltipCategory
+  option: TooltipSparklineOption | undefined
 ): AreaTooltipTimeseries {
   const { start, end } = useSelector(selectTimeRange)
   const activityDataviews = useSelector(selectActiveActivityDataviews)
   const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
-  const dataviews = category === 'detections' ? detectionsDataviews : activityDataviews
-  const ids = useMemo(
-    () => (dataviews?.length ? [getMergedDataviewId(dataviews)] : ['']),
-    [dataviews]
-  )
+  const ids = useMemo(() => {
+    if (option?.category === 'environment') {
+      return [option.id]
+    }
+    const dataviews = option?.category === 'detections' ? detectionsDataviews : activityDataviews
+    return dataviews?.length ? [getMergedDataviewId(dataviews)] : ['']
+  }, [option, activityDataviews, detectionsDataviews])
   const reportLayers = useGetDeckLayers<FourwingsLayer>(ids)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
 

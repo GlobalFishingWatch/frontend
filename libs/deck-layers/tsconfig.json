@@ -15,7 +15,12 @@
     "declarationMap": true,
     "inlineSources": true,
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "#config": ["./src/config/index.ts"],
+      "#utils": ["./src/utils/index.ts"],
+      "#*": ["./src/*.ts"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

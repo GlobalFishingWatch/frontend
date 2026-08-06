@@ -7,7 +7,7 @@ import {
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import type { DeckResolverFunction } from '../types/resolvers'
 

@@ -54,7 +54,7 @@ export const plugins = [
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    root: __dirname,
+    root: import.meta.dirname,
     base: basePath,
     devtools: command === 'serve',
     resolve: {

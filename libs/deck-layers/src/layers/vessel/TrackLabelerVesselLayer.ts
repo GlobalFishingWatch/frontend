@@ -3,8 +3,8 @@ import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension } from '@deck.gl/extensions'
 import { IconLayer, PathLayer } from '@deck.gl/layers'
 
-import { VESSEL_SPRITE_ICON_MAPPING } from '../../utils'
-import { PATH_BASENAME } from '../layers.config'
+import { PATH_BASENAME } from '#config/layers.config'
+import { VESSEL_SPRITE_ICON_MAPPING } from '#utils'
 
 import type { TrackLabelerPoint } from './vessel.types'
 

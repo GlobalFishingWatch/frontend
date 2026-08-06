@@ -129,6 +129,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: var(--size-M);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .secondary .optionItem {

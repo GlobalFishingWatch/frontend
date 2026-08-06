@@ -8,7 +8,7 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   POSITIONS_ID,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
 
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 import {

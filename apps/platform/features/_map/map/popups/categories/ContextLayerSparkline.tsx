@@ -5,7 +5,7 @@ import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import ReportActivityEvolution from 'features/_reports/tabs/activity/ReportActivityEvolution'
 
-import type { TooltipCategory } from './area-tooltip-timeseries.hooks'
+import type { TooltipSparklineOption } from './area-tooltip-timeseries.hooks'
 import { useAreaTooltipTimeseries } from './area-tooltip-timeseries.hooks'
 
 import styles from './ContextLayers.module.css'
@@ -14,37 +14,31 @@ const SPARKLINE_HEIGHT = 120
 
 const ContextLayerSparkline = ({
   feature,
-  category,
+  option,
+  options,
   canSwitch,
   onSelectCategory,
 }: {
   feature: ContextPickingObject | UserLayerPickingObject
-  category: TooltipCategory
+  option: TooltipSparklineOption
+  options: TooltipSparklineOption[]
   canSwitch: boolean
-  onSelectCategory: (category: TooltipCategory) => void
+  onSelectCategory: (id: string) => void
 }) => {
   const { t } = useTranslation()
-  const { loading, timeseries, start, end } = useAreaTooltipTimeseries(feature, category)
-
-  const activityLabel = t((t) => t.common.activity)
-  const detectionsLabel = t((t) => t.common.detections)
+  const { loading, timeseries, start, end } = useAreaTooltipTimeseries(feature, option)
 
   return (
     <div className={styles.sparklineContainer}>
       {canSwitch ? (
         <Choice
           size="small"
-          activeOption={category}
-          options={[
-            { id: 'activity', label: activityLabel },
-            { id: 'detections', label: detectionsLabel },
-          ]}
-          onSelect={(option) => onSelectCategory(option.id as TooltipCategory)}
+          activeOption={option.id}
+          options={options}
+          onSelect={({ id }) => onSelectCategory(id)}
         />
       ) : (
-        <span className={styles.sparklineLabel}>
-          {category === 'detections' ? detectionsLabel : activityLabel}
-        </span>
+        <span className={styles.sparklineLabel}>{option.label}</span>
       )}
       <div className={styles.sparkline} style={{ height: SPARKLINE_HEIGHT }}>
         {loading ? (

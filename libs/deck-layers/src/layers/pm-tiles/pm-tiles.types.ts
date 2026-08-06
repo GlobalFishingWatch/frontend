@@ -1,8 +1,8 @@
 import type { Accessor, Color, PickingInfo } from '@deck.gl/core'
 import type { _Tile2DHeader as Tile2DHeader, TileLayerProps } from '@deck.gl/geo-layers'
 
-import type { DeckLayerProps, DeckPickingObject } from '../../types'
-import type { ContextFeature } from '../context'
+import type { ContextFeature } from '#layers/context/index'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 export type PMTilesFeatureProperties = {
   id: string

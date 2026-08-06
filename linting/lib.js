@@ -95,6 +95,7 @@ export const config = {
           ['^(@|@globalfishingwatch|@platform/config)(/.*|$)'],
           // Internal paths.
           [
+            '^#', //`#` is a package.json `imports` subpath (package-internal alias).
             '^(features|store|routes|router|reducers|server|server-functions|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
