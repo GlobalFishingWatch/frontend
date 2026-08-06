@@ -36,7 +36,7 @@
     "luxon": "3.x",
     "qs": "6.x",
     "tslib": "2.x",
-    "vite": "7.x",
+    "vite": "8.x",
     "vitest": "4.1.10"
   }
 }
