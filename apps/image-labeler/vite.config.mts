@@ -7,7 +7,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
-  root: __dirname,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/image-labeler',
 
   server: {
