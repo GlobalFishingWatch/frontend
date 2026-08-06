@@ -789,6 +789,7 @@
     "color_change": "Cambiar el color",
     "colorSelectCustom": "Selecciona un color personalizado",
     "colorSelectPredefined": "Selecciona color predefinido",
+    "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
     "distance_from_port_km": "Búfer del puerto",
     "drawAddPoint": "Añadir un punto",

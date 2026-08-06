@@ -789,6 +789,7 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
+    "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
     "distance_from_port_km": "Tampon de port",
     "drawAddPoint": "Add a point",
