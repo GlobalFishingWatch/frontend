@@ -1,8 +1,15 @@
 import { parse } from '@loaders.gl/core'
+import { MVTLoader } from '@loaders.gl/mvt'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
-import { getEnv } from '../layers/layers.config'
+import { getEnv } from '../layers.config'
+
+export const GFWMVTLoader = {
+  ...MVTLoader,
+  // TODO: match api response with standard to avoid this override
+  mimeTypes: [...MVTLoader.mimeTypes, 'application/octet-stream'],
+} as unknown as typeof MVTLoader
 
 type FetchWithGFWAPIContext = {
   signal?: AbortSignal

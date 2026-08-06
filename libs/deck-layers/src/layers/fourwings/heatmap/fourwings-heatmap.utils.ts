@@ -7,10 +7,8 @@ import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loade
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getUTCDateTime } from '../../../utils'
-import type { GetChunkByIntervalParams } from '../fourwings.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
-  getChunkByInterval,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
@@ -21,6 +19,8 @@ import type {
   FourwingsDeckVectorSublayer,
   FourwingsVisualizationMode,
 } from '../fourwings.types'
+import type { GetChunkByIntervalParams } from '../fourwings.utils'
+import { getChunkByInterval } from '../fourwings.utils'
 
 import type {
   AggregateCellParams,

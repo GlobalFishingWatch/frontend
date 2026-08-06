@@ -13,17 +13,18 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_ID_PROPERTY,
+} from '../../config/colors.config'
+import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
+import { LayerGroup } from '../../config/sort.config'
+import {
   getColorRampByOpacitySteps,
-  getFetchLoadOptions,
   getLayerGroupOffset,
-  getMVTSublayerProps,
-  getPickedFeatureToHighlight,
-  GFWMVTLoader,
   hexToDeckColor,
-  LayerGroup,
   rgbaStringToComponents,
 } from '../../utils'
+import { getFetchLoadOptions, GFWMVTLoader } from '../_shared/api'
+import { getPickedFeatureToHighlight } from '../_shared/picking.utils'
+import { getMVTSublayerProps } from '../_shared/tiles.utils'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
 import {
   getContextFiltersHash,

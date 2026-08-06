@@ -10,13 +10,9 @@ import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
 
-import {
-  BLEND_BACKGROUND,
-  getLayerGroupOffset,
-  getViewportHash,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
+import { BLEND_BACKGROUND } from '../../config/colorRamps.config'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset, getViewportHash,hexToDeckColor  } from '../../utils'
 
 import { generateGraticulesFeatures } from './graticules.data'
 import type {

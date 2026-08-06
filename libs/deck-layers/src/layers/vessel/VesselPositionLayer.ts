@@ -5,13 +5,10 @@ import { IconLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { bearingToAzimuth } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
+import { BLEND_BACKGROUND } from '../../config/colorRamps.config'
+import { LayerGroup } from '../../config/sort.config'
 import type { DeckLayerProps } from '../../types'
-import {
-  BLEND_BACKGROUND,
-  getLayerGroupOffset,
-  LayerGroup,
-  VESSEL_SPRITE_ICON_MAPPING,
-} from '../../utils'
+import { getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '../../utils'
 import { hexToDeckColor } from '../../utils/colors'
 import { LabelLayer } from '../labels/LabelLayer'
 import { PATH_BASENAME } from '../layers.config'

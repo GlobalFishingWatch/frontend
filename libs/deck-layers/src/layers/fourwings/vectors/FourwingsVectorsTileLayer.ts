@@ -18,7 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { hexToRgbaString, removeOutliers } from '../../../utils'
+import { hexToRgbaString } from '../../../utils'
 import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
@@ -28,6 +28,7 @@ import {
   MAX_RAMP_VALUES,
   VECTORS_MAX_ZOOM,
 } from '../fourwings.config'
+import { removeOutliers } from '../fourwings.stats'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckVectorSublayer,

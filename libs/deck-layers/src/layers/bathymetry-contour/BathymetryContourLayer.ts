@@ -5,7 +5,8 @@ import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 
-import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
 import { LabelLayer } from '../labels/LabelLayer'
 import { PMTilesLayer } from '../pm-tiles'
 

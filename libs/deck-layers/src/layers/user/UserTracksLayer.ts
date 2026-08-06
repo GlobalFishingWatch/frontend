@@ -18,15 +18,10 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  COLOR_TRANSPARENT,
-  DEFAULT_ID_PROPERTY,
-  getLayerGroupOffset,
-  getUTCDateTime,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
+import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../config/colors.config'
+import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset, getUTCDateTime, hexToDeckColor } from '../../utils'
 import type { ContextFeature, ContextSublayerCallbackParams } from '../context/context.types'
 import { getContextId } from '../context/context.utils'
 import { MAX_FILTER_VALUE } from '../layers.config'

@@ -4,7 +4,8 @@ import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
 
-import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset } from '../../utils'
 import { PMTilesLayer } from '../pm-tiles/PMTilesLayer'
 
 import type { _BasemapLayerProps } from './basemap.types'

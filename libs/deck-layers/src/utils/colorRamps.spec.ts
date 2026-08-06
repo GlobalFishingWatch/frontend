@@ -2,11 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import {
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  getColorRamp,
   SPECTRAL_COLOR_RAMP,
   SPECTRAL_COLOR_RAMP_ID,
   SPECTRAL_REVERSED_COLOR_RAMP_ID,
-} from './colorRamps'
+} from '../config/colorRamps.config'
+
+import { getColorRamp } from './colorRamps'
 
 describe('getColorRamp', () => {
   it('returns the spectral ramp fully opaque, ignoring whiteEnd', () => {

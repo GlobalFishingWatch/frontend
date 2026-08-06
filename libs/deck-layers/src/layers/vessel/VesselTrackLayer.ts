@@ -8,7 +8,9 @@ import KDBush from 'kdbush'
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { COLOR_TRANSPARENT } from '../../config/colors.config'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset } from '../../utils'
 
 import { getPositions } from './vessel.track.utils'
 import type {

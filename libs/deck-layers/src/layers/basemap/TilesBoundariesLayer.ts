@@ -2,7 +2,8 @@ import { CompositeLayer } from '@deck.gl/core'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
 
-import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset } from '../../utils'
 import {
   FOURWINGS_TILE_SIZE,
   HEATMAP_HIGH_RES_ID,

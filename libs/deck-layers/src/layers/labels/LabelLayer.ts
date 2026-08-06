@@ -6,9 +6,12 @@ import { _MultiIconLayer, TextLayer } from '@deck.gl/layers'
 import type { Feature, Point } from '@loaders.gl/schema'
 import type { Position } from 'geojson'
 
-import { BLEND_BACKGROUND, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { BLEND_BACKGROUND } from '../../config/colorRamps.config'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset } from '../../utils'
 import { hexToDeckColor } from '../../utils/colors'
-import { DECK_FONT, loadDeckFont } from '../../utils/fonts'
+
+import { DECK_FONT, loadDeckFont } from './labels.fonts'
 
 type LabelLayerState = {
   fontLoaded: boolean

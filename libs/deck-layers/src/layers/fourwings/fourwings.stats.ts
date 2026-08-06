@@ -1,8 +1,8 @@
 import { ckmeans, mean, standardDeviation } from 'simple-statistics'
 
-import type { FourwingsAggregationOperation } from '../layers/fourwings'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '../../config/colorRamps.config'
 
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from './colorRamps'
+import type { FourwingsAggregationOperation } from './fourwings.types'
 
 export function getSteps(values: number[], numSteps = COLOR_RAMP_DEFAULT_NUM_STEPS) {
   if (!values?.length) return []

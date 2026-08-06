@@ -9,10 +9,8 @@ import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-clien
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import {
-  isMultiHueColorRampId,
-  MULTI_HUE_COLOR_RAMPS,
-} from '@globalfishingwatch/deck-layers/constants'
+import { MULTI_HUE_COLOR_RAMPS } from '@globalfishingwatch/deck-layers/config'
+import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { FillColorBarOptions, IconButton } from '@globalfishingwatch/ui-components'
 

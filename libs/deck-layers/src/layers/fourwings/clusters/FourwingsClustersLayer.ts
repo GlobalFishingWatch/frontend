@@ -34,17 +34,16 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckLayerPickingObject } from '../../../types'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
-  getLayerGroupOffset,
-  GFWMVTLoader,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../../utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+} from '../../../config/colors.config'
+import { LayerGroup } from '../../../config/sort.config'
+import type { DeckLayerPickingObject } from '../../../types'
+import { getLayerGroupOffset, hexToDeckColor } from '../../../utils'
+import { GFWMVTLoader } from '../../_shared/api'
+import { transformTileCoordsToWGS84 } from '../../_shared/tiles.utils'
 import { IS_TEST_ENV, PATH_BASENAME } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,

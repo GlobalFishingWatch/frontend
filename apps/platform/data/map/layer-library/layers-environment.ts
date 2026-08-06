@@ -1,4 +1,4 @@
-import { LayerGroup } from '@globalfishingwatch/deck-layers/constants'
+import { LayerGroup } from '@globalfishingwatch/deck-layers/config'
 
 import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'

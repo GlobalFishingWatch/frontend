@@ -25,17 +25,11 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  COLOR_TRANSPARENT,
-  getColorRamp,
-  getLayerGroupOffset,
-  getSteps,
-  GFWMVTLoader,
-  LayerGroup,
-  VESSEL_SPRITE_ICON_MAPPING,
-} from '../../../utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../../config/colors.config'
+import { LayerGroup } from '../../../config/sort.config'
+import { getColorRamp, getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '../../../utils'
+import { GFWMVTLoader } from '../../_shared/api'
+import { transformTileCoordsToWGS84 } from '../../_shared/tiles.utils'
 import { LabelLayer } from '../../labels/LabelLayer'
 import { PATH_BASENAME } from '../../layers.config'
 import {
@@ -44,6 +38,7 @@ import {
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
 } from '../fourwings.config'
+import { getSteps } from '../fourwings.stats'
 import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
 import type { FourwingsLayer } from '../FourwingsLayer'
 import { getTimeResolved } from '../heatmap/fourwings-heatmap.utils'
@@ -416,8 +411,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getDataUrl() {
-    const { startTime, endTime, sublayers, extentStart, extentEnd, intervalCacheMode = 'DATE' } =
-      this.props
+    const {
+      startTime,
+      endTime,
+      sublayers,
+      extentStart,
+      extentEnd,
+      intervalCacheMode = 'DATE',
+    } = this.props
     const supportedPositionProperties = this._getPositionProperties()
 
     const vesselGroups = sublayers.flatMap((sublayer) => {

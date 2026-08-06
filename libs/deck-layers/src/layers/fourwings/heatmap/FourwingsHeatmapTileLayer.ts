@@ -30,15 +30,14 @@ import {
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 
-import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
-import type { ColorRampId } from '../../../utils/colorRamps'
+import type { ColorRampId } from '../../../config/colorRamps.config'
 import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  getBivariateRamp,
-  getColorRamp,
   TIME_COMPARE_COLOR_RAMP,
-} from '../../../utils/colorRamps'
+} from '../../../config/colorRamps.config'
+import { hexToRgb } from '../../../utils'
+import { getBivariateRamp, getColorRamp } from '../../../utils/colorRamps'
 import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
@@ -48,6 +47,7 @@ import {
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES,
 } from '../fourwings.config'
+import { getSteps, removeOutliers } from '../fourwings.stats'
 import type {
   FourwingsColorObject,
   FourwingsDeckSublayer,

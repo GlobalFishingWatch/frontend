@@ -1,5 +1,7 @@
 export * from './fourwings.config'
+export * from './fourwings.stats'
 export * from './fourwings.types'
+export * from './fourwings.utils'
 export * from './clusters/fourwings-clusters.types'
 export * from './clusters/FourwingsClustersLayer'
 export * from './vectors/FourwingsVectorsTileLayer'

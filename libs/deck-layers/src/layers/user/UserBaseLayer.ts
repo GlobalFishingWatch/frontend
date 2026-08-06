@@ -13,9 +13,9 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
+import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
 import type { DeckLayerProps } from '../../types'
-import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
-import { DEFAULT_ID_PROPERTY } from '../../utils/layers'
+import { transformTileCoordsToWGS84 } from '../_shared/tiles.utils'
 import type { ContextFeature, ContextSubLayerConfig } from '../context'
 import {
   getContextFilterOperatorsHash,

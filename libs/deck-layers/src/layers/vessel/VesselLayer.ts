@@ -19,9 +19,11 @@ import {
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 
+import { LayerGroup } from '../../config/sort.config'
 import type { DeckLayerPickingObject, DeckLayerProps } from '../../types'
-import { fetchWithGFWAPI, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { getLayerGroupOffset } from '../../utils'
 import { deckToHexColor } from '../../utils/colors'
+import { fetchWithGFWAPI } from '../_shared/api'
 
 import {
   EVENT_LAYER_TYPE,

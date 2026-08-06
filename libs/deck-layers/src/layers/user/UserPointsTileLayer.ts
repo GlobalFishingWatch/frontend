@@ -18,17 +18,11 @@ import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  DEFAULT_LINE_COLOR,
-  getFetchLoadOptions,
-  getLayerGroupOffset,
-  getMVTSublayerProps,
-  GFWMVTLoader,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
-import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import { COLOR_HIGHLIGHT_LINE, DEFAULT_LINE_COLOR } from '../../config/colors.config'
+import { LayerGroup } from '../../config/sort.config'
+import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
+import { getFetchLoadOptions, GFWMVTLoader } from '../_shared/api'
+import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '../_shared/tiles.utils'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
 import {
   getContextFilterOperatorsHash,
