@@ -56,6 +56,7 @@ function SearchBasic({
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const [inputValue, setInputValue] = useState(searchQuery || '')
+  const [isScrolled, setIsScrolled] = useState(false)
   const syncedSearchQueryRef = useRef(searchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
@@ -122,7 +123,7 @@ function SearchBasic({
     >
       {({ getInputProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
         <div className={styles.basicLayout}>
-          <div className={styles.form}>
+          <div className={cx(styles.form, { [styles.formScrolled]: isScrolled })}>
             <InputText
               {...getInputProps()}
               onChange={onInputChange}
@@ -139,7 +140,10 @@ function SearchBasic({
               placeholder={`${t((t) => t.search.placeholder)} (${placeholderFieldsLabel})`}
             />
           </div>
-          <div className={styles.scrollContainer}>
+          <div
+            className={styles.scrollContainer}
+            onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
+          >
             {basicSearchAllowed ? (
               <ul
                 {...getMenuProps()}

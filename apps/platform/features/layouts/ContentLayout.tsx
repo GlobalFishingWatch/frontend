@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
@@ -26,11 +26,16 @@ function ContentLayout() {
   const isClientHydrated = useIsClientHydrated()
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   return (
     <div className={styles.appLayout}>
       <div className={styles.contentLayout}>
-        <div className={cx(styles.contentHeader)}>
+        <div
+          className={cx(styles.contentHeader, {
+            [styles.contentHeaderScrolled]: isScrolled,
+          })}
+        >
           <a href="https://globalfishingwatch.org">
             <Logo />
           </a>
@@ -43,6 +48,7 @@ function ContentLayout() {
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.contentScrollContainer)}
           data-testid="content-container"
+          onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
         >
           <Suspense fallback={null}>
             <Outlet />
