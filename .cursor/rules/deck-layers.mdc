@@ -1,0 +1,14 @@
+---
+description: deck.gl / Fourwings / vessel layer conventions in libs/deck-layers
+globs: libs/deck-layers/**/*.{ts,tsx},libs/deck-loaders/**/*.{ts,tsx},libs/deck-layer-composer/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Deck layers
+
+- Layer implementations are **classes** extending deck.gl `Layer` / `CompositeLayer` — expected here
+- Keep picking helpers and props types next to the layer (`*.types.ts`, `picking.utils.ts`)
+- Prefer existing Fourwings / vessel / context utilities over new ad-hoc loaders
+- Composer resolution lives in `libs/deck-layer-composer` — change resolvers carefully; dataview IDs and visibility matter
+- Avoid breaking public prop shapes without updating platform map wrappers and tests
+- Run `pnpm nx test deck-layers` (or affected) after loader/layer logic changes
