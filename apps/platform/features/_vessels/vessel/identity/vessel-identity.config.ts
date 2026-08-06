@@ -41,10 +41,20 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   terminologyKey: 'geartype',
 }
 
+export const COMBINED_SOURCE_VALUE_FIELDS = [
+  'bestLengthM',
+  'bestTonnageGt',
+  'bestEnginePowerKw',
+  'maxSpeedKn',
+] as const
+
 export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
-  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD],
-  // [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'lengthM', label: 'lengthM' }],
-  // [{ key: 'tonnageGt', label: 'grossTonnage' }],
+  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'bestLengthM', label: 'lengthM' }],
+  [
+    { key: 'bestTonnageGt', label: 'grossTonnage' },
+    { key: 'bestEnginePowerKw', label: 'enginePowerKw' },
+    { key: 'maxSpeedKn', label: 'maxSpeedKn' },
+  ],
 ]
 
 export const REGISTRY_FIELDS: VesselRenderField[][] = [

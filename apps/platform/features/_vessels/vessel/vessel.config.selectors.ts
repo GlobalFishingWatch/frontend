@@ -2,8 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
+import { WORKSPACE_ENV } from 'data/workspace-env'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
-import { DEFAULT_VESSEL_STATE } from 'features/_vessels/vessel/vessel.config'
+import { DEFAULT_VESSEL_STATE, VESSEL_IDENTITY_ID_V5 } from 'features/_vessels/vessel/vessel.config'
 import { selectLocationQuery } from 'router/routes.selectors'
 
 import type { VesselProfileState, VesselProfileStateProperty } from './vessel.types'
@@ -19,6 +20,12 @@ export function selectVesselProfileStateProperty<P extends VesselProfileStatePro
   })
 }
 export const selectVesselDatasetId = selectVesselProfileStateProperty('vesselDatasetId')
+
+export const selectShowPipe5IdentityFields = createSelector(
+  [selectVesselDatasetId],
+  (datasetId): boolean => datasetId === VESSEL_IDENTITY_ID_V5 && WORKSPACE_ENV !== 'production'
+)
+
 export const selectVesselActivityMode = selectVesselProfileStateProperty('vesselActivityMode')
 const selectVesselIdentitySourceParam = selectVesselProfileStateProperty('vesselIdentitySource')
 
