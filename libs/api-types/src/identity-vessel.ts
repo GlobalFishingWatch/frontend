@@ -236,30 +236,40 @@ export type VesselIdentitySearchMatchCriteria = {
 }
 
 export type CombinedSourceInfo = {
-  name: string
-  source: string
+  // pipe 5 only sets `name` on the geartypes/shiptypes entries, the rest are value-only
+  name?: string
+  source: string | null
   yearFrom: number
   yearTo: number
-  value?: string | boolean
+  value?: string | boolean | number
 }
 export type VesselCombinedSourcesInfo = {
   vesselId: string
   atomicClass?: CombinedSourceInfo[]
+  bestEnginePowerKw?: CombinedSourceInfo[]
+  bestLengthM?: CombinedSourceInfo[]
+  bestTonnageGt?: CombinedSourceInfo[]
   bestVesselClassRf?: CombinedSourceInfo[]
   coarseClass?: CombinedSourceInfo[]
   fishingSourceAgreement?: CombinedSourceInfo[]
   geartypes: CombinedSourceInfo[]
   inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
+  /** @deprecated substituted by `vesselClass` in pipe 5, still populated in pipe 4 */
   inferredVesselClassAgNnet?: CombinedSourceInfo[]
+  maxSpeedKn?: CombinedSourceInfo[]
   messyMmsi?: CombinedSourceInfo[]
+  onFishingListRf?: CombinedSourceInfo[]
   onFishingListSr?: CombinedSourceInfo[]
   prodGeartypeNnet?: CombinedSourceInfo[]
   prodGeartypeSource?: CombinedSourceInfo[]
   shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
   prodShiptypeNnet?: CombinedSourceInfo[]
   registryVesselClass?: CombinedSourceInfo[]
+  /** @deprecated substituted by `coarseClass`, still returned (empty) by pipe 5 */
+  rfCoarseClass?: CombinedSourceInfo[]
   shiptypes: CombinedSourceInfo[]
+  vesselClass?: CombinedSourceInfo[]
   vesselClassScore?: CombinedSourceInfo[]
   vesselClassSourceAgreement?: CombinedSourceInfo[]
 }

@@ -7,6 +7,7 @@ import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identity/fields/vessel-identity.utils'
+import { selectShowPipe5IdentityFields } from 'features/_vessels/vessel/vessel.config.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import styles from '../VesselIdentity.module.css'
@@ -19,6 +20,7 @@ const VesselIdentityGFWExtendedVesseltype = ({
   identity,
 }: VesselIdentityGFWExtendedVesseltypeProps) => {
   const isGFWUser = useSelector(selectIsGFWUser)
+  const showPipe5Fields = useSelector(selectShowPipe5IdentityFields)
 
   if (!isGFWUser || !identity.combinedSourcesInfo) {
     return null
@@ -55,18 +57,22 @@ const VesselIdentityGFWExtendedVesseltype = ({
           ? coarseClassInTimerange.value.toString()
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
-      <li>
-        <span className={cx(styles.secondary, styles.help)}>Shipname indicates likely gear: </span>
-        {shipnameIndicatesLikelyGearInTimerange?.value !== undefined
-          ? shipnameIndicatesLikelyGearInTimerange.value.toString()
-          : EMPTY_FIELD_PLACEHOLDER}
-      </li>
-      <li>
-        <span className={cx(styles.secondary, styles.help)}>Fishing source agreement: </span>
-        {fishingSourceAgreementInTimerange?.value !== undefined
-          ? fishingSourceAgreementInTimerange.value.toString()
-          : EMPTY_FIELD_PLACEHOLDER}
-      </li>
+      {showPipe5Fields && (
+        <li>
+          <span className={cx(styles.secondary, styles.help)}>Shipname indicates likely gear: </span>
+          {shipnameIndicatesLikelyGearInTimerange?.value !== undefined
+            ? shipnameIndicatesLikelyGearInTimerange.value.toString()
+            : EMPTY_FIELD_PLACEHOLDER}
+        </li>
+      )}
+      {showPipe5Fields && (
+        <li>
+          <span className={cx(styles.secondary, styles.help)}>Fishing source agreement: </span>
+          {fishingSourceAgreementInTimerange?.value !== undefined
+            ? fishingSourceAgreementInTimerange.value.toString()
+            : EMPTY_FIELD_PLACEHOLDER}
+        </li>
+      )}
       <li>
         <span className={cx(styles.secondary, styles.help)}>On fishing list: </span>
         {onFishingListInTimerange?.value !== undefined
