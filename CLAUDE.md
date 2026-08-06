@@ -21,3 +21,47 @@
 - The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
 
 <!-- nx configuration end-->
+
+## This workspace
+
+pnpm only (`preinstall` runs `only-allow pnpm`), pinned `pnpm@11.15.1`. Never use npm/yarn here.
+
+Apps in `apps/*`, shared libs in `libs/*`. pnpm workspace members: `linting`, `apps/platform`, `apps/platform/config`, `libs/*` — the other apps (`api-portal`, `data-download-portal`, `port-labeler`, `track-labeler`, `image-labeler`, `user-groups-admin`) are Nx projects but not pnpm packages, so they resolve `@globalfishingwatch/*` via `tsconfig.base.json` paths instead of symlinks.
+
+`apps/platform` is the main map app. It was named `fishing-map` — older notes, memory files and branches still say so. Current names: `apps/platform`, project `platform`, e2e project `platform-e2e`, config package `@platform/config`.
+
+### Lib resolution (read before touching tsconfig or vite config)
+
+Libs are consumed via built `dist/`, not src paths. Each `libs/*/package.json` export has three conditions: `types` → `dist/*.d.ts`, `development` → `src/*` (Vite dev only, gives HMR without lib rebuilds), `default` → `dist/*`. Consequence: after editing a lib's public types, run that lib's `dist` target or typecheck fails on correct code. Details and the traps in `.claude/memory/platform-dist-workspace-link.md`.
+
+### Commands
+
+| Task | Command |
+| --- | --- |
+| Run the map app | `pnpm nx start platform` (port 3003) |
+| Build a lib's dist | `pnpm nx dist <lib>` (target is `dist`, not `build`) |
+| Typecheck | `pnpm nx typecheck platform` |
+| Build app | `pnpm nx build platform` |
+| e2e | `pnpm nx test platform-e2e` |
+| Dead code | `pnpm knip` |
+
+Vitest suites are currently broken in `platform` — don't run them to validate changes. Verify with typecheck + lint, e2e, or a real SSR build. See `.claude/memory/platform-testing.md`.
+
+## Team knowledge
+
+Durable facts about this repo live in `.claude/memory/`, one fact per file, imported below. They are committed and reviewed like code.
+
+**Claude: this folder is where repo knowledge goes.** When you learn something durable about this codebase — an architectural constraint, a non-obvious build behavior, a trap that cost time to find — write it as a new file in `.claude/memory/` and add an import line here. Do **not** put it in your per-user memory directory; that one is only for an individual's personal working preferences. Rules of thumb:
+
+- One fact per file, kebab-case filename, `name` + `description` frontmatter, an `# H1`, then `**Why:**` and `**How to apply:**`.
+- Cross-link with `[[other-file-name]]`.
+- Prefer updating an existing file over adding a near-duplicate.
+- Don't record what the code or git history already says. Record the reasoning that isn't in them.
+- Date any claim that will age ("as of 2026-08"), so a stale note is recognisable as stale.
+
+@.claude/memory/platform-dist-workspace-link.md
+@.claude/memory/platform-config-package.md
+@.claude/memory/platform-testing.md
+@.claude/memory/skills-lib.md
+@.claude/memory/encode-url-skill-maintenance.md
+@.claude/memory/typescript7-migration.md
