@@ -78,7 +78,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   get cacheHash(): string {
-    return this.state?.rampDirty?.toString() || ''
+    if (!this.state) {
+      return ''
+    }
+    const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    return `${colorRamps}|${this.state.rampDirty}`
   }
 
   get debounceTime(): number {
