@@ -19,6 +19,7 @@ import { getUTCDateTime } from '../../utils/dates'
 export { DATASET_COMPARISON_SUFFIX } from '@platform/config/map/dataviews'
 
 export const ROOT_DOM_ELEMENT = '__root__'
+export const PLATFORM_CONTAINER_DOM_ID = 'platform-container'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
@@ -40,11 +41,9 @@ export const REPORT_DAYS_LIMIT =
     : 366 // 1 year
 
 export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as
-  | string
-  | undefined
+  string | undefined
 export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID as
-  | string
-  | undefined
+  string | undefined
 
 export const IS_REALTIME_ENABLED = import.meta.env.VITE_REALTIME_ENABLED === 'true'
 export const IS_CHATBOT_ENABLED = WORKSPACE_ENV === 'development'
@@ -146,10 +145,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
 }
 
 export type EncounterAuthorizedEventType =
-  | 'encounterauthorized'
-  | 'encounterauthorizedLabels'
-  | 'encounterpartially'
-  | 'encounterunmatched'
+  'encounterauthorized' | 'encounterauthorizedLabels' | 'encounterpartially' | 'encounterunmatched'
 export const EVENTS_COLORS: Record<
   EventType | EncounterAuthorizedEventType | 'fishingLabels',
   string

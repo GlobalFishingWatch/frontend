@@ -60,6 +60,9 @@ body:has(.printing) {
 #__root__ {
   height: 100dvh;
   width: 100%;
+  display: flex;
+  overflow-x: clip;
+  background: var(--color-background);
 }
 
 @media print {
