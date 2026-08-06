@@ -20,6 +20,7 @@
   height: 100%;
   transform: translateZ(0);
   transition: width 380ms var(--ease-drawer);
+  overflow-y: auto;
 }
 
 .contentHeader {
