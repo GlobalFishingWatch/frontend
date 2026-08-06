@@ -2,8 +2,8 @@ import type { GetPickingInfoParams } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset } from '../../utils'
+import { LayerGroup } from '#config/sort.config'
+import { getLayerGroupOffset } from '#utils'
 
 import type { WorkspacesFeature, WorkspacesLayerProps } from './workspaces.types'
 

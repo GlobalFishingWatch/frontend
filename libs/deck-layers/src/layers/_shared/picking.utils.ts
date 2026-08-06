@@ -1,7 +1,7 @@
-import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
-import type { ContextPickingObject } from '../context'
-import type { PolygonPickingObject } from '../polygons'
-import type { UserLayerPickingObject } from '../user'
+import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import type { ContextPickingObject } from '#layers/context/index'
+import type { PolygonPickingObject } from '#layers/polygons/index'
+import type { UserLayerPickingObject } from '#layers/user/index'
 
 export function getPickedFeatureToHighlight(
   data: any,

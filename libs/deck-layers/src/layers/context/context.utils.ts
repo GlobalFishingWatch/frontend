@@ -4,9 +4,9 @@ import type { Feature, MultiPolygon, Polygon } from 'geojson'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import { getPolygonsUnion } from '@globalfishingwatch/data-transforms'
 
-import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
-import type { FilterExtensionProps } from '../user/user.types'
-import { getFilterExtensionSize } from '../user/user.utils'
+import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import type { FilterExtensionProps } from '#layers/user/user.types'
+import { getFilterExtensionSize } from '#layers/user/user.utils'
 
 import type {
   ContextFeature,

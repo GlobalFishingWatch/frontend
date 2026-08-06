@@ -1,7 +1,7 @@
 import type { Color } from '@deck.gl/core'
 import type { RGBA } from 'color-blend/dist/types'
 
-import { COLOR_TRANSPARENT } from '../config/colors.config'
+import { COLOR_TRANSPARENT } from '#config/colors.config'
 
 export const hexToRgb = (hex: string) => {
   if (!hex) {

@@ -5,7 +5,7 @@ import {
   SPECTRAL_COLOR_RAMP,
   SPECTRAL_COLOR_RAMP_ID,
   SPECTRAL_REVERSED_COLOR_RAMP_ID,
-} from '../config/colorRamps.config'
+} from '#config/colorRamps.config'
 
 import { getColorRamp } from './colorRamps'
 

@@ -3,9 +3,9 @@ import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
 
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset } from '../../utils'
-import { PMTilesLayer } from '../pm-tiles/PMTilesLayer'
+import { LayerGroup } from '#config/sort.config'
+import { PMTilesLayer } from '#layers/pm-tiles/PMTilesLayer'
+import { getLayerGroupOffset } from '#utils'
 
 export type BaseMapImageLayerProps = Omit<MVTLayerProps, 'data'> & {
   tilesUrl: string

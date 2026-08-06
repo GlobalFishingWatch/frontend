@@ -13,10 +13,8 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
-import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
-import type { DeckLayerProps } from '../../types'
-import { transformTileCoordsToWGS84 } from '../_shared/tiles.utils'
-import type { ContextFeature, ContextSubLayerConfig } from '../context'
+import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   getContextFilterOperatorsHash,
   getContextId,
@@ -24,7 +22,9 @@ import {
   hasSublayerFilters,
   mergePickedFeatures,
   supportDataFilterExtension,
-} from '../context/context.utils'
+} from '#layers/context/context.utils'
+import type { ContextFeature, ContextSubLayerConfig } from '#layers/context/index'
+import type { DeckLayerProps } from '#types'
 
 import type {
   BaseUserLayerProps,
@@ -39,9 +39,7 @@ import type {
 import { getFilterExtensionSize } from './user.utils'
 
 type _UserBaseLayerProps =
-  | (TileLayerProps & UserPointsLayerProps)
-  | UserTrackLayerProps
-  | UserPointsLayerProps
+  (TileLayerProps & UserPointsLayerProps) | UserTrackLayerProps | UserPointsLayerProps
 
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   pickable: true,

@@ -25,23 +25,26 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../../config/colors.config'
-import { LayerGroup } from '../../../config/sort.config'
-import { getColorRamp, getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '../../../utils'
-import { GFWMVTLoader } from '../../_shared/api'
-import { transformTileCoordsToWGS84 } from '../../_shared/tiles.utils'
-import { LabelLayer } from '../../labels/LabelLayer'
-import { PATH_BASENAME } from '../../layers.config'
+import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { PATH_BASENAME } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { GFWMVTLoader } from '#layers/_shared/api'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
-} from '../fourwings.config'
-import { getSteps } from '../fourwings.stats'
-import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
-import type { FourwingsLayer } from '../FourwingsLayer'
-import { getTimeResolved } from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/fourwings.config'
+import { getSteps } from '#layers/fourwings/fourwings.stats'
+import type {
+  FourwingsColorObject,
+  FourwingsTileLayerColorScale,
+} from '#layers/fourwings/fourwings.types'
+import type { FourwingsLayer } from '#layers/fourwings/FourwingsLayer'
+import { getTimeResolved } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { LabelLayer } from '#layers/labels/LabelLayer'
+import { getColorRamp, getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '#utils'
 
 import type {
   FourwingsPositionsPickingInfo,

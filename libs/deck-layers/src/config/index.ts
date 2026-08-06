@@ -3,7 +3,6 @@
  */
 export * from './colorRamps.config'
 export * from './colors.config'
-export * from './features.config'
 export * from './sort.config'
 export * from '../layers/basemap/basemap.types'
 export * from '../layers/fourwings/fourwings.config'

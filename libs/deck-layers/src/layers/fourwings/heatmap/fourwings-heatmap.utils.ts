@@ -6,21 +6,21 @@ import { stringify } from 'qs'
 import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { getUTCDateTime } from '../../../utils'
 import {
   FOOTPRINT_HIGH_RES_ID,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
 import type {
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsVisualizationMode,
-} from '../fourwings.types'
-import type { GetChunkByIntervalParams } from '../fourwings.utils'
-import { getChunkByInterval } from '../fourwings.utils'
+} from '#layers/fourwings/fourwings.types'
+import type { GetChunkByIntervalParams } from '#layers/fourwings/fourwings.utils'
+import { getChunkByInterval } from '#layers/fourwings/fourwings.utils'
+import { getUTCDateTime } from '#utils'
 
 import type {
   AggregateCellParams,

@@ -4,10 +4,10 @@ import { PathStyleExtension } from '@deck.gl/extensions'
 import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
 import type { Feature, LineString, MultiLineString, Point } from 'geojson'
 
-import { COLOR_TRANSPARENT } from '../../config/colors.config'
-import { LayerGroup } from '../../config/sort.config'
-import type { DeckLayerCategory } from '../../types'
-import { getLayerGroupOffset } from '../../utils'
+import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import type { DeckLayerCategory } from '#types'
+import { getLayerGroupOffset } from '#utils'
 
 import type {
   RulerData,

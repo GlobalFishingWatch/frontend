@@ -5,10 +5,10 @@ import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
-import { LabelLayer } from '../labels/LabelLayer'
-import { PMTilesLayer } from '../pm-tiles'
+import { LayerGroup } from '#config/sort.config'
+import { LabelLayer } from '#layers/labels/LabelLayer'
+import { PMTilesLayer } from '#layers/pm-tiles/index'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type {
   BathymetryContourFeature,

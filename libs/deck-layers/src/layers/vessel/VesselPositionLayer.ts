@@ -1,17 +1,16 @@
 import type { Accessor, Color, LayerProps } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { CollisionFilterExtension } from '@deck.gl/extensions'
 import { IconLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { bearingToAzimuth } from '@turf/turf'
 import type { Feature, Point } from 'geojson'
 
-import { BLEND_BACKGROUND } from '../../config/colorRamps.config'
-import { LayerGroup } from '../../config/sort.config'
-import type { DeckLayerProps } from '../../types'
-import { getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '../../utils'
-import { hexToDeckColor } from '../../utils/colors'
-import { LabelLayer } from '../labels/LabelLayer'
-import { PATH_BASENAME } from '../layers.config'
+import { BLEND_BACKGROUND } from '#config/colorRamps.config'
+import { PATH_BASENAME } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { LabelLayer } from '#layers/labels/LabelLayer'
+import type { DeckLayerProps } from '#types'
+import { getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '#utils'
+import { hexToDeckColor } from '#utils/colors'
 
 /** Render paths that represent vessel trips. */
 export class VesselPositionIconLayer extends IconLayer {

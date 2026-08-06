@@ -1,5 +1,5 @@
-import type { LayerGroup } from '../config/sort.config'
-import { LAYER_GROUP_ORDER } from '../config/sort.config'
+import type { LayerGroup } from '#config/sort.config'
+import { LAYER_GROUP_ORDER } from '#config/sort.config'
 
 export function getLayerGroupOffset(
   group: LayerGroup,

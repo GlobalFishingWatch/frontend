@@ -3,7 +3,7 @@ import { DateTime, Duration } from 'luxon'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
-import { getUTCDateTime } from '../../utils/dates'
+import { getUTCDateTime } from '#utils/dates'
 
 import { CHUNKS_BUFFER } from './fourwings.config'
 import type { FourwingsChunk, FourwingsIntervalCacheMode } from './fourwings.types'

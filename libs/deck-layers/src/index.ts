@@ -1,5 +1,4 @@
-// `./config` and `./utils` are deliberately NOT re-exported here to enforce
-// `@globalfishingwatch/deck-layers/config` and `/utils` imports.
+// NOT re-exported`./config`, `./utils`, `./draw` to enforce leaf imports (`@globalfishingwatch/deck-layers/* )
 export * from './layers/_shared/api'
 export * from './layers/_shared/picking.utils'
 export * from './layers/_shared/tiles.utils'

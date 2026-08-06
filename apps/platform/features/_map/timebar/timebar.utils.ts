@@ -5,11 +5,8 @@ import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
-import {
-  getDateInIntervalResolution,
-  getFeatureTimeRange,
-  rgbaStringToComponents,
-} from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution, getFeatureTimeRange } from '@globalfishingwatch/deck-layers'
+import { rgbaStringToComponents } from '@globalfishingwatch/deck-layers/utils'
 import type {
   FourwingsFeature,
   FourwingsInterval,

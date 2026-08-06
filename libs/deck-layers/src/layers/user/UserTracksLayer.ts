@@ -18,15 +18,14 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '../../config/colors.config'
-import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset, getUTCDateTime, hexToDeckColor } from '../../utils'
-import type { ContextFeature, ContextSublayerCallbackParams } from '../context/context.types'
-import { getContextId } from '../context/context.utils'
-import { MAX_FILTER_VALUE } from '../layers.config'
-import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
-import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
+import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '#config/colors.config'
+import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/context/context.types'
+import { getContextId } from '#layers/context/context.utils'
+import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '#layers/vessel/vessel.config'
+import type { GetSegmentsFromDataParams } from '#layers/vessel/vessel.utils'
+import { getLayerGroupOffset, getUTCDateTime, hexToDeckColor } from '#utils'
 
 import {
   cloneArrayBuffer,

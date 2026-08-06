@@ -18,19 +18,19 @@ import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, DEFAULT_LINE_COLOR } from '../../config/colors.config'
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
-import { getFetchLoadOptions, GFWMVTLoader } from '../_shared/api'
-import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '../_shared/tiles.utils'
-import type { ContextSublayerCallbackParams } from '../context/context.types'
+import { COLOR_HIGHLIGHT_LINE, DEFAULT_LINE_COLOR } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
+import type { ContextSublayerCallbackParams } from '#layers/context/context.types'
 import {
   getContextFilterOperatorsHash,
   getContextFiltersHash,
   hasSublayerFilters,
   supportDataFilterExtension,
-} from '../context/context.utils'
-import { filteredPositionsByViewport } from '../fourwings'
+} from '#layers/context/context.utils'
+import { filteredPositionsByViewport } from '#layers/fourwings/index'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
 import type { IsFeatureInRangeParams } from './user.utils'

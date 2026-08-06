@@ -6,17 +6,17 @@ import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE } from '../../../config/colors.config'
-import { LayerGroup } from '../../../config/sort.config'
-import { getLayerGroupOffset, hexToDeckColor } from '../../../utils'
-import { FOOTPRINT_ID } from '../fourwings.config'
-import type { FourwingsHeatmapPickingInfo, FourwingsHeatmapPickingObject } from '../fourwings.types'
-import { FourwingsAggregationOperation } from '../fourwings.types'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { FOOTPRINT_ID } from '#layers/fourwings/fourwings.config'
+import type { FourwingsHeatmapPickingInfo, FourwingsHeatmapPickingObject } from '#layers/fourwings/fourwings.types'
+import { FourwingsAggregationOperation } from '#layers/fourwings/fourwings.types'
 import {
   aggregateCell,
   EMPTY_CELL_COLOR,
   getIntervalFrames,
-} from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type { FourwingsFootprintLayerProps } from './fourwings-footprint.types'
 

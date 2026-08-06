@@ -1,6 +1,6 @@
 import { ckmeans, mean, standardDeviation } from 'simple-statistics'
 
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '../../config/colorRamps.config'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '#config/colorRamps.config'
 
 import type { FourwingsAggregationOperation } from './fourwings.types'
 

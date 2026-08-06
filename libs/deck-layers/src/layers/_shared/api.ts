@@ -3,7 +3,7 @@ import { MVTLoader } from '@loaders.gl/mvt'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
-import { getEnv } from '../layers.config'
+import { getEnv } from '#config/layers.config'
 
 export const GFWMVTLoader = {
   ...MVTLoader,

@@ -2,19 +2,19 @@ import { CompositeLayer } from '@deck.gl/core'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
 
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset } from '../../utils'
+import { LayerGroup } from '#config/sort.config'
 import {
   FOURWINGS_TILE_SIZE,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-} from '../fourwings/fourwings.config'
-import type { FourwingsVisualizationMode } from '../fourwings/fourwings.types'
+} from '#layers/fourwings/fourwings.config'
+import type { FourwingsVisualizationMode } from '#layers/fourwings/fourwings.types'
 import {
   getResolutionByVisualizationMode,
   getZoomOffsetByResolution,
-} from '../fourwings/heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { getLayerGroupOffset } from '#utils'
 
 const colorByVisualizationMode = {
   [HEATMAP_ID]: [255, 0, 0, 100],

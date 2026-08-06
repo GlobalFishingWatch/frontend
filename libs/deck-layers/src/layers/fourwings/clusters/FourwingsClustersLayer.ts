@@ -38,20 +38,20 @@ import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
-} from '../../../config/colors.config'
-import { LayerGroup } from '../../../config/sort.config'
-import type { DeckLayerPickingObject } from '../../../types'
-import { getLayerGroupOffset, hexToDeckColor } from '../../../utils'
-import { GFWMVTLoader } from '../../_shared/api'
-import { transformTileCoordsToWGS84 } from '../../_shared/tiles.utils'
-import { IS_TEST_ENV, PATH_BASENAME } from '../../layers.config'
+} from '#config/colors.config'
+import { IS_TEST_ENV, PATH_BASENAME } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { GFWMVTLoader } from '#layers/_shared/api'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
-} from '../fourwings.config'
-import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/fourwings.config'
+import { getURLFromTemplate } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import type { DeckLayerPickingObject } from '#types'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type {
   FourwingsClusterEventType,

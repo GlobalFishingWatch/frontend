@@ -15,12 +15,12 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
-} from '../../config/colors.config'
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
-import { getFetchLoadOptions } from '../_shared/api'
-import { getPickedFeatureToHighlight } from '../_shared/picking.utils'
-import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
+} from '#config/colors.config'
+import { PREVIEW_BUFFER_GENERATOR_ID } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { getFetchLoadOptions } from '#layers/_shared/api'
+import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type {
   PolygonFeature,

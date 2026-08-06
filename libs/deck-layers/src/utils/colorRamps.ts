@@ -1,7 +1,7 @@
 import { normal, screen } from 'color-blend'
 import type { RGBA } from 'color-blend/dist/types'
 
-import type { AnyColorRampId, ColorRampId, MultiHueColorRampId } from '../config/colorRamps.config'
+import type { AnyColorRampId, ColorRampId, MultiHueColorRampId } from '#config/colorRamps.config'
 import {
   BLEND_BACKGROUND,
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
@@ -10,7 +10,7 @@ import {
   DEFAULT_COLOR_RAMP_ID,
   HEATMAP_COLORS_BY_ID,
   MULTI_HUE_COLOR_RAMPS,
-} from '../config/colorRamps.config'
+} from '#config/colorRamps.config'
 
 import {
   hexToRgb,

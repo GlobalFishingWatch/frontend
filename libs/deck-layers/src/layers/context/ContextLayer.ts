@@ -15,13 +15,13 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
-} from '../../config/colors.config'
-import { DEFAULT_ID_PROPERTY } from '../../config/features.config'
-import { LayerGroup } from '../../config/sort.config'
-import { getLayerGroupOffset, hexToDeckColor } from '../../utils'
-import { getFetchLoadOptions, GFWMVTLoader } from '../_shared/api'
-import { getPickedFeatureToHighlight } from '../_shared/picking.utils'
-import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '../_shared/tiles.utils'
+} from '#config/colors.config'
+import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
+import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
 import type {
