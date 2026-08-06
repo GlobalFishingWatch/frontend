@@ -10,7 +10,7 @@ import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHis
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import SearchTypeChoice from 'features/_vessels/search/SearchTypeChoice'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
-import { selectIsAnySearchLocation } from 'router/routes.selectors'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 
 import styles from './layouts.module.css'
 
@@ -24,7 +24,7 @@ import styles from './layouts.module.css'
  */
 function ContentLayout() {
   const isClientHydrated = useIsClientHydrated()
-  const isSearchLocation = useSelector(selectIsAnySearchLocation)
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
 
   return (
@@ -35,7 +35,7 @@ function ContentLayout() {
             <Logo />
           </a>
           <div className={styles.contentHeaderActions}>
-            {isSearchLocation && !isSmallScreen && <SearchTypeChoice />}
+            {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
             {isClientHydrated && <NavigationHistoryButton />}
           </div>
         </div>
