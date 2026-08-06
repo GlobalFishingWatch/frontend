@@ -1,4 +1,4 @@
-name: Build and Deploy (shared)
+name: _Build and Deploy (Reusable workflow)
 
 on:
   workflow_call:
