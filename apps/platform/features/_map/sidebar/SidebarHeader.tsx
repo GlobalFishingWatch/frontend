@@ -1,11 +1,9 @@
 import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Choice, Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { Logo, SubBrands } from '@globalfishingwatch/ui-components'
 
 import { WorkspaceCategory } from 'data/map/workspaces'
 import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
@@ -16,22 +14,10 @@ import { getScrollElement } from 'features/_map/sidebar/sidebar.utils'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { selectWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.selectors'
 import UserButton from 'features/_user/UserButton'
-import type { SearchType } from 'features/_vessels/search/search.config'
-import {
-  CALLSIGN_MIN_LENGTH,
-  EMPTY_SEARCH_FILTERS,
-  IMO_LENGTH,
-  SSVID_LENGTH,
-} from 'features/_vessels/search/search.config'
-import { selectSearchOption, selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
-import { useSearchFiltersConnect } from 'features/_vessels/search/search.hook'
-import { cleanVesselSearchResults } from 'features/_vessels/search/search.slice'
+import SearchTypeChoice from 'features/_vessels/search/SearchTypeChoice'
 import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/track-selection.selectors'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { useAppDispatch } from 'features/app/app.hooks'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyReportLocation,
@@ -62,9 +48,6 @@ const SaveWorkspaceButton = lazy(() => import('features/_map/sidebar/buttons/Sav
 const TimeModeSelector = lazy(() => import('features/_map/sidebar/TimeModeSelector'))
 
 function SidebarHeader() {
-  const { t } = useTranslation()
-  const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)
@@ -80,9 +63,6 @@ function SidebarHeader() {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
-  const activeSearchOption = useSelector(selectSearchOption)
-  const searchQuery = useSelector(selectSearchQuery)
-  const { searchFilters } = useSearchFiltersConnect()
   const scrollElement = getScrollElement()
 
   useEffect(() => {
@@ -109,47 +89,6 @@ function SidebarHeader() {
     if (locationCategory === WorkspaceCategory.MarineManager) subBrand = SubBrands.MarineManager
     return subBrand
   }, [locationCategory])
-
-  const searchOptions: ChoiceOption<SearchType>[] = useMemo(() => {
-    return [
-      {
-        id: 'basic' as SearchType,
-        label: t((t) => t.search.basic),
-      },
-      {
-        id: 'advanced' as SearchType,
-        label: t((t) => t.search.advanced),
-      },
-    ]
-  }, [t])
-
-  const onSearchOptionChange = (option: ChoiceOption<SearchType>) => {
-    trackEvent({
-      category: TrackCategory.SearchVessel,
-      action: 'Toggle search type to filter results',
-      label: option.id,
-    })
-    let additionalParams = {}
-    if (option.id === 'advanced') {
-      if (searchQuery?.length === SSVID_LENGTH && !isNaN(Number(searchQuery))) {
-        additionalParams = { ssvid: searchQuery }
-      } else if (searchQuery?.length === IMO_LENGTH && !isNaN(Number(searchQuery))) {
-        additionalParams = { imo: searchQuery }
-      } else if (searchQuery?.length >= CALLSIGN_MIN_LENGTH && /^[A-Z0-9]+$/.test(searchQuery)) {
-        additionalParams = { callsign: searchQuery }
-      } else {
-        additionalParams = { query: searchQuery }
-      }
-    } else {
-      if (searchQuery || searchFilters.ssvid || searchFilters.imo) {
-        additionalParams = {
-          query: searchQuery || searchFilters.ssvid || searchFilters.imo,
-        }
-      }
-    }
-    dispatch(cleanVesselSearchResults())
-    replaceQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
-  }
 
   const sectionHeaderComponent = useMemo(() => {
     if (isAnyVesselLocation) {
@@ -190,13 +129,7 @@ function SidebarHeader() {
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
-              <Choice
-                options={searchOptions}
-                activeOption={activeSearchOption}
-                onSelect={onSearchOptionChange}
-                size="medium"
-                className={styles.searchOption}
-              />
+              <SearchTypeChoice className={styles.searchOption} />
             )}
             {isClientHydrated &&
               (workspaceHistoryNavigation?.length ? (

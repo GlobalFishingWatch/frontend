@@ -121,7 +121,7 @@ function SearchBasic({
       itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
     >
       {({ getInputProps, getMenuProps, highlightedIndex, setHighlightedIndex }) => (
-        <div>
+        <div className={styles.basicLayout}>
           <div className={styles.form}>
             <InputText
               {...getInputProps()}

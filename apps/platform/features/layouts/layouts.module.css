@@ -22,6 +22,7 @@
   transition: width 380ms var(--ease-drawer);
   display: flex;
   flex-direction: column;
+  overflow: clip;
 }
 
 .contentHeader {
@@ -30,6 +31,13 @@
   justify-content: space-between;
   padding: 0 var(--space-S);
   height: var(--header-height);
+  flex-shrink: 0;
+}
+
+.contentHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
 }
 
 .contentScrollContainer {
