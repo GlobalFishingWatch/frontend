@@ -160,6 +160,7 @@ function UserDatasets() {
                       )}
                       {(datasetError || datasetImporting) && (
                         <InfoError
+                          size="default"
                           error={datasetError}
                           loading={datasetImporting}
                           tooltip={infoTooltip}
