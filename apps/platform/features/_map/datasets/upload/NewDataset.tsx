@@ -8,7 +8,7 @@ import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types
 import { getDatasetFiltersAllowed } from '@globalfishingwatch/datasets-client'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 
-import { NEW_DATASET_MODAL_ID, ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/map/config'
+import { NEW_DATASET_MODAL_ID, SUPPORT_EMAIL } from 'data/map/config'
 import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
 import { getFinalDatasetFromMetadata } from 'features/_map/datasets/upload/datasets-upload.utils'
 import NewPointsDataset from 'features/_map/datasets/upload/NewPointsDataset'
@@ -184,7 +184,6 @@ function NewDataset() {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={isDatasetEdit ? t((t) => t.dataset.edit) : t((t) => t.dataset.uploadNew)}
       isOpen={datasetModalOpen}
       contentId={NEW_DATASET_MODAL_ID}

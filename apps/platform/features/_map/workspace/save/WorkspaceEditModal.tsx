@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 
 import { Modal } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { getModalParent } from 'features/modals/modals.utils'
@@ -31,7 +30,6 @@ function EditWorkspaceModal({ title }: EditWorkspaceModalProps) {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={title || t((t) => t.workspace.edit)}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc

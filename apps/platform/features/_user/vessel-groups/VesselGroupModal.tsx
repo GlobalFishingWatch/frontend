@@ -18,7 +18,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { AVAILABLE_END, AVAILABLE_START, ROOT_DOM_ELEMENT } from 'data/map/config'
+import { AVAILABLE_END, AVAILABLE_START } from 'data/map/config'
 import { selectVesselGroupSearchDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
@@ -519,7 +519,6 @@ function VesselGroupModal(): React.ReactElement<any> {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={
         <div className={styles.textAlign}>
           {t((t) => t.vesselGroup.vesselGroup)}

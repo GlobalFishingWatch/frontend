@@ -1,13 +1,10 @@
-/*
- * Platform shell: the MainNav rail plus everything else. The rail is always visible now — it used to
- * live inside the SplitView aside, so collapsing the sidebar hid it.
- */
-.platformLayout {
+.platformContainer {
   display: flex;
+  flex: 1;
   height: 100%;
   width: 100%;
-  overflow-x: clip;
-  background: var(--color-background);
+  position: relative;
+  transform: translateZ(0);
 }
 
 .platformContent {

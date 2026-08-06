@@ -16,7 +16,7 @@ import { eventsToBbox } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { EVENTS_COLORS, ROOT_DOM_ELEMENT } from 'data/map/config'
+import { EVENTS_COLORS } from 'data/map/config'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { selectVesselProfileColor } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
@@ -201,7 +201,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               {t((t) => t.common.learnMore)}
             </button>
             <Modal
-              appSelector={ROOT_DOM_ELEMENT}
               title={areaOptions.find((o) => o.id === vesselArea)?.label}
               isOpen={modalDataWarningOpen}
               onClose={onDataWarningModalClose}

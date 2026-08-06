@@ -6,7 +6,6 @@ import cx from 'classnames'
 import { THINNING_LEVELS, ThinningLevels } from '@globalfishingwatch/api-client'
 import { Button, Choice, Icon, Modal, Tag } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import type { DateRange } from 'features/_map/download/downloadActivity.slice'
 import type { DownloadTrackParams } from 'features/_map/download/downloadTrack.slice'
 import {
@@ -87,7 +86,6 @@ function DownloadTrackModal() {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={
         <Fragment>
           {t((t) => t.download.title)} - {t((t) => t.download.track)}

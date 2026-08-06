@@ -6,7 +6,6 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Modal, Tabs } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import {
   selectActiveActivityAndDetectionsDataviews,
   selectActiveHeatmapAnimatedEnvironmentalDataviews,
@@ -98,7 +97,6 @@ function DownloadActivityModal() {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={t((t) => t.download.title)}
       isOpen={downloadModalOpen}
       onClose={onClose}

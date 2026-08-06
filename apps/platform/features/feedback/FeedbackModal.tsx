@@ -15,7 +15,6 @@ import {
   AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION,
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
   PATH_BASENAME,
-  ROOT_DOM_ELEMENT,
 } from 'data/map/config'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
@@ -256,7 +255,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={t((t) => t.common.feedback)}
       isOpen={isOpen}
       onClose={onClose}
