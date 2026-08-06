@@ -22,6 +22,7 @@
   transition: width 380ms var(--ease-drawer);
   display: flex;
   flex-direction: column;
+  overflow: clip;
 }
 
 .contentHeader {
