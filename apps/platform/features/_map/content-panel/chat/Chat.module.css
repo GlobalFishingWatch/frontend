@@ -172,6 +172,11 @@
   color: var(--color-white);
 }
 
+.tripwire {
+  color: var(--color-danger-red);
+  border-radius: var(--border-radius-0);
+}
+
 .feedback {
   display: flex;
   justify-content: flex-end;

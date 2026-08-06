@@ -17,10 +17,10 @@
     "prepare-start": {
       "executor": "nx:run-commands",
       "dependsOn": ["^dist", "prepare-loaders", "i18n-labels:serve", "types-watch"],
+      "continuous": true,
       "options": {
         "command": "nx run platform:i18n:watch"
-      },
-      "continuous": true
+      }
     },
     "prepare-loaders": {
       "executor": "nx:run-commands",
@@ -134,19 +134,19 @@
     "proxy": {
       "executor": "nx:run-commands",
       "dependsOn": [],
+      "continuous": true,
       "options": {
         "command": "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
-      },
-      "continuous": true
+      }
     },
     "start-proxy": {
       "executor": "nx:run-commands",
       "dependsOn": [],
+      "continuous": true,
       "options": {
         "commands": ["nx run platform:start", "nx run platform:proxy"],
         "parallel": true
-      },
-      "continuous": true
+      }
     },
     "build:app": {
       "executor": "nx:run-commands",
@@ -205,28 +205,34 @@
       }
     },
     "test": {
-      "executor": "@nx/vitest:test",
-      "cache": true,
       "inputs": [
         "default",
         "^production",
         "!{projectRoot}/.vitest-attachments/**/*",
         "!{projectRoot}/test/integration/__screenshots__/**/*",
         "!{projectRoot}/test/integration/__traces__/**/*",
-        "!{projectRoot}/test/__traces__/**/*"
+        "!{projectRoot}/test/__traces__/**/*",
+        {
+          "externalDependencies": ["vitest"]
+        }
       ],
-      "outputs": ["{workspaceRoot}/coverage/apps/platform"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/platform",
+        "{projectRoot}/test/coverage/apps/platform"
+      ],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/platform/vitest.config.ts"
+        "config": "./vitest.config.ts"
       }
     },
     "test:changed": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/platform/vitest.config.ts",
-        "changed": true
+        "cwd": "apps/platform",
+        "command": "vitest run",
+        "changed": true,
+        "config": "./vitest.config.ts"
       }
     },
     "test:ci": {
@@ -238,28 +244,33 @@
       }
     },
     "test:coverage": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/platform/vitest.config.ts",
-        "mode": "coverage"
+        "cwd": "apps/platform",
+        "command": "vitest run",
+        "mode": "coverage",
+        "config": "./vitest.config.ts"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
+      "executor": "nx:run-commands",
+      "continuous": true,
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/platform/vitest.config.ts",
-        "watch": true
+        "cwd": "apps/platform",
+        "command": "vitest watch",
+        "config": "./vitest.config.ts"
       }
     },
     "test:ui": {
-      "executor": "@nx/vitest:test",
+      "cache": false,
+      "continuous": true,
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "configFile": "apps/platform/vitest.config.ts",
         "mode": "ui",
-        "watch": true
+        "watch": true,
+        "config": "./vitest.config.ts"
       }
     },
     "typecheck": {
@@ -271,10 +282,10 @@
     },
     "typecheck-watch": {
       "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
         "command": "tsc --noEmit --watch --project apps/platform/tsconfig.json"
-      },
-      "continuous": true
+      }
     }
   }
 }

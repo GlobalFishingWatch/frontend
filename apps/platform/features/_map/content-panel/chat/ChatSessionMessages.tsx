@@ -116,6 +116,16 @@ function NavigateToolLink({ input }: { input: unknown }) {
   )
 }
 
+type TripwireData = {
+  reason?: string
+}
+
+function tripwireReason(part: UIMessage['parts'][number]): string | undefined {
+  if (part.type !== 'data-tripwire') return undefined
+  const data = (part as { data?: TripwireData }).data
+  return data?.reason
+}
+
 function MessageParts({ message }: { message: UIMessage }) {
   const { t } = useTranslation()
   const parts = message.parts ?? []
@@ -149,6 +159,13 @@ function MessageParts({ message }: { message: UIMessage }) {
                 <ContentMarkdown variant="chat">{part.text}</ContentMarkdown>
               </div>
             </details>
+          )
+        }
+        if (part.type === 'data-tripwire') {
+          return (
+            <div key={idx} className={styles.tripwire}>
+              {tripwireReason(part) ?? t((t) => t.chat.requestBlocked)}
+            </div>
           )
         }
         if (isToolUIPart(part)) {

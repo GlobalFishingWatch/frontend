@@ -20,7 +20,7 @@ test('VV01- Vessel profile', async ({ page }) => {
 
   await page.locator('button').filter({ hasText: 'Registry' }).click()
 
-  expect(page.getByTestId('vv-vessel-name')).toContainText('Gabureefer')
+  await expect(page.getByTestId('vv-vessel-name')).toContainText('Gabu Reefer')
 
   // Weak & flaky validation: expect(page.getByLabel('Register and login to see').count()).toBe(8)
 })

@@ -1,0 +1,63 @@
+name: Build and Deploy (Development)
+
+on:
+  push:
+    branches: [develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The base environment: every app the push affected
+  dev:
+    name: dev
+    uses: ./.github/workflows/_build-and-deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      env-suffix: dev
+      config: .github/apps/development.yml
+      service-prefix: dev-ui
+      cloudrun-project: gfw-development
+      environment: development
+    secrets: inherit
+
+  platform-mode:
+    name: dev (platform mode)
+    needs: dev
+    if: needs.dev.outputs.apps != '' && contains(fromJson(needs.dev.outputs.apps), 'platform')
+    uses: ./.github/workflows/_build-and-deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      apps: '["platform"]'
+      build-args: VITE_PLATFORM_MODE=true
+      image-tag: latest-dev-platform-mode
+      env-suffix: dev
+      config: .github/apps/development.yml
+      service-prefix: dev-platform-mode-ui
+      cloudrun-project: gfw-development
+      environment: development
+    secrets: inherit
+
+  realtime:
+    name: dev (realtime)
+    needs: dev
+    if: needs.dev.outputs.apps != '' && contains(fromJson(needs.dev.outputs.apps), 'platform')
+    uses: ./.github/workflows/_build-and-deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      apps: '["platform"]'
+      build-args: VITE_REALTIME_ENABLED=true
+      image-tag: latest-dev-realtime
+      env-suffix: dev
+      config: .github/apps/development.yml
+      service-prefix: dev-realtime-ui
+      cloudrun-project: gfw-development
+      environment: development
+    secrets: inherit

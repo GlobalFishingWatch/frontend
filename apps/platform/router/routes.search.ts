@@ -45,8 +45,12 @@ import {
 
 const optionalNumber = () => fallback(z.coerce.number().optional(), undefined)
 const optionalBoolean = () => fallback(z.union([z.boolean(), z.stringbool()]).optional(), undefined)
-const optionalString = () => z.string().optional()
+// ponytail: fallback on every helper so a malformed param drops to undefined instead of throwing a
+// SearchParamError that the router error boundary turns into a blank page
+const optionalString = () => fallback(z.string().optional(), undefined)
 const optionalStringArray = () => fallback(z.array(z.string()).optional(), undefined)
+const optionalStringOrArray = () =>
+  fallback(z.union([z.string(), z.array(z.string())]).optional(), undefined)
 const optionalEnum = <T extends string>(enumObj: Record<string, T>) =>
   fallback(z.enum(Object.values(enumObj) as [T, ...T[]]).optional(), undefined)
 const optionalLiteralUnion = <T extends string>(values: readonly [T, ...T[]]) =>
@@ -239,7 +243,8 @@ export const vesselSearchQuerySchema = z
     targetSpecies: optionalString(),
     transmissionDateFrom: optionalString(),
     transmissionDateTo: optionalString(),
-    owner: optionalString(),
+    // string when typed in the advanced filter input, string[] when set from a result cell filter
+    owner: optionalStringOrArray(),
     fleet: optionalStringArray(),
     origin: optionalString(),
   })

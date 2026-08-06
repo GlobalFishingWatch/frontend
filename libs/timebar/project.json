@@ -6,29 +6,37 @@
   "tags": ["lib"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/timebar"
+      ],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
         "cwd": "libs/timebar",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/timebar"
+        "coverage.reportsDirectory": "../../../coverage/libs/timebar"
       }
     },
     "dist": {
       "executor": "@nx/js:tsc",
       "options": {
         "clean": false,
-        "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
+        "assets": [
+          {
+            "glob": "**/*.css",
+            "input": "libs/timebar/src",
+            "output": "."
+          }
+        ]
       }
     },
     "dev": {
       "dependsOn": ["^dev"],
       "executor": "@nx/js:tsc",
       "cache": false,
+      "continuous": true,
       "options": {
         "watch": true
-      },
-      "continuous": true
+      }
     },
     "publish": {
       "executor": "@nx/js:release-publish",

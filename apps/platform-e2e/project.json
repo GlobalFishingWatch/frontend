@@ -12,8 +12,8 @@
       }
     },
     "test:local": {
-      "command": "playwright test",
       "cache": false,
+      "parallelism": true,
       "dependsOn": [
         {
           "projects": "platform",
@@ -21,7 +21,6 @@
         }
       ],
       "options": {
-        "cwd": "{projectRoot}",
         "grep": "^(?!.*Screenshot comparison).*"
       },
       "configurations": {
@@ -34,17 +33,19 @@
       }
     },
     "screenshots": {
-      "command": "playwright test src/screenshots/ --project=chromium --workers=2",
       "cache": false,
       "options": {
-        "cwd": "{projectRoot}"
+        "args": "src/screenshots/",
+        "project": "chromium",
+        "workers": 2
       },
       "configurations": {
         "update": {
-          "command": "playwright test src/screenshots/ --project=chromium --workers=2 --update-snapshots"
+          "update-snapshots": "changed"
         },
         "ui": {
-          "command": "playwright test src/screenshots/ --project=chromium --workers=1 --ui"
+          "workers": 1,
+          "ui": true
         }
       }
     },

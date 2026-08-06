@@ -2,6 +2,7 @@ import { Fragment, Suspense, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
 
+import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components/dom-ids'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
@@ -106,7 +107,7 @@ function MapLayout() {
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
       <div className={styles.appLayout}>
-        <div id="app-layout-content" className={styles.appLayoutContent}>
+        <div id={SPLIT_VIEW_DOM_ID} className={styles.appLayoutContent}>
           <ErrorBoundary>
             <SplitView
               isOpen={sidebarOpen && !isMapDrawing}

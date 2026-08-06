@@ -33,7 +33,7 @@ function AdvancedResultCellWithFilter({
   const onFilterClick = useCallback(() => {
     let filter: string | string[] = value
     if (MULTIPLE_SELECTION_FILTERS_COLUMN.includes(column)) {
-      filter = column === 'owner' ? value.split(', ') : Array.isArray(value) ? value : [value]
+      filter = Array.isArray(value) ? value : column === 'owner' ? value.split(', ') : [value]
     }
     setSearchFilters({ [column]: filter })
     if (onClick) {

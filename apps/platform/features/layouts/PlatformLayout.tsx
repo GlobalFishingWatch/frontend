@@ -6,7 +6,7 @@ import { getRouteApi, Outlet } from '@tanstack/react-router'
 import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
+import { PLATFORM_CONTAINER_DOM_ID } from 'data/map/config'
 import ContentPanel from 'features/_map/content-panel/ContentPanel'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useAppShell } from 'features/app/app-shell.hooks'
@@ -39,27 +39,26 @@ function PlatformLayout() {
   return (
     <Fragment>
       <ConfirmLeave />
-      <div className={styles.platformLayout}>
+      <div id={PLATFORM_CONTAINER_DOM_ID} className={styles.platformContainer}>
         {PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />}
         <div className={styles.platformContent}>
           <ErrorBoundary>
             <Outlet />
           </ErrorBoundary>
         </div>
-        <ErrorBoundary>
-          <Suspense fallback={null}>
-            <ContentPanel
-              initialPanelWidth={contentPanelWidth ?? undefined}
-              initialScreenWidth={screenWidth ?? undefined}
-              onPanelWidthChange={onContentPanelWidthChange}
-            />
-          </Suspense>
-        </ErrorBoundary>
       </div>
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <ContentPanel
+            initialPanelWidth={contentPanelWidth ?? undefined}
+            initialScreenWidth={screenWidth ?? undefined}
+            onPanelWidthChange={onContentPanelWidthChange}
+          />
+        </Suspense>
+      </ErrorBoundary>
       {/* Platform mode drops the hamburger for the expanding rail, so nothing can open this. */}
       {!readOnly && !PLATFORM_MODE && (
         <Menu
-          appSelector={ROOT_DOM_ELEMENT}
           bgImage={menuBgImage}
           isOpen={menuOpen}
           onClose={() => setMenuOpen(false)}

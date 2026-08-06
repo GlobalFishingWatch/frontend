@@ -12,8 +12,7 @@ import type {
 import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import type { NavItem, RoutedNavItem } from 'features/nav/nav.config'
-import type { ValidRoutePathValues } from 'router/routes.utils'
-import { toValidRoutePath } from 'router/routes.utils'
+import type { RoutePathValues } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 /** Live state and side effects a row's link may depend on. */
@@ -28,7 +27,7 @@ export type NavLinkContext = {
 }
 
 export type NavLinkProps = {
-  to: ValidRoutePathValues
+  to: RoutePathValues
   params?: Record<string, string>
   search?: unknown
   replace?: boolean
@@ -39,7 +38,7 @@ export type NavLinkProps = {
  * TanStack types `Link` per call site: `to` must be a literal, and `params`/`search` are then
  * inferred *from that literal*. Nav rows come from a config array, so `to` is only ever a union —
  * there is no literal to infer from, and the generic never resolves. This narrows `Link` to the
- * subset of props the nav uses, with `to` still typed as a real route path (`ValidRoutePathValues`),
+ * subset of props the nav uses, with `to` still typed as a real route path (`RoutePathValues`),
  * so a bad path is still a compile error. What is given up is the `params`/`search` shape *matching*
  * that specific path — the router validates it at runtime.
  */
@@ -64,9 +63,7 @@ const workspaceParams = (workspace: NavLinkContext['workspace']) => ({
 const NAV_LINK_RESOLVERS: Record<string, (ctx: NavLinkContext) => NavLinkProps> = {
   // Back to the workspace the user came from, minus any report state.
   workspace: ({ workspace, lastVisitedWorkspace, onWorkspaceClick }) => ({
-    to: lastVisitedWorkspace
-      ? toValidRoutePath(lastVisitedWorkspace.to, lastVisitedWorkspace.params)
-      : ROUTE_PATHS.WORKSPACE,
+    to: lastVisitedWorkspace ? lastVisitedWorkspace.to : ROUTE_PATHS.WORKSPACE,
     params: lastVisitedWorkspace
       ? cleanReportPayload(lastVisitedWorkspace.params || {})
       : workspaceParams(workspace),
@@ -107,7 +104,7 @@ export function getNavLinkProps(item: RoutedNavItem, ctx: NavLinkContext): NavLi
   }
   const category = item.params?.category
   return {
-    to: toValidRoutePath(item.to),
+    to: item.to,
     params: item.params,
     search: {},
     onClick: category ? () => ctx.onCategoryClick(category as WorkspaceCategory) : undefined,
