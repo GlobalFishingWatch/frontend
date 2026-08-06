@@ -1,18 +1,14 @@
 import { atom, useAtomValue } from 'jotai'
 
-import type {
-  ColorRampId,
-  FourwingsColorObject,
-  FourwingsPickingObject,
-} from '@globalfishingwatch/deck-layers'
+import type { FourwingsColorObject, FourwingsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   FourwingsComparisonMode,
   FourwingsLayer,
   FourwingsVectorsTileLayer,
-  getBivariateRampLegend,
   POSITIONS_ID,
-  rgbaToString,
 } from '@globalfishingwatch/deck-layers'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
+import { getBivariateRampLegend, rgbaToString } from '@globalfishingwatch/deck-layers/utils'
 
 import { GRID_AREA_BY_ZOOM_LEVEL, HEATMAP_DEFAULT_MAX_ZOOM } from '../config'
 import { deckHoverInteractionAtom } from '../interactions'

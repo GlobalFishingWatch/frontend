@@ -1,15 +1,9 @@
-import type { Color } from '@deck.gl/core'
-import { scaleLinear } from 'd3-scale'
 import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
-import {
-  getDateInIntervalResolution,
-  getFeatureTimeRange,
-  rgbaStringToComponents,
-} from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution, getFeatureTimeRange } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
   FourwingsInterval,
@@ -399,13 +393,4 @@ export function getGraphDataFromFourwingsHeatmap(
   })
 
   return timeseries.sort((a, b) => a.date - b.date)
-}
-
-export const getLegendColorScale = (domain: number[], rgbaColors: string[]) => {
-  if (!domain?.length || domain.length !== rgbaColors?.length) {
-    return undefined
-  }
-  const colors = rgbaColors.map((color) => rgbaStringToComponents(color) as Color)
-  const scale = scaleLinear<Color>(domain, colors).clamp(true)
-  return (value: number) => scale(value)?.map(Math.round) as Color
 }

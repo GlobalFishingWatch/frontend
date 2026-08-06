@@ -6,7 +6,7 @@ import { useSetAtom } from 'jotai'
 import type { MjolnirEvent } from 'mjolnir.js'
 
 import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import type { TrackGraphOrientation } from '../timeline/timeline-context'
 import { useTimelineContext } from '../timeline/timeline-context'

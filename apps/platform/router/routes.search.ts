@@ -15,7 +15,7 @@ import {
   FOURWINGS_VISUALIZATION_MODES,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-} from '@globalfishingwatch/deck-layers/constants'
+} from '@globalfishingwatch/deck-layers/config'
 
 import {
   REPORT_ACTIVITY_GRAPHS,

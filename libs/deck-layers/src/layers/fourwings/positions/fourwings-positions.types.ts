@@ -3,14 +3,14 @@ import type { TileLayerProps } from '@deck.gl/geo-layers'
 
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
   FourwingsIntervalCacheMode,
   FourwingsVisualizationMode,
-} from '../fourwings.types'
-import type { FourwingsLayer } from '../FourwingsLayer'
+} from '#layers/fourwings/fourwings.types'
+import type { FourwingsLayer } from '#layers/fourwings/FourwingsLayer'
+import type { DeckPickingObject } from '#types'
 
 export type _FourwingsPositionsTileLayerProps = BaseFourwingsLayerProps & {
   highlightStartTime?: number

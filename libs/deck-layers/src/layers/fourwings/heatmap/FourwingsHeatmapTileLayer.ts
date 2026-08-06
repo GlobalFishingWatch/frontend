@@ -30,16 +30,13 @@ import {
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 
-import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
-import type { ColorRampId } from '../../../utils/colorRamps'
+import type { ColorRampId } from '#config/colorRamps.config'
 import {
   COLOR_RAMP_BIVARIATE_NUM_STEPS,
   COLOR_RAMP_DEFAULT_NUM_STEPS,
-  getBivariateRamp,
-  getColorRamp,
   TIME_COMPARE_COLOR_RAMP,
-} from '../../../utils/colorRamps'
-import { IS_TEST_ENV } from '../../layers.config'
+} from '#config/colorRamps.config'
+import { IS_TEST_ENV } from '#config/layers.config'
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
   FOURWINGS_MAX_CACHE_BYTE_SIZE,
@@ -47,7 +44,8 @@ import {
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
+import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
   FourwingsColorObject,
   FourwingsDeckSublayer,
@@ -55,8 +53,13 @@ import type {
   FourwingsTileLayerColorRange,
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
-} from '../fourwings.types'
-import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
+} from '#layers/fourwings/fourwings.types'
+import {
+  EMPTY_FOURWINGS_TILE_DATA,
+  getAreTilePositionsAvailable,
+} from '#layers/fourwings/fourwings-tile.utils'
+import { hexToRgb } from '#utils'
+import { getBivariateRamp, getColorRamp } from '#utils/colorRamps'
 
 import type {
   FourwingsChunk,

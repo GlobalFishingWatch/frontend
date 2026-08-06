@@ -10,7 +10,8 @@ import type {
   FourwingsClusterEventType,
   FourwingsClustersLayerProps,
 } from '@globalfishingwatch/deck-layers'
-import { FOURWINGS_MAX_ZOOM, getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import { FOURWINGS_MAX_ZOOM } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 
 import type { DeckResolverFunction, ResolverGlobalConfig } from '../types/resolvers'
 

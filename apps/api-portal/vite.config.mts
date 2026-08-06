@@ -7,13 +7,13 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
 export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, __dirname, '')
+  const env = loadEnv(mode, import.meta.dirname, '')
   const basePath = env.PUBLIC_URL || (mode === 'production' ? '/api-portal' : '')
 
   return {
     devtools: command === 'serve',
     base: basePath,
-    root: __dirname,
+    root: import.meta.dirname,
     cacheDir: '../../node_modules/.vite/apps/api-portal',
     resolve: { tsconfigPaths: true },
 

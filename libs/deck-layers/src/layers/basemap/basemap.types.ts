@@ -2,7 +2,7 @@ import type { Feature, Point } from 'geojson'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
-import type { DeckLayerProps } from '../../types'
+import type { DeckLayerProps } from '#types'
 
 export enum BasemapType {
   Satellite = 'satellite',

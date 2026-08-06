@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { area as turfArea } from '@turf/turf'
 import { useAtomValue } from 'jotai'
 
-import { deckToHexColor } from '@globalfishingwatch/deck-layers'
+import { deckToHexColor } from '@globalfishingwatch/deck-layers/utils'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {
   Button,

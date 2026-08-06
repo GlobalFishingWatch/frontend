@@ -9,7 +9,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 
-import type { DeckLayerProps, DeckPickingObject } from '../../../types'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 export type FourwingsClusterEventType =
   | `${EventTypes.Encounter}`

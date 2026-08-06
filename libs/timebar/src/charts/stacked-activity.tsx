@@ -5,7 +5,7 @@ import { scaleLinear } from 'd3-scale'
 import { stack, stackOffsetSilhouette } from 'd3-shape'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import { useTimelineContext } from '../timeline/timeline-context'
 

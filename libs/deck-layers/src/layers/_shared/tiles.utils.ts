@@ -1,7 +1,41 @@
-import type { Viewport } from '@deck.gl/core'
-import type { GeoBoundingBox } from '@deck.gl/geo-layers'
-import { lerp } from '@math.gl/core'
+import type { CoordinateSystem, Viewport } from '@deck.gl/core'
+import { ClipExtension } from '@deck.gl/extensions'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  GeoBoundingBox,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
+import { lerp, Matrix4 } from '@math.gl/core'
 import type { Feature } from 'geojson'
+
+const WORLD_SIZE = 512
+
+export function getMVTSublayerProps({
+  tile,
+  extensions,
+}: {
+  tile: Tile2DHeader
+  extensions?: TileLayerProps['extensions']
+}): {
+  modelMatrix: Matrix4
+  coordinateOrigin: [number, number, number]
+  coordinateSystem: CoordinateSystem
+  extensions: any[]
+} {
+  const { x, y, z } = tile.index
+  const worldScale = Math.pow(2, z)
+  const xScale = WORLD_SIZE / worldScale
+  const yScale = -xScale
+  const xOffset = (WORLD_SIZE * x) / worldScale
+  const yOffset = WORLD_SIZE * (1 - y / worldScale)
+  const modelMatrix = new Matrix4().scale([xScale, yScale, 1])
+  return {
+    modelMatrix: modelMatrix,
+    coordinateOrigin: [xOffset, yOffset, 0],
+    coordinateSystem: 'cartesian',
+    extensions: [...(extensions || []), new ClipExtension()],
+  }
+}
 
 const availableTransformations: Record<any, any> = {
   Point,
@@ -58,14 +92,7 @@ export function transformCoordinates(geometry: any, bbox: GeoBoundingBox, viewpo
     ),
   }
 }
-// export function filteredPositionsByViewport<T extends FourwingsPositionFeature | Feature<Point>>(
-//   positions: T[],
-//   viewport: Viewport
-// ): T[] {
-//   const viewportBounds = viewport.getBounds()
-//   const viewportPolygon = bboxPolygon(viewportBounds)
-//   return positions.filter((position) => booleanPointInPolygon(position, viewportPolygon))
-// }
+
 export function transformTileCoordsToWGS84<T extends Feature>(
   object: T,
   bbox: GeoBoundingBox,
@@ -78,13 +105,6 @@ export function transformTileCoordsToWGS84<T extends Feature>(
       coordinates: transformCoordinates(object.geometry, bbox, viewport).coordinates,
     },
   }
-
-  // Object.defineProperty(feature.geometry, 'coordinates', {
-  //   get: () => {
-  //     const wgs84Geom = transform(object.geometry, bbox, viewport)
-  //     return wgs84Geom.coordinates
-  //   },
-  // })
 
   return feature as T
 }

@@ -2,7 +2,7 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 // Leaf subpath rather than the package root: BasemapType is needed as a *value* here, and the root
 // barrel pulls all of deck.gl into the reducer map (this module is reachable from 9 slices).
-import { BasemapType } from '@globalfishingwatch/deck-layers/constants'
+import { BasemapType } from '@globalfishingwatch/deck-layers/config'
 import * as WORKSPACES_CONFIG from '@platform/config/map/workspaces'
 
 import { PRESENCE_REALTIME_DATAVIEW_SLUG } from 'data/map/dataset-ids'

@@ -8,15 +8,17 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../../utils'
-import { HEATMAP_ID } from '../fourwings.config'
-import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
-import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
+import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { HEATMAP_ID } from '#layers/fourwings/fourwings.config'
+import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '#layers/fourwings/fourwings.types'
+import { FourwingsAggregationOperation } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,
   getIntervalFrames,
   sliceCellValues,
-} from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type { VectorsLayerProps } from './VectorsLayer'
 import VectorsLayer from './VectorsLayer'

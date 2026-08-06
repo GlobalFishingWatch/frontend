@@ -9,9 +9,9 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import { toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
-import { getUTCDateTime } from '../../utils'
-import { colorToVec, hexToDeckColor } from '../../utils/colors'
-import { MAX_FILTER_VALUE } from '../layers.config'
+import { MAX_FILTER_VALUE } from '#config/layers.config'
+import { getUTCDateTime } from '#utils'
+import { colorToVec, hexToDeckColor } from '#utils/colors'
 
 import type { VesselsColorByProperty } from './vessel.config'
 import { COLOR_BY, DEFAULT_HIGHLIGHT_COLOR_VEC } from './vessel.config'

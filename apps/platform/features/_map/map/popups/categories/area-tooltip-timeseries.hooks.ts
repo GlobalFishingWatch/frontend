@@ -75,8 +75,7 @@ export function useAreaTooltipSparklineCategory() {
       })
     })
     return options
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activityDataviews, detectionsDataviews, environmentalDataviews])
+  }, [activityDataviews, detectionsDataviews, environmentalDataviews, t])
 
   return {
     option: options.find(({ id }) => id === preferredId) ?? options[0],

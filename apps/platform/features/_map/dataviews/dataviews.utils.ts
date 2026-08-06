@@ -22,7 +22,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 // Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
 // (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/constants'
+import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/config'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
