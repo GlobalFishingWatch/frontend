@@ -84,13 +84,6 @@ runs:
           echo "secret_names=$SECRET_NAMES"
           echo "target=$TARGET"
         } >> "$GITHUB_OUTPUT"
-
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v3
-      with:
-        workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-        service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
-
     - name: Fetch build secrets
       id: build-secrets
       if: steps.prepare.outputs.secret_mappings != ''
