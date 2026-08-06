@@ -8,7 +8,8 @@ import {
   useMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime, POSITIONS_ID } from '@globalfishingwatch/deck-layers'
+import { POSITIONS_ID } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import type { FourwingsFeatureProperties } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 

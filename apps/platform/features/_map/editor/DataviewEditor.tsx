@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import type { ApiAppName, Dataview, DataviewConfig } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EndpointId } from '@globalfishingwatch/api-types'
-import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers'
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers/config'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import {

@@ -16,7 +16,7 @@ import type {
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 
 import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'

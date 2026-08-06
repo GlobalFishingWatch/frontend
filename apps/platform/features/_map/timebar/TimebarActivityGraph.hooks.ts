@@ -12,7 +12,7 @@ import {
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
-import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/constants'
+import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
 import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,

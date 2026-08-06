@@ -4,7 +4,8 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import type { LayerGroup, PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import type { LayerGroup } from '@globalfishingwatch/deck-layers/config'
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
