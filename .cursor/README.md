@@ -4,14 +4,14 @@ Project extensions for Cursor’s **Customize** page (rules, skills, commands, h
 
 ## Already wired
 
-| Kind | Location |
-| --- | --- |
-| Rules | `.cursor/rules/*.mdc` |
-| Skills | `.cursor/skills/*` (Nx + encode/decode-url + playwright-cli + monitor-ci) |
-| Commands | `.cursor/commands/` (`/unit-test`, `/review`, `/mermaid`, `/monitor-ci`) |
-| Hooks | `.cursor/hooks.json` + `.cursor/hooks/` |
-| Subagents | `.cursor/agents/` (`ci-monitor-subagent`, plus examples) |
-| MCP example | `.cursor/mcp.json.example` |
+| Kind        | Location                                                                  |
+| ----------- | ------------------------------------------------------------------------- |
+| Rules       | `.cursor/rules/*.mdc`                                                     |
+| Skills      | `.cursor/skills/*` (Nx + encode/decode-url + playwright-cli + monitor-ci) |
+| Commands    | `.cursor/commands/` (`/unit-test`, `/review`, `/mermaid`, `/monitor-ci`)  |
+| Hooks       | `.cursor/hooks.json` + `.cursor/hooks/`                                   |
+| Subagents   | `.cursor/agents/` (`ci-monitor-subagent`, plus examples)                  |
+| MCP example | `.cursor/mcp.json.example`                                                |
 
 ## MCP (no secrets in git)
 

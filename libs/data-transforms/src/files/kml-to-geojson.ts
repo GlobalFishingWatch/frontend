@@ -62,7 +62,7 @@ export async function kmlToGeoJSON(file: File, type: DatasetGeometryType) {
         invalidDataErrorHandler(type)
       }
     } catch (e: any) {
-      throw new Error('datasetUpload.errors.kml.invalidData')
+      throw new Error('datasetUpload.errors.kml.invalidData', { cause: e })
     }
   }
 

@@ -1,22 +1,12 @@
-import type { MouseEventHandler } from 'react';
-import { Fragment, useCallback, useEffect,useMemo, useState } from 'react'
+import type { MouseEventHandler } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import type { FieldValidationError } from 'lib/types'
 import _ from 'lodash'
 
-import type {
-  UserApiAdditionalInformation} from '@globalfishingwatch/api-types';
-import {
-  USER_APPLICATION_INTENDED_USES,
-} from '@globalfishingwatch/api-types'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Button,
-  Checkbox,
-  InputText,
-  Select,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import type { UserApiAdditionalInformation } from '@globalfishingwatch/api-types'
+import { USER_APPLICATION_INTENDED_USES } from '@globalfishingwatch/api-types'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, Checkbox, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 
@@ -223,8 +213,8 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
             valid
               ? ''
               : !!selectedIntendedUse && !!error.intendedUse
-              ? error.intendedUse
-              : 'Complete the required fields (*) and accept the terms to Continue'
+                ? error.intendedUse
+                : 'Complete the required fields (*) and accept the terms to Continue'
           }
         >
           Continue

@@ -7,14 +7,10 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 
 type GFWFetchSpy = MockInstance<GFW_API_CLASS['fetch']>
 
-const assertRequestReceived = vi.defineHelper(
-  (spy: GFWFetchSpy, matchingCallIndices: number[]) => {
-    expect(matchingCallIndices.length).toBeGreaterThan(0)
-    return Promise.all(
-      matchingCallIndices.map((i) => spy.mock.results[i]?.value).filter(Boolean)
-    )
-  }
-)
+const assertRequestReceived = vi.defineHelper((spy: GFWFetchSpy, matchingCallIndices: number[]) => {
+  expect(matchingCallIndices.length).toBeGreaterThan(0)
+  return Promise.all(matchingCallIndices.map((i) => spy.mock.results[i]?.value).filter(Boolean))
+})
 
 export class GFWAPITestUtils {
   private fetchSpy: GFWFetchSpy

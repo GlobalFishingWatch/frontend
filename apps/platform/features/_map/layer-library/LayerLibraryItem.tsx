@@ -16,7 +16,10 @@ import {
   getDatasetSourceIcon,
   getDatasetTypeIcon,
 } from 'features/_map/datasets/datasets.utils'
-import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
+import {
+  fetchDataviewsByIdsThunk,
+  selectAllDataviews,
+} from 'features/_map/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'

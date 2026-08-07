@@ -126,7 +126,7 @@ const FORBIDDEN = [
  *
  * WE DELIBERATELY RESOLVE TO SOURCE, NEVER dist. This is the one place the guard diverges from what
  * `vite build` does (build has no `development` condition, so it takes `default` -> dist):
- *   - dist may not exist. This target has no `^dist` dependency and CI runs it right after install.
+ *   - dist may not exist. This target has no `^build` dependency and CI runs it right after install.
  *   - stale dist gives a wrong answer silently, which is worse than no answer.
  *   - dist is a per-file tsc emit, so its import graph has the same shape as src. src is the same
  *     answer, fresher.

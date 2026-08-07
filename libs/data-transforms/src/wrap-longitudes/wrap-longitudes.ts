@@ -157,16 +157,22 @@ export const wrapFeatureLongitudes = (
   featureData: Feature<LineString | Polygon | MultiPolygon>,
   params: WrapLongitudesParams = {}
 ): Feature<LineString | Polygon | MultiPolygon> => {
-  let coordinates = featureData.geometry.coordinates
   switch (featureData.geometry.type) {
-    case 'LineString':
-      coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
+    case 'LineString': {
+      const coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
       return feature(geometry('LineString', coordinates)) as Feature<LineString>
-    case 'Polygon':
-      coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>, params)
+    }
+    case 'Polygon': {
+      const coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>, params)
       return feature(geometry('Polygon', coordinates)) as Feature<Polygon>
-    default: // MultiPolygon
-      coordinates = wrapMultipolygonFeatureCoordinates(featureData as Feature<MultiPolygon>, params)
+    }
+    default: {
+      // MultiPolygon
+      const coordinates = wrapMultipolygonFeatureCoordinates(
+        featureData as Feature<MultiPolygon>,
+        params
+      )
       return feature(geometry('MultiPolygon', coordinates)) as Feature<MultiPolygon>
+    }
   }
 }

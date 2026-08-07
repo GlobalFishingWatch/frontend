@@ -185,10 +185,7 @@ function TrackFootprint({
 
   return (
     <Tooltip content={error && t((t) => t.vessel.noTrackAvailable)}>
-      <div
-        className={styles.map}
-        style={{ backgroundImage: `url(${trackFootprintBgImage})` }}
-      >
+      <div className={styles.map} style={{ backgroundImage: `url(${trackFootprintBgImage})` }}>
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
           width={footprintWidth}

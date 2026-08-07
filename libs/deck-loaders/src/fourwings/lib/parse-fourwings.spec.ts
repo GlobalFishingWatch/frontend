@@ -91,7 +91,6 @@ describe('parse-fourwings', () => {
       })
 
       expect(result).toHaveLength(1)
-      expect(result[0].properties.dates).toBeUndefined()
       expect(result[0].properties.tileStartFrame).toBe(0)
       expect(result[0].properties.startOffsets[0]).toBe(0)
       expect(result[0].properties.values[0]).toEqual([10, 20])

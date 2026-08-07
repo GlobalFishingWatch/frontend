@@ -1,10 +1,10 @@
 import type {
   ActionReducerMapBuilder,
-  IdSelector,  SliceCaseReducers,
-  ValidateSliceCaseReducers} from '@reduxjs/toolkit';
-import {
-  createEntityAdapter,
-  createSlice} from '@reduxjs/toolkit'
+  IdSelector,
+  SliceCaseReducers,
+  ValidateSliceCaseReducers,
+} from '@reduxjs/toolkit'
+import { createEntityAdapter, createSlice } from '@reduxjs/toolkit'
 
 export enum AsyncReducerStatus {
   Idle = 'idle',

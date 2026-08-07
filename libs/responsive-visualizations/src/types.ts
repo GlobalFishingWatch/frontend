@@ -13,8 +13,7 @@ export type ResponsiveVisualizationAggregatedObjectValue = {
 }
 
 export type ResponsiveVisualizationAggregatedValue =
-  | number
-  | ResponsiveVisualizationAggregatedObjectValue
+  number | ResponsiveVisualizationAggregatedObjectValue
 
 export type ResponsiveVisualizationValue<
   Mode extends ResponsiveVisualizationMode | undefined = undefined,
@@ -39,11 +38,10 @@ export type ResponsiveVisualizationItem<
 
 export type ResponsiveVisualizationData<
   Mode extends ResponsiveVisualizationMode | undefined = undefined,
-  Data extends
-    | ResponsiveVisualizationAggregatedItem
-    | ResponsiveVisualizationIndividualItem = Mode extends 'aggregated'
-    ? ResponsiveVisualizationAggregatedItem
-    : ResponsiveVisualizationIndividualItem,
+  Data extends ResponsiveVisualizationAggregatedItem | ResponsiveVisualizationIndividualItem =
+    Mode extends 'aggregated'
+      ? ResponsiveVisualizationAggregatedItem
+      : ResponsiveVisualizationIndividualItem,
 > = Mode extends 'aggregated'
   ? ResponsiveVisualizationItem<Data>[]
   : Mode extends 'individual'

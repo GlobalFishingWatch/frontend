@@ -1,21 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.lib.base.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "composite": true,
     "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
+    // customConditions resolves deck-layers from src, so its unmodified deck.gl overrides
+    // are checked under this project's options too. See libs/deck-layers/tsconfig.json.
+    "noImplicitOverride": false
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

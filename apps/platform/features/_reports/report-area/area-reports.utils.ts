@@ -98,14 +98,6 @@ export const formatTooltipValue = (value: number, unit: string, asDifference = f
   return valueLabel
 }
 
-
-
-
-
-
-
-
-
 type BufferedAreaParams = {
   area: Area<FeatureCollection<AreaGeometry>> | undefined
   value: number

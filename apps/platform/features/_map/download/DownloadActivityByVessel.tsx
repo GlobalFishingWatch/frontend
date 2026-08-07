@@ -16,7 +16,10 @@ import {
   selectActiveHeatmapVesselDatasets,
 } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { selectIsDownloadActivityAreaLoading } from 'features/_map/download/download.selectors'
-import type { DateRange, DownloadActivityParams } from 'features/_map/download/downloadActivity.slice'
+import type {
+  DateRange,
+  DownloadActivityParams,
+} from 'features/_map/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
   selectDownloadActivityAreaKey,

@@ -19,7 +19,10 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/_vessels/search/search.config'
 import { selectSearchSources } from 'features/_vessels/search/search.config.selectors'
-import { DEFAULT_VESSEL_IDENTITY_ID, VESSEL_IDENTITY_ID_V5 } from 'features/_vessels/vessel/vessel.config'
+import {
+  DEFAULT_VESSEL_IDENTITY_ID,
+  VESSEL_IDENTITY_ID_V5,
+} from 'features/_vessels/vessel/vessel.config'
 import { selectWorkspaceId } from 'router/routes.selectors'
 
 const EMPTY_ARRAY: [] = []

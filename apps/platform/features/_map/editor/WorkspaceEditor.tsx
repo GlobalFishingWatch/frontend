@@ -5,7 +5,7 @@ import { groupBy } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { IconButton,Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { addDataviewEntity } from 'features/_map/dataviews/dataviews.slice'

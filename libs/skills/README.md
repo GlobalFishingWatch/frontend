@@ -24,7 +24,7 @@ const { navigation, path } = encodeMapUrl({ route: { type: 'workspace' }, state:
 ## Development
 
 ```bash
-pnpm nx dist skills   # build (also builds dataviews-client deps)
+pnpm nx bundle skills   # build (also builds dataviews-client deps)
 ```
 
 This produces `libs/skills/dist/`: a combined `index.js`, plus one self-contained folder per skill (`encode-url/`, `decode-url/`) — each with its own `index.js` bundle and `index.d.ts` alongside its `SKILL.md`, `scripts/`, and `references/`.
@@ -38,7 +38,7 @@ Each skill folder is self-contained (own bundle + `SKILL.md` + `scripts/` + `ref
 ### From this monorepo
 
 ```bash
-pnpm nx dist skills
+pnpm nx bundle skills
 
 # Claude Code, this project only
 cp -r libs/skills/dist/encode-url .claude/skills/

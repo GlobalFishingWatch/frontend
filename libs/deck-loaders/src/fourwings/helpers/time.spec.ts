@@ -62,9 +62,7 @@ describe('time helpers', () => {
     it('should respect custom availableIntervals', () => {
       const start = '2024-01-01T00:00:00.000Z'
       const end = '2024-01-02T00:00:00.000Z'
-      expect(
-        getFourwingsInterval(start, end, ['DAY', 'MONTH', 'YEAR'])
-      ).toBe('DAY')
+      expect(getFourwingsInterval(start, end, ['DAY', 'MONTH', 'YEAR'])).toBe('DAY')
     })
   })
 
@@ -72,12 +70,8 @@ describe('time helpers', () => {
     describe('HOUR', () => {
       it('should convert frame to timestamp (milliseconds)', () => {
         expect(CONFIG_BY_INTERVAL.HOUR.getIntervalTimestamp(0)).toBe(0)
-        expect(CONFIG_BY_INTERVAL.HOUR.getIntervalTimestamp(1)).toBe(
-          1000 * 60 * 60
-        )
-        expect(CONFIG_BY_INTERVAL.HOUR.getIntervalTimestamp(24)).toBe(
-          24 * 1000 * 60 * 60
-        )
+        expect(CONFIG_BY_INTERVAL.HOUR.getIntervalTimestamp(1)).toBe(1000 * 60 * 60)
+        expect(CONFIG_BY_INTERVAL.HOUR.getIntervalTimestamp(24)).toBe(24 * 1000 * 60 * 60)
       })
 
       it('should convert timestamp to frame', () => {
@@ -89,9 +83,7 @@ describe('time helpers', () => {
     describe('DAY', () => {
       it('should convert frame to timestamp', () => {
         expect(CONFIG_BY_INTERVAL.DAY.getIntervalTimestamp(0)).toBe(0)
-        expect(CONFIG_BY_INTERVAL.DAY.getIntervalTimestamp(1)).toBe(
-          1000 * 60 * 60 * 24
-        )
+        expect(CONFIG_BY_INTERVAL.DAY.getIntervalTimestamp(1)).toBe(1000 * 60 * 60 * 24)
       })
 
       it('should convert timestamp to frame', () => {
@@ -102,27 +94,19 @@ describe('time helpers', () => {
 
     describe('MONTH', () => {
       it('should convert frame to timestamp', () => {
-        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalTimestamp(0)).toBe(
-          Date.UTC(0, 0)
-        )
-        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalTimestamp(12)).toBe(
-          Date.UTC(1, 0)
-        )
+        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalTimestamp(0)).toBe(Date.UTC(0, 0))
+        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalTimestamp(12)).toBe(Date.UTC(1, 0))
       })
 
       it('should convert timestamp to frame', () => {
         const jan2024 = new Date('2024-01-15').getTime()
-        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalFrame(jan2024)).toBe(
-          2024 * 12 + 0
-        )
+        expect(CONFIG_BY_INTERVAL.MONTH.getIntervalFrame(jan2024)).toBe(2024 * 12 + 0)
       })
     })
 
     describe('YEAR', () => {
       it('should convert frame to timestamp', () => {
-        expect(CONFIG_BY_INTERVAL.YEAR.getIntervalTimestamp(2024)).toBe(
-          Date.UTC(2024)
-        )
+        expect(CONFIG_BY_INTERVAL.YEAR.getIntervalTimestamp(2024)).toBe(Date.UTC(2024))
       })
 
       it('should convert timestamp to frame', () => {

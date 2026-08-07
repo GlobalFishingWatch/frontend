@@ -28,7 +28,9 @@ const duplicates = entryPoints
   .map((file) => path.basename(file))
   .filter((name, i, names) => names.indexOf(name) !== i)
 if (duplicates.length) {
-  throw new Error(`Worker file names must be unique, they are flattened into dist/workers: ${duplicates.join(', ')}`)
+  throw new Error(
+    `Worker file names must be unique, they are flattened into dist/workers: ${duplicates.join(', ')}`
+  )
 }
 
 fs.rmSync(outdir, { recursive: true, force: true })

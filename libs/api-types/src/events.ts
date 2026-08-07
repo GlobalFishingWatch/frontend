@@ -72,15 +72,7 @@ export type EventVessel = {
 }
 
 export type RFMOs =
-  | 'iccat'
-  | 'iotc'
-  | 'wcpfc'
-  | 'iattc'
-  | 'aidcp'
-  | 'ccsbt'
-  | 'sprfmo'
-  | 'npfc'
-  | 'none'
+  'iccat' | 'iotc' | 'wcpfc' | 'iattc' | 'aidcp' | 'ccsbt' | 'sprfmo' | 'npfc' | 'none'
 
 export type EncounterEventAuthorizations = {
   rfmo: RFMOs

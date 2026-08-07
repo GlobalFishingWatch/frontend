@@ -43,12 +43,9 @@ export const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCateg
 
 // REPORT SUBCATEGORIES
 export type ReportActivitySubCategory =
-  | `${DatasetSubCategory.Fishing}`
-  | `${DatasetSubCategory.Presence}`
+  `${DatasetSubCategory.Fishing}` | `${DatasetSubCategory.Presence}`
 export type ReportDetectionsSubCategory =
-  | `${DatasetSubCategory.Sar}`
-  | `${DatasetSubCategory.Viirs}`
-  | `${DatasetSubCategory.Sentinel2}`
+  `${DatasetSubCategory.Sar}` | `${DatasetSubCategory.Viirs}` | `${DatasetSubCategory.Sentinel2}`
 export type ReportEventsSubCategory = EventType
 export type ReportVesselsSubCategory = ReportVesselGraph | 'source' | 'coverage'
 

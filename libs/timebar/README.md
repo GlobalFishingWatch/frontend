@@ -42,10 +42,17 @@ function App() {
 import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Timebar } from '@globalfishingwatch/timebar'
 
-<Timebar start={start} end={end} absoluteStart={absoluteStart} absoluteEnd={absoluteEnd} onChange={onChange}
+<Timebar
+  start={start}
+  end={end}
+  absoluteStart={absoluteStart}
+  absoluteEnd={absoluteEnd}
+  onChange={onChange}
   intervals={FOURWINGS_INTERVALS_ORDER}
   getCurrentInterval={getFourwingsInterval}
-  onBookmarkChange={(bookmarkStart, bookmarkEnd) => { /* persist bookmark */ }}
+  onBookmarkChange={(bookmarkStart, bookmarkEnd) => {
+    /* persist bookmark */
+  }}
   bookmarkStart={bookmarkStart}
   bookmarkEnd={bookmarkEnd}
 >
@@ -63,13 +70,15 @@ import { Timebar } from '@globalfishingwatch/timebar'
 Place chart components inside `Timebar.Charts.Wrapper`. Built-in charts: `TracksGraph`, `TracksEvents`, `StackedActivity`, `Highlighter`.
 
 ```tsx
-<Timebar.Charts.Wrapper onMouseMove={(clientX, scale) => {
-  if (clientX === null || !scale) return
-  setHighlight({
-    start: scale(clientX - 10).toISOString(),
-    end: scale(clientX + 10).toISOString(),
-  })
-}}>
+<Timebar.Charts.Wrapper
+  onMouseMove={(clientX, scale) => {
+    if (clientX === null || !scale) return
+    setHighlight({
+      start: scale(clientX - 10).toISOString(),
+      end: scale(clientX + 10).toISOString(),
+    })
+  }}
+>
   <Timebar.Charts.TracksGraph data={tracksGraphData} steps={steps} />
   <Timebar.Charts.TracksEvents data={events} onEventClick={onEventClick} />
   {highlight && (
@@ -99,7 +108,10 @@ function CustomOverlay() {
 import { getTimebarStepByDelta } from '@globalfishingwatch/timebar'
 
 const { start, end } = getTimebarStepByDelta({
-  start, end, absoluteStart, deltaMultiplicator: -1, // shift+left
+  start,
+  end,
+  absoluteStart,
+  deltaMultiplicator: -1, // shift+left
 })
 ```
 

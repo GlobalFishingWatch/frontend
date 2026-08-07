@@ -52,7 +52,6 @@ function EventReportPorts() {
 
   useEffect(() => {
     replaceQueryParams({ reportEventsPortsFilter: debouncedQuery, reportEventsPortsPage: 0 })
-     
   }, [debouncedQuery])
 
   const onPrevPageClick = () => {

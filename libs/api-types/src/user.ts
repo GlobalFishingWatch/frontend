@@ -67,14 +67,7 @@ export type UserPermissionValue =
   | BADGES_PERMISSIONS
 
 export type UserPermissionAction =
-  | 'basic-search'
-  | 'create-all'
-  | 'create'
-  | 'delete-all'
-  | 'delete'
-  | 'read-all'
-  | 'read'
-  | string
+  'basic-search' | 'create-all' | 'create' | 'delete-all' | 'delete' | 'read-all' | 'read' | string
 
 export type UserPermission = {
   type: UserPermissionType

@@ -11,7 +11,10 @@ import {
 import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import { selectDeletedDatasets, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
+import {
+  selectDeletedDatasets,
+  selectDeprecatedDatasets,
+} from 'features/_map/datasets/datasets.slice'
 import {
   hasVesselGroupDatasetsDeleted,
   hasVesselGroupDatasetsDeprecated,
@@ -70,9 +73,7 @@ export const NEW_VESSEL_GROUP_ID = 'new-vessel-group'
 export const VMS_ID_FIELD = 'shipname'
 
 export type AddVesselGroupVessel =
-  | IdentityVesselData
-  | VesselGroupVesselIdentity
-  | ReportTableVessel
+  IdentityVesselData | VesselGroupVesselIdentity | ReportTableVessel
 
 export const useMigrateToLatestVesselGroup = () => {
   const [loadingGroupId, setLoadingGroupId] = useState<VesselGroup['id'] | null>(null)

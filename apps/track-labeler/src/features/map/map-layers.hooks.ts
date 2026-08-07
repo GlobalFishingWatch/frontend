@@ -88,6 +88,7 @@ export const useMapDataviewLayers = () => {
       bivariateDataviews: null,
       visibleEvents: [],
       vesselsColorBy: 'track',
+      timeMode: 'historical',
     },
   })
 

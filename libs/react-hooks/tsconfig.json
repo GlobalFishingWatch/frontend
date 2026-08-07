@@ -1,22 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
-  },
+  "extends": "../tsconfig.lib.base.json",
+  "compilerOptions": { "outDir": "./dist" },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

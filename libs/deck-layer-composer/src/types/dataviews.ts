@@ -37,6 +37,4 @@ export type ResolvedContextDataviewInstance = Omit<DataviewInstance, 'dataviewId
 }
 
 export type ResolvedDataviewInstance =
-  | DataviewInstance
-  | ResolvedFourwingsDataviewInstance
-  | ResolvedContextDataviewInstance
+  DataviewInstance | ResolvedFourwingsDataviewInstance | ResolvedContextDataviewInstance

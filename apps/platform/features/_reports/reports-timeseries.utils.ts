@@ -34,14 +34,11 @@ import {
 } from 'features/_reports/tabs/others/reports-points-timeseries.utils'
 import { getPolygonsTimeseries } from 'features/_reports/tabs/others/reports-polygons-timeseries.utils'
 
-
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
 export type ReportPolygonsDeckLayer = UserContextTileLayer
 export type ReportDeckLayer =
-  | ReportFourwingsDeckLayer
-  | ReportPointsDeckLayer
-  | ReportPolygonsDeckLayer
+  ReportFourwingsDeckLayer | ReportPointsDeckLayer | ReportPolygonsDeckLayer
 
 export type GetTimeseriesParams<T extends ReportDeckLayer> = {
   featuresFiltered: FilteredPolygons[][]

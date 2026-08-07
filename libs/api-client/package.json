@@ -2,37 +2,35 @@
   "name": "@globalfishingwatch/api-client",
   "version": "7.0.0",
   "description": "",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./utils/*": {
-      "types": "./dist/utils/*.d.ts",
       "development": "./src/utils/*.ts",
+      "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@globalfishingwatch/api-types": "workspace:^",
-    "protobufjs": "^8.x",
+    "es-toolkit": "1.x",
     "file-saver": "2.x",
-    "lodash": "4.x",
+    "long": "5.x",
+    "protobufjs": "^8.x",
     "react": "19.x",
     "tslib": "2.x"
   }

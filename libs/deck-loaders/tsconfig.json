@@ -1,25 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "es2020",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "composite": true,
-    "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
-  },
-  "include": ["src/**/*.ts"]
+  "extends": "../tsconfig.lib.base.json",
+  "compilerOptions": { "outDir": "./dist" },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

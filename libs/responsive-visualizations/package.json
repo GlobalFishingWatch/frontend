@@ -1,35 +1,32 @@
 {
   "name": "@globalfishingwatch/responsive-visualizations",
   "version": "14.0.9",
-  "sideEffects": [
-    "**/*.css"
-  ],
   "description": "Set of react components and hooks to render responsive visualizations",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./lib/values": {
-      "types": "./dist/lib/values.d.ts",
       "development": "./src/lib/values.ts",
+      "types": "./dist/lib/values.d.ts",
       "default": "./dist/lib/values.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@floating-ui/react": "0.x",
@@ -38,7 +35,7 @@
     "classnames": "2.x",
     "colorjs.io": "0.x",
     "d3-format": "3.x",
-    "lodash": "4.x",
+    "es-toolkit": "1.x",
     "luxon": "3.x",
     "react": "19.x",
     "recharts": "3.x",

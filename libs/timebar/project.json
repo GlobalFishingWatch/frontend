@@ -6,20 +6,15 @@
   "tags": ["lib"],
   "targets": {
     "test": {
-      "outputs": [
-        "{projectRoot}/{options.coverage.reportsDirectory}",
-        "{workspaceRoot}/coverage/libs/timebar"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "cwd": "libs/timebar",
-        "coverage.reportsDirectory": "../../../coverage/libs/timebar"
+        "cwd": "libs/timebar"
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
-        "clean": false,
         "assets": [
           {
             "glob": "**/*.css",
@@ -29,21 +24,7 @@
         ]
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "continuous": true,
-      "options": {
-        "watch": true
-      }
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/timebar"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }

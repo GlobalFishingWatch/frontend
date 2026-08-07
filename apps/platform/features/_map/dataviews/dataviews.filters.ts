@@ -47,8 +47,7 @@ export type GetFiltersInDataviewParams = {
 }
 
 export type DataviewWithFilters =
-  | UrlDataviewInstance
-  | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
+  UrlDataviewInstance | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
 
 export const isDataviewFilterSupported = (
   dataview: DataviewWithFilters,
@@ -225,9 +224,10 @@ export const getCommonFiltersInDataview = (
     compatibilityOperation === 'every'
       ? filterFields
           .slice(1)
-          .reduce<
-            (string | number | boolean)[]
-          >((acc, arr) => intersection(acc, arr), filterFields[0] ?? [])
+          .reduce<(string | number | boolean)[]>(
+            (acc, arr) => intersection(acc, arr),
+            filterFields[0] ?? []
+          )
       : uniq(filterFields.flat())
   const activeDataset = activeDatasets?.[0] as Dataset
   let commonFilters = filterFields

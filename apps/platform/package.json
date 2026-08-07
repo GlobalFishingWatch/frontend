@@ -11,18 +11,7 @@
     "i18n:types": "i18next-cli types",
     "test:e2e": "npx playwright test"
   },
-  "devDependencies": {
-    "i18next-cli": "^1.50.1",
-    "source-map-explorer": "2.5.3"
-  },
-  "browserslist": [
-    ">0.1%",
-    "not dead",
-    "not op_mini all"
-  ],
   "dependencies": {
-    "@platform/config": "workspace:*",
-    "@fontsource/roboto": "^5.3.0",
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
@@ -37,6 +26,15 @@
     "@globalfishingwatch/responsive-visualizations": "workspace:^",
     "@globalfishingwatch/timebar": "workspace:^",
     "@globalfishingwatch/ui-components": "workspace:^",
-    "@sentry/tanstackstart-react": "^10.69.0"
-  }
+    "@platform/config": "workspace:*"
+  },
+  "devDependencies": {
+    "i18next-cli": "^1.50.1",
+    "source-map-explorer": "^2.5.3"
+  },
+  "browserslist": [
+    ">0.1%",
+    "not dead",
+    "not op_mini all"
+  ]
 }

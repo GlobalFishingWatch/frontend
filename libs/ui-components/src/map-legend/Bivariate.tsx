@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 
 import BivariateArrows from './Bivariate-arrows'
-import { formatLegendValue,roundLegendNumber } from './map-legend.utils'
+import { formatLegendValue, roundLegendNumber } from './map-legend.utils'
 import type { UILegendBivariate } from './types'
 
 import styles from './Bivariate.module.css'

@@ -16,7 +16,9 @@ export function TimebarBookmarkButton() {
     bookmarkEnd !== undefined &&
     bookmarkEnd !== null
   const bookmarkDisabled =
-    hasBookmark && getTime(bookmarkStart) === getTime(start) && getTime(bookmarkEnd) === getTime(end)
+    hasBookmark &&
+    getTime(bookmarkStart) === getTime(start) &&
+    getTime(bookmarkEnd) === getTime(end)
 
   const setBookmark = () => {
     onBookmarkChange?.(start, end)

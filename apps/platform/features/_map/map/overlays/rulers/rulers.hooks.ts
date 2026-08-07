@@ -8,7 +8,10 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 
 import { useMapControl } from 'features/_map/map/controls/map-controls.hooks'
 import { MAP_CONTROL_RULERS } from 'features/_map/map/controls/map-controls.slice'
-import { selectAreMapRulersVisible, selectMapRulers } from 'features/_map/workspace/selectors/app.selectors'
+import {
+  selectAreMapRulersVisible,
+  selectMapRulers,
+} from 'features/_map/workspace/selectors/app.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 const useRulers = () => {

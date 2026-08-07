@@ -3,7 +3,7 @@ import { parse } from 'qs'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
-import { useAppSearch,useReplaceQueryParams  } from 'router/routes.hook'
+import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import type { QueryParams } from 'types'
 
 type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>

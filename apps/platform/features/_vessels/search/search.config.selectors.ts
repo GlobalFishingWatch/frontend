@@ -1,7 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DEFAULT_SEARCH_STATE } from 'features/_vessels/search/search.config'
-import type { VesselSearchState, VesselSearchStateProperty } from 'features/_vessels/search/search.types'
+import type {
+  VesselSearchState,
+  VesselSearchStateProperty,
+} from 'features/_vessels/search/search.types'
 import { IS_PIPE_4 } from 'features/_vessels/vessel/vessel.config'
 import { selectLocationQuery } from 'router/routes.selectors'
 

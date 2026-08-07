@@ -11,10 +11,12 @@ describe('parseUserTrack', () => {
     vi.restoreAllMocks()
   })
 
-  const createLineStringFeature = (overrides: {
-    coordinates?: [number, number][]
-    coordinateProperties?: Record<string, number[]>
-  } = {}) => ({
+  const createLineStringFeature = (
+    overrides: {
+      coordinates?: [number, number][]
+      coordinateProperties?: Record<string, number[]>
+    } = {}
+  ) => ({
     type: 'Feature',
     geometry: {
       type: 'LineString',

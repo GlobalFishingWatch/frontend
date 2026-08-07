@@ -17,7 +17,10 @@ import {
 } from 'features/_user/vessel-groups/vessel-groups.utils'
 import VesselIdentityFieldLogin from 'features/_vessels/vessel/identity/fields/VesselIdentityFieldLogin'
 import type { VesselIdentityProperty } from 'features/_vessels/vessel/vessel.utils'
-import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/_vessels/vessel/vessel.utils'
+import {
+  getSearchIdentityResolved,
+  isFieldLoginRequired,
+} from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'

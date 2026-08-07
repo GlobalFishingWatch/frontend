@@ -1,0 +1,17 @@
+{
+  "name": "@globalfishingwatchapp/track-labeler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/deck-layer-composer": "workspace:^",
+    "@globalfishingwatch/deck-layers": "workspace:^",
+    "@globalfishingwatch/i18n-labels": "workspace:^",
+    "@globalfishingwatch/timebar": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^"
+  }
+}

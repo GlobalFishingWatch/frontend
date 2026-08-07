@@ -1,0 +1,11 @@
+{
+  "name": "@globalfishingwatchapp/image-labeler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^"
+  }
+}

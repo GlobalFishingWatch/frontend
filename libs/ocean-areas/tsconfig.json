@@ -1,27 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "composite": true,
-    "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"]
-  },
+  "$comment": "src/scripts and src/source are ts-node data-prep scripts that import with explicit .ts extensions, so they cannot be checked under this config. Excluded here rather than in tsconfig.lib.json so typecheck skips them too.",
+  "extends": "../tsconfig.lib.base.json",
+  "compilerOptions": { "outDir": "./dist" },
   "ts-node": {
     "esm": true,
     "experimentalEsm": true,
     "transpileOnly": true
   },
-  "include": ["src/**/*.ts", "src/data/**/*.json", "src/locales/**/*.json"]
+  "include": ["src/**/*.ts", "src/data/**/*.json", "src/locales/**/*.json"],
+  "exclude": ["src/source/**/*", "src/scripts/**/*"]
 }

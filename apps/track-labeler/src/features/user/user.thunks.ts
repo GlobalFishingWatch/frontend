@@ -6,7 +6,7 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { selectLocationQuery } from '../../routes/routes.selectors'
 import type { AppState } from '../../types/redux.types'
 
-import { fetchUserComplete, fetchUserError,fetchUserInit } from './user.actions'
+import { fetchUserComplete, fetchUserError, fetchUserInit } from './user.actions'
 import { isUserLogged, userLoaded } from './user.slice'
 
 export const userLoginThunk = async (

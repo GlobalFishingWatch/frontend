@@ -6,7 +6,12 @@ import type { Regions } from '@globalfishingwatch/api-types'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectRegionsDatasets } from 'features/data/regions/regions.selectors'
-import { selectEEZs, selectFAOs, selectMPAs, selectRFMOs } from 'features/data/regions/regions.slice'
+import {
+  selectEEZs,
+  selectFAOs,
+  selectMPAs,
+  selectRFMOs,
+} from 'features/data/regions/regions.slice'
 
 export function useRegionTranslationsById() {
   const regionsDatasets = useSelector(selectRegionsDatasets)

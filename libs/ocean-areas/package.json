@@ -4,17 +4,13 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
   "scripts": {
     "mpas": "node --loader ts-node/esm src/scripts/mpas.ts",
     "fao": "node --loader ts-node/esm src/scripts/fao.ts",
@@ -24,6 +20,10 @@
     "ports": "node --loader ts-node/esm src/scripts/ports.ts",
     "update-data": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "@turf/turf": "7.x",
     "dotenv": "17.x",
@@ -33,10 +33,7 @@
     "tslib": "2.x"
   },
   "devDependencies": {
-    "@types/lodash": "4.x",
-    "@types/node": "20.x",
-    "dotenv": "^17.2.0",
-    "ts-node": "10.x",
-    "typescript": "5.x"
+    "@types/node": "26.x",
+    "ts-node": "10.x"
   }
 }

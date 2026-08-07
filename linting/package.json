@@ -2,7 +2,30 @@
   "name": "@globalfishingwatch/linting",
   "version": "3.2.1",
   "description": "linting config ready to be used in every gfw frontend project",
+  "license": "MIT",
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "bugs": "https://github.com/GlobalFishingWatch/frontend/issues",
+  "author": "Satellite Studio",
   "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./lib": "./lib.js",
+    "./legacy": "./legacy.js",
+    "./nx": "./nx.js",
+    "./prettier": "./prettier.js",
+    "./stylelint": "./stylelint.js"
+  },
+  "main": "./index.js",
+  "files": [
+    "index.js",
+    "lib.js",
+    "legacy.js",
+    "nx.js",
+    "prettier.js",
+    "stylelint.js",
+    "javascript.js"
+  ],
   "keywords": [
     "eslint",
     "eslint-config",
@@ -11,56 +34,23 @@
     "stylelint",
     "stylelint-config"
   ],
-  "main": "index.js",
-  "exports": {
-    ".": "./index.js",
-    "./lib": "./lib.js",
-    "./legacy": "./legacy.js",
-    "./prettier": "./prettier.js",
-    "./stylelint": "./stylelint.js"
-  },
-  "files": [
-    "index.js",
-    "lib.js",
-    "legacy.js",
-    "javascript.js",
-    "prettier.js",
-    "stylelint.js"
-  ],
-  "repository": {
-    "type": "git",
-    "repository": "git@github.com:GlobalFishingWatch/frontend.git"
-  },
-  "author": "Satellite Studio",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/GlobalFishingWatch/frontend/issues"
-  },
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "dependencies": {
     "@eslint/compat": "2.x",
     "@eslint/js": "10.x",
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",
+    "eslint-package-json": "0.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "7.x",
-    "eslint-plugin-simple-import-sort": "14.x",
     "eslint-plugin-react-refresh": "0.x",
+    "eslint-plugin-simple-import-sort": "14.x",
     "prettier": "3.x",
     "prettier-eslint": "17.x",
     "stylelint": "^17.14.1",
     "stylelint-config-css-modules": "4.x",
     "stylelint-config-standard": "40.x",
     "typescript-eslint": "8.x"
-  },
-  "peerDependencies": {
-    "@nx/eslint-plugin": "23.x"
-  },
-  "peerDependenciesMeta": {
-    "@nx/eslint-plugin": {
-      "optional": true
-    }
   }
 }
