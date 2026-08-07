@@ -4,6 +4,9 @@
 **/*.gen.js
 **/*.gen.d.ts
 
+# pnpm rewrites this unformatted on every install; formatting it is 16k lines of permanent churn
+pnpm-lock.yaml
+
 /dist
 /coverage
 

@@ -18,7 +18,7 @@ This workspace therefore uses Nx's official aliasing scheme. Root `package.json`
 
 ## The editor half is separate — and it's the part that fixes OOM
 
-The default VS Code TS extension resolves `node_modules/typescript` by name, which the aliasing above points at the *slow* 6.0 compat shim. `.vscode/settings.json` overrides it:
+The default VS Code TS extension resolves `node_modules/typescript` by name, which the aliasing above points at the _slow_ 6.0 compat shim. `.vscode/settings.json` overrides it:
 
 ```json
 "js/ts.experimental.useTsgo": true,
@@ -37,11 +37,11 @@ That also needs the `TypeScriptTeam.native-preview` VS Code extension installed 
 
 Concretely, in `node_modules/.bin/`: **`tsc` is TS 7.0.2 native, `tsc6` is TS 6.0.3.**
 
-| Consumer | Compiler | Why |
-|---|---|---|
-| every `typecheck` target (shells out to `tsc`) | **TS 7 native** | speed |
-| VS Code (`js/ts.tsdk.path` → `@typescript/native/lib`) | **TS 7 native** | editor memory |
-| `@nx/js:tsc` (lib `.d.ts` emit), typescript-eslint | **TS 6** | need the JS compiler API, which TS 7 native does not expose until 7.1 |
+| Consumer                                               | Compiler        | Why                                                                   |
+| ------------------------------------------------------ | --------------- | --------------------------------------------------------------------- |
+| every `typecheck` target (shells out to `tsc`)         | **TS 7 native** | speed                                                                 |
+| VS Code (`js/ts.tsdk.path` → `@typescript/native/lib`) | **TS 7 native** | editor memory                                                         |
+| `@nx/js:tsc` (lib `.d.ts` emit), typescript-eslint     | **TS 6**        | need the JS compiler API, which TS 7 native does not expose until 7.1 |
 
 ## Measured, 2026-08
 

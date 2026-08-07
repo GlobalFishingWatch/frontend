@@ -9,11 +9,11 @@ description: libs/skills — encode-url/decode-url agent skills; esbuild-bundled
 
 Targets (`libs/skills/project.json`):
 
-| Target | What it does |
-| --- | --- |
-| `bundle` | esbuild → self-contained ESM in `libs/skills/dist`, plus SKILL.md / references / scripts copied as assets |
-| `types` | `dts-bundle-generator` → `dist/**/*.d.ts` |
-| `claude:encode-url` / `claude:decode-url` | copy the built skill into `~/.claude/skills/` for local use |
+| Target                                    | What it does                                                                                              |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `bundle`                                  | esbuild → self-contained ESM in `libs/skills/dist`, plus SKILL.md / references / scripts copied as assets |
+| `types`                                   | `dts-bundle-generator` → `dist/**/*.d.ts`                                                                 |
+| `claude:encode-url` / `claude:decode-url` | copy the built skill into `~/.claude/skills/` for local use                                               |
 
 `bundle` runs esbuild with `platform: node`, a `createRequire` banner, and aliases: [[platform-config-package]] source (`@platform/config` → `apps/platform/config/index.ts`) plus the local dists of api-types, api-client, data-transforms, deck-layers, deck-loaders, datasets-client and dataviews-client. Skill scripts run under plain node ≥ 23 via `scripts/register-gfw-resolver.mjs`.
 
