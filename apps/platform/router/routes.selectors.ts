@@ -7,6 +7,7 @@ import { createDeepEqualSelector } from 'utils/selectors'
 
 import type { ROUTE_TYPES } from './routes'
 import {
+  HELP_HUB_ROUTES,
   PORT_REPORT,
   REPORT,
   ROUTES_WITH_WORKSPACES,
@@ -33,6 +34,10 @@ export const selectIsWorkspaceLocation = createSelector([selectLocationType], (l
 
 export const selectIsRouteWithWorkspace = createSelector([selectLocationType], (locationType) =>
   ROUTES_WITH_WORKSPACES.includes(locationType)
+)
+
+export const selectIsHelpHubLocation = createSelector([selectLocationType], (locationType) =>
+  HELP_HUB_ROUTES.includes(locationType)
 )
 
 export const selectIsVesselLocation = createSelector(

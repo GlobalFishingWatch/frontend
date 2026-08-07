@@ -2,6 +2,7 @@ import { Fragment, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
+import cx from 'classnames'
 
 import { Menu } from '@globalfishingwatch/ui-components/menu'
 
@@ -17,6 +18,7 @@ import { PLATFORM_MODE } from 'features/nav/nav.config'
 import PlatformNav from 'features/nav/PlatformNav'
 import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 import { ConfirmLeave } from 'router/ConfirmLeave'
+import { selectIsHelpHubLocation } from 'router/routes.selectors'
 
 import styles from './layouts.module.css'
 
@@ -30,6 +32,7 @@ function PlatformLayout() {
   const onContentPanelWidthChange = usePersistedPanelWidth('contentPanel')
 
   const readOnly = useSelector(selectReadOnly)
+  const isHelpHubLocation = useSelector(selectIsHelpHubLocation)
   const [menuOpen, setMenuOpen] = useState(false)
 
   const onMenuClick = useCallback(() => {
@@ -39,7 +42,12 @@ function PlatformLayout() {
   return (
     <Fragment>
       <ConfirmLeave />
-      <div id={PLATFORM_CONTAINER_DOM_ID} className={styles.platformContainer}>
+      <div
+        id={PLATFORM_CONTAINER_DOM_ID}
+        className={cx(styles.platformContainer, {
+          [styles.helpHubBackground]: isHelpHubLocation,
+        })}
+      >
         {PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />}
         <div className={styles.platformContent}>
           <ErrorBoundary>
