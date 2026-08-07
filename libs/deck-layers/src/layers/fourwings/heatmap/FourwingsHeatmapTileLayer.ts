@@ -135,7 +135,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (!this.state) {
       return ''
     }
-    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${this.state.rampDirty}|${this.state.viewportLoaded}`
+    const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}`
   }
 
   get debounceTime(): number {

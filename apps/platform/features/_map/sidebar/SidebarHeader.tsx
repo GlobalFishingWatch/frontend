@@ -63,26 +63,17 @@ function SidebarHeader() {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
-  const scrollElement = getScrollElement()
 
   useEffect(() => {
+    const scrollElement = getScrollElement()
+    if (!scrollElement) return
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement
-      if (target?.scrollTop > 0) {
-        setIsSticky(true)
-      } else {
-        setIsSticky(false)
-      }
+      setIsSticky(target?.scrollTop > 0)
     }
-    if (scrollElement) {
-      scrollElement.addEventListener('scroll', handleScroll, { passive: true })
-    }
-    return () => {
-      if (scrollElement) {
-        scrollElement.removeEventListener('scroll', handleScroll)
-      }
-    }
-  }, [scrollElement])
+    scrollElement.addEventListener('scroll', handleScroll, { passive: true })
+    return () => scrollElement.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const getSubBrand = useCallback((): SubBrands | undefined => {
     let subBrand: SubBrands | undefined

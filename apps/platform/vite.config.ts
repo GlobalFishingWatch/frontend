@@ -115,6 +115,9 @@ export default defineConfig(({ command, mode }) => {
           release: { name: env.COMMIT_SHA, setCommits: false },
         }),
     ],
+    build: {
+      cssCodeSplit: false,
+    },
     envPrefix: ['VITE_', 'i18n_'],
     define: {
       __BUILD_ID__: JSON.stringify(
