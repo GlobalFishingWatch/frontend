@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
   const basePath = env.PUBLIC_URL || (mode === 'production' ? '/api-portal' : '')
 
   return {
-    devtools: command === 'serve',
+    devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
     base: basePath,
     root: import.meta.dirname,
     cacheDir: '../../node_modules/.vite/apps/api-portal',

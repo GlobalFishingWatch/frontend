@@ -38,19 +38,6 @@
         "development": {},
         "production": {}
       }
-    },
-    "typecheck": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "tsc --noEmit --project apps/data-download-portal/tsconfig.json"
-      }
-    },
-    "typecheck-watch": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "command": "tsc --noEmit --watch --project apps/data-download-portal/tsconfig.json"
-      }
     }
   }
 }

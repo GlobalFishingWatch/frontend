@@ -5,18 +5,9 @@
   "projectType": "application",
   "tags": ["app"],
   "targets": {
-    "types-watch": {
-      "executor": "nx:run-commands",
-      "cache": false,
-      "continuous": true,
-      "dependsOn": ["^dist"],
-      "options": {
-        "command": "nx watch --projects=tag:lib -- nx run-many -t dist -p \\$NX_PROJECT_NAME"
-      }
-    },
     "prepare-start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["^dist", "prepare-loaders", "i18n-labels:serve", "types-watch"],
+      "dependsOn": ["prepare-loaders", "i18n-labels:serve"],
       "continuous": true,
       "options": {
         "command": "nx run platform:i18n:watch"
@@ -275,7 +266,7 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n:types", "^dist"],
+      "dependsOn": ["i18n:types"],
       "options": {
         "command": "tsc --noEmit --project  apps/platform/tsconfig.typecheck.json"
       }

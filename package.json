@@ -16,12 +16,10 @@
     "postinstall": "husky",
     "nx:latest": "nx migrate latest",
     "nx:migrations": "nx migrate --run-migrations",
-    "knip": "NX_DAEMON=false knip",
-    "knip:fix": "NX_DAEMON=false knip --fix",
     "libs:dev": "nx run-many -t dev --projects=tag:lib",
     "clean": "pnpm clean:cache && pnpm clean:deps",
     "clean:deps": "rimraf -rf ./pnpm-lock.yaml && touch pnpm-lock.yaml && rimraf -rf ./node_modules && pnpm store prune && pnpm install",
-    "clean:cache": "rimraf -rf .nx && rimraf -rf ./dist"
+    "clean:cache": "rimraf --glob .nx ./dist 'apps/*/node_modules/.rolldown' 'apps/*/node_modules/.cache' 'node_modules/.cache/tsbuildinfo'"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.51",
@@ -68,7 +66,6 @@
     "@tanstack/react-devtools": "0.10.9",
     "@tanstack/react-router": "1.170.18",
     "@tanstack/react-router-devtools": "1.167.0",
-    "@tanstack/react-router-ssr-query": "1.167.1",
     "@tanstack/react-start": "1.168.34",
     "@tanstack/react-virtual": "3.14.9",
     "@tanstack/router-plugin": "1.168.23",
@@ -109,7 +106,6 @@
     "i18next-fs-backend": "2.6.7",
     "i18next-http-backend": "4.0.1",
     "immer": "11.1.15",
-    "jest-canvas-mock": "2.5.8",
     "jimp": "1.6.1",
     "jotai": "2.20.2",
     "jszip": "3.10.1",
@@ -180,19 +176,17 @@
     "@eslint/js": "10.0.1",
     "@globalfishingwatch/linting": "workspace:*",
     "@luma.gl/test-utils": "9.3.6",
-    "@nx/esbuild": "23.1.0",
-    "@nx/eslint": "23.1.0",
-    "@nx/eslint-plugin": "23.1.0",
-    "@nx/js": "23.1.0",
-    "@nx/playwright": "23.1.0",
-    "@nx/react": "23.1.0",
+    "@nx/esbuild": "23.1.1",
+    "@nx/eslint": "23.1.1",
+    "@nx/eslint-plugin": "23.1.1",
+    "@nx/js": "23.1.1",
+    "@nx/playwright": "23.1.1",
+    "@nx/react": "23.1.1",
     "@nx/vite": "23.1.1",
-    "@nx/vitest": "23.1.0",
-    "@nx/web": "23.1.0",
-    "@nx/workspace": "23.1.0",
+    "@nx/vitest": "23.1.1",
+    "@nx/web": "23.1.1",
+    "@nx/workspace": "23.1.1",
     "@playwright/test": "1.62.0",
-    "@tanstack/router-devtools": "1.167.0",
-    "@tanstack/router-vite-plugin": "1.167.23",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.0",
     "@testing-library/react": "16.3.2",
@@ -230,7 +224,6 @@
     "@vitest/coverage-v8": "4.1.10",
     "@vitest/ui": "4.1.10",
     "@xmldom/xmldom": "0.9.10",
-    "babel-jest": "30.4.1",
     "babel-plugin-react-compiler": "1.0.0",
     "baseline-browser-mapping": "2.11.4",
     "circular-dependency-plugin": "5.2.2",
@@ -252,20 +245,16 @@
     "husky": "9.1.7",
     "i18next-cli": "1.67.3",
     "i18next-resources-for-ts": "2.1.0",
-    "jest": "30.4.2",
-    "jest-environment-jsdom": "30.4.1",
-    "jest-util": "30.4.1",
     "jiti": "2.7.0",
     "jsdom": "29.1.1",
     "jsonc-eslint-parser": "3.1.0",
-    "knip": "6.29.0",
     "lint-staged": "17.2.0",
     "load-json-file": "7.0.1",
     "local-ssl-proxy": "2.0.5",
     "make-dir-cli": "4.0.0",
     "mochawesome": "7.1.4",
     "next-react-memory-stats": "1.0.2",
-    "nx": "23.1.0",
+    "nx": "23.1.1",
     "playwright": "1.62.0",
     "prettier": "3.9.6",
     "prettier-eslint": "17.1.1",
@@ -277,7 +266,6 @@
     "stylelint": "17.14.1",
     "stylelint-config-css-modules": "4.6.0",
     "stylelint-config-standard": "40.0.0",
-    "ts-jest": "29.4.12",
     "ts-node": "10.9.2",
     "typescript-eslint": "8.65.0",
     "vite": "8.2.0",
@@ -286,12 +274,16 @@
     "vitest-browser-react": "2.2.0"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
+    "*.{js,jsx,ts,tsx,mts,mjs}": [
+      "eslint --fix",
+      "prettier --write"
     ],
     "*.css": [
-      "prettier --write",
-      "stylelint --fix"
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,scss}": [
+      "prettier --write"
     ]
   },
   "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065"

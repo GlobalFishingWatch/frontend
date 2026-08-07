@@ -9,7 +9,7 @@ const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')
 
 export default defineConfig(({ command }) => ({
-  devtools: command === 'serve',
+  devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
   base: basePath,
   root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/port-labeler',

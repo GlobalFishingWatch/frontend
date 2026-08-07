@@ -56,7 +56,8 @@ export default defineConfig(({ command, mode }) => {
   return {
     root: import.meta.dirname,
     base: basePath,
-    devtools: command === 'serve',
+    // devtools is opt-in: it writes a ~1GB .rolldown session dir per run and never GCs them
+    devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
     resolve: {
       tsconfigPaths: true,
       dedupe: ['jotai'],

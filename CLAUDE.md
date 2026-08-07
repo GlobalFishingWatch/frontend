@@ -43,7 +43,6 @@ Libs are consumed via built `dist/`, not src paths. Each `libs/*/package.json` e
 | Typecheck | `pnpm nx typecheck platform` |
 | Build app | `pnpm nx build platform` |
 | e2e | `pnpm nx test platform-e2e` |
-| Dead code | `pnpm knip` |
 
 Vitest suites are currently broken in `platform` — don't run them to validate changes. Verify with typecheck + lint, e2e, or a real SSR build. See `.claude/memory/platform-testing.md`.
 

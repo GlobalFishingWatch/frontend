@@ -23,20 +23,34 @@ Vite matches `development` in dev only; build, nitro, node and tsc still get `di
 
 Do **not** reintroduce an `nx watch → dist` loop, and do **not** restore src `paths` overrides in the app tsconfig.
 
-## Consequence: types lag src
+## Types no longer lag src (changed 2026-08-06)
 
-IDE and tsc types come from `dist/*.d.ts` while Vite dev serves `src`. Editing a lib's public type — e.g. adding an icon to `libs/ui-components/src/icon/icon.config.ts` — makes the app typecheck fail with `not assignable to type ...` until that lib's dist is rebuilt:
+This used to be the main tax: IDE and tsc read `dist/*.d.ts` while Vite dev served `src`, so editing a lib's public type made the app typecheck fail on correct code until you ran that lib's `dist` **and** did *TypeScript: Restart TS Server*. That is fixed.
 
-```sh
-pnpm nx run ui-components:dist   # the target is `dist`, there is no `build`
+The cause was condition **order** in each `libs/*/package.json`. `types` was listed first, so TS matched it and never reached `development`:
+
+```jsonc
+// before — TS stops at "types"        // after — TS matches "development"
+{ "types": "./dist/index.d.ts",        { "development": "./src/index.ts",
+  "development": "./src/index.ts",       "types": "./dist/index.d.ts",
+  "default": "./dist/index.js" }         "default": "./dist/index.js" }
 ```
 
-After rebuilding, VS Code still needs **TypeScript: Restart TS Server** — it caches the old `.d.ts` in memory. Check dist content and mtime before believing such an error.
+All 13 libs were reordered, and `apps/platform/tsconfig.json` gained `"customConditions": ["development"]`. **Both halves are required — either alone is a no-op.** Vite was never affected (it does not know the `types` condition), which is why dev already served src.
 
-(`platform:typecheck` does now declare `dependsOn: ["i18n:types", "^dist"]`, so nx builds lib dists for you; a bare `tsc` invocation outside nx does not.)
+Runtime resolution is unchanged: build, nitro and node still get `dist` via `default`. Only type resolution moved.
 
-## Why tsconfig.base.json paths still exist
+Consequences:
 
-`tsconfig.base.json` maps `@globalfishingwatch/* → libs/*/dist/*.d.ts` solely for `apps/api-portal`, `apps/data-download-portal` and `apps/port-labeler`. Those three have no `package.json`, so they are not pnpm packages and paths are their only resolution mechanism. They cannot be deleted until those apps get manifests and workspace membership. Libs opt out individually via `"paths": {}` in each `libs/*/tsconfig.json`.
+- `platform:typecheck` and `prepare-start` no longer declare `^dist`. Cold `nx run platform:typecheck` went **21.2s → 6.9s** (18 tasks → 2) because 13 lib `dist` builds are no longer prerequisites.
+- The old `types-watch` (`nx watch → dist`) was removed from `prepare-start`. With `development` exports, rebuilding `dist` on every lib edit does nothing useful for Vite or the IDE; switching it to `typecheck` would only burn CPU. Native `watch-deps` is also a miss here — it depends on `^build`, and these libs expose `dist`, not `build`.
+- `platform:build` **keeps** `^dist` — production resolves `default` → `dist`.
+- Go-to-definition lands in lib source instead of generated `.d.ts`.
+
+Trade-off to know: typecheck now validates against lib *source*, not the emitted `.d.ts`. A declaration-emit-only bug would be caught by `build`, not by `typecheck`.
+
+## tsconfig.base.json no longer has paths
+
+Historical note: `tsconfig.base.json` used to map `@globalfishingwatch/* → libs/*/dist/*.d.ts` for the apps without a `package.json`. Those paths were **removed on 2026-07-27** in `a97680d746 "remove paths and fix project run"`. Each of those apps carries its own `paths` map in `apps/<app>/tsconfig.json` instead.
 
 Prefer fixing the source over patching consumers — a dev-only `resolve.alias` in `vite.config` was proposed and rejected for exactly this reason.

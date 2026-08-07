@@ -27,7 +27,7 @@ const RootComponent = () => {
   }
 
   const hasAccessPermissions = checkExistPermissionInList(
-    login.user?.permissions,
+    login.user?.permissions ?? [],
     labelerPermission
   )
   if (login.logged && !hasAccessPermissions) {

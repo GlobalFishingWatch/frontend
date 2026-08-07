@@ -1,4 +1,5 @@
 import {
+  type Dataset,
   DatasetCategory,
   DatasetStatus,
   DatasetTypes,
@@ -249,7 +250,9 @@ const dataviews: UrlDataviewInstance[] = [
           },
         ],
       },
-    ],
+      // Hardcoded fixtures predating the current Dataset shape. This app is frozen, so we
+      // assert rather than reshape data the deck layers still read at runtime.
+    ] as unknown as Dataset[],
   },
   {
     id: CONTEXT_LAYERS_IDS.mpa,
@@ -369,7 +372,7 @@ const dataviews: UrlDataviewInstance[] = [
           },
         ],
       },
-    ],
+    ] as unknown as Dataset[],
   },
   {
     id: CONTEXT_LAYERS_IDS.rfmo,
@@ -532,7 +535,7 @@ const dataviews: UrlDataviewInstance[] = [
           },
         ],
       },
-    ],
+    ] as unknown as Dataset[],
   },
 ]
 

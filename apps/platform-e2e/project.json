@@ -56,17 +56,9 @@
       }
     },
     "typecheck": {
-      "executor": "nx:run-commands",
       "options": {
-        "command": "tsc --noEmit --project apps/platform-e2e/tsconfig.json"
+        "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
       }
-    },
-    "typecheck-watch": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "tsc --noEmit --watch --project apps/platform-e2e/tsconfig.json"
-      },
-      "continuous": true
     }
   }
 }
