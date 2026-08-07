@@ -11,7 +11,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/_map/workspace/workspace.selectors'
 import { selectShowTimeComparison } from 'features/_reports/report-area/area-reports.selectors'
-import { VESSEL, WORKSPACE_VESSEL } from 'router/routes'
+import { SEARCH, VESSEL, WORKSPACE_VESSEL } from 'router/routes'
 import {
   selectIsAnyAreaReportLocation,
   selectIsPortReportLocation,
@@ -21,9 +21,7 @@ import {
 } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-// Shared with the layouts: the @media print rules cross-reference .splitContainer/.aside and
-// .mapContainer/.withTimebar, so these classes must stay in one CSS module.
-import styles from 'features/layouts/layouts.module.css'
+import styles from './layouts.module.css'
 
 const Map = lazy(() => import('features/_map/map/Map'))
 const Timebar = lazy(() => import('features/_map/timebar/Timebar'))
@@ -40,7 +38,7 @@ const Main = () => {
   const isSmallScreen = useSmallScreen()
 
   const isRouteWithTimebar = locationType === VESSEL
-  const isRouteWithMap = locationType !== 'SEARCH'
+  const isRouteWithMap = locationType !== SEARCH
   const isWorkspacesRouteWithTimebar =
     isWorkspaceLocation ||
     locationType === WORKSPACE_VESSEL ||

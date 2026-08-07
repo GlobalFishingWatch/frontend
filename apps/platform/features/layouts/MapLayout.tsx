@@ -81,20 +81,20 @@ function MapLayout() {
   }, [locationType, isAreaReportLocation])
 
   const RAIL = 'var(--sidebar-tabs-width)'
-  let asideWidth = '50%'
+  let fixedAsideWidth: string | null = null
 
   if (screenshotMode) {
-    asideWidth = '0'
+    fixedAsideWidth = '0'
   } else if (readOnly) {
-    asideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
+    fixedAsideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
   } else if (isAnySearchLocation) {
-    asideWidth = '100%'
+    fixedAsideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
+    fixedAsideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
   }
 
-  const isAsideResizable =
-    !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
+  const asideWidth = fixedAsideWidth ?? '50%'
+  const isAsideResizable = fixedAsideWidth === null
 
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const [committedAside, setCommittedAside] = useState({ asideWidth, isAsideResizable })
