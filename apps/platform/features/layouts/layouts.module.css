@@ -7,6 +7,13 @@
   transform: translateZ(0);
 }
 
+.helpHubBackground {
+  background-color: var(--color-white);
+  background-image: var(--gradient-help);
+  background-size: 100% 70rem;
+  background-repeat: no-repeat;
+}
+
 .platformContent,
 .appLayoutContent {
   flex: 1;
