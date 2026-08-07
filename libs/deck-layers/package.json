@@ -1,7 +1,6 @@
 {
   "name": "@globalfishingwatch/deck-layers",
   "version": "0.1.7",
-  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -44,9 +43,10 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.3.8",

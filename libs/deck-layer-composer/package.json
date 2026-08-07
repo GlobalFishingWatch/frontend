@@ -1,7 +1,6 @@
 {
   "name": "@globalfishingwatch/deck-layer-composer",
   "version": "0.1.13",
-  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -17,9 +16,10 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@deck.gl/core": "9.x",

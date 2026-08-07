@@ -11,10 +11,6 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
   "scripts": {
     "mpas": "node --loader ts-node/esm src/scripts/mpas.ts",
     "fao": "node --loader ts-node/esm src/scripts/fao.ts",
@@ -24,6 +20,10 @@
     "ports": "node --loader ts-node/esm src/scripts/ports.ts",
     "update-data": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "@turf/turf": "7.x",
     "dotenv": "17.x",

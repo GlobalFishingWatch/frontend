@@ -1,0 +1,16 @@
+{
+  "name": "@globalfishingwatchapp/port-labeler",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/i18n-labels": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
+    "@globalfishingwatch/timebar": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^"
+  }
+}

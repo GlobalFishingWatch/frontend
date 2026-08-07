@@ -1,8 +1,8 @@
 {
   "name": "@globalfishingwatch/data-transforms",
   "version": "4.0.1",
-  "license": "MIT",
   "description": "Utils to decode various data formats",
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -24,8 +24,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@globalfishingwatch/api-types": "workspace:^",

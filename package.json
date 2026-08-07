@@ -285,7 +285,14 @@
       "stylelint --fix",
       "prettier --write"
     ],
-    "*.{json,md,yml,yaml,scss}": [
+    "package.json": [
+      "eslint",
+      "prettier --write"
+    ],
+    "!(package).json": [
+      "prettier --write"
+    ],
+    "*.{md,yml,yaml,scss}": [
       "prettier --write"
     ]
   }
