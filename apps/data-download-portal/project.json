@@ -6,7 +6,7 @@
   "tags": ["app"],
   "targets": {
     "build": {
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "outputs": [
         "{projectRoot}/{options.outDir}",
         "{workspaceRoot}/dist/apps/data-download-portal"

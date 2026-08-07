@@ -189,7 +189,7 @@
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^dist", "i18n", "prepare-loaders", "check-store-graph"],
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "check-store-graph"],
       "options": {
         "commands": ["nx run platform:typecheck", "nx run platform:build:app"],
         "parallel": false

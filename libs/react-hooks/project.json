@@ -5,11 +5,8 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "clean": false
-      }
+    "build": {
+      "executor": "@nx/js:tsc"
     },
     "typecheck": {},
     "publish": {}

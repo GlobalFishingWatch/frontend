@@ -12,10 +12,9 @@
         "cwd": "libs/timebar"
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
-        "clean": false,
         "assets": [
           {
             "glob": "**/*.css",

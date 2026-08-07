@@ -1,5 +1,5 @@
 {
-  "$comment": "Shared base for the dist-producing libs. `${configDir}` resolves to the *extending* config's directory (TS >= 5.5), so path options and the default include live here instead of being repeated per lib. libs/skills does not extend this: its program includes apps/platform/config, which is outside the rootDir set here, and it emits via esbuild, so the composite/tsBuildInfoFile settings would only litter the dist that bundle owns.",
+  "$comment": "Shared base for the dist-producing libs. Path options (outDir/declarationDir/rootDir/tsBuildInfoFile) and `include` MUST stay per-lib: `${configDir}` makes `@nx/js:tsc` silently emit nothing — the `dist` target still prints 'Done compiling' and exits 0, but no .js/.d.ts is written. Plain tsc handles it fine, so apps/tsconfig.apps.base.json can use it; the libs cannot, because their dist target runs through that executor. libs/skills does not extend this: its program includes apps/platform/config, outside any rootDir set here, and it emits via esbuild.",
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "module": "ESNext",
@@ -23,12 +23,10 @@
       "node",
       "vite/client",
       "@nx/react/typings/cssmodule.d.ts",
-      "@nx/react/typings/image.d.ts"
-    ],
-    "outDir": "${configDir}/dist",
-    "declarationDir": "${configDir}/dist",
-    "rootDir": "${configDir}/src",
-    "tsBuildInfoFile": "${configDir}/dist/tsconfig.tsbuildinfo"
-  },
-  "include": ["${configDir}/src/**/*.ts", "${configDir}/src/**/*.tsx"]
+      "@nx/react/typings/image.d.ts",
+      "vitest",
+      "vitest/globals",
+      "vitest/importMeta"
+    ]
+  }
 }

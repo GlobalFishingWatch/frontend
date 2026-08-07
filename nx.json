@@ -107,21 +107,16 @@
     },
     "@nx/vite:build": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production", "envVars"]
     },
-    "dist": {
-      "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
-    },
     "dist:workers": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist/workers"],
       "cache": true
     },
     "@nx/js:tsc": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{options.outputPath}"],
       "cache": true,
       "options": {
@@ -139,7 +134,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production", "envVars"]
     },
     "typecheck": {
@@ -153,7 +148,7 @@
         }
       ],
       "options": {
-        "command": "tsc --noEmit --project {projectRoot}/tsconfig.lib.json"
+        "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
       }
     },
     "typecheck-watch": {
@@ -165,7 +160,7 @@
       }
     },
     "publish": {
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "executor": "@nx/js:release-publish",
       "options": {
         "packageRoot": "{projectRoot}"
@@ -220,42 +215,18 @@
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "envVars": [
-      {
-        "env": "API_GATEWAY"
-      },
-      {
-        "env": "PUBLIC_URL"
-      },
-      {
-        "env": "VITE_API_GATEWAY"
-      },
-      {
-        "env": "VITE_API_VERSION"
-      },
-      {
-        "env": "VITE_GOOGLE_MEASUREMENT_ID"
-      },
-      {
-        "env": "VITE_GOOGLE_TAG_MANAGER_ID"
-      },
-      {
-        "env": "VITE_PIPE_DATASET_VERSION"
-      },
-      {
-        "env": "VITE_PLATFORM_MODE"
-      },
-      {
-        "env": "VITE_PUBLIC_URL"
-      },
-      {
-        "env": "VITE_REALTIME_ENABLED"
-      },
-      {
-        "env": "VITE_REPORT_DAYS_LIMIT"
-      },
-      {
-        "env": "VITE_WORKSPACE_ENV"
-      }
+      { "env": "API_GATEWAY" },
+      { "env": "PUBLIC_URL" },
+      { "env": "VITE_API_GATEWAY" },
+      { "env": "VITE_API_VERSION" },
+      { "env": "VITE_GOOGLE_MEASUREMENT_ID" },
+      { "env": "VITE_GOOGLE_TAG_MANAGER_ID" },
+      { "env": "VITE_PIPE_DATASET_VERSION" },
+      { "env": "VITE_PLATFORM_MODE" },
+      { "env": "VITE_PUBLIC_URL" },
+      { "env": "VITE_REALTIME_ENABLED" },
+      { "env": "VITE_REPORT_DAYS_LIMIT" },
+      { "env": "VITE_WORKSPACE_ENV" }
     ],
     "sharedGlobals": [
       "{workspaceRoot}/nx.json",

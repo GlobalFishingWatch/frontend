@@ -8,7 +8,7 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": [
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
@@ -29,12 +29,9 @@
         "parallel": false
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["proto:generate", "^dist"],
-      "options": {
-        "clean": false
-      }
+      "dependsOn": ["proto:generate", "^build"]
     },
     "test": {
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
@@ -44,7 +41,7 @@
     },
     "dist:workers": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "outputs": ["{projectRoot}/dist/workers"],
       "options": {
         "command": "node libs/deck-loaders/scripts/build-workers.mjs"
@@ -52,7 +49,7 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist", "dist:workers"],
+      "dependsOn": ["build", "dist:workers"],
       "options": {
         "packageRoot": "libs/deck-loaders"
       }

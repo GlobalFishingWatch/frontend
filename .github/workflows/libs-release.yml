@@ -116,7 +116,7 @@ jobs:
 
       - name: Build dist
         if: steps.resolve.outputs.list != ''
-        run: pnpm exec nx run-many -t dist --projects=${{ steps.resolve.outputs.list }}
+        run: pnpm exec nx run-many -t build --projects=${{ steps.resolve.outputs.list }}
 
       - name: Release
         if: steps.resolve.outputs.list != ''

@@ -19,7 +19,7 @@
       }
     },
     "build": {
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/port-labeler"],
       "defaultConfiguration": "production",
       "options": {

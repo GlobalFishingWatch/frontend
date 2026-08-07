@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.lib.base.json",
   "compilerOptions": {
+    "outDir": "./dist",
     // deck.gl layers override ~140 base-class members without the modifier. Opt out until
     // someone does that pass; the rest of the libs keep the flag from tsconfig.lib.base.json.
     "noImplicitOverride": false,
@@ -9,5 +10,6 @@
       "#utils": ["./src/utils/index.ts"],
       "#*": ["./src/*.ts"]
     }
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

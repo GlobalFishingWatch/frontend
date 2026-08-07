@@ -5,14 +5,11 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "clean": false
-      }
+    "build": {
+      "executor": "@nx/js:tsc"
     },
     "test": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts"

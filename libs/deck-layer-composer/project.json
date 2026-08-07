@@ -6,13 +6,10 @@
   "tags": ["lib"],
   "targets": {
     "test": {
-      "dependsOn": ["^dist"]
+      "dependsOn": ["^build"]
     },
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "clean": false
-      }
+    "build": {
+      "executor": "@nx/js:tsc"
     },
     "typecheck": {},
     "publish": {}
