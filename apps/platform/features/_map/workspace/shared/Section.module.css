@@ -184,12 +184,6 @@
   right: 0;
 }
 
-.expandedContainerContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-S);
-}
-
 .legend {
   font: var(--font-S);
   color: var(--color-secondary-blue);

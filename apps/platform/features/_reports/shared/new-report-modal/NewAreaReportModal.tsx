@@ -12,7 +12,6 @@ import {
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { selectPrivateDatasetsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useSaveWorkspaceTimerange } from 'features/_map/workspace/save/workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from 'features/_map/workspace/save/workspace-save.utils'
@@ -156,7 +155,6 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={report?.id ? t((t) => t.analysis.editTitle) : t((t) => t.analysis.save)}
       isOpen={isOpen}
       shouldCloseOnEsc

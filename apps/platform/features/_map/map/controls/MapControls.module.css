@@ -111,10 +111,6 @@
   min-width: 15rem;
 }
 
-.printBtn {
-  margin-right: var(--space-S);
-}
-
 @media print {
   .mapControls {
     right: unset;

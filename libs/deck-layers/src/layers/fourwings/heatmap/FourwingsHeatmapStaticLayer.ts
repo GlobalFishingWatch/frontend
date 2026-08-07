@@ -25,22 +25,20 @@ import type {
   FourwingsStaticFeatureProperties,
 } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  getLayerGroupOffset,
-  getSteps,
-  GFWMVTLoader,
-  LayerGroup,
-} from '../../../utils'
-import type { ColorRampId } from '../../../utils/colorRamps'
-import { getColorRamp } from '../../../utils/colorRamps'
+import type { ColorRampId } from '#config/colorRamps.config'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { GFWMVTLoader } from '#layers/_shared/api'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   HEATMAP_STATIC_PROPERTY_ID,
   MAX_RAMP_VALUES,
-} from '../fourwings.config'
-import type { GetViewportDataParams } from '../fourwings.types'
+} from '#layers/fourwings/fourwings.config'
+import { getSteps } from '#layers/fourwings/fourwings.stats'
+import type { GetViewportDataParams } from '#layers/fourwings/fourwings.types'
+import { getLayerGroupOffset } from '#utils'
+import { getColorRamp } from '#utils/colorRamps'
 
 import type {
   FourwingsHeatmapStaticLayerProps,
@@ -80,7 +78,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   get cacheHash(): string {
-    return this.state?.rampDirty?.toString() || ''
+    if (!this.state) {
+      return ''
+    }
+    const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
+    return `${colorRamps}|${this.state.rampDirty}`
   }
 
   get debounceTime(): number {

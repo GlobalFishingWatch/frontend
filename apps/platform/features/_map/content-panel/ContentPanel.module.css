@@ -225,11 +225,6 @@
   flex-direction: column;
 }
 
-.subtitle {
-  font: var(--font-S);
-  text-transform: uppercase;
-}
-
 .titleContainer {
   display: flex;
   align-items: center;

@@ -215,21 +215,18 @@
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "envVars": [
-      {
-        "env": "VITE_API_GATEWAY"
-      },
-      {
-        "env": "VITE_PUBLIC_URL"
-      },
-      {
-        "env": "VITE_WORKSPACE_ENV"
-      },
-      {
-        "env": "VITE_GOOGLE_MEASUREMENT_ID"
-      },
-      {
-        "env": "VITE_GOOGLE_TAG_MANAGER_ID"
-      }
+      { "env": "API_GATEWAY" },
+      { "env": "PUBLIC_URL" },
+      { "env": "VITE_API_GATEWAY" },
+      { "env": "VITE_API_VERSION" },
+      { "env": "VITE_GOOGLE_MEASUREMENT_ID" },
+      { "env": "VITE_GOOGLE_TAG_MANAGER_ID" },
+      { "env": "VITE_PIPE_DATASET_VERSION" },
+      { "env": "VITE_PLATFORM_MODE" },
+      { "env": "VITE_PUBLIC_URL" },
+      { "env": "VITE_REALTIME_ENABLED" },
+      { "env": "VITE_REPORT_DAYS_LIMIT" },
+      { "env": "VITE_WORKSPACE_ENV" }
     ],
     "sharedGlobals": [
       "{workspaceRoot}/nx.json",

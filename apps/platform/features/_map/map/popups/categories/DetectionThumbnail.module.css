@@ -5,13 +5,6 @@
   height: 30rem;
 }
 
-.staticImgContainer {
-  position: relative;
-  display: block;
-  width: 38rem;
-  height: 38rem;
-}
-
 .img {
   position: absolute;
   width: 30rem;
@@ -19,12 +12,6 @@
   object-fit: cover;
   visibility: hidden;
   z-index: 0;
-}
-
-.staticImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .canvas {

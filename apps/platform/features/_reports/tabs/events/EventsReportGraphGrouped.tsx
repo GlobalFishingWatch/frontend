@@ -168,7 +168,7 @@ const ReportGraphTick = (props: any) => {
         const category = locationPayload.category
         const workspaceId = locationPayload.workspaceId
         router.navigate({
-          to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+          to: ROUTE_PATHS.WORKSPACE_REPORT,
           params: {
             category: category || DEFAULT_WORKSPACE_CATEGORY,
             workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,

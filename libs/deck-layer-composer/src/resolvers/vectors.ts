@@ -4,7 +4,7 @@ import type {
   FourwingsDeckVectorSublayer,
   FourwingsVectorsTileLayerProps,
 } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 
 import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'

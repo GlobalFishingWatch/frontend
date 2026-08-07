@@ -1,28 +1,29 @@
-/*
- * Platform shell: the MainNav rail plus everything else. The rail is always visible now — it used to
- * live inside the SplitView aside, so collapsing the sidebar hid it.
- */
-.platformLayout {
+.platformContainer {
   display: flex;
+  flex: 1;
   height: 100%;
   width: 100%;
-  overflow-x: clip;
-  background: var(--color-background);
+  position: relative;
+  transform: translateZ(0);
 }
 
-.platformContent {
+.platformContent,
+.appLayoutContent {
   flex: 1;
   min-width: 0;
   height: 100%;
+}
+
+.platformContent {
   z-index: 0;
 }
 
 .contentLayout {
-  flex: 1;
-  min-width: 0;
   height: 100%;
   transform: translateZ(0);
-  transition: width 380ms var(--ease-drawer);
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
 }
 
 .contentHeader {
@@ -31,6 +32,17 @@
   justify-content: space-between;
   padding: 0 var(--space-S);
   height: var(--header-height);
+  flex-shrink: 0;
+}
+
+.contentHeaderScrolled {
+  border-bottom: var(--border);
+}
+
+.contentHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
 }
 
 .contentScrollContainer {
@@ -45,28 +57,10 @@
   overflow-x: clip;
 }
 
-.appLayoutContent {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-}
-
 .main {
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-/*
- * Aside for the map-free shell (StandaloneApp). The map shell gets its aside sizing from SplitView;
- * with no SplitView the Sidebar needs an explicit full-size box, matching the 100% width that
- * SplitView already applies to standalone search today.
- */
-.standaloneAside {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  background: var(--color-white);
 }
 
 .mapContainer {

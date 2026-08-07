@@ -48,11 +48,6 @@
   margin-bottom: var(--space-SM);
 }
 
-.eventsCount strong {
-  font-weight: 400;
-  color: var(--color-primary-blue);
-}
-
 .iconContainer {
   width: 2rem;
   display: inline-flex;

@@ -53,7 +53,8 @@ const ContextLayersRow = ({
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const { reportPreview } = useSelector(selectFeatureFlags)
-  const { category, setPreferredCategory, canSwitch, hasAny } = useAreaTooltipSparklineCategory()
+  const { option, options, setPreferredCategory, canSwitch, hasAny } =
+    useAreaTooltipSparklineCategory()
   const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
   const showSparklinePreview =
     reportPreview && showFeaturesDetails && showSparkline && !isAnyReportLocation && hasAny
@@ -101,7 +102,8 @@ const ContextLayersRow = ({
               <Fragment>
                 <ContextLayerSparkline
                   feature={feature}
-                  category={category}
+                  option={option}
+                  options={options}
                   canSwitch={canSwitch}
                   onSelectCategory={setPreferredCategory}
                 />
@@ -109,7 +111,7 @@ const ContextLayersRow = ({
                   <ContextLayerReportLink
                     feature={feature}
                     label={t((t) => t.analysis.showFullReport)}
-                    reportCategory={category}
+                    reportCategory={option.category}
                     onClick={handleReportClick}
                   />
                 )}

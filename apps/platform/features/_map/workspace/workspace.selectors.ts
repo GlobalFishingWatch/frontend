@@ -40,7 +40,7 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { mapRoutePathToType, toValidRoutePath } from 'router/routes.utils'
+import { mapRoutePathToType } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -91,7 +91,7 @@ export const selectLastWorkspaceNavigationProps = createSelector(
       : lastWorkspaceVisited.params
 
     return {
-      to: toValidRoutePath(lastWorkspaceVisited.to, lastWorkspaceVisited.params),
+      to: lastWorkspaceVisited.to,
       params,
       search,
       previousRouteType,

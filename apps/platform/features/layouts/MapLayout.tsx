@@ -1,7 +1,8 @@
-import { Fragment, Suspense, useCallback } from 'react'
+import { Fragment, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getRouteApi, Outlet } from '@tanstack/react-router'
+import { getRouteApi, Outlet, useRouterState } from '@tanstack/react-router'
 
+import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components/dom-ids'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
@@ -80,20 +81,30 @@ function MapLayout() {
   }, [locationType, isAreaReportLocation])
 
   const RAIL = 'var(--sidebar-tabs-width)'
-  let asideWidth = '50%'
+  let fixedAsideWidth: string | null = null
 
   if (screenshotMode) {
-    asideWidth = '0'
+    fixedAsideWidth = '0'
   } else if (readOnly) {
-    asideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
+    fixedAsideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
   } else if (isAnySearchLocation) {
-    asideWidth = '100%'
+    fixedAsideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
+    fixedAsideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
   }
 
-  const isAsideResizable =
-    !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
+  const asideWidth = fixedAsideWidth ?? '50%'
+  const isAsideResizable = fixedAsideWidth === null
+
+  const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
+  const [committedAside, setCommittedAside] = useState({ asideWidth, isAsideResizable })
+  if (
+    !isNavigating &&
+    (committedAside.asideWidth !== asideWidth ||
+      committedAside.isAsideResizable !== isAsideResizable)
+  ) {
+    setCommittedAside({ asideWidth, isAsideResizable })
+  }
 
   return (
     <Fragment>
@@ -106,7 +117,7 @@ function MapLayout() {
         <Logo type={screenshotMode ? 'invert' : 'default'} />
       </a>
       <div className={styles.appLayout}>
-        <div id="app-layout-content" className={styles.appLayoutContent}>
+        <div id={SPLIT_VIEW_DOM_ID} className={styles.appLayoutContent}>
           <ErrorBoundary>
             <SplitView
               isOpen={sidebarOpen && !isMapDrawing}
@@ -120,12 +131,12 @@ function MapLayout() {
                 </Sidebar>
               }
               main={<Main />}
-              asideWidth={asideWidth}
+              asideWidth={committedAside.asideWidth}
               initialAsideWidthPct={sidebarWidthPct ?? undefined}
               onAsideWidthChange={onSidebarWidthChange}
               initialScreenWidth={screenWidth ?? undefined}
               onScreenWidthChange={onScreenWidthChange}
-              resizable={isAsideResizable}
+              resizable={committedAside.isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}
               className={styles.splitContainer}

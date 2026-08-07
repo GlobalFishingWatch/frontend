@@ -241,7 +241,7 @@ export function getVesselProperty<P extends VesselIdentityProperty>(
       property,
     })?.filter((i) => i !== null)
     if (combinedSourcesInfoData?.length) {
-      return combinedSourcesInfoData.flatMap((i) => i.name) as VesselProperty<P>
+      return combinedSourcesInfoData.flatMap((i) => i.name ?? []) as VesselProperty<P>
     }
   }
   return get<VesselProperty<P>>(identity, property as any)

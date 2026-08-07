@@ -44,11 +44,11 @@ const tsconfigPathAliases = [
   // Exact matches first so `types` does not get shadowed by the `types/` prefix rule.
   ...Object.entries(EXACT_ALIAS_MODULES).map(([name, path]) => ({
     find: new RegExp(`^${name}$`),
-    replacement: `${__dirname}/${path}`,
+    replacement: `${import.meta.dirname}/${path}`,
   })),
   ...PREFIX_ALIAS_DIRS.map((dir) => ({
     find: new RegExp(`^${dir}/`),
-    replacement: `${__dirname}/${dir}/`,
+    replacement: `${import.meta.dirname}/${dir}/`,
   })),
 ]
 
@@ -65,7 +65,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
   const isCoverageMode = mode === 'coverage' || env.VITEST_COVERAGE === 'true'
 
   return {
-    root: __dirname,
+    root: import.meta.dirname,
     base: basePath,
     cacheDir: '../../node_modules/.vite/apps/platform',
     plugins: [...plugins, publicAssetsPlugin(), authTokensPlugin()],

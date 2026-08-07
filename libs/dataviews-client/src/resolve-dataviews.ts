@@ -109,6 +109,17 @@ export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function getIsSingleHeatmapDataview(dataviews: UrlDataviewInstance[]) {
+  return (
+    dataviews.filter(
+      (dataview) =>
+        isActivityDataview(dataview) ||
+        isDetectionsDataview(dataview) ||
+        isEnvironmentalDataview(dataview)
+    ).length === 1
+  )
+}
+
 export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
   if (!dataviews.length) {
     console.warn('Trying to merge empty dataviews')

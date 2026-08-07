@@ -187,23 +187,24 @@ export function Select(props: SelectProps) {
                   return (
                     <Tooltip key={virtualRow.key} content={item.tooltip} placement="top-start">
                       <li
+                        data-index={virtualRow.index}
                         style={{
                           position: 'absolute',
                           top: 0,
                           left: 0,
                           width: '100%',
-                          height: `${virtualRow.size}px`,
                           transform: `translateY(${virtualRow.start}px)`,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
                         }}
                         className={cx(styles.optionItem, {
                           [styles.selected]: selected,
                           [styles.highlight]: highlight,
                           [styles.notAllowed]: itemDisabled,
                         })}
-                        {...getItemProps({ item, index: virtualRow.index })}
+                        {...getItemProps({
+                          item,
+                          index: virtualRow.index,
+                          ref: rowVirtualizer.measureElement,
+                        })}
                         data-testid={`${testId}-option-${item.id}`}
                       >
                         {item.label}

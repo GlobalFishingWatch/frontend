@@ -9,10 +9,6 @@
   position: relative;
 }
 
-.tightPadding {
-  padding: var(--space-S);
-}
-
 .tabsContainer {
   margin: var(--space-S);
   margin-bottom: var(--space-XS);

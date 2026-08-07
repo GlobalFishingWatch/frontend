@@ -2,8 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { selectReportArea } from 'features/_reports/report-area/area-reports.selectors'
@@ -14,7 +12,7 @@ import ReportEnvironmentMigramarGraph from './ReportEnvironmentMigramarGraph'
 
 import styles from '../ReportEnvironment.module.css'
 
-function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance<DataviewType> }) {
+function ReportEnvironmentMigramar() {
   const { t } = useTranslation()
   const reportArea = useSelector(selectReportArea)
   const {
@@ -39,6 +37,7 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
               <p className={styles.migramarSingleOption}>{effectiveSpecies?.label}</p>
             ) : (
               <Select
+                className={styles.migramarSelect}
                 options={speciesOptions}
                 selectedOption={effectiveSpecies}
                 onSelect={selectSpecies}
@@ -53,6 +52,7 @@ function ReportEnvironmentMigramar({ dataview }: { dataview: UrlDataviewInstance
               <p className={styles.migramarSingleOption}>{effectiveIndicator?.label}</p>
             ) : (
               <Select
+                className={styles.migramarSelect}
                 options={indicatorOptions}
                 selectedOption={effectiveIndicator}
                 onSelect={selectIndicator}

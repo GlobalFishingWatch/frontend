@@ -88,14 +88,34 @@
 }
 
 .migramarSelectors > div {
-  width: calc((100% - var(--space-S)) / 2);
+  flex: 1;
+}
+
+.migramarSelectors .migramarSelect {
+  width: 100%;
+  height: auto;
+  min-height: var(--size-M);
+  line-height: 1.4;
+  align-items: center;
+}
+
+.migramarSelectors .migramarSelect > [role='button'] {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: unset;
+  padding: var(--space-XS);
+  padding-left: var(--space-S);
+}
+
+.migramarSelectors .migramarSelect li {
+  white-space: normal;
+  text-overflow: unset;
+  align-items: flex-start;
 }
 
 .migramarSingleOption {
-  line-height: var(--size-M);
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  line-height: 1.4;
+  padding: var(--space-XS) 0;
 }
 
 .migramarTooltip {

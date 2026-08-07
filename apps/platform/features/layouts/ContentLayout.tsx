@@ -1,12 +1,16 @@
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
 
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 
 import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
+import SearchTypeChoice from 'features/_vessels/search/SearchTypeChoice'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 
 import styles from './layouts.module.css'
 
@@ -20,28 +24,34 @@ import styles from './layouts.module.css'
  */
 function ContentLayout() {
   const isClientHydrated = useIsClientHydrated()
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   return (
-    <div className={styles.appLayout}>
-      <div className={styles.contentLayout}>
-        <div className={cx(styles.contentHeader)}>
-          <a href="https://globalfishingwatch.org">
-            <Logo />
-          </a>
-          {
-            // TODO: remove this button when migrated to platform
-            isClientHydrated && <NavigationHistoryButton />
-          }
+    <div className={styles.contentLayout}>
+      <div
+        className={cx(styles.contentHeader, {
+          [styles.contentHeaderScrolled]: isScrolled,
+        })}
+      >
+        <a href="https://globalfishingwatch.org">
+          <Logo />
+        </a>
+        <div className={styles.contentHeaderActions}>
+          {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
+          {isClientHydrated && <NavigationHistoryButton />}
         </div>
-        <div
-          id={SCROLL_CONTAINER_DOM_ID}
-          className={cx('scrollContainer', styles.contentScrollContainer)}
-          data-testid="content-container"
-        >
-          <Suspense fallback={null}>
-            <Outlet />
-          </Suspense>
-        </div>
+      </div>
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className={cx('scrollContainer', styles.contentScrollContainer)}
+        data-testid="content-container"
+        onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
+      >
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   )

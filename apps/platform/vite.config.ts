@@ -54,7 +54,7 @@ export const plugins = [
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    root: __dirname,
+    root: import.meta.dirname,
     base: basePath,
     devtools: command === 'serve',
     resolve: {
@@ -115,6 +115,9 @@ export default defineConfig(({ command, mode }) => {
           release: { name: env.COMMIT_SHA, setCommits: false },
         }),
     ],
+    build: {
+      cssCodeSplit: false,
+    },
     envPrefix: ['VITE_', 'i18n_'],
     define: {
       __BUILD_ID__: JSON.stringify(

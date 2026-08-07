@@ -1,6 +1,6 @@
 import type { Feature, LineString, MultiLineString, Point } from 'geojson'
 
-import type { DeckLayerProps } from '../../types'
+import type { DeckLayerProps } from '#types'
 
 export type BathymetryContourLayerProps = DeckLayerProps<{
   tilesUrl: string

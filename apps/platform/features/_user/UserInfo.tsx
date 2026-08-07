@@ -15,7 +15,7 @@ import presenterImg from 'assets/images/badges/presenter.webp'
 import presenterPlaceholderImg from 'assets/images/badges/presenter-placeholder.webp'
 import teacherImg from 'assets/images/badges/teacher.webp'
 import teacherPlaceholderImg from 'assets/images/badges/teacher-placeholder.webp'
-import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/map/config'
+import { SUPPORT_EMAIL } from 'data/map/config'
 import LogoutButton from 'features/_user/LogoutButton'
 import {
   selectIsGFWUser,
@@ -162,7 +162,6 @@ function UserInfo() {
               </ul>
             </div>
             <Modal
-              appSelector={ROOT_DOM_ELEMENT}
               isOpen={badgesModalOpen}
               title={t((t) => t.user.badges[badgeSelected!].title, {
                 defaultValue: '',

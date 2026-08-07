@@ -283,7 +283,10 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
 
       if (includeRelated && relatedIds.length >= 1) {
         let frontier = relatedIds
-        let bgExistingIds = selectIds(state) as string[]
+        let bgExistingIds = uniq([...(selectIds(state) as string[]), ...batch.map((d) => d.id)])
+        const allRelatedDatasets: Dataset[] = []
+        const allRelatedDeprecated: DatasetsMigration = {}
+        const allRelatedDeletedIds: string[] = []
 
         for (let depth = 1; depth < MAX_RELATED_FETCH_DEPTH; depth++) {
           const {
@@ -299,21 +302,25 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
             useApiCache,
           })
 
-          if (relatedBatch.length) {
-            dispatch(upsertDatasets(relatedBatch))
-          }
-          if (Object.keys(relatedDeprecated).length) {
-            dispatch(setDeprecatedDatasets(relatedDeprecated))
-          }
-          if (relatedDeletedIds.length) {
-            dispatch(setDeletedDatasets(relatedDeletedIds))
-          }
+          allRelatedDatasets.push(...relatedBatch)
+          Object.assign(allRelatedDeprecated, relatedDeprecated)
+          allRelatedDeletedIds.push(...relatedDeletedIds)
 
           bgExistingIds = uniq([...bgExistingIds, ...relatedBatch.map((d) => d.id)])
           if (!nextRelatedIds.length) {
             break
           }
           frontier = nextRelatedIds
+        }
+
+        if (allRelatedDatasets.length) {
+          dispatch(upsertDatasets(allRelatedDatasets))
+        }
+        if (Object.keys(allRelatedDeprecated).length) {
+          dispatch(setDeprecatedDatasets(allRelatedDeprecated))
+        }
+        if (allRelatedDeletedIds.length) {
+          dispatch(setDeletedDatasets(allRelatedDeletedIds))
         }
       }
 

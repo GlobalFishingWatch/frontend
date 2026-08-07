@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText, Modal } from '@globalfishingwatch/ui-components'
 
-import { PUBLIC_SUFIX, ROOT_DOM_ELEMENT, USER_SUFIX } from 'data/map/config'
+import { PUBLIC_SUFIX, USER_SUFIX } from 'data/map/config'
 import { WIZARD_TEMPLATE_ID } from 'data/map/highlighted-workspaces/marine-manager.dataviews'
 import {
   DEEP_SEA_MINING_WORKSPACE_ID,
@@ -113,7 +113,6 @@ function WorkspaceTitle() {
               </h3>
             )}
             <Modal
-              appSelector={ROOT_DOM_ELEMENT}
               title={t((t) => t.workspace.edit)}
               isOpen={workspaceEditModalOpen}
               contentClassName={styles.modalContainer}

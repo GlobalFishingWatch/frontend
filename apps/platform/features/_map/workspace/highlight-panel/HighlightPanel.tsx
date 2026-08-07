@@ -8,6 +8,7 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, Popover } from '@globalfishingwatch/ui-components'
 
 import { selectIsMapLoaded } from 'features/_map/map/map.slice'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { Locale } from 'types'
 
@@ -45,7 +46,7 @@ const HighlightPanel = ({
       }
       if (config.delayed) {
         const timerId = setTimeout(() => {
-          const container = document.querySelector('.scrollContainer')
+          const container = document.getElementById(SCROLL_CONTAINER_DOM_ID)
           if (container) {
             container.scrollTop = 1
           }

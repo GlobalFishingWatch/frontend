@@ -12,10 +12,6 @@
   z-index: 1;
 }
 
-.singleTabContainer .section {
-  padding-block: 0;
-}
-
 .container {
   padding: var(--space-SM);
 }

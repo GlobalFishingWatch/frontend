@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { WorkspaceCategory } from 'data/map/workspaces'
 import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
@@ -129,7 +128,6 @@ const AppModals = () => {
     <Fragment>
       {isLayerLibraryModalOpen && (
         <Modal
-          appSelector={ROOT_DOM_ELEMENT}
           title={t((t) => t.common.layerLibrary, {
             defaultValue: 'Layer Library',
           })}
@@ -147,7 +145,6 @@ const AppModals = () => {
       )}
       {debugActive && !anyAppModalOpen && (
         <Modal
-          appSelector={ROOT_DOM_ELEMENT}
           title={
             <Fragment>
               Secret debug menu 🤖
@@ -167,7 +164,6 @@ const AppModals = () => {
       )}
       {isGFWUser && editorActive && !anyAppModalOpen && (
         <Modal
-          appSelector={ROOT_DOM_ELEMENT}
           title={
             <Fragment>
               Workspace editor 📝
@@ -187,7 +183,6 @@ const AppModals = () => {
       {(isGFWUser || jacUser) && (bigqueryActive || turningTidesActive) && !anyAppModalOpen && (
         <Fragment>
           <Modal
-            appSelector={ROOT_DOM_ELEMENT}
             title={
               <Fragment>
                 Big query datasets creation 🧠
@@ -204,7 +199,6 @@ const AppModals = () => {
             </Suspense>
           </Modal>
           <Modal
-            appSelector={ROOT_DOM_ELEMENT}
             title={
               <Fragment>
                 Turning tides datasets creation 🌊

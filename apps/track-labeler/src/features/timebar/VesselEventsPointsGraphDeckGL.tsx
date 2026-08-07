@@ -4,7 +4,7 @@ import { OrthographicView } from '@deck.gl/core'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import DeckGL from '@deck.gl/react'
 
-import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 import { useOuterScale, useTimelineContext } from '@globalfishingwatch/timebar'
 
 import { Field } from '../../data/models'

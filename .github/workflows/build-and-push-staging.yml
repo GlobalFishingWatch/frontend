@@ -1,0 +1,23 @@
+name: Build and Deploy (Staging)
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_build-and-deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      env-suffix: sta
+      config: .github/apps/staging.yml
+      service-prefix: sta-ui
+      cloudrun-project: gfw-development
+      environment: staging
+    secrets: inherit

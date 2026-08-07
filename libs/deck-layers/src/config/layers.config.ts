@@ -21,3 +21,4 @@ export const PATH_BASENAME = DEFAULT_PATH_BASENAME.endsWith('/')
 
 export const MAX_FILTER_VALUE = 999999999999999
 export const PREVIEW_BUFFER_GENERATOR_ID = 'report-area-preview-buffer'
+export const DEFAULT_ID_PROPERTY = 'gfw_id'

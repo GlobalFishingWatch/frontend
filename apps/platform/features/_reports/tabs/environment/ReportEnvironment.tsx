@@ -100,7 +100,7 @@ function ReportEnvironment() {
               )
             })}
             {/* TODO:Migramar show this instead of ReportEnvironmentGraph when dataview is migramar */}
-            {migramarLayer && <ReportEnvironmentMigramar dataview={environmentalDataviews[0]} />}
+            {migramarLayer && <ReportEnvironmentMigramar />}
           </>
         ) : (
           <Fragment>

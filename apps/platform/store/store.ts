@@ -11,16 +11,27 @@ import { queriesDynamicMiddleware, QUERY_REDUCER_PATHS } from 'queries/inject-ap
 
 import { rootReducer } from './reducers'
 
+// Too big to deep-check in dev, these slices hold hundreds of API entities
+const BIG_STATE_PATHS = ['resources', 'datasets', 'dataviews']
+
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
 const defaultMiddlewareOptions: any = {
-  // serializableCheck: false,
-  immutableCheck: {
-    ignoredPaths: [
-      // Too big to check for immutability:
-      'resources',
-      'datasets',
-      'dataviews',
+  serializableCheck: {
+    ignoredPaths: BIG_STATE_PATHS,
+    // Their payloads are the same entities the paths above hold
+    ignoredActions: [
+      'datasets/upsertDatasets',
+      'datasets/fetch/fulfilled',
+      'datasets/all/fulfilled',
+      'dataviews/fetch/fulfilled',
+      'dataviews/fetchById/fulfilled',
+      'resources/fetch/pending',
+      'resources/fetch/fulfilled',
+      'resources/setResource',
     ],
+  },
+  immutableCheck: {
+    ignoredPaths: BIG_STATE_PATHS,
   },
 }
 

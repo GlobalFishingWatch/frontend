@@ -7,7 +7,7 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Button, InputText, Modal, Select, Tag } from '@globalfishingwatch/ui-components'
 
 import flags from 'data/flags'
-import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
@@ -15,7 +15,10 @@ import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/_vessels/vessel/vessel.config.selectors'
-import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/_vessels/vessel/vessel.utils'
+import {
+  formatTransmissionDate,
+  getCurrentIdentityVessel,
+} from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { getModalParent } from 'features/modals/modals.utils'
@@ -141,7 +144,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={
         <Fragment>
           {t((t) => t.vessel.vesselCorrection.title)}

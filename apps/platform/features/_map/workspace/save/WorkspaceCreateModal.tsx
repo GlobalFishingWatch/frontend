@@ -17,13 +17,15 @@ import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
 import { WorkspaceCategory } from 'data/map/workspaces'
 import { selectPrivateDatasetsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
-import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
+import {
+  saveWorkspaceThunk,
+  setWorkspaceSuggestSave,
+} from 'features/_map/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -238,7 +240,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
 
   return (
     <Modal
-      appSelector={ROOT_DOM_ELEMENT}
       title={title || t((t) => t.workspace.save)}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc

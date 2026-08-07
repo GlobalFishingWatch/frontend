@@ -11,7 +11,7 @@ const basePath =
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
   base: basePath,
-  root: __dirname,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
   resolve: { tsconfigPaths: true },
 

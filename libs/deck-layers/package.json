@@ -14,10 +14,32 @@
       "development": "./src/draw.ts",
       "default": "./dist/draw.js"
     },
-    "./constants": {
-      "types": "./dist/constants.d.ts",
-      "development": "./src/constants.ts",
-      "default": "./dist/constants.js"
+    "./config": {
+      "types": "./dist/config/index.d.ts",
+      "development": "./src/config/index.ts",
+      "default": "./dist/config/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "development": "./src/utils/index.ts",
+      "default": "./dist/utils/index.js"
+    }
+  },
+  "imports": {
+    "#config": {
+      "types": "./dist/config/index.d.ts",
+      "development": "./src/config/index.ts",
+      "default": "./dist/config/index.js"
+    },
+    "#utils": {
+      "types": "./dist/utils/index.d.ts",
+      "development": "./src/utils/index.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "#*": {
+      "types": "./dist/*.d.ts",
+      "development": "./src/*.ts",
+      "default": "./dist/*.js"
     }
   },
   "main": "./dist/index.js",
@@ -27,7 +49,7 @@
     "dist"
   ],
   "dependencies": {
-    "@deck.gl-community/editable-layers": "9.3.7",
+    "@deck.gl-community/editable-layers": "9.3.8",
     "@deck.gl/core": "9.3.7",
     "@deck.gl/extensions": "9.3.7",
     "@deck.gl/geo-layers": "9.3.7",

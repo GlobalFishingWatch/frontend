@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 import { scaleSqrt } from 'd3-scale'
 
-import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import { useTimelineContext } from '../timeline/timeline-context'
 

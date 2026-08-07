@@ -3,10 +3,10 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 import type { NavigationConfig } from './navigation-config'
 
 export function navigateToNoDataReport(): NavigationConfig<
-  typeof ROUTE_PATHS.WORKSPACE_REPORT_FULL
+  typeof ROUTE_PATHS.WORKSPACE_REPORT
 > {
   return {
-    to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+    to: ROUTE_PATHS.WORKSPACE_REPORT,
     params: {
       category: 'fishing-activity',
       workspaceId: 'default-public',

@@ -7,12 +7,9 @@ import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 
-import {
-  DEFAULT_BACKGROUND_COLOR,
-  getLayerGroupOffset,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
+import { DEFAULT_BACKGROUND_COLOR } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import { DEFAULT_FISHING_EVENT_COLOR } from './vessel.config'
 import type { _VesselEventIconLayerProps, VesselEventIconLayerProps } from './VesselEventIconLayer'

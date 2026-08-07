@@ -37,11 +37,6 @@
   opacity: 1;
 }
 
-.span {
-  font: var(--font-XS);
-  cursor: pointer;
-}
-
 @media print {
   .link {
     display: none;

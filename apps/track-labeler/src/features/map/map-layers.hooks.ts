@@ -4,11 +4,8 @@ import { DateTime } from 'luxon'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { useDeckLayerComposer } from '@globalfishingwatch/deck-layer-composer'
-import {
-  hexToDeckColor,
-  RulersLayer,
-  TrackLabelerVesselLayer,
-} from '@globalfishingwatch/deck-layers'
+import { RulersLayer, TrackLabelerVesselLayer } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import { selectRulers } from '../rulers/rulers.selectors'
 import { selectHighlightedTime } from '../timebar/timebar.slice'

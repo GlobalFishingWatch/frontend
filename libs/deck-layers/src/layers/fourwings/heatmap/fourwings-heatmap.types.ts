@@ -10,7 +10,6 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
@@ -19,7 +18,8 @@ import type {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsVisualizationMode,
-} from '../fourwings.types'
+} from '#layers/fourwings/fourwings.types'
+import type { DeckPickingObject } from '#types'
 
 export type FourwingsChunk = {
   id: string

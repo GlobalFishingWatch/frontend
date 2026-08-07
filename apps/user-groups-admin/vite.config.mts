@@ -6,7 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve',
-  root: __dirname,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/user-groups-admin',
   resolve: { tsconfigPaths: true },
 
