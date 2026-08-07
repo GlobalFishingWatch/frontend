@@ -1,6 +1,6 @@
-import { Fragment, Suspense, useCallback } from 'react'
+import { Fragment, Suspense, useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getRouteApi, Outlet } from '@tanstack/react-router'
+import { getRouteApi, Outlet, useRouterState } from '@tanstack/react-router'
 
 import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components/dom-ids'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
@@ -96,6 +96,16 @@ function MapLayout() {
   const isAsideResizable =
     !screenshotMode && !readOnly && !isAnySearchLocation && !isWorkspaceLocation
 
+  const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
+  const [committedAside, setCommittedAside] = useState({ asideWidth, isAsideResizable })
+  if (
+    !isNavigating &&
+    (committedAside.asideWidth !== asideWidth ||
+      committedAside.isAsideResizable !== isAsideResizable)
+  ) {
+    setCommittedAside({ asideWidth, isAsideResizable })
+  }
+
   return (
     <Fragment>
       <BasemapLabelsLocaleSync />
@@ -121,12 +131,12 @@ function MapLayout() {
                 </Sidebar>
               }
               main={<Main />}
-              asideWidth={asideWidth}
+              asideWidth={committedAside.asideWidth}
               initialAsideWidthPct={sidebarWidthPct ?? undefined}
               onAsideWidthChange={onSidebarWidthChange}
               initialScreenWidth={screenWidth ?? undefined}
               onScreenWidthChange={onScreenWidthChange}
-              resizable={isAsideResizable}
+              resizable={committedAside.isAsideResizable}
               showAsideLabel={getSidebarName()}
               showMainLabel={t((t) => t.common.map)}
               className={styles.splitContainer}
