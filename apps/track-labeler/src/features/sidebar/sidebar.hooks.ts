@@ -58,7 +58,6 @@ export const useSelectedTracksConnect = () => {
   const project = useSelector(selectProject)
   const projectId = useSelector(selectProjectId)
   const user = useSelector(selectUserData)
-  let fileReader: FileReader
   // Prepare the selected track to be uploaded
   const getSelectedTracksAsGeoJson = (tracks: TrackInterface): ExportData => {
     return {
@@ -165,8 +164,8 @@ export const useSelectedTracksConnect = () => {
   /**
    * handle the file after this was uploaded
    */
-  const handleFileUploaded = (e: any) => {
-    const content: string = fileReader.result as string
+  const handleFileUploaded = (e: ProgressEvent<FileReader>) => {
+    const content: string = (e.target as FileReader).result as string
     const geojeson: ExportData = JSON.parse(content) as ExportData
     const { segments, start, end } = extractLabeledTrack(geojeson)
     const wrapedGeojson = fixCoordinates(geojeson)
@@ -233,9 +232,9 @@ export const useSelectedTracksConnect = () => {
    */
   const dispatchImportHandler = (event: any) => {
     if (event.target.files && event.target.files.length) {
-      fileReader = new FileReader()
-      fileReader.onloadend = handleFileUploaded
-      fileReader.readAsText(event.target.files[0])
+      const reader = new FileReader()
+      reader.onloadend = handleFileUploaded
+      reader.readAsText(event.target.files[0])
     }
   }
 

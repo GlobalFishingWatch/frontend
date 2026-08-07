@@ -74,8 +74,6 @@ export function useSelectorConnect(): UseSelector {
     (e: MapLayerMouseEvent) => {
       if (box && box.startPosition) {
         const actualPosition = mousePos(e)
-        // Append the box element if it doesnt exist
-        const newBox = box
 
         const minX = Math.min(box.startPosition.x, actualPosition.x),
           maxX = Math.max(box.startPosition.x, actualPosition.x),
@@ -85,9 +83,7 @@ export function useSelectorConnect(): UseSelector {
         // Adjust width and xy position of the box element ongoing
         const pos = `translate(${minX}px, ${minY}px)`
 
-        newBox.endCoords = e.lngLat
-        newBox.endPosition = actualPosition
-        setBox(newBox)
+        setBox({ ...box, endCoords: e.lngLat, endPosition: actualPosition })
         setBoxTransform(pos)
         setBoxWidth(maxX - minX + 'px')
         setBoxHeight(maxY - minY + 'px')

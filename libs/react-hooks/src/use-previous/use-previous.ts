@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
 
 export function usePrevious<N = unknown>(value: N) {
-  const ref = useRef<N>(undefined)
-  useEffect(() => {
-    ref.current = value //assign the value of ref to the argument
-  }, [value]) //this code will run when the value of 'value' changes
-  return ref.current //in the end, return the current ref value.
+  const [current, setCurrent] = useState(value)
+  const [previous, setPrevious] = useState<N | undefined>(undefined)
+  if (value !== current) {
+    setPrevious(current)
+    setCurrent(value)
+  }
+  return previous
 }
