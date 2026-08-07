@@ -76,7 +76,8 @@ export type AggregateCellParams = {
   startFrame: number
   endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
-  cellStartOffsets: number[]
+  // Optional: aggregateCell returns 0 for a sublayer when offsets are absent.
+  cellStartOffsets?: number[]
 }
 
 export type CompareCellParams = {

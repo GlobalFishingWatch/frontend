@@ -75,10 +75,10 @@ const createMockDataview = (overrides: Partial<DataviewInstance> = {}): Dataview
         createdAt: '2024-01-01T00:00:00.000Z',
         configuration: {},
         relatedDatasets: [],
-        fieldsAllowed: [],
         filters: {},
       },
-    ] as Dataset[],
+      // Only the fields the composer reads; category/documentation are irrelevant here.
+    ] as unknown as Dataset[],
     ...overrides,
   }) as DataviewInstance
 
@@ -630,6 +630,6 @@ describe('useSetDeckLayerComposer', () => {
 
     const { result: setterResult } = renderHook(() => useSetDeckLayerComposer())
 
-    expect(() => setterResult.current(mockLayers)).not.toThrow()
+    expect(() => setterResult.current(mockLayers as unknown as AnyDeckLayer[])).not.toThrow()
   })
 })

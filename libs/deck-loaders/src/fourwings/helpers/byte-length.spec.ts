@@ -13,7 +13,8 @@ const createFeature = (overrides: Partial<FourwingsFeature['properties']> = {}):
       tileStartFrame: 0,
       ...overrides,
     },
-  }) as FourwingsFeature
+    // Only the properties these helpers read are set.
+  }) as unknown as FourwingsFeature
 
 describe('fourwings byte length', () => {
   it('estimates heatmap feature byte length from values arrays', () => {

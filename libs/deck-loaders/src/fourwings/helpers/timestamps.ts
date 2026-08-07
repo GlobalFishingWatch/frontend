@@ -4,7 +4,8 @@ import { CONFIG_BY_INTERVAL } from './time'
 
 /** Absolute interval frame for a sublayer. Use as startOffset only when tileStartFrame is 0. */
 export function getFourwingsSublayerStartFrame(
-  properties: Pick<FourwingsFeatureProperties, 'tileStartFrame' | 'startOffsets'>,
+  // Partial: both are defaulted to 0 below, so callers may pass neither.
+  properties: Partial<Pick<FourwingsFeatureProperties, 'tileStartFrame' | 'startOffsets'>>,
   sublayerIndex: number
 ) {
   return (properties.tileStartFrame ?? 0) + (properties.startOffsets?.[sublayerIndex] ?? 0)
