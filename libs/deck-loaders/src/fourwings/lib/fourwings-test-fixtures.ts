@@ -18,7 +18,8 @@ export function createHeatmapPbfBuffer(
   const packed = cells.flatMap((cell) => [cell.cellNum, cell.startAbs, cell.endAbs, ...cell.values])
   pbf.writePackedVarint(1, packed)
   const bytes = pbf.finish()
-  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
+  // Pbf always allocates over a plain ArrayBuffer; slice() widens to ArrayBufferLike.
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
 }
 
 export function createVectorsPbfBuffer(

@@ -24,7 +24,10 @@ import {
   schemaFilterIds,
 } from 'features/_vessels/search/advanced/advanced-search.utils'
 import AdvancedFilterInputField from 'features/_vessels/search/advanced/AdvancedFilterInputField'
-import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/_vessels/search/search.hook'
+import {
+  useSearchFiltersConnect,
+  useSearchFiltersErrors,
+} from 'features/_vessels/search/search.hook'
 import { selectAdvancedSearchDatasets } from 'features/_vessels/search/search.selectors'
 import type { VesselSearchState } from 'features/_vessels/search/search.types'
 import {

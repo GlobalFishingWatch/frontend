@@ -64,9 +64,7 @@ export async function ssrLoadVessel({
   // Read the slice by id: the vessel selectors key off the router state, which is only synced
   // into redux once the app component mounts, after this loader runs.
   const vessel = store.getState().vessel.data?.[vesselId]?.info as IdentityVesselData | undefined
-  const identity = vessel?.identities?.length
-    ? getUrlIdentity(vessel, location.search)
-    : undefined
+  const identity = vessel?.identities?.length ? getUrlIdentity(vessel, location.search) : undefined
   return {
     ...head,
     shipname: identity?.shipname,

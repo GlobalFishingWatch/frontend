@@ -16,7 +16,7 @@ Paste (or point Claude at) the following:
 > 6. **Defaults** come from `DEFAULT_WORKSPACE` (`apps/platform/data/map/config.ts`) and `DEFAULT_REPORT_STATE` (`apps/platform/features/_reports/reports.config.ts`) — mark them `(default)` in the tables.
 > 7. **Routes come from `ROUTE_PATHS`** (`apps/platform/config/routes.ts`) and the basename from `DEFAULT_PATH_BASENAME` in the same file. `routes.ts` (`ROUTE_PATTERNS`, `LEGACY_ROUTE_PATTERNS`) must cover every pattern an agent can build or decode, and `references/routes.md` must show the full patterns including the `/map` segment. Redirect-only paths (`apps/platform/routes/_platform/_map/map/{user,vessel-search,report.$reportId,vessel.$vesselId}.tsx`) belong in `LEGACY_ROUTE_PATTERNS` for decoding only, never in the build tables.
 > 8. **Examples live in two files.** `references/examples.md` holds input recipes; `references/examples-conversations.md` holds conversation transcripts with expected output URLs. Update transcripts if encoder output changes.
-> 9. **Verify, don't trust.** `pnpm nx dist skills`, then run `node scripts/encode-url.mjs` (node >= 23) with inputs exercising every param you touched; confirm expected abbreviations/pass-through names in the output path. Round-trip against the transcripts in examples-conversations.md. Finish with `pnpm prettier --write` on every markdown file touched.
+> 9. **Verify, don't trust.** `pnpm nx bundle skills`, then run `node scripts/encode-url.mjs` (node >= 23) with inputs exercising every param you touched; confirm expected abbreviations/pass-through names in the output path. Round-trip against the transcripts in examples-conversations.md. Finish with `pnpm prettier --write` on every markdown file touched.
 
 ## Value sources (for update checks)
 

@@ -1,7 +1,8 @@
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+
 import { defineConfig, devices } from '@playwright/test'
 import * as dotenv from 'dotenv'
-import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url)

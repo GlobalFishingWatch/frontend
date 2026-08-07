@@ -575,7 +575,7 @@ export function resolveDataviews(
                       : datasetConfig.query,
                 }
               }
-              // using the instance query and params first as the uniqBy from lodash doc says:
+              // using the instance query and params first as the uniqBy from es-toolkit doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
 

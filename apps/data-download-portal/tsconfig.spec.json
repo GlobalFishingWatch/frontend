@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.app.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": [
@@ -15,7 +15,6 @@
   },
   "include": [
     "vite.config.mts",
-    "vitest.config.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.test.tsx",

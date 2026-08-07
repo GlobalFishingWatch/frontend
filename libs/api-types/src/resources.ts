@@ -2,13 +2,7 @@ import type { Dataset } from './datasets'
 import type { DataviewDatasetConfig } from './dataviews'
 
 export type ResourceResponseType =
-  | 'default'
-  | 'text'
-  | 'json'
-  | 'blob'
-  | 'arrayBuffer'
-  | 'vessel'
-  | 'withHeaders'
+  'default' | 'text' | 'json' | 'blob' | 'arrayBuffer' | 'vessel' | 'withHeaders'
 
 export type ResourceRequestType = 'json' | 'formData'
 

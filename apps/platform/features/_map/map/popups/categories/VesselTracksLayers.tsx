@@ -20,7 +20,10 @@ import {
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { setClickedEvent } from 'features/_map/map/map.slice'
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import { useTimebarVisualisationConnect, useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import {
+  useTimebarVisualisationConnect,
+  useTimerangeConnect,
+} from 'features/_map/timebar/timebar.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectIsGuestUser, selectIsUserExpired } from 'features/_user/selectors/user.selectors'

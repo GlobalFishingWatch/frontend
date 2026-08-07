@@ -5,7 +5,11 @@ import type { UserPermission } from '@globalfishingwatch/api-types'
 import { BADGES_GROUP_PREFIX, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
-import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, PRIVATE_SUFIX, USER_SUFIX } from 'data/map/config'
+import {
+  AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
+  PRIVATE_SUFIX,
+  USER_SUFIX,
+} from 'data/map/config'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectAllReports } from 'features/_reports/reports.slice'

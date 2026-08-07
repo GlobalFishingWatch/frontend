@@ -8,7 +8,10 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { selectVesselInfoStatus } from 'features/_vessels/vessel/selectors/vessel.selectors'
-import { DEFAULT_VESSEL_IDENTITY_ID, VESSEL_IDENTITY_ID_V5 } from 'features/_vessels/vessel/vessel.config'
+import {
+  DEFAULT_VESSEL_IDENTITY_ID,
+  VESSEL_IDENTITY_ID_V5,
+} from 'features/_vessels/vessel/vessel.config'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,

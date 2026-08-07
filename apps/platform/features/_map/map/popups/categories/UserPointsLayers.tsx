@@ -8,7 +8,10 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectCustomUserDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { getContextLayerId, getUserContextLayerLabel } from 'features/_map/map/popups/map-popups.utils'
+import {
+  getContextLayerId,
+  getUserContextLayerLabel,
+} from 'features/_map/map/popups/map-popups.utils'
 
 import { useContextInteractions } from './ContextLayers.hooks'
 import ContextLayersRow from './ContextLayersRow'

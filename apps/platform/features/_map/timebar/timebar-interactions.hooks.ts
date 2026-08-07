@@ -10,7 +10,10 @@ import type {
 
 import { viewStateAtom } from 'features/_map/map/map.atoms'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
-import { useDisableHighlightTimeConnect, useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import {
+  useDisableHighlightTimeConnect,
+  useTimerangeConnect,
+} from 'features/_map/timebar/timebar.hooks'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch, useAppStore } from 'features/app/app.hooks'

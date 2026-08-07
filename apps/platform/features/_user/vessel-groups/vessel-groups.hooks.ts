@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import { PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectPresenceDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'

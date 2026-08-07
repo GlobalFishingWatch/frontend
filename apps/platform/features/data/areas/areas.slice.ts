@@ -126,9 +126,8 @@ async function fetchAreaDetail({
     console.warn('No geometry found for area', area)
   }
   // Same reason as the @turf/turf import above: wrap-longitudes reaches turf
-  const { wrapBBoxLongitudes, wrapGeometryBbox } = await import(
-    '@globalfishingwatch/data-transforms/wrap-longitudes'
-  )
+  const { wrapBBoxLongitudes, wrapGeometryBbox } =
+    await import('@globalfishingwatch/data-transforms/wrap-longitudes')
   const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
   // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
   // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
@@ -190,9 +189,8 @@ export const fetchAreaDetailThunk = createAsyncThunk(
         )
         const { circle } = await import('@turf/turf')
         const { getPolygonsUnion } = await import('@globalfishingwatch/data-transforms/union')
-        const { wrapGeometryBbox } = await import(
-          '@globalfishingwatch/data-transforms/wrap-longitudes'
-        )
+        const { wrapGeometryBbox } =
+          await import('@globalfishingwatch/data-transforms/wrap-longitudes')
         try {
           const geoms = areas.flatMap((fetchedArea) => {
             if (!fetchedArea?.geometry) return []

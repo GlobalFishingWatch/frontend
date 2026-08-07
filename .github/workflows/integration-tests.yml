@@ -23,7 +23,7 @@ jobs:
           message: |
             ## ⏳ Integration tests are running...
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 100
       - name: Fetch base branch
@@ -32,14 +32,23 @@ jobs:
       # --- Setting up dependencies and cache ---------------------------------
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version-file: .nvmrc
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Cache Nx computation
+        uses: actions/cache@v6
+        with:
+          path: .nx/cache
+          key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-
+            ${{ runner.os }}-nx-
 
       # Guards two separate import graphs: the eagerly-registered slices, and routes/_platform.tsx (the
       # layout every page renders under). deck.gl and friends must not be statically reachable from
@@ -50,10 +59,10 @@ jobs:
 
       - name: Cache Playwright browsers
         id: playwright-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-1.58.2
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
@@ -62,7 +71,6 @@ jobs:
 
       - name: Run affected tests
         id: run-tests
-        continue-on-error: true
         run: |
           set -euo pipefail
           pnpm exec nx affected \
@@ -77,6 +85,7 @@ jobs:
           VITE_WORKSPACE_ENV: development
           CI: '1'
           NX_DAEMON: 'false'
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           NODE_OPTIONS: --trace-warnings
           TEST_CHROME_ONLY: 'true'
           TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
@@ -129,6 +138,7 @@ jobs:
           ' >> summary.md
 
       - name: Comment on PR with test results
+        if: always()
         uses: marocchino/sticky-pull-request-comment@v3
         with:
           path: summary.md

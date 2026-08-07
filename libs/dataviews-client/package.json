@@ -2,40 +2,39 @@
   "name": "@globalfishingwatch/dataviews-client",
   "version": "17.0.7",
   "description": "",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
   "dependencies": {
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
     "@globalfishingwatch/datasets-client": "workspace:^",
-    "@nx/vite": "23.x",
     "@reduxjs/toolkit": "2.x",
     "es-toolkit": "1.x",
-    "esbuild": "0.x",
     "geojson": "0.x",
-    "lodash": "4.x",
+    "immer": "11.x",
     "luxon": "3.x",
     "qs": "6.x",
-    "tslib": "2.x",
+    "tslib": "2.x"
+  },
+  "devDependencies": {
+    "@nx/vite": "23.x",
+    "esbuild": "0.x",
     "vite": "8.x",
     "vitest": "4.1.10"
   }

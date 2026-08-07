@@ -14,7 +14,10 @@ import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
-import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
+import {
+  fetchDatasetsByIdsThunk,
+  selectDeprecatedDatasets,
+} from 'features/_map/datasets/datasets.slice'
 import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
 import type { DataviewWithFilters } from 'features/_map/dataviews/dataviews.filters'
 import { isDataviewFilterSupported } from 'features/_map/dataviews/dataviews.filters'
@@ -99,9 +102,7 @@ export function useMigrateToLatestDataview() {
       if (dataview && !datasets.length) {
         const datasetIds = getDatasetsInDataviews([dataview])
         if (datasetIds.length > 0) {
-          datasets = await dispatch(
-            fetchDatasetsByIdsThunk({ ids: datasetIds })
-          ).unwrap()
+          datasets = await dispatch(fetchDatasetsByIdsThunk({ ids: datasetIds })).unwrap()
         }
       }
       const hasDatasets =

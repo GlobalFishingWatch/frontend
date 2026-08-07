@@ -82,7 +82,8 @@ async function fetchServerPackageNamespace(
 ): Promise<Record<string, unknown>> {
   const key = `${language}:${ns}`
   const cached = packageNsCache.get(key)
-  const isFresh = cached && PACKAGE_NS_TTL_MS > 0 && Date.now() - cached.fetchedAt < PACKAGE_NS_TTL_MS
+  const isFresh =
+    cached && PACKAGE_NS_TTL_MS > 0 && Date.now() - cached.fetchedAt < PACKAGE_NS_TTL_MS
   if (isFresh) {
     return cached!.data
   }

@@ -6,7 +6,10 @@ import { darkTheme } from '@uiw/react-json-view/dark'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/_map/datasets/datasets.debug'
+import {
+  debugDatasetsInDataviews,
+  debugRelatedDatasets,
+} from 'features/_map/datasets/datasets.debug'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper } from 'features/_user/selectors/user.selectors'

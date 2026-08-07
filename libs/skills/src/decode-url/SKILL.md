@@ -48,4 +48,4 @@ How to narrate it:
 - `timeRange` is the analyzed period; no `timeRange` means the app default (roughly the last year).
 - `raw` is the full parsed workspace state — edit it and feed it back to the encode-url skill (`{"route": <route>, "state": <raw>}`) to produce a modified view that keeps everything else identical.
 
-Requires node >= 23 (uses `module.registerHooks`). In the monorepo run `pnpm nx dist skills` once so `dist/` exists.
+Requires node >= 23 (uses `module.registerHooks`). In the monorepo run `pnpm nx bundle skills` once so `dist/` exists.

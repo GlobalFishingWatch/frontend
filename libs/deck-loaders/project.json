@@ -8,7 +8,7 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": [
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.js",
         "{projectRoot}/src/vessels/lib/vessel-track-proto.gen.d.ts",
@@ -29,43 +29,19 @@
         "parallel": false
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["proto:generate", "^dist"],
-      "options": {
-        "clean": false
-      }
-    },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "continuous": true,
-      "options": {
-        "watch": true
-      }
+      "dependsOn": ["proto:generate", "^build"]
     },
     "test": {
-      "outputs": [
-        "{projectRoot}/{options.coverage.reportsDirectory}",
-        "{workspaceRoot}/coverage/libs/deck-loaders"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
-        "coverage.reportsDirectory": "../../../coverage/libs/deck-loaders"
-      }
-    },
-    "test:watch": {
-      "cache": false,
-      "continuous": true,
-      "options": {
-        "watch": true,
-        "config": "./vitest.config.ts"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
     "dist:workers": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "outputs": ["{projectRoot}/dist/workers"],
       "options": {
         "command": "node libs/deck-loaders/scripts/build-workers.mjs"
@@ -73,10 +49,18 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist", "dist:workers"],
+      "dependsOn": ["build", "dist:workers"],
       "options": {
         "packageRoot": "libs/deck-loaders"
       }
-    }
+    },
+    "test:watch": {
+      "cache": false,
+      "continuous": true,
+      "options": {
+        "watch": true
+      }
+    },
+    "typecheck": {}
   }
 }

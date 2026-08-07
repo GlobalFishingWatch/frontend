@@ -11,5 +11,5 @@ export const VERSION = '${packageJson.version}'
 `
 
 writeFileSync(join(__dirname, '../src/version.ts'), versionFileContent)
- 
+
 console.log(`Generated version.ts with version ${packageJson.version}`)

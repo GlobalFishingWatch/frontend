@@ -18,7 +18,10 @@ import SearchBasic from 'features/_vessels/search/basic/SearchBasic'
 import { RESULTS_PER_PAGE } from 'features/_vessels/search/search.config'
 import { selectSearchOption } from 'features/_vessels/search/search.config.selectors'
 import { useSearch, useSearchConnect } from 'features/_vessels/search/search.hook'
-import { isAdvancedSearchAllowed, isBasicSearchAllowed } from 'features/_vessels/search/search.selectors'
+import {
+  isAdvancedSearchAllowed,
+  isBasicSearchAllowed,
+} from 'features/_vessels/search/search.selectors'
 import {
   cleanVesselSearchResults,
   selectSearchPagination,

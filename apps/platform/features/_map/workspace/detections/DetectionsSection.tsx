@@ -11,7 +11,10 @@ import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { selectBivariateDataviews, selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import {
+  selectBivariateDataviews,
+  selectReadOnly,
+} from 'features/_map/workspace/selectors/app.selectors'
 import GlobalReportLink from 'features/_map/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/_map/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'

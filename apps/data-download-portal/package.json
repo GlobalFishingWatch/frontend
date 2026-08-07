@@ -1,0 +1,12 @@
+{
+  "name": "@globalfishingwatchapp/data-download-portal",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^"
+  }
+}

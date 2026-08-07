@@ -40,9 +40,7 @@ export const frameTimeseriesToDateTimeseries = (
 
 export function getStatsValue<
   T extends
-    | keyof FourwingsReportGraphStats
-    | keyof PointsReportGraphStats
-    | keyof PolygonsReportGraphStats,
+    keyof FourwingsReportGraphStats | keyof PointsReportGraphStats | keyof PolygonsReportGraphStats,
 >(
   stats: FourwingsReportGraphStats | PointsReportGraphStats | PolygonsReportGraphStats,
   property: T

@@ -5,13 +5,20 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
-        "clean": false,
         "assets": [
-          { "glob": "**/*.css", "input": "libs/ui-components/src", "output": "." },
-          { "glob": "**/*.svg", "input": "libs/ui-components/src", "output": "." },
+          {
+            "glob": "**/*.css",
+            "input": "libs/ui-components/src",
+            "output": "."
+          },
+          {
+            "glob": "**/*.svg",
+            "input": "libs/ui-components/src",
+            "output": "."
+          },
           {
             "glob": "**/*.{jpg,jpeg,png,gif,webp}",
             "input": "libs/ui-components/src",
@@ -20,21 +27,7 @@
         ]
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/ui-components"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }

@@ -22,13 +22,7 @@ export enum DatasetStatus {
 }
 
 export type DatasetDocumentationTypes =
-  | 'fishing-effort'
-  | 'presence'
-  | 'vessels'
-  | 'tracks'
-  | 'events'
-  | 'environmental'
-  | 'insights'
+  'fishing-effort' | 'presence' | 'vessels' | 'tracks' | 'events' | 'environmental' | 'insights'
 
 export enum DatasetDocumentationStatusTypes {
   Active = 'Active',

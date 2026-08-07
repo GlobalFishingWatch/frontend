@@ -5,4 +5,5 @@ import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 
 export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
 
-export type AddVesselGroupVessel = IdentityVesselData | VesselGroupVesselIdentity | ReportTableVessel
+export type AddVesselGroupVessel =
+  IdentityVesselData | VesselGroupVesselIdentity | ReportTableVessel

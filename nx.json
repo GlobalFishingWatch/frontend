@@ -28,7 +28,7 @@
         "buildTargetName": "build",
         "serveTargetName": "serve",
         "devTargetName": "start",
-        "previewTargetName": "vite:preview",
+        "previewTargetName": "preview",
         "serveStaticTargetName": "serve-static",
         "typecheckTargetName": "typecheck",
         "buildDepsTargetName": "build-deps",
@@ -40,22 +40,6 @@
       "options": {
         "testTargetName": "test"
       }
-    },
-    {
-      "plugin": "@nx/vite/plugin",
-      "options": {
-        "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "previewTargetName": "preview",
-        "serveStaticTargetName": "serve-static",
-        "devTargetName": "dev",
-        "typecheckTargetName": "typecheck"
-      },
-      "include": [
-        "apps/api-portal/**/*",
-        "apps/data-download-portal/**/*",
-        "apps/port-labeler/**/*"
-      ]
     },
     {
       "plugin": "@nx/playwright/plugin",
@@ -76,14 +60,6 @@
         "libs/deck-layers/**/*",
         "libs/deck-loaders/**/*"
       ]
-    },
-    {
-      "plugin": "@nx/vitest",
-      "options": {
-        "testTargetName": "test",
-        "testMode": "watch"
-      },
-      "include": ["libs/datasets-client/**/*", "libs/timebar/**/*"]
     },
     {
       "plugin": "@nx/vitest",
@@ -111,18 +87,18 @@
     }
   ],
   "targetDefaults": {
-    "@nx/eslint:lint": {
+    "lint": {
       "cache": true,
       "inputs": [
         "default",
         "^default",
-        "{workspaceRoot}/eslint.config.mjs",
-        "{projectRoot}/eslint.config.mjs",
-        "{workspaceRoot}/tools/eslint-rules/**/*"
-      ],
-      "options": {
-        "eslintConfig": "eslint.config.mjs"
-      }
+        "{workspaceRoot}/eslint.config.js",
+        "{projectRoot}/eslint.config.js",
+        "{workspaceRoot}/linting/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
@@ -131,21 +107,16 @@
     },
     "@nx/vite:build": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production", "envVars"]
     },
-    "dist": {
-      "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
-    },
     "dist:workers": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist/workers"],
       "cache": true
     },
     "@nx/js:tsc": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{options.outputPath}"],
       "cache": true,
       "options": {
@@ -163,8 +134,37 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production", "envVars"]
+    },
+    "typecheck": {
+      "cache": true,
+      "executor": "nx:run-commands",
+      "inputs": [
+        "default",
+        "^default",
+        {
+          "externalDependencies": ["typescript"]
+        }
+      ],
+      "options": {
+        "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "cache": false,
+      "continuous": true,
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project {projectRoot}/tsconfig.lib.json"
+      }
+    },
+    "publish": {
+      "dependsOn": ["build"],
+      "executor": "@nx/js:release-publish",
+      "options": {
+        "packageRoot": "{projectRoot}"
+      }
     }
   },
   "generators": {

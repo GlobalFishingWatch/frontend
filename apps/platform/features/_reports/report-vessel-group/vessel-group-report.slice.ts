@@ -1,10 +1,10 @@
-import { FISHING_DATAVIEW_SLUG_ALL, PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
+import { FISHING_DATAVIEW_SLUG_ALL, PRESENCE_DATAVIEW_SLUG } from '@platform/config'
 
 import { getDatasetByIdsThunk, selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import {

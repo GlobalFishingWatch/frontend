@@ -112,11 +112,7 @@ export const getVesselIdentity = (
 }
 
 export type VesselIdentityProperty =
-  | keyof SelfReportedInfo
-  | keyof VesselRegistryInfo
-  | 'owner'
-  | 'id'
-  | 'image'
+  keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner' | 'id' | 'image'
 
 export function getLatestIdentityPrioritised(vessel: VesselsParamsSupported) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {

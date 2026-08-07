@@ -175,5 +175,7 @@ export type DatasetConfiguration<
   (keyof DatasetTypeToConfigurationType extends T
     ? DatasetConfigurationByType
     : {
-        [K in GetConfigurationType<T>]-?: Required<DatasetConfigurationByType>[GetConfigurationType<T>]
+        [
+          K in GetConfigurationType<T>
+        ]-?: Required<DatasetConfigurationByType>[GetConfigurationType<T>]
       })

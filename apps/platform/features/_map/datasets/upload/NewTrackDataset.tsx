@@ -21,7 +21,10 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import type { DataList } from 'features/_map/datasets/upload/datasets-parse.utils'
-import { getDatasetParsed, getTrackFromList } from 'features/_map/datasets/upload/datasets-parse.utils'
+import {
+  getDatasetParsed,
+  getTrackFromList,
+} from 'features/_map/datasets/upload/datasets-parse.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect,useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import cx from 'classnames'
 
 import { Button, InputText } from '@globalfishingwatch/ui-components'

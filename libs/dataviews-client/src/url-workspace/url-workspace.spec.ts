@@ -250,7 +250,10 @@ describe('url-workspace', () => {
 
   describe('parseLegacyDataviewInstanceConfig', () => {
     test('should parse legacy dataview instance config', () => {
-      const dataviewInstance: AnyDataviewInstance = {
+      // Deliberately the pre-migration shape: `events` held objects rather than ids and
+      // datasetsConfig entries had no `params`. That is what this parser exists to accept,
+      // so it no longer satisfies the current AnyDataviewInstance type.
+      const dataviewInstance = {
         id: 'test',
         dataviewId: 'test-dv',
         config: {
@@ -264,7 +267,7 @@ describe('url-workspace', () => {
             endpoint: 'legacy-endpoint',
           },
         ],
-      }
+      } as unknown as AnyDataviewInstance
 
       const result = parseLegacyDataviewInstanceConfig(dataviewInstance)
 

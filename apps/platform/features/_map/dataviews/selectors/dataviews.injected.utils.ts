@@ -6,9 +6,7 @@ import {
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
 import { PORT_VISITS_REPORT_DATAVIEW_ID } from 'features/_map/dataviews/dataviews.utils'
-import {
-  getVesselGroupEventsDataviewInstance,
-} from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
+import { getVesselGroupEventsDataviewInstance } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ReportEventsSubCategory } from 'features/_reports/reports.types'
 
 const REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID = `report-event-graph-area`

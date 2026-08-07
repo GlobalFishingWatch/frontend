@@ -42,7 +42,10 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/_map/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/_map/map/map.config'
+import {
+  OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
+  PORTS_LAYER_ID,
+} from 'features/_map/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {

@@ -15,7 +15,11 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
-import { getVesselId, getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import {
+  getVesselId,
+  getVesselIdentities,
+  getVesselProperty,
+} from 'features/_vessels/vessel/vessel.utils'
 
 import {
   ID_COLUMNS_OPTIONS,

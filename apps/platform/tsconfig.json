@@ -1,33 +1,8 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "$comment": "Sources live at the app root, not under src/, so include overrides the shared base.",
+  "extends": "../tsconfig.apps.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": false,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "types": [
-      "node",
-      "vite/client",
-      "vitest",
-      "vitest-browser-react",
-      "@vitest/browser/matchers",
-      "@vitest/browser-playwright"
-    ],
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "target": "es2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "skipLibCheck": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "incremental": true,
-    "tsBuildInfoFile": "tsconfig.tsbuildinfo",
-    "strictNullChecks": true,
-    // generating source maps for debug ids for Sentry.
-    "sourceMap": true,
+    "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo/platform.tsbuildinfo",
     "paths": {
       "assets/*": ["./assets/*"],
       "data/*": ["./data/*"],
@@ -49,15 +24,5 @@
       "utils/*": ["./utils/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "jest.config.ts",
-    "exported",
-    "**/resources.d.ts",
-    "**/__traces__/**",
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

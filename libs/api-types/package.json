@@ -2,21 +2,21 @@
   "name": "@globalfishingwatch/api-types",
   "version": "9.1.1",
   "description": "Typescript definitions for API responses",
-  "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "geojson": "0.x",

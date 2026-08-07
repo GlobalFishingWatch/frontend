@@ -9,7 +9,6 @@ lerna-debug.log*
 # Editor files
 .cursor/mcp.json
 .mcp.json
-.claude
 
 # Env
 .env
@@ -180,8 +179,9 @@ playwright-report/
 local.globalfishingwatch.org-key.pem
 local.globalfishingwatch.org.pem
 
-# Claude
-.claude
+# Claude — everything local except shared team memory (imported from CLAUDE.md)
+.claude/*
+!.claude/memory/
 
 # NX
 .nx/cache

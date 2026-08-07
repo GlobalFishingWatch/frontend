@@ -2,15 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Icon,
-  IconButton,
-  Logo,
-  Select,
-  SubBrands,
-} from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, Logo, Select, SubBrands } from '@globalfishingwatch/ui-components'
 
 import { selectCountries, selectCountry, sortOptions } from 'features/labeler/labeler.slice'
 import Search from 'features/search/Search'
@@ -65,10 +58,14 @@ function SidebarHeader(props: HeaderProps) {
       </div>
       <Select
         options={countries}
-        onRemove={() => { }}
+        onRemove={() => {}}
         className={styles.countrySelector}
         placeholder={t('messages.country_selection', 'Select a country')}
-        selectedOption={country ? { id: country, label: flags[country as keyof typeof flags] ?? country } : undefined}
+        selectedOption={
+          country
+            ? { id: country, label: flags[country as keyof typeof flags] ?? country }
+            : undefined
+        }
         onSelect={(selected: SelectOption) => {
           onCountryChange(String(selected.id))
 

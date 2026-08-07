@@ -7,8 +7,11 @@
   font-size: var(--font-size-S);
   top: 13px;
   left: 20px;
-  text-shadow: -1px -1px 0 var(--color-brand), 1px -1px 0 var(--color-brand),
-    -1px 1px 0 var(--color-brand), 1px 1px 0 var(--color-brand);
+  text-shadow:
+    -1px -1px 0 var(--color-brand),
+    1px -1px 0 var(--color-brand),
+    -1px 1px 0 var(--color-brand),
+    1px 1px 0 var(--color-brand);
 }
 
 /* .num._active {

@@ -3,7 +3,10 @@ import { describe, expect, it } from 'vitest'
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
 
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG, TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS } from 'data/map/workspaces'
+import {
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS,
+} from 'data/map/workspaces'
 import { VESSEL_DATAVIEW_SLUG_VMS_PERU } from 'data/map/workspaces-vms'
 
 import { getVesselDataviewInstance } from './dataviews.utils'

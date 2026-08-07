@@ -13,9 +13,12 @@ import type { TrackCorrectionId } from 'types'
 
 export function useSetTrackCorrectionId() {
   const { replaceQueryParams } = useReplaceQueryParams()
-  return useCallback((trackCorrectionId: TrackCorrectionId) => {
-    replaceQueryParams({ trackCorrectionId })
-  }, [replaceQueryParams])
+  return useCallback(
+    (trackCorrectionId: TrackCorrectionId) => {
+      replaceQueryParams({ trackCorrectionId })
+    },
+    [replaceQueryParams]
+  )
 }
 
 export function useFetchTrackCorrections() {

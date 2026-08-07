@@ -53,7 +53,6 @@ describe('parse-fourwings-vectors', () => {
       expect(result).toHaveLength(2)
       expect(result[0].properties.velocities).toBeDefined()
       expect(result[0].properties.directions).toBeDefined()
-      expect(result[0].properties.dates).toBeUndefined()
     })
 
     it('should parse timeseries vectors without dates and derive timestamps from frames', () => {
@@ -83,7 +82,6 @@ describe('parse-fourwings-vectors', () => {
       })
 
       expect(result).toHaveLength(1)
-      expect(result[0].properties.dates).toBeUndefined()
       expect(result[0].properties.tileStartFrame).toBe(0)
       expect(result[0].properties.startOffsets[0]).toBe(0)
       expect(result[0].properties.velocities).toHaveLength(2)

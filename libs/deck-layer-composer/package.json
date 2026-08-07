@@ -1,25 +1,25 @@
 {
   "name": "@globalfishingwatch/deck-layer-composer",
   "version": "0.1.13",
-  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./dataview-resolvers": {
-      "types": "./dist/resolvers/dataviews.d.ts",
       "development": "./src/resolvers/dataviews.ts",
+      "types": "./dist/resolvers/dataviews.d.ts",
       "default": "./dist/resolvers/dataviews.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@deck.gl/core": "9.x",

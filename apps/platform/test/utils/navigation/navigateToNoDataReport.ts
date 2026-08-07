@@ -2,9 +2,7 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'
 
-export function navigateToNoDataReport(): NavigationConfig<
-  typeof ROUTE_PATHS.WORKSPACE_REPORT
-> {
+export function navigateToNoDataReport(): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_REPORT> {
   return {
     to: ROUTE_PATHS.WORKSPACE_REPORT,
     params: {

@@ -1,0 +1,32 @@
+{
+  "$comment": "Shared base for the dist-producing libs. Path options (outDir/declarationDir/rootDir/tsBuildInfoFile) and `include` MUST stay per-lib: `${configDir}` makes `@nx/js:tsc` silently emit nothing — the `dist` target still prints 'Done compiling' and exits 0, but no .js/.d.ts is written. Plain tsc handles it fine, so apps/tsconfig.apps.base.json can use it; the libs cannot, because their dist target runs through that executor. libs/skills does not extend this: its program includes apps/platform/config, outside any rootDir set here, and it emits via esbuild.",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Resolve sibling @globalfishingwatch/* libs from src, matching apps/platform. Without
+    // this, type resolution falls through to "types" -> dist/*.d.ts, so `typecheck` would
+    // need every dependency's dist built first.
+    "customConditions": ["development"],
+    "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    // Only 4 libs hold .tsx, but jsx and the ambient typings below are inert for the rest,
+    // so one list beats a second base config. `types` replaces rather than merges.
+    "jsx": "react-jsx",
+    "types": [
+      "node",
+      "vite/client",
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts",
+      "vitest",
+      "vitest/globals",
+      "vitest/importMeta"
+    ]
+  }
+}

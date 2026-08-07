@@ -1,22 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": false,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "composite": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
-  },
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/**/*.json"]
+  "extends": "../tsconfig.lib.base.json",
+  "compilerOptions": { "outDir": "./dist" },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"]
 }

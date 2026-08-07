@@ -56,8 +56,8 @@ describe('isTimerangeOutsideTransmissions', () => {
     expect(isTimerangeOutsideTransmissions(null, transmissionDateFrom, transmissionDateTo)).toBe(
       false
     )
-    expect(isTimerangeOutsideTransmissions({ start: '2023-01-01', end: '2024-01-01' }, '', '')).toBe(
-      false
-    )
+    expect(
+      isTimerangeOutsideTransmissions({ start: '2023-01-01', end: '2024-01-01' }, '', '')
+    ).toBe(false)
   })
 })

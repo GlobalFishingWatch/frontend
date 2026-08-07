@@ -19,9 +19,9 @@ type UserGroupsListProps = {
 }
 
 export function UserGroupsList({ groupId, onGroupClick, user }: UserGroupsListProps) {
-  const [groups, setGroups] = useState<UserGroup[]>()
+  const [groups, setGroups] = useState<UserGroup<number>[]>()
   const fetchGroups = async () => {
-    const userGroups = await GFWAPI.fetch<UserGroup[]>('/auth/user-groups')
+    const userGroups = await GFWAPI.fetch<UserGroup<number>[]>('/auth/user-groups')
     setGroups(userGroups.sort((a, b) => a.name.localeCompare(b.name)))
   }
   useEffect(() => {

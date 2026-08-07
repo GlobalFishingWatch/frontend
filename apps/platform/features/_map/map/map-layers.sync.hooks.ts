@@ -42,8 +42,7 @@ const EMPTY_HOVER_FEATURES: DeckLayerPickingObject[] = []
 
 function getFeaturePropertyId(feature: DeckLayerPickingObject) {
   const properties = feature.properties as
-    | (FourwingsFeatureProperties & { pointIndex?: number })
-    | undefined
+    (FourwingsFeatureProperties & { pointIndex?: number }) | undefined
   if (properties?.cellId) {
     return properties.cellId
   }

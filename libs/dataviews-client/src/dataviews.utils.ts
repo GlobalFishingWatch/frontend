@@ -9,7 +9,9 @@ export const getVesselIdFromInstanceId = (dataviewInstanceId: unknown) => {
   if (typeof dataviewInstanceId !== 'string') {
     return ''
   }
-  const hasEncounterPrefix = dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  const hasEncounterPrefix = dataviewInstanceId.startsWith(
+    VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
+  )
   const hasVesselPrefix = dataviewInstanceId.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
 
   if (!hasEncounterPrefix && !hasVesselPrefix) {

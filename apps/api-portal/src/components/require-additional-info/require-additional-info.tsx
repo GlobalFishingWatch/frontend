@@ -1,10 +1,9 @@
-import type { ReactNode} from 'react';
+import type { ReactNode } from 'react'
 import { Fragment, useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 
 import useUser from 'features/user/user'
 
- 
 export interface RequireAdditionalInfoProps {
   children: ReactNode
 }

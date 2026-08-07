@@ -44,16 +44,15 @@ export const useSearchConnect = () => {
       return records.filter((record: PortPosition) => {
         const recordValue = fieldValues[country]?.[record.s2id] ?? ''
         const optionName = optionNames?.[recordValue]
-        return compareProperty(term, [
-          recordValue,
-          ...(optionName ? [optionName] : []),
-        ])
+        return compareProperty(term, [recordValue, ...(optionName ? [optionName] : [])])
       })
     } else {
       return records.filter((record: PortPosition) => {
         return compareProperty(
           term,
-          mainSearchProperties.map((property) => String(record[property as keyof PortPosition] ?? ''))
+          mainSearchProperties.map((property) =>
+            String(record[property as keyof PortPosition] ?? '')
+          )
         )
       })
     }

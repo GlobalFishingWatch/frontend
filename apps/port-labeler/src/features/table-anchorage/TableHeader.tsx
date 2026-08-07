@@ -11,14 +11,11 @@ type SidebarProps = {
 }
 
 function TableHeader({ order, label, onToggle }: SidebarProps) {
-  const setSort = useCallback(
-    () => {
-      if (onToggle) {
-        onToggle(order === 'desc' ? 'asc' : 'desc')
-      }
-    },
-    [order, onToggle]
-  )
+  const setSort = useCallback(() => {
+    if (onToggle) {
+      onToggle(order === 'desc' ? 'asc' : 'desc')
+    }
+  }, [order, onToggle])
 
   return (
     <div className={styles.col}>

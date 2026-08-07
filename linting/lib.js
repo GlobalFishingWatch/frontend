@@ -2,6 +2,7 @@
 import eslint from '@eslint/js'
 import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-config-prettier'
+import packageJson from 'eslint-package-json'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
 import reactPlugin from 'eslint-plugin-react'
@@ -19,7 +20,7 @@ import tseslint from 'typescript-eslint'
  * @typedef {import('typescript-eslint').ConfigWithExtends} ConfigWithExtends
  */
 export const config = {
-  files: ['**/*.{js,ts,jsx,tsx}', '**/*.mjs'],
+  files: ['**/*.{js,cjs,mjs,ts,cts,mts,jsx,tsx}'],
   plugins: {
     import: importPlugin,
     'simple-import-sort': simpleImportSort,
@@ -164,6 +165,39 @@ export const nodeScriptsConfig = {
       URL: 'readonly',
       URLSearchParams: 'readonly',
     },
+  },
+}
+
+export const packageJsonConfig = {
+  files: ['**/package.json'],
+  plugins: {
+    'package-json': packageJson,
+  },
+  extends: ['package-json/recommended'],
+  rules: {
+    'package-json/dependency-version-range': ['error', { range: 'consistent' }],
+    // pnpm rewrites workspace: on publish; source manifests intentionally use it
+    'package-json/no-workspace-protocol-in-published-package': 'off',
+    // root preinstall (only-allow pnpm) + postinstall (husky)
+    'package-json/no-install-scripts': 'off',
+    // workspace packages live under apps/*/libs/*; their exports/imports are real package roots
+    'package-json/no-nested-exports': 'off',
+    // preserve `development` → `types` → `default` order for Vite HMR
+    'package-json/require-types-in-exports': 'off',
+    // libs keep main/types alongside exports for tooling that does not read exports
+    'package-json/prefer-exports': 'off',
+    // engines/keywords/sideEffects are not standardized across this monorepo yet
+    'package-json/require-engines': 'off',
+    'package-json/require-fields': 'off',
+    'package-json/prefer-side-effects-field': 'off',
+    // `files` allowlists and `type` vary; not enforced workspace-wide yet
+    'package-json/prefer-files-field': 'off',
+    'package-json/prefer-type-module': 'off',
+    // empty description strings and ambient @types/* without a runtime sibling are common here
+    'package-json/no-empty-fields': 'off',
+    'package-json/no-orphan-types': 'off',
+    // script names like `prerender` are not always paired with a `render` script
+    'package-json/no-orphan-script-hooks': 'off',
   },
 }
 
