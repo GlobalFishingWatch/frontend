@@ -568,8 +568,8 @@ importers:
         specifier: 7946.0.16
         version: 7946.0.16
       '@types/lodash':
-        specifier: 4.17.24
-        version: 4.17.24
+        specifier: 4.17.25
+        version: 4.17.25
       '@types/luxon':
         specifier: 3.7.2
         version: 3.7.2
@@ -966,12 +966,12 @@ importers:
       '@globalfishingwatch/api-types':
         specifier: workspace:^
         version: link:../api-types
+      es-toolkit:
+        specifier: 1.x
+        version: 1.50.0
       file-saver:
         specifier: 2.x
         version: 2.0.5
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       protobufjs:
         specifier: ^8.x
         version: 8.7.1
@@ -1020,21 +1020,12 @@ importers:
       jszip:
         specifier: 3.x
         version: 3.10.1
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       luxon:
         specifier: 3.x
         version: 3.7.2
-      papaparse:
-        specifier: 5.5.4
-        version: 5.5.4
       shpjs:
         specifier: 6.x
         version: 6.2.0
-      simple-statistics:
-        specifier: 7.x
-        version: 7.9.3
       tslib:
         specifier: 2.x
         version: 2.8.1
@@ -1086,6 +1077,9 @@ importers:
       geojson:
         specifier: 0.x
         version: 0.5.0
+      immer:
+        specifier: 11.1.15
+        version: 11.1.15
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -1228,18 +1222,12 @@ importers:
       kdbush:
         specifier: 4.x
         version: 4.1.0
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       luxon:
         specifier: 3.x
         version: 3.7.2
       qs:
         specifier: 6.x
         version: 6.15.3
-      sharp:
-        specifier: 0.x
-        version: 0.34.5
       simple-statistics:
         specifier: 7.x
         version: 7.9.3
@@ -1249,9 +1237,6 @@ importers:
       tslib:
         specifier: 2.x
         version: 2.8.1
-      type-fest:
-        specifier: 5.x
-        version: 5.8.0
 
   libs/deck-loaders:
     dependencies:
@@ -1264,12 +1249,12 @@ importers:
       '@loaders.gl/loader-utils':
         specifier: ^4.x
         version: 4.4.4(@loaders.gl/core@4.4.4)
+      es-toolkit:
+        specifier: 1.x
+        version: 1.50.0
       geojson:
         specifier: 0.x
         version: 0.5.0
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -1317,9 +1302,6 @@ importers:
         specifier: 2.x
         version: 2.8.1
     devDependencies:
-      '@types/lodash':
-        specifier: 4.x
-        version: 4.17.24
       '@types/node':
         specifier: 26.x
         version: 26.1.1
@@ -1338,9 +1320,6 @@ importers:
       es-toolkit:
         specifier: 1.x
         version: 1.50.0
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       react:
         specifier: 19.x
         version: 19.2.8
@@ -1374,9 +1353,9 @@ importers:
       d3-format:
         specifier: 3.x
         version: 3.1.2
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
+      es-toolkit:
+        specifier: 1.50.0
+        version: 1.50.0
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -1413,12 +1392,18 @@ importers:
       '@deck.gl/core':
         specifier: 9.x
         version: 9.3.7
+      '@deck.gl/extensions':
+        specifier: 9.3.7
+        version: 9.3.7(@deck.gl/core@9.3.7)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))
       '@deck.gl/layers':
         specifier: 9.x
         version: 9.3.7(@deck.gl/core@9.3.7)(@loaders.gl/core@4.4.4)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))
       '@deck.gl/react':
         specifier: 9.x
         version: 9.3.7(@deck.gl/core@9.3.7)(@deck.gl/widgets@9.3.7(@deck.gl/core@9.3.7)(@luma.gl/core@9.3.6))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@deck.gl/widgets':
+        specifier: 9.3.7
+        version: 9.3.7(@deck.gl/core@9.3.7)(@luma.gl/core@9.3.6)
       '@globalfishingwatch/api-types':
         specifier: workspace:^
         version: link:../api-types
@@ -1449,18 +1434,18 @@ importers:
       d3-shape:
         specifier: 3.x
         version: 3.2.0
+      es-toolkit:
+        specifier: 1.x
+        version: 1.50.0
       jotai:
         specifier: 2.x
         version: 2.20.2(@babel/core@7.29.7(supports-color@10.2.2))(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.8)
-      lodash:
-        specifier: 4.x
-        version: 4.18.1
       luxon:
         specifier: 3.x
         version: 3.7.2
-      memoize-one:
-        specifier: 6.x
-        version: 6.0.0
+      mjolnir.js:
+        specifier: 3.x
+        version: 3.0.1
       react:
         specifier: 19.x
         version: 19.2.8
@@ -1470,9 +1455,6 @@ importers:
       tslib:
         specifier: 2.x
         version: 2.8.1
-      use-debounce:
-        specifier: 10.x
-        version: 10.1.1(react@19.2.8)
 
   libs/ui-components:
     dependencies:
@@ -6493,8 +6475,8 @@ packages:
   '@types/linkify-it@5.0.0':
     resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
 
-  '@types/lodash@4.17.24':
-    resolution: {integrity: sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ==}
+  '@types/lodash@4.17.25':
+    resolution: {integrity: sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==}
 
   '@types/luxon@3.7.2':
     resolution: {integrity: sha512-gW+Oib+vUtGJBtNC8V9Reww0oIpusw+4m81uncg9REGZAJfqOQHfo/nkabnc7w0QReXyPqjrbWMJk6NuAkiX3Q==}
@@ -21182,7 +21164,7 @@ snapshots:
 
   '@types/linkify-it@5.0.0': {}
 
-  '@types/lodash@4.17.24': {}
+  '@types/lodash@4.17.25': {}
 
   '@types/luxon@3.7.2': {}
 

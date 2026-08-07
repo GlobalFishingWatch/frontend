@@ -78,7 +78,6 @@ nx publish dataviews-client
 - `@globalfishingwatch/data-transforms`
 - `@globalfishingwatch/datasets-client`
 - `@reduxjs/toolkit`
-- `lodash`
 - `luxon`
 - `qs`
 

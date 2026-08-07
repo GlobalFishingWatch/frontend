@@ -41,10 +41,6 @@ project, never the dependency. Aligning the names is the only real fix.
 - `deck-loaders` keeps a separate `dist:workers` target — that name is about the output
   folder and is intentionally not `build:workers`.
 
-Fallout handled in the same change: with the rule finally live on libs it produced 21 real
-findings (mostly `lodash` left declared after the `es-toolkit` migration). Two traps worth
-knowing —
-
 - **`protobufjs` and `long` are not obsolete** in `api-client` / `deck-loaders` even though the
   rule says so. The only importers are the generated `*.gen.js` / `*.gen.d.ts` decoders, which
   are **gitignored**, so they are absent from Nx's project file map. Both sit in
@@ -63,6 +59,18 @@ Nx project (inferred from its `package.json`; `nx show project '@platform/config
 it. It is source-only on purpose ([[platform-config-package]]) — adding a `build` target to
 appease the rule would break that contract. It lives in `ignoredDependencies` instead.
 
+Removing it from `ignoredDependencies` would **not** buy back missing-dependency detection:
+`missingDeps` is filtered out of `expectedDependencyNames`, which the same gate already
+emptied. The rule is structurally blind to it in both directions.
+
+**pnpm is the real guard, and it is loud.** Verified 2026-08-07: an undeclared
+`@platform/config` import in `libs/data-transforms` fails `nx typecheck data-transforms` with
+`TS2307: Cannot find module '@platform/config'`, because pnpm only symlinks declared
+`workspace:` deps into `libs/<lib>/node_modules/` ([[app-dependency-catalog]]). A lib that
+forgets the manifest entry breaks at typecheck, not in production.
+
+`dependency-checks` never runs on `libs/skills`
+
 ## `--fix` on a lib is not safe to trust blind
 
 `ignoredFiles` makes the rule blind to tests, `scripts/**` and vite/vitest/esbuild configs, so
@@ -77,6 +85,34 @@ script. `sharp` `0.34.5` is now a root devDependency.
 After any `--fix` on a `libs/*/package.json`, diff the removals and confirm each one either is
 genuinely unused or resolves from root. Also normalize versions it writes: `--fix` copies the
 exact installed version (`1.50.0`), while libs use `x` ranges (`1.x`).
+
+## The rule only ever reads a _cached_ project graph
+
+`@nx/eslint-plugin` calls `readProjectGraph()` — it never computes one. Wipe the cache
+(`nx reset`) and every package.json lint emits
+`No cached ProjectGraph is available. The rule will be skipped.` A **stale** cache is worse: it
+reports live dependencies as obsolete and `--fix` deletes them. `qs` was removed from
+`dataviews-client` this way on 2026-08-07 even though
+`src/url-workspace/url-workspace.ts` imports it; after rebuilding the graph,
+`findNpmDependencies` returned `qs: 6.15.3` and the same lint was clean, with no config change.
+The trigger is lockfile churn — external nodes come from `pnpm-lock.yaml`, and a missing
+`externalNodes['npm:qs']` makes `find-npm-dependencies.js` drop the dep silently.
+
+So: run package.json lint through `pnpm nx lint <project>`, which builds the graph first. After
+a `pnpm install`, refresh with any `nx` command (`pnpm nx show projects`) before trusting an
+IDE-surfaced `dependency-checks` diagnostic or hitting its quick-fix. Never accept a
+"not used" claim you can contradict by reading the source.
+
+## Manifests nested in a source tree get attributed to the parent project
+
+`libs/dataviews-client/src/url-workspace/package.json` (the standalone BigQuery UDF bundle, see
+`libs/dataviews-client/.nxignore` + the `bundle-url-workspace` target) is not an Nx project. The
+rule's `findProject` walks up to `dataviews-client` and lints that file **as** the lib's
+manifest, so it reported the lib's whole dependency list as missing and `--fix` copied all 11
+entries in at exact versions. `.nxignore` keeps Nx out but eslint does not read it, so
+`packageJsonDependencyChecksConfig` in `linting/nx.js` carries
+`ignores: ['**/src/**/package.json']`. Any future nested manifest must live outside a `src/`
+tree or be added there.
 
 See [[platform-dist-workspace-link]] for why apps resolve libs through `dist` in the first
 place, and [[app-dependency-catalog]] for how app versions are pinned.

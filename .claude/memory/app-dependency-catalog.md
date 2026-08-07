@@ -6,7 +6,7 @@ description: apps/* declare only `workspace:` deps; npm versions live in the roo
 # App manifests list workspace deps only
 
 Every `apps/*/package.json` declares **only** `workspace:^` / `workspace:*` entries. No npm
-packages. `react`, `lodash`, `luxon` and the rest are declared once in the root
+packages. `react`, `es-toolkit`, `luxon` and the rest are declared once in the root
 `package.json` and resolve because Node walks up from `apps/<app>/…` to the root
 `node_modules/`.
 

@@ -12,8 +12,9 @@ export const dependencyChecksOptions = {
     '{projectRoot}/**/*.{spec,test}.{ts,tsx}',
     '{projectRoot}/scripts/**',
   ],
-  // Generated protobuf decoders (`*.gen.js`) are gitignored, so the import is invisible
-  ignoredDependencies: ['protobufjs'],
+  // - protobufjs / long: only imported from the generated `*.gen.js` / `*.gen.d.ts` decoders,
+  // - @platform/config: it *is* an Nx project (inferred from its package.json) but without a build target
+  ignoredDependencies: ['protobufjs', 'long', '@platform/config'],
   checkMissingDependencies: true,
   checkObsoleteDependencies: true,
   checkVersionMismatches: true,
