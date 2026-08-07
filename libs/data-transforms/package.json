@@ -6,18 +6,18 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./dates": {
-      "types": "./dist/dates/index.d.ts",
       "development": "./src/dates/index.ts",
+      "types": "./dist/dates/index.d.ts",
       "default": "./dist/dates/index.js"
     },
     "./*": {
-      "types": "./dist/*/index.d.ts",
       "development": "./src/*/index.ts",
+      "types": "./dist/*/index.d.ts",
       "default": "./dist/*/index.js"
     }
   },

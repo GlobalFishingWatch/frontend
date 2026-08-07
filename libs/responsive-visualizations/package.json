@@ -15,13 +15,13 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./lib/values": {
-      "types": "./dist/lib/values.d.ts",
       "development": "./src/lib/values.ts",
+      "types": "./dist/lib/values.d.ts",
       "default": "./dist/lib/values.js"
     }
   },

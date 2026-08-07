@@ -5,40 +5,40 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./draw": {
-      "types": "./dist/draw.d.ts",
       "development": "./src/draw.ts",
+      "types": "./dist/draw.d.ts",
       "default": "./dist/draw.js"
     },
     "./config": {
-      "types": "./dist/config/index.d.ts",
       "development": "./src/config/index.ts",
+      "types": "./dist/config/index.d.ts",
       "default": "./dist/config/index.js"
     },
     "./utils": {
-      "types": "./dist/utils/index.d.ts",
       "development": "./src/utils/index.ts",
+      "types": "./dist/utils/index.d.ts",
       "default": "./dist/utils/index.js"
     }
   },
   "imports": {
     "#config": {
-      "types": "./dist/config/index.d.ts",
       "development": "./src/config/index.ts",
+      "types": "./dist/config/index.d.ts",
       "default": "./dist/config/index.js"
     },
     "#utils": {
-      "types": "./dist/utils/index.d.ts",
       "development": "./src/utils/index.ts",
+      "types": "./dist/utils/index.d.ts",
       "default": "./dist/utils/index.js"
     },
     "#*": {
-      "types": "./dist/*.d.ts",
       "development": "./src/*.ts",
+      "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
     }
   },

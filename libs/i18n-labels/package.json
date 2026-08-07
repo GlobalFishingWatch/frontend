@@ -18,14 +18,14 @@
   "main": "./dist/index.js",
   "types": "./types.d.ts",
   "files": [
+    "dist",
     "en",
     "es",
     "fr",
     "id",
     "pt",
     "source",
-    "val",
-    "dist"
+    "val"
   ],
   "devDependencies": {
     "prettier": "3.9.6",

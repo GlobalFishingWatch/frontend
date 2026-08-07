@@ -4,8 +4,8 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
@@ -34,9 +34,7 @@
   },
   "devDependencies": {
     "@types/lodash": "4.x",
-    "@types/node": "20.x",
-    "dotenv": "^17.2.0",
-    "ts-node": "10.x",
-    "typescript": "5.x"
+    "@types/node": "26.x",
+    "ts-node": "10.x"
   }
 }
