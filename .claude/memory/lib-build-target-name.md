@@ -90,29 +90,48 @@ exact installed version (`1.50.0`), while libs use `x` ranges (`1.x`).
 
 `@nx/eslint-plugin` calls `readProjectGraph()` — it never computes one. Wipe the cache
 (`nx reset`) and every package.json lint emits
-`No cached ProjectGraph is available. The rule will be skipped.` A **stale** cache is worse: it
-reports live dependencies as obsolete and `--fix` deletes them. `qs` was removed from
-`dataviews-client` this way on 2026-08-07 even though
-`src/url-workspace/url-workspace.ts` imports it; after rebuilding the graph,
-`findNpmDependencies` returned `qs: 6.15.3` and the same lint was clean, with no config change.
-The trigger is lockfile churn — external nodes come from `pnpm-lock.yaml`, and a missing
-`externalNodes['npm:qs']` makes `find-npm-dependencies.js` drop the dep silently.
+`No cached ProjectGraph is available. The rule will be skipped.`, so run manifest lint through
+`pnpm nx lint <project>` (which builds the graph) rather than raw `npx eslint --fix` or an IDE
+quick-fix.
 
-So: run package.json lint through `pnpm nx lint <project>`, which builds the graph first. After
-a `pnpm install`, refresh with any `nx` command (`pnpm nx show projects`) before trusting an
-IDE-surfaced `dependency-checks` diagnostic or hitting its quick-fix. Never accept a
-"not used" claim you can contradict by reading the source.
+## A target `outputs` entry naming a source directory erases it from the file map
+
+This is what actually caused `qs` to be deleted from `dataviews-client` on 2026-08-07 — not a
+stale cache, which is what it looked like at first. `bundle-url-workspace` declared
+
+```json
+"outputs": ["{workspaceRoot}/libs/dataviews-client/src/url-workspace"]
+```
+
+Nx excludes a target's declared outputs from the project file map, so all five tracked files in
+that directory vanished from `projectFileMap['dataviews-client']` — including
+`url-workspace.ts`, the only importer of `qs`. `findNpmDependencies` then legitimately reported
+`qs` unused and `--fix` removed it. The intermittency (it sometimes worked) came from which code
+path last rebuilt the map.
+
+Fixed by narrowing `outputs` to the single emitted artifact,
+`.../src/url-workspace/url-workspace.js` — which is also exactly what
+`libs/dataviews-client/.gitignore` lists. **`outputs` must name generated artifacts, never a
+directory that also holds source.** Verify with:
+
+```js
+readProjectGraph('probe').projectFileMap['<project>'].filter((f) => f.file.includes('<dir>'))
+```
+
+If a file you can see on disk and in `git ls-files` is absent there, check every target's
+`outputs` before blaming the cache.
 
 ## Manifests nested in a source tree get attributed to the parent project
 
-`libs/dataviews-client/src/url-workspace/package.json` (the standalone BigQuery UDF bundle, see
-`libs/dataviews-client/.nxignore` + the `bundle-url-workspace` target) is not an Nx project. The
-rule's `findProject` walks up to `dataviews-client` and lints that file **as** the lib's
-manifest, so it reported the lib's whole dependency list as missing and `--fix` copied all 11
-entries in at exact versions. `.nxignore` keeps Nx out but eslint does not read it, so
-`packageJsonDependencyChecksConfig` in `linting/nx.js` carries
-`ignores: ['**/src/**/package.json']`. Any future nested manifest must live outside a `src/`
-tree or be added there.
+`libs/dataviews-client/src/url-workspace/package.json` (the standalone BigQuery UDF bundle) is
+not an Nx project. The rule's `findProject` walks up to `dataviews-client` and lints that file
+**as** the lib's manifest, so it reported the lib's whole dependency list as missing and `--fix`
+copied all 11 entries in at exact versions. `.nxignore` keeps Nx out but eslint does not read
+it, so `packageJsonDependencyChecksConfig` in `linting/nx.js` carries
+`ignores: ['**/url-workspace/package.json']`. The leading `**/` is load-bearing: the shared
+config is consumed both from the root `eslint.config.js` and from
+`libs/dataviews-client/eslint.config.js`, and eslint resolves `ignores` against the base path of
+whichever config is running — a workspace-root-relative path silently fails under `nx lint`.
 
 See [[platform-dist-workspace-link]] for why apps resolve libs through `dist` in the first
 place, and [[app-dependency-catalog]] for how app versions are pinned.

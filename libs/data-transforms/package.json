@@ -37,11 +37,8 @@
     "geo-coordinates-parser": "1.x",
     "geojson": "0.x",
     "jszip": "3.x",
-    "lodash": "4.x",
     "luxon": "3.x",
-    "papaparse": "5.5.4",
     "shpjs": "6.x",
-    "simple-statistics": "7.x",
     "tslib": "2.x"
   }
 }

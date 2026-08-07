@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "2.x",
     "es-toolkit": "1.x",
     "geojson": "0.x",
+    "immer": "11.x",
     "luxon": "3.x",
     "qs": "6.x",
     "tslib": "2.x"

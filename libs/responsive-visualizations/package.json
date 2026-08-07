@@ -35,7 +35,7 @@
     "classnames": "2.x",
     "colorjs.io": "0.x",
     "d3-format": "3.x",
-    "lodash": "4.x",
+    "es-toolkit": "1.x",
     "luxon": "3.x",
     "react": "19.x",
     "recharts": "3.x",

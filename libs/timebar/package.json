@@ -29,8 +29,10 @@
   ],
   "dependencies": {
     "@deck.gl/core": "9.x",
+    "@deck.gl/extensions": "9.x",
     "@deck.gl/layers": "9.x",
     "@deck.gl/react": "9.x",
+    "@deck.gl/widgets": "9.x",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
     "@globalfishingwatch/dataviews-client": "workspace:^",
@@ -41,13 +43,12 @@
     "d3-array": "3.x",
     "d3-scale": "4.x",
     "d3-shape": "3.x",
+    "es-toolkit": "1.x",
     "jotai": "2.x",
-    "lodash": "4.x",
     "luxon": "3.x",
-    "memoize-one": "6.x",
+    "mjolnir.js": "3.x",
     "react": "19.x",
     "react-dom": "19.x",
-    "tslib": "2.x",
-    "use-debounce": "10.x"
+    "tslib": "2.x"
   }
 }

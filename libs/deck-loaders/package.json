@@ -27,12 +27,13 @@
   "dependencies": {
     "@deck.gl/geo-layers": "9.x",
     "@globalfishingwatch/api-types": "workspace:^",
-    "@loaders.gl/loader-utils": "^4.x",
+    "@loaders.gl/loader-utils": "4.x",
+    "es-toolkit": "1.x",
     "geojson": "0.x",
-    "lodash": "4.x",
+    "long": "5.x",
     "luxon": "3.x",
     "pbf": "5.x",
-    "protobufjs": "^8.4.2",
+    "protobufjs": "8.x",
     "tslib": "2.x"
   }
 }

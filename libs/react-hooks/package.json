@@ -22,7 +22,6 @@
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "es-toolkit": "1.x",
-    "lodash": "4.x",
     "react": "19.x",
     "react-ga4": "3.x",
     "tslib": "2.x",

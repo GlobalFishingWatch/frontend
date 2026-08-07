@@ -27,8 +27,9 @@
   ],
   "dependencies": {
     "@globalfishingwatch/api-types": "workspace:^",
+    "es-toolkit": "1.x",
     "file-saver": "2.x",
-    "lodash": "4.x",
+    "long": "5.x",
     "protobufjs": "^8.x",
     "react": "19.x",
     "tslib": "2.x"
