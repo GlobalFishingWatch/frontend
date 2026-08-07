@@ -107,6 +107,17 @@ const DebugFeatureFlags: React.FC = () => {
         <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
       </div>
       <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
+      <div className={styles.header}>
+        <Switch
+          id="option_longline_sets_insight"
+          active={longlineSetsInsight ?? false}
+          onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
+        />
+        <label htmlFor="option_longline_sets_insight">
+          <strong>Feature flag:</strong> Longline sets insight
+        </label>
+      </div>
+      <p>Show the longline sets insight in the vessel and vessel group profiles</p>
       {isGFWDeveloper && (
         <Fragment>
           <div className={styles.header}>
@@ -142,17 +153,6 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>Show the hotspot zone button in the report activity graph</p>
-          <div className={styles.header}>
-            <Switch
-              id="option_longline_sets_insight"
-              active={longlineSetsInsight ?? false}
-              onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
-            />
-            <label htmlFor="option_longline_sets_insight">
-              <strong>Feature flag:</strong> Longline sets insight
-            </label>
-          </div>
-          <p>Show the longline sets insight in the vessel and vessel group profiles</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"
