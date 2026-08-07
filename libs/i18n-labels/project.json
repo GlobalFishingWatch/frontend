@@ -82,6 +82,7 @@
         ],
         "parallel": false
       }
-    }
+    },
+    "typecheck": {}
   }
 }

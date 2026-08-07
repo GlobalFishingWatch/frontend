@@ -11,21 +11,7 @@
         "clean": false
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/data-transforms"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }

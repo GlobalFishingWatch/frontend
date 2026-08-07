@@ -1,6 +1,5 @@
 {
   "extends": "./tsconfig.json",
-
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "tsBuildInfoFile": "./tsconfig.spec.tsbuildinfo",
@@ -15,8 +14,7 @@
     "moduleResolution": "bundler"
   },
   "include": [
-    "vite.config.ts",
-    "vitest.config.ts",
+    "vitest.config.mts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.test.tsx",

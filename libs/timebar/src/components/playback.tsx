@@ -83,7 +83,9 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
       // Live range is the shared truth; notifyChange advances it synchronously, so the
       // next frame/click reads the value just emitted (no optimistic write-back needed).
       const { start, end } = rangeRef.current
-      if (!start || !end) return
+      if (!start || !end) {
+        return false
+      }
 
       const {
         start: newStart,
@@ -118,9 +120,7 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
           stop()
         }
       }
-      if (clamped !== 'end' || loop === true) {
-        return true
-      }
+      return clamped !== 'end' || loop === true
     },
     [stop]
   )

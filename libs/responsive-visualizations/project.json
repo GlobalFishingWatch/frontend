@@ -10,25 +10,15 @@
       "options": {
         "clean": false,
         "assets": [
-          { "glob": "**/*.css", "input": "libs/responsive-visualizations/src", "output": "." }
+          {
+            "glob": "**/*.css",
+            "input": "libs/responsive-visualizations/src",
+            "output": "."
+          }
         ]
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/responsive-visualizations"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }

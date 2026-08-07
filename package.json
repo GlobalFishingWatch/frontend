@@ -16,7 +16,6 @@
     "postinstall": "husky",
     "nx:latest": "nx migrate latest",
     "nx:migrations": "nx migrate --run-migrations",
-    "libs:dev": "nx run-many -t dev --projects=tag:lib",
     "clean": "pnpm clean:cache && pnpm clean:deps",
     "clean:deps": "rimraf -rf ./pnpm-lock.yaml && touch pnpm-lock.yaml && rimraf -rf ./node_modules && pnpm store prune && pnpm install",
     "clean:cache": "rimraf --glob .nx ./dist 'apps/*/node_modules/.rolldown' 'apps/*/node_modules/.cache' 'node_modules/.cache/tsbuildinfo'"

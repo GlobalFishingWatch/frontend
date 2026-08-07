@@ -1,26 +1,13 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.lib.base.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "composite": true,
-    "outDir": "./dist",
-    "declarationDir": "./dist",
-    "rootDir": "src",
-    "declaration": true,
-    "declarationMap": true,
-    "inlineSources": true,
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-    "types": ["node"],
+    // deck.gl layers override ~140 base-class members without the modifier. Opt out until
+    // someone does that pass; the rest of the libs keep the flag from tsconfig.lib.base.json.
+    "noImplicitOverride": false,
     "paths": {
       "#config": ["./src/config/index.ts"],
       "#utils": ["./src/utils/index.ts"],
       "#*": ["./src/*.ts"]
     }
-  },
-  "include": ["src/**/*.ts"]
+  }
 }

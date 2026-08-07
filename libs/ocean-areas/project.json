@@ -19,21 +19,7 @@
         "cwd": "libs/ocean-areas"
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/ocean-areas"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }

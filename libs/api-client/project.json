@@ -44,40 +44,21 @@
         ]
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "continuous": true,
-      "options": {
-        "watch": true
-      }
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/api-client"
-      }
-    },
     "test": {
       "dependsOn": ["^dist"],
-      "outputs": [
-        "{projectRoot}/{options.coverage.reportsDirectory}",
-        "{workspaceRoot}/coverage/libs/api-client"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
-        "coverage.reportsDirectory": "../../../coverage/libs/api-client"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
     "test:watch": {
       "cache": false,
       "continuous": true,
       "options": {
-        "watch": true,
-        "config": "./vitest.config.ts"
+        "watch": true
       }
-    }
+    },
+    "typecheck": {},
+    "publish": {}
   }
 }

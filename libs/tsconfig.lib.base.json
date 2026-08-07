@@ -1,0 +1,34 @@
+{
+  "$comment": "Shared base for the dist-producing libs. `${configDir}` resolves to the *extending* config's directory (TS >= 5.5), so path options and the default include live here instead of being repeated per lib. libs/skills does not extend this: its program includes apps/platform/config, which is outside the rootDir set here, and it emits via esbuild, so the composite/tsBuildInfoFile settings would only litter the dist that bundle owns.",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Resolve sibling @globalfishingwatch/* libs from src, matching apps/platform. Without
+    // this, type resolution falls through to "types" -> dist/*.d.ts, so `typecheck` would
+    // need every dependency's dist built first.
+    "customConditions": ["development"],
+    "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
+    // Only 4 libs hold .tsx, but jsx and the ambient typings below are inert for the rest,
+    // so one list beats a second base config. `types` replaces rather than merges.
+    "jsx": "react-jsx",
+    "types": [
+      "node",
+      "vite/client",
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts"
+    ],
+    "outDir": "${configDir}/dist",
+    "declarationDir": "${configDir}/dist",
+    "rootDir": "${configDir}/src",
+    "tsBuildInfoFile": "${configDir}/dist/tsconfig.tsbuildinfo"
+  },
+  "include": ["${configDir}/src/**/*.ts", "${configDir}/src/**/*.tsx"]
+}

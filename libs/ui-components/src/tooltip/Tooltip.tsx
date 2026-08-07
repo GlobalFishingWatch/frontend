@@ -76,6 +76,7 @@ function TooltipComponent({ content, children, className, placement = 'top' }: T
               (child.props as PropsWithChildren).children
             )
           }
+          return undefined
         })
       )}
       {isMounted && (

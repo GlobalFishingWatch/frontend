@@ -11,32 +11,14 @@
         "clean": false
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "continuous": true,
-      "options": {
-        "watch": true
-      }
-    },
     "test": {
       "dependsOn": ["^dist"],
-      "outputs": [
-        "{projectRoot}/{options.coverage.reportsDirectory}",
-        "{workspaceRoot}/coverage/libs/datasets-client"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
-        "coverage.reportsDirectory": "../../../coverage/libs/datasets-client"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/datasets-client"
-      }
-    }
+    "typecheck": {},
+    "publish": {}
   }
 }
