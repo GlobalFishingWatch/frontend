@@ -29,31 +29,29 @@ function ContentLayout() {
   const [isScrolled, setIsScrolled] = useState(false)
 
   return (
-    <div className={styles.appLayout}>
-      <div className={styles.contentLayout}>
-        <div
-          className={cx(styles.contentHeader, {
-            [styles.contentHeaderScrolled]: isScrolled,
-          })}
-        >
-          <a href="https://globalfishingwatch.org">
-            <Logo />
-          </a>
-          <div className={styles.contentHeaderActions}>
-            {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
-            {isClientHydrated && <NavigationHistoryButton />}
-          </div>
+    <div className={styles.contentLayout}>
+      <div
+        className={cx(styles.contentHeader, {
+          [styles.contentHeaderScrolled]: isScrolled,
+        })}
+      >
+        <a href="https://globalfishingwatch.org">
+          <Logo />
+        </a>
+        <div className={styles.contentHeaderActions}>
+          {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
+          {isClientHydrated && <NavigationHistoryButton />}
         </div>
-        <div
-          id={SCROLL_CONTAINER_DOM_ID}
-          className={cx('scrollContainer', styles.contentScrollContainer)}
-          data-testid="content-container"
-          onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
-        >
-          <Suspense fallback={null}>
-            <Outlet />
-          </Suspense>
-        </div>
+      </div>
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className={cx('scrollContainer', styles.contentScrollContainer)}
+        data-testid="content-container"
+        onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
+      >
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </div>
     </div>
   )
