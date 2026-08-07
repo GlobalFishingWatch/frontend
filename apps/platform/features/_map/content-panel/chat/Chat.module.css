@@ -103,12 +103,6 @@
   --th-background: var(--color-terthiary-blue);
 }
 
-.message .content-markdown pre.tm-code {
-  padding: var(--space-XS) var(--space-S);
-  background: var(--color-terthiary-blue);
-  border-radius: var(--border-radius-0);
-}
-
 .message hr {
   border: none;
   border-top: var(--border);

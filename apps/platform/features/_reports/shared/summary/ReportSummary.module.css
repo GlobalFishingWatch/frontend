@@ -23,7 +23,3 @@
   align-items: flex-start;
   gap: var(--space-M);
 }
-
-.tagsContainerNoFilters {
-  padding-bottom: var(--space-XS);
-}

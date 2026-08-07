@@ -22,11 +22,6 @@
   font-size: 2.2rem;
 }
 
-.titleLabel {
-  line-height: 0.5;
-  margin-top: var(--space-S);
-}
-
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
