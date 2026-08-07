@@ -19,7 +19,6 @@ export function usePageVisibility() {
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-     
   }, [])
 
   return { isVisible, firstTimeVisible }

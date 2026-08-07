@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest'
 
 import type { FourwingsFeature } from '../lib/types'
 
-import { assignFourwingsFeaturesByteLength, estimateFourwingsFeaturesByteLength } from './byte-length'
+import {
+  assignFourwingsFeaturesByteLength,
+  estimateFourwingsFeaturesByteLength,
+} from './byte-length'
 
 const createFeature = (overrides: Partial<FourwingsFeature['properties']> = {}): FourwingsFeature =>
   ({

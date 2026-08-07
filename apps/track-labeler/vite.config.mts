@@ -1,8 +1,8 @@
 /// <reference types='vitest' />
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig(({ command }) => ({
   devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,

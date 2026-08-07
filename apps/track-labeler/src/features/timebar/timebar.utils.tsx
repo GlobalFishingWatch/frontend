@@ -1,6 +1,6 @@
 import type { TrackPoint } from '@globalfishingwatch/api-types'
 
-import type { FilterModeValues,LayersData, VesselPoint } from '../../types'
+import type { FilterModeValues, LayersData, VesselPoint } from '../../types'
 import { ActionType } from '../../types'
 
 const getIsOutOfFilterRange = ({

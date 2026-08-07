@@ -13,7 +13,10 @@ import SearchBasicResultList from 'features/_vessels/search/basic/SearchBasicRes
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/_vessels/search/search.config'
 import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
 import { useSearchConnect } from 'features/_vessels/search/search.hook'
-import { isBasicSearchAllowed, selectBasicSearchDatasets } from 'features/_vessels/search/search.selectors'
+import {
+  isBasicSearchAllowed,
+  selectBasicSearchDatasets,
+} from 'features/_vessels/search/search.selectors'
 import {
   selectSearchResults,
   selectSearchStatus,

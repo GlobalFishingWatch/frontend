@@ -264,6 +264,7 @@
     "protobufjs-cli": "2.6.1",
     "rollup-plugin-visualizer": "7.0.1",
     "sass": "1.102.0",
+    "sharp": "0.34.5",
     "shx": "0.4.0",
     "source-map-explorer": "2.5.3",
     "stylelint": "17.14.1",

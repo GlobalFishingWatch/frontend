@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next'
 
 import { InputText } from '@globalfishingwatch/ui-components'
 
-import { useSearchFiltersConnect, useSearchFiltersErrors } from 'features/_vessels/search/search.hook'
+import {
+  useSearchFiltersConnect,
+  useSearchFiltersErrors,
+} from 'features/_vessels/search/search.hook'
 import type { VesselSearchState } from 'features/_vessels/search/search.types'
 
 type AdvancedFilterInputFieldProps = {

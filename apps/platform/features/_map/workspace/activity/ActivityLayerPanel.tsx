@@ -19,7 +19,10 @@ import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.ho
 import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import ActivityAuxiliaryLayerPanel from 'features/_map/workspace/activity/ActivityAuxiliaryLayer'
 import TurningTidesTags from 'features/_map/workspace/activity/TurningTidesTags'
-import { selectBivariateDataviews, selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import {
+  selectBivariateDataviews,
+  selectReadOnly,
+} from 'features/_map/workspace/selectors/app.selectors'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
 import LayerProperties from 'features/_map/workspace/shared/LayerProperties'
 import MapLegend from 'features/_map/workspace/shared/MapLegend'

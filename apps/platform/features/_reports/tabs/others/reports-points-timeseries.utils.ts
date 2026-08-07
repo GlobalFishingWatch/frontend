@@ -6,7 +6,11 @@ import {
   type FourwingsDeckSublayer,
   isFeatureInRange,
 } from '@globalfishingwatch/deck-layers'
-import type { FourwingsFeature, FourwingsInterval, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+import type {
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsStaticFeature,
+} from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getGraphDataFromPoints } from 'features/_map/timebar/timebar.utils'
@@ -116,13 +120,16 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
       const filteredPoints =
         startTime && endTime && (startTimeProperty || endTimeProperty)
           ? contained.filter((feature) => {
-              return isFeatureInRange(feature as FourwingsFeature | FourwingsStaticFeature | Feature<Point>, {
-                startTime: startTime!,
-                endTime: endTime!,
-                startTimeProperty: startTimeProperty!,
-                endTimeProperty,
-                timeFilterType,
-              })
+              return isFeatureInRange(
+                feature as FourwingsFeature | FourwingsStaticFeature | Feature<Point>,
+                {
+                  startTime: startTime!,
+                  endTime: endTime!,
+                  startTimeProperty: startTimeProperty!,
+                  endTimeProperty,
+                  timeFilterType,
+                }
+              )
             })
           : contained
       filteredPoints.forEach((feature) => {

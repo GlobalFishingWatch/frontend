@@ -63,8 +63,7 @@ export const getReportSubCategoryFromDataview = (
   }
 
   return dataview.datasets?.[0]?.subcategory as
-    | ReportActivitySubCategory
-    | ReportDetectionsSubCategory
+    ReportActivitySubCategory | ReportDetectionsSubCategory
 }
 
 const SUPPORTED_REPORT_CATEGORIES = [

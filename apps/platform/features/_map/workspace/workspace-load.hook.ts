@@ -108,9 +108,7 @@ export const useEnsureWorkspaceLoad = () => {
   const fetchParamsKey = workspaceFetchParams ? JSON.stringify(workspaceFetchParams) : null
 
   const shouldFetchWorkspace =
-    userLogged &&
-    workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-    !!workspaceFetchParams
+    userLogged && workspaceCustomStatus !== AsyncReducerStatus.Loading && !!workspaceFetchParams
 
   useEffect(() => {
     if (shouldFetchWorkspace) {

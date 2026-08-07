@@ -11,7 +11,10 @@ import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 import { COLOR_TRANSPARENT } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
 import { HEATMAP_ID } from '#layers/fourwings/fourwings.config'
-import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '#layers/fourwings/fourwings.types'
+import type {
+  FourwingsHeatmapPickingObject,
+  FourwingsVectorsLayerProps,
+} from '#layers/fourwings/fourwings.types'
 import { FourwingsAggregationOperation } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,

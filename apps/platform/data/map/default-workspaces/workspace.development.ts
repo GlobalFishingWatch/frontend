@@ -1,7 +1,12 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
-import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT, IS_REALTIME_ENABLED } from 'data/map/config'
+import {
+  APP_NAME,
+  DEFAULT_TIME_RANGE,
+  DEFAULT_VIEWPORT,
+  IS_REALTIME_ENABLED,
+} from 'data/map/config'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -45,7 +50,10 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/_map/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/_map/map/map.config'
+import {
+  OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
+  PORTS_LAYER_ID,
+} from 'features/_map/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {

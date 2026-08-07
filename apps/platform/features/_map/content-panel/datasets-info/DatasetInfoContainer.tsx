@@ -15,7 +15,10 @@ import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
-import { useScrollToTopOnChange, useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import {
+  useScrollToTopOnChange,
+  useSidePanel,
+} from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'

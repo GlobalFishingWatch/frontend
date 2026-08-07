@@ -7,6 +7,11 @@
 # pnpm rewrites this unformatted on every install; formatting it is 16k lines of permanent churn
 pnpm-lock.yaml
 
+# Generated/large ocean-area datasets
+libs/ocean-areas/src/data/**
+libs/ocean-areas/src/source/**
+libs/ui-components/src/miniglobe/ne_110m_land.json
+
 /dist
 /coverage
 

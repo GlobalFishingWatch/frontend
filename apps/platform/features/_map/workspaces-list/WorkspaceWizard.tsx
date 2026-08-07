@@ -26,7 +26,10 @@ import {
 } from 'data/map/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
-import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
+import {
+  fetchDataviewsByIdsThunk,
+  selectAllDataviews,
+} from 'features/_map/dataviews/dataviews.slice'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
 import { useMapViewState } from 'features/_map/map/map-viewport.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

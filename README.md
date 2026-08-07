@@ -22,16 +22,16 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## Applications
 
-|                                                     |                                                 |
-| --------------------------------------------------- | ----------------------------------------------- |
-| [api-portal](apps/api-portal)                       | Api documentation portal                        |
-| [data-download-portal](apps/data-download-portal)   | The place to download datasets                  |
-| [platform](apps/platform)                           | Platform entry point (includes fishing-map app) |
-| [platform-e2e](apps/platform-e2e)                   | Playwright e2e testing for the map              |
-| [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images              |
-| [port-labeler](apps/port-labeler)                   | Labeling tool for ports                         |
-| [track-labeler](apps/track-labeler)                 | Labeling tool for tracks                        |
-| [user-groups-admin](apps/user-groups-admin) | Tool to manage user groups with ease            |
+|                                                   |                                                 |
+| ------------------------------------------------- | ----------------------------------------------- |
+| [api-portal](apps/api-portal)                     | Api documentation portal                        |
+| [data-download-portal](apps/data-download-portal) | The place to download datasets                  |
+| [platform](apps/platform)                         | Platform entry point (includes fishing-map app) |
+| [platform-e2e](apps/platform-e2e)                 | Playwright e2e testing for the map              |
+| [image-labeler](apps/image-labeler)               | Labeling tool for satellite images              |
+| [port-labeler](apps/port-labeler)                 | Labeling tool for ports                         |
+| [track-labeler](apps/track-labeler)               | Labeling tool for tracks                        |
+| [user-groups-admin](apps/user-groups-admin)       | Tool to manage user groups with ease            |
 
 To create a new application using a template with sidebar + map + timebar just run:
 

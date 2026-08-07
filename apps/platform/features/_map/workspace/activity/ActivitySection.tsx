@@ -13,7 +13,10 @@ import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { selectBivariateDataviews, selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import {
+  selectBivariateDataviews,
+  selectReadOnly,
+} from 'features/_map/workspace/selectors/app.selectors'
 import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginRequired'
 import DatasetNotFound from 'features/_map/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/_map/workspace/shared/GlobalReportLink'

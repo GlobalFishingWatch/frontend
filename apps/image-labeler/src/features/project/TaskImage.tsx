@@ -85,7 +85,8 @@ export function TaskImage({
       if (rawOriginal.current) {
         const { levels: auto, range } = computeAutoLevels(rawOriginal.current)
         autoLevelsRef.current = auto
-        const effectiveLevels = rangeModeRef.current === 'full' ? ([0, 128, 255] as LevelsValues) : auto
+        const effectiveLevels =
+          rangeModeRef.current === 'full' ? ([0, 128, 255] as LevelsValues) : auto
         const effectiveRange: DataRange = rangeModeRef.current === 'full' ? [0, 255] : range
         levelsRef.current = effectiveLevels
         applyLevelsToAll(effectiveLevels)

@@ -40,7 +40,10 @@ import {
 } from 'features/_vessels/vessel/vessel.config.selectors'
 import { useUpdateVesselEventsVisibility } from 'features/_vessels/vessel/vessel.hooks'
 import { fetchVesselInfoThunk } from 'features/_vessels/vessel/vessel.slice'
-import { getCurrentIdentityVessel, getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
+import {
+  getCurrentIdentityVessel,
+  getVesselIdentities,
+} from 'features/_vessels/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/_vessels/vessel/vessel-bounds.hooks'
 import { useSetVesselProfileEvents } from 'features/_vessels/vessel/vessel-events.hooks'
 import VesselSubHeader from 'features/_vessels/vessel/VesselSubHeader'

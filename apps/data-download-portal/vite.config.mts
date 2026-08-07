@@ -1,9 +1,9 @@
 /// <reference types='vitest' />
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import svgr from 'vite-plugin-svgr'
 
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')

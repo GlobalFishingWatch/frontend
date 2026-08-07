@@ -40,7 +40,6 @@ import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
 import type { FileType } from 'utils/files'
 
-
 export const MIN_NAME_LENGTH = 3
 
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {

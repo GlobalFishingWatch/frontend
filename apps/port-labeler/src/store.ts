@@ -1,5 +1,5 @@
-import type { Action,ThunkAction} from '@reduxjs/toolkit';
-import { combineReducers,configureStore } from '@reduxjs/toolkit'
+import type { Action, ThunkAction } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 
 import labelerReducer from 'features/labeler/labeler.slice'
 

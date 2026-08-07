@@ -12,7 +12,7 @@ import type { GeoJsonProperties } from 'geojson'
 
 import { BLEND_BACKGROUND } from '#config/colorRamps.config'
 import { LayerGroup } from '#config/sort.config'
-import { getLayerGroupOffset, getViewportHash,hexToDeckColor  } from '#utils'
+import { getLayerGroupOffset, getViewportHash, hexToDeckColor } from '#utils'
 
 import { generateGraticulesFeatures } from './graticules.data'
 import type {

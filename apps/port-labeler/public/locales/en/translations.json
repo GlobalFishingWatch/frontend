@@ -1,23 +1,23 @@
 {
-    "common": {
-        "country": "Country",
-        "port": "Port",
-        "subarea": "Subarea",
-        "anchorage": "Anchorage",
-        "anchorageId": "Anchorage ID",
-        "destination": "Destination",
-        "zoom_more": "Increase zoom",
-        "zoom_less": "Decrease zoom",
-        "select_port": "Select port",
-        "add_port": "Add port",
-        "select_subarea": "Select subarea",
-        "add_subarea": "Add subarea"
-    },
-    "messages": {
-        "no_anchorages": "No anchorages found",
-        "country_selection": "Select a country",
-        "add_port": "Add new Port",
-        "add_subarea": "Add new community",
-        "select_subarea": "Select a community"
-    }
+  "common": {
+    "country": "Country",
+    "port": "Port",
+    "subarea": "Subarea",
+    "anchorage": "Anchorage",
+    "anchorageId": "Anchorage ID",
+    "destination": "Destination",
+    "zoom_more": "Increase zoom",
+    "zoom_less": "Decrease zoom",
+    "select_port": "Select port",
+    "add_port": "Add port",
+    "select_subarea": "Select subarea",
+    "add_subarea": "Add subarea"
+  },
+  "messages": {
+    "no_anchorages": "No anchorages found",
+    "country_selection": "Select a country",
+    "add_port": "Add new Port",
+    "add_subarea": "Add new community",
+    "select_subarea": "Select a community"
+  }
 }

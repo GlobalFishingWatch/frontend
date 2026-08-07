@@ -11,8 +11,7 @@ export type WorkspaceViewAccessType =
   | typeof WORKSPACE_PASSWORD_ACCESS
   | typeof WORKSPACE_PRIVATE_ACCESS
 export type WorkspaceEditAccessType =
-  | typeof WORKSPACE_PASSWORD_ACCESS
-  | typeof WORKSPACE_PRIVATE_ACCESS
+  typeof WORKSPACE_PASSWORD_ACCESS | typeof WORKSPACE_PRIVATE_ACCESS
 
 export type WorkspaceViewport = {
   zoom: number

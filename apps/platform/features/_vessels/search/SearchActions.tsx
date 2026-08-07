@@ -15,7 +15,10 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
-import { selectCurrentWorkspaceId, selectWorkspace } from 'features/_map/workspace/workspace.selectors'
+import {
+  selectCurrentWorkspaceId,
+  selectWorkspace,
+} from 'features/_map/workspace/workspace.selectors'
 import { NEW_VESSEL_GROUP_ID } from 'features/_user/vessel-groups/vessel-groups.hooks'
 import { setVesselGroupConfirmationMode } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import VesselGroupAddButton, {

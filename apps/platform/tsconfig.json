@@ -1,5 +1,5 @@
 {
-  "$comment": "Sources live at the app root, not under src/, so include and exclude override the shared base.",
+  "$comment": "Sources live at the app root, not under src/, so include overrides the shared base.",
   "extends": "../tsconfig.apps.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo/platform.tsbuildinfo",
@@ -24,14 +24,5 @@
       "utils/*": ["./utils/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "exported",
-    ".output",
-    ".tanstack",
-    "**/__traces__/**",
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

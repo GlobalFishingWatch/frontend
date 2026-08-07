@@ -1,32 +1,44 @@
-import { useCallback } from "react"
-import { useDispatch } from "react-redux"
+import { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { changePointValue, changePortValue, changeSubareaValue } from "features/labeler/labeler.slice"
+import {
+  changePointValue,
+  changePortValue,
+  changeSubareaValue,
+} from 'features/labeler/labeler.slice'
 
 type ValueManager = {
-    onPointValueChange: (id: string, value: string) => void
-    onSubareaChange: (id: string, value: string) => void
-    onPortChange: (id: string, value: string) => void
-
+  onPointValueChange: (id: string, value: string) => void
+  onSubareaChange: (id: string, value: string) => void
+  onPortChange: (id: string, value: string) => void
 }
 export function useValueManagerConnect(): ValueManager {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-    const onPointValueChange = useCallback((id: string, value: string) => {
-        dispatch(changePointValue({ id, value }))
-    }, [dispatch])
+  const onPointValueChange = useCallback(
+    (id: string, value: string) => {
+      dispatch(changePointValue({ id, value }))
+    },
+    [dispatch]
+  )
 
-    const onSubareaChange = useCallback((id: string, value: string) => {
-        dispatch(changeSubareaValue({ id, value }))
-    }, [dispatch])
+  const onSubareaChange = useCallback(
+    (id: string, value: string) => {
+      dispatch(changeSubareaValue({ id, value }))
+    },
+    [dispatch]
+  )
 
-    const onPortChange = useCallback((id: string, value: string) => {
-        dispatch(changePortValue({ id, value }))
-    }, [dispatch])
+  const onPortChange = useCallback(
+    (id: string, value: string) => {
+      dispatch(changePortValue({ id, value }))
+    },
+    [dispatch]
+  )
 
-    return {
-        onPointValueChange,
-        onSubareaChange,
-        onPortChange
-    }
+  return {
+    onPointValueChange,
+    onSubareaChange,
+    onPortChange,
+  }
 }

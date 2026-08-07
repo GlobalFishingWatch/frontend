@@ -13,12 +13,7 @@ interface SpinnerProps {
 const DEFAULT_SPINNER_COLOR = 'var(--color-primary-blue, rgb(22, 63, 137))'
 
 export function Spinner(props: SpinnerProps) {
-  const {
-    color = DEFAULT_SPINNER_COLOR,
-    size = 'default',
-    className = '',
-    inline = false,
-  } = props
+  const { color = DEFAULT_SPINNER_COLOR, size = 'default', className = '', inline = false } = props
   const radius = size === 'default' ? 20 : 8
   const SvgComponent = (
     <svg

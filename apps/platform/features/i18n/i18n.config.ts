@@ -25,9 +25,7 @@ export const PACKAGE_NAMESPACES = ['flags', 'timebar'] as const
 export const CLIENT_NAMESPACES = [...SERVER_NAMESPACES, ...PACKAGE_NAMESPACES] as const
 
 export type i18nSupportedLocale =
-  | Locale
-  | typeof CROWDIN_IN_CONTEXT_LANG
-  | typeof CROWDIN_SOURCE_LANG
+  Locale | typeof CROWDIN_IN_CONTEXT_LANG | typeof CROWDIN_SOURCE_LANG
 
 export const SUPPORTED_LANGUAGES = [
   ...Object.values(Locale),

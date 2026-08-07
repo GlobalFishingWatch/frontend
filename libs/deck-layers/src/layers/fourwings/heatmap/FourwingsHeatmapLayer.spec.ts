@@ -80,9 +80,9 @@ describe('FourwingsHeatmapLayer', () => {
     })
 
     it('returns empty color without a color domain', () => {
-      expect(
-        makeLayer({ colorDomain: [] }).getCompareFillColor(feature([[10]]), target)
-      ).toEqual(EMPTY_CELL_COLOR)
+      expect(makeLayer({ colorDomain: [] }).getCompareFillColor(feature([[10]]), target)).toEqual(
+        EMPTY_CELL_COLOR
+      )
     })
   })
 
@@ -120,8 +120,9 @@ describe('FourwingsHeatmapLayer', () => {
         [50, 0],
         [80, 0],
       ])
-      const color = makeLayer({ comparisonMode: FourwingsComparisonMode.Bivariate })
-        .getBivariateFillColor(f, target)
+      const color = makeLayer({
+        comparisonMode: FourwingsComparisonMode.Bivariate,
+      }).getBivariateFillColor(f, target)
       expect(color).toHaveLength(4)
       expect(color).not.toEqual(EMPTY_CELL_COLOR)
     })
@@ -160,9 +161,9 @@ describe('FourwingsHeatmapLayer', () => {
     })
 
     it('renders nothing without color config', () => {
-      expect(
-        makeLayer({ data: [feature([[1]])], colorDomain: undefined }).renderLayers()
-      ).toEqual([])
+      expect(makeLayer({ data: [feature([[1]])], colorDomain: undefined }).renderLayers()).toEqual(
+        []
+      )
     })
   })
 })

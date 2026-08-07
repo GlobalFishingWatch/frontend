@@ -25,6 +25,9 @@ const globalIgnores = {
     '**/*.gen.js',
     '**/*.gen.ts',
     '**/*.gen.d.ts',
+    'libs/ocean-areas/src/data/**',
+    'libs/ocean-areas/src/source/**',
+    'libs/ui-components/src/miniglobe/ne_110m_land.json',
   ],
 }
 

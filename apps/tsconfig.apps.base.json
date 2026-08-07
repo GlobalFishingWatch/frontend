@@ -30,10 +30,12 @@
     "${configDir}/dist",
     "${configDir}/exported",
     "${configDir}/.next",
+    "${configDir}/.output",
+    "${configDir}/.tanstack",
     "**/__traces__/**",
-    "${configDir}/src/**/*.spec.ts",
-    "${configDir}/src/**/*.test.ts",
-    "${configDir}/src/**/*.spec.tsx",
-    "${configDir}/src/**/*.test.tsx"
+    "${configDir}/**/*.spec.ts",
+    "${configDir}/**/*.test.ts",
+    "${configDir}/**/*.spec.tsx",
+    "${configDir}/**/*.test.tsx"
   ]
 }
