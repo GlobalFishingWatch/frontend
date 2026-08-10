@@ -20,6 +20,7 @@ import {
   getDatasetsLatestEndDate,
   getDatasetSource,
   getIsVMSDataset,
+  getRelatedDatasetsByType,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
@@ -38,6 +39,21 @@ export type VesselInstanceDatasets = {
   info?: string
   events?: string[]
   relatedVesselIds?: string[]
+}
+
+export const getVesselTrackDatasetIds = (
+  infoDataset: Dataset | undefined,
+  trackDatasets: Dataset[]
+): Pick<VesselInstanceDatasets, 'track' | 'trackRealTime'> => {
+  const relatedTrackDatasets = (
+    getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks) || []
+  ).flatMap((relatedDataset) => trackDatasets.find(({ id }) => id === relatedDataset.id) || [])
+  const bySubcategory = (subcategory: DatasetSubCategory) =>
+    relatedTrackDatasets.find((dataset) => dataset.subcategory === subcategory)?.id
+  return {
+    track: bySubcategory(DatasetSubCategory.Track),
+    trackRealTime: bySubcategory(DatasetSubCategory.TrackRealTime),
+  }
 }
 
 const VESSEL_INSTANCE_DATASETS = [

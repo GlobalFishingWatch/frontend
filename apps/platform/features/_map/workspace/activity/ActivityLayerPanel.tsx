@@ -28,6 +28,7 @@ import LayerProperties from 'features/_map/workspace/shared/LayerProperties'
 import MapLegend from 'features/_map/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {
+  selectIsRealTimeMode,
   selectIsTurningTidesWorkspace,
   selectIsWorkspaceOwnerOrDefault,
 } from 'features/_map/workspace/workspace.selectors'
@@ -79,6 +80,7 @@ function ActivityLayerPanel({
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -372,7 +374,7 @@ function ActivityLayerPanel({
               )} */}
             <div className={styles.filters}>
               <div className={styles.filters}>
-                <OutOfTimerangeDisclaimer dataview={dataview} />
+                {!isRealTimeMode && <OutOfTimerangeDisclaimer dataview={dataview} />}
                 {dataview.category === DataviewCategory.Activity && (
                   <DatasetFilterSource dataview={dataview} />
                 )}

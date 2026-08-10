@@ -87,6 +87,7 @@ export function ConfirmVesselProfileLeave() {
       }
     },
     disabled: !enabled,
+    enableBeforeUnload: false,
   })
 
   return null
