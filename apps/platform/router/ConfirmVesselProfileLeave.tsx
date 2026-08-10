@@ -11,18 +11,12 @@ import type { QueryParams } from 'types'
 
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import { mapRoutePathToType, type RoutePathValues } from './routes.utils'
-
-function stripAppPrefix(routeId: string): string {
-  return routeId.replace(/^\/_app/, '') || '/'
-}
+import { mapRoutePathToType, normalizeRoutePath, type RoutePathValues } from './routes.utils'
 
 /**
- * Blocks navigation away from vessel profile when the vessel dataview instance
- * is not pinned. Prompts the user with window.confirm and, if they confirm,
- * navigates to the target route with the cleaned vessel dataview instance
- * merged into search params. We perform a single programmatic navigation
- * instead of allowing the original + replaceQueryParams to avoid a race.
+ * Blocks navigation away from vessel profile when the vessel dataview instance is not pinned.
+ * Prompts: OK keeps the vessel in the workspace, Cancel exits and removes it.
+ * Both choices leave the profile via a deferred navigate
  */
 export function ConfirmVesselProfileLeave() {
   const router = useRouter()
@@ -53,9 +47,16 @@ export function ConfirmVesselProfileLeave() {
         return false
       }
 
-      const shouldLeave = window.confirm(t((t) => t.vessel.confirmationClose))
+      const keepVessel = window.confirm(t((t) => t.vessel.confirmationClose))
 
-      if (shouldLeave) {
+      const vesselId = vesselProfileDataviewInstance!.id
+      const nextSearch = (next.search || {}) as QueryParams
+      const otherDataviewInstances = (nextSearch.dataviewInstances || []).filter(
+        (dataviewInstance) => dataviewInstance.id !== vesselId
+      )
+
+      let dataviewInstances = cleanVesselProfileDataviewInstances(otherDataviewInstances)
+      if (keepVessel) {
         const cleanVesselDataviewInstance: UrlDataviewInstance = {
           ...vesselProfileDataviewInstance!,
           config: {
@@ -65,26 +66,24 @@ export function ConfirmVesselProfileLeave() {
           },
           datasetsConfig: undefined,
         }
-        const nextSearch = (next.search || {}) as QueryParams
-        const mergedDataviewInstances = cleanVesselProfileDataviewInstances([
-          ...(nextSearch.dataviewInstances || []),
+        dataviewInstances = cleanVesselProfileDataviewInstances([
+          ...otherDataviewInstances,
           cleanVesselDataviewInstance,
         ])
-        setTimeout(() => {
-          router.navigate({
-            to: stripAppPrefix(next.routeId) as RoutePathValues,
-            params: next.params,
-            state: (state) => ({ ...state, isHistoryNavigation: true }),
-            search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
-            replace: true,
-            resetScroll: false,
-            ignoreBlocker: true,
-          })
-        })
-        return true // block the original navigation; our navigate handles it
-      } else {
-        return false // don't block navigation
       }
+
+      setTimeout(() => {
+        router.navigate({
+          to: normalizeRoutePath(next.fullPath) as RoutePathValues,
+          params: next.params,
+          state: (state) => ({ ...state, isHistoryNavigation: true }),
+          search: { ...nextSearch, dataviewInstances },
+          replace: true,
+          resetScroll: false,
+          ignoreBlocker: true,
+        })
+      })
+      return true // block the original navigation; deferred navigate handles it
     },
     disabled: !enabled,
     enableBeforeUnload: false,
