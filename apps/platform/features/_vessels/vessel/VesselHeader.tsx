@@ -217,14 +217,16 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           </svg>
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
-          <a className={styles.reportLink} href={isClientHydrated ? getCurrentAppUrl() : undefined}>
-            {t((t) => t.vessel.linkToVessel)}
-          </a>
+          {isClientHydrated && (
+            <a hidden className={styles.reportLink} href={getCurrentAppUrl()}>
+              {t((t) => t.vessel.linkToVessel)}
+            </a>
+          )}
         </h1>
 
         <div className={styles.actionsContainer}>
           {showDeprecatedWarning && <VesselDeprecatedLink vesselIdentity={vessel} />}
-          {vesselProfileDataview && (
+          {vesselProfileDataview ? (
             <VesselDownload
               dataview={vesselProfileDataview}
               vesselIds={vessel.identities
@@ -233,6 +235,15 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               vesselTitle={shipname}
               datasetId={vessel.track as string}
               iconType="border"
+            />
+          ) : (
+            // Placeholder while the dataview resolves to avoid SSR flickering
+            <IconButton
+              className="print-hidden"
+              type="border"
+              icon="download"
+              size="medium"
+              disabled
             />
           )}
           <IconButton

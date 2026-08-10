@@ -1,4 +1,4 @@
-import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, lazy, memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
@@ -47,16 +47,56 @@ const SaveReportButton = lazy(() => import('features/_map/sidebar/buttons/SaveRe
 const SaveWorkspaceButton = lazy(() => import('features/_map/sidebar/buttons/SaveWorkspaceButton'))
 const TimeModeSelector = lazy(() => import('features/_map/sidebar/TimeModeSelector'))
 
+/**
+ * Own memoized component on purpose, do not inline back into SidebarHeader to avoid flickering after hydration
+ */
+const SidebarHeaderSections = memo(function SidebarHeaderSections({
+  isSticky,
+}: {
+  isSticky: boolean
+}) {
+  const hasTimeModeEnabled = useSelector(selectHasTimeModeEnabled)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+
+  const sectionHeaderComponent = useMemo(() => {
+    if (isAnyVesselLocation) {
+      return <VesselHeader isSticky={isSticky} />
+    }
+    if (isAreaReportLocation) {
+      return <ReportTitle isSticky={isSticky} />
+    }
+    if (isPortReportLocation) {
+      return <PortReportHeader />
+    }
+    if (isVesselGroupReportLocation) {
+      return <VesselGroupReportTitle />
+    }
+  }, [
+    isAnyVesselLocation,
+    isAreaReportLocation,
+    isPortReportLocation,
+    isSticky,
+    isVesselGroupReportLocation,
+  ])
+
+  return (
+    <Suspense fallback={null}>
+      {hasTimeModeEnabled && <TimeModeSelector />}
+      {sectionHeaderComponent}
+    </Suspense>
+  )
+})
+
 function SidebarHeader() {
   const readOnly = useSelector(selectReadOnly)
   const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const hasTimeModeEnabled = useSelector(selectHasTimeModeEnabled)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const isPortReportLocation = useSelector(selectIsPortReportLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isClientHydrated = useIsClientHydrated()
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -81,27 +121,6 @@ function SidebarHeader() {
     return subBrand
   }, [locationCategory])
 
-  const sectionHeaderComponent = useMemo(() => {
-    if (isAnyVesselLocation) {
-      return <VesselHeader isSticky={isSticky} />
-    }
-    if (isAreaReportLocation) {
-      return <ReportTitle isSticky={isSticky} />
-    }
-    if (isPortReportLocation) {
-      return <PortReportHeader />
-    }
-    if (isVesselGroupReportLocation) {
-      return <VesselGroupReportTitle />
-    }
-  }, [
-    isAnyVesselLocation,
-    isAreaReportLocation,
-    isPortReportLocation,
-    isSticky,
-    isVesselGroupReportLocation,
-  ])
-
   return (
     <div className={cx({ [styles.sticky]: isSticky }, styles.container)}>
       <div className={cx(styles.sidebarHeader)}>
@@ -122,19 +141,15 @@ function SidebarHeader() {
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <SearchTypeChoice className={styles.searchOption} />
             )}
-            {isClientHydrated &&
-              (workspaceHistoryNavigation?.length ? (
-                <NavigationHistoryButton />
-              ) : (
-                <NavigationWorkspaceButton />
-              ))}
+            {isClientHydrated && workspaceHistoryNavigation?.length ? (
+              <NavigationHistoryButton />
+            ) : (
+              <NavigationWorkspaceButton />
+            )}
           </Fragment>
         )}
       </div>
-      <Suspense fallback={null}>
-        {hasTimeModeEnabled && <TimeModeSelector />}
-        {sectionHeaderComponent}
-      </Suspense>
+      <SidebarHeaderSections isSticky={isSticky} />
     </div>
   )
 }
