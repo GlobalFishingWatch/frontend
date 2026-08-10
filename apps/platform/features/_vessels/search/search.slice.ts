@@ -75,6 +75,8 @@ type VesselSearchThunk = {
   searchType?: SearchType
 }
 
+export const selectSearchResults = (state: SearchSliceState) => state.search.data
+
 export function getVesselSearchEndpoint(
   datasets: Dataset[],
   {
@@ -299,7 +301,6 @@ const searchSlice = createSlice({
 export const { setSelectedVessels, setSuggestionClicked, cleanVesselSearchResults } =
   searchSlice.actions
 
-export const selectSearchResults = (state: SearchSliceState) => state.search.data
 export const selectSearchStatus = (state: SearchSliceState) => state.search.status
 export const selectSearchStatusCode = (state: SearchSliceState) => state.search.statusCode
 export const selectSearchSuggestion = (state: SearchSliceState) => state.search.suggestion

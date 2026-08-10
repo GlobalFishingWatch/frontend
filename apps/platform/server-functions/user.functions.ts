@@ -21,7 +21,7 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
         headers: SSR_HEADERS,
       })
       return { user }
-    } catch (e) {
+    } catch {
       // Expired/invalid — fall through to a refresh attempt.
     }
   }
@@ -36,7 +36,7 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
       headers: SSR_HEADERS,
     })
     return { user }
-  } catch (e) {
+  } catch {
     clearAuthCookies(setCookie)
     return { user: getGuestUser() }
   }

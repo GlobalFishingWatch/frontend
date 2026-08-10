@@ -9,7 +9,7 @@ export interface RequireAdditionalInfoProps {
 }
 
 export function RequireAdditionalInfo({ children }: RequireAdditionalInfoProps) {
-  const { isUserApplicationsRequiredInfoCompleted, isFetched, isSuccess } = useUser()
+  const { isUserApplicationsRequiredInfoCompleted } = useUser()
   const navigate = useNavigate()
 
   useEffect(() => {

@@ -8,7 +8,6 @@ import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/de
 import { findFourwingsValueIndexByTimestamp } from '@globalfishingwatch/deck-loaders'
 
 import { PRIMARY_BLUE_COLOR } from 'data/map/config'
-import type { CURRENTS_LAYER_ID } from 'data/map/layer-library'
 import { WINDS_LAYER_ID } from 'data/map/layer-library'
 import { formatDate } from 'features/_reports/report-area/area-reports.utils'
 import { useReportFilteredFeatures } from 'features/_reports/reports-timeseries.hooks'
@@ -26,8 +25,6 @@ type TooltipData = {
   x: number
   y: number
 } | null
-
-type DirectionType = typeof CURRENTS_LAYER_ID | typeof WINDS_LAYER_ID
 
 const DEGREES_BINNED = 10
 const SIZE = 160

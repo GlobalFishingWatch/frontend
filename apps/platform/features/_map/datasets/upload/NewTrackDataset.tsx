@@ -63,7 +63,6 @@ function NewTrackDataset({
   const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
-  const numericFiltersFieldsOptions = filtersFieldsOptions.filter((f) => f.type === 'range')
   const isEditing = dataset?.id !== undefined
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
   const [isCSVFile, setIsCSVFile] = useState<boolean>(false)

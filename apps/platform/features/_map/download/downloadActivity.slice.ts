@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define -- RTK thunks/slice circular module init */
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
@@ -215,7 +216,7 @@ const downloadActivitySlice = createSlice({
         state.fileName = ''
       }
     })
-    builder.addCase(downloadActivityLastReportThunk.rejected, (state, action) => {
+    builder.addCase(downloadActivityLastReportThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Finished
       state.hadTimeoutError = false
     })

@@ -65,7 +65,7 @@ export const fetchRegionsThunk = createAsyncThunk(
     }
   },
   {
-    condition: (_, { getState, extra }) => {
+    condition: (_, { getState }) => {
       const { regions } = getState() as RootState
       const fetchStatus = regions.status
       if (

@@ -10,42 +10,6 @@ import type { Feature } from 'geojson'
 
 const WORLD_SIZE = 512
 
-export function getMVTSublayerProps({
-  tile,
-  extensions,
-}: {
-  tile: Tile2DHeader
-  extensions?: TileLayerProps['extensions']
-}): {
-  modelMatrix: Matrix4
-  coordinateOrigin: [number, number, number]
-  coordinateSystem: CoordinateSystem
-  extensions: any[]
-} {
-  const { x, y, z } = tile.index
-  const worldScale = Math.pow(2, z)
-  const xScale = WORLD_SIZE / worldScale
-  const yScale = -xScale
-  const xOffset = (WORLD_SIZE * x) / worldScale
-  const yOffset = WORLD_SIZE * (1 - y / worldScale)
-  const modelMatrix = new Matrix4().scale([xScale, yScale, 1])
-  return {
-    modelMatrix: modelMatrix,
-    coordinateOrigin: [xOffset, yOffset, 0],
-    coordinateSystem: 'cartesian',
-    extensions: [...(extensions || []), new ClipExtension()],
-  }
-}
-
-const availableTransformations: Record<any, any> = {
-  Point,
-  MultiPoint,
-  LineString,
-  MultiLineString,
-  Polygon,
-  MultiPolygon,
-}
-
 function Point([pointX, pointY]: [number, number], [nw, se]: number[][], viewport: Viewport) {
   const x = lerp(nw[0], se[0], pointX)
   const y = lerp(nw[1], se[1], pointY)
@@ -75,6 +39,42 @@ function Polygon(polygon: any, bbox: number[][], viewport: Viewport) {
 
 function MultiPolygon(multiPolygon: any, bbox: number[][], viewport: Viewport) {
   return multiPolygon.map((polygon: any) => Polygon(polygon, bbox, viewport))
+}
+
+const availableTransformations: Record<any, any> = {
+  Point,
+  MultiPoint,
+  LineString,
+  MultiLineString,
+  Polygon,
+  MultiPolygon,
+}
+
+export function getMVTSublayerProps({
+  tile,
+  extensions,
+}: {
+  tile: Tile2DHeader
+  extensions?: TileLayerProps['extensions']
+}): {
+  modelMatrix: Matrix4
+  coordinateOrigin: [number, number, number]
+  coordinateSystem: CoordinateSystem
+  extensions: any[]
+} {
+  const { x, y, z } = tile.index
+  const worldScale = Math.pow(2, z)
+  const xScale = WORLD_SIZE / worldScale
+  const yScale = -xScale
+  const xOffset = (WORLD_SIZE * x) / worldScale
+  const yOffset = WORLD_SIZE * (1 - y / worldScale)
+  const modelMatrix = new Matrix4().scale([xScale, yScale, 1])
+  return {
+    modelMatrix: modelMatrix,
+    coordinateOrigin: [xOffset, yOffset, 0],
+    coordinateSystem: 'cartesian',
+    extensions: [...(extensions || []), new ClipExtension()],
+  }
 }
 
 // copied from deck.gl geo-layers/src/mvt-layer/coordinate-transform as it not exported

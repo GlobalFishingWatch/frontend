@@ -3,14 +3,12 @@ import type { TFunction } from 'i18next'
 
 import type {
   GearType,
-  IdentityVessel,
   RegistryLoginMessage,
   SelfReportedInfo,
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
 
-import type { ExtendedFeatureVessel } from 'features/_map/map/map.slice'
 import type { VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'

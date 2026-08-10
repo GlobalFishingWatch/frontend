@@ -350,7 +350,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const onCreateGroupClick = useCallback(
     async (
       e: React.MouseEvent<Element, MouseEvent>,
-      { addToDataviews = true, removeVessels = false, navigateToWorkspace = false } = {}
+      { addToDataviews = true, navigateToWorkspace = false } = {}
     ) => {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupVessels)

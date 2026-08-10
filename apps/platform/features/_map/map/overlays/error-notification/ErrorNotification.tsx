@@ -1,21 +1,16 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { stringify } from 'qs'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { URL_STRINGIFY_CONFIG } from '@globalfishingwatch/dataviews-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME, WORKSPACE_ENV } from 'data/map/config'
 import PopupWrapper from 'features/_map/map/popups/PopupWrapper'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
-import { selectLocationQuery } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-
-import type { MapAnnotation } from '../annotations/annotations.types'
 
 import { useMapErrorNotification } from './error-notification.hooks'
 
@@ -27,7 +22,6 @@ const ErrorNotification = (): React.ReactNode | null => {
     useMapErrorNotification()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const locationQuery = useSelector(selectLocationQuery)
   const userData = useSelector(selectUserData)
 
   const onClose = () => {
@@ -43,22 +37,6 @@ const ErrorNotification = (): React.ReactNode | null => {
     setLoading(true)
     try {
       const date = new Date()
-      const mapAnnotations: MapAnnotation[] = [
-        {
-          id: date.getTime(),
-          lat: errorNotification.lat,
-          lon: errorNotification.lon,
-          label: errorNotification.label,
-        },
-      ]
-      const query = stringify(
-        {
-          ...locationQuery,
-          mapAnnotations,
-          mapAnnotationsVisible: true,
-        },
-        URL_STRINGIFY_CONFIG
-      )
       const finalErrorData = {
         latitude: errorNotification.lat,
         longitude: errorNotification.lon,

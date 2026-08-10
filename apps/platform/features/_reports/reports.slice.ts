@@ -89,6 +89,7 @@ export const updateReportThunk = createAsyncThunk<
 >(
   'reports/update',
   async (partialReport, { rejectWithValue }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ownerId, ownerType, createdAt, ...rest } = partialReport
     try {
       const report = await GFWAPI.fetch<Report>(`/reports/${partialReport.id}`, {

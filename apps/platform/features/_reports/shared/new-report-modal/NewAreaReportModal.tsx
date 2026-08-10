@@ -34,14 +34,13 @@ import type { AsyncError } from 'utils/async-slice'
 import styles from './NewAreaReportModal.module.css'
 
 type NewReportModalProps = {
-  title?: string
   isOpen: boolean
   onClose: () => void
   onFinish?: (report: Report) => void
   report?: Report
 }
 
-function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportModalProps) {
+function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)

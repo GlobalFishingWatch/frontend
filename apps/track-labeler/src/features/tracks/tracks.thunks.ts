@@ -192,7 +192,7 @@ export const trackThunk = async (dispatch: AppDispatch, getState: StateGetter<Ap
           data: track.data ?? [],
         })
       )
-    } catch (e) {
+    } catch {
       //dispatch(fetchTrackError({ id, error: e }))
     }
   }

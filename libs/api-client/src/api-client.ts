@@ -446,7 +446,7 @@ export class GFW_API_CLASS {
         saveAs(blob, fileName)
         return true
       })
-      .catch((e) => {
+      .catch(() => {
         return false
       })
       .finally(() => {
@@ -540,7 +540,7 @@ export class GFW_API_CLASS {
             case 'default':
               return res
             case 'json':
-              return parseJSON(res).catch((e) => {
+              return parseJSON(res).catch(() => {
                 // When an error occurs while parsing and
                 // http response is no content, returns an
                 // empty response instead of an raising error

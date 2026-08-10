@@ -4,18 +4,13 @@ import cx from 'classnames'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import downloadPopupImage from 'assets/images/download-popup.jpg'
-import type { HeatmapDownloadFormat } from 'features/_map/download/downloadActivity.config'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 
 import { getDownloadReportSupported } from './download.utils'
 
 import styles from './DownloadModal.module.css'
 
-type DownloadActivityProductsBannerProps = {
-  format: HeatmapDownloadFormat
-}
-
-function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBannerProps) {
+function DownloadActivityProductsBanner() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const isDownloadReportSupported = getDownloadReportSupported(start, end)

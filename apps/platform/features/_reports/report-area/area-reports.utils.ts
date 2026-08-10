@@ -6,27 +6,14 @@ import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import {
-  DatasetCategory,
-  type Dataview,
-  DataviewCategory,
-  DataviewType,
-} from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import type {
-  ReportActivitySubCategory,
-  ReportDetectionsSubCategory,
-} from 'features/_reports/reports.types'
-import { ReportCategory } from 'features/_reports/reports.types'
 import type { FilterProperty } from 'features/_reports/shared/vessels/report-vessels.config'
 import { FILTER_PROPERTIES } from 'features/_reports/shared/vessels/report-vessels.config'
 import type { ReportTableVessel } from 'features/_reports/shared/vessels/report-vessels.types'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { Area, AreaGeometry } from 'features/data/areas/areas.slice'
-import type { FeatureFlag } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import type { Bbox, BufferOperation, BufferUnit } from 'types'
@@ -105,34 +92,6 @@ type BufferedAreaParams = {
   operation?: BufferOperation
   properties?: Record<string, any>
 }
-// Area is needed to generate all report results
-export const getBufferedArea = ({
-  area,
-  value,
-  unit,
-  operation,
-}: BufferedAreaParams): Area | null => {
-  if (!area) return null
-  const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
-  return { ...area, id: REPORT_BUFFER_FEATURE_ID, geometry: bufferedFeature?.geometry } as Area
-}
-
-export const getBufferedAreaBbox = ({
-  area,
-  value = DEFAULT_POINT_BUFFER_VALUE,
-  unit = DEFAULT_BUFFER_UNIT,
-  operation = DEFAULT_BUFFER_OPERATION,
-}: BufferedAreaParams): Bbox | undefined => {
-  const bufferedFeature = getBufferedFeature({
-    area,
-    value,
-    unit,
-    operation,
-  })
-  return bufferedFeature?.geometry
-    ? wrapGeometryBbox(bufferedFeature.geometry as MultiPolygon)
-    : undefined
-}
 
 // Feature is handled to Polygon generator to be displayed on the map
 export const getBufferedFeature = ({
@@ -176,6 +135,35 @@ export const getBufferedFeature = ({
   }
 
   return dissolvedBufferedPolygonsFeatures
+}
+
+// Area is needed to generate all report results
+export const getBufferedArea = ({
+  area,
+  value,
+  unit,
+  operation,
+}: BufferedAreaParams): Area | null => {
+  if (!area) return null
+  const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
+  return { ...area, id: REPORT_BUFFER_FEATURE_ID, geometry: bufferedFeature?.geometry } as Area
+}
+
+export const getBufferedAreaBbox = ({
+  area,
+  value = DEFAULT_POINT_BUFFER_VALUE,
+  unit = DEFAULT_BUFFER_UNIT,
+  operation = DEFAULT_BUFFER_OPERATION,
+}: BufferedAreaParams): Bbox | undefined => {
+  const bufferedFeature = getBufferedFeature({
+    area,
+    value,
+    unit,
+    operation,
+  })
+  return bufferedFeature?.geometry
+    ? wrapGeometryBbox(bufferedFeature.geometry as MultiPolygon)
+    : undefined
 }
 
 export const parseReportUrl = (url: string) => {

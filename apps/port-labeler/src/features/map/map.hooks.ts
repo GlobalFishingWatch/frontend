@@ -46,7 +46,6 @@ export function useSelectorConnect(): UseSelector {
   const [hoveredStateId, setHoveredStateId] = useState<string | number | null>(null)
   const selected = useSelector(selectSelectedPoints)
   const map = useMapInstance()
-  const canvas = map?.getCanvasContainer()
 
   const mousePos = useCallback((e: MapLayerMouseEvent) => {
     return new Point(e.point.x, e.point.y)
@@ -111,8 +110,7 @@ export function useSelectorConnect(): UseSelector {
     [dispatch, box, mousePos, hoveredStateId, map]
   )
 
-  const onMouseUp = useCallback(
-    (e: MapLayerMouseEvent) => {
+  const onMouseUp = useCallback(() => {
       if (map && box && box.endPosition && box.startPosition) {
         const features = map.queryRenderedFeatures(
           [box.startPosition as any, box.endPosition as any],

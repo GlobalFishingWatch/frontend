@@ -122,8 +122,25 @@ export const config = {
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/no-require-imports': 'warn',
-    '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/no-use-before-define': 'warn',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+      },
+    ],
+    '@typescript-eslint/no-use-before-define': [
+      'warn',
+      {
+        // Function declarations are hoisted; mutual recursion is common and safe
+        functions: false,
+        classes: false,
+        typedefs: false,
+        ignoreTypeReferences: true,
+      },
+    ],
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
@@ -168,6 +185,14 @@ export const nodeScriptsConfig = {
   },
 }
 
+// Explicit CJS only — keep pushing .js/.mjs toward ESM imports
+export const cjsRequireConfig = {
+  files: ['**/*.cjs'],
+  rules: {
+    '@typescript-eslint/no-require-imports': 'off',
+  },
+}
+
 export const packageJsonConfig = {
   files: ['**/package.json'],
   plugins: {
@@ -201,4 +226,4 @@ export const packageJsonConfig = {
   },
 }
 
-export default defineConfig([config, nodeScriptsConfig])
+export default defineConfig([config, nodeScriptsConfig, cjsRequireConfig])

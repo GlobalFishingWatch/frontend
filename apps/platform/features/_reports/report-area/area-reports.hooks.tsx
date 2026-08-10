@@ -158,6 +158,34 @@ export function useVesselGroupBounds(dataviewId?: string) {
   return useStatsBounds(dataview)
 }
 
+export function usePortsReportAreaFootprint() {
+  const dispatch = useAppDispatch()
+  const portReportId = useSelector(selectReportPortId)
+  const portReportFootprintArea = useSelector(selectPortReportFootprintArea)
+  const portReportFootprintDatasetId = useSelector(selectPortReportFootprintDatasetId)
+
+  useEffect(() => {
+    if (!portReportFootprintArea && portReportFootprintDatasetId && portReportId) {
+      dispatch(
+        fetchAreaDetailThunk({ datasetId: portReportFootprintDatasetId, areaId: portReportId })
+      )
+    }
+  }, [dispatch, portReportFootprintArea, portReportFootprintDatasetId, portReportId])
+
+  return portReportFootprintArea
+}
+
+export function usePortsReportAreaFootprintBounds() {
+  const portReportFootprintArea = usePortsReportAreaFootprint()
+  return useMemo(
+    () => ({
+      loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
+      bbox: portReportFootprintArea?.data?.bounds,
+    }),
+    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
+  )
+}
+
 export function useReportAreaBounds() {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { loaded: vesselGroupLoaded, bbox: vesselGroupBbox } = useVesselGroupActivityBounds()
@@ -323,7 +351,7 @@ export function useFetchReportArea() {
 
 export function useFetchReportVessel() {
   const dispatch = useAppDispatch()
-  const [_, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
+  const [, setLastReportUrl] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
@@ -395,34 +423,6 @@ export function useFetchReportVessel() {
   return useMemo(
     () => ({ status, data, error, dispatchFetchReport }),
     [status, data, error, dispatchFetchReport]
-  )
-}
-
-export function usePortsReportAreaFootprint() {
-  const dispatch = useAppDispatch()
-  const portReportId = useSelector(selectReportPortId)
-  const portReportFootprintArea = useSelector(selectPortReportFootprintArea)
-  const portReportFootprintDatasetId = useSelector(selectPortReportFootprintDatasetId)
-
-  useEffect(() => {
-    if (!portReportFootprintArea && portReportFootprintDatasetId && portReportId) {
-      dispatch(
-        fetchAreaDetailThunk({ datasetId: portReportFootprintDatasetId, areaId: portReportId })
-      )
-    }
-  }, [dispatch, portReportFootprintArea, portReportFootprintDatasetId, portReportId])
-
-  return portReportFootprintArea
-}
-
-export function usePortsReportAreaFootprintBounds() {
-  const portReportFootprintArea = usePortsReportAreaFootprint()
-  return useMemo(
-    () => ({
-      loaded: portReportFootprintArea?.status === AsyncReducerStatus.Finished,
-      bbox: portReportFootprintArea?.data?.bounds,
-    }),
-    [portReportFootprintArea?.data?.bounds, portReportFootprintArea?.status]
   )
 }
 

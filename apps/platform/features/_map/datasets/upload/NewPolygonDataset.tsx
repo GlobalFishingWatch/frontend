@@ -55,7 +55,7 @@ function NewPolygonDataset({
   const { t } = useTranslation()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const [devMode, setDevMode] = useState(false)
-  const [error, setError] = useState<string>('')
+  const [error] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
   const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)

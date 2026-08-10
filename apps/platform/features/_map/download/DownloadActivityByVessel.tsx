@@ -249,7 +249,7 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
           </Button>
         </div>
       </div>
-      <DownloadActivityProductsBanner format={format} />
+      <DownloadActivityProductsBanner />
     </Fragment>
   )
 }

@@ -7,8 +7,6 @@ import maplibregl from 'maplibre-gl'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
-import { selectPortPointsByCountry } from 'features/labeler/labeler.selectors'
-import { selectCountry } from 'features/labeler/labeler.slice'
 import mapStyle from 'features/map/map-style'
 
 import { useMapBounds } from './controls/map-controls.hooks'
@@ -45,7 +43,6 @@ const handleError = ({ error }: any) => {
 
 const MapWrapper = (): React.ReactElement<any> => {
   const { viewport, onViewportChange } = useViewport()
-  const country = useSelector(selectCountry)
 
   const mapBounds = useMapBounds()
   const pointsLayer = useSelector(selectPortPositionLayer)
@@ -61,7 +58,6 @@ const MapWrapper = (): React.ReactElement<any> => {
     }
   }, [areaLayer, pointsLayer])
   const {
-    box,
     boxTransform,
     boxHeight,
     boxWidth,
@@ -71,7 +67,6 @@ const MapWrapper = (): React.ReactElement<any> => {
     onHover,
     onMapclick,
   } = useSelectorConnect()
-  const points = useSelector(selectPortPointsByCountry)
 
   return (
     <div className={styles.container}>

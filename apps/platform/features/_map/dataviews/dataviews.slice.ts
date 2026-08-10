@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define -- RTK thunks/slice circular module init */
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { kebabCase, uniq, uniqBy } from 'es-toolkit'

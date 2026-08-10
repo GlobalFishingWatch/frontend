@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/map/chat-api'
 

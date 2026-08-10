@@ -682,6 +682,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   _getTileDataCacheKey = (): string => {
     // Needs to remove zoom to avoid double loading tiles as deck.gl internally trigger the funcion on zoom changes
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { zoom, ...tilesCache } = this.state.tilesCache
     const dataCache = Object.values(tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')

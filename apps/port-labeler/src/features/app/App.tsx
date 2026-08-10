@@ -41,10 +41,6 @@ function App(): React.ReactElement<any> {
     dispatch(fetchUserThunk({ guest: false }) as any)
   }, [dispatch])
 
-  const onMenuClick = useCallback(() => {
-    setMenuOpen(true)
-  }, [])
-
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
   }, [sidebarOpen])
@@ -57,7 +53,7 @@ function App(): React.ReactElement<any> {
         showToggle
         isOpen={sidebarOpen}
         onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
+        aside={<Sidebar />}
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={'TODO'}

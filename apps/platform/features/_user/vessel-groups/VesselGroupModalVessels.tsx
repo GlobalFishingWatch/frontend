@@ -130,7 +130,7 @@ const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
             color: 'rgb(var(--danger-red-rgb))',
           }}
           tooltip={t((t) => t.vesselGroup.removeVessel)}
-          onClick={(e) => onRemoveClick(vessel, shipname === null)}
+          onClick={() => onRemoveClick(vessel, shipname === null)}
           size="small"
         />
       </td>
