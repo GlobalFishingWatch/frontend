@@ -9,8 +9,6 @@ export const MIN_DEPTH_VALUE = 0
 export const MAX_DEPTH_VALUE = -6000
 
 function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
-  let q1
-  let q3
   const values = array.filter(Boolean).sort((a, b) => a - b)
 
   if (colorBy === 'elevation') {

@@ -52,7 +52,7 @@ export const useDownloadDomElementAsImage = () => {
         const img = await capture.toPng()
         setPreviewImage(img.src)
         setPreviewImageLoading(false)
-      } catch (e: any) {
+      } catch {
         setPreviewImageLoading(false)
       }
     },
@@ -76,7 +76,7 @@ export const useDownloadDomElementAsImage = () => {
             setError('No blob canvas')
             return false
           }
-        } catch (e: any) {
+        } catch {
           setError('Something went wrong generating the screenshot, please try again')
           setLoading(false)
           return false

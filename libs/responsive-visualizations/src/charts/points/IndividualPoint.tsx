@@ -45,6 +45,7 @@ export function IndividualPoint({
     onOpenChange: setIsOpen,
     middleware: [offset(2), flip(), shift()],
   })
+  const { setReference, setFloating } = refs
 
   const hover = useHover(context)
   const { getReferenceProps, getFloatingProps } = useInteractions([hover])
@@ -55,7 +56,7 @@ export function IndividualPoint({
 
   return (
     <li
-      ref={refs.setReference}
+      ref={setReference}
       {...getReferenceProps()}
       className={cx(styles.point, { [styles.withIcon]: icon })}
       style={{
@@ -73,7 +74,7 @@ export function IndividualPoint({
       {isOpen && (
         <FloatingPortal>
           <div
-            ref={refs.setFloating}
+            ref={setFloating}
             className={cx(styles.tooltip, className)}
             style={floatingStyles}
             {...getFloatingProps()}

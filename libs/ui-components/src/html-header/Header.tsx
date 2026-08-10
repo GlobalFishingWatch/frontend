@@ -17,6 +17,37 @@ interface HeaderMenuItemProps {
   mini?: boolean
 }
 
+export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProps): JSX.Element {
+  return (
+    <li key={index} role="menuitem" className={item.className}>
+      {((item.link || item.onClick) && (
+        <a href={item.link} onClick={item.onClick}>
+          {item.label}
+        </a>
+      )) || <div>{item.label}</div>}
+      {!mini && item.childs && item.childs.length > 0 && (
+        <Fragment>
+          <input
+            name={`accordion-toggle-${index}`}
+            className={styles.accordionToggle}
+            type="checkbox"
+          />
+          <ul role="menu" className={cx([styles.navListSubMenu, item.className])}>
+            {item.childs.map((child, childIndex) => (
+              <HeaderMenuItem
+                key={`${index}-child-${childIndex}`}
+                index={childIndex}
+                item={child}
+                mini={mini}
+              />
+            ))}
+          </ul>
+        </Fragment>
+      )}
+    </li>
+  )
+}
+
 export function Header({ children, mini = false, inverted = false }: HeaderProps) {
   return (
     <div
@@ -51,36 +82,5 @@ export function Header({ children, mini = false, inverted = false }: HeaderProps
         </div>
       </header>
     </div>
-  )
-}
-
-export function HeaderMenuItem({ index, item, mini = false }: HeaderMenuItemProps): JSX.Element {
-  return (
-    <li key={index} role="menuitem" className={item.className}>
-      {((item.link || item.onClick) && (
-        <a href={item.link} onClick={item.onClick}>
-          {item.label}
-        </a>
-      )) || <div>{item.label}</div>}
-      {!mini && item.childs && item.childs.length > 0 && (
-        <Fragment>
-          <input
-            name={`accordion-toggle-${index}`}
-            className={styles.accordionToggle}
-            type="checkbox"
-          />
-          <ul role="menu" className={cx([styles.navListSubMenu, item.className])}>
-            {item.childs.map((child, childIndex) => (
-              <HeaderMenuItem
-                key={`${index}-child-${childIndex}`}
-                index={childIndex}
-                item={child}
-                mini={mini}
-              />
-            ))}
-          </ul>
-        </Fragment>
-      )}
-    </li>
   )
 }

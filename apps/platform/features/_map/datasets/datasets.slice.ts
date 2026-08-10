@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define -- RTK thunks/slice circular module init */
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniq, uniqBy, without } from 'es-toolkit'
@@ -39,47 +40,18 @@ function getAPILocale(locale: i18nSupportedLocale) {
     : locale.toUpperCase()
 }
 
-export const getDatasetByIdsThunk = createAsyncThunk(
-  'datasets/getByIds',
-  async (
-    {
-      ids,
-      includeRelated = true,
-      locale = i18n.language as Locale,
-    }: { ids: string[]; includeRelated?: boolean; locale?: Locale },
-    { rejectWithValue, getState, dispatch }
-  ) => {
-    try {
-      const state = getState() as RootState
-      const datasetsToRequest: string[] = []
-      let datasets = ids.flatMap((datasetId) => {
-        const dataset = selectDatasetById(datasetId)(state)
-        if (!dataset) {
-          datasetsToRequest.push(datasetId)
-        }
-        return (dataset as Dataset) || []
-      })
+export interface DatasetsState extends AsyncReducer<Dataset> {
+  deprecatedDatasets: DatasetsMigration
+  deletedDatasets: string[]
+}
 
-      if (datasetsToRequest.length) {
-        const action = await dispatch(
-          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated, locale })
-        )
-        if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
-          datasets = datasets.concat(
-            action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
-          )
-        }
-      }
-      return datasets
-    } catch (e: any) {
-      console.warn(e)
-      return rejectWithValue({
-        status: parseAPIErrorStatus(e),
-        message: `${ids.join(', ')} - ${parseAPIErrorMessage(e)}`,
-      })
-    }
-  }
-)
+export type DatasetsSliceState = { datasets: DatasetsState }
+
+const initialState: DatasetsState = {
+  ...asyncInitialState,
+  deprecatedDatasets: {},
+  deletedDatasets: [],
+}
 
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
@@ -468,13 +440,6 @@ export const deleteDatasetThunk = createAsyncThunk<
   }
 })
 
-export interface DatasetsState extends AsyncReducer<Dataset> {
-  deprecatedDatasets: DatasetsMigration
-  deletedDatasets: string[]
-}
-
-export type DatasetsSliceState = { datasets: DatasetsState }
-
 export const refreshDatasetsLocaleThunk = createAsyncThunk<
   void,
   Locale,
@@ -487,12 +452,6 @@ export const refreshDatasetsLocaleThunk = createAsyncThunk<
   }
   await dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
 })
-
-const initialState: DatasetsState = {
-  ...asyncInitialState,
-  deprecatedDatasets: {},
-  deletedDatasets: [],
-}
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
@@ -544,6 +503,48 @@ export const selectDeprecatedDatasets = createSelector(
     return {
       ...deprecatedDatasets,
       ...LEGACY_DATASETS_TO_LATEST_VMS,
+    }
+  }
+)
+
+export const getDatasetByIdsThunk = createAsyncThunk(
+  'datasets/getByIds',
+  async (
+    {
+      ids,
+      includeRelated = true,
+      locale = i18n.language as Locale,
+    }: { ids: string[]; includeRelated?: boolean; locale?: Locale },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const state = getState() as RootState
+      const datasetsToRequest: string[] = []
+      let datasets = ids.flatMap((datasetId) => {
+        const dataset = selectDatasetById(datasetId)(state)
+        if (!dataset) {
+          datasetsToRequest.push(datasetId)
+        }
+        return (dataset as Dataset) || []
+      })
+
+      if (datasetsToRequest.length) {
+        const action = await dispatch(
+          fetchDatasetsByIdsThunk({ ids: datasetsToRequest, includeRelated, locale })
+        )
+        if (fetchDatasetsByIdsThunk.fulfilled.match(action) && action.payload?.length) {
+          datasets = datasets.concat(
+            action.payload.filter((v) => v.type === DatasetTypes.Vessels) as Dataset[]
+          )
+        }
+      }
+      return datasets
+    } catch (e: any) {
+      console.warn(e)
+      return rejectWithValue({
+        status: parseAPIErrorStatus(e),
+        message: `${ids.join(', ')} - ${parseAPIErrorMessage(e)}`,
+      })
     }
   }
 )

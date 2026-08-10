@@ -126,7 +126,7 @@ function SegmentRowItem({
   )
 }
 
-const Sidebar: React.FC = (props): React.ReactElement<any> => {
+const Sidebar: React.FC = (): React.ReactElement<any> => {
   const {
     uploadingTrack,
     dispatchUpdateActionSelectedTrack,
@@ -184,7 +184,6 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
           start: selection.start as number,
           end: selection.end as number,
         })
-        const bbox = track?.length ? segmentsToBbox(trackFragment) : undefined
         if (!trackFragment || !trackFragment.length) {
           setViewState({
             latitude: selection.startLatitude ?? 0,
@@ -211,7 +210,7 @@ const Sidebar: React.FC = (props): React.ReactElement<any> => {
   )
 
   const onShortcutPress = useCallback(
-    (keyName: string, e: KeyboardEvent, handle: any) => {
+    (keyName: string) => {
       if (keyName === 'control+z' || keyName === 'command+z') {
         dispatchUndo()
       }

@@ -3,8 +3,6 @@ import type { StatsGroupBy } from '@globalfishingwatch/api-types'
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  FIXED_SAR_INFRASTRUCTURE,
-  MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
 import type { BufferOperation, BufferUnit } from 'types'

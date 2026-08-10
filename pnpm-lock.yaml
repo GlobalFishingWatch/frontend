@@ -215,9 +215,6 @@ importers:
       colorjs.io:
         specifier: 0.7.1
         version: 0.7.1
-      countryflag:
-        specifier: 5.0.0
-        version: 5.0.0
       d3:
         specifier: 7.9.0
         version: 7.9.0
@@ -7851,9 +7848,6 @@ packages:
   core-js-compat@3.49.0:
     resolution: {integrity: sha512-VQXt1jr9cBz03b331DFDCCP90b3fanciLkgiOoy8SBHy06gNf+vQ1A3WFLqG7I8TipYIKeYK9wxd0tUrvHcOZA==}
 
-  core-js@3.27.2:
-    resolution: {integrity: sha512-9ashVQskuh5AZEZ1JdQWp1GqSoC1e1G87MzRqg2gIfVAQ7Qn9K+uFj8EcniUFA4P2NLZfV+TOlX1SzoKfo+s7w==}
-
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
 
@@ -7882,9 +7876,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  countryflag@5.0.0:
-    resolution: {integrity: sha512-KUcp63vUCX7fKxV/L5RK0ZlN4B0+9foGoyCSjcr9g25BfqbZieDofCmIx7nHzHyKC2stJjywF9MK4E0fr6XNAg==}
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
@@ -9519,9 +9510,6 @@ packages:
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
-
-  if-emoji@0.1.0:
-    resolution: {integrity: sha512-mYFCvIquPZ8wGoCBqdDgPGGn8uo7wDaPAmGwaIDNUJ+Bx1tTpF/maK2cU3XGD64f3Bm11LJchFZjAEJgQDB+VQ==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -13483,9 +13471,6 @@ packages:
 
   workerpool@9.3.4:
     resolution: {integrity: sha512-TmPRQYYSAnnDiEB0P/Ytip7bFGvqnSU6I2BcuSw7Hx+JSg/DsUi5ebYfc8GYaSdpuvOcEs6dXxPurOYpe9QFwg==}
-
-  world-countries@4.0.0:
-    resolution: {integrity: sha512-LsFFYmggquj0U+i7VUaJOZYz5F4QNu+oceGw8odnyVHMT2LxYSdVncqdouOEnq1esr7yCakp9+3BZTztuSw1Pg==}
 
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
@@ -22543,8 +22528,6 @@ snapshots:
     dependencies:
       browserslist: 4.28.4
 
-  core-js@3.27.2: {}
-
   core-util-is@1.0.3: {}
 
   corser@2.0.1: {}
@@ -22574,12 +22557,6 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: '@typescript/typescript6@6.0.2'
-
-  countryflag@5.0.0:
-    dependencies:
-      core-js: 3.27.2
-      if-emoji: 0.1.0
-      world-countries: 4.0.0
 
   create-require@1.1.1: {}
 
@@ -24734,8 +24711,6 @@ snapshots:
       postcss: 8.5.25
 
   ieee754@1.2.1: {}
-
-  if-emoji@0.1.0: {}
 
   ignore@5.3.2: {}
 
@@ -29541,8 +29516,6 @@ snapshots:
   word-wrap@1.2.5: {}
 
   workerpool@9.3.4: {}
-
-  world-countries@4.0.0: {}
 
   wrap-ansi@7.0.0:
     dependencies:

@@ -37,7 +37,7 @@ function DownloadActivityModal() {
   const activityAndDetectionsDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const environmentalDataviews = useSelector(selectActiveHeatmapAnimatedEnvironmentalDataviews)
   const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
-  const [disableDownloadSurvey, _] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
+  const [disableDownloadSurvey] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
   const [showSurvey, setShowSurvey] = useState(false)
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
   const isDownloadTimeoutError = useSelector(selectIsDownloadActivityTimeoutError)

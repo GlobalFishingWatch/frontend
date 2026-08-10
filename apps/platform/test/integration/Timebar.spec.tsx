@@ -1,4 +1,3 @@
-import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { WAIT } from 'test/setup/config'

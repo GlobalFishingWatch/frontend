@@ -1,10 +1,8 @@
 import type { DateTimeUnit, DurationUnit } from 'luxon'
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -22,7 +20,7 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import { DATASET_COMPARISON_SUFFIX, PRIMARY_BLUE_COLOR } from 'data/map/config'
+import { PRIMARY_BLUE_COLOR } from 'data/map/config'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/_map/timebar/timebar.utils'
 import type { FilteredPolygons } from 'features/_reports/reports-geo.utils'

@@ -1,5 +1,4 @@
 import { Fragment, useCallback } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
@@ -26,7 +25,6 @@ import styles from './Vessel.module.css'
 const PIPE_5_WORKSPACE_ID = 'pipe_v_5-public'
 
 const VesselSubHeader = () => {
-  const { t } = useTranslation()
   const router = useRouter()
   const { replaceQueryParams } = useReplaceQueryParams()
   const vesselId = useSelector(selectVesselId)

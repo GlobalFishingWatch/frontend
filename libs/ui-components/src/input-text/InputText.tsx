@@ -49,8 +49,8 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     onCleanButtonClick,
     ...rest
   } = props
-  useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
   const inputRef = useRef<HTMLInputElement>(null)
+  useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [isValid, setIsValid] = useState(true)
   let inputType = type

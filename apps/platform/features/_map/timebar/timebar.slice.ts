@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import type { RootState } from 'reducers'
 

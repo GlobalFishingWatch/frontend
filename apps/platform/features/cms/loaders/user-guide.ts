@@ -13,7 +13,7 @@ export const getUserGuideContent = createServerFn({
   method: 'GET',
 })
   .validator((params: { locale?: Locale; page?: number } = {}) => params)
-  .handler(({ data: { locale, page } }): Promise<StrapiResponse<UserGuideSection>> =>
+  .handler(({ data: { locale } }): Promise<StrapiResponse<UserGuideSection>> =>
     findWithLocaleFallback<UserGuideSection>(
       userGuideSections,
       {

@@ -1,4 +1,4 @@
-import { IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,

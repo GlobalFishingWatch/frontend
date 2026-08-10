@@ -7,10 +7,7 @@ import { useCreateUserApplication } from 'features/user-applications/user-applic
 
 import styles from './access-token-create.module.css'
 
-/* eslint-disable-next-line */
-export interface AccessTokenCreateProps {}
-
-export function AccessTokenCreate(props: AccessTokenCreateProps) {
+export function AccessTokenCreate() {
   const {
     mutate,
     error,

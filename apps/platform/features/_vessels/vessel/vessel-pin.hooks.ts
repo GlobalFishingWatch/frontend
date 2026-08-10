@@ -142,7 +142,7 @@ export function usePinVessel({
           setLoading(true)
           try {
             vesselWithIdentity = await GFWAPI.fetch<IdentityVessel>(url)
-          } catch (e) {
+          } catch {
             setLoading(false)
           }
         }

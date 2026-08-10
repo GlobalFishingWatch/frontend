@@ -106,6 +106,7 @@ export const removeDuplicatedVesselGroupvessels = (vessels: VesselGroupVesselIde
   return uniqBy(vessels, (vessel) => [vessel.vesselId, vessel.dataset].join(','))
 }
 export const removeVesselGroupvesselIdentity = (vessels: VesselGroupVesselIdentity[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return vessels.map(({ identity, ...vessel }) => vessel)
 }
 export const prepareVesselGroupVesselsUpdate = (vessels: VesselGroupVesselIdentity[]) => {

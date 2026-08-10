@@ -120,6 +120,74 @@ export const TOKEN_REGEX = /~(\d+)/
 
 const parseIntNumber = (value: any) => (typeof value === 'string' ? parseInt(value) : value)
 
+export const parseLegacyDataviewInstanceConfig = (
+  dataviewInstance: AnyDataviewInstance
+): UrlDataviewInstance => {
+  return {
+    ...dataviewInstance,
+    config: {
+      ...dataviewInstance.config,
+      ...(dataviewInstance?.config?.datasets?.length && {
+        datasets: dataviewInstance.config.datasets.map(runDatasetMigrations),
+      }),
+      ...(dataviewInstance?.config?.info && {
+        info: runDatasetMigrations(dataviewInstance?.config?.info),
+      }),
+      ...(dataviewInstance?.config?.events?.length && {
+        events: dataviewInstance?.config?.events.map((d) => migrateEventsLegacyDatasets(d)),
+      }),
+    },
+    ...(dataviewInstance.datasetsConfig && {
+      datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
+        ...dc,
+        datasetId: runDatasetMigrations(dc?.datasetId),
+        endpoint: removeLegacyEndpointPrefix(dc?.endpoint),
+      })),
+    }),
+  }
+}
+
+const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
+  const dataviewId = dataview.dataviewId?.toString()
+  const breaks = dataview.config?.breaks?.map((b: any) => parseFloat(b))
+  const vesselGroups = dataview.config?.filters?.['vessel-groups'] as string | string[] | undefined
+  // Legacy workspaces supported multiple vessel groups but this is not supported anymore so we pick the first one
+  const vesselGroup = Array.isArray(vesselGroups) ? vesselGroups[0] : vesselGroups
+  const config = { ...dataview.config }
+  if (breaks) {
+    config.breaks = breaks
+  }
+  if (dataview.config?.color !== undefined) {
+    config.color = decodeURIComponent(dataview.config?.color)
+  }
+  if (dataview.config?.datasets !== undefined && dataview.config?.datasets.length) {
+    config.datasets = dataview.config?.datasets.map((datasetId) => decodeURIComponent(datasetId))
+  }
+  if (dataview.config?.maxVisibleValue !== undefined) {
+    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
+  }
+  if (dataview.config?.minVisibleValue !== undefined) {
+    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue as any)
+  }
+  if (dataview.config?.thickness !== undefined) {
+    config.thickness = parseInt(dataview.config?.thickness as any)
+  }
+  if (dataview.config?.gapSegmentThreshold !== undefined) {
+    config.gapSegmentThreshold = parseFloat(dataview.config?.gapSegmentThreshold as any)
+  }
+  if (vesselGroup) {
+    if (!config.filters) {
+      config.filters = {}
+    }
+    config.filters['vessel-groups'] = [vesselGroup]
+  }
+  return parseLegacyDataviewInstanceConfig({
+    ...dataview,
+    ...(dataviewId && { dataviewId }),
+    config,
+  })
+}
+
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   start: (start) => decodeURIComponent(start),
   end: (end) => decodeURIComponent(end),
@@ -254,76 +322,8 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
   return detokenized
 }
 
-export const parseLegacyDataviewInstanceConfig = (
-  dataviewInstance: AnyDataviewInstance
-): UrlDataviewInstance => {
-  return {
-    ...dataviewInstance,
-    config: {
-      ...dataviewInstance.config,
-      ...(dataviewInstance?.config?.datasets?.length && {
-        datasets: dataviewInstance.config.datasets.map(runDatasetMigrations),
-      }),
-      ...(dataviewInstance?.config?.info && {
-        info: runDatasetMigrations(dataviewInstance?.config?.info),
-      }),
-      ...(dataviewInstance?.config?.events?.length && {
-        events: dataviewInstance?.config?.events.map((d) => migrateEventsLegacyDatasets(d)),
-      }),
-    },
-    ...(dataviewInstance.datasetsConfig && {
-      datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
-        ...dc,
-        datasetId: runDatasetMigrations(dc?.datasetId),
-        endpoint: removeLegacyEndpointPrefix(dc?.endpoint),
-      })),
-    }),
-  }
-}
-
-const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
-  const dataviewId = dataview.dataviewId?.toString()
-  const breaks = dataview.config?.breaks?.map((b: any) => parseFloat(b))
-  const vesselGroups = dataview.config?.filters?.['vessel-groups'] as string | string[] | undefined
-  // Legacy workspaces supported multiple vessel groups but this is not supported anymore so we pick the first one
-  const vesselGroup = Array.isArray(vesselGroups) ? vesselGroups[0] : vesselGroups
-  const config = { ...dataview.config }
-  if (breaks) {
-    config.breaks = breaks
-  }
-  if (dataview.config?.color !== undefined) {
-    config.color = decodeURIComponent(dataview.config?.color)
-  }
-  if (dataview.config?.datasets !== undefined && dataview.config?.datasets.length) {
-    config.datasets = dataview.config?.datasets.map((datasetId) => decodeURIComponent(datasetId))
-  }
-  if (dataview.config?.maxVisibleValue !== undefined) {
-    config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
-  }
-  if (dataview.config?.minVisibleValue !== undefined) {
-    config.minVisibleValue = parseFloat(dataview.config?.minVisibleValue as any)
-  }
-  if (dataview.config?.thickness !== undefined) {
-    config.thickness = parseInt(dataview.config?.thickness as any)
-  }
-  if (dataview.config?.gapSegmentThreshold !== undefined) {
-    config.gapSegmentThreshold = parseFloat(dataview.config?.gapSegmentThreshold as any)
-  }
-  if (vesselGroup) {
-    if (!config.filters) {
-      config.filters = {}
-    }
-    config.filters['vessel-groups'] = [vesselGroup]
-  }
-  return parseLegacyDataviewInstanceConfig({
-    ...dataview,
-    ...(dataviewId && { dataviewId }),
-    config,
-  })
-}
-
 // Extended logic from qs utils decoder to have some keywords parsed
-const decoder = (str: string, decoder?: any, charset?: string, type?: string) => {
+const decoder = (str: string, decoder?: any, charset?: string) => {
   const strWithoutPlus = str.replace(/\+/g, ' ')
   if (charset === 'iso-8859-1') {
     // unescape never throws, no try...catch needed:
@@ -342,7 +342,7 @@ const decoder = (str: string, decoder?: any, charset?: string, type?: string) =>
   // utf-8
   try {
     return decodeURIComponent(strWithoutPlus)
-  } catch (e) {
+  } catch {
     return strWithoutPlus
   }
 }

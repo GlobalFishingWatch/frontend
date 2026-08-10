@@ -40,6 +40,7 @@ export default function WorkspacePassword() {
       dispatch(setWorkspacePassword(password))
       const action = await fetchWorkspace({ workspaceId: workspaceId!, password })
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { dataviewInstancesToUpsert, ...workspace } = action.payload
         if (!isWorkspacePasswordProtected(workspace)) {
           dispatch(setWorkspacePassword(VALID_PASSWORD))

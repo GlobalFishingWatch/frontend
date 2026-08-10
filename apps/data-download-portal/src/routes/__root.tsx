@@ -7,12 +7,11 @@ import { Footer } from '@globalfishingwatch/ui-components'
 
 import HeaderHtml from '../components/header/header'
 import Loader from '../components/loader/loader'
-import Login from '../pages/login/login'
 
 import styles from '../app.module.css'
 
 function RootComponent() {
-  const { loading, logged } = useGFWLogin(GFWAPI)
+  const { loading } = useGFWLogin(GFWAPI)
 
   // if (!logged && !loading) {
   //   return <Login />

@@ -20,7 +20,7 @@ export function getReportAreaStringByLocale(
       return parsedResponse[Object.keys(parsedResponse)[0] as keyof typeof parsedResponse] as string
     }
     return parsedResponse
-  } catch (_: any) {
+  } catch {
     return string
   }
 }

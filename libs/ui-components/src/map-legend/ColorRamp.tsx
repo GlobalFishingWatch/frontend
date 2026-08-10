@@ -39,14 +39,15 @@ export function ColorRampLegend({
     if (!values || !domainValues) return null
 
     // Reuse d3 logic when values go beyond max value
-    if (domainValues[0] === -Infinity) {
-      domainValues[0] = domainValues[1] + domainValues[2]
+    const adjustedDomain = [...domainValues]
+    if (adjustedDomain[0] === -Infinity) {
+      adjustedDomain[0] = adjustedDomain[1] + adjustedDomain[2]
     }
 
-    const rangeValues = domainValues.map((item, i) => (i * 100) / domainValues.length)
+    const rangeValues = adjustedDomain.map((item, i) => (i * 100) / adjustedDomain.length)
 
     return (value: number) => {
-      const scaled = scaleLinear().range(rangeValues).domain(domainValues)(value)
+      const scaled = scaleLinear().range(rangeValues).domain(adjustedDomain)(value)
       return isNaN(scaled) || scaled < 0 ? 0 : scaled
     }
   }, [domainValues, values])

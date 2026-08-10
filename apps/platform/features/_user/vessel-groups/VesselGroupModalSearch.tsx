@@ -38,7 +38,7 @@ import {
 
 import styles from './VesselGroupModal.module.css'
 
-function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
+function VesselGroupSearch(_props: { onError: (string: any) => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [csvName, setCsvName] = useState<string>('')

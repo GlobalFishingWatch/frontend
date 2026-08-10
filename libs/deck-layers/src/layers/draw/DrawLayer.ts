@@ -268,7 +268,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
             selectedPositionIndexes
           )
         }
-      } catch (ignore) {
+      } catch {
         // ignore
       }
     })

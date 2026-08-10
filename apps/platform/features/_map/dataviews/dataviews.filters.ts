@@ -49,6 +49,42 @@ export type GetFiltersInDataviewParams = {
 export type DataviewWithFilters =
   UrlDataviewInstance | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
 
+export const getIncompatibleFilterSelection = (
+  dataview: DataviewWithFilters,
+  filter: SupportedDatasetFilter
+) => {
+  return (dataview?.config?.datasets || [])?.flatMap((datasetId) => {
+    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[datasetId]
+    if (!incompatibilityDict?.length) {
+      return []
+    }
+    return incompatibilityDict.filter(({ id, value, valueNot, disabled }) => {
+      const selectedFilterValue = dataview.config?.filters?.[id]
+      if (value === 'undefined' && selectedFilterValue === undefined && valueNot === undefined) {
+        return disabled.includes(filter)
+      }
+
+      const selectedFilterValues = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue
+        : [selectedFilterValue]
+
+      if (value !== undefined) {
+        const matchedValue =
+          selectedFilterValue?.length === 1 &&
+          (selectedFilterValue?.includes(value) || selectedFilterValue?.includes(value.toString()))
+        return matchedValue && disabled.includes(filter)
+      }
+      if (valueNot !== undefined) {
+        const matchedValue = selectedFilterValue
+          ? selectedFilterValues.some((f) => f !== value && f !== valueNot.toString())
+          : true
+        return matchedValue && disabled.includes(filter)
+      }
+      return false
+    })
+  })
+}
+
 export const isDataviewFilterSupported = (
   dataview: DataviewWithFilters,
   filter: SupportedDatasetFilter
@@ -123,42 +159,6 @@ export const getNotSupportedFilterDatasets = (
     return dataset
   })
   return datasetsWithoutFiltersSupport
-}
-
-export const getIncompatibleFilterSelection = (
-  dataview: DataviewWithFilters,
-  filter: SupportedDatasetFilter
-) => {
-  return (dataview?.config?.datasets || [])?.flatMap((datasetId) => {
-    const incompatibilityDict = dataview.filtersConfig?.incompatibility?.[datasetId]
-    if (!incompatibilityDict?.length) {
-      return []
-    }
-    return incompatibilityDict.filter(({ id, value, valueNot, disabled }) => {
-      const selectedFilterValue = dataview.config?.filters?.[id]
-      if (value === 'undefined' && selectedFilterValue === undefined && valueNot === undefined) {
-        return disabled.includes(filter)
-      }
-
-      const selectedFilterValues = Array.isArray(selectedFilterValue)
-        ? selectedFilterValue
-        : [selectedFilterValue]
-
-      if (value !== undefined) {
-        const matchedValue =
-          selectedFilterValue?.length === 1 &&
-          (selectedFilterValue?.includes(value) || selectedFilterValue?.includes(value.toString()))
-        return matchedValue && disabled.includes(filter)
-      }
-      if (valueNot !== undefined) {
-        const matchedValue = selectedFilterValue
-          ? selectedFilterValues.some((f) => f !== value && f !== valueNot.toString())
-          : true
-        return matchedValue && disabled.includes(filter)
-      }
-      return false
-    })
-  })
 }
 
 const getCommonFilterTypeInDataview = (

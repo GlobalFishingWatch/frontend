@@ -2,7 +2,7 @@ import { startTransition, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
-import { atom, useAtom, useAtomValue, useSetAtom, useStore } from 'jotai'
+import { atom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'

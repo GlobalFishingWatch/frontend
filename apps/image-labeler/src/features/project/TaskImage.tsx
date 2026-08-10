@@ -46,8 +46,11 @@ export function TaskImage({
       applyLevelsToCanvas(rawOriginal.current, canvasRef.current, v)
   }, [])
 
-  rangeModeRef.current = rangeMode
   const displayRange: DataRange = rangeMode === 'full' ? [0, 255] : dataRange
+
+  useEffect(() => {
+    rangeModeRef.current = rangeMode
+  }, [rangeMode])
 
   useEffect(() => {
     levelsRef.current = levels

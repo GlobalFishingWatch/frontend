@@ -1,37 +1,18 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
-import type { Workspace } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/map/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/map/layer-library/layers-detections'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
-import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
-import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
-import { selectUserLogged } from 'features/_user/selectors/user.selectors'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsVesselGroupReportLocation,
-  selectUrlDataviewInstances,
-  selectUrlTimeRange,
-  selectUrlViewport,
-} from 'router/routes.selectors'
+import { selectUrlDataviewInstances } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
-import {
-  isWorkspacePasswordProtected,
-  selectWorkspaceCustomStatus,
-  selectWorkspaceDataviewInstances,
-  selectWorkspaceFetchParams,
-} from './workspace.selectors'
-import type { FetchWorkspacesThunkParams } from './workspace.slice'
-import { fetchWorkspaceThunk } from './workspace.slice'
+import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 import { getNextColor } from './workspace.utils'
 
 const createDataviewsInstances = (

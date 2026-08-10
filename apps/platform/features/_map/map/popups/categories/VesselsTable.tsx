@@ -17,7 +17,6 @@ import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import type {
   ActivityProperty,
-  ExtendedFeatureVessel,
   SliceExtendedFourwingsDeckSublayer,
 } from 'features/_map/map/map.slice'
 import { MAX_TOOLTIP_LIST } from 'features/_map/map/map.slice'

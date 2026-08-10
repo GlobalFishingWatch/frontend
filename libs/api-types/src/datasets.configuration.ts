@@ -30,7 +30,7 @@ export type UserContextLayerV1Configuration = {
   importLogs?: string
 }
 
-export type TemporalContextLayerV1Configuration = {}
+export type TemporalContextLayerV1Configuration = Record<string, never>
 
 export type UserTracksV1Configuration = {
   filePath?: string
@@ -66,18 +66,18 @@ export type FourwingsV1Configuration = {
   reportGroupings?: FourwingsReportGrouping[]
 }
 
-export type TracksV1Configuration = {}
+export type TracksV1Configuration = Record<string, never>
 
-export type VesselsV1Configuration = {}
+export type VesselsV1Configuration = Record<string, never>
 
-export type InsightSource = {}
+export type InsightSource = Record<string, never>
 
 export type InsightsV1Configuration = {
   sources?: InsightSource[]
 }
 
 export type BulkDownloadFormat = 'CSV' | 'JSON'
-export type BulkDownloadV1Configuration = {}
+export type BulkDownloadV1Configuration = Record<string, never>
 
 export type DataDownloadDatasetFile = {
   name: string

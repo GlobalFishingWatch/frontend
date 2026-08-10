@@ -68,12 +68,9 @@ function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
     [dispatch]
   )
 
-  const onFeatureMouseLeave = useCallback(
-    (feature: UserTrackFeature) => {
+  const onFeatureMouseLeave = useCallback(() => {
       dispatchDisableHighlightedTime()
-    },
-    [dispatchDisableHighlightedTime]
-  )
+    }, [dispatchDisableHighlightedTime])
 
   if (!hasFeaturesColoredByField || !data?.features) {
     return null
@@ -104,7 +101,7 @@ function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
             key={index}
             className={styles.trackColor}
             onMouseEnter={() => onFeatureMouseEnter(feature)}
-            onMouseLeave={() => onFeatureMouseLeave(feature)}
+            onMouseLeave={onFeatureMouseLeave}
             style={
               {
                 '--color': feature.properties?.color || dataview.config?.color,

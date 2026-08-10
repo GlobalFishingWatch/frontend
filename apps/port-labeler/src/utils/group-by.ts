@@ -2,8 +2,7 @@ import type { PortPosition } from 'types'
 
 export const groupBy = (
   arr: PortPosition[],
-  mapValues: Record<string, string | undefined>,
-  property?: string
+  mapValues: Record<string, string | undefined>
 ): Record<string, PortPosition[]> => {
   return arr.reduce(function (memo: Record<string, PortPosition[]>, x: PortPosition) {
     const value = mapValues[x.s2id] ?? ''

@@ -1,14 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { debounce } from 'es-toolkit'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
-import { stickToClosestInterval } from '@globalfishingwatch/data-transforms'
 import { deckHoverInteractionAtom } from '@globalfishingwatch/deck-layer-composer'
 import { usePrevious } from '@globalfishingwatch/react-hooks'
-import { EVENT_SOURCE } from '@globalfishingwatch/timebar'
 
-import { DEFAULT_TIME_RANGE } from 'data/map/config'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
@@ -25,15 +21,11 @@ import {
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectIsWorkspaceReady, selectTimeMode } from 'features/_map/workspace/workspace.selectors'
 import { useAppDispatch, useAppStore } from 'features/app/app.hooks'
-import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
-import { getUTCDateTime } from 'utils/dates'
 
-import type { TimeRange } from './timebar.slice'
 import {
   disableHighlightedTime,
   selectHasChangedSettingsOnce,

@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react'
 import React, { useCallback, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import cx from 'classnames'
@@ -101,12 +100,9 @@ export function Select(props: SelectProps) {
       },
     })
 
-  const handleToggleButtonClick = useCallback(
-    (e: MouseEvent) => {
+  const handleToggleButtonClick = useCallback(() => {
       if (onToggleButtonClick) onToggleButtonClick(selectedOption)
-    },
-    [onToggleButtonClick, selectedOption]
-  )
+    }, [onToggleButtonClick, selectedOption])
 
   const hasSelectedOptions = selectedOption !== undefined
 

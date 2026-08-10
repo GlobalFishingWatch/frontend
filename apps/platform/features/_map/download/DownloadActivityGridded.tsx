@@ -104,7 +104,6 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
       : downloadAreaDataset?.source === DRAW_DATASET_SOURCE
         ? downloadAreaDataset.name
         : downloadAreaKey?.areaName
-  const areaId = downloadAreaKey?.areaId as AreaKeyId
   const datasetId = downloadAreaKey?.datasetId as string
   const downloadAreaGeometry = downloadArea?.data?.geometry
 
@@ -326,7 +325,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
           </Button>
         </div>
       </div>
-      <DownloadActivityProductsBanner format={format} />
+      <DownloadActivityProductsBanner />
     </Fragment>
   )
 }
