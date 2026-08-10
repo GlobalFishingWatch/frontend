@@ -29,7 +29,7 @@
     "@platform/config": "workspace:*"
   },
   "devDependencies": {
-    "i18next-cli": "^1.50.1",
+    "i18next-cli": "^1.67.7",
     "source-map-explorer": "^2.5.3"
   },
   "browserslist": [
