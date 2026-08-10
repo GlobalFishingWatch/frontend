@@ -32,10 +32,10 @@ afterEach(() => cleanup())
 
 describe('TimeRangeSelector', () => {
   it('renders start and end date inputs', () => {
-    const { container } = render(<TimeRangeSelector {...baseProps} onSubmit={vi.fn()} />)
-    expect(container.querySelector('[name="start year"]')).not.toBeNull()
-    expect(container.querySelector('[name="end year"]')).not.toBeNull()
-    expect(container.querySelector('[name="start day"]')).not.toBeNull()
+    render(<TimeRangeSelector {...baseProps} onSubmit={vi.fn()} />)
+    expect(document.querySelector('[name="start year"]')).not.toBeNull()
+    expect(document.querySelector('[name="end year"]')).not.toBeNull()
+    expect(document.querySelector('[name="start day"]')).not.toBeNull()
   })
 
   it('submits the current range when the form is submitted', () => {

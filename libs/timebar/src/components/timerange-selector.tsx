@@ -1,5 +1,6 @@
-import type { ChangeEvent, MouseEventHandler } from 'react'
-import { useMemo, useState } from 'react'
+import type { ChangeEvent, MouseEventHandler, RefObject } from 'react'
+import { useLayoutEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import classNames from 'classnames'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
@@ -28,11 +29,13 @@ type TimeRangeSelectorProps = {
   absoluteStart: string
   absoluteEnd: string
   latestAvailableDataDate?: string
-  onDiscard: MouseEventHandler<HTMLDivElement> | undefined
+  onDiscard: MouseEventHandler<HTMLButtonElement> | undefined
   labels?: TimebarLabels['timerange']
   /** Quick-select "last N units" options. Defaults to 30 days / 3 + 6 months / 1 year. */
   lastXOptions?: LastXOption[]
   showDateInputs?: boolean
+  /** Anchor used to left-align the portaled panel with the time-range button. */
+  anchorRef?: RefObject<HTMLElement | null>
 }
 
 /** A "last N units" quick-select option (e.g. last 30 days, last 3 months). */
@@ -183,7 +186,26 @@ function TimeRangeSelector({
   labels = DEFAULT_LABELS.timerange,
   lastXOptions: lastXOptionsProp,
   showDateInputs = true,
+  anchorRef,
 }: TimeRangeSelectorProps) {
+  const [panelPosition, setPanelPosition] = useState({ left: 0, bottom: 0 })
+
+  useLayoutEffect(() => {
+    const updatePosition = () => {
+      const anchor = anchorRef?.current
+      if (!anchor) return
+      const rect = anchor.getBoundingClientRect()
+      setPanelPosition({
+        left: rect.left,
+        // Sit just above the time-range button (timebar chrome).
+        bottom: window.innerHeight - rect.top,
+      })
+    }
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    return () => window.removeEventListener('resize', updatePosition)
+  }, [anchorRef])
+
   const bounds = useMemo(
     () => ({
       min: DateTime.fromISO(absoluteStart, { zone: 'utc' }).toISO()?.slice(0, 10) || '',
@@ -365,13 +387,13 @@ function TimeRangeSelector({
 
   const disabledFields = getDisabledFields(startDate, endDate)
 
-  return (
-    <div className={styles.TimeRangeSelector}>
-      <div
-        role="button"
-        tabIndex={0}
+  const content = (
+    <div className={styles.TimeRangeSelector} style={panelPosition}>
+      <button
+        type="button"
         data-testid="timerange-veil"
         className={styles.veil}
+        aria-label="Close"
         onClick={onDiscard}
       />
       <div className={styles.inner}>
@@ -448,6 +470,9 @@ function TimeRangeSelector({
       </div>
     </div>
   )
+
+  if (typeof document === 'undefined') return content
+  return createPortal(content, document.body)
 }
 
 export default TimeRangeSelector
