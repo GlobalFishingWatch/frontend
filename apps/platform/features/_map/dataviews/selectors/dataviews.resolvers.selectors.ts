@@ -26,6 +26,7 @@ import {
 
 import { BASEMAP_LABELS_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
+import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
   getVesselDataviewInstanceDatasetConfig,
@@ -141,6 +142,13 @@ export const selectAllDataviewInstancesResolved = createSelector(
           const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
           if (trackDatasetId) {
             config.track = trackDatasetId
+          }
+        }
+        if (!config.trackRealTime && config.ssvid && config.info) {
+          const dataset = datasets.find((d) => d.id === config.info)
+          const { trackRealTime } = getVesselTrackDatasetIds(dataset, datasets)
+          if (trackRealTime) {
+            config.trackRealTime = trackRealTime
           }
         }
         const newDataviewInstance = {

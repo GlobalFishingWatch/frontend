@@ -1,4 +1,4 @@
-import { kebabCase } from 'es-toolkit'
+import { kebabCase, omit } from 'es-toolkit'
 
 import type {
   ColorCyclingType,
@@ -260,11 +260,12 @@ export const getVesselDataviewInstance = ({
 }): DataviewInstance => {
   const dataviewTemplate =
     dataviewTemplateId || getBestVesselTemplateSlug(dataviewTemplates, datasets)
+  const resolvedDatasets = vessel.ssvid ? datasets : omit(datasets, ['trackRealTime'])
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate({
       dataviewSlug: dataviewTemplate,
-      datasets,
+      datasets: resolvedDatasets,
       vessel,
       highlightEventStartTime,
       highlightEventEndTime,

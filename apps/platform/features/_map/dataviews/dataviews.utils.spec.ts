@@ -60,3 +60,18 @@ describe('getVesselDataviewInstance template selection', () => {
     expect(instance.dataviewId).toBe(TEMPLATE_VESSEL_DATAVIEW_SLUG)
   })
 })
+
+describe('getVesselDataviewInstance trackRealTime ssvid gate', () => {
+  const datasets = { info: INFO_DATASET, track: 'track', trackRealTime: 'track-realtime' }
+
+  it('keeps trackRealTime when the vessel carries an ssvid', () => {
+    const instance = getInstance({ vessel: { id: 'vessel-1', ssvid: '224000000' }, datasets })
+    expect(instance.config?.trackRealTime).toBe('track-realtime')
+  })
+
+  it('drops trackRealTime when there is no ssvid to query it with', () => {
+    const instance = getInstance({ datasets })
+    expect(instance.config?.trackRealTime).toBeUndefined()
+    expect(instance.config?.track).toBe('track')
+  })
+})

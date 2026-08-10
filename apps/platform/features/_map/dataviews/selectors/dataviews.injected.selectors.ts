@@ -19,6 +19,8 @@ import {
   PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 } from 'data/map/workspaces'
+import { selectTracksDatasets } from 'features/_map/datasets/datasets.selectors'
+import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
@@ -54,7 +56,10 @@ import {
   selectCurrentVesselEvent,
   selectVesselInfoData,
 } from 'features/_vessels/vessel/selectors/vessel.selectors'
-import { getRelatedIdentityVesselIds } from 'features/_vessels/vessel/vessel.utils'
+import {
+  getRelatedIdentityVesselIds,
+  getVesselProperty,
+} from 'features/_vessels/vessel/vessel.utils'
 import {
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,
@@ -83,6 +88,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
     selectCurrentVesselEvent,
     selectVesselId,
     selectVesselInfoData,
+    selectTracksDatasets,
   ],
   (
     workspaceDataviewInstancesMerged,
@@ -91,7 +97,8 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
     isVesselLocation,
     currentVesselEvent,
     vesselId,
-    vesselInfoData
+    vesselInfoData,
+    trackDatasets
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
@@ -107,9 +114,11 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
         ({ id }) => vesselId && id?.includes(vesselId)
       )
       if (!existingDataviewInstance && vesselInfoData?.identities) {
+        const { trackRealTime } = getVesselTrackDatasetIds(vesselInfoData.dataset, trackDatasets)
         const vesselDatasets = {
           info: vesselInfoData.info,
           track: vesselInfoData.track,
+          trackRealTime,
           ...(vesselInfoData?.events?.length && {
             events: vesselInfoData?.events,
           }),
@@ -120,7 +129,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
         )
         const nextColor = getNextColor('line', currentColors)
         const dataviewInstance = getVesselDataviewInstance({
-          vessel: { id: vesselId },
+          vessel: { id: vesselId, ssvid: getVesselProperty(vesselInfoData, 'ssvid') },
           datasets: vesselDatasets,
           highlightEventStartTime: eventStartDateTime?.toMillis(),
           highlightEventEndTime: eventEndDateTime?.toMillis(),
@@ -130,7 +139,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
         if (dataviewInstance) {
           const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
             vesselId,
-            vesselDatasets
+            dataviewInstance.config || {}
           )
           dataviewInstancesInjected.push({ ...dataviewInstance, datasetsConfig })
         }
