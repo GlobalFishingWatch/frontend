@@ -84,10 +84,10 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
         />
         <style>{fontFaceCss}</style>
         <HeadContent />
+        <Scripts />
       </head>
       <body suppressHydrationWarning>
         <div id={ROOT_DOM_ELEMENT}>{children}</div>
-        <Scripts />
         {GOOGLE_TAG_MANAGER_ID && (
           <noscript
             dangerouslySetInnerHTML={{
