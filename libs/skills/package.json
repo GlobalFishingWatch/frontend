@@ -31,6 +31,6 @@
     "@globalfishingwatch/datasets-client": "workspace:^",
     "@globalfishingwatch/dataviews-client": "workspace:^",
     "@platform/config": "workspace:*",
-    "@tanstack/router-core": "1.171.15"
+    "@tanstack/router-core": "1.171.18"
   }
 }
