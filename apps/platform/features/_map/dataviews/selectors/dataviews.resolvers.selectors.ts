@@ -1,15 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
-import type {
-  DataviewDatasetConfig,
-  IdentityVessel,
-  Locale,
-  Resource,
-} from '@globalfishingwatch/api-types'
+import type { IdentityVessel, Locale, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
-import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import type {
   GetDatasetConfigsCallbacks,
   UrlDataviewInstance,
@@ -18,7 +12,6 @@ import {
   extendDataviewDatasetConfig,
   getIsVesselDataviewInstanceId,
   getResources,
-  getVesselIdFromInstanceId,
   resolveDataviewDatasetResource,
   resolveDataviews,
   selectResources,
@@ -26,13 +19,12 @@ import {
 
 import { BASEMAP_LABELS_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
-import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
-  getVesselDataviewInstanceDatasetConfig,
   isDataviewDeprecated,
   isHistoricalDataview,
   isRealTimeDataview,
+  resolveVesselDataviewInstance,
 } from 'features/_map/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/_map/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
@@ -130,47 +122,15 @@ export const selectAllDataviewInstancesResolved = createSelector(
       return EMPTY_ARRAY
     }
 
-    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) => {
-      if (dataviewInstance && getIsVesselDataviewInstanceId(dataviewInstance.id)) {
-        const vesselId = getVesselIdFromInstanceId(dataviewInstance.id)
-        // New way to resolve datasetConfig for vessels to avoid storing all
-        // the datasetConfig in the instance and save url string characters
-        const config = { ...dataviewInstance.config }
-        // Vessel pined from not logged user but is logged now and the related dataset is available
-        if (loggedUser && !config.track && config.info) {
-          const dataset = datasets.find((d) => d.id === config.info)
-          const trackDatasetId = getRelatedDatasetByType(dataset, DatasetTypes.Tracks)?.id
-          if (trackDatasetId) {
-            config.track = trackDatasetId
-          }
-        }
-        if (!config.trackRealTime && config.ssvid && config.info) {
-          const dataset = datasets.find((d) => d.id === config.info)
-          const { trackRealTime } = getVesselTrackDatasetIds(dataset, datasets)
-          if (trackRealTime) {
-            config.trackRealTime = trackRealTime
-          }
-        }
-        const newDataviewInstance = {
-          ...dataviewInstance,
-          config: {
-            ...dataviewInstance.config,
-            ...(trackThinningZoomConfig && {
-              trackThinningZoomConfig,
-            }),
-          },
-        }
-        if (!dataviewInstance.datasetsConfig?.length) {
-          const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
-            vesselId,
-            config
-          )
-          newDataviewInstance.datasetsConfig = datasetsConfig
-        }
-        return newDataviewInstance
-      }
-      return dataviewInstance
-    })
+    const dataviewInstancesWithDatasetConfig = dataviewInstances.map((dataviewInstance) =>
+      dataviewInstance && getIsVesselDataviewInstanceId(dataviewInstance.id)
+        ? resolveVesselDataviewInstance(dataviewInstance, {
+            datasets,
+            loggedUser,
+            trackThinningZoomConfig,
+          })
+        : dataviewInstance
+    )
 
     const dataviewInstancesResolved = resolveDataviews(
       dataviewInstancesWithDatasetConfig,
