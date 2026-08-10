@@ -4,11 +4,7 @@ import SidebarHeader from './SidebarHeader'
 
 import styles from './Sidebar.module.css'
 
-type SidebarProps = {
-  onMenuClick: () => void
-}
-
-function Sidebar({ onMenuClick }: SidebarProps) {
+function Sidebar() {
   return (
     <div className={styles.container}>
       <div className="scrollContainer">

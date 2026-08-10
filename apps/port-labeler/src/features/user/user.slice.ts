@@ -39,7 +39,7 @@ export const fetchUserThunk = createAsyncThunk(
 
     try {
       return await GFWAPI.login({ accessToken })
-    } catch (e: any) {
+    } catch {
       return await GFWAPI.fetchGuestUser()
     }
   }

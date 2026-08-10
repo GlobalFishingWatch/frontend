@@ -1,4 +1,4 @@
-import { IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
 import type { WorkspaceReportLink } from 'data/map/highlighted-workspaces/reports'
 
 import type workspaceTranslations from '../../../public/locales/source/workspaces.json'

@@ -48,12 +48,9 @@ function UserReports() {
     dispatch(fetchReportsThunk([]))
   }, [dispatch])
 
-  const onReportClick = useCallback(
-    (report: Report) => {
-      dispatch(resetReportData())
-    },
-    [dispatch]
-  )
+  const onReportClick = useCallback(() => {
+    dispatch(resetReportData())
+  }, [dispatch])
 
   const onDeleteClick = useCallback(
     (report: Report) => {
@@ -101,7 +98,7 @@ function UserReports() {
                     to="/report/$reportId"
                     params={{ reportId: report.id }}
                     search={{}}
-                    onClick={() => onReportClick(report)}
+                    onClick={() => onReportClick()}
                   >
                     <span className={styles.workspaceTitle}>
                       {getHighlightedText(label as string, searchQuery, styles)}

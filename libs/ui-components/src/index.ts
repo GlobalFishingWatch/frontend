@@ -1,4 +1,3 @@
-// export * from './countryflag'
 export * from './button'
 export * from './checkbox'
 export * from './choice'

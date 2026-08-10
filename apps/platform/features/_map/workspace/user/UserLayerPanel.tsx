@@ -23,7 +23,6 @@ import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatc
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/workspaces'
-import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import {
   useAutoRefreshImportingDataset,
   useDatasetModalConfigConnect,
@@ -78,7 +77,6 @@ function UserPanel({
   onToggle,
 }: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
-  const { openSidePanel } = useSidePanel()
 
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
@@ -191,7 +189,6 @@ function UserPanel({
         defaultValue: dataview?.name || dataview?.id,
       })
   const datasetError = dataset.status === DatasetStatus.Error
-  const datasetDescription = dataset.description !== dataset.name
 
   const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 

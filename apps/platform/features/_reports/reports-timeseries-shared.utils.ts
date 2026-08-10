@@ -1,7 +1,4 @@
-import type { Feature, Point } from 'geojson'
-
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 import type { DateTimeSeries } from 'features/_reports/report-area/area-reports.hooks'
 import type {
@@ -28,6 +25,7 @@ export const frameTimeseriesToDateTimeseries = (
   frameTimeseries: TimeSeriesFrame[]
 ): DateTimeSeries => {
   const dateFrameseries = frameTimeseries.map((frameValues) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { frame, count, date, ...rest } = frameValues
     const dateTime = getUTCDate(date)
     return {

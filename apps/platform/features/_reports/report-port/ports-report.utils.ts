@@ -16,7 +16,9 @@ export function getPortClusterDataviewForReport(
   }
 ) {
   if (isPortClusterDataviewForReport(dataview)) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { clusterMaxZoomLevels, ...restConfig } = dataview.config || {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { port_id, ...restFilters } = restConfig.filters || {}
     return {
       ...dataview,

@@ -200,15 +200,6 @@ const Vessel = () => {
     [updateAreaLayersVisibility, vesselArea]
   )
 
-  const handleFullProfileClick = useCallback(() => {
-    replaceQueryParams({
-      includeRelatedIdentities: true,
-      start: undefined,
-      end: undefined,
-      vesselSelfReportedId: undefined,
-    })
-  }, [])
-
   if (!infoStatus || infoStatus === AsyncReducerStatus.Loading || isVesselRefreshing) {
     return <Spinner />
   }

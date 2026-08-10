@@ -48,6 +48,11 @@ function DownloadTrackModal() {
   const downloadTrackName = useSelector(selectDownloadTrackName)
   const downloadTrackDataset = useSelector(selectDownloadTrackDataset)
 
+  const onClose = () => {
+    dispatch(clearDownloadTrackVessel())
+    dispatch(setModalOpen({ id: 'downloadTrack', open: false }))
+  }
+
   const onDownloadClick = async () => {
     const downloadParams: DownloadTrackParams = {
       vesselIds: downloadTrackIds,
@@ -75,11 +80,6 @@ function DownloadTrackModal() {
       action: `Track download`,
       label: downloadTrackName,
     })
-  }
-
-  const onClose = () => {
-    dispatch(clearDownloadTrackVessel())
-    dispatch(setModalOpen({ id: 'downloadTrack', open: false }))
   }
 
   const isDownloadRatioExceeded = rateLimit?.remaining === 0

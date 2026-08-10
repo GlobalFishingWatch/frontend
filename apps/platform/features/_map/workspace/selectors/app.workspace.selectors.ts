@@ -266,6 +266,7 @@ export const selectWorkspaceWithCurrentState = createSelector(
       dataviewInstances: dataviewInstances
         ?.filter((d) => d && !d.deleted && !d.injected)
         ?.map((dvI) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { datasetsConfigMigration, ...rest } = dvI
           return rest
         }) as DataviewInstance[],

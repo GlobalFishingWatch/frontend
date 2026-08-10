@@ -81,7 +81,7 @@ export function useMapViewport() {
     return (deckMap as any)
       ?.getViewports?.()
       .find((v: any) => v.id === MAP_VIEW_ID) as WebMercatorViewport
-  } catch (e: any) {
+  } catch {
     return undefined
   }
 }

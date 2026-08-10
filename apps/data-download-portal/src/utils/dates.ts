@@ -11,7 +11,7 @@ export const getUTCDateTime = (d: DateInput): DateTime => {
   if (d instanceof Date) {
     try {
       return DateTime.fromJSDate(d, { zone: 'utc' })
-    } catch (error) {
+    } catch {
       console.warn('Not a valid date', typeof d, d)
       return DateTime.utc()
     }

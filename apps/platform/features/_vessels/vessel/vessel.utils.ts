@@ -30,6 +30,27 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 type VesselsParamsSupported = IdentityVessel | IdentityVesselData | ExtendedFeatureVessel
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
 
+function getVesselCombinedSource(
+  vessel: VesselsParamsSupported | null,
+  { vesselId } = {} as { vesselId: string }
+) {
+  return vessel?.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
+}
+
+function getVesselCombinedSourceProperty(
+  vessel: VesselsParamsSupported | null,
+  { vesselId, property } = {} as {
+    vesselId: string
+    property: keyof Pick<VesselInfo, 'shiptypes' | 'geartypes'>
+  }
+) {
+  const combinedSource = getVesselCombinedSource(vessel, { vesselId })
+  const source = combinedSource?.[property]
+  if (source) {
+    return [...source].sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
+  }
+}
+
 const getVesselIdentitiesBySource = (
   vessel: IdentityVessel,
   { identitySource } = {} as Pick<GetVesselIdentityParams, 'identitySource'>
@@ -101,6 +122,12 @@ export const getVesselIdentities = (
     : uniqueIdentities
 }
 
+export function getVesselIdentityId(identity: VesselDataIdentity) {
+  return identity.identitySource === VesselIdentitySourceEnum.SelfReported
+    ? identity.id
+    : (identity as VesselRegistryInfo).vesselInfoReference
+}
+
 export const getVesselIdentity = (
   vessel: VesselsParamsSupported,
   { identityId, identitySource } = {} as GetVesselIdentityParams
@@ -113,6 +140,49 @@ export const getVesselIdentity = (
 
 export type VesselIdentityProperty =
   keyof SelfReportedInfo | keyof VesselRegistryInfo | 'owner' | 'id' | 'image'
+
+type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
+  ? VesselType[]
+  : P extends 'geartypes'
+    ? GearType[]
+    : P extends number
+      ? number
+      : P extends string
+        ? string
+        : undefined
+export function getVesselProperty<P extends VesselIdentityProperty>(
+  vessel: VesselsParamsSupported | null,
+  property: P,
+  { identityId, identitySource } = {} as GetVesselIdentityParams
+): VesselProperty<P> {
+  if (!vessel) return '' as VesselProperty<P>
+  const identity = identitySource
+    ? getVesselIdentity(vessel, { identityId, identitySource })
+    : getLatestIdentityPrioritised(vessel)
+  if (property === 'owner') {
+    const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
+    return uniq(
+      vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name) || []
+    ).join(', ') as VesselProperty<P>
+  }
+  if (
+    identitySource !== VesselIdentitySourceEnum.Registry &&
+    (property === 'geartypes' || property === 'shiptypes')
+  ) {
+    const vesselId = getVesselProperty(vessel, 'id', {
+      identityId,
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+    const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, {
+      vesselId,
+      property,
+    })?.filter((i) => i !== null)
+    if (combinedSourcesInfoData?.length) {
+      return combinedSourcesInfoData.flatMap((i) => i.name ?? []) as VesselProperty<P>
+    }
+  }
+  return get<VesselProperty<P>>(identity, property as any)
+}
 
 export function getLatestIdentityPrioritised(vessel: VesselsParamsSupported) {
   const latestRegistryIdentity = getVesselIdentity(vessel, {
@@ -163,12 +233,6 @@ export function getBestMatchCriteriaIdentity(vessel: VesselsParamsSupported) {
   }
 }
 
-export function getVesselIdentityId(identity: VesselDataIdentity) {
-  return identity.identitySource === VesselIdentitySourceEnum.SelfReported
-    ? identity.id
-    : (identity as VesselRegistryInfo).vesselInfoReference
-}
-
 export function getVesselId(vessel: VesselsParamsSupported | null) {
   const selfReportedId = getVesselProperty(vessel, 'id', {
     identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -179,69 +243,6 @@ export function getVesselId(vessel: VesselsParamsSupported | null) {
   return selfReportedId || identityId
 }
 
-function getVesselCombinedSource(
-  vessel: VesselsParamsSupported | null,
-  { vesselId } = {} as { vesselId: string }
-) {
-  return vessel?.combinedSourcesInfo?.find((i) => i.vesselId === vesselId)
-}
-
-function getVesselCombinedSourceProperty(
-  vessel: VesselsParamsSupported | null,
-  { vesselId, property } = {} as {
-    vesselId: string
-    property: keyof Pick<VesselInfo, 'shiptypes' | 'geartypes'>
-  }
-) {
-  const combinedSource = getVesselCombinedSource(vessel, { vesselId })
-  const source = combinedSource?.[property]
-  if (source) {
-    return [...source].sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
-  }
-}
-
-type VesselProperty<P extends VesselIdentityProperty> = P extends 'shiptypes'
-  ? VesselType[]
-  : P extends 'geartypes'
-    ? GearType[]
-    : P extends number
-      ? number
-      : P extends string
-        ? string
-        : undefined
-export function getVesselProperty<P extends VesselIdentityProperty>(
-  vessel: VesselsParamsSupported | null,
-  property: P,
-  { identityId, identitySource } = {} as GetVesselIdentityParams
-): VesselProperty<P> {
-  if (!vessel) return '' as VesselProperty<P>
-  const identity = identitySource
-    ? getVesselIdentity(vessel, { identityId, identitySource })
-    : getLatestIdentityPrioritised(vessel)
-  if (property === 'owner') {
-    const ssvid = getVesselProperty(vessel, 'ssvid', { identityId, identitySource })
-    return uniq(
-      vessel.registryOwners?.filter((owner) => owner.ssvid === ssvid)?.map(({ name }) => name) || []
-    ).join(', ') as VesselProperty<P>
-  }
-  if (
-    identitySource !== VesselIdentitySourceEnum.Registry &&
-    (property === 'geartypes' || property === 'shiptypes')
-  ) {
-    const vesselId = getVesselProperty(vessel, 'id', {
-      identityId,
-      identitySource: VesselIdentitySourceEnum.SelfReported,
-    })
-    const combinedSourcesInfoData = getVesselCombinedSourceProperty(vessel, {
-      vesselId,
-      property,
-    })?.filter((i) => i !== null)
-    if (combinedSourcesInfoData?.length) {
-      return combinedSourcesInfoData.flatMap((i) => i.name ?? []) as VesselProperty<P>
-    }
-  }
-  return get<VesselProperty<P>>(identity, property as any)
-}
 export function getRelatedIdentityVesselIds(vessel: VesselsParamsSupported): string[] {
   if (!vessel) return [] as string[]
   const vesselId = (vessel as IdentityVesselData).id || getVesselId(vessel)
@@ -256,6 +257,30 @@ export function getRelatedIdentityVesselIds(vessel: VesselsParamsSupported): str
 type SearchIdentityResolvedParams = {
   prioritizedProperty?: IdField | VesselPropertyApiSearch
 }
+
+// Vessel transmission dates span from the earliest transmissionDateFrom
+// to the latest transmissionDateTo of all the self reported identities
+export function getVesselTransmissionDates(vessel: VesselsParamsSupported | null) {
+  const isBefore = (date: string, than: string) =>
+    getUTCDateTime(date).toMillis() < getUTCDateTime(than).toMillis()
+  const identities = vessel
+    ? getVesselIdentities(vessel, { identitySource: VesselIdentitySourceEnum.SelfReported })
+    : []
+  return identities.reduce(
+    (acc, { transmissionDateFrom: from, transmissionDateTo: to }) => ({
+      transmissionDateFrom:
+        from && (!acc.transmissionDateFrom || isBefore(from, acc.transmissionDateFrom))
+          ? from
+          : acc.transmissionDateFrom,
+      transmissionDateTo:
+        to && (!acc.transmissionDateTo || isBefore(acc.transmissionDateTo, to))
+          ? to
+          : acc.transmissionDateTo,
+    }),
+    { transmissionDateFrom: '', transmissionDateTo: '' }
+  )
+}
+
 export function getSearchIdentityResolved(
   vessel: VesselsParamsSupported,
   { prioritizedProperty } = {} as SearchIdentityResolvedParams
@@ -400,29 +425,6 @@ export function getIdentitySourceLabel(
   if (selfReportedIdentities.length)
     return `${t((t) => t.vessel.infoSources.selfReported)} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
   return EMPTY_FIELD_PLACEHOLDER
-}
-
-// Vessel transmission dates span from the earliest transmissionDateFrom
-// to the latest transmissionDateTo of all the self reported identities
-export function getVesselTransmissionDates(vessel: VesselsParamsSupported | null) {
-  const isBefore = (date: string, than: string) =>
-    getUTCDateTime(date).toMillis() < getUTCDateTime(than).toMillis()
-  const identities = vessel
-    ? getVesselIdentities(vessel, { identitySource: VesselIdentitySourceEnum.SelfReported })
-    : []
-  return identities.reduce(
-    (acc, { transmissionDateFrom: from, transmissionDateTo: to }) => ({
-      transmissionDateFrom:
-        from && (!acc.transmissionDateFrom || isBefore(from, acc.transmissionDateFrom))
-          ? from
-          : acc.transmissionDateFrom,
-      transmissionDateTo:
-        to && (!acc.transmissionDateTo || isBefore(acc.transmissionDateTo, to))
-          ? to
-          : acc.transmissionDateTo,
-    }),
-    { transmissionDateFrom: '', transmissionDateTo: '' }
-  )
 }
 
 export function isTimerangeOutsideTransmissions(

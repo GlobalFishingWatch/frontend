@@ -46,7 +46,6 @@ export function useSelectorConnect(): UseSelector {
   const [hoveredStateId, setHoveredStateId] = useState<string | number | null>(null)
   const selected = useSelector(selectSelectedPoints)
   const map = useMapInstance()
-  const canvas = map?.getCanvasContainer()
 
   const mousePos = useCallback((e: MapLayerMouseEvent) => {
     return new Point(e.point.x, e.point.y)
@@ -74,8 +73,6 @@ export function useSelectorConnect(): UseSelector {
     (e: MapLayerMouseEvent) => {
       if (box && box.startPosition) {
         const actualPosition = mousePos(e)
-        // Append the box element if it doesnt exist
-        const newBox = box
 
         const minX = Math.min(box.startPosition.x, actualPosition.x),
           maxX = Math.max(box.startPosition.x, actualPosition.x),
@@ -85,9 +82,7 @@ export function useSelectorConnect(): UseSelector {
         // Adjust width and xy position of the box element ongoing
         const pos = `translate(${minX}px, ${minY}px)`
 
-        newBox.endCoords = e.lngLat
-        newBox.endPosition = actualPosition
-        setBox(newBox)
+        setBox({ ...box, endCoords: e.lngLat, endPosition: actualPosition })
         setBoxTransform(pos)
         setBoxWidth(maxX - minX + 'px')
         setBoxHeight(maxY - minY + 'px')
@@ -115,27 +110,24 @@ export function useSelectorConnect(): UseSelector {
     [dispatch, box, mousePos, hoveredStateId, map]
   )
 
-  const onMouseUp = useCallback(
-    (e: MapLayerMouseEvent) => {
-      if (map && box && box.endPosition && box.startPosition) {
-        const features = map.queryRenderedFeatures(
-          [box.startPosition as any, box.endPosition as any],
-          {
-            layers: ['portPoints'],
-          }
-        )
-        dispatch(setSelectedPoints(selected.concat(features.map((point) => point.properties.id))))
-      }
-      if (map) {
-        map.dragPan?.enable()
-      }
-      setBox(null)
-      setBoxHeight(null)
-      setBoxTransform(null)
-      setBoxWidth(null)
-    },
-    [box, dispatch, map]
-  )
+  const onMouseUp = useCallback(() => {
+    if (map && box && box.endPosition && box.startPosition) {
+      const features = map.queryRenderedFeatures(
+        [box.startPosition as any, box.endPosition as any],
+        {
+          layers: ['portPoints'],
+        }
+      )
+      dispatch(setSelectedPoints(selected.concat(features.map((point) => point.properties.id))))
+    }
+    if (map) {
+      map.dragPan?.enable()
+    }
+    setBox(null)
+    setBoxHeight(null)
+    setBoxTransform(null)
+    setBoxWidth(null)
+  }, [box, dispatch, map])
 
   // here starts the feature to select points in mass
   const onMapclick = useCallback(

@@ -10,7 +10,6 @@ import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
-import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import {
@@ -37,7 +36,6 @@ import styles from './LayerLibraryUserPanel.module.css'
 
 const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
   const { t } = useTranslation()
-  const { openSidePanel } = useSidePanel()
 
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const dispatch = useAppDispatch()
@@ -143,7 +141,6 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                 {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
                   const datasetError = dataset.status === DatasetStatus.Error
                   const datasetImporting = dataset.status === DatasetStatus.Importing
-                  const datasetDescription = dataset.description !== dataset.name
                   let infoTooltip = t((t) => t.layer.seeDescription, {
                     defaultValue: 'Click to see layer description',
                   }) as string

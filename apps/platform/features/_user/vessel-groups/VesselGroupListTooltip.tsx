@@ -34,7 +34,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
     children,
     keepOpenWhileAdding = false,
     disabled = false,
-    onAddToVesselGroup: _onAddToVesselGroup,
+    onAddToVesselGroup,
     ...restProps
   } = props
   const { t } = useTranslation()
@@ -66,8 +66,8 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
 
   const handleVesselGroupClick = useCallback(
     (vesselGroupId: string) => {
-      if (_onAddToVesselGroup) {
-        _onAddToVesselGroup(vesselGroupId)
+      if (onAddToVesselGroup) {
+        onAddToVesselGroup(vesselGroupId)
         if (vesselGroupId === NEW_VESSEL_GROUP_ID) {
           dispatch(setVesselGroupsModalOpen(true))
         } else {
@@ -79,7 +79,7 @@ function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
         }
       }
     },
-    [dispatch, keepOpenWhileAdding, _onAddToVesselGroup]
+    [dispatch, keepOpenWhileAdding, onAddToVesselGroup]
   )
 
   return (

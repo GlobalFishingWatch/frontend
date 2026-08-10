@@ -30,7 +30,7 @@ describe('Polygon', () => {
 
     // store.dispatch(navigateToPolygonEditorAction)
 
-    const { getByTestId, getByRole } = await render({ authenticated: true, store })
+    const { getByTestId } = await render({ authenticated: true, store })
 
     await userEvent.click(getByTestId('activity-layer-panel-switch-ais'))
     await userEvent.click(getByTestId('activity-layer-panel-switch-vms'))
@@ -55,7 +55,7 @@ describe('Polygon', () => {
     const jotaiStore = createJotaiStore()
     const store = makeStore(defaultState)
 
-    const { getByTestId, router } = await render({ store, jotaiStore })
+    const { router } = await render({ store, jotaiStore })
 
     await router.navigate(navigateToPolygonEditor())
 

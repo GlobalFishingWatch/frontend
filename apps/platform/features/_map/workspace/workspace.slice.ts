@@ -83,7 +83,7 @@ export function getPersistedHistoryNavigation(): LastWorkspaceVisited[] {
     try {
       const stored = sessionStorage.getItem(WORKSPACE_HISTORY_NAVIGATION)
       return stored ? (JSON.parse(stored) as LastWorkspaceVisited[]) : []
-    } catch (e) {
+    } catch {
       return []
     }
   }
@@ -94,7 +94,7 @@ function persistHistoryNavigation(historyNavigation: LastWorkspaceVisited[]) {
   if (getIsBrowser()) {
     try {
       sessionStorage.setItem(WORKSPACE_HISTORY_NAVIGATION, JSON.stringify(historyNavigation))
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
@@ -648,7 +648,8 @@ const workspaceSlice = createSlice({
       const { isRefresh } = action.meta.arg
       state.status = AsyncReducerStatus.Finished
       state.refreshStatus = isRefresh ? AsyncReducerStatus.Finished : state.refreshStatus
-      const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { workspaceReportId, dataviewInstancesToUpsert, ...data } = action.payload
       if (data) {
         state.data = data
       }

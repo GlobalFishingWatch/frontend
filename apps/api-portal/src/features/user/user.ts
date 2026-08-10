@@ -15,7 +15,7 @@ const fetchUser = async (accessToken: string | null) => {
     removeAccessTokenFromUrl()
   }
 
-  return await GFWAPI.login({ accessToken }).catch((error) => {
+  return await GFWAPI.login({ accessToken }).catch(() => {
     return null
   })
 }

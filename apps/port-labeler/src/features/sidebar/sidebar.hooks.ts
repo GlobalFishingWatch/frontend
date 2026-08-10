@@ -31,7 +31,6 @@ export const useSelectedTracksConnect = () => {
   const subareas = useSelector(selectSubareas)
   const ports = useSelector(selectPorts)
   const { centerPoints } = useMapConnect()
-  let fileReader: FileReader
 
   const findPortName = (country: string, portId: string, defaultValue: string) => {
     const port = ports[country]?.find((p) => p.id === portId)
@@ -131,8 +130,8 @@ export const useSelectedTracksConnect = () => {
   /**
    * handle the file after this was uploaded
    */
-  const handleFileUploaded = (_e: ProgressEvent<FileReader>) => {
-    const content: string = fileReader.result as string
+  const handleFileUploaded = (e: ProgressEvent<FileReader>) => {
+    const content: string = (e.target as FileReader).result as string
     const records: any = JSON.parse(content)
 
     dispatch(
@@ -155,9 +154,9 @@ export const useSelectedTracksConnect = () => {
    */
   const dispatchImportHandler = (event: any) => {
     if (event.target.files && event.target.files.length) {
-      fileReader = new FileReader()
-      fileReader.onloadend = handleFileUploaded
-      fileReader.readAsText(event.target.files[0])
+      const reader = new FileReader()
+      reader.onloadend = handleFileUploaded
+      reader.readAsText(event.target.files[0])
     }
   }
 

@@ -138,7 +138,7 @@ const bigQuerySlice = createSlice({
         state.runCostStatus = AsyncReducerStatus.Idle
       }
     )
-    builder.addCase(fetchBigQueryRunCostThunk.pending, (state, action) => {
+    builder.addCase(fetchBigQueryRunCostThunk.pending, (state) => {
       state.runCostStatus = AsyncReducerStatus.Loading
       state.runCost = null
     })
@@ -153,10 +153,10 @@ const bigQuerySlice = createSlice({
         state.runCostStatus = AsyncReducerStatus.Error
       }
     })
-    builder.addCase(createBigQueryDatasetThunk.pending, (state, action) => {
+    builder.addCase(createBigQueryDatasetThunk.pending, (state) => {
       state.creationStatus = AsyncReducerStatus.Loading
     })
-    builder.addCase(createBigQueryDatasetThunk.fulfilled, (state, action) => {
+    builder.addCase(createBigQueryDatasetThunk.fulfilled, (state) => {
       state.creationStatus = AsyncReducerStatus.Finished
     })
     builder.addCase(createBigQueryDatasetThunk.rejected, (state, action) => {

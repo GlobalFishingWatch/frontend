@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { flags } from '@globalfishingwatch/i18n-labels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { IconButton, InputText, Modal, Tooltip } from '@globalfishingwatch/ui-components'
+import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import {
   selectPointValuesByCountry,

@@ -1,8 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
 
-import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
-import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
+import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getUserContextTimeFilterProps } from '@globalfishingwatch/deck-layer-composer'
@@ -48,22 +48,13 @@ import { t } from 'features/i18n/i18n'
 import {
   selectIsAnyReportLocation,
   selectIsVesselGroupReportLocation,
-  selectUrlBufferOperationQuery,
-  selectUrlBufferUnitQuery,
-  selectUrlBufferValueQuery,
 } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import { EMPTY_API_VALUES } from '../reports.config'
-import {
-  selectReportActivityGraph,
-  selectReportBufferOperationSelector,
-  selectReportBufferUnitSelector,
-  selectReportBufferValueSelector,
-  selectReportTimeComparison,
-} from '../reports.config.selectors'
+import { selectReportActivityGraph, selectReportTimeComparison } from '../reports.config.selectors'
 import type { ReportTimeComparisonValues } from '../tabs/activity/reports-activity.types'
 
 // Moved to area-reports.buffer.selectors so app.workspace.selectors (reached from MainNav) can read the

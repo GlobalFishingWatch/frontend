@@ -1,8 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { buffer, concave, featureCollection, point } from '@turf/turf'
 
-import { flags } from '@globalfishingwatch/i18n-labels'
-
 import {
   selectPortPointsByCountry,
   selectPortValuesByCountry,
@@ -12,7 +10,6 @@ import {
 import {
   selectCountry,
   selectCountryColors,
-  selectMapData,
   selectSelectedPoints,
 } from 'features/labeler/labeler.slice'
 import type {
@@ -21,7 +18,6 @@ import type {
   PortPositionFeature,
   PortPositionsGeneratorConfig,
 } from 'types'
-import { getFixedColorForUnknownLabel } from 'utils/colors'
 import { groupBy } from 'utils/group-by'
 
 /**
@@ -74,7 +70,7 @@ export const selectPointsByPort = createSelector(
   [selectPortPointsByCountry, selectPortValuesByCountry, selectCountry],
   (countryPoints, portValues, country): PortPosition[][] => {
     if (!country || !portValues) return []
-    const areas = groupBy(countryPoints, portValues, 'label')
+    const areas = groupBy(countryPoints, portValues)
     const areaNames = Object.keys(areas)
     return areaNames.map((areaName) => areas[areaName]).filter((area) => area.length > 2)
   }
@@ -88,7 +84,7 @@ export const selectPointsByPortAndSubarea = createSelector(
       return []
     }
     const subareas = portPoints.map((poins) =>
-      groupBy(poins, subareasValues as Record<string, string | undefined>, 'community_iso3')
+      groupBy(poins, subareasValues as Record<string, string | undefined>)
     )
 
     return subareas.flatMap((subareaMap) => {

@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from 'react'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import type { FieldValidationError } from 'lib/types'
 import _ from 'lodash'
 
@@ -12,12 +12,9 @@ import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 
 import styles from './user-additional-fields.module.css'
 
-/* eslint-disable-next-line */
-export interface UserAdditionalFieldsProps {}
-
-export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
+export function UserAdditionalFields() {
   const { data: user, isLoading } = useUser()
-  const { mutate, isLoading: isUpdating, isSuccess, isError } = useUpdateUserAdditionalInformation()
+  const { mutate, isLoading: isUpdating, isError } = useUpdateUserAdditionalInformation()
 
   const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
     apiTerms: user?.apiTerms,
@@ -31,7 +28,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     useState<UserApiAdditionalInformation | null>(defaultUserAdditionalInformation)
 
   const [termsOfUseOpened, setTermsOfUseOpened] = useState(false)
-  const onTermsOfUseClick: MouseEventHandler = useCallback((event) => {
+  const onTermsOfUseClick: MouseEventHandler = useCallback(() => {
     setTermsOfUseOpened(true)
   }, [])
   const error = useMemo(() => {
@@ -85,12 +82,9 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     },
     [setUserAdditionalInformation, userAdditionalInformation]
   )
-  const onRemoveIntendedUse = useCallback(
-    (option: SelectOption) => {
-      setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
-    },
-    [setUserAdditionalInformation, userAdditionalInformation]
-  )
+  const onRemoveIntendedUse = useCallback(() => {
+    setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
+  }, [setUserAdditionalInformation, userAdditionalInformation])
 
   const termsAccepted = useMemo(
     () => !!userAdditionalInformation?.apiTerms,

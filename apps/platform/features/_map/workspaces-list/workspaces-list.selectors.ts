@@ -12,11 +12,7 @@ import { USER } from 'router/routes'
 import { selectLocationCategory, selectLocationType } from 'router/routes.selectors'
 
 // Static data + types live in the config leaf so chrome components don't pull this selector graph.
-import type {
-  HighlightedWorkspace,
-  HighlightedWorkspaceCategory,
-  HighlightedWorkspaces,
-} from './workspaces-list.config'
+import type { HighlightedWorkspace, HighlightedWorkspaces } from './workspaces-list.config'
 import { WORKSPACES_BY_CATEGORY } from './workspaces-list.config'
 import { selectWorkspaces } from './workspaces-list.slice'
 

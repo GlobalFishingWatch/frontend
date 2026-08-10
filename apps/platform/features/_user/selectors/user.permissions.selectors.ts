@@ -14,7 +14,6 @@ import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectAllReports } from 'features/_reports/reports.slice'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
-import type { PRIVATE_SUPPORTED_GROUPS } from 'features/_user/user.config'
 import { DEFAULT_GROUP_ID } from 'features/_user/user.config'
 
 import { USER_GROUP_WORKSPACE } from '../user.slice'

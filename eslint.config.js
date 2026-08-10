@@ -1,6 +1,7 @@
 import { defineConfig } from 'eslint/config'
 
 import {
+  cjsRequireConfig,
   nodeScriptsConfig,
   packageJsonConfig,
   repoConfig,
@@ -37,6 +38,7 @@ export default defineConfig([
   packageJsonDependencyChecksConfig, // @nx/dependency-checks (libs + root)
   repoConfig,
   nodeScriptsConfig,
+  cjsRequireConfig,
   routeFilesConfig,
   moduleBoundariesConfig,
 ])

@@ -119,7 +119,7 @@ const MapAnnotations = (): React.ReactNode | null => {
                 // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
                 role="button"
                 tabIndex={0}
-                onClick={(event) => {
+                onClick={() => {
                   setMapAnnotation(annotation)
                 }}
                 onMouseEnter={handleMouseEnter}

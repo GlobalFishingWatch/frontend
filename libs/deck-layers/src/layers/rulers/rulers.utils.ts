@@ -22,6 +22,16 @@ export const getGreatCircleMultiLine = (ruler: RulerData) => {
   return greatCircle(start as Coord, end as Coord, { properties: { id: ruler.id }, npoints: 200 })
 }
 
+export const getRulerLengthLabel = (line: Feature<LineString | MultiLineString>) => {
+  const lengthKm = length(line, { units: 'kilometers' })
+  const lengthNmi = lengthKm / 1.852
+  const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
+  const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
+  const lengthKmFormatted = lengthKm.toFixed(precissionKm)
+  const lengthNmiFormatted = lengthNmi.toFixed(precissionNmi)
+  return `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
+}
+
 export const getRulerStartAndEndPoints = (
   ruler: RulerData
 ): Feature<Point, RulerPointProperties>[] => {
@@ -48,14 +58,4 @@ export const getRulerCenterPointWithLabel = (
     text: getRulerLengthLabel(line),
     bearing: bearing <= 0 ? 270 - bearing : 90 - bearing,
   })
-}
-
-export const getRulerLengthLabel = (line: Feature<LineString | MultiLineString>) => {
-  const lengthKm = length(line, { units: 'kilometers' })
-  const lengthNmi = lengthKm / 1.852
-  const precissionKm = lengthKm > 100 ? 0 : lengthKm > 10 ? 1 : 2
-  const precissionNmi = lengthNmi > 100 ? 0 : lengthNmi > 10 ? 1 : 2
-  const lengthKmFormatted = lengthKm.toFixed(precissionKm)
-  const lengthNmiFormatted = lengthNmi.toFixed(precissionNmi)
-  return `${lengthKmFormatted}km - ${lengthNmiFormatted}nm`
 }

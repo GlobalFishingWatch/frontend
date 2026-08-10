@@ -18,7 +18,7 @@ export const getVesselIdentityTooltipSummary = (
   }
   const identitiesByNormalizedShipname = groupBy(vessel?.selfReportedInfo, (i) => i.nShipname)
   const identities = Object.entries(identitiesByNormalizedShipname).flatMap(
-    ([_, selfReportedInfo], index) => {
+    ([_shipname, selfReportedInfo], index) => {
       const firstTransmissionDateFrom = selfReportedInfo.reduce((acc, curr) => {
         if (!acc) {
           return curr.transmissionDateFrom

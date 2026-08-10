@@ -21,6 +21,7 @@ export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
 export const parseUpsertWorkspace = (
   workspace: AppWorkspace | Partial<AppWorkspace>
 ): WorkspaceUpsert<WorkspaceState> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ownerId, createdAt, ownerType, viewAccess, ...restWorkspace } = workspace
   return restWorkspace as WorkspaceUpsert<WorkspaceState>
 }
@@ -88,6 +89,7 @@ export function cleanReportPayload(payload: Record<string, any>) {
 }
 
 export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
     workspace
 

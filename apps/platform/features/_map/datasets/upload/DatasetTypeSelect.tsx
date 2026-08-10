@@ -1,6 +1,5 @@
 import type { ReactElement } from 'react'
 import { useCallback, useState } from 'react'
-import type { FileRejection } from 'react-dropzone'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -45,12 +44,9 @@ const DatasetType = ({
     },
     [dispatchDatasetModalConfig, type, onFileLoaded]
   )
-  const onDropRejected = useCallback(
-    (files: FileRejection[]) => {
-      dispatchDatasetModalConfig({ fileRejected: true })
-    },
-    [dispatchDatasetModalConfig]
-  )
+  const onDropRejected = useCallback(() => {
+    dispatchDatasetModalConfig({ fileRejected: true })
+  }, [dispatchDatasetModalConfig])
 
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)

@@ -82,7 +82,8 @@ export const useSetTimerange = () => {
     (timerange: TimeRange, stickToInterval = true) => {
       let stuckTimerange = timerange
       if (stickToInterval) {
-        let { start: newStart, end: newEnd } = stickToClosestInterval(timerange)
+        const { start: newStart, end: newEndInitial } = stickToClosestInterval(timerange)
+        let newEnd = newEndInitial
         const minEnd = getUTCDateTime(newStart).plus({ hours: 24 })
         if (timeMode !== 'realTime' && getUTCDateTime(newEnd) < minEnd) {
           newEnd = minEnd.toISO() as string
