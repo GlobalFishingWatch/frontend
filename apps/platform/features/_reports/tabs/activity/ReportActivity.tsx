@@ -20,7 +20,10 @@ import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/d
 import { getDownloadReportSupported } from 'features/_map/download/download.utils'
 import { selectReportLoadVessels } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
+import {
+  selectIsRealTimeMode,
+  selectWorkspaceStatus,
+} from 'features/_map/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import type { LastReportStorage } from 'features/_reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/_reports/report-area/area-reports.config'
@@ -75,6 +78,7 @@ function ActivityReport() {
   const reportRequestHash = useSelector(selectReportRequestHash)
   const reportCategory = useSelector(selectReportCategory)
   const userData = useSelector(selectUserData)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const dataviews = useSelector(selectActiveReportDataviews)
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
@@ -244,6 +248,10 @@ function ActivityReport() {
   ])
 
   const ReportComponent = useMemo(() => {
+    if (isRealTimeMode) {
+      // TODO:realtime add the vessels report when supported
+      return null
+    }
     if (isBQEditorDataset) {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
