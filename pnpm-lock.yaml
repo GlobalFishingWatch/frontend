@@ -1079,7 +1079,7 @@ importers:
         version: 0.5.0
       immer:
         specifier: 11.x
-        version: 11.1.15
+        version: 11.1.16
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -9530,9 +9530,6 @@ packages:
 
   immediate@3.0.6:
     resolution: {integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==}
-
-  immer@11.1.15:
-    resolution: {integrity: sha512-VrNANlmnWQnh5COXIIOQXM9oOJw7naGKlBT74ZOOR6lpVXc3gFEu9FJLDFcpCJ2j+NWr8TIwtWD//T6ZX6TKiQ==}
 
   immer@11.1.16:
     resolution: {integrity: sha512-Xs7H9rBc+kti1J6RueUvbEBkmOz7jqj11XYgf+YMXAYzu8EeE7hwZ9poLXdVfVnGmJu7QAf41T7H2KuF6QoK6Q==}
@@ -24931,8 +24928,6 @@ snapshots:
   image-size@0.7.5: {}
 
   immediate@3.0.6: {}
-
-  immer@11.1.15: {}
 
   immer@11.1.16: {}
 
