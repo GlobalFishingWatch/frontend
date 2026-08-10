@@ -17,7 +17,7 @@ const SITE_ORIGIN =
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 const SHARE_IMAGE = `${SITE_ORIGIN}${PATH_BASENAME}/images/gfw.jpg`
 
-const buildCanonicalUrl = (pathname?: string) => {
+export const buildCanonicalUrl = (pathname?: string) => {
   if (!pathname) return `${SITE_ORIGIN}${PATH_BASENAME}`
   const withBase = pathname.startsWith(PATH_BASENAME) ? pathname : `${PATH_BASENAME}${pathname}`
   return `${SITE_ORIGIN}${withBase}`

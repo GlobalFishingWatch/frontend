@@ -2,19 +2,35 @@
   display: grid;
   grid-template-columns: minmax(24rem, 28rem) minmax(0, 1fr);
   gap: var(--space-L);
-  align-items: start;
+  height: 100%;
   padding: var(--space-M);
 }
 
-/* Sticky rather than its own scroll context: the page already scrolls inside ContentLayout's
-   SCROLL_CONTAINER_DOM_ID element, and nesting a second scroller traps the wheel. */
 .tableOfContents {
-  position: sticky;
-  top: var(--space-M);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .content {
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 60%;
+}
+
+.header {
+  margin-bottom: var(--space-L);
+}
+
+.title {
+  font: var(--font-XXL-bold);
+  color: var(--color-primary-blue);
+}
+
+.description {
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+  margin-top: var(--space-S);
 }
 
 .placeholder {
@@ -29,19 +45,31 @@
   .container {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-M);
+    height: auto;
   }
 
-  .tableOfContents {
-    position: static;
+  .tableOfContents,
+  .content {
+    overflow-y: visible;
+  }
+
+  .content {
+    padding-bottom: 0;
   }
 }
 
 @media print {
   .container {
     grid-template-columns: minmax(0, 1fr);
+    height: auto;
   }
 
   .tableOfContents {
     display: none;
+  }
+
+  .content {
+    overflow-y: visible;
+    padding-bottom: 0;
   }
 }

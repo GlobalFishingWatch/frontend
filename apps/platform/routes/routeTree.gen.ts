@@ -26,7 +26,6 @@ import { Route as ApiOceanAreasIndexRouteImport } from './api/ocean-areas/index'
 import { Route as ApiOceanAreasNameRouteImport } from './api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './api/ocean-areas/search'
 import { Route as PlatformContentHelpAndResourcesIndexRouteImport } from './_platform/_content/help-and-resources/index'
-import { Route as PlatformContentHelpAndResourcesSectionSlugRouteImport } from './_platform/_content/help-and-resources/$sectionSlug'
 import { Route as PlatformMapMapIndexRouteImport } from './_platform/_map/map/index'
 import { Route as PlatformMapMapUserRouteImport } from './_platform/_map/map/user'
 import { Route as PlatformMapMapVesselSearchRouteImport } from './_platform/_map/map/vessel-search'
@@ -34,8 +33,7 @@ import { Route as PlatformMapReportReportIdRouteImport } from './_platform/_map/
 import { Route as PlatformMapVesselVesselIdRouteImport } from './_platform/_map/vessel.$vesselId'
 import { Route as ApiTrackCorrectionsWorkspaceIdIndexRouteImport } from './api/track-corrections/$workspaceId/index'
 import { Route as ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport } from './api/track-corrections/$workspaceId/$issueId'
-import { Route as PlatformContentHelpAndResourcesSectionSlugIndexRouteImport } from './_platform/_content/help-and-resources/$sectionSlug/index'
-import { Route as PlatformContentHelpAndResourcesSectionSlugTopicSlugRouteImport } from './_platform/_content/help-and-resources/$sectionSlug/$topicSlug'
+import { Route as PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125RouteImport } from './_platform/_content/help-and-resources/$sectionSlug.{-$topicSlug}'
 import { Route as PlatformMapMapCategoryIndexRouteImport } from './_platform/_map/map/$category/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdRouteImport } from './_platform/_map/map/$category/$workspaceId'
 import { Route as PlatformMapMapReportReportIdRouteImport } from './_platform/_map/map/report.$reportId'
@@ -89,12 +87,11 @@ const PlatformContentUserRoute = PlatformContentUserRouteImport.update({
   path: '/user',
   getParentRoute: () => PlatformContentRoute,
 } as any)
-const PlatformContentVesselSearchRoute =
-  PlatformContentVesselSearchRouteImport.update({
-    id: '/vessel-search',
-    path: '/vessel-search',
-    getParentRoute: () => PlatformContentRoute,
-  } as any)
+const PlatformContentVesselSearchRoute = PlatformContentVesselSearchRouteImport.update({
+  id: '/vessel-search',
+  path: '/vessel-search',
+  getParentRoute: () => PlatformContentRoute,
+} as any)
 const PlatformMapMapRoute = PlatformMapMapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -131,12 +128,6 @@ const PlatformContentHelpAndResourcesIndexRoute =
     path: '/help-and-resources/',
     getParentRoute: () => PlatformContentRoute,
   } as any)
-const PlatformContentHelpAndResourcesSectionSlugRoute =
-  PlatformContentHelpAndResourcesSectionSlugRouteImport.update({
-    id: '/help-and-resources/$sectionSlug',
-    path: '/help-and-resources/$sectionSlug',
-    getParentRoute: () => PlatformContentRoute,
-  } as any)
 const PlatformMapMapIndexRoute = PlatformMapMapIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -147,24 +138,21 @@ const PlatformMapMapUserRoute = PlatformMapMapUserRouteImport.update({
   path: '/user',
   getParentRoute: () => PlatformMapMapRoute,
 } as any)
-const PlatformMapMapVesselSearchRoute =
-  PlatformMapMapVesselSearchRouteImport.update({
-    id: '/vessel-search',
-    path: '/vessel-search',
-    getParentRoute: () => PlatformMapMapRoute,
-  } as any)
-const PlatformMapReportReportIdRoute =
-  PlatformMapReportReportIdRouteImport.update({
-    id: '/report/$reportId',
-    path: '/report/$reportId',
-    getParentRoute: () => PlatformMapRoute,
-  } as any)
-const PlatformMapVesselVesselIdRoute =
-  PlatformMapVesselVesselIdRouteImport.update({
-    id: '/vessel/$vesselId',
-    path: '/vessel/$vesselId',
-    getParentRoute: () => PlatformMapRoute,
-  } as any)
+const PlatformMapMapVesselSearchRoute = PlatformMapMapVesselSearchRouteImport.update({
+  id: '/vessel-search',
+  path: '/vessel-search',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
+const PlatformMapReportReportIdRoute = PlatformMapReportReportIdRouteImport.update({
+  id: '/report/$reportId',
+  path: '/report/$reportId',
+  getParentRoute: () => PlatformMapRoute,
+} as any)
+const PlatformMapVesselVesselIdRoute = PlatformMapVesselVesselIdRouteImport.update({
+  id: '/vessel/$vesselId',
+  path: '/vessel/$vesselId',
+  getParentRoute: () => PlatformMapRoute,
+} as any)
 const ApiTrackCorrectionsWorkspaceIdIndexRoute =
   ApiTrackCorrectionsWorkspaceIdIndexRouteImport.update({
     id: '/api/track-corrections/$workspaceId/',
@@ -177,42 +165,32 @@ const ApiTrackCorrectionsWorkspaceIdIssueIdRoute =
     path: '/api/track-corrections/$workspaceId/$issueId',
     getParentRoute: () => rootRouteImport,
   } as any)
-const PlatformContentHelpAndResourcesSectionSlugIndexRoute =
-  PlatformContentHelpAndResourcesSectionSlugIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => PlatformContentHelpAndResourcesSectionSlugRoute,
+const PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route =
+  PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125RouteImport.update({
+    id: '/help-and-resources/$sectionSlug/{-$topicSlug}',
+    path: '/help-and-resources/$sectionSlug/{-$topicSlug}',
+    getParentRoute: () => PlatformContentRoute,
   } as any)
-const PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute =
-  PlatformContentHelpAndResourcesSectionSlugTopicSlugRouteImport.update({
-    id: '/$topicSlug',
-    path: '/$topicSlug',
-    getParentRoute: () => PlatformContentHelpAndResourcesSectionSlugRoute,
-  } as any)
-const PlatformMapMapCategoryIndexRoute =
-  PlatformMapMapCategoryIndexRouteImport.update({
-    id: '/$category/',
-    path: '/$category/',
-    getParentRoute: () => PlatformMapMapRoute,
-  } as any)
-const PlatformMapMapCategoryWorkspaceIdRoute =
-  PlatformMapMapCategoryWorkspaceIdRouteImport.update({
-    id: '/$category/$workspaceId',
-    path: '/$category/$workspaceId',
-    getParentRoute: () => PlatformMapMapRoute,
-  } as any)
-const PlatformMapMapReportReportIdRoute =
-  PlatformMapMapReportReportIdRouteImport.update({
-    id: '/report/$reportId',
-    path: '/report/$reportId',
-    getParentRoute: () => PlatformMapMapRoute,
-  } as any)
-const PlatformMapMapVesselVesselIdRoute =
-  PlatformMapMapVesselVesselIdRouteImport.update({
-    id: '/vessel/$vesselId',
-    path: '/vessel/$vesselId',
-    getParentRoute: () => PlatformMapMapRoute,
-  } as any)
+const PlatformMapMapCategoryIndexRoute = PlatformMapMapCategoryIndexRouteImport.update({
+  id: '/$category/',
+  path: '/$category/',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
+const PlatformMapMapCategoryWorkspaceIdRoute = PlatformMapMapCategoryWorkspaceIdRouteImport.update({
+  id: '/$category/$workspaceId',
+  path: '/$category/$workspaceId',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
+const PlatformMapMapReportReportIdRoute = PlatformMapMapReportReportIdRouteImport.update({
+  id: '/report/$reportId',
+  path: '/report/$reportId',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
+const PlatformMapMapVesselVesselIdRoute = PlatformMapMapVesselVesselIdRouteImport.update({
+  id: '/vessel/$vesselId',
+  path: '/vessel/$vesselId',
+  getParentRoute: () => PlatformMapMapRoute,
+} as any)
 const PlatformMapMapCategoryWorkspaceIdIndexRoute =
   PlatformMapMapCategoryWorkspaceIdIndexRouteImport.update({
     id: '/',
@@ -232,13 +210,11 @@ const PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute =
     getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
   } as any)
 const PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
-  PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update(
-    {
-      id: '/vessel-group-report/$vesselGroupId',
-      path: '/vessel-group-report/$vesselGroupId',
-      getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-    } as any,
-  )
+  PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update({
+    id: '/vessel-group-report/$vesselGroupId',
+    path: '/vessel-group-report/$vesselGroupId',
+    getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
+  } as any)
 const PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute =
   PlatformMapMapCategoryWorkspaceIdVesselVesselIdRouteImport.update({
     id: '/vessel/$vesselId',
@@ -251,7 +227,7 @@ const PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaI
       id: '/report/{-$datasetId}/{-$areaId}',
       path: '/report/{-$datasetId}/{-$areaId}',
       getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-    } as any,
+    } as any
   )
 
 export interface FileRoutesByFullPath {
@@ -268,7 +244,6 @@ export interface FileRoutesByFullPath {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
-  '/help-and-resources/$sectionSlug': typeof PlatformContentHelpAndResourcesSectionSlugRouteWithChildren
   '/map/user': typeof PlatformMapMapUserRoute
   '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/report/$reportId': typeof PlatformMapReportReportIdRoute
@@ -277,11 +252,10 @@ export interface FileRoutesByFullPath {
   '/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
-  '/help-and-resources/$sectionSlug/$topicSlug': typeof PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute
+  '/help-and-resources/$sectionSlug/{-$topicSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
   '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
-  '/help-and-resources/$sectionSlug/': typeof PlatformContentHelpAndResourcesSectionSlugIndexRoute
   '/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -311,10 +285,9 @@ export interface FileRoutesByTo {
   '/help-and-resources': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
-  '/help-and-resources/$sectionSlug/$topicSlug': typeof PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute
+  '/help-and-resources/$sectionSlug/{-$topicSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route
   '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
-  '/help-and-resources/$sectionSlug': typeof PlatformContentHelpAndResourcesSectionSlugIndexRoute
   '/map/$category': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -341,7 +314,6 @@ export interface FileRoutesById {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
-  '/_platform/_content/help-and-resources/$sectionSlug': typeof PlatformContentHelpAndResourcesSectionSlugRouteWithChildren
   '/_platform/_map/map/user': typeof PlatformMapMapUserRoute
   '/_platform/_map/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/_platform/_map/report/$reportId': typeof PlatformMapReportReportIdRoute
@@ -350,11 +322,10 @@ export interface FileRoutesById {
   '/_platform/_content/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/_platform/_map/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
-  '/_platform/_content/help-and-resources/$sectionSlug/$topicSlug': typeof PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute
+  '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route
   '/_platform/_map/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
   '/_platform/_map/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/_platform/_map/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
-  '/_platform/_content/help-and-resources/$sectionSlug/': typeof PlatformContentHelpAndResourcesSectionSlugIndexRoute
   '/_platform/_map/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/_platform/_map/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/_platform/_map/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -379,7 +350,6 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
-    | '/help-and-resources/$sectionSlug'
     | '/map/user'
     | '/map/vessel-search'
     | '/report/$reportId'
@@ -388,11 +358,10 @@ export interface FileRouteTypes {
     | '/help-and-resources/'
     | '/map/'
     | '/api/track-corrections/$workspaceId/'
-    | '/help-and-resources/$sectionSlug/$topicSlug'
+    | '/help-and-resources/$sectionSlug/{-$topicSlug}'
     | '/map/$category/$workspaceId'
     | '/map/report/$reportId'
     | '/map/vessel/$vesselId'
-    | '/help-and-resources/$sectionSlug/'
     | '/map/$category/'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId/'
@@ -422,10 +391,9 @@ export interface FileRouteTypes {
     | '/help-and-resources'
     | '/map'
     | '/api/track-corrections/$workspaceId'
-    | '/help-and-resources/$sectionSlug/$topicSlug'
+    | '/help-and-resources/$sectionSlug/{-$topicSlug}'
     | '/map/report/$reportId'
     | '/map/vessel/$vesselId'
-    | '/help-and-resources/$sectionSlug'
     | '/map/$category'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId'
@@ -451,7 +419,6 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
-    | '/_platform/_content/help-and-resources/$sectionSlug'
     | '/_platform/_map/map/user'
     | '/_platform/_map/map/vessel-search'
     | '/_platform/_map/report/$reportId'
@@ -460,11 +427,10 @@ export interface FileRouteTypes {
     | '/_platform/_content/help-and-resources/'
     | '/_platform/_map/map/'
     | '/api/track-corrections/$workspaceId/'
-    | '/_platform/_content/help-and-resources/$sectionSlug/$topicSlug'
+    | '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}'
     | '/_platform/_map/map/$category/$workspaceId'
     | '/_platform/_map/map/report/$reportId'
     | '/_platform/_map/map/vessel/$vesselId'
-    | '/_platform/_content/help-and-resources/$sectionSlug/'
     | '/_platform/_map/map/$category/'
     | '/_platform/_map/map/$category/$workspaceId/vessel-search'
     | '/_platform/_map/map/$category/$workspaceId/'
@@ -610,13 +576,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformContentHelpAndResourcesIndexRouteImport
       parentRoute: typeof PlatformContentRoute
     }
-    '/_platform/_content/help-and-resources/$sectionSlug': {
-      id: '/_platform/_content/help-and-resources/$sectionSlug'
-      path: '/help-and-resources/$sectionSlug'
-      fullPath: '/help-and-resources/$sectionSlug'
-      preLoaderRoute: typeof PlatformContentHelpAndResourcesSectionSlugRouteImport
-      parentRoute: typeof PlatformContentRoute
-    }
     '/_platform/_map/map/': {
       id: '/_platform/_map/map/'
       path: '/'
@@ -666,19 +625,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_platform/_content/help-and-resources/$sectionSlug/': {
-      id: '/_platform/_content/help-and-resources/$sectionSlug/'
-      path: '/'
-      fullPath: '/help-and-resources/$sectionSlug/'
-      preLoaderRoute: typeof PlatformContentHelpAndResourcesSectionSlugIndexRouteImport
-      parentRoute: typeof PlatformContentHelpAndResourcesSectionSlugRoute
-    }
-    '/_platform/_content/help-and-resources/$sectionSlug/$topicSlug': {
-      id: '/_platform/_content/help-and-resources/$sectionSlug/$topicSlug'
-      path: '/$topicSlug'
-      fullPath: '/help-and-resources/$sectionSlug/$topicSlug'
-      preLoaderRoute: typeof PlatformContentHelpAndResourcesSectionSlugTopicSlugRouteImport
-      parentRoute: typeof PlatformContentHelpAndResourcesSectionSlugRoute
+    '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}': {
+      id: '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}'
+      path: '/help-and-resources/$sectionSlug/{-$topicSlug}'
+      fullPath: '/help-and-resources/$sectionSlug/{-$topicSlug}'
+      preLoaderRoute: typeof PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125RouteImport
+      parentRoute: typeof PlatformContentRoute
     }
     '/_platform/_map/map/$category/': {
       id: '/_platform/_map/map/$category/'
@@ -753,42 +705,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface PlatformContentHelpAndResourcesSectionSlugRouteChildren {
-  PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute: typeof PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute
-  PlatformContentHelpAndResourcesSectionSlugIndexRoute: typeof PlatformContentHelpAndResourcesSectionSlugIndexRoute
-}
-
-const PlatformContentHelpAndResourcesSectionSlugRouteChildren: PlatformContentHelpAndResourcesSectionSlugRouteChildren =
-  {
-    PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute:
-      PlatformContentHelpAndResourcesSectionSlugTopicSlugRoute,
-    PlatformContentHelpAndResourcesSectionSlugIndexRoute:
-      PlatformContentHelpAndResourcesSectionSlugIndexRoute,
-  }
-
-const PlatformContentHelpAndResourcesSectionSlugRouteWithChildren =
-  PlatformContentHelpAndResourcesSectionSlugRoute._addFileChildren(
-    PlatformContentHelpAndResourcesSectionSlugRouteChildren,
-  )
-
 interface PlatformContentRouteChildren {
   PlatformContentUserRoute: typeof PlatformContentUserRoute
   PlatformContentVesselSearchRoute: typeof PlatformContentVesselSearchRoute
-  PlatformContentHelpAndResourcesSectionSlugRoute: typeof PlatformContentHelpAndResourcesSectionSlugRouteWithChildren
   PlatformContentHelpAndResourcesIndexRoute: typeof PlatformContentHelpAndResourcesIndexRoute
+  PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route: typeof PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route
 }
 
 const PlatformContentRouteChildren: PlatformContentRouteChildren = {
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
-  PlatformContentHelpAndResourcesSectionSlugRoute:
-    PlatformContentHelpAndResourcesSectionSlugRouteWithChildren,
-  PlatformContentHelpAndResourcesIndexRoute:
-    PlatformContentHelpAndResourcesIndexRoute,
+  PlatformContentHelpAndResourcesIndexRoute: PlatformContentHelpAndResourcesIndexRoute,
+  PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route:
+    PlatformContentHelpAndResourcesSectionSlugChar123TopicSlugChar125Route,
 }
 
 const PlatformContentRouteWithChildren = PlatformContentRoute._addFileChildren(
-  PlatformContentRouteChildren,
+  PlatformContentRouteChildren
 )
 
 interface PlatformMapMapCategoryWorkspaceIdRouteChildren {
@@ -804,8 +737,7 @@ const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWork
   {
     PlatformMapMapCategoryWorkspaceIdVesselSearchRoute:
       PlatformMapMapCategoryWorkspaceIdVesselSearchRoute,
-    PlatformMapMapCategoryWorkspaceIdIndexRoute:
-      PlatformMapMapCategoryWorkspaceIdIndexRoute,
+    PlatformMapMapCategoryWorkspaceIdIndexRoute: PlatformMapMapCategoryWorkspaceIdIndexRoute,
     PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute:
       PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute,
     PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
@@ -818,7 +750,7 @@ const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWork
 
 const PlatformMapMapCategoryWorkspaceIdRouteWithChildren =
   PlatformMapMapCategoryWorkspaceIdRoute._addFileChildren(
-    PlatformMapMapCategoryWorkspaceIdRouteChildren,
+    PlatformMapMapCategoryWorkspaceIdRouteChildren
   )
 
 interface PlatformMapMapRouteChildren {
@@ -835,15 +767,14 @@ const PlatformMapMapRouteChildren: PlatformMapMapRouteChildren = {
   PlatformMapMapUserRoute: PlatformMapMapUserRoute,
   PlatformMapMapVesselSearchRoute: PlatformMapMapVesselSearchRoute,
   PlatformMapMapIndexRoute: PlatformMapMapIndexRoute,
-  PlatformMapMapCategoryWorkspaceIdRoute:
-    PlatformMapMapCategoryWorkspaceIdRouteWithChildren,
+  PlatformMapMapCategoryWorkspaceIdRoute: PlatformMapMapCategoryWorkspaceIdRouteWithChildren,
   PlatformMapMapReportReportIdRoute: PlatformMapMapReportReportIdRoute,
   PlatformMapMapVesselVesselIdRoute: PlatformMapMapVesselVesselIdRoute,
   PlatformMapMapCategoryIndexRoute: PlatformMapMapCategoryIndexRoute,
 }
 
 const PlatformMapMapRouteWithChildren = PlatformMapMapRoute._addFileChildren(
-  PlatformMapMapRouteChildren,
+  PlatformMapMapRouteChildren
 )
 
 interface PlatformMapRouteChildren {
@@ -858,9 +789,7 @@ const PlatformMapRouteChildren: PlatformMapRouteChildren = {
   PlatformMapVesselVesselIdRoute: PlatformMapVesselVesselIdRoute,
 }
 
-const PlatformMapRouteWithChildren = PlatformMapRoute._addFileChildren(
-  PlatformMapRouteChildren,
-)
+const PlatformMapRouteWithChildren = PlatformMapRoute._addFileChildren(PlatformMapRouteChildren)
 
 interface PlatformRouteChildren {
   PlatformContentRoute: typeof PlatformContentRouteWithChildren
@@ -874,9 +803,7 @@ const PlatformRouteChildren: PlatformRouteChildren = {
   PlatformIndexRoute: PlatformIndexRoute,
 }
 
-const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
-  PlatformRouteChildren,
-)
+const PlatformRouteWithChildren = PlatformRoute._addFileChildren(PlatformRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRouteWithChildren,
@@ -889,10 +816,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
-  ApiTrackCorrectionsWorkspaceIdIssueIdRoute:
-    ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
-  ApiTrackCorrectionsWorkspaceIdIndexRoute:
-    ApiTrackCorrectionsWorkspaceIdIndexRoute,
+  ApiTrackCorrectionsWorkspaceIdIssueIdRoute: ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
+  ApiTrackCorrectionsWorkspaceIdIndexRoute: ApiTrackCorrectionsWorkspaceIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

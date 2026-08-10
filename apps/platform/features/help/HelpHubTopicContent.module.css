@@ -1,3 +1,11 @@
+.topic {
+  scroll-margin-top: var(--space-M);
+}
+
+.topic + .topic {
+  margin-top: var(--space-XL);
+}
+
 .title {
   font: var(--font-XL-bold);
   color: var(--color-primary-blue);
@@ -25,10 +33,4 @@
 .subsectionTitle {
   font: var(--font-L-bold);
   color: var(--color-primary-blue);
-}
-
-.empty {
-  font: var(--font-M);
-  color: var(--color-secondary-blue);
-  padding: var(--space-L);
 }

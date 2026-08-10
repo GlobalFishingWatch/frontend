@@ -32,13 +32,3 @@ export function toHelpHubTopics(sections: UserGuideContent): HelpHubTopic[] {
     })),
   }))
 }
-
-export function findHelpHubTopic(
-  topics: HelpHubTopic[],
-  slug: string | undefined
-): HelpHubTopic | undefined {
-  if (!slug) {
-    return undefined
-  }
-  return topics.find((topic) => topic.slug === slug)
-}
