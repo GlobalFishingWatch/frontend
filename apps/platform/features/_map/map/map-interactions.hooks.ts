@@ -25,7 +25,10 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 
 import { getIsBQEditorDataset } from 'features/_map/datasets/datasets.utils'
-import { BIG_QUERY_4WINGS_PREFIX } from 'features/_map/dataviews/dataviews.utils'
+import {
+  BIG_QUERY_4WINGS_PREFIX,
+  isRealTimeDataview,
+} from 'features/_map/dataviews/dataviews.utils'
 import {
   selectActivityDataviews,
   selectEventsDataviews,
@@ -56,6 +59,7 @@ import {
   fetchClusterEventThunk,
   fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
+  fetchRealTimePositionsThunk,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
@@ -164,29 +168,43 @@ export const useClickedEventConnect = () => {
       if (!event?.features) {
         return
       }
-      const detectionPositionFeatures = (
-        event.features as FourwingsPositionsPickingObject[]
-      ).filter((feature) => {
-        if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
-          return false
+      const positionFeatures = (event.features as FourwingsPositionsPickingObject[]).filter(
+        (feature) => {
+          if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
+            return false
+          }
+          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+            feature.category as DataviewCategory
+          )
+          const isPositions = feature.visualizationMode === 'positions'
+          return hasVesselInteraction && isPositions
         }
-        const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-          feature.category as DataviewCategory
-        )
-        const isPositions = feature.visualizationMode === 'positions'
-        return hasVesselInteraction && isPositions
+      )
+      const realTimeFeatures = positionFeatures.filter((feature) => {
+        const dataview = activityDataviews.find((d) => d.id === feature.layerId)
+        return dataview ? isRealTimeDataview(dataview) : false
       })
-      if (detectionPositionFeatures?.length) {
+      const detectionFeatures = positionFeatures.filter(
+        (feature) => !realTimeFeatures.includes(feature)
+      )
+      if (detectionFeatures?.length) {
         const detectionsPositionPromise = dispatch(
-          fetchDetectionThumbnailsThunk({ detectionFeatures: detectionPositionFeatures })
+          fetchDetectionThumbnailsThunk({ detectionFeatures })
         )
         setInteractionPromises((prev) => ({
           ...prev,
           detectionPositions: detectionsPositionPromise as any,
         }))
       }
+      if (realTimeFeatures?.length) {
+        const realTimePositionsPromise = dispatch(fetchRealTimePositionsThunk({ realTimeFeatures }))
+        setInteractionPromises((prev) => ({
+          ...prev,
+          realTimePositions: realTimePositionsPromise as any,
+        }))
+      }
     },
-    [dispatch, setInteractionPromises]
+    [activityDataviews, dispatch, setInteractionPromises]
   )
 
   const handleTileClusterInteraction = useCallback(

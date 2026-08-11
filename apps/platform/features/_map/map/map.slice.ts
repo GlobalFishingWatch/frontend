@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { uniqBy } from 'es-toolkit'
+import { uniq, uniqBy } from 'es-toolkit'
 import { castDraft } from 'immer'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -51,7 +51,8 @@ import {
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { getVesselSearchEndpoint } from 'features/_vessels/search/search.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
-import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import type { VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
+import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import type { RootState } from 'reducers'
 import type { AppDispatch } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -150,6 +151,9 @@ type MapState = {
   apiDetectionPositionsStatus: AsyncReducerStatus
   apiDetectionPositionsError: string
   currentDetectionRequestId: string
+  apiRealTimePositionsStatus: AsyncReducerStatus
+  apiRealTimePositionsError: string
+  currentRealTimePositionsRequestId: string
 }
 
 const initialState: MapState = {
@@ -164,6 +168,9 @@ const initialState: MapState = {
   apiDetectionPositionsStatus: AsyncReducerStatus.Idle,
   apiDetectionPositionsError: '',
   currentDetectionRequestId: '',
+  apiRealTimePositionsStatus: AsyncReducerStatus.Idle,
+  apiRealTimePositionsError: '',
+  currentRealTimePositionsRequestId: '',
 }
 
 type SublayerVessels = {
@@ -810,6 +817,105 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
   }
 )
 
+export type PositionRealTimeVessel = {
+  vessel: IdentityVessel
+  identity: VesselDataIdentity
+}
+
+export const fetchRealTimePositionsThunk = createAsyncThunk<
+  Record<string, PositionRealTimeVessel> | undefined,
+  {
+    realTimeFeatures: FourwingsPositionsPickingObject[]
+  },
+  {
+    dispatch: AppDispatch
+  }
+>(
+  'map/fetchRealTimePositions',
+  async ({ realTimeFeatures }, { signal, getState, rejectWithValue, dispatch }) => {
+    try {
+      const state = getState() as any
+      const mmsis = uniq(realTimeFeatures.flatMap((feature) => feature.properties?.id || []))
+      if (!mmsis.length) {
+        return {}
+      }
+      const guestUser = selectIsGuestUser(state)
+      const datasetIds = uniq(
+        realTimeFeatures.flatMap(
+          (feature) => feature.sublayers?.flatMap((sublayer) => sublayer.datasets || []) || []
+        )
+      )
+      const infoDatasetIds = uniq(
+        datasetIds.flatMap((datasetId) => {
+          const dataset = selectDatasetById(datasetId)(state)
+          if (!dataset) {
+            return []
+          }
+          const relatedDatasets = getRelatedDatasetsByType(
+            dataset,
+            DatasetTypes.Vessels,
+            !guestUser
+          )?.map((d) => d.id)
+          return relatedDatasets || []
+        })
+      )
+      // The search endpoint needs the resolved dataset, not just the id from relatedDatasets
+      const infoDatasets = (
+        await Promise.all(
+          infoDatasetIds.map(async (id) => {
+            const infoDataset = selectDatasetById(id)(state)
+            if (infoDataset) {
+              return infoDataset
+            }
+            const action = await dispatch(fetchDatasetByIdThunk({ id }))
+            return fetchDatasetByIdThunk.fulfilled.match(action) ? action.payload : undefined
+          })
+        )
+      ).flatMap((dataset) => dataset || [])
+
+      if (!infoDatasets.length) {
+        console.warn('No vessel info datasets found for realtime positions', datasetIds)
+        return {}
+      }
+
+      const vessels = await searchVesselMMSI(infoDatasets, mmsis, signal)
+      if (!vessels?.length) {
+        return {}
+      }
+
+      const entries = mmsis.flatMap((mmsi) => {
+        const matches = vessels.flatMap((vessel) =>
+          getVesselIdentities(vessel, { identitySource: VesselIdentitySourceEnum.SelfReported })
+            .filter((identity) => identity.ssvid === mmsi)
+            .map((identity) => ({ vessel, identity }))
+        )
+        if (!matches.length) {
+          return []
+        }
+        const positionTime = realTimeFeatures.find((f) => f.properties?.id === mmsi)?.properties
+          ?.stime
+        const positionDate = positionTime ? getUTCDate(positionTime * 1000).toISOString() : ''
+        const transmittingMatches = positionDate
+          ? matches.filter(
+              ({ identity }) =>
+                (!identity.transmissionDateFrom || identity.transmissionDateFrom <= positionDate) &&
+                (!identity.transmissionDateTo || identity.transmissionDateTo >= positionDate)
+            )
+          : []
+        const candidates = transmittingMatches.length ? transmittingMatches : matches
+        if (uniq(candidates.map(({ identity }) => identity.id)).length !== 1) {
+          return []
+        }
+        return [[mmsi, candidates[0]] as const]
+      })
+
+      return Object.fromEntries(entries)
+    } catch (e: any) {
+      return rejectWithValue(parseAPIError(e))
+    }
+  }
+)
+
 type BQClusterEvent = Record<string, any>
 export const fetchBQEventThunk = createAsyncThunk<
   BQClusterEvent | undefined,
@@ -928,6 +1034,41 @@ const slice = createSlice({
         }
       }
     })
+    builder.addCase(fetchRealTimePositionsThunk.pending, (state, action) => {
+      state.apiRealTimePositionsStatus = AsyncReducerStatus.Loading
+      state.apiRealTimePositionsError = ''
+      state.currentRealTimePositionsRequestId = action.meta.requestId
+    })
+    builder.addCase(fetchRealTimePositionsThunk.fulfilled, (state, action) => {
+      state.apiRealTimePositionsStatus = AsyncReducerStatus.Finished
+      state.currentRealTimePositionsRequestId = ''
+      const vesselsByMmsi = action.payload
+      if (!state?.clicked?.features?.length || !vesselsByMmsi) {
+        return
+      }
+      state.clicked.features = state.clicked.features.map((feature) => {
+        const mmsi = (feature as FourwingsPositionsPickingObject).properties?.id
+        const realTimeVessel = mmsi ? vesselsByMmsi[mmsi] : undefined
+        if (!realTimeVessel) {
+          return feature
+        }
+        const properties = { ...(feature.properties || ({} as any)), realTimeVessel }
+        return { ...feature, properties } as SliceExtendedFeature
+      })
+    })
+    builder.addCase(fetchRealTimePositionsThunk.rejected, (state, action) => {
+      if (action.error.message === 'Aborted') {
+        state.apiRealTimePositionsStatus =
+          state.currentRealTimePositionsRequestId !== action.meta.requestId
+            ? AsyncReducerStatus.Loading
+            : AsyncReducerStatus.Idle
+      } else {
+        state.apiRealTimePositionsStatus = AsyncReducerStatus.Error
+        if (action.error.message) {
+          state.apiRealTimePositionsError = action.error.message
+        }
+      }
+    })
     builder.addCase(fetchClusterEventThunk.pending, (state) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
       state.apiEventError = ''
@@ -985,6 +1126,10 @@ export const selectDetectionPositionsInteractionStatus = (state: { map: MapState
   state.map.apiDetectionPositionsStatus
 export const selectDetectionPositionsInteractionError = (state: { map: MapState }) =>
   state.map.apiDetectionPositionsError
+export const selectRealTimePositionsInteractionStatus = (state: { map: MapState }) =>
+  state.map.apiRealTimePositionsStatus
+export const selectRealTimePositionsInteractionError = (state: { map: MapState }) =>
+  state.map.apiRealTimePositionsError
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 

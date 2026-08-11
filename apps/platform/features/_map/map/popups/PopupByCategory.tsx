@@ -54,6 +54,8 @@ import {
   selectApiEventStatus,
   selectDetectionPositionsInteractionError,
   selectDetectionPositionsInteractionStatus,
+  selectRealTimePositionsInteractionError,
+  selectRealTimePositionsInteractionStatus,
 } from '../map.slice'
 
 import HotspotTooltipSection from './categories/HotspotTooltip'
@@ -79,6 +81,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const activityInteractionError = useSelector(selectActivityInteractionError)
   const detectionPositionsInteractionStatus = useSelector(selectDetectionPositionsInteractionStatus)
   const detectionPositionsInteractionError = useSelector(selectDetectionPositionsInteractionError)
+  const realTimePositionsInteractionStatus = useSelector(selectRealTimePositionsInteractionStatus)
+  const realTimePositionsInteractionError = useSelector(selectRealTimePositionsInteractionError)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
@@ -132,8 +136,11 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     key={featureCategory}
                     features={uniqPositionFeatures}
                     showFeaturesDetails={type === 'click'}
-                    loading={detectionPositionsInteractionStatus === AsyncReducerStatus.Loading}
-                    error={detectionPositionsInteractionError}
+                    loading={
+                      detectionPositionsInteractionStatus === AsyncReducerStatus.Loading ||
+                      realTimePositionsInteractionStatus === AsyncReducerStatus.Loading
+                    }
+                    error={detectionPositionsInteractionError || realTimePositionsInteractionError}
                   />
                 )}
                 {heatmapFeatures.map((feature, i) => {
