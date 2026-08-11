@@ -94,7 +94,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
       ? getIsActivityPositionMatched(feature)
       : getIsDetectionsPositionMatched(feature)
 
-  // Realtime tiles only carry the MMSI, the vessel identity is resolved by the interaction thunk
+  // Realtime tiles only have the MMSI, the vessel identity is resolved by the interaction thunk
   const realTimeVessel = feature.properties.realTimeVessel as PositionRealTimeVessel | undefined
   const realTimeIdentity = realTimeVessel?.identity
 
@@ -143,12 +143,66 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
       return mmsi
     } else if (isPositionMatched) {
       return (
-        <VesselLink vesselId={vesselId}>
+        <VesselLink vesselId={vesselId} className={popupStyles.marginRight}>
           {formatInfoField(feature.properties.shipname, 'shipname') as string}
         </VesselLink>
       )
     }
-    return upperFirst(t((t) => t.vessel.unmatched))
+    return (
+      <span className={popupStyles.marginRight}>{upperFirst(t((t) => t.vessel.unmatched))}</span>
+    )
+  }
+
+  const renderVesselPin = () => {
+    if (!showFeaturesDetails) {
+      return null
+    }
+    if (isRealTime) {
+      if (loading) {
+        return <Spinner size="tiny" className={popupStyles.marginRight} />
+      }
+      return realTimeVessel ? <VesselPin vessel={realTimeVessel.vessel} /> : null
+    }
+    if (isPositionMatched && !isRealTime) {
+      return (
+        <VesselPin
+          vesselToSearch={{
+            id: vesselId,
+            name: feature.properties.shipname,
+            datasets: searchDatasets,
+          }}
+        />
+      )
+    }
+    return null
+  }
+
+  const renderSearchLink = () => {
+    if (!showFeaturesDetails || !showRealTimeSearchLink) {
+      return null
+    }
+    return (
+      <Link
+        to={ROUTE_PATHS.WORKSPACE_SEARCH}
+        params={{
+          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+        }}
+        search={{ searchOption: 'advanced', ssvid: feature.properties.id }}
+      >
+        <IconButton
+          icon="search"
+          size="tiny"
+          tooltip={t((t) => t.vessel.skylightSearch)}
+          onClick={() => {
+            trackEvent({
+              category: TrackCategory.MapInteraction,
+              action: 'click_realtime_search_from_popup',
+            })
+          }}
+        />
+      </Link>
+    )
   }
 
   return (
@@ -159,70 +213,26 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
         style={{ color, transform: `rotate(${angle}deg)` }}
       />
       <div className={popupStyles.popupSectionContent}>
-        <div className={popupStyles.row}>
+        <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
           <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-            {showFeaturesDetails && showRealTimeSearchLink && (
-              <Link
-                to={ROUTE_PATHS.WORKSPACE_SEARCH}
-                params={{
-                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                }}
-                search={{
-                  searchOption: 'advanced',
-                  ssvid: feature.properties.id,
-                }}
-              >
-                <IconButton
-                  icon="search"
-                  size="tiny"
-                  tooltip={t((t) => t.vessel.skylightSearch)}
-                  onClick={() => {
-                    trackEvent({
-                      category: TrackCategory.MapInteraction,
-                      action: 'click_realtime_search_from_popup',
-                    })
-                  }}
-                />
-              </Link>
-            )}
-            <span>
-              <span className={popupStyles.rowColum}>
-                {showFeaturesDetails && realTimeVessel && (
-                  <VesselPin vessel={realTimeVessel.vessel} />
-                )}
-                {showFeaturesDetails && isPositionMatched && !isRealTime && (
-                  <VesselPin
-                    vesselToSearch={{
-                      id: vesselId,
-                      name: feature.properties.shipname,
-                      datasets: searchDatasets,
-                    }}
-                  />
-                )}
-                {renderShipname()}
-              </span>
-              {feature.properties.stime && (
-                <span className={popupStyles.secondary}>
-                  {' '}
-                  <I18nDate
-                    date={feature.properties.stime * 1000}
-                    {...(isRealTime && {
-                      format: DateTime.DATETIME_MED_WITH_SECONDS,
-                      showUTCLabel: true,
-                    })}
-                  />
-                </span>
-              )}
-            </span>
+            {renderSearchLink()}
+            {renderVesselPin()}
+            {renderShipname()}
           </span>
+          {feature.properties.stime && (
+            <span className={popupStyles.secondary}>
+              <I18nDate
+                date={feature.properties.stime * 1000}
+                {...(isRealTime && {
+                  format: DateTime.DATETIME_MED_WITH_SECONDS,
+                  showUTCLabel: true,
+                })}
+              />
+            </span>
+          )}
         </div>
-        {loading && (
-          <div
-            className={cx(popupStyles.loading, {
-              [popupStyles.thumbnailLoading]: isPositionThumbnail,
-            })}
-          >
+        {loading && isPositionThumbnail && (
+          <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
             <Spinner size="small" />
           </div>
         )}
