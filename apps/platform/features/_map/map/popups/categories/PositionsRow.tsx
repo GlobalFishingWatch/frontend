@@ -16,6 +16,7 @@ import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-l
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
+  getPositionBearing,
 } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -88,7 +89,8 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
 
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  const angle = feature.properties.bearing !== undefined ? feature.properties.bearing - 45 : 0
+  const bearing = getPositionBearing(feature)
+  const angle = bearing !== undefined ? bearing - 45 : 0
   const isPositionMatched =
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
@@ -208,7 +210,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
   return (
     <Fragment>
       <Icon
-        icon={feature.properties.bearing !== undefined ? 'vessel' : 'circle'}
+        icon={bearing !== undefined ? 'vessel' : 'circle'}
         className={popupStyles.layerIcon}
         style={{ color, transform: `rotate(${angle}deg)` }}
       />

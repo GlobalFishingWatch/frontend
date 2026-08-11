@@ -135,6 +135,10 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
         return null
       }
       const uniqVessels = Array.from(new Set(vesselInsights.map((v) => v.vessel.id)))
+      const listLabel =
+        list === 'black'
+          ? t((t) => t.vesselGroupReport.insights.blackList, { defaultValue: 'black' })
+          : t((t) => t.vesselGroupReport.insights.greyList, { defaultValue: 'grey' })
       return (
         <div className={styles.nested} key={list}>
           <VesselsInMOUByCategory
@@ -143,7 +147,7 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             onToggle={(isOpen) => onToggle(isOpen, list)}
             label={t((t) => t.vesselGroupReport.insights.MOUListsCount, {
               vessels: String(uniqVessels.length),
-              list: t((t) => (t as any).insights.lists[list as string], { defaultValue: list }),
+              list: listLabel,
             })}
           />
         </div>

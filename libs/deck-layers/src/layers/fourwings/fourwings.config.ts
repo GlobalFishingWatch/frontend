@@ -31,7 +31,13 @@ export const FOURWINGS_VISUALIZATION_MODES = [
   FOOTPRINT_HIGH_RES_ID,
 ] as const
 
-export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname', 'vessel_id']
+export const SUPPORTED_POSITION_PROPERTIES = [
+  /*'speed',*/
+  'bearing',
+  'shipname',
+  'vessel_id',
+  'course',
+]
 
 export const FOURWINGS_MAX_ZOOM = 12
 export const VECTORS_MAX_ZOOM = 12

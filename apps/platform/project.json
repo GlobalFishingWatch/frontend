@@ -61,7 +61,7 @@
         "!{projectRoot}/**/test-results/**",
         "!{projectRoot}/**/__traces__/**"
       ],
-      "outputs": ["{projectRoot}/public/locales"],
+      "outputs": [],
       "options": {
         "command": "i18next-cli extract",
         "cwd": "apps/platform",
@@ -90,9 +90,27 @@
         "!{projectRoot}/**/test-results/**",
         "!{projectRoot}/**/__traces__/**"
       ],
-      "outputs": ["{projectRoot}/public/locales", "{projectRoot}/features/i18n/i18n.types.d.ts"],
+      "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
       "options": {
         "command": "i18next-cli extract && i18next-cli types",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "i18n:lint": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
+      ],
+      "outputs": [],
+      "options": {
+        "command": "i18next-cli lint",
         "cwd": "apps/platform",
         "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
       }
