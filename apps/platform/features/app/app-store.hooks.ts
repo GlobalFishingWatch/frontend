@@ -34,13 +34,13 @@ export function useAppStore() {
   const router = useRouter()
   const { user } = rootRoute.useLoaderData()
 
-  const store = useMemo(() => {
+  const { store, serverState } = useMemo(() => {
     // Lets tests inject a store through the router context.
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     syncInitialLocation(router, store)
     store.dispatch(setUserLanguage(getActiveI18nLanguage() as Locale))
     store.dispatch(setLoggedUser(user || getGuestUser()))
-    return store
+    return { store, serverState: store.getState() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
@@ -55,5 +55,5 @@ export function useAppStore() {
     store.dispatch(hydrateWorkspaceHistoryNavigation(getPersistedHistoryNavigation()))
   }, [store])
 
-  return store
+  return { store, serverState }
 }

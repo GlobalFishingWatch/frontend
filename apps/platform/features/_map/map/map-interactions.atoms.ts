@@ -16,12 +16,14 @@ const initialInteractionPromises = {
   activity: undefined,
   events: undefined,
   detectionPositions: undefined,
+  realTimePositions: undefined,
 }
 
 export const interactionPromisesAtom = atom<{
   activity: InteractionPromise | undefined
   events: InteractionPromise | undefined
   detectionPositions: InteractionPromise | undefined
+  realTimePositions: InteractionPromise | undefined
 }>(initialInteractionPromises)
 
 export const useCancelInteractionPromises = () => {
@@ -32,6 +34,7 @@ export const useCancelInteractionPromises = () => {
       interactionPromises.activity,
       interactionPromises.events,
       interactionPromises.detectionPositions,
+      interactionPromises.realTimePositions,
     ]
     promisesRef.forEach((p) => {
       if (p) {
@@ -43,6 +46,7 @@ export const useCancelInteractionPromises = () => {
     interactionPromises.events,
     interactionPromises.activity,
     interactionPromises.detectionPositions,
+    interactionPromises.realTimePositions,
     setInteractionPromises,
   ])
 

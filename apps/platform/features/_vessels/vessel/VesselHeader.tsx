@@ -253,7 +253,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             tooltip={t((t) => t.layer.vessel_fit_bounds)}
             tooltipPlacement="bottom"
             size="medium"
-            disabled={!boundsReady}
+            disabled={!isClientHydrated || !boundsReady}
             onClick={onVesselFitBoundsClick}
           />
           <IconButton
