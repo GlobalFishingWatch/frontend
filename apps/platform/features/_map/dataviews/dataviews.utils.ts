@@ -1,10 +1,11 @@
-import { kebabCase } from 'es-toolkit'
+import { kebabCase, omit } from 'es-toolkit'
 
 import type {
   ColorCyclingType,
   Dataset,
   DatasetsMigration,
   Dataview,
+  DataviewConfig,
   DataviewConfigVessel,
   DataviewDatasetConfig,
   DataviewInstance,
@@ -14,11 +15,15 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getRelatedDatasetByType,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getEncounteredVesselDataviewInstanceId,
   getVesselDataviewInstanceId,
+  getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
 // Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
 // (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
@@ -43,6 +48,7 @@ import {
 import type { VesselInstanceDatasets } from 'features/_map/datasets/datasets.utils'
 import {
   getActiveDatasetsInDataview,
+  getVesselTrackDatasetIds,
   isPrivateDataset,
   isRealTimeDataset,
 } from 'features/_map/datasets/datasets.utils'
@@ -186,6 +192,66 @@ export const getVesselDataviewInstanceDatasetConfig = (
   return datasetsConfig
 }
 
+// Resolves track dataset ids not stored in the url instance config, to avoid
+// storing all the datasetConfig in the instance and save url string characters
+export const resolveVesselTrackConfig = (
+  config: UrlDataviewInstance['config'],
+  datasets: Dataset[],
+  loggedUser: boolean
+) => {
+  const resolvedConfig = { ...config }
+  if (!resolvedConfig.info) {
+    return resolvedConfig
+  }
+  const infoDataset = datasets.find((d) => d.id === resolvedConfig.info)
+  // Vessel pined from not logged user but is logged now and the related dataset is available
+  if (loggedUser && !resolvedConfig.track) {
+    const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
+    if (trackDatasetId) {
+      resolvedConfig.track = trackDatasetId
+    }
+  }
+  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
+    const { trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
+    if (trackRealTime) {
+      resolvedConfig.trackRealTime = trackRealTime
+    }
+  }
+  return resolvedConfig
+}
+
+export const resolveVesselDataviewInstance = (
+  dataviewInstance: UrlDataviewInstance,
+  {
+    datasets,
+    loggedUser,
+    trackThinningZoomConfig,
+  }: {
+    datasets: Dataset[]
+    loggedUser: boolean
+    trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
+  }
+): UrlDataviewInstance => {
+  const newDataviewInstance = {
+    ...dataviewInstance,
+    config: {
+      ...dataviewInstance.config,
+      ...(trackThinningZoomConfig && {
+        trackThinningZoomConfig,
+      }),
+    },
+  }
+  if (!dataviewInstance.datasetsConfig?.length) {
+    const config = resolveVesselTrackConfig(dataviewInstance.config, datasets, loggedUser)
+    const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
+      getVesselIdFromInstanceId(dataviewInstance.id),
+      config
+    )
+    newDataviewInstance.datasetsConfig = datasetsConfig
+  }
+  return newDataviewInstance
+}
+
 type VesselDataviewInstanceTemplateParams = {
   vessel: { id: string; ssvid?: string }
   dataviewSlug: Dataview['slug']
@@ -260,11 +326,12 @@ export const getVesselDataviewInstance = ({
 }): DataviewInstance => {
   const dataviewTemplate =
     dataviewTemplateId || getBestVesselTemplateSlug(dataviewTemplates, datasets)
+  const resolvedDatasets = vessel.ssvid ? datasets : omit(datasets, ['trackRealTime'])
   const vesselDataviewInstance: DataviewInstance = {
     id: getVesselDataviewInstanceId(vessel.id),
     ...vesselDataviewInstanceTemplate({
       dataviewSlug: dataviewTemplate,
-      datasets,
+      datasets: resolvedDatasets,
       vessel,
       highlightEventStartTime,
       highlightEventEndTime,

@@ -37,6 +37,9 @@
   background-color: var(--color-off-white-0);
   filter: var(--filter-drop-shadow-0);
   pointer-events: none;
+}
+
+.activePill.animated {
   transition:
     transform 220ms var(--ease-out-strong),
     width 220ms var(--ease-out-strong);
@@ -61,8 +64,6 @@
   background-color: transparent;
   color: var(--color-secondary-blue);
   min-height: var(--size-XS);
-
-  /* z-index keeps text above the sliding pill */
   position: relative;
   z-index: 1;
   transition: color 180ms ease;
@@ -76,6 +77,18 @@
 .Choice .optionActive:focus {
   background-color: transparent;
   box-shadow: none;
+}
+
+/* Pill is JS-measured — until it mounts, the active button paints the same look. */
+.list:not(:has(.activePill)) .optionActive,
+.list:not(:has(.activePill)) .optionActive:hover,
+.list:not(:has(.activePill)) .optionActive:focus {
+  background-color: var(--color-off-white-0);
+  filter: var(--filter-drop-shadow-0);
+}
+
+.Choice .list .optionButton:focus {
+  background-color: transparent;
 }
 
 .Choice .disabled:not(.optionActive) {
@@ -112,13 +125,15 @@
     display: none;
   }
 
-  .Choice .optionActive {
+  .Choice .optionActive,
+  .list:not(:has(.activePill)) .optionActive {
     background-color: transparent;
+    filter: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .activePill {
+  .activePill.animated {
     transition: none;
   }
 }

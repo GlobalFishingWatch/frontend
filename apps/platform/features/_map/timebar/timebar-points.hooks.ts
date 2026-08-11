@@ -10,6 +10,7 @@ import {
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
@@ -50,7 +51,9 @@ export const useTimebarPoints = () => {
     ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
     : false
 
-  const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+  const availableIntervals = isRealTimeMode
+    ? FOURWINGS_REAL_TIME_INTERVALS
+    : getAvailableIntervalsInDataviews(dataviews)
   const { interval, bufferedStart, bufferedEnd } = getFourwingsChunk({
     start,
     end,

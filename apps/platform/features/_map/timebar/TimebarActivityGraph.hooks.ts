@@ -20,6 +20,7 @@ import type {
   FourwingsPositionFeature,
   FourwingsValuesAndStartFrameFeature,
 } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame, TimebarColorScale } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
@@ -55,7 +56,9 @@ export const useHeatmapActivityGraph = () => {
   const start = getUTCDate(rangeStart).getTime()
   const end = getUTCDate(rangeEnd).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
-  const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+  const availableIntervals = isRealTimeMode
+    ? FOURWINGS_REAL_TIME_INTERVALS
+    : getAvailableIntervalsInDataviews(dataviews)
   const chunk = getFourwingsChunk({
     start,
     end,

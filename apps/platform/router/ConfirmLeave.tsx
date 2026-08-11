@@ -46,7 +46,7 @@ export function ConfirmLeave() {
       // Return true to BLOCK navigation (user declined)
       return !shouldLeave
     },
-    disabled: isGuestUser || !suggestWorkspaceSave,
+    disabled: isGuestUser || !suggestWorkspaceSave || !SHOW_LEAVE_CONFIRMATION,
   })
 
   return null

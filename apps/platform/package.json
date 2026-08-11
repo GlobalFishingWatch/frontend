@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "i18n": "i18next-cli extract && i18next-cli types",
-    "i18n:status": "i18next-cli status",
-    "i18n:extract": "i18next-cli extract",
-    "i18n:extract:watch": "i18next-cli extract --watch --with-types",
-    "i18n:types": "i18next-cli types",
+    "i18n": "LC_ALL=en_US.UTF-8 i18next-cli extract && LC_ALL=en_US.UTF-8 i18next-cli types",
+    "i18n:status": "LC_ALL=en_US.UTF-8 i18next-cli status",
+    "i18n:extract": "LC_ALL=en_US.UTF-8 i18next-cli extract",
+    "i18n:extract:watch": "LC_ALL=en_US.UTF-8 i18next-cli extract --watch --with-types",
+    "i18n:types": "LC_ALL=en_US.UTF-8 i18next-cli types",
     "test:e2e": "npx playwright test"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
@@ -158,7 +158,7 @@ const VesselLink = ({
         ...dataviewInstances,
         {
           ...getVesselDataviewInstance({
-            vessel: { id: vesselId },
+            vessel: { id: vesselId, ssvid: identity?.ssvid },
             datasets: { info: vesselDatasetId },
             dataviewTemplates: vesselTemplateDataviews,
           }),
@@ -197,11 +197,11 @@ const VesselLink = ({
       }
 
   return isTrackCorrectionOpen ? (
-    <>
+    <Fragment>
       <Tooltip className={styles.linkTooltip} content={t((t) => t.vessel.exitTrackCorrection)}>
         <span>{children}</span>
       </Tooltip>
-    </>
+    </Fragment>
   ) : (
     <Link
       {...(testId && { 'data-testid': testId })}

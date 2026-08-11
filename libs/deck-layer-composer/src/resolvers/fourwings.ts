@@ -22,7 +22,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
-import { TIME_COMPARISON_NOT_SUPPORTED_INTERVALS } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_REAL_TIME_INTERVALS, TIME_COMPARISON_NOT_SUPPORTED_INTERVALS } from '@globalfishingwatch/deck-loaders'
 
 import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
@@ -95,7 +95,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     maxZoomLevels.push(dataview.config?.maxZoom)
   }
 
-  const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
+  const allAvailableIntervals =
+    timeMode === 'realTime' ? FOURWINGS_REAL_TIME_INTERVALS : getDataviewAvailableIntervals(dataview)
   const availableIntervals =
     dataview.config?.comparisonMode === FourwingsComparisonMode.TimeCompare
       ? allAvailableIntervals.filter(
