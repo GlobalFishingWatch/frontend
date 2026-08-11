@@ -160,7 +160,7 @@ const MapSearch = () => {
                 data-test={`map-search-result-${index}`}
                 className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
               >
-                {`${t((t: any) => t.search.searchTypes[type], { defaultValue: type })}: ${formatInfoField(name, 'name')}${
+                {`${t((t) => t.search.searchTypes[type], { defaultValue: type })}: ${formatInfoField(name, 'name')}${
                   flag ? ` (${formatInfoField(flag, 'flag')})` : ''
                 }`}
               </li>
