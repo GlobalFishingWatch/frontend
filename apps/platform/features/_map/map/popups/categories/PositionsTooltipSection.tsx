@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import type { SliceExtendedFourwingsPickingObject } from 'features/_map/map/map.slice'
 import PositionsRow from 'features/_map/map/popups/categories/PositionsRow'
 
@@ -22,6 +25,7 @@ function PositionsTooltipSection({
   error,
 }: PositionsTooltipRowProps) {
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState(0)
+  const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
 
   const handlePreviousFeature = () => {
     setCurrentFeatureIndex((prev) => (prev > 0 ? prev - 1 : features.length - 1))
@@ -42,9 +46,14 @@ function PositionsTooltipSection({
   }
 
   if (showFeaturesDetails) {
+    const dataview = dataviewInstances?.find((instance) => instance.id === currentFeature.layerId)
+    const title = dataview
+      ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+      : currentFeature.title
     return (
       <div className={styles.popupSection}>
         <div>
+          {title && <h3 className={styles.popupSectionTitle}>{title}</h3>}
           <PositionsRow
             key={`${currentFeature.id}-${currentFeatureIndex}`}
             loading={loading}
