@@ -1240,13 +1240,8 @@
       "tuna_purse_seines": "crwdns134011:0crwdne134011:0",
       "well_boat": "crwdns134013:0crwdne134013:0"
     },
-    "gfw_callsign": "crwdns134015:0crwdne134015:0",
-    "gfw_flag": "crwdns134017:0crwdne134017:0",
     "gfw_geartypes": "crwdns134019:0crwdne134019:0",
-    "gfw_imo": "crwdns134021:0crwdne134021:0",
-    "gfw_shipname": "crwdns134023:0crwdne134023:0",
     "gfw_shiptypes": "crwdns134025:0crwdne134025:0",
-    "gfw_ssvid": "crwdns134027:0crwdne134027:0",
     "gfwPredictions": "crwdns134029:0crwdne134029:0",
     "goToImage": "crwdns134031:0{{number}}crwdne134031:0",
     "grossTonnage": "crwdns134033:0crwdne134033:0",
