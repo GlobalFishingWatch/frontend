@@ -228,11 +228,6 @@
     "dismiss": "Ignorer",
     "edit": "Modifier",
     "environment": "Environnement",
-    "eventLabels": {
-      "encounter": "rencontre",
-      "loitering": "dérive",
-      "port_visit": "visite de port"
-    },
     "events": "Évènements",
     "events_one": "Event",
     "events_other": "Events",
@@ -682,8 +677,6 @@
     "authorizationEmpty": "No authorization data available",
     "averageSpeedKnots": "vitesse moyenne (nœuds)",
     "depth": "depth",
-    "distanceFromPortKm": "distanceFromPortKm",
-    "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "durée",
     "encounteredVesselName": "navire rencontré",
     "end": "fin",
@@ -696,11 +689,9 @@
     "port_exit": "Sortie de port",
     "portVisitedAfter": "Port visited after",
     "speed": "vitesse",
-    "ssvid": "ssvid",
     "start": "Début",
     "totalDistanceKm": "distance totale (km)",
-    "trackDisclaimer": "Encountered vessel track shows one month before and after the event.",
-    "type": "shiptype"
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -875,13 +866,6 @@
     "screenshotDownload": "Télécharger l'image",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
-    "searchTypes": {
-      "eez": "EEZ",
-      "fao": "FAO",
-      "mpa": "MPA",
-      "port": "Port",
-      "rfmo": "ORGP"
-    },
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -936,6 +920,13 @@
     "placeholderFilterMultiple": "Une ou plusieurs valeurs (séparées par des virgules)",
     "results": "results",
     "searching": "Recherche parmi plus de 100 000 navires...",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "seeing": "Voir",
     "seeVesselsOnMap": "Voir navire sur la carte",
     "seeVesselsOnMap_one": "Voir {{count}} navire sur la carte",
@@ -1300,10 +1291,6 @@
       "IUU": "Liste des navires INN d'une ORGP",
       "IUUBlackListsCount": "Le navire figure sur la liste des navires INN d'une ORGP",
       "IUUBlackListsEmpty": "Le navire ne figure pas sur la liste des navires INN d'une ORGP",
-      "list": {
-        "black": "noir",
-        "grey": "gris"
-      },
       "longline": "Longline settings at day and night",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
@@ -1492,17 +1479,13 @@
   "vesselGroupReport": {
     "clickToSee": "Cliquez pour analyser le groupe de navires et voir le rapport",
     "insights": {
+      "blackList": "black",
       "fishingEventsError": "Une erreur s'est produite lors du chargement des événements de pêche",
-      "fishingInNoTakeMpas_one": "{{count}} événement de pêche par le navire {{vessels}} détecté dans une AMP interdite à la pêche de capture",
-      "fishingInNoTakeMpas_other": "{{count}} événements de pêche par les navires {{vessels}} détectés dans des AMP interdites à la pêche de capture",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} événement de pêche par le navire {{vessels}} détecté en dehors d'une zone soumise à une autorisation connue d'une ORGP",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
       "flagChangesCount": "Les navires {{vessels}} ont effectué des changements de pavillon",
       "flagChangesCount_one": "Le navire {{vessels}} a effectué des changements de pavillon",
       "flagChangesCount_other": "Les navires {{vessels}} ont effectué des changements de pavillon",
       "flagChangesEmpty": "Il n'y a pas de navire ayant effectué des changements de pavillon",
-      "gaps_one": "{{count}} événement de désactivation de l'AIS détecté pour le navire {{vessels}}",
-      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}",
+      "greyList": "grey",
       "IUUBlackListsCount": "Les navires {{vessels}} sont inscrits sur une liste des navires INN d'une ORGP",
       "IUUBlackListsCount_one": "Le navire {{vessels}} est inscrit une liste des navires INN d'une ORGP",
       "IUUBlackListsCount_other": "Les navires {{vessels}} sont inscrits sur une liste des navires INN d'une ORGP",
@@ -1511,8 +1494,7 @@
       "MOUListsCount": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
       "MOUListsCount_one": "Le navire {{vessels}} a été exploité sous un pavillon inscrit sur la liste {{list}}",
       "MOUListsCount_other": "Les navires {{vessels}} ont été exploités sous un pavillon inscrit sur la liste {{list}}",
-      "MOUListsEmpty": "Aucun des navire be bat un pavillon inscrit sur la liste noire ou grise du MOU de {{country}}",
-      "title": "Indicateurs du groupe de navires"
+      "MOUListsEmpty": "Aucun des navire be bat un pavillon inscrit sur la liste noire ou grise du MOU de {{country}}"
     },
     "linkDisabled": "Ce groupe de navires doit être mis à jour avec les dernières données disponibles",
     "linkToReport": "Consultez le rapport de groupe de navires ici",
