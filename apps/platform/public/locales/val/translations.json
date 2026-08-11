@@ -228,11 +228,6 @@
     "dismiss": "crwdns132145:0crwdne132145:0",
     "edit": "crwdns132147:0crwdne132147:0",
     "environment": "crwdns132149:0crwdne132149:0",
-    "eventLabels": {
-      "encounter": "crwdns132151:0crwdne132151:0",
-      "loitering": "crwdns132153:0crwdne132153:0",
-      "port_visit": "crwdns132155:0crwdne132155:0"
-    },
     "events": "crwdns132157:0crwdne132157:0",
     "events_one": "crwdns132159:0crwdne132159:0",
     "events_other": "crwdns132163:0crwdne132163:0",
@@ -682,8 +677,6 @@
     "authorizationEmpty": "crwdns132991:0crwdne132991:0",
     "averageSpeedKnots": "crwdns132993:0crwdne132993:0",
     "depth": "crwdns132995:0crwdne132995:0",
-    "distanceFromPortKm": "crwdns132997:0crwdne132997:0",
-    "distanceFromShoreKm": "crwdns132999:0crwdne132999:0",
     "duration": "crwdns133001:0crwdne133001:0",
     "encounteredVesselName": "crwdns133003:0crwdne133003:0",
     "end": "crwdns133005:0crwdne133005:0",
@@ -696,11 +689,9 @@
     "port_exit": "crwdns133019:0crwdne133019:0",
     "portVisitedAfter": "crwdns133021:0crwdne133021:0",
     "speed": "crwdns133023:0crwdne133023:0",
-    "ssvid": "crwdns133025:0crwdne133025:0",
     "start": "crwdns133027:0crwdne133027:0",
     "totalDistanceKm": "crwdns133029:0crwdne133029:0",
-    "trackDisclaimer": "crwdns133031:0crwdne133031:0",
-    "type": "crwdns133033:0crwdne133033:0"
+    "trackDisclaimer": "crwdns133031:0crwdne133031:0"
   },
   "eventsReport": {
     "newTimeRange": "crwdns133035:0{{start}}crwdnd133035:0{{end}}crwdne133035:0",
@@ -875,13 +866,6 @@
     "screenshotDownload": "crwdns133333:0crwdne133333:0",
     "screenshotPreview": "crwdns133335:0crwdne133335:0",
     "search": "crwdns133337:0crwdne133337:0",
-    "searchTypes": {
-      "eez": "crwdns133339:0crwdne133339:0",
-      "fao": "crwdns133341:0crwdne133341:0",
-      "mpa": "crwdns133343:0crwdne133343:0",
-      "port": "crwdns133345:0crwdne133345:0",
-      "rfmo": "crwdns133347:0crwdne133347:0"
-    },
     "zoom_in": "crwdns133349:0crwdne133349:0",
     "zoom_out": "crwdns133351:0crwdne133351:0"
   },
@@ -936,6 +920,13 @@
     "placeholderFilterMultiple": "crwdns133441:0crwdne133441:0",
     "results": "crwdns133443:0crwdne133443:0",
     "searching": "crwdns133445:0crwdne133445:0",
+    "searchTypes": {
+      "eez": "crwdns138355:0crwdne138355:0",
+      "fao": "crwdns138357:0crwdne138357:0",
+      "mpa": "crwdns138359:0crwdne138359:0",
+      "port": "crwdns138361:0crwdne138361:0",
+      "rfmo": "crwdns138363:0crwdne138363:0"
+    },
     "seeing": "crwdns133447:0crwdne133447:0",
     "seeVesselsOnMap": "crwdns133449:0crwdne133449:0",
     "seeVesselsOnMap_one": "crwdns133451:0{{count}}crwdne133451:0",
@@ -1300,10 +1291,6 @@
       "IUU": "crwdns134109:0crwdne134109:0",
       "IUUBlackListsCount": "crwdns134111:0crwdne134111:0",
       "IUUBlackListsEmpty": "crwdns134113:0crwdne134113:0",
-      "list": {
-        "black": "crwdns134115:0crwdne134115:0",
-        "grey": "crwdns134117:0crwdne134117:0"
-      },
       "longline": "crwdns134119:0crwdne134119:0",
       "longlineEntirelyDaySets_one": "crwdns134121:0{{count}}crwdne134121:0",
       "longlineEntirelyDaySets_other": "crwdns134125:0{{count}}crwdne134125:0",
@@ -1492,17 +1479,13 @@
   "vesselGroupReport": {
     "clickToSee": "crwdns134481:0crwdne134481:0",
     "insights": {
+      "blackList": "crwdns138365:0crwdne138365:0",
       "fishingEventsError": "crwdns134483:0crwdne134483:0",
-      "fishingInNoTakeMpas_one": "crwdns134485:0{{count}}crwdnd134485:0{{vessels}}crwdne134485:0",
-      "fishingInNoTakeMpas_other": "crwdns134487:0{{count}}crwdnd134487:0{{vessels}}crwdne134487:0",
-      "fishingInRfmoWithoutKnownAuthorization_one": "crwdns134489:0{{count}}crwdnd134489:0{{vessels}}crwdne134489:0",
-      "fishingInRfmoWithoutKnownAuthorization_other": "crwdns134491:0{{count}}crwdnd134491:0{{vessels}}crwdne134491:0",
       "flagChangesCount": "crwdns134493:0{{vessels}}crwdne134493:0",
       "flagChangesCount_one": "crwdns134495:0{{vessels}}crwdne134495:0",
       "flagChangesCount_other": "crwdns134497:0{{vessels}}crwdne134497:0",
       "flagChangesEmpty": "crwdns134499:0crwdne134499:0",
-      "gaps_one": "crwdns134501:0{{count}}crwdnd134501:0{{vessels}}crwdne134501:0",
-      "gaps_other": "crwdns134503:0{{count}}crwdnd134503:0{{vessels}}crwdne134503:0",
+      "greyList": "crwdns138367:0crwdne138367:0",
       "IUUBlackListsCount": "crwdns134505:0{{vessels}}crwdne134505:0",
       "IUUBlackListsCount_one": "crwdns134507:0{{vessels}}crwdne134507:0",
       "IUUBlackListsCount_other": "crwdns134509:0{{vessels}}crwdne134509:0",
@@ -1511,8 +1494,7 @@
       "MOUListsCount": "crwdns134515:0{{vessels}}crwdnd134515:0{{list}}crwdne134515:0",
       "MOUListsCount_one": "crwdns134517:0{{vessels}}crwdnd134517:0{{list}}crwdne134517:0",
       "MOUListsCount_other": "crwdns134519:0{{vessels}}crwdnd134519:0{{list}}crwdne134519:0",
-      "MOUListsEmpty": "crwdns134521:0{{country}}crwdne134521:0",
-      "title": "crwdns134523:0crwdne134523:0"
+      "MOUListsEmpty": "crwdns134521:0{{country}}crwdne134521:0"
     },
     "linkDisabled": "crwdns134525:0crwdne134525:0",
     "linkToReport": "crwdns134527:0crwdne134527:0",
