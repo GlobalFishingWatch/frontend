@@ -228,11 +228,6 @@
     "dismiss": "Cancelar",
     "edit": "Editar",
     "environment": "Datos ambientales",
-    "eventLabels": {
-      "encounter": "encuentro",
-      "loitering": "A la deriva",
-      "port_visit": "visita a puerto"
-    },
     "events": "Eventos",
     "events_one": "Evento",
     "events_other": "Eventos",
@@ -682,8 +677,6 @@
     "authorizationEmpty": "No hay datos de autorización disponibles",
     "averageSpeedKnots": "velocidad media (nudos)",
     "depth": "profundidad",
-    "distanceFromPortKm": "distancia desde el puerto (km)",
-    "distanceFromShoreKm": "distancia desde costa (km)",
     "duration": "duración",
     "encounteredVesselName": "embarcación encontrada",
     "end": "Fin",
@@ -696,11 +689,9 @@
     "port_exit": "Salida de puerto",
     "portVisitedAfter": "Visita a puerto después",
     "speed": "velocidad",
-    "ssvid": "ssvid",
     "start": "Inicio",
     "totalDistanceKm": "Distancia total (km)",
-    "trackDisclaimer": "La pista de barcos encontrada muestra un mes antes y después del evento.",
-    "type": "shiptype"
+    "trackDisclaimer": "La pista de barcos encontrada muestra un mes antes y después del evento."
   },
   "eventsReport": {
     "newTimeRange": "Haga clic en el botón para ver los barcos que tuvieron eventos en esta área <br/>entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
@@ -875,13 +866,6 @@
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Busque un área de interés, por ejemplo: océano, mar, puerto, AMP, ZEE u ORP",
-    "searchTypes": {
-      "eez": "ZEE",
-      "fao": "FAO",
-      "mpa": "AMP",
-      "port": "Puerto",
-      "rfmo": "OROP"
-    },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -936,6 +920,13 @@
     "placeholderFilterMultiple": "Uno o más valores (separados por comas)",
     "results": "resultados",
     "searching": "Buscando entre más de 100.000 embarcaciones ...",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "seeing": "Viendo",
     "seeVesselsOnMap": "Ver embarcaciones en el mapa",
     "seeVesselsOnMap_one": "Ver {{count}} embarcación en el mapa",
@@ -1300,10 +1291,6 @@
       "IUU": "Lista de embarcaciones INDNR de OROP",
       "IUUBlackListsCount": "La embarcación está presente en una lista de embarcaciones INDNR de OROP",
       "IUUBlackListsEmpty": "La embarcación no está presente en una lista de embarcaciones INDNR de OROP",
-      "list": {
-        "black": "negro",
-        "grey": "gris"
-      },
       "longline": "Longline settings at day and night",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
@@ -1492,17 +1479,13 @@
   "vesselGroupReport": {
     "clickToSee": "Haga clic para analizar el grupo de buques y ver su informe",
     "insights": {
+      "blackList": "black",
       "fishingEventsError": "Se ha producido un error al cargar los eventos de pesca",
-      "fishingInNoTakeMpas_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado en AMP de no extracción",
-      "fishingInNoTakeMpas_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados en AMP de no extracción",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado fuera de las OROP con autorización conocida",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados fuera de las OROP con autorización conocida",
       "flagChangesCount": "{{vessels}} embarcaciones tuvieron cambios de bandera",
       "flagChangesCount_one": "{{vessels}} embarcación tuvo cambios de bandera",
       "flagChangesCount_other": "{{vessels}} embarcaciones tuvieron cambios de bandera",
       "flagChangesEmpty": "No hay embarcaciones con cambios de bandera",
-      "gaps_one": "{{count}} evento de desactivación probable de AIS de {{vessels}} embarcación detectado",
-      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados",
+      "greyList": "grey",
       "IUUBlackListsCount": "{{vessels}} embarcaciones presentes en una lista INDNR de OROP",
       "IUUBlackListsCount_one": "{{vessels}} embarcación presente en una lista INDNR de OROP",
       "IUUBlackListsCount_other": "{{vessels}} embarcaciones presentes en una lista INDNR de OROP",
@@ -1511,8 +1494,7 @@
       "MOUListsCount": "{{vessels}} embarcaciones operaron bajo una bandera presente en la lista de {{list}}",
       "MOUListsCount_one": "{{vessels}} embarcación operó bajo una bandera presente en la lista de {{list}}",
       "MOUListsCount_other": "{{vessels}} embarcaciones operaron bajo una bandera presente en la lista de {{list}}",
-      "MOUListsEmpty": "Ningún buque operó bajo una bandera presente en las listas negras o grises de la MOU de {{country}}",
-      "title": "Indicadores del grupo de embarcaciones"
+      "MOUListsEmpty": "Ningún buque operó bajo una bandera presente en las listas negras o grises de la MOU de {{country}}"
     },
     "linkDisabled": "Este grupo de buques necesita ser actualizado a los últimos datos disponibles",
     "linkToReport": "Compruebe el informe del grupo de buques aquí",
