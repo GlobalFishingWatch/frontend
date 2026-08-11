@@ -57,6 +57,7 @@ import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
   getIsFeatureInFilterIds,
+  getPositionBearing,
 } from './fourwings-positions.utils'
 
 type FourwingsPositionsTileLayerState = {
@@ -311,7 +312,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _canShowVesselIcon = (d: FourwingsPositionFeature) => {
-    return this.getIsPositionMatched(d) || d.properties.bearing !== undefined
+    return this.getIsPositionMatched(d) || getPositionBearing(d) !== undefined
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
@@ -484,7 +485,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getFillColor,
         getSize: this._getIconSize,
-        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getAngle: (d: any) => {
+          const bearing = getPositionBearing(d)
+          return bearing ? 360 - bearing : 0
+        },
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
@@ -501,7 +505,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getHighlightColor,
         getSize: this._getHighlightedIconSize,
-        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getAngle: (d: any) => {
+          const bearing = getPositionBearing(d)
+          return bearing ? 360 - bearing : 0
+        },
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         updateTriggers: {
           getColor: [
