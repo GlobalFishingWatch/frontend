@@ -49,20 +49,20 @@ export async function ssrLoadVessel({
   const datasetId =
     (location.search?.vesselDatasetId as string) || DEFAULT_VESSEL_STATE.vesselDatasetId
   const head = { vesselId, vesselDatasetId: datasetId }
-  if (!import.meta.env.SSR || !vesselId || !datasetId) return head
+  if (!vesselId || !datasetId) return head
   const store = context?.store
   if (!store) return head
 
-  const includeRelatedIdentities =
-    (location.search?.includeRelatedIdentities as boolean) ??
-    DEFAULT_VESSEL_STATE.includeRelatedIdentities
+  if (import.meta.env.SSR) {
+    const includeRelatedIdentities =
+      (location.search?.includeRelatedIdentities as boolean) ??
+      DEFAULT_VESSEL_STATE.includeRelatedIdentities
 
-  const dispatch = store.dispatch as AppDispatch
-  await dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
-  await dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
+    const dispatch = store.dispatch as AppDispatch
+    await dispatch(fetchDataviewsByIdsThunk(PROFILE_DATAVIEW_SLUGS))
+    await dispatch(fetchVesselInfoThunk({ vesselId, datasetId, includeRelatedIdentities }))
+  }
 
-  // Read the slice by id: the vessel selectors key off the router state, which is only synced
-  // into redux once the app component mounts, after this loader runs.
   const vessel = store.getState().vessel.data?.[vesselId]?.info as IdentityVesselData | undefined
   const identity = vessel?.identities?.length ? getUrlIdentity(vessel, location.search) : undefined
   return {
