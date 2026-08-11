@@ -1,0 +1,37 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  min-width: 0;
+}
+
+.media {
+  aspect-ratio: var(--card-media-aspect-ratio, 16 / 10);
+  overflow: hidden;
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-0);
+  background-image: linear-gradient(135deg, var(--color-terthiary-blue) 0%, transparent 70%);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  font: var(--font-M);
+  color: var(--color-primary-blue);
+  display: -webkit-box;
+  -webkit-line-clamp: var(--card-title-lines, 2);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.subtitle {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

@@ -8,7 +8,7 @@
 }
 
 .carousel > * {
-  flex: 0 0 auto;
+  flex: 0 0 var(--carousel-item-width, 20rem);
   scroll-snap-align: start;
 }
 
