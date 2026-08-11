@@ -157,7 +157,7 @@ export const useClickedEventConnect = () => {
         const heatmapPromise = dispatch(
           fetchHeatmapInteractionThunk({ heatmapFeatures, heatmapProperties })
         )
-        setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
+        setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise }))
       }
     },
     [activityDataviews, dispatch, setInteractionPromises]
@@ -193,14 +193,14 @@ export const useClickedEventConnect = () => {
         )
         setInteractionPromises((prev) => ({
           ...prev,
-          detectionPositions: detectionsPositionPromise as any,
+          detectionPositions: detectionsPositionPromise,
         }))
       }
       if (realTimeFeatures?.length) {
         const realTimePositionsPromise = dispatch(fetchRealTimePositionsThunk({ realTimeFeatures }))
         setInteractionPromises((prev) => ({
           ...prev,
-          realTimePositions: realTimePositionsPromise as any,
+          realTimePositions: realTimePositionsPromise,
         }))
       }
     },
