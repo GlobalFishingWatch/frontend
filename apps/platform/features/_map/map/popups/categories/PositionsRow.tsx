@@ -1,4 +1,4 @@
-import { Fragment, lazy } from 'react'
+import { Fragment, lazy, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
@@ -18,7 +18,7 @@ import {
   getIsDetectionsPositionMatched,
   getPositionBearing,
 } from '@globalfishingwatch/deck-layers'
-import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Choice, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
@@ -47,6 +47,15 @@ type PositionsRowProps = {
   showFeaturesDetails: boolean
 }
 
+// e.g. 20250603_planet_..._RGB.png -> RGB
+const getThumbnailBand = (name: string) =>
+  name
+    .replace(/\.png$/i, '')
+    .split(/[_.-]/)
+    .pop() || name
+
+const isRGBThumbnail = (name: string) => getThumbnailBand(name).toUpperCase() === 'RGB'
+
 function DetectionThumbnails({
   thumbnails,
   scale,
@@ -56,17 +65,43 @@ function DetectionThumbnails({
   scale?: number
   datasetId?: string
 }) {
-  const detection = thumbnails.find((thumbnail) => thumbnail.name.endsWith('RGB.png'))
-  if (!detection) {
+  const { t } = useTranslation()
+  const [selectedName, setSelectedName] = useState<string>()
+  if (!thumbnails.length) {
     return null
   }
+  // Show RGB by default
+  const sorted = thumbnails.toSorted(
+    (a, b) => Number(isRGBThumbnail(b.name)) - Number(isRGBThumbnail(a.name))
+  )
+  const thumbnail = sorted.find(({ name }) => name === selectedName) ?? sorted[0]
+  const bandTooltips: Record<string, string> = {
+    RGB: t((t) => t.detectionBands.rgb),
+    NIR: t((t) => t.detectionBands.nir),
+  }
+  const options = sorted.map(({ name }) => {
+    const band = getThumbnailBand(name)
+    return { id: name, label: band, tooltip: bandTooltips[band.toUpperCase()] }
+  })
   return (
-    <DetectionThumbnailImage
-      id={detection.name}
-      data={detection.data}
-      scale={scale}
-      datasetId={datasetId}
-    />
+    <div className={popupStyles.thumbnailContainer}>
+      <DetectionThumbnailImage
+        key={thumbnail.name}
+        id={thumbnail.name}
+        data={thumbnail.data}
+        scale={scale}
+        datasetId={datasetId}
+      />
+      {options.length > 1 && (
+        <Choice
+          size="small"
+          options={options}
+          activeOption={thumbnail.name}
+          onSelect={({ id }) => setSelectedName(id)}
+          containerClassName={popupStyles.thumbnailBands}
+        />
+      )}
+    </div>
   )
 }
 
