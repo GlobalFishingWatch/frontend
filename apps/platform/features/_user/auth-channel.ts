@@ -11,14 +11,28 @@ export const TAB_ID = `${Date.now()}-${Math.random()}`
 const POPUP_WIDTH = 500
 const POPUP_HEIGHT = 750
 
+const authPopups = new Set<Window>()
+let popupListenerAttached = false
+
 export function openAuthPopup(url: string, name: string) {
   const left = window.screenX + (window.outerWidth - POPUP_WIDTH) / 2
   const top = window.screenY + (window.outerHeight - POPUP_HEIGHT) / 2
-  return window.open(
+  const popup = window.open(
     url,
     name,
     `width=${POPUP_WIDTH},height=${POPUP_HEIGHT},left=${left},top=${top}`
   )
+  if (popup) {
+    authPopups.add(popup)
+    if (!popupListenerAttached) {
+      popupListenerAttached = true
+      window.addEventListener('pagehide', () => {
+        authPopups.forEach((p) => !p.closed && p.close())
+        authPopups.clear()
+      })
+    }
+  }
+  return popup
 }
 
 export type AuthChannelMessage =
