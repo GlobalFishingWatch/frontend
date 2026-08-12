@@ -1,4 +1,4 @@
-import { Fragment, lazy, useState } from 'react'
+import { Fragment, lazy, Suspense, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
@@ -85,13 +85,15 @@ function DetectionThumbnails({
   })
   return (
     <div className={popupStyles.thumbnailContainer}>
-      <DetectionThumbnailImage
-        key={thumbnail.name}
-        id={thumbnail.name}
-        data={thumbnail.data}
-        scale={scale}
-        datasetId={datasetId}
-      />
+      <Suspense fallback={<Spinner size="small" />}>
+        <DetectionThumbnailImage
+          key={thumbnail.name}
+          id={thumbnail.name}
+          data={thumbnail.data}
+          scale={scale}
+          datasetId={datasetId}
+        />
+      </Suspense>
       {options.length > 1 && (
         <Choice
           size="small"
