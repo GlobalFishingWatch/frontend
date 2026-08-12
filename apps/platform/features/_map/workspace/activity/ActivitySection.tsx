@@ -194,9 +194,13 @@ function ActivitySection(): React.ReactElement<any> {
             )}
           </Fragment>
         ) : dataviewHasPrivateDataset ? (
-          <DatasetLoginRequired dataview={dataview} isLoading={isWorkspaceRefreshing} />
+          <DatasetLoginRequired
+            key={dataview.id}
+            dataview={dataview}
+            isLoading={isWorkspaceRefreshing}
+          />
         ) : (
-          <DatasetNotFound dataview={dataview} />
+          <DatasetNotFound key={dataview.id} dataview={dataview} />
         )
       })}
     </Section>
