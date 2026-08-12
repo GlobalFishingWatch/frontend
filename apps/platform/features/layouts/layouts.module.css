@@ -107,7 +107,7 @@
 }
 
 @media print {
-  .splitContainer {
+  :global(#__root__) .splitContainer {
     --color-primary-blue: black;
 
     height: auto;
@@ -118,7 +118,7 @@
     overflow: visible;
   }
 
-  .aside {
+  :global(#__root__) .aside {
     position: relative;
     width: 100% !important;
     overflow: visible;
@@ -126,7 +126,7 @@
     background: none;
   }
 
-  .main {
+  :global(#__root__) .main {
     position: relative;
     width: 100%;
     height: auto;
