@@ -756,9 +756,9 @@
         "title": "Use cases"
       }
     },
-    "title": ""
+    "title": "Help & Resources"
   },
-  "hours": "",
+  "hours": "hours",
   "layer": {
     "activityFitBounds": "Center view on activity",
     "add": "Add layer",
