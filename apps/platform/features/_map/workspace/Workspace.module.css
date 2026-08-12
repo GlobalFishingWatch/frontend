@@ -1,5 +1,4 @@
 .placeholder {
-  height: calc(100% - var(--header-height));
   flex: 1;
   display: flex;
   align-items: center;

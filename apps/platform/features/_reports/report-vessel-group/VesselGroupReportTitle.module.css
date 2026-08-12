@@ -1,6 +1,6 @@
 .container {
   padding: var(--space-S);
-  min-height: 5.2rem;
+  min-height: var(--summary-container-height);
 }
 
 .row {
