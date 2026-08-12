@@ -8,6 +8,8 @@ export const QUERY_REDUCER_PATHS = [
   'dataviewStatsApi',
   'reportEventsStatsApi',
   'userGuideApi',
+  'useCaseApi',
+  'dataUpdateApi',
   'dataTerminologyApi',
   'vesselEventsApi',
   'vesselInsightApi',
