@@ -19,7 +19,7 @@ export const getUserGuideContent = createServerFn({
       {
         // pagination: { page: page || 1, pageSize: 50 },
         sort: ['createdAt:asc'],
-        populate: ['subsections'],
+        populate: ['subsections', 'thumbnail'],
       },
       locale
     )

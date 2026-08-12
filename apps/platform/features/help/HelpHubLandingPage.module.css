@@ -53,6 +53,14 @@
   color: var(--color-primary-blue);
 }
 
+.carouselPlaceholder {
+  display: flex;
+  align-items: center;
+  min-height: var(--size-XL);
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+}
+
 @media (width <= 768px) {
   .intro {
     flex-direction: column;
