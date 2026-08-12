@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { Button } from '@globalfishingwatch/ui-components'
 
@@ -34,7 +35,7 @@ export default function WorkspaceLoginError({
   const openPopupLogin = usePopupLogin()
 
   return (
-    <ErrorPlaceholder title={title} className={className}>
+    <ErrorPlaceholder title={title} className={cx(className, 'print-hidden')}>
       {guestUser ? (
         <LoginLink className={styles.button} loginSource={loginSource}>
           {t((t) => t.common.login)}

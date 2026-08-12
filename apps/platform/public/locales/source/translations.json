@@ -150,7 +150,7 @@
     "thinking": "Thinking",
     "toolBash": "Running command",
     "toolLoadSkill": "Loading skill",
-    "toolNavigate": "",
+    "toolNavigate": "Navigated to view",
     "toolNavigateBack": "Go back to this view",
     "toolNavigation": "Navigated to view",
     "toolReadSkillResource": "Reading skill resource",
@@ -207,8 +207,8 @@
     "country_one": "Country",
     "country_other": "countries",
     "coverage": "coverage",
-    "coverage_one": "",
-    "coverage_other": "",
+    "coverage_one": "coverage",
+    "coverage_other": "coverage",
     "dataTerminology": "Data Terminology",
     "date_one": "Date",
     "date_other": "Dates",
@@ -219,8 +219,8 @@
     "delete": "Delete",
     "description": "Description",
     "detection": "Detections",
-    "detection_one": "",
-    "detection_other": "",
+    "detection_one": "detection",
+    "detection_other": "detections",
     "detections": "Detections",
     "detections_one": "Detection",
     "detections_other": "Detections",
@@ -228,11 +228,6 @@
     "dismiss": "Dismiss",
     "edit": "Edit",
     "environment": "Environment",
-    "eventLabels": {
-      "encounter": "encounter",
-      "loitering": "loitering",
-      "port_visit": "port visit"
-    },
     "events": "Events",
     "events_one": "Event",
     "events_other": "Events",
@@ -303,8 +298,8 @@
     "noData": "No data",
     "none": "None",
     "numEvents": "number of events",
-    "numEvents_one": "",
-    "numEvents_other": "",
+    "numEvents_one": "number of event",
+    "numEvents_other": "number of events",
     "of": "of",
     "onlyMe": "Only me",
     "onlyVisibleForGFW": "Only visible for GFW users",
@@ -522,7 +517,7 @@
       "dataWarningDetail": "This platform uses reference layers (shapefiles) from the ProtectedSeas Navigator for MPAs. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. To see the original reference layers, please visit <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw oro upload your own reference layer using the '+' icon in the left sidebar. Learn more on our <a href='https://globalfishingwatch.org/tutorials/'>tutorials</a> and <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
-  "detections": "",
+  "detections": "Detections",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -682,8 +677,6 @@
     "authorizationEmpty": "No authorization data available",
     "averageSpeedKnots": "avg speed (knots)",
     "depth": "depth",
-    "distanceFromPortKm": "distanceFromPortKm",
-    "distanceFromShoreKm": "distanceFromShoreKm",
     "duration": "Duration",
     "encounteredVesselName": "encountered vessel",
     "end": "End",
@@ -696,11 +689,9 @@
     "port_exit": "Port exit",
     "portVisitedAfter": "Port visited after",
     "speed": "speed",
-    "ssvid": "ssvid",
     "start": "Start",
     "totalDistanceKm": "total distance (km)",
-    "trackDisclaimer": "Encountered vessel track shows one month before and after the event.",
-    "type": "shiptype"
+    "trackDisclaimer": "Encountered vessel track shows one month before and after the event."
   },
   "eventsReport": {
     "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -892,13 +883,6 @@
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
     "search": "Search ocean and sea areas, MPAs or EEZs",
-    "searchTypes": {
-      "eez": "EEZ",
-      "fao": "FAO",
-      "mpa": "MPA",
-      "port": "Port",
-      "rfmo": "RFMO"
-    },
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
@@ -953,6 +937,13 @@
     "placeholderFilterMultiple": "One or more values (comma separated)",
     "results": "results",
     "searching": "Searching more than 100K vessels ...",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "seeing": "Seeing",
     "seeVesselsOnMap": "See vessels on map",
     "seeVesselsOnMap_one": "See {{count}} vessel on map",
@@ -1266,13 +1257,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw_callsign": "",
-    "gfw_flag": "",
     "gfw_geartypes": "GFW Gear type",
-    "gfw_imo": "",
-    "gfw_shipname": "",
     "gfw_shiptypes": "GFW Vessel type",
-    "gfw_ssvid": "",
     "gfwPredictions": "GFW Predictions",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
@@ -1317,10 +1303,6 @@
       "IUU": "RFMO IUU Vessel List",
       "IUUBlackListsCount": "The vessel is present on an RFMO IUU vessel list",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU vessel list",
-      "list": {
-        "black": "black",
-        "grey": "grey"
-      },
       "longline": "Longline settings at day and night",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
@@ -1509,17 +1491,13 @@
   "vesselGroupReport": {
     "clickToSee": "Click to analyse vessel group and see report",
     "insights": {
+      "blackList": "black",
       "fishingEventsError": "There was an error loading the fishing events",
-      "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",
       "flagChangesCount": "{{vessels}} vessels had flag changes",
       "flagChangesCount_one": "{{vessels}} vessel had flag changes",
       "flagChangesCount_other": "{{vessels}} vessels had flag changes",
       "flagChangesEmpty": "There are no vessels with flag changes",
-      "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
+      "greyList": "grey",
       "IUUBlackListsCount": "{{vessels}} vessels are present on a RFMO IUU vessel list",
       "IUUBlackListsCount_one": "{{vessels}} vessel is present on a RFMO IUU vessel list",
       "IUUBlackListsCount_other": "{{vessels}} vessels are present on a RFMO IUU vessel list",
@@ -1528,8 +1506,7 @@
       "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
       "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
       "MOUListsCount_other": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
-      "title": "Vessel group insights"
+      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists"
     },
     "linkDisabled": "This vessel group needs to be updated to latest available data",
     "linkToReport": "Check the vessel group report here",

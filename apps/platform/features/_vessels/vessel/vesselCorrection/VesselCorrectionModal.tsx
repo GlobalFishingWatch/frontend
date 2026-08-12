@@ -205,16 +205,12 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
               {fields.map((key) => (
                 <tr key={key}>
                   <td>
-                    {t(
-                      (t: any) =>
-                        t.vessel[
-                          identitySource === VesselIdentitySourceEnum.SelfReported &&
-                          (key === 'geartypes' || key === 'shiptypes')
-                            ? 'gfw_' + key
-                            : key
-                        ],
-                      { defaultValue: key }
-                    )}
+                    {identitySource === VesselIdentitySourceEnum.SelfReported && key === 'geartypes'
+                      ? t((t) => t.vessel.gfw_geartypes, { defaultValue: key })
+                      : identitySource === VesselIdentitySourceEnum.SelfReported &&
+                          key === 'shiptypes'
+                        ? t((t) => t.vessel.gfw_shiptypes, { defaultValue: key })
+                        : t((t: any) => t.vessel[key], { defaultValue: key })}
                   </td>
                   <td>
                     {key === 'geartypes' ? (

@@ -208,7 +208,12 @@
   margin-bottom: var(--space-XS);
 }
 
-.rowColum {
+.rowCenter {
+  display: flex;
+  align-items: center;
+}
+
+.rowColumn {
   display: flex;
   align-items: flex-start;
   flex-direction: column;

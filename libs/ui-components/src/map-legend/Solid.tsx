@@ -13,7 +13,7 @@ type SolidLegendProps = {
 export function SolidLegend({ layer, className }: SolidLegendProps) {
   const { label, color } = (layer || {}) as UILegendSolid
   return (
-    <div className={cx(styles.row, styles.rowColum, className)}>
+    <div className={cx(styles.row, styles.rowColumn, className)}>
       {color && <span className={styles.line} style={{ backgroundColor: color }} />}
       {label && <p>{label}</p>}
     </div>

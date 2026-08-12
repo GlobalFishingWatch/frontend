@@ -43,7 +43,7 @@ export function getCreateRouterOptions() {
     defaultPreload: 'intent' as const,
     trailingSlash: 'never' as const,
     scrollRestoration: true,
-    defaultPendingComponent: () => null,
+    /* Don't add `defaultPendingComponent`, it was deleted on purpose to avoid initial load flashes. */
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
     defaultOnCatch: (error: Error) => {
       reportRouteError(error, 'router-render')

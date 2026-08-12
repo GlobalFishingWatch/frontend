@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
-import { selectVesselProfileDataview } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import ActivityByType from 'features/_vessels/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/_vessels/vessel/activity/activity-by-voyage/ActivityByVoyage'
 import { ACTIVITY_CONTAINER_ID } from 'features/_vessels/vessel/activity/event/event-scroll.hooks'
@@ -27,9 +26,6 @@ const VesselActivity = () => {
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const eventsLoading = useVesselProfileEventsLoading()
   const eventsError = useVesselProfileEventsError()
-  const vesselProfileDataview = useSelector(selectVesselProfileDataview)
-  const hasVesselEvents =
-    vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
   const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
     replaceQueryParams({ vesselActivityMode: option.id })
@@ -53,14 +49,6 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (hasVesselEvents && eventsLoading) {
-    return (
-      <div className={styles.placeholder}>
-        <Spinner />
-      </div>
-    )
-  }
-
   if (!hasEventsDataset) {
     return (
       <div className={styles.emptyState}>
@@ -77,6 +65,16 @@ const VesselActivity = () => {
     )
   }
 
+  // The summary counts come from the same map layer as the events list, so showing it while the
+  // list is still loading renders half-filled numbers. Keep the whole block in loading state.
+  if (eventsLoading) {
+    return (
+      <div className={styles.placeholder}>
+        <Spinner />
+      </div>
+    )
+  }
+
   return (
     <Fragment>
       <div data-testid="vessel-profile-info" className={styles.activityTitleContainer}>
@@ -89,14 +87,9 @@ const VesselActivity = () => {
           onSelect={setActivityMode}
         />
       </div>
-      {eventsLoading && (
-        <div className={styles.placeholder}>
-          <Spinner />
-        </div>
-      )}
       <div className={styles.activityWrapper} id={ACTIVITY_CONTAINER_ID}>
-        {!eventsLoading && activityMode === 'type' && <ActivityByType />}
-        {!eventsLoading && activityMode === 'voyage' && <ActivityByVoyage />}
+        {activityMode === 'type' && <ActivityByType />}
+        {activityMode === 'voyage' && <ActivityByVoyage />}
       </div>
     </Fragment>
   )

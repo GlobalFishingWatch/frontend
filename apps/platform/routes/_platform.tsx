@@ -9,9 +9,9 @@ import '@globalfishingwatch/timebar/timebar-settings.css'
 import '@globalfishingwatch/ui-components/base.css'
 
 function PlatformShell() {
-  const store = useAppStore()
+  const { store, serverState } = useAppStore()
   return (
-    <Provider store={store}>
+    <Provider store={store} serverState={serverState}>
       <PlatformLayout />
     </Provider>
   )

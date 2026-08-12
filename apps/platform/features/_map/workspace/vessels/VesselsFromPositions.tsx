@@ -15,6 +15,7 @@ import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
@@ -48,6 +49,7 @@ function VesselsFromPositions() {
 
   const activityDataviews = useSelector(selectActiveActivityDataviews)
   const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const isRealTime = activityDataviews?.some(isRealTimeDataview)
   const activityId = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
   const detectionsId = detectionsDataviews?.length ? getMergedDataviewId(detectionsDataviews) : ''
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(activityId)
@@ -104,16 +106,17 @@ function VesselsFromPositions() {
       if (positions.length) {
         const vesselsByValue = positions.reduce(
           (acc, position) => {
-            if (position.properties.shipname) {
-              if (!acc[position.properties.shipname]) {
-                acc[position.properties.shipname] = {
+            const key = isRealTime ? position.properties.id : position.properties.shipname
+            if (key) {
+              if (!acc[key]) {
+                acc[key] = {
                   id: position.properties.vessel_id || position.properties.id,
                   shipname: position.properties.shipname,
                   value: 0,
                   datasets: searchDatasets,
                 }
               }
-              acc[position.properties.shipname].value += position.properties.value
+              acc[key].value += position.properties.value || 0
             }
             return acc
           },
@@ -129,7 +132,7 @@ function VesselsFromPositions() {
       return []
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fourwingsLayers.length, fourwingsLayersLoaded, layersStateHash, vesselsHash])
+  }, [fourwingsLayers.length, fourwingsLayersLoaded, isRealTime, layersStateHash, vesselsHash])
 
   if (!vessels.length) {
     return null
@@ -153,15 +156,23 @@ function VesselsFromPositions() {
               onMouseEnter={() => setHighlightVessel(vessel)}
               onMouseLeave={() => setHighlightVessel(undefined)}
             >
-              <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
+              {!isRealTime && (
+                <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
+              )}
               <div className={styles.vesselOnScreen}>
-                <VesselLink
-                  className={styles.link}
-                  vesselId={vessel.id}
-                  datasetId={vessel.datasets?.[0]}
-                >
-                  {formatInfoField(vessel.shipname, 'shipname')}
-                </VesselLink>
+                {isRealTime ? (
+                  <span>
+                    {t((t) => t.vessel.mmsi)}: {vessel.id}
+                  </span>
+                ) : (
+                  <VesselLink
+                    className={styles.link}
+                    vesselId={vessel.id}
+                    datasetId={vessel.datasets?.[0]}
+                  >
+                    {formatInfoField(vessel.shipname, 'shipname')}
+                  </VesselLink>
+                )}
                 {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
