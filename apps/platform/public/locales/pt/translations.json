@@ -517,6 +517,10 @@
       "dataWarningDetail": "Esta plataforma usa camadas de referência (shapefiles) do ProtectedSeas Navigator para  Áreas Marinhas Protegidas. As denominações empregadas e a apresentação do material nesta plataforma não implicam a expressão de qualquer parecer do Global Fishing Watch sobre o estatuto jurídico de qualquer país, território, cidade, área ou das suas autoridades, ou ainda sobre a delimitação das suas fronteiras ou limitações. Para ver as camadas de referência originais, por favor visite  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Você deve considerar estas camadas de referência não aplicáveis para seus propósitos, esta plataforma permite que camadas de referência personalizadas sejam carregadas. Desenhe ou carregue sua própria camada de referência usando o ícone '+' na barra lateral esquerda. Saiba mais sobre nossos <a href='https://globalfishingwatch.org/tutorials/'>tutoriais</a> e <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
+  "detectionBands": {
+    "nir": "Near-infrared",
+    "rgb": "Red, green and blue (visible light)"
+  },
   "detections": "Detections",
   "download": {
     "apiPortal": "Veja nossas APIs aqui",
