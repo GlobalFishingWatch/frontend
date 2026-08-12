@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getRouteApi, useNavigate } from '@tanstack/react-router'
+import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 
 import type { Locale } from '@globalfishingwatch/api-types'
@@ -98,28 +98,41 @@ function HelpHubSectionPage() {
   }
 
   return (
-    <div className={styles.container}>
-      <TableOfContents
-        data={topics}
-        activeId={topicSlug ?? topicSlugs[0]}
-        className={styles.tableOfContents}
-        onClick={scrollToTopic}
-        onSubTopicClick={(_sectionId, subId) =>
-          scrollContainerRef.current
-            ?.querySelector(`#${CSS.escape(subId)}`)
-            ?.scrollIntoView({ block: 'start' })
-        }
-      />
-      <div ref={scrollContainerRef} className={styles.content}>
-        {copy && (
-          <header className={styles.header}>
-            <h1 className={styles.title}>{copy.title}</h1>
-            <p className={styles.description}>{copy.description}</p>
-          </header>
-        )}
-        {topics.map((topic) => (
-          <HelpHubTopicContent key={topic.slug} topic={topic} />
-        ))}
+    <div className={styles.page}>
+      {copy && (
+        <header className={styles.header}>
+          <nav>
+            <ul className={styles.breadcrumb}>
+              <li>
+                <Link to={ROUTE_PATHS.HELP_HUB} className={styles.breadcrumbLink}>
+                  {t((s) => s.helpHub.title)}
+                </Link>
+              </li>
+              <li className={styles.breadcrumbSeparator} aria-hidden="true">
+                ›
+              </li>
+              <li>{copy.title}</li>
+            </ul>
+          </nav>
+        </header>
+      )}
+      <div className={styles.container}>
+        <TableOfContents
+          data={topics}
+          activeId={topicSlug ?? topicSlugs[0]}
+          className={styles.tableOfContents}
+          onClick={scrollToTopic}
+          onSubTopicClick={(_sectionId, subId) =>
+            scrollContainerRef.current
+              ?.querySelector(`#${CSS.escape(subId)}`)
+              ?.scrollIntoView({ block: 'start' })
+          }
+        />
+        <div ref={scrollContainerRef} className={styles.content}>
+          {topics.map((topic) => (
+            <HelpHubTopicContent key={topic.slug} topic={topic} />
+          ))}
+        </div>
       </div>
     </div>
   )
