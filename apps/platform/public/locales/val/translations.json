@@ -517,6 +517,10 @@
       "dataWarningDetail": "crwdns132669:0crwdne132669:0"
     }
   },
+  "detectionBands": {
+    "nir": "crwdns138369:0crwdne138369:0",
+    "rgb": "crwdns138371:0crwdne138371:0"
+  },
   "detections": "crwdns132671:0crwdne132671:0",
   "download": {
     "apiPortal": "crwdns132673:0crwdne132673:0",
