@@ -1,15 +1,25 @@
 .carousel {
+  --carousel-gap: var(--space-SM);
+
   display: flex;
-  gap: var(--space-SM);
+  gap: var(--carousel-gap);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--space-SM);
+  scroll-padding-left: var(--carousel-gap);
   padding-bottom: var(--space-S);
 }
 
 .carousel > * {
-  flex: 0 0 var(--carousel-item-width, 20rem);
+  flex: 0 0
+    max(
+      var(--carousel-item-min-width, 16rem),
+      calc(
+        (100% - (var(--carousel-items-per-view, 4) - 1) * var(--carousel-gap)) /
+          var(--carousel-items-per-view, 4)
+      )
+    );
   scroll-snap-align: start;
+  min-width: 0;
 }
 
 @media print {
