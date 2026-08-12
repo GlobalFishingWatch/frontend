@@ -1,6 +1,10 @@
 import type { VesselSearchState } from 'features/_vessels/search/search.types'
 
-export { CALLSIGN_MIN_LENGTH, IMO_LENGTH, SSVID_LENGTH } from '@globalfishingwatch/data-transforms'
+export {
+  CALLSIGN_MIN_LENGTH,
+  IMO_LENGTH,
+  SSVID_LENGTH,
+} from '@globalfishingwatch/data-transforms/vessels'
 
 export const MIN_SEARCH_CHARACTERS = 3
 
