@@ -1,6 +1,6 @@
 .summaryContainer {
   padding: var(--space-S);
-  min-height: 5.2rem;
+  min-height: var(--summary-container-height);
   display: flex;
   gap: var(--space-S);
   position: relative;

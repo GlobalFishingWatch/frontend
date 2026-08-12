@@ -225,7 +225,6 @@ const Vessel = () => {
         <WorkspaceLoginError
           title={t((t) => t.errors.vesselActivityLogin)}
           loginSource="vessel-events"
-          className={styles.loginRequiered}
         />
       ) : hasSelfReportedData ? (
         <Fragment>

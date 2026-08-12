@@ -1,4 +1,8 @@
 .placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   padding-block: var(--space-XL);
 }
@@ -42,8 +46,4 @@
 
 .linkTooltip {
   max-width: none;
-}
-
-.loginRequiered {
-  height: 32rem;
 }
