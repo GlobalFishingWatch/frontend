@@ -2,16 +2,12 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { getVesselIdentifierType } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import type { SearchType } from 'features/_vessels/search/search.config'
-import {
-  CALLSIGN_MIN_LENGTH,
-  EMPTY_SEARCH_FILTERS,
-  IMO_LENGTH,
-  SSVID_LENGTH,
-} from 'features/_vessels/search/search.config'
+import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import {
   selectSearchOption,
   selectSearchQuery,
@@ -51,15 +47,8 @@ function SearchTypeChoice({ className }: { className?: string }) {
     })
     let additionalParams = {}
     if (option.id === 'advanced') {
-      if (searchQuery?.length === SSVID_LENGTH && !isNaN(Number(searchQuery))) {
-        additionalParams = { ssvid: searchQuery }
-      } else if (searchQuery?.length === IMO_LENGTH && !isNaN(Number(searchQuery))) {
-        additionalParams = { imo: searchQuery }
-      } else if (searchQuery?.length >= CALLSIGN_MIN_LENGTH && /^[A-Z0-9]+$/.test(searchQuery)) {
-        additionalParams = { callsign: searchQuery }
-      } else {
-        additionalParams = { query: searchQuery }
-      }
+      const identifierType = getVesselIdentifierType(searchQuery)
+      additionalParams = identifierType ? { [identifierType]: searchQuery } : { query: searchQuery }
     } else {
       if (searchQuery || searchFilters.ssvid || searchFilters.imo) {
         additionalParams = {
