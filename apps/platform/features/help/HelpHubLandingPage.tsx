@@ -8,7 +8,6 @@ import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 import type { Locale } from '@globalfishingwatch/api-types'
 import { Spinner } from '@globalfishingwatch/ui-components'
 import { Card } from '@globalfishingwatch/ui-components/card'
-import { Carousel } from '@globalfishingwatch/ui-components/carousel'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { HelpHubSectionId } from 'features/help/helpHub.content'
@@ -67,17 +66,23 @@ function HelpHubLandingPage() {
                 <Spinner size="small" />
               </div>
             ) : cards.length > 0 ? (
-              <Carousel id={`${section.slug}-carousel`} label={title}>
+              <div className={styles.cardGrid}>
                 {cards.map((card) => (
-                  <Card
+                  <Link
                     key={card.id}
-                    title={card.title}
-                    subtitle={card.subtitle}
-                    image={card.image}
-                    titleTag="h3"
-                  />
+                    to={ROUTE_PATHS.HELP_HUB_SECTION}
+                    params={{ sectionSlug: section.slug, topicSlug: card.slug }}
+                    className={styles.cardLink}
+                  >
+                    <Card
+                      title={card.title}
+                      subtitle={card.subtitle}
+                      image={card.image}
+                      titleTag="h3"
+                    />
+                  </Link>
                 ))}
-              </Carousel>
+              </div>
             ) : (
               <p className={styles.carouselPlaceholder}>{t((s) => s.common.noData)}</p>
             )}

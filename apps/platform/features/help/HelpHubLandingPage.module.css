@@ -53,6 +53,50 @@
   color: var(--color-primary-blue);
 }
 
+.cardGrid {
+  --card-grid-gap: var(--space-SM);
+  --card-grid-items-per-view: 4;
+  --card-grid-item-min-width: 16rem;
+
+  display: flex;
+  gap: var(--card-grid-gap);
+  overflow: hidden;
+}
+
+.cardGrid > * {
+  flex: 0 0
+    max(
+      var(--card-grid-item-min-width),
+      calc(
+        (100% - (var(--card-grid-items-per-view) - 1) * var(--card-grid-gap)) /
+          var(--card-grid-items-per-view)
+      )
+    );
+  min-width: 0;
+}
+
+.cardLink {
+  display: block;
+  min-width: 0;
+}
+
+.cardLink img {
+  transition: transform 240ms ease;
+}
+
+.cardLink:hover img {
+  transform: scale(1.03);
+}
+
+.cardLink:hover h3 {
+  text-decoration: underline;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-primary-blue);
+  outline-offset: var(--space-XS);
+}
+
 .carouselPlaceholder {
   display: flex;
   align-items: center;
