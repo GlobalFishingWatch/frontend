@@ -161,6 +161,8 @@ export type SelfReportedInfo = VesselInfo & {
   hull?: string
   fishingLicenseCode?: string
   vesselRegistrationCode?: string
+  onFishingListSr?: CombinedSourceInfo[]
+  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
 }
 
 export type RegistryImage = {
@@ -196,6 +198,7 @@ export type VesselRegistryInfo = VesselInfo & {
   tonnageGt: number | RegistryLoginMessage
   vesselInfoReference: string
   extraFields?: RegistryExtraFields[]
+  registryVesselClass?: CombinedSourceInfo[]
 }
 
 export type VesselRegistryProperty = {
@@ -244,8 +247,7 @@ export type CombinedSourceInfo = {
   value?: string | boolean | number
 }
 export type VesselCombinedSourcesInfo = {
-  vesselId: string
-  atomicClass?: CombinedSourceInfo[]
+  atomicClassSc?: CombinedSourceInfo[]
   bestEnginePowerKw?: CombinedSourceInfo[]
   bestLengthM?: CombinedSourceInfo[]
   bestTonnageGt?: CombinedSourceInfo[]
@@ -255,23 +257,14 @@ export type VesselCombinedSourcesInfo = {
   geartypes: CombinedSourceInfo[]
   inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
-  /** @deprecated substituted by `vesselClass` in pipe 5, still populated in pipe 4 */
-  inferredVesselClassAgNnet?: CombinedSourceInfo[]
   maxSpeedKn?: CombinedSourceInfo[]
-  messyMmsi?: CombinedSourceInfo[]
-  onFishingListRf?: CombinedSourceInfo[]
-  onFishingListSr?: CombinedSourceInfo[]
-  prodGeartypeNnet?: CombinedSourceInfo[]
+  onFishingListSc?: CombinedSourceInfo[]
   prodGeartypeSource?: CombinedSourceInfo[]
-  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
-  prodShiptypeNnet?: CombinedSourceInfo[]
-  registryVesselClass?: CombinedSourceInfo[]
-  /** @deprecated substituted by `coarseClass`, still returned (empty) by pipe 5 */
-  rfCoarseClass?: CombinedSourceInfo[]
   shiptypes: CombinedSourceInfo[]
-  vesselClass?: CombinedSourceInfo[]
+  vesselClassSc?: CombinedSourceInfo[]
   vesselClassScore?: CombinedSourceInfo[]
   vesselClassSourceAgreement?: CombinedSourceInfo[]
+  vesselId: string
 }
 
 export type IdentityVessel = {

@@ -1,13 +1,18 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import type { VesselRegistryInfo } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identity/fields/vessel-identity.utils'
+import { isRegistryInTimerange } from 'features/_vessels/vessel/identity/vessel-identity.utils'
+import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { selectShowPipe5IdentityFields } from 'features/_vessels/vessel/vessel.config.selectors'
+import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from '../VesselIdentity.module.css'
@@ -22,31 +27,31 @@ const VesselIdentityGFWExtendedGeartype = ({
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
   const showPipe5Fields = useSelector(selectShowPipe5IdentityFields)
+  const vesselData = useSelector(selectVesselInfoData)
 
   if ((!isGFWUser && !isJACUser) || !identity.combinedSourcesInfo) {
     return null
   }
   const {
-    atomicClass = [],
-    vesselClass = [],
+    atomicClassSc = [],
+    vesselClassSc = [],
     vesselClassScore = [],
     prodGeartypeSource = [],
-    inferredVesselClassAgNnet = [],
-    registryVesselClass = [],
     vesselClassSourceAgreement = [],
   } = identity.combinedSourcesInfo
 
-  const atomicClassInTimerange = atomicClass.find((source) =>
+  const atomicClassInTimerange = atomicClassSc.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
-  // pipe 5 publishes the ML vessel class as `vesselClass`, pipe 4 as `inferredVesselClassAgNnet`
-  const vesselClassInTimerange = vesselClass.find(
+  const vesselClassInTimerange = vesselClassSc.find(
     (source) => getIsCombinedSourceInTimerange(identity, source) && source.value !== undefined
   )
-  const inferredVesselClassAgNnetInTimerange =
-    vesselClassInTimerange ||
-    inferredVesselClassAgNnet.find((source) => getIsCombinedSourceInTimerange(identity, source))
-  const registryVesselClassInTimerange = registryVesselClass.find((source) =>
+  const registryIdentity = getVesselIdentities(vesselData, {
+    identitySource: VesselIdentitySourceEnum.Registry,
+  }).find((registry) =>
+    isRegistryInTimerange(registry, identity.transmissionDateFrom, identity.transmissionDateTo)
+  ) as VesselRegistryInfo | undefined
+  const registryVesselClassInTimerange = registryIdentity?.registryVesselClass?.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
   const prodGeartypeSourceInTimerange = prodGeartypeSource.find((source) =>
@@ -64,11 +69,11 @@ const VesselIdentityGFWExtendedGeartype = ({
         <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
       </li>
       <li>
-        <Tooltip content="(inferredVesselClassAgNnet) Vessel class inferred by the machine learning model.">
+        <Tooltip content="(vesselClassSc) Vessel class inferred by the machine learning model.">
           <span className={cx(styles.secondary, styles.help)}>ML vessel class: </span>
         </Tooltip>
-        {inferredVesselClassAgNnetInTimerange?.value
-          ? formatInfoField(inferredVesselClassAgNnetInTimerange?.value as string, 'geartypes')
+        {vesselClassInTimerange?.value
+          ? formatInfoField(vesselClassInTimerange?.value as string, 'geartypes')
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       {showPipe5Fields && (
