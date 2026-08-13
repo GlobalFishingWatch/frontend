@@ -98,6 +98,7 @@ export const ENDPOINTS_BY_TYPE = {
   'thumbnails:v1': THUMBNAILS_ENDPOINTS,
   'tracks:v1': TRACK_ENDPOINTS,
   'user-context-layer:v1': USER_CONTEXT_LAYER_ENDPOINTS,
+  'user-4wings:v1': FOURWINGS_ENDPOINTS,
   'user-tracks:v1': USER_TRACKS_ENDPOINTS,
   'vessels:v1': VESSELS_ENDPOINTS,
 } as const
