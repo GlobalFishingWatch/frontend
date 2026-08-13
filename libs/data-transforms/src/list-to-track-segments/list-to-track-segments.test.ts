@@ -4,6 +4,7 @@ import path from 'path'
 import { parse } from 'papaparse'
 
 import { getUTCDate } from '../dates'
+import { getFilterIdClean } from '../schema'
 import { guessColumn } from '../schema/guess-columns'
 
 import { checkRecordValidity } from './check-record-validity'
@@ -85,210 +86,102 @@ describe('getUTCDate', () => {
   })
 })
 
-describe('Basic raw csv to track', () => {
-  const rawCsv = fs.readFileSync(path.join(__dirname, 'mock/messages.csv'), 'utf-8')
+type Columns = { latitude: string; longitude: string; startTime: string; lineId: string }
 
-  const { data, meta } = parse(rawCsv, { dynamicTyping: true, header: true, skipEmptyLines: true })
-
-  const columns = {
-    latitude: 'location-lat',
-    longitude: 'location-long',
-    timestamp: 'timestamp',
-    id: 'individual-local-identifier',
-  }
-  const lineColorBarOptions = LINE_COLOR_BAR_OPTIONS
-  const { segments } = listToTrackSegments({
-    records: data as Record<string, any>[],
-    ...columns,
-    lineColorBarOptions,
-  })
-  const ids = Array.from(new Set(data.map((item: any) => item[columns.id])))
-
-  // Map index position in segment array for a given id
-  const segmentIndexPerId = ids.reduce((prev, id) => {
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i]
-      if (segment[0]?.[0]?.id === id) return { ...prev, [id]: i }
-    }
-    return { ...prev }
-  }, {})
-
-  const getSegmentById = (id: string) => {
-    return segments[segmentIndexPerId[id]]
-  }
-
-  it('guesses columns correctly', () => {
-    expect(guessColumn('timestamp', meta?.fields)).toEqual('timestamp')
-    expect(guessColumn('latitude', meta?.fields)).toEqual('location-lat')
-    expect(guessColumn('longitude', meta?.fields)).toEqual('location-long')
-  })
-
-  it('checks record validity correctly', () => {
-    const badRecord = {
-      latitude: 'ggg',
-      longitude: 1234,
-      timestamp: 'ggg',
-    }
-    const goodRecord = {
-      latitude: 1.234,
-      longitude: 43.21,
-      timestamp: '2015-09-11 09:25:27.000',
-    }
-    const columns = {
-      latitude: 'latitude',
-      longitude: 'longitude',
-      timestamp: 'timestamp',
-    }
-    const errors = checkRecordValidity({ record: badRecord, ...columns })
-    expect(errors).toEqual(['latitude', 'longitude', 'timestamp'])
-
-    const noErrors = checkRecordValidity({
-      record: goodRecord,
-      ...columns,
-    })
-    expect(noErrors).toEqual([])
-  })
-
-  it('creates one segment per id', () => {
-    expect(segments.length).toEqual(ids.length)
-  })
-
-  it.each(ids)('includes all the points of id %s in the track segment', (id) => {
-    const segment = getSegmentById(id)
-    const idPoints = data.filter((item: any) => item[columns.id] === id).length
-    expect(segment?.length).toEqual(idPoints)
-  })
-
-  // Use a data sample to verify point by point
-  const dataSample: any[] = ids.reduce((prev, id) => {
-    return [
-      ...prev,
-      ...data
-        // per id
-        .filter((item: any) => item[columns.id] === id)
-        // get only some records
-        .slice(0, 20)
-        // and add the index position that should match the position in the segment
-        .map((r: any, i) => ({ ...r, i })),
-    ]
-  }, [])
-
-  it.each(dataSample)(
-    'checks point $i of id $individual-local-identifier converted to segment. {lat: $location-lat, lon: $location-long, timestamp: $timestamp} ',
-    (point: any) => {
-      const i = point.i
-      const segment = getSegmentById(point[columns.id])
-      const segmentPoint = segment[i]
-
-      expect(segmentPoint).toBeDefined()
-      expect(segmentPoint[0]?.latitude).toEqual(point[columns.latitude])
-      expect(segmentPoint[0]?.longitude).toEqual(point[columns.longitude])
-      const dateCsv = getUTCDate(point[columns.timestamp])
-      expect(segmentPoint[0]?.timestamp).toEqual(dateCsv.getTime())
-    }
-  )
-})
-
-describe('Raw csv to track with UTC timestamps', () => {
-  const rawUtcCsv = fs.readFileSync(path.join(__dirname, 'mock/messages_utc.csv'), 'utf-8')
-
-  const { data, meta } = parse(rawUtcCsv, {
+// Headers are cleaned on upload (see the platform's datasets-parse.utils.ts) and
+// listToTrackSegments normalizes record keys the same way before reading them, so the column
+// names handed to it are always the cleaned ones.
+const readCsv = (file: string) => {
+  const raw = fs.readFileSync(path.join(__dirname, `mock/${file}`), 'utf-8')
+  const rawFields = parse(raw, { header: true, preview: 1 }).meta?.fields
+  const parsed = parse(raw, {
     dynamicTyping: true,
     header: true,
     skipEmptyLines: true,
+    transformHeader: (header) => getFilterIdClean(header),
   })
+  return { ...parsed, rawFields }
+}
 
-  const columns = {
-    latitude: 'lat',
-    longitude: 'lon',
-    timestamp: 'timestamp',
-    id: 'ssvid',
-  }
-  const lineColorBarOptions = LINE_COLOR_BAR_OPTIONS
-  const { segments } = listToTrackSegments({
-    records: data as Record<string, any>[],
-    ...columns,
-    lineColorBarOptions,
-  })
-  const ids = Array.from(new Set(data.map((item: any) => item[columns.id])))
-
-  // Map index position in segment array for a given id
-  const segmentIndexPerId = ids.reduce((prev, id) => {
-    for (let i = 0; i < segments.length; i++) {
-      const segment = segments[i]
-      if (segment[0]?.[0]?.id === id) return { ...prev, [id]: i }
-    }
-    return { ...prev }
-  }, {})
-
-  const getSegmentById = (id: string) => {
-    return segments[segmentIndexPerId[id]]
-  }
-
-  it('guesses columns correctly', () => {
-    expect(guessColumn('timestamp', meta?.fields)).toEqual('timestamp')
-    expect(guessColumn('latitude', meta?.fields)).toEqual('lat')
-    expect(guessColumn('longitude', meta?.fields)).toEqual('lon')
-  })
-
-  it('checks record validity correctly', () => {
-    const badRecord = {
-      latitude: 'ggg',
-      longitude: 1234,
-      timestamp: 'ggg',
-    }
-    const goodRecord = data.slice().pop() as Record<string, any>
-    const columns = {
-      latitude: 'lat',
-      longitude: 'lon',
-      timestamp: 'timestamp',
-    }
-    const errors = checkRecordValidity({ record: badRecord, ...columns })
-    expect(errors).toEqual(['latitude', 'longitude', 'timestamp'])
-
-    const noErrors = checkRecordValidity({
-      record: goodRecord,
+const describeTrackCsv = (name: string, file: string, columns: Columns) => {
+  describe(name, () => {
+    const { data, rawFields } = readCsv(file)
+    const records = data as Record<string, any>[]
+    const { segments } = listToTrackSegments({
+      records,
       ...columns,
+      lineColorBarOptions: LINE_COLOR_BAR_OPTIONS,
     })
-    expect(noErrors).toEqual([])
+    const ids = Array.from(new Set(records.map((record) => record[columns.lineId])))
+
+    // `segments` holds one entry per line, each one holding that line's segments. Without a
+    // segmentId column every line resolves to exactly one segment.
+    const getPointsById = (id: any) => segments.find((line) => line[0]?.[0]?.id === id)?.[0]
+
+    const getExpectedPoints = (id: any) =>
+      records
+        .filter((record) => record[columns.lineId] === id)
+        .map((record) => ({
+          latitude: record[columns.latitude],
+          longitude: record[columns.longitude],
+          timestamp: getUTCDate(record[columns.startTime]).getTime(),
+        }))
+        .sort((a, b) => a.timestamp - b.timestamp)
+
+    // guessColumn matches raw headers only — its dictionary holds `location-lat`, not the
+    // `location_lat` the cleaning step produces — so guess first, clean after.
+    it('guesses columns correctly', () => {
+      const guess = (col: 'latitude' | 'longitude' | 'timestamp') =>
+        getFilterIdClean(guessColumn(col, rawFields) as string)
+      expect(guess('timestamp')).toEqual(columns.startTime)
+      expect(guess('latitude')).toEqual(columns.latitude)
+      expect(guess('longitude')).toEqual(columns.longitude)
+    })
+
+    it('checks record validity correctly', () => {
+      const badRecord = { latitude: 'ggg', longitude: 1234, timestamp: 'ggg' }
+      const badColumns = { latitude: 'latitude', longitude: 'longitude', timestamp: 'timestamp' }
+      expect(checkRecordValidity({ record: badRecord, ...badColumns })).toEqual([
+        'latitude',
+        'longitude',
+        'timestamp',
+      ])
+
+      const goodRecord = records[records.length - 1]
+      expect(
+        checkRecordValidity({
+          record: goodRecord,
+          latitude: columns.latitude,
+          longitude: columns.longitude,
+          timestamp: columns.startTime,
+        })
+      ).toEqual([])
+    })
+
+    it('creates one line per id', () => {
+      expect(segments.length).toEqual(ids.length)
+    })
+
+    it.each(ids)('converts every point of id %s, in timestamp order', (id) => {
+      const points = getPointsById(id)
+      expect(points).toBeDefined()
+      expect(
+        points!.map(({ latitude, longitude, timestamp }) => ({ latitude, longitude, timestamp }))
+      ).toEqual(getExpectedPoints(id))
+    })
   })
+}
 
-  it('creates one segment per id', () => {
-    expect(segments.length).toEqual(ids.length)
-  })
+describeTrackCsv('Basic raw csv to track', 'messages.csv', {
+  latitude: 'location_lat',
+  longitude: 'location_long',
+  startTime: 'timestamp',
+  lineId: 'individual_local_identifier',
+})
 
-  it.each(ids)('includes all the points of id %s in the track segment', (id) => {
-    const segment = getSegmentById(id)
-    const idPoints = data.filter((item: any) => item[columns.id] === id).length
-    expect(segment?.length).toEqual(idPoints)
-  })
-
-  // Use a data sample to verify point by point
-  const dataSample: any[] = ids.reduce((prev, id) => {
-    return [
-      ...prev,
-      ...data
-        // per id
-        .filter((item: any) => item[columns.id] === id)
-        // get only some records
-        .slice(0, 20)
-        // and add the index position that should match the position in the segment
-        .map((r: any, i) => ({ ...r, i })),
-    ]
-  }, [])
-
-  it.each(dataSample)(
-    'checks point $i of id $id converted to segment. {lat: $lat, lon: $lon, timestamp: $timestamp} ',
-    (point: any) => {
-      const i = point.i
-      const segment = getSegmentById(point[columns.id])
-      const segmentPoint = segment[i]
-
-      expect(segmentPoint).toBeDefined()
-      expect(segmentPoint[0]?.latitude).toEqual(point[columns.latitude])
-      expect(segmentPoint[0]?.longitude).toEqual(point[columns.longitude])
-      const dateCsv = getUTCDate(point[columns.timestamp])
-      expect(segmentPoint[0]?.timestamp).toEqual(dateCsv.getTime())
-    }
-  )
+describeTrackCsv('Raw csv to track with UTC timestamps', 'messages_utc.csv', {
+  latitude: 'lat',
+  longitude: 'lon',
+  startTime: 'timestamp',
+  lineId: 'ssvid',
 })
