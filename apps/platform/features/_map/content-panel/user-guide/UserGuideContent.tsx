@@ -156,7 +156,7 @@ export const UserGuideContentComponent = () => {
           />
         ) : (
           <div className={cx(styles.content)}>
-            <h2>{selectedSection.title}</h2>
+            <h2 className={styles.sectionTitle}>{selectedSection.title}</h2>
             <ContentMarkdown>{selectedSection.body}</ContentMarkdown>
             {selectedSection.subsections?.map((subsection) => (
               <div
@@ -164,7 +164,7 @@ export const UserGuideContentComponent = () => {
                 id={subsection.slug || subsection.id}
                 className={styles.subsection}
               >
-                <h3>{subsection.title}</h3>
+                <h3 className={styles.subsectionTitle}>{subsection.title}</h3>
                 <ContentMarkdown>{subsection.body}</ContentMarkdown>
               </div>
             ))}

@@ -3,7 +3,7 @@ import { memo } from 'react'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import type { HelpHubTopic } from 'features/help/helpHub.types'
 
-import styles from 'features/_map/content-panel/ContentPanel.module.css'
+import styles from './HelpHubTopicContent.module.css'
 
 type HelpHubTopicContentProps = {
   topic: HelpHubTopic
