@@ -119,6 +119,11 @@ export default defineConfig(({ command, mode }) => {
     build: {
       cssCodeSplit: false,
     },
+    // @developmentseed/geotiff's defaultDecoderPool spawns `new Worker(..., { type: 'module' })`,
+    // which vite's default 'iife' worker format cannot emit.
+    worker: {
+      format: 'es',
+    },
     envPrefix: ['VITE_', 'i18n_'],
     define: {
       __BUILD_ID__: JSON.stringify(
@@ -189,9 +194,6 @@ export default defineConfig(({ command, mode }) => {
         '@deck.gl/mesh-layers',
         '@deck.gl/react',
         'papaparse',
-        'geotiff',
-        '@developmentseed/geotiff',
-        'proj4',
         // Keep i18next's classes on Node's native require cache so unrelated lib program
         // reloads (e.g. editing api-client) don't tear down/rebuild them mid-request and
         // desync an already-constructed instance from the freshly reloaded prototype.
