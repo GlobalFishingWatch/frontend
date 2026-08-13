@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -14,6 +14,7 @@ import {
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
   getContextDataviewInstance,
+  getUserFourwingsDataviewInstance,
   getUserPointsDataviewInstance,
   getUserPolygonsDataviewInstance,
   getUserTrackDataviewInstance,
@@ -47,6 +48,9 @@ interface NewDatasetProps {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  if (dataset.type === DatasetTypes.UserFourwings) {
+    return getUserFourwingsDataviewInstance(dataset)
+  }
   const isBQEditorLayer = getIsBQEditorDataset(dataset)
   if (isBQEditorLayer) {
     const config = getDatasetConfiguration(dataset, 'fourwingsV1')

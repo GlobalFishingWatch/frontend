@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import Points from 'assets/icons/dataset-type-points.svg?react'
+import Gridded from 'assets/icons/dataset-type-polygons.svg?react'
 import Polygons from 'assets/icons/dataset-type-polygons-lines.svg?react'
 import Tracks from 'assets/icons/dataset-type-tracks.svg?react'
 import { useDatasetModalConfigConnect } from 'features/_map/datasets/datasets.hook'
@@ -45,8 +46,8 @@ const DatasetType = ({
     [dispatchDatasetModalConfig, type, onFileLoaded]
   )
   const onDropRejected = useCallback(() => {
-      dispatchDatasetModalConfig({ fileRejected: true })
-    }, [dispatchDatasetModalConfig])
+    dispatchDatasetModalConfig({ fileRejected: true })
+  }, [dispatchDatasetModalConfig])
 
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
@@ -142,6 +143,15 @@ const DatasetTypeSelect = ({
         style={style}
         description={t((t) => t.dataset.typePointsDescription)}
         icon={<Points />}
+        onFileLoaded={onFileLoaded}
+      />
+      <DatasetType
+        testId="gridded-file-input"
+        type="gridded"
+        title={t((t) => t.dataset.typeGridded)}
+        style={style}
+        description={t((t) => t.dataset.typeGriddedDescription)}
+        icon={<Gridded />}
         onFileLoaded={onFileLoaded}
       />
     </div>

@@ -11,6 +11,7 @@ import { Button, Modal } from '@globalfishingwatch/ui-components'
 import { NEW_DATASET_MODAL_ID, SUPPORT_EMAIL } from 'data/map/config'
 import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
 import { getFinalDatasetFromMetadata } from 'features/_map/datasets/upload/datasets-upload.utils'
+import NewGriddedDataset from 'features/_map/datasets/upload/NewGriddedDataset'
 import NewPointsDataset from 'features/_map/datasets/upload/NewPointsDataset'
 import NewPolygonDataset from 'features/_map/datasets/upload/NewPolygonDataset'
 import NewTrackDataset from 'features/_map/datasets/upload/NewTrackDataset'
@@ -167,6 +168,7 @@ function NewDataset() {
         polygons: NewPolygonDataset,
         points: NewPointsDataset,
         tracks: NewTrackDataset,
+        gridded: NewGriddedDataset,
       }[type as Exclude<DatasetGeometryType, 'draw'>]
       return (
         <DatasetComponent

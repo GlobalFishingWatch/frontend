@@ -143,6 +143,33 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
+export const getGriddedDatasetMetadata = ({
+  name,
+  bands,
+}: {
+  name: string
+  bands: string[]
+}): DatasetMetadata => {
+  return {
+    name,
+    public: true,
+    category: DatasetCategory.Activity,
+    type: DatasetTypes.UserFourwings,
+    configuration: {
+      userFourwingsV1: {
+        agregationMode: 'AVG',
+        agregationColumn: bands[0],
+        latColumn: 'lat',
+        lonColumn: 'lon',
+        // raw cell values, no rescaling
+        tileScale: 1,
+        tileOffset: 0,
+      },
+      frontend: { sourceFormat: 'GeoTIFF', geometryType: 'gridded' },
+    },
+  }
+}
+
 export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromFilters(baseMetadata.filters)

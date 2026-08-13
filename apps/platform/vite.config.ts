@@ -189,6 +189,9 @@ export default defineConfig(({ command, mode }) => {
         '@deck.gl/mesh-layers',
         '@deck.gl/react',
         'papaparse',
+        'geotiff',
+        '@developmentseed/geotiff',
+        'proj4',
         // Keep i18next's classes on Node's native require cache so unrelated lib program
         // reloads (e.g. editing api-client) don't tear down/rebuild them mid-request and
         // desync an already-constructed instance from the freshly reloaded prototype.

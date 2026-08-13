@@ -2,6 +2,7 @@ import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
 import type { ApiEvent, Dataset, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import {
+  DatasetStatus,
   DatasetTypes,
   DataviewCategory,
   DataviewType,
@@ -68,7 +69,8 @@ export const getDataviewAvailableIntervals = (
         (sublayer) => sublayer.datasets || []
       ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
-    (dataset) => dataset.type === DatasetTypes.Fourwings
+    (dataset) =>
+      dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings
   )
   const dataviewInterval = dataview.config?.interval
   const dataviewIntervals = dataview.config?.intervals
@@ -110,13 +112,19 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     return []
   }
 
-  const activeDatasets =
+  const activeDatasets = (
     dataview.category === DataviewCategory.Environment ||
     dataview.category === DataviewCategory.User
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
+  ).filter((dataset) => dataset.status === DatasetStatus.Done)
 
-  const maxZoomLevels = activeDatasets?.flatMap((dataset) => {
+  if (!activeDatasets?.length) {
+    console.warn('No active datasets found on dataview:', dataview)
+    return []
+  }
+
+  const maxZoomLevels = activeDatasets.flatMap((dataset) => {
     const datasetConfiguration = getDatasetConfiguration(dataset, 'fourwingsV1')
     return datasetConfiguration?.maxZoom !== undefined
       ? (datasetConfiguration?.maxZoom as number)
@@ -189,10 +197,16 @@ export function getFourwingsDataviewsResolved(
   const comparisonDataviews = dataviewsArray.filter(isComparisonDataview)
 
   if (fourwingsDataviews.length) {
-    dataviewsFiltered.push(getFourwingsDataviewsMerged(fourwingsDataviews))
+    const merged = getFourwingsDataviewsMerged(fourwingsDataviews)
+    if (merged.config?.sublayers?.length) {
+      dataviewsFiltered.push(merged)
+    }
   }
   if (comparisonDataviews.length) {
-    dataviewsFiltered.push(getFourwingsDataviewsMerged(comparisonDataviews))
+    const merged = getFourwingsDataviewsMerged(comparisonDataviews)
+    if (merged.config?.sublayers?.length) {
+      dataviewsFiltered.push(merged)
+    }
   }
 
   // New sublayers as auxiliar activity layers

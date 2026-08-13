@@ -1,6 +1,7 @@
 import { uniq } from 'es-toolkit'
 
 import {
+  DatasetStatus,
   DatasetTypes,
   DataviewCategory,
   DataviewType,
@@ -121,7 +122,11 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
 
   const allVisibleDatasets = (dataview.config?.sublayers || []).flatMap((sublayer) =>
     sublayer.visible
-      ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
+      ? sublayer.datasets.filter(
+          (dataset) =>
+            dataset.status === DatasetStatus.Done &&
+            (dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings)
+        )
       : []
   )
   const { extentStart, extentEnd } = getDatasetsExtent<string>(allVisibleDatasets)

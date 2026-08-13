@@ -16,7 +16,7 @@ import type {
   DatasetsMigration,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getIsDatasetVersionDowngrade,
@@ -335,11 +335,17 @@ export const upsertDatasetThunk = createAsyncThunk<
     try {
       let filePath
       const configurationByType =
-        dataset.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
-      const { idProperty, filePath: datasetFilePath } = getDatasetConfiguration(
-        dataset,
-        configurationByType
-      )
+        DATASET_TYPE_TO_CONFIG_TYPE[dataset.type as keyof typeof DATASET_TYPE_TO_CONFIG_TYPE] ??
+        'userContextLayerV1'
+      const existingTypeConfig = dataset.configuration?.[configurationByType]
+      const datasetFilePath =
+        existingTypeConfig && 'filePath' in existingTypeConfig
+          ? existingTypeConfig.filePath
+          : undefined
+      const idProperty =
+        existingTypeConfig && 'idProperty' in existingTypeConfig
+          ? existingTypeConfig.idProperty
+          : undefined
       const { format } = getDatasetConfiguration(dataset, 'userContextLayerV1')
       if (file) {
         const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
@@ -367,13 +373,19 @@ export const upsertDatasetThunk = createAsyncThunk<
         ...(isPatchDataset && file && { status: 'importing' }),
         configuration: {
           ...dataset.configuration,
-          [configurationByType]: {
-            ...dataset.configuration?.[configurationByType],
-            // Properties that are to be used as SQL params on the server
-            // need to be lowercase
-            idProperty: idProperty?.toLowerCase() || '',
-            filePath: filePath || datasetFilePath,
-          },
+          [configurationByType]:
+            configurationByType === 'userFourwingsV1'
+              ? {
+                  ...dataset.configuration?.[configurationByType],
+                  filePath: filePath || datasetFilePath,
+                }
+              : {
+                  ...dataset.configuration?.[configurationByType],
+                  // Properties that are to be used as SQL params on the server
+                  // need to be lowercase
+                  idProperty: idProperty?.toLowerCase() || '',
+                  filePath: filePath || datasetFilePath,
+                },
         },
       }
       delete (datasetWithFilePath as any).public

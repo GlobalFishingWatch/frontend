@@ -35,6 +35,10 @@ export type MimeExtention =
   | '.KMZ'
   | '.shp'
   | '.SHP'
+  | '.tif'
+  | '.TIF'
+  | '.tiff'
+  | '.TIFF'
 type MimeType =
   | 'application/json'
   | 'application/geo+json'
@@ -45,6 +49,7 @@ type MimeType =
   | 'text/tab-separated-values'
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
+  | 'image/tiff'
 
 export type MimeExtentionWithoutShp = Exclude<MimeExtention, '.shp' | '.SHP'>
 
@@ -63,17 +68,22 @@ const MIME_TYPES_BY_EXTENSION: Record<MimeExtentionWithoutShp, MimeType[]> = {
   '.KML': ['application/vnd.google-earth.kml+xml'],
   '.kmz': ['application/vnd.google-earth.kmz'],
   '.KMZ': ['application/vnd.google-earth.kmz'],
+  '.tif': ['image/tiff'],
+  '.TIF': ['image/tiff'],
+  '.tiff': ['image/tiff'],
+  '.TIFF': ['image/tiff'],
 }
 
 export type DatasetGeometryTypesSupported = Extract<
   DatasetGeometryType,
-  'polygons' | 'tracks' | 'points'
+  'polygons' | 'tracks' | 'points' | 'gridded'
 >
 
 const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
   polygons: ['GeoJSON', 'KML', 'Shapefile'],
   tracks: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
   points: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
+  gridded: ['GeoTIFF'],
 }
 
 export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
@@ -91,6 +101,7 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP', '.shp', '.SHP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
+  GeoTIFF: { id: 'GeoTIFF', files: ['.tif', '.tiff', '.TIF', '.TIFF'], icon: 'csv' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }

@@ -408,6 +408,8 @@
     "requiredFields": "Required fields {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Datasets",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -434,6 +436,11 @@
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read",
+        "tooLarge": "This raster is too large to process in the browser. Try a smaller file (max 1,000,000 cells).",
+        "unsupportedProjection": "Only GeoTIFF files in EPSG:4326 (WGS 84) are supported"
+      },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {
         "invalidData": "KML data does not have a valid geometry type",
@@ -453,6 +460,10 @@
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "valueBand": "Value band"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
