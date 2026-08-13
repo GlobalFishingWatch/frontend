@@ -17,7 +17,7 @@ node scripts/encode-url.mjs '{"route":{"type":"report","datasetId":"public-eez-a
 # or pipe: echo '<json>' | node scripts/encode-url.mjs
 ```
 
-Requires node >= 23 (uses `module.registerHooks`). In the monorepo run `pnpm nx bundle skills` once so `dist/` exists.
+Requires node >= 24 (uses `module.registerHooks`). In the monorepo run `pnpm nx build skills` once so `dist/` exists.
 
 The encoder enforces these invariants itself — do NOT add them by hand:
 

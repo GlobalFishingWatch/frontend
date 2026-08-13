@@ -6,6 +6,9 @@
   "repository": "git@github.com:GlobalFishingWatch/frontend.git",
   "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -229,7 +232,6 @@
     "baseline-browser-mapping": "2.11.12",
     "circular-dependency-plugin": "5.2.2",
     "dotenv": "17.4.2",
-    "dts-bundle-generator": "9.5.1",
     "esbuild": "0.28.1",
     "eslint": "10.8.0",
     "eslint-config-prettier": "10.1.8",

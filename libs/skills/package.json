@@ -7,30 +7,23 @@
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./encode-url": {
-      "types": "./dist/encode-url/index.d.ts",
-      "default": "./dist/encode-url/index.js"
-    },
-    "./decode-url": {
-      "types": "./dist/decode-url/index.d.ts",
-      "default": "./dist/decode-url/index.js"
-    }
+    ".": "./dist/index.js",
+    "./encode-url": "./dist/encode-url/index.js",
+    "./decode-url": "./dist/decode-url/index.js"
   },
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=24"
+  },
   "files": [
     "dist",
-    "src"
+    "!dist/package.json"
   ],
   "devDependencies": {
     "@globalfishingwatch/data-transforms": "workspace:^",
     "@globalfishingwatch/datasets-client": "workspace:^",
     "@globalfishingwatch/dataviews-client": "workspace:^",
     "@platform/config": "workspace:*",
-    "@tanstack/router-core": "1.171.18"
+    "@tanstack/router-core": "1.x"
   }
 }

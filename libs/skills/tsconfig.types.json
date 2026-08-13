@@ -1,7 +1,0 @@
-// Config used only for the declaration rollup (see dts-bundle.config.cjs).
-{
-  "extends": "./tsconfig.lib.json",
-  "compilerOptions": {
-    "types": []
-  }
-}
