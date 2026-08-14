@@ -21,7 +21,7 @@ import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
 } from '@globalfishingwatch/deck-layers'
-import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
+import type { ColorRampId, LayerGroup } from '@globalfishingwatch/deck-layers/config'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import {
   FOURWINGS_REAL_TIME_INTERVALS,
@@ -168,6 +168,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     category: dataview.category!,
     subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
+    group: dataview.config?.group as LayerGroup,
     sublayers,
     comparisonMode,
     visualizationMode,

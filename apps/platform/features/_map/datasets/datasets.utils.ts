@@ -144,6 +144,7 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
     tracks: [],
     polygons: [],
     points: [],
+    gridded: [],
     bigQuery: [],
   }
 

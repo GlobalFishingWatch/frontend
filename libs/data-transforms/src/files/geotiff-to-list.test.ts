@@ -11,6 +11,7 @@ import {
   geotiffToList,
   getGriddedMaxZoom,
   getGriddedTileEncoding,
+  isEmptyCell,
   isEmptyValue,
 } from './geotiff-to-list'
 
@@ -52,6 +53,19 @@ describe('isEmptyValue', () => {
   })
 })
 
+describe('isEmptyCell', () => {
+  it('is empty when every band is nodata, NaN or zero', () => {
+    expect(isEmptyCell([0, 0, 0], null)).toBe(true)
+    expect(isEmptyCell([NaN, 0], null)).toBe(true)
+    expect(isEmptyCell([-9999, 0], -9999)).toBe(true)
+  })
+
+  it('keeps a cell where any band measured something', () => {
+    expect(isEmptyCell([0, 0, 3], null)).toBe(false)
+    expect(isEmptyCell([-1, 0], null)).toBe(false)
+  })
+})
+
 describe('geotiffToList', () => {
   it('converts every pixel to a lat/lon row', async () => {
     const { rows, bands } = await geotiffToList(writeTiff([1, 2, 3, 4]))
@@ -79,6 +93,19 @@ describe('geotiffToList', () => {
       // the whole third cell is nodata
       { lat: 21, lon: 11.5, gfw_value: 4, band: 'band_1' },
       { lat: 21, lon: 11.5, gfw_value: 40, band: 'band_2' },
+    ])
+  })
+
+  it('skips a cell whose every band is zero, but keeps a zero beside a real value', async () => {
+    // cell 1 all-zero across both bands, cell 4 has a zero band next to a measurement
+    const { rows } = await geotiffToList(writeTiff([0, 0, 1, 2, 3, 4, 0, 6]))
+    expect(rows).toEqual([
+      { lat: 23, lon: 11.5, gfw_value: 1, band: 'band_1' },
+      { lat: 23, lon: 11.5, gfw_value: 2, band: 'band_2' },
+      { lat: 21, lon: 10.5, gfw_value: 3, band: 'band_1' },
+      { lat: 21, lon: 10.5, gfw_value: 4, band: 'band_2' },
+      { lat: 21, lon: 11.5, gfw_value: 0, band: 'band_1' },
+      { lat: 21, lon: 11.5, gfw_value: 6, band: 'band_2' },
     ])
   })
 
@@ -139,7 +166,8 @@ describe('geotiffToList with real GDAL files', () => {
   it('reprojects a geographic CRS that is not WGS 84', async () => {
     const { rows } = await geotiffToList(readTiff('GeogToWGS84GeoKey5.tif'))
 
-    expect(rows).toHaveLength(101 * 101)
+    // fewer than the 101x101 cells: the file declares no nodata and pads with zeros
+    expect(rows).toHaveLength(9164)
     // Matches the file's own bounding box (9.00106, 52.00137) because the datum shift is NOT
     // applied: the PROJJSON @developmentseed/geotiff builds names the ellipsoid ("EPSG
     // ellipsoid 7004") without its axes and drops GeogTOWGS84GeoKey, so proj4 has nothing to

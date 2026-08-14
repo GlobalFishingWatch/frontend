@@ -10,6 +10,7 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
+import type { LayerGroup } from '#config/sort.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
@@ -159,7 +160,9 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
   'data' | 'availableIntervals' | 'comparisonMode'
->
+> & {
+  group?: LayerGroup
+}
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>
