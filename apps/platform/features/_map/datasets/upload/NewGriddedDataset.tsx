@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import papaparse from 'papaparse'
 
 import type { AggregationFunction } from '@globalfishingwatch/api-types'
-import type { GeotiffError } from '@globalfishingwatch/data-transforms'
-import { GEOTIFF_ERRORS, geotiffToList } from '@globalfishingwatch/data-transforms'
+import type { GeotiffRow } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
-import { Button, InputText, Select, Spinner, SwitchRow } from '@globalfishingwatch/ui-components'
+import { Button, Choice, InputText, Spinner, SwitchRow } from '@globalfishingwatch/ui-components'
 
+import { getDatasetParsed } from 'features/_map/datasets/upload/datasets-parse.utils'
 import { useDatasetMetadata } from 'features/_map/datasets/upload/datasets-upload.hooks'
 import {
   getDatasetMetadataValidations,
+  getGriddedBandFilters,
   getGriddedDatasetMetadata,
   getMetadataFromDataset,
 } from 'features/_map/datasets/upload/datasets-upload.utils'
@@ -28,16 +29,6 @@ const AGGREGATION_OPTIONS: { id: AggregationFunction; label: string }[] = [
   { id: 'SUM', label: 'SUM' },
 ]
 
-// geotiffToList throws domain codes; the user-facing copy belongs here, not in the lib
-const GEOTIFF_ERROR_KEYS: Record<GeotiffError, string> = {
-  [GEOTIFF_ERRORS.UnsupportedProjection]: 'datasetUpload.errors.geotiff.unsupportedProjection',
-  [GEOTIFF_ERRORS.TooLarge]: 'datasetUpload.errors.geotiff.tooLarge',
-  [GEOTIFF_ERRORS.InvalidData]: 'datasetUpload.errors.geotiff.invalidData',
-}
-
-const getGeotiffErrorKey = (error: any) =>
-  GEOTIFF_ERROR_KEYS[error?.message as GeotiffError] ?? 'datasetUpload.errors.default'
-
 function NewGriddedDataset({
   onConfirm,
   file,
@@ -49,7 +40,7 @@ function NewGriddedDataset({
   const [dataParseError, setDataParseError] = useState('')
   const [processingData, setProcessingData] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [rows, setRows] = useState<Record<string, number>[] | undefined>()
+  const [rows, setRows] = useState<GeotiffRow[] | undefined>()
   const [bands, setBands] = useState<string[]>([])
   const { datasetMetadata, setDatasetMetadata } = useDatasetMetadata()
   const isEditing = dataset?.id !== undefined
@@ -60,14 +51,16 @@ function NewGriddedDataset({
     async (file: File) => {
       setProcessingData(true)
       try {
-        const { rows, bands } = await geotiffToList(file)
+        const { rows, bands, resolution, stats } = await getDatasetParsed(file, 'gridded')
         setRows(rows)
         setBands(bands)
-        setDatasetMetadata(getGriddedDatasetMetadata({ name: getFileName(file), bands }))
+        setDatasetMetadata(
+          getGriddedDatasetMetadata({ name: getFileName(file), bands, resolution, stats })
+        )
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(new Error(getGeotiffErrorKey(e)), setDataParseError)
+        onDatasetParseError(e, setDataParseError)
       }
     },
     [onDatasetParseError, setDatasetMetadata]
@@ -82,12 +75,20 @@ function NewGriddedDataset({
   }, [dataset, file])
 
   const fourwingsConfig = getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')
-  const valueBand = fourwingsConfig.agregationColumn
   const agregationMode = fourwingsConfig.agregationMode ?? 'AVG'
-  const bandOptions = useMemo(() => bands.map((id) => ({ id, label: id })), [bands])
+  const bandNames = (datasetMetadata?.filters?.fourwings?.[0]?.enum as string[]) ?? bands
+
+  const setBandName = useCallback(
+    (index: number, name: string) => {
+      setDatasetMetadata({
+        filters: getGriddedBandFilters(bandNames.map((band, i) => (i === index ? name : band))),
+      })
+    },
+    [bandNames, setDatasetMetadata]
+  )
 
   const setFourwingsConfig = useCallback(
-    (patch: { agregationMode?: AggregationFunction; agregationColumn?: string }) => {
+    (patch: { agregationMode?: AggregationFunction }) => {
       setDatasetMetadata({
         configuration: {
           ...datasetMetadata.configuration,
@@ -112,12 +113,13 @@ function NewGriddedDataset({
     setLoading(true)
     let csvFile: File | undefined
     if (rows) {
-      const csv = papaparse.unparse(rows)
+      const namesById = Object.fromEntries(bands.map((band, index) => [band, bandNames[index]]))
+      const csv = papaparse.unparse(rows.map((row) => ({ ...row, band: namesById[row.band] })))
       csvFile = new File([csv], 'file.csv', { type: 'text/csv' })
     }
     await onConfirm(datasetMetadata, { file: csvFile, isEditing })
     setLoading(false)
-  }, [datasetMetadata, isEditing, onConfirm, rows])
+  }, [bandNames, bands, datasetMetadata, isEditing, onConfirm, rows])
 
   if (processingData) {
     return (
@@ -150,18 +152,11 @@ function NewGriddedDataset({
       />
       {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
       <div className={styles.row}>
-        <Select
-          label={t((t) => t.datasetUpload.gridded.valueBand)}
-          options={bandOptions}
-          selectedOption={bandOptions.find((option) => option.id === valueBand)}
-          onSelect={(option) => setFourwingsConfig({ agregationColumn: option.id })}
-          className={styles.input}
-          disabled={loading || !bandOptions.length}
-        />
-        <Select
+        <Choice
+          size="medium"
           label={t((t) => t.datasetUpload.gridded.aggregation)}
           options={AGGREGATION_OPTIONS}
-          selectedOption={AGGREGATION_OPTIONS.find((option) => option.id === agregationMode)}
+          activeOption={AGGREGATION_OPTIONS.find((option) => option.id === agregationMode)?.id}
           onSelect={(option) =>
             setFourwingsConfig({ agregationMode: option.id as AggregationFunction })
           }
@@ -169,6 +164,19 @@ function NewGriddedDataset({
           disabled={loading}
         />
       </div>
+      {bands.length > 1 &&
+        bands.map((band, index) => (
+          <InputText
+            key={band}
+            value={bandNames[index] ?? band}
+            label={t((t) => t.datasetUpload.gridded.bandName, { band: index + 1 })}
+            className={styles.input}
+            onChange={(e) => setBandName(index, e.target.value)}
+            disabled={loading}
+          />
+        ))}
+      {errors.bands && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.bands}</p>}
+
       <SwitchRow
         className={styles.saveAsPublic}
         label={t((t) => t.dataset.uploadPublic)}

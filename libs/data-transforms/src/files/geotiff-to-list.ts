@@ -1,5 +1,8 @@
 import type { GeoTIFF } from '@developmentseed/geotiff'
 
+import { USER_FOURWINGS_VALUE_COLUMN } from '@globalfishingwatch/api-types'
+import { FOURWINGS_TILE_COLUMNS } from '@globalfishingwatch/deck-loaders'
+
 const MAX_CELLS = 10_000_000
 const EPSG_4326 = 4326
 
@@ -14,8 +17,8 @@ export type GeotiffError = (typeof GEOTIFF_ERRORS)[keyof typeof GEOTIFF_ERRORS]
 
 const GEOTIFF_ERROR_VALUES = Object.values(GEOTIFF_ERRORS) as string[]
 
-export function isEmptyCell(values: number[], nodata: number | null) {
-  return values.every((value) => Number.isNaN(value) || (nodata !== null && value === nodata))
+export function isEmptyValue(value: number, nodata: number | null) {
+  return Number.isNaN(value) || (nodata !== null && value === nodata)
 }
 
 type LonLatConverter = (x: number, y: number) => { lon: number; lat: number }
@@ -98,13 +101,75 @@ async function readBands(tiff: GeoTIFF, buffer: ArrayBuffer): Promise<ReadBands>
   return (band, row, col) => samples[band][row * stride + col] as number
 }
 
-export async function geotiffToList(
-  file: File | ArrayBuffer
-): Promise<{ rows: Record<string, number>[]; bands: string[] }> {
+export type GeotiffBandStats = { min: number; max: number }
+
+// from deck-layers' fourwings.config to avoid a circular dependency
+const FOURWINGS_MAX_ZOOM = 12
+
+/**
+ * Deepest zoom a raster of this resolution can fit in 4wings api tiles cells
+ *
+ * @param resolution degrees per pixel, as returned by {@link geotiffToList}
+ */
+export const getGriddedMaxZoom = (resolution?: number) => {
+  if (!resolution) {
+    return FOURWINGS_MAX_ZOOM
+  }
+  const zoom = Math.log2(360 / (FOURWINGS_TILE_COLUMNS * resolution))
+  return Math.max(0, Math.min(FOURWINGS_MAX_ZOOM, Math.floor(zoom)))
+}
+
+export const getGriddedTileEncoding = (stats?: GeotiffBandStats) => {
+  if (!stats || !Number.isFinite(stats.min) || !Number.isFinite(stats.max)) {
+    return { tileScale: 1, tileOffset: 0 }
+  }
+  return {
+    tileScale: 0.001,
+    tileOffset: stats.min < 0 ? Math.ceil(-stats.min) : 0,
+  }
+}
+
+/**
+ * Size of one pixel in degrees, measured at the centre of the raster and after reprojection,
+ * so it reflects what the uploaded lon/lat spacing actually is. The coarser of the two axes,
+ * since that is what governs where gaps would appear. Undefined for a single-pixel raster.
+ */
+function getResolutionInDegrees(tiff: GeoTIFF, toLonLat: LonLatConverter | null) {
+  if (tiff.width < 2 && tiff.height < 2) {
+    return undefined
+  }
+  const row = Math.min(Math.floor(tiff.height / 2), tiff.height - 1)
+  const col = Math.min(Math.floor(tiff.width / 2), tiff.width - 1)
+  // step back instead of forward at the edges, so a 2x2 raster still has a neighbour
+  const nextRow = row + 1 < tiff.height ? row + 1 : row - 1
+  const nextCol = col + 1 < tiff.width ? col + 1 : col - 1
+  const toDegrees = (r: number, c: number) => {
+    const [x, y] = tiff.xy(r, c, 'center')
+    return toLonLat ? toLonLat(x, y) : { lon: x, lat: y }
+  }
+  const from = toDegrees(row, col)
+  const to = toDegrees(Math.max(nextRow, 0), Math.max(nextCol, 0))
+  const resolution = Math.max(Math.abs(to.lon - from.lon), Math.abs(to.lat - from.lat))
+  return resolution > 0 ? resolution : undefined
+}
+
+export type GeotiffRow = {
+  lat: number
+  lon: number
+  band: string
+  [USER_FOURWINGS_VALUE_COLUMN]: number
+}
+
+export async function geotiffToList(file: File | ArrayBuffer): Promise<{
+  rows: GeotiffRow[]
+  bands: string[]
+  /** Degrees per pixel */
+  resolution: number | undefined
+  /** Value range across every band */
+  stats: GeotiffBandStats
+}> {
   try {
     const { GeoTIFF } = await import('@developmentseed/geotiff')
-    // duck-typed rather than `instanceof ArrayBuffer`: buffers crossing a realm boundary
-    // (jsdom, workers, iframes) fail that check
     const buffer =
       typeof (file as File).arrayBuffer === 'function'
         ? await (file as File).arrayBuffer()
@@ -123,27 +188,41 @@ export async function geotiffToList(
     const getValue = await readBands(tiff, buffer)
 
     const bands = Array.from({ length: count }, (_, index) => `band_${index + 1}`)
-    const rows: Record<string, number>[] = []
+    const stats: GeotiffBandStats = { min: Infinity, max: -Infinity }
+    const rows: GeotiffRow[] = []
     for (let row = 0; row < height; row++) {
       for (let col = 0; col < width; col++) {
-        const values = bands.map((_, band) => getValue(band, row, col))
-        if (isEmptyCell(values, nodata)) {
-          continue
-        }
-        // xy() applies the file's affine transform, so skewed and rotated rasters work too
-        const [x, y] = tiff.xy(row, col, 'center')
-        const { lon, lat } = toLonLat ? toLonLat(x, y) : { lon: x, lat: y }
-        const cell: Record<string, number> = { lat, lon }
+        // only worth reprojecting once a band in this cell turns out to hold data
+        let lonLat: { lon: number; lat: number } | undefined
         for (let b = 0; b < bands.length; b++) {
-          cell[bands[b]] = values[b]
+          const value = getValue(b, row, col)
+          if (isEmptyValue(value, nodata)) {
+            continue
+          }
+          if (!lonLat) {
+            // xy() applies the file's affine transform, so skewed and rotated rasters work too
+            const [x, y] = tiff.xy(row, col, 'center')
+            lonLat = toLonLat ? toLonLat(x, y) : { lon: x, lat: y }
+          }
+          rows.push({
+            lat: lonLat.lat,
+            lon: lonLat.lon,
+            [USER_FOURWINGS_VALUE_COLUMN]: value,
+            band: bands[b],
+          })
+          if (value < stats.min) {
+            stats.min = value
+          }
+          if (value > stats.max) {
+            stats.max = value
+          }
         }
-        rows.push(cell)
       }
     }
     if (!rows.length) {
       throw new Error(GEOTIFF_ERRORS.InvalidData)
     }
-    return { rows, bands }
+    return { rows, bands, resolution: getResolutionInDegrees(tiff, toLonLat), stats }
   } catch (e) {
     if (e instanceof Error && GEOTIFF_ERROR_VALUES.includes(e.message)) {
       throw e

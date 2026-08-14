@@ -6,7 +6,13 @@ import path from 'path'
 import { writeArrayBuffer } from 'geotiff'
 import { describe, expect, it } from 'vitest'
 
-import { GEOTIFF_ERRORS, geotiffToList, isEmptyCell } from './geotiff-to-list'
+import {
+  GEOTIFF_ERRORS,
+  geotiffToList,
+  getGriddedMaxZoom,
+  getGriddedTileEncoding,
+  isEmptyValue,
+} from './geotiff-to-list'
 
 const WIDTH = 2
 const HEIGHT = 2
@@ -33,16 +39,16 @@ const readTiff = (file: string) => {
   return new Uint8Array(buffer).buffer as ArrayBuffer
 }
 
-describe('isEmptyCell', () => {
-  it('is empty when every band is NaN or nodata', () => {
-    expect(isEmptyCell([NaN, NaN], null)).toBe(true)
-    expect(isEmptyCell([-9999, -9999], -9999)).toBe(true)
-    expect(isEmptyCell([0], 0)).toBe(true)
+describe('isEmptyValue', () => {
+  it('is empty when NaN or nodata', () => {
+    expect(isEmptyValue(NaN, null)).toBe(true)
+    expect(isEmptyValue(-9999, -9999)).toBe(true)
+    expect(isEmptyValue(0, 0)).toBe(true)
   })
 
-  it('is not empty when any band has a value', () => {
-    expect(isEmptyCell([1, NaN], null)).toBe(false)
-    expect(isEmptyCell([-9999, 1], -9999)).toBe(false)
+  it('is not empty for a real value', () => {
+    expect(isEmptyValue(1, null)).toBe(false)
+    expect(isEmptyValue(0, -9999)).toBe(false)
   })
 })
 
@@ -51,20 +57,44 @@ describe('geotiffToList', () => {
     const { rows, bands } = await geotiffToList(writeTiff([1, 2, 3, 4]))
     expect(bands).toEqual(['band_1'])
     expect(rows).toEqual([
-      { lat: 23, lon: 10.5, band_1: 1 },
-      { lat: 23, lon: 11.5, band_1: 2 },
-      { lat: 21, lon: 10.5, band_1: 3 },
-      { lat: 21, lon: 11.5, band_1: 4 },
+      { lat: 23, lon: 10.5, gfw_value: 1, band: 'band_1' },
+      { lat: 23, lon: 11.5, gfw_value: 2, band: 'band_1' },
+      { lat: 21, lon: 10.5, gfw_value: 3, band: 'band_1' },
+      { lat: 21, lon: 11.5, gfw_value: 4, band: 'band_1' },
+    ])
+  })
+
+  it('emits one row per band and drops only the nodata ones', async () => {
+    // 2 bands interleaved per pixel; 255 rather than the usual -9999 because
+    // writeArrayBuffer defaults to an 8-bit sample
+    const { rows, bands } = await geotiffToList(
+      writeTiff([1, 10, 2, 255, 255, 255, 4, 40], { GDAL_NODATA: '255' })
+    )
+    expect(bands).toEqual(['band_1', 'band_2'])
+    expect(rows).toEqual([
+      { lat: 23, lon: 10.5, gfw_value: 1, band: 'band_1' },
+      { lat: 23, lon: 10.5, gfw_value: 10, band: 'band_2' },
+      // band_2 of this cell is nodata, so only band_1 survives
+      { lat: 23, lon: 11.5, gfw_value: 2, band: 'band_1' },
+      // the whole third cell is nodata
+      { lat: 21, lon: 11.5, gfw_value: 4, band: 'band_1' },
+      { lat: 21, lon: 11.5, gfw_value: 40, band: 'band_2' },
     ])
   })
 
   it('skips nodata cells', async () => {
-    // 255 rather than the usual -9999: writeArrayBuffer defaults to an 8-bit sample
     const { rows } = await geotiffToList(writeTiff([1, 255, 255, 4], { GDAL_NODATA: '255' }))
     expect(rows).toEqual([
-      { lat: 23, lon: 10.5, band_1: 1 },
-      { lat: 21, lon: 11.5, band_1: 4 },
+      { lat: 23, lon: 10.5, gfw_value: 1, band: 'band_1' },
+      { lat: 21, lon: 11.5, gfw_value: 4, band: 'band_1' },
     ])
+  })
+
+  it('reports the pixel size in degrees and the value range across bands', async () => {
+    // BBOX is 2 degrees wide and 4 tall over a 2x2 raster, so pixels are 1 x 2 degrees
+    const { resolution, stats } = await geotiffToList(writeTiff([1, 2, 3, 4]))
+    expect(resolution).toBeCloseTo(2, 6)
+    expect(stats).toEqual({ min: 1, max: 4 })
   })
 
   it('reprojects a Web Mercator raster to lon/lat', async () => {
@@ -129,7 +159,8 @@ describe('geotiffToList with real GDAL files', () => {
     for (const row of rows) {
       expect(row.lon).toBeGreaterThanOrEqual(AZORES_BBOX.minLon)
       expect(row.lat).toBeLessThanOrEqual(AZORES_BBOX.maxLat)
-      expect(Number.isNaN(row.band_1)).toBe(false)
+      expect(row.band).toBe('band_1')
+      expect(Number.isNaN(row.gfw_value)).toBe(false)
     }
 
     // coordinates sit on pixel centres of the source grid, so snapping to the nearest
@@ -142,5 +173,56 @@ describe('geotiffToList with real GDAL files', () => {
       expect(row.lon).toBeCloseTo(firstLon + lonIndex * AZORES_BBOX.lonStep, 6)
       expect(row.lat).toBeCloseTo(firstLat - latIndex * AZORES_BBOX.latStep, 6)
     }
+  })
+})
+
+describe('getGriddedMaxZoom', () => {
+  it('caps the zoom where 4wings cells would get finer than the source pixels', () => {
+    expect(getGriddedMaxZoom(0.1)).toBe(4) // gfw-azores.tif
+    expect(getGriddedMaxZoom(1)).toBe(1) // nz_habitat_anticross_4326_1deg.tif
+    expect(getGriddedMaxZoom(0.059626)).toBe(5) // wind_direction.tif
+    expect(getGriddedMaxZoom(0.001511)).toBe(11) // utm.tif, reprojected
+  })
+
+  it('stays inside the 4wings zoom range', () => {
+    expect(getGriddedMaxZoom(0.000001)).toBe(12)
+    expect(getGriddedMaxZoom(180)).toBe(0)
+  })
+
+  it('falls back to the maximum when the resolution is unknown', () => {
+    expect(getGriddedMaxZoom(undefined)).toBe(12)
+    expect(getGriddedMaxZoom(0)).toBe(12)
+  })
+})
+
+describe('getGriddedTileEncoding', () => {
+  it('shifts negatives up so they survive an unsigned varint', () => {
+    // wind_direction.tif: decoding -32767 back out needs the offset
+    const { tileScale, tileOffset } = getGriddedTileEncoding({ min: -32767, max: 358.4 })
+    expect(tileOffset).toBe(32767)
+    expect((0 + tileOffset) / tileScale).toBeGreaterThan(0)
+    // round trip: encoded value decodes back to the original
+    const encoded = Math.round((-32767 + tileOffset) / tileScale)
+    expect(encoded * tileScale - tileOffset).toBeCloseTo(-32767, 6)
+  })
+
+  it('leaves positive-only bands unshifted', () => {
+    expect(getGriddedTileEncoding({ min: 0.04, max: 572.98 })).toEqual({
+      tileScale: 0.001,
+      tileOffset: 0,
+    })
+  })
+
+  it('keeps the same 3-decimal step whatever the range', () => {
+    expect(getGriddedTileEncoding({ min: 0, max: 1e12 }).tileScale).toBe(0.001)
+    expect(getGriddedTileEncoding({ min: 0, max: 1 }).tileScale).toBe(0.001)
+  })
+
+  it('falls back to a no-op encoding without usable stats', () => {
+    expect(getGriddedTileEncoding(undefined)).toEqual({ tileScale: 1, tileOffset: 0 })
+    expect(getGriddedTileEncoding({ min: Infinity, max: -Infinity })).toEqual({
+      tileScale: 1,
+      tileOffset: 0,
+    })
   })
 })

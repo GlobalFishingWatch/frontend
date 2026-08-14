@@ -449,6 +449,7 @@
         "noPolygonData": "No polygon data found in the KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Shapefile data does not have a valid geometry type",
         "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet",
@@ -462,7 +463,7 @@
     "fieldPlaceholder": "Select a field from your dataset",
     "gridded": {
       "aggregation": "Aggregation",
-      "valueBand": "Value band"
+      "bandName": "Band {{band}} name"
     },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
