@@ -419,7 +419,7 @@
     "uploadPublic": "Permitir que outros usuários vejam este conjunto de dados quando você compartilha uma área de trabalho",
     "uploadVesselGroups": "<0>Register</0> or <2>login</2> to create and access your vessel groups.",
     "uploadYourOwn": "Carregue seu próprio",
-    "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
+    "VIIRSDelayDisclaimer": "Em pausa. Detecções recentes na camada Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nome do conjunto de dados",
