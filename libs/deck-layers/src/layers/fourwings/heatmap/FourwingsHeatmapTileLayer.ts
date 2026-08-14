@@ -808,7 +808,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         scales,
         minZoom: -1, // fixes global report when zoom is 0
         onTileError: this._onLayerError,
-        maxZoom: FOURWINGS_MAX_ZOOM,
+        maxZoom: this.props.maxZoom ?? FOURWINGS_MAX_ZOOM,
         // Bounds bytes retained in the tileset cache during long sessions,
         // using the byteLength the fourwings loader stamps on parsed tiles
         maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,

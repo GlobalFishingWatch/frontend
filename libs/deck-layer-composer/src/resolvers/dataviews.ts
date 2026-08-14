@@ -125,10 +125,10 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   }
 
   const maxZoomLevels = activeDatasets.flatMap((dataset) => {
-    const datasetConfiguration = getDatasetConfiguration(dataset, 'fourwingsV1')
-    return datasetConfiguration?.maxZoom !== undefined
-      ? (datasetConfiguration?.maxZoom as number)
-      : []
+    const maxZoom =
+      getDatasetConfiguration(dataset, 'fourwingsV1')?.maxZoom ??
+      getDatasetConfiguration(dataset, 'userFourwingsV1')?.maxZoom
+    return maxZoom !== undefined ? (maxZoom as number) : []
   })
   const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
@@ -147,7 +147,8 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     maxZoom,
   }
 
-  return sublayer
+  // always an array: the early returns above hand back [], and the only caller flatMaps
+  return [sublayer]
 }
 
 export function getFourwingsDataviewsResolved(
@@ -542,7 +543,9 @@ export function getDataviewsResolved(
     )
   })
 
-  const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
+  const userHeatmapDataviewsParsed = userHeatmapDataviews.flatMap((d) =>
+    getFourwingsDataviewsResolved(d)
+  )
   const vesselTrackDataviewsParsed = uniqBy<UrlDataviewInstance, string>(
     vesselTrackDataviews.flatMap((d) => ({
       ...d,
