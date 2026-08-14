@@ -9,6 +9,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
+import { fetchAllDatasetsThunk } from 'features/_map/datasets/datasets.slice'
 import { getDatasetLabel, groupDatasetsByGeometryType } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { resolveLibraryLayers } from 'features/_map/layer-library/LayerLibrary.utils'
@@ -17,6 +18,7 @@ import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserP
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectAllVisibleVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectLayerLibraryModal,
@@ -30,7 +32,8 @@ import styles from './LayerLibrary.module.css'
 
 const SEARCH_MIN_CHARS = 3
 
-type UserSubcategory = DataviewCategory | 'bigQuery'
+// gridded has no DataviewCategory of its own — it is a geometry type of the user datasets
+type UserSubcategory = DataviewCategory | 'bigQuery' | 'gridded'
 
 const LayerLibrary: FC = () => {
   const { t, ready: i18nReady } = useTranslation(['translations', 'layer-library'])
@@ -45,8 +48,19 @@ const LayerLibrary: FC = () => {
   )
   const [currentSubcategory, setCurrentSubcategory] = useState<UserSubcategory | null>(null)
   const categoryElementsRef = useRef<HTMLElement[]>([])
+  const dispatch = useAppDispatch()
   const userDatasets = useSelector(selectUserDatasets)
   const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
+  const [userDatasetsFetched, setUserDatasetsFetched] = useState(false)
+  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsFetched
+
+  useEffect(() => {
+    if (guestUser) {
+      return
+    }
+    dispatch(fetchAllDatasetsThunk()).finally(() => setUserDatasetsFetched(true))
+  }, [dispatch, guestUser])
+
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
   }, [userDatasets])
@@ -80,10 +94,15 @@ const LayerLibrary: FC = () => {
       return [...uniqCategories.map((category) => ({ category, subcategories: [] }))]
     }
     const userSubcategories = [] as UserSubcategory[]
-    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
-    if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
-    if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
-    if (userGeometries.bigQuery?.length) userSubcategories.push('bigQuery')
+    // Until the fetch resolves the store only holds the datasets the workspace happened to load, so
+    // showing subcategories now means a partial list that grows as the request lands
+    if (userDatasetsLoaded) {
+      if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
+      if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
+      if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
+      if (userGeometries.gridded?.length) userSubcategories.push('gridded')
+      if (userGeometries.bigQuery?.length) userSubcategories.push('bigQuery')
+    }
 
     return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
@@ -92,7 +111,7 @@ const LayerLibrary: FC = () => {
         subcategories: userSubcategories,
       },
     ]
-  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory])
+  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory, userDatasetsLoaded])
 
   const allCategories = useMemo(() => {
     return extendedCategories.map(({ category }) => category)
@@ -352,7 +371,10 @@ const LayerLibrary: FC = () => {
           {allCategories.includes(DataviewCategory.User) &&
             (searchQuery.length < SEARCH_MIN_CHARS || userDatasetsMatchCount > 0) && (
               <div className={styles.categoryContainer}>
-                <LayerLibraryUserPanel searchQuery={activeSearchQuery} />
+                <LayerLibraryUserPanel
+                  searchQuery={activeSearchQuery}
+                  datasetsLoaded={userDatasetsLoaded}
+                />
               </div>
             )}
         </ul>
