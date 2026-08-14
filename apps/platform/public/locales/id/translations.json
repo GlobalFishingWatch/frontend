@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Hanya {{formats}} file yang diizinkan)",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
+    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Dataset",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",

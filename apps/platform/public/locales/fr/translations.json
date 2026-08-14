@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Seuls les fichiers au format {{formats}} sont autorisés)",
     "remove": "Supprimer les jeux de données",
     "requiredFields": "Champs requis {{fields}}",
+    "SARDelayDisclaimer": "En pause pendant le passage de Sentinel-1A à Sentinel-1C et 1D. <0>En savoir plus.</0>",
     "title": "Jeu de données",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
@@ -419,7 +420,7 @@
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce jeu de données lorsque vous partagez un espace de travail",
     "uploadVesselGroups": "<0>Register</0> or <2>login</2> to create and access your vessel groups.",
     "uploadYourOwn": "Uploadez le votre",
-    "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
+    "VIIRSDelayDisclaimer": "En pause. Détections récentes dans le calque Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nom du jeu de données",

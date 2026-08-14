@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Sólo se permiten archivos {{formats}})",
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
+    "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
     "title": "Datos",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
@@ -419,7 +420,7 @@
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
     "uploadVesselGroups": "<0>Registrar</0> o <2>iniciar sesión</2> para crear y acceder a tus grupos de nave.",
     "uploadYourOwn": "Subir una propia",
-    "VIIRSDelayDisclaimer": "Los datos de luz nocturna de VIIRS están disponibles con un retraso de ingestión de aproximadamente 3 meses."
+    "VIIRSDelayDisclaimer": "En pausa. Detecciones recientes en la capa Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nombre del conjunto de datos",
