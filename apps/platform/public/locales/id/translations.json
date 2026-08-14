@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Hanya {{formats}} file yang diizinkan)",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
+    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Dataset",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
@@ -419,7 +420,7 @@
     "uploadPublic": "Izinkan pengguna lain untuk melihat dataset ini saat Anda berbagi ruang kerja",
     "uploadVesselGroups": "<0>Register</0> or <2>login</2> to create and access your vessel groups.",
     "uploadYourOwn": "Unggah milik Anda sendiri",
-    "VIIRSDelayDisclaimer": "Paused. Recent detections in the Skylight layer."
+    "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
   },
   "datasetUpload": {
     "datasetName": "Nama dataset",
