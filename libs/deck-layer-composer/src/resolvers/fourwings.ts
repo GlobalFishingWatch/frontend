@@ -110,9 +110,20 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
         )
       : allAvailableIntervals
 
-  // TODO: get this from the dataset config
-  const aggregationOperation =
-    dataview.category === DataviewCategory.Environment
+  const datasetAggregationMode = dataview.config?.sublayers
+    ?.flatMap((sublayer) => sublayer.datasets || [])
+    .map((dataset) => {
+      return getDatasetConfigurationProperty({
+        dataset,
+        property: 'agregationMode',
+        type: 'userFourwingsV1',
+      })
+    })
+    .find(Boolean)
+
+  const aggregationOperation = datasetAggregationMode
+    ? (datasetAggregationMode.toLowerCase() as FourwingsAggregationOperation)
+    : dataview.category === DataviewCategory.Environment
       ? FourwingsAggregationOperation.Avg
       : FourwingsAggregationOperation.Sum
 
