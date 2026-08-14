@@ -419,7 +419,7 @@
     "uploadPublic": "Autoriser d'autres utilisateurs à voir ce jeu de données lorsque vous partagez un espace de travail",
     "uploadVesselGroups": "<0>Register</0> or <2>login</2> to create and access your vessel groups.",
     "uploadYourOwn": "Uploadez le votre",
-    "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay."
+    "VIIRSDelayDisclaimer": "En pause. Détections récentes dans le calque Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nom du jeu de données",
