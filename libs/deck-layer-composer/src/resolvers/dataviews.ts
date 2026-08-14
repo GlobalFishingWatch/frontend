@@ -104,7 +104,6 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   const { config, datasetsConfig } = dataview
 
   if (!dataview?.datasets?.length) {
-    console.warn('No datasets found on dataview:', dataview)
     return []
   }
 
