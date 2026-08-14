@@ -419,7 +419,7 @@
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
     "uploadVesselGroups": "<0>Registrar</0> o <2>iniciar sesión</2> para crear y acceder a tus grupos de nave.",
     "uploadYourOwn": "Subir una propia",
-    "VIIRSDelayDisclaimer": "Los datos de luz nocturna de VIIRS están disponibles con un retraso de ingestión de aproximadamente 3 meses."
+    "VIIRSDelayDisclaimer": "En pausa. Detecciones recientes en la capa Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nombre del conjunto de datos",
