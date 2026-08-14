@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Only {{formats}} files are allowed)",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
+    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Datasets",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
