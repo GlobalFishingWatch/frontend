@@ -234,7 +234,10 @@ export function useLayerFilterHandlers({
         [filterKey]: filterValues,
       },
     }
-    const newDataview = { ...dataview, config: { ...dataview.config, ...newDataviewConfig } }
+    const newDataview = {
+      ...dataview,
+      config: { ...dataview.config, ...newDataviewConfig },
+    }
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
       const incompatibleFilterSelection = getIncompatibleFilterSelection(
         newDataview,
