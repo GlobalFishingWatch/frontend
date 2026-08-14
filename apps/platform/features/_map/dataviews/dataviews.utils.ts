@@ -26,9 +26,7 @@ import {
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-// Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
-// (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/config'
+import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/deck-layers/config'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -456,6 +454,7 @@ export const getUserFourwingsDataviewInstance = (
         (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
         FourwingsAggregationOperation.Avg,
       datasets: [dataset.id],
+      group: LayerGroup.CustomLayer,
     },
     dataviewId: timestampColumn
       ? TEMPLATE_ACTIVITY_DATAVIEW_SLUG

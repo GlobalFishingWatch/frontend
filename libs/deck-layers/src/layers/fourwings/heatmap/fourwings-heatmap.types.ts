@@ -107,6 +107,7 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   intervalCacheMode?: FourwingsIntervalCacheMode
   bufferedStartTime?: number
   bufferedEndTime?: number
+  group?: LayerGroup
 }
 
 export type FourwingsHeatmapTileLayerProps = _FourwingsHeatmapTileLayerProps &
@@ -160,9 +161,7 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
   'data' | 'availableIntervals' | 'comparisonMode'
-> & {
-  group?: LayerGroup
-}
+>
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>

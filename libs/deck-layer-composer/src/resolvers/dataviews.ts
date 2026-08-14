@@ -187,6 +187,7 @@ export function getFourwingsDataviewsResolved(
         maxVisibleValue: dataviewsToMerge[0].config?.maxVisibleValue,
         colorRampWhiteEnd,
         color: dataviewsToMerge[0].config?.color,
+        group: dataviewsToMerge[0].config?.group,
         visualizationMode,
         comparisonMode,
       },

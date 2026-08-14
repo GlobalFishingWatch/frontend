@@ -235,6 +235,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       maxVisibleValue,
       compareStart,
       compareEnd,
+      group = LayerGroup.Heatmap,
     } = this.props
 
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
@@ -269,7 +270,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
                 ? this.getBivariateFillColor
                 : this.getCompareFillColor,
           getPolygon: (d: FourwingsFeature) => d.coordinates,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(group, params),
           updateTriggers: {
             // This tells deck.gl to recalculate fillColor on changes
             getFillColor: [
