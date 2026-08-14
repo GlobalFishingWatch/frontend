@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
@@ -34,9 +34,6 @@ const DatasetType = ({
 }) => {
   const { t } = useTranslation()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
-  // Needed because browsers don't recognise all MIME types
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-  const [fileTypeEmpty, setFileTypeEmpty] = useState(false)
 
   const onDropAccepted = useCallback(
     (files: File[]) => {
@@ -52,21 +49,13 @@ const DatasetType = ({
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
-  const isFileTypeEmpty = (file: File) => {
-    if (file.type === '') {
-      setFileTypeEmpty(true)
-    }
-    return null
-  }
-
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, fileRejections } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
-    validator: isFileTypeEmpty,
     onDropAccepted,
     onDropRejected,
   })
 
-  const dragError = isDragActive && !isDragAccept && !fileTypeEmpty
+  const dragError = isDragActive && isDragReject
 
   return (
     <div
