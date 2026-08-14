@@ -68,17 +68,20 @@ const OutOfTimerangeDisclaimer = ({
     return (
       <span className={cx(styles.dataWarning, styles.error, className)}>
         <span className={cx(styles.dataWarning, styles.error, className)}>
-          <Trans i18nKey={(t) => t.dataset.SARDelayDisclaimer}>
-            Paused while we move from Sentinel-1A to Sentinel-1C and 1D.{' '}
-            <a
-              className={styles.link}
-              href="https://globalfishingwatch.org/platform-update/sar-vessel-detection-and-fixed-infrastructure-datasets-issue"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn more.
-            </a>
-          </Trans>
+          <Trans
+            i18nKey={(t) => t.dataset.SARDelayDisclaimer}
+            defaults="Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>"
+            components={[
+              <a
+                className={styles.link}
+                href="https://globalfishingwatch.org/platform-update/sar-vessel-detection-and-fixed-infrastructure-datasets-issue"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Learn more.
+              </a>,
+            ]}
+          />
         </span>
       </span>
     )
