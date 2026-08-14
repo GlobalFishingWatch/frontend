@@ -256,6 +256,10 @@ export function useLayerFilterHandlers({
       id: dataview.id,
       config: newDataviewConfig,
     })
+    console.log(
+      '🚀 ~ onSelectFilterClick ~ getActivitySources(dataview):',
+      getActivitySources(dataview)
+    )
     const eventLabel = getEventLabel([
       'select',
       getActivitySources(dataview),
