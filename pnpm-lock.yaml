@@ -60,6 +60,9 @@ importers:
       '@deck.gl/widgets':
         specifier: 9.3.10
         version: 9.3.10(@deck.gl/core@9.3.10)(@luma.gl/core@9.3.6)
+      '@developmentseed/geotiff':
+        specifier: 0.7.0
+        version: 0.7.0
       '@dnd-kit/core':
         specifier: 6.3.1
         version: 6.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -246,6 +249,9 @@ importers:
       geokdbush:
         specifier: 2.1.0
         version: 2.1.0
+      geotiff:
+        specifier: 3.0.5
+        version: 3.0.5
       gl-matrix:
         specifier: 3.4.4
         version: 3.4.4
@@ -315,6 +321,9 @@ importers:
       pbf:
         specifier: 5.1.2
         version: 5.1.2
+      proj4:
+        specifier: 2.20.9
+        version: 2.20.9(geotiff@3.0.5)
       protobufjs:
         specifier: 8.7.2
         version: 8.7.2
