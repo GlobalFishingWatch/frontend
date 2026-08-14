@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Sólo se permiten archivos {{formats}})",
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
+    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Datos",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
