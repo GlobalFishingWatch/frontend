@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Seuls les fichiers au format {{formats}} sont autorisés)",
     "remove": "Supprimer les jeux de données",
     "requiredFields": "Champs requis {{fields}}",
+    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Jeu de données",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
