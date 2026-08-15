@@ -742,21 +742,19 @@
     "supportBy": "Supported by"
   },
   "helpHub": {
-    "sections": {
-      "platformAndUpdates": {
-        "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
-        "title": "Platform and updates"
-      },
-      "toolsAndFeatures": {
-        "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
-        "title": "Tools and features"
-      },
-      "useCases": {
-        "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
-        "title": "Use cases"
-      }
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
     },
-    "title": "Help & Resources"
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
   },
   "hours": "hours",
   "layer": {
