@@ -29,9 +29,53 @@
   overflow: hidden;
 }
 
-.subtitle {
-  font: var(--font-XS);
-  color: var(--color-secondary-blue);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.placeholder {
+  background-color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+  animation: placeHolderShimmer 2s linear infinite;
+}
+
+.titlePlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding-block: 0.4rem;
+}
+
+.line {
+  display: block;
+  height: 1.6rem;
+  border-radius: 0.8rem;
+}
+
+.lineShort {
+  width: 60%;
+}
+
+.subtitleLine {
+  height: 1.2rem;
+  width: 40%;
+  border-radius: 0.6rem;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placeholder {
+    animation: none;
+  }
 }

@@ -3,34 +3,40 @@ import cx from 'classnames'
 
 import styles from './Card.module.css'
 
-export type CardTitleTag = 'h2' | 'h3' | 'h4' | 'span'
-
 export interface CardProps {
   title: string
-  subtitle?: string
   image?: { url: string; alt?: string }
-  titleTag?: CardTitleTag
   className?: string
   children?: React.ReactNode
   testId?: string
+  loading?: boolean
 }
 
-export function Card({
-  title,
-  subtitle,
-  image,
-  titleTag: TitleTag = 'h3',
-  className,
-  children,
-  testId,
-}: CardProps) {
+export function Card({ title, image, className, children, testId, loading }: CardProps) {
+  if (loading) {
+    return (
+      <article
+        className={cx(styles.card, className)}
+        data-testid={testId}
+        aria-busy
+        aria-hidden="true"
+      >
+        <div className={cx(styles.media, styles.placeholder)} />
+        <div className={styles.titlePlaceholder}>
+          <span className={cx(styles.line, styles.placeholder)} />
+          <span className={cx(styles.line, styles.lineShort, styles.placeholder)} />
+        </div>
+        {children}
+      </article>
+    )
+  }
+
   return (
     <article className={cx(styles.card, className)} data-testid={testId}>
       <div className={styles.media}>
         {image && <img className={styles.image} src={image.url} alt={image.alt ?? ''} />}
       </div>
-      <TitleTag className={styles.title}>{title}</TitleTag>
-      {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      <h3 className={styles.title}>{title}</h3>
       {children}
     </article>
   )
