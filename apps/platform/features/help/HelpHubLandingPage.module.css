@@ -36,21 +36,7 @@
 
 .seeMore {
   flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  height: var(--size-M);
-  padding: 0 var(--space-SM);
-  border-radius: var(--border-radius-0);
-  font: var(--font-S);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-secondary-blue);
-  background-color: var(--color-terthiary-blue);
-  transition: background-color 160ms ease;
-}
-
-.seeMore:hover {
-  color: var(--color-primary-blue);
+  padding-inline: var(--space-XL);
 }
 
 .cardGrid {

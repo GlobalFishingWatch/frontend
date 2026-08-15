@@ -6,7 +6,8 @@ import { useGetUseCasesQuery } from 'queries/map/use-case-api'
 import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 
 import type { Locale } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import type { CardProps } from '@globalfishingwatch/ui-components/card'
 import { Card } from '@globalfishingwatch/ui-components/card'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
@@ -77,13 +78,14 @@ function HelpHubLandingPage() {
             <h2 className={styles.title}>{title}</h2>
             <div className={styles.intro}>
               <p className={styles.description}>{description}</p>
+              <Button asChild type="secondary" className={styles.seeMore}>
               <Link
                 to={ROUTE_PATHS.HELP_HUB_SECTION}
                 params={{ sectionSlug: section.slug }}
-                className={styles.seeMore}
               >
                 {t((s) => s.common.seeMore)}
               </Link>
+              </Button>
             </div>
             {isLoading ? (
               <div className={styles.carouselPlaceholder}>
