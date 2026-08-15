@@ -32,10 +32,34 @@ function HelpHubLandingPage() {
 
   const sectionCards = useMemo<Record<HelpHubSectionId, SectionCards>>(
     () => ({
-      toolsAndFeatures: { cards: toUserGuideCards(userGuide), isLoading: isLoadingUserGuide },
-      useCases: { cards: toUseCaseCards(useCases), isLoading: isLoadingUseCases },
+      toolsAndFeatures: {
+        cards: userGuide.map(({ id, slug, title, thumbnail, body }) => ({
+          id,
+          slug,
+          title,
+          image: getCardImage(thumbnail, body),
+        })),
+        isLoading: isLoadingUserGuide,
+      },
+      useCases: {
+        cards: useCases.map(({ id, slug, role, thumbnail, body }) => ({
+          id,
+          slug,
+          title: role,
+          image: getCardImage(thumbnail, body),
+        })),
+        isLoading: isLoadingUseCases,
+      },
       platformAndUpdates: {
-        cards: toDataUpdateCards(dataUpdates),
+        cards: dataUpdates.map(({ id, slug, title, thumbnail, body, publication_date }) => ({
+          id,
+          slug,
+          title,
+          subtitle: publication_date
+            ? formatI18nDate(publication_date, { format: DateTime.DATE_FULL })
+            : undefined,
+          image: getCardImage(thumbnail, body),
+        })),
         isLoading: isLoadingDataUpdates,
       },
     }),
