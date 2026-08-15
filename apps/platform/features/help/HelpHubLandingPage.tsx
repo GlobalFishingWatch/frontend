@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from '@tanstack/react-router'
+import { DateTime } from 'luxon'
 import { useGetDataUpdatesQuery } from 'queries/map/data-update-api'
 import { useGetUseCasesQuery } from 'queries/map/use-case-api'
 import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
@@ -14,22 +15,30 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 import type { HelpHubSectionId } from 'features/help/helpHub.content'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.content'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import type { HelpHubCard } from 'features/help/helpHub.types'
-import { toDataUpdateCards, toUseCaseCards, toUserGuideCards } from 'features/help/helpHub.types'
+import { getCardImage } from 'features/help/helpHub.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 
 import styles from './HelpHubLandingPage.module.css'
 
-type SectionCards = { cards: HelpHubCard[]; isLoading: boolean }
+type SectionCards = {
+  cards: (CardProps & { id: string; slug: string })[]
+  isLoading: boolean
+}
+
+const LOADING_CARDS = 4
 
 function HelpHubLandingPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
 
-  const { data: userGuide = [], isLoading: isLoadingUserGuide } = useGetUserGuideQuery({ locale })
-  const { data: useCases = [], isLoading: isLoadingUseCases } = useGetUseCasesQuery({ locale })
-  const { data: dataUpdates = [], isLoading: isLoadingDataUpdates } = useGetDataUpdatesQuery({
-    locale,
-  })
+  const { data: userGuide = [], isLoading: isLoadingUserGuide } =
+    useGetUserGuideQuery({ locale })
+  const { data: useCases = [], isLoading: isLoadingUseCases } =
+    useGetUseCasesQuery({ locale })
+  const { data: dataUpdates = [], isLoading: isLoadingDataUpdates } =
+    useGetDataUpdatesQuery({
+      locale,
+    })
 
   const sectionCards = useMemo<Record<HelpHubSectionId, SectionCards>>(
     () => ({
@@ -52,19 +61,28 @@ function HelpHubLandingPage() {
         isLoading: isLoadingUseCases,
       },
       platformAndUpdates: {
-        cards: dataUpdates.map(({ id, slug, title, thumbnail, body, publication_date }) => ({
-          id,
-          slug,
-          title,
-          subtitle: publication_date
-            ? formatI18nDate(publication_date, { format: DateTime.DATE_FULL })
-            : undefined,
-          image: getCardImage(thumbnail, body),
-        })),
+        cards: dataUpdates.map(
+          ({ id, slug, title, thumbnail, body, publication_date }) => ({
+            id,
+            slug,
+            title,
+            subtitle: publication_date
+              ? formatI18nDate(publication_date, { format: DateTime.DATE_FULL })
+              : undefined,
+            image: getCardImage(thumbnail, body),
+          }),
+        ),
         isLoading: isLoadingDataUpdates,
       },
     }),
-    [userGuide, useCases, dataUpdates, isLoadingUserGuide, isLoadingUseCases, isLoadingDataUpdates]
+    [
+      userGuide,
+      useCases,
+      dataUpdates,
+      isLoadingUserGuide,
+      isLoadingUseCases,
+      isLoadingDataUpdates,
+    ],
   )
 
   return (
@@ -79,17 +97,19 @@ function HelpHubLandingPage() {
             <div className={styles.intro}>
               <p className={styles.description}>{description}</p>
               <Button asChild type="secondary" className={styles.seeMore}>
-              <Link
-                to={ROUTE_PATHS.HELP_HUB_SECTION}
-                params={{ sectionSlug: section.slug }}
-              >
-                {t((s) => s.common.seeMore)}
-              </Link>
+                <Link
+                  to={ROUTE_PATHS.HELP_HUB_SECTION}
+                  params={{ sectionSlug: section.slug }}
+                >
+                  {t((s) => s.common.seeMore)}
+                </Link>
               </Button>
             </div>
             {isLoading ? (
-              <div className={styles.carouselPlaceholder}>
-                <Spinner size="small" />
+              <div className={styles.cardGrid}>
+                {Array.from({ length: LOADING_CARDS }, (_, index) => (
+                  <Card key={index} loading />
+                ))}
               </div>
             ) : cards.length > 0 ? (
               <div className={styles.cardGrid}>
@@ -100,17 +120,14 @@ function HelpHubLandingPage() {
                     params={{ sectionSlug: section.slug, topicSlug: card.slug }}
                     className={styles.cardLink}
                   >
-                    <Card
-                      title={card.title}
-                      subtitle={card.subtitle}
-                      image={card.image}
-                      titleTag="h3"
-                    />
+                    <Card title={card.title} image={card.image} />
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className={styles.carouselPlaceholder}>{t((s) => s.common.noData)}</p>
+              <p className={styles.carouselPlaceholder}>
+                {t((s) => s.common.noData)}
+              </p>
             )}
           </section>
         )
