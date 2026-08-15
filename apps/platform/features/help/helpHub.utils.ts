@@ -1,22 +1,55 @@
 import type { CardProps } from '@globalfishingwatch/ui-components/card'
 
+import type { DataUpdateContent } from 'features/cms/loaders/data-update.types'
+import type { UseCaseContent } from 'features/cms/loaders/use-case.types'
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
-import type { StrapiImage } from 'features/cms/strapi.types'
-import type { HelpHubItem } from 'features/help/helpHub.types'
+import type { StrapiBaseAttributes, StrapiImage } from 'features/cms/strapi.types'
+import type { HelpHubItem, HelpHubItemSubsection } from 'features/help/helpHub.types'
 
-export function toHelpHubItems(sections: UserGuideContent): HelpHubItem[] {
+const toSubsections = (
+  subsections?: (StrapiBaseAttributes & {
+    title: string
+    slug: string
+    body?: string
+  })[]
+): HelpHubItemSubsection[] | undefined =>
+  subsections?.map((subsection) => ({
+    id: subsection.id.toString(),
+    slug: subsection.slug,
+    title: subsection.title,
+    body: subsection.body,
+  }))
+
+export function toUserGuideItems(sections: UserGuideContent): HelpHubItem[] {
   return sections.map((section) => ({
     id: section.id.toString(),
     slug: section.slug || section.id.toString(),
     title: section.title,
     thumbnail: section.thumbnail,
     body: section.body,
-    subsections: section.subsections?.map((subsection) => ({
-      id: subsection.id.toString(),
-      slug: subsection.slug,
-      title: subsection.title,
-      body: subsection.body,
-    })),
+    subsections: toSubsections(section.subsections),
+  }))
+}
+
+export function toUseCaseItems(sections: UseCaseContent): HelpHubItem[] {
+  return sections.map((section) => ({
+    id: section.id.toString(),
+    slug: section.slug || section.id.toString(),
+    title: section.role,
+    thumbnail: section.thumbnail,
+    body: section.body,
+    subsections: toSubsections(section.subsections),
+  }))
+}
+
+export function toDataUpdateItems(updates: DataUpdateContent): HelpHubItem[] {
+  return updates.map((update) => ({
+    id: update.id.toString(),
+    slug: update.slug || update.id.toString(),
+    title: update.title,
+    thumbnail: update.thumbnail,
+    body: update.body,
+    publicationDate: update.publication_date,
   }))
 }
 

@@ -1,17 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
-import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 
-import type { Locale } from '@globalfishingwatch/api-types'
-import { Spinner } from '@globalfishingwatch/ui-components'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import { findHelpHubSection } from 'features/help/helpHub.content'
 import { useActiveItemOnScroll } from 'features/help/helpHub.hooks'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import { toHelpHubItems } from 'features/help/helpHub.utils'
 import HelpHubItemContent from 'features/help/HelpHubItemContent'
 
 import styles from './HelpHubSectionPage.module.css'
@@ -20,20 +16,11 @@ const sectionRoute = getRouteApi('/_platform/_content/help-and-resources/$sectio
 
 function HelpHubSectionPage() {
   const { sectionSlug, itemSlug } = sectionRoute.useParams()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  // TODO swap for the help hub CMS
-  const {
-    data = [],
-    isLoading,
-    isError,
-  } = useGetUserGuideQuery({
-    locale: i18n.language as Locale,
-  })
-
-  const items = useMemo(() => toHelpHubItems(data), [data])
+  const items = sectionRoute.useLoaderData()
   const itemSlugs = useMemo(() => items.map((item) => item.slug), [items])
 
   const handleActiveChange = useCallback(
@@ -83,15 +70,7 @@ function HelpHubSectionPage() {
   const section = findHelpHubSection(sectionSlug)
   const copy = section ? getHelpHubSectionCopy(section.id) : undefined
 
-  if (isLoading) {
-    return (
-      <div className={styles.placeholder}>
-        <Spinner />
-      </div>
-    )
-  }
-
-  if (isError || !items.length) {
+  if (!items.length) {
     return <p className={styles.placeholder}>{t((s) => s.common.noData)}</p>
   }
 
