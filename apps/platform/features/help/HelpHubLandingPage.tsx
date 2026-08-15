@@ -105,7 +105,15 @@ function HelpHubLandingPage() {
                     params={{ sectionSlug: section.slug, itemSlug: card.slug }}
                     className={styles.cardLink}
                   >
-                    <Card title={card.title} image={card.image} />
+                    <Card title={item.title} image={getCardImage(item.thumbnail, item.body)}>
+                      {item.publicationDate && (
+                        <p className={styles.cardDate}>
+                          {formatI18nDate(item.publicationDate, {
+                            format: DateTime.DATE_FULL,
+                          })}
+                        </p>
+                      )}
+                    </Card>
                   </Link>
                 ))}
               </div>

@@ -14,5 +14,6 @@ export type HelpHubItem = {
   description?: string
   thumbnail?: StrapiImage
   body?: string
+  publicationDate?: string
   subsections?: HelpHubItemSubsection[]
 }
