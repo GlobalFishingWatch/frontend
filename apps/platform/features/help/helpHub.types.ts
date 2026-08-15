@@ -1,18 +1,18 @@
 import type { StrapiImage } from 'features/cms/strapi.types'
 
-export type HelpHubTopicSubsection = {
+export type HelpHubItemSubsection = {
   id: string
   slug?: string
   title: string
   body?: string
 }
 
-export type HelpHubTopic = {
+export type HelpHubItem = {
   id: string
   slug: string
   title: string
   description?: string
   thumbnail?: StrapiImage
   body?: string
-  subsections?: HelpHubTopicSubsection[]
+  subsections?: HelpHubItemSubsection[]
 }

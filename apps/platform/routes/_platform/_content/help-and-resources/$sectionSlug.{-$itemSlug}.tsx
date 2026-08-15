@@ -9,12 +9,12 @@ import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
 import { buildCanonicalUrl, getRouteHead } from 'router/router.meta'
 
 /**
- * One route serves both `/help-and-resources/$sectionSlug` and `.../$topicSlug`. The optional param
+ * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The optional param
  * keeps it a single match, so scroll-driven URL changes swap params on a mounted component instead
  * of remounting it and throwing away the reader's scroll position.
  */
 export const Route = createFileRoute(
-  '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}'
+  '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}'
 )({
   component: HelpHubSectionPage,
   beforeLoad: ({ params }) => {
@@ -31,7 +31,7 @@ export const Route = createFileRoute(
     return {
       // TODO use the real content title once a loader fetches the topic.
       ...getRouteHead({
-        category: params.topicSlug ? startCase(params.topicSlug) : title,
+        category: params.itemSlug ? startCase(params.itemSlug) : title,
         description,
       }),
       links: [

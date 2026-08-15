@@ -21,7 +21,7 @@ export const MARKDOWN_IMAGE_ALT = 'Vessel track example'
 /** Appears exactly once across the whole fixture set, in the Detections body. */
 export const SEARCH_TERM = 'synthetic'
 
-// Each topic has to be taller than the 720px viewport: both the deep-link jump and the
+// Each item has to be taller than the 720px viewport: both the deep-link jump and the
 // IntersectionObserver that rewrites the URL as you scroll are no-ops in a container that fits.
 const filler = (subject: string) =>
   Array.from(
@@ -51,11 +51,11 @@ const thumbnail = (id: number, alternativeText: string): StrapiImage => ({
  * `UserGuideSectionSlug` / `UserGuideSubSectionSlug`.
  *
  * Shape that the specs depend on:
- * - `introduction` is first, so it is the implicit active topic when the URL carries no topicSlug.
- * - `vessels` is the only topic with subsections (expand-button specs) and the only one whose body
+ * - `introduction` is first, so it is the implicit active item when the URL carries no itemSlug.
+ * - `vessels` is the only item with subsections (expand-button specs) and the only one whose body
  *   holds a markdown image (image-expansion spec).
  * - `detections` is the only match for SEARCH_TERM, and is deliberately NOT last: scrolling a
- *   trailing topic to the top of the container is not always possible, which would make the
+ *   trailing item to the top of the container is not always possible, which would make the
  *   scroll-driven URL sync ambiguous.
  */
 export const USER_GUIDE_FIXTURE: UserGuideContent = [
@@ -140,7 +140,7 @@ export function landingSection(title: string) {
   )
 }
 
-/** The table-of-contents row for a topic: its title button plus, if any, its expand button. */
+/** The table-of-contents row for a item: its title button plus, if any, its expand button. */
 export function tocRow(title: string) {
   return Array.from(document.querySelectorAll<HTMLElement>('[class*="listItemRow"]')).find(
     (row) => row.textContent?.trim() === title

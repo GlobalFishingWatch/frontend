@@ -9,19 +9,17 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import { findHelpHubSection } from 'features/help/helpHub.content'
-import { useActiveTopicOnScroll } from 'features/help/helpHub.hooks'
+import { useActiveItemOnScroll } from 'features/help/helpHub.hooks'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import { toHelpHubTopics } from 'features/help/helpHub.types'
-import HelpHubTopicContent from 'features/help/HelpHubTopicContent'
+import { toHelpHubItems } from 'features/help/helpHub.utils'
+import HelpHubItemContent from 'features/help/HelpHubItemContent'
 
 import styles from './HelpHubSectionPage.module.css'
 
-const sectionRoute = getRouteApi(
-  '/_platform/_content/help-and-resources/$sectionSlug/{-$topicSlug}'
-)
+const sectionRoute = getRouteApi('/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}')
 
 function HelpHubSectionPage() {
-  const { sectionSlug, topicSlug } = sectionRoute.useParams()
+  const { sectionSlug, itemSlug } = sectionRoute.useParams()
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -35,50 +33,50 @@ function HelpHubSectionPage() {
     locale: i18n.language as Locale,
   })
 
-  const topics = useMemo(() => toHelpHubTopics(data), [data])
-  const topicSlugs = useMemo(() => topics.map((topic) => topic.slug), [topics])
+  const items = useMemo(() => toHelpHubItems(data), [data])
+  const itemSlugs = useMemo(() => items.map((item) => item.slug), [items])
 
   const handleActiveChange = useCallback(
     (activeSlug: string) => {
-      const nextTopicSlug = activeSlug === topicSlugs[0] ? undefined : activeSlug
-      if (nextTopicSlug === topicSlug) {
+      const nextItemSlug = activeSlug === itemSlugs[0] ? undefined : activeSlug
+      if (nextItemSlug === itemSlug) {
         return
       }
       navigate({
         to: ROUTE_PATHS.HELP_HUB_SECTION,
-        params: { sectionSlug, topicSlug: nextTopicSlug },
+        params: { sectionSlug, itemSlug: nextItemSlug },
         replace: true,
         resetScroll: false,
       })
     },
-    [navigate, sectionSlug, topicSlug, topicSlugs]
+    [navigate, sectionSlug, itemSlug, itemSlugs]
   )
 
-  useActiveTopicOnScroll({
+  useActiveItemOnScroll({
     containerRef: scrollContainerRef,
-    topicSlugs,
+    itemSlugs,
     onActiveChange: handleActiveChange,
   })
 
-  // Deep link: jump to the requested topic once, on first render with content. Instant rather than
+  // Deep link: jump to the requested item once, on first render with content. Instant rather than
   // smooth, so a late-loading image cannot shift the target out from under an in-flight animation.
   const hasJumpedRef = useRef(false)
   useEffect(() => {
-    if (hasJumpedRef.current || !topics.length) {
+    if (hasJumpedRef.current || !items.length) {
       return
     }
     hasJumpedRef.current = true
-    if (!topicSlug) {
+    if (!itemSlug) {
       return
     }
     scrollContainerRef.current
-      ?.querySelector(`[data-topic-slug="${CSS.escape(topicSlug)}"]`)
+      ?.querySelector(`[data-item-slug="${CSS.escape(itemSlug)}"]`)
       ?.scrollIntoView({ block: 'start' })
-  }, [topics, topicSlug])
+  }, [items, itemSlug])
 
-  const scrollToTopic = useCallback((slug: string) => {
+  const scrollToItem = useCallback((slug: string) => {
     scrollContainerRef.current
-      ?.querySelector(`[data-topic-slug="${CSS.escape(slug)}"]`)
+      ?.querySelector(`[data-item-slug="${CSS.escape(slug)}"]`)
       ?.scrollIntoView({ block: 'start' })
   }, [])
 
@@ -93,7 +91,7 @@ function HelpHubSectionPage() {
     )
   }
 
-  if (isError || !topics.length) {
+  if (isError || !items.length) {
     return <p className={styles.placeholder}>{t((s) => s.common.noData)}</p>
   }
 
@@ -118,19 +116,19 @@ function HelpHubSectionPage() {
       )}
       <div className={styles.container}>
         <TableOfContents
-          data={topics}
-          activeId={topicSlug ?? topicSlugs[0]}
+          data={items}
+          activeId={itemSlug ?? itemSlugs[0]}
           className={styles.tableOfContents}
-          onClick={scrollToTopic}
-          onSubTopicClick={(_sectionId, subId) =>
+          onClick={scrollToItem}
+          onSubItemClick={(_sectionId, subId) =>
             scrollContainerRef.current
               ?.querySelector(`#${CSS.escape(subId)}`)
               ?.scrollIntoView({ block: 'start' })
           }
         />
         <div ref={scrollContainerRef} className={styles.content}>
-          {topics.map((topic) => (
-            <HelpHubTopicContent key={topic.slug} topic={topic} />
+          {items.map((item) => (
+            <HelpHubItemContent key={item.slug} item={item} />
           ))}
         </div>
       </div>

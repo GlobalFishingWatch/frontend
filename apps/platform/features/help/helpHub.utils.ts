@@ -2,9 +2,9 @@ import type { CardProps } from '@globalfishingwatch/ui-components/card'
 
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import type { StrapiImage } from 'features/cms/strapi.types'
-import type { HelpHubTopic } from 'features/help/helpHub.types'
+import type { HelpHubItem } from 'features/help/helpHub.types'
 
-export function toHelpHubTopics(sections: UserGuideContent): HelpHubTopic[] {
+export function toHelpHubItems(sections: UserGuideContent): HelpHubItem[] {
   return sections.map((section) => ({
     id: section.id.toString(),
     slug: section.slug || section.id.toString(),

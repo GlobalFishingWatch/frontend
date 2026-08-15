@@ -1,8 +1,8 @@
-.topic {
+.item {
   scroll-margin-top: var(--space-M);
 }
 
-.topic + .topic {
+.item + .item {
   margin-top: var(--space-XL);
 }
 
@@ -35,7 +35,7 @@
   color: var(--color-primary-blue);
 }
 
-.topic > :global(.content-markdown),
+.item > :global(.content-markdown),
 .subsection > :global(.content-markdown) {
   margin-top: var(--space-SM);
 }

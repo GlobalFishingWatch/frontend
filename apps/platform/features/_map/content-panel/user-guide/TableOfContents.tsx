@@ -25,7 +25,7 @@ type TableOfContentsProps = {
   activeId?: string
   className?: string
   onClick?: (id: string) => void
-  onSubTopicClick?: (sectionId: string, subId: string) => void
+  onSubItemClick?: (sectionId: string, subId: string) => void
 }
 
 function TableOfContents({
@@ -33,7 +33,7 @@ function TableOfContents({
   activeId,
   className,
   onClick,
-  onSubTopicClick,
+  onSubItemClick,
 }: TableOfContentsProps) {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
@@ -111,7 +111,7 @@ function TableOfContents({
                     <li key={sub.id}>
                       <button
                         type="button"
-                        onClick={() => onSubTopicClick?.(item.id, sub.id)}
+                        onClick={() => onSubItemClick?.(item.id, sub.id)}
                         className={styles.subTopic}
                       >
                         {sub.label}

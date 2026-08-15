@@ -65,7 +65,10 @@ export const UserGuideContentComponent = () => {
 
       const performScroll = () => {
         if (!cancelled) {
-          subcontentElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          subcontentElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
         }
       }
 
@@ -102,7 +105,11 @@ export const UserGuideContentComponent = () => {
   }
 
   return (
-    <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
+    <div
+      className={cx(styles.container, {
+        [styles.userGuideBackground]: !isTableOfContentsOpen,
+      })}
+    >
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
@@ -113,7 +120,11 @@ export const UserGuideContentComponent = () => {
                 tabIndex={0}
                 onClick={() => {
                   setIsTableOfContentsOpen(true)
-                  openSidePanel({ type: 'userGuide', id: undefined, subcontentId: undefined })
+                  openSidePanel({
+                    type: 'userGuide',
+                    id: undefined,
+                    subcontentId: undefined,
+                  })
                 }}
               >
                 {t((t) => t.common.userGuide)}
@@ -126,7 +137,10 @@ export const UserGuideContentComponent = () => {
                     role="button"
                     tabIndex={0}
                     onClick={() =>
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      })
                     }
                   >{`${selectedSection.title}`}</span>
                 </>
@@ -149,8 +163,12 @@ export const UserGuideContentComponent = () => {
               openSidePanel({ type: 'userGuide', id: id })
               setIsTableOfContentsOpen(false)
             }}
-            onSubTopicClick={(sectionId, subId) => {
-              openSidePanel({ type: 'userGuide', id: sectionId, subcontentId: subId })
+            onSubItemClick={(sectionId, subId) => {
+              openSidePanel({
+                type: 'userGuide',
+                id: sectionId,
+                subcontentId: subId,
+              })
               setIsTableOfContentsOpen(false)
             }}
           />
@@ -180,7 +198,10 @@ export const UserGuideContentComponent = () => {
                         type: 'userGuide',
                         id: prevSection.slug || prevSection.id.toString(),
                       })
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'instant',
+                      })
                     }}
                   >
                     <Icon icon="arrow-left" type="default" />
@@ -199,7 +220,10 @@ export const UserGuideContentComponent = () => {
                         type: 'userGuide',
                         id: nextSection.slug || nextSection.id.toString(),
                       })
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'instant',
+                      })
                     }}
                   >
                     <span className={styles.sectionLinkLabel}>{nextSection.title}</span>

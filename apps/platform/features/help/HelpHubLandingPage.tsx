@@ -31,14 +31,11 @@ function HelpHubLandingPage() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language as Locale
 
-  const { data: userGuide = [], isLoading: isLoadingUserGuide } =
-    useGetUserGuideQuery({ locale })
-  const { data: useCases = [], isLoading: isLoadingUseCases } =
-    useGetUseCasesQuery({ locale })
-  const { data: dataUpdates = [], isLoading: isLoadingDataUpdates } =
-    useGetDataUpdatesQuery({
-      locale,
-    })
+  const { data: userGuide = [], isLoading: isLoadingUserGuide } = useGetUserGuideQuery({ locale })
+  const { data: useCases = [], isLoading: isLoadingUseCases } = useGetUseCasesQuery({ locale })
+  const { data: dataUpdates = [], isLoading: isLoadingDataUpdates } = useGetDataUpdatesQuery({
+    locale,
+  })
 
   const sectionCards = useMemo<Record<HelpHubSectionId, SectionCards>>(
     () => ({
@@ -61,28 +58,19 @@ function HelpHubLandingPage() {
         isLoading: isLoadingUseCases,
       },
       platformAndUpdates: {
-        cards: dataUpdates.map(
-          ({ id, slug, title, thumbnail, body, publication_date }) => ({
-            id,
-            slug,
-            title,
-            subtitle: publication_date
-              ? formatI18nDate(publication_date, { format: DateTime.DATE_FULL })
-              : undefined,
-            image: getCardImage(thumbnail, body),
-          }),
-        ),
+        cards: dataUpdates.map(({ id, slug, title, thumbnail, body, publication_date }) => ({
+          id,
+          slug,
+          title,
+          subtitle: publication_date
+            ? formatI18nDate(publication_date, { format: DateTime.DATE_FULL })
+            : undefined,
+          image: getCardImage(thumbnail, body),
+        })),
         isLoading: isLoadingDataUpdates,
       },
     }),
-    [
-      userGuide,
-      useCases,
-      dataUpdates,
-      isLoadingUserGuide,
-      isLoadingUseCases,
-      isLoadingDataUpdates,
-    ],
+    [userGuide, useCases, dataUpdates, isLoadingUserGuide, isLoadingUseCases, isLoadingDataUpdates]
   )
 
   return (
@@ -97,10 +85,7 @@ function HelpHubLandingPage() {
             <div className={styles.intro}>
               <p className={styles.description}>{description}</p>
               <Button asChild type="secondary" className={styles.seeMore}>
-                <Link
-                  to={ROUTE_PATHS.HELP_HUB_SECTION}
-                  params={{ sectionSlug: section.slug }}
-                >
+                <Link to={ROUTE_PATHS.HELP_HUB_SECTION} params={{ sectionSlug: section.slug }}>
                   {t((s) => s.common.seeMore)}
                 </Link>
               </Button>
@@ -117,7 +102,7 @@ function HelpHubLandingPage() {
                   <Link
                     key={card.id}
                     to={ROUTE_PATHS.HELP_HUB_SECTION}
-                    params={{ sectionSlug: section.slug, topicSlug: card.slug }}
+                    params={{ sectionSlug: section.slug, itemSlug: card.slug }}
                     className={styles.cardLink}
                   >
                     <Card title={card.title} image={card.image} />
@@ -125,9 +110,7 @@ function HelpHubLandingPage() {
                 ))}
               </div>
             ) : (
-              <p className={styles.carouselPlaceholder}>
-                {t((s) => s.common.noData)}
-              </p>
+              <p className={styles.carouselPlaceholder}>{t((s) => s.common.noData)}</p>
             )}
           </section>
         )

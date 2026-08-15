@@ -81,8 +81,10 @@ describe('Help hub', async () => {
     // WHY: assert route type + params rather than pathname — pathname carries PATH_BASENAME, params
     // are what the section page actually reads.
     await expect.poll(() => store.getState().location.type).toBe(HELP_HUB_SECTION)
-    expect(store.getState().location.payload).toMatchObject({ sectionSlug: 'use-cases' })
-    expect(store.getState().location.payload.topicSlug).toBeUndefined()
+    expect(store.getState().location.payload).toMatchObject({
+      sectionSlug: 'use-cases',
+    })
+    expect(store.getState().location.payload.itemSlug).toBeUndefined()
   })
 
   it('should redirect when clicking on thumbnail link', async () => {
@@ -94,36 +96,38 @@ describe('Help hub', async () => {
     await userEvent.click(toolsAndFeatures.getByRole('link').filter({ hasText: 'Vessels' }))
 
     await expect.poll(() => store.getState().location.type).toBe(HELP_HUB_SECTION)
-    // A card links to its own topic, so the URL carries both the section and the topic.
+    // A card links to its own item, so the URL carries both the section and the item.
     expect(store.getState().location.payload).toMatchObject({
       sectionSlug: 'tools-and-features',
-      topicSlug: 'vessels',
+      itemSlug: 'vessels',
     })
   })
 
   it('table of contents should redirect to section', async () => {
     const { store } = await renderSectionPage()
 
-    // Only the table of contents renders topic titles as buttons; the article renders them as headings.
+    // Only the table of contents renders item titles as buttons; the article renders them as headings.
     await userEvent.click(page.getByRole('button', { name: 'Vessels' }))
 
     // WHY: the click only scrolls. The URL is rewritten by the IntersectionObserver in
-    // useActiveTopicOnScroll once the topic reaches the top band of the scroll container.
+    // useActiveItemOnScroll once the item reaches the top band of the scroll container.
     await expect
-      .poll(() => store.getState().location.payload.topicSlug, { timeout: 5000 })
+      .poll(() => store.getState().location.payload.itemSlug, {
+        timeout: 5000,
+      })
       .toBe('vessels')
     expect(store.getState().location.type).toBe(HELP_HUB_SECTION)
   })
 
   it('should have table of contents link selected according to current section', async () => {
-    const { store } = await renderSectionPage({ topicSlug: 'vessels' })
+    const { store } = await renderSectionPage({ itemSlug: 'vessels' })
 
     await expect.poll(() => activeTocTitle()).toBe('Vessels')
-    expect(store.getState().location.payload.topicSlug).toBe('vessels')
+    expect(store.getState().location.payload.itemSlug).toBe('vessels')
   })
 
-  it('should default the selected table of contents link to the first topic', async () => {
-    // WHY: with no topicSlug the section page falls back to topicSlugs[0], and handleActiveChange
+  it('should default the selected table of contents link to the first item', async () => {
+    // WHY: with no itemSlug the section page falls back to itemSlugs[0], and handleActiveChange
     // deliberately keeps that case out of the URL.
     await renderSectionPage()
 
@@ -133,7 +137,7 @@ describe('Help hub', async () => {
   it('should only show expand button when has subsections', async () => {
     await renderSectionPage()
 
-    // A row holds the topic button plus, only when the topic has subsections, the expand button.
+    // A row holds the item button plus, only when the item has subsections, the expand button.
     await expect.poll(() => tocRowButtons('Vessels').length).toBe(2)
     expect(tocRowButtons('Introduction')).toHaveLength(1)
     expect(tocRowButtons('Detections')).toHaveLength(1)
@@ -145,7 +149,9 @@ describe('Help hub', async () => {
 
     await expect.poll(() => tocRowButtons('Vessels').length).toBe(2)
     // The subsection titles also render as headings inside the article, so scope to the button role.
-    await expect.element(page.getByRole('button', { name: 'Vessel profile' })).not.toBeInTheDocument()
+    await expect
+      .element(page.getByRole('button', { name: 'Vessel profile' }))
+      .not.toBeInTheDocument()
 
     await userEvent.click(page.elementLocator(tocRowButtons('Vessels')[1]))
 
@@ -168,7 +174,7 @@ describe('Help hub', async () => {
     await renderSectionPage()
 
     // WHY: MARKDOWN_IMAGE_URL is used by exactly one body image, so it never collides with the
-    // topic thumbnails.
+    // item thumbnails.
     await expect.poll(() => imagesWithSrc(MARKDOWN_IMAGE_URL).length).toBe(1)
 
     await userEvent.click(page.elementLocator(imagesWithSrc(MARKDOWN_IMAGE_URL)[0]))
@@ -192,7 +198,9 @@ describe('Help hub', async () => {
     await userEvent.click(page.getByRole('button', { name: 'Detections' }))
 
     await expect
-      .poll(() => store.getState().location.payload.topicSlug, { timeout: 5000 })
+      .poll(() => store.getState().location.payload.itemSlug, {
+        timeout: 5000,
+      })
       .toBe('detections')
   })
 
