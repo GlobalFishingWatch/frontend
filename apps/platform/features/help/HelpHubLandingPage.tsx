@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Card } from '@globalfishingwatch/ui-components/card'
+import { Carousel } from '@globalfishingwatch/ui-components/carousel'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.content'
@@ -37,7 +38,7 @@ function HelpHubLandingPage() {
               </Button>
             </div>
             {items.length > 0 ? (
-              <div className={styles.cardGrid}>
+              <Carousel id={`${section.slug}-carousel`} label={title}>
                 {items.map((item) => (
                   <Link
                     key={item.id}
@@ -56,7 +57,7 @@ function HelpHubLandingPage() {
                     </Card>
                   </Link>
                 ))}
-              </div>
+              </Carousel>
             ) : (
               <p className={styles.carouselPlaceholder}>{t((s) => s.common.noData)}</p>
             )}

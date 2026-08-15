@@ -39,28 +39,6 @@
   padding-inline: var(--space-XL);
 }
 
-.cardGrid {
-  --card-grid-gap: var(--space-SM);
-  --card-grid-items-per-view: 4;
-  --card-grid-item-min-width: 16rem;
-
-  display: flex;
-  gap: var(--card-grid-gap);
-  overflow: hidden;
-}
-
-.cardGrid > * {
-  flex: 0 0
-    max(
-      var(--card-grid-item-min-width),
-      calc(
-        (100% - (var(--card-grid-items-per-view) - 1) * var(--card-grid-gap)) /
-          var(--card-grid-items-per-view)
-      )
-    );
-  min-width: 0;
-}
-
 .cardLink {
   display: block;
   min-width: 0;
