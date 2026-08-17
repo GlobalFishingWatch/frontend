@@ -109,6 +109,17 @@ const MAX_INDIVIDUAL_POINTS = 1000
 const MAX_CLUSTER_EXPANSION_ZOOM = 20
 const emptyHighlightedFeatures = [] as DeckLayerPickingObject[]
 
+type SuperclusterIndex = Supercluster & {
+  numPoints?: number
+  points?: { length: number }
+}
+
+function getClusterIndexSize(clusterIndex: Supercluster | undefined): number {
+  if (!clusterIndex) return 0
+  const index = clusterIndex as SuperclusterIndex
+  return index.numPoints ?? index.points?.length ?? 0
+}
+
 export function getFourwingsGeolocation(
   clusterMaxZoomLevels: ClusterMaxZoomLevelConfig,
   zoom: number
@@ -199,7 +210,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
             radiusScale: undefined,
           })
         }
-      } else if (clusterIndex !== undefined && (clusterIndex as any).points?.length > 0) {
+      } else if (getClusterIndexSize(clusterIndex) > 0) {
         const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
         this.setState({
           clusters: clusters,
@@ -231,7 +242,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
     const { zoom } = this.context.viewport
-    if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
+    if (getClusterIndexSize(this.state.clusterIndex) && info.object?.properties.cluster_id) {
       try {
         const points = this.state.clusterIndex.getLeaves(
           info.object?.properties.cluster_id,
@@ -296,7 +307,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClustersByZoom = (zoom: number) => {
-    if (!this.state.clusterIndex || !(this.state.clusterIndex as any).points?.length) {
+    if (getClusterIndexSize(this.state.clusterIndex) === 0) {
       return { clusters: undefined, points: undefined, radiusScale: undefined }
     }
 
