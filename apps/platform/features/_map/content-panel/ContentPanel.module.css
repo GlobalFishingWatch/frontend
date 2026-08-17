@@ -17,6 +17,19 @@
   pointer-events: none;
 }
 
+@media only screen and (width <= 800px) {
+  .panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 20;
+  }
+
+  .hidden {
+    margin-right: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .panel {
     transition: none;

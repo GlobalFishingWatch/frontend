@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
 
+import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
@@ -32,6 +33,10 @@ function PlatformLayout() {
   const readOnly = useSelector(selectReadOnly)
   const [menuOpen, setMenuOpen] = useState(false)
 
+  const isSmallPhone = useSmallScreen(SMALL_PHONE_BREAKPOINT, {
+    initialScreenWidth: screenWidth ?? undefined,
+  })
+
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
@@ -40,7 +45,8 @@ function PlatformLayout() {
     <Fragment>
       <ConfirmLeave />
       <div id={PLATFORM_CONTAINER_DOM_ID} className={styles.platformContainer}>
-        {PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />}
+        {!isSmallPhone &&
+          (PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />)}
         <div className={styles.platformContent}>
           <ErrorBoundary>
             <Outlet />

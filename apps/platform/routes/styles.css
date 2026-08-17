@@ -13,6 +13,12 @@
   --switch-height: 4.4rem;
 }
 
+@media only screen and (width <= 360px) {
+  :root {
+    --sidebar-tabs-width: 0;
+  }
+}
+
 .card {
   background-color: var(--color-off-white-0);
   border: var(--border);
