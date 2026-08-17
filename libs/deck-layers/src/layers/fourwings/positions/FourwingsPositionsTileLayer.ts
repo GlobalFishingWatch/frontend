@@ -23,6 +23,7 @@ import { mean, sample, standardDeviation } from 'simple-statistics'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getVesselIdentifierType } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT } from '#config/colors.config'
@@ -328,10 +329,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return ''
     }
 
+    const { shipname, id } = d.properties || {}
     const label =
-      d.properties?.shipname && d.properties?.shipname !== 'null'
-        ? cleanVesselShipname(d.properties?.shipname)
-        : d.properties?.id || ''
+      shipname && shipname !== 'null'
+        ? cleanVesselShipname(shipname)
+        : getVesselIdentifierType(id) === 'ssvid'
+          ? id
+          : ''
     return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 

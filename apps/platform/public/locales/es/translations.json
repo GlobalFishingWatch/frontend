@@ -406,6 +406,7 @@
     "onlyFileFormatAllowed": "(Sólo se permiten archivos {{formats}})",
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
+    "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
     "title": "Datos",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
@@ -419,7 +420,7 @@
     "uploadPublic": "Permitir a otros usuarios ver estos datos cuando comparta un espacio de trabajo",
     "uploadVesselGroups": "<0>Registrar</0> o <2>iniciar sesión</2> para crear y acceder a tus grupos de nave.",
     "uploadYourOwn": "Subir una propia",
-    "VIIRSDelayDisclaimer": "Los datos de luz nocturna de VIIRS están disponibles con un retraso de ingestión de aproximadamente 3 meses."
+    "VIIRSDelayDisclaimer": "En pausa. Detecciones recientes en la capa Skylight."
   },
   "datasetUpload": {
     "datasetName": "Nombre del conjunto de datos",
@@ -516,6 +517,10 @@
       "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente ProtectedSeas Navigator",
       "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente ProtectedSeas Navigator para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     }
+  },
+  "detectionBands": {
+    "nir": "Near-infrared",
+    "rgb": "Red, green and blue (visible light)"
   },
   "detections": "Detections",
   "download": {

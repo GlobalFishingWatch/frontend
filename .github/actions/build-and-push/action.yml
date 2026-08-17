@@ -106,6 +106,7 @@ runs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v7
       with:
+        context: .
         target: ${{ steps.prepare.outputs.target }}
         push: true
         tags: ${{ inputs.image }}

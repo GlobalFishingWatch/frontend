@@ -22,9 +22,9 @@ export const dependencyChecksOptions = {
 
 export const packageJsonDependencyChecksConfig = {
   files: ['**/package.json'],
-  // Manifest of the standalone BigQuery UDF bundle, not an Nx project: the rule would lint it as
-  // dataviews-client's own and `--fix` would copy the whole lib dependency list into it.
-  ignores: ['**/url-workspace/package.json'],
+  // url-workspace and skills are self-contained bundles; their workspace
+  // packages must stay in devDependencies so `--fix` cannot promote them.
+  ignores: ['**/url-workspace/package.json', '**/libs/skills/package.json'],
   plugins: {
     '@nx': nxJsonPlugin,
   },

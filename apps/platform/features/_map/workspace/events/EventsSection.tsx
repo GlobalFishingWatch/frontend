@@ -34,18 +34,17 @@ function EventsLayerSection(): React.ReactElement<any> | null {
     dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Events }))
   }, [dispatch])
 
-  const onToggleLayer = useCallback(
-    (dataview: UrlDataviewInstance) => () => {
+  const onToggleLayer = useCallback((dataview: UrlDataviewInstance) => {
+    return () => {
       const isVisible = dataview?.config?.visible ?? false
       const action = isVisible ? 'disable' : 'enable'
       trackEvent({
         category: TrackCategory.ActivityData,
         action: `Toggle ${dataview.category} layer`,
-        label: getEventLabel([action, dataview.id]),
+        label: getEventLabel([action, dataview.id, dataview.datasets!.map((d) => d.id).join(', ')]),
       })
-    },
-    []
-  )
+    }
+  }, [])
 
   return (
     <Section

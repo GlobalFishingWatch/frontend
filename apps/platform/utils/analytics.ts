@@ -1,10 +1,9 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
+import { getActiveDatasetsInDataview } from 'features/_map/datasets/datasets.utils'
+
 export const getActivitySources = (dataview: UrlDataviewInstance) =>
-  (dataview.datasets || [])
-    .filter((ds) => (dataview.config?.datasets || []).includes(ds.id))
-    .map((ds) => ds.name)
-    .join(',')
+  (getActiveDatasetsInDataview(dataview) || []).map((ds) => ds.id).join(',')
 
 export const getActivityFilters = (filters: Record<string, any> = []) =>
   Object.keys(filters || {})

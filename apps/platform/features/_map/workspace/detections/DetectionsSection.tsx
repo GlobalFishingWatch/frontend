@@ -3,10 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import {
+  getDatasetConfigByDatasetType,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
@@ -15,9 +19,12 @@ import {
   selectBivariateDataviews,
   selectReadOnly,
 } from 'features/_map/workspace/selectors/app.selectors'
+import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginRequired'
+import DatasetNotFound from 'features/_map/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/_map/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/_map/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { selectIsWorkspaceRefreshing } from 'features/_map/workspace/workspace.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -40,6 +47,7 @@ function DetectionsSection(): React.ReactElement<any> {
   const dataviews = useSelector(selectDetectionsDataviews)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const hasVisibleDataviews = visibleDataviews.length >= 1
+  const isWorkspaceRefreshing = useSelector(selectIsWorkspaceRefreshing)
   const activityDataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
@@ -151,7 +159,12 @@ function DetectionsSection(): React.ReactElement<any> {
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
         const showBivariateIcon =
           bivariateDataviews === null && isVisible && isNextVisible && !isLastElement
-        return (
+        const hasDatasetAvailable =
+          getDatasetConfigByDatasetType(dataview, { type: DatasetTypes.Fourwings }) !== undefined
+        const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+          isPrivateDataset({ id: d.datasetId })
+        )
+        return hasDatasetAvailable ? (
           <Fragment key={dataview.id}>
             <LayerPanelContainer key={dataview.id} dataview={dataview}>
               <LayerPanel
@@ -175,6 +188,14 @@ function DetectionsSection(): React.ReactElement<any> {
               </div>
             )}
           </Fragment>
+        ) : dataviewHasPrivateDataset ? (
+          <DatasetLoginRequired
+            key={dataview.id}
+            dataview={dataview}
+            isLoading={isWorkspaceRefreshing}
+          />
+        ) : (
+          <DatasetNotFound key={dataview.id} dataview={dataview} />
         )
       })}
     </Section>

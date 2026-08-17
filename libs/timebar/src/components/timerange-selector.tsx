@@ -373,7 +373,7 @@ function TimeRangeSelector({
     Object.values(endInputValids).every((valid) => valid) &&
     Object.values(endInputValues).every((value) => !!value) &&
     endDate.isValid
-  const startBeforeEnd = startValid && endValid ? startDate.toISO() < endDate.toISO() : false
+  const startBeforeEnd = startValid && endValid ? startDate.toISO()! < endDate.toISO()! : false
 
   let errorMessage = ''
   if (!startValid || !endValid) {

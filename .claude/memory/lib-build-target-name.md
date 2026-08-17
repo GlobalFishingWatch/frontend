@@ -6,8 +6,7 @@ description: libs/* build target is named `build` (renamed from `dist` on 2026-0
 # Every project's build target is named `build`
 
 `libs/*` emit to `dist/` via a target **named `build`** (`@nx/js:tsc`). It was called `dist`
-until 2026-08-07. `libs/skills` is the exception — it bundles with esbuild under `bundle` +
-`types` and has no `build` target at all.
+until 2026-08-07. `libs/skills` uses `@nx/esbuild:esbuild` under the same name ([[skills-lib]]).
 
 **Why:** `@nx/dependency-checks` resolves **one** build-target name from the _consumer_
 project and then reuses that same string to decide whether each workspace **dependency** is a
@@ -69,7 +68,7 @@ emptied. The rule is structurally blind to it in both directions.
 `workspace:` deps into `libs/<lib>/node_modules/` ([[app-dependency-catalog]]). A lib that
 forgets the manifest entry breaks at typecheck, not in production.
 
-`dependency-checks` never runs on `libs/skills`
+`libs/skills/package.json` is in the rule's `ignores` ([[skills-lib]]).
 
 ## `--fix` on a lib is not safe to trust blind
 

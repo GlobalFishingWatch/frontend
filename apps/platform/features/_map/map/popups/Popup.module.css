@@ -77,6 +77,22 @@
   justify-content: center;
 }
 
+.thumbnailContainer {
+  position: relative;
+  width: 30rem;
+  border-radius: var(--border-radius-0);
+  overflow: hidden;
+}
+
+.thumbnailBands {
+  position: absolute;
+  top: var(--space-S);
+  right: var(--space-S);
+  z-index: 1;
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-0);
+}
+
 .click .error {
   color: var(--color-danger-red);
   padding-block: var(--space-XS);

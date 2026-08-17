@@ -9,6 +9,8 @@ import { getIsLoginPopup, REDIRECT_KEY } from 'features/_user/user.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { loginServerFn } from 'server-functions/auth.functions'
 
+import styles from './LoginPopupHandler.module.css'
+
 // Skip mounting the entire <App /> and just manage the login
 function LoginPopupHandler() {
   const handled = useRef(false)
@@ -36,7 +38,7 @@ function LoginPopupHandler() {
       })
   }, [])
 
-  return <Spinner />
+  return <Spinner className={styles.spinner} />
 }
 
 export default LoginPopupHandler
