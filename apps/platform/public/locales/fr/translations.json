@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "Aucune donnée disponible",
     "port": "Port",
-    "port_entryActionIn": "Entré au port de {{port}}",
-    "port_exitActionIn": "Sorti du port de {{port}}",
     "port_one": "Port",
     "port_other": "Ports",
+    "port_entryActionIn": "Entré au port de {{port}}",
+    "port_exitActionIn": "Sorti du port de {{port}}",
     "port_visit": "Visites de port",
     "port_visit_one": "Visite de port",
     "port_visit_other": "Visites de port",
@@ -923,6 +923,7 @@
     "notValidFilterSelection": "Au moins une de vos sources sélectionnées n'autorise pas l'un de vos filtres",
     "placeholder": "Entrez un texte pour rechercher des navires",
     "placeholderFilterMultiple": "Une ou plusieurs valeurs (séparées par des virgules)",
+    "reorderColumn": "Drag to reorder column",
     "results": "results",
     "searching": "Recherche parmi plus de 100 000 navires...",
     "searchTypes": {
@@ -1183,8 +1184,8 @@
       "Sem código IN": "No IN code"
     },
     "geartype": "Type d’engin",
-    "gearType": "Type d’engin",
     "geartype_other": "Types d’engins",
+    "gearType": "Type d’engin",
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
     "gearTypes": {
