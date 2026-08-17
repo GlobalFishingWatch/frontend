@@ -28,6 +28,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(350%);
   }
@@ -36,6 +37,7 @@
 .table {
   display: grid;
   border-collapse: collapse;
+
   --col-select-size: 48;
   --header-select-size: 48;
   --col-shipname-size: 250;
@@ -137,8 +139,8 @@
   z-index: 1;
 }
 
-.tr.selected .td:not([data-column='select']):not([data-column='shipname']),
-.tr:hover .td:not([data-column='select']):not([data-column='shipname']) {
+.tr.selected .td:not([data-column='select'], [data-column='shipname']),
+.tr:hover .td:not([data-column='select'], [data-column='shipname']) {
   background-color: var(--color-terthiary-blue);
 }
 
@@ -158,6 +160,25 @@
 .checkbox:disabled {
   cursor: not-allowed;
   opacity: 0.45;
+}
+
+.headerLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dragHandle {
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.th.dropTarget {
+  box-shadow: inset 2px 0 0 var(--color-secondary-blue);
 }
 
 .resizer {

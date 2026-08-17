@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { ReactTable, Row } from '@tanstack/react-table'
 import {
+  columnOrderingFeature,
   columnResizingFeature,
   columnSizingFeature,
   createColumnHelper,
@@ -20,6 +21,7 @@ import {
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/map/config'
@@ -70,12 +72,19 @@ import cellStyles from '../basic/SearchBasicResult.module.css'
 import styles from './SearchAdvancedResults.module.css'
 
 const PINNED_COLUMN = 'shipname'
+const FIXED_COLUMNS = ['select', PINNED_COLUMN]
+const COLUMN_ORDER_STORAGE_KEY = 'searchAdvancedColumnOrder'
 const EMPTY_RESULTS: IdentityVesselData[] = []
+const EMPTY_COLUMN_ORDER: string[] = []
 const TOOLTIP_LABEL_CHARACTERS = 25
 const ROW_HEIGHT_ESTIMATE = 80
 const SELECT_COLUMN_SIZE = 48
 
-const features = tableFeatures({ columnSizingFeature, columnResizingFeature })
+const features = tableFeatures({
+  columnSizingFeature,
+  columnResizingFeature,
+  columnOrderingFeature,
+})
 const columnHelper = createColumnHelper<typeof features, IdentityVesselData>()
 
 type SearchTable = ReactTable<typeof features, IdentityVesselData, {}>
@@ -232,6 +241,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
   const [tableContainer, setTableContainer] = useState<HTMLDivElement | null>(null)
+  const [columnOrder, setColumnOrder] = useLocalStorage<string[]>(
+    COLUMN_ORDER_STORAGE_KEY,
+    EMPTY_COLUMN_ORDER
+  )
+  const [dropTargetColumn, setDropTargetColumn] = useState<string | null>(null)
+  const draggedColumn = useRef<string | null>(null)
   const tableRef = useRef<HTMLTableElement>(null)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const vesselDataviews = useSelector(selectVesselsDataviews)
@@ -594,8 +609,28 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       data: searchResults ?? EMPTY_RESULTS,
       defaultColumn: { size: 150, minSize: 60 },
       columnResizeMode: 'onChange',
+      state: { columnOrder },
     },
     () => ({})
+  )
+
+  const moveColumn = useCallback(
+    (fromId: string, toId: string) => {
+      if (fromId === toId || FIXED_COLUMNS.includes(fromId)) return
+      const currentIds = table.getAllLeafColumns().map((column) => column.id)
+      const orderedIds = [
+        ...columnOrder.filter((id) => currentIds.includes(id)),
+        ...currentIds.filter((id) => !columnOrder.includes(id)),
+      ]
+      const fromIndex = orderedIds.indexOf(fromId)
+      const targetIndex = orderedIds.indexOf(toId)
+      if (fromIndex === -1 || targetIndex === -1) return
+      orderedIds.splice(fromIndex, 1)
+      const insertAt = orderedIds.indexOf(toId) + (fromIndex < targetIndex ? 1 : 0)
+      orderedIds.splice(Math.max(insertAt, FIXED_COLUMNS.length), 0, fromId)
+      setColumnOrder(orderedIds)
+    },
+    [columnOrder, setColumnOrder, table]
   )
 
   useLayoutEffect(() => {
@@ -650,27 +685,61 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         <thead className={styles.thead}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} role="row" className={styles.headerRow}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  role="columnheader"
-                  className={styles.th}
-                  data-column={header.column.id}
-                  style={columnSizeStyle(header.id, 'header')}
-                >
-                  {header.isPlaceholder ? null : <table.FlexRender header={header} />}
-                  {header.column.getCanResize() && (
-                    <button
-                      type="button"
-                      tabIndex={-1}
-                      aria-label={`Resize ${header.column.id}`}
-                      className={styles.resizer}
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                    />
-                  )}
-                </th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const columnId = header.column.id
+                const draggable = !FIXED_COLUMNS.includes(columnId)
+                return (
+                  <th
+                    key={header.id}
+                    role="columnheader"
+                    className={cx(styles.th, {
+                      [styles.dropTarget]: dropTargetColumn === columnId,
+                    })}
+                    data-column={columnId}
+                    style={columnSizeStyle(header.id, 'header')}
+                    onDragOver={(e) => {
+                      if (!draggedColumn.current || draggedColumn.current === columnId) return
+                      e.preventDefault()
+                      setDropTargetColumn(columnId)
+                    }}
+                    onDragLeave={() => setDropTargetColumn(null)}
+                    onDrop={(e) => {
+                      e.preventDefault()
+                      if (draggedColumn.current) moveColumn(draggedColumn.current, columnId)
+                      draggedColumn.current = null
+                      setDropTargetColumn(null)
+                    }}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <span
+                        className={cx(styles.headerLabel, { [styles.dragHandle]: draggable })}
+                        draggable={draggable}
+                        aria-label={draggable ? t((t) => t.search.reorderColumn) : undefined}
+                        title={draggable ? t((t) => t.search.reorderColumn) : undefined}
+                        onDragStart={() => {
+                          draggedColumn.current = columnId
+                        }}
+                        onDragEnd={() => {
+                          draggedColumn.current = null
+                          setDropTargetColumn(null)
+                        }}
+                      >
+                        <table.FlexRender header={header} />
+                      </span>
+                    )}
+                    {header.column.getCanResize() && (
+                      <button
+                        type="button"
+                        tabIndex={-1}
+                        aria-label={`Resize ${header.column.id}`}
+                        className={styles.resizer}
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                      />
+                    )}
+                  </th>
+                )
+              })}
             </tr>
           ))}
         </thead>
