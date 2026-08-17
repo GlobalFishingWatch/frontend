@@ -105,11 +105,17 @@ export const CLIENT_LANGUAGE_DETECTION = {
   cookieOptions: { path: '/', sameSite: 'lax' as const },
 }
 
-/** Valid BCP47 value for `<html lang>` — dev-only i18n codes map to English. */
-export function toDocumentLang(language: string | undefined): string {
+/**
+ * Map the active i18n language to a real Locale. Dev-only codes (`source`, `val`) resolve to English.
+ */
+export function toContentLocale(language: string | undefined): Locale {
   const normalized = normalizeI18nLanguage(language)
   if (normalized === CROWDIN_SOURCE_LANG || normalized === CROWDIN_IN_CONTEXT_LANG) {
     return FALLBACK_LNG
   }
   return normalized
+}
+
+export function toDocumentLang(language: string | undefined): string {
+  return toContentLocale(language)
 }

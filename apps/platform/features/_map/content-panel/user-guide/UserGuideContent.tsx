@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 
-import type { Locale } from '@globalfishingwatch/api-types'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
@@ -11,6 +10,7 @@ import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
+import { toContentLocale } from 'features/i18n/i18n.config'
 import { useAppSearch } from 'router/routes.hook'
 
 import styles from '../ContentPanel.module.css'
@@ -24,7 +24,7 @@ export const UserGuideContentComponent = () => {
     isLoading,
     isError,
   } = useGetUserGuideQuery({
-    locale: i18n.language as Locale,
+    locale: toContentLocale(i18n.language),
   })
 
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
