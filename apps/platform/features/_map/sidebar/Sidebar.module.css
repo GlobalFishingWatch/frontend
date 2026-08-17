@@ -1,20 +1,13 @@
 .container {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column;
+  width: 100%;
   height: 100%;
+  min-height: 0;
 }
 
 :global(.printing) .container {
   background: var(--color-white);
-}
-
-/* Full width of the aside: the nav rail is no longer a sibling, it lives in the platform shell. */
-.content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
 }
 
 .scrollContainer {
@@ -23,10 +16,22 @@
   overflow: hidden auto;
 }
 
+.workspaceSearchScrollContainer {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .scrollContent {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+.scrollContentFill {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
 }
 
 .bottomSpacer {
@@ -48,22 +53,13 @@
   z-index: 3;
 }
 
-.hidden {
-  display: none;
-}
-
 @media print {
   .container {
-    flex-direction: unset;
     height: auto;
   }
 
   .scrollContainer {
     overflow: visible;
     height: auto;
-  }
-
-  .content {
-    width: unset;
   }
 }

@@ -10,7 +10,7 @@ import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.sele
 import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/track-selection.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchResourceThunk } from 'features/data/resources/resources.slice'
-import { selectIsAnySearchLocation } from 'router/routes.selectors'
+import { selectIsWorkspaceSearchLocation } from 'router/routes.selectors'
 
 import SidebarHeader from './SidebarHeader'
 
@@ -30,7 +30,7 @@ function Sidebar({ children }: SidebarProps) {
   const screenshotMode = useSelector(selectScreenshotMode)
   const dataviewsResources = useSelector(selectDataviewsResources)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
-  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
 
   useEffect(() => {
     if (dataviewsResources?.resources?.length) {
@@ -50,19 +50,25 @@ function Sidebar({ children }: SidebarProps) {
 
   return (
     <div className={cx(styles.container, { [styles.overlay]: isTrackCorrectionOpen })}>
-      <div className={styles.content}>
-        {!screenshotMode && <SidebarHeader />}
-        <div
-          id={SCROLL_CONTAINER_DOM_ID}
-          className={cx('scrollContainer', styles.scrollContainer)}
-          data-testid="sidebar-container"
-        >
-          <Suspense fallback={null}>{isTrackCorrectionOpen && <TrackCorrection />}</Suspense>
-          <div className={cx(styles.scrollContent, { [styles.hidden]: isTrackCorrectionOpen })}>
+      {!screenshotMode && <SidebarHeader />}
+      <div
+        id={SCROLL_CONTAINER_DOM_ID}
+        className={cx('scrollContainer', styles.scrollContainer, {
+          [styles.workspaceSearchScrollContainer]: isWorkspaceSearchLocation,
+        })}
+        data-testid="sidebar-container"
+      >
+        <Suspense fallback={null}>{isTrackCorrectionOpen && <TrackCorrection />}</Suspense>
+        {!isTrackCorrectionOpen && (
+          <div
+            className={cx(styles.scrollContent, {
+              [styles.scrollContentFill]: isWorkspaceSearchLocation,
+            })}
+          >
             {children}
-            {!isAnySearchLocation && <div className={styles.bottomSpacer} />}
+            {!isWorkspaceSearchLocation && <div className={styles.bottomSpacer} />}
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

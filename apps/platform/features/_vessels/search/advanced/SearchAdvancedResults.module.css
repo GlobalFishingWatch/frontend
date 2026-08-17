@@ -1,0 +1,203 @@
+.container {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+}
+
+.progress {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  height: 6px;
+  margin: 8px;
+  overflow: hidden;
+  border-radius: var(--border-radius-1);
+  background-color: var(--color-white);
+}
+
+.progressBar {
+  height: 100%;
+  width: 35%;
+  background-color: var(--color-secondary-blue);
+  animation: progressIndeterminate 1.6s ease-in-out infinite;
+}
+
+@keyframes progressIndeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+.table {
+  display: grid;
+  border-collapse: collapse;
+
+  --col-select-size: 48;
+  --header-select-size: 48;
+  --col-shipname-size: 250;
+  --header-shipname-size: 250;
+  --col-ssvid-size: 100;
+  --header-ssvid-size: 100;
+  --col-imo-size: 100;
+  --header-imo-size: 100;
+  --col-callsign-size: 100;
+  --header-callsign-size: 100;
+  --col-infoSource-size: 250;
+  --header-infoSource-size: 250;
+}
+
+.thead {
+  display: grid;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-off-white-1);
+}
+
+.headerRow,
+.tr {
+  display: flex;
+  width: 100%;
+}
+
+.tbody {
+  display: grid;
+  position: relative;
+}
+
+.tr {
+  position: absolute;
+}
+
+.th,
+.td {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-right: var(--border);
+  border-bottom: var(--border);
+  color: var(--color-primary-blue);
+  white-space: nowrap;
+}
+
+.th {
+  position: relative;
+  font: var(--font-S-bold);
+  background-color: var(--color-off-white-1);
+  padding: 0.8rem 1.1rem;
+}
+
+.td {
+  font: var(--font-S);
+  min-height: 5rem;
+  padding: 0 1.1rem;
+}
+
+.td a {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.th[data-column='select'],
+.td[data-column='select'] {
+  position: sticky;
+  left: 0;
+  justify-content: center;
+  padding: 0;
+  background-color: var(--color-off-white-1);
+}
+
+.th[data-column='select'] {
+  z-index: 3;
+}
+
+.td[data-column='select'] {
+  z-index: 1;
+}
+
+.th[data-column='shipname'],
+.td[data-column='shipname'] {
+  position: sticky;
+  left: calc(var(--col-select-size) * 1px);
+  background-color: var(--color-off-white-1);
+  box-shadow: 5px 0 5px -3px var(--color-terthiary-blue);
+}
+
+.th[data-column='shipname'] {
+  z-index: 3;
+}
+
+.td[data-column='shipname'] {
+  z-index: 1;
+}
+
+.tr.selected .td:not([data-column='select'], [data-column='shipname']),
+.tr:hover .td:not([data-column='select'], [data-column='shipname']) {
+  background-color: var(--color-terthiary-blue);
+}
+
+.tr:hover .td[data-column='select'],
+.tr:hover .td[data-column='shipname'] {
+  background-color: var(--color-off-white-1);
+}
+
+.checkbox {
+  margin: 0;
+  width: 1.4rem;
+  height: 1.4rem;
+  cursor: pointer;
+  accent-color: var(--color-secondary-blue);
+}
+
+.checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.headerLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dragHandle {
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.th.dropTarget {
+  box-shadow: inset 2px 0 0 var(--color-secondary-blue);
+}
+
+.resizer {
+  appearance: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 5px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.resizer:hover,
+.resizer:active {
+  background-color: var(--color-secondary-blue);
+}
