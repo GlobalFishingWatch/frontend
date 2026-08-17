@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "Dados não disponíveis",
     "port": "Porto",
-    "port_entryActionIn": "Entrou no porto {{port}}",
-    "port_exitActionIn": "Saiu do porto {{port}}",
     "port_one": "Port",
     "port_other": "Ports",
+    "port_entryActionIn": "Entrou no porto {{port}}",
+    "port_exitActionIn": "Saiu do porto {{port}}",
     "port_visit": "Visita ao porto",
     "port_visit_one": "Visita ao porto",
     "port_visit_other": "Visitas portuárias",
@@ -923,6 +923,7 @@
     "notValidFilterSelection": "Pelo menos uma das fontes selecionadas não permite um de seus filtros",
     "placeholder": "Digite para pesquisar por embarcações",
     "placeholderFilterMultiple": "Um ou mais valores (separados por vírgula)",
+    "reorderColumn": "Drag to reorder column",
     "results": "results",
     "searching": "Pesquisando mais de 100 mil embarcações...",
     "searchTypes": {
@@ -1183,8 +1184,8 @@
       "Sem código IN": "Sem código IN"
     },
     "geartype": "Petrechos de pesca",
-    "gearType": "Tipo de petrecho",
     "geartype_other": "Petrechos de pesca",
+    "gearType": "Tipo de petrecho",
     "gearType_short": "petrecho",
     "geartypes": "Petrechos de pesca",
     "gearTypes": {
