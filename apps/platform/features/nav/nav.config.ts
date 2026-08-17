@@ -5,7 +5,7 @@ import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
-import type { HelpHubSectionSlug } from 'features/help/helpHub.content'
+import type { HelpHubSectionSlug } from 'features/help/helpHub.types'
 import type { LanguageOption } from 'features/i18n/language.hooks'
 
 export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'

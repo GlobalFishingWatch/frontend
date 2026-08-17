@@ -5,9 +5,9 @@ import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
-import { findHelpHubSection } from 'features/help/helpHub.content'
 import { useActiveItemOnScroll } from 'features/help/helpHub.hooks'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
+import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubError from 'features/help/HelpHubError'
 import HelpHubItemContent from 'features/help/HelpHubItemContent'
 

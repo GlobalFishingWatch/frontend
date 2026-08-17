@@ -1,4 +1,4 @@
-import type { HelpHubSectionSlug } from 'features/help/helpHub.content'
+import type { HelpHubSectionSlug } from 'features/help/helpHub.types'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
 import type { NavigationConfig } from './navigation-config'

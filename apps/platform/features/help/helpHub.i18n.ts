@@ -1,6 +1,5 @@
+import type { HelpHubSectionId } from 'features/help/helpHub.types'
 import { t } from 'features/i18n/i18n'
-
-import type { HelpHubSectionId } from './helpHub.content'
 
 export function getHelpHubSectionCopy(id: HelpHubSectionId): {
   title: string

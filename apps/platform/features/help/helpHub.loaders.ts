@@ -1,6 +1,5 @@
-import type { HelpHubSectionId } from 'features/help/helpHub.content'
-import { HELP_HUB_SECTIONS } from 'features/help/helpHub.content'
-import type { HelpHubItem } from 'features/help/helpHub.types'
+import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
+import type { HelpHubItem, HelpHubSectionId } from 'features/help/helpHub.types'
 import { toDataUpdateItems, toUseCaseItems, toUserGuideItems } from 'features/help/helpHub.utils'
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import { toContentLocale } from 'features/i18n/i18n.config'

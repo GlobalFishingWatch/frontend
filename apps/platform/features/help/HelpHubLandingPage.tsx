@@ -7,7 +7,7 @@ import { Card } from '@globalfishingwatch/ui-components/card'
 import { Carousel } from '@globalfishingwatch/ui-components/carousel'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { HELP_HUB_SECTIONS } from 'features/help/helpHub.content'
+import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
 import { getCardImage } from 'features/help/helpHub.utils'
 import HelpHubError from 'features/help/HelpHubError'

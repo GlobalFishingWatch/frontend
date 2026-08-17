@@ -4,7 +4,19 @@ import type { DataUpdateContent } from 'features/cms/loaders/data-update.types'
 import type { UseCaseContent } from 'features/cms/loaders/use-case.types'
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import type { StrapiBaseAttributes, StrapiImage } from 'features/cms/strapi.types'
-import type { HelpHubItem, HelpHubItemSubsection } from 'features/help/helpHub.types'
+import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
+import type {
+  HelpHubItem,
+  HelpHubItemSubsection,
+  HelpHubSection,
+} from 'features/help/helpHub.types'
+
+export function findHelpHubSection(slug: string | undefined): HelpHubSection | undefined {
+  if (!slug) {
+    return undefined
+  }
+  return HELP_HUB_SECTIONS.find((section) => section.slug === slug)
+}
 
 const toSubsections = (
   subsections?: (StrapiBaseAttributes & {
