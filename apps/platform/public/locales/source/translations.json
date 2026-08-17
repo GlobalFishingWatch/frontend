@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "No data available",
     "port": "Port",
-    "port_one": "Port",
-    "port_other": "Ports",
     "port_entryActionIn": "Entered port {{port}}",
     "port_exitActionIn": "Exited port {{port}}",
+    "port_one": "Port",
+    "port_other": "Ports",
     "port_visit": "Port visit",
     "port_visit_one": "Port visit",
     "port_visit_other": "Port visits",
@@ -1183,8 +1183,8 @@
       "Sem código IN": "No IN code"
     },
     "geartype": "Gear type",
-    "geartype_other": "Gear types",
     "gearType": "Gear Type",
+    "geartype_other": "Gear types",
     "gearType_short": "gear",
     "geartypes": "Gear type",
     "gearTypes": {
