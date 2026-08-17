@@ -430,8 +430,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       supercluster:
-        specifier: 8.0.1
-        version: 8.0.1
+        specifier: 9.0.0
+        version: 9.0.0
       topojson-client:
         specifier: 3.1.0
         version: 3.1.0
@@ -1230,8 +1230,8 @@ importers:
         specifier: 7.x
         version: 7.9.3
       supercluster:
-        specifier: 8.x
-        version: 8.0.1
+        specifier: 9.x
+        version: 9.0.0
       tslib:
         specifier: 2.x
         version: 2.8.1
@@ -7160,6 +7160,7 @@ packages:
   '@xmldom/xmldom@0.9.11':
     resolution: {integrity: sha512-tW8bcK3hsG0/uqSnNz6TK4BkcuZSezoU7DlnYssILmZDktPnSHHuDJJFM0AJv+13gz2r0iGdrj6qqKeUnxXEDg==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -12644,8 +12645,8 @@ packages:
   supercluster@6.0.2:
     resolution: {integrity: sha512-aa0v2HURjBTOpbcknilcfxGDuArM8khklKSmZ/T8ZXL0BuRwb5aRw95lz+2bmWpFvCXDX/+FzqHxmg0TIaJErw==}
 
-  supercluster@8.0.1:
-    resolution: {integrity: sha512-IiOea5kJ9iqzD2t7QJq/cREyLHTtSmUT6gQsweojg9WH2sYJqZK9SswTu6jrscO6D1G5v5vYZ9ru/eq85lXeZQ==}
+  supercluster@9.0.0:
+    resolution: {integrity: sha512-SaU8dQaxagTXr8+a1f67Pxg5CiRcZsq+LPQsZoV2r+FD8EF3Wpg5v7Zl8STPhml3oWHF1CQ8YaJGf8Uo8zS5qg==}
 
   supports-color@10.2.2:
     resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
@@ -28708,7 +28709,7 @@ snapshots:
     dependencies:
       kdbush: 3.0.0
 
-  supercluster@8.0.1:
+  supercluster@9.0.0:
     dependencies:
       kdbush: 4.1.0
 
