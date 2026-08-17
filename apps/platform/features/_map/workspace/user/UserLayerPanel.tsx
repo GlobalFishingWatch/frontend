@@ -118,6 +118,11 @@ function UserPanel({
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
+  const datasetBbox = getDatasetConfigurationProperty({
+    dataset,
+    property: 'bbox',
+    type: 'userFourwingsV1',
+  })
   const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
   const hasLegend = polygonColor !== undefined
   const changeColor = (color: ColorBarOption) => {
@@ -278,7 +283,13 @@ function UserPanel({
               <FitBounds
                 hasError={Boolean(error)}
                 layer={instance as UserTracksLayer}
-                disabled={isBaseUserLayer ? false : layerLoading}
+                bbox={datasetBbox}
+                tooltip={
+                  datasetGeometryType === 'gridded'
+                    ? t((t) => t.layer.user_gridded_fit_bounds)
+                    : undefined
+                }
+                disabled={isBaseUserLayer || datasetBbox ? false : layerLoading}
                 dataviewId={dataview.id}
               />
               {hasSchemaFilters &&

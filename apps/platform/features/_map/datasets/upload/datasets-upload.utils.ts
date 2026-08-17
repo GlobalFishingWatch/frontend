@@ -21,19 +21,21 @@ import {
   DatasetTypes,
   USER_FOURWINGS_VALUE_COLUMN,
 } from '@globalfishingwatch/api-types'
-import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import type { Bbox, PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
   getDatasetFilters,
   getDatasetFiltersClean,
   getFilterIdClean,
-  getGriddedMaxZoom,
-  getGriddedTileEncoding,
   getPolygonsUnion,
   getUTCDate,
   guessColumnsFromFilters,
 } from '@globalfishingwatch/data-transforms'
+import {
+  getGriddedMaxZoom,
+  getGriddedTileEncoding,
+} from '@globalfishingwatch/data-transforms/files'
 import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   getDatasetConfiguration,
@@ -181,11 +183,13 @@ export const getGriddedDatasetMetadata = ({
   bands,
   resolution,
   stats,
+  bbox,
 }: {
   name: string
   bands: string[]
   resolution?: number
   stats?: { min: number; max: number }
+  bbox?: Bbox
 }): DatasetMetadata => {
   return {
     name,
@@ -200,9 +204,13 @@ export const getGriddedDatasetMetadata = ({
         latColumn: 'lat',
         lonColumn: 'lon',
         maxZoom: getGriddedMaxZoom(resolution),
+        ...(bbox?.every(Number.isFinite) && { bbox }),
         ...getGriddedTileEncoding(stats),
       },
-      frontend: { sourceFormat: 'GeoTIFF', geometryType: 'gridded' },
+      frontend: {
+        sourceFormat: 'GeoTIFF',
+        geometryType: 'gridded',
+      },
     },
   }
 }

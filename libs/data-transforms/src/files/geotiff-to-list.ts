@@ -153,6 +153,30 @@ function getResolutionInDegrees(tiff: GeoTIFF, toLonLat: LonLatConverter | null)
   return resolution > 0 ? resolution : undefined
 }
 
+/**
+ * Not using `tiff.bbox`, which is in the file's own CRS: this goes through `xy()` like the rest of the file
+ */
+function getBboxInDegrees(tiff: GeoTIFF, toLonLat: LonLatConverter | null): Bbox {
+  const lastRow = tiff.height - 1
+  const lastCol = tiff.width - 1
+  const corners: [number, number, 'ul' | 'ur' | 'll' | 'lr'][] = [
+    [0, 0, 'ul'],
+    [0, lastCol, 'ur'],
+    [lastRow, 0, 'll'],
+    [lastRow, lastCol, 'lr'],
+  ]
+  const bbox: Bbox = [Infinity, Infinity, -Infinity, -Infinity]
+  for (const [row, col, offset] of corners) {
+    const [x, y] = tiff.xy(row, col, offset)
+    const { lon, lat } = toLonLat ? toLonLat(x, y) : { lon: x, lat: y }
+    bbox[0] = Math.min(bbox[0], lon)
+    bbox[1] = Math.min(bbox[1], lat)
+    bbox[2] = Math.max(bbox[2], lon)
+    bbox[3] = Math.max(bbox[3], lat)
+  }
+  return bbox
+}
+
 export type GeotiffRow = {
   lat: number
   lon: number
@@ -167,6 +191,8 @@ export async function geotiffToList(file: File | ArrayBuffer): Promise<{
   resolution: number | undefined
   /** Value range across every band */
   stats: GeotiffBandStats
+  /** Full raster extent, [minLon, minLat, maxLon, maxLat] — includes any nodata margin */
+  bbox: Bbox
 }> {
   try {
     const { GeoTIFF } = await import('@developmentseed/geotiff')
@@ -222,7 +248,13 @@ export async function geotiffToList(file: File | ArrayBuffer): Promise<{
     if (!rows.length) {
       throw new Error(GEOTIFF_ERRORS.InvalidData)
     }
-    return { rows, bands, resolution: getResolutionInDegrees(tiff, toLonLat), stats }
+    return {
+      rows,
+      bands,
+      resolution: getResolutionInDegrees(tiff, toLonLat),
+      stats,
+      bbox: getBboxInDegrees(tiff, toLonLat),
+    }
   } catch (e) {
     if (e instanceof Error && GEOTIFF_ERROR_VALUES.includes(e.message)) {
       throw e

@@ -7,19 +7,21 @@ import {
   type DatasetGeometryType,
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
-import type { GeotiffError } from '@globalfishingwatch/data-transforms'
 import {
-  fixTextEncoding,
-  GEOTIFF_ERRORS,
-  geotiffToList,
   getFilterIdClean,
-  kmlToGeoJSON,
   listToTrackSegments,
   pointsGeojsonToNormalizedGeojson,
   pointsListToGeojson,
   segmentsToGeoJSON,
-  shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
+import type { GeotiffError } from '@globalfishingwatch/data-transforms/files'
+import {
+  fixTextEncoding,
+  GEOTIFF_ERRORS,
+  geotiffToList,
+  kmlToGeoJSON,
+  shpToGeoJSON,
+} from '@globalfishingwatch/data-transforms/files'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,

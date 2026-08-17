@@ -4,7 +4,7 @@ import cx from 'classnames'
 import papaparse from 'papaparse'
 
 import type { AggregationFunction } from '@globalfishingwatch/api-types'
-import type { GeotiffRow } from '@globalfishingwatch/data-transforms'
+import type { GeotiffRow } from '@globalfishingwatch/data-transforms/files'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { Button, Choice, InputText, Spinner, SwitchRow } from '@globalfishingwatch/ui-components'
 
@@ -51,11 +51,11 @@ function NewGriddedDataset({
     async (file: File) => {
       setProcessingData(true)
       try {
-        const { rows, bands, resolution, stats } = await getDatasetParsed(file, 'gridded')
+        const { rows, bands, resolution, stats, bbox } = await getDatasetParsed(file, 'gridded')
         setRows(rows)
         setBands(bands)
         setDatasetMetadata(
-          getGriddedDatasetMetadata({ name: getFileName(file), bands, resolution, stats })
+          getGriddedDatasetMetadata({ name: getFileName(file), bands, resolution, stats, bbox })
         )
         setProcessingData(false)
       } catch (e: any) {
