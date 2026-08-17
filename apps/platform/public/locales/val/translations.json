@@ -657,10 +657,10 @@
     "naiveGaps": "crwdns132939:0{{regionName}}crwdne132939:0",
     "noData": "crwdns132941:0crwdne132941:0",
     "port": "crwdns132943:0crwdne132943:0",
-    "port_entryActionIn": "crwdns132945:0{{port}}crwdne132945:0",
-    "port_exitActionIn": "crwdns132947:0{{port}}crwdne132947:0",
     "port_one": "crwdns132949:0crwdne132949:0",
     "port_other": "crwdns132953:0crwdne132953:0",
+    "port_entryActionIn": "crwdns132945:0{{port}}crwdne132945:0",
+    "port_exitActionIn": "crwdns132947:0{{port}}crwdne132947:0",
     "port_visit": "crwdns132955:0crwdne132955:0",
     "port_visit_one": "crwdns132957:0crwdne132957:0",
     "port_visit_other": "crwdns132961:0crwdne132961:0",
@@ -1183,8 +1183,8 @@
       "Sem código IN": "crwdns133891:0crwdne133891:0"
     },
     "geartype": "crwdns133893:0crwdne133893:0",
-    "gearType": "crwdns133895:0crwdne133895:0",
     "geartype_other": "crwdns133897:0crwdne133897:0",
+    "gearType": "crwdns133895:0crwdne133895:0",
     "gearType_short": "crwdns133899:0crwdne133899:0",
     "geartypes": "crwdns133901:0crwdne133901:0",
     "gearTypes": {
