@@ -5,17 +5,13 @@ import { findWithLocaleFallback } from 'features/cms/loaders/utils'
 import type { StrapiResponse } from 'features/cms/strapi.types'
 import type { Locale } from 'types'
 
-import { sdk } from '../strapi-sdk'
-
-const dataUpdates = sdk.collection('data-updates')
-
 export const getDataUpdateContent = createServerFn({
   method: 'GET',
 })
   .validator((params: { locale?: Locale } = {}) => params)
   .handler(({ data: { locale } }): Promise<StrapiResponse<DataUpdate>> =>
     findWithLocaleFallback<DataUpdate>(
-      dataUpdates,
+      'data-updates',
       {
         sort: ['publication_date:desc'],
         populate: ['thumbnail'],

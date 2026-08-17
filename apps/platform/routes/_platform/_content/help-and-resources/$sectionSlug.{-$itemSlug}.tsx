@@ -5,7 +5,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
 import {
-  getHelpHubLocale,
+  helpHubRouteCache,
   type HelpHubSectionData,
   loadHelpHubSection,
 } from 'features/help/helpHub.loaders'
@@ -22,6 +22,7 @@ export const Route = createFileRoute(
   '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}'
 )({
   component: HelpHubSectionPage,
+  ...helpHubRouteCache,
   beforeLoad: ({ params }) => {
     if (!findHelpHubSection(params.sectionSlug)) {
       throw redirect({
@@ -31,10 +32,10 @@ export const Route = createFileRoute(
       })
     }
   },
-  loader: async ({ params }): Promise<HelpHubSectionData> => {
+  loader: async ({ params, deps }): Promise<HelpHubSectionData> => {
     const section = findHelpHubSection(params.sectionSlug)
     if (!section) return { items: [] }
-    return loadHelpHubSection(section.id, getHelpHubLocale())
+    return loadHelpHubSection(section.id, deps.locale)
   },
   head: ({ params, loaderData }) => {
     const section = findHelpHubSection(params.sectionSlug)

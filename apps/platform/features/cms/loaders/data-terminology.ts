@@ -5,17 +5,13 @@ import { findWithLocaleFallback } from 'features/cms/loaders/utils'
 import type { StrapiResponse } from 'features/cms/strapi.types'
 import type { Locale } from 'types'
 
-import { sdk } from '../strapi-sdk'
-
-const dataTerminology = sdk.collection('data-terminologies')
-
 export const getDataTerminologyContent = createServerFn({
   method: 'GET',
 })
   .validator((params: { id: string; locale?: Locale; page?: number }) => params)
   .handler(({ data: { id, locale } }): Promise<StrapiResponse<DataTerminology>> => {
     return findWithLocaleFallback<DataTerminology>(
-      dataTerminology,
+      'data-terminologies',
       {
         filters: { slug: { $eqi: id } },
         sort: ['createdAt:asc'],
