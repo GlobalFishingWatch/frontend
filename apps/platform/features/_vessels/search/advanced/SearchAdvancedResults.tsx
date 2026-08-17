@@ -71,8 +71,9 @@ import { getHighlightedText } from 'utils/text'
 import cellStyles from '../basic/SearchBasicResult.module.css'
 import styles from './SearchAdvancedResults.module.css'
 
+const SELECT_COLUMN = 'select'
 const PINNED_COLUMN = 'shipname'
-const FIXED_COLUMNS = ['select', PINNED_COLUMN]
+const FIXED_COLUMNS = [SELECT_COLUMN, PINNED_COLUMN]
 const COLUMN_ORDER_STORAGE_KEY = 'searchAdvancedColumnOrder'
 const EMPTY_RESULTS: IdentityVesselData[] = []
 const EMPTY_COLUMN_ORDER: string[] = []
@@ -362,7 +363,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
 
     return [
       columnHelper.display({
-        id: 'select',
+        id: SELECT_COLUMN,
         size: SELECT_COLUMN_SIZE,
         minSize: SELECT_COLUMN_SIZE,
         maxSize: SELECT_COLUMN_SIZE,
