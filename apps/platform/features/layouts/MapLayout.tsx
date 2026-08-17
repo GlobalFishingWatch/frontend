@@ -30,10 +30,10 @@ import {
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
-  selectIsAnySearchLocation,
   selectIsMapDrawing,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
+  selectIsWorkspaceSearchLocation,
   selectLocationType,
 } from 'router/routes.selectors'
 
@@ -55,7 +55,7 @@ function MapLayout() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isWorkspaceSearchLocation = useSelector(selectIsWorkspaceSearchLocation)
 
   const locationType = useSelector(selectLocationType)
   const isPrinting = useSelector(selectScreenshotModalOpen)
@@ -87,7 +87,7 @@ function MapLayout() {
     fixedAsideWidth = '0'
   } else if (readOnly) {
     fixedAsideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
-  } else if (isAnySearchLocation) {
+  } else if (isWorkspaceSearchLocation) {
     fixedAsideWidth = '100%'
   } else if (isWorkspaceLocation) {
     fixedAsideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`

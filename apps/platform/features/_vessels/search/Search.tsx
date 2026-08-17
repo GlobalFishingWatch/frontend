@@ -118,13 +118,10 @@ function Search() {
       </SearchPlaceholder>
     )
   }
-  const hasMoreResults =
-    !!searchResultsPagination.since &&
-    searchResults.length < searchResultsPagination.total &&
-    searchResultsPagination.total > RESULTS_PER_PAGE
-  const displayedTotal = hasMoreResults ? searchResultsPagination.total : searchResults.length
-
   const SearchComponent = activeSearchOption === 'basic' ? SearchBasic : SearchAdvanced
+  const footerVisible =
+    Boolean(searchResultsPagination?.total) &&
+    (activeSearchOption === 'basic' ? basicSearchAllowed : advancedSearchAllowed)
 
   return (
     <div className={styles.search}>
@@ -133,32 +130,8 @@ function Search() {
         fetchMoreResults={fetchMoreResults}
         fetchResults={onAdvancedSearchClick}
         debouncedQuery={debouncedQuery}
+        footer={footerVisible ? <SearchFooter /> : undefined}
       />
-      <div
-        className={cx('card', styles.footer, styles[activeSearchOption], {
-          [styles.hidden]:
-            !searchResultsPagination ||
-            searchResultsPagination.total === 0 ||
-            (activeSearchOption === 'basic' && !basicSearchAllowed) ||
-            (activeSearchOption === 'advanced' && !advancedSearchAllowed),
-        })}
-      >
-        {searchResults && searchResults.length !== 0 && (
-          <label className={styles.results}>
-            {`${t((t) => t.search.seeing)} `}
-            <I18nNumber number={searchResults.length} />
-            {` ${t((t) => t.common.of)} `}
-            <I18nNumber number={displayedTotal} />
-            {` ${t((t) => t.search.results)} ${
-              vesselsSelected.length !== 0
-                ? `(${vesselsSelected.length} ${t((t) => t.selects.selected)})`
-                : ''
-            }`}
-          </label>
-        )}
-        {activeSearchOption === 'advanced' && <SearchDownload />}
-        <SearchActions />
-      </div>
     </div>
   )
 }

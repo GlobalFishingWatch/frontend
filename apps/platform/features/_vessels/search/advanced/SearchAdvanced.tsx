@@ -42,6 +42,7 @@ function SearchAdvanced({
   onSuggestionClick,
   fetchMoreResults,
   fetchResults,
+  footer,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -149,24 +150,24 @@ function SearchAdvanced({
           </Button>
         </div>
       </div>
-      <div className={cx('card', styles.scrollContainer)}>
-        {searchStatus === AsyncReducerStatus.Aborted &&
-        searchPagination.loading === false ? null : (
-          <div className={styles.searchResults}>
-            <Suspense fallback={null}>
-              <SearchAdvancedResults
-                fetchResults={fetchResults}
-                fetchMoreResults={fetchMoreResults}
-              />
-            </Suspense>
-            {(searchStatus === AsyncReducerStatus.Idle ||
-              searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
-            {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
-              <SearchNoResultsState />
-            )}
-            {searchStatus === AsyncReducerStatus.Error && <SearchError />}
-          </div>
-        )}
+      <div className={cx(styles.resultsColumn, { [styles.withFooter]: Boolean(footer) })}>
+        <div className={cx('card', styles.scrollContainer)}>
+          <Suspense fallback={null}>
+            <SearchAdvancedResults
+              fetchResults={fetchResults}
+              fetchMoreResults={fetchMoreResults}
+            />
+          </Suspense>
+          {(searchStatus === AsyncReducerStatus.Idle ||
+            ((searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted) &&
+              !searchPagination.loading)) && <SearchEmptyState />}
+          {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
+            <SearchNoResultsState />
+          )}
+          {searchStatus === AsyncReducerStatus.Error && <SearchError />}
+        </div>
+        {footer}
       </div>
     </div>
   )
