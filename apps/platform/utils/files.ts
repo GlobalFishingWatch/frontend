@@ -5,8 +5,8 @@ import type {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import type { JSZipObject } from '@globalfishingwatch/data-transforms'
-import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms'
+import type { JSZipObject } from '@globalfishingwatch/data-transforms/files'
+import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms/files'
 
 export function getFileName(file: File): string {
   if (!file?.name) {

@@ -3,6 +3,8 @@ import type { GeoTIFF } from '@developmentseed/geotiff'
 import { USER_FOURWINGS_VALUE_COLUMN } from '@globalfishingwatch/api-types'
 import { FOURWINGS_TILE_COLUMNS } from '@globalfishingwatch/deck-loaders'
 
+import type { Bbox } from '../types'
+
 const MAX_CELLS = 10_000_000
 const EPSG_4326 = 4326
 
@@ -24,13 +26,7 @@ export function isEmptyValue(value: number, nodata: number | null) {
 type LonLatConverter = (x: number, y: number) => { lon: number; lat: number }
 
 /**
- * Builds a converter from the file's own CRS to WGS 84 lon/lat, or null when the file already
- * is WGS 84.
- *
- * `GeoTIFF.crs` hands back either an EPSG code or, for user-defined CRSs, a PROJJSON object
- * it assembles from the geokeys. proj4 accepts both, so no EPSG lookup table is needed — that
- * is why there is no `geotiff-geokeys-to-proj4` here (it would add ~5MB for the same result).
- * proj4 is imported lazily since a WGS 84 file never needs it.
+ * Builds a converter from the file's own CRS to WGS 84 lon/lat, or null when the file already is WGS 84.
  */
 async function getLonLatConverter(crs: GeoTIFF['crs']): Promise<LonLatConverter | null> {
   if (crs === EPSG_4326) {

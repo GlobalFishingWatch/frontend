@@ -124,6 +124,16 @@ describe('geotiffToList', () => {
     expect(stats).toEqual({ min: 1, max: 4 })
   })
 
+  it('reports the full raster extent as the bbox, at the outer pixel edges', async () => {
+    const { bbox } = await geotiffToList(writeTiff([1, 2, 3, 4]))
+    expect(bbox).toEqual([BBOX[0], BBOX[1], BBOX[2], BBOX[3]])
+  })
+
+  it('keeps the full extent even when only one cell holds data', async () => {
+    const { bbox } = await geotiffToList(writeTiff([1, 255, 255, 255], { GDAL_NODATA: '255' }))
+    expect(bbox).toEqual([BBOX[0], BBOX[1], BBOX[2], BBOX[3]])
+  })
+
   it('reprojects a Web Mercator raster to lon/lat', async () => {
     // 2x2, 100km pixels, origin west of the Azores — this bbox is in metres, not degrees
     const tiff = writeArrayBuffer([1, 2, 3, 4], {
