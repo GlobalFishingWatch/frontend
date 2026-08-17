@@ -20,6 +20,9 @@ const landingRoute = getRouteApi('/_platform/_content/help-and-resources/')
 function HelpHubLandingPage() {
   const { t } = useTranslation()
   const sectionItems = landingRoute.useLoaderData()
+  const isLoading = landingRoute.useMatch({
+    select: (match) => match.isFetching === 'loader',
+  })
 
   return (
     <div className={styles.container}>
@@ -49,7 +52,11 @@ function HelpHubLandingPage() {
                     params={{ sectionSlug: section.slug, itemSlug: item.slug }}
                     className={styles.cardLink}
                   >
-                    <Card title={item.title} image={getCardImage(item.thumbnail, item.body)}>
+                    <Card
+                      loading={isLoading}
+                      title={item.title}
+                      image={getCardImage(item.thumbnail, item.body)}
+                    >
                       {item.publicationDate && (
                         <p className={styles.cardDate}>
                           {formatI18nDate(item.publicationDate, {
