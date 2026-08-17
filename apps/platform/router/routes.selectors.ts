@@ -103,7 +103,7 @@ export const selectIsStandaloneSearchLocation = createSelector(
   (locationType) => locationType === SEARCH
 )
 
-const selectIsWorkspaceSearchLocation = createSelector(
+export const selectIsWorkspaceSearchLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === WORKSPACE_SEARCH
 )

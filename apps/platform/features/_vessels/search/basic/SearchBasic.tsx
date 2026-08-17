@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -46,12 +47,14 @@ export type SearchComponentProps = {
   fetchResults?: () => void
   cleanResults?: () => void
   debouncedQuery?: string
+  footer?: ReactNode
 }
 
 function SearchBasic({
   onSuggestionClick,
   fetchMoreResults,
   debouncedQuery,
+  footer,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -186,11 +189,10 @@ function SearchBasic({
                   </li>
                 )}
 
-                {(searchStatus === AsyncReducerStatus.Loading ||
-                  searchStatus === AsyncReducerStatus.Aborted ||
-                  (!hasMoreResults && searchStatus === AsyncReducerStatus.Idle)) && (
-                  <SearchEmptyState />
-                )}
+                {(searchStatus === AsyncReducerStatus.Idle ||
+                  (!searchResults?.length &&
+                    (searchStatus === AsyncReducerStatus.Loading ||
+                      searchStatus === AsyncReducerStatus.Aborted))) && <SearchEmptyState />}
 
                 {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
                   <SearchNoResultsState className={styles.noMoreResults} />
@@ -201,6 +203,7 @@ function SearchBasic({
               <SearchNotAllowed />
             )}
           </div>
+          {footer}
         </div>
       )}
     </Downshift>

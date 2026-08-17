@@ -1,11 +1,15 @@
 .advancedLayout {
+  flex: 1;
   height: 100%;
+  min-height: 0;
   display: flex;
 }
 
 .advancedLayout .form {
   margin-top: 0;
   width: var(--sidebar-width);
+  flex-shrink: 0;
+  min-height: 0;
   z-index: 4;
   display: flex;
   flex-direction: column;
@@ -34,19 +38,26 @@
   min-width: 15rem;
 }
 
-.advancedLayout .scrollContainer {
-  margin-top: 0;
-  margin-left: 0;
+.resultsColumn {
   flex: 1;
-  overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-.searchResults {
+.advancedLayout .scrollContainer {
+  margin: 0 var(--space-S) var(--space-S) 0;
   flex: 1;
-  min-height: 40rem;
-  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.withFooter .scrollContainer {
+  margin-bottom: 0;
 }
 
 .error {

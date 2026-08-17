@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 
+import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import {
   ADVANCED_SEARCH_FIELDS,
@@ -24,6 +25,7 @@ import type { VesselSearchState } from 'features/_vessels/search/search.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import {
   cleanVesselSearchResults,
@@ -136,22 +138,60 @@ type FetchSearchResultsParams = {
   searchType: SearchType
   gfwUser: boolean
   since?: string
+  force?: boolean
+}
+
+const getSearchParamsKey = ({
+  query,
+  filters,
+  datasets,
+  searchType,
+}: Pick<FetchSearchResultsParams, 'query' | 'filters' | 'datasets' | 'searchType'>) => {
+  const datasetIds = datasets.map(({ id }) => id).join(',')
+  return `${searchType}|${query}|${datasetIds}|${JSON.stringify(filters)}`
 }
 
 export const useFetchSearchResults = () => {
   const promiseRef = useRef<any>(undefined)
-  const lastParamsRef = useRef<Omit<FetchSearchResultsParams, 'since'> | undefined>(undefined)
+  const lastParamsRef = useRef<Omit<FetchSearchResultsParams, 'since' | 'force'> | undefined>(
+    undefined
+  )
+  const lastParamsKeyRef = useRef<string | undefined>(undefined)
   const { searchPagination } = useSearchConnect()
   const searchResults = useSelector(selectSearchResults)
   const dispatch = useAppDispatch()
 
   const fetchResults = useCallback(
-    ({ query, filters, datasets, gfwUser, since = '', searchType }: FetchSearchResultsParams) => {
+    ({
+      query,
+      filters,
+      datasets,
+      gfwUser,
+      since = '',
+      searchType,
+      force = false,
+    }: FetchSearchResultsParams) => {
+      if (!datasets?.length || !searchType) {
+        return
+      }
       if (datasets?.length && searchType) {
         const sources = filters?.sources
           ? datasets.filter(({ id }) => filters?.sources?.includes(id))
           : datasets
+        const paramsKey = getSearchParamsKey({
+          query,
+          filters,
+          datasets: sources,
+          searchType,
+        })
+        if (!since && !force && lastParamsKeyRef.current === paramsKey) {
+          return
+        }
+        lastParamsKeyRef.current = paramsKey
         lastParamsRef.current = { query, filters, datasets: sources, gfwUser, searchType }
+        if (!since) {
+          dispatch(cleanVesselSearchResults())
+        }
         if (promiseRef.current) {
           promiseRef.current.abort()
         }
@@ -191,6 +231,12 @@ export const useFetchSearchResults = () => {
     }
   }, [fetchResults, searchPagination, searchResults?.length])
 
+  useEffect(() => {
+    return () => {
+      promiseRef.current?.abort()
+    }
+  }, [])
+
   return useMemo(() => ({ fetchResults, fetchMoreResults }), [fetchResults, fetchMoreResults])
 }
 
@@ -202,8 +248,9 @@ export const useSearch = () => {
     activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
   ) as Dataset[]
 
-  const dispatch = useAppDispatch()
   const debouncedQuery = useDebounce(query, 600)
+  const datasetsStatus = useSelector(selectDatasetsStatus)
+  const areDatasetsLoading = datasetsStatus === AsyncReducerStatus.Loading
   const searchFilterErrors = useSearchFiltersErrors()
   const { hasFilters, searchFilters } = useSearchFiltersConnect()
   const { fetchResults, fetchMoreResults } = useFetchSearchResults()
@@ -213,38 +260,49 @@ export const useSearch = () => {
   const searchInAdvanced =
     activeSearchOption === 'advanced' && (hasFilters || (query ? query?.trim() !== '' : false))
 
-  const onBasicSearch = useEffectEvent(() => {
-    dispatch(cleanVesselSearchResults())
-    fetchResults({
-      query: debouncedQuery,
-      datasets: searchDatasets,
-      filters: {},
-      gfwUser: gfwUser || false,
-      searchType: 'basic',
-    })
-  })
-
-  const onAdvancedSearch = useEffectEvent(() => {
-    fetchResults({
-      query,
-      datasets: searchDatasets,
-      filters: searchFilters,
-      gfwUser: gfwUser || false,
-      searchType: 'advanced',
-    })
-  })
-
   const searchDatasetsHash = searchDatasets.map((dataset) => dataset.id).join(',')
 
   useEffect(() => {
-    if (searchDatasetsHash?.length && !hasSearchFiltersErrors) {
-      if (searchInBasic) {
-        onBasicSearch()
-      } else if (searchInAdvanced) {
-        onAdvancedSearch()
-      }
+    if (areDatasetsLoading || hasSearchFiltersErrors || !searchDatasetsHash) {
+      return
     }
-  }, [hasSearchFiltersErrors, debouncedQuery, searchDatasetsHash, searchInAdvanced, searchInBasic])
+    if (!searchInBasic && !searchInAdvanced) {
+      return
+    }
+    const timeout = window.setTimeout(() => {
+      if (searchInBasic) {
+        fetchResults({
+          query: debouncedQuery,
+          datasets: searchDatasets,
+          filters: {},
+          gfwUser: gfwUser || false,
+          searchType: 'basic',
+        })
+      } else if (searchInAdvanced) {
+        fetchResults({
+          query: debouncedQuery,
+          datasets: searchDatasets,
+          filters: searchFilters,
+          gfwUser: gfwUser || false,
+          searchType: 'advanced',
+        })
+      }
+    }, 300)
+    return () => {
+      window.clearTimeout(timeout)
+    }
+  }, [
+    areDatasetsLoading,
+    debouncedQuery,
+    fetchResults,
+    gfwUser,
+    hasSearchFiltersErrors,
+    searchDatasets,
+    searchDatasetsHash,
+    searchFilters,
+    searchInAdvanced,
+    searchInBasic,
+  ])
 
   const onAdvancedSearchClick = useCallback(() => {
     if (!hasSearchFiltersErrors) {
@@ -253,18 +311,17 @@ export const useSearch = () => {
         action: 'Add filters to refine Advanced Search',
         label: `name: ${debouncedQuery} | MMSI: ${searchFilters.ssvid} | IMO: ${searchFilters.imo} | Call Sign: ${searchFilters.callsign} | Owner: ${searchFilters.owner} | Info source: ${searchFilters.infoSource} | Sources: ${searchFilters.sources} | Flag: ${searchFilters.flag} | Active After: ${searchFilters.transmissionDateFrom} | Active Before: ${searchFilters.transmissionDateTo}`,
       })
-      dispatch(cleanVesselSearchResults())
       fetchResults({
         query,
         datasets: searchDatasets,
         filters: searchFilters,
         gfwUser: gfwUser || false,
         searchType: 'advanced',
+        force: true,
       })
     }
   }, [
     debouncedQuery,
-    dispatch,
     fetchResults,
     gfwUser,
     hasSearchFiltersErrors,

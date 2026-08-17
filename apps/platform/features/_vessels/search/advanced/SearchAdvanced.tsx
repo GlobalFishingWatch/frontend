@@ -1,8 +1,9 @@
 import type { ChangeEvent } from 'react'
-import { lazy, Suspense, useCallback } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { useDebouncedCallback } from 'use-debounce'
 
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -42,6 +43,7 @@ function SearchAdvanced({
   onSuggestionClick,
   fetchMoreResults,
   fetchResults,
+  footer,
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -51,11 +53,26 @@ function SearchAdvanced({
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchStatus = useSelector(selectSearchStatus)
   const searchQuery = useSelector(selectSearchQuery)
+  const [inputValue, setInputValue] = useState(searchQuery || '')
+  const syncedSearchQueryRef = useRef(searchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
   const { hasFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
   const isGFWUser = useSelector(selectIsGFWUser)
   const ref = useEventKeyListener(['Enter'], fetchResults)
+
+  const debouncedReplaceQuery = useDebouncedCallback(
+    (value: string) => replaceQueryParams({ query: value }),
+    300
+  )
+
+  useEffect(() => {
+    if (searchQuery === syncedSearchQueryRef.current || debouncedReplaceQuery.isPending()) {
+      return
+    }
+    syncedSearchQueryRef.current = searchQuery
+    setInputValue(searchQuery || '')
+  }, [searchQuery, debouncedReplaceQuery])
 
   const resetSearchState = useCallback(() => {
     replaceQueryParams(EMPTY_SEARCH_FILTERS)
@@ -77,7 +94,9 @@ function SearchAdvanced({
   }
 
   const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    replaceQueryParams({ query: e.target.value })
+    const value = e.target.value
+    setInputValue(value)
+    debouncedReplaceQuery(value)
   }
 
   const handleSearchIdChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -104,15 +123,15 @@ function SearchAdvanced({
           <InputText
             onChange={handleSearchQueryChange}
             id="name"
-            value={searchQuery || ''}
+            value={inputValue}
             label={t((t) => t.common.name)}
             className={styles.input}
             autoFocus
           />
           <SearchAdvancedFilters />
-          {searchQuery &&
+          {inputValue &&
             searchSuggestion &&
-            searchSuggestion !== searchQuery &&
+            searchSuggestion !== inputValue &&
             !searchSuggestionClicked && (
               <div>
                 {t((t) => t.search.suggestion)}{' '}
@@ -130,7 +149,7 @@ function SearchAdvanced({
             className={styles.confirmButton}
             onClick={fetchResults}
             disabled={
-              (!hasFilters && !searchQuery) || hasSearchFilterErrors || searchStatusCode === 401
+              (!hasFilters && !inputValue) || hasSearchFilterErrors || searchStatusCode === 401
             }
             tooltip={
               hasSearchFilterErrors
@@ -149,24 +168,24 @@ function SearchAdvanced({
           </Button>
         </div>
       </div>
-      <div className={cx('card', styles.scrollContainer)}>
-        {searchStatus === AsyncReducerStatus.Aborted &&
-        searchPagination.loading === false ? null : (
-          <div className={styles.searchResults}>
-            <Suspense fallback={null}>
-              <SearchAdvancedResults
-                fetchResults={fetchResults}
-                fetchMoreResults={fetchMoreResults}
-              />
-            </Suspense>
-            {(searchStatus === AsyncReducerStatus.Idle ||
-              searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
-            {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
-              <SearchNoResultsState />
-            )}
-            {searchStatus === AsyncReducerStatus.Error && <SearchError />}
-          </div>
-        )}
+      <div className={cx(styles.resultsColumn, { [styles.withFooter]: Boolean(footer) })}>
+        <div className={cx('card', styles.scrollContainer)}>
+          <Suspense fallback={null}>
+            <SearchAdvancedResults
+              fetchResults={fetchResults}
+              fetchMoreResults={fetchMoreResults}
+            />
+          </Suspense>
+          {(searchStatus === AsyncReducerStatus.Idle ||
+            ((searchStatus === AsyncReducerStatus.Loading ||
+              searchStatus === AsyncReducerStatus.Aborted) &&
+              !searchPagination.loading)) && <SearchEmptyState />}
+          {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
+            <SearchNoResultsState />
+          )}
+          {searchStatus === AsyncReducerStatus.Error && <SearchError />}
+        </div>
+        {footer}
       </div>
     </div>
   )
