@@ -5,6 +5,27 @@
   z-index: 2;
 }
 
+.PlatformNav::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: rgba(var(--primary-blue-rgb), 0.7);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-drawer);
+}
+
+.expanded::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .PlatformNav::before {
+    transition: none;
+  }
+}
+
 .panel {
   position: absolute;
   inset-block: 0;
@@ -30,7 +51,7 @@
   /* Opening */
   transition:
     width 200ms var(--ease-drawer),
-    background-color 100ms var(--ease-drawer),
+    background-color 0s,
     filter 100ms var(--ease-drawer);
 }
 
