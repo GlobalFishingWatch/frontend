@@ -28,7 +28,8 @@ export const findWithLocaleFallback = async <T>(
 
     return response
   } catch (e) {
-    console.error('Error fetching CMS content:', e)
+    const message = e instanceof Error ? e.message : String(e)
+    console.error('Error fetching CMS content:', message)
     throw e
   }
 }

@@ -5,7 +5,11 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { findHelpHubSection } from 'features/help/helpHub.content'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import { getHelpHubLocale, loadHelpHubSection } from 'features/help/helpHub.loaders'
+import {
+  getHelpHubLocale,
+  type HelpHubSectionData,
+  loadHelpHubSection,
+} from 'features/help/helpHub.loaders'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
 import { buildCanonicalUrl, getRouteHead } from 'router/router.meta'
 
@@ -27,9 +31,9 @@ export const Route = createFileRoute(
       })
     }
   },
-  loader: ({ params }) => {
+  loader: async ({ params }): Promise<HelpHubSectionData> => {
     const section = findHelpHubSection(params.sectionSlug)
-    if (!section) return []
+    if (!section) return { items: [] }
     return loadHelpHubSection(section.id, getHelpHubLocale())
   },
   head: ({ params, loaderData }) => {
@@ -39,7 +43,7 @@ export const Route = createFileRoute(
     }
     const { title, description } = getHelpHubSectionCopy(section.id)
     const item = params.itemSlug
-      ? loaderData?.find(({ slug }) => slug === params.itemSlug)
+      ? loaderData?.items.find(({ slug }) => slug === params.itemSlug)
       : undefined
     return {
       ...getRouteHead({

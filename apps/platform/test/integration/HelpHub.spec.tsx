@@ -241,10 +241,23 @@ describe('Help hub', async () => {
 
     await renderSectionPage()
 
-    // NOTE: the error and empty states share the same copy today, so this asserts the placeholder
-    // rather than an error-specific message.
-    await expect.element(page.getByText('No data')).toBeVisible()
+    await expect.element(page.getByText('Something went wrong')).toBeVisible()
+    await expect.element(page.getByText('Strapi unavailable')).toBeVisible()
+    await expect.element(page.getByText('No data')).not.toBeInTheDocument()
     await expect.element(page.getByRole('searchbox')).not.toBeInTheDocument()
     await expect.poll(() => spinners()).toHaveLength(0)
+  })
+
+  it('should keep other landing sections when one CMS request fails', async () => {
+    cms.userGuide = () => Promise.reject(new Error('Strapi unavailable'))
+
+    await renderLandingPage()
+
+    const toolsAndFeatures = await waitForLandingSection('Tools and features')
+    await expect.element(toolsAndFeatures.getByText('Something went wrong')).toBeVisible()
+    await expect.element(toolsAndFeatures.getByText('Strapi unavailable')).toBeVisible()
+
+    const useCases = await waitForLandingSection('Use cases')
+    await expect.element(useCases.getByRole('link').filter({ hasText: 'Journalists' })).toBeVisible()
   })
 })

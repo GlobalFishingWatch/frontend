@@ -68,7 +68,9 @@
 
 .carouselPlaceholder {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-XS);
   min-height: var(--size-XL);
   font: var(--font-M);
   color: var(--color-secondary-blue);

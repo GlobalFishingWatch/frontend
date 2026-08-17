@@ -66,7 +66,10 @@
 
 .placeholder {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: var(--space-XS);
   padding: var(--space-L);
   font: var(--font-M);
   color: var(--color-secondary-blue);

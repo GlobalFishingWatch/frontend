@@ -10,6 +10,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.content'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
 import { getCardImage } from 'features/help/helpHub.utils'
+import HelpHubError from 'features/help/HelpHubError'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 
 import styles from './HelpHubLandingPage.module.css'
@@ -25,7 +26,7 @@ function HelpHubLandingPage() {
       <h1 className={styles.pageTitle}>{t((s) => s.helpHub.title)}</h1>
       {HELP_HUB_SECTIONS.map((section) => {
         const { title, description } = getHelpHubSectionCopy(section.id)
-        const items = sectionItems[section.id]
+        const { items, error } = sectionItems[section.id]
         return (
           <section key={section.slug} className={styles.section}>
             <h2 className={styles.title}>{title}</h2>
@@ -37,7 +38,9 @@ function HelpHubLandingPage() {
                 </Link>
               </Button>
             </div>
-            {items.length > 0 ? (
+            {error ? (
+              <HelpHubError error={error} className={styles.carouselPlaceholder} />
+            ) : items.length > 0 ? (
               <Carousel id={`${section.slug}-carousel`} label={title}>
                 {items.map((item) => (
                   <Link
