@@ -11,6 +11,9 @@ ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
 ENV HUSKY=0
+# Nx Cloud's default CI style only prints a summary + cloud URL. Stream so a
+# failed task's tsc/vite output shows up in the GitHub Actions job log.
+ENV NX_DEFAULT_OUTPUT_STYLE=stream
 
 # Copy only what pnpm needs to install — no source files.
 # patches/ is required because pnpm-workspace.yaml references patch files
@@ -66,7 +69,7 @@ RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
     NX_CLOUD_ACCESS_TOKEN="$(cat /run/secrets/NX_CLOUD_ACCESS_TOKEN 2>/dev/null || true)" \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true)" \
     NODE_OPTIONS='--max-old-space-size=6144' \
-    pnpm exec nx run ${APP_NAME}:build
+    pnpm exec nx run ${APP_NAME}:build --output-style=stream
 
 
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──
