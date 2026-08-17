@@ -1,5 +1,7 @@
+import { getRequestUrl } from '@tanstack/react-start/server'
 import { defineCachedFunction } from 'nitro/cache'
 
+import { IS_DEVELOPMENT_ENV } from 'data/map/config'
 import type { StrapiResponse } from 'features/cms/strapi.types'
 import { CMS_MAX_CACHE_AGE_MINUTES } from 'features/help/helpHub.config'
 import { toContentLocale } from 'features/i18n/i18n.config'
@@ -19,11 +21,17 @@ export type StrapiCollectionName =
   | 'user-guide-sections'
   | 'user-guide-subsections'
 
-const findWithLocaleFallbackUncached = async <T>(
-  collectionName: StrapiCollectionName,
-  params: FindParams,
-  locale = Locale.en as string
-): Promise<StrapiResponse<T>> => {
+export type FetchStrapiCollectionParams = {
+  collectionName: StrapiCollectionName
+  params: FindParams
+  locale?: string
+}
+
+const fetchStrapiCollection = async <T>({
+  collectionName,
+  params,
+  locale = Locale.en as string,
+}: FetchStrapiCollectionParams): Promise<StrapiResponse<T>> => {
   const collection = sdk.collection(collectionName)
   const cmsLocale = toContentLocale(locale)
   try {
@@ -47,14 +55,33 @@ const findWithLocaleFallbackUncached = async <T>(
   }
 }
 
-export const findWithLocaleFallback = defineCachedFunction(findWithLocaleFallbackUncached, {
+const fetchStrapiCollectionFromCache = defineCachedFunction(fetchStrapiCollection, {
   name: 'strapi-content',
   maxAge: CMS_MAX_CACHE_AGE_MINUTES * 60,
   swr: true,
-  getKey: (collectionName: StrapiCollectionName, params: FindParams, locale?: string) =>
-    `${collectionName}:${locale ?? Locale.en}:${JSON.stringify(params)}`,
-}) as <T>(
-  collectionName: StrapiCollectionName,
-  params: FindParams,
-  locale?: string
-) => Promise<StrapiResponse<T>>
+  getKey: ({ collectionName, params, locale }: FetchStrapiCollectionParams) => {
+    return `${collectionName}:${locale ?? Locale.en}:${JSON.stringify(params)}`
+  },
+}) as <T>(args: FetchStrapiCollectionParams) => Promise<StrapiResponse<T>>
+
+const isCacheEnabled = () => {
+  try {
+    const searchParams = getRequestUrl().searchParams
+    if (!searchParams.has('nocache')) {
+      return true
+    }
+    if (IS_DEVELOPMENT_ENV) {
+      return false
+    }
+    const secret = process.env.STRAPI_PREVIEW_SECRET
+    return !secret || searchParams.get('nocache') !== secret
+  } catch {
+    // no request context (prerender, background swr revalidation) — keep the cache
+    return true
+  }
+}
+
+export const fetchStrapiCollectionCached = <T>(
+  args: FetchStrapiCollectionParams
+): Promise<StrapiResponse<T>> =>
+  isCacheEnabled() ? fetchStrapiCollectionFromCache<T>(args) : fetchStrapiCollection<T>(args)
