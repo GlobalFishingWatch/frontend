@@ -1,9 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import type { ReactTable, Row } from '@tanstack/react-table'
+import {
+  columnResizingFeature,
+  columnSizingFeature,
+  createColumnHelper,
+  tableFeatures,
+  useTable,
+} from '@tanstack/react-table'
+import type { Virtualizer } from '@tanstack/react-virtual'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import type { MRT_ColumnDef } from 'material-react-table'
-import { MaterialReactTable } from 'material-react-table'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -25,6 +34,7 @@ import { useSearchFiltersConnect } from 'features/_vessels/search/search.hook'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import {
   cleanVesselSearchResults,
+  selectSearchPagination,
   selectSearchResults,
   selectSearchStatus,
   selectSelectedVessels,
@@ -56,10 +66,158 @@ import {
 } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
-import styles from '../basic/SearchBasicResult.module.css'
+import cellStyles from '../basic/SearchBasicResult.module.css'
+import styles from './SearchAdvancedResults.module.css'
 
 const PINNED_COLUMN = 'shipname'
+const EMPTY_RESULTS: IdentityVesselData[] = []
 const TOOLTIP_LABEL_CHARACTERS = 25
+const ROW_HEIGHT_ESTIMATE = 80
+const SELECT_COLUMN_SIZE = 48
+
+const features = tableFeatures({ columnSizingFeature, columnResizingFeature })
+const columnHelper = createColumnHelper<typeof features, IdentityVesselData>()
+
+type SearchTable = ReactTable<typeof features, IdentityVesselData, {}>
+type VesselDataviewRef = { id: string; config?: { info?: string } }
+
+function isVesselInWorkspace(
+  vessel: IdentityVesselData,
+  vesselDataviews: VesselDataviewRef[] | undefined
+) {
+  const vesselId = getSearchIdentityResolved(vessel).id
+  return vesselDataviews?.some(
+    (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(vesselId)
+  )
+}
+
+function canSelectVessel(
+  vessel: IdentityVesselData,
+  vesselDataviews: VesselDataviewRef[] | undefined
+) {
+  return (
+    !isVesselInWorkspace(vessel, vesselDataviews) &&
+    vessel.identities.some(
+      (identity) => identity.identitySource === VesselIdentitySourceEnum.SelfReported
+    )
+  )
+}
+
+function columnSizeStyle(columnId: string, kind: 'col' | 'header' = 'col') {
+  return { width: `calc(var(--${kind}-${columnId}-size) * 1px)` }
+}
+
+function SelectAllCheckbox({
+  checked,
+  indeterminate,
+  label,
+  onChange,
+}: {
+  checked: boolean
+  indeterminate: boolean
+  label: string
+  onChange: (checked: boolean) => void
+}) {
+  return (
+    <input
+      type="checkbox"
+      className={styles.checkbox}
+      checked={checked}
+      aria-label={label}
+      data-testid="search-advanced-select-all"
+      ref={(node) => {
+        if (node) node.indeterminate = indeterminate
+      }}
+      onChange={(event) => onChange(event.target.checked)}
+    />
+  )
+}
+
+function SearchAdvancedResultRow({
+  row,
+  selected,
+  table,
+  virtualStart,
+  virtualIndex,
+  rowVirtualizer,
+}: {
+  row: Row<typeof features, IdentityVesselData>
+  selected: boolean
+  table: SearchTable
+  virtualStart: number
+  virtualIndex: number
+  rowVirtualizer: Virtualizer<HTMLDivElement, HTMLTableRowElement>
+}) {
+  return (
+    <tr
+      role="row"
+      data-index={virtualIndex}
+      ref={(node) => rowVirtualizer.measureElement(node)}
+      className={cx(styles.tr, { [styles.selected]: selected })}
+      style={{ transform: `translateY(${virtualStart}px)` }}
+    >
+      {row.getAllCells().map((cell) => (
+        <td
+          key={cell.id}
+          className={styles.td}
+          data-column={cell.column.id}
+          style={columnSizeStyle(cell.column.id)}
+        >
+          <table.FlexRender cell={cell} />
+        </td>
+      ))}
+    </tr>
+  )
+}
+
+function SearchAdvancedResultsBody({
+  table,
+  scrollElement,
+  vesselSelectedIds,
+}: {
+  table: SearchTable
+  scrollElement: HTMLDivElement | null
+  vesselSelectedIds: string[]
+}) {
+  const { rows } = table.getRowModel()
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
+    count: rows.length,
+    getScrollElement: () => scrollElement,
+    estimateSize: () => ROW_HEIGHT_ESTIMATE,
+    overscan: 10,
+    measureElement:
+      typeof window !== 'undefined'
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+  })
+
+  useEffect(() => {
+    rowVirtualizer.measure()
+  }, [rowVirtualizer, rows.length, scrollElement])
+
+  return (
+    <tbody className={styles.tbody} style={{ height: `${rowVirtualizer.getTotalSize()}px` }}>
+      {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+        const row = rows[virtualRow.index]
+        if (!row) return null
+        const vessel = row.original
+        const selected = vesselSelectedIds.includes(getSearchVesselId(vessel))
+        return (
+          <SearchAdvancedResultRow
+            key={getSearchVesselId(vessel)}
+            row={row}
+            selected={selected}
+            table={table}
+            virtualStart={virtualRow.start}
+            virtualIndex={virtualRow.index}
+            rowVirtualizer={rowVirtualizer}
+          />
+        )
+      })}
+    </tbody>
+  )
+}
 
 function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchComponentProps) {
   const { t, i18n } = useTranslation()
@@ -70,9 +228,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   )
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatus = useSelector(selectSearchStatus)
+  const searchPagination = useSelector(selectSearchPagination)
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
-  const tableContainerRef = useRef<HTMLDivElement>(null)
+  const [tableContainer, setTableContainer] = useState<HTMLDivElement | null>(null)
+  const tableRef = useRef<HTMLTableElement>(null)
   const isSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const { setTimerange } = useTimerangeConnect()
@@ -89,11 +249,39 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     [dispatch, isSearchLocation, setTimerange]
   )
 
-  const columns = useMemo((): MRT_ColumnDef<any>[] => {
-    const selfReportedColums: MRT_ColumnDef<any>[] = [
-      {
+  const onSelectHandler = useCallback(
+    (vessels: IdentityVesselData[]) => {
+      dispatch(setSelectedVessels(vessels.map(getSearchVesselId)))
+    },
+    [dispatch]
+  )
+
+  const vesselSelectedIds = useMemo(() => {
+    const selectedIds = vesselsSelected.map((vessel) => getSearchVesselId(vessel))
+    const workspaceIds =
+      vesselDataviews?.map((vd) => `${vd.config?.info}-${getVesselIdFromInstanceId(vd.id)}`) ?? []
+    return [...selectedIds, ...workspaceIds]
+  }, [vesselsSelected, vesselDataviews])
+
+  const selectableRows = useMemo(
+    () => (searchResults ?? []).filter((vessel) => canSelectVessel(vessel, vesselDataviews)),
+    [searchResults, vesselDataviews]
+  )
+
+  const allSelectableSelected =
+    selectableRows.length > 0 &&
+    selectableRows.every((vessel) => vesselSelectedIds.includes(getSearchVesselId(vessel)))
+  const someSelectableSelected = selectableRows.some((vessel) =>
+    vesselSelectedIds.includes(getSearchVesselId(vessel))
+  )
+
+  const columns = useMemo(() => {
+    const selfReportedColumns = [
+      columnHelper.display({
         id: 'gfw_shiptypes',
-        accessorFn: (vessel: IdentityVesselData) => {
+        header: sourceIsBrazilVMS ? t((t) => t.vessel.shiptype) : t((t) => t.vessel.gfw_shiptypes),
+        cell: ({ row }) => {
+          const vessel = row.original
           const shiptypes = getVesselProperty(vessel, 'shiptypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
@@ -104,11 +292,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: sourceIsBrazilVMS ? t((t) => t.vessel.shiptype) : t((t) => t.vessel.gfw_shiptypes),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'gfw_geartypes',
-        accessorFn: (vessel: IdentityVesselData) => {
+        header: sourceIsBrazilVMS ? t((t) => t.vessel.gearType) : t((t) => t.vessel.gfw_geartypes),
+        cell: ({ row }) => {
+          const vessel = row.original
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           })
@@ -121,13 +310,14 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: sourceIsBrazilVMS ? t((t) => t.vessel.gearType) : t((t) => t.vessel.gfw_geartypes),
-      },
+      }),
     ]
-    const registryColumns: MRT_ColumnDef<any>[] = [
-      {
+    const registryColumns = [
+      columnHelper.display({
         id: 'geartypes',
-        accessorFn: (vessel: IdentityVesselData) => {
+        header: t((t) => t.vessel.registryGeartype),
+        cell: ({ row }) => {
+          const vessel = row.original
           const geartypes = getVesselProperty(vessel, 'geartypes', {
             identitySource: VesselIdentitySourceEnum.Registry,
           })
@@ -145,22 +335,55 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t((t) => t.vessel.registryGeartype),
-      },
+      }),
     ]
-    let columnsByInfoSource = [...selfReportedColums, ...registryColumns]
+    let columnsByInfoSource = [...selfReportedColumns, ...registryColumns]
     if (searchFilters?.infoSource) {
       columnsByInfoSource =
-        searchFilters?.infoSource === VesselIdentitySourceEnum.SelfReported
-          ? selfReportedColums
+        searchFilters.infoSource === VesselIdentitySourceEnum.SelfReported
+          ? selfReportedColumns
           : registryColumns
     }
 
     return [
-      {
+      columnHelper.display({
+        id: 'select',
+        size: SELECT_COLUMN_SIZE,
+        minSize: SELECT_COLUMN_SIZE,
+        maxSize: SELECT_COLUMN_SIZE,
+        enableResizing: false,
+        header: () => (
+          <SelectAllCheckbox
+            checked={allSelectableSelected}
+            indeterminate={someSelectableSelected && !allSelectableSelected}
+            label={t((t) => t.search.selectVesselResults)}
+            onChange={(checked) => onSelectHandler(checked ? selectableRows : [])}
+          />
+        ),
+        cell: ({ row }) => {
+          const vessel = row.original
+          const disabled = !canSelectVessel(vessel, vesselDataviews)
+          const checked = vesselSelectedIds.includes(getSearchVesselId(vessel))
+          return (
+            <input
+              type="checkbox"
+              className={styles.checkbox}
+              checked={checked}
+              disabled={disabled}
+              aria-label={t((t) => t.search.selectVessel)}
+              onChange={() => {
+                if (!disabled) onSelectHandler([vessel])
+              }}
+            />
+          )
+        },
+      }),
+      columnHelper.display({
         id: PINNED_COLUMN,
-        accessorKey: PINNED_COLUMN,
-        accessorFn: (vessel: IdentityVesselData) => {
+        size: 250,
+        header: t((t) => t.common.name),
+        cell: ({ row }) => {
+          const vessel = row.original
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const vesselData = getSearchIdentityResolved(vessel)
           const { dataset, shipname, nShipname } = vesselData
@@ -175,10 +398,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             end: transmissionDateTo,
             includeRelatedIdentities: searchFilters.id ? false : true,
           } as Record<QueryParam, any>
-
-          const isInWorkspace = vesselDataviews?.some(
-            (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(vesselData.id)
-          )
+          const inWorkspace = isVesselInWorkspace(vessel, vesselDataviews)
 
           return (
             <VesselLink
@@ -187,34 +407,36 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               identity={bestIdentityMatch}
               onClick={(e) => onVesselClick(e, vesselData)}
               query={vesselQuery}
-              className={`${styles.advancedName}${isInWorkspace ? ` ${styles.inWorkspace}` : ''}`}
+              className={`${cellStyles.advancedName}${inWorkspace ? ` ${cellStyles.inWorkspace}` : ''}`}
               fitBounds={isSearchLocation}
             >
               <Tooltip
                 content={
-                  (isInWorkspace ? t((t) => t.vessel.inWorkspace) : '') +
+                  (inWorkspace ? t((t) => t.vessel.inWorkspace) : '') +
                   (label?.length > TOOLTIP_LABEL_CHARACTERS ? label : '')
                 }
               >
                 <span>
-                  {getHighlightedText(name, searchQuery || '', styles)}{' '}
-                  {otherNamesLabel && <span className={styles.secondary}>{otherNamesLabel}</span>}
+                  {getHighlightedText(name, searchQuery || '', cellStyles)}{' '}
+                  {otherNamesLabel && (
+                    <span className={cellStyles.secondary}>{otherNamesLabel}</span>
+                  )}
                 </span>
               </Tooltip>
             </VesselLink>
           )
         },
-        header: t((t) => t.common.name),
-        enableColumnDragging: false,
-        enableColumnActions: false,
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'transmissionDates',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(vessel)
-          if (!transmissionDateFrom || !transmissionDateTo) return
+        header: t((t) => t.vessel.transmissionDates),
+        cell: ({ row }) => {
+          const { transmissionDateFrom, transmissionDateTo } = getSearchIdentityResolved(
+            row.original
+          )
+          if (!transmissionDateFrom || !transmissionDateTo) return null
           return (
-            <div className={styles.transmissionDates}>
+            <div className={cellStyles.transmissionDates}>
               <span style={{ font: 'var(--font-XS)' }}>
                 <I18nDate date={transmissionDateFrom} /> - <I18nDate date={transmissionDateTo} />
               </span>
@@ -227,53 +449,60 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </div>
           )
         },
-        header: t((t) => t.vessel.transmissionDates),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'flag',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const flags = uniq(vessel.identities.map((i) => i.flag))
-          return flags.map((f, index) => (
-            <span key={f}>
-              <I18nFlag iso={f} />
+        header: t((t) => t.vessel.flag),
+        cell: ({ row }) => {
+          const flags = uniq(row.original.identities.map((identity) => identity.flag))
+          return flags.map((flag, index) => (
+            <span key={flag}>
+              <I18nFlag iso={flag} />
               {index < flags.length - 1 ? ', ' : ''}
             </span>
           ))
         },
-        header: t((t) => t.vessel.flag),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'ssvid',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const ssvid = getSearchIdentityResolved(vessel).ssvid || EMPTY_FIELD_PLACEHOLDER
+        size: 100,
+        header: t((t) => t.vessel.mmsi),
+        cell: ({ row }) => {
+          const ssvid = getSearchIdentityResolved(row.original).ssvid || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.ssvid
-            ? getHighlightedText(ssvid, searchFilters.ssvid || '', styles)
+            ? getHighlightedText(ssvid, searchFilters.ssvid || '', cellStyles)
             : ssvid
         },
-        header: t((t) => t.vessel.mmsi),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'imo',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const imo = getSearchIdentityResolved(vessel).imo || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.imo ? getHighlightedText(imo, searchFilters.imo || '', styles) : imo
-        },
+        size: 100,
         header: t((t) => t.vessel.imo),
-      },
-      {
+        cell: ({ row }) => {
+          const imo = getSearchIdentityResolved(row.original).imo || EMPTY_FIELD_PLACEHOLDER
+          return searchFilters.imo
+            ? getHighlightedText(imo, searchFilters.imo || '', cellStyles)
+            : imo
+        },
+      }),
+      columnHelper.display({
         id: 'callsign',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const callsign = getSearchIdentityResolved(vessel).callsign || EMPTY_FIELD_PLACEHOLDER
+        size: 100,
+        header: t((t) => t.vessel.callsign),
+        cell: ({ row }) => {
+          const callsign =
+            getSearchIdentityResolved(row.original).callsign || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.callsign
-            ? getHighlightedText(callsign, searchFilters.callsign || '', styles)
+            ? getHighlightedText(callsign, searchFilters.callsign || '', cellStyles)
             : callsign
         },
-        header: t((t) => t.vessel.callsign),
-      },
+      }),
       ...columnsByInfoSource,
-      {
+      columnHelper.display({
         id: 'owner',
-        accessorFn: (vessel: IdentityVesselData) => {
+        header: t((t) => t.vessel.owner),
+        cell: ({ row }) => {
+          const vessel = row.original
           const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
           const label =
             formatInfoField(
@@ -295,17 +524,19 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
                 <span>
-                  {getHighlightedText(label as string, searchFilters.owner || '', styles)}
+                  {getHighlightedText(label as string, searchFilters.owner || '', cellStyles)}
                 </span>
               </Tooltip>
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t((t) => t.vessel.owner),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'infoSource',
-        accessorFn: (vessel: IdentityVesselData) => {
+        size: 250,
+        header: t((t) => t.vessel.infoSource),
+        cell: ({ row }) => {
+          const vessel = row.original
           const registryIdentities = vessel.identities.filter(
             ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
           )
@@ -315,44 +546,76 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const selfReportedIdentitiesSources = uniq(
             selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
-          if (registryIdentities.length && selfReportedIdentities.length)
+          if (registryIdentities.length && selfReportedIdentities.length) {
             return `${t((t) => t.vessel.infoSources.both)} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
+          }
           if (registryIdentities.length) return t((t) => t.vessel.infoSources.registry)
-          if (selfReportedIdentities.length)
+          if (selfReportedIdentities.length) {
             return `${t(
               (t) => t.vessel.infoSources.selfReported
             )} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
-
+          }
           return EMPTY_FIELD_PLACEHOLDER
         },
-        header: t((t) => t.vessel.infoSource),
-      },
-      {
+      }),
+      columnHelper.display({
         id: 'transmissionCount',
-        accessorFn: (vessel: IdentityVesselData) => {
-          const { positionsCounter } = getSearchIdentityResolved(vessel)
+        header: t((t) => t.vessel.transmissions),
+        cell: ({ row }) => {
+          const { positionsCounter } = getSearchIdentityResolved(row.original)
           if (positionsCounter) {
             return <I18nNumber number={positionsCounter} />
           }
+          return null
         },
-        header: t((t) => t.vessel.transmissions),
-      },
+      }),
     ]
   }, [
+    allSelectableSelected,
     fetchResults,
     i18n.language,
     isSearchLocation,
+    onSelectHandler,
     onVesselClick,
     searchFilters,
     searchQuery,
+    selectableRows,
+    someSelectableSelected,
     sourceIsBrazilVMS,
     t,
     vesselDataviews,
+    vesselSelectedIds,
   ])
 
+  const table = useTable(
+    {
+      features,
+      columns,
+      data: searchResults ?? EMPTY_RESULTS,
+      defaultColumn: { size: 150, minSize: 60 },
+      columnResizeMode: 'onChange',
+    },
+    () => ({})
+  )
+
+  useLayoutEffect(() => {
+    const writeColumnSizeVars = () => {
+      const tableEl = tableRef.current
+      if (!tableEl) return
+      for (const header of table.getFlatHeaders()) {
+        tableEl.style.setProperty(`--header-${header.id}-size`, String(header.getSize()))
+        tableEl.style.setProperty(`--col-${header.column.id}-size`, String(header.column.getSize()))
+      }
+      tableEl.style.width = `${table.getTotalSize()}px`
+    }
+    writeColumnSizeVars()
+    const subscription = table.atoms.columnSizing.subscribe(writeColumnSizeVars)
+    return typeof subscription === 'function' ? subscription : subscription.unsubscribe
+  }, [table, columns])
+
   const fetchMoreOnBottomReached = useCallback(() => {
-    if (tableContainerRef.current) {
-      const { scrollHeight, scrollTop, clientHeight } = tableContainerRef.current
+    if (tableContainer) {
+      const { scrollHeight, scrollTop, clientHeight } = tableContainer
       if (
         scrollHeight - scrollTop - clientHeight < 50 &&
         searchStatus === AsyncReducerStatus.Finished
@@ -360,30 +623,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         fetchMoreResults()
       }
     }
-  }, [fetchMoreResults, searchStatus])
-
-  const onSelectHandler = useCallback(
-    (vessels: IdentityVesselData[]) => {
-      const vessesSelected = vessels.map(getSearchVesselId)
-      dispatch(setSelectedVessels(vessesSelected))
-    },
-    [dispatch]
-  )
-
-  const vesselSelectedIds = useMemo(() => {
-    const selectedIds = vesselsSelected.map((vessel) => getSearchVesselId(vessel))
-    const workspaceIds =
-      vesselDataviews?.map((vd) => `${vd.config?.info}-${getVesselIdFromInstanceId(vd.id)}`) ?? []
-    return [...selectedIds, ...workspaceIds]
-  }, [vesselsSelected, vesselDataviews])
-
-  const rowSelection = useMemo(() => {
-    return Object.fromEntries(
-      (searchResults || []).map((vessel, index) => {
-        return [`${index}-${vessel.id}`, vesselSelectedIds.includes(getSearchVesselId(vessel))]
-      })
-    )
-  }, [searchResults, vesselSelectedIds])
+  }, [fetchMoreResults, searchStatus, tableContainer])
 
   useEffect(() => {
     fetchMoreOnBottomReached()
@@ -391,146 +631,61 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     return () => window.removeEventListener('resize', fetchMoreOnBottomReached)
   }, [fetchMoreOnBottomReached])
 
-  if (!searchResults?.length) {
+  const isSearching =
+    searchStatus === AsyncReducerStatus.Loading || searchStatus === AsyncReducerStatus.Aborted
+  const isFetchingMore = searchPagination.loading
+
+  if (!searchResults?.length || (isSearching && !isFetchingMore)) {
     return null
   }
 
-  const showProgressBars = searchStatus !== AsyncReducerStatus.Finished
-
   return (
-    <MaterialReactTable
-      columns={columns}
-      data={searchResults as any}
-      enableSorting={false}
-      enableTopToolbar={false}
-      renderToolbarInternalActions={undefined}
-      enableColumnFilters={false}
-      enableColumnResizing
-      enablePagination={false}
-      enableColumnActions
-      enableColumnOrdering
-      enableColumnDragging
-      enableStickyHeader
-      enableMultiRowSelection
-      enableRowVirtualization
-      enableRowSelection={(row) => {
-        const isInWorkspace = vesselDataviews?.some(
-          (vesselDataview) =>
-            vesselDataview.id ===
-            getVesselDataviewInstanceId(getSearchIdentityResolved(row.original).id)
-        )
-        return (
-          !isInWorkspace &&
-          row.original.identities.some(
-            (i: any) => i.identitySource === VesselIdentitySourceEnum.SelfReported
-          )
-        )
-      }}
-      onRowSelectionChange={undefined}
-      selectAllMode="all"
-      getRowId={(row, index) => `${index}-${row.id}`}
-      initialState={{ columnPinning: { left: [PINNED_COLUMN] } }}
-      state={{ showProgressBars, rowSelection }}
-      muiTablePaperProps={{
-        sx: { backgroundColor: 'transparent', boxShadow: 'none' },
-      }}
-      muiTableContainerProps={{
-        ref: tableContainerRef,
-        sx: { height: 'calc(100vh - 104px - 1rem)', overflowX: 'scroll' },
-        onScroll: fetchMoreOnBottomReached,
-      }}
-      muiSelectAllCheckboxProps={({ table }) => ({
-        sx: { color: 'var(--color-secondary-blue)' },
-        onChange: (_, checked) => {
-          onSelectHandler(checked ? table.getRowModel().rows.map(({ original }) => original) : [])
-        },
-      })}
-      muiSelectCheckboxProps={({ row }) => ({
-        onClick: () => {
-          if (row.getCanSelect()) {
-            onSelectHandler([row.original])
-          }
-        },
-        sx: {
-          '&.Mui-checked': { color: 'var(--color-secondary-blue)' },
-          color: 'var(--color-secondary-blue)',
-        },
-      })}
-      muiTableBodyRowProps={() => ({
-        sx: {
-          backgroundColor: 'transparent',
-          ':hover': {
-            td: { backgroundColor: 'var(--color-off-white-1)' },
-            'td ~ td': { backgroundColor: 'var(--color-terthiary-blue)' },
-          },
-        },
-      })}
-      muiTableProps={{
-        style: {
-          ['--header-ssvid-size' as any]: 100,
-          ['--header-imo-size' as any]: 100,
-          ['--header-callsign-size' as any]: 100,
-          ['--col-ssvid-size' as any]: 100,
-          ['--col-imo-size' as any]: 100,
-          ['--col-shipname-size' as any]: 250,
-          ['--col-infoSource-size' as any]: 250,
-          ['--col-callsign-size' as any]: 100,
-          ['--header-mrt_row_select-size' as any]: 10,
-          ['--col-mrt_row_select-size' as any]: 10,
-          ['--header-shipname-size' as any]: 250,
-          ['--header-infoSource-size' as any]: 250,
-        },
-      }}
-      muiTableHeadCellProps={(cell) => ({
-        sx: {
-          font: 'var(--font-S-bold)',
-          color: 'var(--color-primary-blue)',
-          borderRight: 'var(--border)',
-          borderBottom: 'var(--border)',
-          backgroundColor: 'var(--color-off-white-1)',
-          boxShadow:
-            cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
-          div: { justifyContent: cell.column.id === 'mrt-row-select' ? 'center' : 'flex-start' },
-          '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '1rem' },
-        },
-      })}
-      muiTableBodyCellProps={({ row, cell }) => ({
-        sx: {
-          font: 'var(--font-S)',
-          color: 'var(--color-primary-blue)',
-          backgroundColor:
-            cell.column.id === 'shipname'
-              ? 'var(--color-off-white-1)'
-              : vesselSelectedIds.includes(getVesselProperty(row.original, 'id'))
-                ? 'var(--color-terthiary-blue)'
-                : 'transparent',
-          textAlign: cell.column.id === 'mrt-row-select' ? 'center' : 'left',
-          borderRight: 'var(--border)',
-          borderBottom: 'var(--border)',
-          boxShadow:
-            cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
-          whiteSpace: 'nowrap',
-          '.Mui-TableHeadCell-Content-Wrapper': { minWidth: '2rem' },
-          minHeight: '5rem',
-          padding: '0 1.1rem',
-          ' a': {
-            cursor: 'pointer',
-            textDecoration: 'underline',
-          },
-        },
-      })}
-      muiBottomToolbarProps={{ sx: { overflow: 'visible' } }}
-      muiLinearProgressProps={{
-        sx: {
-          height: '6px',
-          backgroundColor: 'var(--color-white)',
-          transform: 'translateY(-24px)',
-          margin: '8px',
-          borderRadius: 'var(--border-radius-1)',
-          span: { backgroundColor: 'var(--color-secondary-blue)' },
-        },
-      }}
-    />
+    <div
+      ref={setTableContainer}
+      className={styles.container}
+      data-testid="search-advanced-table"
+      onScroll={fetchMoreOnBottomReached}
+    >
+      <table ref={tableRef} className={styles.table} role="table">
+        <thead className={styles.thead}>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} role="row" className={styles.headerRow}>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  role="columnheader"
+                  className={styles.th}
+                  data-column={header.column.id}
+                  style={columnSizeStyle(header.id, 'header')}
+                >
+                  {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                  {header.column.getCanResize() && (
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      aria-label={`Resize ${header.column.id}`}
+                      className={styles.resizer}
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                    />
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <SearchAdvancedResultsBody
+          table={table}
+          scrollElement={tableContainer}
+          vesselSelectedIds={vesselSelectedIds}
+        />
+      </table>
+      {searchPagination.loading && (
+        <div className={styles.progress} role="progressbar" aria-busy="true">
+          <div className={styles.progressBar} />
+        </div>
+      )}
+    </div>
   )
 }
 
