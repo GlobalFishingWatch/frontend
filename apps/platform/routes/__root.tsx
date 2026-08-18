@@ -184,7 +184,11 @@ export const Route = createRootRoute({
     const description = t((s) => s.workspace.siteDescription.default) || defaultDescription
     const { meta, links } = getDefaultMeta(title, description)
     // Canonical is emitted here for every route. Child routes must not add their own.
-    const canonical = getCanonicalLink(matches[matches.length - 1]?.pathname)
+    const deepest = matches[matches.length - 1]
+    const canonical = getCanonicalLink(
+      deepest?.pathname,
+      deepest?.params as Record<string, string | undefined> | undefined
+    )
     return { meta, links: [...links, canonical] }
   },
 

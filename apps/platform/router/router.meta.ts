@@ -23,10 +23,16 @@ const buildCanonicalUrl = (pathname?: string) => {
   return `${SITE_ORIGIN}${withBase.length > 1 ? withBase.replace(/\/+$/, '') : withBase}`
 }
 
+const getCanonicalPathname = (pathname?: string, params?: Record<string, string | undefined>) =>
+  params?.vesselId ? `/vessel/${params.vesselId}` : pathname
+
 /** Single source of `rel=canonical` for the whole app — emitted once, from the root route. */
-export const getCanonicalLink = (pathname?: string) => ({
+export const getCanonicalLink = (
+  pathname?: string,
+  params?: Record<string, string | undefined>
+) => ({
   rel: 'canonical',
-  href: buildCanonicalUrl(pathname),
+  href: buildCanonicalUrl(getCanonicalPathname(pathname, params)),
 })
 
 export const getDefaultMeta = (
