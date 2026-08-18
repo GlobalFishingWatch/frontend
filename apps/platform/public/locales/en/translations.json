@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "No data available",
     "port": "Port",
-    "port_entryActionIn": "Entered port {{port}}",
-    "port_exitActionIn": "Exited port {{port}}",
     "port_one": "Port",
     "port_other": "Ports",
+    "port_entryActionIn": "Entered port {{port}}",
+    "port_exitActionIn": "Exited port {{port}}",
     "port_visit": "Port visit",
     "port_visit_one": "Port visit",
     "port_visit_other": "Port visits",
@@ -923,6 +923,7 @@
     "notValidFilterSelection": "At least one of your selected sources doesn't allow one of your filters",
     "placeholder": "Type to search for vessels",
     "placeholderFilterMultiple": "One or more values (comma separated)",
+    "reorderColumn": "Drag to reorder column",
     "results": "results",
     "searching": "Searching more than 100K vessels ...",
     "searchTypes": {
@@ -1183,8 +1184,8 @@
       "Sem código IN": "No IN code"
     },
     "geartype": "Gear type",
-    "gearType": "Gear Type",
     "geartype_other": "Gear types",
+    "gearType": "Gear Type",
     "gearType_short": "gear",
     "geartypes": "Gear type",
     "gearTypes": {

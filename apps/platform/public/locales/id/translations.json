@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "Tidak ada data yang tersedia",
     "port": "Pelabuhan",
-    "port_entryActionIn": "Masuk ke pelabuhan {{port}}",
-    "port_exitActionIn": "Keluar dari pelabuhan {{port}}",
     "port_one": "Port",
     "port_other": "Ports",
+    "port_entryActionIn": "Masuk ke pelabuhan {{port}}",
+    "port_exitActionIn": "Keluar dari pelabuhan {{port}}",
     "port_visit": "Kunjungan pelabuhan",
     "port_visit_one": "Kunjungan pelabuhan",
     "port_visit_other": "Kunjungan pelabuhan",
@@ -923,6 +923,7 @@
     "notValidFilterSelection": "At least one of your selected sources doesn't allow one of your filters",
     "placeholder": "Ketik untuk mencari kapal",
     "placeholderFilterMultiple": "One or more values (comma separated)",
+    "reorderColumn": "Drag to reorder column",
     "results": "results",
     "searching": "Searching more than 100K vessels ...",
     "searchTypes": {
@@ -1183,8 +1184,8 @@
       "Sem código IN": "No IN code"
     },
     "geartype": "Jenis peralatan",
-    "gearType": "Gear Type",
     "geartype_other": "Jenis peralatan",
+    "gearType": "Gear Type",
     "gearType_short": "Peralatan",
     "geartypes": "Jenis peralatan",
     "gearTypes": {

@@ -59,14 +59,14 @@ const fontFaceCss = `
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
-  font-display: optional;
+  font-display: swap;
   src: url(${robotoLatin400}) format('woff2');
 }
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
-  font-display: optional;
+  font-display: swap;
   src: url(${robotoLatin500}) format('woff2');
 }`
 
@@ -75,13 +75,16 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
     <html lang={lang}>
       <head>
         <link rel="stylesheet" href={appCss} />
-        <link
-          rel="preload"
-          as="font"
-          type="font/woff2"
-          href={robotoLatin400}
-          crossOrigin="anonymous"
-        />
+        {[robotoLatin400, robotoLatin500].map((href) => (
+          <link
+            key={href}
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href={href}
+            crossOrigin="anonymous"
+          />
+        ))}
         <style>{fontFaceCss}</style>
         <HeadContent />
         <Scripts />

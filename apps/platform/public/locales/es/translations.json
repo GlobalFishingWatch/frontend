@@ -657,10 +657,10 @@
     "naiveGaps": "Naive gaps in {{regionName}}",
     "noData": "No hay datos disponibles",
     "port": "Puerto",
-    "port_entryActionIn": "Ingreso puerto {{port}}",
-    "port_exitActionIn": "Salida puerto {{port}}",
     "port_one": "Puerto",
     "port_other": "Puertos",
+    "port_entryActionIn": "Ingreso puerto {{port}}",
+    "port_exitActionIn": "Salida puerto {{port}}",
     "port_visit": "Visita a puerto",
     "port_visit_one": "Visita a puerto",
     "port_visit_other": "Visitas a puerto",
@@ -923,6 +923,7 @@
     "notValidFilterSelection": "Al menos una de las fuentes que ha seleccionado no permite uno de sus filtros",
     "placeholder": "Escriba para buscar embarcaciones",
     "placeholderFilterMultiple": "Uno o más valores (separados por comas)",
+    "reorderColumn": "Drag to reorder column",
     "results": "resultados",
     "searching": "Buscando entre más de 100.000 embarcaciones ...",
     "searchTypes": {
@@ -1183,8 +1184,8 @@
       "Sem código IN": "No IN code"
     },
     "geartype": "Arte de pesca",
-    "gearType": "Arte de pesca",
     "geartype_other": "Artes de pesca",
+    "gearType": "Arte de pesca",
     "gearType_short": "Arte",
     "geartypes": "Artes de pesca",
     "gearTypes": {

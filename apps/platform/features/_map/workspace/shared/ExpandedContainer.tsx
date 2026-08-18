@@ -17,6 +17,7 @@ import {
 } from '@floating-ui/react'
 import cx from 'classnames'
 
+import { PLATFORM_CONTAINER_DOM_ID } from 'data/map/config'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 
 import styles from './ExpandedContainer.module.css'
@@ -122,7 +123,7 @@ function ExpandedContainer({
         {children}
       </div>
       {isOpen && (
-        <FloatingPortal>
+        <FloatingPortal id={PLATFORM_CONTAINER_DOM_ID}>
           {/* outer: floating-ui owns transform:translate for positioning */}
           <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
             {/* inner: CSS animation owns transform:scale without conflicting */}
