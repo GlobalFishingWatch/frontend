@@ -155,12 +155,6 @@ affected
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 
-# Terraform
-terraform.tfstate
-terraform.tfstate.backup
-**/*/.terraform
-**/*.terraform.lock.hcl
-
 
 
 # Vitest traces
