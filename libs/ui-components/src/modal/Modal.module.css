@@ -1,3 +1,25 @@
+@keyframes modal-overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .modalOverlay {
   background: rgba(var(--primary-blue-rgb), 0.75);
   position: fixed;
@@ -6,16 +28,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 200ms ease;
 }
 
-:global(.ReactModal__Overlay--after-open).modalOverlay {
-  opacity: 1;
-}
-
-:global(.ReactModal__Overlay--before-close).modalOverlay {
-  opacity: 0;
+/* Enter only — closing is immediate. With no [data-exiting] animation react-aria unmounts
+   the overlay straight away instead of holding it for a fade-out. */
+.modalOverlay[data-entering] {
+  animation: modal-overlay-in 200ms ease;
 }
 
 @media only screen and (width <= 720px) {
@@ -33,21 +51,14 @@
   overflow-y: auto;
   max-height: 100dvh;
   border-radius: var(--border-radius-1);
-  opacity: 0;
-  transform: scale(0.95);
-  transition:
-    transform 200ms var(--ease-out-strong),
-    opacity 180ms ease;
 }
 
-:global(.ReactModal__Content--after-open).modalContentWrapper {
-  opacity: 1;
-  transform: scale(1);
+.modalContentWrapper[data-entering] {
+  animation: modal-content-in 200ms var(--ease-out-strong);
 }
 
-:global(.ReactModal__Content--before-close).modalContentWrapper {
-  opacity: 0;
-  transform: scale(0.95);
+.dialog {
+  outline: none;
 }
 
 .auto {
@@ -121,12 +132,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .modalOverlay,
-  .modalContentWrapper {
-    transition: opacity 200ms ease;
-  }
-
-  .modalContentWrapper {
-    transform: none;
+  .modalContentWrapper[data-entering] {
+    animation-name: modal-overlay-in;
   }
 }
