@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
 
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
-// TODO remove also the ui-components and the react-modal dependency
 import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'

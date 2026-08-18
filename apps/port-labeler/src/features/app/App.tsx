@@ -4,7 +4,6 @@ import { SplitView } from '@globalfishingwatch/ui-components'
 import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { t } from 'features/i18n/i18n'
 import Sidebar from 'features/sidebar/Sidebar'
@@ -62,7 +61,6 @@ function App(): React.ReactElement<any> {
         className="split-container"
       />
       <Menu
-        appSelector={ROOT_DOM_ELEMENT}
         bgImage={menuBgImage}
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
