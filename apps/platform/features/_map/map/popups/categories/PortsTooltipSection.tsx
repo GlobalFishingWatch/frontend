@@ -11,12 +11,12 @@ import { formatInfoField } from 'utils/info'
 
 import styles from '../Popup.module.css'
 
-type PortsLayersProps = {
+type PortsTooltipSectionProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]
   showFeaturesDetails: boolean
 }
 
-function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLayersProps) {
+function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsTooltipSectionProps) {
   const { t } = useTranslation()
   const featuresByType = groupBy(features, (f) => f.layerId)
   return (

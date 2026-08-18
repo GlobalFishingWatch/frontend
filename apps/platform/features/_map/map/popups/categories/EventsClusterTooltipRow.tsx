@@ -1,106 +1,123 @@
-import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
-import {
-  ENCOUNTER_EVENTS_SOURCES,
-  GAPS_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-} from 'features/_map/dataviews/dataviews.utils'
-import EventsClusterRow from 'features/_map/map/popups/categories/EventsClusterRow'
-import EventsEncounterTooltipRow from 'features/_map/map/popups/categories/EventsEncounterTooltipRow'
-import EventsGapTooltipRow from 'features/_map/map/popups/categories/EventsGapTooltipRow'
-import EventsGenericClusterTooltipRow from 'features/_map/map/popups/categories/EventsGenericClusterTooltipRow'
-import EventsPortVisitTooltipRow from 'features/_map/map/popups/categories/EventsPortVisitTooltipRow'
-import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
-import type {
-  ExtendedFeatureByVesselEvent,
-  ExtendedFeatureSingleEvent,
-  SliceExtendedClusterPickingObject,
-} from '../../map.slice'
+import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
+import VesselLink from 'features/_vessels/vessel/VesselLink'
+import VesselPin from 'features/_vessels/vessel/VesselPin'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { getEventLabel } from 'utils/analytics'
+import { getEventDescription } from 'utils/events'
+import { formatInfoField } from 'utils/info'
+
+import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+
+import styles from '../Popup.module.css'
 
 type EventsClusterTooltipRowProps = {
-  feature: SliceExtendedClusterPickingObject
+  feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
   error?: string
   loading?: boolean
 }
 
-const GFW_CLUSTER_LAYERS = [
-  'encounter', // Used in VMS workspaces
-  'cluster-events', // Used in VMS workspaces
-  ...ENCOUNTER_EVENTS_SOURCES,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  GAPS_EVENTS_SOURCE_ID,
-  ...VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
-]
-
-export function EventsClusterTooltipRow({
+function EventsClusterTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
-  error,
 }: EventsClusterTooltipRowProps) {
-  const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
-    const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
-    return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
-  })
-  const key = `${feature.title}-${feature.eventId}`
-  const eventFeature = feature as SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
-  if (isGFWCluster) {
-    if (feature.layerId.includes('port')) {
-      return (
-        <EventsPortVisitTooltipRow
-          key={key}
-          loading={loading}
-          error={error}
-          feature={feature as SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>}
-          showFeaturesDetails={showFeaturesDetails}
-        />
-      )
-    }
-    if (feature.layerId.includes(EventTypes.Encounter) || feature.layerId.includes('encounters')) {
-      return (
-        <EventsEncounterTooltipRow
-          key={key}
-          loading={loading}
-          error={error}
-          feature={eventFeature}
-          showFeaturesDetails={showFeaturesDetails}
-        />
-      )
-    }
-    if (feature.layerId.includes(EventTypes.Gap) || feature.layerId.includes(EventTypes.Gaps)) {
-      return (
-        <EventsGapTooltipRow
-          key={key}
-          loading={loading}
-          error={error}
-          feature={eventFeature}
-          showFeaturesDetails={showFeaturesDetails}
-        />
-      )
-    }
-    return (
-      <EventsClusterRow
-        key={key}
-        loading={loading}
-        error={error}
-        feature={eventFeature}
-        showFeaturesDetails={showFeaturesDetails}
-      />
-    )
-  }
+  const { t } = useTranslation()
+  const { datasetId, event, color } = feature
+  const title = getDatasetLabel({ id: datasetId! })
+  const infoDataset = event?.dataset.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
+  const source = getDatasetSource(infoDataset?.id)
+  const timestamp = feature.properties.stime
+    ? feature.properties.stime * 1000
+    : event?.start
+      ? getUTCDateTime(event?.start as string).toMillis()
+      : undefined
+
+  const seeEventClick = useCallback((dataset: Dataset) => {
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `Clicked see loitering event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
+    })
+  }, [])
+
   return (
-    <EventsGenericClusterTooltipRow
-      key={key}
-      error={error}
-      loading={loading}
-      feature={eventFeature}
-      showFeaturesDetails={showFeaturesDetails}
-    />
+    <div className={styles.popupSection}>
+      <Icon icon="clusters" className={styles.layerIcon} style={{ color }} />
+      <div className={styles.popupSectionContent}>
+        {showFeaturesDetails ? (
+          <h3 className={styles.popupSectionTitle}>{title}</h3>
+        ) : (
+          feature.count && (
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={feature.count} />{' '}
+                {t((t) => t.event.loitering, {
+                  count: feature.count,
+                })}
+                {timestamp && (
+                  <span className={styles.rowTextSecondary}>
+                    {' '}
+                    <I18nDate date={timestamp} />
+                  </span>
+                )}
+              </span>
+            </div>
+          )
+        )}
+
+        {loading ? (
+          <Spinner className={styles.eventSpinner} inline size="small" />
+        ) : (
+          showFeaturesDetails && (
+            <div className={styles.row}>
+              {event?.vessel ? (
+                <div className={styles.rowText}>
+                  <VesselPin
+                    vesselToResolve={{ ...event.vessel, datasetId: infoDataset?.id as string }}
+                    size="small"
+                    className={styles.inlineBtn}
+                  />
+                  <VesselLink
+                    vesselId={event.vessel.id}
+                    datasetId={infoDataset?.id}
+                    query={{
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                      vesselSelfReportedId: event.vessel.id,
+                    }}
+                    className={styles.marginRight}
+                    onClick={() => seeEventClick(event.dataset)}
+                  >
+                    {formatInfoField(event.vessel.name, 'shipname')}
+                  </VesselLink>
+                  ({formatInfoField(event.vessel.flag, 'flag')}){' '}
+                  <span className={styles.secondary} style={{ display: 'inline' }}>
+                    {getEventDescription(event, { source })?.description}
+                  </span>
+                </div>
+              ) : (
+                t((t) => t.event.noData)
+              )}
+            </div>
+          )
+        )}
+      </div>
+    </div>
   )
 }
 

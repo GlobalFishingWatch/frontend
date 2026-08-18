@@ -9,7 +9,7 @@ type HotspotTooltipSectionProps = {
   properties: HotspotProperties
 }
 
-export default function HotspotTooltipSection({ properties }: HotspotTooltipSectionProps) {
+function HotspotTooltipSection({ properties }: HotspotTooltipSectionProps) {
   const { t } = useTranslation()
   const { area, unit, totalHours, percentOfTotal } = properties
   const unitLabel = unit === NAUTICAL_MILES ? 'nm²' : 'km²'
@@ -29,3 +29,5 @@ export default function HotspotTooltipSection({ properties }: HotspotTooltipSect
     </div>
   )
 }
+
+export default HotspotTooltipSection

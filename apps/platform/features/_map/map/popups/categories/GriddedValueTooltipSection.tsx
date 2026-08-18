@@ -18,7 +18,7 @@ import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/sele
 
 import styles from '../Popup.module.css'
 
-type ContextTooltipRowProps = {
+type GriddedValueTooltipSectionProps = {
   features: (FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject)[]
   showFeaturesDetails: boolean
 }
@@ -33,10 +33,18 @@ function parseEnvironmentalValue(value: any) {
   return value as number
 }
 
-function EnvironmentTooltipSection({
+function getGriddedFeatureValue(
+  feature: FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject
+) {
+  return feature.subcategory === DataviewType.HeatmapStatic
+    ? (feature as FourwingsHeatmapStaticPickingObject).properties?.[HEATMAP_STATIC_PROPERTY_ID]
+    : feature.sublayers?.[0]?.value
+}
+
+function GriddedValueTooltipSection({
   features,
   showFeaturesDetails = false,
-}: ContextTooltipRowProps) {
+}: GriddedValueTooltipSectionProps) {
   const { t } = useTranslation()
 
   // user gridded (HEATMAP_STATIC) layers land here too, and they are not in the environment category
@@ -49,16 +57,9 @@ function EnvironmentTooltipSection({
         const isHeatmapFeature =
           feature.subcategory === DataviewType.HeatmapAnimated ||
           feature.subcategory === DataviewType.HeatmapStatic
-        const value =
-          feature.subcategory === DataviewType.HeatmapAnimated
-            ? feature.sublayers?.[0]?.value
-            : (feature as FourwingsHeatmapStaticPickingObject).properties?.[
-                HEATMAP_STATIC_PROPERTY_ID
-              ]
+        const value = getGriddedFeatureValue(feature)
 
-        const unit = feature.sublayers
-          ? feature.sublayers?.[0]?.unit
-          : dataview?.datasets?.[0]?.unit
+        const unit = feature.sublayers?.[0]?.unit ?? dataview?.datasets?.[0]?.unit
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon
@@ -69,7 +70,9 @@ function EnvironmentTooltipSection({
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && (
                 <h3 className={styles.popupSectionTitle}>
-                  {dataview ? getDatasetTitleByDataview(dataview) : feature.title}
+                  {dataview
+                    ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                    : feature.title}
                 </h3>
               )}
               <div className={styles.row}>
@@ -96,4 +99,4 @@ function EnvironmentTooltipSection({
   )
 }
 
-export default EnvironmentTooltipSection
+export default GriddedValueTooltipSection

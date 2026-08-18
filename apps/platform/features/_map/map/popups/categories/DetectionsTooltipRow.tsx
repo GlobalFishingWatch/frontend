@@ -5,12 +5,13 @@ import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getIsSkylightDataset } from 'features/_map/datasets/datasets.utils'
-import VesselDetectionTimestamps from 'features/_map/map/popups/categories/VesselDetectionTimestamps'
-import { getVesselsInfoConfig } from 'features/_map/map/popups/categories/vessels-table.utils'
-import VesselsTable from 'features/_map/map/popups/categories/VesselsTable'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import type { ExtendedFeatureVessel, SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+
+import VesselDetectionTimestamps from './VesselDetectionTimestamps'
+import { getVesselsInfoConfig } from './vessels-table.utils'
+import VesselsTable from './VesselsTable'
 
 import styles from '../Popup.module.css'
 

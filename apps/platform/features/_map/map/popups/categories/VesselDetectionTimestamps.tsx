@@ -12,7 +12,7 @@ import { getDetectionsTimestamps } from 'utils/info'
 
 import styles from './VesselsTable.module.css'
 
-export const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
+const VesselDetectionTimestamps = ({ vessel }: { vessel: ExtendedFeatureVessel }) => {
   const { setTimerange } = useTimerangeConnect()
   const detectionsTimestamps = getDetectionsTimestamps(vessel)
   const hasDetectionsTimestamps = detectionsTimestamps && detectionsTimestamps.length > 0

@@ -8,20 +8,24 @@ import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
+import { getContextValue } from '../map-popups.utils'
+
 import { useContextInteractions } from './ContextLayers.hooks'
-import ContextLayersRow from './ContextLayersRow'
+import ContextTooltipRow from './ContextTooltipRow'
 
 import styles from '../Popup.module.css'
 
-type ContextTooltipRowProps = {
+type ContextTooltipSectionProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]
   showFeaturesDetails: boolean
 }
 
-function ContextTooltipSection({ features, showFeaturesDetails = false }: ContextTooltipRowProps) {
+function ContextTooltipSection({
+  features,
+  showFeaturesDetails = false,
+}: ContextTooltipSectionProps) {
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
   const isSingleArea = features.length === 1
@@ -68,7 +72,7 @@ function ContextTooltipSection({ features, showFeaturesDetails = false }: Contex
                 if (!label) return null
                 const linkHref = (feature as ContextPickingObject).link
                 return (
-                  <ContextLayersRow
+                  <ContextTooltipRow
                     id={feature.id as string}
                     key={`${feature.id}-${index}`}
                     label={label}

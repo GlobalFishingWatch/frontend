@@ -24,19 +24,19 @@ import VesselsTable from './VesselsTable'
 
 import styles from '../Popup.module.css'
 
-type PortVisitLayerProps = {
+type EventsPortVisitTooltipRowProps = {
   feature: SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>
   showFeaturesDetails: boolean
   error?: string
   loading?: boolean
 }
 
-function PortVisitEventTooltipRow({
+function EventsPortVisitTooltipRow({
   feature,
   showFeaturesDetails,
   error,
   loading,
-}: PortVisitLayerProps) {
+}: EventsPortVisitTooltipRowProps) {
   const { t } = useTranslation()
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { datasetId, event, color } = feature
@@ -110,4 +110,4 @@ function PortVisitEventTooltipRow({
   )
 }
 
-export default PortVisitEventTooltipRow
+export default EventsPortVisitTooltipRow

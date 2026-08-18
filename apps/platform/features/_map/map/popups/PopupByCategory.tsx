@@ -26,21 +26,6 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { PORTS_LAYER_ID, REPORT_HOTSPOT_ID } from 'features/_map/map/map.config'
 import { useMapViewport } from 'features/_map/map/map-viewport.hooks'
-import ActivityTooltipRow from 'features/_map/map/popups/categories/ActivityLayers'
-import ComparisonRow from 'features/_map/map/popups/categories/ComparisonRow'
-import ContextTooltipSection from 'features/_map/map/popups/categories/ContextLayers'
-import DetectionsTooltipRow from 'features/_map/map/popups/categories/DetectionsLayers'
-import EnvironmentTooltipSection from 'features/_map/map/popups/categories/EnvironmentLayers'
-import EventsClusterTooltip from 'features/_map/map/popups/categories/EventsClusterTooltip'
-import PortsTooltipSection from 'features/_map/map/popups/categories/PortsLayers'
-import PositionsTooltipSection from 'features/_map/map/popups/categories/PositionsTooltipSection'
-import RulerTooltip from 'features/_map/map/popups/categories/RulerTooltip'
-import UserPointsTooltipSection from 'features/_map/map/popups/categories/UserPointsLayers'
-import UserTracksTooltipSection from 'features/_map/map/popups/categories/UserTracksLayers'
-import VesselEventsLayers from 'features/_map/map/popups/categories/VesselEventsLayers'
-import VesselGroupTooltipRow from 'features/_map/map/popups/categories/VesselGroupLayers'
-import VesselTracksLayers from 'features/_map/map/popups/categories/VesselTracksLayers'
-import WorkspacePointsTooltipSection from 'features/_map/map/popups/categories/WorkspacePointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import type {
@@ -58,10 +43,25 @@ import {
   selectRealTimePositionsInteractionStatus,
 } from '../map.slice'
 
-import HotspotTooltipSection from './categories/HotspotTooltip'
-import ReportBufferTooltip from './categories/ReportBufferLayers'
-import UserContextTooltipSection from './categories/UserContextLayers'
-import VectorsTooltipRow from './categories/VectorsLayers'
+import ActivityTooltipRow from './categories/ActivityTooltipRow'
+import ComparisonTooltipRow from './categories/ComparisonTooltipRow'
+import ContextTooltipSection from './categories/ContextTooltipSection'
+import DetectionsTooltipRow from './categories/DetectionsTooltipRow'
+import EventsClusterTooltipSection from './categories/EventsClusterTooltipSection'
+import GriddedValueTooltipSection from './categories/GriddedValueTooltipSection'
+import HotspotTooltipSection from './categories/HotspotTooltipSection'
+import PortsTooltipSection from './categories/PortsTooltipSection'
+import PositionsTooltipSection from './categories/PositionsTooltipSection'
+import ReportBufferTooltipSection from './categories/ReportBufferTooltipSection'
+import RulerTooltipSection from './categories/RulerTooltipSection'
+import UserContextTooltipSection from './categories/UserContextTooltipSection'
+import UserPointsTooltipSection from './categories/UserPointsTooltipSection'
+import UserTracksTooltipSection from './categories/UserTracksTooltipSection'
+import VectorsTooltipRow from './categories/VectorsTooltipRow'
+import VesselEventsTooltipSection from './categories/VesselEventsTooltipSection'
+import VesselGroupTooltipRow from './categories/VesselGroupTooltipRow'
+import VesselTracksTooltipSection from './categories/VesselTracksTooltipSection'
+import WorkspacePointsTooltipSection from './categories/WorkspacePointsTooltipSection'
 
 import styles from './Popup.module.css'
 
@@ -70,7 +70,7 @@ type PopupByCategoryProps = {
   type?: 'hover' | 'click'
 }
 
-const OMITED_CATEGORIES = ['draw']
+const OMITTED_CATEGORIES = ['draw']
 
 function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) {
   const { t } = useTranslation()
@@ -92,7 +92,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
 
   const visibleFeatures = interaction?.features.filter(
     (feature) =>
-      !OMITED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
+      !OMITTED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
   )
 
   if (!visibleFeatures.length && !hotspotFeature) return null
@@ -146,7 +146,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 {heatmapFeatures.map((feature, i) => {
                   if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
                     return (
-                      <ComparisonRow
+                      <ComparisonTooltipRow
                         key={featureCategory}
                         feature={features[0] as FourwingsHeatmapPickingObject}
                         showFeaturesDetails={type === 'click'}
@@ -207,7 +207,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.Events: {
             return (
-              <EventsClusterTooltip
+              <EventsClusterTooltipSection
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
@@ -247,7 +247,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
-                <EnvironmentTooltipSection
+                <GriddedValueTooltipSection
                   features={environmentalFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
@@ -297,7 +297,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.Buffer: {
             return (
-              <ReportBufferTooltip
+              <ReportBufferTooltipSection
                 key={featureCategory}
                 features={features as PolygonPickingObject[]}
               />
@@ -339,7 +339,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   features={userContextFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
-                <EnvironmentTooltipSection
+                <GriddedValueTooltipSection
                   features={userStaticHeatmapFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
@@ -376,11 +376,11 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
             return (
               <Fragment key={featureCategory}>
-                <VesselTracksLayers
+                <VesselTracksTooltipSection
                   features={trackFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
-                <VesselEventsLayers
+                <VesselEventsTooltipSection
                   features={eventFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
@@ -401,7 +401,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               (f) => f.properties.order === 'start' || f.properties.order === 'end'
             )
             return (
-              <RulerTooltip
+              <RulerTooltipSection
                 key={featureCategory}
                 features={rulersFeatures}
                 showFeaturesDetails={type === 'click'}

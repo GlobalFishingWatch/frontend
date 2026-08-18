@@ -196,7 +196,7 @@ const drawEnhancedImageToCanvas = ({
   }
 }
 
-export function DetectionThumbnail({ data, scale, datasetId }: DetectionThumbnailProps) {
+function DetectionThumbnail({ data, scale, datasetId }: DetectionThumbnailProps) {
   const { t } = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)

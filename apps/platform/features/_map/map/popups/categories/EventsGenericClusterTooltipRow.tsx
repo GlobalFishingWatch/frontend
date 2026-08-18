@@ -6,19 +6,19 @@ import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } fr
 
 import styles from '../Popup.module.css'
 
-type EncountersLayerProps = {
+type EventsGenericClusterTooltipRowProps = {
   feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
   error?: string
   loading?: boolean
 }
 
-function GenericClusterTooltipRow({
+function EventsGenericClusterTooltipRow({
   feature,
   showFeaturesDetails,
   error,
   loading,
-}: EncountersLayerProps) {
+}: EventsGenericClusterTooltipRowProps) {
   return (
     <div className={styles.popupSection}>
       <Icon icon="clusters" style={{ color: feature.color }} />
@@ -67,4 +67,4 @@ function GenericClusterTooltipRow({
   )
 }
 
-export default GenericClusterTooltipRow
+export default EventsGenericClusterTooltipRow

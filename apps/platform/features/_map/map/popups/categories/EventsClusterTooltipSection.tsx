@@ -5,25 +5,26 @@ import cx from 'classnames'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
-import EventsClusterTooltipRow from 'features/_map/map/popups/categories/EventsClusterTooltipRow'
 
 import type { SliceExtendedClusterPickingObject } from '../../map.slice'
 
+import PopupByEventType from './PopupByEventType'
+
 import styles from '../Popup.module.css'
 
-type EventsClusterTooltipProps = {
+type EventsClusterTooltipSectionProps = {
   features: SliceExtendedClusterPickingObject[]
   showFeaturesDetails: boolean
   loading?: boolean
   error?: string
 }
 
-export function EventsClusterTooltip({
+function EventsClusterTooltipSection({
   features,
   showFeaturesDetails,
   loading,
   error,
-}: EventsClusterTooltipProps) {
+}: EventsClusterTooltipSectionProps) {
   const datasets = useSelector(selectAllDatasets)
   const { t } = useTranslation()
   if (showFeaturesDetails && features.length > 1) {
@@ -36,7 +37,7 @@ export function EventsClusterTooltip({
     const moreFeatures = features.slice(1)
     return (
       <Fragment>
-        <EventsClusterTooltipRow
+        <PopupByEventType
           feature={feature}
           showFeaturesDetails={showFeaturesDetails}
           loading={loading}
@@ -60,7 +61,7 @@ export function EventsClusterTooltip({
           count: f?.properties?.value || 1,
         }
         return (
-          <EventsClusterTooltipRow
+          <PopupByEventType
             key={f.id}
             feature={feature}
             showFeaturesDetails={showFeaturesDetails}
@@ -73,4 +74,4 @@ export function EventsClusterTooltip({
   )
 }
 
-export default EventsClusterTooltip
+export default EventsClusterTooltipSection

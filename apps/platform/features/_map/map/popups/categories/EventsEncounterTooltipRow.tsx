@@ -40,19 +40,19 @@ const parseEncounterEvent = (
   }
 }
 
-type EncounterTooltipRowProps = {
+type EventsEncounterTooltipRowProps = {
   feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
   error?: string
   loading?: boolean
 }
 
-function EncounterTooltipRow({
+function EventsEncounterTooltipRow({
   feature,
   showFeaturesDetails,
   error,
   loading,
-}: EncounterTooltipRowProps) {
+}: EventsEncounterTooltipRowProps) {
   const { t } = useTranslation()
   const dataviews = useSelector(selectEventsDataviews)
   const encountersDataview = dataviews.find((d) => d.id === feature.layerId)
@@ -247,4 +247,4 @@ function EncounterTooltipRow({
   )
 }
 
-export default EncounterTooltipRow
+export default EventsEncounterTooltipRow

@@ -39,7 +39,7 @@ import { formatInfoField } from 'utils/info'
 
 import styles from '../Popup.module.css'
 
-type VesselTracksLayersProps = {
+type VesselTracksTooltipSectionProps = {
   features: VesselTrackPickingObject[]
   showFeaturesDetails: boolean
 }
@@ -175,7 +175,7 @@ function VesselTracksTooltipRow({
 function VesselTracksTooltipSection({
   features,
   showFeaturesDetails = false,
-}: VesselTracksLayersProps) {
+}: VesselTracksTooltipSectionProps) {
   const trackDataviews = useSelector(selectActiveVesselsDataviews) as UrlDataviewInstance[]
   const userDataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
   const featuresByType = groupBy(features, (f) => f.layerId)

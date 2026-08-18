@@ -21,7 +21,6 @@ import {
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useMapBoundsLive, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { getSimplificationByDataview } from 'features/_reports/report-area/area-reports.hooks'
 import { useFilterCellsByPolygonWorker } from 'features/_reports/reports-geo.utils.workers.hooks'
@@ -35,6 +34,8 @@ import {
   selectDatasetAreaStatus,
 } from 'features/data/areas/areas.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { getContextValue } from '../map-popups.utils'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 

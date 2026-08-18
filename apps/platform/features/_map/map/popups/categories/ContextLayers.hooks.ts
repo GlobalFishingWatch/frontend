@@ -8,13 +8,14 @@ import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectPointsActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { setDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
-import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/data/areas/areas.slice'
 import { fetchAreaDetailThunk } from 'features/data/areas/areas.slice'
 import { selectLocationAreaId } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
+
+import { getContextValue } from '../map-popups.utils'
 
 export const getAreaIdFromFeature = (
   feature: ContextPickingObject | UserLayerPickingObject

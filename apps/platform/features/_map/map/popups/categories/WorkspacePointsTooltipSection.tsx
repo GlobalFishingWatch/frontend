@@ -14,7 +14,7 @@ import type { MapCoordinates } from 'types'
 
 import styles from '../Popup.module.css'
 
-type WorkspacePointsLayersProps = {
+type WorkspacePointsTooltipSectionProps = {
   features: WorkspacesPickingObject[]
   showFeaturesDetails?: boolean
 }
@@ -22,7 +22,7 @@ type WorkspacePointsLayersProps = {
 function WorkspacePointsTooltipSection({
   features,
   showFeaturesDetails,
-}: WorkspacePointsLayersProps) {
+}: WorkspacePointsTooltipSectionProps) {
   const setMapCoordinates = useSetMapCoordinates()
   const { dispatchClickedEvent } = useClickedEventConnect()
 

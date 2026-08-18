@@ -8,11 +8,11 @@ import I18nNumber from 'features/i18n/i18nNumber'
 
 import styles from '../Popup.module.css'
 
-type ComparisonRowProps = {
+type ComparisonTooltipRowProps = {
   feature: FourwingsHeatmapPickingObject
   showFeaturesDetails: boolean
 }
-function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowProps) {
+function ComparisonTooltipRow({ feature, showFeaturesDetails = false }: ComparisonTooltipRowProps) {
   const { t } = useTranslation()
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
   const value = feature.sublayers?.[0]?.value as number
@@ -42,4 +42,4 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
   )
 }
 
-export default ComparisonRow
+export default ComparisonTooltipRow

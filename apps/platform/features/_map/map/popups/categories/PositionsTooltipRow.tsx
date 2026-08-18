@@ -36,11 +36,9 @@ import { formatInfoField, upperFirst } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
 
-const DetectionThumbnailImage = lazy(
-  () => import('features/_map/map/popups/categories/DetectionThumbnail')
-)
+const DetectionThumbnailImage = lazy(() => import('./DetectionThumbnail'))
 
-type PositionsRowProps = {
+type PositionsTooltipRowProps = {
   loading: boolean
   error: string
   feature: FourwingsPositionsPickingObject
@@ -107,7 +105,12 @@ function DetectionThumbnails({
   )
 }
 
-function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
+function PositionsTooltipRow({
+  loading,
+  error,
+  feature,
+  showFeaturesDetails,
+}: PositionsTooltipRowProps) {
   const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
   const workspace = useSelector(selectWorkspace)
@@ -290,4 +293,4 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
   )
 }
 
-export default PositionsRow
+export default PositionsTooltipRow

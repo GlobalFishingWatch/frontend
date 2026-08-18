@@ -7,11 +7,12 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import type { SliceExtendedFourwingsPickingObject } from 'features/_map/map/map.slice'
-import PositionsRow from 'features/_map/map/popups/categories/PositionsRow'
+
+import PositionsTooltipRow from './PositionsTooltipRow'
 
 import styles from '../Popup.module.css'
 
-type PositionsTooltipRowProps = {
+type PositionsTooltipSectionProps = {
   features: SliceExtendedFourwingsPickingObject[]
   showFeaturesDetails: boolean
   loading: boolean
@@ -23,7 +24,7 @@ function PositionsTooltipSection({
   showFeaturesDetails = false,
   loading,
   error,
-}: PositionsTooltipRowProps) {
+}: PositionsTooltipSectionProps) {
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState(0)
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
 
@@ -54,7 +55,7 @@ function PositionsTooltipSection({
       <div className={styles.popupSection}>
         <div>
           {title && <h3 className={styles.popupSectionTitle}>{title}</h3>}
-          <PositionsRow
+          <PositionsTooltipRow
             key={`${currentFeature.id}-${currentFeatureIndex}`}
             loading={loading}
             error={error}
@@ -88,7 +89,7 @@ function PositionsTooltipSection({
   return features.map((feature, i) => {
     return (
       <div key={`${feature.id}-${i}`} className={styles.popupSection}>
-        <PositionsRow
+        <PositionsTooltipRow
           loading={loading}
           error={error}
           feature={feature as any as FourwingsPositionsPickingObject}

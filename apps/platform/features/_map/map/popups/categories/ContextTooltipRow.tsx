@@ -23,7 +23,7 @@ import ContextLayerSparkline from './ContextLayerSparkline'
 import styles from '../Popup.module.css'
 import layerStyles from './ContextLayers.module.css'
 
-type ContextLayersRowProps = {
+type ContextTooltipRowProps = {
   id: string
   label: string
   feature: ContextPickingObject | UserLayerPickingObject
@@ -39,7 +39,7 @@ type ContextLayersRowProps = {
   ) => void
 }
 
-const ContextLayersRow = ({
+const ContextTooltipRow = ({
   id,
   label,
   showFeaturesDetails,
@@ -48,7 +48,7 @@ const ContextLayersRow = ({
   feature,
   handleDownloadClick,
   handleReportClick,
-}: ContextLayersRowProps) => {
+}: ContextTooltipRowProps) => {
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
@@ -124,4 +124,4 @@ const ContextLayersRow = ({
   )
 }
 
-export default ContextLayersRow
+export default ContextTooltipRow

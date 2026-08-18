@@ -9,12 +9,12 @@ import useRulers from 'features/_map/map/overlays/rulers/rulers.hooks'
 
 import styles from '../Popup.module.css'
 
-type RulerTooltipProps = {
+type RulerTooltipSectionProps = {
   features: RulerPickingObject[]
   showFeaturesDetails: boolean
 }
 
-function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
+function RulerTooltipSection({ features, showFeaturesDetails }: RulerTooltipSectionProps) {
   const { t } = useTranslation()
   const { deleteMapRuler } = useRulers()
   const { dispatchClickedEvent } = useClickedEventConnect()
@@ -48,4 +48,4 @@ function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
   )
 }
 
-export default RulerTooltip
+export default RulerTooltipSection

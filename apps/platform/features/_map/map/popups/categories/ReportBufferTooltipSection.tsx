@@ -9,11 +9,11 @@ import { BUFFER_PREVIEW_COLOR } from 'data/map/config'
 
 import styles from '../Popup.module.css'
 
-type ReportBufferLayersProps = {
+type ReportBufferTooltipSectionProps = {
   features: (ContextPickingObject | UserLayerPickingObject | PolygonPickingObject)[]
 }
 
-function ReportBufferTooltip({ features }: ReportBufferLayersProps) {
+function ReportBufferTooltipSection({ features }: ReportBufferTooltipSectionProps) {
   return features.length ? (
     <div className={styles.popupSection}>
       <Icon icon="polygons" className={styles.layerIcon} style={{ color: BUFFER_PREVIEW_COLOR }} />
@@ -24,4 +24,4 @@ function ReportBufferTooltip({ features }: ReportBufferLayersProps) {
   ) : null
 }
 
-export default ReportBufferTooltip
+export default ReportBufferTooltipSection

@@ -21,7 +21,6 @@ import type {
 } from 'features/_map/map/map.slice'
 import { MAX_TOOLTIP_LIST } from 'features/_map/map/map.slice'
 import { SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION } from 'features/_map/map/map-interactions.hooks'
-import VesselDetectionTimestamps from 'features/_map/map/popups/categories/VesselDetectionTimestamps'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { getVesselIdentityTooltipSummary } from 'features/_map/workspace/vessels/vessel-layer-panel.utils'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
@@ -46,6 +45,7 @@ import {
   getVesselShipTypeLabel,
 } from 'utils/info'
 
+import VesselDetectionTimestamps from './VesselDetectionTimestamps'
 import { getVesselsInfoConfig } from './vessels-table.utils'
 
 import styles from './VesselsTable.module.css'

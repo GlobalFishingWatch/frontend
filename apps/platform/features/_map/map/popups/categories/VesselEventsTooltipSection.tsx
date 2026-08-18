@@ -110,7 +110,7 @@ function EventDescription({
   )
 }
 
-type VesselEventsTooltipRowProps = {
+type VesselEventsTooltipSectionProps = {
   features: VesselEventPickingObject[]
   showFeaturesDetails?: boolean
 }
@@ -118,7 +118,7 @@ type VesselEventsTooltipRowProps = {
 function VesselEventsTooltipSection({
   features,
   showFeaturesDetails,
-}: VesselEventsTooltipRowProps) {
+}: VesselEventsTooltipSectionProps) {
   const { t } = useTranslation()
   const overflows = features?.length > MAX_TOOLTIP_LIST
   const featuresByType = useMemo(() => {
