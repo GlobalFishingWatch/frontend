@@ -2,6 +2,7 @@ import { getRequestUrl } from '@tanstack/react-start/server'
 import { defineCachedFunction } from 'nitro/cache'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
+import { resolveCmsRequestMode } from 'features/cms/loaders/preview'
 import type { StrapiResponse } from 'features/cms/strapi.types'
 import { CMS_MAX_CACHE_AGE_MINUTES } from 'features/help/helpHub.config'
 import { toContentLocale } from 'features/i18n/i18n.config'
@@ -64,24 +65,24 @@ const fetchStrapiCollectionFromCache = defineCachedFunction(fetchStrapiCollectio
   },
 }) as <T>(args: FetchStrapiCollectionParams) => Promise<StrapiResponse<T>>
 
-const isCacheEnabled = () => {
+const getCmsRequestMode = (): ReturnType<typeof resolveCmsRequestMode> => {
   try {
-    const searchParams = getRequestUrl().searchParams
-    if (!searchParams.has('nocache')) {
-      return true
-    }
-    if (IS_DEVELOPMENT_ENV) {
-      return false
-    }
-    const secret = process.env.STRAPI_PREVIEW_SECRET
-    return !secret || searchParams.get('nocache') !== secret
+    return resolveCmsRequestMode(
+      getRequestUrl().searchParams,
+      process.env.STRAPI_PREVIEW_SECRET,
+      IS_DEVELOPMENT_ENV
+    )
   } catch {
-    // no request context (prerender, background swr revalidation) — keep the cache
-    return true
+    return { useCache: true }
   }
 }
 
 export const fetchStrapiCollectionCached = <T>(
   args: FetchStrapiCollectionParams
-): Promise<StrapiResponse<T>> =>
-  isCacheEnabled() ? fetchStrapiCollectionFromCache<T>(args) : fetchStrapiCollection<T>(args)
+): Promise<StrapiResponse<T>> => {
+  const { useCache, status } = getCmsRequestMode()
+  if (useCache) {
+    return fetchStrapiCollectionFromCache<T>(args)
+  }
+  return fetchStrapiCollection<T>(status ? { ...args, params: { ...args.params, status } } : args)
+}

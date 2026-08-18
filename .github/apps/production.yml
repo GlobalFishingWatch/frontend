@@ -22,6 +22,7 @@ platform:
     secrets:
       STRAPI_TOKEN: projects/674016975526/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
       STRAPI_URL: projects/674016975526/secrets/FISHING_MAP_STRAPI_URL/versions/latest
+      STRAPI_PREVIEW_SECRET: projects/674016975526/secrets/strapi-preview-secret-production/versions/latest
       DOWNLOAD_SURVEY_SPREADSHEET_ID: projects/674016975526/secrets/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest
       FEEDBACK_SPREADSHEET_ID: projects/674016975526/secrets/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest
       GFW_API_KEY: projects/674016975526/secrets/FISHING_MAP_GFW_API_KEY/versions/latest
