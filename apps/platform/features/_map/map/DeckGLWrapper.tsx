@@ -46,6 +46,10 @@ const DeckGLWrapper = () => {
 
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters<any>) => {
+      const { longitude, latitude, zoom } = params.viewState
+      if (![longitude, latitude, zoom].every(Number.isFinite)) {
+        return
+      }
       if (params.interactionState.isZooming || !params.interactionState.inTransition) {
         // https://github.com/visgl/deck.gl/issues/7158#issuecomment-2305388963
         // add transitionDuration: 0 to avoid unresponsive zoom
