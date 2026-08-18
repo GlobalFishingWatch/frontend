@@ -51,7 +51,7 @@ export type NewDatasetProps = {
 export type DatasetMetadata = Partial<
   Pick<
     Dataset,
-    'id' | 'name' | 'type' | 'filters' | 'category' | 'configuration' // | 'description'
+    'id' | 'name' | 'type' | 'filters' | 'category' | 'configuration' | 'unit' // | 'description'
   > & {
     public: boolean
   }

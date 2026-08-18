@@ -461,7 +461,9 @@
     "fieldPlaceholder": "Select a field from your dataset",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name"
+      "bandName": "Band {{band}} name",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
     },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",

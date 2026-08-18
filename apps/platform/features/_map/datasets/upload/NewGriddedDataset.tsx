@@ -147,6 +147,14 @@ function NewGriddedDataset({
           className={styles.input}
           disabled={loading}
         />
+        <InputText
+          value={datasetMetadata?.unit ?? ''}
+          label={t((t) => t.datasetUpload.gridded.unit)}
+          placeholder={t((t) => t.datasetUpload.gridded.unitPlaceholder)}
+          className={styles.input}
+          onChange={(e) => setDatasetMetadata({ unit: e.target.value })}
+          disabled={loading}
+        />
       </div>
       {bands.length > 1 &&
         bands.map((band, index) => (
