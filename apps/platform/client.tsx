@@ -70,15 +70,11 @@ if (import.meta.env.PROD) {
     })
 }
 
-if (typeof WeakRef === 'undefined') {
-  window.location.replace(`${import.meta.env.BASE_URL}unsupported.html`)
-} else {
-  startTransition(() => {
-    hydrateRoot(
-      document,
-      <StrictMode>
-        <StartClient />
-      </StrictMode>
-    )
-  })
-}
+startTransition(() => {
+  hydrateRoot(
+    document,
+    <StrictMode>
+      <StartClient />
+    </StrictMode>
+  )
+})
