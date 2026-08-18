@@ -14,7 +14,7 @@ import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
-import { selectEnvironmentalDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 
 import styles from '../Popup.module.css'
 
@@ -39,7 +39,8 @@ function EnvironmentTooltipSection({
 }: ContextTooltipRowProps) {
   const { t } = useTranslation()
 
-  const dataviews = useSelector(selectEnvironmentalDataviews) as UrlDataviewInstance[]
+  // user gridded (HEATMAP_STATIC) layers land here too, and they are not in the environment category
+  const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   return (
     <Fragment>
       {features.map((feature, index) => {

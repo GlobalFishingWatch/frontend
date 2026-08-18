@@ -322,6 +322,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext ||
                 feature.subcategory === DataviewType.HeatmapAnimated
             )
+            const userStaticHeatmapFeatures = (
+              features as SliceExtendedFourwingsPickingObject[]
+            ).filter((feature) => feature.subcategory === DataviewType.HeatmapStatic)
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
@@ -334,6 +337,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 />
                 <UserContextTooltipSection
                   features={userContextFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <EnvironmentTooltipSection
+                  features={userStaticHeatmapFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 {userBQHeatmapFeatures &&
