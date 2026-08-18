@@ -19,6 +19,7 @@ import {
 } from 'features/_reports/tabs/events/events-report.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { selectIsPortReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -50,6 +51,7 @@ export default function ReportSummaryEvents() {
           t((t) => (t.event as any)[eventType.toLowerCase()], {
             defaultValue: lowerCase(eventType || ''),
             count: totalStatsEvents,
+            source: getDatasetSourceTranslated({ id: eventDataset?.source || '' }),
           } as any)
         ).toLowerCase()
       : ''
@@ -92,6 +94,7 @@ export default function ReportSummaryEvents() {
     reportAreaId,
     reportVesselsFlags?.size,
     t,
+    eventDataset?.source,
     timerange?.end,
     timerange?.start,
     totalEventsVessels,
