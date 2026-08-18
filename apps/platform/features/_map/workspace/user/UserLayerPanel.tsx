@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
@@ -97,10 +96,11 @@ function UserPanel({
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const layerImporting = layerActive && dataset?.status === DatasetStatus.Importing
   const isBaseUserLayer =
     instance instanceof UserPointsTileLayer || instance instanceof UserContextTileLayer
 
-  useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
+  useAutoRefreshImportingDataset(layerActive ? dataset : undefined, 5000)
 
   const {
     items,
@@ -319,7 +319,7 @@ function UserPanel({
           {datasetError && (
             <InfoError
               error={datasetError}
-              loading={dataset.status === DatasetStatus.Importing}
+              loading={layerImporting}
               tooltip={error || t((t) => t.layer.seeDescription)}
               size="small"
               // onClick={() =>
@@ -334,7 +334,7 @@ function UserPanel({
           <Remove
             testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}
-            loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
+            loading={layerLoading && !layerImporting}
           />
           {showSortHandler && (
             <IconButton
@@ -352,7 +352,7 @@ function UserPanel({
           testId={`user-layer-status-${dataset.id}`}
           icon={layerActive ? (error ? 'warning' : 'more') : undefined}
           type={error ? 'warning' : 'default'}
-          loading={layerLoading || dataset?.status === DatasetStatus.Importing}
+          loading={layerLoading || layerImporting}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
