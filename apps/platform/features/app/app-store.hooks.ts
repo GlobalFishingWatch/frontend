@@ -15,6 +15,7 @@ import { getAppRouterStore } from 'router/app-router-context'
 import { setupRouterSync, syncInitialLocation } from 'router/router-sync'
 import { makeStore } from 'store'
 import type { Locale } from 'types'
+import { getLocalStorageItem } from 'utils/dom'
 
 const rootRoute = getRouteApi('__root__')
 
@@ -50,8 +51,12 @@ export function useAppStore() {
   }, [router, store])
 
   useEffect(() => {
-    const hintsDismissed = JSON.parse(localStorage.getItem(HINTS) || '{}')
-    store.dispatch(hydrateHintsDismissed(hintsDismissed))
+    try {
+      const hintsDismissed = JSON.parse(getLocalStorageItem(HINTS) || '{}')
+      store.dispatch(hydrateHintsDismissed(hintsDismissed))
+    } catch {
+      // localStorage blocked or invalid JSON — start with no dismissed hints
+    }
     store.dispatch(hydrateWorkspaceHistoryNavigation(getPersistedHistoryNavigation()))
   }, [store])
 
