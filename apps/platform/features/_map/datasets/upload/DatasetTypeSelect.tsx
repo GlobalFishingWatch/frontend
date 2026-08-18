@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import Gridded from 'assets/icons/dataset-type-gridded.svg?react'
@@ -9,6 +10,7 @@ import Points from 'assets/icons/dataset-type-points.svg?react'
 import Polygons from 'assets/icons/dataset-type-polygons-lines.svg?react'
 import Tracks from 'assets/icons/dataset-type-tracks.svg?react'
 import { useDatasetModalConfigConnect } from 'features/_map/datasets/datasets.hook'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import type { DatasetGeometryTypesSupported } from 'utils/files'
 import { getFilesAcceptedByMime, getFileTypes } from 'utils/files'
@@ -105,6 +107,7 @@ const DatasetTypeSelect = ({
   onFileLoaded: (file: File) => void
 }) => {
   const { t } = useTranslation()
+  const featureFlags = useSelector(selectFeatureFlags)
   return (
     <div className={styles.wrapper}>
       <DatasetType
@@ -134,15 +137,17 @@ const DatasetTypeSelect = ({
         icon={<Points />}
         onFileLoaded={onFileLoaded}
       />
-      <DatasetType
-        testId="gridded-file-input"
-        type="gridded"
-        title={t((t) => t.dataset.typeGridded)}
-        style={style}
-        description={t((t) => t.dataset.typeGriddedDescription)}
-        icon={<Gridded />}
-        onFileLoaded={onFileLoaded}
-      />
+      {featureFlags?.griddedHeatmap && (
+        <DatasetType
+          testId="gridded-file-input"
+          type="gridded"
+          title={t((t) => t.dataset.typeGridded)}
+          style={style}
+          description={t((t) => t.dataset.typeGriddedDescription)}
+          icon={<Gridded />}
+          onFileLoaded={onFileLoaded}
+        />
+      )}
     </div>
   )
 }
