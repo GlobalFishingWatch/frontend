@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { MAIN_DOM_ID, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
 import { rootReducer } from 'reducers'
-import { getIsBrowser } from 'utils/dom'
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
@@ -26,9 +26,7 @@ interface ScreenshotState {
 }
 
 const getInitialState = (): ScreenshotState => {
-  if (!getIsBrowser()) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
-
-  const storedValue = localStorage.getItem(SCREENSHOT_AREA_KEY_ID)
+  const storedValue = getLocalStorageItem(SCREENSHOT_AREA_KEY_ID)
   if (!storedValue) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
 
   try {
@@ -45,9 +43,7 @@ export const screenshotSlice = createSlice({
   reducers: {
     setScreenshotAreaId: (state, action: PayloadAction<ScrenshotDOMArea>) => {
       state.screenshotAreaId = action.payload
-      if (getIsBrowser()) {
-        localStorage.setItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
-      }
+      setLocalStorageItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
     },
   },
 })
