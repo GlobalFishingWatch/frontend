@@ -11,15 +11,16 @@ import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client
 
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server-functions/auth.functions'
+import { getLocalStorageItem, removeLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
 import 'utils/polyfills'
 
 const AUTH_RESET_VERSION = '2026-06-ssr-cookies'
 try {
-  if (localStorage.getItem('GFW_AUTH_RESET') !== AUTH_RESET_VERSION) {
-    localStorage.removeItem('GFW_API_USER_TOKEN')
-    localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
-    localStorage.setItem('GFW_AUTH_RESET', AUTH_RESET_VERSION)
+  if (getLocalStorageItem('GFW_AUTH_RESET') !== AUTH_RESET_VERSION) {
+    removeLocalStorageItem('GFW_API_USER_TOKEN')
+    removeLocalStorageItem('GFW_API_USER_REFRESH_TOKEN')
+    setLocalStorageItem('GFW_AUTH_RESET', AUTH_RESET_VERSION)
   }
 } catch {
   // localStorage unavailable (private mode / blocked) — nothing to clean up.
@@ -44,6 +45,7 @@ sentryInit({
     /Aborted due to condition callback returning false/,
     /^Script error\.?$/,
     /^uncaught exception: undefined$/,
+    /WeakRef is not defined/,
   ],
   dataCollection: { userInfo: true },
   tracesSampleRate: 1.0,

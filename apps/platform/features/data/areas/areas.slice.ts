@@ -56,6 +56,18 @@ type AreasState = Record<string, DatasetAreas>
 
 const initialState: AreasState = {}
 
+function ensureDatasetAreas(state: AreasState, datasetId: string): DatasetAreas {
+  if (!state[datasetId]) {
+    state[datasetId] = {
+      list: {} as DatasetAreaList,
+      detail: {},
+    }
+  } else if (!state[datasetId].detail) {
+    state[datasetId].detail = {}
+  }
+  return state[datasetId]
+}
+
 export type AreaKeyId = string | number
 export type AreaKeys = { datasetId: string; areaId: AreaKeyId; areaName: string | undefined }
 type FetchAreaDetailThunkParam = {
@@ -320,57 +332,48 @@ const areasSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchAreaDetailThunk.pending, (state, action) => {
       const { datasetId, areaId, areaName } = action.meta.arg as FetchAreaDetailThunkParam
-      const area = {
+      const dataset = ensureDatasetAreas(state, datasetId)
+      dataset.detail[areaId] = {
         status: AsyncReducerStatus.Loading,
         data: { ...(areaName && { name: areaName }) } as Area,
-      }
-      if (state[datasetId]?.detail?.[areaId]) {
-        state[datasetId].detail[areaId] = area
-      } else {
-        state[datasetId] = {
-          list: {} as DatasetAreaList,
-          detail: {
-            [areaId]: area,
-          },
-        }
       }
     })
     builder.addCase(fetchAreaDetailThunk.fulfilled, (state, action) => {
       const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
-      state[datasetId].detail[areaId] = {
+      const dataset = ensureDatasetAreas(state, datasetId)
+      dataset.detail[areaId] = {
         status: AsyncReducerStatus.Finished,
-        data: { ...(state[datasetId]?.detail?.[areaId]?.data || ({} as Area)), ...action.payload },
+        data: { ...(dataset.detail[areaId]?.data || ({} as Area)), ...action.payload },
       }
     })
     builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {
       const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
-      state[datasetId].detail[areaId].status = AsyncReducerStatus.Error
+      const detail = state[datasetId]?.detail?.[areaId]
+      if (detail) {
+        detail.status = AsyncReducerStatus.Error
+      }
     })
     builder.addCase(fetchDatasetAreasThunk.pending, (state, action) => {
-      const list = {
+      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
+      ensureDatasetAreas(state, datasetId).list = {
         status: AsyncReducerStatus.Loading,
         data: [],
-      }
-      const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
-      if (state[datasetId]?.list) {
-        state[datasetId].list = list
-      } else {
-        state[datasetId] = {
-          list,
-          detail: {},
-        }
       }
     })
     builder.addCase(fetchDatasetAreasThunk.fulfilled, (state, action) => {
       const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
-      state[datasetId].list = {
+      const dataset = state[datasetId]
+      if (!dataset) return
+      dataset.list = {
         status: AsyncReducerStatus.Finished,
         data: action.payload,
       }
     })
     builder.addCase(fetchDatasetAreasThunk.rejected, (state, action) => {
       const { datasetId } = action.meta.arg as FetchDatasetAreasThunkParam
-      state[datasetId].list.status = AsyncReducerStatus.Error
+      if (state[datasetId]?.list) {
+        state[datasetId].list.status = AsyncReducerStatus.Error
+      }
     })
   },
 })

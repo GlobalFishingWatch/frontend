@@ -4,6 +4,8 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
+
 import packageJson from '../../package.json'
 
 import styles from './WhatsNew.module.css'
@@ -21,7 +23,7 @@ const CURRENT_VERSION = parseVersion(packageJson.version)
 
 function getClientWhatsNewSnapshot() {
   if (!hasLoadedSnapshot) {
-    const lastVersionSeen = localStorage.getItem(GFW_LAST_VERSION_SEEN_KEY) || ''
+    const lastVersionSeen = getLocalStorageItem(GFW_LAST_VERSION_SEEN_KEY) || ''
     newVersionSinceLastVisitSnapshot = lastVersionSeen === '' || CURRENT_VERSION > lastVersionSeen
     hasLoadedSnapshot = true
   }
@@ -33,7 +35,7 @@ function getServerWhatsNewSnapshot() {
 }
 
 function dismissWhatsNewSnapshot() {
-  localStorage.setItem(GFW_LAST_VERSION_SEEN_KEY, CURRENT_VERSION)
+  setLocalStorageItem(GFW_LAST_VERSION_SEEN_KEY, CURRENT_VERSION)
   newVersionSinceLastVisitSnapshot = false
 }
 
@@ -47,7 +49,7 @@ function WhatsNew() {
 
   useEffect(() => {
     // We want to hide the icon automatically for following visits
-    localStorage.setItem(GFW_LAST_VERSION_SEEN_KEY, CURRENT_VERSION)
+    setLocalStorageItem(GFW_LAST_VERSION_SEEN_KEY, CURRENT_VERSION)
   }, [])
 
   const dismissNewVersionHint = () => {
