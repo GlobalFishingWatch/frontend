@@ -89,13 +89,17 @@ function UserPanel({
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
+  const datasetError = dataset?.status === DatasetStatus.Error
+  const datasetImportLogs = Object.values(dataset?.configuration ?? {}).find(
+    (config): config is { importLogs: string } => Boolean((config as any)?.importLogs)
+  )?.importLogs
   const { instance, loaded, hasFeaturesColoredByField, error } = useUserLayerMetadata(
     dataview,
     mergedDataviewId
   )
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
-  const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const layerLoading = layerActive && !layerLoadedDebounced && !error && !datasetError
   const layerImporting = layerActive && dataset?.status === DatasetStatus.Importing
   const isBaseUserLayer =
     instance instanceof UserPointsTileLayer || instance instanceof UserContextTileLayer
@@ -193,8 +197,6 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
-  const datasetError = dataset.status === DatasetStatus.Error
-
   const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
   return (
@@ -209,7 +211,7 @@ function UserPanel({
     >
       <div className={styles.header}>
         <LayerSwitch
-          disabled={dataset?.status === DatasetStatus.Error}
+          disabled={datasetError}
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
@@ -326,7 +328,7 @@ function UserPanel({
             <InfoError
               error={datasetError}
               loading={layerImporting}
-              tooltip={error || t((t) => t.layer.seeDescription)}
+              tooltip={error || datasetImportLogs || t((t) => t.layer.seeDescription)}
               size="small"
               // onClick={() =>
               //   !datasetError &&
@@ -356,8 +358,8 @@ function UserPanel({
         </div>
         <IconButton
           testId={`user-layer-status-${dataset.id}`}
-          icon={layerActive ? (error ? 'warning' : 'more') : undefined}
-          type={error ? 'warning' : 'default'}
+          icon={layerActive ? (error || datasetError ? 'warning' : 'more') : undefined}
+          type={error || datasetError ? 'warning' : 'default'}
           loading={layerLoading || layerImporting}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
