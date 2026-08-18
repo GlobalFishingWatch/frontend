@@ -119,11 +119,6 @@ export default defineConfig(({ command, mode }) => {
     build: {
       cssCodeSplit: false,
     },
-    // @developmentseed/geotiff's defaultDecoderPool spawns `new Worker(..., { type: 'module' })`,
-    // which vite's default 'iife' worker format cannot emit.
-    worker: {
-      format: 'es',
-    },
     envPrefix: ['VITE_', 'i18n_'],
     define: {
       __BUILD_ID__: JSON.stringify(

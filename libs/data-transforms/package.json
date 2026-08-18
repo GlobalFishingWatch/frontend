@@ -28,7 +28,6 @@
     "src"
   ],
   "dependencies": {
-    "@developmentseed/geotiff": "0.x",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/datasets-client": "workspace:^",
     "@globalfishingwatch/deck-loaders": "workspace:^",
@@ -40,7 +39,6 @@
     "geotiff": "3.x",
     "jszip": "3.x",
     "luxon": "3.x",
-    "proj4": "2.x",
     "shpjs": "6.x",
     "tslib": "2.x"
   }

@@ -437,9 +437,7 @@
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
       "geotiff": {
-        "invalidData": "GeoTIFF data could not be read",
-        "tooLarge": "This raster is too large to process in the browser. Try a smaller file (max 1,000,000 cells).",
-        "unsupportedProjection": "Only GeoTIFF files in EPSG:4326 (WGS 84) are supported"
+        "invalidData": "GeoTIFF data could not be read"
       },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {

@@ -60,9 +60,6 @@ importers:
       '@deck.gl/widgets':
         specifier: 9.3.10
         version: 9.3.10(@deck.gl/core@9.3.10)(@luma.gl/core@9.3.6)
-      '@developmentseed/geotiff':
-        specifier: 0.7.0
-        version: 0.7.0
       '@dnd-kit/core':
         specifier: 6.3.1
         version: 6.3.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -321,9 +318,6 @@ importers:
       pbf:
         specifier: 5.1.2
         version: 5.1.2
-      proj4:
-        specifier: 2.20.9
-        version: 2.20.9(geotiff@3.0.5)
       protobufjs:
         specifier: 8.7.2
         version: 8.7.2
@@ -979,9 +973,6 @@ importers:
 
   libs/data-transforms:
     dependencies:
-      '@developmentseed/geotiff':
-        specifier: 0.x
-        version: 0.7.0
       '@globalfishingwatch/api-types':
         specifier: workspace:^
         version: link:../api-types
@@ -1015,9 +1006,6 @@ importers:
       luxon:
         specifier: 3.x
         version: 3.7.2
-      proj4:
-        specifier: 2.x
-        version: 2.20.9(geotiff@3.0.5)
       shpjs:
         specifier: 6.x
         version: 6.2.0(geotiff@3.0.5)
@@ -2238,26 +2226,6 @@ packages:
   '@cacheable/utils@2.5.0':
     resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
 
-  '@chunkd/middleware@11.3.1':
-    resolution: {integrity: sha512-BMvxd2Zfb0zhcZUjLera/9ozt1CKcpS71LjekNtJwOxeMN4AJ4DJK8gev9erHX5ZnwBsjbq1VnZSm2TxEFhv1Q==}
-    engines: {node: '>=16.0.0'}
-
-  '@chunkd/source-http@11.4.1':
-    resolution: {integrity: sha512-h/7tWxFh6EUh5k/pcYh66WSwiVbIWM6mCCLH0TZpBSWzgekjOXqXkEMRUBXrhekqrmtPQdTPro5e7tnknIdESg==}
-    engines: {node: '>=18.0.0'}
-
-  '@chunkd/source-memory@11.2.1':
-    resolution: {integrity: sha512-+WDp5x71OqfFm2AbX4ev9xn+HhP8SAfUAdTsDQtiO8sR65abZAkZ6GK0laOK5p24tA72dhCaUIVrFC8swVgFiQ==}
-    engines: {node: '>=16.0.0'}
-
-  '@chunkd/source@11.4.1':
-    resolution: {integrity: sha512-R4/gIKbx059Am4UOYplEjKkE6g9jhDQF4M7jKNkMZR8Toeudr9vQl0z9ppb9fkTQIuvW8oKjO0Hc5/s4RCCCzg==}
-    engines: {node: '>=16.0.0'}
-
-  '@cogeotiff/core@9.5.0':
-    resolution: {integrity: sha512-BsBlk8UGq9b8aIlUliKweS2V48KK8O3xORjd+IZLBxErr0kHP1WmWnqBRG+JcmNGoPMaE4lUHl/YVbY9UHLr+A==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   '@croct/json5-parser@0.2.2':
     resolution: {integrity: sha512-0NJMLrbeLbQ0eCVj3UoH/kG2QckUgOASfwmfDTjyW1xAYPyTNJXcWVT/dssJdTJd0pRchW+qF0VFWQHcxs1OVw==}
 
@@ -2418,21 +2386,6 @@ packages:
     peerDependencies:
       '@deck.gl/core': ~9.3.0
       '@luma.gl/core': ~9.3.5
-
-  '@developmentseed/affine@0.7.0':
-    resolution: {integrity: sha512-O00T3nLFY8DiEqTIpKzEDc6wyVLth4DoFc0gPE6EiaEdFM4lQsQnH8x5mrknDB7jeLyKW2aPnNyBxoPqS7JKHA==}
-
-  '@developmentseed/geotiff@0.7.0':
-    resolution: {integrity: sha512-KnTJ7ZRzg7laiNRlfuslNN4EmM8lvOp4h7Y/RTyojCmiDycJxT0tbo7gMDjFPSvys5tWxoR/9WGPLKyipkzRiQ==}
-
-  '@developmentseed/lzw-tiff-decoder@0.2.2':
-    resolution: {integrity: sha512-bsBIdV1LyqcrtnYtIYu3C/297X2wxeYkmmhHzR02OOX823sGxT8GLGdenTmwoXvNWkozk3b+ptXtJeSUmNPaTA==}
-
-  '@developmentseed/morecantile@0.7.0':
-    resolution: {integrity: sha512-m9tWDase9COlP/EZ2KK/ydraRU/5yfwvmF/y/2g/iFMFW1vYHQTW/8JYjmo84SiJXUifDDY2xoA3ErYlcWJctg==}
-
-  '@developmentseed/proj@0.7.0':
-    resolution: {integrity: sha512-3EPvX29sM3iCn+avpGKz18ZzlRJdn53SbkmFWJXDWh/fNreP3RjcDJGBbvfwnZnVtiLUqnTzM8V4fLKnYHKj0A==}
 
   '@devframes/hub@0.8.2':
     resolution: {integrity: sha512-3SE+aUy+u1LeMClVK0S9FDmfA3j+kvzgyiIEz7gA+bek0chMuVB0A05ZBdLCZ6E/Tq/CKD7svI7L7ntgStCVew==}
@@ -8992,9 +8945,6 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
-  fzstd@0.1.1:
-    resolution: {integrity: sha512-dkuVSOKKwh3eas5VkJy1AW1vFpet8TA/fGmVA5krThl8YcOVE/8ZIoEA1+U1vEn5ckxxhLirSdY837azmbaNHA==}
-
   gaxios@7.3.1:
     resolution: {integrity: sha512-kB3rzJV7d9juLZh8/56QTXCwQfxyhdOMdyYk1HdQKFtF8TJTDTZQJtixWIwXdE9Jji91mC41DUNpjleo4L4eAQ==}
     engines: {node: '>=18'}
@@ -10040,9 +9990,6 @@ packages:
 
   lerc@3.0.0:
     resolution: {integrity: sha512-Rm4J/WaHhRa93nCN2mwWDZFoRVF18G1f47C+kvQWyHGEZxFpTUi73p7lMVSAndyxGt6lJ2/CFbOcf9ra5p8aww==}
-
-  lerc@4.2.0:
-    resolution: {integrity: sha512-5TeQPWq2xnHjaxkTrskOG+Ove9pWRGFMKlofBx2hPORFHmIMhyoYWC5zMUJ9mibq0e5tqTZR/dvyAMZ3F6yCqw==}
 
   less@4.5.1:
     resolution: {integrity: sha512-UKgI3/KON4u6ngSsnDADsUERqhZknsVZbnuzlRZXLQCmfC/MDld42fTydUE9B+Mla1AL6SJ/Pp6SlEFi/AVGfw==}
@@ -15111,22 +15058,6 @@ snapshots:
       hashery: 1.5.1
       keyv: 5.6.0
 
-  '@chunkd/middleware@11.3.1':
-    dependencies:
-      '@chunkd/source': 11.4.1
-
-  '@chunkd/source-http@11.4.1':
-    dependencies:
-      '@chunkd/source': 11.4.1
-
-  '@chunkd/source-memory@11.2.1':
-    dependencies:
-      '@chunkd/source': 11.4.1
-
-  '@chunkd/source@11.4.1': {}
-
-  '@cogeotiff/core@9.5.0': {}
-
   '@croct/json5-parser@0.2.2':
     dependencies:
       '@croct/json': 2.1.0
@@ -15360,33 +15291,6 @@ snapshots:
       preact: 10.29.8
     transitivePeerDependencies:
       - preact-render-to-string
-
-  '@developmentseed/affine@0.7.0': {}
-
-  '@developmentseed/geotiff@0.7.0':
-    dependencies:
-      '@chunkd/middleware': 11.3.1
-      '@chunkd/source': 11.4.1
-      '@chunkd/source-http': 11.4.1
-      '@chunkd/source-memory': 11.2.1
-      '@cogeotiff/core': 9.5.0
-      '@developmentseed/affine': 0.7.0
-      '@developmentseed/lzw-tiff-decoder': 0.2.2
-      '@developmentseed/morecantile': 0.7.0
-      '@developmentseed/proj': 0.7.0
-      fzstd: 0.1.1
-      lerc: 4.2.0
-      uuid: 14.0.1
-
-  '@developmentseed/lzw-tiff-decoder@0.2.2': {}
-
-  '@developmentseed/morecantile@0.7.0':
-    dependencies:
-      '@developmentseed/affine': 0.7.0
-
-  '@developmentseed/proj@0.7.0':
-    dependencies:
-      wkt-parser: 1.5.5
 
   '@devframes/hub@0.8.2(devframe@0.8.2(cac@7.0.0)(srvx@0.11.22))':
     dependencies:
@@ -23985,8 +23889,6 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  fzstd@0.1.1: {}
-
   gaxios@7.3.1(supports-color@7.2.0):
     dependencies:
       extend: 3.0.2
@@ -25200,8 +25102,6 @@ snapshots:
       language-subtag-registry: 0.3.23
 
   lerc@3.0.0: {}
-
-  lerc@4.2.0: {}
 
   less@4.5.1:
     dependencies:

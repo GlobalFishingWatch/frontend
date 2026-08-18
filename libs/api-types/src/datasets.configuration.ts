@@ -34,15 +34,16 @@ export type UserContextLayerV1Configuration = {
 export const USER_FOURWINGS_VALUE_COLUMN = 'gfw_value'
 
 export type UserFourwingsV1Configuration = {
-  agregationColumn: string
   agregationMode: string
+  bands?: string[]
+  agregationColumn?: string
   bbox?: [number, number, number, number]
   filePath?: string
-  latColumn: string
-  lonColumn: string
-  maxZoom: number
-  tileOffset: number
-  tileScale: number
+  latColumn?: string
+  lonColumn?: string
+  maxZoom?: number
+  tileOffset?: number
+  tileScale?: number
   timestampColumn?: string
 }
 

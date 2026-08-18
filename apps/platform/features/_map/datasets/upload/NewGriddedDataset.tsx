@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import papaparse from 'papaparse'
 
 import type { AggregationFunction } from '@globalfishingwatch/api-types'
-import type { GeotiffRow } from '@globalfishingwatch/data-transforms/files'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { Button, Choice, InputText, Spinner, SwitchRow } from '@globalfishingwatch/ui-components'
 
@@ -12,7 +10,6 @@ import { getDatasetParsed } from 'features/_map/datasets/upload/datasets-parse.u
 import { useDatasetMetadata } from 'features/_map/datasets/upload/datasets-upload.hooks'
 import {
   getDatasetMetadataValidations,
-  getGriddedBandFilters,
   getGriddedDatasetMetadata,
   getMetadataFromDataset,
 } from 'features/_map/datasets/upload/datasets-upload.utils'
@@ -40,8 +37,6 @@ function NewGriddedDataset({
   const [dataParseError, setDataParseError] = useState('')
   const [processingData, setProcessingData] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [rows, setRows] = useState<GeotiffRow[] | undefined>()
-  const [bands, setBands] = useState<string[]>([])
   const { datasetMetadata, setDatasetMetadata } = useDatasetMetadata()
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
@@ -51,12 +46,8 @@ function NewGriddedDataset({
     async (file: File) => {
       setProcessingData(true)
       try {
-        const { rows, bands, resolution, stats, bbox } = await getDatasetParsed(file, 'gridded')
-        setRows(rows)
-        setBands(bands)
-        setDatasetMetadata(
-          getGriddedDatasetMetadata({ name: getFileName(file), bands, resolution, stats, bbox })
-        )
+        const bands = await getDatasetParsed(file, 'gridded')
+        setDatasetMetadata(getGriddedDatasetMetadata({ name: getFileName(file), bands }))
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
@@ -76,19 +67,10 @@ function NewGriddedDataset({
 
   const fourwingsConfig = getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')
   const agregationMode = fourwingsConfig.agregationMode ?? 'AVG'
-  const bandNames = (datasetMetadata?.filters?.fourwings?.[0]?.enum as string[]) ?? bands
-
-  const setBandName = useCallback(
-    (index: number, name: string) => {
-      setDatasetMetadata({
-        filters: getGriddedBandFilters(bandNames.map((band, i) => (i === index ? name : band))),
-      })
-    },
-    [bandNames, setDatasetMetadata]
-  )
+  const bands = fourwingsConfig.bands ?? []
 
   const setFourwingsConfig = useCallback(
-    (patch: { agregationMode?: AggregationFunction }) => {
+    (patch: { agregationMode?: AggregationFunction; bands?: string[] }) => {
       setDatasetMetadata({
         configuration: {
           ...datasetMetadata.configuration,
@@ -106,20 +88,22 @@ function NewGriddedDataset({
     [datasetMetadata, setDatasetMetadata]
   )
 
+  const setBandName = useCallback(
+    (index: number, name: string) => {
+      setFourwingsConfig({ bands: bands.map((band, i) => (i === index ? name : band)) })
+    },
+    [bands, setFourwingsConfig]
+  )
+
   const onConfirmClick = useCallback(async () => {
     if (!datasetMetadata) {
       return
     }
     setLoading(true)
-    let csvFile: File | undefined
-    if (rows) {
-      const namesById = Object.fromEntries(bands.map((band, index) => [band, bandNames[index]]))
-      const csv = papaparse.unparse(rows.map((row) => ({ ...row, band: namesById[row.band] })))
-      csvFile = new File([csv], 'file.csv', { type: 'text/csv' })
-    }
-    await onConfirm(datasetMetadata, { file: csvFile, isEditing })
+    // the raw GeoTIFF is what the API imports — it derives the bbox, stats, cells and resolution
+    await onConfirm(datasetMetadata, { file, isEditing })
     setLoading(false)
-  }, [bandNames, bands, datasetMetadata, isEditing, onConfirm, rows])
+  }, [datasetMetadata, file, isEditing, onConfirm])
 
   if (processingData) {
     return (
@@ -167,8 +151,8 @@ function NewGriddedDataset({
       {bands.length > 1 &&
         bands.map((band, index) => (
           <InputText
-            key={band}
-            value={bandNames[index] ?? band}
+            key={index}
+            value={band}
             label={t((t) => t.datasetUpload.gridded.bandName, { band: index + 1 })}
             className={styles.input}
             onChange={(e) => setBandName(index, e.target.value)}
@@ -191,7 +175,7 @@ function NewGriddedDataset({
         <Button
           className={styles.saveBtn}
           onClick={onConfirmClick}
-          disabled={!datasetMetadata || !isValid || (!isEditing && !rows)}
+          disabled={!datasetMetadata || !isValid || (!isEditing && !file)}
           loading={loading}
           testId="confirm-upload"
         >

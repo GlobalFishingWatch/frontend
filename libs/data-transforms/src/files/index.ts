@@ -1,4 +1,4 @@
-export * from './geotiff-to-list'
+export * from './geotiff-bands'
 export * from './kml-to-geojson'
 export * from './shp-to-geojson'
 export * from './text-encoding'

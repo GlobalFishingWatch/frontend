@@ -352,7 +352,10 @@ export const upsertDatasetThunk = createAsyncThunk<
           method: 'POST',
           body: {
             contentType:
-              format && format.toUpperCase() === 'GEOJSON' ? 'application/json' : file.type,
+              format && format.toUpperCase() === 'GEOJSON'
+                ? 'application/json'
+                : // .tif files often reach us with an empty File.type
+                  file.type || (dataset.type === DatasetTypes.UserFourwings ? 'image/tiff' : ''),
           } as any,
         })
         filePath = path

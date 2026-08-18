@@ -12,7 +12,6 @@ import type {
 import type {
   Dataset,
   DatasetConfiguration,
-  DatasetFilters,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import {
@@ -21,7 +20,7 @@ import {
   DatasetTypes,
   USER_FOURWINGS_VALUE_COLUMN,
 } from '@globalfishingwatch/api-types'
-import type { Bbox, PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
@@ -32,10 +31,6 @@ import {
   getUTCDate,
   guessColumnsFromFilters,
 } from '@globalfishingwatch/data-transforms'
-import {
-  getGriddedMaxZoom,
-  getGriddedTileEncoding,
-} from '@globalfishingwatch/data-transforms/files'
 import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import {
   getDatasetConfiguration,
@@ -58,7 +53,9 @@ export const getReservedBandName = (bandNames?: (string | number | boolean)[]) =
   bandNames?.find((band) => GRIDDED_RESERVED_COLUMNS.includes(String(band).trim().toLowerCase()))
 
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
-  const reservedBandName = getReservedBandName(datasetMetadata.filters?.fourwings?.[0]?.enum)
+  const reservedBandName = getReservedBandName(
+    getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')?.bands
+  )
   const errors = {
     name:
       datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
@@ -165,47 +162,22 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
-export const GRIDDED_BAND_FILTER_ID = 'band'
-
-export const getGriddedBandFilters = (bandNames: string[]): DatasetFilters => ({
-  fourwings: [
-    {
-      id: GRIDDED_BAND_FILTER_ID,
-      label: GRIDDED_BAND_FILTER_ID,
-      type: 'string',
-      enum: bandNames,
-    },
-  ],
-})
-
 export const getGriddedDatasetMetadata = ({
   name,
   bands,
-  resolution,
-  stats,
-  bbox,
 }: {
   name: string
   bands: string[]
-  resolution?: number
-  stats?: { min: number; max: number }
-  bbox?: Bbox
 }): DatasetMetadata => {
   return {
     name,
     public: true,
     category: DatasetCategory.Activity,
     type: DatasetTypes.UserFourwings,
-    filters: getGriddedBandFilters(bands),
     configuration: {
       userFourwingsV1: {
         agregationMode: 'AVG',
-        agregationColumn: USER_FOURWINGS_VALUE_COLUMN,
-        latColumn: 'lat',
-        lonColumn: 'lon',
-        maxZoom: getGriddedMaxZoom(resolution),
-        ...(bbox?.every(Number.isFinite) && { bbox }),
-        ...getGriddedTileEncoding(stats),
+        bands,
       },
       frontend: {
         sourceFormat: 'GeoTIFF',
