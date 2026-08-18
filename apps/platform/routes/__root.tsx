@@ -17,7 +17,7 @@ import { reportRouteError } from 'features/app/sentry'
 import { getActiveI18nLanguage, t } from 'features/i18n/i18n'
 import { toDocumentLang } from 'features/i18n/i18n.config'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
-import { getDefaultMeta } from 'router/router.meta'
+import { getCanonicalLink, getDefaultMeta } from 'router/router.meta'
 
 import appCss from './styles.css?url'
 
@@ -179,10 +179,13 @@ export const Route = createRootRoute({
   preloadStaleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
   shouldReload: false,
-  head: () => {
+  head: ({ matches }) => {
     const title = `GFW | ${t((s) => s.common.map)}`
     const description = t((s) => s.workspace.siteDescription.default) || defaultDescription
-    return getDefaultMeta(title, description)
+    const { meta, links } = getDefaultMeta(title, description)
+    // Canonical is emitted here for every route. Child routes must not add their own.
+    const canonical = getCanonicalLink(matches[matches.length - 1]?.pathname)
+    return { meta, links: [...links, canonical] }
   },
 
   component: RootComponent,
