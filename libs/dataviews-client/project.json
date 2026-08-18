@@ -5,54 +5,33 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "clean": false
-      }
-    },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
+    "build": {
+      "executor": "@nx/js:tsc"
     },
     "bundle-url-workspace": {
       "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}libs/dataviews-client/src/url-workspace"],
+      "outputs": ["{workspaceRoot}/libs/dataviews-client/src/url-workspace/url-workspace.js"],
       "dependsOn": [],
       "options": {
         "commands": ["node libs/dataviews-client/esbuild.url.ts"],
         "cwd": "."
       }
     },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/dataviews-client"
-      }
-    },
     "test": {
-      "executor": "@nx/vitest:test",
-      "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "dependsOn": ["^build"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.ts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/dataviews-client"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/dataviews-client/vitest.config.ts",
         "watch": true
-      },
-      "continuous": true
-    }
+      }
+    },
+    "typecheck": {},
+    "publish": {}
   }
 }

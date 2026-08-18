@@ -29,12 +29,7 @@ export function ProjectForm({
   }
 
   const saveProject = async () => {
-    let res = null
-    if (mode === 'edit') {
-      res = await editProject(projectInfo)
-    } else {
-      res = await createProject(projectInfo)
-    }
+    const res = mode === 'edit' ? await editProject(projectInfo) : await createProject(projectInfo)
     if (res.data) {
       window.location.reload()
     } else if (res.error) {

@@ -1,37 +1,29 @@
 {
   "name": "@globalfishingwatch/skills",
-  "version": "0.0.4",
+  "version": "0.0.8",
   "description": "Agent skills for the GFW map: encode/decode app URLs for chatbot navigation",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "default": "./dist/index.js"
-    },
-    "./encode-url": {
-      "types": "./src/encode-url/index.ts",
-      "default": "./dist/encode-url/index.js"
-    },
-    "./decode-url": {
-      "types": "./src/decode-url/index.ts",
-      "default": "./dist/decode-url/index.js"
-    }
+    ".": "./dist/index.js",
+    "./encode-url": "./dist/encode-url/index.js",
+    "./decode-url": "./dist/decode-url/index.js"
   },
   "main": "./dist/index.js",
-  "types": "./src/index.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  "engines": {
+    "node": ">=24"
   },
-  "dependencies": {
-    "@fishing-map/config": "workspace:*",
-    "tslib": "2.x",
-    "zod": "^4.3.6"
+  "files": [
+    "dist",
+    "!dist/package.json"
+  ],
+  "devDependencies": {
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/datasets-client": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@platform/config": "workspace:*",
+    "@tanstack/router-core": "1.x"
   }
 }

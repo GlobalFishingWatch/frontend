@@ -1,6 +1,5 @@
-import * as WORKSPACE_CONFIG from '@fishing-map/config'
-
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '@globalfishingwatch/dataviews-client'
+import * as WORKSPACE_CONFIG from '@platform/config'
 
 export type LayerCategory = 'activity' | 'detections' | 'events' | 'environment' | 'context'
 
@@ -12,8 +11,8 @@ export type LayerInfo = {
 }
 
 /**
- * Dataview instance ids used by the fishing-map default workspace and layer library.
- * Ids and slugs come from @fishing-map/config (single source of truth with the app)
+ * Dataview instance ids used by the platform default workspace and layer library.
+ * Ids and slugs come from @platform/config (single source of truth with the app)
  */
 export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
   // Activity

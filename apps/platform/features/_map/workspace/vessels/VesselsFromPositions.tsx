@@ -1,0 +1,202 @@
+import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { uniq } from 'es-toolkit'
+
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
+import {
+  getMergedDataviewId,
+  getVesselIdFromInstanceId,
+} from '@globalfishingwatch/dataviews-client'
+import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
+import { Collapsable } from '@globalfishingwatch/ui-components'
+
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+} from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import VesselLink from 'features/_vessels/vessel/VesselLink'
+import VesselPin from 'features/_vessels/vessel/VesselPin'
+import { t } from 'features/i18n/i18n'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatInfoField } from 'utils/info'
+
+import styles from 'features/_map/workspace/shared/Section.module.css'
+
+const MAX_VESSLES_TO_DISPLAY = 10
+
+type VesselFromPosition = {
+  id: string
+  shipname?: string
+  value: number
+  datasets: string[]
+}
+
+function VesselsFromPositions() {
+  const allDatasets = useSelector(selectAllDatasets)
+
+  const vesselDataviews = useSelector(selectVesselsDataviews)
+  const vesselIds = vesselDataviews?.flatMap(
+    (dataview) => getVesselIdFromInstanceId(dataview.id) || []
+  )
+  const vesselsHash = vesselIds.join(',')
+
+  const activityDataviews = useSelector(selectActiveActivityDataviews)
+  const detectionsDataviews = useSelector(selectActiveDetectionsDataviews)
+  const isRealTime = activityDataviews?.some(isRealTimeDataview)
+  const activityId = activityDataviews?.length ? getMergedDataviewId(activityDataviews) : ''
+  const detectionsId = detectionsDataviews?.length ? getMergedDataviewId(detectionsDataviews) : ''
+  const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(activityId)
+  const fourwingsDetectionsLayer = useGetDeckLayer<FourwingsLayer>(detectionsId)
+
+  const setHighlightVessel = (vessel: VesselFromPosition | undefined) => {
+    if (fourwingsActivityLayer?.instance) {
+      if (vessel) {
+        fourwingsActivityLayer.instance.setHighlightedVessel(vessel.id)
+      } else {
+        fourwingsActivityLayer.instance.setHighlightedVessel(undefined)
+      }
+    }
+    if (fourwingsDetectionsLayer?.instance) {
+      if (vessel) {
+        fourwingsDetectionsLayer.instance.setHighlightedVessel(vessel.id)
+      } else {
+        fourwingsDetectionsLayer.instance.setHighlightedVessel(undefined)
+      }
+    }
+  }
+
+  const fourwingsLayers = [fourwingsActivityLayer, fourwingsDetectionsLayer].filter(Boolean)
+
+  const fourwingsLayersLoaded =
+    fourwingsLayers.length && fourwingsLayers.every((l) => l?.instance?.isLoaded)
+
+  const layersLoadedState = useDeckLayerLoadedState()
+  const layersStateHash = fourwingsLayers
+    .map((l) => (l ? layersLoadedState[l.id]?.cacheHash || '' : ''))
+    .join('|')
+
+  const vessels = useMemo(() => {
+    if (
+      fourwingsLayersLoaded &&
+      (fourwingsActivityLayer?.instance?.props.visualizationMode === 'positions' ||
+        fourwingsDetectionsLayer?.instance?.props.visualizationMode === 'positions')
+    ) {
+      const positions = [
+        ...((fourwingsActivityLayer?.instance.getViewportData() as FourwingsPositionFeature[]) ||
+          []),
+        ...((fourwingsDetectionsLayer?.instance.getViewportData() as FourwingsPositionFeature[]) ||
+          []),
+      ]
+      const sublayers = fourwingsActivityLayer?.instance.getFourwingsLayers()
+      const activityDatasets = uniq(sublayers?.flatMap((sublayer) => sublayer.datasets || []) || [])
+      const searchDatasets = allDatasets.flatMap((dataset) => {
+        if (activityDatasets.includes(dataset.id)) {
+          const relatedVesselDataset = getRelatedDatasetByType(dataset, DatasetTypes.Vessels)
+          return relatedVesselDataset?.id || []
+        }
+        return []
+      })
+      if (positions.length) {
+        const vesselsByValue = positions.reduce(
+          (acc, position) => {
+            const key = isRealTime ? position.properties.id : position.properties.shipname
+            if (key) {
+              if (!acc[key]) {
+                acc[key] = {
+                  id: position.properties.vessel_id || position.properties.id,
+                  shipname: position.properties.shipname,
+                  value: 0,
+                  datasets: searchDatasets,
+                }
+              }
+              acc[key].value += position.properties.value || 0
+            }
+            return acc
+          },
+          {} as Record<string, VesselFromPosition>
+        )
+        const vessels = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
+        const vesselsNotAlreadyPinned = vessels.filter((vessel) => !vesselIds.includes(vessel.id))
+        return vesselsNotAlreadyPinned || []
+      } else {
+        return []
+      }
+    } else {
+      return []
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fourwingsLayers.length, fourwingsLayersLoaded, isRealTime, layersStateHash, vesselsHash])
+
+  if (!vessels.length) {
+    return null
+  }
+
+  return (
+    <div className={cx(styles.content, 'print-hidden')}>
+      <Collapsable
+        label={t((t) => t.vessel.onScreen)}
+        open
+        className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
+      >
+        <ul className={styles.vesselsOnScreenList}>
+          {(vessels.length > MAX_VESSLES_TO_DISPLAY
+            ? vessels.slice(0, MAX_VESSLES_TO_DISPLAY)
+            : vessels
+          ).map((vessel, index) => (
+            <li
+              className={styles.row}
+              key={vessel.id}
+              onMouseEnter={() => setHighlightVessel(vessel)}
+              onMouseLeave={() => setHighlightVessel(undefined)}
+            >
+              {!isRealTime && (
+                <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
+              )}
+              <div className={styles.vesselOnScreen}>
+                {isRealTime ? (
+                  <span>
+                    {t((t) => t.vessel.mmsi)}: {vessel.id}
+                  </span>
+                ) : (
+                  <VesselLink
+                    className={styles.link}
+                    vesselId={vessel.id}
+                    datasetId={vessel.datasets?.[0]}
+                  >
+                    {formatInfoField(vessel.shipname, 'shipname')}
+                  </VesselLink>
+                )}
+                {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
+                  <span>
+                    <I18nNumber number={Math.round(vessel.value)} />{' '}
+                    {index === 0 && ` ${t((t) => t.common.hours)}`}
+                  </span>
+                )}
+                {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
+                  <span>
+                    <I18nNumber number={Math.round(vessel.value)} />{' '}
+                    {index === 0 && ` ${t((t) => t.common.detections).toLowerCase()}`}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {vessels.length > MAX_VESSLES_TO_DISPLAY && (
+          <span className={styles.moreVesselsOnScreen}>
+            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t((t) => t.common.more)}
+          </span>
+        )}
+      </Collapsable>
+    </div>
+  )
+}
+
+export default VesselsFromPositions

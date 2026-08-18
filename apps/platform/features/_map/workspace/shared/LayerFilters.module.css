@@ -1,0 +1,52 @@
+.relative {
+  position: relative;
+}
+
+.labelContainer {
+  margin-bottom: 0.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.labelWithExperimental {
+  margin-top: var(--space-XS);
+}
+
+.placeholder {
+  padding: var(--space-S);
+  color: var(--color-secondary-blue);
+}
+
+.multiSelect {
+  margin-top: var(--space-S);
+}
+
+.withLabel {
+  margin-top: var(--space-XS);
+}
+
+.range {
+  width: 100%;
+}
+
+.filtersDisabled {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin-top: var(--space-S);
+}
+
+.userGuideLink {
+  margin-top: var(--space-S);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  gap: var(--space-S);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.spaceBetween {
+  justify-content: space-between;
+}

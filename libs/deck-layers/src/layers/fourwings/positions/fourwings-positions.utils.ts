@@ -29,6 +29,10 @@ export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature
   )
 }
 
+export function getPositionBearing(feature: FourwingsPositionFeature): number | undefined {
+  return feature.properties.bearing ?? feature.properties.course
+}
+
 export function getIsFeatureInFilterIds(feature: FourwingsPositionFeature, ids?: string[]) {
   if (!ids || ids.length === 0) return true
   return ids.includes(feature.properties.id)

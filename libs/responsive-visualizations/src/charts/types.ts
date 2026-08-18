@@ -25,8 +25,7 @@ export type BaseResponsiveChartProps = {
   onAggregatedItemClick?: ResponsiveVisualizationInteractionCallback
   getAggregatedData?: () => Promise<ResponsiveVisualizationData<'aggregated'> | undefined>
   aggregatedValueKey?:
-    | ResponsiveVisualizationAggregatedValueKey
-    | ResponsiveVisualizationAggregatedValueKey[]
+    ResponsiveVisualizationAggregatedValueKey | ResponsiveVisualizationAggregatedValueKey[]
   // Individual props
   individualTooltip?: ReactElement
   individualItem?: ReactElement

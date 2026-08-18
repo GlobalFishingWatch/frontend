@@ -1,0 +1,134 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
+
+import { DatasetStatus } from '@globalfishingwatch/api-types'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import {
+  getAvailableIntervalsInDataviews,
+  useGetDeckLayers,
+} from '@globalfishingwatch/deck-layer-composer'
+import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
+import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
+import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
+import { useTimebar } from '@globalfishingwatch/timebar'
+
+import {
+  selectRealTimeTimerange,
+  selectTimebarUserDataviewsSelected,
+} from 'features/_map/timebar/timebar.selectors'
+import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
+import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
+import type { PointsFeaturesToTimeseriesParams } from 'features/_reports/tabs/others/reports-points-timeseries.utils'
+
+import { getGraphDataFromPoints } from './timebar.utils'
+
+const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
+
+export const useTimebarPoints = () => {
+  const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
+  const viewport = useSelector(selectViewport)
+  const dataviews = useSelector(selectTimebarUserDataviewsSelected)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const realTimeTimerange = useSelector(selectRealTimeTimerange)
+  const { start: rangeStart, end: rangeEnd } = useTimebar()
+  const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
+  const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
+  const start = getUTCDate(rangeStart).getTime()
+  const end = getUTCDate(rangeEnd).getTime()
+
+  const datasetImporting = dataviews?.some(
+    (dv) => dv.datasets?.[0].status === DatasetStatus.Importing
+  )
+
+  const viewportChangeHash = useMemo(() => {
+    if (!viewport) return ''
+    return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(2)).join(',')
+  }, [viewport])
+
+  const loaded = dataviews?.length
+    ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
+    : false
+
+  const availableIntervals = isRealTimeMode
+    ? FOURWINGS_REAL_TIME_INTERVALS
+    : getAvailableIntervalsInDataviews(dataviews)
+  const { interval, bufferedStart, bufferedEnd } = getFourwingsChunk({
+    start,
+    end,
+    availableIntervals,
+    ...(isRealTimeMode &&
+      realTimeTimerange && {
+        intervalCacheMode: 'NONE',
+        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+      }),
+  })
+
+  const instanceCacheHash = useMemo(() => {
+    if (!userPointsLayers[0]?.instance) return ''
+
+    const { startTimeProperty, endTimeProperty, layers, timeFilterType } =
+      userPointsLayers[0]?.instance?.props || {}
+    const { filtersHash = '', aggregatedPropertyHash = '' } = userPointsLayers[0]?.instance || {}
+
+    return `${bufferedStart}-${bufferedEnd}-${interval}-${startTimeProperty}-${endTimeProperty}-${layers.length}-${timeFilterType}-${filtersHash}-${aggregatedPropertyHash}`
+  }, [userPointsLayers, bufferedStart, bufferedEnd, interval])
+
+  const instance = useMemo(() => {
+    return userPointsLayers[0]?.instance
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instanceCacheHash])
+
+  const setFourwingsPointsData = useCallback(
+    async (data: FourwingsPointFeature[], params: PointsFeaturesToTimeseriesParams) => {
+      const {
+        start,
+        end,
+        sublayers,
+        startTimeProperty,
+        endTimeProperty,
+        interval,
+        timeFilterType,
+      } = params
+
+      const result =
+        getGraphDataFromPoints(data, {
+          start: start,
+          end: end,
+          interval: interval || 'MONTH',
+          sublayersLength: sublayers.length,
+          startTimeProperty: startTimeProperty,
+          endTimeProperty: endTimeProperty,
+          timeFilterType: timeFilterType,
+        }) || EMPTY_ACTIVITY_DATA
+      setData(result)
+    },
+    []
+  )
+
+  useEffect(() => {
+    if (loaded && instance) {
+      const { startTimeProperty, endTimeProperty, layers, timeFilterType } = instance?.props || {}
+      const viewportData =
+        (instance?.getViewportData?.({ skipTemporalFilter: true }) as FourwingsPointFeature[]) || []
+
+      const params = {
+        startTimeProperty: startTimeProperty,
+        endTimeProperty,
+        sublayers: layers.flatMap((l) => l.sublayers) || [],
+        start: bufferedStart,
+        end: bufferedEnd,
+        interval: interval || 'MONTH',
+        timeFilterType: timeFilterType,
+      } as PointsFeaturesToTimeseriesParams
+
+      setFourwingsPointsData(viewportData, params)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, dataviewIds, viewportChangeHash, instance])
+
+  return useMemo(() => ({ loading: !loaded, points: data, dataviews }), [data, loaded, dataviews])
+}

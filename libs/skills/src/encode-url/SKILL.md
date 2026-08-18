@@ -1,6 +1,6 @@
 ---
 name: encode-url
-description: Build a GFW map URL (and TanStack Router navigation config) identical to what the fishing-map app itself generates, encoding the full app state — layers, filters, time range, viewport and route. Use when the user wants to see, compare or review ocean activity (fishing effort, vessel presence, detections, encounters, loitering, port visits, environment conditions, etc), open a report over an area or port, open a vessel profile, or search vessels — whether building a view from scratch or modifying the one behind their current URL.
+description: Build a GFW map URL (and TanStack Router navigation config) identical to what the platform app itself generates, encoding the full app state — layers, filters, time range, viewport and route. Use when the user wants to see, compare or review ocean activity (fishing effort, vessel presence, detections, encounters, loitering, port visits, environment conditions, etc), open a report over an area or port, open a vessel profile, or search vessels — whether building a view from scratch or modifying the one behind their current URL.
 ---
 
 # Encode GFW map URL
@@ -8,7 +8,7 @@ description: Build a GFW map URL (and TanStack Router navigation config) identic
 Turn a navigation intent into `{ navigation, path }`:
 
 - `navigation`: TanStack Router config (`to`, `params`, `search`) — use to navigate from inside the map app.
-- `path`: path + encoded query string (e.g. `/map/fishing-activity/default-public?...`) — for external navigation prepend the origin `https://globalfishingwatch.org`.
+- `path`: path + encoded query string (e.g. `/platform/map/fishing-activity/default-public?...`) — for external navigation prepend the origin `https://globalfishingwatch.org`.
 
 Never hand-build the query string: params are abbreviated (`dataviewInstances`→`dvIn`, `config`→`cfg`, `visible`→`vis`…) and repeated values are tokenized (`~0`). The script does this with the app's own encoder:
 
@@ -17,7 +17,7 @@ node scripts/encode-url.mjs '{"route":{"type":"report","datasetId":"public-eez-a
 # or pipe: echo '<json>' | node scripts/encode-url.mjs
 ```
 
-Requires node >= 23 (uses `module.registerHooks`). In the monorepo run `pnpm nx dist skills` once so `dist/` exists.
+Requires node >= 24 (uses `module.registerHooks`). In the monorepo run `pnpm nx build skills` once so `dist/` exists.
 
 The encoder enforces these invariants itself — do NOT add them by hand:
 
@@ -45,8 +45,8 @@ Rules for the change:
 
 1. **Pick the route type** from the user intent (details in [references/routes.md](references/routes.md)):
    - browse/compare activity on the map → `workspace`
-   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md) only when marine manager is mentioned; marine-manager workspaces index → static path `/map/marine-manager` (no state/query at all)
-   - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`). Multiple areas in one report → pass `datasetId`/`areaId` as comma-joined lists of equal length (one datasetId per areaId), e.g. `"datasetId":"public-fao-major,public-fao-major","areaId":"41,87"` → path `/report/public-fao-major%2Cpublic-fao-major/41%2C87`. Adding an area to an existing report = append its dataset+id to both.
+   - a marine protected area / region with a curated workspace (Galapagos, Palau, Fiji, Mediterranean…) or a global curated report (activity, dark vessel detections, events, deep sea mining) → ids in [references/highlighted-workspaces.md](references/highlighted-workspaces.md) only when marine manager is mentioned; marine-manager workspaces index → static path `/platform/map/marine-manager` (no state/query at all)
+   - aggregated report over an area (EEZ, FAO, RFMO) → `report` (needs `datasetId` + `areaId`). Multiple areas in one report → pass `datasetId`/`areaId` as comma-joined lists of equal length (one datasetId per areaId), e.g. `"datasetId":"public-fao-major,public-fao-major","areaId":"41,87"` → path `/platform/map/fishing-activity/default-public/report/public-fao-major%2Cpublic-fao-major/41%2C87`. Adding an area to an existing report = append its dataset+id to both.
    - port activity profile → `ports-report` (needs `portId`)
    - vessel profile → `vessel` (needs `vesselId`)
    - find a vessel by name/MMSI/IMO/owner → `vessel-search`
@@ -63,7 +63,7 @@ Rules for the change:
 4. **Set the rest of the state** ([references/query-params.md](references/query-params.md)): `start`/`end` (ISO datetimes), `latitude`/`longitude`/`zoom`, and `timebarVisualisation` (`heatmap` for activity, `heatmapDetections` for detections, `events` for encounters/loitering/port visits).
    - **Relative time periods**: compute `start`/`end` with plain date math from the current datetime (e.g. "last year" = now minus 1 year → now).
 5. **Look up ids when needed**: grep [references/areas.json](references/areas.json) for EEZ/FAO/RFMO area ids and [references/ports.json](references/ports.json) for port ids (large file — always grep by name, never read it whole).
-   - Region not in areas.json → no area `report` possible (needs a real `areaId`). Options: (a) a `workspace` framed by viewport — set `latitude`/`longitude`/`zoom` to your best estimate of the region's center; (b) a **global report** for whole-world stats. Global report = `route.type` `report` with NO `datasetId`/`areaId` (→ `/reports/default-public/report`); set viewport to world (`latitude: 0`, `longitude: 0`, `zoom: ~0.8`, not `0`). A global/whole-world report keeps ALL default-workspace layers VISIBLE (`ais`, `vms`, `presence`, `sar`, `sentinel2`, `viirs`, `encounters`, `loitering`, `port-visits`) — do not hide them and do not include only the one the user named. Use the global report when the user wants aggregated numbers but no specific area matches.
+   - Region not in areas.json → no area `report` possible (needs a real `areaId`). Options: (a) a `workspace` framed by viewport — set `latitude`/`longitude`/`zoom` to your best estimate of the region's center; (b) a **global report** for whole-world stats. Global report = `route.type` `report` with NO `datasetId`/`areaId` (→ `/platform/map/reports/default-public/report`); set viewport to world (`latitude: 0`, `longitude: 0`, `zoom: ~0.8`, not `0`). A global/whole-world report keeps ALL default-workspace layers VISIBLE (`ais`, `vms`, `presence`, `sar`, `sentinel2`, `viirs`, `encounters`, `loitering`, `port-visits`) — do not hide them and do not include only the one the user named. Use the global report when the user wants aggregated numbers but no specific area matches.
 6. **Run the script** (usage above). Input shape:
 
 ```json
@@ -100,4 +100,4 @@ Rules for the change:
 
 Worked examples of real intents → inputs: [references/examples.md](references/examples.md). Real conversation transcripts with expected output URLs: [references/examples-conversations.md](references/examples-conversations.md).
 
-A state param not covered in query-params.md may still exist — the app state types carry full JSDoc: `apps/fishing-map/types/index.ts`, `features/reports/reports.types.ts`, `features/vessel/vessel.types.ts`, `features/search/search.types.ts`.
+A state param not covered in query-params.md may still exist — the app state types carry full JSDoc: `apps/platform/types/index.ts`, `features/_reports/reports.types.ts`, `features/_vessels/vessel/vessel.types.ts`, `features/_vessels/search/search.types.ts`.

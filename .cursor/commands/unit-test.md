@@ -1,42 +1,26 @@
-# Write Unit Tests
+# Write unit tests (Vitest + Nx)
 
-## Overview
+Create or update unit tests for the current code using this monorepo’s conventions.
 
-Create comprehensive unit tests for the current code and generate the test file with proper imports and setup according to the project's testing conventions.
+## Stack
+
+- Runner: **Vitest** via Nx (`pnpm nx test <project>`)
+- Prefer existing patterns in the same project (`*.spec.ts`, `*.test.ts`, `vitest.config.ts`)
+- Testing Library for React components when the project already uses it
 
 ## Steps
 
-1. **Test Coverage**
-   - Test all public methods and functions
-   - Cover edge cases and error conditions
-   - Test both positive and negative scenarios
-   - Aim for high code coverage
-2. **Test Structure**
-   - Use the project's testing framework conventions
-   - Write clear, descriptive test names
-   - Follow the Arrange-Act-Assert pattern
-   - Group related tests logically
-3. **Test Cases to Include**
-   - Happy path scenarios
-   - Edge cases and boundary conditions
-   - Error handling and exception cases
-   - Mock external dependencies appropriately
-4. **Test Quality**
-   - Make tests independent and isolated
-   - Ensure tests are deterministic and repeatable
-   - Keep tests simple and focused on one thing
-   - Add helpful assertion messages
+1. Identify the Nx project for the file under test (`pnpm nx show projects` / nx-workspace skill).
+2. Find an existing sibling test file and mirror its imports, setup, and naming.
+3. Cover public behavior: happy path, edge cases, error paths.
+4. Mock network/API boundaries; do not hit real GFW APIs.
+5. Run: `pnpm nx test <project> --testPathPattern=<name>` (or the project’s Vitest equivalent flags).
 
-## Write Unit Tests Checklist
+## Checklist
 
-- [ ] Tested all public methods and functions
-- [ ] Covered edge cases and error conditions
-- [ ] Tested both positive and negative scenarios
-- [ ] Used the project's testing framework conventions
-- [ ] Written clear, descriptive test names
-- [ ] Followed the Arrange-Act-Assert pattern
-- [ ] Included happy path scenarios
-- [ ] Included edge cases and boundary conditions
-- [ ] Mocked external dependencies appropriately
-- [ ] Made tests independent and isolated
-- [ ] Ensured tests are deterministic and repeatable
+- [ ] Matches project Vitest/Nx setup (not Jest unless that project still uses it)
+- [ ] Descriptive test names
+- [ ] Arrange–Act–Assert
+- [ ] Mocks for `@globalfishingwatch/api-client` / RTK Query where needed
+- [ ] Tests are independent and deterministic
+- [ ] Command to re-run tests included in the reply

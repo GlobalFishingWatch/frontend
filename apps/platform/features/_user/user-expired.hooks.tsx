@@ -1,0 +1,40 @@
+import { useEffect, useRef } from 'react'
+import { Trans } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+
+import LoginLink from 'features/_user/LoginLink'
+
+import { selectIsUserExpired } from './selectors/user.selectors'
+
+import styles from './User.module.css'
+
+export const useUserExpiredToast = () => {
+  const isUserExpired = useSelector(selectIsUserExpired)
+  const toastId = useRef<any>(undefined)
+
+  const ToastContent = () => (
+    <div className={styles.disclaimer}>
+      <Trans i18nKey={(t) => t.errors.sessionExpired}>
+        Your session has expired, please
+        <LoginLink className={styles.link} loginSource="user-session-expired">
+          log in
+        </LoginLink>{' '}
+        again.
+      </Trans>
+    </div>
+  )
+
+  useEffect(() => {
+    if (isUserExpired) {
+      toastId.current = toast(<ToastContent />, {
+        toastId: 'user-expired',
+        autoClose: false,
+        closeButton: true,
+      })
+    } else if (toastId.current !== undefined) {
+      toast.dismiss(toastId.current)
+      toastId.current = undefined
+    }
+  }, [isUserExpired])
+}

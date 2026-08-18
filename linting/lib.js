@@ -2,6 +2,7 @@
 import eslint from '@eslint/js'
 import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-config-prettier'
+import packageJson from 'eslint-package-json'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
 import reactPlugin from 'eslint-plugin-react'
@@ -19,7 +20,7 @@ import tseslint from 'typescript-eslint'
  * @typedef {import('typescript-eslint').ConfigWithExtends} ConfigWithExtends
  */
 export const config = {
-  files: ['**/*.{js,ts,jsx,tsx}', '**/*.mjs'],
+  files: ['**/*.{js,cjs,mjs,ts,cts,mts,jsx,tsx}'],
   plugins: {
     import: importPlugin,
     'simple-import-sort': simpleImportSort,
@@ -92,9 +93,10 @@ export const config = {
           // Packages. `react` related packages come first.
           ['^react', '^@?\\w'],
           // Internal packages.
-          ['^(@|@globalfishingwatch)(/.*|$)'],
+          ['^(@|@globalfishingwatch|@platform/config)(/.*|$)'],
           // Internal paths.
           [
+            '^#', //`#` is a package.json `imports` subpath (package-internal alias).
             '^(features|store|routes|router|reducers|server|server-functions|common|components|redux-modules|types|assets|pages|data|hooks|utils)(/.*(?<!\\.css)$)?',
           ],
           // Side effect imports.
@@ -120,8 +122,25 @@ export const config = {
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/no-require-imports': 'warn',
-    '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/no-use-before-define': 'warn',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+      },
+    ],
+    '@typescript-eslint/no-use-before-define': [
+      'warn',
+      {
+        // Function declarations are hoisted; mutual recursion is common and safe
+        functions: false,
+        classes: false,
+        typedefs: false,
+        ignoreTypeReferences: true,
+      },
+    ],
     '@typescript-eslint/explicit-module-boundary-types': 0,
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
@@ -160,8 +179,51 @@ export const nodeScriptsConfig = {
       __dirname: 'readonly',
       __filename: 'readonly',
       console: 'readonly',
+      URL: 'readonly',
+      URLSearchParams: 'readonly',
     },
   },
 }
 
-export default defineConfig([config, nodeScriptsConfig])
+// Explicit CJS only — keep pushing .js/.mjs toward ESM imports
+export const cjsRequireConfig = {
+  files: ['**/*.cjs'],
+  rules: {
+    '@typescript-eslint/no-require-imports': 'off',
+  },
+}
+
+export const packageJsonConfig = {
+  files: ['**/package.json'],
+  plugins: {
+    'package-json': packageJson,
+  },
+  extends: ['package-json/recommended'],
+  rules: {
+    'package-json/dependency-version-range': ['error', { range: 'consistent' }],
+    // pnpm rewrites workspace: on publish; source manifests intentionally use it
+    'package-json/no-workspace-protocol-in-published-package': 'off',
+    // root preinstall (only-allow pnpm) + postinstall (husky)
+    'package-json/no-install-scripts': 'off',
+    // workspace packages live under apps/*/libs/*; their exports/imports are real package roots
+    'package-json/no-nested-exports': 'off',
+    // preserve `development` → `types` → `default` order for Vite HMR
+    'package-json/require-types-in-exports': 'off',
+    // libs keep main/types alongside exports for tooling that does not read exports
+    'package-json/prefer-exports': 'off',
+    // engines/keywords/sideEffects are not standardized across this monorepo yet
+    'package-json/require-engines': 'off',
+    'package-json/require-fields': 'off',
+    'package-json/prefer-side-effects-field': 'off',
+    // `files` allowlists and `type` vary; not enforced workspace-wide yet
+    'package-json/prefer-files-field': 'off',
+    'package-json/prefer-type-module': 'off',
+    // empty description strings and ambient @types/* without a runtime sibling are common here
+    'package-json/no-empty-fields': 'off',
+    'package-json/no-orphan-types': 'off',
+    // script names like `prerender` are not always paired with a `render` script
+    'package-json/no-orphan-script-hooks': 'off',
+  },
+}
+
+export default defineConfig([config, nodeScriptsConfig, cjsRequireConfig])

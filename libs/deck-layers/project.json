@@ -5,45 +5,25 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "options": {
-        "clean": false
-      }
-    },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
+    "build": {
+      "executor": "@nx/js:tsc"
     },
     "test": {
-      "executor": "@nx/vitest:test",
-      "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "dependsOn": ["^build"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/deck-layers"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/deck-layers/vitest.config.mts",
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/deck-layers"
+        "watch": true,
+        "config": "./vitest.config.mts"
       }
-    }
+    },
+    "typecheck": {},
+    "publish": {}
   }
 }

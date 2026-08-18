@@ -13,23 +13,24 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
-  DEFAULT_ID_PROPERTY,
-  getColorRampByOpacitySteps,
-  getFetchLoadOptions,
-  getLayerGroupOffset,
-  getMVTSublayerProps,
-  getPickedFeatureToHighlight,
-  GFWMVTLoader,
-  hexToDeckColor,
-  LayerGroup,
-  rgbaStringToComponents,
-} from '../../utils'
-import type { ContextSublayerCallbackParams } from '../context/context.types'
+} from '#config/colors.config'
+import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
+import { getMVTSublayerProps } from '#layers/_shared/tiles.utils'
+import type { ContextSublayerCallbackParams } from '#layers/context/context.types'
 import {
   getContextFiltersHash,
   hasSublayerFilters,
   supportDataFilterExtension,
-} from '../context/context.utils'
+} from '#layers/context/context.utils'
+import {
+  getColorRampByOpacitySteps,
+  getLayerGroupOffset,
+  hexToDeckColor,
+  rgbaStringToComponents,
+} from '#utils'
 
 import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'

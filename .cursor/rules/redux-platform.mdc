@@ -1,0 +1,14 @@
+---
+description: Platform Redux Toolkit + RTK Query patterns (slices, selectors, typed hooks)
+globs: apps/platform/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Platform Redux
+
+- Typed hooks from `features/app/app.hooks.ts`: `useAppDispatch`, `useAppSelector`, `useAppStore`
+- Prefer selectors over reading nested state in components
+- Feature state: `createSlice` + `createAsyncThunk` colocated as `*.slice.ts` / `*.selectors.ts`
+- Server APIs: RTK Query under `apps/platform/queries/` (`createApi`, `gfwBaseQuery`) — not TanStack Query
+- Keep async errors normalized (`parseAPIError` / existing async-slice helpers)
+- Do not introduce new `react-query` usage in platform

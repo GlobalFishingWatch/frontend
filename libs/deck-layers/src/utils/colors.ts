@@ -1,11 +1,7 @@
 import type { Color } from '@deck.gl/core'
 import type { RGBA } from 'color-blend/dist/types'
 
-export const COLOR_TRANSPARENT: Color = [0, 0, 0, 0]
-export const COLOR_HIGHLIGHT_LINE: Color = [255, 255, 255, 255]
-export const COLOR_HIGHLIGHT_FILL: Color = [0, 0, 0, 120]
-export const DEFAULT_BACKGROUND_COLOR: Color = [0, 36, 87]
-export const DEFAULT_LINE_COLOR: Color = [...DEFAULT_BACKGROUND_COLOR, 0.5]
+import { COLOR_TRANSPARENT } from '#config/colors.config'
 
 export const hexToRgb = (hex: string) => {
   if (!hex) {
@@ -18,6 +14,24 @@ export const hexToRgb = (hex: string) => {
     b: parseInt(cleanHex.slice(4, 6), 16),
   }
   return color
+}
+
+export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }
+export const rgbaStringToObject = (rgba?: string) => {
+  if (!rgba) return EMPTY_RGBA_COLOR
+  const startIndex = rgba.startsWith('rgb') ? 4 : 0
+  const colorHasAlpha = rgba.includes('rgba')
+  const [r, g, b, a] = rgba
+    .substring(startIndex + (colorHasAlpha ? 1 : 0), rgba.length - 1)
+    .replace(/ /g, '')
+    .split(',')
+
+  return {
+    r: parseInt(r),
+    g: parseInt(g),
+    b: parseInt(b),
+    a: colorHasAlpha ? parseFloat(a) : 1,
+  }
 }
 
 export const hexToDeckColor = (hex: string, opacity = 1): Color => {
@@ -56,24 +70,6 @@ export function colorToVec(c: number) {
 }
 export const deckToVecColor = ([r, g, b, a]: Color) => {
   return `vec4(${colorToVec(r)}, ${colorToVec(g)}, ${colorToVec(b)}, ${a ? colorToVec(a) : 1})`
-}
-
-export const EMPTY_RGBA_COLOR = { r: 0, g: 0, b: 0, a: 0 }
-export const rgbaStringToObject = (rgba?: string) => {
-  if (!rgba) return EMPTY_RGBA_COLOR
-  const startIndex = rgba.startsWith('rgb') ? 4 : 0
-  const colorHasAlpha = rgba.includes('rgba')
-  const [r, g, b, a] = rgba
-    .substring(startIndex + (colorHasAlpha ? 1 : 0), rgba.length - 1)
-    .replace(/ /g, '')
-    .split(',')
-
-  return {
-    r: parseInt(r),
-    g: parseInt(g),
-    b: parseInt(b),
-    a: colorHasAlpha ? parseFloat(a) : 1,
-  }
 }
 
 export const rgbaStringToComponents = (color: string): [number, number, number, number] | [] => {

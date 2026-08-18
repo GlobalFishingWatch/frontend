@@ -1,0 +1,49 @@
+.placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: var(--space-XL);
+}
+
+.tabsContainer {
+  margin: var(--space-S);
+}
+
+@media print {
+  .tabsContainer > *[role='tabpanel'] {
+    break-inside: avoid;
+  }
+
+  .tabsContainer h2 {
+    break-after: avoid;
+  }
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.fullProfileMessage {
+  color: var(--color-secondary-blue);
+  padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fullProfileMessage .pipe4Disclaimer {
+  padding: var(--space-S);
+  margin-left: 0;
+}
+
+.pipe4DisclaimerLink {
+  color: var(--color-secondary-blue);
+  text-decoration: underline;
+  margin-left: var(--space-S);
+}
+
+.linkTooltip {
+  max-width: none;
+}

@@ -1,4 +1,4 @@
-import { useEffect,useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 export function useEventKeyListener(keys: string[], callback?: (e: KeyboardEvent) => void) {
   const parentNode = useRef<HTMLDivElement>(undefined)

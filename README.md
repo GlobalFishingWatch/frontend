@@ -22,16 +22,16 @@ All of them availables with the `@globalfishingwatch/` prefix:
 
 ## Applications
 
-|                                                     |                                        |
-| --------------------------------------------------- | -------------------------------------- |
-| [api-portal](apps/api-portal)                       | Api documentation portal               |
-| [data-download-portal](apps/data-download-portal)   | The place to download datasets         |
-| [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
-| [fishing-map-e2e](apps/fishing-map-e2e)             | Playwright e2e testing for the map     |
-| [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
-| [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
-| [track-labeler](apps/track-labeler)                 | Labeling tool for tracks               |
-| [user-groups-admin](applications/user-groups-admin) | Tool to manage user groups with ease   |
+|                                                   |                                                 |
+| ------------------------------------------------- | ----------------------------------------------- |
+| [api-portal](apps/api-portal)                     | Api documentation portal                        |
+| [data-download-portal](apps/data-download-portal) | The place to download datasets                  |
+| [platform](apps/platform)                         | Platform entry point (includes fishing-map app) |
+| [platform-e2e](apps/platform-e2e)                 | Playwright e2e testing for the map              |
+| [image-labeler](apps/image-labeler)               | Labeling tool for satellite images              |
+| [port-labeler](apps/port-labeler)                 | Labeling tool for ports                         |
+| [track-labeler](apps/track-labeler)               | Labeling tool for tracks                        |
+| [user-groups-admin](apps/user-groups-admin)       | Tool to manage user groups with ease            |
 
 To create a new application using a template with sidebar + map + timebar just run:
 
@@ -54,34 +54,38 @@ See: <a href="https://docs.google.com/presentation/d/1LdxRbB491Rjf64C5VVF9oTWwWj
 
 ### Dependencies
 
-The repo is using yarn workspaces so npm is not suported yet, to install yarn [follow this instructions](https://classic.yarnpkg.com/en/docs/install/)
+The repo uses **pnpm workspaces**; npm and yarn are blocked by an `only-allow pnpm` preinstall hook.
+Node is pinned in [.nvmrc](.nvmrc) — use `nvm use` (or any version manager that reads it).
+
+```bash
+corepack enable   # pnpm version comes from package.json "packageManager"
+```
 
 #### Install a new dependency
 
 For all packages:
 
 ```bash
-yarn|pnpm add [package] -W
+pnpm add [package] -w
 ```
 
 Only for a specific package
 
 ```bash
-cd apps/[you-app]
-yarn|pnpm add [package]
+pnpm --filter [project-name] add [package]
 ```
 
 ### Installation
 
-To install all packages dependencies just run:
+To install all workspace dependencies:
 
 ```bash
-yarn
+pnpm install
 ```
 
 ### Developmment
 
-Nx handles every app or library by its own project.json file, see for example [fishing-map](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/fishing-map/project.json):
+Nx handles every app or library by its own project.json file, see for example [platform](https://github.com/GlobalFishingWatch/frontend/blob/develop/apps/platform/project.json):
 
 ```bash
 nx start [app-name]
@@ -100,15 +104,16 @@ nx build [app-name]
 
 ### Building using Docker
 
-To test all packages builds process run, useful to test everything works well before publishing.
+Reproduces the CI image build locally (same root `Dockerfile` the GitHub Actions workflow uses):
 
 ```bash
-docker compose up [app-name] --build
+./scripts/test-ci-build-platform.sh          # build only
+./scripts/test-ci-build-platform.sh --push   # build and push
 ```
 
 ### Publishing
 
-TODO
+Use [libs-release](.github/workflows/libs-release.yml) workflow
 
 ### API DOCS
 
@@ -119,7 +124,7 @@ https://gateway.api.dev.globalfishingwatch.org/swagger?version=3
 To replicate the prod build and serve it locally:
 
 ```bash
-nx build-serve [app-name]
+nx serve [app-name]
 ```
 
 ## Generating release notes for github releases

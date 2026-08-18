@@ -16,6 +16,12 @@ inputs:
     description: NX Cloud access token passed as a Docker BuildKit secret
     required: false
     default: ''
+  extra-build-args:
+    description: |
+      Newline-separated KEY=VALUE build args appended after the ones from the
+      config, so they override it. Every KEY still needs an ARG in the Dockerfile.
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -30,6 +36,8 @@ runs:
     - name: Prepare build config
       id: prepare
       shell: bash
+      env:
+        EXTRA_BUILD_ARGS: ${{ inputs.extra-build-args }}
       run: |
         set -euo pipefail
 
@@ -49,6 +57,19 @@ runs:
           ARGS+=$'\n'"$line"
         done < <(echo "$APP_CONFIG" | jq -r '.build.env_vars | to_entries[] | "\(.key)=\(.value)"')
 
+        # Appended last so a caller override beats the config value
+        while IFS= read -r line; do
+          [ -n "$line" ] && ARGS+=$'\n'"$line"
+        done <<< "$EXTRA_BUILD_ARGS"
+
+        # Collapse repeated keys to their last value rather than leaning on docker
+        # to pick a winner: an override of a key already in the config (say
+        # VITE_REALTIME_ENABLED) silently flips app behaviour, so make it explicit.
+        ARGS=$(awk -F= '
+          { if (!($1 in seen)) order[++n] = $1; seen[$1] = $0 }
+          END { for (i = 1; i <= n; i++) print seen[order[i]] }
+        ' <<< "$ARGS")
+
         SECRET_MAPPINGS=$(echo "$APP_CONFIG" | jq -r '(.build.secrets // {}) | to_entries[] | "\(.key):\(.value)"')
         SECRET_NAMES=$(echo "$APP_CONFIG" | jq -c '(.build.secrets // {}) | keys')
         TARGET=$(echo "$APP_CONFIG" | jq -r '.target')
@@ -63,7 +84,6 @@ runs:
           echo "secret_names=$SECRET_NAMES"
           echo "target=$TARGET"
         } >> "$GITHUB_OUTPUT"
-
     - name: Fetch build secrets
       id: build-secrets
       if: steps.prepare.outputs.secret_mappings != ''
@@ -86,6 +106,7 @@ runs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v7
       with:
+        context: .
         target: ${{ steps.prepare.outputs.target }}
         push: true
         tags: ${{ inputs.image }}

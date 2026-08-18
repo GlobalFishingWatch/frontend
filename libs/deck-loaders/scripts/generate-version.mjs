@@ -11,5 +11,5 @@ export const VERSION = '${packageJson.version}'
 `
 
 writeFileSync(join(__dirname, '../src/version.ts'), versionFileContent)
-// eslint-disable-next-line no-undef
+
 console.log(`Generated version.ts with version ${packageJson.version}`)

@@ -1,12 +1,12 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
+import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import svgr from 'vite-plugin-svgr'
 
 export default defineConfig(({ command }) => ({
-  devtools: command === 'serve',
-  root: __dirname,
+  devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/user-groups-admin',
   resolve: { tsconfigPaths: true },
 
@@ -40,28 +40,8 @@ export default defineConfig(({ command }) => ({
     }),
   ],
 
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
-
   build: {
     outDir: '../../dist/apps/user-groups-admin',
     reportCompressedSize: true,
   },
-
-  // test: {
-  //   globals: true,
-  //   cache: {
-  //     dir: '../../node_modules/.vitest',
-  //   },
-  //   environment: 'jsdom',
-  //   include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-
-  //   reporters: ['default'],
-  //   coverage: {
-  //     reportsDirectory: '../../coverage/apps/user-groups-admin',
-  //     provider: 'v8',
-  //   },
-  // },
 }))

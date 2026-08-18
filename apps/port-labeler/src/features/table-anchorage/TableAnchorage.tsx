@@ -119,7 +119,7 @@ function TableAnchorage() {
           tooltip="Toggle extra data"
           tooltipPlacement="bottom"
           className={styles.actionButton}
-          onClick={() => dispatch(toogleExtraData([]))}
+          onClick={() => dispatch(toogleExtraData())}
         />
       </div>
 

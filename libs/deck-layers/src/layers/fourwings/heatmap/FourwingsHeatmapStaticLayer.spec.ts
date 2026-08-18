@@ -99,8 +99,14 @@ describe('FourwingsHeatmapStaticLayer', () => {
 
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
-    expect(layer.cacheHash).toBe('false')
+    expect(layer.cacheHash).toBe('teal|false')
     layer.state.rampDirty = true
-    expect(layer.cacheHash).toBe('true')
+    expect(layer.cacheHash).toBe('teal|true')
+  })
+
+  it('cacheHash changes when the sublayer color ramp changes', () => {
+    const teal = makeLayer()
+    const magenta = makeLayer({ sublayers: [{ ...baseProps.sublayers[0], colorRamp: 'magenta' }] })
+    expect(teal.cacheHash).not.toBe(magenta.cacheHash)
   })
 })

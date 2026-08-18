@@ -1,19 +1,20 @@
 /// <reference types='vitest' />
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
 import { defineConfig, loadEnv } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import svgr from 'vite-plugin-svgr'
+
 import 'dotenv/config'
 
 export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, __dirname, '')
+  const env = loadEnv(mode, import.meta.dirname, '')
   const basePath = env.PUBLIC_URL || (mode === 'production' ? '/api-portal' : '')
 
   return {
-    devtools: command === 'serve',
+    devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
     base: basePath,
-    root: __dirname,
+    root: import.meta.dirname,
     cacheDir: '../../node_modules/.vite/apps/api-portal',
     resolve: { tsconfigPaths: true },
 

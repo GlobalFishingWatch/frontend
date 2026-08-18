@@ -5,12 +5,17 @@ import { scaleLinear } from 'd3-scale'
 import { stack, stackOffsetSilhouette } from 'd3-shape'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import { useTimelineContext } from '../timeline/timeline-context'
 
 import { useTimebarTimeOrigin, useTimeseriesToChartData } from './charts.hooks'
-import type { HighlighterCallback, HighlighterIconCallback, Timeseries } from './charts.types'
+import type {
+  HighlighterCallback,
+  HighlighterIconCallback,
+  TimebarColorScale,
+  Timeseries,
+} from './charts.types'
 import { useUpdateChartLayers, useUpdateChartsData } from './charts-store.atom'
 
 const MARGIN_BOTTOM = 20
@@ -36,12 +41,14 @@ const getEdges = (point: number[], y: (v: number) => number, numSubLayers: numbe
 export const TimebarStackedActivity = ({
   timeseries,
   dataviews,
+  colorScale,
   highlighterCallback,
   highlighterIconCallback,
   loading = false,
 }: {
   timeseries: Timeseries
   dataviews: UrlDataviewInstance[]
+  colorScale?: TimebarColorScale
   highlighterCallback?: HighlighterCallback
   highlighterIconCallback?: HighlighterIconCallback
   loading?: boolean
@@ -71,8 +78,9 @@ export const TimebarStackedActivity = ({
       .range([MARGIN_TOP, graphHeight / 2 - MARGIN_BOTTOM / 2])
 
     const layerData = series.flatMap((s, sublayerIndex) => {
-      if (!dataviews[sublayerIndex]) return []
-      const color = hexToDeckColor(dataviews[sublayerIndex]?.config?.color || '#ffffff')
+      const dataview = dataviews[sublayerIndex]
+      if (!dataview) return []
+      const color = hexToDeckColor(dataview.config?.color || '#ffffff')
       return s.slice(0, -1).flatMap((point, i) => {
         const x1 = (point as any).data.date - origin
         const x2 = (s[i + 1] as any).data.date - origin
@@ -82,7 +90,11 @@ export const TimebarStackedActivity = ({
         if (isNaN(x1) || isNaN(x2) || isNaN(yLo) || isNaN(yHi)) {
           return []
         }
-        return { polygon: [x1, yLo, x2, yLo, x2, yHi, x1, yHi], color }
+        const value = (point as unknown as number[])[1] - (point as unknown as number[])[0]
+        return {
+          polygon: [x1, yLo, x2, yLo, x2, yHi, x1, yHi],
+          color: colorScale?.(value) ?? color,
+        }
       })
     })
 
@@ -96,7 +108,7 @@ export const TimebarStackedActivity = ({
         getFillColor: (d) => d.color,
       }),
     ]
-  }, [timeseries, subLayers, dataviews, graphHeight, middleY, origin])
+  }, [timeseries, subLayers, dataviews, colorScale, graphHeight, middleY, origin])
 
   useUpdateChartLayers('activity', layers)
 

@@ -2,7 +2,6 @@ import { uniqBy } from 'es-toolkit'
 
 import type {
   Dataset,
-  DatasetFilter,
   DatasetFilterOperation,
   Dataview,
   DataviewDatasetConfig,
@@ -20,7 +19,7 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { isNumeric } from '@globalfishingwatch/data-transforms/filter-tracks-coordinates'
 import {
   getFlattenDatasetFilters,
   removeDatasetVersion,
@@ -107,6 +106,17 @@ export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Environment &&
     dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function getIsSingleHeatmapDataview(dataviews: UrlDataviewInstance[]) {
+  return (
+    dataviews.filter(
+      (dataview) =>
+        isActivityDataview(dataview) ||
+        isDetectionsDataview(dataview) ||
+        isEnvironmentalDataview(dataview)
+    ).length === 1
   )
 }
 
@@ -565,7 +575,7 @@ export function resolveDataviews(
                       : datasetConfig.query,
                 }
               }
-              // using the instance query and params first as the uniqBy from lodash doc says:
+              // using the instance query and params first as the uniqBy from es-toolkit doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
 

@@ -1,4 +1,4 @@
-name: PR Preview (Reusable Workflow)
+name: _PR Preview (Reusable Workflow)
 
 on:
   workflow_call:
@@ -34,7 +34,7 @@ on:
         type: string
 
 env:
-  APP: fishing-map
+  APP: platform
 
 jobs:
   deploy-preview:

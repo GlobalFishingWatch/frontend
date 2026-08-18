@@ -1,5 +1,5 @@
-import type { DeckLayerProps, DeckPickingObject } from '../../types'
-import type { ColorRampsIds } from '../../utils'
+import type { ColorRampsIds } from '#config/colorRamps.config'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 import type {
   FourwingsHeatmapPickingInfo,

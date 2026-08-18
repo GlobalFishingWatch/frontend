@@ -55,7 +55,7 @@ nx publish deck-layer-composer
 - @globalfishingwatch/deck-layers
 - @globalfishingwatch/dataviews-client
 - jotai
-- lodash
+- es-toolkit
 - luxon
 - react
 

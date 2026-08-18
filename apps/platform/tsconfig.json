@@ -1,0 +1,28 @@
+{
+  "$comment": "Sources live at the app root, not under src/, so include overrides the shared base.",
+  "extends": "../tsconfig.apps.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo/platform.tsbuildinfo",
+    "paths": {
+      "assets/*": ["./assets/*"],
+      "data/*": ["./data/*"],
+      "features/*": ["./features/*"],
+      "hooks/*": ["./hooks/*"],
+      "middlewares": ["./store/middlewares"],
+      "pages/*": ["./pages/*"],
+      "queries": ["./queries"],
+      "queries/*": ["./queries/*"],
+      "reducers": ["./store/reducers"],
+      "router/*": ["./router/*"],
+      "routes/*": ["./routes/*"],
+      "server/*": ["./server/*"],
+      "server-functions/*": ["./server-functions/*"],
+      "store": ["./store/store"],
+      "test/*": ["./test/*"],
+      "types": ["./types"],
+      "types/*": ["./types/*"],
+      "utils/*": ["./utils/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
+}

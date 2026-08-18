@@ -1,0 +1,41 @@
+{
+  "$comment": "Shared base for the app tsconfigs. `${configDir}` resolves to the *extending* app's directory (TS >= 5.5), so include/exclude and app-relative paths live here instead of being repeated per app. Options already set by ../tsconfig.base.json (esModuleInterop, allowSyntheticDefaultImports, resolveJsonModule, module, moduleResolution, target, skipLibCheck, sourceMap, incremental) are deliberately not repeated. apps/platform-e2e does not extend this: playwright-only, allowJs, no JSX, no lib src resolution.",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // Resolve @globalfishingwatch/* to lib src, not dist/*.d.ts.
+    // See .claude/memory/platform-dist-workspace-link.md
+    "customConditions": ["development"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "allowJs": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Union of what the apps need. `types` replaces rather than merges, so a per-app list
+    // means every app repeats the common half; the extra ambient typings are inert.
+    "types": [
+      "node",
+      "vite/client",
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts",
+      "vitest",
+      "vitest-browser-react",
+      "@vitest/browser/matchers",
+      "@vitest/browser-playwright"
+    ]
+  },
+  "include": ["${configDir}/src/**/*.ts", "${configDir}/src/**/*.tsx"],
+  "exclude": [
+    "${configDir}/node_modules",
+    "${configDir}/dist",
+    "${configDir}/exported",
+    "${configDir}/.next",
+    "${configDir}/.output",
+    "${configDir}/.tanstack",
+    "**/__traces__/**",
+    "${configDir}/**/*.spec.ts",
+    "${configDir}/**/*.test.ts",
+    "${configDir}/**/*.spec.tsx",
+    "${configDir}/**/*.test.tsx"
+  ]
+}

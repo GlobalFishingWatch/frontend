@@ -244,6 +244,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.getLayer()?.getColorScale()
   }
 
+  getColorByValue(value: number, sublayerIndex = 0) {
+    return (this.getLayer() as FourwingsHeatmapTileLayer)?.getColorByValue?.(value, sublayerIndex)
+  }
+
   getFourwingsLayers() {
     return this.getLayer()?.getFourwingsLayers()
   }

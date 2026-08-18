@@ -46,7 +46,6 @@ export const useReplaceLoginUrl = () => {
       // ensures the localStorage is clean when the app is unmounted
       cleanRedirectUrl()
     }
-     
   }, [])
 }
 

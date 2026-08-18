@@ -1,0 +1,25 @@
+.summaryWrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.summaryContainer {
+  padding: var(--space-SM);
+  padding-bottom: 0;
+  font: var(--font-L);
+  color: var(--color-secondary-blue);
+}
+
+.summaryContainer strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  padding: var(--space-M);
+  padding-top: var(--space-XS);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+}

@@ -11,7 +11,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { toAbsoluteTimestamp, toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
-import { getUTCDateTime } from '../../utils'
+import { getUTCDateTime } from '#utils'
 
 import type { VesselsColorByProperty } from './vessel.config'
 import { VESSEL_GRAPH_COLORS } from './vessel.config'

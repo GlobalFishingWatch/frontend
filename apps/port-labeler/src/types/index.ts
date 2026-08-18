@@ -3,13 +3,7 @@ export enum Locale {
 }
 
 export type WorkspaceParam =
-  | 'zoom'
-  | 'latitude'
-  | 'longitude'
-  | 'start'
-  | 'end'
-  | 'sidebarOpen'
-  | 'satellite'
+  'zoom' | 'latitude' | 'longitude' | 'start' | 'end' | 'sidebarOpen' | 'satellite'
 
 export type QueryParams = {
   [query in WorkspaceParam]?: string | number | boolean | null

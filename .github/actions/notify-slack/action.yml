@@ -17,8 +17,23 @@ runs:
   steps:
     - name: Post message to Slack
       shell: bash
+      env:
+        SLACK_TOKEN: ${{ inputs.token }}
+        SLACK_CHANNEL: ${{ inputs.channel }}
+        SLACK_MESSAGE: ${{ inputs.message }}
       run: |
-        curl -s -X POST https://slack.com/api/chat.postMessage \
-          -H "Content-type: application/json" \
-          -H "Authorization: Bearer ${{ inputs.token }}" \
-          --data "{\"channel\": \"${{ inputs.channel }}\", \"text\": \"${{ inputs.message }}\"}"
+        set -euo pipefail
+
+        PAYLOAD=$(jq -nc --arg channel "$SLACK_CHANNEL" --arg text "$SLACK_MESSAGE" \
+          '{channel: $channel, text: $text}')
+
+        RESPONSE=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+          -H 'Content-type: application/json; charset=utf-8' \
+          -H "Authorization: Bearer $SLACK_TOKEN" \
+          --data "$PAYLOAD")
+
+        # Slack answers 200 with {"ok": false} on failure, so curl alone proves nothing
+        if [ "$(jq -r '.ok' <<< "$RESPONSE")" != "true" ]; then
+          echo "::error::Slack rejected the message: $(jq -r '.error // "unknown"' <<< "$RESPONSE")"
+          exit 1
+        fi

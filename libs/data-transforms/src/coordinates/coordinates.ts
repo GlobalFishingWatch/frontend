@@ -38,7 +38,7 @@ export const parseCoords = (
   try {
     const coords = convert(`${latitude},${longitude}`)
     return { latitude: coords.decimalLatitude, longitude: coords.decimalLongitude }
-  } catch (error: any) {
+  } catch {
     return null
   }
 }

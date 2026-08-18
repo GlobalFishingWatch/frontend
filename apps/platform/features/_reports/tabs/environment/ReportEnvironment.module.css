@@ -1,0 +1,158 @@
+.section {
+  padding-block: var(--space-XS);
+}
+
+.container {
+  padding: var(--space-SM);
+}
+
+.graphSelectorContainer {
+  padding: var(--space-S);
+  padding-bottom: 0;
+}
+
+.comparisonContainer {
+  padding: var(--space-S);
+}
+
+.addLayerContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-M);
+}
+
+.titleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 2rem;
+}
+
+.summary {
+  font: var(--font-L);
+  color: var(--color-secondary-blue);
+  padding-block: var(--space-S);
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-M);
+  padding-bottom: var(--space-S);
+}
+
+.marginTop {
+  margin-top: var(--space-M);
+}
+
+.disclaimer {
+  color: var(--color-secondary-blue);
+}
+
+.disclaimer a {
+  text-decoration: underline;
+}
+
+.errorMessage {
+  border-color: var(--color-danger-red);
+  color: var(--color-danger-red);
+}
+
+.noDataDisclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.dataWarning {
+  color: var(--color-danger-red);
+  opacity: var(--opacity-secondary);
+  font: var(--font-S);
+  width: 100%;
+}
+
+.migramarSelectors {
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.migramarSelectors > div {
+  flex: 1;
+}
+
+.migramarSelectors .migramarSelect {
+  width: 100%;
+  height: auto;
+  min-height: var(--size-M);
+  line-height: 1.4;
+  align-items: center;
+}
+
+.migramarSelectors .migramarSelect > [role='button'] {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: unset;
+  padding: var(--space-XS);
+  padding-left: var(--space-S);
+}
+
+.migramarSelectors .migramarSelect li {
+  white-space: normal;
+  text-overflow: unset;
+  align-items: flex-start;
+}
+
+.migramarSingleOption {
+  line-height: 1.4;
+  padding: var(--space-XS) 0;
+}
+
+.migramarTooltip {
+  background: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+}
+
+.migramarTooltipRow {
+  display: flex;
+  align-items: center;
+}
+
+.migramarDot {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.migramarLegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-S);
+  padding: var(--space-S) 0;
+  color: var(--color-secondary-blue);
+}
+
+.migramarLegendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  font: var(--font-S);
+}

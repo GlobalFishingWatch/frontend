@@ -1,68 +1,57 @@
 ---
-description:
-globs: **/*.ts,**/*.tsx
+description: TypeScript/React conventions for the GFW frontend Nx monorepo (apps + libs)
+globs: **/*.{ts,tsx}
 alwaysApply: false
 ---
 
-You are an expert in TypeScript, Node.js, React, Vite, TanStack Query, TanStack Router, and CSS modules.
+You are an expert in TypeScript, React 19, Vite 8, TanStack Router, Redux Toolkit, and CSS modules in this Nx + pnpm monorepo.
 
-Monorepo ruls
+## Monorepo
 
-- Use pnpm to manage dependencies
+- Package manager: **pnpm** only (`preinstall` enforces it)
+- Run tasks via `pnpm nx …` (build, lint, test, serve)
+- Apps: `platform` (main), `api-portal`, `data-download-portal`, labelers, `user-groups-admin`
+- Shared libs under `libs/` (`ui-components`, `api-client`, `deck-layers`, `dataviews-client`, etc.)
 
-Response Constraints
+## Response constraints
 
-- Do not remove any existing code unless necessary.
-- Do not remove my comments or commented-out code unless necessary.
-- Do not change the formatting of my imports.
-- Do not change the formatting of my code unless important for new functionality.
+- Do not remove existing code or comments unless necessary
+- Do not reformat imports or unrelated code
+- Match surrounding file style (exports, naming, selectors)
 
-Code Style and Structure
+## Stack (current)
 
-- Write concise, technical TypeScript code with accurate examples.
-- Use functional and declarative programming patterns; avoid classes.
-- Prefer iteration and modularization over code duplication.
-- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
-- Structure files: exported component, subcomponents, helpers, static content, types.
+- **Routing (platform):** TanStack Router + TanStack Start (file routes under `apps/platform/routes/`)
+- **Server/async data (platform):** Redux Toolkit + **RTK Query** (`apps/platform/queries/`), `createAsyncThunk` in slices — not TanStack Query
+- **Legacy:** `react-query` v3 only in `api-portal`
+- **UI:** React 19, CSS modules (`.module.css`), `classnames` as `cx`
+- **Utils:** prefer `es-toolkit` over new lodash usage
+- **Maps:** deck.gl / MapLibre (layer code is class-based — that is expected)
+- **Tests:** Vitest via Nx (`pnpm nx test <project>`)
 
-Naming Conventions
+## Code style
 
-- Use lowercase with dashes for directories and hooks or config files (e.g., components/auth-wizard).
-- Use upper first with camelCase for components
-- Favor default exports for components.
+- Functional components; TypeScript throughout; prefer `type` over `interface`
+- Descriptive booleans: `isLoading`, `hasError`
+- Pure helpers: `function` keyword; curly braces on all conditionals
+- Colocate: component + `.module.css` + `*.hooks.ts` + `*.slice.ts` / selectors
 
-TypeScript Usage
+## Naming & structure
 
-- Use TypeScript for all code; prefer types over interfaces.
-- Implement strict TypeScript checks
-- Avoid enums; use maps instead.
-- Use functional components with TypeScript types.
+- Directories: kebab-case (`vessel-groups/`)
+- Components: PascalCase files (`Sidebar.tsx`)
+- Hooks modules: `Foo.hooks.ts` (not `use-foo.ts` for feature hooks)
+- Platform features live under `apps/platform/features/`
+- **Apps:** default-export the page/feature component when that is the file’s main export
+- **`libs/ui-components`:** named exports (`export function Button`)
 
-Syntax and Formatting
+## Redux / libs (see scoped rules)
 
-- Use the "function" keyword for pure functions.
-- Use curly braces for all conditionals. Favor simplicity over cleverness.
-- Use declarative JSX.
+- Platform Redux details: `redux-platform.mdc`
+- deck.gl layers: `deck-layers.mdc`
+- Shared UI: `ui-components.mdc`
 
-UI and Styling
+## Performance
 
-- Use CSS modules for components and styling.
-
-Redux best practices
-
-- Use Redux Toolkit for efficient Redux development
-- Implement slice pattern for organizing Redux code
-- Utilize createAsyncThunk for handling async actions
-- Use selectors for accessing state in components
-- Use Redux hooks: useSelector, (useAppDispatch in app/app.hooks.ts)
-
-Performance Optimization
-
-- Look for ways to make things faster:
-  - Use immutable data structures
-  - Use efficient data fetching strategies
-  - Optimize network requests
-  - Use efficient data structures
-  - Use efficient algorithms
-  - Use efficient rendering strategies
-  - Use efficient state management
+- Prefer efficient data fetching (RTK Query cache, abort signals) and avoid unnecessary re-renders
+- Do not add `useMemo` / `useCallback` by default unless the file already relies on them or profiling shows a need (React Compiler is not enabled yet)

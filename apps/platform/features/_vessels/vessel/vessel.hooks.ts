@@ -1,0 +1,93 @@
+import { useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+
+import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  getEncounteredVesselDataviewInstanceId,
+  getVesselDataviewInstanceId,
+  resolveDataviewDatasetResource,
+  selectResourceByUrl,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { VesselLayer } from '@globalfishingwatch/deck-layers'
+
+import { getHasVesselProfileInstance } from 'features/_map/dataviews/dataviews.utils'
+import {
+  selectActiveVesselsDataviews,
+  selectCustomUserDataviews,
+} from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveTrackDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-events.hooks'
+import {
+  selectCurrentVesselEvent,
+  selectVesselInfoData,
+} from 'features/_vessels/vessel/selectors/vessel.selectors'
+import { selectVesselSelfReportedId } from 'features/_vessels/vessel/vessel.config.selectors'
+import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import { selectVesselId } from 'router/routes.selectors'
+
+export const useVesselProfileLayer = () => {
+  const vesselId = useSelector(selectVesselId)
+  const vesselLayer = useGetDeckLayer<VesselLayer>(getVesselDataviewInstanceId(vesselId))
+  return vesselLayer
+}
+
+export const useVesselProfileEncounterLayer = () => {
+  const currentVesselEvent = useSelector(selectCurrentVesselEvent)
+  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const encounteredVesselId = currentVesselEvent?.encounter?.vessel?.id || ''
+  const isEncounterInstanceInWorkspace = getHasVesselProfileInstance({
+    dataviews: activeTrackDataviews!,
+    vesselId: encounteredVesselId!,
+    origin: 'vesselProfile',
+  })
+  const vesselLayerId = isEncounterInstanceInWorkspace
+    ? getVesselDataviewInstanceId(encounteredVesselId)
+    : getEncounteredVesselDataviewInstanceId(encounteredVesselId)
+  const vesselLayer = useGetDeckLayer<VesselLayer>(vesselLayerId)
+  return vesselLayer
+}
+
+export const useUpdateVesselEventsVisibility = () => {
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const vessel = useSelector(selectVesselInfoData)
+  const identityId = useSelector(selectVesselSelfReportedId)
+  useEffect(() => {
+    if (vessel) {
+      const shiptypes = getVesselProperty(vessel, 'shiptypes', {
+        identityId,
+        identitySource: VesselIdentitySourceEnum.SelfReported,
+      })
+      if (shiptypes?.includes('FISHING')) {
+        setVesselEventVisibility({ event: 'loitering', visible: false })
+      } else {
+        setVesselEventVisibility({ event: 'fishing', visible: false })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vessel])
+}
+
+export function useGetVesselInfoByDataviewId(dataviewId: string) {
+  const trackDataviews = useSelector(selectActiveVesselsDataviews) as UrlDataviewInstance[]
+  const userDataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
+  const dataviews = useMemo(
+    () => [...trackDataviews, ...userDataviews],
+    [trackDataviews, userDataviews]
+  )
+  const dataview = dataviews.find((dataview) => dataview.id === dataviewId)
+  const { url: infoUrl } = resolveDataviewDatasetResource(dataview!, DatasetTypes.Vessels)
+
+  const vesselInfoResource: Resource<IdentityVessel> | undefined = useSelector(
+    selectResourceByUrl<IdentityVessel>(infoUrl)
+  )
+
+  const vesselLayer = useGetDeckLayer<VesselLayer>(dataviewId)
+
+  return useMemo(
+    () => ({ dataview, vesselInfoResource, vesselLayer }),
+    [dataview, vesselInfoResource, vesselLayer]
+  )
+}

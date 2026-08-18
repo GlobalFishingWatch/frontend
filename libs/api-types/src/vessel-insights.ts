@@ -68,7 +68,7 @@ export type InsightIdentityFlagsChanges = {
 }
 
 export type InsightIdentity<
-  InsighIdentityType = InsightIdentityMOU & InsightIdentityIUU & InsightIdentityFlagsChanges
+  InsighIdentityType = InsightIdentityMOU & InsightIdentityIUU & InsightIdentityFlagsChanges,
 > = {
   datasets: string[]
 } & InsighIdentityType

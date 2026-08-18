@@ -64,7 +64,7 @@
       display: inline-block;
       background: none;
       border-left: 1px solid var(--border-color);
-    
+
       width: 10px;
       height: 100%;
       position: absolute;
@@ -72,13 +72,12 @@
       top: 0;
       transform: translateX(50%);
       z-index: 1;
-      touch-action:none;
-    
+      touch-action: none;
+
       &.isResizing {
         border-left: 2px solid var(--border-color);
       }
     }
-    
   }
 
   .td {
@@ -99,8 +98,6 @@
       flex: unset !important;
       // width: 10rem !important;
     }
-
-    
   }
 
   .tr {
@@ -134,8 +131,6 @@
 .folder {
   font-weight: bold;
 }
-
-
 
 .checkbox {
   margin-top: 0.3rem;

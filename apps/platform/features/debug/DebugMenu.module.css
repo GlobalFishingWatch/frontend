@@ -1,0 +1,56 @@
+.container {
+  padding: var(--space-M);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.header:not(:first-child) {
+  margin-top: 2rem;
+}
+
+.header label {
+  margin-left: 1rem;
+}
+
+.header label strong {
+  font-weight: 500;
+}
+
+.row {
+  margin-top: var(--space-S);
+  padding-left: var(--space-S);
+  display: flex;
+  gap: var(--space-S);
+}
+
+.padding {
+  padding-left: var(--space-S);
+}
+
+.editor {
+  margin-top: 1rem;
+  width: 100%;
+  min-height: 400px;
+  font-size: 1.2rem;
+  font-family: monospace;
+  background: #212121;
+  color: white;
+  resize: vertical;
+}
+
+.section:not(:first-child) {
+  border-top: var(--border);
+  margin-top: 4rem;
+}
+
+.input {
+  margin-left: var(--space-M);
+  flex: 1;
+}
+
+.link {
+  text-decoration: underline;
+}

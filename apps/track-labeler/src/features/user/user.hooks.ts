@@ -24,10 +24,12 @@ export const useUser = (): UserHookType => {
   const user = useSelector(selectUserData)
   const logged = useSelector(selectUserLogged)
 
-  const allowedAppAccess =
+  const allowedAppAccess = Boolean(
     user && checkExistPermissionInList(user?.permissions, LABELER_LOAD_PERMISSION)
-  const allowedProjectAccess =
+  )
+  const allowedProjectAccess = Boolean(
     user && project && checkExistPermissionInList(user?.permissions, project?.permission)
+  )
 
   const projects =
     (user &&

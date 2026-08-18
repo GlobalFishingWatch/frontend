@@ -10,7 +10,6 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckPickingObject } from '../../../types'
 import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
@@ -19,7 +18,8 @@ import type {
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsVisualizationMode,
-} from '../fourwings.types'
+} from '#layers/fourwings/fourwings.types'
+import type { DeckPickingObject } from '#types'
 
 export type FourwingsChunk = {
   id: string
@@ -76,7 +76,8 @@ export type AggregateCellParams = {
   startFrame: number
   endFrame: number
   aggregationOperation?: FourwingsAggregationOperation
-  cellStartOffsets: number[]
+  // Optional: aggregateCell returns 0 for a sublayer when offsets are absent.
+  cellStartOffsets?: number[]
 }
 
 export type CompareCellParams = {

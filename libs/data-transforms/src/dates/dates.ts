@@ -2,7 +2,8 @@ import { toNumber } from 'es-toolkit/compat'
 import type { DateTimeOptions, DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { type FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
@@ -91,7 +92,7 @@ export const getUTCDateTime = (d: SupportedDateType): DateTime => {
   if (typeof d === 'object') {
     try {
       return DateTime.fromJSDate(d, { zone: 'utc' })
-    } catch (error) {
+    } catch {
       console.warn('Not a valid date', typeof d, d)
       return DateTime.utc()
     }

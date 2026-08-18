@@ -47,8 +47,7 @@ const renderTimeline = (onChange: ChangeMock) => {
   return graph
 }
 
-const sourcesOf = (onChange: ChangeMock) =>
-  onChange.mock.calls.map((call) => call[0].source)
+const sourcesOf = (onChange: ChangeMock) => onChange.mock.calls.map((call) => call[0].source)
 
 afterEach(() => cleanup())
 

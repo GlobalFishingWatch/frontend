@@ -1,0 +1,129 @@
+import { useSelector } from 'react-redux'
+
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Choice } from '@globalfishingwatch/ui-components'
+
+import {
+  selectHasFishingDataviews,
+  selectHasPresenceDataviews,
+  selectHasSarDataviews,
+  selectHasSentinel2Dataviews,
+  selectHasViirsDataviews,
+} from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
+  selectReportSubCategory,
+} from 'features/_reports/reports.selectors'
+import type {
+  ReportActivitySubCategory,
+  ReportDetectionsSubCategory,
+} from 'features/_reports/reports.types'
+import { ReportCategory } from 'features/_reports/reports.types'
+import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
+
+import { getReportSubCategoryLabel } from './reports-activity.utils'
+
+import styles from './ReportActivity.module.css'
+
+function ReportActivitySubsectionSelector() {
+  const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const reportCategory = useSelector(selectReportCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
+  const hasFishingDataviews = useSelector(selectHasFishingDataviews)
+  const hasPresenceDataviews = useSelector(selectHasPresenceDataviews)
+  const hasViirsDataviews = useSelector(selectHasViirsDataviews)
+  const hasSarDataviews = useSelector(selectHasSarDataviews)
+  const hasSentinel2Dataviews = useSelector(selectHasSentinel2Dataviews)
+  const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
+  const loading = useReportFeaturesLoading()
+  const fitAreaInViewport = useFitAreaInViewport()
+
+  const isPresenceDisabled =
+    loading || !hasPresenceDataviews || !activeReportSubCategories?.includes('presence')
+
+  const options: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>[] =
+    reportCategory === ReportCategory.Activity
+      ? ([
+          {
+            id: 'fishing',
+            label: getReportSubCategoryLabel('fishing'),
+            disabled: loading || !hasFishingDataviews,
+          },
+          {
+            id: 'presence',
+            label: getReportSubCategoryLabel('presence'),
+            disabled: isPresenceDisabled,
+          },
+        ] as ChoiceOption<ReportActivitySubCategory>[])
+      : ([
+          ...(hasViirsDataviews
+            ? [
+                {
+                  id: 'viirs',
+                  label: getReportSubCategoryLabel('viirs'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+          ...(hasSarDataviews
+            ? [
+                {
+                  id: 'sar',
+                  label: getReportSubCategoryLabel('sar'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+          ...(hasSentinel2Dataviews
+            ? [
+                {
+                  id: 'sentinel-2',
+                  label: getReportSubCategoryLabel('sentinel-2'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+        ] as ChoiceOption<ReportDetectionsSubCategory>[])
+
+  const onSelectSubsection = (
+    option: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>
+  ) => {
+    if (reportSubCategory !== option.id) {
+      const queryParam =
+        reportCategory === ReportCategory.Activity
+          ? 'reportActivitySubCategory'
+          : 'reportDetectionsSubCategory'
+      replaceQueryParams({ [queryParam]: option.id })
+      fitAreaInViewport()
+      dispatch(resetReportData())
+      trackEvent({
+        category: TrackCategory.Analysis,
+        action: `activity_tab_toggle_${option.id}`,
+      })
+    }
+  }
+
+  const selectedOption = reportSubCategory
+    ? options.find((o) => o.id === reportSubCategory)
+    : options[0]
+
+  return (
+    <Choice
+      size="medium"
+      options={options}
+      activeOption={selectedOption?.id}
+      onSelect={onSelectSubsection}
+      testId="report-subsection-selector"
+      className={styles.selector}
+    />
+  )
+}
+
+export default ReportActivitySubsectionSelector

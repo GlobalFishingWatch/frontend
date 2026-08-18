@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { Icon } from '@globalfishingwatch/ui-components/icon'
@@ -24,6 +24,7 @@ export function TimebarTimeRangeSelector({
   const { labels, absoluteStart, absoluteEnd, latestAvailableDataDate, notifyChange, start, end } =
     useTimebar()
   const [showTimeRangeSelector, setShowTimeRangeSelector] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const toggleTimeRangeSelector = useCallback(() => {
     setShowTimeRangeSelector((prev) => !prev)
@@ -51,9 +52,11 @@ export function TimebarTimeRangeSelector({
           latestAvailableDataDate={latestAvailableDataDate}
           lastXOptions={timeRangeOptions}
           showDateInputs={showDateInputs}
+          anchorRef={buttonRef}
         />
       )}
       <button
+        ref={buttonRef}
         type="button"
         title={labels.timerange?.title}
         className={cx(styles.uiButton)}

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect,useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import cx from 'classnames'
 
 import { Button, InputText } from '@globalfishingwatch/ui-components'
@@ -7,10 +7,7 @@ import { useCreateUserApplication } from 'features/user-applications/user-applic
 
 import styles from './access-token-create.module.css'
 
-/* eslint-disable-next-line */
-export interface AccessTokenCreateProps {}
-
-export function AccessTokenCreate(props: AccessTokenCreateProps) {
+export function AccessTokenCreate() {
   const {
     mutate,
     error,

@@ -1,11 +1,13 @@
+import { interpolatePath } from '@tanstack/router-core'
+
 import {
   DEFAULT_PATH_BASENAME,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   ROUTE_PATHS,
-} from '@fishing-map/config'
+} from '@platform/config'
 
-export { DEFAULT_PATH_BASENAME as DEFAULT_BASENAME }
+export const DEFAULT_BASENAME: string = DEFAULT_PATH_BASENAME
 
 export type MapRouteType =
   | 'workspace'
@@ -45,7 +47,7 @@ const required = (route: MapRoute, param: keyof MapRouteParams): string => {
 
 /**
  * Returns the TanStack Router `to` pattern and `params` for a route,
- * matching the file routes in apps/fishing-map/routes/_app
+ * matching the file routes in apps/platform/routes/_platform
  */
 export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   const category = route.category || DEFAULT_WORKSPACE_CATEGORY
@@ -54,7 +56,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   switch (route.type) {
     case 'workspace':
       if (!route.category && !route.workspaceId) {
-        return { to: ROUTE_PATHS.HOME, params: {} }
+        return { to: ROUTE_PATHS.MAP, params: {} }
       }
       return { to: ROUTE_PATHS.WORKSPACE, params: workspaceParams }
     case 'workspaces-list':
@@ -63,6 +65,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
       if (route.reportId) {
         return { to: ROUTE_PATHS.REPORT, params: { reportId: route.reportId } }
       }
+      // datasetId/areaId are optional path params: without them this is the global report.
       if (!route.datasetId && !route.areaId) {
         return {
           to: ROUTE_PATHS.WORKSPACE_REPORT,
@@ -70,7 +73,7 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
         }
       }
       return {
-        to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+        to: ROUTE_PATHS.WORKSPACE_REPORT,
         params: {
           ...workspaceParams,
           datasetId: required(route, 'datasetId'),
@@ -86,6 +89,9 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
         params: { ...workspaceParams, vesselId: required(route, 'vesselId') },
       }
     case 'vessel-search':
+      if (!route.category && !route.workspaceId) {
+        return { to: ROUTE_PATHS.SEARCH, params: {} }
+      }
       return { to: ROUTE_PATHS.WORKSPACE_SEARCH, params: workspaceParams }
     case 'vessel-group-report':
       return {
@@ -104,21 +110,32 @@ export const getRouteNavigation = (route: MapRoute): RouteNavigation => {
   }
 }
 
+const OPTIONAL_PARAM = /^\{-\$(.+)\}$/
+
+/** `$name` is a required param segment, `{-$name}` an optional one (dropped when the param is missing). */
+const parseParamSegment = (segment: string): { name: string; optional: boolean } | undefined => {
+  const optional = segment.match(OPTIONAL_PARAM)
+  if (optional) return { name: optional[1], optional: true }
+  if (segment.startsWith('$')) return { name: segment.slice(1), optional: false }
+  return undefined
+}
+
+/** Same interpolation the app's router does, so `{-$optional}` segments and param encoding match. */
 export const buildRoutePath = (navigation: RouteNavigation): string => {
-  const path = navigation.to
-    .split('/')
-    .map((segment) =>
-      segment.startsWith('$')
-        ? encodeURIComponent(navigation.params[segment.slice(1)] || '')
-        : segment
-    )
-    .join('/')
-  return path === '' ? '/' : path
+  const { interpolatedPath, isMissingParams } = interpolatePath({
+    path: navigation.to,
+    params: navigation.params,
+  })
+  if (isMissingParams) {
+    throw new Error(`missing params for route "${navigation.to}"`)
+  }
+  return interpolatedPath || '/'
 }
 
 // Static-segment patterns listed before parametric ones of the same length,
 // so e.g. /user wins over /$category. Types map each ROUTE_PATHS pattern.
 const ROUTE_PATTERNS: [string, MapRouteType][] = [
+  [ROUTE_PATHS.MAP, 'workspace'],
   [ROUTE_PATHS.USER, 'user'],
   [ROUTE_PATHS.SEARCH, 'vessel-search'],
   [ROUTE_PATHS.REPORT, 'report'],
@@ -128,20 +145,37 @@ const ROUTE_PATTERNS: [string, MapRouteType][] = [
   [ROUTE_PATHS.WORKSPACE_SEARCH, 'vessel-search'],
   [ROUTE_PATHS.WORKSPACE_VESSEL, 'vessel'],
   [ROUTE_PATHS.WORKSPACE_REPORT, 'report'],
-  [ROUTE_PATHS.WORKSPACE_REPORT_FULL, 'report'],
   [ROUTE_PATHS.VESSEL_GROUP_REPORT, 'vessel-group-report'],
   [ROUTE_PATHS.PORT_REPORT, 'ports-report'],
 ]
 
+// Pre-standalone paths the app still serves as 308 redirects (routes/_platform/_map/map/{user,
+// vessel-search,report.$reportId,vessel.$vesselId}.tsx). Matched before ROUTE_PATTERNS, because
+// '/map/user' would otherwise read as the '/map/$category' workspaces list.
+const LEGACY_ROUTE_PATTERNS: [string, MapRouteType][] = [
+  ['/map/user', 'user'],
+  ['/map/vessel-search', 'vessel-search'],
+  ['/map/report/$reportId', 'report'],
+  ['/map/vessel/$vesselId', 'vessel'],
+]
+
 const matchPattern = (pattern: string, segments: string[]): MapRouteParams | undefined => {
   const patternSegments = pattern.split('/').filter(Boolean)
-  if (patternSegments.length !== segments.length) return undefined
+  // Optional params only ever trail (`/report/{-$datasetId}/{-$areaId}`), so a shorter pathname is
+  // just the pattern with its last N segments dropped.
+  const optionalCount = patternSegments.filter((segment) => OPTIONAL_PARAM.test(segment)).length
+  if (
+    segments.length > patternSegments.length ||
+    segments.length < patternSegments.length - optionalCount
+  ) {
+    return undefined
+  }
   const params: Record<string, string> = {}
-  for (let i = 0; i < patternSegments.length; i++) {
-    const patternSegment = patternSegments[i]
-    if (patternSegment.startsWith('$')) {
-      params[patternSegment.slice(1)] = segments[i]
-    } else if (patternSegment !== segments[i]) {
+  for (let i = 0; i < segments.length; i++) {
+    const param = parseParamSegment(patternSegments[i])
+    if (param) {
+      params[param.name] = segments[i]
+    } else if (patternSegments[i] !== segments[i]) {
       return undefined
     }
   }
@@ -154,13 +188,20 @@ const matchPattern = (pattern: string, segments: string[]): MapRouteParams | und
 export const matchRoutePath = (pathname: string): MapRoute => {
   const segments = pathname.split('/').filter(Boolean).map(decodeURIComponent)
   if (segments.length === 0) {
+    // The platform root. It currently 404s straight to the default workspace map, so reporting a
+    // workspace matches what the user actually lands on. Revisit when a landing page exists.
     return { type: 'workspace' }
   }
-  for (const [pattern, type] of ROUTE_PATTERNS) {
+  for (const [pattern, type] of [...LEGACY_ROUTE_PATTERNS, ...ROUTE_PATTERNS]) {
     const params = matchPattern(pattern, segments)
     if (params) {
       return { type, ...params }
     }
   }
-  return { type: 'workspace', category: segments[0], workspaceId: segments[1] }
+  // Unrecognised shape. Map URLs are '/map/<category>/<workspaceId>', so the workspace params are
+  // offset by the '/map' segment; anything else has no workspace to report.
+  if (segments[0] === 'map') {
+    return { type: 'workspace', category: segments[1], workspaceId: segments[2] }
+  }
+  return { type: 'workspace' }
 }

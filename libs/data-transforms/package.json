@@ -1,26 +1,31 @@
 {
   "name": "@globalfishingwatch/data-transforms",
   "version": "4.0.1",
-  "license": "MIT",
   "description": "Utils to decode various data formats",
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./dates": {
-      "types": "./dist/dates/index.d.ts",
       "development": "./src/dates/index.ts",
+      "types": "./dist/dates/index.d.ts",
       "default": "./dist/dates/index.js"
+    },
+    "./*": {
+      "development": "./src/*/index.ts",
+      "types": "./dist/*/index.d.ts",
+      "default": "./dist/*/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@globalfishingwatch/api-types": "workspace:^",
@@ -32,11 +37,8 @@
     "geo-coordinates-parser": "1.x",
     "geojson": "0.x",
     "jszip": "3.x",
-    "lodash": "4.x",
     "luxon": "3.x",
-    "papaparse": "5.5.3",
     "shpjs": "6.x",
-    "simple-statistics": "7.x",
     "tslib": "2.x"
   }
 }

@@ -12,7 +12,6 @@ import {
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 import type {
-  ColorRampId,
   FourwingsDeckSublayer,
   FourwingsLayerProps,
   FourwingsVisualizationMode,
@@ -20,9 +19,13 @@ import type {
 import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
-  getUTCDateTime,
 } from '@globalfishingwatch/deck-layers'
-import { TIME_COMPARISON_NOT_SUPPORTED_INTERVALS } from '@globalfishingwatch/deck-loaders'
+import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
+import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
+import {
+  FOURWINGS_REAL_TIME_INTERVALS,
+  TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
+} from '@globalfishingwatch/deck-loaders'
 
 import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
@@ -95,7 +98,10 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     maxZoomLevels.push(dataview.config?.maxZoom)
   }
 
-  const allAvailableIntervals = getDataviewAvailableIntervals(dataview)
+  const allAvailableIntervals =
+    timeMode === 'realTime'
+      ? FOURWINGS_REAL_TIME_INTERVALS
+      : getDataviewAvailableIntervals(dataview)
   const availableIntervals =
     dataview.config?.comparisonMode === FourwingsComparisonMode.TimeCompare
       ? allAvailableIntervals.filter(

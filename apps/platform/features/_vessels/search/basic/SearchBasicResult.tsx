@@ -1,0 +1,355 @@
+import { memo, useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import { lowerFirst, uniq } from 'es-toolkit'
+import type { FeatureCollection } from 'geojson'
+
+import type { Locale } from '@globalfishingwatch/api-types'
+import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { getVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
+import { useSmallScreen } from '@globalfishingwatch/react-hooks'
+import {
+  FIRST_YEAR_OF_DATA,
+  IconButton,
+  YearlyTransmissionsTimeline,
+} from '@globalfishingwatch/ui-components'
+
+import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import TrackFootprint from 'features/_vessels/search/basic/TrackFootprint'
+import { cleanVesselSearchResults, setSelectedVessels } from 'features/_vessels/search/search.slice'
+import { getSearchVesselId } from 'features/_vessels/search/search.utils'
+import VesselIdentityFieldLogin from 'features/_vessels/vessel/identity/fields/VesselIdentityFieldLogin'
+import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
+import {
+  getBestMatchCriteriaIdentity,
+  getIdentitySourceLabel,
+  getOtherVesselNames,
+  getSearchIdentityResolved,
+  getVesselIdentities,
+  getVesselProperty,
+} from 'features/_vessels/vessel/vessel.utils'
+import VesselLink from 'features/_vessels/vessel/VesselLink'
+import { useAppDispatch } from 'features/app/app.hooks'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nFlag from 'features/i18n/i18nFlag'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
+import {
+  EMPTY_FIELD_PLACEHOLDER,
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselOtherNamesLabel,
+  getVesselShipTypeLabel,
+} from 'utils/info'
+import { getHighlightedText } from 'utils/text'
+
+import styles from './SearchBasicResult.module.css'
+
+type SearchBasicResultProps = {
+  vessel: IdentityVesselData
+  index: number
+  highlighted: boolean
+  setHighlightedIndex: (index: number) => void
+  vesselsSelected: IdentityVesselData[]
+  highlightQuery: string
+}
+
+function SearchBasicResult({
+  vessel,
+  index,
+  highlighted,
+  setHighlightedIndex,
+  vesselsSelected,
+  highlightQuery,
+}: SearchBasicResultProps) {
+  const { t, i18n } = useTranslation()
+  const dispatch = useAppDispatch()
+  const vesselDataviews = useSelector(selectVesselsDataviews)
+  const isSmallScreen = useSmallScreen()
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const [highlightedYear, setHighlightedYear] = useState<number>()
+  const [trackBbox, setTrackBbox] = useState<Bbox>()
+  const fitBounds = useMapFitBounds()
+  const { setTimerange } = useTimerangeConnect()
+
+  const { dataset, track } = vessel
+  const vesselData = getSearchIdentityResolved(vessel)
+  const {
+    id,
+    flag,
+    shipname,
+    nShipname,
+    ssvid,
+    imo,
+    callsign,
+    transmissionDateFrom,
+    transmissionDateTo,
+    positionsCounter,
+  } = vesselData
+  const shiptypes = getVesselProperty(vessel, 'shiptypes')
+  const geartypes = getVesselGearTypeLabel({ geartypes: getVesselProperty(vessel, 'geartypes') })
+  const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
+  const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
+  const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
+  const hasPositions = positionsCounter !== undefined && positionsCounter > 0
+
+  const identitySource = useMemo(() => {
+    const registryIdentities = vessel.identities.filter(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.Registry
+    )
+    const selfReportedIdentities = vessel.identities.filter(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
+    )
+    return getIdentitySourceLabel(registryIdentities, selfReportedIdentities, dataset, t)
+  }, [t, vessel.identities, dataset])
+
+  const transmissionsSource = useMemo(() => {
+    const selfReportedIdentities = vessel.identities.filter(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
+    )
+    const selfReportedIdentitiesSources = uniq(
+      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
+    )
+    if (selfReportedIdentities.length) return selfReportedIdentitiesSources.join(', ')
+    return ''
+  }, [vessel.identities])
+
+  const selfReportedVesselIds = useMemo(() => {
+    const identities = getVesselIdentities(vessel, {
+      identitySource: VesselIdentitySourceEnum.SelfReported,
+    })
+    return identities.map((i) => i.id)
+  }, [vessel])
+
+  // TODO decide how we manage VMS properties
+  const { fleet, origin, casco, nationalId, matricula, externalId, sourceFleet, hull } =
+    vessel as any
+
+  const isInWorkspace = vesselDataviews?.some(
+    (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(id)
+  )
+  const isSelected = vesselsSelected?.some(
+    (v) => getSearchVesselId(v) === getSearchVesselId(vessel)
+  )
+  let tooltip: string = t((t) => t.search.selectVessel)
+  if (isInWorkspace) {
+    tooltip = t((t) => t.search.vesselAlreadyInWorkspace)
+  } else if (isSelected) {
+    tooltip = t((t) => t.search.vesselSelected)
+  }
+
+  const onSelectClick = useCallback(() => {
+    dispatch(setSelectedVessels([getSearchVesselId(vessel)]))
+  }, [dispatch, vessel])
+
+  const vesselQuery = (() => {
+    const query = isStandaloneSearchLocation
+      ? { start: transmissionDateFrom, end: transmissionDateTo }
+      : {}
+    if (trackBbox) {
+      const coordinates = getMapCoordinatesFromBounds(trackBbox)
+      return { ...query, ...coordinates }
+    }
+    return query
+  })()
+
+  const onVesselClick = (e: MouseEvent) => {
+    if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+      dispatch(cleanVesselSearchResults())
+    }
+    if (isStandaloneSearchLocation) {
+      if (trackBbox) {
+        fitBounds(trackBbox, { fitZoom: true })
+      }
+      setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
+    }
+  }
+
+  const onYearHover = useCallback(
+    (year?: number) => {
+      if (!isSmallScreen) {
+        setHighlightedYear(year)
+      }
+    },
+    [isSmallScreen]
+  )
+
+  const onTrackFootprintLoad = useCallback((data: FeatureCollection) => {
+    const segments = geoJSONToSegments(data)
+    const bbox = segments?.length ? segmentsToBbox(segments) : undefined
+    setTrackBbox(bbox)
+  }, [])
+
+  return (
+    <li
+      onMouseOut={() => setHighlightedIndex(-1)}
+      onBlur={() => setHighlightedIndex(-1)}
+      className={cx('card', styles.searchResult, {
+        [styles.highlighted]: highlighted,
+        [styles.inWorkspace]: isInWorkspace,
+        [styles.selected]: isSelected,
+      })}
+      key={`${index} - ${dataset?.id} - ${id}`}
+      data-test={`search-vessels-option-${id}-${index}`}
+    >
+      <div className={styles.container}>
+        <IconButton
+          icon={isSelected || isInWorkspace ? 'tick' : undefined}
+          type="border"
+          testId={`search-vessels-option-selection-${index}`}
+          className={cx(styles.icon, { [styles.selectedIcon]: isSelected || isInWorkspace })}
+          size="tiny"
+          tooltip={tooltip}
+          onClick={isInWorkspace ? undefined : onSelectClick}
+        />
+        <div className={styles.fullWidth}>
+          <div className={styles.name}>
+            <VesselLink
+              vesselId={vesselData.id}
+              identity={bestIdentityMatch}
+              datasetId={dataset?.id}
+              onClick={onVesselClick}
+              query={vesselQuery}
+              fitBounds={isStandaloneSearchLocation}
+            >
+              {getHighlightedText(
+                (name as string) || EMPTY_FIELD_PLACEHOLDER,
+                highlightQuery,
+                styles
+              )}
+            </VesselLink>
+            <span className={styles.secondary}>{otherNamesLabel}</span>
+          </div>
+          <div className={styles.properties}>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.flag)}</label>
+              <span>
+                <I18nFlag iso={flag} />
+              </span>
+            </div>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.mmsi)}</label>
+              <span>
+                {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+              </span>
+            </div>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.imo)}</label>
+              <span>
+                {getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+              </span>
+            </div>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.callsign)}</label>
+              <span>
+                {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+              </span>
+            </div>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.vesselType)}</label>
+              <span>{getVesselShipTypeLabel({ shiptypes }) || EMPTY_FIELD_PLACEHOLDER}</span>
+            </div>
+            <div className={styles.property}>
+              <label>{t((t) => t.vessel.geartype)}</label>
+              <span>
+                {geartypes === API_LOGIN_REQUIRED ? (
+                  <VesselIdentityFieldLogin />
+                ) : (
+                  geartypes || EMPTY_FIELD_PLACEHOLDER
+                )}
+              </span>
+            </div>
+            {matricula && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.matricula)}</label>
+                <span>{matricula}</span>
+              </div>
+            )}
+            {nationalId && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.nationalId)}</label>
+                <span>{nationalId}</span>
+              </div>
+            )}
+            {externalId && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.externalId)}</label>
+                <span>{externalId}</span>
+              </div>
+            )}
+            {(casco || hull) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.casco)}</label>
+                <span>{casco || hull}</span>
+              </div>
+            )}
+            {(fleet || sourceFleet) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.fleet)}</label>
+                <span>{formatInfoField(fleet || sourceFleet, 'fleet')}</span>
+              </div>
+            )}
+            {origin && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.origin)}</label>
+                <span>{formatInfoField(origin, 'fleet')}</span>
+              </div>
+            )}
+            {/* {dataset && (
+                    <div className={styles.property}>
+                      <label>{t((t) => t.vessel.source)}</label>
+                      <DatasetLabel dataset={dataset} />
+                    </div>
+                  )} */}
+            {identitySource && (
+              <div className={styles.property}>
+                <label>
+                  {t((t) => t.vessel.infoSource)}
+                  <DataTerminology terminologyKey="registryInfo" />
+                </label>
+                <span>{identitySource}</span>
+              </div>
+            )}
+          </div>
+          <div className={styles.properties}>
+            {transmissionDateFrom && transmissionDateTo && (
+              <div className={cx(styles.property, styles.fullWidth)}>
+                <span>
+                  {hasPositions ? `${formatI18nNumber(positionsCounter)} ` : ''}
+                  {`${transmissionsSource} ${lowerFirst(t((t) => t.vessel.transmissions))} ${t((t) => t.common.from)} `}
+                  <I18nDate date={transmissionDateFrom} /> {t((t) => t.common.to)}{' '}
+                  <I18nDate date={transmissionDateTo} />
+                </span>
+
+                <YearlyTransmissionsTimeline
+                  firstTransmissionDate={transmissionDateFrom}
+                  lastTransmissionDate={transmissionDateTo}
+                  firstYearOfData={FIRST_YEAR_OF_DATA}
+                  locale={i18n.language as Locale}
+                  onYearHover={onYearHover}
+                  showLastTimePoint
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        {!isSmallScreen && (
+          <TrackFootprint
+            vesselIds={selfReportedVesselIds}
+            trackDatasetId={track}
+            highlightedYear={highlightedYear}
+            onDataLoad={onTrackFootprintLoad}
+          />
+        )}
+      </div>
+    </li>
+  )
+}
+
+export default memo(SearchBasicResult)

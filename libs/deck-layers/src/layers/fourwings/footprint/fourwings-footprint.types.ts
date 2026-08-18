@@ -7,7 +7,7 @@ import type {
   FourwingsHeatmapResolution,
   FourwingsHeatmapTilesCache,
   FourwingsPickingObject,
-} from '../fourwings.types'
+} from '#layers/fourwings/fourwings.types'
 
 export type _FourwingsFootprintTileLayerProps<DataT = FourwingsFeature> =
   BaseFourwingsLayerProps & {

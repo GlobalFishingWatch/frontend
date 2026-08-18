@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig(() => ({
-  root: __dirname,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/libs/deck-loaders',
   resolve: { tsconfigPaths: true },
   test: {

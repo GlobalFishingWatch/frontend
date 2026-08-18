@@ -1,4 +1,4 @@
-import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
+import { API_GATEWAY, GFWAPI, ThinningLevels } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import {
@@ -7,7 +7,7 @@ import {
   resolveDataviewDatasetResources,
 } from '@globalfishingwatch/dataviews-client'
 import type { VesselLayerProps } from '@globalfishingwatch/deck-layers'
-import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
+import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
@@ -74,7 +74,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     singleTrack: dataview.config?.singleTrack,
     strictTimeRange: hasDataviewDatesConfig || timeMode === 'realTime',
-    trackThinningZoomConfig: dataview.config?.trackThinningZoomConfig,
+    trackThinningZoomConfig:
+      timeMode === 'realTime'
+        ? { 0: ThinningLevels.None }
+        : dataview.config?.trackThinningZoomConfig,
     trackGraphExtent: trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
     colorBy: vesselsColorBy,

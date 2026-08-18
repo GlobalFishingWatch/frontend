@@ -85,31 +85,6 @@ export const wrapLineStringLongitudes = (features: Feature<LineString>[]) => {
   })
 }
 
-export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
-  let [minX, minY, maxX, maxY] = bbox(geometry)
-  if (minX === -180 && maxX === 180) {
-    geometry.coordinates.forEach((polygon) => {
-      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon as Position[][] })
-      if (polygonBbox[2] === 180 && (minX === -180 || polygonBbox[0] < minX)) {
-        minX = polygonBbox[0]
-      } else if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] + 360 > maxX)) {
-        maxX = polygonBbox[2] + 360
-      }
-    })
-  }
-  return [minX, minY, maxX, maxY]
-}
-
-export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
-  return features.map((feature) => wrapFeatureLongitudes(feature))
-}
-
-export const normalizeLongitude = (longitude: number) => {
-  if (longitude > BUFFERED_ANTIMERIDIAN_LON) return BUFFERED_ANTIMERIDIAN_NORMALIZED
-  else if (longitude < -BUFFERED_ANTIMERIDIAN_LON) return -BUFFERED_ANTIMERIDIAN_NORMALIZED
-  return longitude
-}
-
 type WrapLongitudesParams = {
   normalize?: boolean
 }
@@ -129,6 +104,12 @@ export const wrapLineStringFeatureCoordinates = (feature: Feature<LineString>) =
     prevLon = currentLon
     return [currentLon + lonOffset, currentLat]
   })
+}
+
+export const normalizeLongitude = (longitude: number) => {
+  if (longitude > BUFFERED_ANTIMERIDIAN_LON) return BUFFERED_ANTIMERIDIAN_NORMALIZED
+  else if (longitude < -BUFFERED_ANTIMERIDIAN_LON) return -BUFFERED_ANTIMERIDIAN_NORMALIZED
+  return longitude
 }
 
 export const wrapPolygonFeatureCoordinates = (
@@ -157,16 +138,45 @@ export const wrapFeatureLongitudes = (
   featureData: Feature<LineString | Polygon | MultiPolygon>,
   params: WrapLongitudesParams = {}
 ): Feature<LineString | Polygon | MultiPolygon> => {
-  let coordinates = featureData.geometry.coordinates
   switch (featureData.geometry.type) {
-    case 'LineString':
-      coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
+    case 'LineString': {
+      const coordinates = wrapLineStringFeatureCoordinates(featureData as Feature<LineString>)
       return feature(geometry('LineString', coordinates)) as Feature<LineString>
-    case 'Polygon':
-      coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>, params)
+    }
+    case 'Polygon': {
+      const coordinates = wrapPolygonFeatureCoordinates(featureData as Feature<Polygon>, params)
       return feature(geometry('Polygon', coordinates)) as Feature<Polygon>
-    default: // MultiPolygon
-      coordinates = wrapMultipolygonFeatureCoordinates(featureData as Feature<MultiPolygon>, params)
+    }
+    default: {
+      // MultiPolygon
+      const coordinates = wrapMultipolygonFeatureCoordinates(
+        featureData as Feature<MultiPolygon>,
+        params
+      )
       return feature(geometry('MultiPolygon', coordinates)) as Feature<MultiPolygon>
+    }
   }
+}
+
+export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
+  const fullBbox = bbox(geometry)
+  let minX = fullBbox[0]
+  const minY = fullBbox[1]
+  let maxX = fullBbox[2]
+  const maxY = fullBbox[3]
+  if (minX === -180 && maxX === 180) {
+    geometry.coordinates.forEach((polygon) => {
+      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon as Position[][] })
+      if (polygonBbox[2] === 180 && (minX === -180 || polygonBbox[0] < minX)) {
+        minX = polygonBbox[0]
+      } else if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] + 360 > maxX)) {
+        maxX = polygonBbox[2] + 360
+      }
+    })
+  }
+  return [minX, minY, maxX, maxY]
+}
+
+export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
+  return features.map((feature) => wrapFeatureLongitudes(feature))
 }

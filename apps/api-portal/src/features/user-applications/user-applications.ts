@@ -20,7 +20,7 @@ async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
     ...((offset && { offset }) || {}),
   })
   const url = `/auth/user-applications?${query}`
-  const data = await GFWAPI.fetch<APIPagination<UserApplication>>(url).catch((error) => {
+  const data = await GFWAPI.fetch<APIPagination<UserApplication>>(url).catch(() => {
     return null
   })
   return data

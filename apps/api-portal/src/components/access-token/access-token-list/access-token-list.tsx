@@ -4,7 +4,6 @@ import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 
 import type { UserApplication } from '@globalfishingwatch/api-types'
-import { UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import useUser from 'features/user/user'
@@ -14,15 +13,12 @@ import useUserApplications, {
 
 import styles from './access-token-list.module.css'
 
-/* eslint-disable-next-line */
-export interface AccessTokenListProps {}
-
 type ActionMessage = {
   type: 'error' | 'success' | 'info'
   message: string
 }
 
-export function AccessTokenList(props: AccessTokenListProps) {
+export function AccessTokenList() {
   const { data: user } = useUser()
   const { isError, isLoading, data } = useUserApplications(user?.id)
   const deleteUserApplication = useDeleteUserApplication(user?.id)
@@ -62,7 +58,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
         await deleteUserApplication.mutate(id)
         setActionMessage({ type: 'success', message: 'Token deleted successfully.' })
         setTimeout(clearActionMessage, 5000)
-      } catch (e) {
+      } catch {
         setActionMessage({
           type: 'error',
           message: 'There was a problem deleting the token.',
@@ -120,7 +116,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
                         type="default"
                         size="default"
                         icon={showClipboardNotification(row.token) ? 'tick' : 'copy'}
-                        onClick={(e) => onCopyClipboardClick(row.token)}
+                        onClick={() => onCopyClipboardClick(row.token)}
                         tooltip={
                           showClipboardNotification(row.token)
                             ? 'The token was copied to the clipboard'
@@ -140,7 +136,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
                         size="default"
                         icon="delete"
                         className={styles.delete}
-                        onClick={(e) => onDeleteClick(row)}
+                        onClick={() => onDeleteClick(row)}
                       />
                     </div>
                   </td>

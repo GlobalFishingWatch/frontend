@@ -1,4 +1,11 @@
-import { bbox, booleanPointInPolygon, distance, explode, nearestPoint as nearest, point as turfPoint } from '@turf/turf'
+import {
+  bbox,
+  booleanPointInPolygon,
+  distance,
+  explode,
+  nearestPoint as nearest,
+  point as turfPoint,
+} from '@turf/turf'
 import { uniqBy } from 'es-toolkit'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import { matchSorter } from 'match-sorter'

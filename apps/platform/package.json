@@ -1,0 +1,40 @@
+{
+  "name": "@globalfishingwatchapp/platform",
+  "version": "3.4.20",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "i18n": "LC_ALL=en_US.UTF-8 i18next-cli extract && LC_ALL=en_US.UTF-8 i18next-cli types",
+    "i18n:status": "LC_ALL=en_US.UTF-8 i18next-cli status",
+    "i18n:extract": "LC_ALL=en_US.UTF-8 i18next-cli extract",
+    "i18n:extract:watch": "LC_ALL=en_US.UTF-8 i18next-cli extract --watch --with-types",
+    "i18n:types": "LC_ALL=en_US.UTF-8 i18next-cli types",
+    "test:e2e": "npx playwright test"
+  },
+  "dependencies": {
+    "@globalfishingwatch/api-client": "workspace:^",
+    "@globalfishingwatch/api-types": "workspace:^",
+    "@globalfishingwatch/data-transforms": "workspace:^",
+    "@globalfishingwatch/datasets-client": "workspace:^",
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/deck-layer-composer": "workspace:^",
+    "@globalfishingwatch/deck-layers": "workspace:^",
+    "@globalfishingwatch/deck-loaders": "workspace:^",
+    "@globalfishingwatch/i18n-labels": "workspace:^",
+    "@globalfishingwatch/ocean-areas": "workspace:^",
+    "@globalfishingwatch/react-hooks": "workspace:^",
+    "@globalfishingwatch/responsive-visualizations": "workspace:^",
+    "@globalfishingwatch/timebar": "workspace:^",
+    "@globalfishingwatch/ui-components": "workspace:^",
+    "@platform/config": "workspace:*"
+  },
+  "devDependencies": {
+    "i18next-cli": "^1.69.0",
+    "source-map-explorer": "^2.5.3"
+  },
+  "browserslist": [
+    ">0.1%",
+    "not dead",
+    "not op_mini all"
+  ]
+}
