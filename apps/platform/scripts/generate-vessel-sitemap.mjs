@@ -1,15 +1,9 @@
 /**
- * Generates the vessel sitemap set from a GFW presence-hours CSV export.
+ * Generates the vessel sitemap set from a GFW CSV export.
  *
  *   node apps/platform/scripts/generate-vessel-sitemap.mjs <export.csv>
  *
  * Writes public/sitemap.xml (index) + public/sitemaps/vessels-N.xml.gz.
- * Gzipped because 258k <loc> entries are ~28MB raw; sitemaps.org and Google both
- * accept .xml.gz, and static files need no route or runtime API call.
- *
- * Vessels are sorted by presence hours descending, so vessels-0 holds the
- * highest-activity vessels — submit that shard alone to test crawl response
- * before opening the whole set.
  */
 import { Buffer } from 'node:buffer'
 import { createReadStream } from 'node:fs'
@@ -23,7 +17,6 @@ const ORIGIN = process.env.SITEMAP_ORIGIN ?? 'https://globalfishingwatch.org'
 const BASENAME = process.env.SITEMAP_BASENAME ?? '/platform'
 const URLS_PER_SITEMAP = 50000 // protocol hard limit
 
-// GFW vessel/gear types that carry no identity worth a landing page.
 const EXCLUDED_VESSEL_TYPES = new Set(['Otro', 'Na', 'Desconocido'])
 const EXCLUDED_GEAR_TYPES = new Set(['Otro'])
 
