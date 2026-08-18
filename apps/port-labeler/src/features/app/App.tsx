@@ -1,6 +1,7 @@
 import React, { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
 
-import { Menu, SplitView } from '@globalfishingwatch/ui-components'
+import { SplitView } from '@globalfishingwatch/ui-components'
+import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
 import { ROOT_DOM_ELEMENT } from 'data/config'

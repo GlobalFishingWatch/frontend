@@ -28,7 +28,6 @@ import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetAreaDetail } from 'features/data/areas/areas.slice'
-import { getModalParent } from 'features/modals/modals.utils'
 import type { AsyncError } from 'utils/async-slice'
 
 import styles from './NewAreaReportModal.module.css'
@@ -159,7 +158,6 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
       shouldCloseOnEsc
       contentClassName={styles.modal}
       onClose={onClose}
-      parentSelector={getModalParent}
     >
       <form onSubmit={isEditing ? updateReport : createReport}>
         <div className={styles.row}>
