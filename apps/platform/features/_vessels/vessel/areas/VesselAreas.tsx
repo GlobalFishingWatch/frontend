@@ -35,7 +35,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useRegionNamesByType } from 'features/data/regions/regions.hooks'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
-import { getModalParent } from 'features/modals/modals.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -205,7 +204,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               isOpen={modalDataWarningOpen}
               onClose={onDataWarningModalClose}
               contentClassName={styles.modalContent}
-              parentSelector={getModalParent}
             >
               {htmlSafeParse(t((t) => (t.dataview as any)[areaDataview?.id]?.dataWarningDetail))}
             </Modal>

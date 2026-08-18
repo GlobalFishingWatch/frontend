@@ -19,7 +19,7 @@ export const useDownloadDomElementAsImage = () => {
       if (domElement) {
         const { snapdom } = await import('@zumer/snapdom')
         const capture = await snapdom(domElement, {
-          exclude: ['.ReactModalPortal'],
+          exclude: ['[data-modal-overlay]'],
           embedFonts: true,
           dpr: 2,
           scale: 2,

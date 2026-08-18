@@ -23,7 +23,6 @@ import {
   selectUserLogged,
 } from 'features/_user/selectors/user.selectors'
 import SettingsButton from 'features/_user/SettingsButton'
-import { getModalParent } from 'features/modals/modals.utils'
 
 import {
   selectHasAmbassadorBadge,
@@ -169,7 +168,6 @@ function UserInfo() {
               onClose={onBadgeModalClose}
               contentClassName={styles.badgeModalContent}
               shouldCloseOnEsc
-              parentSelector={getModalParent}
             >
               <Fragment>
                 {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}

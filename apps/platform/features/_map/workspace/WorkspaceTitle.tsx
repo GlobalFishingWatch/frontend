@@ -18,7 +18,6 @@ import { setWorkspaceProperty } from 'features/_map/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import { updateWorkspaceThunk } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
 import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
 import { selectLocationCategory } from 'router/routes.selectors'
@@ -117,7 +116,6 @@ function WorkspaceTitle() {
               isOpen={workspaceEditModalOpen}
               contentClassName={styles.modalContainer}
               onClose={onWorkspaceUpdateClose}
-              parentSelector={getModalParent}
             >
               <div className={styles.content}>
                 <InputText
