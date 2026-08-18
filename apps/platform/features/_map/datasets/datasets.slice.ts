@@ -348,18 +348,21 @@ export const upsertDatasetThunk = createAsyncThunk<
           : undefined
       const { format } = getDatasetConfiguration(dataset, 'userContextLayerV1')
       if (file) {
+        const contentType =
+          format && format.toUpperCase() === 'GEOJSON'
+            ? 'application/json'
+            : // .tif files often reach us with an empty File.type
+              file.type || (dataset.type === DatasetTypes.UserFourwings ? 'image/tiff' : '')
         const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
           method: 'POST',
-          body: {
-            contentType:
-              format && format.toUpperCase() === 'GEOJSON'
-                ? 'application/json'
-                : // .tif files often reach us with an empty File.type
-                  file.type || (dataset.type === DatasetTypes.UserFourwings ? 'image/tiff' : ''),
-          } as any,
+          body: { contentType } as any,
         })
         filePath = path
-        await fetch(url, { method: 'PUT', body: file })
+        await fetch(url, {
+          method: 'PUT',
+          body: file,
+          ...(contentType && { headers: { 'Content-Type': contentType } }),
+        })
       }
 
       const suffix = addIdSuffix ? `-${Date.now()}` : ''

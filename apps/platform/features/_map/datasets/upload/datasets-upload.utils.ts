@@ -58,7 +58,7 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
   )
   const errors = {
     name:
-      datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
+      !datasetMetadata.name?.trim() || datasetMetadata.name.trim().length < MIN_NAME_LENGTH
         ? t((t) => t.datasetUpload.errors.name, {
             min: String(MIN_NAME_LENGTH),
           })
@@ -90,6 +90,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
     filters: dataset.filters,
     category: dataset.category,
     configuration: dataset.configuration,
+    unit: dataset.unit,
   }
 }
 
@@ -172,6 +173,7 @@ export const getGriddedDatasetMetadata = ({
   return {
     name,
     public: true,
+    unit: '',
     category: DatasetCategory.Activity,
     type: DatasetTypes.UserFourwings,
     configuration: {
@@ -223,7 +225,7 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
   const userContextLayersClean = getDatasetFiltersClean(userContextLayers)
   const baseDataset: Partial<Dataset> = {
     ...datasetMetadata,
-    unit: 'TBD',
+    unit: datasetMetadata.unit,
     subcategory: DatasetSubCategory.Info,
     filters: {
       ...otherFilters,

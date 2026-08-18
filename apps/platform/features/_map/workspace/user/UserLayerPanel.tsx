@@ -289,7 +289,13 @@ function UserPanel({
                     ? t((t) => t.layer.user_gridded_fit_bounds)
                     : undefined
                 }
-                disabled={isBaseUserLayer || datasetBbox ? false : layerLoading}
+                disabled={
+                  datasetGeometryType === 'gridded'
+                    ? layerImporting || !datasetBbox
+                    : isBaseUserLayer
+                      ? false
+                      : layerLoading
+                }
                 dataviewId={dataview.id}
               />
               {hasSchemaFilters &&

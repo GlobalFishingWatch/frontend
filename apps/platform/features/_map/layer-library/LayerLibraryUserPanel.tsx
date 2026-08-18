@@ -143,8 +143,9 @@ const LayerLibraryUserPanel = ({
                   infoTooltip = t((t) => t.dataset.importing)
                 }
                 if (datasetError) {
-                  const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
-                  infoTooltip = `${t((t) => t.errors.uploadError)} - ${configuration.importLogs}`
+                  const importLogs =
+                    getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''
+                  infoTooltip = `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
                 }
                 const datasetIcon = getDatasetTypeIcon(dataset)
 
