@@ -6,7 +6,8 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
-import type { SliceExtendedFourwingsPickingObject } from 'features/_map/map/map.slice'
+
+import type { SliceExtendedFourwingsPickingObject } from '../../map.slice'
 
 import PositionsTooltipRow from './PositionsTooltipRow'
 

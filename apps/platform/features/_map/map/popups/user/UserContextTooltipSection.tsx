@@ -3,41 +3,41 @@ import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
-import { selectCustomUserDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 
+import { useContextInteractions } from '../context/ContextLayers.hooks'
+import ContextTooltipRow from '../context/ContextTooltipRow'
 import { getContextLayerId, getUserContextLayerLabel } from '../map-popups.utils'
-
-import { useContextInteractions } from './ContextLayers.hooks'
-import ContextTooltipRow from './ContextTooltipRow'
 
 import styles from '../Popup.module.css'
 
-type UserPointsTooltipSectionProps = {
-  features: (ContextPickingObject | UserLayerPickingObject)[]
+type UserContextTooltipSectionProps = {
+  features: UserLayerPickingObject[]
   showFeaturesDetails: boolean
 }
 
-function UserPointsTooltipSection({
+function UserContextTooltipSection({
   features,
   showFeaturesDetails = false,
-}: UserPointsTooltipSectionProps) {
-  const dataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
-  const { onReportClick } = useContextInteractions()
+}: UserContextTooltipSectionProps) {
+  const dataviews = useSelector(selectDataviewInstancesResolved) as UrlDataviewInstance[]
+  const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
+  const isSingleArea = features.length === 1
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => {
-        const { color, dataviewId, datasetId } = featureByType[0]
+        const { color, layerId, dataviewId, datasetId } = featureByType[0]
         const dataview = dataviews.find((d) => d.id === dataviewId)
         const dataset = dataview?.datasets?.find((d) => d.id === datasetId)
-        const rowTitle = dataset ? getDatasetLabel(dataset) : datasetId
+        const rowTitle = dataset ? getDatasetLabel(dataset) : layerId
         return (
           <div key={`${dataviewId}-${index}`} className={styles.popupSection}>
-            <Icon icon="dots" className={styles.layerIcon} style={{ color }} />
+            <Icon icon="polygons" className={styles.layerIcon} style={{ color }} />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
               {featureByType.map((feature, index) => {
@@ -47,9 +47,11 @@ function UserPointsTooltipSection({
                   <ContextTooltipRow
                     id={id}
                     key={`${id}-${index}`}
-                    label={label as string}
+                    label={label}
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
+                    showSparkline={isSingleArea}
+                    handleDownloadClick={(e) => onDownloadClick(e, feature)}
                     handleReportClick={(e) => onReportClick(e, feature)}
                   />
                 )
@@ -62,4 +64,4 @@ function UserPointsTooltipSection({
   )
 }
 
-export default UserPointsTooltipSection
+export default UserContextTooltipSection

@@ -8,10 +8,9 @@ import { getIsSkylightDataset } from 'features/_map/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import type { ExtendedFeatureVessel, SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
-
-import VesselDetectionTimestamps from './VesselDetectionTimestamps'
-import { getVesselsInfoConfig } from './vessels-table.utils'
-import VesselsTable from './VesselsTable'
+import VesselDetectionTimestamps from '../shared/VesselDetectionTimestamps'
+import { getVesselsInfoConfig } from '../shared/vessels-table.utils'
+import VesselsTable from '../shared/VesselsTable'
 
 import styles from '../Popup.module.css'
 

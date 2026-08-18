@@ -19,8 +19,7 @@ import type {
   ExtendedFeatureByVesselEventPort,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
-
-import VesselsTable from './VesselsTable'
+import VesselsTable from '../shared/VesselsTable'
 
 import styles from '../Popup.module.css'
 

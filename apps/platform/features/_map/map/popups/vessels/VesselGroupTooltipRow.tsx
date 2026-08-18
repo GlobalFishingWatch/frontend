@@ -5,8 +5,7 @@ import { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
-
-import VesselsTable from './VesselsTable'
+import VesselsTable from '../shared/VesselsTable'
 
 import popupStyles from '../Popup.module.css'
 

@@ -7,8 +7,7 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
-
-import VesselsTable from './VesselsTable'
+import VesselsTable from '../shared/VesselsTable'
 
 import popupStyles from '../Popup.module.css'
 

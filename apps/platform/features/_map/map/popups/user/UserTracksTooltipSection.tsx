@@ -9,9 +9,8 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectCustomUserDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 
+import ContextTooltipRow from '../context/ContextTooltipRow'
 import { getUserContextLayerLabel } from '../map-popups.utils'
-
-import ContextTooltipRow from './ContextTooltipRow'
 
 import styles from '../Popup.module.css'
 
