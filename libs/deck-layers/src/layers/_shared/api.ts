@@ -1,7 +1,9 @@
 import { parse } from '@loaders.gl/core'
 import { MVTLoader } from '@loaders.gl/mvt'
 
+import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VESSEL_TRACKS_LOADER_ID } from '@globalfishingwatch/deck-loaders'
 
 import { getEnv } from '#config/layers.config'
 
@@ -72,6 +74,15 @@ async function fetchLocalSprite(url: string, signal?: AbortSignal): Promise<Imag
   return createImageBitmap(blob)
 }
 
+function getTimestampBase(response: Response): number | null {
+  const header = response.headers.get('timestamp-base')
+  if (header == null) {
+    return null
+  }
+  const base = Number(header)
+  return Number.isFinite(base) && base > 0 ? base : null
+}
+
 export async function fetchWithGFWAPI(
   url: string,
   { signal, layer }: FetchWithGFWAPIContext = {}
@@ -79,31 +90,38 @@ export async function fetchWithGFWAPI(
   if (isSpriteUrl(url)) {
     return fetchLocalSprite(url, signal)
   }
-
-  const response = await GFWAPI.fetch<Response>(url, {
+  const fetchOptions: FetchOptions = {
     method: 'GET',
     signal,
     responseType: 'default',
-  })
+  }
+  let response = await GFWAPI.fetch<Response>(url, fetchOptions)
 
   const loaders = Array.isArray(layer?.props?.loaders) ? (layer.props.loaders as any[]) : []
   const loader = loaders[0]
-  if (loader) {
-    const timestampBaseHeader = response.headers.get('timestamp-base')
-    const loadOptions = layer?.props?.loadOptions as any
-    const mergedLoadOptions =
-      timestampBaseHeader != null
-        ? {
-            ...loadOptions,
-            'vessel-tracks': {
-              ...(loadOptions?.['vessel-tracks'] || {}),
-              timestampBase: Number(timestampBaseHeader),
-            },
-          }
-        : loadOptions
-    const buffer = await response.arrayBuffer()
-    return parse(buffer, loader, mergedLoadOptions)
+  if (!loader) {
+    return response
   }
 
-  return response
+  const loadOptions = layer?.props?.loadOptions as any
+  if (loader.id !== VESSEL_TRACKS_LOADER_ID) {
+    return parse(await response.arrayBuffer(), loader, loadOptions)
+  }
+
+  let timestampBase = getTimestampBase(response)
+  if (timestampBase === null) {
+    response = await GFWAPI.fetch<Response>(url, { ...fetchOptions, cache: 'reload' })
+    timestampBase = getTimestampBase(response)
+  }
+  if (timestampBase === null) {
+    throw new Error(`Missing timestamp-base header for track chunk: ${url}`)
+  }
+
+  return parse(await response.arrayBuffer(), loader, {
+    ...loadOptions,
+    [VESSEL_TRACKS_LOADER_ID]: {
+      ...(loadOptions?.[VESSEL_TRACKS_LOADER_ID] || {}),
+      timestampBase,
+    },
+  })
 }
