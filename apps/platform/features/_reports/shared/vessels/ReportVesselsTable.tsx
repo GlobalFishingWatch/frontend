@@ -5,8 +5,8 @@ import cx from 'classnames'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { GLOBAL_VESSELS_DATASET_ID } from '@platform/config/map/datasets'
 
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/map/workspaces'
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/_map/datasets/datasets.permissions'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'

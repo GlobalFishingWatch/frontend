@@ -7,24 +7,24 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import {
-  DATASET_PRIVATE_PREFIX,
   getRelatedDatasetByType,
   removeDatasetVersion,
   replaceDatasetPrivateToPublic,
 } from '@globalfishingwatch/datasets-client'
+import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 // Leaf subpath: this module is reached from five dataview selector modules that are always loaded.
 import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers/config'
-
-import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/map/config'
+import { DEFAULT_PRESENCE_DATASET_ID } from '@platform/config/map/datasets'
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-  DEFAULT_PRESENCE_DATASET_ID,
-  FISHING_DATAVIEW_SLUG_ALL,
+  FISHING_ALL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/map/config'
 import { GAPS_EVENTS_SOURCE_ID } from 'features/_map/dataviews/dataviews.utils'
 
 import type {
@@ -136,7 +136,8 @@ export type VesselGroupEventsDataviewId =
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
 export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visit`
-export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}${GAPS_EVENTS_SOURCE_ID}`
+export const VESSEL_GROUP_GAPS_EVENTS_ID =
+  `${VESSEL_GROUP_DATAVIEW_PREFIX}${GAPS_EVENTS_SOURCE_ID}` as const
 
 export const VESSEL_GROUP_EVENTS_DATAVIEW_IDS: VesselGroupEventsDataviewId[] = [
   VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
@@ -218,7 +219,7 @@ export const getVesselGroupActivityDataviewInstance = ({
   activityType,
   datasets,
   presenceDataviewId = PRESENCE_DATAVIEW_SLUG,
-  fishingDataviewId = FISHING_DATAVIEW_SLUG_ALL,
+  fishingDataviewId = FISHING_ALL_DATAVIEW_SLUG,
 }: {
   vesselGroupId: string
   color?: string

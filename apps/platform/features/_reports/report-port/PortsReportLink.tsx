@@ -7,12 +7,9 @@ import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import {
-  DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-} from 'data/map/workspaces'
 import type { ExtendedFeatureByVesselEventPort } from 'features/_map/map/map.slice'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'

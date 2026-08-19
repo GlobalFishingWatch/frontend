@@ -1,7 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { Entries } from 'type-fest'
 
-import { WorkspaceCategory } from 'data/map/workspaces'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
+
 import {
   selectUserWorkspaces,
   selectUserWorkspacesPrivate,

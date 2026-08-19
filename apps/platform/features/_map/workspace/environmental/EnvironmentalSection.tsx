@@ -7,8 +7,8 @@ import cx from 'classnames'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
-import { WorkspaceCategory } from 'data/map/workspaces'
 import {
   isBathymetryContourDataview,
   isBathymetryDataview,

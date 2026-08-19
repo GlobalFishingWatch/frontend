@@ -42,6 +42,7 @@ import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 
+import { AUXILIAR_DATAVIEW_SUFIX } from '../constants'
 import type {
   FourwingsSublayerConfig,
   ResolvedContextDataviewInstance,
@@ -49,9 +50,6 @@ import type {
   ResolvedFourwingsDataviewInstance,
 } from '../types/dataviews'
 import type { TimeRange } from '../types/resolvers'
-
-export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
-export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
 
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => getDatasetConfiguration(d, 'fourwingsV1')?.intervals || []))

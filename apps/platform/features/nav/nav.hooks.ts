@@ -2,8 +2,9 @@ import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useMatchRoute } from '@tanstack/react-router'
 
+import type { WorkspaceCategory } from '@platform/config/map/workspaces'
+
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
-import type { WorkspaceCategory } from 'data/map/workspaces'
 import { setClickedEvent } from 'features/_map/map/map.slice'
 import { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
 import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'

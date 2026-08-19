@@ -5,9 +5,10 @@ import { stringify } from 'qs'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
+import { BASEMAP_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/map/config'
-import { BASEMAP_DATAVIEW_SLUG, TEMPLATE_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { TEMPLATE_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { rootReducer } from 'reducers'
 import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'

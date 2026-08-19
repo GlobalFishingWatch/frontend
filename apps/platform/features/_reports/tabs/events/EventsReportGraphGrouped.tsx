@@ -10,8 +10,8 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {

@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
-import { WorkspaceCategory } from 'data/map/workspaces'
 import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { selectIsWorkspaceReady } from 'features/_map/workspace/workspace.selectors'
@@ -36,7 +36,6 @@ import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
-
 
 import styles from './Modals.module.css'
 
