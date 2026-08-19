@@ -1,4 +1,7 @@
-import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import {
+  DATASET_VERSION_SEPARATOR,
+  PIPE_DATASET_ID,
+} from '@globalfishingwatch/datasets-client/constants'
 
 import {
   VESSEL_DATAVIEW_INSTANCE_PREFIX,

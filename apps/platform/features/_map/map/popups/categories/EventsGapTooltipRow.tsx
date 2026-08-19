@@ -9,8 +9,8 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS } from 'data/map/workspaces'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
@@ -156,7 +156,7 @@ function EventsGapTooltipRow({
                                       ...event.vessel,
                                       datasetId: vesselDatasetId,
                                     }}
-                                    dataviewTemplateId={TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS}
+                                    dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
                                     config={{
                                       ...(!!gapSegmentThreshold && {
                                         gapSegmentThreshold,

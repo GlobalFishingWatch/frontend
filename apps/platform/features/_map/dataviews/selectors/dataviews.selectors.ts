@@ -14,9 +14,8 @@ import {
   getMergedDataviewId,
   getVesselDataviewInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-
-import { DATASET_COMPARISON_SUFFIX } from 'data/map/config'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,

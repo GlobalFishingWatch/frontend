@@ -17,7 +17,7 @@ import {
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/dataviews'
 import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectActivityMergedDataviewId,

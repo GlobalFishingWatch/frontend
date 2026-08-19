@@ -5,8 +5,7 @@ import cx from 'classnames'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
-
-import { DATASET_COMPARISON_SUFFIX } from 'data/map/config'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import {

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'

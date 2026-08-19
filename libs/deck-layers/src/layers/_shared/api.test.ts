@@ -32,19 +32,13 @@ describe('fetchWithGFWAPI track timestampBase', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('refetches past the HTTP cache when the header is missing', async () => {
-    fetchMock
-      .mockResolvedValueOnce(trackResponse())
-      .mockResolvedValueOnce(trackResponse('1735689600000'))
-    const options = (await fetchWithGFWAPI('/track', { layer: trackLayer })) as any
-    expect(options['vessel-tracks'].timestampBase).toBe(1735689600000)
-    expect(fetchMock.mock.calls[1][1]).toMatchObject({ cache: 'reload' })
-  })
-
-  it('throws rather than parsing with a base of 0', async () => {
+  it('passes null and logs when the header is missing', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
     fetchMock.mockResolvedValue(trackResponse())
-    await expect(fetchWithGFWAPI('/track', { layer: trackLayer })).rejects.toThrow(
-      'Missing timestamp-base header'
-    )
+    const options = (await fetchWithGFWAPI('/track', { layer: trackLayer })) as any
+    expect(options['vessel-tracks'].timestampBase).toBeNull()
+    expect(error).toHaveBeenCalledWith(expect.stringContaining('Missing timestamp-base header'))
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    error.mockRestore()
   })
 })

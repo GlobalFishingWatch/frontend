@@ -7,9 +7,9 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { PRESENCE_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 
 import { REPORT_DAYS_LIMIT } from 'data/map/config'
-import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/map/dataviews'
 import { getActiveDatasetsInDataview } from 'features/_map/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'

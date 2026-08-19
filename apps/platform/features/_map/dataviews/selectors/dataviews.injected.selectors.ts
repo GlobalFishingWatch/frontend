@@ -10,15 +10,15 @@ import {
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
-
-import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
-import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
-import { LIBRARY_LAYERS } from 'data/map/layer-library'
 import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  LAYER_LIBRARY_ID_SEPARATOR,
   PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
+import { LIBRARY_LAYERS } from 'data/map/layer-library'
 import { selectTracksDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import {
