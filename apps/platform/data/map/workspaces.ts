@@ -5,14 +5,13 @@ import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers/config'
 import * as WORKSPACES_CONFIG from '@platform/config/map/workspaces'
 
-import { PRESENCE_REALTIME_DATAVIEW_SLUG } from 'data/map/dataset-ids'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/map/workspaces-vms'
 
 // Single source of truth for workspace constants shared with libs/skills
 export * from '@platform/config/map/workspaces'
 
 // Re-exported so existing `from 'data/map/workspaces'` imports keep working.
-export * from 'data/map/dataset-ids'
+export * from 'data/map/datasets'
 
 // Re-exported so existing `from 'data/map/workspaces'` imports keep working. Modules that only need the
 // env string should import 'data/workspace-env' directly to avoid pulling deck-layers in.
@@ -38,7 +37,7 @@ export const VESSEL_TEMPLATE_DATAVIEW_SLUGS = [
 
 const PRESENCE_DATAVIEWS = [
   WORKSPACES_CONFIG.PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
-  PRESENCE_REALTIME_DATAVIEW_SLUG,
+  // WORKSPACES_CONFIG.PRESENCE_REALTIME_DATAVIEW_SLUG,
 ]
 
 const DETECTIONS_DATAVIEWS = [
@@ -115,6 +114,7 @@ export const PROFILE_DATAVIEW_SLUGS = [
 
 export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = [
   WORKSPACES_CONFIG.VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  WORKSPACES_CONFIG.PRESENCE_REALTIME_DATAVIEW_SLUG,
   ...Object.values(VMS_VESSEL_DATAVIEW_SLUGS),
 ]
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []

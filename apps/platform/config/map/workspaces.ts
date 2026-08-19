@@ -58,6 +58,10 @@ export const FISHING_DATAVIEW_SLUG_AIS =
   `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-${PIPE_DATASET_VERSION}` as const
 export const FISHING_DATAVIEW_SLUG_VMS =
   `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
+
+export const PRESENCE_REALTIME_DATAVIEW_SLUG =
+  `presence-realtime-v-${PIPE_DATASET_VERSION}` as const
+
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG =
   `encounter-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG =
