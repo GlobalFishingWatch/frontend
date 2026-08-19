@@ -4,5 +4,9 @@ export {
   toAbsoluteTimestamp,
   toRelativeTimestamp,
 } from './lib/parse-tracks'
-export { VesselTrackLoader, VesselTrackWorkerLoader } from './tracks-loader'
+export {
+  VESSEL_TRACKS_LOADER_ID,
+  VesselTrackLoader,
+  VesselTrackWorkerLoader,
+} from './tracks-loader'
 export { VesselEventsLoader, VesselEventsWorkerLoader } from './events-loader'

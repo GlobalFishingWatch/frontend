@@ -15,6 +15,7 @@ import {
   getVesselGraphExtentClamped,
   toAbsoluteTimestamp,
   toRelativeTimestamp,
+  VESSEL_TRACKS_LOADER_ID,
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
@@ -331,7 +332,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           fetch: fetchWithGFWAPI,
           loadOptions: {
             worker: false,
-            'vessel-tracks': {
+            [VESSEL_TRACKS_LOADER_ID]: {
               computeGaps,
             },
           },
