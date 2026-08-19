@@ -25,10 +25,10 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import type { IconType } from '@globalfishingwatch/ui-components'
+import { SKYLIGHT_VIIRS_DATASET_ID } from '@platform/config/map/datasets'
+import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'
-import { SKYLIGHT_VIIRS_DATASET_ID } from 'data/map/datasets'
-import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from 'data/map/dataviews'
 import { t } from 'features/i18n/i18n'
 
 // Datasets ids for vessel instances

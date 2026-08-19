@@ -5,8 +5,8 @@ import { Link } from '@tanstack/react-router'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,

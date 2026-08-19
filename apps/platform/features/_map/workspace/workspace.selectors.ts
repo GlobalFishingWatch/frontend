@@ -2,17 +2,14 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { EventTypes, WORKSPACE_PASSWORD_ACCESS } from '@globalfishingwatch/api-types'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {
   DEFAULT_WORKSPACE,
   PREFERRED_FOURWINGS_VISUALISATION_MODE,
   VALID_PASSWORD,
 } from 'data/map/config'
-import {
-  DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-} from 'data/map/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/dataviews'
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { selectUserData, selectUserSettings } from 'features/_user/selectors/user.selectors'
 import type { UserSettings } from 'features/_user/user.slice'

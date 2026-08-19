@@ -1,11 +1,11 @@
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import type { MarineManagerWorkspace } from 'data/map/highlighted-workspaces/marine-manager'
 import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
 import type { ReportWorkspace, WorkspaceReportLink } from 'data/map/highlighted-workspaces/reports'
 import { REPORTS_INDEX } from 'data/map/highlighted-workspaces/reports'
-import type { WorkspaceCategory } from 'data/map/workspaces'
 import type { ReportCategory } from 'features/_reports/reports.types'
 
 import type workspaceTranslations from '../../../public/locales/source/workspaces.json'

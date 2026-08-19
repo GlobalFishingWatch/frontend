@@ -1,10 +1,10 @@
 import type { StatsGroupBy } from '@globalfishingwatch/api-types'
-
 import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import type { BufferOperation, BufferUnit } from 'types'
 
 import { ReportCategory, type ReportState, type ReportVesselOrderProperty } from './reports.types'

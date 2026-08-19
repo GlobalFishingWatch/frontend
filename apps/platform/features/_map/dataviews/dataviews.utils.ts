@@ -33,19 +33,16 @@ import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
-} from '@platform/config/map/dataviews'
-
-import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
-import {
-  REAL_TIME_DATAVIEW_SLUGS,
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
-  TEMPLATE_USER_TRACK_SLUG,
+  TEMPLATE_USER_TRACK_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { LEGACY_TO_LATEST_DATAVIEWS, REAL_TIME_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import type { VesselInstanceDatasets } from 'features/_map/datasets/datasets.utils'
 import {
   getActiveDatasetsInDataview,
@@ -451,7 +448,7 @@ export const getUserTrackDataviewInstance = (dataset: Dataset) => {
   ]
   const dataviewInstance = {
     id: `user-track-${dataset.id}`,
-    dataviewId: TEMPLATE_USER_TRACK_SLUG,
+    dataviewId: TEMPLATE_USER_TRACK_DATAVIEW_SLUG,
     config: {
       colorCyclingType: 'line' as ColorCyclingType,
     },

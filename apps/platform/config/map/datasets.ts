@@ -1,4 +1,7 @@
-import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import {
+  DATASET_VERSION_SEPARATOR,
+  PIPE_DATASET_ID,
+} from '@globalfishingwatch/datasets-client/constants'
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
 export const SKYLIGHT_VIIRS_DATASET_ID = 'public-global-skylight-viirs:v1.0'

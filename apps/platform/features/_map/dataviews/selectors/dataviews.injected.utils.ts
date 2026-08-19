@@ -1,10 +1,10 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
 import {
   PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import { PORT_VISITS_REPORT_DATAVIEW_ID } from 'features/_map/dataviews/dataviews.utils'
 import { getVesselGroupEventsDataviewInstance } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ReportEventsSubCategory } from 'features/_reports/reports.types'

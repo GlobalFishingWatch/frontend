@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'

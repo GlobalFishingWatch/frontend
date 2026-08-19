@@ -6,7 +6,8 @@ import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME, WORKSPACE_ENV } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
+import { WORKSPACE_ENV } from 'data/workspace-env'
 import PopupWrapper from 'features/_map/map/popups/PopupWrapper'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
@@ -45,7 +46,7 @@ const ErrorNotification = (): React.ReactNode | null => {
         url: getCurrentAppUrl(),
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
-        environment: WORKSPACE_ENV || 'development',
+        environment: WORKSPACE_ENV,
         name: userData?.firstName
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,

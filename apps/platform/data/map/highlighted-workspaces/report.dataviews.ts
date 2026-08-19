@@ -1,5 +1,4 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -7,7 +6,8 @@ import {
   SENTINEL2_DATAVIEW_INSTANCE_ID,
   VIIRS_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
-} from 'data/map/dataviews'
+} from '@platform/config/map/dataviews'
+
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,

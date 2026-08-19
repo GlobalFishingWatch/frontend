@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
-import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
+import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import {

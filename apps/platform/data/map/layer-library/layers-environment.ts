@@ -1,14 +1,14 @@
 import { LayerGroup } from '@globalfishingwatch/deck-layers/config'
-
-import { PATH_BASENAME } from 'data/map/config'
-import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import {
   CURRENTS_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   WINDS_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { PATH_BASENAME } from 'data/map/config'
+import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/_map/dataviews/dataviews.utils'
 
 const heatmapDatasetConfig = {

@@ -4,8 +4,8 @@ import cx from 'classnames'
 
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Logo, SubBrands } from '@globalfishingwatch/ui-components'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
-import { WorkspaceCategory } from 'data/map/workspaces'
 import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
 import NavigationWorkspaceButton from 'features/_map/sidebar/buttons/NavigationWorkspaceButton'
 import ShareWorkspaceButton from 'features/_map/sidebar/buttons/ShareWorkspaceButton'

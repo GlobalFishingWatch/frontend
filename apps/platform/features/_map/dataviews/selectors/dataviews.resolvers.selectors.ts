@@ -16,8 +16,8 @@ import {
   resolveDataviews,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
+import { BASEMAP_LABELS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
-import { BASEMAP_LABELS_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
