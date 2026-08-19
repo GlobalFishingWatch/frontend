@@ -67,7 +67,7 @@ data-download-portal:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 image-labeler:
   target: production-nginx
@@ -75,7 +75,7 @@ image-labeler:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 user-groups-admin:
   target: production-nginx
@@ -83,7 +83,7 @@ user-groups-admin:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 port-labeler:
   target: production-nginx

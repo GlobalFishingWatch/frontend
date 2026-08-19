@@ -9,12 +9,6 @@ import { useCombobox } from 'downshift'
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
-
-import {
-  MARINE_MANAGER_DATAVIEWS,
-  MARINE_MANAGER_DATAVIEWS_INSTANCES,
-  WIZARD_TEMPLATE_ID,
-} from 'data/map/highlighted-workspaces/marine-manager.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_SLUG,
@@ -22,8 +16,14 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-  WorkspaceCategory,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
+
+import {
+  MARINE_MANAGER_DATAVIEWS,
+  MARINE_MANAGER_DATAVIEWS_INSTANCES,
+  WIZARD_TEMPLATE_ID,
+} from 'data/map/highlighted-workspaces/marine-manager.dataviews'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
 import {

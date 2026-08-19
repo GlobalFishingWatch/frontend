@@ -11,10 +11,10 @@ import {
 } from '@globalfishingwatch/api-client'
 import type { APIPagination, Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import type { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/map/config'
-import type { WorkspaceCategory } from 'data/map/workspaces'
-import { DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import type { UpdateWorkspaceThunkRejectError } from 'features/_map/workspace/workspace.slice'
 import { getDefaultWorkspace } from 'features/_map/workspace/workspace.slice'
 import { parseUpsertWorkspace } from 'features/_map/workspace/workspace.utils'

@@ -1,6 +1,6 @@
 import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
 
-import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
 import {
   ENCOUNTER_EVENTS_SOURCES,
   GAPS_EVENTS_SOURCE_ID,

@@ -19,22 +19,22 @@ export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
   [WORKSPACE_CONFIG.AIS_DATAVIEW_INSTANCE_ID]: {
     name: 'Apparent fishing effort (AIS)',
     category: 'activity',
-    dataviewId: WORKSPACE_CONFIG.FISHING_DATAVIEW_SLUG_AIS,
+    dataviewId: WORKSPACE_CONFIG.FISHING_AIS_DATAVIEW_SLUG,
   },
   'fishing-effort-ais': {
     name: 'Apparent fishing effort (AIS)',
     category: 'activity',
-    dataviewId: WORKSPACE_CONFIG.FISHING_DATAVIEW_SLUG_AIS,
+    dataviewId: WORKSPACE_CONFIG.FISHING_AIS_DATAVIEW_SLUG,
   },
   [WORKSPACE_CONFIG.VMS_DATAVIEW_INSTANCE_ID]: {
     name: 'Apparent fishing effort (VMS)',
     category: 'activity',
-    dataviewId: WORKSPACE_CONFIG.FISHING_DATAVIEW_SLUG_VMS,
+    dataviewId: WORKSPACE_CONFIG.FISHING_VMS_DATAVIEW_SLUG,
   },
   'fishing-effort-vms': {
     name: 'Apparent fishing effort (VMS)',
     category: 'activity',
-    dataviewId: WORKSPACE_CONFIG.FISHING_DATAVIEW_SLUG_VMS,
+    dataviewId: WORKSPACE_CONFIG.FISHING_VMS_DATAVIEW_SLUG,
   },
   [WORKSPACE_CONFIG.PRESENCE_DATAVIEW_INSTANCE_ID]: {
     name: 'Vessel presence (AIS)',
@@ -144,7 +144,7 @@ export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
   'offshore-fixed-infrastructure': {
     name: 'Offshore fixed infrastructure',
     category: 'context',
-    dataviewId: WORKSPACE_CONFIG.FIXED_SAR_INFRASTRUCTURE,
+    dataviewId: WORKSPACE_CONFIG.FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
   },
   'port-locations': {
     name: 'Port locations (AIS)',

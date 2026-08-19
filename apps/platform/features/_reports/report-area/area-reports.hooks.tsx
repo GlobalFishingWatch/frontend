@@ -18,9 +18,9 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Tooltip } from '@globalfishingwatch/ui-components'
+import { RFMO_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/map/config'
-import { RFMO_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectVGReportActivityDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'

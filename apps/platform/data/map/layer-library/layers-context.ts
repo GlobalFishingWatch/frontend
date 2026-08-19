@@ -1,12 +1,9 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-
-import { PATH_BASENAME } from 'data/map/config'
-import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import {
   EEZ_AREAS_12NM_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
-  FIXED_SAR_INFRASTRUCTURE,
+  FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
   GFCM_FAO_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -19,7 +16,10 @@ import {
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { PATH_BASENAME } from 'data/map/config'
+import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
 
 export const OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID = 'offshore-fixed-infrastructure'
@@ -95,7 +95,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
-    dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.jpg`,
     config: {
       color: '#8E24A9',

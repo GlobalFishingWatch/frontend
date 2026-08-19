@@ -16,8 +16,8 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/map/layer-library/layers-context'
-import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/workspaces'
 import { useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { getDatasetLabel, isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
@@ -42,7 +42,6 @@ import { selectIsWorkspaceRefreshing } from 'features/_map/workspace/workspace.s
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { getModalParent } from 'features/modals/modals.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -348,7 +347,6 @@ function LayerPanel({
                     isOpen={modalDataWarningOpen}
                     onClose={onDataWarningModalClose}
                     contentClassName={styles.modalContent}
-                    parentSelector={getModalParent}
                   >
                     {htmlSafeParse(t((t: any) => t.dataview[dataview?.id].dataWarningDetail))}
                   </Modal>

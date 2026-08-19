@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
@@ -18,7 +18,6 @@ import {
   selectWorkspaceListStatusId,
 } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'
@@ -80,7 +79,6 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
           shouldCloseOnEsc
           contentClassName={styles.modal}
           onClose={onClose}
-          parentSelector={getModalParent}
         >
           <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
         </Modal>

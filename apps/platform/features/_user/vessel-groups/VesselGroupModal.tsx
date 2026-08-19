@@ -50,7 +50,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
-import { getModalParent } from 'features/modals/modals.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -535,7 +534,6 @@ function VesselGroupModal(): React.ReactElement<any> {
       contentClassName={styles.modalContainer}
       onClose={() => onBackClick('close')}
       size="fullscreen"
-      parentSelector={getModalParent}
     >
       <div className={styles.modalContent}>
         <div className={styles.parameters}>

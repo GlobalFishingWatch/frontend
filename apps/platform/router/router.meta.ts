@@ -1,4 +1,5 @@
-import { PATH_BASENAME, WORKSPACE_ENV } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
+import { WORKSPACE_ENV } from 'data/workspace-env'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
 import { getIsBrowser } from 'utils/dom'
@@ -13,15 +14,27 @@ const SITE_ORIGIN =
     production: 'https://globalfishingwatch.org',
     staging: 'https://fishing-map.staging.globalfishingwatch.org',
     development: 'https://fishing-map.dev.globalfishingwatch.org',
-  }[WORKSPACE_ENV!] ?? (getIsBrowser() ? window.location.origin : 'http://localhost:3003')
+  }[WORKSPACE_ENV] ?? (getIsBrowser() ? window.location.origin : 'http://localhost:3003')
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 const SHARE_IMAGE = `${SITE_ORIGIN}${PATH_BASENAME}/images/gfw.jpg`
 
-export const buildCanonicalUrl = (pathname?: string) => {
-  if (!pathname) return `${SITE_ORIGIN}${PATH_BASENAME}`
-  const withBase = pathname.startsWith(PATH_BASENAME) ? pathname : `${PATH_BASENAME}${pathname}`
-  return `${SITE_ORIGIN}${withBase}`
+const buildCanonicalUrl = (pathname?: string) => {
+  const path = (pathname ?? '').split(/[?#]/)[0]
+  const withBase = path.startsWith(PATH_BASENAME) ? path : `${PATH_BASENAME}${path}`
+  return `${SITE_ORIGIN}${withBase.length > 1 ? withBase.replace(/\/+$/, '') : withBase}`
 }
+
+const getCanonicalPathname = (pathname?: string, params?: Record<string, string | undefined>) =>
+  params?.vesselId ? `/vessel/${params.vesselId}` : pathname
+
+/** Single source of `rel=canonical` for the whole app — emitted once, from the root route. */
+export const getCanonicalLink = (
+  pathname?: string,
+  params?: Record<string, string | undefined>
+) => ({
+  rel: 'canonical',
+  href: buildCanonicalUrl(getCanonicalPathname(pathname, params)),
+})
 
 export const getDefaultMeta = (
   title: string,
@@ -130,18 +143,10 @@ export type VesselHeadData =
   | undefined
 
 export const getVesselHead = (data?: VesselHeadData) => {
-  const { vesselDatasetId } = data || {}
-  const canonicalQuery = vesselDatasetId ? `?${new URLSearchParams({ vesselDatasetId })}` : ''
-  const canonical = buildCanonicalUrl(
-    data?.vesselId ? `/vessel/${data.vesselId}${canonicalQuery}` : undefined
-  )
-  const links = [{ rel: 'canonical', href: canonical }]
+  const canonical = buildCanonicalUrl(data?.vesselId ? `/vessel/${data.vesselId}` : undefined)
 
   if (!data?.shipname) {
-    return {
-      ...getRouteHead({ category: t((s) => s.vessel.title) }),
-      links,
-    }
+    return getRouteHead({ category: t((s) => s.vessel.title) })
   }
 
   const vesselName = formatInfoField(data.shipname, 'shipname') as string
@@ -179,7 +184,6 @@ export const getVesselHead = (data?: VesselHeadData) => {
         },
       },
     ],
-    links,
   }
 }
 

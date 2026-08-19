@@ -11,6 +11,28 @@
   font: var(--font-L);
 }
 
+.search {
+  margin-top: var(--space-S);
+  margin-right: var(--space-M);
+  max-width: 28rem;
+}
+
+.subTitleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  margin-top: var(--space-M);
+}
+
+.subTitleRow .subTitle {
+  margin-top: 0;
+}
+
+.subTitleRow .search {
+  margin: 0;
+  flex: 1;
+}
+
 .description {
   opacity: var(--opacity-secondary);
 }
@@ -42,8 +64,14 @@
   align-items: center;
 }
 
+.empty {
+  margin-top: var(--space-S);
+  opacity: var(--opacity-secondary);
+}
+
 .group {
   cursor: pointer;
+  text-align: left;
 }
 
 .active {

@@ -21,7 +21,6 @@ import {
 } from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nFlag from 'features/i18n/i18nFlag'
-import { getModalParent } from 'features/modals/modals.utils'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import {
   formatInfoField,
@@ -153,7 +152,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
-      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.top}>

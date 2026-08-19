@@ -1,10 +1,10 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 

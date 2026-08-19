@@ -11,7 +11,7 @@ import { USER_SETTINGS } from 'data/map/config'
 import { broadcastLogout } from 'features/_user/auth-channel'
 import type { LoginSource } from 'features/_user/user.types'
 import { logoutServerFn } from 'server-functions/auth.functions'
-import { getIsBrowser } from 'utils/dom'
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
@@ -67,9 +67,13 @@ export const fetchUserThunk = createAsyncThunk('user/fetch', () => GFWAPI.fetchU
 const userSlice = createSlice({
   name: 'user',
   initialState: () => {
-    if (!getIsBrowser()) return initialState
-    const settings = JSON.parse(localStorage.getItem(USER_SETTINGS) || '{}') as UserSettings
-    return { ...initialState, settings }
+    try {
+      const stored = getLocalStorageItem(USER_SETTINGS)
+      if (!stored) return initialState
+      return { ...initialState, settings: JSON.parse(stored) as UserSettings }
+    } catch {
+      return initialState
+    }
   },
   reducers: {
     setLoginExpired: (state, action: PayloadAction<boolean>) => {
@@ -80,7 +84,7 @@ const userSlice = createSlice({
     },
     setUserSetting: (state, action: PayloadAction<Partial<UserSettings>>) => {
       state.settings = { ...state.settings, ...action.payload }
-      localStorage.setItem(USER_SETTINGS, JSON.stringify(state.settings))
+      setLocalStorageItem(USER_SETTINGS, JSON.stringify(state.settings))
     },
     setLoginSource: (state, action: PayloadAction<LoginSource | null>) => {
       state.loginSource = action.payload

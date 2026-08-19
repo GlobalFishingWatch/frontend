@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import { HINTS } from 'data/map/config'
 import type { RootState } from 'reducers'
-import { getIsBrowser } from 'utils/dom'
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
 import type { HintId } from './hints.content'
 
@@ -26,19 +26,21 @@ const hintsSlice = createSlice({
     },
     resetHints: (state) => {
       state.hintsDismissed = undefined
-      if (getIsBrowser()) {
-        localStorage.setItem(HINTS, '{}')
-      }
+      setLocalStorageItem(HINTS, '{}')
     },
     setHintDismissed: (state, action: PayloadAction<HintId>) => {
-      const currentHintsDismissed = !getIsBrowser()
-        ? state.hintsDismissed || {}
-        : JSON.parse(localStorage.getItem(HINTS) || '{}')
-      const allHintsDismissed = { ...currentHintsDismissed, ...{ [action.payload]: true } }
-      state.hintsDismissed = allHintsDismissed
-      if (getIsBrowser()) {
-        localStorage.setItem(HINTS, JSON.stringify(allHintsDismissed))
+      let currentHintsDismissed: HintsDismissed = state.hintsDismissed ?? ({} as HintsDismissed)
+      const storedHints = getLocalStorageItem(HINTS)
+      if (storedHints) {
+        try {
+          currentHintsDismissed = JSON.parse(storedHints) as HintsDismissed
+        } catch {
+          // keep in-memory hints if storage is corrupt
+        }
       }
+      const allHintsDismissed = { ...currentHintsDismissed, [action.payload]: true }
+      state.hintsDismissed = allHintsDismissed
+      setLocalStorageItem(HINTS, JSON.stringify(allHintsDismissed))
     },
   },
 })

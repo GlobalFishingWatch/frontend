@@ -1,113 +1,93 @@
-import React, { useId, useMemo } from 'react'
-import ReactModal from 'react-modal'
+import type React from 'react'
+import { useId } from 'react'
+import { Dialog, Heading, Modal as AriaModal, ModalOverlay } from 'react-aria-components/Modal'
 import cx from 'classnames'
 
 import { IconButton } from '../icon-button'
 
 import styles from './Modal.module.css'
 
-interface ModalProps {
+type ModalBaseProps = {
   isOpen: boolean
   title?: string | React.ReactNode
-  header?: boolean
   className?: string
-  closeButtonClassName?: string
   shouldCloseOnEsc?: boolean
-  headerClassName?: string
   contentId?: string
   contentClassName?: string
-  overlayClassName?: string
-  portalClassName?: string
-  /**
-   * Id of the html root selector, normally in CRA 'root'
-   */
-  appSelector?: string
   size?: 'fullscreen' | 'default' | 'auto'
   children: React.ReactNode
-  onClose: (e: React.MouseEvent) => void
-  parentSelector?: () => HTMLElement
+  onClose: () => void
 }
+
+/**
+ * With a header, the dialog is named by its title heading. Without one — or when `header` is
+ * computed, so it may be false at runtime — `ariaLabel` is the only thing left to name it by,
+ * so the type requires it.
+ */
+type ModalProps = ModalBaseProps &
+  ({ header?: true; ariaLabel?: string } | { header: boolean; ariaLabel: string })
 
 export function Modal(props: ModalProps) {
   const {
     isOpen,
     onClose,
-    appSelector = '__root__',
     header = true,
-    parentSelector,
     title,
-    portalClassName,
     className,
-    headerClassName,
     contentClassName,
     contentId,
-    overlayClassName,
-    closeButtonClassName,
+    ariaLabel,
     shouldCloseOnEsc = false,
     size = 'default',
     children,
   } = props
   const modalContentId = useId()
 
-  const isSSR = typeof window === 'undefined'
-  const appElement = useMemo(
-    () => (isSSR ? null : document.getElementById(appSelector)),
-    [isSSR, appSelector]
-  )
-  if (isSSR) {
-    return null
-  }
-  if (!appElement) {
-    if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
-      console.warn(`Invalid appSelector (${appSelector}) provided`)
-    }
-    return null
-  }
-
   return (
-    <ReactModal
-      portalClassName={portalClassName}
-      overlayClassName={cx(styles.modalOverlay, overlayClassName)}
-      shouldCloseOnOverlayClick={shouldCloseOnEsc}
-      shouldCloseOnEsc={shouldCloseOnEsc}
-      className={cx(styles.modalContentWrapper, className, {
-        [styles.fullScreen]: size === 'fullscreen',
-        [styles.auto]: size === 'auto',
-      })}
-      appElement={appElement}
+    <ModalOverlay
+      data-modal-overlay
+      className={styles.modalOverlay}
       isOpen={isOpen}
-      onRequestClose={onClose}
-      parentSelector={parentSelector}
-      closeTimeoutMS={220}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+      isDismissable={shouldCloseOnEsc}
+      isKeyboardDismissDisabled={!shouldCloseOnEsc}
     >
-      {header ? (
-        <div className={cx(styles.header, headerClassName, { [styles.withTitle]: title })}>
-          <h1 className={styles.title}>{title}</h1>
-          <IconButton
-            icon="close"
-            className={closeButtonClassName}
-            onClick={onClose}
-            data-testid="modal-close-button"
-          />
-        </div>
-      ) : (
-        <IconButton
-          icon="close"
-          data-testid="modal-close-button"
-          onClick={onClose}
-          type="border"
-          className={cx(styles.closeButtonWithoutHeader, closeButtonClassName)}
-        />
-      )}
-      <div
-        id={contentId || modalContentId}
-        className={cx(styles.content, contentClassName, {
-          [styles.contentNoHeader]: !header,
-          [styles.contentAuto]: size === 'auto',
+      <AriaModal
+        className={cx(styles.modalContentWrapper, className, {
+          [styles.fullScreen]: size === 'fullscreen',
+          [styles.auto]: size === 'auto',
         })}
       >
-        {children}
-      </div>
-    </ReactModal>
+        <Dialog className={styles.dialog} aria-label={ariaLabel}>
+          {header ? (
+            <div className={cx(styles.header, { [styles.withTitle]: title })}>
+              <Heading slot="title" level={1} className={styles.title}>
+                {title}
+              </Heading>
+              <IconButton icon="close" onClick={onClose} data-testid="modal-close-button" />
+            </div>
+          ) : (
+            <IconButton
+              icon="close"
+              data-testid="modal-close-button"
+              onClick={onClose}
+              type="border"
+              className={styles.closeButtonWithoutHeader}
+            />
+          )}
+          <div
+            id={contentId || modalContentId}
+            className={cx(styles.content, contentClassName, {
+              [styles.contentNoHeader]: !header,
+              [styles.contentAuto]: size === 'auto',
+            })}
+          >
+            {children}
+          </div>
+        </Dialog>
+      </AriaModal>
+    </ModalOverlay>
   )
 }

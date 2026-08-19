@@ -6,8 +6,7 @@ import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 // Leaf subpath: this module is always loaded (MainNav -> app.timebar.selectors), and the composer root
 // barrel pulls the whole deck layer pipeline.
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer/dataview-resolvers'
-
-import { DATASET_COMPARISON_SUFFIX } from 'data/map/config'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   isPointsDataviewReportSupported,

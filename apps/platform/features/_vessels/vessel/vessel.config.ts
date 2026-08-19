@@ -1,5 +1,8 @@
 import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
+import {
+  PIPE_DATASET_ID,
+  PIPE_DATASET_VERSION,
+} from '@globalfishingwatch/datasets-client/constants'
 
 import type { VesselProfileState } from './vessel.types'
 

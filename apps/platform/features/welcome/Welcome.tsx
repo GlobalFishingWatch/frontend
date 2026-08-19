@@ -79,6 +79,7 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
   return (
     <Modal
       header={false}
+      ariaLabel={title}
       shouldCloseOnEsc
       isOpen={welcomePopup?.visible}
       onClose={() => {

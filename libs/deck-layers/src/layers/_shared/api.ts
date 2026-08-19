@@ -2,6 +2,7 @@ import { parse } from '@loaders.gl/core'
 import { MVTLoader } from '@loaders.gl/mvt'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { VESSEL_TRACKS_LOADER_ID } from '@globalfishingwatch/deck-loaders'
 
 import { getEnv } from '#config/layers.config'
 
@@ -72,6 +73,26 @@ async function fetchLocalSprite(url: string, signal?: AbortSignal): Promise<Imag
   return createImageBitmap(blob)
 }
 
+type ResponseHeaderOptions = { response: Response; header: string }
+
+function getResponseHeader(options: ResponseHeaderOptions & { type: 'number' }): number | null
+function getResponseHeader(options: ResponseHeaderOptions & { type?: 'string' }): string | null
+function getResponseHeader({
+  response,
+  header,
+  type,
+}: ResponseHeaderOptions & { type?: 'number' | 'string' }): number | string | null {
+  const value = response.headers.get(header)
+  if (value == null) {
+    return null
+  }
+  if (type === 'number') {
+    const parsedValue = Number(value)
+    return Number.isFinite(parsedValue) ? parsedValue : null
+  }
+  return value
+}
+
 export async function fetchWithGFWAPI(
   url: string,
   { signal, layer }: FetchWithGFWAPIContext = {}
@@ -88,22 +109,26 @@ export async function fetchWithGFWAPI(
 
   const loaders = Array.isArray(layer?.props?.loaders) ? (layer.props.loaders as any[]) : []
   const loader = loaders[0]
-  if (loader) {
-    const timestampBaseHeader = response.headers.get('timestamp-base')
-    const loadOptions = layer?.props?.loadOptions as any
-    const mergedLoadOptions =
-      timestampBaseHeader != null
-        ? {
-            ...loadOptions,
-            'vessel-tracks': {
-              ...(loadOptions?.['vessel-tracks'] || {}),
-              timestampBase: Number(timestampBaseHeader),
-            },
-          }
-        : loadOptions
-    const buffer = await response.arrayBuffer()
-    return parse(buffer, loader, mergedLoadOptions)
+
+  if (!loader) {
+    return response
   }
 
-  return response
+  const loadOptions = layer?.props?.loadOptions as any
+  if (loader.id !== VESSEL_TRACKS_LOADER_ID) {
+    return parse(await response.arrayBuffer(), loader, loadOptions)
+  }
+
+  const timestampBase = getResponseHeader({ response, header: 'timestamp-base', type: 'number' })
+  if (timestampBase === null) {
+    console.error(`Missing timestamp-base header for track chunk: ${url}`)
+  }
+
+  return parse(await response.arrayBuffer(), loader, {
+    ...loadOptions,
+    [VESSEL_TRACKS_LOADER_ID]: {
+      ...(loadOptions?.[VESSEL_TRACKS_LOADER_ID] || {}),
+      timestampBase,
+    },
+  })
 }

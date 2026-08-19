@@ -4,21 +4,20 @@ import { useSelector } from 'react-redux'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText, Modal } from '@globalfishingwatch/ui-components'
-
-import { PUBLIC_SUFIX, USER_SUFIX } from 'data/map/config'
-import { WIZARD_TEMPLATE_ID } from 'data/map/highlighted-workspaces/marine-manager.dataviews'
 import {
   DEEP_SEA_MINING_WORKSPACE_ID,
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategory,
-} from 'data/map/workspaces'
+} from '@platform/config/map/workspaces'
+
+import { PUBLIC_SUFIX, USER_SUFIX } from 'data/map/config'
+import { WIZARD_TEMPLATE_ID } from 'data/map/highlighted-workspaces/marine-manager.dataviews'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { setWorkspaceProperty } from 'features/_map/workspace/workspace.slice'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import { updateWorkspaceThunk } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
 import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
 import { selectLocationCategory } from 'router/routes.selectors'
@@ -117,7 +116,6 @@ function WorkspaceTitle() {
               isOpen={workspaceEditModalOpen}
               contentClassName={styles.modalContainer}
               onClose={onWorkspaceUpdateClose}
-              parentSelector={getModalParent}
             >
               <div className={styles.content}>
                 <InputText

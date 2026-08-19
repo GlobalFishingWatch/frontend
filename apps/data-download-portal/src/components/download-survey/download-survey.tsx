@@ -66,7 +66,6 @@ function DownloadSurveyModal({
 
   return (
     <Modal
-      appSelector="root"
       title="Download"
       isOpen={isOpen}
       onClose={onClose}

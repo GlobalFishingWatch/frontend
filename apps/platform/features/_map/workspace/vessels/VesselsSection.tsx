@@ -11,8 +11,8 @@ import {
   resolveDataviewDatasetResource,
 } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { getDataviewsSources } from 'features/_map/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'

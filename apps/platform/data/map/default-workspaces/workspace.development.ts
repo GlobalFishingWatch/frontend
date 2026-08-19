@@ -1,24 +1,8 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
-
-import {
-  APP_NAME,
-  DEFAULT_TIME_RANGE,
-  DEFAULT_VIEWPORT,
-  IS_REALTIME_ENABLED,
-} from 'data/map/config'
+import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
-  PRESENCE_DATAVIEW_INSTANCE_ID,
-  REAL_TIME_DATAVIEW_INSTANCE_ID,
-  SAR_DATAVIEW_INSTANCE_ID,
-  SENTINEL2_DATAVIEW_INSTANCE_ID,
-  VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
-  VMS_DATAVIEW_INSTANCE_ID,
-} from 'data/map/dataviews'
-import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
-import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/map/layer-library/layers-environment'
-import {
   BASEMAP_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
@@ -26,20 +10,29 @@ import {
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-  FISHING_DATAVIEW_SLUG_AIS,
-  FISHING_DATAVIEW_SLUG_VMS,
-  FIXED_SAR_INFRASTRUCTURE,
+  FISHING_AIS_DATAVIEW_SLUG,
+  FISHING_VMS_DATAVIEW_SLUG,
+  FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
   PORTS_AIS_DATAVIEW_SLUG,
   PORTS_VMS_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_SLUG,
   PRESENCE_REALTIME_DATAVIEW_SLUG,
+  REAL_TIME_DATAVIEW_INSTANCE_ID,
+  SAR_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_SLUG,
+  SENTINEL2_DATAVIEW_INSTANCE_ID,
   SENTINEL2_DATAVIEW_SLUG,
   VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+  VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
+  VMS_DATAVIEW_INSTANCE_ID,
+} from '@platform/config/map/dataviews'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+
+import { APP_NAME, DEFAULT_TIME_RANGE, IS_REALTIME_ENABLED } from 'data/map/config'
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
+import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/map/layer-library/layers-environment'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -87,11 +80,11 @@ const workspace: Workspace<WorkspaceState> = {
           distance_from_port_km: '3',
         },
       },
-      dataviewId: FISHING_DATAVIEW_SLUG_AIS,
+      dataviewId: FISHING_AIS_DATAVIEW_SLUG,
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
-      dataviewId: FISHING_DATAVIEW_SLUG_VMS,
+      dataviewId: FISHING_VMS_DATAVIEW_SLUG,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -174,7 +167,7 @@ const workspace: Workspace<WorkspaceState> = {
         color: '#8E24A9',
         colorRamp: 'seance',
       },
-      dataviewId: FIXED_SAR_INFRASTRUCTURE,
+      dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     },
     {
       id: `${PORTS_LAYER_ID}-ais`,

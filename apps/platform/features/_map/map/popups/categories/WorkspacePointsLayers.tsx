@@ -4,9 +4,9 @@ import cx from 'classnames'
 
 import type { WorkspacesPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 
 import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON } from 'data/map/config'
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'

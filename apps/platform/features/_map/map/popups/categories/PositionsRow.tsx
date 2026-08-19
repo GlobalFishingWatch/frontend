@@ -19,8 +19,8 @@ import {
   getPositionBearing,
 } from '@globalfishingwatch/deck-layers'
 import { Choice, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'

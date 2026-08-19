@@ -1,12 +1,12 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { SENTINEL2_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { PATH_BASENAME } from 'data/map/config'
-import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/map/dataviews'
 import {
   // CARRIER_PORTAL_DATAVIEW_INSTANCES,
   REPORT_DATAVIEW_INSTANCES,
 } from 'data/map/highlighted-workspaces/report.dataviews'
-import { WorkspaceCategory } from 'data/map/workspaces'
 import { ReportCategory } from 'features/_reports/reports.types'
 
 import type workspaceTranslations from '../../../public/locales/source/workspaces.json'

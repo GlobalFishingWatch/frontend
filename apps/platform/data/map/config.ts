@@ -6,17 +6,15 @@ import {
   DATASET_FULL_PREFIX,
   DATASET_PRIVATE_PREFIX,
   DATASET_PUBLIC_PREFIX,
-} from '@globalfishingwatch/datasets-client'
+} from '@globalfishingwatch/datasets-client/constants'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import { DEFAULT_PATH_BASENAME } from '@platform/config/routes'
 
-import type { WorkspaceEnv } from 'data/workspace-env'
+import { WORKSPACE_ENV } from 'data/workspace-env'
 
 import type { AppState, WorkspaceState } from '../../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../../types'
 import { getUTCDateTime } from '../../utils/dates'
-
-export { DATASET_COMPARISON_SUFFIX } from '@platform/config/map/dataviews'
 
 export const ROOT_DOM_ELEMENT = '__root__'
 export const PLATFORM_CONTAINER_DOM_ID = 'platform-container'
@@ -25,7 +23,7 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
 export const IS_PRODUCTION_BUILD = import.meta.env.PROD
-export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv | undefined
+
 export const IS_PRODUCTION_WORKSPACE_ENV =
   WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'
 
@@ -71,8 +69,6 @@ export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
-export { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
-
 const DEFAULT_DATA_DELAY_DAYS = 3
 
 export const REAL_TIME_DATA_DAYS_AVAILABLE = 3
@@ -85,8 +81,6 @@ export const LAST_DATA_UPDATE = DateTime.fromObject(
 )
   .minus({ days: DEFAULT_DATA_DELAY_DAYS })
   .toISO() as string
-
-export { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 
 export const DEFAULT_WORKSPACE_LIST_VIEWPORT = {
   latitude: 10,
