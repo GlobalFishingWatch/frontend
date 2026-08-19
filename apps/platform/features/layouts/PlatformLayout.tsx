@@ -47,9 +47,12 @@ function PlatformLayout() {
   return (
     <Fragment>
       <ConfirmLeave />
-      <div id={PLATFORM_CONTAINER_DOM_ID} className={cx(styles.platformContainer, {
+      <div
+        id={PLATFORM_CONTAINER_DOM_ID}
+        className={cx(styles.platformContainer, {
           [styles.helpHubBackground]: isHelpHubLocation,
-        })>
+        })}
+      >
         {!isSmallPhone &&
           (PLATFORM_MODE ? <PlatformNav /> : <LegacyNav onMenuClick={onMenuClick} />)}
         <div className={styles.platformContent}>

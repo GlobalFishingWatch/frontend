@@ -1,5 +1,4 @@
 .page {
-  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 0 var(--space-M);
@@ -8,22 +7,21 @@
 .container {
   gap: var(--space-S);
   flex: 1;
-  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(24rem, 28rem) minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: 36rem minmax(0, 1fr);
+  align-items: start;
 }
 
-.tableOfContents {
-  min-height: 0;
+.aside {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
   overflow-y: auto;
+  padding-bottom: var(--space-L);
 }
 
 .content {
-  max-width: 70rem;
-  min-height: 0;
-  overflow-y: auto;
-  padding-bottom: 60%;
+  max-width: 72rem;
   margin: 0 auto;
 }
 
@@ -37,20 +35,21 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-XS);
-  font: var(--font-M);
-  color: var(--color-primary-blue-hover);
+  font: var(--font-L);
+  color: var(--color-primary-blue);
 }
 
-/* .breadcrumbLink {
+.breadcrumbLink {
+  color: var(--color-secondary-blue);
 }
 
 .breadcrumbLink:hover {
   color: var(--color-primary-blue);
 }
- */
+
 .breadcrumbSeparator {
   font: var(--font-XL);
-  color: var(--color-primary-blue-hover);
+  color: var(--color-secondary-blue);
 }
 
 .title {
@@ -75,10 +74,11 @@
   color: var(--color-secondary-blue);
 }
 
-@media (width <= 768px) {
+@media (width <= 800px) {
   .page {
     height: auto;
     display: block;
+    padding: var(--space-M) var(--space-SM);
   }
 
   .container {
@@ -88,13 +88,20 @@
     height: auto;
   }
 
-  .tableOfContents,
-  .content {
+  .aside {
+    position: static;
+    max-height: none;
     overflow-y: visible;
+    padding-bottom: 0;
   }
 
   .content {
+    max-width: none;
     padding-bottom: 0;
+  }
+
+  .aside .tableOfContents {
+    display: none;
   }
 }
 
@@ -110,12 +117,42 @@
     height: auto;
   }
 
-  .tableOfContents {
+  .aside .tableOfContents {
     display: none;
   }
+}
 
-  .content {
-    overflow-y: visible;
-    padding-bottom: 0;
-  }
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-M);
+  margin-block: var(--space-L);
+  padding-top: var(--space-M);
+  border-top: var(--border);
+}
+
+.paginationLink {
+  display: flex;
+  flex: 0 1 24rem;
+  flex-direction: column;
+  gap: var(--space-XS);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.paginationNext {
+  margin-left: auto;
+  text-align: right;
+}
+
+.paginationLabel {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+}
+
+.paginationTitle {
+  font: var(--font-M-bold);
+  color: var(--color-primary-blue);
 }

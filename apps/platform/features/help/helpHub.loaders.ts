@@ -15,17 +15,29 @@ export type HelpHubSectionData = {
 
 export type HelpHubSectionItems = Record<HelpHubSectionId, HelpHubSectionData>
 
-const SECTION_FETCHERS: Record<HelpHubSectionId, (locale: Locale) => Promise<HelpHubItem[]>> = {
-  toolsAndFeatures: async (locale) => {
-    const response = await getUserGuideContent({ data: { locale } })
+/** The article page needs one full item plus a bodyless index; the landing page needs neither. */
+export type HelpHubFetchOptions = { slug?: string; index?: boolean }
+
+export type HelpHubArticleData = {
+  index: HelpHubItem[]
+  item?: HelpHubItem
+  error?: string
+}
+
+const SECTION_FETCHERS: Record<
+  HelpHubSectionId,
+  (locale: Locale, options?: HelpHubFetchOptions) => Promise<HelpHubItem[]>
+> = {
+  toolsAndFeatures: async (locale, options) => {
+    const response = await getUserGuideContent({ data: { locale, ...options } })
     return toUserGuideItems(response?.data ?? [])
   },
-  useCases: async (locale) => {
-    const response = await getUseCaseContent({ data: { locale } })
+  useCases: async (locale, options) => {
+    const response = await getUseCaseContent({ data: { locale, ...options } })
     return toUseCaseItems(response?.data ?? [])
   },
-  platformAndUpdates: async (locale) => {
-    const response = await getDataUpdateContent({ data: { locale } })
+  platformAndUpdates: async (locale, options) => {
+    const response = await getDataUpdateContent({ data: { locale, ...options } })
     return toDataUpdateItems(response?.data ?? [])
   },
 }
@@ -53,9 +65,10 @@ export const helpHubRouteCache = {
 
 export function loadHelpHubSection(
   sectionId: HelpHubSectionId,
-  locale: Locale
+  locale: Locale,
+  options?: HelpHubFetchOptions
 ): Promise<HelpHubSectionData> {
-  return SECTION_FETCHERS[sectionId](locale)
+  return SECTION_FETCHERS[sectionId](locale, options)
     .then((items): HelpHubSectionData => ({ items }))
     .catch((error: unknown): HelpHubSectionData => {
       const message = toErrorMessage(error)
@@ -71,4 +84,25 @@ export async function loadHelpHubSections(locale: Locale): Promise<HelpHubSectio
     )
   )
   return Object.fromEntries(entries) as HelpHubSectionItems
+}
+
+export async function loadHelpHubArticle(
+  sectionId: HelpHubSectionId,
+  locale: Locale,
+  itemSlug?: string
+): Promise<HelpHubArticleData> {
+  const [index, requested] = await Promise.all([
+    loadHelpHubSection(sectionId, locale, { index: true }),
+    itemSlug ? loadHelpHubSection(sectionId, locale, { slug: itemSlug }) : undefined,
+  ])
+  // Section root falls back to the first article, whose slug only exists once the index is in.
+  const firstSlug = index.items[0]?.slug
+  const article =
+    requested ??
+    (firstSlug ? await loadHelpHubSection(sectionId, locale, { slug: firstSlug }) : undefined)
+  return {
+    index: index.items,
+    item: article?.items[0],
+    error: index.error ?? article?.error,
+  }
 }

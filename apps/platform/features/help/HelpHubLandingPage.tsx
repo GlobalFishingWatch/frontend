@@ -44,7 +44,7 @@ function HelpHubLandingPage() {
             {error ? (
               <HelpHubError error={error} className={styles.carouselPlaceholder} />
             ) : items.length > 0 ? (
-              <Carousel id={`${section.slug}-carousel`} label={title}>
+              <Carousel id={`${section.slug}-carousel`} label={title} className={styles.carousel}>
                 {items.map((item) => (
                   <Link
                     key={item.id}
@@ -52,11 +52,7 @@ function HelpHubLandingPage() {
                     params={{ sectionSlug: section.slug, itemSlug: item.slug }}
                     className={styles.cardLink}
                   >
-                    <Card
-                      loading={isLoading}
-                      title={item.title}
-                      image={getCardImage(item.thumbnail, item.body)}
-                    >
+                    <Card loading={isLoading} title={item.title} image={getCardImage(item)}>
                       {item.publicationDate && (
                         <p className={styles.cardDate}>
                           {formatI18nDate(item.publicationDate, {

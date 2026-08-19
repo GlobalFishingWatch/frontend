@@ -3,7 +3,7 @@ import type { CardProps } from '@globalfishingwatch/ui-components/card'
 import type { DataUpdateContent } from 'features/cms/loaders/data-update.types'
 import type { UseCaseContent } from 'features/cms/loaders/use-case.types'
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
-import type { StrapiBaseAttributes, StrapiImage } from 'features/cms/strapi.types'
+import type { StrapiBaseAttributes } from 'features/cms/strapi.types'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
 import type {
   HelpHubItem,
@@ -84,7 +84,17 @@ const getFirstBodyImage = (body?: string): CardProps['image'] => {
 }
 
 // Card takes { url, alt }; Strapi media carries the text as alternativeText.
-export const getCardImage = (thumbnail?: StrapiImage, body?: string): CardProps['image'] =>
-  thumbnail
-    ? { url: thumbnail.url, alt: thumbnail.alternativeText ?? undefined }
-    : getFirstBodyImage(body)
+export const getCardImage = ({
+  thumbnail,
+  body,
+  subsections,
+}: Pick<HelpHubItem, 'thumbnail' | 'body' | 'subsections'>): CardProps['image'] => {
+  if (thumbnail) {
+    return { url: thumbnail.url, alt: thumbnail.alternativeText ?? undefined }
+  }
+  for (const candidate of [body, ...(subsections?.map((subsection) => subsection.body) ?? [])]) {
+    const image = getFirstBodyImage(candidate)
+    if (image) return image
+  }
+  return undefined
+}

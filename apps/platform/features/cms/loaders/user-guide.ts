@@ -5,17 +5,23 @@ import { fetchStrapiCollectionCached } from 'features/cms/loaders/utils'
 import type { StrapiResponse } from 'features/cms/strapi.types'
 import type { Locale } from 'types'
 
+// Titles and slugs only: enough for the section menu and the prev/next links, no bodies.
+const INDEX_PARAMS = {
+  fields: ['title', 'slug'],
+  populate: { subsections: { fields: ['title', 'slug'] } },
+}
+
 export const getUserGuideContent = createServerFn({
   method: 'GET',
 })
-  .validator((params: { locale?: Locale; page?: number } = {}) => params)
-  .handler(({ data: { locale } }): Promise<StrapiResponse<UserGuideSection>> =>
+  .validator((params: { locale?: Locale; slug?: string; index?: boolean } = {}) => params)
+  .handler(({ data: { locale, slug, index } }): Promise<StrapiResponse<UserGuideSection>> =>
     fetchStrapiCollectionCached<UserGuideSection>({
       collectionName: 'user-guide-sections',
       params: {
-        // pagination: { page: page || 1, pageSize: 50 },
         sort: ['createdAt:asc'],
-        populate: ['subsections', 'thumbnail'],
+        ...(index ? INDEX_PARAMS : { populate: '*' }),
+        ...(slug && { filters: { slug: { $eq: slug } } }),
       },
       locale,
     })

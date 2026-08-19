@@ -1,6 +1,10 @@
 .carousel {
+  --scrollbar-width: none;
+  --scrollbar-size: 0;
   --carousel-gap: var(--space-SM);
+  --carousel-items-per-view-auto: 1.5;
 
+  container: carousel / inline-size;
   display: flex;
   gap: var(--carousel-gap);
   overflow-x: auto;
@@ -10,16 +14,45 @@
 }
 
 .carousel > * {
+  --carousel-items: var(--carousel-items-per-view, var(--carousel-items-per-view-auto));
+
   flex: 0 0
     max(
-      var(--carousel-item-min-width, 16rem),
-      calc(
-        (100% - (var(--carousel-items-per-view, 4) - 1) * var(--carousel-gap)) /
-          var(--carousel-items-per-view, 4)
-      )
+      var(--carousel-item-min-width, 24rem),
+      calc((100% - (var(--carousel-items) - 1) * var(--carousel-gap)) / var(--carousel-items))
     );
   scroll-snap-align: start;
   min-width: 0;
+}
+
+@container carousel (width >= 60rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 2.5;
+  }
+}
+
+@container carousel (width >= 84rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 3.5;
+  }
+}
+
+@container carousel (width >= 108rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 4.5;
+  }
+}
+
+@container carousel (width >= 132rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 5.5;
+  }
+}
+
+@container carousel (width >= 156rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 6.5;
+  }
 }
 
 @media print {

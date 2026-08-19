@@ -747,10 +747,12 @@
     "supportBy": "Supported by"
   },
   "helpHub": {
+    "nextArticle": "Next",
     "platformAndUpdates": {
       "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
       "title": "Platform and updates"
     },
+    "previousArticle": "Previous",
     "title": "Help & Resources",
     "toolsAndFeatures": {
       "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",

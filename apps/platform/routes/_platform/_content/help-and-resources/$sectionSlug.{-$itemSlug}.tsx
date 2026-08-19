@@ -5,18 +5,18 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
 import {
+  type HelpHubArticleData,
   helpHubRouteCache,
-  type HelpHubSectionData,
-  loadHelpHubSection,
+  loadHelpHubArticle,
 } from 'features/help/helpHub.loaders'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
 import { buildCanonicalUrl, getRouteHead } from 'router/router.meta'
 
 /**
- * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The optional param
- * keeps it a single match, so scroll-driven URL changes swap params on a mounted component instead
- * of remounting it and throwing away the reader's scroll position.
+ * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The loader fetches
+ * a single article plus a bodyless index of the section, which feeds the menu and the prev/next
+ * links; the section root shows the first article.
  */
 export const Route = createFileRoute(
   '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}'
@@ -32,10 +32,10 @@ export const Route = createFileRoute(
       })
     }
   },
-  loader: async ({ params, deps }): Promise<HelpHubSectionData> => {
+  loader: async ({ params, deps }): Promise<HelpHubArticleData> => {
     const section = findHelpHubSection(params.sectionSlug)
-    if (!section) return { items: [] }
-    return loadHelpHubSection(section.id, deps.locale)
+    if (!section) return { index: [] }
+    return loadHelpHubArticle(section.id, deps.locale, params.itemSlug)
   },
   head: ({ params, loaderData }) => {
     const section = findHelpHubSection(params.sectionSlug)
@@ -43,9 +43,7 @@ export const Route = createFileRoute(
       return getRouteHead()
     }
     const { title, description } = getHelpHubSectionCopy(section.id)
-    const item = params.itemSlug
-      ? loaderData?.items.find(({ slug }) => slug === params.itemSlug)
-      : undefined
+    const item = loaderData?.item
     return {
       ...getRouteHead({
         category: params.itemSlug ? (item?.title ?? startCase(params.itemSlug)) : title,
@@ -54,7 +52,9 @@ export const Route = createFileRoute(
       links: [
         {
           rel: 'canonical',
-          href: buildCanonicalUrl(`/help-and-resources/${section.slug}`),
+          href: buildCanonicalUrl(
+            `/help-and-resources/${section.slug}${params.itemSlug ? `/${params.itemSlug}` : ''}`
+          ),
         },
       ],
     }

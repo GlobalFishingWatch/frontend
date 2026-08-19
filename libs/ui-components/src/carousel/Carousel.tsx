@@ -8,6 +8,7 @@ export interface CarouselProps {
   children?: React.ReactNode
   className?: string
   label?: string
+  /** Overrides the width-driven step count. Fractional values are intended, e.g. 4.5. */
   itemsPerView?: number
   itemMinWidth?: string
   style?: React.CSSProperties
@@ -18,12 +19,14 @@ export function Carousel({
   children,
   className,
   label,
-  itemsPerView = 4,
+  itemsPerView,
   itemMinWidth,
   style,
 }: CarouselProps) {
   const itemsStyle = {
-    '--carousel-items-per-view': Math.max(1, Math.round(itemsPerView)),
+    // Only set when overridden: unset lets the CSS container queries pick the step from the
+    // carousel's own width. Fractional is the point — the .5 leaves a card half cut as a hint.
+    ...(itemsPerView ? { '--carousel-items-per-view': Math.max(1, itemsPerView) } : {}),
     ...(itemMinWidth ? { '--carousel-item-min-width': itemMinWidth } : {}),
     ...style,
   } as React.CSSProperties
