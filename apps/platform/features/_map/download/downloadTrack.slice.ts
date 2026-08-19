@@ -12,7 +12,7 @@ import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
-import type { Format } from './downloadTrack.config'
+import { Format } from './downloadTrack.config'
 
 type VesselParams = {
   name: string
@@ -68,17 +68,20 @@ export const downloadTrackThunk = createAsyncThunk<
     const { dateRange, dataset, format, vesselIds, vesselName, thinning } = params
     const fromDate = getUTCDateTime(dateRange.start).toString()
     const toDate = getUTCDateTime(dateRange.end).toString()
+    const isKml = format === Format.Kml
     const downloadTrackParams = {
       'start-date': fromDate,
       'end-date': toDate,
       dataset,
-      format,
+      // KML is not supported by the API: we download geojson and convert it client-side
+      format: isKml ? Format.GeoJson : format,
       ...(thinning && { ...thinning }),
     }
 
-    const fileName = `${vesselName || vesselIds?.[0]} (${downloadTrackParams['start-date'].split('T')[0]} - ${
+    const baseName = `${vesselName || vesselIds?.[0]} (${downloadTrackParams['start-date'].split('T')[0]} - ${
       downloadTrackParams['end-date'].split('T')[0]
-    }).zip`
+    })`
+    const fileName = `${baseName}.zip`
     const rateLimit = await GFWAPI.fetch<Response>(
       `/vessels/${vesselIds.join(',')}/tracks/download?${stringify(downloadTrackParams)}`,
       {
@@ -90,6 +93,26 @@ export const downloadTrackThunk = createAsyncThunk<
       const rateLimit = parseRateLimit(response)
       const blob = await response.blob()
       const { saveAs } = await import('file-saver')
+      if (isKml) {
+        const [{ default: JSZip }, { geoJsonToKml }] = await Promise.all([
+          import('jszip'),
+          import('./geojson-to-kml'),
+        ])
+        const zip = await JSZip.loadAsync(blob)
+        await Promise.all(
+          zip.file(/\.(geojson|json)$/i).map(async (file) => {
+            const geojson = JSON.parse(await file.async('string'))
+            if (geojson?.type !== 'FeatureCollection') return
+            zip.remove(file.name)
+            zip.file(
+              file.name.replace(/\.(geojson|json)$/i, '.kml'),
+              geoJsonToKml(geojson, baseName)
+            )
+          })
+        )
+        saveAs(await zip.generateAsync({ type: 'blob' }), fileName)
+        return rateLimit
+      }
       saveAs(blob as any, fileName)
 
       return rateLimit

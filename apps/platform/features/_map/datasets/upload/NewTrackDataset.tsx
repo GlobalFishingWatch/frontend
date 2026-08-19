@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { FeatureCollection, LineString } from 'geojson'
@@ -296,15 +296,19 @@ function NewTrackDataset({
             />
           </div>
         )}
-        <div className={styles.row}>
-          <TimeFieldsGroup
-            filterOptions={['none', 'date']}
-            datasetMetadata={datasetMetadata}
-            setDatasetMetadataConfig={setDatasetMetadataConfig}
-            disabled={loading || isEditing}
-          />
-        </div>
-        <p className={cx(styles.errorMsg, styles.errorMargin)}>{timeFilterError}</p>
+        {isCSVFile && (
+          <Fragment>
+            <div className={styles.row}>
+              <TimeFieldsGroup
+                filterOptions={['none', 'date']}
+                datasetMetadata={datasetMetadata}
+                setDatasetMetadataConfig={setDatasetMetadataConfig}
+                disabled={loading || isEditing}
+              />
+            </div>
+            <p className={cx(styles.errorMsg, styles.errorMargin)}>{timeFilterError}</p>
+          </Fragment>
+        )}
         {isCSVFile && (
           <div className={styles.row}>
             <NewDatasetField
