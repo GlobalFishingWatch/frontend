@@ -37,6 +37,7 @@ import {
 
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
 import {
+  REAL_TIME_DATAVIEW_SLUGS,
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -629,14 +630,25 @@ const SUPPORTED_CATEGORIES_REAL_TIME = [
   DataviewCategory.Context,
   DataviewCategory.User,
 ]
+
+function isRealTimeActivityDataview(dataview: UrlDataviewInstance) {
+  return (
+    REAL_TIME_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) ||
+    dataview.datasets?.some(isRealTimeDataset) === true
+  )
+}
+
 export function isRealTimeDataview(dataview: UrlDataviewInstance) {
   if (dataview.category === DataviewCategory.Activity) {
-    return dataview.datasets?.some(isRealTimeDataset)
+    return isRealTimeActivityDataview(dataview)
   }
   return !dataview.category || SUPPORTED_CATEGORIES_REAL_TIME.includes(dataview.category)
 }
 
 export function isHistoricalDataview(dataview: UrlDataviewInstance) {
+  if (dataview.category === DataviewCategory.Activity) {
+    return !isRealTimeActivityDataview(dataview)
+  }
   return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
 }
 
