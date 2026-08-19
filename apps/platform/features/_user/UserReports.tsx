@@ -49,8 +49,8 @@ function UserReports() {
   }, [dispatch])
 
   const onReportClick = useCallback(() => {
-      dispatch(resetReportData())
-    }, [dispatch])
+    dispatch(resetReportData())
+  }, [dispatch])
 
   const onDeleteClick = useCallback(
     (report: Report) => {

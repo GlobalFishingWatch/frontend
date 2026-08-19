@@ -45,8 +45,8 @@ const DatasetType = ({
     [dispatchDatasetModalConfig, type, onFileLoaded]
   )
   const onDropRejected = useCallback(() => {
-      dispatchDatasetModalConfig({ fileRejected: true })
-    }, [dispatchDatasetModalConfig])
+    dispatchDatasetModalConfig({ fileRejected: true })
+  }, [dispatchDatasetModalConfig])
 
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)

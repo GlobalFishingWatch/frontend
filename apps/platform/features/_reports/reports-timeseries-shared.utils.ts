@@ -1,4 +1,3 @@
-
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 
 import type { DateTimeSeries } from 'features/_reports/report-area/area-reports.hooks'

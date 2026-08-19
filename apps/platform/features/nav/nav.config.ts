@@ -5,6 +5,7 @@ import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/workspaces-list.config'
+import type { HelpHubSectionSlug } from 'features/help/helpHub.types'
 import type { LanguageOption } from 'features/i18n/language.hooks'
 
 export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
@@ -51,6 +52,8 @@ export const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
     to: ROUTE_PATHS.WORKSPACES_LIST,
     params: { category },
   }))
+
+const helpHubSectionParams = (sectionSlug: HelpHubSectionSlug) => ({ sectionSlug })
 
 export const getPlatformNavSections = (t: TFunc): NavItem[] => [
   {
@@ -111,22 +114,25 @@ export const getPlatformNavSections = (t: TFunc): NavItem[] => [
     id: 'help-and-resources',
     icon: 'help-section',
     label: t((s) => s.nav.helpAndResources),
-    plannedTo: '/help-and-resources',
+    to: ROUTE_PATHS.HELP_HUB,
     subsections: [
       {
         id: 'user-guide',
         label: t((s) => s.nav.toolsAndFeatures),
-        plannedTo: '/help-and-resources/user-guide',
+        to: ROUTE_PATHS.HELP_HUB_SECTION,
+        params: helpHubSectionParams('tools-and-features'),
       },
       {
         id: 'use-cases',
         label: t((s) => s.nav.useCases),
-        plannedTo: '/help-and-resources/use-cases',
+        to: ROUTE_PATHS.HELP_HUB_SECTION,
+        params: helpHubSectionParams('use-cases'),
       },
       {
         id: 'platform-and-data-updates',
         label: t((s) => s.nav.platformAndDataUpdates),
-        plannedTo: '/help-and-resources/platform-and-data-updates',
+        to: ROUTE_PATHS.HELP_HUB_SECTION,
+        params: helpHubSectionParams('platform-and-updates'),
       },
     ],
   },

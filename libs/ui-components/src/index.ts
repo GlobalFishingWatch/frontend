@@ -1,4 +1,6 @@
 export * from './button'
+export * from './card'
+export * from './carousel'
 export * from './checkbox'
 export * from './choice'
 export * from './collapsable'
