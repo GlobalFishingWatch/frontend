@@ -5,9 +5,9 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
 import {
+  getHelpHubArticleContent,
   type HelpHubArticleData,
   helpHubRouteCache,
-  loadHelpHubArticle,
 } from 'features/help/helpHub.loaders'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
@@ -35,7 +35,9 @@ export const Route = createFileRoute(
   loader: async ({ params, deps }): Promise<HelpHubArticleData> => {
     const section = findHelpHubSection(params.sectionSlug)
     if (!section) return { index: [] }
-    return loadHelpHubArticle(section.id, deps.locale, params.itemSlug)
+    return getHelpHubArticleContent({
+      data: { sectionId: section.id, locale: deps.locale, itemSlug: params.itemSlug },
+    })
   },
   head: ({ params, loaderData }) => {
     const section = findHelpHubSection(params.sectionSlug)

@@ -3,7 +3,7 @@ import type { CardProps } from '@globalfishingwatch/ui-components/card'
 import type { DataUpdateContent } from 'features/cms/loaders/data-update.types'
 import type { UseCaseContent } from 'features/cms/loaders/use-case.types'
 import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
-import type { StrapiBaseAttributes } from 'features/cms/strapi.types'
+import type { StrapiBaseAttributes, StrapiResponse } from 'features/cms/strapi.types'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
 import type {
   HelpHubItem,
@@ -82,6 +82,28 @@ const getFirstBodyImage = (body?: string): CardProps['image'] => {
   const alt = markdownUrl ? markdownAlt : HTML_ALT_REGEX.exec(tag)?.[1]
   return { url, alt: alt || undefined }
 }
+
+type CardBodies = { body?: string; subsections?: { body?: string }[] }
+const CARD_KEYS = ['id', 'documentId', 'title', 'role', 'slug', 'publication_date', 'thumbnail']
+const toCardItem = <T extends CardBodies>(item: T): T => {
+  const card: Record<string, unknown> = {}
+  for (const key of CARD_KEYS) {
+    if (key in item) card[key] = item[key as keyof T]
+  }
+  for (const candidate of [item.body, ...(item.subsections?.map(({ body }) => body) ?? [])]) {
+    const match = candidate ? BODY_IMAGE_REGEX.exec(candidate) : null
+    if (match) {
+      card.body = match[0]
+      break
+    }
+  }
+  return card as T
+}
+
+export const toCardResponse = <T extends CardBodies>(
+  response: StrapiResponse<T>
+): StrapiResponse<T> =>
+  response.data ? { ...response, data: response.data.map(toCardItem) } : response
 
 // Card takes { url, alt }; Strapi media carries the text as alternativeText.
 export const getCardImage = ({

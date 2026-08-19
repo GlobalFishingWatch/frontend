@@ -1,3 +1,5 @@
+import { createServerFn } from '@tanstack/react-start'
+
 import { getDataUpdateContent } from 'features/cms/loaders/data-update'
 import { getUseCaseContent } from 'features/cms/loaders/use-case'
 import { getUserGuideContent } from 'features/cms/loaders/user-guide'
@@ -15,8 +17,7 @@ export type HelpHubSectionData = {
 
 export type HelpHubSectionItems = Record<HelpHubSectionId, HelpHubSectionData>
 
-/** The article page needs one full item plus a bodyless index; the landing page needs neither. */
-export type HelpHubFetchOptions = { slug?: string; index?: boolean }
+export type HelpHubFetchOptions = { slug?: string; variant?: 'index' | 'card'; first?: boolean }
 
 export type HelpHubArticleData = {
   index: HelpHubItem[]
@@ -80,7 +81,8 @@ export function loadHelpHubSection(
 export async function loadHelpHubSections(locale: Locale): Promise<HelpHubSectionItems> {
   const entries = await Promise.all(
     HELP_HUB_SECTIONS.map(
-      async (section) => [section.id, await loadHelpHubSection(section.id, locale)] as const
+      async (section) =>
+        [section.id, await loadHelpHubSection(section.id, locale, { variant: 'card' })] as const
     )
   )
   return Object.fromEntries(entries) as HelpHubSectionItems
@@ -91,18 +93,23 @@ export async function loadHelpHubArticle(
   locale: Locale,
   itemSlug?: string
 ): Promise<HelpHubArticleData> {
-  const [index, requested] = await Promise.all([
-    loadHelpHubSection(sectionId, locale, { index: true }),
-    itemSlug ? loadHelpHubSection(sectionId, locale, { slug: itemSlug }) : undefined,
+  const [index, article] = await Promise.all([
+    loadHelpHubSection(sectionId, locale, { variant: 'index' }),
+    loadHelpHubSection(sectionId, locale, itemSlug ? { slug: itemSlug } : { first: true }),
   ])
-  // Section root falls back to the first article, whose slug only exists once the index is in.
-  const firstSlug = index.items[0]?.slug
-  const article =
-    requested ??
-    (firstSlug ? await loadHelpHubSection(sectionId, locale, { slug: firstSlug }) : undefined)
   return {
     index: index.items,
-    item: article?.items[0],
-    error: index.error ?? article?.error,
+    item: article.items[0],
+    error: index.error ?? article.error,
   }
 }
+
+export const getHelpHubSectionsContent = createServerFn({ method: 'GET' })
+  .validator((params: { locale: Locale }) => params)
+  .handler(({ data: { locale } }): Promise<HelpHubSectionItems> => loadHelpHubSections(locale))
+
+export const getHelpHubArticleContent = createServerFn({ method: 'GET' })
+  .validator((params: { sectionId: HelpHubSectionId; locale: Locale; itemSlug?: string }) => params)
+  .handler(({ data: { sectionId, locale, itemSlug } }): Promise<HelpHubArticleData> =>
+    loadHelpHubArticle(sectionId, locale, itemSlug)
+  )
