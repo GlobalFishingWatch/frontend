@@ -14,7 +14,12 @@ import type {
   DatasetConfiguration,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DatasetSubCategory,
+  DatasetTypes,
+  USER_FOURWINGS_VALUE_COLUMN,
+} from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
@@ -42,14 +47,28 @@ import type { FileType } from 'utils/files'
 
 export const MIN_NAME_LENGTH = 3
 
+export const GRIDDED_RESERVED_COLUMNS = ['lat', 'lon', USER_FOURWINGS_VALUE_COLUMN, 'band']
+
+export const getReservedBandName = (bandNames?: (string | number | boolean)[]) =>
+  bandNames?.find((band) => GRIDDED_RESERVED_COLUMNS.includes(String(band).trim().toLowerCase()))
+
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
+  const reservedBandName = getReservedBandName(
+    getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')?.bands
+  )
   const errors = {
     name:
-      datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
+      !datasetMetadata.name?.trim() || datasetMetadata.name.trim().length < MIN_NAME_LENGTH
         ? t((t) => t.datasetUpload.errors.name, {
             min: String(MIN_NAME_LENGTH),
           })
         : null,
+    bands: reservedBandName
+      ? t((t) => t.datasetUpload.errors.reservedBandName, {
+          band: String(reservedBandName),
+          reserved: GRIDDED_RESERVED_COLUMNS.join(', '),
+        })
+      : null,
   }
   const isValid = Object.values(errors).every((error) => !error)
   return { isValid, errors }
@@ -71,6 +90,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
     filters: dataset.filters,
     category: dataset.category,
     configuration: dataset.configuration,
+    unit: dataset.unit,
   }
 }
 
@@ -143,6 +163,32 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
+export const getGriddedDatasetMetadata = ({
+  name,
+  bands,
+}: {
+  name: string
+  bands: string[]
+}): DatasetMetadata => {
+  return {
+    name,
+    public: true,
+    unit: '',
+    category: DatasetCategory.Activity,
+    type: DatasetTypes.UserFourwings,
+    configuration: {
+      userFourwingsV1: {
+        agregationMode: 'AVG',
+        bands,
+      },
+      frontend: {
+        sourceFormat: 'GeoTIFF',
+        geometryType: 'gridded',
+      },
+    },
+  }
+}
+
 export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromFilters(baseMetadata.filters)
@@ -175,12 +221,15 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
 }
 
 export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) => {
+  const { userContextLayers, ...otherFilters } = datasetMetadata.filters ?? {}
+  const userContextLayersClean = getDatasetFiltersClean(userContextLayers)
   const baseDataset: Partial<Dataset> = {
     ...datasetMetadata,
-    unit: 'TBD',
+    unit: datasetMetadata.unit,
     subcategory: DatasetSubCategory.Info,
     filters: {
-      userContextLayers: getDatasetFiltersClean(datasetMetadata.filters?.userContextLayers),
+      ...otherFilters,
+      ...(userContextLayersClean.length > 0 && { userContextLayers: userContextLayersClean }),
     },
     configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
   }

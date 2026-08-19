@@ -44,7 +44,6 @@ import type {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapStaticPickingInfo,
   FourwingsHeatmapStaticPickingObject,
-  FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
@@ -59,7 +58,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   resolution: 'default',
 }
 
-export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
+export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapStaticLayerProps> {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
   declare state: Omit<FourwingsTileLayerState, 'tilesCache'>
@@ -242,34 +241,41 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       maxVisibleValue,
       maxZoom,
       highlightedFeatures,
+      aggregationOperation,
+      group = LayerGroup.HeatmapStatic,
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const { zoom } = this.context.viewport
+    const filters = sublayers.flatMap((sublayer) => sublayer.filter || [])
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
       'temporal-aggregation': true,
+      ...(filters.length && { filters }),
     }
 
     const layers: any[] = [
-      new MVTLayer<FourwingsStaticFeatureProperties>(this.props as any, {
-        id: `static-${resolution}`,
-        data: `${tilesUrl}?${stringify(params)}`,
-        maxZoom,
-        binary: false,
-        pickable: true,
-        loaders: [GFWMVTLoader],
-        zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
-        onTileLoad: this._onTileLoad,
-        onTileError: this._onLayerError,
-        onViewportLoad: this._onViewportLoad,
-        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
-        getFillColor: this.getFillColor,
-        stroked: false,
-        updateTriggers: {
-          getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
-        },
-      }),
+      new MVTLayer<FourwingsStaticFeatureProperties>(
+        this.props as any,
+        this.getSubLayerProps({
+          id: `static-${resolution}-${aggregationOperation}`,
+          data: `${tilesUrl}?${stringify(params)}`,
+          maxZoom,
+          binary: false,
+          pickable: true,
+          loaders: [GFWMVTLoader],
+          zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
+          onTileLoad: this._onTileLoad,
+          onTileError: this._onLayerError,
+          onViewportLoad: this._onViewportLoad,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(group, params),
+          getFillColor: this.getFillColor,
+          stroked: false,
+          updateTriggers: {
+            getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
+          },
+        })
+      ),
     ]
 
     const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)

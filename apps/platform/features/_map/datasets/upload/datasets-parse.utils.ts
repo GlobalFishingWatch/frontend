@@ -8,15 +8,20 @@ import {
   DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import {
-  fixTextEncoding,
   getFilterIdClean,
-  kmlToGeoJSON,
   listToTrackSegments,
   pointsGeojsonToNormalizedGeojson,
   pointsListToGeojson,
   segmentsToGeoJSON,
-  shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
+import type { GeotiffError } from '@globalfishingwatch/data-transforms/files'
+import {
+  fixTextEncoding,
+  GEOTIFF_ERRORS,
+  getGeotiffBands,
+  kmlToGeoJSON,
+  shpToGeoJSON,
+} from '@globalfishingwatch/data-transforms/files'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -32,9 +37,22 @@ import { getFileType, readBlobAs } from 'utils/files'
 // }
 
 export type DataList = Record<string, any>[]
-export type DataParsed = FeatureCollection | DataList
+/** Band names — the raster itself is uploaded raw and parsed by the API */
+export type GriddedData = string[]
+export type DatasetParsedByType = {
+  gridded: GriddedData
+  polygons: FeatureCollection
+  tracks: FeatureCollection | DataList
+  points: FeatureCollection | DataList
+}
+export type DataParsed = DatasetParsedByType[DatasetGeometryTypesSupported]
 
 const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
+
+// getGeotiffBands throws domain codes, on purpose — the i18n keys belong to the app
+const GEOTIFF_ERROR_KEYS: Record<GeotiffError, string> = {
+  [GEOTIFF_ERRORS.InvalidData]: 'datasetUpload.errors.geotiff.invalidData',
+}
 
 const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
   const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
@@ -103,19 +121,20 @@ const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
   return validateFeatures(geoJSON, type)
 }
 
-export async function getDatasetParsed(
+export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
   file: File,
-  type: DatasetGeometryTypesSupported,
+  type: T,
   fileTypeResult?: FileTypeResult
-): Promise<DataParsed> {
+): Promise<DatasetParsedByType[T]> {
   const { fileType, zipContent } = fileTypeResult || (await getFileType(file))
   if (!fileType) {
     throw new Error('File type not supported')
   }
   try {
+    let parsed: DataParsed
     if (fileType === 'Shapefile') {
       const fileData = await readBlobAs(file, 'arrayBuffer')
-      return shpToGeoJSON(fileData, type)
+      parsed = await shpToGeoJSON(fileData, type)
     } else if (fileType === 'CSV') {
       let fileText: string | undefined
       try {
@@ -142,17 +161,25 @@ export async function getDatasetParsed(
           return getFilterIdClean(fixTextEncoding(header)) as string
         },
       })
-      return data as DataList
+      parsed = data as DataList
     } else if (fileType === 'KML') {
       const geoJson = await kmlToGeoJSON(file, type)
-      return validateFeatures(geoJson, type)
+      parsed = validateFeatures(geoJson, type)
+    } else if (fileType === 'GeoTIFF') {
+      parsed = await getGeotiffBands(file)
+    } else {
+      const fileText = await readBlobAs(file, 'text')
+      parsed = validatedGeoJSON(fileText, type)
     }
-    const fileText = await readBlobAs(file, 'text')
-    return validatedGeoJSON(fileText, type)
+    return parsed as DatasetParsedByType[T]
   } catch (e: any) {
     console.error(e)
     if (e.message === NOT_VALID_GEOJSON_FEATURES_ERROR) {
       throw new Error('datasetUpload.errors.geoJSON.noValidFeatures', { cause: e })
+    }
+    const geotiffErrorKey = GEOTIFF_ERROR_KEYS[e.message as GeotiffError]
+    if (geotiffErrorKey) {
+      throw new Error(geotiffErrorKey, { cause: e })
     }
     throw new Error('datasetUpload.errors.default', { cause: e })
   }

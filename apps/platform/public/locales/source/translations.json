@@ -408,6 +408,8 @@
     "requiredFields": "Required fields {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Datasets",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -434,6 +436,9 @@
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {
         "invalidData": "KML data does not have a valid geometry type",
@@ -442,6 +447,7 @@
         "noPolygonData": "No polygon data found in the KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Shapefile data does not have a valid geometry type",
         "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet",
@@ -453,6 +459,12 @@
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "bandName": "Band {{band}} name",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -824,6 +836,7 @@
     "toggleVisibility": "Toggle layer visibility",
     "type": "Type",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",

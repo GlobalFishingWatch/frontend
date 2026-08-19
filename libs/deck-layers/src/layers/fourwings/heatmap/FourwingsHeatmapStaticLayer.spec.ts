@@ -97,6 +97,24 @@ describe('FourwingsHeatmapStaticLayer', () => {
     })
   })
 
+  describe('MVT sublayer id', () => {
+    const renderMVTId = (props: Record<string, unknown>) => {
+      const layer = makeLayer(props)
+      layer.context = { viewport: { zoom: 4 } } as any
+      return (layer.renderLayers() as any[])[0].id
+    }
+
+    it('is namespaced so two static layers never collide', () => {
+      expect(renderMVTId({ id: 'layer-a' })).not.toBe(renderMVTId({ id: 'layer-b' }))
+    })
+
+    it('changes with the aggregation operation so the tileset reloads', () => {
+      expect(renderMVTId({ aggregationOperation: 'sum' })).not.toBe(
+        renderMVTId({ aggregationOperation: 'avg' })
+      )
+    })
+  })
+
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
     expect(layer.cacheHash).toBe('teal|false')

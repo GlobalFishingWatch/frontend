@@ -188,7 +188,7 @@ function NewPolygonDataset({
         />
       )}
       <InputText
-        value={datasetMetadata?.name}
+        value={datasetMetadata?.name ?? ''}
         label={t((t) => t.datasetUpload.datasetName)}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}

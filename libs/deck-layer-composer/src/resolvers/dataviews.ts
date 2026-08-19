@@ -2,6 +2,7 @@ import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
 import type { ApiEvent, Dataset, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import {
+  DatasetStatus,
   DatasetTypes,
   DataviewCategory,
   DataviewType,
@@ -66,7 +67,8 @@ export const getDataviewAvailableIntervals = (
         (sublayer) => sublayer.datasets || []
       ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
-    (dataset) => dataset.type === DatasetTypes.Fourwings
+    (dataset) =>
+      dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings
   )
   const dataviewInterval = dataview.config?.interval
   const dataviewIntervals = dataview.config?.intervals
@@ -100,7 +102,6 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   const { config, datasetsConfig } = dataview
 
   if (!dataview?.datasets?.length) {
-    console.warn('No datasets found on dataview:', dataview)
     return []
   }
 
@@ -108,17 +109,23 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     return []
   }
 
-  const activeDatasets =
+  const activeDatasets = (
     dataview.category === DataviewCategory.Environment ||
     dataview.category === DataviewCategory.User
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
+  ).filter((dataset) => dataset.status === DatasetStatus.Done)
 
-  const maxZoomLevels = activeDatasets?.flatMap((dataset) => {
-    const datasetConfiguration = getDatasetConfiguration(dataset, 'fourwingsV1')
-    return datasetConfiguration?.maxZoom !== undefined
-      ? (datasetConfiguration?.maxZoom as number)
-      : []
+  if (!activeDatasets?.length) {
+    console.warn('No active datasets found on dataview:', dataview)
+    return []
+  }
+
+  const maxZoomLevels = activeDatasets.flatMap((dataset) => {
+    const maxZoom =
+      getDatasetConfiguration(dataset, 'fourwingsV1')?.maxZoom ??
+      getDatasetConfiguration(dataset, 'userFourwingsV1')?.maxZoom
+    return maxZoom !== undefined ? (maxZoom as number) : []
   })
   const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
@@ -137,7 +144,8 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     maxZoom,
   }
 
-  return sublayer
+  // always an array: the early returns above hand back [], and the only caller flatMaps
+  return [sublayer]
 }
 
 export function getFourwingsDataviewsResolved(
@@ -177,6 +185,7 @@ export function getFourwingsDataviewsResolved(
         maxVisibleValue: dataviewsToMerge[0].config?.maxVisibleValue,
         colorRampWhiteEnd,
         color: dataviewsToMerge[0].config?.color,
+        group: dataviewsToMerge[0].config?.group,
         visualizationMode,
         comparisonMode,
       },
@@ -187,10 +196,16 @@ export function getFourwingsDataviewsResolved(
   const comparisonDataviews = dataviewsArray.filter(isComparisonDataview)
 
   if (fourwingsDataviews.length) {
-    dataviewsFiltered.push(getFourwingsDataviewsMerged(fourwingsDataviews))
+    const merged = getFourwingsDataviewsMerged(fourwingsDataviews)
+    if (merged.config?.sublayers?.length) {
+      dataviewsFiltered.push(merged)
+    }
   }
   if (comparisonDataviews.length) {
-    dataviewsFiltered.push(getFourwingsDataviewsMerged(comparisonDataviews))
+    const merged = getFourwingsDataviewsMerged(comparisonDataviews)
+    if (merged.config?.sublayers?.length) {
+      dataviewsFiltered.push(merged)
+    }
   }
 
   // New sublayers as auxiliar activity layers
@@ -525,7 +540,9 @@ export function getDataviewsResolved(
     )
   })
 
-  const userHeatmapDataviewsParsed = getFourwingsDataviewsResolved(userHeatmapDataviews)
+  const userHeatmapDataviewsParsed = userHeatmapDataviews.flatMap((d) =>
+    getFourwingsDataviewsResolved(d)
+  )
   const vesselTrackDataviewsParsed = uniqBy<UrlDataviewInstance, string>(
     vesselTrackDataviews.flatMap((d) => ({
       ...d,

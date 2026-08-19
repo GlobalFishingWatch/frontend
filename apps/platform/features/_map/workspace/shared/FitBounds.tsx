@@ -29,6 +29,8 @@ type FitBoundsProps = {
   className?: string
   disabled?: boolean
   dataviewId?: string
+  bbox?: Bbox
+  tooltip?: string
 }
 
 const useLayerFitBounds = () => {
@@ -42,11 +44,17 @@ const useLayerFitBounds = () => {
       layer,
       infoResource,
       dataviewId,
+      bbox,
     }: {
       layer: VesselLayer | UserTracksLayer | UserPointsTileLayer | UserContextTileLayer
       infoResource?: Resource<IdentityVessel>
       dataviewId?: string
+      bbox?: Bbox
     }) => {
+      if (bbox) {
+        fitBounds(bbox, { padding: 60, fitZoom: true, flyTo: true, maxZoom: 8 })
+        return
+      }
       if (layer && start && end) {
         if (layer instanceof UserPointsTileLayer || layer instanceof UserContextTileLayer) {
           const startMs = getUTCDateTime(start).toMillis()
@@ -189,6 +197,8 @@ const FitBounds = ({
   infoResource,
   disabled,
   dataviewId,
+  bbox,
+  tooltip,
 }: FitBoundsProps) => {
   const { t } = useTranslation()
   const userLayerFitBounds = useLayerFitBounds()
@@ -196,21 +206,23 @@ const FitBounds = ({
 
   const onFitBoundsClick = useCallback(async () => {
     setLoading(true)
-    await userLayerFitBounds({ layer, infoResource, dataviewId })
+    await userLayerFitBounds({ layer, infoResource, dataviewId, bbox })
     setLoading(false)
-  }, [userLayerFitBounds, layer, infoResource, dataviewId])
+  }, [userLayerFitBounds, layer, infoResource, dataviewId, bbox])
 
-  let tooltip: string
+  let layerTooltip: string
   if (hasError) {
-    tooltip = t((t) => t.errors.trackLoading)
+    layerTooltip = t((t) => t.errors.trackLoading)
+  } else if (tooltip) {
+    layerTooltip = tooltip
   } else if (layer instanceof VesselLayer) {
-    tooltip = t((t) => t.layer.vessel_fit_bounds)
+    layerTooltip = t((t) => t.layer.vessel_fit_bounds)
   } else if (layer instanceof UserContextTileLayer) {
-    tooltip = t((t) => t.layer.user_context_fit_bounds)
+    layerTooltip = t((t) => t.layer.user_context_fit_bounds)
   } else if (layer instanceof UserPointsTileLayer) {
-    tooltip = t((t) => t.layer.user_points_fit_bounds)
+    layerTooltip = t((t) => t.layer.user_points_fit_bounds)
   } else {
-    tooltip = t((t) => t.layer.user_track_fit_bounds)
+    layerTooltip = t((t) => t.layer.user_track_fit_bounds)
   }
   return (
     <IconButton
@@ -220,7 +232,7 @@ const FitBounds = ({
       type={hasError ? 'warning' : 'default'}
       loading={loading}
       className={className}
-      tooltip={tooltip}
+      tooltip={layerTooltip}
       onClick={onFitBoundsClick}
       tooltipPlacement="top"
     />
