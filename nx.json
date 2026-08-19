@@ -84,6 +84,30 @@
         "ciTargetName": "test-ci"
       },
       "include": ["apps/platform-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "test:smoke",
+        "ciTargetName": "test-ci"
+      },
+      "include": ["apps/platform-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "test:extended",
+        "ciTargetName": "test-ci"
+      },
+      "include": ["apps/platform-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/playwright/plugin",
+      "options": {
+        "targetName": "test:regression",
+        "ciTargetName": "test-ci"
+      },
+      "include": ["apps/platform-e2e/**/*"]
     }
   ],
   "targetDefaults": {

@@ -1,6 +1,6 @@
-# Fishing Map E2E Tests
+# Platform E2E Tests
 
-This project contains end-to-end tests for the Fishing Map application using [Playwright](https://playwright.dev/) and [Nx](https://nx.dev/).
+This project contains end-to-end tests for the Platform application using [Playwright](https://playwright.dev/) and [Nx](https://nx.dev/).
 
 ## Prerequisites
 
@@ -39,6 +39,34 @@ Runs tests with visible browser windows. Useful for debugging visual issues.
 
 ```bash
 nx test:local platform-e2e -c headed
+```
+
+### Running by Tag
+
+Tests are tagged (see `src/tags.ts`) so subsets can be run via dedicated targets. Screenshot comparison specs are excluded from all three.
+
+#### `test:smoke` - Smoke Suite
+
+Runs `@smoke`-tagged tests on Chromium only. Fastest signal, meant for quick sanity checks.
+
+```bash
+pnpm nx run platform-e2e:test:smoke
+```
+
+#### `test:extended` - Extended Suite
+
+Runs `@smoke` and `@extended`-tagged tests across Chromium, Firefox, and WebKit.
+
+```bash
+pnpm nx run platform-e2e:test:extended
+```
+
+#### `test:regression` - Full Regression Suite
+
+Runs all tests (regardless of tag) across Chromium, Firefox, and WebKit.
+
+```bash
+pnpm nx run platform-e2e:test:regression
 ```
 
 ### Browser Selection

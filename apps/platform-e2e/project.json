@@ -32,6 +32,26 @@
         }
       }
     },
+    "test:smoke": {
+      "options": {
+        "grep": "@smoke",
+        "grep-invert": "Screenshot comparison",
+        "project": ["chromium"]
+      }
+    },
+    "test:extended": {
+      "options": {
+        "grep": "@smoke|@extended",
+        "grep-invert": "Screenshot comparison",
+        "project": ["chromium", "firefox", "webkit"]
+      }
+    },
+    "test:regression": {
+      "options": {
+        "grep-invert": "Screenshot comparison",
+        "project": ["chromium", "firefox", "webkit"]
+      }
+    },
     "screenshots": {
       "cache": false,
       "options": {
