@@ -11,7 +11,7 @@ import {
 } from 'features/help/helpHub.loaders'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
-import { buildCanonicalUrl, getRouteHead } from 'router/router.meta'
+import { getCanonicalLink, getRouteHead } from 'router/router.meta'
 
 /**
  * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The loader fetches
@@ -52,12 +52,9 @@ export const Route = createFileRoute(
         description: item?.description ?? description,
       }),
       links: [
-        {
-          rel: 'canonical',
-          href: buildCanonicalUrl(
-            `/help-and-resources/${section.slug}${params.itemSlug ? `/${params.itemSlug}` : ''}`
-          ),
-        },
+        getCanonicalLink(
+          `/help-and-resources/${section.slug}${params.itemSlug ? `/${params.itemSlug}` : ''}`
+        ),
       ],
     }
   },
