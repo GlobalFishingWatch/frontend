@@ -43,30 +43,41 @@ nx test:local platform-e2e -c headed
 
 ### Running by Tag
 
-Tests are tagged (see `src/tags.ts`) so subsets can be run via dedicated targets. Screenshot comparison specs are excluded from all three.
+Tests are tagged (see `src/tags.ts`). Screenshot comparison specs are excluded from `test` / `test:local` (including these configurations). Untagged specs (Map, Report, Vessel, Workspace) only run in the default and `regression` suites.
 
-#### `test:smoke` - Smoke Suite
+Use `-c smoke|extended|regression` on `test` (CI / already-running server) or `test:local` (starts the platform server). The colon form is equivalent: `nx run platform-e2e:test:smoke` is `project:target:configuration`. Infix `nx test:smoke platform-e2e` is not valid — that looks for a target named `test:smoke`.
+
+#### Smoke (`-c smoke`)
 
 Runs `@smoke`-tagged tests on Chromium only. Fastest signal, meant for quick sanity checks.
 
 ```bash
+pnpm nx test platform-e2e -c smoke
 pnpm nx run platform-e2e:test:smoke
+pnpm nx test:local platform-e2e -c smoke
+pnpm nx run platform-e2e:test:local:smoke
 ```
 
-#### `test:extended` - Extended Suite
+#### Extended (`-c extended`)
 
-Runs `@smoke` and `@extended`-tagged tests across Chromium, Firefox, and WebKit.
+Runs `@smoke` and `@extended`-tagged tests across Chromium, Firefox, and WebKit (`PLAYWRIGHT_BROWSER=all`, ignoring `.env`).
 
 ```bash
+pnpm nx test platform-e2e -c extended
 pnpm nx run platform-e2e:test:extended
+pnpm nx test:local platform-e2e -c extended
+pnpm nx run platform-e2e:test:local:extended
 ```
 
-#### `test:regression` - Full Regression Suite
+#### Regression (`-c regression`)
 
 Runs all tests (regardless of tag) across Chromium, Firefox, and WebKit.
 
 ```bash
+pnpm nx test platform-e2e -c regression
 pnpm nx run platform-e2e:test:regression
+pnpm nx test:local platform-e2e -c regression
+pnpm nx run platform-e2e:test:local:regression
 ```
 
 ### Browser Selection
