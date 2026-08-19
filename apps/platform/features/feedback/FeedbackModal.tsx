@@ -27,7 +27,6 @@ import { createReportThunk } from 'features/_reports/reports.slice'
 import { selectUserGroupsClean } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
@@ -259,7 +258,6 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
-      parentSelector={getModalParent}
     >
       <div className={styles.container} data-testid="feedback-modal">
         <div className={styles.form}>

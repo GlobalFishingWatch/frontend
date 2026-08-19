@@ -44,7 +44,6 @@ export function ProjectsList() {
       </Button>
       <Modal
         contentClassName={styles.editModal}
-        appSelector={'app'}
         title="Create new project"
         isOpen={createOpen}
         shouldCloseOnEsc

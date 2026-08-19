@@ -24,7 +24,6 @@ import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDownloadTrackModalOpen, setModalOpen } from 'features/modals/modals.slice'
-import { getModalParent } from 'features/modals/modals.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -94,7 +93,6 @@ function DownloadTrackModal() {
       isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
-      parentSelector={getModalParent}
     >
       <div className={styles.container}>
         <div className={styles.info}>

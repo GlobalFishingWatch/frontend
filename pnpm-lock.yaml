@@ -351,9 +351,6 @@ importers:
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.18)(react@19.2.8)(supports-color@7.2.0)
-      react-modal:
-        specifier: 3.16.3
-        version: 3.16.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-query:
         specifier: 3.39.3
         version: 3.39.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -574,9 +571,6 @@ importers:
       '@types/react-dom':
         specifier: 19.2.4
         version: 19.2.4(@types/react@19.2.18)
-      '@types/react-modal':
-        specifier: 3.16.3
-        version: 3.16.3
       '@types/react-table':
         specifier: 7.7.20
         version: 7.7.20
@@ -1489,9 +1483,6 @@ importers:
       react-dom:
         specifier: 19.x
         version: 19.2.8(react@19.2.8)
-      react-modal:
-        specifier: 3.x
-        version: 3.16.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       suncalc:
         specifier: 2.0.1
         version: 2.0.1
@@ -6298,9 +6289,6 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
 
-  '@types/react-modal@3.16.3':
-    resolution: {integrity: sha512-xXuGavyEGaFQDgBv4UVm8/ZsG+qxeQ7f77yNrW3n+1J6XAstUy5rYHeIHPh1KzsGc6IkCIdu6lQ2xWzu1jBTLg==}
-
   '@types/react-table@7.7.20':
     resolution: {integrity: sha512-ahMp4pmjVlnExxNwxyaDrFgmKxSbPwU23sGQw2gJK4EhCvnvmib2s/O/+y1dfV57dXOwpr2plfyBol+vEHbi2w==}
 
@@ -8673,9 +8661,6 @@ packages:
   execa@9.6.1:
     resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
     engines: {node: ^18.19.0 || >=20.5.0}
-
-  exenv@1.2.2:
-    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
 
   exif-parser@0.1.12:
     resolution: {integrity: sha512-c2bQfLNbMzLPmzQuOr8fy0csy84WmwnER81W88DzTp9CYNPJ6yzOj2EZAh9pywYpqHnshVLHQJ8WzldAyfY+Iw==}
@@ -11410,9 +11395,6 @@ packages:
   react-is@19.2.8:
     resolution: {integrity: sha512-s5un28nYxKJw5gvUHyW5PCC28CvBqLu9r3cWgzHT4Vo/5fqqkFcdRYsGcKf50WMPpjjFZS5d76fn3YCo2njKwQ==}
 
-  react-lifecycles-compat@3.0.4:
-    resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
-
   react-map-gl@8.1.2:
     resolution: {integrity: sha512-7jBqPoyO30M9GR+qd8utPipWGmpuCPOIJA/ePjR6LjQEZoedTf1hSN1SDj2jj6or8NQxe+ztEi91Bwbs5C+f4A==}
     peerDependencies:
@@ -11431,12 +11413,6 @@ packages:
     peerDependencies:
       '@types/react': '>=18'
       react: '>=18'
-
-  react-modal@3.16.3:
-    resolution: {integrity: sha512-yCYRJB5YkeQDQlTt17WGAgFJ7jr2QYcWa1SHqZ3PluDmnKJ/7+tVU+E6uKyZ0nODaeEj+xCpK4LcSnKXLMC0Nw==}
-    peerDependencies:
-      react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
-      react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
 
   react-property@2.0.2:
     resolution: {integrity: sha512-+PbtI3VuDV0l6CleQMsx2gtK0JZbZKbpdu5ynr+lbsuvtmgbNcS3VM0tuY2QjFNOcWxvXeHjDpy42RO+4U2rug==}
@@ -13200,9 +13176,6 @@ packages:
 
   warning@3.0.0:
     resolution: {integrity: sha512-jMBt6pUrKn5I+OGgtQ4YZLdhIeJmObddh6CsibPxyQ5yPZm1XExSyzC1LCNX7BzhxWgiHmizBWJTHJIjMjTQYQ==}
-
-  warning@4.0.3:
-    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
 
   watchpack@2.5.2:
     resolution: {integrity: sha512-6i/00NBjP4yGPs+caKSyRfpTF/8Torsu0MOW3mMzIbhgISFder8i7xbqgHlLMwJrdiN8ndBV3UA1/AfzPSr+jg==}
@@ -20494,10 +20467,6 @@ snapshots:
     dependencies:
       '@types/react': 19.2.18
 
-  '@types/react-modal@3.16.3':
-    dependencies:
-      '@types/react': 19.2.18
-
   '@types/react-table@7.7.20':
     dependencies:
       '@types/react': 19.2.18
@@ -23561,8 +23530,6 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 4.0.0
       yoctocolors: 2.2.0
-
-  exenv@1.2.2: {}
 
   exif-parser@0.1.12: {}
 
@@ -27024,8 +26991,6 @@ snapshots:
 
   react-is@19.2.8: {}
 
-  react-lifecycles-compat@3.0.4: {}
-
   react-map-gl@8.1.2(maplibre-gl@5.24.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       '@vis.gl/react-mapbox': 8.1.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -27052,15 +27017,6 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  react-modal@3.16.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
-    dependencies:
-      exenv: 1.2.2
-      prop-types: 15.8.1
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-      react-lifecycles-compat: 3.0.4
-      warning: 4.0.3
 
   react-property@2.0.2: {}
 
@@ -29058,10 +29014,6 @@ snapshots:
       xml-name-validator: 5.0.0
 
   warning@3.0.0:
-    dependencies:
-      loose-envify: 1.4.0
-
-  warning@4.0.3:
     dependencies:
       loose-envify: 1.4.0
 

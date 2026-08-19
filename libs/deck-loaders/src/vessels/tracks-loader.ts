@@ -7,24 +7,26 @@ import type { VesselTrackLoaderParams } from './lib/parse-tracks'
 import { parseTrack } from './lib/parse-tracks'
 import type { VesselTrackData } from './lib/types'
 
+export const VESSEL_TRACKS_LOADER_ID = 'vessel-tracks'
+
 /**
  * Worker loader for the Vessel Track DECKGL format
  */
 
 export type VesselTrackLoaderOptions = StrictLoaderOptions & {
-  'vessel-tracks'?: VesselTrackLoaderParams & {
+  [VESSEL_TRACKS_LOADER_ID]?: VesselTrackLoaderParams & {
     workerUrl?: string
   }
 }
 
 const defaultOptions: VesselTrackLoaderOptions = {
-  'vessel-tracks': {
+  [VESSEL_TRACKS_LOADER_ID]: {
     workerUrl: `${PATH_BASENAME}workers/vessel-tracks-worker.js`,
   },
 }
 
 export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLoaderOptions> = {
-  id: 'vessel-tracks',
+  id: VESSEL_TRACKS_LOADER_ID,
   name: 'gfw-vessel-tracks',
   module: 'tracks',
   category: 'geometry',
@@ -42,8 +44,8 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
 export const VesselTrackLoader: LoaderWithParser<VesselTrackData, any, VesselTrackLoaderOptions> = {
   ...VesselTrackWorkerLoader,
   parse: async (arrayBuffer, options?: VesselTrackLoaderOptions) =>
-    parseTrack(arrayBuffer, options?.['vessel-tracks']),
+    parseTrack(arrayBuffer, options?.[VESSEL_TRACKS_LOADER_ID]),
   parseSync: (arrayBuffer, options?: VesselTrackLoaderOptions) =>
-    parseTrack(arrayBuffer, options?.['vessel-tracks']),
+    parseTrack(arrayBuffer, options?.[VESSEL_TRACKS_LOADER_ID]),
   binary: true,
 }

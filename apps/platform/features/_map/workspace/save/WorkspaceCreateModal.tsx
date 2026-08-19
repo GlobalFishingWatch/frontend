@@ -29,7 +29,6 @@ import {
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { MAP, REPORT, WORKSPACE } from 'router/routes'
 import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
@@ -246,7 +245,6 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
       className={styles.modalContentWrapper}
       contentClassName={styles.modal}
       onClose={onClose}
-      parentSelector={getModalParent}
     >
       <form onSubmit={handleSubmit}>
         <div className={styles.row}>

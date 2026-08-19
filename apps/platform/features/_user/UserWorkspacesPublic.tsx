@@ -18,7 +18,6 @@ import {
   selectWorkspaceListStatusId,
 } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'
@@ -80,7 +79,6 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
           shouldCloseOnEsc
           contentClassName={styles.modal}
           onClose={onClose}
-          parentSelector={getModalParent}
         >
           <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
         </Modal>

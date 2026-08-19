@@ -37,7 +37,6 @@ import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
 
-import { getModalParent } from './modals.utils'
 
 import styles from './Modals.module.css'
 
@@ -135,7 +134,6 @@ const AppModals = () => {
           onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
           contentClassName={styles.layerLibraryModal}
           size="fullscreen"
-          parentSelector={getModalParent}
           shouldCloseOnEsc
         >
           <Suspense fallback={null}>
@@ -155,7 +153,6 @@ const AppModals = () => {
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
           contentClassName={styles.debugMenuModal}
-          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <DebugMenu />
@@ -173,7 +170,6 @@ const AppModals = () => {
           isOpen
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
-          parentSelector={getModalParent}
         >
           <Suspense fallback={null}>
             <EditorMenu />
@@ -192,7 +188,6 @@ const AppModals = () => {
             isOpen={bigqueryActive}
             onClose={dispatchBigQueryMenu}
             contentClassName={styles.bqModal}
-            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <BigQueryModal />
@@ -208,7 +203,6 @@ const AppModals = () => {
             isOpen={turningTidesActive}
             onClose={dispatchTurningTidesMenu}
             contentClassName={styles.bqModal}
-            parentSelector={getModalParent}
           >
             <Suspense fallback={null}>
               <TurningTidesModal />

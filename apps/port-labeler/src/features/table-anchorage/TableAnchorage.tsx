@@ -149,7 +149,6 @@ function TableAnchorage() {
       )}
 
       <Modal
-        appSelector="__next"
         title={'Change anchorage country'}
         isOpen={!!anchorageChangeCountryOpen}
         onClose={() => setAnchorageChangeCountryOpen(null)}

@@ -42,7 +42,6 @@ import { selectIsWorkspaceRefreshing } from 'features/_map/workspace/workspace.s
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { getModalParent } from 'features/modals/modals.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
@@ -348,7 +347,6 @@ function LayerPanel({
                     isOpen={modalDataWarningOpen}
                     onClose={onDataWarningModalClose}
                     contentClassName={styles.modalContent}
-                    parentSelector={getModalParent}
                   >
                     {htmlSafeParse(t((t: any) => t.dataview[dataview?.id].dataWarningDetail))}
                   </Modal>

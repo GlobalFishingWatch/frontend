@@ -23,7 +23,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
-import { getModalParent } from 'features/modals/modals.utils'
 import { selectLocationType } from 'router/routes.selectors'
 
 import {
@@ -192,10 +191,10 @@ function NewDataset() {
         [styles.fullheight]: isGuestUser,
       })}
       header={style !== 'transparent'}
+      ariaLabel={isDatasetEdit ? t((t) => t.dataset.edit) : t((t) => t.dataset.uploadNew)}
       className={style === 'transparent' ? styles.transparentOverlay : undefined}
       size={style === 'transparent' ? 'fullscreen' : 'default'}
       onClose={onClose}
-      parentSelector={getModalParent}
     >
       {error ? (
         <div className={cx(styles.errorMsgContainer, styles.errorMsg)}>{error}</div>

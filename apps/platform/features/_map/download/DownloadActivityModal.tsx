@@ -22,7 +22,6 @@ import {
 import DownloadActivityEnvironment from 'features/_map/download/DownloadActivityEnvironment'
 import DownloadSurvey, { DISABLE_DOWNLOAD_SURVEY } from 'features/_map/download/DownloadSurvey'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getModalParent } from 'features/modals/modals.utils'
 
 import { HeatmapDownloadTab } from './downloadActivity.config'
 import DownloadActivityByVessel from './DownloadActivityByVessel'
@@ -101,7 +100,6 @@ function DownloadActivityModal() {
       isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
-      parentSelector={getModalParent}
     >
       {showSurvey ? (
         <DownloadSurvey onClose={onClose} />
