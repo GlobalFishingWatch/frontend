@@ -17,13 +17,14 @@ const useVesselProfileLayer = () => {
 
 const useVesselProfileEvents = () => {
   const vesselLayer = useVesselProfileLayer()
-  const dataLoaded = vesselLayer?.instance?.getVesselEventsLayersLoaded()
+  const eventLayersCount = vesselLayer?.instance?.getEventLayers().length ?? 0
+  const dataLoaded = eventLayersCount > 0 && vesselLayer?.instance?.getVesselEventsLayersLoaded()
   return useMemo(() => {
     if (dataLoaded) {
       return vesselLayer?.instance?.getVesselEventsData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataLoaded])
+  }, [dataLoaded, eventLayersCount])
 }
 
 export const useVesselProfileEventsLoading = () => {
