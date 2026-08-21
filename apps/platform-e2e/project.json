@@ -9,6 +9,23 @@
     "test": {
       "options": {
         "grep": "^(?!.*Screenshot comparison).*"
+      },
+      "configurations": {
+        "smoke": {
+          "grep": "@smoke",
+          "project": "chromium"
+        },
+        "extended": {
+          "grep": "@smoke|@extended",
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        },
+        "regression": {
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        }
       }
     },
     "test:local": {
@@ -29,27 +46,22 @@
         },
         "headed": {
           "headed": true
+        },
+        "smoke": {
+          "grep": "@smoke",
+          "project": "chromium"
+        },
+        "extended": {
+          "grep": "@smoke|@extended",
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        },
+        "regression": {
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
         }
-      }
-    },
-    "test:smoke": {
-      "options": {
-        "grep": "@smoke",
-        "grep-invert": "Screenshot comparison",
-        "project": ["chromium"]
-      }
-    },
-    "test:extended": {
-      "options": {
-        "grep": "@smoke|@extended",
-        "grep-invert": "Screenshot comparison",
-        "project": ["chromium", "firefox", "webkit"]
-      }
-    },
-    "test:regression": {
-      "options": {
-        "grep-invert": "Screenshot comparison",
-        "project": ["chromium", "firefox", "webkit"]
       }
     },
     "screenshots": {
