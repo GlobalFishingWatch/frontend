@@ -22,9 +22,12 @@
  * 3. Generate a JSON mapping file with icon coordinates
  */
 
-const fs = require('fs')
-const path = require('path')
-const sharp = require('sharp')
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import sharp from 'sharp'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const ERROR_CODES = {
   INVALID_ARGS: 1,

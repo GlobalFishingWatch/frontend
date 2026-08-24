@@ -10,7 +10,7 @@ export function getEnv(key: string, fallback?: string): string | undefined {
   return fallback
 }
 
-const DEFAULT_PATH_BASENAME = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/map/'
+const DEFAULT_PATH_BASENAME = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/platform/'
 export const PATH_BASENAME = DEFAULT_PATH_BASENAME.endsWith('/')
   ? DEFAULT_PATH_BASENAME
   : DEFAULT_PATH_BASENAME + '/'

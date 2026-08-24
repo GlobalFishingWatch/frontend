@@ -1,33 +1,20 @@
-import type { MouseEventHandler } from 'react';
-import { Fragment, useCallback, useEffect,useMemo, useState } from 'react'
+import type { MouseEventHandler } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import type { FieldValidationError } from 'lib/types'
 import _ from 'lodash'
 
-import type {
-  UserApiAdditionalInformation} from '@globalfishingwatch/api-types';
-import {
-  USER_APPLICATION_INTENDED_USES,
-} from '@globalfishingwatch/api-types'
-import type {
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Button,
-  Checkbox,
-  InputText,
-  Select,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import type { UserApiAdditionalInformation } from '@globalfishingwatch/api-types'
+import { USER_APPLICATION_INTENDED_USES } from '@globalfishingwatch/api-types'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, Checkbox, InputText, Select, Spinner } from '@globalfishingwatch/ui-components'
 
 import useUser, { useUpdateUserAdditionalInformation } from 'features/user/user'
 
 import styles from './user-additional-fields.module.css'
 
-/* eslint-disable-next-line */
-export interface UserAdditionalFieldsProps {}
-
-export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
+export function UserAdditionalFields() {
   const { data: user, isLoading } = useUser()
-  const { mutate, isLoading: isUpdating, isSuccess, isError } = useUpdateUserAdditionalInformation()
+  const { mutate, isLoading: isUpdating, isError } = useUpdateUserAdditionalInformation()
 
   const defaultUserAdditionalInformation: UserApiAdditionalInformation = {
     apiTerms: user?.apiTerms,
@@ -41,7 +28,7 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     useState<UserApiAdditionalInformation | null>(defaultUserAdditionalInformation)
 
   const [termsOfUseOpened, setTermsOfUseOpened] = useState(false)
-  const onTermsOfUseClick: MouseEventHandler = useCallback((event) => {
+  const onTermsOfUseClick: MouseEventHandler = useCallback(() => {
     setTermsOfUseOpened(true)
   }, [])
   const error = useMemo(() => {
@@ -95,12 +82,9 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
     },
     [setUserAdditionalInformation, userAdditionalInformation]
   )
-  const onRemoveIntendedUse = useCallback(
-    (option: SelectOption) => {
+  const onRemoveIntendedUse = useCallback(() => {
       setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
-    },
-    [setUserAdditionalInformation, userAdditionalInformation]
-  )
+    }, [setUserAdditionalInformation, userAdditionalInformation])
 
   const termsAccepted = useMemo(
     () => !!userAdditionalInformation?.apiTerms,
@@ -223,8 +207,8 @@ export function UserAdditionalFields(props: UserAdditionalFieldsProps) {
             valid
               ? ''
               : !!selectedIntendedUse && !!error.intendedUse
-              ? error.intendedUse
-              : 'Complete the required fields (*) and accept the terms to Continue'
+                ? error.intendedUse
+                : 'Complete the required fields (*) and accept the terms to Continue'
           }
         >
           Continue

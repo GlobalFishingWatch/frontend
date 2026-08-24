@@ -2,19 +2,12 @@ import React, { useCallback, useState } from 'react'
 import cx from 'classnames'
 import { useSelect } from 'downshift'
 
-import type {
-  SelectOnChange,
-  SelectOption} from '@globalfishingwatch/ui-components';
-import {
-  Button,
-  IconButton,
-  InputText,
-  Tooltip,
-} from '@globalfishingwatch/ui-components'
+import type { SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import styles from './SubareaSelector.module.css'
 
-export interface SubareaSelectOption<T = any> extends SelectOption {
+export interface SubareaSelectOption extends SelectOption {
   color?: string
 }
 
@@ -57,17 +50,6 @@ export function SubareaSelector(props: SelectProps) {
     direction = 'bottom',
     disabled = false,
   } = props
-  const { isOpen, selectItem, getToggleButtonProps, getLabelProps, getMenuProps, getItemProps } =
-    useSelect<SubareaSelectOption | null>({
-      items: options,
-      onSelectedItemChange: ({ selectedItem }) => {
-        if (!disabled && selectedItem && !selectedItem.disabled) {
-          handleChange(selectedItem)
-          selectItem(null)
-        }
-      },
-    })
-
   const [filterQuery, setFilterQuery] = useState('')
   const handleChange = useCallback(
     (option: SelectOption) => {
@@ -80,6 +62,16 @@ export function SubareaSelector(props: SelectProps) {
     },
     [onRemove, onSelect, selectedOption]
   )
+  const { isOpen, selectItem, getToggleButtonProps, getLabelProps, getMenuProps, getItemProps } =
+    useSelect<SubareaSelectOption | null>({
+      items: options,
+      onSelectedItemChange: ({ selectedItem }) => {
+        if (!disabled && selectedItem && !selectedItem.disabled) {
+          handleChange(selectedItem)
+          selectItem(null)
+        }
+      },
+    })
 
   const hasSelectedOptions = selectedOption !== undefined
   return (

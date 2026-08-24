@@ -1,0 +1,6 @@
+{
+  "name": "@globalfishingwatchapp/platform-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module"
+}

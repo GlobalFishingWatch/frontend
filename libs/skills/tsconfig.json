@@ -3,6 +3,8 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
+    // resolve sibling libs from src rather than dist/*.d.ts
+    "customConditions": ["development"],
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -10,5 +12,5 @@
     "noFallthroughCasesInSwitch": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "../../apps/fishing-map/config/src/**/*.ts"]
+  "include": ["src/**/*.ts", "../../apps/platform/config/**/*.ts"]
 }

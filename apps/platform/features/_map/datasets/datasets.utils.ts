@@ -1,0 +1,399 @@
+import { uniq } from 'es-toolkit'
+
+import type {
+  Dataset,
+  Dataview,
+  DataviewInstance,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DatasetStatus,
+  DatasetSubCategory,
+  DatasetTypes,
+  DataviewCategory,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetGeometryType,
+  getDatasetsLatestEndDate,
+  getDatasetSource,
+  getIsVMSDataset,
+  getRelatedDatasetsByType,
+} from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import type { IconType } from '@globalfishingwatch/ui-components'
+import { SKYLIGHT_VIIRS_DATASET_ID } from '@platform/config/map/datasets'
+import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
+
+import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'
+import { t } from 'features/i18n/i18n'
+
+// Datasets ids for vessel instances
+export type VesselInstanceDatasets = {
+  track?: string
+  trackRealTime?: string
+  ssvid?: string
+  info?: string
+  events?: string[]
+  relatedVesselIds?: string[]
+}
+
+export const getVesselTrackDatasetIds = (
+  infoDataset: Dataset | undefined,
+  trackDatasets: Dataset[]
+): Pick<VesselInstanceDatasets, 'track' | 'trackRealTime'> => {
+  const relatedTrackDatasets = (
+    getRelatedDatasetsByType(infoDataset, DatasetTypes.Tracks) || []
+  ).flatMap((relatedDataset) => trackDatasets.find(({ id }) => id === relatedDataset.id) || [])
+  const bySubcategory = (subcategory: DatasetSubCategory) =>
+    relatedTrackDatasets.find((dataset) => dataset.subcategory === subcategory)?.id
+  return {
+    track: bySubcategory(DatasetSubCategory.Track),
+    trackRealTime: bySubcategory(DatasetSubCategory.TrackRealTime),
+  }
+}
+
+const VESSEL_INSTANCE_DATASETS = [
+  'track' as keyof VesselInstanceDatasets,
+  'trackRealTime' as keyof VesselInstanceDatasets,
+  'info' as keyof VesselInstanceDatasets,
+  'events' as keyof VesselInstanceDatasets,
+]
+
+export const isPrivateDataset = (dataset: Partial<Dataset>) =>
+  !(dataset?.id || '').startsWith(`${PUBLIC_SUFIX}-`)
+
+export const isPrivateVesselGroup = (vesselGroupId: string) =>
+  !vesselGroupId.endsWith(`-${PUBLIC_SUFIX}`)
+
+const GFW_ONLY_DATASETS = [
+  'private-global-other-vessels:v20201001',
+  'public-global-presence-speed:v20231026',
+]
+
+export const isGFWOnlyDataset = (dataset: Partial<Dataset>) =>
+  GFW_ONLY_DATASETS.includes(dataset?.id || '')
+
+export const getIsSkylightDataset = (datasetId: Dataset['id']) =>
+  datasetId === SKYLIGHT_VIIRS_DATASET_ID
+
+export function isRealTimeDataset(dataset: Dataset) {
+  return dataset.subcategory === DatasetSubCategory.RealTime
+}
+
+export const GFW_ONLY_SUFFIX = ' - GFW Only'
+
+export type GetDatasetLabelParams = { id: string; name?: string }
+export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string => {
+  const { id, name = '' } = dataset || {}
+  if (!id) return name || ''
+  const label = dataset.name || ''
+  if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
+  if (isPrivateDataset(dataset)) return `${PRIVATE_ICON} ${label}`
+  return label
+}
+
+export const getDataviewsSources = (dataviews: UrlDataviewInstance[]) => {
+  return uniq(
+    dataviews
+      .map((dataview) => {
+        const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
+        return getDatasetSource(dataset?.id)
+      })
+      .filter(Boolean)
+  )
+}
+
+export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
+  if (!dataset) {
+    return null
+  }
+  if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
+  if (dataset.type === DatasetTypes.Events) return 'clusters'
+  const geometryType = getDatasetGeometryType(dataset)
+  if (geometryType === 'draw') {
+    const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
+    return geometryType === 'points' ? 'dots' : 'polygons'
+  }
+  if (geometryType === 'points') {
+    return 'dots'
+  }
+  if (geometryType === 'tracks') {
+    return 'track'
+  }
+  return 'polygons'
+}
+export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
+  if (!dataset) {
+    return false
+  }
+  // TODO use a custom category for BQ datasets but the API doesn't allow it yet
+  return (
+    (dataset.category === DatasetCategory.Activity || dataset.category === DatasetCategory.Event) &&
+    (dataset.subcategory === 'user' || dataset.subcategory === 'user-interactive')
+  )
+}
+
+export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
+  const orderedObject: Record<string, Dataset[]> = {
+    tracks: [],
+    polygons: [],
+    points: [],
+    bigQuery: [],
+  }
+
+  return datasets.reduce((acc, dataset) => {
+    if (getIsBQEditorDataset(dataset)) {
+      if (dataset.status !== DatasetStatus.Deleted) {
+        acc.bigQuery.push(dataset)
+      }
+      return acc
+    }
+    const geometryType = getDatasetConfigurationProperty({
+      dataset,
+      property: 'geometryType',
+    })
+    if (!geometryType) {
+      return acc
+    }
+    if (!acc[geometryType]) {
+      acc[geometryType] = []
+    }
+    acc[geometryType].push(dataset)
+    return acc
+  }, orderedObject)
+}
+
+export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
+  const source = dataset?.source?.toLowerCase()
+  if (!source) {
+    return null
+  }
+  // Activity, Detections & Events
+  if (source === 'global fishing watch' || source === 'gfw') return 'gfw-logo'
+  // Environment
+  if (source.includes('hycom')) return 'hycom-logo'
+  if (source.includes('copernicus')) return 'copernicus-logo'
+  if (source.includes('nasa')) return 'nasa-logo'
+  if (source.includes('pacioos')) return 'pacioos-logo'
+  if (source.includes('gebco')) return 'gebco-logo'
+  if (source.includes('geospatial conservation atlas')) return 'gca-logo'
+  if (source.includes('unep') || source.includes('oceanplus')) return 'unep-logo'
+  if (source.includes('blue habitats')) return 'blue-habitats-logo'
+  // Reference
+  if (source.includes('protectedplanet')) return 'protected-planet-logo'
+  if (source.includes('protectedseas')) return 'protected-seas-logo'
+  if (source.includes('marineregions')) return 'marine-regions-logo'
+  if (source.includes('fao')) return 'fao-logo'
+  if (source.includes('mpatlas')) return 'mci-logo'
+  if (source.includes('duke')) return 'duke-logo'
+  if (source.includes('isa.org.jm')) return 'isa-logo'
+
+  return null
+}
+
+export const getDatasetTitleByDataview = (
+  dataview: Dataview | UrlDataviewInstance | undefined,
+  { showPrivateIcon = true, withSources = false } = {}
+): string => {
+  if (!dataview) return ''
+  const dataviewInstance = {
+    ...dataview,
+    dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.slug,
+  }
+  const hasDatasetsConfig = dataview.config?.datasets && dataview.config?.datasets?.length > 0
+  const activeDatasets = hasDatasetsConfig
+    ? dataview.datasets?.filter((d) => dataview.config?.datasets?.includes(d.id))
+    : dataview.datasets
+
+  let datasetTitle = dataview.name || ''
+  const { category, subcategory, id } = dataviewInstance.datasets?.[0] || {}
+  if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
+    let sourceType: 'VMS' | 'AIS' | '' = ''
+    if (
+      dataviewInstance.id.toString().toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID) ||
+      dataviewInstance.slug?.toString().toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID) ||
+      dataviewInstance.datasets?.every((d) => getIsVMSDataset(d.id))
+    ) {
+      sourceType = t((t) => t.common.vms) as 'VMS'
+    } else if (
+      dataviewInstance.id.toString().toLowerCase().includes(AIS_DATAVIEW_INSTANCE_ID) ||
+      id?.toLowerCase().includes(AIS_DATAVIEW_INSTANCE_ID)
+    ) {
+      sourceType = t((t) => t.common.ais) as 'AIS'
+    }
+    datasetTitle = sourceType
+      ? `${t((t) => t.common.apparentFishing)} (${sourceType})`
+      : `${t((t) => t.common.apparentFishing)}`
+  } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
+    datasetTitle = t((t) => t.common.presence)
+  } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
+    datasetTitle = activeDatasets?.some((d) => getIsSkylightDataset(d.id))
+      ? t((t) => t.common.viirsSkylight)
+      : t((t) => t.common.viirs)
+  } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
+    datasetTitle = t((t) => t.common.sar)
+  } else if (activeDatasets) {
+    if (hasDatasetsConfig && activeDatasets?.length !== 1) {
+      return datasetTitle
+    }
+    datasetTitle = showPrivateIcon ? getDatasetLabel(activeDatasets[0]) : activeDatasets[0]?.name
+  }
+  if (!withSources) {
+    return datasetTitle
+  }
+  const sources =
+    dataview?.datasets && dataview?.datasets?.length > 1
+      ? `(${dataview.datasets?.length} ${t((t) => t.common.sources)})`
+      : `(${dataview.datasets?.[0]?.name})`
+
+  return datasetTitle + ' ' + sources
+}
+
+const getDatasetsInDataview = (
+  dataview: Dataview | DataviewInstance | UrlDataviewInstance,
+  guestUser = false
+): string[] => {
+  let datasetIds: string[] = (dataview.datasetsConfig || []).flatMap(
+    ({ datasetId }) => datasetId || []
+  )
+  if (dataview.config?.info) {
+    datasetIds.push(dataview.config.info)
+  }
+  if (dataview.config?.track) {
+    datasetIds.push(dataview.config.track)
+  }
+  if (dataview.config?.events?.length) {
+    datasetIds.push(...dataview.config.events)
+  }
+  const datasetsConfigMigration = (dataview as DataviewInstance).datasetsConfigMigration || {}
+  if (Object.values(datasetsConfigMigration).length) {
+    datasetIds = [...datasetIds, ...Object.values(datasetsConfigMigration)]
+  }
+  if (!datasetIds.length) {
+    // Get the datasets from the vessel config shorcurt (to avoid large urls)
+    datasetIds = VESSEL_INSTANCE_DATASETS.flatMap((d) => {
+      const value = dataview.config?.[d]
+      return Array.isArray(value) ? value : []
+    })
+  }
+
+  return guestUser
+    ? datasetIds.filter((id) => !isPrivateDataset({ id }) && !id.includes(FULL_SUFIX))
+    : datasetIds
+}
+
+export const getDatasetsInDataviews = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  dataviewInstances: (DataviewInstance | UrlDataviewInstance)[] = [],
+  guestUser = false
+) => {
+  const safeDataviews = Array.isArray(dataviews) ? dataviews : []
+  const safeDataviewInstances = Array.isArray(dataviewInstances) ? dataviewInstances : []
+  const allDataviews = [...safeDataviews, ...safeDataviewInstances]
+  if (!allDataviews?.length) {
+    return []
+  }
+  const datasets = allDataviews.flatMap((dataview) => {
+    return getDatasetsInDataview(dataview, guestUser)
+  })
+  return uniq(datasets)
+}
+
+export const getVesselGroupInDataview = (
+  dataview: Dataview | DataviewInstance | UrlDataviewInstance,
+  guestUser = false
+): string[] => {
+  const vesselGroupIds = (dataview?.config?.filters?.['vessel-groups'] as string[]) || []
+  return guestUser ? vesselGroupIds.filter((id) => !isPrivateVesselGroup(id)) : vesselGroupIds
+}
+
+export const getVesselGroupsInDataviews = (
+  dataviews: (Dataview | DataviewInstance | UrlDataviewInstance)[],
+  guestUser = false
+) => {
+  if (!dataviews?.length) {
+    return []
+  }
+  const vesselGroups = dataviews.flatMap((dataview) => {
+    return getVesselGroupInDataview(dataview, guestUser)
+  })
+  return uniq(vesselGroups)
+}
+
+export const getActiveDatasetsInActivityDataviews = (
+  dataviews: UrlDataviewInstance<DataviewType>[]
+): string[] => {
+  return dataviews.flatMap((dataview) => {
+    return dataview?.config?.datasets || []
+  })
+}
+
+export const getLatestEndDateFromDatasets = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string => {
+  return getDatasetsLatestEndDate(datasets, datasetCategory) || DEFAULT_TIME_RANGE.end
+}
+
+export const getActiveDatasetsInDataview = (dataview: Dataview | UrlDataviewInstance) => {
+  if (!dataview) {
+    return [] as Dataset[]
+  }
+  if (dataview.category === DataviewCategory.User) {
+    return dataview.datasets
+  }
+  if (dataview.config?.datasets?.length) {
+    const datasetIds = dataview.config.datasets.map((dataset) => {
+      // vessel dataviews can have the entire dataset objects for searching
+      return typeof dataset === 'string' ? dataset : (dataset as any).id
+    })
+    return dataview.datasets?.filter((dataset) => datasetIds.includes(dataset.id))
+  }
+  return dataview?.datasets
+}
+
+export const getActiveActivityDatasetsInDataviews = (
+  dataviews: (Dataview | UrlDataviewInstance)[]
+) => {
+  return dataviews.map((dataview) => {
+    const activeDatasets = (dataview?.config?.datasets || []) as string[]
+    return dataview.datasets?.filter((dataset) => {
+      return activeDatasets.includes(dataset.id)
+    })
+  })
+}
+
+export const getEventsDatasetsInDataview = (dataview: UrlDataviewInstance) => {
+  const datasetsConfigured = dataview.datasetsConfig
+    ?.filter((datasetConfig) =>
+      datasetConfig.query?.find((q) => q.id === 'vessels' && q.value !== '')
+    )
+    .map((d) => d.datasetId)
+  return (dataview?.datasets || []).filter((dataset) => {
+    const isEventType =
+      dataset?.category === DatasetCategory.Event
+        ? Object.values(EventTypes).includes(dataset.subcategory as EventTypes)
+        : false
+    const hasVesselId = datasetsConfigured?.includes(dataset.id)
+    return isEventType && hasVesselId
+  })
+}
+
+export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boolean) => {
+  const datasetsIds = datasets.map(({ id }) => id)
+  const allowedDatasets = datasets.filter(({ id }) => {
+    if (isGuestUser) {
+      return id.includes(PUBLIC_SUFIX)
+    }
+    if (id.includes(PUBLIC_SUFIX)) {
+      const fullDataset = id.replace(PUBLIC_SUFIX, FULL_SUFIX)
+      return !datasetsIds.includes(fullDataset)
+    }
+    return id.includes(FULL_SUFIX) || isPrivateDataset({ id })
+  })
+  return allowedDatasets
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "outDir": "../../dist/out-tsc",
+    "allowJs": true,
+    "types": ["node", "playwright"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "playwright.config.mts",
+    "../platform/features/app/cookies.config.ts"
+  ]
+}

@@ -1,5 +1,4 @@
-import React, { useMemo } from 'react'
-import ReactModal from 'react-modal'
+import { Dialog, Modal as AriaModal, ModalOverlay } from 'react-aria-components/Modal'
 import cx from 'classnames'
 
 import { IconButton } from '../icon-button'
@@ -12,72 +11,58 @@ import styles from './Menu.module.css'
 
 interface MenuProps {
   isOpen: boolean
-  /**
-   * Id of the html root selector, normally in CRA 'root'
-   */
-  appSelector?: string
   bgImage: string
   bgImageSource?: string
   links?: MenuLink[]
   activeLinkId?: string
-  onClose: (e: React.MouseEvent) => void
+  /** Accessible name for the dialog. */
+  ariaLabel?: string
+  onClose: () => void
 }
 
 export function Menu(props: MenuProps) {
   const {
     isOpen,
     onClose,
-    appSelector = '__root__',
     links = defaultLinks,
     bgImage = 'https://globalfishingwatch.org/carrier-portal/static/media/juan-vilata.fc4bde7c.jpg',
     bgImageSource = '',
     activeLinkId,
+    ariaLabel = 'Menu',
   } = props
-  const isSSR = typeof window === 'undefined'
-  const appElement = useMemo(
-    () => (isSSR ? null : document.getElementById(appSelector)),
-    [isSSR, appSelector]
-  )
-  if (isSSR) {
-    return null
-  }
-  if (!appElement) {
-    if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
-      console.warn(`Invalid appSelector (${appSelector}) provided`)
-    }
-    return null
-  }
-  const customStyles = {
-    content: {
-      backgroundImage: `url(${bgImage})`,
-    },
-  }
+
   return (
-    <ReactModal
-      overlayClassName={styles.modalOverlay}
-      className={styles.modalContentWrapper}
-      appElement={appElement}
-      closeTimeoutMS={400}
-      style={customStyles}
+    <ModalOverlay
+      className={styles.modalOverlay}
       isOpen={isOpen}
-      onRequestClose={onClose}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+      isDismissable
     >
-      <div className={styles.header}>
-        <a href="https://globalfishingwatch.org">
-          <Logo type="invert" className={styles.logo} />
-        </a>
-        <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
-      </div>
-      {links?.length > 0 && (
-        <ul>
-          {links.map(({ id, label, href }) => (
-            <li className={cx(styles.link, { [styles.active]: id === activeLinkId })} key={id}>
-              <a href={href}>{label}</a>
-            </li>
-          ))}
-        </ul>
-      )}
-      {bgImageSource && <p className={styles.copyright}>{bgImageSource}</p>}
-    </ReactModal>
+      <AriaModal
+        className={styles.modalContentWrapper}
+        style={{ backgroundImage: `url(${bgImage})` }}
+      >
+        <Dialog className={styles.dialog} aria-label={ariaLabel}>
+          <div className={styles.header}>
+            <a href="https://globalfishingwatch.org">
+              <Logo type="invert" className={styles.logo} />
+            </a>
+            <IconButton className={styles.closeBtn} icon="close" type="invert" onClick={onClose} />
+          </div>
+          {links?.length > 0 && (
+            <ul>
+              {links.map(({ id, label, href }) => (
+                <li className={cx(styles.link, { [styles.active]: id === activeLinkId })} key={id}>
+                  <a href={href}>{label}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {bgImageSource && <p className={styles.copyright}>{bgImageSource}</p>}
+        </Dialog>
+      </AriaModal>
+    </ModalOverlay>
   )
 }

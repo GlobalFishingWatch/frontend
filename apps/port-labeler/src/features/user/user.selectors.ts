@@ -8,7 +8,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { selectUserData, selectUserLogged, selectUserStatus } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
-const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']
 
 export const isUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],

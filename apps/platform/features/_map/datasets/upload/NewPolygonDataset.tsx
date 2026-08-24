@@ -1,0 +1,324 @@
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+import type { FeatureCollection, Polygon } from 'geojson'
+
+import { type Dataset } from '@globalfishingwatch/api-types'
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetFiltersAllowed,
+} from '@globalfishingwatch/datasets-client'
+import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Collapsable,
+  InputText,
+  MultiSelect,
+  Spinner,
+  SwitchRow,
+} from '@globalfishingwatch/ui-components'
+
+import {
+  useDatasetMetadata,
+  useDatasetMetadataOptions,
+} from 'features/_map/datasets/upload/datasets-upload.hooks'
+import {
+  getDatasetMetadataValidations,
+  getMetadataFromDataset,
+  getPolygonsDatasetMetadata,
+  parseGeoJsonProperties,
+} from 'features/_map/datasets/upload/datasets-upload.utils'
+import type { NewDatasetProps } from 'features/_map/datasets/upload/NewDataset'
+import NewDatasetField from 'features/_map/datasets/upload/NewDatasetField'
+import { TimeFieldsGroup } from 'features/_map/datasets/upload/TimeFieldsGroup'
+import { selectIsGFWDeveloper } from 'features/_user/selectors/user.selectors'
+import UserGuideLink from 'features/help/UserGuideLink'
+import type { FileType, FileTypeResult } from 'utils/files'
+import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
+
+import { getDatasetParsed } from './datasets-parse.utils'
+import FileDropzone from './FileDropzone'
+
+import styles from './NewDataset.module.css'
+
+type PolygonFeatureCollection = FeatureCollection<Polygon> & { metadata: Record<string, any> }
+
+function NewPolygonDataset({
+  onConfirm,
+  file,
+  dataset,
+  onFileUpdate,
+  onDatasetParseError,
+}: NewDatasetProps): React.ReactElement<any> {
+  const { t } = useTranslation()
+  const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
+  const [devMode, setDevMode] = useState(false)
+  const [error] = useState<string>('')
+  const [timeFilterError, setTimeFilterError] = useState<string>('')
+  const [dataParseError, setDataParseError] = useState<string>('')
+  const [processingData, setProcessingData] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [geojson, setGeojson] = useState<PolygonFeatureCollection | undefined>()
+  const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
+  const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
+  const isEditing = dataset?.id !== undefined
+  const isPublic = !!datasetMetadata?.public
+  const datasetFieldsAllowed =
+    getDatasetFiltersAllowed(datasetMetadata as Dataset) ||
+    getDatasetFiltersAllowed(dataset as Dataset) ||
+    []
+  const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
+  const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
+  useEffect(() => {
+    const updateFileType = async () => {
+      const fileTypeResult = await getFileType(file)
+      setFileTypeResult(fileTypeResult)
+    }
+    updateFileType()
+  }, [file])
+
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'timeFilterType',
+  })
+
+  const startTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'startTime',
+  })
+
+  const endTimeProperty = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'endTime',
+  })
+
+  const handleRawData = useCallback(
+    async (file: File, fileTypeResult: FileTypeResult) => {
+      setProcessingData(true)
+      try {
+        const data = await getDatasetParsed(file, 'polygons', fileTypeResult)
+        const datasetMetadata = getPolygonsDatasetMetadata({
+          data,
+          name: getFileName(file),
+          sourceFormat: fileTypeResult.fileType,
+        })
+        setDatasetMetadata(datasetMetadata)
+        setGeojson(data as PolygonFeatureCollection)
+        setProcessingData(false)
+      } catch (e: any) {
+        setProcessingData(false)
+        onDatasetParseError(e, setDataParseError)
+      }
+    },
+    [setDatasetMetadata, onDatasetParseError]
+  )
+
+  useEffect(() => {
+    if (file && !loading && fileTypeResult) {
+      handleRawData(file, fileTypeResult)
+    } else if (dataset) {
+      setDatasetMetadata(getMetadataFromDataset(dataset))
+    }
+  }, [dataset, file, fileTypeResult])
+
+  useEffect(() => {
+    if (timeFilterType && (startTimeProperty || endTimeProperty)) {
+      const hasDateError = geojson?.features.some((feature) => {
+        const isValidStartDate = startTimeProperty
+          ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty]).getTime())
+          : true
+        const isValidEndDate =
+          timeFilterType === 'dateRange' && endTimeProperty
+            ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty!]).getTime())
+            : true
+        return !isValidStartDate || !isValidEndDate
+      })
+      if (hasDateError) {
+        setTimeFilterError(
+          t((t) => t.datasetUpload.errors.invalidDatesFeatures, {
+            featureType: t((t) => t.dataset.typePolygons),
+          })
+        )
+      }
+    } else {
+      setTimeFilterError('')
+    }
+  }, [timeFilterType, startTimeProperty, endTimeProperty])
+
+  const onConfirmClick = useCallback(async () => {
+    if (datasetMetadata && onConfirm) {
+      setLoading(true)
+      const file = geojson
+        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+        : undefined
+      if (devMode) {
+        console.log('Dataset metadata:', datasetMetadata)
+        console.log('Context layers on map:', file)
+      } else await onConfirm(datasetMetadata, { file, isEditing })
+      setLoading(false)
+    }
+  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing])
+
+  if (processingData) {
+    return (
+      <div className={styles.processingData}>
+        <Spinner className={styles.processingDataSpinner} />
+        <p>{t((t) => t.datasetUpload.processingData)}</p>
+      </div>
+    )
+  }
+
+  if (dataParseError) {
+    return (
+      <div className={styles.processingData}>
+        <p className={styles.errorMsg}>{dataParseError}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.container}>
+      {!dataset && (
+        <FileDropzone
+          label={file?.name}
+          fileTypes={fileTypeResult ? [fileTypeResult.fileType as FileType] : []}
+          onFileLoaded={onFileUpdate}
+        />
+      )}
+      <InputText
+        value={datasetMetadata?.name}
+        label={t((t) => t.datasetUpload.datasetName)}
+        className={styles.input}
+        onChange={(e) => setDatasetMetadata({ name: e.target.value })}
+        disabled={loading}
+      />
+      {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
+      <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
+        {/* <InputText
+          value={datasetMetadata?.description}
+          label={t((t) => t.datasetUpload.datasetDescription)}
+          className={styles.input}
+          onChange={(e) => setDatasetMetadata({ description: e.target.value })}
+          disabled={loading}
+        /> */}
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="valueProperties"
+          label={t((t) => t.datasetUpload.polygons.name)}
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ valueProperties: [selected.id] })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ valueProperties: [] })
+          }}
+          editable={!loading}
+          infoTooltip={t((t) => t.datasetUpload.polygons.nameHelp)}
+        />
+        <NewDatasetField
+          datasetMetadata={datasetMetadata}
+          property="polygonColor"
+          label={t((t) => t.datasetUpload.polygons.color)}
+          placeholder={t((t) => t.datasetUpload.fieldNumericPlaceholder)}
+          onSelect={(selected) => {
+            setDatasetMetadataConfig({ polygonColor: selected.id })
+          }}
+          onCleanClick={() => {
+            setDatasetMetadataConfig({ polygonColor: '' })
+          }}
+          editable={!loading}
+          infoTooltip={t((t) => t.datasetUpload.polygons.colorHelp)}
+        />
+        <div className={styles.row}>
+          <TimeFieldsGroup
+            datasetMetadata={datasetMetadata}
+            setDatasetMetadataConfig={setDatasetMetadataConfig}
+            disabled={loading}
+          />
+        </div>
+        <span className={styles.errorMsg}>{timeFilterError}</span>
+        <MultiSelect
+          className={styles.input}
+          label={t((t) => t.datasetUpload.polygons.filters)}
+          placeholder={
+            datasetFieldsAllowed.length > 0
+              ? datasetFieldsAllowed.join(', ')
+              : t((t) => t.datasetUpload.fieldMultiplePlaceholder)
+          }
+          direction="top"
+          options={filtersFieldsOptions}
+          selectedOptions={getSelectedOption(datasetFieldsAllowed) as MultiSelectOption[]}
+          onSelect={(newFilter: MultiSelectOption) => {
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: f.enabled || f.id === newFilter.id }
+                }),
+              },
+            })
+          }}
+          onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
+            // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            const restIds = rest.map((r) => r.id)
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: restIds.includes(f.id) }
+                }),
+              },
+            })
+          }}
+          onCleanClick={() => {
+            // setDatasetMetadata({ fieldsAllowed: [] })
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: false }
+                }),
+              },
+            })
+          }}
+          disabled={loading}
+          infoTooltip={t((t) => t.datasetUpload.polygons.filtersHelp)}
+        />
+        <SwitchRow
+          className={styles.saveAsPublic}
+          label={t((t) => t.dataset.uploadPublic)}
+          disabled={isEditing || loading}
+          active={isPublic}
+          onClick={() => setDatasetMetadata({ public: !isPublic })}
+        />
+        {isGFWDeveloper && (
+          <SwitchRow
+            className={styles.saveAsPublic}
+            // not translated to not use crowdin strings for a developer only feature
+            label={'Print context layer info to console (developer only)'}
+            active={devMode}
+            onClick={() => setDevMode(!devMode)}
+          />
+        )}
+      </Collapsable>
+      <div className={styles.modalFooter}>
+        <div className={styles.footerMsg}>
+          {error && <span className={styles.errorMsg}>{error}</span>}
+          <UserGuideLink slug="uploading-data" />
+        </div>
+        <Button
+          className={styles.saveBtn}
+          onClick={onConfirmClick}
+          disabled={!datasetMetadata || error !== '' || !isValid}
+          loading={loading}
+          testId="confirm-upload"
+        >
+          {t((t) => t.common.confirm) as string}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export default NewPolygonDataset

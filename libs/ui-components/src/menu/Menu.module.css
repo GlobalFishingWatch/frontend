@@ -1,3 +1,27 @@
+/* Enter only — closing is immediate. These used to be the `.ReactModal__*` globals in
+   base.css; they are scoped here now that Menu no longer uses react-modal. */
+@keyframes menu-overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menu-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .modalOverlay {
   background: var(--color-secondary-blue);
   position: fixed;
@@ -5,8 +29,10 @@
   z-index: 100;
   display: flex;
   justify-content: flex-start;
-  transition: var(--transition);
-  opacity: 0;
+}
+
+.modalOverlay[data-entering] {
+  animation: menu-overlay-in 400ms ease;
 }
 
 .modalContentWrapper {
@@ -20,9 +46,16 @@
   padding: var(--space-S) 0;
   height: 100dvh;
   background-image: url('../assets/images/menubg.jpg');
-  transition-duration: 300ms;
-  transform: translateX(-100%);
-  opacity: 0;
+}
+
+.modalContentWrapper[data-entering] {
+  animation: menu-panel-in 400ms ease;
+}
+
+/* react-aria's Dialog node must stay a real box: display:contents makes it unfocusable,
+   which breaks autofocus and with it ESC dismissal. */
+.dialog {
+  outline: none;
 }
 
 .header {

@@ -1,0 +1,49 @@
+import { useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { VesselLayer } from '@globalfishingwatch/deck-layers'
+
+import { selectVesselProfileDataview } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { selectVesselId } from 'router/routes.selectors'
+
+import { setVesselEvents } from './vessel.slice'
+
+const useVesselProfileLayer = () => {
+  const vesselDataview = useSelector(selectVesselProfileDataview)
+  return useGetDeckLayer<VesselLayer>(vesselDataview?.id as string)
+}
+
+const useVesselProfileEvents = () => {
+  const vesselLayer = useVesselProfileLayer()
+  const eventLayersCount = vesselLayer?.instance?.getEventLayers().length ?? 0
+  const dataLoaded = eventLayersCount > 0 && vesselLayer?.instance?.getVesselEventsLayersLoaded()
+  return useMemo(() => {
+    if (dataLoaded) {
+      return vesselLayer?.instance?.getVesselEventsData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataLoaded, eventLayersCount])
+}
+
+export const useVesselProfileEventsLoading = () => {
+  const vesselInstance = useVesselProfileLayer()
+  return !vesselInstance?.instance || !vesselInstance?.instance?.getVesselEventsLayersLoaded()
+}
+
+export const useVesselProfileEventsError = () => {
+  const vesselInstance = useVesselProfileLayer()
+  return vesselInstance?.instance?.getVesselLayersError('events') ?? false
+}
+
+export const useSetVesselProfileEvents = () => {
+  const events = useVesselProfileEvents()
+  const vesselId = useSelector(selectVesselId)
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    if (vesselId && events) {
+      dispatch(setVesselEvents({ vesselId, events }))
+    }
+  }, [dispatch, events, vesselId])
+}

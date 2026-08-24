@@ -1,0 +1,234 @@
+import { createSelector } from '@reduxjs/toolkit'
+import { DateTime } from 'luxon'
+
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+
+import { AVAILABLE_END, AVAILABLE_START, REAL_TIME_DATA_DAYS_AVAILABLE } from 'data/map/config'
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
+import {
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveEventsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
+  selectActiveVesselGroupDataviews,
+  selectPointsActiveReportDataviews,
+} from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+} from 'features/_map/workspace/selectors/app.selectors'
+import {
+  selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
+  selectTimebarSelectedVGId,
+  selectTimebarVisualisation,
+} from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
+import { getReportCategoryFromDataview } from 'features/_reports/report-area/area-reports.utils'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
+import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
+import { TimebarVisualisations } from 'types'
+import { getUTCDateTime } from 'utils/dates'
+
+import { selectRealTimeLatestUpdate } from './timebar.slice'
+
+export const selectActiveActivityDataviewsByVisualisation = (
+  timebarVisualisation: TimebarVisualisations
+) =>
+  createSelector(
+    [
+      selectActiveActivityDataviews,
+      selectActiveDetectionsDataviews,
+      selectActiveEventsDataviews,
+      selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+      selectActiveVesselGroupDataviews,
+      selectPointsActiveReportDataviews,
+      selectTimebarSelectedEnvId,
+      selectTimebarSelectedVGId,
+    ],
+    (
+      activityDataviews,
+      detectionsDataviews,
+      eventsDataviews,
+      environmentDataviews,
+      vesselGroupDataviews,
+      userDataviews,
+      timebarSelectedEnvId,
+      timebarSelectedVGId
+    ) => {
+      if (timebarVisualisation === TimebarVisualisations.HeatmapActivity) {
+        return activityDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
+        return detectionsDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.Events) {
+        return eventsDataviews
+      }
+      if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
+        const selectedVGDataview =
+          timebarSelectedVGId && vesselGroupDataviews.find((d) => d.id === timebarSelectedVGId)
+
+        if (selectedVGDataview) return [selectedVGDataview]
+        else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
+      }
+      if (timebarVisualisation === TimebarVisualisations.Points) {
+        return userDataviews
+      }
+      // timebarVisualisation === TimebarVisualisations.Environment
+      const selectedEnvDataview =
+        timebarSelectedEnvId && environmentDataviews.find((d) => d.id === timebarSelectedEnvId)
+
+      if (selectedEnvDataview) return [selectedEnvDataview]
+      else if (environmentDataviews[0]) return [environmentDataviews[0]]
+    }
+  )
+
+const selectActiveDatasets = createSelector(
+  [selectDataviewInstancesResolved, selectAllDatasets],
+  (dataviews, datasets) => {
+    const activeDataviewDatasets = getDatasetsInDataviews(dataviews)
+    return datasets.filter((d) => activeDataviewDatasets.includes(d.id))
+  }
+)
+
+const selectDatasetsExtent = createSelector([selectActiveDatasets], (activeDatasets) => {
+  return getDatasetsExtent<number>(activeDatasets, {
+    format: 'timestamp',
+  })
+})
+
+export const selectRealTimeLatestAvailableTimerange = createSelector(
+  [selectRealTimeLatestUpdate],
+  (realTimeLatestUpdate) => {
+    if (!realTimeLatestUpdate) return null
+
+    return {
+      end: realTimeLatestUpdate,
+      // TODO: use endDate of activity presence dataset
+      start: DateTime.fromISO(realTimeLatestUpdate, { zone: 'utc' })
+        .minus({ days: REAL_TIME_DATA_DAYS_AVAILABLE })
+        .startOf('day')
+        .toISO() as string,
+    }
+  }
+)
+
+export const selectRealTimeTimerange = createSelector(
+  [selectIsRealTimeMode, selectRealTimeLatestAvailableTimerange],
+  (isRealTimeMode, realTimeLatestAvailableTimerange) => {
+    if (isRealTimeMode) {
+      return realTimeLatestAvailableTimerange
+    }
+    return null
+  }
+)
+
+export const selectAvailableStart = createSelector(
+  [selectRealTimeTimerange, selectDatasetsExtent],
+  (realTimeTimerange, datasetsExtent) => {
+    if (realTimeTimerange) {
+      return realTimeTimerange?.start
+    }
+    const defaultAvailableStartMs = getUTCDateTime(AVAILABLE_START).toMillis()
+    const availableStart = getUTCDateTime(
+      Math.min(defaultAvailableStartMs, datasetsExtent.extentStart || Infinity)
+    ).toISO() as string
+    return availableStart
+  }
+)
+
+export const selectAvailableEnd = createSelector(
+  [selectRealTimeTimerange, selectDatasetsExtent],
+  (realTimeTimerange, datasetsExtent) => {
+    if (realTimeTimerange) {
+      return DateTime.fromISO(realTimeTimerange?.end, { zone: 'utc' })
+        .endOf('day')
+        .toISO() as string
+    }
+    const defaultAvailableEndMs = getUTCDateTime(AVAILABLE_END).toMillis()
+    const availableEndMs = getUTCDateTime(
+      Math.max(defaultAvailableEndMs, datasetsExtent.extentEnd || -Infinity)
+    )
+      .endOf('day')
+      .toISO() as string
+    return availableEndMs
+  }
+)
+
+export const selectTimebarSelectedDataviews = createSelector(
+  [
+    selectTimebarVisualisation,
+    selectTimebarSelectedEnvId,
+    selectTimebarSelectedVGId,
+    selectActiveDetectionsDataviews,
+    selectActiveActivityDataviews,
+    selectActiveEventsDataviews,
+    selectActiveVesselGroupDataviews,
+    selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
+    selectReportCategory,
+    selectIsAnyAreaReportLocation,
+  ],
+  (
+    timebarVisualisation,
+    timebarSelectedEnvId,
+    timebarSelectedVGId,
+    detectionsDataviews,
+    activityDataviews,
+    eventsDataviews,
+    vesselGroupDataviews,
+    environmentalDataviews,
+    reportCategory,
+    isAreaReportLocation
+  ) => {
+    if (!timebarVisualisation) return []
+    if (timebarVisualisation === TimebarVisualisations.Environment) {
+      return environmentalDataviews.filter((d) => d.id === timebarSelectedEnvId)
+    }
+    if (timebarVisualisation === TimebarVisualisations.VesselGroup) {
+      const selectedVGDataview = vesselGroupDataviews.find((d) => d.id === timebarSelectedVGId)
+      return selectedVGDataview
+        ? [selectedVGDataview]
+        : vesselGroupDataviews[0]
+          ? [vesselGroupDataviews[0]]
+          : []
+    }
+    if (timebarVisualisation === TimebarVisualisations.HeatmapDetections) {
+      return detectionsDataviews
+    }
+    if (timebarVisualisation === TimebarVisualisations.Events) {
+      return eventsDataviews
+    }
+
+    return isAreaReportLocation
+      ? activityDataviews.filter((d) => getReportCategoryFromDataview(d) === reportCategory)
+      : activityDataviews
+  }
+)
+
+export const selectTimebarSelectedVisualizationMode = createSelector(
+  [
+    selectTimebarSelectedDataviews,
+    selectActivityVisualizationMode,
+    selectDetectionsVisualizationMode,
+  ],
+  (timebarDataviews, activityVisualizationMode, detectionsVisualizationMode) => {
+    if (timebarDataviews[0]?.category === DataviewCategory.Activity) {
+      return activityVisualizationMode
+    }
+    if (timebarDataviews[0]?.category === DataviewCategory.Detections) {
+      return detectionsVisualizationMode
+    }
+  }
+)
+
+export const selectTimebarUserDataviewsSelected = createSelector(
+  [selectActiveUserPointsWithTimeRangeDataviews, selectTimebarSelectedUserId],
+  (dataviews, timebarSelectedUserId) => {
+    return dataviews.filter((dataview) => dataview.id === timebarSelectedUserId)
+  }
+)

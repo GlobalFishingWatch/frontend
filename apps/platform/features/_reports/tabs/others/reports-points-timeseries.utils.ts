@@ -1,0 +1,153 @@
+import type { Feature, Point } from 'geojson'
+
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
+import {
+  type ContextSubLayerConfig,
+  type FourwingsDeckSublayer,
+  isFeatureInRange,
+} from '@globalfishingwatch/deck-layers'
+import type {
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsStaticFeature,
+} from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
+import { getGraphDataFromPoints } from 'features/_map/timebar/timebar.utils'
+import type { FilteredPolygons } from 'features/_reports/reports-geo.utils'
+import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
+import type { ReportPointsDeckLayer } from 'features/_reports/reports-timeseries.utils'
+import { frameTimeseriesToDateTimeseries } from 'features/_reports/reports-timeseries-shared.utils'
+
+export type PointsFeaturesToTimeseriesParams = {
+  start: number
+  end: number
+  interval: FourwingsInterval
+  startTimeProperty: string
+  endTimeProperty?: string
+  timeFilterType?: TimeFilterType
+  sublayers: (FourwingsDeckSublayer | ContextSubLayerConfig)[]
+}
+
+export const pointsFeaturesToTimeseries = (
+  filteredFeatures: FilteredPolygons[],
+  {
+    start,
+    end,
+    interval,
+    startTimeProperty,
+    endTimeProperty,
+    sublayers,
+  }: PointsFeaturesToTimeseriesParams
+): ReportGraphProps[] => {
+  return filteredFeatures.map(({ contained }) => {
+    const featureToTimeseries: ReportGraphProps = {
+      interval,
+      sublayers: sublayers.map((sublayer) => ({
+        id: sublayer.id,
+        legend: {
+          color: sublayer.color,
+          unit: '',
+        },
+      })),
+      timeseries: [],
+    }
+
+    const valuesContainedRaw = getGraphDataFromPoints(contained as Feature<Point>[], {
+      start,
+      end,
+      interval,
+      sublayersLength: sublayers.length,
+      startTimeProperty,
+      endTimeProperty,
+    })
+    const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw as any)
+
+    featureToTimeseries.timeseries = valuesContained.map(({ values, date }) => {
+      return {
+        date,
+        min: values,
+        max: values,
+      } as ReportGraphProps['timeseries'][number]
+    })
+    return featureToTimeseries
+  })
+}
+
+export type GetPointsTimeseriesParams = {
+  features: FilteredPolygons[]
+  instance: ReportPointsDeckLayer
+}
+
+export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesParams) => {
+  const { startTime, endTime, startTimeProperty, endTimeProperty, layers } = instance.props || {}
+
+  const sublayers = layers?.flatMap((l) => l?.sublayers)
+
+  if (!startTime || !endTime || !startTimeProperty) {
+    // need to add empty timeseries because they are then used by their index
+    return {
+      timeseries: [],
+      interval: 'MONTH',
+      sublayers: sublayers.map((sublayer) => ({
+        id: sublayer.id,
+        legend: {
+          color: sublayer.color,
+          unit: '',
+        },
+      })),
+    } as ReportGraphProps
+  }
+
+  const interval = getFourwingsInterval(startTime, endTime)
+  const params: PointsFeaturesToTimeseriesParams = {
+    interval: interval,
+    start: startTime,
+    end: endTime,
+    startTimeProperty,
+    endTimeProperty,
+    sublayers,
+  }
+  return pointsFeaturesToTimeseries(features, params)[0]
+}
+
+export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
+  const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } =
+    instance.props || {}
+
+  const values = features?.reduce((acc, { contained }) => {
+    if (contained) {
+      const filteredPoints =
+        startTime && endTime && (startTimeProperty || endTimeProperty)
+          ? contained.filter((feature) => {
+              return isFeatureInRange(
+                feature as FourwingsFeature | FourwingsStaticFeature | Feature<Point>,
+                {
+                  startTime: startTime!,
+                  endTime: endTime!,
+                  startTimeProperty: startTimeProperty!,
+                  endTimeProperty,
+                  timeFilterType,
+                }
+              )
+            })
+          : contained
+      filteredPoints.forEach((feature) => {
+        feature.properties?.values?.forEach((value: number, index: number) => {
+          if (!acc[index]) {
+            acc[index] = 0
+          }
+          acc[index] += value
+        })
+      })
+    }
+    return acc
+  }, [] as number[])
+
+  return {
+    type: 'points' as const,
+    total: values?.reduce((acc, value) => acc + value, 0),
+    count: features?.[0]?.contained.length,
+    values,
+  }
+}

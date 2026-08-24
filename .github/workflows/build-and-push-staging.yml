@@ -1,0 +1,40 @@
+name: Build and Deploy (Staging)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'App to deploy'
+        required: true
+        default: affected
+        type: choice
+        options:
+          - affected # apps affected by the last commit on main
+          - platform
+          - api-portal
+          - track-labeler
+          - data-download-portal
+          - image-labeler
+          - user-groups-admin
+          - port-labeler
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_build-and-deploy.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      apps: ${{ inputs.app != '' && inputs.app != 'affected' && format('["{0}"]', inputs.app) || '' }}
+      env-suffix: sta
+      config: .github/apps/staging.yml
+      service-prefix: sta-ui
+      cloudrun-project: gfw-development
+      environment: staging
+    secrets: inherit

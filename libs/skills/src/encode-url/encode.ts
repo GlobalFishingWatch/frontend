@@ -1,15 +1,14 @@
-import {
-  EEZ_DATAVIEW_INSTANCE_ID,
-  FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  FISHING_DATAVIEW_SLUG_AIS,
-  LAYER_LIBRARY_ID_SEPARATOR,
-  MPA_DATAVIEW_INSTANCE_ID,
-  RFMO_DATAVIEW_INSTANCE_ID,
-} from '@fishing-map/config'
-
 import { getUTCDate, stickToClosestInterval } from '@globalfishingwatch/data-transforms'
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+import {
+  EEZ_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  FISHING_AIS_DATAVIEW_SLUG,
+  LAYER_LIBRARY_ID_SEPARATOR,
+  MPA_DATAVIEW_INSTANCE_ID,
+  RFMO_DATAVIEW_INSTANCE_ID,
+} from '@platform/config'
 
 import { resolveDataviewSlug } from './config'
 import { getLayerInfo } from './dictionary'
@@ -34,9 +33,9 @@ const withDataviewId = (instance: any) => {
 // Snaps start/end to the fourwings interval resolution the app will render with
 // (month boundaries for ~year ranges, day for short ranges) — same functions the map uses
 const withSnappedTimeRange = (state: MapState): MapState => {
-  const start = typeof state.start === 'string' ? Date.parse(state.start) : NaN
-  const end = typeof state.end === 'string' ? Date.parse(state.end) : NaN
-  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+  const start = typeof state.start === 'string' ? state.start : ''
+  const end = typeof state.end === 'string' ? state.end : ''
+  if (!Number.isFinite(Date.parse(start)) || !Number.isFinite(Date.parse(end))) {
     return state
   }
   const { start: newStart, end: newEnd } = stickToClosestInterval({ start, end })
@@ -90,7 +89,7 @@ const withAisDefaultFilters = (state: MapState): MapState => {
     dataviewInstances: (state.dataviewInstances as any[]).map((instance) => {
       if (!instance?.id) return instance
       const { dataviewId } = getLayerInfo(String(instance.id))
-      if (dataviewId !== FISHING_DATAVIEW_SLUG_AIS) return instance
+      if (dataviewId !== FISHING_AIS_DATAVIEW_SLUG) return instance
       const filters = instance.config?.filters
       if (!filters || !Object.keys(filters).length || 'distance_from_port_km' in filters) {
         return instance
@@ -108,7 +107,7 @@ export type MapState = BaseUrlWorkspace & Record<string, unknown>
 export type EncodeMapUrlInput = {
   route: MapRoute
   state?: MapState
-  /** App basename prepended to `path`, defaults to '/map' */
+  /** App basename prepended to `path`, defaults to '/platform' */
   basename?: string
 }
 

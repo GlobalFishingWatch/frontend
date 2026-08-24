@@ -39,7 +39,6 @@ export const getCellTimeseries = (
     rows,
     buffersLength,
   } = data.options?.fourwings || ({} as ParseFourwingsOptions)
-
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
   const timeRangeStartFrame =
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start as number) -

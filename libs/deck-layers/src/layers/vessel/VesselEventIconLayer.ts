@@ -47,7 +47,7 @@ const defaultProps: DefaultProps<VesselEventIconLayerProps> = {
   },
   getStart: { type: 'accessor', value: (d) => d.start },
   getEnd: { type: 'accessor', value: (d) => d.end },
-  getFillColor: { type: 'accessor', value: (d) => [255, 255, 255] },
+  getFillColor: { type: 'accessor', value: () => [255, 255, 255] },
   getPosition: { type: 'accessor', value: (d) => d.coordinates },
   // getPickingInfo: { type: 'accessor', value: ({ info }) => info },
   visibleEvents: { type: 'accessor', value: [] },

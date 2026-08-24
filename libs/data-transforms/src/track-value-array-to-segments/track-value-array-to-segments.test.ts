@@ -1,4 +1,4 @@
-import type { Field } from '@globalfishingwatch/api-types'
+import type { TrackField } from '@globalfishingwatch/api-types'
 
 import { trackValueArrayToSegments } from './track-value-array-to-segments'
 
@@ -7,14 +7,14 @@ describe('trackValueArrayToSegments', () => {
     const valueArray = [
       -2147483648, 1, 0, -42342480, 47021440, 1562724078, 10300000, -3943, 270600000, 1, 782340,
     ]
-    const fields: Field[] = [
-      'lonlat' as Field,
-      'timestamp' as Field,
-      'speed' as Field,
-      'elevation' as Field,
-      'course' as Field,
-      'night' as Field,
-      'distance_from_port' as Field,
+    const fields: TrackField[] = [
+      'lonlat' as TrackField,
+      'timestamp' as TrackField,
+      'speed' as TrackField,
+      'elevation' as TrackField,
+      'course' as TrackField,
+      'night' as TrackField,
+      'distance_from_port' as TrackField,
     ]
     const result = trackValueArrayToSegments(valueArray, fields)
     expect(result).toEqual([

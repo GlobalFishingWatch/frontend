@@ -7,12 +7,9 @@ import { screen } from 'color-blend'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  EMPTY_RGBA_COLOR,
-  getLayerGroupOffset,
-  LayerGroup,
-} from '../../../utils'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import { LayerGroup } from '#config/sort.config'
+import { EMPTY_RGBA_COLOR, getLayerGroupOffset } from '#utils'
 
 import type {
   FourwingsHeatmapLayerProps,

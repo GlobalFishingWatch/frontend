@@ -1,0 +1,58 @@
+import { useCallback } from 'react'
+
+import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
+import { Timebar } from '@globalfishingwatch/timebar'
+
+import { useHeatmapActivityGraph } from 'features/_map/timebar/TimebarActivityGraph.hooks'
+import { t } from 'features/i18n/i18n'
+import { TimebarVisualisations } from 'types'
+import { formatNumber } from 'utils/info'
+
+const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
+  const { loading, heatmapActivity, dataviews, colorScale } = useHeatmapActivityGraph()
+
+  const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
+    ({ value, item }: HighlighterCallbackFnArgs) => {
+      if (!value || !value.value) return ''
+      const maxHighlighterFractionDigits =
+        visualisation === TimebarVisualisations.Environment ? 2 : undefined
+      const labels = [
+        formatNumber(value.value, maxHighlighterFractionDigits),
+        item?.props?.unit || '',
+        t((t) => t.common.onScreen),
+      ]
+      if (visualisation === TimebarVisualisations.Environment) {
+        labels.push(t((t) => t.common.averageAbbreviated))
+      }
+
+      return labels.join(' ')
+    },
+    // [loading, mapLegends, visualisation]
+    [visualisation]
+  )
+
+  // if (error) {
+  //   return (
+  //     <div className={styles.error}>
+  //       {t((t) => t.analysis.error)}
+  //     </div>
+  //   )
+  // }
+  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) {
+    return null
+  }
+
+  return (
+    <Timebar.Charts.StackedActivity
+      key="stackedActivity"
+      timeseries={heatmapActivity}
+      dataviews={dataviews}
+      colorScale={colorScale}
+      highlighterCallback={getActivityHighlighterLabel}
+      highlighterIconCallback="heatmap"
+      loading={loading}
+    />
+  )
+}
+
+export default TimebarActivityGraph

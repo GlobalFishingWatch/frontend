@@ -12,7 +12,9 @@ const Home = ({ login }: any) => {
       <aside className={styles.aside}>
         <UserGroupsList groupId={groupId as number} onGroupClick={setGroupId} user={login.user} />
       </aside>
-      <main className={styles.main}>{groupId && <UserGroupDetail groupId={groupId} user={login.user} />}</main>
+      <main className={styles.main}>
+        {groupId && <UserGroupDetail groupId={groupId} user={login.user} />}
+      </main>
     </Fragment>
   )
 }

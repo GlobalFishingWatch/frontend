@@ -8,7 +8,7 @@
     "proto:generate": {
       "executor": "nx:run-commands",
       "cache": true,
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["{projectRoot}/src/pbf-decoders/vessels.proto", "{workspaceRoot}/.prettierrc.js"],
       "outputs": [
         "{projectRoot}/src/pbf-decoders/vessels.gen.js",
@@ -30,11 +30,10 @@
         "parallel": false
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "dependsOn": ["proto:generate"],
       "options": {
-        "clean": false,
         "assets": [
           {
             "input": "libs/api-client/src/pbf-decoders",
@@ -44,39 +43,21 @@
         ]
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/api-client"
-      }
-    },
     "test": {
-      "executor": "@nx/vitest:test",
-      "dependsOn": ["^dist"],
-      "outputs": ["{options.reportsDirectory}"],
+      "dependsOn": ["^build"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "command": "vitest run --config=vitest.config.ts",
-        "reportsDirectory": "{projectRoot}/../../coverage/libs/api-client"
+        "command": "vitest run --config=vitest.config.mts"
       }
     },
     "test:watch": {
-      "executor": "@nx/vitest:test",
       "cache": false,
+      "continuous": true,
       "options": {
-        "configFile": "libs/api-client/vitest.config.ts",
         "watch": true
-      },
-      "continuous": true
-    }
+      }
+    },
+    "typecheck": {},
+    "publish": {}
   }
 }

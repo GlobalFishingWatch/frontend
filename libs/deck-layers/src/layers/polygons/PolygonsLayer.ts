@@ -15,13 +15,12 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
-  getFetchLoadOptions,
-  getLayerGroupOffset,
-  getPickedFeatureToHighlight,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
-import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
+} from '#config/colors.config'
+import { PREVIEW_BUFFER_GENERATOR_ID } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { getFetchLoadOptions } from '#layers/_shared/api'
+import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type {
   PolygonFeature,
@@ -130,8 +129,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
-    return d.properties?.highlighted ||
-      getPickedFeatureToHighlight(d, highlightedFeatures)
+    return d.properties?.highlighted || getPickedFeatureToHighlight(d, highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
   }
@@ -141,8 +139,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       return 0
     }
     const highlightedFeatures = this._getHighlightedFeatures()
-    return d.properties?.highlighted ||
-      getPickedFeatureToHighlight(d, highlightedFeatures)
+    return d.properties?.highlighted || getPickedFeatureToHighlight(d, highlightedFeatures)
       ? lineWidth
       : 0
   }

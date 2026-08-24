@@ -1,0 +1,232 @@
+import { createStore as createJotaiStore } from 'jotai'
+import { render } from 'test/appTestUtils'
+import { WAIT } from 'test/setup/config'
+import { defaultState, defaultViewport } from 'test/utils/store'
+import { describe, expect, it, vi } from 'vitest'
+import { userEvent } from 'vitest/browser'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
+
+import { mapInstanceAtom, viewStateAtom } from 'features/_map/map/map.atoms'
+import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
+import { timerangeState } from 'features/_map/timebar/timebar.hooks'
+import { makeStore } from 'store'
+
+describe('Map', () => {
+  it('should render a map element and it should be loaded and with the default state', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+    const mapElement = getByTestId('map-container')
+
+    const viewState = jotaiStore.get(viewStateAtom)
+
+    await expect.element(mapElement).toBeVisible()
+
+    expect(viewState).toMatchObject(defaultViewport)
+  })
+
+  it('should pass zoom, latitude and longitude changes of query params to map state', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+
+    const mapElement = getByTestId('app-main')
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    await userEvent.dragAndDrop(mapElement, mapElement, {
+      sourcePosition: { x: 400, y: 35 },
+      targetPosition: { x: 700, y: 35 },
+      steps: 10, // This is needed to trigger the drag event, as a single step is not captured
+    })
+
+    await userEvent.click(getByTestId('map-control-zoom-in'))
+
+    // Wait for the debounced URL update (1000ms debounce time)
+    await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE))
+
+    const viewState = jotaiStore.get(viewStateAtom)
+    const urlState = store.getState().location.query
+
+    expect(viewState.longitude).toBe(urlState?.longitude)
+    expect(viewState.latitude).toBe(urlState?.latitude)
+    expect(viewState.zoom).toBe(urlState?.zoom)
+  })
+
+  it('should preserve map state when adding a new layer', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId, getByText } = await render({ store, jotaiStore })
+
+    const openLayerModalButton = getByTestId('activity-add-layer-button')
+    const addLayerButton = getByTestId('add-layer-eez-button')
+
+    await userEvent.hover(getByTestId('activity-layer-panel-switch-presence'))
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await openLayerModalButton.click()
+    await expect.element(getByText('Layer Library')).toBeVisible()
+    await addLayerButton.click()
+    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
+
+    const viewState = jotaiStore.get(viewStateAtom)
+
+    expect(viewState).toMatchObject(defaultViewport)
+  })
+
+  it('should preserve map state when removing a layer', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+
+    const removeLayerButton = getByTestId('activity-layer-panel-remove-presence')
+
+    await userEvent.hover(getByTestId('activity-layer-panel-switch-presence'))
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    await removeLayerButton.click()
+
+    const viewState = jotaiStore.get(viewStateAtom)
+    expect(viewState).toMatchObject(defaultViewport)
+  })
+
+  it('should update layers when interacting with the map', async () => {
+    const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const getTileZoomLevels = () => {
+      const allUrls = fetchSpy.mock.calls.map((call) => call[0] as string)
+      const tileUrls = allUrls.filter((url) => url.includes('/4wings/tile/heatmap/'))
+
+      return tileUrls.map((url) => {
+        const match = url.match(/\/tile\/heatmap\/(\d+)\//)
+        return match ? parseInt(match[1]) : 0
+      })
+    }
+
+    const maxZoomBefore = Math.max(...getTileZoomLevels(), 0)
+    const callsBeforeZoom = fetchSpy.mock.calls.length
+
+    // Zoom in
+    await userEvent.click(getByTestId('map-control-zoom-in'))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Verify zoom increased in viewport
+    const viewStateAfter = jotaiStore.get(viewStateAtom)
+    expect(viewStateAfter.zoom).toBe(defaultViewport.zoom + 1)
+
+    // Get zoom levels from new tile requests
+    const newTileZooms = fetchSpy.mock.calls
+      .slice(callsBeforeZoom)
+      .map((call) => call[0] as string)
+      .filter((url) => url.includes('/4wings/tile/heatmap/'))
+      .map((url) => {
+        const match = url.match(/\/tile\/heatmap\/(\d+)\//)
+        return match ? parseInt(match[1]) : 0
+      })
+
+    const maxZoomAfter = Math.max(...newTileZooms, 0)
+
+    // Verify new tiles were requested with higher zoom
+    expect(newTileZooms.length).toBeGreaterThan(0)
+    expect(maxZoomAfter).toBeGreaterThan(maxZoomBefore)
+
+    fetchSpy.mockRestore()
+  })
+
+  it('should reflect period changes on the state and map', async () => {
+    const store = makeStore(defaultState)
+    const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    await userEvent.click(getByTestId('interval-btn-year'))
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const timerange = jotaiStore.get(timerangeState)
+    const deckLayersState = jotaiStore.get(deckLayersStateAtom)
+
+    expect(timerange).toMatchObject({
+      start: '2012-01-01T00:00:00.000Z',
+      end: '2026-12-31T23:59:59.999Z',
+    })
+    expect(deckLayersState['ais,vms'].cacheHash).toMatch(
+      /1325376000000,1798761599999,1325376000000,YEAR/
+    )
+    expect(fetchSpy.mock.calls.some((call) => (call[0] as string).includes('&interval=YEAR'))).toBe(
+      true
+    )
+  })
+
+  it('should preserve map state when changing period', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    await userEvent.click(getByTestId('map-control-zoom-in'))
+    await userEvent.click(getByTestId('interval-btn-year'))
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    const viewState = jotaiStore.get(viewStateAtom)
+
+    expect(viewState).toMatchObject({
+      ...defaultViewport,
+      zoom: defaultViewport.zoom + 1,
+    })
+  })
+
+  it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
+    const store = makeStore(defaultState)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render({ store, jotaiStore, authenticated: true })
+
+    await userEvent.dragAndDrop(getByTestId('app-main'), getByTestId('app-main'), {
+      sourcePosition: { x: 100, y: 35 },
+      targetPosition: { x: 380, y: 35 },
+      steps: 10,
+    })
+
+    // Zoom in multiple times to enable positions layer
+    for (let i = 0; i < 8; i++) {
+      await userEvent.click(getByTestId('map-control-zoom-in'))
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+
+    await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
+
+    await userEvent.click(
+      getByTestId('activity-section').getByTestId('activity-visualizations-change-positions')
+    )
+
+    await expect.poll(() => getByTestId('map-loading-spinner'), { timeout: 5000 }).not.toBeVisible()
+
+    await expect
+      .poll(() => jotaiStore.get(mapInstanceAtom), {
+        timeout: 10000,
+        interval: 500,
+      })
+      .toBeDefined()
+    const mapInstance = jotaiStore.get(mapInstanceAtom)
+    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
+    if (!viewport) {
+      throw new Error('Map viewport not found - cannot project coordinates')
+    }
+    const [x, y] = viewport?.project([-37.0458, 19.0776]) || [0, 0]
+
+    await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    await userEvent.click(getByTestId('app-main'), { position: { x, y } })
+
+    await expect.element(getByTestId('map-popup-wrapper').getByText(/No.805 Oryong/i)).toBeVisible()
+  })
+})

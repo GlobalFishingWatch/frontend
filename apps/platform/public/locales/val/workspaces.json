@@ -1,0 +1,100 @@
+{
+  "marine-manager": {
+    "ascension-public": {
+      "description": "crwdns138239:0crwdne138239:0",
+      "name": "crwdns138241:0crwdne138241:0"
+    },
+    "cmar_core_mpas-public": {
+      "description": "crwdns138243:0crwdne138243:0",
+      "name": "crwdns138245:0crwdne138245:0"
+    },
+    "colombia-public": {
+      "description": "crwdns138247:0crwdne138247:0",
+      "name": "crwdns138249:0crwdne138249:0"
+    },
+    "costa_rica-public": {
+      "description": "crwdns138251:0crwdne138251:0",
+      "name": "crwdns138253:0crwdne138253:0"
+    },
+    "fiji-public": {
+      "description": "crwdns138255:0crwdne138255:0",
+      "name": "crwdns138257:0crwdne138257:0"
+    },
+    "galapagos_and_hermandad-public": {
+      "description": "crwdns138259:0crwdne138259:0",
+      "name": "crwdns138261:0crwdne138261:0"
+    },
+    "galapagos-public": {
+      "description": "crwdns138263:0crwdne138263:0",
+      "name": "crwdns138265:0crwdne138265:0"
+    },
+    "guyana-public": {
+      "description": "crwdns138267:0crwdne138267:0",
+      "name": "crwdns138269:0crwdne138269:0"
+    },
+    "maldives-public": {
+      "description": "crwdns138271:0crwdne138271:0",
+      "name": "crwdns138273:0crwdne138273:0"
+    },
+    "mediterranean-public": {
+      "description": "crwdns138275:0crwdne138275:0",
+      "name": "crwdns138277:0crwdne138277:0"
+    },
+    "micronesia-public": {
+      "description": "crwdns138279:0crwdne138279:0",
+      "name": "crwdns138281:0crwdne138281:0"
+    },
+    "niue-public": {
+      "description": "crwdns138283:0crwdne138283:0",
+      "name": "crwdns138285:0crwdne138285:0"
+    },
+    "palau-public": {
+      "description": "crwdns138287:0crwdne138287:0",
+      "name": "crwdns138289:0crwdne138289:0"
+    },
+    "panama-public": {
+      "description": "crwdns138291:0crwdne138291:0",
+      "name": "crwdns138293:0crwdne138293:0"
+    },
+    "rapanui-public": {
+      "description": "crwdns138295:0crwdne138295:0",
+      "name": "crwdns138297:0crwdne138297:0"
+    },
+    "reserva_de_la_biosfera_cmar-public": {
+      "description": "crwdns138299:0crwdne138299:0",
+      "name": "crwdns138301:0crwdne138301:0"
+    },
+    "revillagigedo-public": {
+      "description": "crwdns138303:0crwdne138303:0",
+      "name": "crwdns138305:0crwdne138305:0"
+    },
+    "tristan-public": {
+      "description": "crwdns138307:0crwdne138307:0",
+      "name": "crwdns138309:0crwdne138309:0"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "description": "crwdns138311:0crwdne138311:0",
+      "name": "crwdns138313:0crwdne138313:0"
+    },
+    "carrier-portal-report": {
+      "cta": "crwdns138315:0crwdne138315:0",
+      "description": "crwdns138317:0crwdne138317:0",
+      "name": "crwdns138319:0crwdne138319:0"
+    },
+    "deep-sea-mining-public": {
+      "cta": "crwdns138321:0crwdne138321:0",
+      "description": "crwdns138323:0crwdne138323:0",
+      "name": "crwdns138325:0crwdne138325:0"
+    },
+    "detections-report": {
+      "description": "crwdns138327:0crwdne138327:0",
+      "name": "crwdns138329:0crwdne138329:0"
+    },
+    "events-report": {
+      "description": "crwdns138331:0crwdne138331:0",
+      "name": "crwdns138333:0crwdne138333:0"
+    }
+  }
+}

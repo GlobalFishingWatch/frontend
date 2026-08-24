@@ -2,35 +2,42 @@
   "name": "@globalfishingwatch/ui-components",
   "version": "14.0.9",
   "description": "Set of react components to consume on the gfw ecosystem",
-  "author": "satellitestudio <contact@satellitestud.io>",
-  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
-  },
-  "scripts": {
-    "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
-  },
+  "repository": "github:GlobalFishingWatch/frontend",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./base.css": "./src/base.css",
+    "./dom-ids": {
+      "development": "./src/dom-ids.ts",
+      "types": "./dist/dom-ids.d.ts",
+      "default": "./dist/dom-ids.js"
+    },
+    "./color-bar-options": {
+      "development": "./src/color-bar/color-bar-options.ts",
+      "types": "./dist/color-bar/color-bar-options.d.ts",
+      "default": "./dist/color-bar/color-bar-options.js"
+    },
     "./*": {
-      "types": "./dist/*/index.d.ts",
       "development": "./src/*/index.ts",
+      "types": "./dist/*/index.d.ts",
       "default": "./dist/*/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "scripts": {
+    "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
+  },
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@floating-ui/react": "0.x",
@@ -48,7 +55,7 @@
     "react": "19.x",
     "react-aria-components": "1.x",
     "react-dom": "19.x",
-    "react-modal": "3.x",
+    "suncalc": "2.0.1",
     "topojson-client": "3.x",
     "tslib": "2.x"
   }

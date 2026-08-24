@@ -26,7 +26,7 @@ export const processStatus = (
             const res = JSON.parse(text)
             errors.message = res.message
             errors.messages = res.messages
-          } catch (e: any) {
+          } catch {
             errors.message = statusText
           }
         })
@@ -36,7 +36,7 @@ export const processStatus = (
         message: errors?.message || statusText,
         messages: errors.messages,
       })
-    } catch (e: any) {
+    } catch {
       return reject({ status, message: statusText })
     }
   })

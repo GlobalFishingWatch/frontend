@@ -1,0 +1,14 @@
+---
+description: Shared UI package conventions (named exports, CSS modules)
+globs: libs/ui-components/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# ui-components
+
+- **Named exports** for components (`export function Button`) — do not default-export new components
+- Styles: colocated `Component.module.css` + `import styles from './Component.module.css'`
+- Classnames via `cx` from `classnames`
+- Export public types next to the component (`export type ButtonProps`)
+- Treat the package as a design-system surface: avoid app-specific Redux/router imports
+- Keep a11y basics (button types, tooltip labeling) consistent with siblings

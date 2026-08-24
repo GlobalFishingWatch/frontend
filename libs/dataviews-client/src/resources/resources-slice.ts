@@ -14,11 +14,8 @@ import type {
   TrackField,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import {
-  mergeTrackChunks,
-  trackValueArrayToSegments,
-  wrapLineStringLongitudes,
-} from '@globalfishingwatch/data-transforms'
+import { mergeTrackChunks } from '@globalfishingwatch/data-transforms/merge-track-chunks'
+import { trackValueArrayToSegments } from '@globalfishingwatch/data-transforms/track-value-array-to-segments'
 
 export type ResourcesState = Record<any, Resource>
 export interface PartialStoreResources {
@@ -71,7 +68,7 @@ export const fetchResourceThunk = createAsyncThunk(
 
     // The urls has the version included so I need to remove them
     const data = await GFWAPI.fetch(resource.url, { responseType, signal })
-      .then((data: any) => {
+      .then(async (data: any) => {
         if (isTrackResource && isTrackBinary) {
           const fields = resource.datasetConfig.query?.find((q) => q.id === 'fields')
             ?.value as TrackField[]
@@ -92,6 +89,8 @@ export const fetchResourceThunk = createAsyncThunk(
         if (isUserTrackResource) {
           const geoJSON = data as FeatureCollection
 
+          const { wrapLineStringLongitudes } =
+            await import('@globalfishingwatch/data-transforms/wrap-longitudes')
           // Wrap longitudes
           const wrappedGeoJSON = {
             ...geoJSON,

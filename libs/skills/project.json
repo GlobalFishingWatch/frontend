@@ -5,9 +5,9 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/esbuild:esbuild",
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/skills/dist",
@@ -61,47 +61,33 @@
             "js": "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"
           },
           "alias": {
-            "@fishing-map/config": "./apps/fishing-map/config/src/index.ts",
-            "@globalfishingwatch/api-types": "./libs/api-types/dist/index.js",
-            "@globalfishingwatch/api-client": "./libs/api-client/dist/index.js",
-            "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist/index.js",
+            "@platform/config": "./apps/platform/config/index.ts",
+            "@globalfishingwatch/api-types": "./libs/api-types/dist",
+            "@globalfishingwatch/api-client": "./libs/api-client/dist",
+            "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist",
             "@globalfishingwatch/deck-layers": "./libs/deck-layers/dist/layers/fourwings/fourwings.config.js",
-            "@globalfishingwatch/deck-loaders": "./libs/deck-loaders/dist/index.js",
-            "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist/index.js",
-            "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist/index.js"
+            "@globalfishingwatch/deck-loaders": "./libs/deck-loaders/dist",
+            "@globalfishingwatch/datasets-client": "./libs/datasets-client/dist",
+            "@globalfishingwatch/dataviews-client": "./libs/dataviews-client/dist"
           }
         }
       }
     },
-    "dev": {
-      "dependsOn": ["^dev"],
-      "executor": "@nx/js:tsc",
-      "cache": false,
-      "options": {
-        "watch": true
-      },
-      "continuous": true
-    },
-    "publish": {
-      "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
-      "options": {
-        "packageRoot": "libs/skills"
-      }
-    },
+    "publish": {},
     "claude:encode-url": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/encode-url && cp -r libs/skills/dist/encode-url ~/.claude/skills/"
       }
     },
     "claude:decode-url": {
       "executor": "nx:run-commands",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/decode-url && cp -r libs/skills/dist/decode-url ~/.claude/skills/"
       }
-    }
+    },
+    "typecheck": {}
   }
 }

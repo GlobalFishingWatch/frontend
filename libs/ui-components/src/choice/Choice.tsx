@@ -42,6 +42,7 @@ export function Choice({
   const choiceRef = useRef<HTMLDivElement | null>(null)
   const [pill, setPill] = useState<{ width: number; left: number } | null>(null)
   const [isOverflowing, setIsOverflowing] = useState(false)
+  const [animated, setAnimated] = useState(false)
 
   const measurePill = useCallback(() => {
     if (activeRef.current) {
@@ -80,6 +81,7 @@ export function Choice({
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     if (activeOptionId === option.id) return
     activeRef.current = e.currentTarget.parentElement as HTMLLIElement
+    setAnimated(true)
     onSelect?.(option, e)
   }
 
@@ -125,10 +127,14 @@ export function Choice({
             testId={testId}
           />
         ) : (
-          <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': testId })}>
+          <ul
+            className={styles.list}
+            role="radiogroup"
+            {...(testId && { 'data-testid': testId })}
+          >
             {pill && (
               <span
-                className={cx(styles.activePill)}
+                className={cx(styles.activePill, { [styles.animated]: animated })}
                 style={{ width: pill.width, transform: `translateX(${pill.left}px)` }}
                 aria-hidden="true"
               />

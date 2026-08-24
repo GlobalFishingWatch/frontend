@@ -27,6 +27,7 @@ import {
   AUTH_PATH,
   DEBUG_API_REQUESTS,
   GUEST_USER_TYPE,
+  LOGOUT_SESSION_PATH,
   REGISTER_PATH,
   SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
@@ -265,6 +266,22 @@ export class GFW_API_CLASS {
     })
   }
 
+  getLogoutSessionUrl(
+    { client = 'gfw', locale = '' } = {} satisfies {
+      client?: string
+      locale?: string
+    }
+  ) {
+    const params = new URLSearchParams({
+      client,
+      locale: locale || this.getStoredLocale(),
+    })
+    return this.generateUrl(
+      `/${API_VERSION}/${AUTH_PATH}/${LOGOUT_SESSION_PATH}?${params.toString()}`,
+      { absolute: true }
+    )
+  }
+
   getConfig() {
     return {
       debug: this.debug,
@@ -429,7 +446,7 @@ export class GFW_API_CLASS {
         saveAs(blob, fileName)
         return true
       })
-      .catch((e) => {
+      .catch(() => {
         return false
       })
       .finally(() => {
@@ -523,7 +540,7 @@ export class GFW_API_CLASS {
             case 'default':
               return res
             case 'json':
-              return parseJSON(res).catch((e) => {
+              return parseJSON(res).catch(() => {
                 // When an error occurs while parsing and
                 // http response is no content, returns an
                 // empty response instead of an raising error

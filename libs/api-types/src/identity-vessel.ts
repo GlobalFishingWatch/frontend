@@ -161,6 +161,8 @@ export type SelfReportedInfo = VesselInfo & {
   hull?: string
   fishingLicenseCode?: string
   vesselRegistrationCode?: string
+  onFishingListSr?: CombinedSourceInfo[]
+  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
 }
 
 export type RegistryImage = {
@@ -196,6 +198,7 @@ export type VesselRegistryInfo = VesselInfo & {
   tonnageGt: number | RegistryLoginMessage
   vesselInfoReference: string
   extraFields?: RegistryExtraFields[]
+  registryVesselClass?: CombinedSourceInfo[]
 }
 
 export type VesselRegistryProperty = {
@@ -236,32 +239,32 @@ export type VesselIdentitySearchMatchCriteria = {
 }
 
 export type CombinedSourceInfo = {
-  name: string
-  source: string
+  // pipe 5 only sets `name` on the geartypes/shiptypes entries, the rest are value-only
+  name?: string
+  source: string | null
   yearFrom: number
   yearTo: number
-  value?: string | boolean
+  value?: string | boolean | number
 }
 export type VesselCombinedSourcesInfo = {
-  vesselId: string
-  atomicClass?: CombinedSourceInfo[]
+  atomicClassSc?: CombinedSourceInfo[]
+  bestEnginePowerKw?: CombinedSourceInfo[]
+  bestLengthM?: CombinedSourceInfo[]
+  bestTonnageGt?: CombinedSourceInfo[]
   bestVesselClassRf?: CombinedSourceInfo[]
   coarseClass?: CombinedSourceInfo[]
   fishingSourceAgreement?: CombinedSourceInfo[]
   geartypes: CombinedSourceInfo[]
   inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
-  inferredVesselClassAgNnet?: CombinedSourceInfo[]
-  messyMmsi?: CombinedSourceInfo[]
-  onFishingListSr?: CombinedSourceInfo[]
-  prodGeartypeNnet?: CombinedSourceInfo[]
+  maxSpeedKn?: CombinedSourceInfo[]
+  onFishingListSc?: CombinedSourceInfo[]
   prodGeartypeSource?: CombinedSourceInfo[]
-  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
-  prodShiptypeNnet?: CombinedSourceInfo[]
-  registryVesselClass?: CombinedSourceInfo[]
   shiptypes: CombinedSourceInfo[]
+  vesselClassSc?: CombinedSourceInfo[]
   vesselClassScore?: CombinedSourceInfo[]
   vesselClassSourceAgreement?: CombinedSourceInfo[]
+  vesselId: string
 }
 
 export type IdentityVessel = {

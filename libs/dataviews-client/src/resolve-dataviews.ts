@@ -2,7 +2,6 @@ import { uniqBy } from 'es-toolkit'
 
 import type {
   Dataset,
-  DatasetFilter,
   DatasetFilterOperation,
   Dataview,
   DataviewDatasetConfig,
@@ -20,12 +19,13 @@ import {
   EXCLUDE_FILTER_ID,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
-import { isNumeric } from '@globalfishingwatch/data-transforms'
+import { isNumeric } from '@globalfishingwatch/data-transforms/filter-tracks-coordinates'
 import {
   getFlattenDatasetFilters,
   removeDatasetVersion,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 
 import { getVesselIdFromInstanceId } from './dataviews.utils'
 import type { UrlDataviewInstance } from './types'
@@ -44,8 +44,6 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
-// keep it sync with '@globalfishingwatch/deck-layer-composer' but needed to duplicate to avoid circular dependency
-const DATASET_COMPARISON_SUFFIX = 'dataset-comparison' as const
 export function isComparisonDataview(dataview: UrlDataviewInstance) {
   return dataview.origin === 'comparison' && dataview.id?.endsWith(DATASET_COMPARISON_SUFFIX)
 }
@@ -107,6 +105,17 @@ export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Environment &&
     dataview.config?.type === DataviewType.HeatmapAnimated
+  )
+}
+
+export function getIsSingleHeatmapDataview(dataviews: UrlDataviewInstance[]) {
+  return (
+    dataviews.filter(
+      (dataview) =>
+        isActivityDataview(dataview) ||
+        isDetectionsDataview(dataview) ||
+        isEnvironmentalDataview(dataview)
+    ).length === 1
   )
 }
 
@@ -565,7 +574,7 @@ export function resolveDataviews(
                       : datasetConfig.query,
                 }
               }
-              // using the instance query and params first as the uniqBy from lodash doc says:
+              // using the instance query and params first as the uniqBy from es-toolkit doc says:
               // the order of result values is determined by the order they occur in the array
               // so the result will be overriding the default dataview config
 

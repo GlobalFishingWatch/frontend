@@ -4,7 +4,7 @@ import type { Feature, LineString, MultiLineString, MultiPolygon, Polygon } from
 
 import type { FilterOperators } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 export type ContextSublayerCallbackParams<T = Record<string, any>> = {
   layer: ContextLayerConfig

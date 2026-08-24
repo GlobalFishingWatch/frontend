@@ -5,8 +5,8 @@ import type { Feature, Geometry } from 'geojson'
 
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
 
-import type { DeckLayerProps, DeckPickingObject } from '../../types'
-import type { ContextFeatureBaseProperties, ContextLayerConfig } from '../context'
+import type { ContextFeatureBaseProperties, ContextLayerConfig } from '#layers/context/index'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 export type FilterExtensionProps = {
   extensions: LayerExtension<unknown>[]

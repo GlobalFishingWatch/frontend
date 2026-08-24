@@ -1,32 +1,59 @@
 {
   "name": "@globalfishingwatch/deck-layers",
   "version": "0.1.7",
-  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./draw": {
-      "types": "./dist/draw.d.ts",
       "development": "./src/draw.ts",
+      "types": "./dist/draw.d.ts",
       "default": "./dist/draw.js"
+    },
+    "./config": {
+      "development": "./src/config/index.ts",
+      "types": "./dist/config/index.d.ts",
+      "default": "./dist/config/index.js"
+    },
+    "./utils": {
+      "development": "./src/utils/index.ts",
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    }
+  },
+  "imports": {
+    "#config": {
+      "development": "./src/config/index.ts",
+      "types": "./dist/config/index.d.ts",
+      "default": "./dist/config/index.js"
+    },
+    "#utils": {
+      "development": "./src/utils/index.ts",
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "#*": {
+      "development": "./src/*.ts",
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
-    "@deck.gl-community/editable-layers": "9.3.7",
-    "@deck.gl/core": "9.3.7",
-    "@deck.gl/extensions": "9.3.7",
-    "@deck.gl/geo-layers": "9.3.7",
-    "@deck.gl/layers": "9.3.7",
+    "@deck.gl-community/editable-layers": "9.x",
+    "@deck.gl/core": "9.x",
+    "@deck.gl/extensions": "9.x",
+    "@deck.gl/geo-layers": "9.x",
+    "@deck.gl/layers": "9.x",
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "@globalfishingwatch/data-transforms": "workspace:^",
@@ -46,13 +73,10 @@
     "geojson": "0.x",
     "geokdbush": "2.x",
     "kdbush": "4.x",
-    "lodash": "4.x",
     "luxon": "3.x",
     "qs": "6.x",
-    "sharp": "0.x",
     "simple-statistics": "7.x",
-    "supercluster": "8.x",
-    "tslib": "2.x",
-    "type-fest": "5.x"
+    "supercluster": "9.x",
+    "tslib": "2.x"
   }
 }

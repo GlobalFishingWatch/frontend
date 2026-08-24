@@ -1,0 +1,168 @@
+import { createSelector } from '@reduxjs/toolkit'
+import { uniqBy } from 'es-toolkit'
+
+import type { VesselGroup } from '@globalfishingwatch/api-types'
+import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+
+import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
+import { getVesselGroupsInDataviews } from 'features/_map/datasets/datasets.utils'
+import { selectActiveVesselGroupDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { selectActiveActivityAndDetectionsDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import {
+  selectLastVisitedWorkspace,
+  selectWorkspace,
+  selectWorkspaceDataviewInstances,
+} from 'features/_map/workspace/workspace.selectors'
+import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
+import { getVesselDatasetsWithoutEventsRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
+import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
+import { getVesselGroupVesselsCount } from 'features/_user/vessel-groups/vessel-groups.utils'
+import {
+  MAX_VESSEL_GROUP_VESSELS,
+  selectVesselGroupModalCsvData,
+  selectVesselGroupModalSearchIdField,
+  selectVesselGroupModalVessels,
+  selectVesselGroupsModalSearchText,
+} from 'features/_user/vessel-groups/vessel-groups-modal.slice'
+import { FLAG_LENGTH, SSVID_LENGTH, VESSEL_ID_LENGTH } from 'features/_vessels/search/search.config'
+import { isAdvancedSearchAllowed } from 'features/_vessels/search/search.selectors'
+import { selectLocationQuery, selectUrlDataviewInstances } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
+
+import { selectAllVesselGroups } from './vessel-groups.slice'
+
+export const selectVesselGroupsModalSearchIds = createSelector(
+  [selectVesselGroupsModalSearchText, selectVesselGroupModalSearchIdField],
+  (text, idField) => {
+    if (!text) {
+      return []
+    }
+    const separator = idField === 'shipname' ? /[\n,]+/ : /[\s|,]+/
+    return text
+      .split(separator)
+      .map((value) => value.trim())
+      .filter(Boolean)
+  }
+)
+
+export const selectHasVesselGroupVesselsOverflow = createSelector(
+  [selectVesselGroupModalVessels],
+  (vessels = []) => {
+    return (
+      vessels !== null &&
+      getVesselGroupVesselsCount({ vessels } as VesselGroup) > MAX_VESSEL_GROUP_VESSELS
+    )
+  }
+)
+
+export const selectHasVesselGroupSearchVessels = createSelector(
+  [selectVesselGroupModalVessels],
+  (vessels = []) => {
+    return vessels !== null && vessels.length > 0
+  }
+)
+
+export const selectVessselGroupsAllowed = createSelector(
+  [isAdvancedSearchAllowed],
+  (advancedSearchAllowed) => {
+    return advancedSearchAllowed
+  }
+)
+
+export const selectWorkspaceVessselGroupsIds = createSelector(
+  [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
+  (workspaceDataviewInstances, urlDataviewInstances) => {
+    return getVesselGroupsInDataviews([
+      ...(Array.isArray(workspaceDataviewInstances) ? workspaceDataviewInstances : []),
+      ...(Array.isArray(urlDataviewInstances) ? urlDataviewInstances : []),
+    ])
+  }
+)
+
+export const selectVesselGroupWorkspaceToNavigate = createSelector(
+  [selectLastVisitedWorkspace, selectWorkspace, selectLocationQuery],
+  (lastVisitedWorkspace, workspace, query): LastWorkspaceVisited => {
+    if (lastVisitedWorkspace) {
+      return lastVisitedWorkspace
+    }
+    return {
+      to: ROUTE_PATHS.WORKSPACE,
+      params: {
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      },
+      search: query,
+    }
+  }
+)
+
+export const selectIsVessselGroupsFiltering = createSelector(
+  [selectActiveActivityAndDetectionsDataviews, selectActiveVesselGroupDataviews],
+  (activeActivityAndDetectionsDataviews, activeVesselGroupDataviews) => {
+    return (
+      [
+        ...getVesselGroupsInDataviews(activeActivityAndDetectionsDataviews),
+        ...(activeVesselGroupDataviews || []),
+      ].length > 0
+    )
+  }
+)
+
+export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector(
+  [selectVesselGroupModalVessels, selectVesselsDatasets],
+  (vessels = [], vesselDatasets) => {
+    return getVesselDatasetsWithoutEventsRelated(vessels, vesselDatasets)
+  }
+)
+
+export const selectUserVesselGroups = createSelector(
+  [selectAllVesselGroups, selectUserId],
+  (vesselGroups, userId) => {
+    return vesselGroups?.filter((d) => d.ownerId === userId)
+  }
+)
+
+export const selectWorkspaceVesselGroups = createSelector(
+  [selectAllVesselGroups, selectWorkspaceVessselGroupsIds],
+  (vesselGroups, workspaceVesselGroupsIds) => {
+    return vesselGroups?.filter((d) => workspaceVesselGroupsIds.includes(d.id))
+  }
+)
+
+export const selectAllVisibleVesselGroups = createSelector(
+  [selectAllVesselGroups, selectWorkspaceVesselGroups],
+  (userVesselGroups, workspaceVesselGroups) => {
+    return uniqBy([...(userVesselGroups || []), ...(workspaceVesselGroups || [])], (v) => v.id)
+  }
+)
+
+export const selectVesselGroupModalSelectableColumns = createSelector(
+  [selectVesselGroupModalCsvData, selectIsGFWUser, selectIsJACUser],
+  (csvData, isGFWUser, isJACUser) => {
+    if (!csvData?.[0]) return []
+    return Object.keys(csvData[0]).filter((column) => {
+      const resolved = resolveVesselPropertyColumn(column)
+      if (!resolved) return false
+      const values = csvData.map((row) => row[column]).filter(Boolean)
+      if (values.length === 0) return false
+      if (resolved === 'flag') {
+        return values.every((v) => v?.length === FLAG_LENGTH) // ISO3
+      }
+      if (resolved === 'mmsi') {
+        return values.every((v) => v?.length === SSVID_LENGTH) // MMSI
+      }
+      if (resolved === 'vesselId') {
+        return (isGFWUser || isJACUser) && values.every((v) => v?.length === VESSEL_ID_LENGTH) // GFW Vessel ID
+      }
+      if (resolved === 'imo') {
+        return true
+      }
+      if (resolved === 'callsign') {
+        return true
+      }
+      return false
+    })
+  }
+)

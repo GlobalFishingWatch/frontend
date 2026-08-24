@@ -34,25 +34,24 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckLayerPickingObject } from '../../../types'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
-  getLayerGroupOffset,
-  GFWMVTLoader,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../../utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import { IS_TEST_ENV, PATH_BASENAME } from '../../layers.config'
+} from '#config/colors.config'
+import { IS_TEST_ENV, PATH_BASENAME } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { GFWMVTLoader } from '#layers/_shared/api'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
-} from '../fourwings.config'
-import { getURLFromTemplate } from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/fourwings.config'
+import { getURLFromTemplate } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import type { DeckLayerPickingObject } from '#types'
+import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import type {
   FourwingsClusterEventType,
@@ -109,6 +108,17 @@ const POINTS_LAYER_ID = 'points'
 const MAX_INDIVIDUAL_POINTS = 1000
 const MAX_CLUSTER_EXPANSION_ZOOM = 20
 const emptyHighlightedFeatures = [] as DeckLayerPickingObject[]
+
+type SuperclusterIndex = Supercluster & {
+  numPoints?: number
+  points?: { length: number }
+}
+
+function getClusterIndexSize(clusterIndex: Supercluster | undefined): number {
+  if (!clusterIndex) return 0
+  const index = clusterIndex as SuperclusterIndex
+  return index.numPoints ?? index.points?.length ?? 0
+}
 
 export function getFourwingsGeolocation(
   clusterMaxZoomLevels: ClusterMaxZoomLevelConfig,
@@ -200,7 +210,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
             radiusScale: undefined,
           })
         }
-      } else if (clusterIndex !== undefined && (clusterIndex as any).points?.length > 0) {
+      } else if (getClusterIndexSize(clusterIndex) > 0) {
         const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
         this.setState({
           clusters: clusters,
@@ -232,7 +242,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
     const { zoom } = this.context.viewport
-    if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
+    if (getClusterIndexSize(this.state.clusterIndex) && info.object?.properties.cluster_id) {
       try {
         const points = this.state.clusterIndex.getLeaves(
           info.object?.properties.cluster_id,
@@ -297,7 +307,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClustersByZoom = (zoom: number) => {
-    if (!this.state.clusterIndex || !(this.state.clusterIndex as any).points?.length) {
+    if (getClusterIndexSize(this.state.clusterIndex) === 0) {
       return { clusters: undefined, points: undefined, radiusScale: undefined }
     }
 

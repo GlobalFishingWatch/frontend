@@ -1,17 +1,17 @@
 /// <reference types='vitest' />
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
-import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import svgr from 'vite-plugin-svgr'
 
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
 
 export default defineConfig(({ command }) => ({
-  devtools: command === 'serve',
+  devtools: command === 'serve' && !!process.env.VITE_DEVTOOLS,
   base: basePath,
-  root: __dirname,
+  root: import.meta.dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
   resolve: { tsconfigPaths: true },
 
@@ -49,28 +49,8 @@ export default defineConfig(({ command }) => ({
     }),
   ],
 
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
-
   build: {
     outDir: '../../dist/apps/data-download-portal',
     reportCompressedSize: true,
   },
-
-  // test: {
-  //   globals: true,
-  //   cache: {
-  //     dir: '../../node_modules/.vitest',
-  //   },
-  //   environment: 'jsdom',
-  //   include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-
-  //   reporters: ['default'],
-  //   coverage: {
-  //     reportsDirectory: '../../coverage/apps/data-download-portal',
-  //     provider: 'v8',
-  //   },
-  // },
 }))

@@ -1,1 +1,2 @@
-pnpm lint-staged
+# The pnpm wrapper costs ~1.1s of pure startup before lint-staged even begins. Call the bin directly.
+node_modules/.bin/lint-staged

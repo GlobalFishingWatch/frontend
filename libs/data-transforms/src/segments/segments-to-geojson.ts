@@ -3,8 +3,9 @@ import type { Feature, FeatureCollection, LineString, MultiLineString, Position 
 
 import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 
-export const COORDINATE_PROPERTY_TIMESTAMP = 'times'
-export const COORDINATES_PROPERTIES_ID = 'coordinateProperties'
+import { COORDINATE_PROPERTY_TIMESTAMP, COORDINATES_PROPERTIES_ID } from './segments.config'
+
+export { COORDINATE_PROPERTY_TIMESTAMP, COORDINATES_PROPERTIES_ID }
 
 const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<LineString>[] => {
   // This checks converts always to bi-dimensional array

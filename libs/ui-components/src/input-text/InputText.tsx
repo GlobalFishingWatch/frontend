@@ -49,8 +49,8 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
     onCleanButtonClick,
     ...rest
   } = props
-  useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
   const inputRef = useRef<HTMLInputElement>(null)
+  useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [isValid, setIsValid] = useState(true)
   let inputType = type
@@ -105,7 +105,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
       {!loading && onCleanButtonClick && inputProps.value && (
         <IconButton
           icon="delete"
-          size="medium"
+          size={inputSize === 'small' ? 'tiny' : 'medium'}
           className={styles.delete}
           onClick={onCleanButtonClick}
         />

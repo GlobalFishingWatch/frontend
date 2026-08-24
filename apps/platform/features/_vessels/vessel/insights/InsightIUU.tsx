@@ -1,0 +1,49 @@
+import { useTranslation } from 'react-i18next'
+
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import type { InsightResponse } from '@globalfishingwatch/api-types'
+
+import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+
+import styles from './Insights.module.css'
+
+const InsightIUU = ({
+  insightData,
+  isLoading,
+  error,
+}: {
+  insightData?: InsightResponse
+  isLoading: boolean
+  error: ParsedAPIError
+}) => {
+  const { t } = useTranslation()
+  const { iuuVesselList } = insightData?.vesselIdentity || {}
+  return (
+    <div id="IUU" className={styles.insightContainer}>
+      <div className={styles.insightTitle}>
+        <label>{t((t) => t.vessel.insights.IUU)}</label>
+        <DataTerminology terminologyKey="insightsIUU" />
+      </div>
+      {isLoading ? (
+        <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
+      ) : error ? (
+        <InsightError error={error} />
+      ) : (
+        <div>
+          <p>
+            {iuuVesselList?.valuesInThePeriod.length !== 0 ? (
+              <span>{t((t) => t.vessel.insights.IUUBlackListsCount)}</span>
+            ) : (
+              <span className={styles.secondary}>
+                {t((t) => t.vessel.insights.IUUBlackListsEmpty)}
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default InsightIUU

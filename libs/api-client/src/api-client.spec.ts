@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createCookieTokenStorage } from './utils/token-storage'
+import type { ApiVersion } from './api-client'
 import { GFW_API_CLASS } from './api-client'
 import { API_GATEWAY, API_VERSION } from './config'
 
@@ -53,7 +54,7 @@ describe('api-client', () => {
       it('should use custom baseUrl and version', () => {
         const client = createApiClient({
           baseUrl: 'https://custom.api.com',
-          version: 'v2',
+          version: 'v2' as ApiVersion,
         })
 
         expect(client.baseUrl).toBe('https://custom.api.com')
@@ -120,7 +121,7 @@ describe('api-client', () => {
 
         const result = client.generateUrl('/datasets', {
           absolute: true,
-          version: 'v2',
+          version: 'v2' as ApiVersion,
         })
 
         expect(result).toBe('https://api.example.com/v2/datasets')
@@ -313,7 +314,7 @@ describe('api-client', () => {
         const client = createApiClient()
         fetchMock.mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }))
 
-        await client.fetch('/datasets', { version: 'v2' })
+        await client.fetch('/datasets', { version: 'v2' as ApiVersion })
 
         expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('/v2/'), expect.any(Object))
       })
@@ -579,7 +580,7 @@ describe('api-client', () => {
           )
 
         // The original error surfaces, but it is NOT flagged as a refresh failure.
-        const error = await client.fetch('/datasets/1').catch((e) => e)
+        const error: any = await client.fetch('/datasets/1').catch((e) => e)
         expect(error.refreshError).toBeUndefined()
         // A 403 is "authenticated but forbidden", not "invalid refresh token" — keep the session.
         expect(storage.getItem('GFW_API_USER_TOKEN')).toBe('old-token')
@@ -1313,7 +1314,9 @@ describe('api-client', () => {
         await client.logout()
 
         expect(logSpy).toHaveBeenCalledWith('GFWAPI: logout — gateway OK')
-        expect(logSpy).toHaveBeenCalledWith('GFWAPI: invalidateClientSession — clearing local session')
+        expect(logSpy).toHaveBeenCalledWith(
+          'GFWAPI: invalidateClientSession — clearing local session'
+        )
         logSpy.mockRestore()
         warnSpy.mockRestore()
       })

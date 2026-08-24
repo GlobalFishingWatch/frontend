@@ -1,9 +1,9 @@
 import React, { Fragment, lazy, Suspense, useCallback, useEffect, useState } from 'react'
 
-import { Menu, SplitView } from '@globalfishingwatch/ui-components'
+import { SplitView } from '@globalfishingwatch/ui-components'
+import { Menu } from '@globalfishingwatch/ui-components/menu'
 
 import menuBgImage from 'assets/images/menubg.jpg'
-import { ROOT_DOM_ELEMENT } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { t } from 'features/i18n/i18n'
 import Sidebar from 'features/sidebar/Sidebar'
@@ -41,10 +41,6 @@ function App(): React.ReactElement<any> {
     dispatch(fetchUserThunk({ guest: false }) as any)
   }, [dispatch])
 
-  const onMenuClick = useCallback(() => {
-    setMenuOpen(true)
-  }, [])
-
   const onToggle = useCallback(() => {
     setSidebarOpen(!sidebarOpen)
   }, [sidebarOpen])
@@ -57,7 +53,7 @@ function App(): React.ReactElement<any> {
         showToggle
         isOpen={sidebarOpen}
         onToggle={onToggle}
-        aside={<Sidebar onMenuClick={onMenuClick} />}
+        aside={<Sidebar />}
         main={<Main />}
         asideWidth={asideWidth}
         showAsideLabel={'TODO'}
@@ -65,7 +61,6 @@ function App(): React.ReactElement<any> {
         className="split-container"
       />
       <Menu
-        appSelector={ROOT_DOM_ELEMENT}
         bgImage={menuBgImage}
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}

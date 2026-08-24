@@ -30,7 +30,7 @@
   content: '';
   inset: -4px;
   border: 1px solid var(--color-primary-blue);
-  border-radius: 50%;
+  border-radius: var(--space-M);
   opacity: 0;
   transition: var(--transition);
 }
@@ -39,8 +39,16 @@
   opacity: 1;
 }
 
+.colorGradient {
+  width: 3.6rem;
+  background-origin: border-box;
+}
+
+.colorGradient::after {
+  inset: -4px;
+}
+
 .colorDisabled {
-  pointer-events: none;
   cursor: not-allowed;
   opacity: 0.4;
 }

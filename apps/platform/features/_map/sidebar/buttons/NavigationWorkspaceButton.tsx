@@ -1,0 +1,112 @@
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
+import cx from 'classnames'
+
+import { IconButton } from '@globalfishingwatch/ui-components'
+import {
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  WorkspaceCategory,
+} from '@platform/config/map/workspaces'
+
+import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
+import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
+import { cleanReportQuery } from 'features/_map/workspace/workspace.utils'
+import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
+import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/track-selection.selectors'
+import { DEFAULT_VESSEL_STATE } from 'features/_vessels/vessel/vessel.config'
+import { resetVesselState } from 'features/_vessels/vessel/vessel.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectIsAnySearchLocation,
+  selectIsAnyWorkspaceReportLocation,
+  selectIsStandaloneSearchLocation,
+  selectIsVesselLocation,
+  selectIsWorkspaceVesselLocation,
+  selectLocationCategory,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
+
+import styles from '../SidebarHeader.module.css'
+
+function NavigationWorkspaceButton() {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const isVesselLocation = useSelector(selectIsVesselLocation)
+  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isSearchLocation = useSelector(selectIsAnySearchLocation)
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
+  const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
+  const workspaceId = useSelector(selectWorkspaceId)
+  const locationCategory = useSelector(selectLocationCategory)
+
+  const resetState = useCallback(() => {
+    resetSidebarScroll()
+    dispatch(resetVesselState())
+  }, [dispatch])
+
+  if (isSearchLocation || (!workspaceId && isVesselLocation)) {
+    return (
+      <Link
+        className={cx(styles.workspaceLink, 'print-hidden')}
+        to={
+          isStandaloneSearchLocation || isVesselLocation ? ROUTE_PATHS.MAP : ROUTE_PATHS.WORKSPACE
+        }
+        params={
+          isStandaloneSearchLocation || isVesselLocation
+            ? undefined
+            : {
+                workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,
+                category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
+              }
+        }
+        search={{}}
+        state={(state) => ({ ...state, isHistoryNavigation: true })}
+        replace
+        onClick={resetState}
+      >
+        <IconButton type="border" icon="close" />
+      </Link>
+    )
+  }
+
+  if (
+    workspaceId &&
+    (isWorkspaceVesselLocation ||
+      isTrackCorrectionOpen ||
+      (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
+  ) {
+    const tooltip = t((t) => t.common.navigateBackTo, {
+      section: t((t) => t.workspace.title).toLocaleLowerCase(),
+    })
+    return (
+      <Link
+        className={cx(styles.workspaceLink, 'print-hidden')}
+        to={ROUTE_PATHS.WORKSPACE}
+        params={{
+          workspaceId: workspaceId,
+          category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
+        }}
+        search={(prev: QueryParams) => ({
+          ...cleanReportQuery(prev),
+          ...EMPTY_SEARCH_FILTERS,
+          ...DEFAULT_VESSEL_STATE,
+          trackCorrectionId: undefined,
+          dataviewInstances: cleanVesselProfileDataviewInstances(prev.dataviewInstances),
+        })}
+        state={(state) => ({ ...state, isHistoryNavigation: true })}
+        onClick={resetState}
+      >
+        <IconButton type="border" icon="close" tooltip={tooltip} />
+      </Link>
+    )
+  }
+  return null
+}
+
+export default NavigationWorkspaceButton

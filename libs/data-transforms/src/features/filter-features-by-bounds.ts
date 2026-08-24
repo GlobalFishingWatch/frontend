@@ -43,10 +43,7 @@ export const filterFeaturesByBounds = ({
   onlyValuesAndStartFrame = false,
 }: {
   features:
-    | GeoJSONFeature[]
-    | FourwingsFeature[]
-    | FourwingsStaticFeature[]
-    | FourwingsPointFeature[]
+    GeoJSONFeature[] | FourwingsFeature[] | FourwingsStaticFeature[] | FourwingsPointFeature[]
   bounds: Bounds
   onlyValuesAndStartFrame?: boolean
 }) => {

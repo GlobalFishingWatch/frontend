@@ -1,58 +1,28 @@
-# Code Review
+# Code review
 
-## Overview
+Review the current change for correctness, maintainability, and risk in this GFW frontend monorepo.
 
-Perform a thorough code review that verifies functionality, maintainability, and
-security before approving a change. Focus on architecture, readability,
-performance implications, and provide actionable suggestions for improvement.
+## Prefer built-in agents when available
 
-## Steps
+If the user wants Bugbot / Security Review, suggest or run:
 
-1. **Understand the change**
-   - Read the PR description and related issues for context
-   - Identify the scope of files and features impacted
-   - Note any assumptions or questions to clarify with the author
-2. **Validate functionality**
-   - Confirm the code delivers the intended behavior
-   - Exercise edge cases or guard conditions mentally or by running locally
-   - Check error handling paths and logging for clarity
-3. **Assess quality**
-   - Ensure functions are focused, names are descriptive, and code is readable
-   - Watch for duplication, dead code, or missing tests
-   - Verify documentation and comments reflect the latest changes
-4. **Review security and risk**
-   - Look for injection points, insecure defaults, or missing validation
-   - Confirm secrets or credentials are not exposed
-   - Evaluate performance or scalability impacts of the change
+- `/review-bugbot` — automated bug finding on the current diff
+- `/review-security` — security-focused review
+- `/review` (Cursor built-in) — pick agents interactively
 
-## Review Checklist
+Use this command for a **manual** review when those agents are unavailable or the user wants repo-specific guidance.
 
-### Functionality
+## Focus areas
 
-- [ ] Intended behavior works and matches requirements
-- [ ] Edge cases handled gracefully
-- [ ] Error handling is appropriate and informative
+1. **Correctness** — matches intent; edge cases; error handling
+2. **Platform patterns** — RTK Query / slices / selectors; TanStack Router routes; `.module.css`; `*.hooks.ts`
+3. **Map/deck** — class-based deck.gl layers OK; watch picking, data loaders, and dataview resolution
+4. **ui-components** — named exports; CSS modules; no drive-by API breaks
+5. **Safety** — no secrets in diff; no force-push / destructive scripts; no exploit PoCs
+6. **Tests** — Vitest coverage for non-trivial logic
 
-### Code Quality
+## Output format
 
-- [ ] Code structure is clear and maintainable
-- [ ] No unnecessary duplication or dead code
-- [ ] Tests/documentation updated as needed
-
-### Security & Safety
-
-- [ ] No obvious security vulnerabilities introduced
-- [ ] Inputs validated and outputs sanitized
-- [ ] Sensitive data handled correctly
-
-## Additional Review Notes
-
-- Architecture and design decisions considered
-- Performance bottlenecks or regressions assessed
-- Coding standards and best practices followed
-- Resource management, error handling, and logging reviewed
-- Suggested alternatives, additional test cases, or documentation updates
-  captured
-
-Provide constructive feedback with concrete examples and actionable guidance for
-the author.
+- One line per finding: `path:line — severity — problem — fix`
+- Severities: `blocker` | `major` | `nit`
+- End with a short verdict (approve / request changes)

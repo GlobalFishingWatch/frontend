@@ -14,6 +14,7 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
   const [invitationNotes, setInvitationNotes] = useState('')
   const [group, setGroup] = useState<UserGroup>()
   const [futureUsers, setFutureUsers] = useState<FutureUserData[]>()
+  const [query, setQuery] = useState('')
 
   const fetchGroup = useCallback(async (groupId: number) => {
     setLoading(true)
@@ -68,6 +69,7 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
     return () => {
       setEmail('')
       setInvitationNotes('')
+      setQuery('')
       setGroup(undefined)
       setFutureUsers(undefined)
     }
@@ -124,6 +126,15 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
     return <Spinner />
   }
 
+  const search = query.trim().toLowerCase()
+  const visibleUsers =
+    group.users?.filter((u) =>
+      [u.firstName, u.lastName, u.email].filter(Boolean).join(' ').toLowerCase().includes(search)
+    ) ?? []
+  const visibleFutureUsers =
+    futureUsers?.filter((u) => u.email.toLowerCase().includes(search)) ?? []
+  const hasUsers = (group.users?.length ?? 0) > 0 || (futureUsers?.length ?? 0) > 0
+
   return (
     <div>
       <div className={styles.header}>
@@ -133,12 +144,24 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
         </div>
         <IconButton tooltip="Download CSV" icon="download" onClick={onDownloadCsvClick} />
       </div>
-      <h2 className={[styles.subTitle, styles.content].join(' ')}>Users</h2>
+      <div className={[styles.subTitleRow, styles.content].join(' ')}>
+        <h2 className={styles.subTitle}>Users</h2>
+        {hasUsers && (
+          <InputText
+            type="search"
+            value={query}
+            inputSize="small"
+            onChange={(e) => setQuery(e.target.value)}
+            onCleanButtonClick={() => setQuery('')}
+            className={styles.search}
+          />
+        )}
+      </div>
       {group && (
         <div className={styles.content}>
-          {group?.users && group?.users?.length > 0 ? (
+          {visibleUsers.length > 0 ? (
             <ul className={styles.list}>
-              {group?.users.map((user) => {
+              {visibleUsers.map((user) => {
                 return (
                   <li key={user.id}>
                     {user.firstName} {user.lastName} ({user.email})
@@ -154,14 +177,16 @@ export function UserGroupDetail({ groupId, user }: { groupId: number; user: User
                 )
               })}
             </ul>
+          ) : search ? (
+            visibleFutureUsers.length === 0 && <p className={styles.empty}>No users found</p>
           ) : (
             <p className={styles.list}>No users added yet</p>
           )}
-          {futureUsers && futureUsers?.length > 0 && (
+          {visibleFutureUsers.length > 0 && (
             <Fragment>
               <h3 className={styles.subTitle}>Invited Users</h3>
               <ul className={styles.list}>
-                {futureUsers?.map((futureUser) => {
+                {visibleFutureUsers.map((futureUser) => {
                   return (
                     <li key={futureUser.id}>
                       {futureUser.email}

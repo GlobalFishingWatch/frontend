@@ -18,26 +18,29 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '../../layers.config'
+import { IS_TEST_ENV } from '#config/layers.config'
 import {
   FOURWINGS_MAX_CACHE_BYTE_SIZE,
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
 import type {
   FourwingsDeckSublayer,
   FourwingsHeatmapTilesCache,
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
-} from '../fourwings.types'
-import { FourwingsAggregationOperation } from '../fourwings.types'
-import { EMPTY_FOURWINGS_TILE_DATA, getAreTilePositionsAvailable } from '../fourwings-tile.utils'
+} from '#layers/fourwings/fourwings.types'
+import { FourwingsAggregationOperation } from '#layers/fourwings/fourwings.types'
+import {
+  EMPTY_FOURWINGS_TILE_DATA,
+  getAreTilePositionsAvailable,
+} from '#layers/fourwings/fourwings-tile.utils'
 import {
   getDataUrl,
   getFourwingsChunk,
   getZoomOffsetByResolution,
-} from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
 
 import type {
   FourwingsFootprintTileLayerProps,

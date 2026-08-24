@@ -10,9 +10,7 @@ import {
 describe('fourwings timestamps', () => {
   describe('getFourwingsSublayerStartFrame', () => {
     it('sums tileStartFrame and the sublayer start offset', () => {
-      expect(
-        getFourwingsSublayerStartFrame({ tileStartFrame: 2, startOffsets: [0, 3] }, 1)
-      ).toBe(5)
+      expect(getFourwingsSublayerStartFrame({ tileStartFrame: 2, startOffsets: [0, 3] }, 1)).toBe(5)
     })
 
     it('defaults missing values to zero', () => {

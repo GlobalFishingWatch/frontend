@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom/client'
 
-import App from './app'
-
 import { ROOT_DOM_ELEMENT } from 'components/data/config'
+
+import App from './app'
 
 import './styles/globals.css'
 import '@globalfishingwatch/ui-components/base.css'

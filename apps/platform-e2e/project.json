@@ -1,0 +1,64 @@
+{
+  "name": "platform-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/platform-e2e/src",
+  "projectType": "application",
+  "tags": ["e2e"],
+  "implicitDependencies": ["platform"],
+  "targets": {
+    "test": {
+      "options": {
+        "grep": "^(?!.*Screenshot comparison).*"
+      }
+    },
+    "test:local": {
+      "cache": false,
+      "parallelism": true,
+      "dependsOn": [
+        {
+          "projects": "platform",
+          "target": "start"
+        }
+      ],
+      "options": {
+        "grep": "^(?!.*Screenshot comparison).*"
+      },
+      "configurations": {
+        "ui": {
+          "ui": true
+        },
+        "headed": {
+          "headed": true
+        }
+      }
+    },
+    "screenshots": {
+      "cache": false,
+      "options": {
+        "args": "src/screenshots/",
+        "project": "chromium",
+        "workers": 2
+      },
+      "configurations": {
+        "update": {
+          "update-snapshots": "changed"
+        },
+        "ui": {
+          "workers": 1,
+          "ui": true
+        }
+      }
+    },
+    "screenshots:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report apps/platform-e2e/playwright-report"
+      }
+    },
+    "typecheck": {
+      "options": {
+        "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
+      }
+    }
+  }
+}

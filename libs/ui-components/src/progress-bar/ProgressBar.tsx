@@ -14,7 +14,6 @@ interface ProgressBarProps {
   helpText?: React.ReactNode
   disabled?: boolean
   disabledText?: string
-  appSelector?: string
   loading: boolean
 }
 export function ProgressBar(props: ProgressBarProps) {
@@ -27,7 +26,6 @@ export function ProgressBar(props: ProgressBarProps) {
     precision = 1,
     helpText,
     loading = false,
-    appSelector = '__root__',
   } = props
 
   const [showModal, setShowModal] = useState(false)
@@ -58,7 +56,6 @@ export function ProgressBar(props: ProgressBarProps) {
                 onClick={() => setShowModal(true)}
               />
               <Modal
-                appSelector={appSelector}
                 isOpen={showModal}
                 onClose={closeModal}
                 title={label}

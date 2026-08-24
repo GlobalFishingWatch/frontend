@@ -3,22 +3,22 @@ build_env_vars: &build_env_vars
   VITE_GOOGLE_MEASUREMENT_ID: G-R3PWRQW70G
   VITE_GOOGLE_TAG_MANAGER_ID: GTM-KK5ZFST
 
-fishing-map:
+platform:
   target: production-node
   build:
     env_vars:
       <<: *build_env_vars
       VITE_GOOGLE_TAG_MANAGER_ID: GTM-WXTMN69
       VITE_API_VERSION: v3
-      VITE_USE_LOCAL_DATASETS: "false"
-      VITE_USE_LOCAL_DATAVIEWS: "false"
+      VITE_USE_LOCAL_DATASETS: 'false'
+      VITE_USE_LOCAL_DATAVIEWS: 'false'
       VITE_WORKSPACE_ENV: production
-      VITE_REPORT_DAYS_LIMIT: "366"
+      VITE_REPORT_DAYS_LIMIT: '366'
     secrets:
       SENTRY_AUTH_TOKEN: projects/674016975526/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
     secrets:
       STRAPI_TOKEN: projects/674016975526/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
       STRAPI_URL: projects/674016975526/secrets/FISHING_MAP_STRAPI_URL/versions/latest
@@ -44,7 +44,7 @@ api-portal:
       PUBLIC_URL: /our-apis/tokens
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 track-labeler:
   target: production-nginx
@@ -52,7 +52,7 @@ track-labeler:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 data-download-portal:
   target: production-nginx
@@ -60,7 +60,7 @@ data-download-portal:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 image-labeler:
   target: production-nginx
@@ -68,7 +68,7 @@ image-labeler:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 user-groups-admin:
   target: production-nginx
@@ -76,7 +76,7 @@ user-groups-admin:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'
 
 port-labeler:
   target: production-nginx
@@ -84,4 +84,4 @@ port-labeler:
     env_vars: *build_env_vars
   deploy:
     env_vars:
-      BASIC_AUTH: off
+      BASIC_AUTH: 'off'

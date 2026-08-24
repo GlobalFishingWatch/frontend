@@ -6,21 +6,21 @@ import { stringify } from 'qs'
 import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { getUTCDateTime } from '../../../utils'
-import type { GetChunkByIntervalParams } from '../fourwings.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
-  getChunkByInterval,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
 import type {
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsVisualizationMode,
-} from '../fourwings.types'
+} from '#layers/fourwings/fourwings.types'
+import type { GetChunkByIntervalParams } from '#layers/fourwings/fourwings.utils'
+import { getChunkByInterval } from '#layers/fourwings/fourwings.utils'
+import { getUTCDateTime } from '#utils'
 
 import type {
   AggregateCellParams,
@@ -59,6 +59,27 @@ export function aggregateSublayerValues(
   }, 0)
 }
 
+export const sliceCellValues = ({
+  values,
+  startFrame,
+  endFrame,
+  startOffset,
+}: {
+  values: number[]
+  startFrame: number
+  endFrame: number
+  startOffset: number
+}): number[] => {
+  if (!values || !values.length) {
+    return []
+  }
+  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
+  return values.slice(
+    Math.max(startFrame - startOffset, 0),
+    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
+  )
+}
+
 export const aggregateCell = ({
   cellValues,
   startFrame,
@@ -89,27 +110,6 @@ export const aggregateCell = ({
       aggregationOperation
     )
   })
-}
-
-export const sliceCellValues = ({
-  values,
-  startFrame,
-  endFrame,
-  startOffset,
-}: {
-  values: number[]
-  startFrame: number
-  endFrame: number
-  startOffset: number
-}): number[] => {
-  if (!values || !values.length) {
-    return []
-  }
-  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
-  return values.slice(
-    Math.max(startFrame - startOffset, 0),
-    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
-  )
 }
 
 export const compareCell = ({

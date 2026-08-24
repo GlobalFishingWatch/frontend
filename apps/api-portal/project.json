@@ -12,7 +12,7 @@
       }
     },
     "build": {
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/api-portal"],
       "defaultConfiguration": "production",
       "options": {
@@ -40,19 +40,6 @@
       "configurations": {
         "development": {},
         "production": {}
-      }
-    },
-    "typecheck": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "tsc --noEmit --project apps/api-portal/tsconfig.json"
-      }
-    },
-    "typecheck-watch": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "command": "tsc --noEmit --watch --project apps/api-portal/tsconfig.json"
       }
     }
   }

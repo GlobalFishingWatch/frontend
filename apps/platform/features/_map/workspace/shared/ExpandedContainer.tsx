@@ -1,0 +1,141 @@
+import { Fragment, useEffect, useRef, useState } from 'react'
+import type { Middleware } from '@floating-ui/react'
+import {
+  arrow,
+  autoUpdate,
+  detectOverflow,
+  flip,
+  FloatingArrow,
+  FloatingPortal,
+  offset,
+  shift,
+  size,
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from '@floating-ui/react'
+import cx from 'classnames'
+
+import { PLATFORM_CONTAINER_DOM_ID } from 'data/map/config'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
+
+import styles from './ExpandedContainer.module.css'
+
+interface ExpandedContainerProps {
+  visible: boolean
+  children: React.ReactElement<any>
+  component: React.ReactElement<any>
+  className?: string
+  arrowClassName?: string
+  referenceClassName?: string
+  onClickOutside: () => void
+  overflowDOMId?: string | null
+  disabled?: boolean
+  testId?: string
+}
+
+function ExpandedContainer({
+  visible,
+  children,
+  component,
+  onClickOutside,
+  className = '',
+  referenceClassName = '',
+  overflowDOMId = SCROLL_CONTAINER_DOM_ID,
+  disabled = false,
+  testId,
+}: ExpandedContainerProps) {
+  const [isOpen, setIsOpen] = useState(disabled ? false : visible)
+
+  const arrowRef = useRef(null)
+
+  const overflowMiddlware: Middleware = {
+    name: 'overflow',
+    async fn(state) {
+      if (!state || !overflowDOMId) {
+        return {}
+      }
+      const overflow = await detectOverflow(state, {
+        boundary: document.getElementById(overflowDOMId)!,
+      })
+      Object.entries(overflow).forEach(([key, value]) => {
+        if (value > 0 && (key === 'left' || key === 'right')) {
+          // const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+          const property = 'x'
+          state[property] = key === 'right' ? state[property] - value : state[property] + value
+        }
+      })
+      return state
+    },
+  }
+  const overflowBoundary = overflowDOMId ? document.getElementById(overflowDOMId) : null
+  const { refs, floatingStyles, context } = useFloating({
+    open: disabled ? false : isOpen,
+    strategy: 'fixed',
+    whileElementsMounted: autoUpdate,
+    onOpenChange: (nextOpen, event, reason) => {
+      if (disabled) return
+      setIsOpen(nextOpen)
+      if (reason === 'escape-key' || reason === 'outside-press') {
+        onClickOutside?.()
+      }
+    },
+    middleware: [
+      offset(5),
+      flip({
+        fallbackPlacements: ['top'],
+        ...(overflowBoundary ? { boundary: overflowBoundary } : {}),
+      }),
+      ...(overflowDOMId ? [overflowMiddlware] : []),
+      shift({
+        padding: 8,
+        ...(overflowBoundary ? { boundary: overflowBoundary } : {}),
+      }),
+      size({
+        apply({ elements }) {
+          const ref = elements.reference as HTMLElement
+          const width = ref.offsetParent
+            ? ref.offsetParent.getBoundingClientRect().width
+            : ref.getBoundingClientRect().width
+          Object.assign(elements.floating.style, { width: `${width}px` })
+        },
+      }),
+      // eslint-disable-next-line react-hooks/refs
+      arrow({
+        element: arrowRef,
+      }),
+    ],
+  })
+
+  useEffect(() => {
+    setIsOpen(disabled ? false : visible)
+  }, [visible, disabled])
+
+  const click = useClick(context)
+  const dismiss = useDismiss(context)
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
+
+  return (
+    /* eslint-disable react-hooks/refs */
+    <Fragment>
+      <div ref={refs.setReference} {...getReferenceProps()} className={referenceClassName}>
+        {children}
+      </div>
+      {isOpen && (
+        <FloatingPortal id={PLATFORM_CONTAINER_DOM_ID}>
+          {/* outer: floating-ui owns transform:translate for positioning */}
+          <div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+            {/* inner: CSS animation owns transform:scale without conflicting */}
+            <div className={cx(styles.expandedContainer, className)} data-testid={testId}>
+              {component}
+              <FloatingArrow className={styles.tooltipArrow} ref={arrowRef} context={context} />
+            </div>
+          </div>
+        </FloatingPortal>
+      )}
+    </Fragment>
+  )
+}
+
+export default ExpandedContainer

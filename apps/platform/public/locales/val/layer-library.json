@@ -1,0 +1,247 @@
+{
+  "bathymetry": {
+    "description": "crwdns137945:0crwdne137945:0",
+    "moreInfoLink": "crwdns137947:0crwdne137947:0",
+    "name": "crwdns137949:0crwdne137949:0"
+  },
+  "bathymetry-contour": {
+    "description": "crwdns137951:0crwdne137951:0",
+    "moreInfoLink": "crwdns137953:0crwdne137953:0",
+    "name": "crwdns137955:0crwdne137955:0"
+  },
+  "chlorophyl": {
+    "description": "crwdns137957:0crwdne137957:0",
+    "moreInfoLink": "crwdns137959:0crwdne137959:0",
+    "name": "crwdns137961:0crwdne137961:0"
+  },
+  "coral-reefs": {
+    "description": "crwdns137963:0crwdne137963:0",
+    "moreInfoLink": "crwdns137965:0crwdne137965:0",
+    "name": "crwdns137967:0crwdne137967:0"
+  },
+  "currents": {
+    "description": "crwdns137969:0crwdne137969:0",
+    "moreInfoLink": "crwdns137971:0crwdne137971:0",
+    "name": "crwdns137973:0crwdne137973:0"
+  },
+  "dsm-isa-leasing-areas": {
+    "description": "crwdns137975:0crwdne137975:0",
+    "moreInfoLink": "crwdns137977:0crwdne137977:0",
+    "name": "crwdns137979:0crwdne137979:0"
+  },
+  "ebsas": {
+    "description": "crwdns137981:0crwdne137981:0",
+    "moreInfoLink": "crwdns137983:0crwdne137983:0",
+    "name": "crwdns137985:0crwdne137985:0"
+  },
+  "eez": {
+    "description": "crwdns137987:0crwdne137987:0",
+    "moreInfoLink": "crwdns137989:0crwdne137989:0",
+    "name": "crwdns137991:0crwdne137991:0"
+  },
+  "eez-areas-12nm": {
+    "description": "crwdns137993:0crwdne137993:0",
+    "moreInfoLink": "crwdns137995:0crwdne137995:0",
+    "name": "crwdns137997:0crwdne137997:0"
+  },
+  "encounters": {
+    "description": "crwdns137999:0crwdne137999:0",
+    "moreInfoLink": "crwdns138001:0crwdne138001:0",
+    "name": "crwdns138003:0crwdne138003:0"
+  },
+  "fao-major": {
+    "description": "crwdns138005:0crwdne138005:0",
+    "moreInfoLink": "crwdns138007:0crwdne138007:0",
+    "name": "crwdns138009:0crwdne138009:0"
+  },
+  "fishing-effort-ais": {
+    "description": "crwdns138011:0crwdne138011:0",
+    "moreInfoLink": "crwdns138013:0crwdne138013:0",
+    "name": "crwdns138015:0crwdne138015:0"
+  },
+  "fishing-effort-vms": {
+    "description": "crwdns138017:0crwdne138017:0",
+    "moreInfoLink": "crwdns138019:0crwdne138019:0",
+    "name": "crwdns138021:0crwdne138021:0"
+  },
+  "gfcm-fao": {
+    "description": "crwdns138023:0crwdne138023:0",
+    "moreInfoLink": "crwdns138025:0crwdne138025:0",
+    "name": "crwdns138027:0crwdne138027:0"
+  },
+  "graticules": {
+    "description": "crwdns138029:0crwdne138029:0",
+    "moreInfoLink": "crwdns138031:0crwdne138031:0",
+    "name": "crwdns138033:0crwdne138033:0"
+  },
+  "high-seas": {
+    "description": "crwdns138035:0crwdne138035:0",
+    "moreInfoLink": "crwdns138037:0crwdne138037:0",
+    "name": "crwdns138039:0crwdne138039:0"
+  },
+  "high-seas-pockets": {
+    "description": "crwdns138041:0crwdne138041:0",
+    "moreInfoLink": "crwdns138043:0crwdne138043:0",
+    "name": "crwdns138045:0crwdne138045:0"
+  },
+  "immas": {
+    "description": "crwdns138047:0crwdne138047:0",
+    "moreInfoLink": "crwdns138049:0crwdne138049:0",
+    "name": "crwdns138051:0crwdne138051:0"
+  },
+  "loitering": {
+    "description": "crwdns138053:0crwdne138053:0",
+    "moreInfoLink": "crwdns138055:0crwdne138055:0",
+    "name": "crwdns138057:0crwdne138057:0"
+  },
+  "mangroves": {
+    "description": "crwdns138059:0crwdne138059:0",
+    "moreInfoLink": "crwdns138061:0crwdne138061:0",
+    "name": "crwdns138063:0crwdne138063:0"
+  },
+  "marine-ecoregions": {
+    "description": "crwdns138065:0crwdne138065:0",
+    "moreInfoLink": "crwdns138067:0crwdne138067:0",
+    "name": "crwdns138069:0crwdne138069:0"
+  },
+  "mpa": {
+    "description": "crwdns138071:0crwdne138071:0",
+    "moreInfoLink": "crwdns138073:0crwdne138073:0",
+    "name": "crwdns138075:0crwdne138075:0"
+  },
+  "mpatlas": {
+    "description": "crwdns138077:0crwdne138077:0",
+    "moreInfoLink": "crwdns138079:0crwdne138079:0",
+    "name": "crwdns138081:0crwdne138081:0"
+  },
+  "nitrate": {
+    "description": "crwdns138083:0crwdne138083:0",
+    "moreInfoLink": "crwdns138085:0crwdne138085:0",
+    "name": "crwdns138087:0crwdne138087:0"
+  },
+  "offshore-fixed-infrastructure": {
+    "description": "crwdns138089:0crwdne138089:0",
+    "moreInfoLink": "crwdns138091:0crwdne138091:0",
+    "name": "crwdns138093:0crwdne138093:0"
+  },
+  "oxygen": {
+    "description": "crwdns138095:0crwdne138095:0",
+    "moreInfoLink": "crwdns138097:0crwdne138097:0",
+    "name": "crwdns138099:0crwdne138099:0"
+  },
+  "paa-duke": {
+    "description": "crwdns138101:0crwdne138101:0",
+    "moreInfoLink": "crwdns138103:0crwdne138103:0",
+    "name": "crwdns138105:0crwdne138105:0"
+  },
+  "ph": {
+    "description": "crwdns138107:0crwdne138107:0",
+    "moreInfoLink": "crwdns138109:0crwdne138109:0",
+    "name": "crwdns138111:0crwdne138111:0"
+  },
+  "phosphate": {
+    "description": "crwdns138113:0crwdne138113:0",
+    "moreInfoLink": "crwdns138115:0crwdne138115:0",
+    "name": "crwdns138117:0crwdne138117:0"
+  },
+  "port-locations": {
+    "description": "crwdns138119:0crwdne138119:0",
+    "moreInfoLink": "crwdns138121:0crwdne138121:0",
+    "name": "crwdns138123:0crwdne138123:0"
+  },
+  "port-locations-vms": {
+    "description": "crwdns138125:0crwdne138125:0",
+    "moreInfoLink": "crwdns138127:0crwdne138127:0",
+    "name": "crwdns138129:0crwdne138129:0"
+  },
+  "port-visits": {
+    "description": "crwdns138131:0crwdne138131:0",
+    "moreInfoLink": "crwdns138133:0crwdne138133:0",
+    "name": "crwdns138135:0crwdne138135:0"
+  },
+  "presence": {
+    "description": "crwdns138137:0crwdne138137:0",
+    "moreInfoLink": "crwdns138139:0crwdne138139:0",
+    "name": "crwdns138141:0crwdne138141:0"
+  },
+  "protectedseas": {
+    "description": "crwdns138143:0crwdne138143:0",
+    "moreInfoLink": "crwdns138145:0crwdne138145:0",
+    "name": "crwdns138147:0crwdne138147:0"
+  },
+  "rfmo": {
+    "description": "crwdns138149:0crwdne138149:0",
+    "moreInfoLink": "crwdns138151:0crwdne138151:0",
+    "name": "crwdns138153:0crwdne138153:0"
+  },
+  "salinity": {
+    "description": "crwdns138155:0crwdne138155:0",
+    "moreInfoLink": "crwdns138157:0crwdne138157:0",
+    "name": "crwdns138159:0crwdne138159:0"
+  },
+  "sar": {
+    "description": "crwdns138161:0crwdne138161:0",
+    "moreInfoLink": "crwdns138163:0crwdne138163:0",
+    "name": "crwdns138165:0crwdne138165:0"
+  },
+  "seagrasses": {
+    "description": "crwdns138167:0crwdne138167:0",
+    "moreInfoLink": "crwdns138169:0crwdne138169:0",
+    "name": "crwdns138171:0crwdne138171:0"
+  },
+  "seamounts": {
+    "description": "crwdns138173:0crwdne138173:0",
+    "moreInfoLink": "crwdns138175:0crwdne138175:0",
+    "name": "crwdns138177:0crwdne138177:0"
+  },
+  "sentinel2": {
+    "description": "crwdns138179:0crwdne138179:0",
+    "moreInfoLink": "crwdns138181:0crwdne138181:0",
+    "name": "crwdns138183:0crwdne138183:0"
+  },
+  "species": {
+    "description": "crwdns138185:0crwdne138185:0",
+    "moreInfoLink": "crwdns138187:0crwdne138187:0",
+    "name": "crwdns138189:0crwdne138189:0"
+  },
+  "sst": {
+    "description": "crwdns138191:0crwdne138191:0",
+    "moreInfoLink": "crwdns138193:0crwdne138193:0",
+    "name": "crwdns138195:0crwdne138195:0"
+  },
+  "sst-anomalies": {
+    "description": "crwdns138197:0crwdne138197:0",
+    "moreInfoLink": "crwdns138199:0crwdne138199:0",
+    "name": "crwdns138201:0crwdne138201:0"
+  },
+  "sst-anomalies-max": {
+    "description": "crwdns138203:0crwdne138203:0",
+    "moreInfoLink": "crwdns138205:0crwdne138205:0",
+    "name": "crwdns138207:0crwdne138207:0"
+  },
+  "sst-anomalies-min": {
+    "description": "crwdns138209:0crwdne138209:0",
+    "moreInfoLink": "crwdns138211:0crwdne138211:0",
+    "name": "crwdns138213:0crwdne138213:0"
+  },
+  "thgt": {
+    "description": "crwdns138215:0crwdne138215:0",
+    "moreInfoLink": "crwdns138217:0crwdne138217:0",
+    "name": "crwdns138219:0crwdne138219:0"
+  },
+  "viirs": {
+    "description": "crwdns138221:0crwdne138221:0",
+    "moreInfoLink": "crwdns138223:0crwdne138223:0",
+    "name": "crwdns138225:0crwdne138225:0"
+  },
+  "viirs-skylight": {
+    "description": "crwdns138227:0crwdne138227:0",
+    "moreInfoLink": "crwdns138229:0crwdne138229:0",
+    "name": "crwdns138231:0crwdne138231:0"
+  },
+  "winds": {
+    "description": "crwdns138233:0crwdne138233:0",
+    "moreInfoLink": "crwdns138235:0crwdne138235:0",
+    "name": "crwdns138237:0crwdne138237:0"
+  }
+}

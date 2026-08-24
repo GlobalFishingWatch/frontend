@@ -1,3 +1,5 @@
+import type { Color } from '@deck.gl/core'
+
 import type {
   EncounterEvent,
   EventTypes,
@@ -94,3 +96,5 @@ export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 export type Timeseries = { frame?: number; date: number; [key: number]: number }[]
 
 export type ActivityTimeseriesFrame = { date: number; count?: number[]; [key: number]: number }
+
+export type TimebarColorScale = ((value: number) => Color | undefined) | undefined

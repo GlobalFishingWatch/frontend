@@ -1,29 +1,15 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
       "type": "node",
       "request": "launch",
-      "name": "fishing-map",
+      "name": "platform",
       "runtimeExecutable": "nx",
-      "runtimeArgs": ["start", "fishing-map"],
+      "runtimeArgs": ["start", "platform"],
       "console": "integratedTerminal",
       "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
-      "cwd": "${workspaceFolder}/apps/fishing-map"
-    },
-    {
-      "name": "Debug Tests - Fishing Map",
-      "type": "node",
-      "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
-      "args": ["test", "--runInBand", "--no-cache", "--env=jsdom"],
-      "cwd": "${workspaceRoot}/apps/fishing-map",
-      "protocol": "inspector",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "cwd": "${workspaceFolder}/apps/platform"
     }
   ]
 }

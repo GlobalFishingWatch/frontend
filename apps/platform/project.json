@@ -1,0 +1,304 @@
+{
+  "name": "platform",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/platform",
+  "projectType": "application",
+  "tags": ["app"],
+  "targets": {
+    "prepare-start": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["prepare-loaders", "i18n-labels:serve"],
+      "continuous": true,
+      "options": {
+        "command": "nx run platform:i18n:watch"
+      }
+    },
+    "prepare-loaders": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["deck-loaders:dist:workers"],
+      "inputs": ["default", "{workspaceRoot}/libs/deck-loaders/dist/workers/*.js"],
+      "outputs": ["{projectRoot}/public/workers"],
+      "options": {
+        "commands": [
+          "shx rm -rf apps/platform/public/workers",
+          "shx mkdir -p apps/platform/public/workers",
+          "shx cp libs/deck-loaders/dist/workers/*.js apps/platform/public/workers/"
+        ],
+        "parallel": false
+      }
+    },
+    "check-store-graph": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/check-store-graph.mjs",
+        "{workspaceRoot}/libs/*/src/**/*",
+        "{workspaceRoot}/libs/*/package.json"
+      ],
+      "outputs": [],
+      "options": {
+        "command": "node scripts/check-store-graph.mjs"
+      }
+    },
+    "clean-test-artifacts": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "outputs": [],
+      "options": {
+        "command": "rimraf test/integration/__screenshots__ test/integration/__traces__ test/__traces__ apps/platform/.vitest-attachments",
+        "cwd": "apps/platform"
+      }
+    },
+    "i18n:extract": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
+      ],
+      "outputs": [],
+      "options": {
+        "command": "i18next-cli extract",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "i18n:types": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["{projectRoot}/public/locales/source/*.json", "{projectRoot}/i18next.config.ts"],
+      "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
+      "options": {
+        "command": "i18next-cli types",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "i18n": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
+      ],
+      "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
+      "options": {
+        "command": "i18next-cli extract && i18next-cli types",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "i18n:lint": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
+      ],
+      "outputs": [],
+      "options": {
+        "command": "i18next-cli lint",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "i18n:watch": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "i18next-cli types && i18next-cli extract --watch --with-types",
+        "cwd": "apps/platform",
+        "env": { "LC_ALL": "en_US.UTF-8", "LANG": "en_US.UTF-8" }
+      }
+    },
+    "start": {
+      "dependsOn": ["prepare-start"],
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 3003
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "dependsOn": ["build:app"],
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "node scripts/serve-ssr.mjs",
+        "cwd": "apps/platform"
+      }
+    },
+    "proxy": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "continuous": true,
+      "options": {
+        "command": "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
+      }
+    },
+    "start-proxy": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "continuous": true,
+      "options": {
+        "commands": ["nx run platform:start", "nx run platform:proxy"],
+        "parallel": true
+      }
+    },
+    "build:app": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production", "^production", "envVars"],
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["prepare-loaders"],
+      "options": {
+        "commands": [
+          "rimraf dist .output",
+          "vite build",
+          "shx cp instrument.server.mjs .output/server"
+        ],
+        "parallel": false,
+        "cwd": "apps/platform"
+      },
+      "configurations": {
+        "development": {
+          "commands": [
+            "rimraf dist .output",
+            "vite build --mode development",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false
+        },
+        "production": {
+          "commands": [
+            "rimraf dist .output",
+            "vite build --mode production",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false
+        },
+        "analyze": {
+          "commands": [
+            "rimraf dist .output",
+            "vite build",
+            "shx cp instrument.server.mjs .output/server"
+          ],
+          "parallel": false,
+          "env": {
+            "ANALYZE": "true"
+          }
+        }
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "check-store-graph"],
+      "options": {
+        "commands": ["nx run platform:typecheck", "nx run platform:build:app"],
+        "parallel": false
+      }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "!{projectRoot}/.vitest-attachments/**/*",
+        "!{projectRoot}/test/integration/__screenshots__/**/*",
+        "!{projectRoot}/test/integration/__traces__/**/*",
+        "!{projectRoot}/test/__traces__/**/*",
+        {
+          "externalDependencies": ["vitest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/platform",
+        "{projectRoot}/test/coverage/apps/platform"
+      ],
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "config": "./vitest.config.ts"
+      }
+    },
+    "test:changed": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "cwd": "apps/platform",
+        "command": "vitest run",
+        "changed": true,
+        "config": "./vitest.config.ts"
+      }
+    },
+    "test:ci": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "command": "docker compose -f docker-compose.test.yml run --rm test",
+        "cwd": "apps/platform"
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "cwd": "apps/platform",
+        "command": "vitest run",
+        "mode": "coverage",
+        "config": "./vitest.config.ts"
+      }
+    },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "cwd": "apps/platform",
+        "command": "vitest watch",
+        "config": "./vitest.config.ts"
+      }
+    },
+    "test:ui": {
+      "cache": false,
+      "continuous": true,
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "options": {
+        "mode": "ui",
+        "watch": true,
+        "config": "./vitest.config.ts"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["i18n:types"],
+      "options": {
+        "command": "tsc --noEmit --project  apps/platform/tsconfig.typecheck.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/platform/tsconfig.json"
+      }
+    }
+  }
+}

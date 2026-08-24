@@ -94,42 +94,43 @@ const MapComponent = (): React.ReactElement<any> => {
   )
 
   const [mapBounds, setMapBounds] = useState<MiniglobeBounds | null>(null)
-  const setBoundsFromViewState = useCallback(() => {
-    if (!deckRef?.current?.deck) {
-      setMapBounds(null)
-      return
-    }
+  const throttledSetBoundsRef = useRef<(() => void) | null>(null)
 
-    try {
-      const bounds = deckRef?.current?.deck
-        ?.getViewports?.()
-        .find((v: any) => v.id === MAP_VIEW_ID)
-        ?.getBounds()
-      if (bounds && bounds?.length) {
-        setMapBounds({
-          north: bounds[3],
-          south: bounds[1],
-          west: bounds[0],
-          east: bounds[2],
-        })
-      } else {
+  useEffect(() => {
+    const updateBounds = () => {
+      if (!deckRef.current?.deck) {
+        setMapBounds(null)
+        return
+      }
+
+      try {
+        const bounds = deckRef.current.deck
+          ?.getViewports?.()
+          .find((v: any) => v.id === MAP_VIEW_ID)
+          ?.getBounds()
+        if (bounds && bounds?.length) {
+          setMapBounds({
+            north: bounds[3],
+            south: bounds[1],
+            west: bounds[0],
+            east: bounds[2],
+          })
+        } else {
+          setMapBounds(null)
+        }
+      } catch (e) {
+        console.warn('[DEBUG] Error calculating bounds:', e)
         setMapBounds(null)
       }
-    } catch (e) {
-      console.warn('[DEBUG] Error calculating bounds:', e)
-      setMapBounds(null)
     }
-  }, [])
 
-  const throttledSetBoundsFromViewState = useMemo(
-    () => throttle(setBoundsFromViewState, 100),
-    [setBoundsFromViewState]
-  )
+    throttledSetBoundsRef.current = throttle(updateBounds, 100)
+  }, [])
 
   // Update bounds when viewState changes
   useEffect(() => {
-    throttledSetBoundsFromViewState()
-  }, [viewState, throttledSetBoundsFromViewState])
+    throttledSetBoundsRef.current?.()
+  }, [viewState])
 
   return (
     <div className={styles.container}>

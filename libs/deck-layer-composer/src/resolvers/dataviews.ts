@@ -10,6 +10,7 @@ import {
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
+  getIsSingleHeatmapDataview,
   getMergedDataviewId,
   isActivityDataview,
   isAnyContextDataview,
@@ -30,10 +31,17 @@ import type {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers'
-import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
+// Leaf subpath for the *value* import: apps reach groupContextDataviews from this module in their
+// always-loaded graph, and the deck-layers root barrel would pull all of deck.gl in with it.
+import {
+  DEFAULT_COLOR_RAMP_ID,
+  FourwingsComparisonMode,
+} from '@globalfishingwatch/deck-layers/config'
+import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 
+import { AUXILIAR_DATAVIEW_SUFIX } from '../constants'
 import type {
   FourwingsSublayerConfig,
   ResolvedContextDataviewInstance,
@@ -41,9 +49,6 @@ import type {
   ResolvedFourwingsDataviewInstance,
 } from '../types/dataviews'
 import type { TimeRange } from '../types/resolvers'
-
-export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
-export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
 
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => getDatasetConfiguration(d, 'fourwingsV1')?.intervals || []))
@@ -87,6 +92,7 @@ type GetMergedHeatmapAnimatedDataviewParams = {
   comparisonMode?: FourwingsComparisonMode
   timeRange?: TimeRange
   colorRampWhiteEnd?: boolean
+  allowMultiHueColorRamp?: boolean
   color?: string
 }
 
@@ -141,6 +147,7 @@ export function getFourwingsDataviewsResolved(
     visualizationMode = 'heatmap',
     comparisonMode = FourwingsComparisonMode.Compare,
     colorRampWhiteEnd = false,
+    allowMultiHueColorRamp = false,
   } = {} as GetMergedHeatmapAnimatedDataviewParams
 ) {
   const dataviewsFiltered = [] as UrlDataviewInstance[]
@@ -159,7 +166,13 @@ export function getFourwingsDataviewsResolved(
       config: {
         type: dataviewsToMerge[0]?.config?.type,
         maxZoom: dataviewsToMerge[0]?.config?.maxZoom,
-        sublayers: dataviewsToMerge.flatMap(getFourwingsDataviewSublayers),
+        sublayers: dataviewsToMerge.flatMap(getFourwingsDataviewSublayers).map((sublayer) =>
+          !allowMultiHueColorRamp && isMultiHueColorRampId(sublayer.colorRamp)
+            ? // config.color is what the single hue ramp is built from, fall back to the default
+              // ramp when the dataview only carries a multi hue colorRamp
+              { ...sublayer, colorRamp: sublayer.color || DEFAULT_COLOR_RAMP_ID }
+            : sublayer
+        ),
         minVisibleValue: dataviewsToMerge[0].config?.minVisibleValue,
         maxVisibleValue: dataviewsToMerge[0].config?.maxVisibleValue,
         colorRampWhiteEnd,
@@ -443,8 +456,7 @@ export function getDataviewsResolved(
     otherDataviews = [],
   } = getDataviewsGrouped(dataviews)
 
-  const singleHeatmapDataview =
-    [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
+  const singleHeatmapDataview = getIsSingleHeatmapDataview(dataviews as UrlDataviewInstance[])
 
   const activityComparisonMode = getComparisonMode(activityDataviews, params)
   const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
@@ -470,6 +482,7 @@ export function getDataviewsResolved(
       getFourwingsDataviewsResolved(d, {
         colorRampWhiteEnd:
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+        allowMultiHueColorRamp: singleHeatmapDataview,
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )

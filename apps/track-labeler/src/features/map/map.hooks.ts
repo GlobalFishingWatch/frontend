@@ -128,9 +128,9 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefine
   const setMapInstance = useSetAtom(mapInstanceAtom)
   useEffect(() => {
     if (mapRef?.current?.deck) {
-      setMapInstance(mapRef?.current?.deck)
+      setMapInstance(mapRef.current.deck)
     }
-  }, [mapRef?.current])
+  }, [mapRef, setMapInstance])
 }
 
 export function useDeckMap(): Deck {

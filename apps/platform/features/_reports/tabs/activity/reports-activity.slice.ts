@@ -1,0 +1,297 @@
+import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { uniq } from 'es-toolkit'
+import { stringify } from 'qs'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { APIPagination, ReportVesselsByDataset } from '@globalfishingwatch/api-types'
+
+import {
+  GroupBy,
+  HeatmapDownloadFormat,
+  SpatialResolution,
+  TemporalResolution,
+} from 'features/_map/download/downloadActivity.config'
+import type { DateRange } from 'features/_map/download/downloadActivity.slice'
+import {
+  ENTIRE_WORLD_REPORT_AREA_ID,
+  KILOMETERS,
+} from 'features/_reports/report-area/area-reports.config'
+import { workspaceTabClicked } from 'features/nav/nav.actions'
+import { rootReducer } from 'reducers'
+import type { BufferOperation, BufferUnit } from 'types'
+import type { AsyncError } from 'utils/async-slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
+import { getUTCDateTime } from 'utils/dates'
+
+import type { ReportTimeComparisonValues } from './reports-activity.types'
+
+export type HotspotSettings = {
+  enabled: boolean
+  area: number
+  unit: BufferUnit
+}
+
+const initialHotspotSettings: HotspotSettings = {
+  enabled: false,
+  area: 50000,
+  unit: KILOMETERS,
+}
+
+type PreviewBuffer = {
+  value: number | null
+  unit: BufferUnit | null
+  operation: BufferOperation | null
+}
+
+const previewBufferInitialState: PreviewBuffer = {
+  value: null,
+  unit: null,
+  operation: null,
+}
+
+type ReportStateError = AsyncError<{ currentReportUrl: string }>
+interface ReportState {
+  status: AsyncReducerStatus
+  error: ReportStateError | null
+  data: ReportVesselsByDataset[] | null
+  isPinningVessels: boolean
+  reportRequestHash: string
+  previewBuffer: PreviewBuffer
+  hotspotSettings: HotspotSettings
+}
+
+type ReportSliceState = { report: ReportState }
+
+const initialState: ReportState = {
+  status: AsyncReducerStatus.Idle,
+  error: null,
+  data: null,
+  isPinningVessels: false,
+  reportRequestHash: '',
+  previewBuffer: { ...previewBufferInitialState },
+  hotspotSettings: { ...initialHotspotSettings },
+}
+type ReportRegion = {
+  dataset: string
+  id: string | number
+}
+
+type FetchReportVesselsThunkParams = {
+  region: ReportRegion
+  datasets: string[]
+  includes: string[]
+  filters: string[]
+  vesselGroups: string[]
+  dateRange: DateRange
+  temporalResolution?: TemporalResolution
+  groupBy?: GroupBy
+  spatialResolution?: SpatialResolution
+  format?: HeatmapDownloadFormat.Csv | HeatmapDownloadFormat.Json
+  spatialAggregation?: boolean
+  reportBufferUnit?: BufferUnit
+  reportBufferValue?: number
+  reportBufferOperation?: BufferOperation
+  timeComparison?: ReportTimeComparisonValues
+  areaId?: string
+}
+
+const REPORT_FIELDS_TO_INCLUDE = [
+  'imo',
+  'callsign',
+  'mmsi',
+  'dataset',
+  'flag',
+  'geartype',
+  'hours',
+  'shipName',
+  'vesselId',
+  'vesselType',
+]
+
+export const getReportQuery = (params: FetchReportVesselsThunkParams) => {
+  const {
+    region,
+    datasets,
+    filters,
+    includes = [],
+    vesselGroups,
+    dateRange,
+    temporalResolution = TemporalResolution.Full,
+    groupBy = GroupBy.Vessel,
+    spatialResolution = SpatialResolution.Low,
+    spatialAggregation = true,
+    format = HeatmapDownloadFormat.Json,
+    reportBufferUnit,
+    reportBufferValue,
+    reportBufferOperation,
+  } = params
+  const hasBufferParams = reportBufferUnit && reportBufferValue && reportBufferOperation
+  const query = stringify(
+    {
+      datasets,
+      filters,
+      'vessel-groups': vesselGroups,
+      'temporal-resolution': temporalResolution,
+      'date-range': [
+        getUTCDateTime(dateRange?.start)?.toString(),
+        getUTCDateTime(dateRange?.end)?.toString(),
+      ].join(','),
+      'group-by': groupBy,
+      includes: uniq([...includes, ...REPORT_FIELDS_TO_INCLUDE]).join(','),
+      'spatial-resolution': spatialResolution,
+      'spatial-aggregation': spatialAggregation,
+      format: format,
+      ...(region.id === ENTIRE_WORLD_REPORT_AREA_ID
+        ? { 'region-world': true }
+        : {
+            'region-id': region.id,
+            'region-dataset': region.dataset,
+          }),
+      ...(hasBufferParams && {
+        'buffer-unit': reportBufferUnit.toUpperCase(),
+        'buffer-value': reportBufferValue,
+        'buffer-operation': reportBufferOperation.toUpperCase(),
+      }),
+    },
+    { arrayFormat: 'indices' }
+  )
+  return query
+}
+
+export const fetchReportVesselsThunk = createAsyncThunk(
+  'report/vessels',
+  async (params: FetchReportVesselsThunkParams, { rejectWithValue }) => {
+    try {
+      const query = getReportQuery(params)
+      const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
+        `/4wings/report?${query}`
+      )
+
+      return vessels.entries.sort((a, b) => {
+        const aLength = Object.values(a).reduce((sum, arr) => sum + arr?.length || 0, 0)
+        const bLength = Object.values(b).reduce((sum, arr) => sum + arr?.length || 0, 0)
+        return bLength - aLength
+      })
+    } catch (e) {
+      console.warn(e)
+      return rejectWithValue(e)
+    }
+  },
+  {
+    condition: (params: FetchReportVesselsThunkParams, { getState }) => {
+      const { status } = (getState() as ReportSliceState).report
+      if (status === AsyncReducerStatus.Loading) {
+        return false
+      }
+      return true
+    },
+  }
+)
+
+export function getReportRequestHash({
+  datasets,
+  filters,
+  dateRange,
+  areaId,
+}: {
+  datasets: string[]
+  filters: string[]
+  dateRange: DateRange
+  areaId?: string
+}) {
+  const datasetsHash = datasets.join(',')
+  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || ''].join('-')
+}
+
+const reportSlice = createSlice({
+  name: 'report',
+  initialState,
+  reducers: {
+    resetReportData: (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.reportRequestHash = ''
+      state.previewBuffer = { ...previewBufferInitialState }
+      state.hotspotSettings = { ...initialHotspotSettings }
+    },
+    setReportRequestHash: (state, action: PayloadAction<string>) => {
+      state.reportRequestHash = action.payload
+    },
+    setPreviewBuffer: (state, action: PayloadAction<PreviewBuffer>) => {
+      state.previewBuffer = action.payload
+    },
+    setPinningVessels: (state, action: PayloadAction<boolean>) => {
+      state.isPinningVessels = action.payload
+    },
+    setReportHotspotSettings: (state, action: PayloadAction<Partial<HotspotSettings>>) => {
+      state.hotspotSettings = { ...state.hotspotSettings, ...action.payload }
+    },
+  },
+  extraReducers: (builder) => {
+    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
+    builder.addCase(workspaceTabClicked, (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.reportRequestHash = ''
+      state.previewBuffer = { ...previewBufferInitialState }
+      state.hotspotSettings = { ...initialHotspotSettings }
+    })
+    builder.addCase(fetchReportVesselsThunk.pending, (state) => {
+      state.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
+      state.status = AsyncReducerStatus.Finished
+      state.data = action.payload
+      const { datasets, filters, dateRange, areaId } = action.meta.arg
+      state.reportRequestHash = getReportRequestHash({
+        datasets,
+        filters,
+        dateRange,
+        areaId,
+      })
+    })
+    builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
+      state.status = AsyncReducerStatus.Error
+      state.error = action.payload as ReportStateError
+    })
+  },
+})
+
+export const {
+  resetReportData,
+  setReportRequestHash,
+  setPreviewBuffer,
+  setPinningVessels,
+  setReportHotspotSettings,
+} = reportSlice.actions
+
+const injectedReportSlice = rootReducer.inject(reportSlice)
+
+declare module 'reducers' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  export interface LazyLoadedSlices extends WithSlice<typeof reportSlice> {}
+}
+
+export const selectReportVesselsStatus = injectedReportSlice.selector(
+  (state) => state.report.status
+)
+export const selectReportVesselsError = injectedReportSlice.selector((state) => state.report.error)
+export const selectReportVesselsData = injectedReportSlice.selector((state) => state.report.data)
+
+export const selectReportPreviewBuffer = injectedReportSlice.selector(
+  (state) => state.report.previewBuffer
+)
+export const selectReportIsPinningVessels = injectedReportSlice.selector(
+  (state) => state.report.isPinningVessels
+)
+export const selectReportRequestHash = injectedReportSlice.selector(
+  (state) => state.report.reportRequestHash
+)
+export const selectReportHotspotSettings = injectedReportSlice.selector(
+  (state) => state.report.hotspotSettings
+)
+
+export default reportSlice.reducer

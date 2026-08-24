@@ -1,11 +1,11 @@
 # Highlighted workspaces (curated entry points)
 
-Curated public workspaces preloaded with relevant layers. Prefer them over building from scratch when the user's intent matches one.
-Sources: `apps/fishing-map/data/highlighted-workspaces/{marine-manager,reports}.ts`.
+Curated public workspaces preloaded with relevant layers. Prefer them over building from scratch when the user's intent matches one but use these ONLY if marine manager has been mentioned.
+Sources: `apps/platform/data/map/highlighted-workspaces/{marine-manager,reports}.ts`.
 
 ## Marine Manager (MPA / region workspaces)
 
-Route: `{ "type": "workspace", "category": "marine-manager", "workspaceId": "<id>" }` → `/marine-manager/<id>`
+Route: `{ "type": "workspace", "category": "marine-manager", "workspaceId": "<id>" }` → `/map/marine-manager/<id>`
 Any extra `state` (time range, filters, extra layers) applies on top of the curated workspace.
 
 | workspaceId                      | Region / MPA                   | Curated report                                |
@@ -43,7 +43,7 @@ Example — "show me activity in the Galapagos":
 
 ## Global reports (curated report workspaces)
 
-Route: `{ "type": "report", "category": "reports", "workspaceId": "<id>" }` (no `datasetId`/`areaId`) → `/reports/<id>/report`.
+Route: `{ "type": "report", "category": "reports", "workspaceId": "<id>" }` (no `datasetId`/`areaId`) → `/map/reports/<id>/report`.
 Use for whole-world aggregated stats when no specific area applies.
 
 | workspaceId         | Name                          | Focus                                             |

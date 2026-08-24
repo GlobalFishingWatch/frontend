@@ -1,5 +1,4 @@
 import * as fs from 'fs'
-import * as path from 'path'
 
 type PortData = {
   port_id: string

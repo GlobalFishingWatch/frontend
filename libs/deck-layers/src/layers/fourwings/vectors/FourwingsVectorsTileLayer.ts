@@ -18,8 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { hexToRgbaString, removeOutliers } from '../../../utils'
-import { IS_TEST_ENV } from '../../layers.config'
+import { IS_TEST_ENV } from '#config/layers.config'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
   FOURWINGS_MAX_CACHE_BYTE_SIZE,
@@ -27,23 +26,25 @@ import {
   HEATMAP_API_TILES_URL,
   MAX_RAMP_VALUES,
   VECTORS_MAX_ZOOM,
-} from '../fourwings.config'
+} from '#layers/fourwings/fourwings.config'
+import { removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
   GetViewportDataParams,
-} from '../fourwings.types'
-import { EMPTY_FOURWINGS_TILE_DATA } from '../fourwings-tile.utils'
-import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
-import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
+} from '#layers/fourwings/fourwings.types'
+import { EMPTY_FOURWINGS_TILE_DATA } from '#layers/fourwings/fourwings-tile.utils'
+import type { FourwingsHeatmapTilesCache } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
+import { FourwingsAggregationOperation } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
   getTileDataCache,
   sliceCellValues,
-} from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { hexToRgbaString } from '#utils'
 
 import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
 

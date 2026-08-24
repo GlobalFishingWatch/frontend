@@ -2,29 +2,28 @@
   "name": "@globalfishingwatch/react-hooks",
   "version": "17.0.9",
   "description": "set of react hooks to easily use pure js libraries",
-  "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "author": "satellitestudio <contact@satellitestud.io>",
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "src"
   ],
   "dependencies": {
     "@globalfishingwatch/api-client": "workspace:^",
     "@globalfishingwatch/api-types": "workspace:^",
     "es-toolkit": "1.x",
-    "lodash": "4.x",
     "react": "19.x",
-    "react-ga4": "2.x",
+    "react-ga4": "3.x",
     "tslib": "2.x",
     "usehooks-ts": "3.x"
   }

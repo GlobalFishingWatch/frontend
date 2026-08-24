@@ -3,7 +3,7 @@ import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
 import type { GeoJsonLayerProps } from '@deck.gl/layers'
 import type { Feature, Point } from 'geojson'
 
-import type { DeckPickingObject } from '../../types'
+import type { DeckPickingObject } from '#types'
 
 export type RulerPointProperties = {
   id?: number

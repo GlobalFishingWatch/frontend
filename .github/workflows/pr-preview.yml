@@ -18,6 +18,6 @@ jobs:
       cloudrun_project: gfw-development
       cloudrun_service_account: frontend-dev@gfw-development.iam.gserviceaccount.com
       service_name_prefix: pr-${{ github.event.pull_request.number }}-dev-ui
-      image: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/fishing-map:pr-${{ github.event.pull_request.number }}
-      comment_header: preview-fishing-map
+      image: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/platform:pr-${{ github.event.pull_request.number }}
+      comment_header: preview-platform
     secrets: inherit

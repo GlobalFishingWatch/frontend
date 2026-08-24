@@ -119,7 +119,7 @@ function TableAnchorage() {
           tooltip="Toggle extra data"
           tooltipPlacement="bottom"
           className={styles.actionButton}
-          onClick={() => dispatch(toogleExtraData([]))}
+          onClick={() => dispatch(toogleExtraData())}
         />
       </div>
 
@@ -149,7 +149,6 @@ function TableAnchorage() {
       )}
 
       <Modal
-        appSelector="__next"
         title={'Change anchorage country'}
         isOpen={!!anchorageChangeCountryOpen}
         onClose={() => setAnchorageChangeCountryOpen(null)}

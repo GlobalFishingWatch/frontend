@@ -11,6 +11,9 @@ ENV NX_PARALLEL=1
 ENV NX_ISOLATE_PLUGINS=false
 ENV CI=true
 ENV HUSKY=0
+# Nx Cloud's default CI style only prints a summary + cloud URL. Stream so a
+# failed task's tsc/vite output shows up in the GitHub Actions job log.
+ENV NX_DEFAULT_OUTPUT_STYLE=stream
 
 # Copy only what pnpm needs to install — no source files.
 # patches/ is required because pnpm-workspace.yaml references patch files
@@ -21,7 +24,7 @@ ENV HUSKY=0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 COPY patches/ patches/
 COPY linting/package.json linting/
-COPY apps/fishing-map/package.json apps/fishing-map/
+COPY apps/platform/package.json apps/platform/
 # libs/* are workspace members too — without their manifests pnpm skips the
 # per-lib node_modules/@globalfishingwatch/* links a lib needs to import a sibling.
 COPY --parents libs/*/package.json ./
@@ -41,6 +44,8 @@ ARG VITE_USE_LOCAL_DATAVIEWS
 ARG VITE_WORKSPACE_ENV
 ARG VITE_REPORT_DAYS_LIMIT
 ARG VITE_REALTIME_ENABLED
+ARG VITE_PIPE_DATASET_VERSION
+ARG VITE_PLATFORM_MODE
 ARG COMMIT_SHA
 
 ENV API_GATEWAY=$API_GATEWAY \
@@ -54,6 +59,8 @@ ENV API_GATEWAY=$API_GATEWAY \
     VITE_WORKSPACE_ENV=$VITE_WORKSPACE_ENV \
     VITE_REPORT_DAYS_LIMIT=$VITE_REPORT_DAYS_LIMIT \
     VITE_REALTIME_ENABLED=$VITE_REALTIME_ENABLED \
+    VITE_PIPE_DATASET_VERSION=$VITE_PIPE_DATASET_VERSION \
+    VITE_PLATFORM_MODE=$VITE_PLATFORM_MODE \
     COMMIT_SHA=$COMMIT_SHA
 
 COPY . .
@@ -62,7 +69,7 @@ RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
     NX_CLOUD_ACCESS_TOKEN="$(cat /run/secrets/NX_CLOUD_ACCESS_TOKEN 2>/dev/null || true)" \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true)" \
     NODE_OPTIONS='--max-old-space-size=6144' \
-    pnpm exec nx run ${APP_NAME}:build
+    pnpm exec nx run ${APP_NAME}:build --output-style=stream
 
 
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──
@@ -78,14 +85,14 @@ COPY --from=builder /app/dist/apps/${APP_NAME}/                     /usr/share/n
 ENTRYPOINT ["./entrypoint.sh"]
 
 
-# ── Production: node (fishing-map and future SSR apps) ───────────────────────
+# ── Production: node (platform and future SSR apps) ───────────────────────
 FROM node:24-alpine AS production-node
 
 RUN apk update && apk upgrade
 
 WORKDIR /app
 
-ARG APP_NAME=fishing-map
+ARG APP_NAME=platform
 COPY --from=builder /app/apps/${APP_NAME}/.output ./output
 
 CMD ["node", "--import", "./output/server/instrument.server.mjs", "--max-http-header-size=40000", "output/server/index.mjs"]

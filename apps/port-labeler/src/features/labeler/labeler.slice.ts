@@ -60,7 +60,7 @@ const slice = createSlice({
     setData: (state, action: PayloadAction<PortPosition[]>) => {
       state.data = action.payload
     },
-    toogleExtraData: (state, action: PayloadAction<PortPosition[]>) => {
+    toogleExtraData: (state) => {
       state.extraData = !state.extraData
     },
     setSelectedPoints: (state, action: PayloadAction<string[]>) => {

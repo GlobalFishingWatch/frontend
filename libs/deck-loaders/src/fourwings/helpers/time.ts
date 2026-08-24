@@ -4,6 +4,7 @@ import { DateTime, Duration } from 'luxon'
 import type { FourwingsInterval } from '../lib/types'
 
 export const FOURWINGS_INTERVALS_ORDER: FourwingsInterval[] = ['HOUR', 'DAY', 'MONTH', 'YEAR']
+export const FOURWINGS_REAL_TIME_INTERVALS: FourwingsInterval[] = ['HOUR']
 export const TIME_COMPARISON_NOT_SUPPORTED_INTERVALS: FourwingsInterval[] = ['MONTH', 'YEAR']
 
 export const LIMITS_BY_INTERVAL: Record<

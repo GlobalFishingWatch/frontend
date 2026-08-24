@@ -1,6 +1,6 @@
 import type { BaseQueryFn } from '@reduxjs/toolkit/query/react'
 
-import type { ParsedAPIError} from '@globalfishingwatch/api-client';
+import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 
 export const gfwBaseQuery =

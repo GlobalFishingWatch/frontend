@@ -68,8 +68,7 @@ type UseResponsiveVisualizationDataProps = {
   getAggregatedData?: BaseResponsiveChartProps['getAggregatedData']
   getIndividualData?: BaseResponsiveChartProps['getIndividualData']
   getIsIndividualSupported:
-    | typeof getIsIndividualBarChartSupported
-    | typeof getIsIndividualTimeseriesSupported
+    typeof getIsIndividualBarChartSupported | typeof getIsIndividualTimeseriesSupported
 }
 
 export function useResponsiveVisualizationData({

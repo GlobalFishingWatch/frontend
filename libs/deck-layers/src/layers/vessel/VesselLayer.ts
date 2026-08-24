@@ -1,8 +1,8 @@
 import type { Layer, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { bbox, bboxPolygon, featureCollection, point, rhumbBearing } from '@turf/turf'
+import { bbox, featureCollection, point, rhumbBearing } from '@turf/turf'
 import { uniq } from 'es-toolkit'
-import type { BBox, Position } from 'geojson'
+import type { Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
@@ -15,13 +15,16 @@ import {
   getVesselGraphExtentClamped,
   toAbsoluteTimestamp,
   toRelativeTimestamp,
+  VESSEL_TRACKS_LOADER_ID,
   VesselEventsLoader,
   VesselTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 
-import type { DeckLayerPickingObject, DeckLayerProps } from '../../types'
-import { fetchWithGFWAPI, getLayerGroupOffset, LayerGroup } from '../../utils'
-import { deckToHexColor } from '../../utils/colors'
+import { LayerGroup } from '#config/sort.config'
+import { fetchWithGFWAPI } from '#layers/_shared/api'
+import type { DeckLayerPickingObject, DeckLayerProps } from '#types'
+import { getLayerGroupOffset } from '#utils'
+import { deckToHexColor } from '#utils/colors'
 
 import {
   EVENT_LAYER_TYPE,
@@ -68,6 +71,33 @@ type VesselLayerState = {
   highlightEndTime?: number
   highlightEventIds?: string[]
 }
+/**
+ * Each bbox is shifted by ±360 when that keeps the union narrower,
+ * so tracks crossing the antimeridian don't span the whole world.
+ */
+export function mergeBboxes(bboxes: Bbox[]): Bbox {
+  return bboxes.reduce((merged, current) => {
+    const [west, south, east, north] = current
+    const candidates: Bbox[] = [
+      current,
+      [west + 360, south, east + 360, north],
+      [west - 360, south, east - 360, north],
+    ]
+    const best = candidates.reduce((a, b) =>
+      Math.max(merged[2], b[2]) - Math.min(merged[0], b[0]) <
+      Math.max(merged[2], a[2]) - Math.min(merged[0], a[0])
+        ? b
+        : a
+    )
+    return [
+      Math.min(merged[0], best[0]),
+      Math.min(merged[1], best[1]),
+      Math.max(merged[2], best[2]),
+      Math.max(merged[3], best[3]),
+    ] as Bbox
+  })
+}
+
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
@@ -302,7 +332,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           fetch: fetchWithGFWAPI,
           loadOptions: {
             worker: false,
-            'vessel-tracks': {
+            [VESSEL_TRACKS_LOADER_ID]: {
               computeGaps,
             },
           },
@@ -554,7 +584,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!trackLayerBboxes.length) return null
     if (trackLayerBboxes.length === 1) return trackLayerBboxes[0]
 
-    return bbox(featureCollection([...trackLayerBboxes.map((l) => bboxPolygon(l as BBox))])) as Bbox
+    return mergeBboxes(trackLayerBboxes as Bbox[])
   }
 
   getVesselEventsBounds() {

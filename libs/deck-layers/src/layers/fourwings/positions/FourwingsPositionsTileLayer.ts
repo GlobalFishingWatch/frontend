@@ -23,30 +23,29 @@ import { mean, sample, standardDeviation } from 'simple-statistics'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { getVesselIdentifierType } from '@globalfishingwatch/data-transforms'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
-import {
-  COLOR_HIGHLIGHT_LINE,
-  COLOR_TRANSPARENT,
-  getColorRamp,
-  getLayerGroupOffset,
-  getSteps,
-  GFWMVTLoader,
-  LayerGroup,
-  VESSEL_SPRITE_ICON_MAPPING,
-} from '../../../utils'
-import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import { LabelLayer } from '../../labels/LabelLayer'
-import { PATH_BASENAME } from '../../layers.config'
+import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { PATH_BASENAME } from '#config/layers.config'
+import { LayerGroup } from '#config/sort.config'
+import { GFWMVTLoader } from '#layers/_shared/api'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
   SUPPORTED_POSITION_PROPERTIES,
-} from '../fourwings.config'
-import type { FourwingsColorObject, FourwingsTileLayerColorScale } from '../fourwings.types'
-import type { FourwingsLayer } from '../FourwingsLayer'
-import { getTimeResolved } from '../heatmap/fourwings-heatmap.utils'
+} from '#layers/fourwings/fourwings.config'
+import { getSteps } from '#layers/fourwings/fourwings.stats'
+import type {
+  FourwingsColorObject,
+  FourwingsTileLayerColorScale,
+} from '#layers/fourwings/fourwings.types'
+import type { FourwingsLayer } from '#layers/fourwings/FourwingsLayer'
+import { getTimeResolved } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
+import { LabelLayer } from '#layers/labels/LabelLayer'
+import { getColorRamp, getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '#utils'
 
 import type {
   FourwingsPositionsPickingInfo,
@@ -59,6 +58,7 @@ import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
   getIsFeatureInFilterIds,
+  getPositionBearing,
 } from './fourwings-positions.utils'
 
 type FourwingsPositionsTileLayerState = {
@@ -313,7 +313,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _canShowVesselIcon = (d: FourwingsPositionFeature) => {
-    return this.getIsPositionMatched(d) || d.properties.bearing !== undefined
+    return this.getIsPositionMatched(d) || getPositionBearing(d) !== undefined
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
@@ -329,8 +329,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return ''
     }
 
-    const label = cleanVesselShipname(d.properties?.shipname)
-    return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
+    const { shipname, id } = d.properties || {}
+    const label =
+      shipname && shipname !== 'null'
+        ? cleanVesselShipname(shipname)
+        : getVesselIdentifierType(id) === 'ssvid'
+          ? id
+          : ''
+    return label.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
 
   _getLatestVesselPositions = (positions: FourwingsPositionFeature[]) => {
@@ -416,8 +422,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getDataUrl() {
-    const { startTime, endTime, sublayers, extentStart, extentEnd, intervalCacheMode = 'DATE' } =
-      this.props
+    const {
+      startTime,
+      endTime,
+      sublayers,
+      extentStart,
+      extentEnd,
+      intervalCacheMode = 'DATE',
+    } = this.props
     const supportedPositionProperties = this._getPositionProperties()
 
     const vesselGroups = sublayers.flatMap((sublayer) => {
@@ -477,7 +489,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getFillColor,
         getSize: this._getIconSize,
-        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getAngle: (d: any) => {
+          const bearing = getPositionBearing(d)
+          return bearing ? 360 - bearing : 0
+        },
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         pickable: true,
         getPickingInfo: this.getPickingInfo,
@@ -494,7 +509,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getHighlightColor,
         getSize: this._getHighlightedIconSize,
-        getAngle: (d: any) => (d.properties.bearing ? 360 - d.properties.bearing : 0),
+        getAngle: (d: any) => {
+          const bearing = getPositionBearing(d)
+          return bearing ? 360 - bearing : 0
+        },
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         updateTriggers: {
           getColor: [

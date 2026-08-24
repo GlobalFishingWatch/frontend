@@ -37,7 +37,6 @@ export function ProjectItem({ project }: { project: LabellingProject }) {
       </div>
       <Modal
         contentClassName={styles.editModal}
-        appSelector={'app'}
         title={`Edit project: ${project.name}`}
         isOpen={editOpen}
         shouldCloseOnEsc
