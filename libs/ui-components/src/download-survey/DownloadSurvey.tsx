@@ -12,7 +12,7 @@ import { TextArea } from '../textarea'
 
 import styles from './DownloadSurvey.module.css'
 
-export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurvey'
+export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurveyDDP'
 
 export type DownloadSurveyContactConsent = 'yes' | 'no'
 
