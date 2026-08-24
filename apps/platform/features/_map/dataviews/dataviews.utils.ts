@@ -51,6 +51,7 @@ import {
   isRealTimeDataset,
 } from 'features/_map/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
+import { formatInfoField } from 'utils/info'
 
 export {
   BATHYMETRY_DATAVIEW_PREFIX,
@@ -344,6 +345,7 @@ export const getVesselDataviewInstance = ({
 
 export const getVesselEncounterTrackDataviewInstance = ({
   vesselId,
+  vesselName,
   track,
   start,
   end,
@@ -351,6 +353,7 @@ export const getVesselEncounterTrackDataviewInstance = ({
   highlightEventEndTime,
 }: {
   vesselId: string
+  vesselName?: string
   track: string
   start: number
   end: number
@@ -361,6 +364,10 @@ export const getVesselEncounterTrackDataviewInstance = ({
     id: getEncounteredVesselDataviewInstanceId(vesselId),
     dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
     config: {
+      // This instance has no Vessels (info) datasetConfig, so selectDataviewInstancesResolved
+      // can't resolve config.name for it and the map popup falls back to "Unknown vessel".
+      // The name comes from the encounter event payload instead.
+      ...(vesselName && { name: formatInfoField(vesselName, 'shipname') as string }),
       startDate: getUTCDateTime(start).toISO()!,
       endDate: getUTCDateTime(end).toISO()!,
       ...(highlightEventStartTime && {
