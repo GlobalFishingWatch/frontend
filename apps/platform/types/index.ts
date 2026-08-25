@@ -204,7 +204,7 @@ export enum TimebarVisualisations {
 }
 export type TimebarVisualisation = `${TimebarVisualisations}`
 
-type VisibleEvents = EventType[] | 'all' | 'none'
+export type VisibleEvents = EventType[] | 'all' | 'none'
 
 export enum TimebarGraphs {
   Speed = 'speed',
