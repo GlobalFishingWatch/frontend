@@ -26,7 +26,6 @@ function HelpHubLandingPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>{t((s) => s.helpHub.title)}</h1>
       {HELP_HUB_SECTIONS.map((section) => {
         const { title, description } = getHelpHubSectionCopy(section.id)
         const { items, error } = sectionItems[section.id]

@@ -24,7 +24,7 @@
 }
 
 .separator {
-  font: var(--font-XL);
+  font-size: 2.6rem;
   color: var(--color-secondary-blue);
 }
 

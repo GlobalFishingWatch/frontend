@@ -19,11 +19,6 @@
   margin: 0 auto;
 }
 
-.header {
-  flex-shrink: 0;
-  margin-bottom: var(--space-M);
-}
-
 .title {
   font: var(--font-XXL-bold);
   color: var(--color-primary-blue);

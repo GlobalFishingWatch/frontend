@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import { Breadcrumb } from '@globalfishingwatch/ui-components/breadcrumb'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
-import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubError from 'features/help/HelpHubError'
 import HelpHubItemContent from 'features/help/HelpHubItemContent'
 
@@ -43,9 +40,6 @@ function HelpHubSectionPage() {
     document.getElementById(SCROLL_CONTAINER_DOM_ID)?.scrollTo({ top: 0 })
   }, [activeSlug])
 
-  const section = findHelpHubSection(sectionSlug)
-  const copy = section ? getHelpHubSectionCopy(section.id) : undefined
-
   if (error) {
     return <HelpHubError error={error} className={styles.placeholder} />
   }
@@ -57,20 +51,6 @@ function HelpHubSectionPage() {
   return (
     <div className={styles.container}>
       <div className={styles.aside}>
-        {copy && (
-          <header className={styles.header}>
-            <Breadcrumb
-              items={[
-                {
-                  id: ROUTE_PATHS.HELP_HUB,
-                  label: t((s) => s.helpHub.title),
-                  renderLink: (props) => <Link to={ROUTE_PATHS.HELP_HUB} {...props} />,
-                },
-                { id: sectionSlug, label: copy.title },
-              ]}
-            />
-          </header>
-        )}
         <TableOfContents
           data={index}
           activeId={activeSlug}
