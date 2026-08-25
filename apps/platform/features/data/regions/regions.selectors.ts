@@ -5,7 +5,8 @@ import {
   FAO_AREAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import { selectDataviewBySlug } from 'features/_map/dataviews/dataviews.slice'
 
 const selectEezDataview = selectDataviewBySlug(EEZ_DATAVIEW_SLUG)

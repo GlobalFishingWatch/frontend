@@ -292,3 +292,37 @@ describe('Raw csv to track with UTC timestamps', () => {
     }
   )
 })
+
+describe('Meridian handling', () => {
+  const columns = { latitude: 'lat', longitude: 'lon', startTime: 't', lineId: 'id' }
+  const toSegments = (records: Record<string, any>[]) =>
+    listToTrackSegments({
+      records,
+      ...columns,
+      lineColorBarOptions: LINE_COLOR_BAR_OPTIONS,
+    }).segments
+
+  it('keeps a track crossing the prime meridian as one line, in time order', () => {
+    const segments = toSegments([
+      { id: 'a', lat: 1, lon: -0.5, t: '2025-01-01T00:00:00Z' },
+      { id: 'a', lat: 1.5, lon: 0.5, t: '2025-01-02T00:00:00Z' },
+      { id: 'a', lat: 2, lon: 0, t: '2025-01-03T00:00:00Z' },
+      { id: 'a', lat: 2.5, lon: -0.5, t: '2025-01-04T00:00:00Z' },
+    ])
+    expect(segments).toHaveLength(1)
+    expect(segments[0]).toHaveLength(1)
+    expect(segments[0][0].map((point) => point.longitude)).toEqual([-0.5, 0.5, 0, -0.5])
+  })
+
+  it('splits a track crossing the antimeridian', () => {
+    const segments = toSegments([
+      { id: 'a', lat: 1, lon: 179, t: '2025-01-01T00:00:00Z' },
+      { id: 'a', lat: 1.5, lon: 179.5, t: '2025-01-02T00:00:00Z' },
+      { id: 'a', lat: 2, lon: -179.5, t: '2025-01-03T00:00:00Z' },
+    ])
+    expect(segments).toHaveLength(1)
+    expect(segments[0]).toHaveLength(2)
+    expect(segments[0][0].map((point) => point.longitude)).toEqual([179, 179.5])
+    expect(segments[0][1].map((point) => point.longitude)).toEqual([-179.5])
+  })
+})

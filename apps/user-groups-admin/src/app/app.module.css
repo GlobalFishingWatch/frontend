@@ -6,10 +6,15 @@
   justify-content: center;
 }
 
+.aside,
+.main {
+  --aside-width: 28rem;
+}
+
 .aside {
   top: 6rem;
-  left: 2rem;
-  width: 24rem;
+  left: var(--space-M);
+  width: var(--aside-width);
   height: calc(100vh - 6rem);
   overflow: auto;
   position: fixed;
@@ -19,6 +24,6 @@
 
 .main {
   flex: 1 1;
-  padding-left: 26rem;
+  padding-left: calc(var(--space-M) + var(--aside-width));
   padding-top: 6rem;
 }

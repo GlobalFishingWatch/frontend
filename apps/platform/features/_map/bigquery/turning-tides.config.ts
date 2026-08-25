@@ -1,6 +1,6 @@
 import { DatasetTypes, type RelatedDataset } from '@globalfishingwatch/api-types'
+import { DEFAULT_IDENTITY_DATASET_ID } from '@platform/config/map/datasets'
 
-import { DEFAULT_IDENTITY_DATASET_ID } from 'data/map/workspaces'
 import type { TurningTidesWorkspaceId } from 'features/_vessels/track-correction/track-correction.config'
 
 export const TURNING_TIDES_DESCRIPTION_PREFIX = 'Turning Tides'

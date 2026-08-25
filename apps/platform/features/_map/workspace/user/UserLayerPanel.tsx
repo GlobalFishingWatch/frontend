@@ -22,7 +22,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import {
   useAutoRefreshImportingDataset,
   useDatasetModalConfigConnect,

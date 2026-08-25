@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { EndpointId } from '@globalfishingwatch/api-types'
-
 import {
   PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectAreas } from 'features/data/areas/areas.slice'
 import { selectReportPortId } from 'router/routes.selectors'

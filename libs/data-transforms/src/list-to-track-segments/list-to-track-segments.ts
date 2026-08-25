@@ -2,7 +2,7 @@ import { groupBy } from 'es-toolkit'
 
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 
-import { parseCoords } from '../coordinates'
+import { isValidLngLat, parseCoords } from '../coordinates'
 import { getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
 import { COORDINATES_PROPERTIES_ID } from '../segments/segments.config'
@@ -29,6 +29,22 @@ const sortRecordsByTimestamp = ({
   )
 }
 
+const splitSegmentAtAntimeridian = (segment: TrackSegment): TrackSegment[] =>
+  segment.reduce(
+    (splitSegments: TrackSegment[], point, index) => {
+      const previousPoint = segment[index - 1]
+      if (
+        previousPoint &&
+        Math.abs((point.longitude ?? 0) - (previousPoint.longitude ?? 0)) > 180
+      ) {
+        splitSegments.push([])
+      }
+      splitSegments[splitSegments.length - 1].push(point)
+      return splitSegments
+    },
+    [[]] as TrackSegment[]
+  )
+
 export const listToTrackSegments = ({
   records,
   latitude,
@@ -45,9 +61,9 @@ export const listToTrackSegments = ({
   const sortedRecords = startTime
     ? sortRecordsByTimestamp({ recordsArray, timestampProperty: startTime })
     : recordsArray
-  const groupedLines = groupBy(sortedRecords, (record) => {
-    return `${hasIdGroup ? record[lineId] : NO_RECORD_ID}-${record.longitude > 0}`
-  })
+  const groupedLines = groupBy(sortedRecords, (record) =>
+    hasIdGroup ? `${record[lineId]}` : NO_RECORD_ID
+  )
   const segments = Object.values(groupedLines).map((line, lineIndex) => {
     const groupedSegments = hasSegmentId
       ? groupBy(line, (s) => s[segmentId])
@@ -58,7 +74,7 @@ export const listToTrackSegments = ({
           const record = normalizePropertiesKeys(dirtyRecord)
           const recordId =
             lineId && record[lineId] ? record[lineId] : `${NO_RECORD_ID}-${lineIndex}`
-          if (record[latitude] && record[longitude]) {
+          if (isValidLngLat(record[longitude], record[latitude])) {
             const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
             const coords = parseCoords(latitudeValue, longitudeValue)
             if (coords) {
@@ -88,6 +104,7 @@ export const listToTrackSegments = ({
           } else return []
         })
       })
+      .flatMap(splitSegmentAtAntimeridian)
       .filter((segment) => segment.length > 0)
   })
   return { segments, metadata: { hasDatesError } }

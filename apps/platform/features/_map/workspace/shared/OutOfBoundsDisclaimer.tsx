@@ -5,13 +5,13 @@ import cx from 'classnames'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
-import { LAST_DATA_UPDATE } from 'data/map/config'
 import {
   SAR_DATAVIEW_INSTANCE_ID,
   VIIRS_DATAVIEW_INSTANCE_ID,
   VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
-} from 'data/map/dataviews'
+} from '@platform/config/map/dataviews'
+
+import { LAST_DATA_UPDATE } from 'data/map/config'
 import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,

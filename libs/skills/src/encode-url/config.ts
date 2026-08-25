@@ -1,4 +1,4 @@
-import { PIPE_DATASET_VERSION as DEFAULT_PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
+import { PIPE_DATASET_VERSION as DEFAULT_PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client/constants'
 
 export const PIPE_DATASET_VERSION: string = DEFAULT_PIPE_DATASET_VERSION || '4'
 

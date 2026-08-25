@@ -1,4 +1,5 @@
-import { PATH_BASENAME, WORKSPACE_ENV } from 'data/map/config'
+import { PATH_BASENAME } from 'data/map/config'
+import { WORKSPACE_ENV } from 'data/workspace-env'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
 import { getIsBrowser } from 'utils/dom'
@@ -13,7 +14,7 @@ const SITE_ORIGIN =
     production: 'https://globalfishingwatch.org',
     staging: 'https://fishing-map.staging.globalfishingwatch.org',
     development: 'https://fishing-map.dev.globalfishingwatch.org',
-  }[WORKSPACE_ENV!] ?? (getIsBrowser() ? window.location.origin : 'http://localhost:3003')
+  }[WORKSPACE_ENV] ?? (getIsBrowser() ? window.location.origin : 'http://localhost:3003')
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 const SHARE_IMAGE = `${SITE_ORIGIN}${PATH_BASENAME}/images/gfw.jpg`
 

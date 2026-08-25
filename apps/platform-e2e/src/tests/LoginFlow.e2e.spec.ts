@@ -1,58 +1,70 @@
 import { test } from '../fixtures'
 import { MAP_PATH } from '../paths'
+import { TAGS } from '../tags'
 
 test.beforeEach(async ({ page }) => {
   await page.goto(MAP_PATH)
 })
 
-test('Login - should allow a user to log in and log out', async ({ loginPage }) => {
-  await loginPage.login()
+test(
+  'Login - should allow a user to log in and log out',
+  { tag: [TAGS.SMOKE] },
+  async ({ loginPage }) => {
+    await loginPage.login()
 
-  await loginPage.openUserPanel()
-  await loginPage.expectUserVisible()
+    await loginPage.openUserPanel()
+    await loginPage.expectUserVisible()
 
-  await loginPage.logout()
-  await loginPage.expectGuest()
-})
+    await loginPage.logout()
+    await loginPage.expectGuest()
+  }
+)
 
-test('Login - should persist the session across a reload (server-side)', async ({
-  loginPage,
-  page,
-}) => {
-  await loginPage.login()
+test(
+  'Login - should persist the session across a reload (server-side)',
+  { tag: [TAGS.EXTENDED] },
+  async ({ loginPage, page }) => {
+    await loginPage.login()
 
-  await page.reload()
+    await page.reload()
 
-  await loginPage.expectLoggedIn()
-  await loginPage.openUserPanel()
-  await loginPage.expectUserVisible()
-})
+    await loginPage.expectLoggedIn()
+    await loginPage.openUserPanel()
+    await loginPage.expectUserVisible()
+  }
+)
 
-test('Login - should refresh an expired access token on reload (SSR)', async ({ loginPage }) => {
-  await loginPage.login()
+test(
+  'Login - should refresh an expired access token on reload (SSR)',
+  { tag: [TAGS.EXTENDED] },
+  async ({ loginPage }) => {
+    await loginPage.login()
 
-  // Simulate an expired access token while the refresh token survives.
-  await loginPage.clearUserToken()
+    // Simulate an expired access token while the refresh token survives.
+    await loginPage.clearUserToken()
 
-  await loginPage.expectUserTokenCleared()
-  await loginPage.expectRefreshTokenPresent()
+    await loginPage.expectUserTokenCleared()
+    await loginPage.expectRefreshTokenPresent()
 
-  await loginPage.reload()
+    await loginPage.reload()
 
-  await loginPage.expectLoggedIn()
-  await loginPage.expectUserTokenPresent()
-})
+    await loginPage.expectLoggedIn()
+    await loginPage.expectUserTokenPresent()
+  }
+)
 
-test('Login - should fall back to the guest user when cookies are cleared', async ({
-  loginPage,
-}) => {
-  await loginPage.login()
+test(
+  'Login - should fall back to the guest user when cookies are cleared',
+  { tag: [TAGS.EXTENDED] },
+  async ({ loginPage }) => {
+    await loginPage.login()
 
-  await loginPage.clearCookies()
-  await loginPage.reload()
+    await loginPage.clearCookies()
+    await loginPage.reload()
 
-  await loginPage.expectGuest()
-})
+    await loginPage.expectGuest()
+  }
+)
 
 test('Login - should sync login across tabs', async ({ loginPage }) => {
   const newTabPage = await loginPage.newTab()

@@ -4,7 +4,7 @@ import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  FISHING_DATAVIEW_SLUG_AIS,
+  FISHING_AIS_DATAVIEW_SLUG,
   LAYER_LIBRARY_ID_SEPARATOR,
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
@@ -89,7 +89,7 @@ const withAisDefaultFilters = (state: MapState): MapState => {
     dataviewInstances: (state.dataviewInstances as any[]).map((instance) => {
       if (!instance?.id) return instance
       const { dataviewId } = getLayerInfo(String(instance.id))
-      if (dataviewId !== FISHING_DATAVIEW_SLUG_AIS) return instance
+      if (dataviewId !== FISHING_AIS_DATAVIEW_SLUG) return instance
       const filters = instance.config?.filters
       if (!filters || !Object.keys(filters).length || 'distance_from_port_km' in filters) {
         return instance

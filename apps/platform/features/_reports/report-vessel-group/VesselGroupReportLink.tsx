@@ -2,7 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'

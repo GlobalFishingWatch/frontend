@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
+import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 
 import { APP_NAME } from 'data/map/config'
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { selectDataviewInstancesMergedOrdered } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   selectActivityCategory,

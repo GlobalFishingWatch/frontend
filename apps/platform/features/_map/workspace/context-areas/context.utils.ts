@@ -2,13 +2,13 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
-
 import {
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-} from 'data/map/workspaces'
+  PROTECTED_SEAS_DATAVIEW_INSTANCE_ID,
+} from '@platform/config/map/dataviews'
+
 import type { MapCoordinates } from 'types'
 
 export const CONTEXT_FEATURES_LIMIT = 5
@@ -17,7 +17,7 @@ export const DATAVIEWS_WARNING = [
   EEZ_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
-  PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
+  PROTECTED_SEAS_DATAVIEW_INSTANCE_ID,
 ]
 
 type FilterFeaturesByCenterDistanceParams = {

@@ -1,5 +1,6 @@
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
+
 import { PATH_BASENAME } from 'data/map/config'
-import { WorkspaceCategory } from 'data/map/workspaces'
 import type { Locale } from 'types'
 
 type WelcomeContentLang = {

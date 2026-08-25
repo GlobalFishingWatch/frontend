@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
 import {
-  FISHING_DATAVIEW_SLUG_ALL,
+  FISHING_ALL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActivityCategory } from 'features/_map/workspace/selectors/app.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
@@ -34,7 +34,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
           })
         } else {
           dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
-            return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG_ALL
+            return dataviewInstance.dataviewId === FISHING_ALL_DATAVIEW_SLUG
           })
         }
       }
