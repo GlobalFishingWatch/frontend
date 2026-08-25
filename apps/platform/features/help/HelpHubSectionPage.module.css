@@ -1,15 +1,9 @@
-.page {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-M);
-}
-
 .container {
-  gap: var(--space-S);
-  flex: 1;
   display: grid;
   grid-template-columns: 36rem minmax(0, 1fr);
   align-items: start;
+  gap: var(--space-S);
+  padding: 0 var(--space-M);
 }
 
 .aside {
@@ -75,17 +69,10 @@
 }
 
 @media (width <= 800px) {
-  .page {
-    height: auto;
-    display: block;
-    padding: var(--space-M) var(--space-SM);
-  }
-
   .container {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
     gap: var(--space-M);
-    height: auto;
+    padding: var(--space-M) var(--space-SM);
   }
 
   .aside {
@@ -106,15 +93,8 @@
 }
 
 @media print {
-  .page {
-    height: auto;
-    display: block;
-  }
-
   .container {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    height: auto;
   }
 
   .aside .tableOfContents {
