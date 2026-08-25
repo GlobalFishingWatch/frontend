@@ -389,6 +389,9 @@ export const useClickedEventConnect = () => {
   )
 }
 
+const HOVER_PICKING_DEPTH = 1
+const CLICK_PICKING_DEPTH = 10 // deck's own default, pinned so it can't drift
+
 const useGetPickingInteraction = () => {
   const map = useDeckMap()
 
@@ -403,6 +406,7 @@ const useGetPickingInteraction = () => {
           x: info.x,
           y: info.y,
           radius: 0,
+          depth: type === 'hover' ? HOVER_PICKING_DEPTH : CLICK_PICKING_DEPTH,
         }) as DeckLayerInteractionPickingInfo[]
       } catch (e) {
         console.warn(e)
@@ -433,6 +437,19 @@ const useGetPickingInteraction = () => {
   return getPickingInteraction
 }
 
+const MAP_MOVE_SETTLE_MS = 150
+const EMPTY_INTERACTION_EVENT = {} as InteractionEvent
+
+let isMapMoving = false
+const endMapMove = debounce(() => {
+  isMapMoving = false
+}, MAP_MOVE_SETTLE_MS)
+
+export const notifyMapMoving = () => {
+  isMapMoving = true
+  endMapMove()
+}
+
 export const hoverCoordinatesAtom = atom<[number, number] | undefined>()
 export const useMapMouseHover = () => {
   const getPickingInteraction = useGetPickingInteraction()
@@ -454,11 +471,15 @@ export const useMapMouseHover = () => {
           isMapDrawing ||
           isErrorNotificationEditing
         ) {
-          setMapHoverFeatures({} as InteractionEvent)
+          setMapHoverFeatures(EMPTY_INTERACTION_EVENT)
           return
         }
         if (rulersEditing) {
           onRulerMapHover(info)
+          return
+        }
+        if (isMapMoving) {
+          setMapHoverFeatures(EMPTY_INTERACTION_EVENT)
           return
         }
         const hoverInteraction = getPickingInteraction(info, 'hover')

@@ -453,8 +453,6 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
           highlightStartTime,
           highlightEndTime,
           onError: this._onLayerError,
-          jointRounded: true,
-          capRounded: true,
           getWidth: 1.5,
           getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
           updateTriggers: {

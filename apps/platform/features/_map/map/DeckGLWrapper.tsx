@@ -12,6 +12,7 @@ import { MAP_CANVAS_ID } from 'features/_map/map/map.config'
 import { setMapLoaded } from 'features/_map/map/map.slice'
 import { useSetMapInstance } from 'features/_map/map/map-context.hooks'
 import {
+  notifyMapMoving,
   useMapCursor,
   useMapDrag,
   useMapMouseClick,
@@ -32,6 +33,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { DebugOption, selectDebugOptions, setDebugOption } from 'features/debug/debug.slice'
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 
+const PICK_ONLY_LAYER_ID_SUFFIX = '-interactive'
+
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
@@ -50,6 +53,7 @@ const DeckGLWrapper = () => {
       if (![longitude, latitude, zoom].every(Number.isFinite)) {
         return
       }
+      notifyMapMoving()
       if (params.interactionState.isZooming || !params.interactionState.inTransition) {
         // https://github.com/visgl/deck.gl/issues/7158#issuecomment-2305388963
         // add transitionDuration: 0 to avoid unresponsive zoom
@@ -108,12 +112,16 @@ const DeckGLWrapper = () => {
     setDeckLayerLoadedState(layers)
   }, [layers, setDeckLayerLoadedState])
 
-  const layerFilterHandler = useCallback(({ renderPass }: FilterContext) => {
+  const layerFilterHandler = useCallback(({ layer, isPicking, renderPass }: FilterContext) => {
     // This avoids performing the default picking
     // since we are handling it through pickMultipleObjects
     // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
     if (renderPass === 'picking:hover') {
       // if (!loadedLayers.includes(layer.id) || renderPass === 'picking:hover') {
+      return false
+    }
+
+    if (!isPicking && layer.id.endsWith(PICK_ONLY_LAYER_ID_SUFFIX)) {
       return false
     }
     return true
