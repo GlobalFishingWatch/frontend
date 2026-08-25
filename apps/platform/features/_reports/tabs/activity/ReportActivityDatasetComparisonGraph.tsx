@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -104,23 +105,30 @@ const ReportActivityDatasetComparisonGraph = ({
   const intervals = filteredData.map((d) => d.interval)
   const interval = getFourwingsInterval(start, end, intervals)
 
+  const hasMainData = (filteredData[0]?.timeseries?.length ?? 0) > 0
+  const hasCompareData = (filteredData[1]?.timeseries?.length ?? 0) > 0
+  const isCompareEmpty = !!comparisonDatasets?.compare && !hasCompareData
+
+  const graphLayers = useMemo(
+    () => (hasCompareData ? filteredData : filteredData.slice(0, 1)),
+    [filteredData, hasCompareData]
+  )
+
   const dataFormated = useMemo(() => {
     return formatEvolutionData(
-      filteredData[0],
+      graphLayers[0],
       {
         start,
         end,
         timeseriesInterval: interval,
       },
-      filteredData[1]
+      graphLayers[1]
     )
-  }, [end, filteredData, interval, start])
+  }, [end, graphLayers, interval, start])
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
 
-  const hasEmptyData = data.some((d) => !d.timeseries || d.timeseries.length === 0)
-
-  if (hasEmptyData) {
+  if (!hasMainData) {
     return (
       <ReportActivityPlaceholder showHeader={false} animate={false}>
         {t((t) => t.analysis.noDataByArea)}
@@ -132,95 +140,110 @@ const ReportActivityDatasetComparisonGraph = ({
     return null
   }
 
-  const leftAxisColor = getContrastSafeColor(filteredData[0].sublayers[0].legend?.color as string)
+  const leftAxisColor = getContrastSafeColor(graphLayers[0].sublayers[0].legend?.color as string)
   const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
 
-  const rightAxisColor =
-    comparisonDatasets?.compare && filteredData[1]
-      ? getContrastSafeColor(filteredData[1].sublayers[0].legend?.color as string)
-      : undefined
-  const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
+  const rightAxisColor = hasCompareData
+    ? getContrastSafeColor(graphLayers[1].sublayers[0].legend?.color as string)
+    : undefined
+  const rightAxisDomain = hasCompareData && calculateYAxisDomain(dataFormated, 1)
 
   return (
-    <div className={styles.graph} data-testid="report-activity-dataset-comparison">
-      <ComposedChart
-        responsive
-        width="100%"
-        height="100%"
-        data={dataFormated}
-        margin={{
-          top: 10,
-          right: comparisonDatasets?.compare ? -30 : 5,
-          left: -20,
-          bottom: -10,
-        }}
+    <div className={styles.graphContainer}>
+      <div
+        className={cx(styles.graph, { [styles.faded]: isCompareEmpty })}
+        data-testid="report-activity-dataset-comparison"
       >
-        <CartesianGrid vertical={true} syncWithTicks />
-        <XAxis
-          domain={xDomain}
-          dataKey="date"
-          minTickGap={10}
-          tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-          axisLine={{
-            stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+        <ComposedChart
+          responsive
+          width="100%"
+          height="100%"
+          data={dataFormated}
+          margin={{
+            top: 10,
+            right: hasCompareData ? -30 : 5,
+            left: -20,
+            bottom: -10,
           }}
-        />
-        <YAxis
-          yAxisId="left"
-          scale="linear"
-          interval="preserveEnd"
-          tickFormatter={tickFormatter}
-          tick={{ style: { fill: leftAxisColor, stroke: leftAxisColor, strokeWidth: 0.5 } }}
-          axisLine={{ stroke: leftAxisColor }}
-          tickLine={false}
-          orientation="left"
-          domain={
-            leftAxisDomain[1] === 0 ? (rightAxisDomain ? rightAxisDomain : [0, 1]) : leftAxisDomain
-          }
-        />
-        {comparisonDatasets?.compare && rightAxisDomain && (
+        >
+          <CartesianGrid vertical={true} syncWithTicks />
+          <XAxis
+            domain={xDomain}
+            dataKey="date"
+            minTickGap={10}
+            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
+            axisLine={{
+              stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+            }}
+          />
           <YAxis
-            yAxisId="right"
+            yAxisId="left"
             scale="linear"
             interval="preserveEnd"
             tickFormatter={tickFormatter}
-            tick={{ style: { fill: rightAxisColor, stroke: rightAxisColor, strokeWidth: 0.5 } }}
-            axisLine={{ stroke: rightAxisColor }}
+            tick={{ style: { fill: leftAxisColor, stroke: leftAxisColor, strokeWidth: 0.5 } }}
+            axisLine={{ stroke: leftAxisColor }}
             tickLine={false}
-            orientation="right"
-            domain={rightAxisDomain}
+            orientation="left"
+            domain={
+              leftAxisDomain[1] === 0
+                ? rightAxisDomain
+                  ? rightAxisDomain
+                  : [0, 1]
+                : leftAxisDomain
+            }
           />
-        )}
-        {filteredData.map((layer, layerIndex) => {
-          const sublayer = layer.sublayers[0]
-          const yAxisId = layerIndex === 0 ? 'left' : 'right'
-          const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
-
-          return (
-            <Line
-              key={`${sublayer.id}-${layerIndex}-line`}
-              yAxisId={yAxisId}
-              name="line"
-              type="monotone"
-              dataKey={(data) => data.avg?.[layerIndex]}
-              unit={sublayer.legend?.unit}
-              dot={false}
-              isAnimationActive={false}
-              stroke={strokeColor}
-              strokeWidth={2}
+          {rightAxisDomain && (
+            <YAxis
+              yAxisId="right"
+              scale="linear"
+              interval="preserveEnd"
+              tickFormatter={tickFormatter}
+              tick={{ style: { fill: rightAxisColor, stroke: rightAxisColor, strokeWidth: 0.5 } }}
+              axisLine={{ stroke: rightAxisColor }}
+              tickLine={false}
+              orientation="right"
+              domain={rightAxisDomain}
             />
-          )
-        })}
-        <Legend
-          verticalAlign="top"
-          align="center"
-          wrapperStyle={{ width: '100%', left: 0 }}
-          content={(props) => <DataComparisonLegend {...props} />}
-        />
-        {dataFormated.length > 0 && (
-          <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
-        )}
-      </ComposedChart>
+          )}
+          {graphLayers.map((layer, layerIndex) => {
+            const sublayer = layer.sublayers[0]
+            const yAxisId = layerIndex === 0 ? 'left' : 'right'
+            const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
+
+            return (
+              <Line
+                key={`${sublayer.id}-${layerIndex}-line`}
+                yAxisId={yAxisId}
+                name="line"
+                type="monotone"
+                dataKey={(data) => data.avg?.[layerIndex]}
+                unit={sublayer.legend?.unit}
+                dot={false}
+                isAnimationActive={false}
+                stroke={strokeColor}
+                strokeWidth={2}
+              />
+            )
+          })}
+          <Legend
+            verticalAlign="top"
+            align="center"
+            wrapperStyle={{ width: '100%', left: 0 }}
+            content={(props) => <DataComparisonLegend {...props} />}
+          />
+          {dataFormated.length > 0 && (
+            <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
+          )}
+        </ComposedChart>
+      </div>
+      {isCompareEmpty && (
+        <div className={styles.emptyCompareOverlay}>
+          <p className={styles.emptyCompareMessage} data-testid="report-comparison-dataset-no-data">
+            {t((t) => t.analysis.noDataByComparedDataset)}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

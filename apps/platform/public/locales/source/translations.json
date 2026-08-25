@@ -70,6 +70,7 @@
     "nauticalmiles": "nautical miles",
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
+    "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
