@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
 import {
   getVesselGraphExtentClamped,
+  parseTrack,
   MAX_DEPTH_VALUE,
   MAX_SPEED_VALUE,
   MIN_DEPTH_VALUE,
@@ -69,6 +70,14 @@ describe('parse-tracks', () => {
       const result = getVesselGraphExtentClamped(domain, 'elevation')
 
       expect(result).toEqual([MIN_DEPTH_VALUE, MAX_DEPTH_VALUE])
+    })
+  })
+
+  describe('parseTrack', () => {
+    // A chunk with no positions in range comes back with an empty body, which protobuf decodes
+    // to `attributes: null`.
+    it('should return an empty track for an empty response body', () => {
+      expect(parseTrack(new ArrayBuffer(0))).toEqual({})
     })
   })
 })

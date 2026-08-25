@@ -2,6 +2,7 @@ import { parse } from '@loaders.gl/core'
 import { MVTLoader } from '@loaders.gl/mvt'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { VESSEL_TRACKS_LOADER_ID } from '@globalfishingwatch/deck-loaders'
 
 import { getEnv } from '#config/layers.config'
@@ -120,15 +121,17 @@ export async function fetchWithGFWAPI(
   }
 
   const timestampBase = getResponseHeader({ response, header: 'timestamp-base', type: 'number' })
-  if (timestampBase === null) {
-    console.error(`Missing timestamp-base header for track chunk: ${url}`)
-  }
-
-  return parse(await response.arrayBuffer(), loader, {
+  const track = (await parse(await response.arrayBuffer(), loader, {
     ...loadOptions,
     [VESSEL_TRACKS_LOADER_ID]: {
       ...(loadOptions?.[VESSEL_TRACKS_LOADER_ID] || {}),
-      timestampBase,
+      timestampBase: timestampBase ?? undefined,
     },
-  })
+  })) as VesselTrackData
+
+  if (timestampBase === null && track.length) {
+    console.error(`Missing timestamp-base header for track chunk: ${url}`)
+  }
+
+  return track
 }
