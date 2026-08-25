@@ -369,8 +369,17 @@
   font-weight: 600;
 }
 
-.logoutLink {
-  cursor: pointer;
+.userMenuEmail {
+  opacity: var(--opacity-secondary, 0.6);
+  padding-bottom: var(--space-S, 10px);
+}
+
+.userMenuButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: var(--space-S, 10px);
+  padding-bottom: var(--space-S, 10px);
 }
 
 @media only screen and (width >= 860px) {

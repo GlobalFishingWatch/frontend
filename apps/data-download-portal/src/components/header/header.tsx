@@ -14,6 +14,9 @@ export default function HeaderComponent() {
       window.location.href = GFWAPI.getLoginUrl(window.location.toString())
     }
   }
+  const handleSettingsRedirect = () => {
+    window.open(GFWAPI.getSettingsUrl(window.location.href), '_blank')
+  }
 
   const isDatasetsPage = location.pathname.includes('/datasets/')
 
@@ -24,6 +27,7 @@ export default function HeaderComponent() {
         homeRedirectURL={isDatasetsPage ? '/' : undefined}
         user={user}
         onLoginClick={loading ? undefined : handleLoginRedirect}
+        onSettingsClick={handleSettingsRedirect}
         onLogoutClick={logoutUser}
       />
       <div className={styles.titleCover}>
