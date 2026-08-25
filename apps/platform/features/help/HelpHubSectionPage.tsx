@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import cx from 'classnames'
 
+import { Breadcrumb } from '@globalfishingwatch/ui-components/breadcrumb'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
@@ -58,19 +59,16 @@ function HelpHubSectionPage() {
       <div className={styles.aside}>
         {copy && (
           <header className={styles.header}>
-            <nav>
-              <ul className={styles.breadcrumb}>
-                <li>
-                  <Link to={ROUTE_PATHS.HELP_HUB} className={styles.breadcrumbLink}>
-                    {t((s) => s.helpHub.title)}
-                  </Link>
-                </li>
-                <li className={styles.breadcrumbSeparator} aria-hidden="true">
-                  ›
-                </li>
-                <li>{copy.title}</li>
-              </ul>
-            </nav>
+            <Breadcrumb
+              items={[
+                {
+                  id: ROUTE_PATHS.HELP_HUB,
+                  label: t((s) => s.helpHub.title),
+                  renderLink: (props) => <Link to={ROUTE_PATHS.HELP_HUB} {...props} />,
+                },
+                { id: sectionSlug, label: copy.title },
+              ]}
+            />
           </header>
         )}
         <TableOfContents

@@ -31,7 +31,7 @@
 .description {
   font: var(--font-M);
   color: var(--color-secondary-blue);
-  max-width: 70ch;
+  max-width: 50%;
 }
 
 .seeMore {
