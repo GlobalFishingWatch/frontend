@@ -63,6 +63,12 @@ const filterDataBySublayer = (
     .filter(Boolean) as ReportGraphProps[]
 }
 
+const findDataviewData = (data: ReportGraphProps[], dataviewId: string) => {
+  return data.find(
+    (d) => d.id === dataviewId || d.sublayers.some((sublayer) => sublayer.id === dataviewId)
+  )
+}
+
 const calculateXDomain = (start: string, end: string, interval?: string) => {
   if (!start || !end || !interval) {
     return undefined
@@ -109,20 +115,15 @@ const ReportActivityDatasetComparisonGraph = ({
   const intervals = filteredData.map((d) => d.interval)
   const interval = getFourwingsInterval(start, end, intervals)
 
+  const mainDataviewId = comparisonDatasets?.main
   const compareDataviewId = comparisonDatasets?.compare
-  const compareData = useMemo(() => {
-    if (!compareDataviewId) {
-      return undefined
-    }
-    return filteredData.find(
-      (d) =>
-        d.id === compareDataviewId ||
-        d.sublayers.some((sublayer) => sublayer.id === compareDataviewId)
-    )
-  }, [filteredData, compareDataviewId])
   const mainData = useMemo(
-    () => filteredData.find((d) => d !== compareData) ?? filteredData[0],
-    [filteredData, compareData]
+    () => (mainDataviewId ? findDataviewData(filteredData, mainDataviewId) : filteredData[0]),
+    [filteredData, mainDataviewId]
+  )
+  const compareData = useMemo(
+    () => (compareDataviewId ? findDataviewData(filteredData, compareDataviewId) : undefined),
+    [filteredData, compareDataviewId]
   )
 
   const hasMainData = (mainData?.timeseries?.length ?? 0) > 0
@@ -130,13 +131,16 @@ const ReportActivityDatasetComparisonGraph = ({
   const isCompareLayerLoading =
     !!compareDataviewId && layersLoadedState[compareDataviewId]?.loaded !== true
   const isLoading =
-    reportFeaturesLoading || isCompareLayerLoading || (!!compareDataviewId && !compareData)
+    reportFeaturesLoading ||
+    isCompareLayerLoading ||
+    !mainData ||
+    (!!compareDataviewId && !compareData)
   const isCompareEmpty = !isLoading && !!compareDataviewId && !hasCompareData
 
-  const graphLayers = useMemo(
-    () => (hasCompareData ? [mainData, compareData as ReportGraphProps] : [mainData]),
-    [mainData, compareData, hasCompareData]
-  )
+  const graphLayers = useMemo(() => {
+    const layers = hasCompareData ? [mainData, compareData] : [mainData]
+    return layers.filter((layer): layer is ReportGraphProps => layer !== undefined)
+  }, [mainData, compareData, hasCompareData])
 
   const dataFormated = useMemo(() => {
     return formatEvolutionData(
