@@ -1,4 +1,4 @@
-import type { DefaultProps, Layer, LayerProps, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
@@ -12,11 +12,15 @@ import {
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
 import type {
-  UserTrackBinaryData,
   UserTrackFeature,
+  UserTrackLod,
   UserTrackRawData,
 } from '@globalfishingwatch/deck-loaders'
-import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  getUserTrackLodIndex,
+  USER_TRACK_LOD_LEVELS,
+  UserTrackLoader,
+} from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '#config/colors.config'
 import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
@@ -153,7 +157,12 @@ type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
-  binaryData?: UserTrackBinaryData
+  /** Path index -> feature index. Avoids a linear scan per path in `_getColor`. */
+  pathFeatureIndexes?: Int32Array
+  /** Coarse-to-fine simplified copies; the last entry is the unsimplified original. */
+  lods?: UserTrackLod[]
+  /** Index into `lods` currently being drawn, derived from viewport zoom. */
+  lodIndex?: number
   highlightedFeatures?: UserLayerPickingObject[]
   highlightStartTime?: number
   highlightEndTime?: number
@@ -168,6 +177,31 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
   declare state: UserTracksLayerState
+
+  /**
+   * Base `Layer.shouldUpdateState` only reports `propsOrDataChanged`, so without this
+   * `renderLayers` never re-runs on a pure zoom change and the LOD would never switch.
+   * Compared against the level index rather than a viewport hash, so this fires at
+   * bucket boundaries instead of on every frame of a zoom.
+   */
+  shouldUpdateState(params: UpdateParameters<this>) {
+    return super.shouldUpdateState(params) || this._getLodIndex() !== this.state?.lodIndex
+  }
+
+  updateState(params: UpdateParameters<this>) {
+    super.updateState(params)
+    const lodIndex = this._getLodIndex()
+    if (lodIndex !== this.state?.lodIndex) {
+      this.setState({ lodIndex })
+    }
+  }
+
+  _getLodIndex() {
+    return getUserTrackLodIndex(
+      this.state?.lods ?? USER_TRACK_LOD_LEVELS,
+      this.context.viewport.zoom
+    )
+  }
 
   _getHighlightedFeatures() {
     return this.state?.highlightedFeatures || emptyHighlightedFeatures
@@ -225,10 +259,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const featureIndex =
-      info.index >= 0
-        ? this.state?.rawDataIndexes?.find(({ length }) => info.index < length)?.index
-        : undefined
+    const featureIndex = this._getFeatureIndex(info.index)
     const feature =
       featureIndex !== undefined ? this.state?.rawData?.features[featureIndex] : undefined
     // TODO: support multiple sublayers
@@ -314,7 +345,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
           : [],
       },
     }
-    const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
+    const { data, lods } = await parse(response, UserTrackLoader, userTracksLoadOptions)
     let totalCoordinatesLength = 0
     const rawDataIndexes = data.features.reduce(
       (acc: RawDataIndex[], feature: any, index: number) => {
@@ -325,9 +356,29 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       },
       [] as RawDataIndex[]
     )
+    const pathFeatureIndexes = new Int32Array(totalCoordinatesLength)
+    let pathCursor = 0
+    for (const { index, length } of rawDataIndexes) {
+      while (pathCursor < length) {
+        pathFeatureIndexes[pathCursor] = index
+        pathCursor++
+      }
+    }
 
-    this.setState({ rawData: data, binaryData: binary, rawDataIndexes })
-    return binary
+    const lodIndex = getUserTrackLodIndex(lods, this.context.viewport.zoom)
+    this.setState({ rawData: data, rawDataIndexes, pathFeatureIndexes, lods, lodIndex })
+    return lods[lodIndex].binary
+  }
+
+  _getFeatureIndex(pathIndex: number): number | undefined {
+    if (pathIndex < 0) {
+      return undefined
+    }
+    const pathFeatureIndexes = this.state?.pathFeatureIndexes
+    if (!pathFeatureIndexes) {
+      return undefined
+    }
+    return pathIndex < pathFeatureIndexes.length ? pathFeatureIndexes[pathIndex] : undefined
   }
 
   _onLayerError = (error: Error) => {
@@ -397,8 +448,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   ) => {
     const { singleTrack } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    const featureIndex = this.state?.rawDataIndexes?.find(({ length }) => index < length)
-      ?.index as number
+    const featureIndex = this._getFeatureIndex(index) as number
     const currentFeature = this.state?.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
@@ -436,11 +486,13 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
       } as _UserTrackLayerProps
 
+      const activeBinary = this.state?.lods?.[this.state?.lodIndex ?? 0]?.binary
+
       return [
         new UserTracksPathLayer<any>({
           ...commonProps,
           id: `${layerIdHash}-interactive`,
-          data: this.state.binaryData,
+          data: activeBinary,
           pickable: layer.pickable,
           getWidth: 5,
           getColor: COLOR_TRANSPARENT,
@@ -448,13 +500,15 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         new UserTracksPathLayer<any>({
           ...commonProps,
           id: layerIdHash,
-          data: tilesUrl.toString(),
+          data: activeBinary ?? tilesUrl.toString(),
           fetch: this._fetch,
           highlightStartTime,
           highlightEndTime,
           onError: this._onLayerError,
+          jointRounded: true,
           getWidth: 1.5,
-          getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
+          getColor: (d, { index: pathIndex }) =>
+            this._getColor(d, { layer, sublayer, index: pathIndex }),
           updateTriggers: {
             getColor: [singleTrack, sublayer.color, highlightedFeatures],
           },
