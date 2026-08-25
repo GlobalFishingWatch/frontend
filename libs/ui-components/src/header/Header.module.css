@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
-  grid-column-gap: 20px;
+  column-gap: 20px;
   overflow-wrap: anywhere;
 }
 
@@ -28,7 +28,7 @@
 
 .gfwHeaderContainer .gfwHeader .screenReaderOnly {
   border: 0;
-  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   height: auto;
   overflow: hidden;
   position: absolute;
@@ -39,7 +39,7 @@
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
-  grid-column-gap: 20px;
+  column-gap: 20px;
 }
 
 .gfwHeaderContainer .gfwHeader * {
@@ -198,7 +198,7 @@
   flex-direction: column;
   align-items: flex-start;
   position: relative;
-  border-top: 1px solid rgb(127, 178, 192, 0.2);
+  border-top: 1px solid rgba(127, 178, 192, 0.2);
   overflow: hidden;
   padding: var(--space-M, 20px);
 }
@@ -362,6 +362,23 @@
     top: 80px;
     transform: translateX(calc(-100% + 97px));
     width: fit-content;
+  }
+}
+
+.userInitials {
+  font-weight: 600;
+}
+
+.logoutLink {
+  cursor: pointer;
+}
+
+@media only screen and (width >= 860px) {
+  .navItem:hover ul.userMenu {
+    width: max-content;
+    left: auto;
+    right: 0;
+    transform: none;
   }
 }
 

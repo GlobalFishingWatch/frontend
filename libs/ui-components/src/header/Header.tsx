@@ -1,7 +1,10 @@
 import React, { Fragment, type JSX } from 'react'
 import cx from 'classnames'
 
+import type { UserData } from '@globalfishingwatch/api-types'
+
 import { Icon } from '../icon'
+import { IconButton } from '../icon-button'
 
 import styles from './Header.module.css'
 
@@ -155,6 +158,9 @@ interface HeaderProps {
   inverted?: boolean
   className?: string
   homeRedirectURL?: string
+  user?: UserData | null
+  onLoginClick?: () => void
+  onLogoutClick?: () => void
 }
 interface HeaderMenuItemProps {
   index: number
@@ -192,7 +198,7 @@ export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Elemen
                         <a
                           href={grandChild.href}
                           onClick={grandChild.onClick}
-                          className={styles.itemLabel}
+                          className={cx(styles.itemLabel, grandChild.className)}
                         >
                           {grandChild.label}
                         </a>
@@ -209,11 +215,39 @@ export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Elemen
   )
 }
 
+function getUserMenuItem(user: UserData, onLogoutClick?: () => void): MenuItem {
+  const userInitials = [user.firstName?.slice(0, 1) || '', user.lastName?.slice(0, 1) || ''].join(
+    ''
+  )
+  return {
+    className: styles.userMenu,
+    label: (
+      <IconButton type="solid" className={styles.userInitials}>
+        {userInitials.toLocaleUpperCase()}
+      </IconButton>
+    ),
+    items: [
+      {
+        label: `${user.firstName} ${user.lastName || ''}`,
+        items: [
+          { label: user.email },
+          ...(onLogoutClick
+            ? [{ label: 'Logout', className: styles.logoutLink, onClick: onLogoutClick }]
+            : []),
+        ],
+      },
+    ],
+  }
+}
+
 export function Header({
   children,
   inverted = false,
   className = '',
   homeRedirectURL = 'https://globalfishingwatch.org',
+  user,
+  onLoginClick,
+  onLogoutClick,
 }: HeaderProps) {
   return (
     <div
@@ -243,6 +277,19 @@ export function Header({
             <ul className={styles.navList} role="menubar">
               {navigation.map((item, index) => HeaderMenuItem({ index, item }))}
               {!!children && children}
+              {user ? (
+                <HeaderMenuItem
+                  index={navigation.length}
+                  item={getUserMenuItem(user, onLogoutClick)}
+                />
+              ) : (
+                onLoginClick && (
+                  <HeaderMenuItem
+                    index={navigation.length}
+                    item={{ label: 'Log in', onClick: onLoginClick }}
+                  />
+                )
+              )}
             </ul>
           </nav>
           <a href="https://globalfishingwatch.org/our-map/" className={styles.exploreButton}>
