@@ -23,17 +23,17 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 import { GAPS_EVENTS_WORKSPACE_ID } from '@platform/config'
+import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
+import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
 import {
   DEFAULT_DATAVIEW_SLUGS,
-  DEFAULT_WORKSPACE_ID,
-  getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS,
-} from 'data/map/workspaces'
-import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/map/workspaces-vms'
+  VMS_VESSEL_DATAVIEW_SLUGS,
+} from 'data/map/dataviews'
+import { getWorkspaceEnv } from 'data/workspace-env'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
@@ -258,7 +258,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
 
       // TODO: remove this once the gaps dataset is ready to production and public
       if (workspaceId === GAPS_EVENTS_WORKSPACE_ID) {
-        dataviewIds.push(TEMPLATE_VESSEL_DATAVIEW_SLUG_GAPS)
+        dataviewIds.push(TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG)
       }
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only

@@ -2,8 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { DatasetSubCategory } from '@globalfishingwatch/api-types'
 
-import { VESSEL_TEMPLATE_DATAVIEW_SLUGS } from 'data/map/workspaces'
-import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/map/workspaces-vms'
+import { VESSEL_TEMPLATE_DATAVIEW_SLUGS, VMS_VESSEL_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 

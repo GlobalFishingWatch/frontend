@@ -1,5 +1,4 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_SLUG,
@@ -10,7 +9,7 @@ import {
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
 
 export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
   {

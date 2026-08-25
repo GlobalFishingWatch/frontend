@@ -1,8 +1,11 @@
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { isActivityDataview, isDetectionsDataview } from '@globalfishingwatch/dataviews-client'
+import {
+  FISHING_DATAVIEW_SLUG_PREFIX,
+  PRESENCE_DATAVIEW_SLUG,
+} from '@platform/config/map/dataviews'
 
-import { FISHING_DATAVIEW_SLUG_PREFIX, PRESENCE_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 
 export const isDefaultActivityDataview = (dataview: UrlDataviewInstance) =>

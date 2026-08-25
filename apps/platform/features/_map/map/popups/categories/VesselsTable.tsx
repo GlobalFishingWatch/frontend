@@ -7,12 +7,9 @@ import cx from 'classnames'
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { GLOBAL_VESSELS_DATASET_ID } from '@platform/config/map/datasets'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import {
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-  GLOBAL_VESSELS_DATASET_ID,
-} from 'data/map/workspaces'
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import type {

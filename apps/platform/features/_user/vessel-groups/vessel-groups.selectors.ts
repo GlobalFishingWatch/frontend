@@ -3,8 +3,8 @@ import { uniqBy } from 'es-toolkit'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getVesselGroupsInDataviews } from 'features/_map/datasets/datasets.utils'
 import { selectActiveVesselGroupDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'

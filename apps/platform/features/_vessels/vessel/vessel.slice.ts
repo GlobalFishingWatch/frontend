@@ -26,7 +26,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 
-import { PROFILE_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { PROFILE_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import {
   fetchDatasetByIdThunk,
   fetchDatasetsByIdsThunk,

@@ -4,7 +4,7 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { CONTEXT_LAYERS_DATAVIEWS } from 'data/map/workspaces'
+import { CONTEXT_LAYERS_DATAVIEWS } from 'data/map/dataviews'
 import { getDatasetTypeIcon } from 'features/_map/datasets/datasets.utils'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'

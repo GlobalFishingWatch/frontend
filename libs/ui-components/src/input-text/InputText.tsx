@@ -105,7 +105,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
       {!loading && onCleanButtonClick && inputProps.value && (
         <IconButton
           icon="delete"
-          size="medium"
+          size={inputSize === 'small' ? 'tiny' : 'medium'}
           className={styles.delete}
           onClick={onCleanButtonClick}
         />

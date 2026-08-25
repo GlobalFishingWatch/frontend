@@ -11,8 +11,8 @@ import type {
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
 
-import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/map/config'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
 import {
   fetchDatasetsByIdsThunk,

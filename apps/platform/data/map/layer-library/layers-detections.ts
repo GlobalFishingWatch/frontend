@@ -1,12 +1,14 @@
-import { PATH_BASENAME } from 'data/map/config'
-import { VIIRS_DATAVIEW_INSTANCE_ID, VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID } from 'data/map/dataviews'
-import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 import {
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
+  VIIRS_DATAVIEW_INSTANCE_ID,
   VIIRS_MATCH_DATAVIEW_SLUG,
   VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
-} from 'data/map/workspaces'
+  VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
+} from '@platform/config/map/dataviews'
+
+import { PATH_BASENAME } from 'data/map/config'
+import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 
 export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
   {
