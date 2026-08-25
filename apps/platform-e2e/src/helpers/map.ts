@@ -1,6 +1,8 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import { TIMEOUTS } from './timeouts'
+
 const MAP_VIEWPORT = '#view-mapViewport'
 
 // Clicking the map only picks data once the layer under the cursor is loaded and interactive
@@ -9,10 +11,10 @@ export async function clickMapUntilVisible(
   page: Page,
   position: { x: number; y: number },
   expected: Locator,
-  { timeout = 30_000 }: { timeout?: number } = {}
+  { timeout = TIMEOUTS.LONG }: { timeout?: number } = {}
 ) {
   await expect(async () => {
     await page.click(MAP_VIEWPORT, { position })
-    await expect(expected).toBeVisible({ timeout: 10_000 })
+    await expect(expected).toBeVisible({ timeout: TIMEOUTS.MEDIUM })
   }).toPass({ timeout })
 }
