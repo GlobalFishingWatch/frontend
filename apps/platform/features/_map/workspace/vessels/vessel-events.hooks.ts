@@ -22,26 +22,21 @@ export const useVisibleVesselEvents = () => {
 
   const setVesselEventVisibility = useCallback(
     ({ event, visible }: { event: EventTypes | EventType; visible: boolean }) => {
+      const currentVisibleEventsTypes =
+        currentVisibleEvents === 'all'
+          ? ALL_EVENT_TYPES
+          : currentVisibleEvents === 'none'
+            ? []
+            : (currentVisibleEvents as EventTypes[])
       if (visible) {
-        const visibleEvents: any =
-          currentVisibleEvents === 'all'
-            ? ALL_EVENT_TYPES.filter((eventType) => eventType !== event)
-            : uniq([...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), event])
+        const visibleEvents = uniq([...currentVisibleEventsTypes, event as EventTypes])
         replaceQueryParams({
-          visibleEvents: visibleEvents?.length === ALL_EVENT_TYPES.length ? 'all' : visibleEvents,
+          visibleEvents: visibleEvents.length === ALL_EVENT_TYPES.length ? 'all' : visibleEvents,
         })
       } else {
-        const currentVisibleEventsTypes =
-          currentVisibleEvents === 'all'
-            ? ALL_EVENT_TYPES
-            : currentVisibleEvents === 'none'
-              ? []
-              : currentVisibleEvents
-        const visibleEvents = currentVisibleEventsTypes?.filter(
-          (eventType) => event !== eventType
-        ) as EventTypes[]
+        const visibleEvents = currentVisibleEventsTypes.filter((eventType) => event !== eventType)
         replaceQueryParams({
-          visibleEvents: visibleEvents?.length ? visibleEvents : 'none',
+          visibleEvents: visibleEvents.length ? visibleEvents : 'none',
         })
       }
     },

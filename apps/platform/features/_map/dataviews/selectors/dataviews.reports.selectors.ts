@@ -2,8 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-
-import { DATASET_COMPARISON_SUFFIX } from 'data/map/config'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,

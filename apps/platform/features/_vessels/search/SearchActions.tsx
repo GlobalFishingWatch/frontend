@@ -10,8 +10,8 @@ import {
   getRelatedDatasetsByType,
 } from '@globalfishingwatch/datasets-client'
 import { Button } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 
-import { DEFAULT_WORKSPACE_CATEGORY } from 'data/map/workspaces'
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'

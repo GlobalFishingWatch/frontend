@@ -5,12 +5,12 @@ import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
-
 import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategory,
-} from 'data/map/workspaces'
+} from '@platform/config/map/workspaces'
+
 import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { cleanReportQuery } from 'features/_map/workspace/workspace.utils'

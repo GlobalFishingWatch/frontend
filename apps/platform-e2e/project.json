@@ -9,6 +9,23 @@
     "test": {
       "options": {
         "grep": "^(?!.*Screenshot comparison).*"
+      },
+      "configurations": {
+        "smoke": {
+          "grep": "@smoke",
+          "project": "chromium"
+        },
+        "extended": {
+          "grep": "@smoke|@extended",
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        },
+        "regression": {
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        }
       }
     },
     "test:local": {
@@ -29,6 +46,21 @@
         },
         "headed": {
           "headed": true
+        },
+        "smoke": {
+          "grep": "@smoke",
+          "project": "chromium"
+        },
+        "extended": {
+          "grep": "@smoke|@extended",
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
+        },
+        "regression": {
+          "env": {
+            "PLAYWRIGHT_BROWSER": "all"
+          }
         }
       }
     },

@@ -1,10 +1,10 @@
 import type { ComponentProps, ComponentType, ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 
+import type { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import type { WorkspaceCategory } from 'data/map/workspaces'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/map/workspaces'
 import type {
   selectLastVisitedWorkspace,
   selectWorkspace,

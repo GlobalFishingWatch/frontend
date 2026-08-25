@@ -33,8 +33,16 @@
 
 .delete {
   position: absolute;
-  bottom: 0.4rem;
   right: 3rem;
+  bottom: calc((var(--size-M) - var(--size-SM)) / 2);
+}
+
+.medium .delete {
+  bottom: 0;
+}
+
+.small .delete {
+  bottom: calc((var(--size-S) - var(--size-XS)) / 2);
 }
 
 .icon {

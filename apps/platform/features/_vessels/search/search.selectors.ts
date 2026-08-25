@@ -2,9 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
+import { PIPE_5_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/map/config'
-import { PIPE_5_WORKSPACE_ID } from 'data/map/workspaces'
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import {

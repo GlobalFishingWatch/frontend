@@ -82,7 +82,7 @@ export const parseTrack = (
   { computeGaps = false, timestampBase = 0 } = {} as VesselTrackLoaderParams
 ): VesselTrackData => {
   const track = DeckTrack.decode(new Uint8Array(arrayBuffer)) as unknown as VesselTrackData
-  if (!track.attributes.getPath.value.length) {
+  if (!track.attributes?.getPath?.value?.length) {
     return {} as VesselTrackData
   }
   const defaultAttributesLength =

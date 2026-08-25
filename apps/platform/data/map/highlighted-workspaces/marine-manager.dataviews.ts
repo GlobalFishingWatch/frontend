@@ -1,12 +1,13 @@
-import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import {
-  DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
   EEZ_DATAVIEW_INSTANCE_ID,
   GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,
   GLOBAL_SALINITY_DATAVIEW_SLUG,
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
-} from 'data/map/workspaces'
+} from '@platform/config/map/dataviews'
+
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/dataviews'
+import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
 
 export const WIZARD_TEMPLATE_ID = 'wizard_template-public'
 

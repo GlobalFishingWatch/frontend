@@ -1,5 +1,5 @@
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
-import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client'
+import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 
 import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
 

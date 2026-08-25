@@ -1,6 +1,6 @@
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
-import { PROFILE_DATAVIEW_SLUGS } from 'data/map/workspaces'
+import { PROFILE_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import type { AppRouterContext } from 'router/app-router-context'
 import type { VesselHeadData } from 'router/router.meta'

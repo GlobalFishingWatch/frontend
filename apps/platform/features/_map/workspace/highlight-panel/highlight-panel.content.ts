@@ -1,5 +1,6 @@
+import { SENTINEL2_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
+
 import { IS_PRODUCTION_BUILD, IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/map/config'
-import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/map/dataviews'
 import type { Locale } from 'types'
 
 type HighlighPanelConfigLocale = {

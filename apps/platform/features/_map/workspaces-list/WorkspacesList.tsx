@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/map/workspaces'
+import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from '@platform/config/map/workspaces'
+
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

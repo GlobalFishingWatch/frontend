@@ -17,6 +17,10 @@
       "types": "./map/app.ts",
       "default": "./map/app.ts"
     },
+    "./map/datasets": {
+      "types": "./map/datasets.ts",
+      "default": "./map/datasets.ts"
+    },
     "./map/dataviews": {
       "types": "./map/dataviews.ts",
       "default": "./map/dataviews.ts"

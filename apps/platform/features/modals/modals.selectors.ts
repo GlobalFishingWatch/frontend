@@ -4,7 +4,8 @@ import {
   DEEP_SEA_MINING_WORKSPACE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   WorkspaceCategory,
-} from 'data/map/workspaces'
+} from '@platform/config/map/workspaces'
+
 import { selectDownloadActivityModalOpen } from 'features/_map/download/download.selectors'
 import { selectVesselGroupModalOpen } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import {

@@ -1,10 +1,10 @@
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayer } from 'data/map/layer-library'
 import { LIBRARY_LAYERS } from 'data/map/layer-library'
-import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG } from 'data/map/workspaces'
 import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/_map/dataviews/dataviews.utils'
 import { getNextColor } from 'features/_map/workspace/workspace.utils'
 import { t } from 'features/i18n/i18n'

@@ -2,9 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { BUFFER_PREVIEW_COLOR } from 'data/map/config'
-import { WorkspaceCategory } from 'data/map/workspaces'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectCurrentWorkspacesList } from 'features/_map/workspaces-list/workspaces-list.selectors'
 import {
