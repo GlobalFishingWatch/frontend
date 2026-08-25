@@ -5,12 +5,14 @@ import cx from 'classnames'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/_reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import {
   formatDateTicks,
@@ -97,6 +99,8 @@ const ReportActivityDatasetComparisonGraph = ({
 }: ReportActivityDatasetComparisonProps) => {
   const { t } = useTranslation()
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
+  const layersLoadedState = useDeckLayerLoadedState()
+  const reportFeaturesLoading = useReportFeaturesLoading()
 
   const filteredData = useMemo(() => {
     return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
@@ -105,13 +109,33 @@ const ReportActivityDatasetComparisonGraph = ({
   const intervals = filteredData.map((d) => d.interval)
   const interval = getFourwingsInterval(start, end, intervals)
 
-  const hasMainData = (filteredData[0]?.timeseries?.length ?? 0) > 0
-  const hasCompareData = (filteredData[1]?.timeseries?.length ?? 0) > 0
-  const isCompareEmpty = !!comparisonDatasets?.compare && !hasCompareData
+  const compareDataviewId = comparisonDatasets?.compare
+  const compareData = useMemo(() => {
+    if (!compareDataviewId) {
+      return undefined
+    }
+    return filteredData.find(
+      (d) =>
+        d.id === compareDataviewId ||
+        d.sublayers.some((sublayer) => sublayer.id === compareDataviewId)
+    )
+  }, [filteredData, compareDataviewId])
+  const mainData = useMemo(
+    () => filteredData.find((d) => d !== compareData) ?? filteredData[0],
+    [filteredData, compareData]
+  )
+
+  const hasMainData = (mainData?.timeseries?.length ?? 0) > 0
+  const hasCompareData = (compareData?.timeseries?.length ?? 0) > 0
+  const isCompareLayerLoading =
+    !!compareDataviewId && layersLoadedState[compareDataviewId]?.loaded !== true
+  const isLoading =
+    reportFeaturesLoading || isCompareLayerLoading || (!!compareDataviewId && !compareData)
+  const isCompareEmpty = !isLoading && !!compareDataviewId && !hasCompareData
 
   const graphLayers = useMemo(
-    () => (hasCompareData ? filteredData : filteredData.slice(0, 1)),
-    [filteredData, hasCompareData]
+    () => (hasCompareData ? [mainData, compareData as ReportGraphProps] : [mainData]),
+    [mainData, compareData, hasCompareData]
   )
 
   const dataFormated = useMemo(() => {
@@ -127,6 +151,10 @@ const ReportActivityDatasetComparisonGraph = ({
   }, [end, graphLayers, interval, start])
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
+
+  if (isLoading) {
+    return <ReportActivityPlaceholder showHeader={false} loading />
+  }
 
   if (!hasMainData) {
     return (
