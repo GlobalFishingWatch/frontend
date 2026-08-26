@@ -33,7 +33,11 @@
     "tslib": "2.x"
   },
   "devDependencies": {
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@platform/config": "workspace:^",
     "@types/node": "26.x",
+    "playwright": "1.x",
+    "sharp": "0.x",
     "ts-node": "10.x"
   }
 }

@@ -8,6 +8,21 @@
     "build": {
       "executor": "@nx/js:tsc"
     },
+    "screenshots": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": [{ "projects": ["dataviews-client"], "target": "build" }],
+      "options": {
+        "cwd": "libs/ocean-areas",
+        "command": "TS_NODE_PROJECT=src/scripts/tsconfig.screenshots.json node --disable-warning=DEP0180 --disable-warning=DEP0205 --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"ts-node/esm\", pathToFileURL(\"./\"));' src/scripts/screenshots.ts"
+      }
+    },
+    "screenshots:typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project {projectRoot}/src/scripts/tsconfig.screenshots.json"
+      }
+    },
     "update-data": {
       "executor": "nx:run-commands",
       "cache": false,
