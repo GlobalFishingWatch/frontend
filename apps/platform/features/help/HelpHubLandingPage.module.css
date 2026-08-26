@@ -67,11 +67,11 @@
 }
 
 /* Full bleed: cards scroll to the page edge while the first stays aligned with the heading above.
-   Two classes so it beats Carousel.module.css whatever order the two modules are emitted in. */
+   Carousel.module.css whatever order the two modules are emitted in. */
 .section .carousel {
   margin-inline: calc(-1 * var(--space-L));
-  padding-inline: var(--space-L);
-  scroll-padding-inline: var(--space-L);
+
+  --carousel-padding-inline: var(--space-L);
 }
 
 .carouselPlaceholder {

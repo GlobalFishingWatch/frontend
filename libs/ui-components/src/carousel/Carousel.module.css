@@ -1,3 +1,10 @@
+.root {
+  --carousel-fade-size: var(--space-L);
+  --carousel-padding-inline: 0px;
+
+  position: relative;
+}
+
 .carousel {
   --scrollbar-width: none;
   --scrollbar-size: 0;
@@ -9,8 +16,24 @@
   gap: var(--carousel-gap);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding-left: var(--carousel-gap);
+  padding-inline: var(--carousel-padding-inline);
+  scroll-padding-inline: max(var(--carousel-padding-inline), var(--carousel-gap));
   padding-bottom: var(--space-S);
+}
+
+.fade {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: var(--carousel-fade-size);
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.fadeVisible {
+  opacity: 0.5;
 }
 
 /* Mandatory snapping fights every scrollLeft write, so it is suspended for the drag and
@@ -71,5 +94,10 @@
   .carousel {
     overflow-x: visible;
     flex-wrap: wrap;
+  }
+
+  /* Nothing is scrolled off in print, so the hint would only wash out the last card. */
+  .fade {
+    display: none;
   }
 }
