@@ -5,11 +5,14 @@ import type {
   DownloadSurveyAnswer,
   DownloadSurveyContactConsent,
 } from '@globalfishingwatch/ui-components'
-import { DownloadSurvey, Modal } from '@globalfishingwatch/ui-components'
+import { Button, DownloadSurvey, Modal } from '@globalfishingwatch/ui-components'
 
-import { DOWNLOAD_SURVEY_URL } from '../../config'
+import { DISABLE_DOWNLOAD_SURVEY, DOWNLOAD_SURVEY_URL } from '../../config'
 
-import styles from './download-survey.module.css'
+import styles from './download-modal.module.css'
+
+const MULTIPLE_FILES_NOTICE =
+  'We are preparing the files you requested, you will receive an email when they are ready.'
 
 type SurveyAnswer = DownloadSurveyAnswer & {
   date: string
@@ -22,23 +25,19 @@ type SurveyAnswer = DownloadSurveyAnswer & {
   contactConsent: DownloadSurveyContactConsent
 }
 
-type DownloadSurveyModalProps = {
-  isOpen: boolean
+export type DownloadRequest = {
+  showSurvey: boolean
+  multipleFiles: boolean
+}
+
+type DownloadModalProps = {
+  request: DownloadRequest | null
   user: UserData | null
-  showQuestions: boolean
-  notice?: string
   downloading?: boolean
   onClose: () => void
 }
 
-function DownloadSurveyModal({
-  isOpen,
-  user,
-  showQuestions,
-  notice,
-  downloading,
-  onClose,
-}: DownloadSurveyModalProps) {
+function DownloadModal({ request, user, downloading, onClose }: DownloadModalProps) {
   const onConfirm = useCallback(
     async ({ usageIntent, contactConsent }: DownloadSurveyAnswer) => {
       const answer: SurveyAnswer = {
@@ -67,19 +66,28 @@ function DownloadSurveyModal({
   return (
     <Modal
       title="Download"
-      isOpen={isOpen}
+      isOpen={request !== null}
       onClose={onClose}
-      contentClassName={styles.modalContent}
+      contentClassName={request?.showSurvey ? styles.surveyContent : styles.noticeContent}
     >
-      <DownloadSurvey
-        onConfirm={onConfirm}
-        onClose={onClose}
-        showQuestions={showQuestions}
-        notice={notice}
-        downloading={downloading}
-      />
+      {request?.showSurvey ? (
+        <DownloadSurvey
+          disableStorageKey={DISABLE_DOWNLOAD_SURVEY}
+          onConfirm={onConfirm}
+          onClose={onClose}
+          notice={request?.multipleFiles ? MULTIPLE_FILES_NOTICE : undefined}
+          downloading={downloading}
+        />
+      ) : (
+        <div className={styles.notice}>
+          <p>{MULTIPLE_FILES_NOTICE}</p>
+          <div className={styles.noticeFooter}>
+            <Button onClick={onClose}>Okay</Button>
+          </div>
+        </div>
+      )}
     </Modal>
   )
 }
 
-export default DownloadSurveyModal
+export default DownloadModal
