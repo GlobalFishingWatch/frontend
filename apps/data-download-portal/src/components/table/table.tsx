@@ -335,8 +335,6 @@ function Table({ columns, data, logged, user }: TableProps) {
     }
   }, [datasetId, disableDownloadSurvey, downloadSingleFile, selectedRows])
 
-  const closeModal = useCallback(() => setDownloadRequest(null), [])
-
   const rowSelectedCount = getFlattenedFiles(selectedRows).length
 
   return (
@@ -444,7 +442,7 @@ function Table({ columns, data, logged, user }: TableProps) {
         request={downloadRequest}
         downloading={downloadLoading}
         user={user}
-        onClose={closeModal}
+        onClose={() => setDownloadRequest(null)}
       />
     </div>
   )

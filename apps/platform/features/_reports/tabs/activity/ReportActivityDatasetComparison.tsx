@@ -115,7 +115,12 @@ const ReportActivityDatasetComparison = () => {
         },
       })
     }
-  }, [selectedMainDataset?.id, comparisonDatasets?.main, comparisonDatasets?.compare])
+  }, [
+    selectedMainDataset.id,
+    comparisonDatasets?.main,
+    comparisonDatasets?.compare,
+    replaceQueryParams,
+  ])
 
   const onMainSelect = (option: SelectOption) => {
     replaceQueryParams({
