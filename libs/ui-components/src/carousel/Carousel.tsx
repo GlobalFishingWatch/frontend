@@ -1,7 +1,10 @@
-import type React from 'react'
+import React, { useRef, useState } from 'react'
 import cx from 'classnames'
 
 import styles from './Carousel.module.css'
+
+/** Pointer travel before a press turns into a drag, so clicks on items keep working. */
+const DRAG_THRESHOLD_PX = 5
 
 export interface CarouselProps {
   id?: string
@@ -23,6 +26,36 @@ export function Carousel({
   itemMinWidth,
   style,
 }: CarouselProps) {
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const startRef = useRef<{ x: number; scrollLeft: number } | null>(null)
+  const draggedRef = useRef(false)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return
+    startRef.current = { x: e.clientX, scrollLeft: scrollerRef.current?.scrollLeft ?? 0 }
+    draggedRef.current = false
+  }
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const start = startRef.current
+    const el = scrollerRef.current
+    if (!start || !el) return
+    const deltaX = e.clientX - start.x
+    if (!draggedRef.current) {
+      if (Math.abs(deltaX) < DRAG_THRESHOLD_PX) return
+      draggedRef.current = true
+      setIsDragging(true)
+      el.setPointerCapture(e.pointerId)
+    }
+    el.scrollLeft = start.scrollLeft - deltaX
+  }
+
+  const onPointerEnd = () => {
+    startRef.current = null
+    setIsDragging(false)
+  }
+
   const itemsStyle = {
     // Only set when overridden: unset lets the CSS container queries pick the step from the
     // carousel's own width. Fractional is the point — the .5 leaves a card half cut as a hint.
@@ -34,10 +67,24 @@ export function Carousel({
   return (
     <div
       id={id}
-      className={cx(styles.carousel, className)}
+      ref={scrollerRef}
+      className={cx(styles.carousel, { [styles.dragging]: isDragging }, className)}
       style={itemsStyle}
       role="group"
       aria-label={label}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerEnd}
+      onPointerCancel={onPointerEnd}
+      onClickCapture={(e) => {
+        // The drag ended on an item; without this the browser would follow its link.
+        if (!draggedRef.current) return
+        draggedRef.current = false
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+      // Links and images start a native HTML drag that would cancel the scroll gesture.
+      onDragStart={(e) => e.preventDefault()}
     >
       {children}
     </div>

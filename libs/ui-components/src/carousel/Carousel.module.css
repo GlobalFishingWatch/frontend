@@ -13,6 +13,18 @@
   padding-bottom: var(--space-S);
 }
 
+/* Mandatory snapping fights every scrollLeft write, so it is suspended for the drag and
+   re-applied on release to settle on the nearest item. */
+.dragging {
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.dragging,
+.dragging * {
+  cursor: grabbing;
+}
+
 .carousel > * {
   --carousel-items: var(--carousel-items-per-view, var(--carousel-items-per-view-auto));
 
