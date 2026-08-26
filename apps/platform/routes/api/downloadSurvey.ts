@@ -1,26 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import type { DownloadSurveyPayload } from '@globalfishingwatch/ui-components/download-survey'
+
 const SURVEY_SPREADSHEET_ID = process.env.DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
 const SURVEY_SHEET_TITLE = 'answers'
-
-export type ContactConsent = 'yes' | 'no'
-
-export type FeedbackFormData = {
-  date: string
-  name?: string
-  email: string
-  organization?: string
-  organizationCategory?: string
-  organizationType?: string
-  groups?: string
-  usageIntent?: string
-  contactConsent?: ContactConsent
-}
 
 export type ApiResponse = {
   success: boolean
   message: string
-  data?: FeedbackFormData
+  data?: DownloadSurveyPayload
 }
 
 export const Route = createFileRoute('/api/downloadSurvey')({
@@ -31,7 +19,7 @@ export const Route = createFileRoute('/api/downloadSurvey')({
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
         }
-        const data: FeedbackFormData = await request.json().catch(() => null)
+        const data: DownloadSurveyPayload = await request.json().catch(() => null)
 
         if (!data || !data.email) {
           return Response.json(

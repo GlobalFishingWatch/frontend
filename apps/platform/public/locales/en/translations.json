@@ -327,11 +327,13 @@
     "seeMore": "See more",
     "seeMyWorkspace": "My workspace",
     "send": "Send",
+    "sendFeedback": "Send feedback",
     "sentinel2": "Imagery detections (Optical)",
     "setNewPassword": "Set a new password",
     "settings": "Settings",
     "share": "Share map",
     "since": "since",
+    "skip": "Skip",
     "sourceOptions": {
       "both": "Registry and AIS",
       "registryOnly": "Registry only",

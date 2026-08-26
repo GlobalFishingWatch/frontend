@@ -1,15 +1,18 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
+import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/_reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
+import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import {
   formatDateTicks,
@@ -60,6 +63,12 @@ const filterDataBySublayer = (
     .filter(Boolean) as ReportGraphProps[]
 }
 
+const findDataviewData = (data: ReportGraphProps[], dataviewId: string) => {
+  return data.find(
+    (d) => d.id === dataviewId || d.sublayers.some((sublayer) => sublayer.id === dataviewId)
+  )
+}
+
 const calculateXDomain = (start: string, end: string, interval?: string) => {
   if (!start || !end || !interval) {
     return undefined
@@ -96,6 +105,8 @@ const ReportActivityDatasetComparisonGraph = ({
 }: ReportActivityDatasetComparisonProps) => {
   const { t } = useTranslation()
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
+  const layersLoadedState = useDeckLayerLoadedState()
+  const reportFeaturesLoading = useReportFeaturesLoading()
 
   const filteredData = useMemo(() => {
     return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
@@ -104,23 +115,52 @@ const ReportActivityDatasetComparisonGraph = ({
   const intervals = filteredData.map((d) => d.interval)
   const interval = getFourwingsInterval(start, end, intervals)
 
+  const mainDataviewId = comparisonDatasets?.main
+  const compareDataviewId = comparisonDatasets?.compare
+  const mainData = useMemo(
+    () => (mainDataviewId ? findDataviewData(filteredData, mainDataviewId) : filteredData[0]),
+    [filteredData, mainDataviewId]
+  )
+  const compareData = useMemo(
+    () => (compareDataviewId ? findDataviewData(filteredData, compareDataviewId) : undefined),
+    [filteredData, compareDataviewId]
+  )
+
+  const hasMainData = (mainData?.timeseries?.length ?? 0) > 0
+  const hasCompareData = (compareData?.timeseries?.length ?? 0) > 0
+  const isCompareLayerLoading =
+    !!compareDataviewId && layersLoadedState[compareDataviewId]?.loaded !== true
+  const isLoading =
+    reportFeaturesLoading ||
+    isCompareLayerLoading ||
+    !mainData ||
+    (!!compareDataviewId && !compareData)
+  const isCompareEmpty = !isLoading && !!compareDataviewId && !hasCompareData
+
+  const graphLayers = useMemo(() => {
+    const layers = hasCompareData ? [mainData, compareData] : [mainData]
+    return layers.filter((layer): layer is ReportGraphProps => layer !== undefined)
+  }, [mainData, compareData, hasCompareData])
+
   const dataFormated = useMemo(() => {
     return formatEvolutionData(
-      filteredData[0],
+      graphLayers[0],
       {
         start,
         end,
         timeseriesInterval: interval,
       },
-      filteredData[1]
+      graphLayers[1]
     )
-  }, [end, filteredData, interval, start])
+  }, [end, graphLayers, interval, start])
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
 
-  const hasEmptyData = data.some((d) => !d.timeseries || d.timeseries.length === 0)
+  if (isLoading) {
+    return <ReportActivityPlaceholder showHeader={false} loading />
+  }
 
-  if (hasEmptyData) {
+  if (!hasMainData) {
     return (
       <ReportActivityPlaceholder showHeader={false} animate={false}>
         {t((t) => t.analysis.noDataByArea)}
@@ -132,95 +172,110 @@ const ReportActivityDatasetComparisonGraph = ({
     return null
   }
 
-  const leftAxisColor = getContrastSafeColor(filteredData[0].sublayers[0].legend?.color as string)
+  const leftAxisColor = getContrastSafeColor(graphLayers[0].sublayers[0].legend?.color as string)
   const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
 
-  const rightAxisColor =
-    comparisonDatasets?.compare && filteredData[1]
-      ? getContrastSafeColor(filteredData[1].sublayers[0].legend?.color as string)
-      : undefined
-  const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
+  const rightAxisColor = hasCompareData
+    ? getContrastSafeColor(graphLayers[1].sublayers[0].legend?.color as string)
+    : undefined
+  const rightAxisDomain = hasCompareData && calculateYAxisDomain(dataFormated, 1)
 
   return (
-    <div className={styles.graph} data-testid="report-activity-dataset-comparison">
-      <ComposedChart
-        responsive
-        width="100%"
-        height="100%"
-        data={dataFormated}
-        margin={{
-          top: 10,
-          right: comparisonDatasets?.compare ? -30 : 5,
-          left: -20,
-          bottom: -10,
-        }}
+    <div className={styles.graphContainer}>
+      <div
+        className={cx(styles.graph, { [styles.faded]: isCompareEmpty })}
+        data-testid="report-activity-dataset-comparison"
       >
-        <CartesianGrid vertical={true} syncWithTicks />
-        <XAxis
-          domain={xDomain}
-          dataKey="date"
-          minTickGap={10}
-          tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-          axisLine={{
-            stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+        <ComposedChart
+          responsive
+          width="100%"
+          height="100%"
+          data={dataFormated}
+          margin={{
+            top: 10,
+            right: hasCompareData ? -30 : 5,
+            left: -20,
+            bottom: -10,
           }}
-        />
-        <YAxis
-          yAxisId="left"
-          scale="linear"
-          interval="preserveEnd"
-          tickFormatter={tickFormatter}
-          tick={{ style: { fill: leftAxisColor, stroke: leftAxisColor, strokeWidth: 0.5 } }}
-          axisLine={{ stroke: leftAxisColor }}
-          tickLine={false}
-          orientation="left"
-          domain={
-            leftAxisDomain[1] === 0 ? (rightAxisDomain ? rightAxisDomain : [0, 1]) : leftAxisDomain
-          }
-        />
-        {comparisonDatasets?.compare && rightAxisDomain && (
+        >
+          <CartesianGrid vertical={true} syncWithTicks />
+          <XAxis
+            domain={xDomain}
+            dataKey="date"
+            minTickGap={10}
+            tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
+            axisLine={{
+              stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+            }}
+          />
           <YAxis
-            yAxisId="right"
+            yAxisId="left"
             scale="linear"
             interval="preserveEnd"
             tickFormatter={tickFormatter}
-            tick={{ style: { fill: rightAxisColor, stroke: rightAxisColor, strokeWidth: 0.5 } }}
-            axisLine={{ stroke: rightAxisColor }}
+            tick={{ style: { fill: leftAxisColor, stroke: leftAxisColor, strokeWidth: 0.5 } }}
+            axisLine={{ stroke: leftAxisColor }}
             tickLine={false}
-            orientation="right"
-            domain={rightAxisDomain}
+            orientation="left"
+            domain={
+              leftAxisDomain[1] === 0
+                ? rightAxisDomain
+                  ? rightAxisDomain
+                  : [0, 1]
+                : leftAxisDomain
+            }
           />
-        )}
-        {filteredData.map((layer, layerIndex) => {
-          const sublayer = layer.sublayers[0]
-          const yAxisId = layerIndex === 0 ? 'left' : 'right'
-          const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
-
-          return (
-            <Line
-              key={`${sublayer.id}-${layerIndex}-line`}
-              yAxisId={yAxisId}
-              name="line"
-              type="monotone"
-              dataKey={(data) => data.avg?.[layerIndex]}
-              unit={sublayer.legend?.unit}
-              dot={false}
-              isAnimationActive={false}
-              stroke={strokeColor}
-              strokeWidth={2}
+          {rightAxisDomain && (
+            <YAxis
+              yAxisId="right"
+              scale="linear"
+              interval="preserveEnd"
+              tickFormatter={tickFormatter}
+              tick={{ style: { fill: rightAxisColor, stroke: rightAxisColor, strokeWidth: 0.5 } }}
+              axisLine={{ stroke: rightAxisColor }}
+              tickLine={false}
+              orientation="right"
+              domain={rightAxisDomain}
             />
-          )
-        })}
-        <Legend
-          verticalAlign="top"
-          align="center"
-          wrapperStyle={{ width: '100%', left: 0 }}
-          content={(props) => <DataComparisonLegend {...props} />}
-        />
-        {dataFormated.length > 0 && (
-          <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
-        )}
-      </ComposedChart>
+          )}
+          {graphLayers.map((layer, layerIndex) => {
+            const sublayer = layer.sublayers[0]
+            const yAxisId = layerIndex === 0 ? 'left' : 'right'
+            const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
+
+            return (
+              <Line
+                key={`${sublayer.id}-${layerIndex}-line`}
+                yAxisId={yAxisId}
+                name="line"
+                type="monotone"
+                dataKey={(data) => data.avg?.[layerIndex]}
+                unit={sublayer.legend?.unit}
+                dot={false}
+                isAnimationActive={false}
+                stroke={strokeColor}
+                strokeWidth={2}
+              />
+            )
+          })}
+          <Legend
+            verticalAlign="top"
+            align="center"
+            wrapperStyle={{ width: '100%', left: 0 }}
+            content={(props) => <DataComparisonLegend {...props} />}
+          />
+          {dataFormated.length > 0 && (
+            <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
+          )}
+        </ComposedChart>
+      </div>
+      {isCompareEmpty && (
+        <div className={styles.emptyCompareOverlay}>
+          <p className={styles.emptyCompareMessage} data-testid="report-comparison-dataset-no-data">
+            {t((t) => t.analysis.noDataByComparedDataset)}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

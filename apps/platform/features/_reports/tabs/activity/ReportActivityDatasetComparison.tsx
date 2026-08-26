@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
-import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
+
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
@@ -114,7 +115,12 @@ const ReportActivityDatasetComparison = () => {
         },
       })
     }
-  }, [selectedMainDataset?.id, comparisonDatasets?.main, comparisonDatasets?.compare])
+  }, [
+    selectedMainDataset.id,
+    comparisonDatasets?.main,
+    comparisonDatasets?.compare,
+    replaceQueryParams,
+  ])
 
   const onMainSelect = (option: SelectOption) => {
     replaceQueryParams({
