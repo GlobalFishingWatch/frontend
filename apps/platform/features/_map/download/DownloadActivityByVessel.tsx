@@ -233,7 +233,11 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
                 </Fragment>
               ))}
             </p>
-          ) : null}
+          ) : (
+            isDownloadLoading && (
+              <p className={styles.footerLabel}>{t((t) => t.download.canCloseModal)}</p>
+            )
+          )}
           <ActivityDownloadError />
           <Button
             testId="download-activity-vessel-button"

@@ -530,6 +530,7 @@
     "apiPortal": "See our APIs here",
     "area": "Area",
     "byVessel": "Active vessels",
+    "canCloseModal": "Your download will continue in the background even if you close this window.",
     "daily": "Day",
     "dataDownload": "Data download",
     "dataDownloadLogin": "Register and login to download vessel information (it is free and only takes 2 minutes)",
