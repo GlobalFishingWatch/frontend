@@ -7,6 +7,7 @@ import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
+import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import type { ReportCategory } from 'features/_reports/reports.types'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -25,10 +26,10 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   return (
     <Link
       to={ROUTE_PATHS.WORKSPACE_REPORT}
-      params={{
+      params={cleanReportPayload({
         category: workspace?.category || '',
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      }}
+      })}
       search={(prev: QueryParams) => ({
         ...prev,
         reportCategory,
