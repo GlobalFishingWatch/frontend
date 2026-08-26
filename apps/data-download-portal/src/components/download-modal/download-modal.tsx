@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
 
 import type { UserData } from '@globalfishingwatch/api-types'
-import type {
-  DownloadSurveyAnswer,
-  DownloadSurveyContactConsent,
+import type { DownloadSurveyAnswer } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  DownloadSurvey,
+  Modal,
+  submitDownloadSurvey,
 } from '@globalfishingwatch/ui-components'
-import { Button, DownloadSurvey, Modal } from '@globalfishingwatch/ui-components'
 
 import { DISABLE_DOWNLOAD_SURVEY, DOWNLOAD_SURVEY_URL } from '../../config'
 
@@ -13,17 +15,6 @@ import styles from './download-modal.module.css'
 
 const MULTIPLE_FILES_NOTICE =
   'We are preparing the files you requested, you will receive an email when they are ready.'
-
-type SurveyAnswer = DownloadSurveyAnswer & {
-  date: string
-  name: string
-  email: string
-  organization: string
-  organizationCategory: string
-  organizationType: string
-  groups: string
-  contactConsent: DownloadSurveyContactConsent
-}
 
 export type DownloadRequest = {
   showSurvey: boolean
@@ -39,27 +30,8 @@ type DownloadModalProps = {
 
 function DownloadModal({ request, user, downloading, onClose }: DownloadModalProps) {
   const onConfirm = useCallback(
-    async ({ usageIntent, contactConsent }: DownloadSurveyAnswer) => {
-      const answer: SurveyAnswer = {
-        date: new Date().toISOString(),
-        name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
-        email: user?.email || '',
-        groups: (user?.groups || []).join(', '),
-        organization: user?.organization || '',
-        organizationCategory: user?.organizationCategory || '',
-        organizationType: user?.organizationType || '',
-        usageIntent,
-        contactConsent,
-      }
-      const response = await fetch(DOWNLOAD_SURVEY_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(answer),
-      })
-      if (!response.ok) {
-        throw new Error(`Download survey answer failed with status ${response.status}`)
-      }
-    },
+    (answer: DownloadSurveyAnswer) =>
+      submitDownloadSurvey({ url: DOWNLOAD_SURVEY_URL, answer, user }),
     [user]
   )
 

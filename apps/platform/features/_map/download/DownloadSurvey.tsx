@@ -3,7 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import type { DownloadSurveyAnswer, DownloadSurveyLabels } from '@globalfishingwatch/ui-components'
-import { DownloadSurvey as DownloadSurveyUI } from '@globalfishingwatch/ui-components'
+import {
+  DownloadSurvey as DownloadSurveyUI,
+  submitDownloadSurvey,
+} from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME } from 'data/map/config'
 import {
@@ -13,7 +16,6 @@ import {
 import ActivityDownloadError from 'features/_map/download/DownloadActivityError'
 import { selectUserGroupsClean } from 'features/_user/selectors/user.permissions.selectors'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
-import type { FeedbackFormData } from 'routes/api/downloadSurvey'
 
 export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurvey'
 
@@ -51,41 +53,17 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
   }, [sent, isDownloadFinished, onClose])
 
   const onConfirm = useCallback(
-    async ({ usageIntent, contactConsent }: DownloadSurveyAnswer) => {
-      const { firstName, lastName, email, organization, organizationType, organizationCategory } =
-        userData || {}
-      const surveyAnswer: FeedbackFormData = {
-        date: new Date().toISOString(),
-        name: `${firstName} ${lastName}`,
-        email: email as string,
-        groups: (userGroups || []).join(', '),
-        organization: organization || '',
-        organizationCategory: organizationCategory || '',
-        organizationType: organizationType || '',
-        usageIntent,
-        contactConsent,
-      }
-      const response = await fetch(`${PATH_BASENAME}/api/downloadSurvey`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(surveyAnswer),
-      })
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong')
-      }
-    },
+    (answer: DownloadSurveyAnswer) =>
+      submitDownloadSurvey({
+        url: `${PATH_BASENAME}/api/downloadSurvey`,
+        answer,
+        user: userData,
+        groups: userGroups,
+      }),
     [userData, userGroups]
   )
 
-  const onSent = useCallback(() => {
-    setSent(true)
-    if (isDownloadFinished) {
-      onClose()
-    }
-  }, [isDownloadFinished, onClose])
+  const onSent = useCallback(() => setSent(true), [])
 
   return (
     <DownloadSurveyUI
