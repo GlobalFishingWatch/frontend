@@ -25,6 +25,7 @@ import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/cont
 import { getContextId } from '#layers/context/context.utils'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '#layers/vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '#layers/vessel/vessel.utils'
+import { getNarrowestLonSpan } from '#layers/vessel/VesselTrackPathLayer'
 import { getLayerGroupOffset, getUTCDateTime, hexToDeckColor } from '#utils'
 
 import {
@@ -369,7 +370,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     const startDate = params?.startDate ? getUTCDateTime(params.startDate).toMillis() : undefined
     const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : undefined
 
-    const bbox = segments.reduce(
+    const acc = segments.reduce(
       (acc, segment) =>
         segment.reduce((acc, point) => {
           const timestamp = point.timestamp
@@ -377,18 +378,23 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
             if (startDate && timestamp < startDate) return acc
             if (endDate && timestamp > endDate) return acc
           }
-          if (point.longitude! < acc[0]) acc[0] = point.longitude as number
-          if (point.longitude! > acc[2]) acc[2] = point.longitude as number
+          const longitude = point.longitude as number
+          const shiftedLon = longitude < 0 ? longitude + 360 : longitude
+          if (longitude < acc[0]) acc[0] = longitude
+          if (longitude > acc[2]) acc[2] = longitude
           if (point.latitude! < acc[1]) acc[1] = point.latitude as number
           if (point.latitude! > acc[3]) acc[3] = point.latitude as number
+          if (shiftedLon < acc[4]) acc[4] = shiftedLon
+          if (shiftedLon > acc[5]) acc[5] = shiftedLon
           return acc
         }, acc),
-      [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+      [Infinity, Infinity, -Infinity, -Infinity, Infinity, -Infinity]
     )
 
-    if (bbox[0] === Infinity) return null
+    if (acc[0] === Infinity) return null
 
-    return bbox
+    const [west, east] = getNarrowestLonSpan(acc[0], acc[2], acc[4], acc[5])
+    return [west, acc[1], east, acc[3]] as Bbox
   }
 
   _getColor = (
