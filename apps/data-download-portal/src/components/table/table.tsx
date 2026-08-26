@@ -39,12 +39,12 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { DISABLE_DOWNLOAD_SURVEY } from '@globalfishingwatch/ui-components'
 
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
+import { DISABLE_DOWNLOAD_SURVEY } from '../../config'
 import { getFlattenedFiles } from '../../utils/folderConfig'
 import DownloadSurveyModal from '../download-survey/download-survey'
 

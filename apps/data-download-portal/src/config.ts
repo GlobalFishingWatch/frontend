@@ -4,3 +4,5 @@ export const API_GATEWAY =
 
 export const DOWNLOAD_SURVEY_URL =
   import.meta.env.VITE_DOWNLOAD_SURVEY_URL || '/map/api/downloadSurvey'
+
+export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurveyDDP'

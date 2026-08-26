@@ -15,7 +15,7 @@ import { selectUserGroupsClean } from 'features/_user/selectors/user.permissions
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import type { FeedbackFormData } from 'routes/api/downloadSurvey'
 
-export { DISABLE_DOWNLOAD_SURVEY } from '@globalfishingwatch/ui-components'
+export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurvey'
 
 function DownloadSurvey({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation()
@@ -89,6 +89,7 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
 
   return (
     <DownloadSurveyUI
+      disableStorageKey={DISABLE_DOWNLOAD_SURVEY}
       labels={labels}
       downloading={isDownloadLoading}
       onConfirm={onConfirm}

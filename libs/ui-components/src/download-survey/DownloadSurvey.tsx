@@ -12,8 +12,6 @@ import { TextArea } from '../textarea'
 
 import styles from './DownloadSurvey.module.css'
 
-export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurveyDDP'
-
 export type DownloadSurveyContactConsent = 'yes' | 'no'
 
 export type DownloadSurveyAnswer = {
@@ -55,31 +53,31 @@ const DEFAULT_LABELS: DownloadSurveyLabels = {
 }
 
 type DownloadSurveyProps = {
+  disableStorageKey: string
   onConfirm: (answer: DownloadSurveyAnswer) => void | Promise<void>
   onClose: () => void
   onSent?: () => void
   labels?: Partial<DownloadSurveyLabels>
   downloading?: boolean
-  showQuestions?: boolean
   notice?: ReactNode
   footerSlot?: ReactNode
   className?: string
 }
 
 export function DownloadSurvey({
+  disableStorageKey,
   onConfirm,
   onClose,
   onSent,
   labels: labelsProp,
   downloading,
-  showQuestions = true,
   notice,
   footerSlot,
   className,
 }: DownloadSurveyProps) {
   const labels = useMemo(() => ({ ...DEFAULT_LABELS, ...labelsProp }), [labelsProp])
   const [disableDownloadSurvey, setDisableDownloadSurvey] = useLocalStorage(
-    DISABLE_DOWNLOAD_SURVEY,
+    disableStorageKey,
     false
   )
   const [loading, setLoading] = useState(false)
@@ -111,12 +109,12 @@ export function DownloadSurvey({
     }
   }, [contactConsent, onConfirm, onSent, usageIntent])
 
-  const showForm = showQuestions && !sent
+  const showForm = !sent
 
   return (
     <div className={cx(styles.container, className)}>
       <div>
-        <h2 className={styles.title}>{labels.title}</h2>
+        {showForm && <h2 className={styles.title}>{labels.title}</h2>}
         {notice && <p className={styles.notice}>{notice}</p>}
         {showForm && <p className={styles.description}>{labels.description}</p>}
         {sent && <p className={styles.description}>{labels.sent}</p>}
@@ -151,13 +149,13 @@ export function DownloadSurvey({
           (footerSlot ?? (
             <div className={styles.disableSection}>
               <input
-                id={DISABLE_DOWNLOAD_SURVEY}
+                id={disableStorageKey}
                 type="checkbox"
                 onChange={() => setDisableDownloadSurvey(!disableDownloadSurvey)}
                 className={styles.disableCheckbox}
                 checked={disableDownloadSurvey}
               />
-              <label className={styles.disableLabel} htmlFor={DISABLE_DOWNLOAD_SURVEY}>
+              <label className={styles.disableLabel} htmlFor={disableStorageKey}>
                 {labels.disable}
               </label>
             </div>
