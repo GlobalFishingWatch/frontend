@@ -1,0 +1,19 @@
+{
+  "$comment": "screenshots.ts is the one script here that is type-checked: the others import each other with explicit .ts extensions and are excluded from the lib configs. Scoped to that entry point (and whatever it imports) rather than the whole folder.",
+  "extends": "../../../tsconfig.lib.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "allowImportingTsExtensions": true,
+    "types": ["node"]
+  },
+  "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "$comment": "The libs emit extensionless relative imports (./url-workspace), which node ESM cannot resolve on its own.",
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["screenshots.ts"]
+}
