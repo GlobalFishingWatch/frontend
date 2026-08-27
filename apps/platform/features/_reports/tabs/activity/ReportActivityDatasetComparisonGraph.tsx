@@ -9,6 +9,7 @@ import { useDeckLayerLoaded } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { tickFormatter } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/_reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
@@ -105,7 +106,7 @@ const ReportActivityDatasetComparisonGraph = ({
 }: ReportActivityDatasetComparisonProps) => {
   const { t } = useTranslation()
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
-  const layersLoadedState = useDeckLayerLoadedState()
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const reportFeaturesLoading = useReportFeaturesLoading()
 
   const filteredData = useMemo(() => {
@@ -126,15 +127,16 @@ const ReportActivityDatasetComparisonGraph = ({
     [filteredData, compareDataviewId]
   )
 
+  const hasCompareDataview =
+    !!compareDataviewId && comparisonDataviews.some((dataview) => dataview.id === compareDataviewId)
+  const compareLayerLoaded = useDeckLayerLoaded(hasCompareDataview ? compareDataviewId : undefined)
+
   const hasMainData = (mainData?.timeseries?.length ?? 0) > 0
   const hasCompareData = (compareData?.timeseries?.length ?? 0) > 0
-  const isCompareLayerLoading =
-    !!compareDataviewId && layersLoadedState[compareDataviewId]?.loaded !== true
   const isLoading =
     reportFeaturesLoading ||
-    isCompareLayerLoading ||
     !mainData ||
-    (!!compareDataviewId && !compareData)
+    (hasCompareDataview && (compareLayerLoaded !== true || !compareData))
   const isCompareEmpty = !isLoading && !!compareDataviewId && !hasCompareData
 
   const graphLayers = useMemo(() => {
