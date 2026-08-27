@@ -893,7 +893,8 @@
     "screenshotPreview": "Screenshot preview",
     "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Zoom out",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",

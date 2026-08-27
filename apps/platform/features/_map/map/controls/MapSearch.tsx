@@ -15,6 +15,7 @@ import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/datavie
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useMapSetViewState } from 'features/_map/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/hints/Hint'
 import { setHintDismissed } from 'features/hints/hints.slice'
@@ -36,6 +37,7 @@ const MapSearch = () => {
   const contextAreasDataviews = useSelector(selectContextAreasDataviews)
   const allDataviews = useSelector(selectAllDataviews)
   const { searchOceanAreas } = useOceanAreas()
+  const navigateToAreaReport = useNavigateToAreaReport()
 
   const fitBounds = useMapFitBounds()
   const setMapViewState = useMapSetViewState()
@@ -160,9 +162,36 @@ const MapSearch = () => {
                 data-test={`map-search-result-${index}`}
                 className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
               >
-                {`${t((t) => t.search.searchTypes[type], { defaultValue: type })}: ${formatInfoField(name, 'name')}${
-                  flag ? ` (${formatInfoField(flag, 'flag')})` : ''
-                }`}
+                <div className={styles.resultInfo}>
+                  <span className={styles.resultType}>
+                    {t((t) => t.search.searchTypes[type], { defaultValue: type })}
+                  </span>
+                  <span className={styles.resultName}>
+                    {`${formatInfoField(name, 'name')}${
+                      flag ? ` (${formatInfoField(flag, 'flag')})` : ''
+                    }`}
+                  </span>
+                </div>
+                <div className={styles.resultActions}>
+                  <IconButton
+                    icon="target"
+                    size="small"
+                    testId={`map-search-result-fit-bounds-${index}`}
+                    tooltip={t((t) => t.map.zoomToArea)}
+                  />
+                  <IconButton
+                    icon="analysis"
+                    size="small"
+                    testId={`map-search-result-report-${index}`}
+                    tooltip={t((t) => t.analysis.see)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigateToAreaReport(item)
+                      setQuery('')
+                      setAreasMatching([])
+                    }}
+                  />
+                </div>
               </li>
             )
           })}
