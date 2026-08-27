@@ -8,6 +8,8 @@ import KDBush from 'kdbush'
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
+import { TRACK_VISIBLE_WIDTH } from '#config/layers.config'
+
 import { getPositions } from './vessel.track.utils'
 import type {
   VesselDataType,
@@ -19,11 +21,7 @@ import { getSegmentsFromData, type GetSegmentsFromDataParams } from './vessel.ut
 import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackPathLayerProps } from './VesselTrackPathLayer'
-import {
-  getTrackShaderLayoutKey,
-  TRACK_VISIBLE_WIDTH,
-  VesselTrackPathLayer,
-} from './VesselTrackPathLayer'
+import { getTrackShaderLayoutKey, VesselTrackPathLayer } from './VesselTrackPathLayer'
 
 export type VesselTrackLayerProps = Omit<_VesselTrackPathLayerProps, 'hoveredTime'> &
   LayerProps & {

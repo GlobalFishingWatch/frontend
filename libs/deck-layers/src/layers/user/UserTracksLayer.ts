@@ -23,7 +23,12 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
-import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
+import {
+  DEFAULT_ID_PROPERTY,
+  MAX_FILTER_VALUE,
+  TRACK_PICK_WIDTH,
+  TRACK_VISIBLE_WIDTH,
+} from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/context/context.types'
 import { getContextId } from '#layers/context/context.utils'
@@ -46,11 +51,6 @@ import type {
 } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
-
-/** Default `pickWidth`: how wide the hover target is, in pixels. */
-const TRACK_PICK_WIDTH = 15
-/** Default drawn width, in pixels. */
-const TRACK_VISIBLE_WIDTH = 1.5
 
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   _pathType: 'open',

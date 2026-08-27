@@ -9,7 +9,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import { toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
-import { MAX_FILTER_VALUE } from '#config/layers.config'
+import { MAX_FILTER_VALUE, TRACK_PICK_WIDTH, TRACK_VISIBLE_WIDTH } from '#config/layers.config'
 import { getUTCDateTime } from '#utils'
 import { colorToVec, hexToDeckColor } from '#utils/colors'
 
@@ -204,11 +204,6 @@ function generateShaderColorSteps({
 // Example of how to use pass an accesor to the shaders
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
-
-/** Default `pickWidth`: how wide the hover target is, in pixels. */
-export const TRACK_PICK_WIDTH = 15
-/** Default drawn width, in pixels. */
-export const TRACK_VISIBLE_WIDTH = 1.5
 
 const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   _pathType: 'open',
