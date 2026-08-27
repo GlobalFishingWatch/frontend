@@ -50,6 +50,7 @@
       "tooltipAmmount": "crwdns131803:0{{ammount}}crwdnd131803:0{{percentage}}crwdne131803:0"
     },
     "insideYourArea": "crwdns131805:0crwdne131805:0",
+    "inTheArea": "crwdns138409:0crwdne138409:0",
     "kilometers": "crwdns131807:0crwdne131807:0",
     "linkToReport": "crwdns131809:0crwdne131809:0",
     "migramar": {
@@ -110,10 +111,10 @@
     "showFullReport": "crwdns131919:0crwdne131919:0",
     "statsDisclaimerDynamic": "crwdns131921:0{{interval}}crwdnd131921:0{{min}}crwdnd131921:0{{unit}}crwdnd131921:0{{max}}crwdnd131921:0{{unit}}crwdne131921:0",
     "statsDisclaimerStatic": "crwdns131923:0{{mean}}crwdnd131923:0{{unit}}crwdnd131923:0{{min}}crwdnd131923:0{{unit}}crwdnd131923:0{{max}}crwdnd131923:0{{unit}}crwdne131923:0",
-    "summary": "crwdns131925:0{{vessels}}crwdnd131925:0{{sources}}crwdnd131925:0{{activityQuantity}}crwdnd131925:0{{activityUnit}}crwdnd131925:0{{activityType}}crwdnd131925:0{{start}}crwdnd131925:0{{end}}crwdne131925:0",
+    "summary": "crwdns131925:0{{vessels}}crwdnd131925:0{{sources}}crwdnd131925:0{{activityQuantity}}crwdnd131925:0{{activityUnit}}crwdnd131925:0{{activityType}}crwdnd131925:0{{area}}crwdnd131925:0{{start}}crwdnd131925:0{{end}}crwdne131925:0",
     "summaryEvents": "crwdns131927:0{{vessels}}crwdnd131927:0{{flags}}crwdnd131927:0{{activityQuantity}}crwdnd131927:0{{activityUnit}}crwdnd131927:0{{area}}crwdnd131927:0{{start}}crwdnd131927:0{{end}}crwdne131927:0",
     "summaryEventsNoVessels": "crwdns131929:0{{activityQuantity}}crwdnd131929:0{{activityUnit}}crwdnd131929:0{{area}}crwdnd131929:0{{start}}crwdnd131929:0{{end}}crwdne131929:0",
-    "summaryNoVessels": "crwdns131931:0{{activityQuantity}}crwdnd131931:0{{activityUnit}}crwdnd131931:0{{activityType}}crwdnd131931:0{{start}}crwdnd131931:0{{end}}crwdne131931:0",
+    "summaryNoVessels": "crwdns131931:0{{activityQuantity}}crwdnd131931:0{{activityUnit}}crwdnd131931:0{{activityType}}crwdnd131931:0{{area}}crwdnd131931:0{{start}}crwdnd131931:0{{end}}crwdne131931:0",
     "timeoutError": "crwdns131933:0crwdne131933:0",
     "timeRangeTooLong": "crwdns131935:0crwdne131935:0",
     "title": "crwdns131937:0crwdne131937:0",
