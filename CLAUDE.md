@@ -63,6 +63,7 @@ Durable facts about this repo live in `.claude/memory/`, one fact per file, impo
 @.claude/memory/app-dependency-catalog.md
 @.claude/memory/platform-config-package.md
 @.claude/memory/platform-testing.md
+@.claude/memory/browser-testing-uses-platform-e2e.md
 @.claude/memory/skills-lib.md
 @.claude/memory/encode-url-skill-maintenance.md
 @.claude/memory/typescript7-migration.md
