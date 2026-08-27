@@ -60,7 +60,11 @@ export const getIncompatibleFilterSelection = (
     }
     return incompatibilityDict.filter(({ id, value, valueNot, disabled }) => {
       const selectedFilterValue = dataview.config?.filters?.[id]
-      if (value === 'undefined' && selectedFilterValue === undefined && valueNot === undefined) {
+      const isFilterValueNotSet =
+        selectedFilterValue === undefined ||
+        selectedFilterValue === null ||
+        selectedFilterValue.length === 0
+      if (value === 'undefined' && isFilterValueNotSet && valueNot === undefined) {
         return disabled.includes(filter)
       }
 
