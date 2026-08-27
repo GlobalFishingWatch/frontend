@@ -22,12 +22,8 @@ import {
   UserTrackLoader,
 } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '#config/colors.config'
-import {
-  DEFAULT_ID_PROPERTY,
-  MAX_FILTER_VALUE,
-  PICK_ONLY_LAYER_ID_SUFFIX,
-} from '#config/layers.config'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/context/context.types'
 import { getContextId } from '#layers/context/context.utils'
@@ -50,8 +46,15 @@ import type {
 } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
+
+/** Width the geometry is tesselated at, so the whole band is pickable. */
+const TRACK_PICK_WIDTH = 15
+/** Default `visibleWidth`: what is actually painted inside the pickable band. */
+const TRACK_VISIBLE_WIDTH = 1.5
+
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   _pathType: 'open',
+  visibleWidth: { type: 'number', value: TRACK_VISIBLE_WIDTH, min: 0 },
   loaders: [UserTrackLoader],
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
@@ -67,6 +70,7 @@ const uniformBlock = `
     uniform float endTime;
     uniform float highlightStartTime;
     uniform float highlightEndTime;
+    uniform float visibleWidthRatio;
   } track;
 `
 
@@ -79,6 +83,7 @@ const trackLayerUniforms = {
     endTime: 'f32',
     highlightStartTime: 'f32',
     highlightEndTime: 'f32',
+    visibleWidthRatio: 'f32',
   },
 }
 
@@ -108,9 +113,14 @@ export class UserTracksPathLayer<
       'fs:#decl': /*glsl*/ `
         in float vTime;
       `,
-      // Drop the segments outside of the time window
       'fs:#main-start': /*glsl*/ `
+      // Drop the segments outside of the time window
         if(vTime > 0.0 && (vTime < track.startTime || vTime > track.endTime)) {
+          discard;
+        }
+        // Drop the outer band that only widens the pick target, but keep it when picking.
+        // vPathPosition.x is the offset from the centerline, +/-1 at the geometry edge.
+        if (picking.isActive < 0.5 && abs(vPathPosition.x) > track.visibleWidthRatio) {
           discard;
         }
       `,
@@ -140,7 +150,14 @@ export class UserTracksPathLayer<
   }
 
   draw(params: any) {
-    const { startTime, endTime, highlightStartTime = 0, highlightEndTime = 0 } = this.props
+    const {
+      startTime,
+      endTime,
+      highlightStartTime = 0,
+      highlightEndTime = 0,
+      visibleWidth = TRACK_VISIBLE_WIDTH,
+      getWidth,
+    } = this.props
 
     if (this.state.model) {
       this.state.model.shaderInputs.setProps({
@@ -149,6 +166,8 @@ export class UserTracksPathLayer<
           endTime: endTime || MAX_FILTER_VALUE,
           highlightStartTime,
           highlightEndTime,
+          visibleWidthRatio:
+            visibleWidth / (typeof getWidth === 'number' ? getWidth : TRACK_PICK_WIDTH),
         },
       })
     }
@@ -556,22 +575,15 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       return [
         new UserTracksPathLayer<any>({
           ...commonProps,
-          id: `${layerIdHash}${PICK_ONLY_LAYER_ID_SUFFIX}`,
-          data: activeBinary,
-          pickable: layer.pickable,
-          getWidth: 5,
-          getColor: COLOR_TRANSPARENT,
-        }),
-        new UserTracksPathLayer<any>({
-          ...commonProps,
           id: layerIdHash,
           data: activeBinary ?? tilesUrl.toString(),
           fetch: this._fetch,
+          pickable: layer.pickable,
           highlightStartTime,
           highlightEndTime,
           onError: this._onLayerError,
           jointRounded: true,
-          getWidth: 1.5,
+          getWidth: TRACK_PICK_WIDTH,
           getColor: (d, { index: pathIndex }) =>
             this._getColor(d, { layer, sublayer, index: pathIndex }),
           updateTriggers: {

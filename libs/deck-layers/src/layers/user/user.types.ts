@@ -76,6 +76,11 @@ export type UserTrackLayerProps = DeckLayerProps<
     highlightEndTime?: number
     getTimestamp?: Accessor<any, number>
     singleTrack?: boolean
+    /**
+     * Width actually painted, in pixels. The geometry itself is tesselated at `TRACK_PICK_WIDTH`
+     * @default 1.5
+     */
+    visibleWidth?: number
   }
 >
 

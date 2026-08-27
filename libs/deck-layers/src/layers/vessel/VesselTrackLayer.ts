@@ -8,11 +8,6 @@ import KDBush from 'kdbush'
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT } from '#config/colors.config'
-import { PICK_ONLY_LAYER_ID_SUFFIX } from '#config/layers.config'
-import { LayerGroup } from '#config/sort.config'
-import { getLayerGroupOffset } from '#utils'
-
 import { getPositions } from './vessel.track.utils'
 import type {
   VesselDataType,
@@ -24,7 +19,11 @@ import { getSegmentsFromData, type GetSegmentsFromDataParams } from './vessel.ut
 import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackPathLayerProps } from './VesselTrackPathLayer'
-import { getTrackShaderLayoutKey, VesselTrackPathLayer } from './VesselTrackPathLayer'
+import {
+  getTrackShaderLayoutKey,
+  TRACK_PICK_WIDTH,
+  VesselTrackPathLayer,
+} from './VesselTrackPathLayer'
 
 export type VesselTrackLayerProps = Omit<_VesselTrackPathLayerProps, 'hoveredTime'> &
   LayerProps & {
@@ -153,40 +152,13 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
   renderLayers(): Layer<VesselTrackData> | LayersList {
     const { id, data, visualizationMode = 'track', ...props } = this.props
 
-    const interactiveLayoutKey = getTrackShaderLayoutKey({
-      ...props,
-      colorBy: undefined,
-      gapSegmentThreshold: undefined,
-    })
-
     const trackLayers = [
-      ...(visualizationMode !== 'positions' && visualizationMode !== 'points'
-        ? [
-            // Transparent thicker layer for interactivity
-            new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
-              ...props,
-              id: `${id}-${interactiveLayoutKey}${PICK_ONLY_LAYER_ID_SUFFIX}`,
-              data: data as VesselTrackData,
-              getWidth: 15,
-              getColor: COLOR_TRANSPARENT,
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
-              pickable: true,
-              highlightStartTime: undefined,
-              highlightEndTime: undefined,
-              highlightEventStartTime: undefined,
-              highlightEventEndTime: undefined,
-              hoveredTime: undefined,
-              colorBy: undefined,
-              gapSegmentThreshold: undefined,
-            }),
-          ]
-        : []),
       new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
         ...props,
         id: `${id}-${getTrackShaderLayoutKey(props)}-track`,
         data: data as VesselTrackData,
-        getWidth: 1.5,
-        pickable: false,
+        getWidth: TRACK_PICK_WIDTH,
+        pickable: visualizationMode !== 'positions' && visualizationMode !== 'points',
         hoveredTime: props.hoveredTime,
       }),
     ] as LayersList
@@ -222,18 +194,18 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
   }
 
   getGraphExtent(graph: 'speed' | 'elevation') {
-    const interactiveLayer = this.getSubLayers()?.[0] as VesselTrackPathLayer<
+    const trackLayer = this.getSubLayers()?.[0] as VesselTrackPathLayer<
       TrackSegment[],
       { type: VesselDataType }
     >
-    return interactiveLayer?.getGraphExtent(graph)
+    return trackLayer?.getGraphExtent(graph)
   }
 
   getBbox(params: { startDate?: number | string; endDate?: number | string }) {
-    const interactiveLayer = this.getSubLayers()?.[0] as VesselTrackPathLayer<
+    const trackLayer = this.getSubLayers()?.[0] as VesselTrackPathLayer<
       TrackSegment[],
       { type: VesselDataType }
     >
-    return interactiveLayer?.getBbox(params)
+    return trackLayer?.getBbox(params)
   }
 }

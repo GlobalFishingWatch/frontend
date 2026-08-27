@@ -140,6 +140,13 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
    * The maximum time gap in hours to split the track into segments
    */
   gapSegmentThreshold?: number
+  /**
+   * Width actually painted, in pixels. The geometry itself is tesselated at `TRACK_PICK_WIDTH`
+   * so the whole band stays pickable; the fragment shader discards everything outside this
+   * width in the draw pass. Values above `TRACK_PICK_WIDTH` paint the full band, no wider.
+   * @default 1.5
+   */
+  visibleWidth?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -199,8 +206,14 @@ function generateShaderColorSteps({
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
 
+/** Width the geometry is tesselated at, so the whole band is pickable. */
+export const TRACK_PICK_WIDTH = 15
+/** Default `visibleWidth`: what is actually painted inside the pickable band. */
+export const TRACK_VISIBLE_WIDTH = 1.5
+
 const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   _pathType: 'open',
+  visibleWidth: { type: 'number', value: TRACK_VISIBLE_WIDTH, min: 0 },
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
@@ -234,7 +247,6 @@ const uniformBlock = `
     uniform float maxSpeedFilter;
     uniform float minElevationFilter;
     uniform float maxElevationFilter;
-    uniform float discardOnFilter;
     uniform float value0;
     uniform float value1;
     uniform float value2;
@@ -257,6 +269,7 @@ const uniformBlock = `
     uniform vec4 color9;
     uniform float colorBy;
     uniform float gapSegmentThreshold;
+    uniform float visibleWidthRatio;
   } track;
 `
 
@@ -275,7 +288,6 @@ const trackLayerUniforms = {
     maxSpeedFilter: 'f32',
     minElevationFilter: 'f32',
     maxElevationFilter: 'f32',
-    discardOnFilter: 'f32',
     value0: 'f32',
     value1: 'f32',
     value2: 'f32',
@@ -298,6 +310,7 @@ const trackLayerUniforms = {
     color9: 'vec4<f32>',
     colorBy: 'f32',
     gapSegmentThreshold: 'f32',
+    visibleWidthRatio: 'f32',
   },
 }
 
@@ -344,9 +357,18 @@ export class VesselTrackPathLayer<
         in float vElevation;
         in float vGap;
       `,
-      // Drop the segments outside of the time window
+      // Drop the segments outside of the time window, and — when not picking — the part of the
+      // band that only exists to widen the pick target. `picking.isActive` keeps the picking pass
+      // reading the full width regardless of hook injection order.
+      // `vPathPosition.x` is the perpendicular offset in half-width units, so the visible band is
+      // a fixed fraction of the geometry — only true while widthUnits is 'pixels' with
+      // widthScale 1. `DECKGL_FILTER_SIZE` scaling (highlighted events) hits both widths, so the
+      // ratio survives it.
       'fs:#main-start': /*glsl*/ `
         if (vTime <= track.startTime || vTime >= track.endTime) {
+          discard;
+        }
+        if (picking.isActive < 0.5 && abs(vPathPosition.x) > track.visibleWidthRatio) {
           discard;
         }
       `,
@@ -363,20 +385,22 @@ export class VesselTrackPathLayer<
           })}
         }
 
+        // Filtered-out segments stay visible but faded, and are not pickable.
         if (vSpeed < track.minSpeedFilter ||
             vSpeed > track.maxSpeedFilter ||
             vElevation < track.minElevationFilter ||
             vElevation > track.maxElevationFilter)
         {
-          if (track.discardOnFilter == 1.0) {
+          if (picking.isActive > 0.5) {
             discard;
-          } else {
-            color.a = 0.25;
           }
+          color.a = 0.25;
         }
 
-        // Hide segments whose time gap to the next point exceeds gapSegmentThreshold
-        if (track.gapSegmentThreshold > 0.0 && vGap > track.gapSegmentThreshold) {
+        // Hide segments whose time gap to the next point exceeds gapSegmentThreshold.
+        // Only in the draw pass: a hidden gap stays pickable, as it was when picking ran on a
+        // separate layer built without gapSegmentThreshold.
+        if (picking.isActive < 0.5 && track.gapSegmentThreshold > 0.0 && vGap > track.gapSegmentThreshold) {
           discard;
         }
 
@@ -459,7 +483,8 @@ export class VesselTrackPathLayer<
       maxElevationFilter = MAX_FILTER_VALUE,
       colorBy,
       gapSegmentThreshold = 0,
-      id,
+      visibleWidth = TRACK_VISIBLE_WIDTH,
+      getWidth,
     } = this.props
 
     const steps =
@@ -501,9 +526,10 @@ export class VesselTrackPathLayer<
         maxSpeedFilter,
         minElevationFilter,
         maxElevationFilter,
-        discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
         colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
         gapSegmentThreshold,
+        visibleWidthRatio:
+          visibleWidth / (typeof getWidth === 'number' ? getWidth : TRACK_PICK_WIDTH),
         ...values,
         ...colors,
       },
