@@ -547,7 +547,7 @@
     "format": "Formato",
     "fullDataset": "Você precisa de todos os dados?",
     "fullTimeRange": "Intervalo de tempo completo",
-    "gridded": "Atividade por quadrantes",
+    "gridded": "Atividade por células",
     "groupActivityBy": "Agrupar atividade por",
     "groupByNotSupported": "The datasets selected don't support grouping by {{property}}",
     "groupVesselsBy": "Agrupar embarcações por",
@@ -933,7 +933,7 @@
     "searchTypes": {
       "eez": "EEZ",
       "fao": "FAO",
-      "mpa": "MPA",
+      "mpa": "AMP",
       "port": "Port",
       "rfmo": "RFMO"
     },
