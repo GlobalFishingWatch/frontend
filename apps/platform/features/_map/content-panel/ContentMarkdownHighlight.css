@@ -23,6 +23,23 @@
   --th-variable: #953800;
 }
 
+.content-markdown img {
+  max-width: 100%;
+}
+
+.content-markdown iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.content-markdown div:has(> iframe) {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
 .content-markdown pre.tm-code {
   overflow-x: auto;
   padding: 1rem;

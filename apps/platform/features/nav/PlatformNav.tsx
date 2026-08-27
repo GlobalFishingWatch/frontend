@@ -8,6 +8,7 @@ import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
@@ -308,20 +309,40 @@ function PlatformNav() {
       className={cx('print-hidden', styles.PlatformNav, { [styles.expanded]: railExpanded })}
       {...hoverExpandProps}
       onBlur={onBlur}
+      // The backdrop is this element's ::before, so a tap on it targets the nav itself.
+      onClick={(event) => event.target === event.currentTarget && collapseRail()}
     >
+      {/*
+        Two separate buttons rather than one that morphs: the hamburger sits in the header band and
+        the close button rides the drawer, so nothing has to cross-fade its background or icon while
+        the drawer slides.
+      */}
+      {isSmallScreen && (
+        <button
+          type="button"
+          className={styles.railToggle}
+          onClick={toggleRail}
+          aria-expanded={railExpanded}
+          aria-label={t((s) => s.nav.menu)}
+          data-testid="nav-rail-toggle"
+        >
+          <Icon icon="menu" />
+        </button>
+      )}
       <div className={styles.panel}>
         {isSmallScreen && (
-          <div className={cx(styles.tab, styles.railToggle)}>
+          <div className={styles.drawerHeader}>
+            <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+              <Logo className={styles.logo} />
+            </a>
             <button
               type="button"
-              className={styles.tabContent}
-              onClick={toggleRail}
-              aria-expanded={railExpanded}
-              data-testid="nav-rail-toggle"
+              className={styles.drawerClose}
+              onClick={collapseRail}
+              aria-label={t((s) => s.nav.closeMenu)}
+              data-testid="nav-rail-close"
             >
-              <span data-nav-icon>
-                <Icon icon={railExpanded ? 'arrow-left' : 'arrow-right'} />
-              </span>
+              <Icon icon="close" />
             </button>
           </div>
         )}

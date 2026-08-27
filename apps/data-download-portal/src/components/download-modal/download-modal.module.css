@@ -1,0 +1,21 @@
+.surveyContent {
+  padding: var(--space-S);
+  height: 52rem;
+}
+
+.noticeContent {
+  padding: var(--space-S);
+  height: auto;
+}
+
+.notice {
+  padding: var(--space-M);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.noticeFooter {
+  display: flex;
+  justify-content: flex-end;
+}

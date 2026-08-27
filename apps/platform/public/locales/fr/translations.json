@@ -70,6 +70,7 @@
     "nauticalmiles": "miles nautiques",
     "newTimeRange": "Cliquez sur le bouton pour voir les navires actifs dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "noDataByArea": "Aucune donnée disponible pour la zone sélectionnée",
+    "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Les modes de comparaison temporelle ne sont pas disponibles lorsque des filtres différents ont été appliqués aux calques",
     "noVesselDataFiltered": "Aucun navire ne correspond à votre filtre",
@@ -327,11 +328,13 @@
     "seeMore": "En voir plus",
     "seeMyWorkspace": "My workspace",
     "send": "Envoyer",
+    "sendFeedback": "Send feedback",
     "sentinel2": "Imagery detections (Optical)",
     "setNewPassword": "Définir un nouveau mot de passe",
     "settings": "Settings",
     "share": "Partager la vue actuelle",
     "since": "depuis",
+    "skip": "Skip",
     "sourceOptions": {
       "both": "Registres et AIS",
       "registryOnly": "Registre uniquement",
@@ -527,6 +530,7 @@
     "apiPortal": "Voir nos APIs ici",
     "area": "Zone",
     "byVessel": "Navires actifs",
+    "canCloseModal": "Your download will continue in the background even if you close this window.",
     "daily": "Jour",
     "dataDownload": "Téléchargement de données",
     "dataDownloadLogin": "S'inscrire et se connecter pour télécharger les informations du navire (c'est gratuit et ne prend que 2 minutes)",
@@ -746,6 +750,23 @@
     "convenedBy": "Partenaires fondateurs",
     "supportBy": "Avec le soutien de"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Centrer la vue sur l'activité",
@@ -872,7 +893,8 @@
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "zoom_in": "Zoomer",
-    "zoom_out": "Dézoomer"
+    "zoom_out": "Dézoomer",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -880,6 +902,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -887,6 +910,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",

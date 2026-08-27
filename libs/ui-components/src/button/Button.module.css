@@ -21,6 +21,11 @@
   border-radius: var(--border-radius-0);
 }
 
+/* A spinner sits closer to the label than an icon does, so it needs more room than --space-XS */
+.button.loading {
+  gap: var(--space-S);
+}
+
 .button:focus {
   box-shadow: var(--box-shadow-highlight);
 }
@@ -33,10 +38,8 @@
     transform 100ms ease-out;
 }
 
-a.button,
-a.button:visited,
-.default {
-  height: var(--size-M);
+.default,
+.default:visited {
   color: var(--color-white);
   background-color: var(--color-primary-blue);
 }
@@ -52,7 +55,8 @@ a.button:visited,
   border-bottom: var(--border);
 }
 
-.secondary {
+.secondary,
+.secondary:visited {
   color: var(--color-secondary-blue);
   background-color: var(--color-terthiary-blue);
 }
@@ -70,7 +74,8 @@ a.button:visited,
   border-bottom: var(--border);
 }
 
-.border-secondary {
+.border-secondary,
+.border-secondary:visited {
   border-radius: var(--border-radius-0);
   color: var(--color-secondary-blue);
   background-color: var(--color-terthiary-blue);
@@ -83,23 +88,28 @@ a.button:visited,
   border-bottom: var(--border);
 }
 
-.tiny {
+/* prefixed so a size can never share a class name with a type */
+.size-tiny {
   height: var(--size-XS);
 }
 
-.small {
+.size-small {
   height: var(--size-S);
 }
 
-.medium {
+.size-medium {
   height: var(--size-SM);
 }
 
-.big {
+.size-default {
+  height: var(--size-M);
+}
+
+.size-big {
   height: var(--size-L);
 }
 
-.verybig {
+.size-verybig {
   height: var(--size-XL);
 }
 

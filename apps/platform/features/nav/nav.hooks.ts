@@ -143,7 +143,7 @@ export function useIsNavItemActive() {
           // Fuzzy so a section stays lit on its children ('/map' on '/map/$category'). Never for the
           // landing route: '/' prefixes every path, so fuzzy would light Home up everywhere.
           const fuzzy = item.to !== ROUTE_PATHS.LANDING
-          return !!matchRoute({ to: item.to, fuzzy } as never)
+          return !!matchRoute({ to: item.to, params: item.params, fuzzy } as never)
         }
       }
     },

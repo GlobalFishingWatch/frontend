@@ -5,6 +5,7 @@ import { useRouter } from '@tanstack/react-router'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
+import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { selectLastWorkspaceNavigationProps } from 'features/_map/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/_map/workspace/workspace.slice'
@@ -50,7 +51,7 @@ function LogoutButton() {
     if (needsWorkspaceRefetch) {
       await dispatch(
         fetchWorkspaceThunk({
-          workspaceId: lastWorkspaceNavProps?.params?.workspaceId,
+          workspaceId: lastWorkspaceNavProps?.params?.workspaceId || DEFAULT_WORKSPACE_ID,
         })
       )
     }

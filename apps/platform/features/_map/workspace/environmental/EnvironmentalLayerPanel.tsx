@@ -7,7 +7,7 @@ import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/a
 import type { SupportedEnvDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoaded, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { MULTI_HUE_COLOR_RAMPS } from '@globalfishingwatch/deck-layers/config'
 import { isMultiHueColorRampId } from '@globalfishingwatch/deck-layers/utils'
@@ -84,7 +84,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   )
 
   const layerActive = dataview?.config?.visible ?? true
-  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+  const layerLoaded = useDeckLayerLoaded(dataview.id)
   const isSingleHeatmapDataview = useSelector(selectIsSingleHeatmapDataview)
 
   const colorBarOptions = useMemo(() => {

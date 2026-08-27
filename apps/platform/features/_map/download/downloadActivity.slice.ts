@@ -190,6 +190,13 @@ const downloadActivitySlice = createSlice({
     },
     setDownloadActivityAreaKey: (state, action: PayloadAction<AreaKeys>) => {
       state.areaKey = action.payload
+      // Closing the modal resets the status, but a download resolving afterwards (the request is
+      // not aborted) sets it again, so the modal would reopen showing the previous download as
+      // finished. Loading is kept: it means a report is still being polled in the background.
+      if (state.status !== AsyncReducerStatus.Loading) {
+        state.status = AsyncReducerStatus.Idle
+        state.error = undefined
+      }
     },
     resetDownloadActivityState: (state) => {
       state.areaKey = undefined

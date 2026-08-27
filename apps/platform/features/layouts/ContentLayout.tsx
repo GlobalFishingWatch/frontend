@@ -9,13 +9,15 @@ import { Logo } from '@globalfishingwatch/ui-components/logo'
 import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import SearchTypeChoice from 'features/_vessels/search/SearchTypeChoice'
+import HelpHubBreadcrumb from 'features/help/HelpHubBreadcrumb'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
-import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
+import { selectIsHelpHubLocation, selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 
 import styles from './layouts.module.css'
 
 /**
- * Layout for platform pages with no map and no sidebar — currently /user and /vessel-search.
+ * Layout for platform pages with no map and no sidebar — currently /user, /vessel-search and
+ * /help-and-resources.
  *
  * It still provides `SCROLL_CONTAINER_DOM_ID`. That element is an app-wide contract, not a Sidebar
  * detail: 15 modules reach for it, including router/router-sync.ts (scroll reset on every
@@ -25,6 +27,7 @@ import styles from './layouts.module.css'
 function ContentLayout() {
   const isClientHydrated = useIsClientHydrated()
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
+  const isHelpHubLocation = useSelector(selectIsHelpHubLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -35,8 +38,8 @@ function ContentLayout() {
           [styles.contentHeaderScrolled]: isScrolled,
         })}
       >
-        <a href="https://globalfishingwatch.org">
-          <Logo />
+        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+          <Logo className={styles.logo} />
         </a>
         <div className={styles.contentHeaderActions}>
           {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
@@ -49,6 +52,7 @@ function ContentLayout() {
         data-testid="content-container"
         onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
       >
+        {isHelpHubLocation && <HelpHubBreadcrumb />}
         <Suspense fallback={null}>
           <Outlet />
         </Suspense>
