@@ -141,12 +141,11 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
    */
   gapSegmentThreshold?: number
   /**
-   * Width actually painted, in pixels. The geometry itself is tesselated at `TRACK_PICK_WIDTH`
-   * so the whole band stays pickable; the fragment shader discards everything outside this
-   * width in the draw pass. Values above `TRACK_PICK_WIDTH` paint the full band, no wider.
-   * @default 1.5
+   * Width of the hover target, in pixels. The track is drawn at `getWidth`;
+   * then the vertex shader widens it to this only during the picking pass
+   * @default 15
    */
-  visibleWidth?: number
+  pickWidth?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -206,14 +205,14 @@ function generateShaderColorSteps({
 // not needed anymore as the highlighted color is fixed
 // const DEFAULT_HIGHLIGHT_COLOR_RGBA = [255, 255, 255, 255] as Color
 
-/** Width the geometry is tesselated at, so the whole band is pickable. */
+/** Default `pickWidth`: how wide the hover target is, in pixels. */
 export const TRACK_PICK_WIDTH = 15
-/** Default `visibleWidth`: what is actually painted inside the pickable band. */
+/** Default drawn width, in pixels. */
 export const TRACK_VISIBLE_WIDTH = 1.5
 
 const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   _pathType: 'open',
-  visibleWidth: { type: 'number', value: TRACK_VISIBLE_WIDTH, min: 0 },
+  pickWidth: { type: 'number', value: TRACK_PICK_WIDTH, min: 0 },
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
@@ -269,7 +268,7 @@ const uniformBlock = `
     uniform vec4 color9;
     uniform float colorBy;
     uniform float gapSegmentThreshold;
-    uniform float visibleWidthRatio;
+    uniform float pickWidthRatio;
   } track;
 `
 
@@ -310,7 +309,7 @@ const trackLayerUniforms = {
     color9: 'vec4<f32>',
     colorBy: 'f32',
     gapSegmentThreshold: 'f32',
-    visibleWidthRatio: 'f32',
+    pickWidthRatio: 'f32',
   },
 }
 
@@ -345,6 +344,11 @@ export class VesselTrackPathLayer<
         if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
           size *= 4.0;
         }
+        // Widen the stroke to the hover target, but only in the picking pass. Keeps one layer
+        // doing both jobs without paying for the wide band's fragments on every drawn frame.
+        if (picking.isActive > 0.5) {
+          size *= track.pickWidthRatio;
+        }
         `,
       'vs:#main-end': /*glsl*/ `
         if(vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
@@ -357,18 +361,9 @@ export class VesselTrackPathLayer<
         in float vElevation;
         in float vGap;
       `,
-      // Drop the segments outside of the time window, and — when not picking — the part of the
-      // band that only exists to widen the pick target. `picking.isActive` keeps the picking pass
-      // reading the full width regardless of hook injection order.
-      // `vPathPosition.x` is the perpendicular offset in half-width units, so the visible band is
-      // a fixed fraction of the geometry — only true while widthUnits is 'pixels' with
-      // widthScale 1. `DECKGL_FILTER_SIZE` scaling (highlighted events) hits both widths, so the
-      // ratio survives it.
+      // Drop the segments outside of the time window
       'fs:#main-start': /*glsl*/ `
         if (vTime <= track.startTime || vTime >= track.endTime) {
-          discard;
-        }
-        if (picking.isActive < 0.5 && abs(vPathPosition.x) > track.visibleWidthRatio) {
           discard;
         }
       `,
@@ -483,7 +478,7 @@ export class VesselTrackPathLayer<
       maxElevationFilter = MAX_FILTER_VALUE,
       colorBy,
       gapSegmentThreshold = 0,
-      visibleWidth = TRACK_VISIBLE_WIDTH,
+      pickWidth = TRACK_PICK_WIDTH,
       getWidth,
     } = this.props
 
@@ -528,8 +523,7 @@ export class VesselTrackPathLayer<
         maxElevationFilter,
         colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
         gapSegmentThreshold,
-        visibleWidthRatio:
-          visibleWidth / (typeof getWidth === 'number' ? getWidth : TRACK_PICK_WIDTH),
+        pickWidthRatio: pickWidth / (typeof getWidth === 'number' ? getWidth : TRACK_VISIBLE_WIDTH),
         ...values,
         ...colors,
       },

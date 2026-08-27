@@ -77,10 +77,11 @@ export type UserTrackLayerProps = DeckLayerProps<
     getTimestamp?: Accessor<any, number>
     singleTrack?: boolean
     /**
-     * Width actually painted, in pixels. The geometry itself is tesselated at `TRACK_PICK_WIDTH`
-     * @default 1.5
+     * Width of the hover target, in pixels. The track is drawn at `getWidth`;
+     * then the vertex shader widens it to this only during the picking pass
+     * @default 15
      */
-    visibleWidth?: number
+    pickWidth?: number
   }
 >
 

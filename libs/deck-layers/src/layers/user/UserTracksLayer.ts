@@ -47,14 +47,14 @@ import type {
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
 
-/** Width the geometry is tesselated at, so the whole band is pickable. */
+/** Default `pickWidth`: how wide the hover target is, in pixels. */
 const TRACK_PICK_WIDTH = 15
-/** Default `visibleWidth`: what is actually painted inside the pickable band. */
+/** Default drawn width, in pixels. */
 const TRACK_VISIBLE_WIDTH = 1.5
 
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   _pathType: 'open',
-  visibleWidth: { type: 'number', value: TRACK_VISIBLE_WIDTH, min: 0 },
+  pickWidth: { type: 'number', value: TRACK_PICK_WIDTH, min: 0 },
   loaders: [UserTrackLoader],
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
@@ -70,7 +70,7 @@ const uniformBlock = `
     uniform float endTime;
     uniform float highlightStartTime;
     uniform float highlightEndTime;
-    uniform float visibleWidthRatio;
+    uniform float pickWidthRatio;
   } track;
 `
 
@@ -83,7 +83,7 @@ const trackLayerUniforms = {
     endTime: 'f32',
     highlightStartTime: 'f32',
     highlightEndTime: 'f32',
-    visibleWidthRatio: 'f32',
+    pickWidthRatio: 'f32',
   },
 }
 
@@ -103,6 +103,13 @@ export class UserTracksPathLayer<
         in float instanceTimestamps;
         out float vTime;
       `,
+      // Widen the stroke to the hover target, but only in the picking pass. Keeps one layer
+      // doing both jobs without paying for the wide band's fragments on every drawn frame.
+      'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
+        if (picking.isActive > 0.5) {
+          size *= track.pickWidthRatio;
+        }
+      `,
       // Timestamp of the vertex
       'vs:#main-end': /*glsl*/ `
         vTime = instanceTimestamps;
@@ -116,11 +123,6 @@ export class UserTracksPathLayer<
       'fs:#main-start': /*glsl*/ `
       // Drop the segments outside of the time window
         if(vTime > 0.0 && (vTime < track.startTime || vTime > track.endTime)) {
-          discard;
-        }
-        // Drop the outer band that only widens the pick target, but keep it when picking.
-        // vPathPosition.x is the offset from the centerline, +/-1 at the geometry edge.
-        if (picking.isActive < 0.5 && abs(vPathPosition.x) > track.visibleWidthRatio) {
           discard;
         }
       `,
@@ -155,7 +157,7 @@ export class UserTracksPathLayer<
       endTime,
       highlightStartTime = 0,
       highlightEndTime = 0,
-      visibleWidth = TRACK_VISIBLE_WIDTH,
+      pickWidth = TRACK_PICK_WIDTH,
       getWidth,
     } = this.props
 
@@ -166,8 +168,10 @@ export class UserTracksPathLayer<
           endTime: endTime || MAX_FILTER_VALUE,
           highlightStartTime,
           highlightEndTime,
-          visibleWidthRatio:
-            visibleWidth / (typeof getWidth === 'number' ? getWidth : TRACK_PICK_WIDTH),
+          // Read back from getWidth rather than assuming TRACK_VISIBLE_WIDTH, so a caller
+          // drawing at another width still gets a `pickWidth`-wide hover target.
+          pickWidthRatio:
+            pickWidth / (typeof getWidth === 'number' ? getWidth : TRACK_VISIBLE_WIDTH),
         },
       })
     }
@@ -583,7 +587,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
           highlightEndTime,
           onError: this._onLayerError,
           jointRounded: true,
-          getWidth: TRACK_PICK_WIDTH,
+          getWidth: TRACK_VISIBLE_WIDTH,
           getColor: (d, { index: pathIndex }) =>
             this._getColor(d, { layer, sublayer, index: pathIndex }),
           updateTriggers: {

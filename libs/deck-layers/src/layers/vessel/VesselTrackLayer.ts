@@ -21,7 +21,7 @@ import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackPathLayerProps } from './VesselTrackPathLayer'
 import {
   getTrackShaderLayoutKey,
-  TRACK_PICK_WIDTH,
+  TRACK_VISIBLE_WIDTH,
   VesselTrackPathLayer,
 } from './VesselTrackPathLayer'
 
@@ -157,7 +157,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         ...props,
         id: `${id}-${getTrackShaderLayoutKey(props)}-track`,
         data: data as VesselTrackData,
-        getWidth: TRACK_PICK_WIDTH,
+        getWidth: TRACK_VISIBLE_WIDTH,
         pickable: visualizationMode !== 'positions' && visualizationMode !== 'points',
         hoveredTime: props.hoveredTime,
       }),
