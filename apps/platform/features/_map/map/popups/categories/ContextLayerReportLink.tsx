@@ -11,7 +11,6 @@ import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
 } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { selectSidebarOpen } from 'features/_map/workspace/selectors/app.selectors'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/_map/workspace/workspace.slice'
@@ -87,7 +86,6 @@ const ContextLayerReportLink = ({
       .map((layer) => (layer.datasets ?? []).map((d) => d.name))
       .flat()
       .join(', ')
-    resetSidebarScroll()
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     if (onClick) {
