@@ -50,6 +50,7 @@
       "tooltipAmmount": "{{ammount}} horas ({{percentage}}% del total)"
     },
     "insideYourArea": "dentro de su zona",
+    "inTheArea": "in the area",
     "kilometers": "kilómetros",
     "linkToReport": "Verifique el informe dinámico aquí",
     "migramar": {
@@ -110,10 +111,10 @@
     "showFullReport": "Ver análisis completo para esta área",
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
-    "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} barcos</strong> de <strong>{{flags}} banderas</strong> tenían <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "timeoutError": "Esto está demorando más de lo esperado, agradecemos su espera",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Informe",
