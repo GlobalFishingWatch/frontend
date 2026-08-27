@@ -1385,6 +1385,7 @@
     "sectionActivity": "Actividad",
     "sectionAreas": "Áreas",
     "sectionInsights": "Indicadores",
+    "sectionInsightsTooltip": "Insights not available for VMS vessels.",
     "sectionRelatedVessel": "Related vessels",
     "sectionRelatedVessels": "Embarcaciones relacionadas",
     "sectionSummary": "Resumen",
