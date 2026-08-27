@@ -84,10 +84,32 @@
   color: var(--color-secondary-blue);
 }
 
-@media (width <= 768px) {
+/* 800px matches HelpHubBreadcrumb / HelpHubSectionPage, which switch to --space-SM gutters. */
+@media (width <= 800px) {
+  .container {
+    gap: var(--space-M);
+
+    /* Breadcrumb drops its bottom padding under 800px, so the gap to the first section is here. */
+    padding: var(--space-M) var(--space-SM) 0;
+  }
+
   .intro {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: var(--space-S);
+  }
+
+  .description {
+    max-width: none;
+  }
+
+  .seeMore {
+    padding-inline: var(--space-SM);
+  }
+
+  .section .carousel {
+    margin-inline: calc(-1 * var(--space-SM));
+
+    --carousel-padding-inline: var(--space-SM);
   }
 }

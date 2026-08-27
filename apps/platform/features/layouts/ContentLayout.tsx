@@ -38,8 +38,8 @@ function ContentLayout() {
           [styles.contentHeaderScrolled]: isScrolled,
         })}
       >
-        <a href="https://globalfishingwatch.org">
-          <Logo />
+        <a href="https://globalfishingwatch.org" className={styles.logoLink}>
+          <Logo className={styles.logo} />
         </a>
         <div className={styles.contentHeaderActions}>
           {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
