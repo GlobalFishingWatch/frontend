@@ -111,25 +111,23 @@ export function useSelectorConnect(): UseSelector {
   )
 
   const onMouseUp = useCallback(() => {
-      if (map && box && box.endPosition && box.startPosition) {
-        const features = map.queryRenderedFeatures(
-          [box.startPosition as any, box.endPosition as any],
-          {
-            layers: ['portPoints'],
-          }
-        )
-        dispatch(setSelectedPoints(selected.concat(features.map((point) => point.properties.id))))
-      }
-      if (map) {
-        map.dragPan?.enable()
-      }
-      setBox(null)
-      setBoxHeight(null)
-      setBoxTransform(null)
-      setBoxWidth(null)
-    },
-    [box, dispatch, map]
-  )
+    if (map && box && box.endPosition && box.startPosition) {
+      const features = map.queryRenderedFeatures(
+        [box.startPosition as any, box.endPosition as any],
+        {
+          layers: ['portPoints'],
+        }
+      )
+      dispatch(setSelectedPoints(selected.concat(features.map((point) => point.properties.id))))
+    }
+    if (map) {
+      map.dragPan?.enable()
+    }
+    setBox(null)
+    setBoxHeight(null)
+    setBoxTransform(null)
+    setBoxWidth(null)
+  }, [box, dispatch, map])
 
   // here starts the feature to select points in mass
   const onMapclick = useCallback(

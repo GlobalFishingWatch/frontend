@@ -101,8 +101,8 @@ export function Select(props: SelectProps) {
     })
 
   const handleToggleButtonClick = useCallback(() => {
-      if (onToggleButtonClick) onToggleButtonClick(selectedOption)
-    }, [onToggleButtonClick, selectedOption])
+    if (onToggleButtonClick) onToggleButtonClick(selectedOption)
+  }, [onToggleButtonClick, selectedOption])
 
   const hasSelectedOptions = selectedOption !== undefined
 

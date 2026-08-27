@@ -31,6 +31,7 @@ export function detectLanguageFromRequest(request: Request): i18nSupportedLocale
   const cookieLng = cookieHeader ? readCookie({ cookie: cookieHeader, key: 'i18next' }) : undefined
 
   return resolveLanguageFromSources({
+    querystring: new URL(request.url).searchParams.get('lng') ?? undefined,
     cookie: cookieLng ?? undefined,
     acceptLanguage: request.headers.get('accept-language') ?? undefined,
   })

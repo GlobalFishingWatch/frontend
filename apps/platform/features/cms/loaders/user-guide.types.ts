@@ -1,4 +1,4 @@
-import type { StrapiBaseAttributes } from 'features/cms/strapi.types'
+import type { StrapiBaseAttributes, StrapiImage } from 'features/cms/strapi.types'
 
 export const CATEGORIES_CONFIG = {
   introduction: [],
@@ -69,9 +69,10 @@ export type UserGuideContent = UserGuideSection[]
 
 export type UserGuideSection = StrapiBaseAttributes & {
   title: string
-  body: string
   slug: UserGuideSectionSlug
-  subsections: UserGuideSubSection[]
+  thumbnail?: StrapiImage
+  body?: string
+  subsections?: UserGuideSubSection[]
 }
 
 export type UserGuideSubSection = StrapiBaseAttributes & {
