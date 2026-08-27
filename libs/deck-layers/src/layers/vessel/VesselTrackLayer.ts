@@ -9,6 +9,7 @@ import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishing
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { PICK_ONLY_LAYER_ID_SUFFIX } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { getLayerGroupOffset } from '#utils'
 
@@ -164,7 +165,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
             // Transparent thicker layer for interactivity
             new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
               ...props,
-              id: `${id}-${interactiveLayoutKey}-interactive`,
+              id: `${id}-${interactiveLayoutKey}${PICK_ONLY_LAYER_ID_SUFFIX}`,
               data: data as VesselTrackData,
               getWidth: 15,
               getColor: COLOR_TRANSPARENT,

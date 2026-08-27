@@ -23,7 +23,11 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '#config/colors.config'
-import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
+import {
+  DEFAULT_ID_PROPERTY,
+  MAX_FILTER_VALUE,
+  PICK_ONLY_LAYER_ID_SUFFIX,
+} from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/context/context.types'
 import { getContextId } from '#layers/context/context.utils'
@@ -512,7 +516,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       return [
         new UserTracksPathLayer<any>({
           ...commonProps,
-          id: `${layerIdHash}-interactive`,
+          id: `${layerIdHash}${PICK_ONLY_LAYER_ID_SUFFIX}`,
           data: activeBinary,
           pickable: layer.pickable,
           getWidth: 5,

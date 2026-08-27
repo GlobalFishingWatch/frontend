@@ -9,6 +9,7 @@ import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { PICK_ONLY_LAYER_ID_SUFFIX } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { HEATMAP_ID } from '#layers/fourwings/fourwings.config'
 import type {
@@ -239,7 +240,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
-          id: `fourwings-vectors-interactive`,
+          id: `fourwings-vectors${PICK_ONLY_LAYER_ID_SUFFIX}`,
           data,
           pickable: true,
           material: false,
