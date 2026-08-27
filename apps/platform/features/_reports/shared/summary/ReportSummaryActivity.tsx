@@ -9,7 +9,10 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
-import { selectReportDataviewsWithPermissions } from 'features/_reports/report-area/area-reports.selectors'
+import {
+  selectIsGlobalReport,
+  selectReportDataviewsWithPermissions,
+} from 'features/_reports/report-area/area-reports.selectors'
 import { selectReportAreaId, selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
@@ -58,6 +61,7 @@ export default function ReportSummaryActivity({
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportRequestHash = useSelector(selectReportRequestHash)
   const areaId = useSelector(selectReportAreaId)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportOutdated =
     reportRequestHash !==
     getReportRequestHash({
@@ -77,6 +81,9 @@ export default function ReportSummaryActivity({
     const datasetTitles = dataviews?.map((dataview) =>
       getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
     )
+    const area = isGlobalReport
+      ? t((t) => t.analysis.globally)
+      : t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
     const sameTitleDataviews = datasetTitles.every((d) => d === datasetTitles?.[0])
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
@@ -105,6 +112,7 @@ export default function ReportSummaryActivity({
         }),
 
         activityType: datasetTitle || '',
+        area,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
 
@@ -170,6 +178,7 @@ export default function ReportSummaryActivity({
         activityQuantity: activityQuantity as string,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle ?? '',
+        area,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
       })
@@ -179,6 +188,7 @@ export default function ReportSummaryActivity({
     timeCompareTimeDescription,
     reportCategory,
     t,
+    isGlobalReport,
     reportHours,
     reportStatus,
     reportOutdated,
