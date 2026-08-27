@@ -173,16 +173,11 @@ export function DownloadSurvey({
         )}
         <Button
           onClick={downloading ? undefined : onClose}
-          className={cx(styles.footerBtn, { [styles.nonInteractive]: downloading })}
+          className={styles.footerBtn}
+          loading={downloading}
+          disabled={downloading}
         >
-          {downloading ? (
-            <div className={styles.flex}>
-              <Spinner size="small" />
-              {labels.downloading}
-            </div>
-          ) : (
-            labels.skip
-          )}
+          {downloading ? labels.downloading : labels.skip}
         </Button>
       </div>
     </div>

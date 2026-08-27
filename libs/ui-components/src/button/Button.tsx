@@ -9,8 +9,7 @@ import type { TooltipTypes } from '../types/types'
 import styles from './Button.module.css'
 
 export type ButtonType = 'default' | 'secondary' | 'border-secondary'
-export type ButtonSize =
-  'tiny' | 'small' | 'medium' | 'default' | 'big' | 'verybig'
+export type ButtonSize = 'tiny' | 'small' | 'medium' | 'default' | 'big' | 'verybig'
 export type HTMLButtonType = 'submit' | 'reset' | 'button' | undefined
 
 export interface ButtonProps {
@@ -44,7 +43,7 @@ function renderAsChild(
   children: React.ReactNode,
   buttonClassName: string,
   renderContent: (inner: React.ReactNode) => React.ReactNode,
-  { disabled, testId }: Pick<ButtonProps, 'disabled' | 'testId'>,
+  { disabled, testId }: Pick<ButtonProps, 'disabled' | 'testId'>
 ) {
   const child = React.Children.only(children) as React.ReactElement<ChildProps>
   const childProps: Record<string, unknown> = {
@@ -55,7 +54,7 @@ function renderAsChild(
   return React.cloneElement(
     child,
     childProps as Partial<ChildProps>,
-    renderContent(child.props.children),
+    renderContent(child.props.children)
   )
 }
 
@@ -86,27 +85,18 @@ export function Button(props: ButtonProps) {
       color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
     />
   )
-  const renderContent = (inner: React.ReactNode) =>
-    icon ? (
-      <React.Fragment>
-        {loading ? spinner : icon}
-        {inner}
-      </React.Fragment>
-    ) : loading ? (
-      spinner
-    ) : (
-      inner
-    )
-  const content = renderContent(children)
-  const buttonClassName = cx(
-    styles.button,
-    styles[type],
-    styles[`size-${size}`],
-    className,
-    {
-      [styles.disabled]: disabled,
-    },
+
+  const renderContent = (inner: React.ReactNode) => (
+    <React.Fragment>
+      {loading ? spinner : icon}
+      {inner}
+    </React.Fragment>
   )
+  const content = renderContent(children)
+  const buttonClassName = cx(styles.button, styles[type], styles[`size-${size}`], className, {
+    [styles.disabled]: disabled,
+    [styles.loading]: loading,
+  })
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
       {asChild ? (
@@ -115,12 +105,7 @@ export function Button(props: ButtonProps) {
           testId,
         })
       ) : href !== undefined && !disabled ? (
-        <a
-          href={href}
-          target={target}
-          onClick={onClick}
-          className={buttonClassName}
-        >
+        <a href={href} target={target} onClick={onClick} className={buttonClassName}>
           {content}
         </a>
       ) : (

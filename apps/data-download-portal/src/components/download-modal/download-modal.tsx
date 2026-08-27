@@ -54,7 +54,13 @@ function DownloadModal({ request, user, downloading, onClose }: DownloadModalPro
         <div className={styles.notice}>
           <p>{MULTIPLE_FILES_NOTICE}</p>
           <div className={styles.noticeFooter}>
-            <Button onClick={onClose}>Okay</Button>
+            <Button
+              onClick={downloading ? undefined : onClose}
+              disabled={downloading}
+              loading={downloading}
+            >
+              Ok
+            </Button>
           </div>
         </div>
       )}
