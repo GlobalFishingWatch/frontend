@@ -157,6 +157,9 @@ export class UserTracksPathLayer<
   }
 }
 
+type UserTrackContextLayer = UserTrackLayerProps['layers'][number]
+type UserTrackSublayer = UserTrackContextLayer['sublayers'][number]
+
 type RawDataIndex = { index: number; length: number }
 type UserTracksLayerState = {
   error: string
@@ -168,6 +171,8 @@ type UserTracksLayerState = {
   lods?: UserTrackLod[]
   /** Index into `lods` currently being drawn, derived from viewport zoom. */
   lodIndex?: number
+  /** Identity of what `lods`/`rawData` were parsed from, so a filter change invalidates them. */
+  dataKey?: string
   highlightedFeatures?: UserLayerPickingObject[]
   highlightStartTime?: number
   highlightEndTime?: number
@@ -195,10 +200,41 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
 
   updateState(params: UpdateParameters<this>) {
     super.updateState(params)
+    // Filters/tilesUrl feed the parse, so anything already parsed is stale once they change.
+    // Without this the sublayers keep rendering `state.lods` and never refetch.
+    const dataKey = this._getDataKey()
+    if (dataKey !== this.state?.dataKey) {
+      this.setState({
+        dataKey,
+        rawData: undefined,
+        rawDataIndexes: [],
+        pathFeatureIndexes: undefined,
+        lods: undefined,
+        lodIndex: undefined,
+      })
+      return
+    }
     const lodIndex = this._getLodIndex()
     if (lodIndex !== this.state?.lodIndex) {
       this.setState({ lodIndex })
     }
+  }
+
+  _getLayerKey(layer?: UserTrackContextLayer, sublayer?: UserTrackSublayer) {
+    return [
+      layer?.id,
+      sublayer?.id,
+      layer?.tilesUrl,
+      Object.entries(sublayer?.filters || {}).join(','),
+      Object.entries(sublayer?.filterOperators || {}).join(','),
+      this.props.timeFilterType ?? '',
+    ].join('|')
+  }
+
+  _getDataKey() {
+    // TODO: support multiple sublayers
+    const layer = this.props.layers?.[0]
+    return this._getLayerKey(layer, layer?.sublayers?.[0])
   }
 
   _getLodIndex() {
@@ -370,8 +406,15 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       }
     }
 
-    const lodIndex = getUserTrackLodIndex(lods, this.context.viewport.zoom)
-    this.setState({ rawData: data, rawDataIndexes, pathFeatureIndexes, lods, lodIndex })
+    const lodIndex = this._getLodIndex()
+    this.setState({
+      dataKey: this._getDataKey(),
+      rawData: data,
+      rawDataIndexes,
+      pathFeatureIndexes,
+      lods,
+      lodIndex,
+    })
     return lods[lodIndex].binary
   }
 
@@ -494,11 +537,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
 
     return layers.map((layer) => {
       const sublayer = layer.sublayers?.[0]
-      // TODO support multiple layers
-      // return layer.sublayers.map((sublayer) => {
       const tilesUrl = new URL(layer.tilesUrl)
-      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}-${Object.values(sublayer.filterOperators || {}).join(',')}`
-      // tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
+      const layerIdHash = this._getLayerKey(layer, sublayer)
 
       const commonProps = {
         _pathType: 'open',
