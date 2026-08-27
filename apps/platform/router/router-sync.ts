@@ -1,7 +1,6 @@
 import type { AnyRouter, RouterEvents } from '@tanstack/react-router'
 
 import { PATH_BASENAME } from 'data/map/config'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.slice'
 import type { LinkToPayload } from 'router/routes.types'
@@ -77,8 +76,6 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
 
   // Deduplicate rapid-fire events for the same URL (viewport rAF, timebar rAF, etc.)
   let lastDispatchedHref = router.latestLocation.href
-
-  let lastPathname = router.latestLocation.pathname
 
   // onBeforeNavigate: location sync + history tracking.
   // Runs before TanStack Router renders the new route, so layout components
@@ -181,18 +178,12 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
     }
   )
 
-  // onResolved: only clear the isHistoryNavigation flag from the committed history and reset sidebarscroll
+  // onResolved: only clear the isHistoryNavigation flag from the committed history.
+  // Scroll reset is the router's job — `scrollToTopSelectors` in router.tsx.
   const unsubscribeResolved = router.subscribe(
     'onResolved',
     (event: RouterEvents['onResolved']) => {
       const navState = (event.toLocation.state || {}) as NavigationState
-
-      if (event.toLocation.pathname !== lastPathname) {
-        lastPathname = event.toLocation.pathname
-        if (!navState.isHistoryNavigation) {
-          resetSidebarScroll()
-        }
-      }
 
       if (navState.isHistoryNavigation) {
         router.navigate({

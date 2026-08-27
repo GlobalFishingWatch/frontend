@@ -7,7 +7,6 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectLastWorkspaceNavigationProps } from 'features/_map/workspace/workspace.selectors'
@@ -77,8 +76,6 @@ function NavigationHistoryButton() {
   const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
 
   const onCloseClick = () => {
-    resetSidebarScroll()
-
     dispatch(cleanVesselSearchResults())
 
     dispatch(resetReportData())

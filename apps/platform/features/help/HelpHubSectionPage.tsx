@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getRouteApi, Link, useNavigate } from '@tanstack/react-router'
 import cx from 'classnames'
@@ -6,7 +6,6 @@ import cx from 'classnames'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
-import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import HelpHubError from 'features/help/HelpHubError'
 import HelpHubItemContent from 'features/help/HelpHubItemContent'
 
@@ -34,11 +33,6 @@ function HelpHubSectionPage() {
     },
     [navigate, sectionSlug]
   )
-
-  // One article per page now, and the whole layout scrolls, so a new article starts at the top.
-  useEffect(() => {
-    document.getElementById(SCROLL_CONTAINER_DOM_ID)?.scrollTo({ top: 0 })
-  }, [activeSlug])
 
   if (error) {
     return <HelpHubError error={error} className={styles.placeholder} />
