@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoaded, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -44,7 +44,7 @@ type EventsLayerPanelProps = {
 function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
-  const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
+  const layerLoaded = useDeckLayerLoaded(dataview.id)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)

@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { useDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoaded } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
