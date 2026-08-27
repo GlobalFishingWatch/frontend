@@ -126,7 +126,6 @@ function ActivityByType() {
     return (
       <GroupedVirtuoso
         ref={virtuosoRef}
-        useWindowScroll
         defaultItemHeight={EVENT_HEIGHT}
         groupCounts={groupCounts}
         increaseViewportBy={EVENT_HEIGHT * 4}

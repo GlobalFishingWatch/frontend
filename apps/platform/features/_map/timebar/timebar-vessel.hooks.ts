@@ -19,8 +19,8 @@ import type {
 
 import {
   selectTimebarTrackDataviews,
+  selectTimebarVesselsDataviews,
   selectTrackDataviews,
-  selectVesselsDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useTimebarVisualisationConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectTimebarGraph } from 'features/_map/workspace/selectors/app.timebar.selectors'
@@ -51,7 +51,7 @@ export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
 }
 
 export const useVesselTracksLayers = () => {
-  const dataviews = useSelector(selectVesselsDataviews)
+  const dataviews = useSelector(selectTimebarVesselsDataviews)
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
