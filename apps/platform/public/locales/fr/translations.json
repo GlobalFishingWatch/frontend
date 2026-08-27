@@ -50,6 +50,7 @@
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
     "insideYourArea": "inside your area",
+    "inTheArea": "in the area",
     "kilometers": "kilomètres",
     "linkToReport": "Consultez le rapport dynamique ici",
     "migramar": {
@@ -110,10 +111,10 @@
     "showFullReport": "See full analysis for this area",
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
-    "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "summaryEvents": "<strong>{{vessels}} navires</strong> de<strong>{{flags}} drapeau</strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Report",
