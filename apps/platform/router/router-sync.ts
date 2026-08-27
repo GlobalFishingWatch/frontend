@@ -8,7 +8,7 @@ import type { AppStore } from 'store'
 import type { QueryParams } from 'types'
 
 import { setLocation } from './location.slice'
-import { REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
+import { PAGE_TURN_ROUTES, REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
 import type { RoutePathValues } from './routes.utils'
 import { mapRoutePathToType, normalizeRoutePath, ROUTE_PATHS } from './routes.utils'
 
@@ -117,9 +117,11 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
         const prevQuery = prevLocation.query || ({} as QueryParams)
         const isDifferentTrackCorrection =
           search?.trackCorrectionId && !prevQuery?.trackCorrectionId
+        const isPageTurn = routeType === prevLocation.type && PAGE_TURN_ROUTES.includes(routeType)
 
         if (
           !isHistoryNavigation &&
+          !isPageTurn &&
           (isDifferentRoute || isDifferentTrackCorrection) &&
           (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
         ) {

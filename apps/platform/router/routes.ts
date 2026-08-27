@@ -23,6 +23,13 @@ export const {
 
 export const WORKSPACE_ROUTES: ROUTE_TYPES[] = [MAP, WORKSPACE]
 export const HELP_HUB_ROUTES: ROUTE_TYPES[] = [HELP_HUB, HELP_HUB_SECTION]
+
+/**
+ * Routes whose params only pick which page of one section is shown, so moving between two of them
+ * is a page turn rather than a new destination. e.g. help hub prev/next
+ * TODO PLATFORM: add /datasets here
+ */
+export const PAGE_TURN_ROUTES: ROUTE_TYPES[] = [HELP_HUB_SECTION]
 export const REPORT_ROUTES: ROUTE_TYPES[] = [
   REPORT,
   WORKSPACE_REPORT,
