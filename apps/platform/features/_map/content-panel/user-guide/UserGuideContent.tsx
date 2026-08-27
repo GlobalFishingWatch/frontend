@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 
-import type { Locale } from '@globalfishingwatch/api-types'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
@@ -11,6 +10,7 @@ import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
+import { toContentLocale } from 'features/i18n/i18n.config'
 import { useAppSearch } from 'router/routes.hook'
 
 import styles from '../ContentPanel.module.css'
@@ -24,7 +24,7 @@ export const UserGuideContentComponent = () => {
     isLoading,
     isError,
   } = useGetUserGuideQuery({
-    locale: i18n.language as Locale,
+    locale: toContentLocale(i18n.language),
   })
 
   const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
@@ -65,7 +65,10 @@ export const UserGuideContentComponent = () => {
 
       const performScroll = () => {
         if (!cancelled) {
-          subcontentElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          subcontentElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          })
         }
       }
 
@@ -102,7 +105,11 @@ export const UserGuideContentComponent = () => {
   }
 
   return (
-    <div className={cx(styles.container, { [styles.userGuideBackground]: !isTableOfContentsOpen })}>
+    <div
+      className={cx(styles.container, {
+        [styles.userGuideBackground]: !isTableOfContentsOpen,
+      })}
+    >
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
@@ -113,7 +120,11 @@ export const UserGuideContentComponent = () => {
                 tabIndex={0}
                 onClick={() => {
                   setIsTableOfContentsOpen(true)
-                  openSidePanel({ type: 'userGuide', id: undefined, subcontentId: undefined })
+                  openSidePanel({
+                    type: 'userGuide',
+                    id: undefined,
+                    subcontentId: undefined,
+                  })
                 }}
               >
                 {t((t) => t.common.userGuide)}
@@ -126,7 +137,10 @@ export const UserGuideContentComponent = () => {
                     role="button"
                     tabIndex={0}
                     onClick={() =>
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      })
                     }
                   >{`${selectedSection.title}`}</span>
                 </>
@@ -149,14 +163,18 @@ export const UserGuideContentComponent = () => {
               openSidePanel({ type: 'userGuide', id: id })
               setIsTableOfContentsOpen(false)
             }}
-            onSubTopicClick={(sectionId, subId) => {
-              openSidePanel({ type: 'userGuide', id: sectionId, subcontentId: subId })
+            onSubItemClick={(sectionId, subId) => {
+              openSidePanel({
+                type: 'userGuide',
+                id: sectionId,
+                subcontentId: subId,
+              })
               setIsTableOfContentsOpen(false)
             }}
           />
         ) : (
           <div className={cx(styles.content)}>
-            <h2>{selectedSection.title}</h2>
+            <h2 className={styles.sectionTitle}>{selectedSection.title}</h2>
             <ContentMarkdown>{selectedSection.body}</ContentMarkdown>
             {selectedSection.subsections?.map((subsection) => (
               <div
@@ -164,7 +182,7 @@ export const UserGuideContentComponent = () => {
                 id={subsection.slug || subsection.id}
                 className={styles.subsection}
               >
-                <h3>{subsection.title}</h3>
+                <h3 className={styles.subsectionTitle}>{subsection.title}</h3>
                 <ContentMarkdown>{subsection.body}</ContentMarkdown>
               </div>
             ))}
@@ -180,7 +198,10 @@ export const UserGuideContentComponent = () => {
                         type: 'userGuide',
                         id: prevSection.slug || prevSection.id.toString(),
                       })
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'instant',
+                      })
                     }}
                   >
                     <Icon icon="arrow-left" type="default" />
@@ -199,7 +220,10 @@ export const UserGuideContentComponent = () => {
                         type: 'userGuide',
                         id: nextSection.slug || nextSection.id.toString(),
                       })
-                      scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+                      scrollContainerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: 'instant',
+                      })
                     }}
                   >
                     <span className={styles.sectionLinkLabel}>{nextSection.title}</span>

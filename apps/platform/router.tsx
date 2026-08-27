@@ -80,7 +80,13 @@ export function getRouter() {
   setRouterRef(router)
 
   if (!router.isServer && import.meta.env.PROD) {
-    Sentry.addIntegration(Sentry.tanstackRouterBrowserTracingIntegration(router))
+    Sentry.addIntegration(
+      Sentry.tanstackRouterBrowserTracingIntegration(router, {
+        enableLongTask: false,
+        enableLongAnimationFrame: false,
+        ignoreResourceSpans: ['resource.img', 'resource.other'],
+      })
+    )
   }
 
   return router

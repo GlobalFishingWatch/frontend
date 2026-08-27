@@ -14,6 +14,7 @@ import {
 } from 'features/_reports/report-dataview-cleaners'
 import { cleanPortClusterDataviewFromReport } from 'features/_reports/report-port/ports-report.utils'
 import { DEFAULT_REPORT_STATE } from 'features/_reports/reports.config'
+import type { LinkToPayload } from 'router/routes.types'
 import type { QueryParams, WorkspaceState } from 'types'
 
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
@@ -82,10 +83,15 @@ export function cleanReportQuery(query: QueryParams) {
   }
 }
 
-export function cleanReportPayload(payload: Record<string, any>) {
+export const EMPTY_REPORT_PARAMS = {
+  datasetId: undefined,
+  areaId: undefined,
+}
+
+export function cleanReportPayload<T extends LinkToPayload>(payload?: T) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { areaId, datasetId, reportId, ...rest } = payload || {}
-  return rest
+  const { reportId, ...rest } = payload || ({} as T)
+  return { ...rest, ...EMPTY_REPORT_PARAMS }
 }
 
 export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {

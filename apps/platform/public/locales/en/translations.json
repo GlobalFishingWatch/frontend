@@ -70,6 +70,7 @@
     "nauticalmiles": "nautical miles",
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
+    "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
@@ -529,6 +530,7 @@
     "apiPortal": "See our APIs here",
     "area": "Area",
     "byVessel": "Active vessels",
+    "canCloseModal": "Your download will continue in the background even if you close this window.",
     "daily": "Day",
     "dataDownload": "Data download",
     "dataDownloadLogin": "Register and login to download vessel information (it is free and only takes 2 minutes)",
@@ -748,6 +750,23 @@
     "convenedBy": "Founding partners",
     "supportBy": "Supported by"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Center view on activity",
@@ -874,7 +893,8 @@
     "screenshotPreview": "Screenshot preview",
     "search": "Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO",
     "zoom_in": "Zoom in",
-    "zoom_out": "Zoom out"
+    "zoom_out": "Zoom out",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -882,6 +902,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -889,6 +910,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",

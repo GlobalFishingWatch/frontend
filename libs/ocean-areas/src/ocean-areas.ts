@@ -48,6 +48,14 @@ const MIN_ZOOM_NOT_GLOBAL = 3
 const MIN_ZOOM_TO_PREFER_EEZS = 5
 const MAX_RESULTS_NUMBER = 10
 
+const SEARCH_TYPE_PRIORITY: Record<OceanAreaType, number> = {
+  eez: 0,
+  rfmo: 1,
+  fao: 2,
+  port: 3,
+  mpa: 4,
+}
+
 type GetOceanAreaNameLocaleParam = {
   locale?: OceanAreaLocale
 }
@@ -87,6 +95,13 @@ export const searchOceanAreas = async (
   const localizedAreas = localizeArea(oceanAreas, locale)
   let matchingFeatures = matchSorter(localizedAreas.features, query, {
     keys: ['properties.name'],
+    baseSort: (a, b) => {
+      const priorityDiff =
+        SEARCH_TYPE_PRIORITY[a.item.properties.type] - SEARCH_TYPE_PRIORITY[b.item.properties.type]
+      return priorityDiff !== 0
+        ? priorityDiff
+        : String(a.rankedValue).localeCompare(String(b.rankedValue))
+    },
   })
   if (types?.length) {
     matchingFeatures = matchingFeatures.filter((feature) => types.includes(feature.properties.type))

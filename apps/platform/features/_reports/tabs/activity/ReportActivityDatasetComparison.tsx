@@ -116,7 +116,7 @@ const ReportActivityDatasetComparison = () => {
       })
     }
   }, [
-    selectedMainDataset.id,
+    selectedMainDataset?.id,
     comparisonDatasets?.main,
     comparisonDatasets?.compare,
     replaceQueryParams,

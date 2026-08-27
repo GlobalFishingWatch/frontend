@@ -70,6 +70,7 @@
     "nauticalmiles": "nautical miles",
     "newTimeRange": "Clique o botão para ver as embarcações ativas na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
+    "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
@@ -327,11 +328,13 @@
     "seeMore": "Ver mais",
     "seeMyWorkspace": "My workspace",
     "send": "Enviar",
+    "sendFeedback": "Send feedback",
     "sentinel2": "Imagery detections (Optical)",
     "setNewPassword": "Defina uma nova senha",
     "settings": "Settings",
     "share": "Compartilhar a visão atual",
     "since": "desde",
+    "skip": "Skip",
     "sourceOptions": {
       "both": "Registro e AIS",
       "registryOnly": "Somente registro",
@@ -527,6 +530,7 @@
     "apiPortal": "Veja nossas APIs aqui",
     "area": "Área",
     "byVessel": "Embarcações ativas",
+    "canCloseModal": "Your download will continue in the background even if you close this window.",
     "daily": "Dia",
     "dataDownload": "Download de dados",
     "dataDownloadLogin": "Registre-se e faça login para baixar informações da embarcação (é gratuito e leva apenas 2 minutos)",
@@ -543,7 +547,7 @@
     "format": "Formato",
     "fullDataset": "Você precisa de todos os dados?",
     "fullTimeRange": "Intervalo de tempo completo",
-    "gridded": "Atividade por quadrantes",
+    "gridded": "Atividade por células",
     "groupActivityBy": "Agrupar atividade por",
     "groupByNotSupported": "The datasets selected don't support grouping by {{property}}",
     "groupVesselsBy": "Agrupar embarcações por",
@@ -746,6 +750,23 @@
     "convenedBy": "Uma parceria organizada por",
     "supportBy": "Apoiado por"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Centralizar visualização sobre a atividade",
@@ -872,7 +893,8 @@
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Busque por uma área de interesse, por exemplo: mar, porto, ZEE, OROP",
     "zoom_in": "Aumentar zoom",
-    "zoom_out": "Diminuir zoom"
+    "zoom_out": "Diminuir zoom",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -880,6 +902,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -887,6 +910,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",
@@ -929,7 +953,7 @@
     "searchTypes": {
       "eez": "EEZ",
       "fao": "FAO",
-      "mpa": "MPA",
+      "mpa": "AMP",
       "port": "Port",
       "rfmo": "RFMO"
     },

@@ -37,11 +37,12 @@ import {
   selectReportId,
   selectWorkspaceId,
 } from 'router/routes.selectors'
+import type { LinkToPayload } from 'router/routes.types'
 import { mapRoutePathToType } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { cleanReportPayload, cleanReportQuery } from './workspace.utils'
+import { cleanReportPayload, cleanReportQuery, EMPTY_REPORT_PARAMS } from './workspace.utils'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
 export const selectWorkspaceReportId = (state: RootState) => state.workspace?.reportId
@@ -83,9 +84,10 @@ export const selectLastWorkspaceNavigationProps = createSelector(
       ...baseSearch,
       dataviewInstances: cleanVesselProfileDataviewInstances(baseSearch.dataviewInstances),
     }
-    const params = !isPreviousLocationReport
-      ? cleanReportPayload(lastWorkspaceVisited.params || {})
-      : lastWorkspaceVisited.params
+
+    const params: LinkToPayload = isPreviousLocationReport
+      ? { ...EMPTY_REPORT_PARAMS, ...lastWorkspaceVisited.params }
+      : cleanReportPayload(lastWorkspaceVisited.params)
 
     return {
       to: lastWorkspaceVisited.to,

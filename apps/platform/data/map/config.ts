@@ -157,6 +157,9 @@ export const EVENTS_COLORS: Record<
   fishingLabels: PRIMARY_BLUE_COLOR,
 }
 
+/** Mirrors DEFAULT_FISHING_EVENT_COLOR in @globalfishingwatch/deck-layers */
+export const FISHING_EVENT_SINGLE_TRACK_COLOR = '#ffffff'
+
 export const POPUP_CATEGORY_ORDER = [
   `${DataviewCategory.Activity}`,
   `${DataviewCategory.Detections}`,

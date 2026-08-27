@@ -4,19 +4,37 @@ import cx from 'classnames'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from '../ContentPanel.module.css'
 
-type TableOfContentsProps = {
-  data: UserGuideContent
-  activeId?: string
-  onClick?: (id: string) => void
-  onSubTopicClick?: (sectionId: string, subId: string) => void
+export type TableOfContentsSection = {
+  id: string
+  slug?: string
+  title: string
+  body?: string
+  subsections?: {
+    id: string
+    slug?: string
+    title: string
+  }[]
 }
 
-function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfContentsProps) {
+type TableOfContentsProps = {
+  data: TableOfContentsSection[]
+  activeId?: string
+  className?: string
+  onClick?: (id: string) => void
+  onSubItemClick?: (sectionId: string, subId: string) => void
+}
+
+function TableOfContents({
+  data,
+  activeId,
+  className,
+  onClick,
+  onSubItemClick,
+}: TableOfContentsProps) {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
@@ -55,7 +73,10 @@ function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfCo
     [filteredSections, searchQuery]
   )
   return (
-    <div className={styles.tableOfContentsContainer + ' ' + styles.notranslate} translate="no">
+    <div
+      className={cx(styles.tableOfContentsContainer, styles.notranslate, className)}
+      translate="no"
+    >
       <InputText
         onChange={(e) => setSearchQuery(e.target.value)}
         value={searchQuery}
@@ -90,7 +111,7 @@ function TableOfContents({ data, activeId, onClick, onSubTopicClick }: TableOfCo
                     <li key={sub.id}>
                       <button
                         type="button"
-                        onClick={() => onSubTopicClick?.(item.id, sub.id)}
+                        onClick={() => onSubItemClick?.(item.id, sub.id)}
                         className={styles.subTopic}
                       >
                         {sub.label}
