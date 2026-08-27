@@ -251,10 +251,14 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
         </div>
         <UserGuideLink slug="downloading-data" />
         <div className={styles.footer}>
-          {!isDownloadReportSupported && (
+          {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>
               {t((t) => t.download.timerangeTooLong)}
             </p>
+          ) : (
+            isDownloadLoading && (
+              <p className={styles.footerLabel}>{t((t) => t.download.canCloseModal)}</p>
+            )
           )}
           {isDownloadError && <ActivityDownloadError />}
           <Button

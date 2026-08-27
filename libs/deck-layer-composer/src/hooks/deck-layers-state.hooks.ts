@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
@@ -99,6 +99,14 @@ const isDeckLayersLoadingAtom = atom((get) => {
 
 export const useIsDeckLayersLoading = () => {
   return useAtomValue(isDeckLayersLoadingAtom)
+}
+
+export const useDeckLayerLoaded = (layerId?: string) => {
+  const layerLoadedAtom = useMemo(
+    () => atom((get) => (layerId ? get(deckLayersStateAtom)[layerId]?.loaded : undefined)),
+    [layerId]
+  )
+  return useAtomValue(layerLoadedAtom)
 }
 
 // Derived atom to track layer state changes for specific layers

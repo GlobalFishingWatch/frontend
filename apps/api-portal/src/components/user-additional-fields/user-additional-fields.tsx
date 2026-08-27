@@ -83,8 +83,8 @@ export function UserAdditionalFields() {
     [setUserAdditionalInformation, userAdditionalInformation]
   )
   const onRemoveIntendedUse = useCallback(() => {
-      setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
-    }, [setUserAdditionalInformation, userAdditionalInformation])
+    setUserAdditionalInformation({ ...userAdditionalInformation, intendedUse: undefined })
+  }, [setUserAdditionalInformation, userAdditionalInformation])
 
   const termsAccepted = useMemo(
     () => !!userAdditionalInformation?.apiTerms,

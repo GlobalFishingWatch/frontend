@@ -79,19 +79,16 @@
   flex: 0 0 auto;
 }
 
-.railToggle {
-  flex: 0 0 auto;
-  margin-top: var(--space-XS);
-  color: var(--color-primary-blue);
-}
-
 .tab {
   display: flex;
   align-items: center;
   min-height: var(--size-M);
   margin: 0 var(--space-XS);
   border-radius: calc(var(--size-M) / 2);
-  transition: var(--transition-spring);
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
   color: var(--color-secondary-blue);
 }
 
@@ -205,6 +202,12 @@
   opacity: 1;
 }
 
+@media (hover: none) {
+  .expanded .sectionToggle {
+    opacity: var(--opacity-secondary);
+  }
+}
+
 .subsectionsWrapper {
   height: var(--disclosure-panel-height, 0);
   overflow: hidden;
@@ -285,4 +288,105 @@
   left: calc(var(--space-XS) * -1);
   right: calc(var(--space-XS) * -1);
   border-top: var(--border);
+}
+
+@media only screen and (width <= 800px) {
+  .PlatformNav {
+    --sidebar-tabs-width: 4.8rem;
+
+    flex-basis: 0;
+    width: 0;
+  }
+
+  .expanded::before {
+    pointer-events: auto;
+  }
+
+  .railToggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--header-height);
+    width: var(--nav-toggle-offset);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-primary-blue);
+  }
+
+  .panel {
+    width: var(--nav-expanded-width);
+    background-color: var(--color-white);
+    border-right: none;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 240ms var(--ease-drawer),
+      filter 240ms var(--ease-drawer),
+      visibility 0s 240ms;
+  }
+
+  .expanded .panel {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 240ms var(--ease-drawer),
+      filter 240ms var(--ease-drawer),
+      visibility 0s;
+  }
+
+  .PlatformNav [data-nav-label] {
+    opacity: 1;
+    transition: none;
+  }
+
+  .drawerHeader {
+    flex: 0 0 auto;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: var(--space-SM) var(--space-S);
+  }
+
+  .drawerClose {
+    width: var(--size-M);
+    height: var(--size-M);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-secondary-blue);
+  }
+
+  .drawerClose:hover {
+    color: var(--color-primary-blue);
+  }
+
+  .logoLink {
+    line-height: 0;
+  }
+
+  .logo {
+    width: 18rem;
+    height: auto;
+  }
+}
+
+@media only screen and (width <= 800px) and (prefers-reduced-motion: reduce) {
+  .panel,
+  .expanded .panel {
+    transition: none;
+  }
+}
+
+@media only screen and (width <= 600px) {
+  .PlatformNav {
+    --nav-expanded-width: 100vw;
+  }
+
+  .PlatformNav::before {
+    display: none;
+  }
 }

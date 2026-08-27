@@ -12,8 +12,6 @@ import { TextArea } from '../textarea'
 
 import styles from './DownloadSurvey.module.css'
 
-export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurvey'
-
 export type DownloadSurveyContactConsent = 'yes' | 'no'
 
 export type DownloadSurveyAnswer = {
@@ -31,55 +29,55 @@ export type DownloadSurveyLabels = {
   contactPermissionNo: string
   sent: string
   disable: string
-  dismiss: string
-  confirm: string
+  skip: string
+  send: string
   downloading: string
   error: string
 }
 
 const DEFAULT_LABELS: DownloadSurveyLabels = {
-  title: 'While we prepare your file…',
+  title: 'We are preparing your file, in the meantime...',
   description:
     'Could you answer two quick questions? It takes less than a minute and helps us improve the platform.',
-  intentLabel: 'How do you intend to utilize this data?',
+  intentLabel: 'How do you intend to utilize this data? (optional)',
   intentPlaceholder: 'Type your answer here',
-  contactPermissionLabel: 'Would you be open to sharing your story or results later?',
+  contactPermissionLabel: 'Would you be open to sharing your story or results later? (optional)',
   contactPermissionYes: 'Yes, I’d be happy to be contacted',
   contactPermissionNo: 'Not right now',
   sent: 'Thanks for helping us improve the platform.',
   disable: "Don't show again",
-  dismiss: 'Dismiss',
-  confirm: 'Confirm',
+  skip: 'Skip',
+  send: 'Send Feedback',
   downloading: 'Downloading',
   error: 'Something went wrong sending your answer, please try again later.',
 }
 
 type DownloadSurveyProps = {
+  disableStorageKey: string
   onConfirm: (answer: DownloadSurveyAnswer) => void | Promise<void>
   onClose: () => void
   onSent?: () => void
   labels?: Partial<DownloadSurveyLabels>
   downloading?: boolean
-  showQuestions?: boolean
   notice?: ReactNode
   footerSlot?: ReactNode
   className?: string
 }
 
 export function DownloadSurvey({
+  disableStorageKey,
   onConfirm,
   onClose,
   onSent,
   labels: labelsProp,
   downloading,
-  showQuestions = true,
   notice,
   footerSlot,
   className,
 }: DownloadSurveyProps) {
   const labels = useMemo(() => ({ ...DEFAULT_LABELS, ...labelsProp }), [labelsProp])
   const [disableDownloadSurvey, setDisableDownloadSurvey] = useLocalStorage(
-    DISABLE_DOWNLOAD_SURVEY,
+    disableStorageKey,
     false
   )
   const [loading, setLoading] = useState(false)
@@ -111,12 +109,12 @@ export function DownloadSurvey({
     }
   }, [contactConsent, onConfirm, onSent, usageIntent])
 
-  const showForm = showQuestions && !sent
+  const showForm = !sent
 
   return (
     <div className={cx(styles.container, className)}>
       <div>
-        <h2 className={styles.title}>{labels.title}</h2>
+        {showForm && <h2 className={styles.title}>{labels.title}</h2>}
         {notice && <p className={styles.notice}>{notice}</p>}
         {showForm && <p className={styles.description}>{labels.description}</p>}
         {sent && <p className={styles.description}>{labels.sent}</p>}
@@ -151,41 +149,36 @@ export function DownloadSurvey({
           (footerSlot ?? (
             <div className={styles.disableSection}>
               <input
-                id={DISABLE_DOWNLOAD_SURVEY}
+                id={disableStorageKey}
                 type="checkbox"
                 onChange={() => setDisableDownloadSurvey(!disableDownloadSurvey)}
                 className={styles.disableCheckbox}
                 checked={disableDownloadSurvey}
               />
-              <label className={styles.disableLabel} htmlFor={DISABLE_DOWNLOAD_SURVEY}>
+              <label className={styles.disableLabel} htmlFor={disableStorageKey}>
                 {labels.disable}
               </label>
             </div>
           ))}
-        <Button
-          onClick={downloading ? undefined : onClose}
-          type="secondary"
-          className={cx(styles.footerBtn, { [styles.nonInteractive]: downloading })}
-        >
-          {downloading ? (
-            <p className={styles.flex}>
-              <Spinner size="small" />
-              {labels.downloading}
-            </p>
-          ) : (
-            labels.dismiss
-          )}
-        </Button>
         {showForm && (
           <Button
             onClick={onConfirmClick}
             className={styles.footerBtn}
             disabled={usageIntent === ''}
             loading={loading}
+            type="secondary"
           >
-            {labels.confirm}
+            {labels.send}
           </Button>
         )}
+        <Button
+          onClick={downloading ? undefined : onClose}
+          className={styles.footerBtn}
+          loading={downloading}
+          disabled={downloading}
+        >
+          {downloading ? labels.downloading : labels.skip}
+        </Button>
       </div>
     </div>
   )

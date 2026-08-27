@@ -304,7 +304,11 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
                 </Fragment>
               ))}
             </p>
-          ) : null}
+          ) : (
+            isDownloadLoading && (
+              <p className={styles.footerLabel}>{t((t) => t.download.canCloseModal)}</p>
+            )
+          )}
           {isDownloadError && <ActivityDownloadError />}
           <Button
             testId="download-activity-gridded-button"

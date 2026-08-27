@@ -1,12 +1,14 @@
 import { type ComponentProps } from 'react'
 import { streamingMarkdownExtension } from '@tanstack/markdown/extensions/streaming'
 import { Markdown, type MarkdownComponents } from '@tanstack/markdown/react'
+import cx from 'classnames'
 
 import { highlightMarkdownCode } from 'features/_map/content-panel/markdown-highlighter'
 import MarkdownIframe from 'features/_map/content-panel/MarkdownIframe'
 import MarkdownImage from 'features/_map/content-panel/MarkdownImage'
 import MarkdownLink from 'features/_map/content-panel/MarkdownLink'
 
+import './ContentMarkdown.css'
 import './ContentMarkdownHighlight.css'
 
 type ContentMarkdownProps = {
@@ -33,7 +35,10 @@ const ContentMarkdown = ({ children, variant = 'default' }: ContentMarkdownProps
   const isChat = variant === 'chat'
 
   return (
-    <div className="content-markdown notranslate" translate="no">
+    <div
+      className={cx('content-markdown', 'notranslate', { 'content-markdown-prose': !isChat })}
+      translate="no"
+    >
       <Markdown
         components={components}
         highlighter={highlightMarkdownCode}

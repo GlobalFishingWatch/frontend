@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
+
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
 import { refreshDatasetsLocaleThunk } from 'features/_map/datasets/datasets.slice'
@@ -28,6 +31,7 @@ export type LanguageOption = {
 export function useLanguageOptions() {
   const { i18n } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
 
@@ -46,17 +50,30 @@ export function useLanguageOptions() {
       const locale = lang === 'source' ? Locale.en : (lang as Locale)
       await dispatch(refreshDatasetsLocaleThunk(locale))
       i18n.changeLanguage(lang)
+      await router.invalidate({
+        filter: (match) => match.fullPath.startsWith(ROUTE_PATHS.HELP_HUB),
+      })
       setIsLoading(false)
     },
-    [dispatch, i18n]
+    [dispatch, i18n, router]
   )
 
   const options: LanguageOption[] = useMemo(
     () => [
       ...(IS_DEVELOPMENT_ENV
-        ? [{ id: 'source' as const, label: '🚧 Source 🚧', testId: 'language-option-source' }]
+        ? [
+            {
+              id: 'source' as const,
+              label: '🚧 Source 🚧',
+              testId: 'language-option-source',
+            },
+          ]
         : []),
-      ...LocaleLabels.map(({ id, label }) => ({ id, label, testId: `language-option-${id}` })),
+      ...LocaleLabels.map(({ id, label }) => ({
+        id,
+        label,
+        testId: `language-option-${id}`,
+      })),
       ...(hasEditTranslationsPermissions
         ? [
             {

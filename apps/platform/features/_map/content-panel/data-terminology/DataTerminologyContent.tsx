@@ -8,8 +8,8 @@ import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import { useScrollToTopOnChange } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
+import { toContentLocale } from 'features/i18n/i18n.config'
 import { useAppSearch } from 'router/routes.hook'
-import type { Locale } from 'types'
 
 import styles from '../ContentPanel.module.css'
 
@@ -20,7 +20,7 @@ const DataTerminologyContent = () => {
 
   const { data, isLoading, isError } = useGetDataTerminologyContentQuery({
     id: sidePanelId as string,
-    locale: i18n.language as Locale,
+    locale: toContentLocale(i18n.language),
   })
 
   if (isLoading) {

@@ -75,12 +75,17 @@ export function normalizeI18nLanguage(language: string | undefined): i18nSupport
 
 /**
  * Shared language resolution order used on the server and mirrored by the client detector.
- * cookie → Accept-Language / navigator → fallback
  */
 export function resolveLanguageFromSources(sources: {
+  querystring?: string | undefined
   cookie?: string | undefined
   acceptLanguage?: string | undefined
 }): i18nSupportedLocale {
+  const fromQuerystring = parseSupportedLanguage(sources.querystring)
+  if (fromQuerystring) {
+    return fromQuerystring
+  }
+
   const fromCookie = parseSupportedLanguage(sources.cookie)
   if (fromCookie) {
     return fromCookie
@@ -96,20 +101,26 @@ export function resolveLanguageFromSources(sources: {
 
 /**
  * Client LanguageDetector config — mirrors {@link resolveLanguageFromSources}:
- * cookie, then navigator (≈ Accept-Language), then `<html lang>`.
+ * `?lng`, then cookie, then navigator (≈ Accept-Language), then `<html lang>`.
  * localStorage is only used as a write cache after the user changes language.
  */
 export const CLIENT_LANGUAGE_DETECTION = {
-  order: ['cookie', 'navigator', 'htmlTag'],
+  order: ['querystring', 'cookie', 'navigator', 'htmlTag'],
   caches: ['cookie', 'localStorage'],
   cookieOptions: { path: '/', sameSite: 'lax' as const },
 }
 
-/** Valid BCP47 value for `<html lang>` — dev-only i18n codes map to English. */
-export function toDocumentLang(language: string | undefined): string {
+/**
+ * Map the active i18n language to a real Locale. Dev-only codes (`source`, `val`) resolve to English.
+ */
+export function toContentLocale(language: string | undefined): Locale {
   const normalized = normalizeI18nLanguage(language)
   if (normalized === CROWDIN_SOURCE_LANG || normalized === CROWDIN_IN_CONTEXT_LANG) {
     return FALLBACK_LNG
   }
   return normalized
+}
+
+export function toDocumentLang(language: string | undefined): string {
+  return toContentLocale(language)
 }
