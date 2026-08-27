@@ -134,7 +134,7 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
           store.dispatch(
             setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
           )
-        } else if (lastHistoryNavigation) {
+        } else if (!isPageTurn && lastHistoryNavigation) {
           const updatedHistoryNavigation = currentHistoryNavigation.map(
             (navigation: LastWorkspaceVisited) => {
               const navRouteType = mapRoutePathToType(lastHistoryNavigation.to)
