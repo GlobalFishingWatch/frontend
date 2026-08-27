@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useRef } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -8,22 +8,24 @@ import styles from './MarkdownImage.module.css'
 type MarkdownImageProps = React.ImgHTMLAttributes<HTMLImageElement>
 
 const MarkdownImage = ({ src, alt, ...props }: MarkdownImageProps) => {
-  const [open, setOpen] = useState(false)
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const isSmallScreen = useSmallScreen()
 
   if (!src) return <img src={src} alt={alt} {...props} />
 
   return (
     <Fragment>
-      <button className={styles.markdownImageBtn} onClick={() => !isSmallScreen && setOpen(true)}>
-        <img src={src} alt={alt} className={cx(styles.markdownImage)} {...props} />
+      <button
+        className={styles.markdownImageBtn}
+        onClick={() => !isSmallScreen && dialogRef.current?.showModal()}
+      >
+        <img src={src} alt={alt} className={styles.markdownImage} {...props} />
       </button>
-      {open && (
-        <button className={styles.markdownImageBtn} onClick={() => setOpen(false)}>
-          <div className={styles.veil} />
+      <dialog ref={dialogRef} className={styles.dialog}>
+        <button className={styles.closeArea} onClick={() => dialogRef.current?.close()}>
           <img src={src} alt={alt} className={cx(styles.markdownImage, styles.open)} {...props} />
         </button>
-      )}
+      </dialog>
     </Fragment>
   )
 }
