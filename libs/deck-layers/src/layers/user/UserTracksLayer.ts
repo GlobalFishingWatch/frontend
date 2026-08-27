@@ -29,6 +29,7 @@ import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/cont
 import { getContextId } from '#layers/context/context.utils'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '#layers/vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '#layers/vessel/vessel.utils'
+import { getNarrowestLonSpan } from '#layers/vessel/VesselTrackPathLayer'
 import { getLayerGroupOffset, getUTCDateTime, hexToDeckColor } from '#utils'
 
 import {
@@ -414,32 +415,52 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getBbox(params = {} as { startDate?: number | string; endDate?: number | string }) {
-    const segments = this.getSegments({ includeMiddlePoints: true })
-    if (!segments.length) return null
+    const features = this.state?.rawData?.features
+    if (!features?.length) return null
 
     const startDate = params?.startDate ? getUTCDateTime(params.startDate).toMillis() : undefined
     const endDate = params?.endDate ? getUTCDateTime(params.endDate).toMillis() : undefined
 
-    const bbox = segments.reduce(
-      (acc, segment) =>
-        segment.reduce((acc, point) => {
-          const timestamp = point.timestamp
-          if (timestamp !== undefined && timestamp !== null) {
-            if (startDate && timestamp < startDate) return acc
-            if (endDate && timestamp > endDate) return acc
-          }
-          if (point.longitude! < acc[0]) acc[0] = point.longitude as number
-          if (point.longitude! > acc[2]) acc[2] = point.longitude as number
-          if (point.latitude! < acc[1]) acc[1] = point.latitude as number
-          if (point.latitude! > acc[3]) acc[3] = point.latitude as number
-          return acc
-        }, acc),
-      [Infinity, Infinity, -Infinity, -Infinity] as Bbox
-    )
+    let minLon = Infinity
+    let maxLon = -Infinity
+    let minLat = Infinity
+    let maxLat = -Infinity
+    let minShiftedLon = Infinity
+    let maxShiftedLon = -Infinity
 
-    if (bbox[0] === Infinity) return null
+    const addLine = (coordinates: number[][], timestamps?: number[]) => {
+      for (let i = 0; i < coordinates.length; i++) {
+        const timestamp = timestamps?.[i]
+        if (timestamp !== undefined && timestamp !== null) {
+          if (startDate && timestamp < startDate) continue
+          if (endDate && timestamp > endDate) continue
+        }
+        const longitude = coordinates[i][0]
+        const latitude = coordinates[i][1]
+        const shiftedLon = longitude < 0 ? longitude + 360 : longitude
+        if (longitude < minLon) minLon = longitude
+        if (longitude > maxLon) maxLon = longitude
+        if (latitude < minLat) minLat = latitude
+        if (latitude > maxLat) maxLat = latitude
+        if (shiftedLon < minShiftedLon) minShiftedLon = shiftedLon
+        if (shiftedLon > maxShiftedLon) maxShiftedLon = shiftedLon
+      }
+    }
 
-    return bbox
+    for (const feature of features) {
+      const times = feature.properties?.coordinateProperties?.[COORDINATE_PROPERTY_TIMESTAMP]
+      if (feature.geometry.type === 'MultiLineString') {
+        // times is indexed per line for MultiLineString
+        feature.geometry.coordinates.forEach((line, index) => addLine(line, times?.[index]))
+      } else {
+        addLine(feature.geometry.coordinates, times)
+      }
+    }
+
+    if (minLon === Infinity) return null
+
+    const [west, east] = getNarrowestLonSpan(minLon, maxLon, minShiftedLon, maxShiftedLon)
+    return [west, minLat, east, maxLat] as Bbox
   }
 
   _getColor = (

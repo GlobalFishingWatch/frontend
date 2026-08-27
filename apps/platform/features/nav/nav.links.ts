@@ -28,7 +28,7 @@ export type NavLinkContext = {
 
 export type NavLinkProps = {
   to: RoutePathValues
-  params?: Record<string, string>
+  params?: Record<string, string | undefined>
   search?: unknown
   replace?: boolean
   onClick?: () => void
@@ -65,7 +65,7 @@ const NAV_LINK_RESOLVERS: Record<string, (ctx: NavLinkContext) => NavLinkProps> 
   workspace: ({ workspace, lastVisitedWorkspace, onWorkspaceClick }) => ({
     to: lastVisitedWorkspace ? lastVisitedWorkspace.to : ROUTE_PATHS.WORKSPACE,
     params: lastVisitedWorkspace
-      ? cleanReportPayload(lastVisitedWorkspace.params || {})
+      ? cleanReportPayload(lastVisitedWorkspace.params)
       : workspaceParams(workspace),
     search: lastVisitedWorkspace
       ? {

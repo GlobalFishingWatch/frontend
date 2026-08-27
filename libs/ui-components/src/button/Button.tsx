@@ -30,6 +30,32 @@ export interface ButtonProps {
   target?: string
   htmlType?: HTMLButtonType
   testId?: string
+  /**
+   * Lets a router link (eg. tanstack's `Link`) look like a button
+   * without this lib depending on a router.
+   **/
+  asChild?: boolean
+}
+
+type ChildProps = { className?: string; children?: React.ReactNode }
+
+function renderAsChild(
+  children: React.ReactNode,
+  buttonClassName: string,
+  renderContent: (inner: React.ReactNode) => React.ReactNode,
+  { disabled, testId }: Pick<ButtonProps, 'disabled' | 'testId'>
+) {
+  const child = React.Children.only(children) as React.ReactElement<ChildProps>
+  const childProps: Record<string, unknown> = {
+    className: cx(buttonClassName, child.props.className),
+    ...(disabled && { 'aria-disabled': true }),
+    ...(testId && { 'data-testid': testId }),
+  }
+  return React.cloneElement(
+    child,
+    childProps as Partial<ChildProps>,
+    renderContent(child.props.children)
+  )
 }
 
 export function Button(props: ButtonProps) {
@@ -51,6 +77,7 @@ export function Button(props: ButtonProps) {
     target,
     htmlType,
     testId,
+    asChild = false,
   } = props
   const spinner = (
     <Spinner
@@ -58,33 +85,33 @@ export function Button(props: ButtonProps) {
       color={type === 'default' ? (disabled ? '#22447e' : 'white') : undefined}
     />
   )
-  const content = icon ? (
+
+  const renderContent = (inner: React.ReactNode) => (
     <React.Fragment>
       {loading ? spinner : icon}
-      {children}
+      {inner}
     </React.Fragment>
-  ) : loading ? (
-    spinner
-  ) : (
-    children
   )
+  const content = renderContent(children)
+  const buttonClassName = cx(styles.button, styles[type], styles[`size-${size}`], className, {
+    [styles.disabled]: disabled,
+    [styles.loading]: loading,
+  })
   return (
     <Tooltip content={tooltip as React.ReactNode} placement={tooltipPlacement}>
-      {href !== undefined && !disabled ? (
-        <a
-          href={href}
-          target={target}
-          onClick={onClick}
-          className={cx(styles.button, styles[type], styles[size], className)}
-        >
+      {asChild ? (
+        renderAsChild(children, buttonClassName, renderContent, {
+          disabled,
+          testId,
+        })
+      ) : href !== undefined && !disabled ? (
+        <a href={href} target={target} onClick={onClick} className={buttonClassName}>
           {content}
         </a>
       ) : (
         <button
           id={id}
-          className={cx(styles.button, styles[type], styles[size], className, {
-            [styles.disabled]: disabled,
-          })}
+          className={buttonClassName}
           onClick={(e) => !loading && !disabled && onClick && onClick(e)}
           onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
           onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}

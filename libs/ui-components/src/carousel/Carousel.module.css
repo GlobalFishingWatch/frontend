@@ -1,0 +1,103 @@
+.root {
+  --carousel-fade-size: var(--space-L);
+  --carousel-padding-inline: 0px;
+
+  position: relative;
+}
+
+.carousel {
+  --scrollbar-width: none;
+  --scrollbar-size: 0;
+  --carousel-gap: var(--space-SM);
+  --carousel-items-per-view-auto: 1.5;
+
+  container: carousel / inline-size;
+  display: flex;
+  gap: var(--carousel-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-inline: var(--carousel-padding-inline);
+  scroll-padding-inline: max(var(--carousel-padding-inline), var(--carousel-gap));
+  padding-bottom: var(--space-S);
+}
+
+.fade {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: var(--carousel-fade-size);
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.fadeVisible {
+  opacity: 0.5;
+}
+
+/* Mandatory snapping fights every scrollLeft write, so it is suspended for the drag and
+   re-applied on release to settle on the nearest item. */
+.dragging {
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.dragging,
+.dragging * {
+  cursor: grabbing;
+}
+
+.carousel > * {
+  --carousel-items: var(--carousel-items-per-view, var(--carousel-items-per-view-auto));
+
+  flex: 0 0
+    max(
+      var(--carousel-item-min-width, 24rem),
+      calc((100% - (var(--carousel-items) - 1) * var(--carousel-gap)) / var(--carousel-items))
+    );
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+@container carousel (width >= 60rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 2.5;
+  }
+}
+
+@container carousel (width >= 84rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 3.5;
+  }
+}
+
+@container carousel (width >= 108rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 4.5;
+  }
+}
+
+@container carousel (width >= 132rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 5.5;
+  }
+}
+
+@container carousel (width >= 156rem) {
+  .carousel > * {
+    --carousel-items-per-view-auto: 6.5;
+  }
+}
+
+@media print {
+  .carousel {
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
+
+  /* Nothing is scrolled off in print, so the hint would only wash out the last card. */
+  .fade {
+    display: none;
+  }
+}

@@ -54,10 +54,7 @@ import { getUTCDateTime } from 'utils/dates'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import { EMPTY_API_VALUES } from '../reports.config'
-import {
-  selectReportActivityGraph,
-  selectReportTimeComparison,
-} from '../reports.config.selectors'
+import { selectReportActivityGraph, selectReportTimeComparison } from '../reports.config.selectors'
 import type { ReportTimeComparisonValues } from '../tabs/activity/reports-activity.types'
 
 // Moved to area-reports.buffer.selectors so app.workspace.selectors (reached from MainNav) can read the

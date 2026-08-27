@@ -7,6 +7,13 @@
   transform: translateZ(0);
 }
 
+.helpHubBackground {
+  background-color: var(--color-white);
+  background-image: var(--gradient-help);
+  background-size: 100% 70rem;
+  background-repeat: no-repeat;
+}
+
 .platformContent,
 .appLayoutContent {
   flex: 1;
@@ -30,13 +37,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-S);
+  padding: 0 var(--space-S) 0 calc(var(--space-S) + var(--nav-toggle-offset));
   height: var(--header-height);
+  border-bottom: 1px transparent;
   flex-shrink: 0;
 }
 
 .contentHeaderScrolled {
   border-bottom: var(--border);
+}
+
+.logoLink {
+  line-height: 0;
+}
+
+.logo {
+  width: 18rem;
+  height: auto;
 }
 
 .contentHeaderActions {

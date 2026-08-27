@@ -115,10 +115,7 @@ type CreateCommentThunkParam = {
 }
 export const createCommentThunk = createAsyncThunk(
   'trackCorrection/comment',
-  async (
-    { issueId, commentBody, workspaceId }: CreateCommentThunkParam,
-    { rejectWithValue }
-  ) => {
+  async ({ issueId, commentBody, workspaceId }: CreateCommentThunkParam, { rejectWithValue }) => {
     try {
       const response = await fetch(
         `${PATH_BASENAME}/api/track-corrections/${workspaceId}/${issueId}`,

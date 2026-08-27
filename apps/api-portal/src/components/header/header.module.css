@@ -20,26 +20,7 @@
   margin: 0 auto;
 }
 
-.userInitials {
-  font-weight: 600;
-}
-
-.userFullname {
-  font-weight: bolder;
-}
-
-.logoutLink {
-  cursor: pointer;
-}
-
-@media only screen and (min-width: 860px) {
-  .userMenuItem > ul.userMenuItem,
-  .userMenuItem > ul.userMenuItem > li {
-    min-width: fit-content !important;
-  }
-}
-
-@media (max-width: 860px) {
+@media (width <= 860px) {
   .Header {
     height: auto;
   }
@@ -51,9 +32,5 @@
   .titleCover .title {
     font-size: 32px;
     padding: 6rem 2rem 0;
-  }
-
-  ul li.userMenuItem > div {
-    padding: var(--space-XS) var(--space-M);
   }
 }
