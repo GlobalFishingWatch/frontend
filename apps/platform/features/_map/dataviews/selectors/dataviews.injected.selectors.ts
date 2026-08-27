@@ -155,6 +155,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
         if (encounterVesselId && vesselInfoData?.track && !isEncounterInstanceInWorkspace) {
           const encounterTrackDataviewInstance = getVesselEncounterTrackDataviewInstance({
             vesselId: encounterVesselId,
+            vesselName: currentVesselEvent.encounter?.vessel?.name,
             track: vesselInfoData.track,
             start: eventStartDateTime!.minus({ month: 1 }).toMillis(),
             end: eventEndDateTime!.plus({ month: 1 }).toMillis(),

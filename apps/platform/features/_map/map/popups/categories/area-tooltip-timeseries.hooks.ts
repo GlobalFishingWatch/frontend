@@ -6,12 +6,17 @@ import { useAtomValue } from 'jotai'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { getLayersStateHashAtom, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import {
+  getLayersStateHashAtom,
+  useGetDeckLayer,
+  useGetDeckLayers,
+} from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
   FourwingsLayer,
   UserLayerPickingObject,
 } from '@globalfishingwatch/deck-layers'
+import { UserTracksLayer } from '@globalfishingwatch/deck-layers'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import {
@@ -34,6 +39,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/data/areas/areas.slice'
+import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
@@ -142,9 +148,18 @@ export function useAreaInViewport(
 export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
   const fitBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
+  const { start, end } = useSelector(selectTimeRange)
+  const trackLayer = useGetDeckLayer<UserTracksLayer>(feature.layerId)?.instance
   const { datasetId, areaId, areaName, simplify, areaDetail, areaStatus } = useAreaDetail(feature)
 
   const onClick = useCallback(async () => {
+    if (trackLayer instanceof UserTracksLayer) {
+      const bbox = trackLayer.getBbox({ startDate: start, endDate: end }) || trackLayer.getBbox()
+      if (bbox) {
+        fitBounds(bbox as Bbox, { padding: 60, fitZoom: true, flyTo: true })
+      }
+      return
+    }
     let bounds = areaDetail?.bounds
     if (!bounds) {
       const area = await dispatch(
@@ -155,7 +170,18 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     if (bounds) {
       fitBounds(bounds, { fitZoom: true, flyTo: true })
     }
-  }, [areaDetail, dispatch, datasetId, areaId, areaName, simplify, fitBounds])
+  }, [
+    trackLayer,
+    start,
+    end,
+    areaDetail,
+    dispatch,
+    datasetId,
+    areaId,
+    areaName,
+    simplify,
+    fitBounds,
+  ])
 
   return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
 }

@@ -1,0 +1,35 @@
+.breadcrumb {
+  padding: var(--space-M) var(--space-M);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-XS);
+  font: var(--font-L);
+}
+
+.crumb {
+  color: var(--color-secondary-blue);
+}
+
+.crumbCurrent {
+  color: var(--color-primary-blue);
+}
+
+.crumbLink {
+  color: inherit;
+}
+
+.crumbLink:hover {
+  color: var(--color-primary-blue);
+}
+
+.separator {
+  font-size: 2.6rem;
+  color: var(--color-secondary-blue);
+}
+
+@media (width <= 800px) {
+  .breadcrumb {
+    padding: var(--space-M) var(--space-SM) 0;
+  }
+}

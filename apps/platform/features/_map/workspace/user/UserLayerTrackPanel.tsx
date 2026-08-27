@@ -69,8 +69,8 @@ function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
   )
 
   const onFeatureMouseLeave = useCallback(() => {
-      dispatchDisableHighlightedTime()
-    }, [dispatchDisableHighlightedTime])
+    dispatchDisableHighlightedTime()
+  }, [dispatchDisableHighlightedTime])
 
   if (!hasFeaturesColoredByField || !data?.features) {
     return null

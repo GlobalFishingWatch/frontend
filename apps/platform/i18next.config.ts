@@ -67,6 +67,13 @@ const DYNAMIC_KEYS = [
   'event.port_visitActionIn',
   'event.port_visitedAfter',
   'event.yearAbbreviated',
+  // t.helpHub[id] — getHelpHubSectionCopy
+  'helpHub.platformAndUpdates.description',
+  'helpHub.platformAndUpdates.title',
+  'helpHub.toolsAndFeatures.description',
+  'helpHub.toolsAndFeatures.title',
+  'helpHub.useCases.description',
+  'helpHub.useCases.title',
   // t.layer[filter] — dataviews.filters.ts schema filter labels
   'layer.areas.port',
   'layer.distance_from_port_km',

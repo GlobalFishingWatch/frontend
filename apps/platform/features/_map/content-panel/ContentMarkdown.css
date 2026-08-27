@@ -1,0 +1,121 @@
+.content-markdown-prose h1 {
+  font: var(--font-XL-bold);
+  color: var(--color-primary-blue);
+}
+
+.content-markdown-prose h2 {
+  font: var(--font-XL);
+  color: var(--color-primary-blue);
+}
+
+.content-markdown-prose h3 {
+  font: var(--font-L-bold);
+  color: var(--color-primary-blue);
+}
+
+.content-markdown-prose h4 {
+  font: var(--font-L);
+  color: var(--color-primary-blue);
+}
+
+.content-markdown-prose h5 {
+  font: var(--font-M-bold);
+  color: var(--color-primary-blue);
+}
+
+.content-markdown-prose h6 {
+  font: var(--font-S-bold);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.content-markdown-prose > * + * {
+  margin-top: var(--space-SM);
+}
+
+.content-markdown-prose > * + :is(h1, h2, h3, h4, h5, h6) {
+  margin-top: var(--space-M);
+}
+
+.content-markdown-prose > :is(h1, h2, h3, h4, h5, h6) + * {
+  margin-top: var(--space-S);
+}
+
+.content-markdown-prose a,
+.content-markdown-prose a:visited {
+  color: var(--color-highlight-orange-rgb);
+  text-decoration: none;
+}
+
+.content-markdown-prose b,
+.content-markdown-prose strong {
+  font-weight: bold;
+}
+
+.content-markdown-prose em,
+.content-markdown-prose i {
+  font-style: italic;
+}
+
+.content-markdown-prose ul {
+  padding-left: var(--space-M);
+  list-style-type: disc;
+}
+
+.content-markdown-prose ol {
+  padding-left: var(--space-M);
+  list-style-type: decimal;
+}
+
+.content-markdown-prose ul ul {
+  list-style-type: circle;
+}
+
+.content-markdown-prose li + li {
+  margin-top: var(--space-XS);
+}
+
+.content-markdown-prose > p:has(img) {
+  margin-block: var(--space-M);
+}
+
+.content-markdown-prose blockquote {
+  padding-left: var(--space-SM);
+  border-left: 2px solid var(--color-terthiary-blue);
+  color: var(--color-secondary-blue);
+}
+
+.content-markdown-prose hr {
+  border-top: var(--border);
+}
+
+.content-markdown-prose code {
+  font-family: monospace;
+}
+
+.content-markdown-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: var(--box-shadow-1);
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
+  background-color: var(--color-white);
+}
+
+.content-markdown-prose th {
+  background-color: var(--color-primary-blue);
+  color: var(--color-white);
+  padding: var(--space-S);
+  text-align: left;
+  font-weight: bold;
+}
+
+.content-markdown-prose td {
+  padding: 10px;
+  border-bottom: var(--border);
+}
+
+.content-markdown-prose tr:hover {
+  background-color: var(--color-off-white-0);
+}

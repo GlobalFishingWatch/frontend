@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -14,17 +15,31 @@ const MarkdownImage = ({ src, alt, ...props }: MarkdownImageProps) => {
   if (!src) return <img src={src} alt={alt} {...props} />
 
   return (
-    <Fragment>
+    <>
       <button className={styles.markdownImageBtn} onClick={() => !isSmallScreen && setOpen(true)}>
-        <img src={src} alt={alt} className={cx(styles.markdownImage)} {...props} />
+        <img src={src} alt={alt} className={styles.markdownImage} {...props} />
       </button>
-      {open && (
-        <button className={styles.markdownImageBtn} onClick={() => setOpen(false)}>
-          <div className={styles.veil} />
-          <img src={src} alt={alt} className={cx(styles.markdownImage, styles.open)} {...props} />
-        </button>
-      )}
-    </Fragment>
+      {open &&
+        createPortal(
+          <dialog
+            ref={(el) => {
+              if (el && !el.open) el.showModal()
+            }}
+            className={styles.dialog}
+            onClose={() => setOpen(false)}
+          >
+            <button className={styles.markdownImageBtn} onClick={() => setOpen(false)}>
+              <img
+                src={src}
+                alt={alt}
+                className={cx(styles.markdownImage, styles.open)}
+                {...props}
+              />
+            </button>
+          </dialog>,
+          document.body
+        )}
+    </>
   )
 }
 

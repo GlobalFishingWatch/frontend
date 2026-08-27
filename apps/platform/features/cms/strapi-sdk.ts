@@ -8,6 +8,9 @@ if (process.env.NODE_ENV === 'production' && !STRAPI_TOKEN) {
 }
 
 // Initialize the Strapi SDK with /api endpoint
-const sdk = strapi({ baseURL: new URL('/api', STRAPI_BASE).href, auth: STRAPI_TOKEN })
+const sdk = strapi({
+  baseURL: new URL('/api', STRAPI_BASE).href,
+  ...(STRAPI_TOKEN && { auth: STRAPI_TOKEN }),
+})
 
 export { sdk }

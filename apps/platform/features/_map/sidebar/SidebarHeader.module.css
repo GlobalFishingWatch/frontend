@@ -9,7 +9,7 @@
 .sidebarHeader {
   display: flex;
   align-items: center;
-  padding: 0 var(--space-S);
+  padding: 0 var(--space-S) 0 calc(var(--space-S) + var(--nav-toggle-offset));
   height: var(--header-height);
 }
 

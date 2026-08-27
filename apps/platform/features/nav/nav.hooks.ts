@@ -8,7 +8,6 @@ import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import { setClickedEvent } from 'features/_map/map/map.slice'
 import { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
 import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import {
   selectLastVisitedWorkspace,
   selectWorkspace,
@@ -82,7 +81,6 @@ export function useNavLinkContext(): NavLinkContext {
   }, [])
 
   const onWorkspaceClick = useCallback(() => {
-    resetSidebarScroll()
     // One leaf action; search, report, vesselGroupReport and vessel reset themselves via extraReducers.
     // Importing those four slices here put them all in the always-loaded graph, since the nav renders on
     // every route. workspace stays direct — it is permanently eager anyway.
@@ -143,7 +141,7 @@ export function useIsNavItemActive() {
           // Fuzzy so a section stays lit on its children ('/map' on '/map/$category'). Never for the
           // landing route: '/' prefixes every path, so fuzzy would light Home up everywhere.
           const fuzzy = item.to !== ROUTE_PATHS.LANDING
-          return !!matchRoute({ to: item.to, fuzzy } as never)
+          return !!matchRoute({ to: item.to, params: item.params, fuzzy } as never)
         }
       }
     },

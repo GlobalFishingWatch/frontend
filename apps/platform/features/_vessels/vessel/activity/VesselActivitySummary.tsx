@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
-import type { IconType, SwitchEvent } from '@globalfishingwatch/ui-components'
-import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
+import type { IconType } from '@globalfishingwatch/ui-components'
+import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
+import { FISHING_EVENT_SINGLE_TRACK_COLOR } from 'data/map/config'
 import { selectVesselProfileSource } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { selectVisibleEvents } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-events.hooks'
+import { isVesselEventVisible } from 'features/_map/workspace/vessels/vessel-events.hooks'
+import VesselEventToggle from 'features/_map/workspace/vessels/VesselEventToggle'
 import VesselActivityDownload from 'features/_vessels/vessel/activity/VesselActivityDownload'
 import {
   EVENTS_ORDER,
@@ -43,7 +43,6 @@ export const VesselActivitySummary = () => {
   const voyages = useSelector(selectVoyagesNumber)
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
-  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const vesselProfileSource = useSelector(selectVesselProfileSource)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
@@ -81,7 +80,7 @@ export const VesselActivitySummary = () => {
     )}`,
 
     voyages:
-      voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
+      voyages !== 0 && isVesselEventVisible(visibleEvents, EventTypes.Port)
         ? `${t((t) => t.common.in)} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
             (t) => t.vessel.voyage,
             {
@@ -97,14 +96,9 @@ export const VesselActivitySummary = () => {
     (regionType) => activityRegions[regionType] && activityRegions[regionType].length !== 0
   )
 
-  const onEventChange = useCallback(
-    (event: SwitchEvent) => {
-      const eventTypeChanged = event.currentTarget.id as EventType
-      setVesselEventVisibility({ event: eventTypeChanged, visible: !event.active })
-      dispatch(setVesselEventId(null))
-    },
-    [dispatch, setVesselEventVisibility]
-  )
+  const onEventToggle = useCallback(() => {
+    dispatch(setVesselEventId(null))
+  }, [dispatch])
 
   return (
     <div className={styles.summaryContainer}>
@@ -171,25 +165,15 @@ export const VesselActivitySummary = () => {
             if (eventType === EventTypes.Gaps && !events?.length) {
               return null
             }
-            const active =
-              visibleEvents === 'all'
-                ? true
-                : visibleEvents === 'none'
-                  ? false
-                  : visibleEvents.includes(eventType)
-            if ((eventType === EventTypes.Gap || eventType === EventTypes.Gaps) && !events) {
-              return null
-            }
+            const active = isVesselEventVisible(visibleEvents, eventType)
             return (
               <li
                 key={eventType}
                 className={cx(styles.eventTypeRowContainer, { 'print-hidden': !active })}
               >
-                <Switch
-                  active={active}
-                  onClick={onEventChange}
-                  id={eventType}
-                  color={eventType === EventTypes.Fishing ? '#163f89bf' : EVENTS_COLORS[eventType]}
+                <VesselEventToggle
+                  eventType={eventType}
+                  onToggle={onEventToggle}
                   className={cx(styles.eventSwitch, 'print-hidden')}
                 />
                 <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
@@ -199,7 +183,7 @@ export const VesselActivitySummary = () => {
                     ) : (
                       <div
                         className={styles.fishingIcon}
-                        style={{ backgroundColor: EVENTS_COLORS[eventType] }}
+                        style={{ backgroundColor: FISHING_EVENT_SINGLE_TRACK_COLOR }}
                       />
                     )}
                   </span>

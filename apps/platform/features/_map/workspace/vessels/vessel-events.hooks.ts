@@ -7,6 +7,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectVisibleEvents } from 'features/_map/workspace/selectors/app.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import type { VisibleEvents } from 'types'
 
 const ALL_EVENT_TYPES = [
   EventTypes.Fishing,
@@ -15,6 +16,15 @@ const ALL_EVENT_TYPES = [
   EventTypes.Port,
   EventTypes.Gaps,
 ]
+
+export const isVesselEventVisible = (
+  visibleEvents: VisibleEvents,
+  eventType: EventTypes | EventType
+) => {
+  if (visibleEvents === 'all') return true
+  if (visibleEvents === 'none') return false
+  return visibleEvents.includes(eventType)
+}
 
 export const useVisibleVesselEvents = () => {
   const currentVisibleEvents = useSelector(selectVisibleEvents)

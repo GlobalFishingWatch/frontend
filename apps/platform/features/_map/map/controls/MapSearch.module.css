@@ -52,7 +52,28 @@
 }
 
 .result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
   padding: var(--space-XS) var(--space-S);
+}
+
+.resultType {
+  display: block;
+  color: var(--color-secondary-blue);
+  font: var(--font-XS);
+  text-transform: uppercase;
+}
+
+.resultInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
 }
 
 .highlighted {

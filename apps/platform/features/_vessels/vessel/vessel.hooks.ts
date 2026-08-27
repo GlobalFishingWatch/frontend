@@ -26,6 +26,7 @@ import {
 } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { selectVesselSelfReportedId } from 'features/_vessels/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import { useAppSearch } from 'router/routes.hook'
 import { selectVesselId } from 'router/routes.selectors'
 
 export const useVesselProfileLayer = () => {
@@ -52,10 +53,12 @@ export const useVesselProfileEncounterLayer = () => {
 
 export const useUpdateVesselEventsVisibility = () => {
   const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const { visibleEvents } = useAppSearch()
   const vessel = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselSelfReportedId)
+  const hasVisibleEventsInUrl = visibleEvents !== undefined
   useEffect(() => {
-    if (vessel) {
+    if (vessel && !hasVisibleEventsInUrl) {
       const shiptypes = getVesselProperty(vessel, 'shiptypes', {
         identityId,
         identitySource: VesselIdentitySourceEnum.SelfReported,

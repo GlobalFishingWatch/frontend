@@ -50,6 +50,7 @@
       "tooltipAmmount": "{{ammount}} horas ({{percentage}}% del total)"
     },
     "insideYourArea": "dentro de su zona",
+    "inTheArea": "en el área",
     "kilometers": "kilómetros",
     "linkToReport": "Verifique el informe dinámico aquí",
     "migramar": {
@@ -70,6 +71,7 @@
     "nauticalmiles": "millas naúticas",
     "newTimeRange": "Haga clic en el boton para ver las embarcaciones activas en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "noDataByArea": "no hay datos disponibles para el area seleccionada",
+    "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
     "noPolygonsContainedOrOverlapping": "No hay polígonos dentro o superposición de tu área",
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
@@ -109,10 +111,10 @@
     "showFullReport": "Ver análisis completo para esta área",
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
-    "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} barcos</strong> de <strong>{{flags}} banderas</strong> tenían <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "timeoutError": "Esto está demorando más de lo esperado, agradecemos su espera",
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Informe",
@@ -327,11 +329,13 @@
     "seeMore": "Ver más",
     "seeMyWorkspace": "My workspace",
     "send": "Enviar",
+    "sendFeedback": "Send feedback",
     "sentinel2": "Sentinel 2",
     "setNewPassword": "Establecer una nueva contraseña",
     "settings": "Settings",
     "share": "Comparte el mapa actual",
     "since": "desde",
+    "skip": "Skip",
     "sourceOptions": {
       "both": "Registro y AIS",
       "registryOnly": "Sólo registro",
@@ -527,6 +531,7 @@
     "apiPortal": "Ver nuestras APIs aquí",
     "area": "Área",
     "byVessel": "Embarcaciones activas",
+    "canCloseModal": "Your download will continue in the background even if you close this window.",
     "daily": "día",
     "dataDownload": "Descarga de datos",
     "dataDownloadLogin": "Regístrese e inicie sesión para descargar información de la embarcación (es gratuito y toma 2 minutos)",
@@ -746,6 +751,23 @@
     "convenedBy": "Socios fundadores",
     "supportBy": "Apoyado por"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Centrar mapa en la actividad",
@@ -872,7 +894,8 @@
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Busque un área de interés, por ejemplo: océano, mar, puerto, AMP, ZEE u ORP",
     "zoom_in": "Acercarse",
-    "zoom_out": "Alejarse"
+    "zoom_out": "Alejarse",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -880,6 +903,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -887,6 +911,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",
@@ -1360,6 +1385,7 @@
     "sectionActivity": "Actividad",
     "sectionAreas": "Áreas",
     "sectionInsights": "Indicadores",
+    "sectionInsightsTooltip": "No se dispone de información analítica para los buques con VMS.",
     "sectionRelatedVessel": "Related vessels",
     "sectionRelatedVessels": "Embarcaciones relacionadas",
     "sectionSummary": "Resumen",

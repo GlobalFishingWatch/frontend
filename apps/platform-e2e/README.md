@@ -32,7 +32,7 @@ nx test:local platform-e2e
 Opens Playwright's interactive UI for debugging and watching tests run.
 
 ```bash
-nx test:local platform-e2e -c ui
+nx test:local platform-e2e -c --ui
 ```
 
 Runs tests with visible browser windows. Useful for debugging visual issues.

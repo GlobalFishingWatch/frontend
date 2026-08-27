@@ -151,6 +151,7 @@ const Vessel = () => {
         content: <Insights />,
         disabled: !hasEventsDataset || isOnlyVMS,
         testId: 'vv-insights-tab',
+        tooltip: isOnlyVMS ? t((t) => t.vessel.sectionInsightsTooltip) : undefined,
       },
     ],
     [t, updateAreaLayersVisibility, hasEventsDataset, isOnlyVMS]
