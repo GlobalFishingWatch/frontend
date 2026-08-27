@@ -750,6 +750,23 @@
     "convenedBy": "crwdns133107:0crwdne133107:0",
     "supportBy": "crwdns133109:0crwdne133109:0"
   },
+  "helpHub": {
+    "nextArticle": "crwdns138385:0crwdne138385:0",
+    "platformAndUpdates": {
+      "description": "crwdns138387:0crwdne138387:0",
+      "title": "crwdns138389:0crwdne138389:0"
+    },
+    "previousArticle": "crwdns138391:0crwdne138391:0",
+    "title": "crwdns138393:0crwdne138393:0",
+    "toolsAndFeatures": {
+      "description": "crwdns138395:0crwdne138395:0",
+      "title": "crwdns138397:0crwdne138397:0"
+    },
+    "useCases": {
+      "description": "crwdns138399:0crwdne138399:0",
+      "title": "crwdns138401:0crwdne138401:0"
+    }
+  },
   "hours": "crwdns133111:0crwdne133111:0",
   "layer": {
     "activityFitBounds": "crwdns133113:0crwdne133113:0",
@@ -876,7 +893,8 @@
     "screenshotPreview": "crwdns133335:0crwdne133335:0",
     "search": "crwdns133337:0crwdne133337:0",
     "zoom_in": "crwdns133349:0crwdne133349:0",
-    "zoom_out": "crwdns133351:0crwdne133351:0"
+    "zoom_out": "crwdns133351:0crwdne133351:0",
+    "zoomToArea": "crwdns138407:0crwdne138407:0"
   },
   "mmsi": "crwdns133353:0crwdne133353:0",
   "mmsi_one": "crwdns133355:0crwdne133355:0",
@@ -884,6 +902,7 @@
   "nav": {
     "api": "crwdns133359:0crwdne133359:0",
     "areas": "crwdns133361:0crwdne133361:0",
+    "closeMenu": "crwdns138403:0crwdne138403:0",
     "dataAvailability": "crwdns133363:0crwdne133363:0",
     "datasets": "crwdns133365:0crwdne133365:0",
     "datasetsAndApi": "crwdns133367:0crwdne133367:0",
@@ -891,6 +910,7 @@
     "home": "crwdns133371:0crwdne133371:0",
     "language": "crwdns133373:0crwdne133373:0",
     "map": "crwdns133375:0crwdne133375:0",
+    "menu": "crwdns138405:0crwdne138405:0",
     "platformAndDataUpdates": "crwdns133377:0crwdne133377:0",
     "ports": "crwdns133379:0crwdne133379:0",
     "settings": "crwdns133381:0crwdne133381:0",

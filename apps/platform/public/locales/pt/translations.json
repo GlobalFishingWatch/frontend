@@ -560,10 +560,10 @@
     "noHeatmapLayers": "Ative uma atividade, detecções ou camada de ambiente para baixar seus dados para esta área",
     "spatialResolution": "Resolução espacial",
     "survey": {
-      "contactPermissionLabel": "Would you be open to sharing your story or results later? (optional)",
+      "contactPermissionLabel": "Would you be open to sharing your story or results later?",
       "contactPermissionNo": "Not right now",
       "contactPermissionYes": "Yes, I’d be happy to be contacted",
-      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform. (optional)",
+      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
       "error": "Something went wrong sending your answer, please try again later.",
       "intentLabel": "How do you intend to utilize this data?",
       "intentPlaceholder": "Type your answer here",
@@ -750,6 +750,23 @@
     "convenedBy": "Uma parceria organizada por",
     "supportBy": "Apoiado por"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Centralizar visualização sobre a atividade",
@@ -876,7 +893,8 @@
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Busque por uma área de interesse, por exemplo: mar, porto, ZEE, OROP",
     "zoom_in": "Aumentar zoom",
-    "zoom_out": "Diminuir zoom"
+    "zoom_out": "Diminuir zoom",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -884,6 +902,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -891,6 +910,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",
