@@ -750,6 +750,23 @@
     "convenedBy": "Socios fundadores",
     "supportBy": "Apoyado por"
   },
+  "helpHub": {
+    "nextArticle": "Next",
+    "platformAndUpdates": {
+      "description": "Check the latest platform and data updates that can help with your understanding, visualization and analysis needs.",
+      "title": "Platform and updates"
+    },
+    "previousArticle": "Previous",
+    "title": "Help & Resources",
+    "toolsAndFeatures": {
+      "description": "Free and easy-to-use features offer unprecedented opportunities to increase transparency across the world’s ocean and support the fair and sustainable use of marine resources.",
+      "title": "Tools and features"
+    },
+    "useCases": {
+      "description": "Discover what you can do with Global Fishing Watch and explore how organizations around the world use data to understand, protect and manage our ocean.",
+      "title": "Use cases"
+    }
+  },
   "hours": "hours",
   "layer": {
     "activityFitBounds": "Centrar mapa en la actividad",
@@ -876,7 +893,8 @@
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Busque un área de interés, por ejemplo: océano, mar, puerto, AMP, ZEE u ORP",
     "zoom_in": "Acercarse",
-    "zoom_out": "Alejarse"
+    "zoom_out": "Alejarse",
+    "zoomToArea": "Zoom to area"
   },
   "mmsi": "MMSI",
   "mmsi_one": "MMSI",
@@ -884,6 +902,7 @@
   "nav": {
     "api": "API",
     "areas": "Areas",
+    "closeMenu": "Close menu",
     "dataAvailability": "Data Availability",
     "datasets": "Datasets",
     "datasetsAndApi": "Datasets & API",
@@ -891,6 +910,7 @@
     "home": "Home",
     "language": "Language",
     "map": "Map",
+    "menu": "Menu",
     "platformAndDataUpdates": "Platform and Data Updates",
     "ports": "Ports",
     "settings": "Settings",
