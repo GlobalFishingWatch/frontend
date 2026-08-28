@@ -6,6 +6,7 @@ import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { CONTEXT_LAYERS_DATAVIEWS } from 'data/map/dataviews'
 import { getDatasetTypeIcon } from 'features/_map/datasets/datasets.utils'
+import { useRefreshClickedEvent } from 'features/_map/map/map-interactions.hooks'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
@@ -34,6 +35,7 @@ const Title = (props: TitleProps) => {
     showTooltip = true,
   } = props
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const refreshClickedEvent = useRefreshClickedEvent()
   const layerActive = dataview?.config?.visible ?? true
   const datasetIcon = dataview?.datasets?.[0] && getDatasetTypeIcon(dataview?.datasets?.[0])
 
@@ -45,6 +47,7 @@ const Title = (props: TitleProps) => {
           visible: !layerActive,
         },
       })
+      refreshClickedEvent(dataview.id, !layerActive)
     }
     if (onToggle) {
       onToggle()
@@ -59,6 +62,7 @@ const Title = (props: TitleProps) => {
           [classNameActive]: layerActive,
         })}
         onClick={onToggleLayerActive}
+        {...(toggleVisibility && { 'data-layer-toggle': true })}
       >
         {showIcon &&
           datasetIcon &&

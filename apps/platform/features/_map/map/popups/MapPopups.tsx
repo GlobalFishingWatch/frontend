@@ -32,7 +32,11 @@ function MapPopups() {
   const onClickOutside = useCallback(
     (e?: MouseEvent) => {
       const mapContainer = getSafeElementById(MAP_CONTAINER_ID)
-      if (e && !mapContainer?.contains(e.target as Node)) {
+      // toggling a layer refreshes the popup content instead of closing it
+      const isLayerToggle = (e?.target as HTMLElement)?.closest?.(
+        '[role="switch"], [data-layer-toggle]'
+      )
+      if (e && !isLayerToggle && !mapContainer?.contains(e.target as Node)) {
         dispatchClickedEvent(null)
         cancelPendingInteractionRequests()
       }
@@ -56,7 +60,7 @@ function MapPopups() {
             <PopupByCategory interaction={hoverInteraction} type="hover" />
           </PopupWrapper>
         )}
-      {clickInteraction && clickInteraction?.features?.length && (
+      {clickInteraction && !!clickInteraction?.features?.length && (
         <PopupWrapper
           latitude={clickInteraction.latitude}
           longitude={clickInteraction.longitude}

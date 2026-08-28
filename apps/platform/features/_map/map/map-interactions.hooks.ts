@@ -1,5 +1,5 @@
 import { startTransition, useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useStore as useReduxStore } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom, useStore } from 'jotai'
@@ -13,6 +13,8 @@ import type {
 import {
   deckHoverInteractionAtom,
   deckLayersAtom,
+  deckLayersStateAtom,
+  isDeckLayersLoadingAtom,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type {
@@ -52,27 +54,33 @@ import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-ac
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/hints/hints.slice'
+import type { RootState } from 'reducers'
 
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
+import type { SliceExtendedClusterPickingObject } from './map.slice'
 import {
   fetchClusterEventThunk,
   fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
   fetchRealTimePositionsThunk,
+  removeClickedEventDataview,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
   setClickedEvent,
+  setClickedEventFeatures,
 } from './map.slice'
 import {
   getAnalyticsEvent,
+  getNewClickedFeatures,
+  getSliceInteractionEvent,
+  getUpdatedClickedFeatures,
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
   isTrackSegment,
 } from './map-interaction.utils'
-import { useSetMapCoordinates } from './map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
@@ -99,20 +107,11 @@ function useGetAreClusterTilesLoading() {
 // Re-exported for existing consumers (`export ... from` alone would not bind them locally).
 export { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
 
-export const useClickedEventConnect = () => {
+const useInteractionHandlers = () => {
   const dispatch = useAppDispatch()
   const activityDataviews = useSelector(selectActivityDataviews)
   const eventsDataviews = useSelector(selectEventsDataviews)
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
-  const cancelPendingInteractionRequests = useCancelInteractionPromises()
-  const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
-  const apiEventStatus = useSelector(selectApiEventStatus)
-  const setMapCoordinates = useSetMapCoordinates()
-  const fitMapBounds = useMapFitBounds()
-  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const { rulersEditing, onRulerMapClick } = useRulers()
   const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
   const scrollToEvent = useVesselProfileScrollToEvent()
   const setEventGroup = useEventActivityToggle()[1]
@@ -256,6 +255,34 @@ export const useClickedEventConnect = () => {
     [setEventGroup, scrollToEvent]
   )
 
+  return {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+    handleVesselEventInteraction,
+  }
+}
+
+export const useClickedEventConnect = () => {
+  const dispatch = useAppDispatch()
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const clickedEvent = useSelector(selectClickedEvent)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
+  const setMapCoordinates = useSetMapCoordinates()
+  const fitMapBounds = useMapFitBounds()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
+  const { rulersEditing, onRulerMapClick } = useRulers()
+  const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
+  const {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+    handleVesselEventInteraction,
+  } = useInteractionHandlers()
+
   const dispatchClickedEvent = useCallback(
     (deckEvent: InteractionEvent | null) => {
       // Cancel all pending promises
@@ -278,19 +305,7 @@ export const useClickedEventConnect = () => {
         return
       }
       // TODO: identify if clicked on a track correction overlay and return to stop propagation from opening events popup
-      const event = {
-        features: deckEvent.features?.map((feature: any) => {
-          if (feature.tile) {
-            const { x, y, z } = feature.tile
-            return { ...feature, tile: { x, y, z } }
-          }
-          return feature
-        }),
-        latitude: deckEvent.latitude,
-        longitude: deckEvent.longitude,
-        zoom: deckEvent.viewport?.zoom,
-        point: { x: deckEvent.point.x, y: deckEvent.point.y },
-      } as SliceInteractionEvent
+      const event = getSliceInteractionEvent(deckEvent)
 
       event?.features?.forEach((feature) => {
         const analyticsEvent = getAnalyticsEvent(feature)
@@ -431,6 +446,118 @@ const useGetPickingInteraction = () => {
     [map]
   )
   return getPickingInteraction
+}
+
+// Only the last refresh requested is applied, as the previous ones are outdated
+let lastRefreshId = 0
+
+const isDataviewLayerLoaded = (store: ReturnType<typeof useStore>, dataviewId: string) =>
+  Object.entries(store.get(deckLayersStateAtom)).some(
+    // fourwings dataviews are merged in a single layer with their ids joined
+    ([layerId, layer]) => layer.loaded && layerId.split(',').includes(dataviewId)
+  )
+
+const waitForLayersUpdate = ({
+  store,
+  isUpdated,
+  isOutdated,
+}: {
+  store: ReturnType<typeof useStore>
+  isUpdated: () => boolean
+  isOutdated: () => boolean
+}) =>
+  new Promise<boolean>((resolve) => {
+    const unsubscribe = store.sub(deckLayersStateAtom, () => {
+      if (isOutdated()) {
+        unsubscribe()
+        resolve(false)
+      } else if (!store.get(isDeckLayersLoadingAtom) && isUpdated()) {
+        unsubscribe()
+        resolve(true)
+      }
+    })
+  })
+
+export const useRefreshClickedEvent = () => {
+  const dispatch = useAppDispatch()
+  const store = useStore()
+  const reduxStore = useReduxStore()
+  const mapViewport = useMapViewport()
+  const getPickingInteraction = useGetPickingInteraction()
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+  } = useInteractionHandlers()
+
+  return useCallback(
+    async (dataviewId: string, visible: boolean) => {
+      // read on demand so consumers don't rerender on every popup change
+      const clicked = selectClickedEvent(reduxStore.getState() as RootState)
+      const refreshId = ++lastRefreshId
+      if (!mapViewport || !clicked) {
+        return
+      }
+      if (!visible) {
+        dispatch(removeClickedEventDataview(dataviewId))
+        return
+      }
+
+      const isOutdated = () => {
+        const currentClicked = selectClickedEvent(reduxStore.getState() as RootState)
+        return (
+          refreshId !== lastRefreshId ||
+          currentClicked?.longitude !== clicked.longitude ||
+          currentClicked?.latitude !== clicked.latitude
+        )
+      }
+      const [x, y] = mapViewport.project([clicked.longitude, clicked.latitude])
+      const pickFeatures = () => {
+        const interaction = getPickingInteraction(
+          { x, y, coordinate: [clicked.longitude, clicked.latitude] } as PickingInfo,
+          'click'
+        )
+        return interaction ? getSliceInteractionEvent(interaction).features : []
+      }
+
+      const updated = await waitForLayersUpdate({
+        store,
+        isUpdated: () => isDataviewLayerLoaded(store, dataviewId),
+        isOutdated,
+      })
+      if (!updated) {
+        return
+      }
+      // read again as a previous refresh could have updated the popup while waiting
+      const previousFeatures =
+        selectClickedEvent(reduxStore.getState() as RootState)?.features || clicked.features
+      const features = pickFeatures()
+      dispatch(setClickedEventFeatures(getUpdatedClickedFeatures(features, previousFeatures)))
+      // only the new features are requested, the rest keep the data already fetched for them
+      const newFeatures = getNewClickedFeatures(features, previousFeatures)
+      if (!newFeatures.length) {
+        return
+      }
+      // a pending request of a previous refresh would overwrite the data of this one
+      cancelPendingInteractionRequests()
+      const newEvent = { ...clicked, features: newFeatures } as InteractionEvent
+      handleHeatmapInteraction(newEvent)
+      handleDetectionPositionsInteraction(newEvent)
+      handleTileClusterInteraction(newEvent)
+    },
+    [
+      cancelPendingInteractionRequests,
+      dispatch,
+      getPickingInteraction,
+      handleDetectionPositionsInteraction,
+      handleHeatmapInteraction,
+      handleTileClusterInteraction,
+      mapViewport,
+      reduxStore,
+      store,
+    ]
+  )
 }
 
 const EMPTY_INTERACTION_EVENT = {} as InteractionEvent
