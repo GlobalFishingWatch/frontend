@@ -50,6 +50,7 @@
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
     "insideYourArea": "inside your area",
+    "inTheArea": "in the area",
     "kilometers": "kilometers",
     "linkToReport": "Check the dynamic report here",
     "migramar": {
@@ -110,10 +111,10 @@
     "showFullReport": "See full analysis for this area",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
-    "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
@@ -1397,6 +1398,7 @@
     "sectionActivity": "Activity",
     "sectionAreas": "Areas",
     "sectionInsights": "Insights",
+    "sectionInsightsTooltip": "Insights not available for VMS vessels.",
     "sectionRelatedVessel": "Related vessels",
     "sectionRelatedVessels": "Related vessels",
     "sectionSummary": "Summary",

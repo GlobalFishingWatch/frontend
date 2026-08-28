@@ -21,7 +21,6 @@ import {
 import { AVAILABLE_END, AVAILABLE_START } from 'data/map/config'
 import { selectVesselGroupSearchDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import {
   mergeDataviewIntancesToUpsert,
   useDataviewInstancesConnect,
@@ -410,9 +409,8 @@ function VesselGroupModal(): React.ReactElement<any> {
           } else if (searchQuery) {
             // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstance)
-            replaceQueryParams({ query: undefined })
+            replaceQueryParams({ query: undefined }, { resetScroll: true })
           }
-          resetSidebarScroll()
         } else if (addToDataviews && dataviewInstance) {
           // if (removeVessels) {
           //   const dataviewsToDelete = vesselDataviews.flatMap((d) =>

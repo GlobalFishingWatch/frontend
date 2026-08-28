@@ -322,7 +322,7 @@ export function useLayerFilterHandlers({
     const filterOperators = dataview.config?.filterOperators
       ? { ...dataview.config.filterOperators }
       : {}
-    delete filters[filterKey]
+    filters[filterKey] = ''
     delete filterOperators[filterKey]
     onDataviewFilterChange({
       id: dataview.id,

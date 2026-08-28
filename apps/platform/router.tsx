@@ -6,6 +6,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PATH_BASENAME } from 'data/map/config'
+import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
 import { getActiveI18nState } from 'features/i18n/i18n'
@@ -43,6 +44,7 @@ export function getCreateRouterOptions() {
     defaultPreload: 'intent' as const,
     trailingSlash: 'never' as const,
     scrollRestoration: true,
+    scrollToTopSelectors: [`#${SCROLL_CONTAINER_DOM_ID}`],
     /* Don't add `defaultPendingComponent`, it was deleted on purpose to avoid initial load flashes. */
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
     defaultOnCatch: (error: Error) => {
