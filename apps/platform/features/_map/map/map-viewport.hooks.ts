@@ -37,7 +37,11 @@ export const useMapViewStateUrlSync = () => {
 }
 // Moved to map-view-state.hooks so always-loaded callers (MainNav) can set the camera without pulling
 // @deck.gl/core, which this module imports as a value for MAP_VIEW. Re-exported for existing consumers.
-export { useMapSetViewState, useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+export {
+  useMapSetViewState,
+  useMapSize,
+  useSetMapCoordinates,
+} from 'features/_map/map/map-view-state.hooks'
 
 const VIEW_STATE_URL_DEBOUNCE = 300
 

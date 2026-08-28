@@ -16,6 +16,9 @@ export const boundsAtom = atom<BoundsAtom>({
   isTransitioning: false,
 })
 
+// CANVAS SIZE
+export const mapSizeAtom = atom<{ width: number; height: number } | undefined>(undefined)
+
 // VIEW STATE
 // Keep the initial value deterministic (same on server and client) to avoid SSR
 // hydration mismatches. The viewport from the URL is synced into the atom on the

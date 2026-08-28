@@ -3,7 +3,7 @@ import type { MapView, ViewStateMap } from '@deck.gl/core'
 import { throttle } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { boundsAtom, viewStateAtom } from 'features/_map/map/map.atoms'
+import { boundsAtom, mapSizeAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 
 /**
@@ -16,6 +16,9 @@ import { useDeckMap } from 'features/_map/map/map-context.hooks'
  * Every deck.gl reference in this module must stay type-only — `check-store-graph.mjs` enforces it for
  * the reducer map, but not for this file directly.
  */
+
+// Committed CSS size of the map canvas, or undefined before deck mounts
+export const useMapSize = () => useAtomValue(mapSizeAtom)
 
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)

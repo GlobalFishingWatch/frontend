@@ -27,7 +27,11 @@ import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/
 import type { FitBoundsParams } from 'features/_map/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/_map/map/map-bounds.hooks'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
-import { useMapViewState, useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import {
+  useMapSize,
+  useMapViewState,
+  useSetMapCoordinates,
+} from 'features/_map/map/map-viewport.hooks'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import type { LastReportStorage } from 'features/_reports/report-area/area-reports.config'
@@ -96,11 +100,14 @@ const isClose = (a?: number, b?: number, tolerance = LAT_LON_TOLERANCE) => {
 
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const screenshotMode = useSelector(selectScreenshotMode)
+  // Deck's committed canvas size, not a render-time getBoundingClientRect()
+  const mapSize = useMapSize()
   return useMemo(() => {
     if (!bounds) return null
     const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
       padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : undefined) : 800,
+      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : mapSize?.width) : 800,
+      mapHeight: getIsBrowser() ? mapSize?.height : undefined,
       ...params,
     })
     return {
@@ -108,7 +115,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
       longitude: parseFloat(longitude.toFixed(8)),
       zoom: parseFloat(zoom.toFixed(8)),
     }
-  }, [bounds, params])
+  }, [bounds, params, screenshotMode, mapSize])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -283,6 +290,15 @@ export function useFitAreaInViewport(params = defaultParams) {
   const areaInViewport = isAreaCenterInViewport(viewState, areaCenter, id)
   const pendingFitInAreaRef = useRef(false)
   const prevDeckMapRef = useRef(deckMap)
+  const lastAppliedCenterRef = useRef<ReturnType<typeof useReportAreaCenter>>(null)
+
+  const applyFit = useCallback(
+    (center: NonNullable<ReturnType<typeof useReportAreaCenter>>) => {
+      lastAppliedCenterRef.current = center
+      setMapCoordinates(center)
+    },
+    [setMapCoordinates]
+  )
 
   // This ensures the useFitAreaInViewport is triggered when deckMap is not available yet
   useEffect(() => {
@@ -291,19 +307,34 @@ export function useFitAreaInViewport(params = defaultParams) {
 
     if (deckMapJustLoaded && pendingFitInAreaRef.current && !areaInViewport && areaCenter) {
       pendingFitInAreaRef.current = false
-      setMapCoordinates(areaCenter)
+      applyFit(areaCenter)
     }
-  }, [deckMap, areaInViewport, areaCenter, setMapCoordinates])
+  }, [deckMap, areaInViewport, areaCenter, applyFit])
+
+  // The map width changes when entering a report (aside becomes 50%, report links can force the
+  // sidebar open) and MapLayout commits it only after the navigation settles, so the first fit runs
+  // against the previous width. Refit when the recomputed center changes, but only while the camera
+  // is still where we put it, so a user pan/zoom is never yanked back.
+  useEffect(() => {
+    const lastApplied = lastAppliedCenterRef.current
+    if (!areaCenter || !lastApplied || areaInViewport) {
+      return
+    }
+    if (!isAreaCenterInViewport(viewState, lastApplied, id)) {
+      return
+    }
+    applyFit(areaCenter)
+  }, [areaCenter, areaInViewport, viewState, id, applyFit])
 
   return useCallback(() => {
     if (!areaInViewport && areaCenter) {
       if (deckMap) {
-        setMapCoordinates(areaCenter)
+        applyFit(areaCenter)
       } else {
         pendingFitInAreaRef.current = true
       }
     }
-  }, [areaCenter, areaInViewport, deckMap, setMapCoordinates])
+  }, [areaCenter, areaInViewport, deckMap, applyFit])
 }
 
 // 0 - 20MB No simplifyTrack

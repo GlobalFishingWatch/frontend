@@ -4,11 +4,13 @@ import type { FilterContext, MapView, ViewStateChangeParameters } from '@deck.gl
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
+import { useSetAtom } from 'jotai'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { PICK_ONLY_LAYER_ID_SUFFIX } from '@globalfishingwatch/deck-layers/config'
 
 import { useDatasetDrag } from 'features/_map/map/drag-dataset.hooks'
+import { mapSizeAtom } from 'features/_map/map/map.atoms'
 import { MAP_CANVAS_ID } from 'features/_map/map/map.config'
 import { setMapLoaded } from 'features/_map/map/map.slice'
 import { useSetMapInstance } from 'features/_map/map/map-context.hooks'
@@ -60,6 +62,14 @@ const DeckGLWrapper = () => {
       }
     },
     [setViewState]
+  )
+
+  const setMapSize = useSetAtom(mapSizeAtom)
+  const onMapResize = useCallback(
+    ({ width, height }: { width: number; height: number }) => {
+      setMapSize({ width, height })
+    },
+    [setMapSize]
   )
 
   const onMapClick = useMapMouseClick()
@@ -144,6 +154,7 @@ const DeckGLWrapper = () => {
       onDrag={onMapDrag}
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
+      onResize={onMapResize}
       widgets={
         showDeckStats
           ? [
