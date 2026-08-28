@@ -412,6 +412,8 @@
     "requiredFields": "Campos requeridos {{fields}}",
     "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
     "title": "Datos",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "No se encontraron tipos de características válidos en el archivo geoJSON"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Algunas de sus {{featureType}} no contienen una fecha válida. No aparecerán en el mapa independientemente del filtro de tiempo utilizado.",
       "kml": {
         "invalidData": "Los datos del KML no tienen un tipo de geometría válido",
@@ -446,6 +451,7 @@
         "noPolygonData": "No se encontraron datos de polígono en el KML"
       },
       "name": "El nombre del conjunto de datos debe tener al menos {{min}} caracteres",
+      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Los datos del shapefile no tienen un tipo de geometría válido",
         "invalidMultipleFiles": "Aún no se admiten shapefiles que contengan varios componentes (varios nombres de archivo)",
@@ -457,6 +463,12 @@
     "fieldMultiplePlaceholder": "Seleccione uno o más campos de su conjunto de datos",
     "fieldNumericPlaceholder": "Seleccione un campo numérico de su conjunto de datos",
     "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "bandName": "Band {{band}} name",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Valores máximos excedidos para el filtrado ({{max}})",
     "maxValuesExceededForFilteringTooltip": "Este campo tiene demasiados valores únicos ({{max}}+). Considere agrupar o categorizar sus datos para habilitar el filtrado.",
     "noFilters": "Para agregar filtros a su conjunto de datos, su archivo debe tener al menos una propiedad con más de 2 valores distintos.",
@@ -846,6 +858,7 @@
     "toggleVisibility": "Cambiar la visibilidad de la capa",
     "type": "Tipo",
     "user_context_fit_bounds": "Centrar mapa en polígonos",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Centrar mapa en puntos",
     "user_points_fit_bounds_out_of_timerange": "El conjunto de datos no tiene puntos en el rango de tiempo seleccionado. ¿Cambiar el rango de tiempo para ajustarse a los puntos?",
     "user_polygons_fit_bounds_out_of_timerange": "El conjunto de datos no tiene polígonos en el rango de tiempo seleccionado. ¿Cambiar el rango de tiempo para adaptarse a los polígonos?",
