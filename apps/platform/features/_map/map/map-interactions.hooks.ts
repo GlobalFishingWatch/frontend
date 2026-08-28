@@ -433,6 +433,8 @@ const useGetPickingInteraction = () => {
   return getPickingInteraction
 }
 
+const EMPTY_INTERACTION_EVENT = {} as InteractionEvent
+
 export const hoverCoordinatesAtom = atom<[number, number] | undefined>()
 export const useMapMouseHover = () => {
   const getPickingInteraction = useGetPickingInteraction()
@@ -454,7 +456,7 @@ export const useMapMouseHover = () => {
           isMapDrawing ||
           isErrorNotificationEditing
         ) {
-          setMapHoverFeatures({} as InteractionEvent)
+          setMapHoverFeatures(EMPTY_INTERACTION_EVENT)
           return
         }
         if (rulersEditing) {
