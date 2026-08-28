@@ -5,7 +5,12 @@ import { PathLayer } from '@deck.gl/layers'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
-import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
+import {
+  EVENTS_COLORS,
+  getLonglineCategory,
+  isLonglineSetEvent,
+  LONGLINE_CATEGORY_COLORS,
+} from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_BACKGROUND_COLOR } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
@@ -37,6 +42,17 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
   renderLayers() {
     const { id, type, singleTrack, highlightEventIds, color, startTime, endTime } = this.props
 
+    const getFillColor = (d: any): Color => {
+      if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
+      if (d.type === EventTypes.Fishing) {
+        if (isLonglineSetEvent(d)) {
+          return hexToDeckColor(LONGLINE_CATEGORY_COLORS[getLonglineCategory(d)])
+        }
+        return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
+      }
+      return hexToDeckColor(EVENTS_COLORS[d.type as EventTypes])
+    }
+
     const baseLayerProps: VesselEventIconLayerProps = {
       ...this.props,
       id: `${id}-points`,
@@ -44,13 +60,12 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       name: this.props.name,
       vesselId: getVesselIdFromInstanceId(this.props.id),
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-      getFillColor: (d: any): Color => {
-        if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
-        if (d.type === EventTypes.Fishing) {
-          return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
-        }
-        return hexToDeckColor(EVENTS_COLORS[d.type as EventTypes])
-      },
+      getFillColor,
+      stroked: true,
+      lineWidthUnits: 'pixels',
+      getLineWidth: 1,
+      getLineColor: (d: any): Color =>
+        isLonglineSetEvent(d) ? DEFAULT_BACKGROUND_COLOR : getFillColor(d),
       radiusUnits: 'pixels',
       getRadius: (d: any) => {
         const size = d.type === EventTypes.Fishing ? 3 : 6
@@ -70,6 +85,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
         extensions: [new DataFilterExtension({ filterSize: 2 })],
         updateTriggers: {
           getFillColor: [color, highlightEventIds],
+          getLineColor: [color, highlightEventIds],
           getFilterValue: [endTime, startTime],
           getRadius: [highlightEventIds],
         },

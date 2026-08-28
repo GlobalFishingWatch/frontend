@@ -13,7 +13,12 @@ import type {
   DataviewType,
   Workspace,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EndpointId,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
   getDatasetConfiguration,
@@ -50,6 +55,7 @@ import {
   isPrivateDataset,
   isRealTimeDataset,
 } from 'features/_map/datasets/datasets.utils'
+import { LONGLINE_FISHING_EVENTS_DATASET } from 'features/_vessels/vessel/insights/insights.config'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 
@@ -250,6 +256,43 @@ export const resolveVesselDataviewInstance = (
     newDataviewInstance.datasetsConfig = datasetsConfig
   }
   return newDataviewInstance
+}
+
+const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightCategory', 'fishing.fractionAtNight']
+
+export const withLonglineSetsEvents = (
+  dataview: UrlDataviewInstance,
+  datasets: Dataset[]
+): UrlDataviewInstance => {
+  const isFishingEventsConfig = (datasetConfig: DataviewDatasetConfig) =>
+    datasetConfig.endpoint === EndpointId.Events &&
+    datasets.find(({ id }) => id === datasetConfig.datasetId)?.subcategory === EventTypes.Fishing
+
+  const fishingEventsConfig = dataview.datasetsConfig?.find(isFishingEventsConfig)
+  const hasLonglineDataset = datasets.some(({ id }) => id === LONGLINE_FISHING_EVENTS_DATASET)
+  if (!fishingEventsConfig || !hasLonglineDataset) {
+    return dataview
+  }
+  const datasetsConfig = dataview.datasetsConfig!.map((datasetConfig) =>
+    datasetConfig === fishingEventsConfig
+      ? {
+          ...datasetConfig,
+          datasetId: LONGLINE_FISHING_EVENTS_DATASET,
+          query: (datasetConfig.query || []).map((query) =>
+            query.id === 'includes'
+              ? { ...query, value: [...(query.value as string[]), ...LONGLINE_EVENTS_INCLUDES] }
+              : query
+          ),
+        }
+      : datasetConfig
+  )
+  return {
+    ...dataview,
+    datasetsConfig,
+    datasets: datasetsConfig.flatMap(
+      (datasetConfig) => datasets.find(({ id }) => id === datasetConfig.datasetId) || []
+    ),
+  }
 }
 
 type VesselDataviewInstanceTemplateParams = {
