@@ -7,6 +7,7 @@ export enum FeatureFlag {
   HotspotButton = 'hotspotButton',
   PolygonsReport = 'polygonsReport',
   ReportPreview = 'reportPreview',
+  GriddedHeatmap = 'griddedHeatmap',
 }
 
 export enum DebugOption {
@@ -37,6 +38,7 @@ export const debugInitialState: DebugState = {
     hotspotButton: false,
     polygonsReport: false,
     reportPreview: false,
+    griddedHeatmap: false,
   },
   options: {
     debugTiles: false,

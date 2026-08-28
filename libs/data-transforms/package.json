@@ -36,6 +36,7 @@
     "es-toolkit": "1.x",
     "geo-coordinates-parser": "1.x",
     "geojson": "0.x",
+    "geotiff": "3.x",
     "jszip": "3.x",
     "luxon": "3.x",
     "shpjs": "6.x",

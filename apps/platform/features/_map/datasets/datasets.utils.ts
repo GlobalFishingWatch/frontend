@@ -111,7 +111,9 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (!dataset) {
     return null
   }
-  if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
+  if (dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings) {
+    return 'heatmap'
+  }
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   const geometryType = getDatasetGeometryType(dataset)
   if (geometryType === 'draw') {
@@ -142,6 +144,7 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
     tracks: [],
     polygons: [],
     points: [],
+    gridded: [],
     bigQuery: [],
   }
 

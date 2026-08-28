@@ -136,10 +136,12 @@ function UserDatasets() {
                 }
                 const datasetError = dataset.status === DatasetStatus.Error
                 const datasetImporting = dataset.status === DatasetStatus.Importing
+                const importLogs =
+                  getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''
                 const infoTooltip: string = datasetImporting
                   ? t((t) => t.dataset.importing)
                   : datasetError
-                    ? `${t((t) => t.errors.uploadError)} - ${getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''}`
+                    ? `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
                     : ''
                 const datasetIcon = getDatasetTypeIcon(dataset)
                 return (

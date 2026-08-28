@@ -16,6 +16,7 @@ import type {
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
+  getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getRelatedDatasetByType,
 } from '@globalfishingwatch/datasets-client'
@@ -25,9 +26,7 @@ import {
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-// Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
-// (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/config'
+import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/deck-layers/config'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -36,6 +35,7 @@ import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
@@ -69,6 +69,7 @@ export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 const CONTEXT_LAYER_PREFIX = 'context-'
+export const USER_4WINGS_PREFIX = 'user-4wings-'
 
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -440,6 +441,34 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
             },
           ],
         }),
+      },
+    ],
+  }
+}
+
+export const getUserFourwingsDataviewInstance = (
+  dataset: Dataset
+): DataviewInstance<DataviewType> => {
+  const { agregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
+  return {
+    id: `${USER_4WINGS_PREFIX}${dataset.id}`,
+    category: DataviewCategory.User,
+    config: {
+      colorCyclingType: 'fill' as ColorCyclingType,
+      aggregationOperation:
+        (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
+        FourwingsAggregationOperation.Avg,
+      datasets: [dataset.id],
+      group: LayerGroup.CustomLayer,
+    },
+    dataviewId: timestampColumn
+      ? TEMPLATE_ACTIVITY_DATAVIEW_SLUG
+      : TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
+    datasetsConfig: [
+      {
+        datasetId: dataset.id,
+        params: [{ id: 'type', value: 'heatmap' }],
+        endpoint: EndpointId.FourwingsTiles,
       },
     ],
   }

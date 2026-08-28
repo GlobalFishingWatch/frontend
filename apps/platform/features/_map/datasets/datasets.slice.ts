@@ -16,7 +16,7 @@ import type {
   DatasetsMigration,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, Locale } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getIsDatasetVersionDowngrade,
@@ -335,22 +335,34 @@ export const upsertDatasetThunk = createAsyncThunk<
     try {
       let filePath
       const configurationByType =
-        dataset.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
-      const { idProperty, filePath: datasetFilePath } = getDatasetConfiguration(
-        dataset,
-        configurationByType
-      )
+        DATASET_TYPE_TO_CONFIG_TYPE[dataset.type as keyof typeof DATASET_TYPE_TO_CONFIG_TYPE] ??
+        'userContextLayerV1'
+      const existingTypeConfig = dataset.configuration?.[configurationByType]
+      const datasetFilePath =
+        existingTypeConfig && 'filePath' in existingTypeConfig
+          ? existingTypeConfig.filePath
+          : undefined
+      const idProperty =
+        existingTypeConfig && 'idProperty' in existingTypeConfig
+          ? existingTypeConfig.idProperty
+          : undefined
       const { format } = getDatasetConfiguration(dataset, 'userContextLayerV1')
       if (file) {
+        const contentType =
+          format && format.toUpperCase() === 'GEOJSON'
+            ? 'application/json'
+            : // .tif files often reach us with an empty File.type
+              file.type || (dataset.type === DatasetTypes.UserFourwings ? 'image/tiff' : '')
         const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
           method: 'POST',
-          body: {
-            contentType:
-              format && format.toUpperCase() === 'GEOJSON' ? 'application/json' : file.type,
-          } as any,
+          body: { contentType } as any,
         })
         filePath = path
-        await fetch(url, { method: 'PUT', body: file })
+        await fetch(url, {
+          method: 'PUT',
+          body: file,
+          ...(contentType && { headers: { 'Content-Type': contentType } }),
+        })
       }
 
       const suffix = addIdSuffix ? `-${Date.now()}` : ''
@@ -367,13 +379,19 @@ export const upsertDatasetThunk = createAsyncThunk<
         ...(isPatchDataset && file && { status: 'importing' }),
         configuration: {
           ...dataset.configuration,
-          [configurationByType]: {
-            ...dataset.configuration?.[configurationByType],
-            // Properties that are to be used as SQL params on the server
-            // need to be lowercase
-            idProperty: idProperty?.toLowerCase() || '',
-            filePath: filePath || datasetFilePath,
-          },
+          [configurationByType]:
+            configurationByType === 'userFourwingsV1'
+              ? {
+                  ...dataset.configuration?.[configurationByType],
+                  filePath: filePath || datasetFilePath,
+                }
+              : {
+                  ...dataset.configuration?.[configurationByType],
+                  // Properties that are to be used as SQL params on the server
+                  // need to be lowercase
+                  idProperty: idProperty?.toLowerCase() || '',
+                  filePath: filePath || datasetFilePath,
+                },
         },
       }
       delete (datasetWithFilePath as any).public

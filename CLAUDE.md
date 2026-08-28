@@ -68,3 +68,4 @@ Durable facts about this repo live in `.claude/memory/`, one fact per file, impo
 @.claude/memory/encode-url-skill-maintenance.md
 @.claude/memory/typescript7-migration.md
 @.claude/memory/locales-source-is-the-only-editable.md
+@.claude/memory/popup-component-naming.md

@@ -11,6 +11,7 @@ export enum DatasetTypes {
   Tracks = 'tracks:v1',
   UserContext = 'user-context-layer:v1',
   UserTracks = 'user-tracks:v1',
+  UserFourwings = 'user-4wings:v1',
   Vessels = 'vessels:v1',
 }
 
@@ -28,6 +29,22 @@ export type UserContextLayerV1Configuration = {
   idProperty?: string
   valuePropertyId?: string
   importLogs?: string
+}
+
+export const USER_FOURWINGS_VALUE_COLUMN = 'gfw_value'
+
+export type UserFourwingsV1Configuration = {
+  agregationMode: string
+  bands?: string[]
+  agregationColumn?: string
+  bbox?: [number, number, number, number]
+  filePath?: string
+  latColumn?: string
+  lonColumn?: string
+  maxZoom?: number
+  tileOffset?: number
+  tileScale?: number
+  timestampColumn?: string
 }
 
 export type TemporalContextLayerV1Configuration = Record<string, never>
@@ -100,6 +117,7 @@ export type ThumbnailsV1Configuration = {
 
 export type DatasetConfigurationByType = Partial<{
   fourwingsV1: FourwingsV1Configuration
+  userFourwingsV1: UserFourwingsV1Configuration
   bulkDownloadV1: BulkDownloadV1Configuration
   contextLayerV1: ContextLayerV1Configuration
   dataDownloadV1: DataDownloadV1Configuration
@@ -116,9 +134,9 @@ export type DatasetConfigurationByType = Partial<{
 }>
 
 export type TimeFilterType = 'date' | 'dateRange'
-export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML'
+export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML' | 'GeoTIFF'
 
-export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw'
+export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw' | 'gridded'
 export type DatasetGeometryToGeoJSONGeometry = {
   [Property in DatasetGeometryType]: string[]
 }
@@ -160,6 +178,7 @@ export const DATASET_TYPE_TO_CONFIG_TYPE = {
   [DatasetTypes.Thumbnails]: 'thumbnailsV1' as const,
   [DatasetTypes.Tracks]: 'tracksV1' as const,
   [DatasetTypes.UserContext]: 'userContextLayerV1' as const,
+  [DatasetTypes.UserFourwings]: 'userFourwingsV1' as const,
   [DatasetTypes.UserTracks]: 'userTracksV1' as const,
   [DatasetTypes.Vessels]: 'vesselsV1' as const,
 }
