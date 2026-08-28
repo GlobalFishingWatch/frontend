@@ -412,6 +412,8 @@
     "requiredFields": "Bidang yang harus diisi {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Dataset",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
     "typePolygons": " Poligon",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {
         "invalidData": "Data KLM tidak memiliki bentuk geometri yang valid",
@@ -446,6 +451,7 @@
         "noPolygonData": "Tidak ada data poligon yang ditemukan di KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Data shapefile tidak memiliki bentuk geometri yang valid",
         "invalidMultipleFiles": "Shapefile yang berisi beberapa komponen (beberapa nama file) belum didukung",
@@ -457,6 +463,12 @@
     "fieldMultiplePlaceholder": "Pilih satu atau beberapa bidang dari dataset Anda",
     "fieldNumericPlaceholder": "Pilih bidang numerik dari dataset Anda",
     "fieldPlaceholder": "Pilih bidang dari dataset Anda",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "bandName": "Band {{band}} name",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -846,6 +858,7 @@
     "toggleVisibility": "Alihkan visibilitas lapisan",
     "type": "Jenis",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",
