@@ -706,8 +706,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       compareEnd,
       availableIntervals,
       comparisonMode,
-      minVisibleValue,
-      maxVisibleValue,
       intervalCacheMode,
     } = props
 
@@ -716,14 +714,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
-    const newVisibleValueLimits =
-      minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
-
     const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
 
-    const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
+    const needsColorUpdate = newMode || sublayersHaveNewColors
     if (needsColorUpdate) {
-      const recalculateDomain = newMode || newVisibleValueLimits
+      const recalculateDomain = newMode
       const newColorDomain = recalculateDomain
         ? this._calculateColorDomain()
         : this.state.colorDomain

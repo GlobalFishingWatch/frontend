@@ -22,7 +22,9 @@ import {
   compareCell,
   EMPTY_CELL_COLOR,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getVisualizationModeByResolution,
+  isSublayerValueVisible,
 } from './fourwings-heatmap.utils'
 
 export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
@@ -48,8 +50,6 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       sublayers,
       tilesCache,
       comparisonMode,
-      minVisibleValue,
-      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -79,12 +79,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         value: info.object?.aggregatedValues?.[i],
       }))
       if (
-        !object.sublayers?.filter(
-          ({ value }) =>
-            value &&
-            (minVisibleValue === undefined || value >= minVisibleValue) &&
-            (maxVisibleValue === undefined || value <= maxVisibleValue)
-        ).length
+        !object.sublayers?.filter((sublayer) => isSublayerValueVisible(sublayer.value, sublayer))
+          .length
       ) {
         return { ...info, object: undefined }
       }
@@ -129,9 +125,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       colorDomain,
       colorRanges,
       aggregationOperation,
-      minVisibleValue,
-      maxVisibleValue,
       scales,
+      sublayers,
       // zoomOffset = 0,
     } = this.props
     if (
@@ -157,16 +152,15 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
 
     feature.aggregatedValues = aggregatedCellValues
     aggregatedCellValues.forEach((value, index) => {
-      if (value && (!chosenValue || value > chosenValue)) {
+      if (!isSublayerValueVisible(value, sublayers?.[index])) {
+        return
+      }
+      if (!chosenValue || value > chosenValue) {
         chosenValue = value
         chosenValueIndex = index
       }
     })
-    if (
-      !chosenValue ||
-      (minVisibleValue !== undefined && chosenValue < minVisibleValue) ||
-      (maxVisibleValue !== undefined && chosenValue > maxVisibleValue)
-    ) {
+    if (!chosenValue) {
       target = EMPTY_CELL_COLOR
       return target
     }
@@ -191,7 +185,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   getBivariateFillColor = (feature: FourwingsFeature, { target }: { target: Color }) => {
-    const { colorDomain, colorRanges, aggregationOperation, scales } = this.props
+    const { colorDomain, colorRanges, aggregationOperation, scales, sublayers } = this.props
     if (!colorDomain || !colorRanges) {
       target = EMPTY_CELL_COLOR
       return target
@@ -213,7 +207,9 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     }
 
     const colors = scales.map((s, i) =>
-      aggregatedCellValues[i] ? s(aggregatedCellValues[i]) : undefined
+      isSublayerValueVisible(aggregatedCellValues[i], sublayers?.[i])
+        ? s(aggregatedCellValues[i])
+        : undefined
     )
     const color = screen(colors[0] || EMPTY_RGBA_COLOR, colors[1] || EMPTY_RGBA_COLOR)
     target = color ? [color.r, color.g, color.b, color.a * 255] : EMPTY_CELL_COLOR
@@ -231,8 +227,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       availableIntervals,
       comparisonMode,
       tilesCache,
-      minVisibleValue,
-      maxVisibleValue,
+      sublayers,
       compareStart,
       compareEnd,
       group = LayerGroup.Heatmap,
@@ -241,6 +236,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     if (!data || !colorDomain || !colorRanges || !tilesCache) {
       return []
     }
+    const sublayersVisibleValues = getSublayersVisibleValuesHash(sublayers)
     const { startFrame, endFrame } = getIntervalFrames({
       startTime,
       endTime,
@@ -281,8 +277,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
               comparisonMode,
               compareStart,
               compareEnd,
-              minVisibleValue,
-              maxVisibleValue,
+              sublayersVisibleValues,
             ],
           },
         })

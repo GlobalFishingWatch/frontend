@@ -67,8 +67,6 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   debugTiles?: boolean
   availableIntervals?: FourwingsInterval[]
   sublayers: FourwingsDeckVectorSublayer[]
-  minVisibleValue?: number
-  maxVisibleValue?: number
   temporalAggregation?: boolean
 }
 
@@ -250,8 +248,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       temporalAggregation,
     } = this.props
     const sublayerIndex = 0
-    // Ensure 'u' (eastward) direction always goes first
-    const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
+    // Ensure 'u' (eastward) vector always goes first
+    const vectorLayers = sublayers.sort((a) => (a.vector === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = temporalAggregation
       ? {

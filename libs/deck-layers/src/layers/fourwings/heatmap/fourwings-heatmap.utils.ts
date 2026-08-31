@@ -347,6 +347,26 @@ export function getIntervalFrames({
   return result
 }
 
+export function isSublayerValueVisible(
+  value: number | undefined,
+  sublayer?: { minVisibleValue?: number; maxVisibleValue?: number }
+): value is number {
+  if (!value) {
+    return false
+  }
+  const { minVisibleValue, maxVisibleValue } = sublayer || {}
+  return (
+    (minVisibleValue === undefined || value >= minVisibleValue) &&
+    (maxVisibleValue === undefined || value <= maxVisibleValue)
+  )
+}
+
+export function getSublayersVisibleValuesHash(
+  sublayers?: { minVisibleValue?: number; maxVisibleValue?: number }[]
+) {
+  return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
+}
+
 export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {
   // Select only 5% of elements
   return (
