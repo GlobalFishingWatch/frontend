@@ -6,6 +6,7 @@ import { SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components/dom-ids'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { SplitView } from '@globalfishingwatch/ui-components/split-view'
 
+import { useWelcomePanelAutoOpen } from 'features/_map/content-panel/welcome/welcome-panel.hooks'
 import BasemapLabelsLocaleSync from 'features/_map/dataviews/BasemapLabelsLocaleSync'
 import Sidebar from 'features/_map/sidebar/Sidebar'
 import {
@@ -48,6 +49,7 @@ declare global {
 const rootRoute = getRouteApi('__root__')
 
 function MapLayout() {
+  useWelcomePanelAutoOpen()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)

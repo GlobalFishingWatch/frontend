@@ -143,6 +143,8 @@ export enum UserTab {
 }
 
 export type SidePanelContent =
+  /** Onboarding cards shown on the first map visit */
+  | 'welcome'
   /** Feature and role based guides and articules explaining how to use the tool */
   | 'userGuide'
   /** Dataset description by id and caveats */

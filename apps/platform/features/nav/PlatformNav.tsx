@@ -53,7 +53,6 @@ const HOVER_INTENT_MS = 300
  */
 function PlatformNav() {
   const { t } = useTranslation()
-  const navSections = useMemo(() => getPlatformNavSections(t), [t])
   const navLinkContext = useNavLinkContext()
   const isItemActive = useIsNavItemActive()
   const locationCategory = useSelector(selectWorkspaceCategory)
@@ -70,6 +69,14 @@ function PlatformNav() {
   } = useLanguageOptions()
 
   const isSmallScreen = useSmallScreen()
+
+  const navSections = useMemo(
+    () =>
+      getPlatformNavSections(t, {
+        onGetStartedClick: () => openSidePanel({ type: 'welcome' }),
+      }),
+    [t, openSidePanel]
+  )
 
   const [railExpanded, setRailExpanded] = useState(false)
   const [openSectionId, setOpenSectionId] = useState<string | null>(null)

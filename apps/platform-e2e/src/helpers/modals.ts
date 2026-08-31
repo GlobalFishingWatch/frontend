@@ -13,6 +13,8 @@ export async function disableWelcomePopups(page: Page) {
       userContextLayers: true,
     })
     window.localStorage.setItem('WelcomePopup', hidden)
+    // Map onboarding side panel — auto-opens on a first visit and would shift every layout below.
+    window.localStorage.setItem('OnboardingPanelDismissed', 'true')
     window.localStorage.setItem('VesselProfilePopup', hidden)
     window.localStorage.setItem('MarineManagerPopup', hidden)
     window.localStorage.setItem('DeepSeaMiningPopup', hidden)

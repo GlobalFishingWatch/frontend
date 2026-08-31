@@ -1,10 +1,11 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
 import type { Point } from 'geojson'
+import { useAtom } from 'jotai'
 
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -13,6 +14,7 @@ import { OCEAN_AREAS_DATAVIEWS } from 'data/map/dataviews'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import { mapSearchOpenRequestAtom } from 'features/_map/map/map.atoms'
 import { useMapSetViewState } from 'features/_map/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
@@ -38,6 +40,7 @@ const MapSearch = () => {
   const allDataviews = useSelector(selectAllDataviews)
   const { searchOceanAreas } = useOceanAreas()
   const navigateToAreaReport = useNavigateToAreaReport()
+  const [openRequested, setOpenRequested] = useAtom(mapSearchOpenRequestAtom)
 
   const fitBounds = useMapFitBounds()
   const setMapViewState = useMapSetViewState()
@@ -119,6 +122,7 @@ const MapSearch = () => {
     highlightedIndex,
     inputValue,
     isOpen,
+    openMenu,
   } = useCombobox({
     inputValue: query,
     items: areasMatching,
@@ -126,6 +130,17 @@ const MapSearch = () => {
     onInputValueChange: onInputChange,
     onSelectedItemChange: onSelectResult,
   })
+
+  // Opened from elsewhere (onboarding panel). Same side effects as the toggle button's onClick, so
+  // the hint tooltip does not sit on top of an already open search.
+  useEffect(() => {
+    if (!openRequested) return
+    setOpenRequested(false)
+    dispatch(setHintDismissed('areaSearch'))
+    openMenu()
+    inputRef.current?.focus()
+  }, [openRequested, setOpenRequested, dispatch, openMenu])
+
   return (
     <div className={styles.container}>
       <IconButton

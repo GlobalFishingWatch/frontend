@@ -22,6 +22,7 @@ const UserDatasetInfoContainer = lazy(
 const UserGuideContent = lazy(
   () => import('features/_map/content-panel/user-guide/UserGuideContent')
 )
+const WelcomePanel = lazy(() => import('features/_map/content-panel/welcome/WelcomePanel'))
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
@@ -117,6 +118,7 @@ function ContentPanel({
         />
       )}
       <Suspense fallback={null}>
+        {sidePanelContent === 'welcome' && <WelcomePanel />}
         {sidePanelContent === 'userGuide' && <UserGuideContent />}
         {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
         {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}

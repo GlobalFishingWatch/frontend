@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
-import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
@@ -255,16 +254,8 @@ const AppModals = () => {
               <Welcome contentKey="deep-sea-mining" />
             </Suspense>
           )}
-          {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
-            <Suspense fallback={null}>
-              <Welcome contentKey={WorkspaceCategory.FishingActivity} />
-            </Suspense>
-          )}
-          {welcomePopupContentKey === WorkspaceCategory.MarineManager && (
-            <Suspense fallback={null}>
-              <Welcome contentKey={WorkspaceCategory.MarineManager} />
-            </Suspense>
-          )}
+          {/* fishing-activity and marine-manager are onboarded by the welcome side panel now —
+              features/_map/content-panel/welcome */}
           {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>
       )}

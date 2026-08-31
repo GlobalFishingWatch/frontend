@@ -55,7 +55,10 @@ export const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
 
 const helpHubSectionParams = (sectionSlug: HelpHubSectionSlug) => ({ sectionSlug })
 
-export const getPlatformNavSections = (t: TFunc): NavItem[] => [
+export const getPlatformNavSections = (
+  t: TFunc,
+  handlers: { onGetStartedClick: () => void }
+): NavItem[] => [
   {
     id: 'home',
     icon: 'home',
@@ -116,6 +119,11 @@ export const getPlatformNavSections = (t: TFunc): NavItem[] => [
     label: t((s) => s.nav.helpAndResources),
     to: ROUTE_PATHS.HELP_HUB,
     subsections: [
+      {
+        id: 'get-started',
+        label: t((s) => s.onboarding.getStarted, { defaultValue: 'Get started' }),
+        onClick: handlers.onGetStartedClick,
+      },
       {
         id: 'user-guide',
         label: t((s) => s.nav.toolsAndFeatures),

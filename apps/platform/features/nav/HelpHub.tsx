@@ -94,6 +94,15 @@ function HelpHub() {
           <button
             type="button"
             className={cx(styles.link)}
+            onClick={() => openSidePanel({ type: 'welcome' })}
+          >
+            {t((t) => t.onboarding.getStarted, { defaultValue: 'Get started' })}
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            className={cx(styles.link)}
             onClick={() => {
               trackEvent({
                 category: TrackCategory.HelpHints,

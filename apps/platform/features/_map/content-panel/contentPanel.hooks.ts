@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 type SidePanelTarget =
+  | { type: 'welcome'; id?: string; subcontentId?: string }
   | { type: 'userGuide'; id?: string; subcontentId?: string }
   | { type: 'datasets'; id: string; subcontentId?: string }
   | { type: 'userDataset'; id: string; subcontentId?: string }
