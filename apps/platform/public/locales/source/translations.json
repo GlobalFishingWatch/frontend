@@ -933,6 +933,28 @@
     "useCases": "Use Cases",
     "vessels": "Vessels"
   },
+  "onboarding": {
+    "areaReport": {
+      "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
+      "title": "Run a report on an area"
+    },
+    "assistant": {
+      "description": "Tell the GFW AI agent what you would like to analyse and it will customise the view for your needs.",
+      "title": "Chat with the analysis copilot"
+    },
+    "getStarted": "Get started",
+    "header": "Welcome",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or learn more <1>here</1>.",
+    "searchVessel": {
+      "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
+      "title": "Search for a vessel"
+    },
+    "title": "What would you like to do today?",
+    "userGuide": {
+      "description": "We support the understanding, visualization and analysis needs of governments, researchers, NGOs, journalists and more.",
+      "title": "Learn how to use the tools"
+    }
+  },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
