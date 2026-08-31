@@ -22,6 +22,7 @@ import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 import { getActiveDatasetsInDataview } from 'features/_map/datasets/datasets.utils'
 import i18n, { t } from 'features/i18n/i18n'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { getPorts, getPortsByIds } from 'utils/ports'
@@ -298,23 +299,33 @@ const getFilterOptionsSelectedInDataview = (
       },
     ])
   }
-  if (
-    filter === 'visibleValues' &&
-    (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
-  ) {
+  if (filter === 'visibleValues') {
+    const { minVisibleValue, maxVisibleValue } = dataview.config || {}
+    if (minVisibleValue === undefined && maxVisibleValue === undefined) {
+      return []
+    }
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
+    // Activity and detections datasets carry no usable static range: it is either absent, so
+    // getEnvironmentalDatasetRange returns NaN, or a placeholder 0/0. Either way an unset bound
+    // stays unbounded rather than being shown as a bogus 0
     const layerRange = getEnvironmentalDatasetRange(dataset)
-    const min = dataview.config?.minVisibleValue || layerRange?.min
-    const max = dataview.config?.maxVisibleValue || layerRange?.max
+    const hasStaticRange =
+      !isNaN(layerRange?.min) &&
+      !isNaN(layerRange?.max) &&
+      (layerRange.min !== 0 || layerRange.max !== 0)
+    const min = minVisibleValue ?? (hasStaticRange ? layerRange.min : undefined)
+    const max = maxVisibleValue ?? (hasStaticRange ? layerRange.max : undefined)
+    // Activity and detections are counts and hours, so the decimals the ckmeans ramp breaks
+    // carry are noise. Environmental units can be genuinely fractional, so those keep them.
+    // Matches how the legend itself rounds (see MapLegend's roundValues).
+    const format = (value: number) =>
+      formatI18nNumber(
+        dataview.category === DataviewCategory.Environment ? value : Math.round(value)
+      ) as string
+    // The deck layers compare inclusively, hence ≥ / ≤ rather than > / <
     return [
-      {
-        id: min.toString(),
-        label: min,
-      },
-      {
-        id: max.toString(),
-        label: max,
-      },
+      ...(min !== undefined ? [{ id: `min-${min}`, label: `≥ ${format(min)}` }] : []),
+      ...(max !== undefined ? [{ id: `max-${max}`, label: `≤ ${format(max)}` }] : []),
     ]
   }
 

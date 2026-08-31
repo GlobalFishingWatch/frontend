@@ -40,8 +40,6 @@ export type FourwingsFeaturesToTimeseriesParams = {
   interval: FourwingsInterval
   staticHeatmap?: boolean
   aggregationOperation?: FourwingsAggregationOperation
-  minVisibleValue?: number
-  maxVisibleValue?: number
   sublayers: FourwingsDeckSublayer[]
 }
 export const fourwingsFeaturesToTimeseries = (
@@ -52,8 +50,6 @@ export const fourwingsFeaturesToTimeseries = (
     staticHeatmap,
     interval,
     aggregationOperation,
-    minVisibleValue,
-    maxVisibleValue,
     sublayers,
     compareStart,
     compareEnd,
@@ -83,8 +79,6 @@ export const fourwingsFeaturesToTimeseries = (
       compareStart,
       compareEnd,
       aggregationOperation,
-      minVisibleValue,
-      maxVisibleValue,
     }
 
     const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(
@@ -171,8 +165,6 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
     compareStart: props.compareStart,
     compareEnd: props.compareEnd,
     aggregationOperation: instance.getAggregationOperation(),
-    minVisibleValue: props.minVisibleValue,
-    maxVisibleValue: props.maxVisibleValue,
     sublayers,
   }
   return fourwingsFeaturesToTimeseries(features, params)[0]
