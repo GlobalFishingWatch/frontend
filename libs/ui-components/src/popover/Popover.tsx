@@ -6,6 +6,7 @@ import {
   flip,
   FloatingArrow,
   FloatingFocusManager,
+  FloatingPortal,
   offset,
   shift,
   useClick,
@@ -28,8 +29,13 @@ export type PopoverProps = {
   open?: boolean
   initialOpen?: boolean
   strategy?: UseFloatingOptions['strategy']
+  portal?: boolean
   onOpenChange?: (open: boolean, event?: MouseEvent, reason?: string) => void
   onClickOutside?: () => void
+}
+
+function OptionalPortal({ enabled, children }: { enabled: boolean; children: React.ReactNode }) {
+  return enabled ? <FloatingPortal>{children}</FloatingPortal> : <Fragment>{children}</Fragment>
 }
 
 export function Popover({
@@ -41,6 +47,7 @@ export function Popover({
   initialOpen,
   placement,
   strategy = 'fixed',
+  portal = false,
   open: controlledOpen = false,
   onOpenChange: setControlledOpen,
   onClickOutside,
@@ -87,20 +94,22 @@ export function Popover({
       {React.isValidElement(children) &&
         React.cloneElement(children, getReferenceProps({ ref: refs.setReference }))}
       {isOpen && (
-        <FloatingFocusManager context={context} modal={false}>
-          <div
-            className={cx(styles.contentContainer, className)}
-            ref={refs.setFloating}
-            style={floatingStyles}
-            {...(ariaLabel && {
-              'aria-label': ariaLabel,
-            })}
-            {...getFloatingProps()}
-          >
-            {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
-            {React.isValidElement(content) && content}
-          </div>
-        </FloatingFocusManager>
+        <OptionalPortal enabled={portal}>
+          <FloatingFocusManager context={context} modal={false}>
+            <div
+              className={cx(styles.contentContainer, className)}
+              ref={refs.setFloating}
+              style={floatingStyles}
+              {...(ariaLabel && {
+                'aria-label': ariaLabel,
+              })}
+              {...getFloatingProps()}
+            >
+              {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
+              {React.isValidElement(content) && content}
+            </div>
+          </FloatingFocusManager>
+        </OptionalPortal>
       )}
     </Fragment>
   )

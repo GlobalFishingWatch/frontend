@@ -2,6 +2,8 @@ import React, { Fragment, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 
+import type { ColorRampBrushRange } from './ColorRampBrush'
+import { ColorRampBrush } from './ColorRampBrush'
 import {
   formatLegendValue,
   parseLegendNumber,
@@ -18,6 +20,12 @@ type ColorRampLegendProps = {
   roundValues?: boolean
   currentValueClassName?: string
   labelComponent?: React.ReactNode
+  brushRange?: ColorRampBrushRange
+  onBrushChange?: (range: ColorRampBrushRange) => void
+  brushLabel?: string
+  brushMinLabel?: string
+  brushMaxLabel?: string
+  brushRemoveLabel?: string
 }
 
 export function ColorRampLegend({
@@ -26,17 +34,35 @@ export function ColorRampLegend({
   roundValues = true,
   currentValueClassName = '',
   labelComponent = null,
+  brushRange,
+  onBrushChange,
+  brushLabel = 'Filter values',
+  brushMinLabel = 'Min',
+  brushMaxLabel = 'Max',
+  brushRemoveLabel = 'Remove value filter',
 }: ColorRampLegendProps) {
   const { gridArea, values, colors, loading, label, unit, currentValue, type } = layer
   // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
   const omitFirstBucket = !layer.divergent
-  const domainValues = omitFirstBucket ? values?.slice(1) : values
+
+  const domainValues = useMemo(
+    () => (omitFirstBucket ? values?.slice(1) : values),
+    [omitFirstBucket, values]
+  )
   const cleanValues = values?.filter((value) => value)
   const skipOddLabels = cleanValues && cleanValues.length >= 6 && !layer.divergent
 
+  const stepPercents = useMemo(() => {
+    if (!domainValues?.length) return []
+    const isDiscrete = type === 'colorramp-discrete' && !!colors?.length
+    return domainValues.map((_, i) =>
+      isDiscrete ? ((i + 1) * 100) / colors.length : (i * 100) / domainValues.length
+    )
+  }, [domainValues, colors, type])
+
   // This scale is only used to draw non discrete gradient, and current value positioning
   const heatmapLegendScale = useMemo(() => {
-    if (!values || !domainValues) return null
+    if (!values || !domainValues || !stepPercents.length) return null
 
     // Reuse d3 logic when values go beyond max value
     const adjustedDomain = [...domainValues]
@@ -44,13 +70,11 @@ export function ColorRampLegend({
       adjustedDomain[0] = adjustedDomain[1] + adjustedDomain[2]
     }
 
-    const rangeValues = adjustedDomain.map((item, i) => (i * 100) / adjustedDomain.length)
-
     return (value: number) => {
-      const scaled = scaleLinear().range(rangeValues).domain(adjustedDomain)(value)
+      const scaled = scaleLinear().range(stepPercents).domain(adjustedDomain)(value)
       return isNaN(scaled) || scaled < 0 ? 0 : scaled
     }
-  }, [domainValues, values])
+  }, [domainValues, values, stepPercents])
 
   const backgroundStyle = useMemo(() => {
     if (!colors || type === 'colorramp-discrete') return {}
@@ -163,6 +187,19 @@ export function ColorRampLegend({
                 ))}
               </div>
             )}
+            {onBrushChange && heatmapLegendScale && !layer.divergent && (
+              <ColorRampBrush
+                domainValues={domainValues as number[]}
+                stepPercents={stepPercents}
+                valueToPercent={heatmapLegendScale}
+                range={brushRange || [undefined, undefined]}
+                onChange={onBrushChange}
+                label={brushLabel}
+                minLabel={brushMinLabel}
+                maxLabel={brushMaxLabel}
+                removeLabel={brushRemoveLabel}
+              />
+            )}
           </div>
           <div className={styles.stepsContainer}>
             {domainValues.map((value, i) => {
@@ -189,7 +226,7 @@ export function ColorRampLegend({
                     [styles.lastStep]:
                       !skipOddLabels && !layer.divergent && i === domainValues.length - 1,
                   })}
-                  style={{ left: `${(i * 100) / domainValues.length}%` }}
+                  style={{ left: `${stepPercents[i]}%` }}
                   key={i}
                 >
                   {getValueLabel(valueLabel)}

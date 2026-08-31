@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { BivariateLegend } from './Bivariate'
 import { ColorRampLegend } from './ColorRamp'
+import type { ColorRampBrushRange } from './ColorRampBrush'
 import { SolidLegend } from './Solid'
 import { SymbolsLegend } from './Symbols'
 import type {
@@ -21,6 +22,12 @@ interface MapLegendProps {
   layer: UILegend
   labelComponent?: React.ReactNode
   roundValues?: boolean
+  brushRange?: ColorRampBrushRange
+  onBrushChange?: (range: ColorRampBrushRange) => void
+  brushLabel?: string
+  brushMinLabel?: string
+  brushMaxLabel?: string
+  brushRemoveLabel?: string
 }
 
 interface MapLegendsProps extends Omit<MapLegendProps, 'layer'> {
@@ -33,6 +40,12 @@ export function MapLegend({
   currentValueClassName,
   labelComponent,
   roundValues,
+  brushRange,
+  onBrushChange,
+  brushLabel,
+  brushMinLabel,
+  brushMaxLabel,
+  brushRemoveLabel,
 }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'symbols') {
@@ -49,6 +62,12 @@ export function MapLegend({
         roundValues={roundValues}
         currentValueClassName={currentValueClassName}
         labelComponent={labelComponent}
+        brushRange={brushRange}
+        onBrushChange={onBrushChange}
+        brushLabel={brushLabel}
+        brushMinLabel={brushMinLabel}
+        brushMaxLabel={brushMaxLabel}
+        brushRemoveLabel={brushRemoveLabel}
       />
     )
   }
