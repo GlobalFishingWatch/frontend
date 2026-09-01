@@ -7,8 +7,6 @@ import { InputText } from '../input-text'
 import { Popover } from '../popover'
 import { Tooltip } from '../tooltip'
 
-import { roundLegendNumber } from './map-legend.utils'
-
 import styles from './ColorRampBrush.module.css'
 
 export type ColorRampBrushRange = [number | undefined, number | undefined]
@@ -24,6 +22,7 @@ type ColorRampBrushProps = ColorRampBrushConfig & {
   valueToPercent: (value: number) => number
   percentToValue: (percent: number) => number
   formatValue: (value: number) => string
+  roundValue: (value: number) => number
 }
 
 type Bound = 0 | 1
@@ -52,6 +51,7 @@ export function ColorRampBrush({
   valueToPercent,
   percentToValue,
   formatValue,
+  roundValue,
 }: ColorRampBrushProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [state, setDrag] = useState<Drag>()
@@ -75,8 +75,8 @@ export function ColorRampBrush({
     const low = Math.min(...next)
     const high = Math.max(...next)
     const committed: ColorRampBrushRange = [
-      low <= 0 ? undefined : roundLegendNumber(percentToValue(low)),
-      high >= 100 ? undefined : roundLegendNumber(percentToValue(high)),
+      low <= 0 ? undefined : roundValue(percentToValue(low)),
+      high >= 100 ? undefined : roundValue(percentToValue(high)),
     ]
     if (committed[0] === min && committed[1] === max) {
       setDrag(undefined)

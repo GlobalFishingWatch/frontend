@@ -19,7 +19,11 @@ import { getEventLabel } from 'utils/analytics'
 
 import styles from './MapLegend.module.css'
 
-const BRUSH_CATEGORIES = [DataviewCategory.Activity, DataviewCategory.Detections]
+const BRUSH_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+]
 
 type LegendScale = {
   domain: number[]

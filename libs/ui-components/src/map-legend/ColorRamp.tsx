@@ -7,6 +7,7 @@ import { ColorRampBrush } from './ColorRampBrush'
 import {
   formatLegendValue,
   parseLegendNumber,
+  roundLegendDecimals,
   roundLegendNumber,
   SCIENTIFIC_NOTATION_E,
 } from './map-legend.utils'
@@ -218,6 +219,7 @@ export function ColorRampLegend({
                 valueToPercent={brushValueToPercent}
                 percentToValue={percentToValue}
                 formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
+                roundValue={roundValues ? roundLegendNumber : roundLegendDecimals}
               />
             )}
           </div>

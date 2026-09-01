@@ -15,7 +15,6 @@ import {
   datasetHasFilterAllowed,
   getDatasetFilterItem,
   getDatasetFiltersAllowed,
-  getEnvironmentalDatasetRange,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -304,17 +303,6 @@ const getFilterOptionsSelectedInDataview = (
     if (minVisibleValue === undefined && maxVisibleValue === undefined) {
       return []
     }
-    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-    // Activity and detections datasets carry no usable static range: it is either absent, so
-    // getEnvironmentalDatasetRange returns NaN, or a placeholder 0/0. Either way an unset bound
-    // stays unbounded rather than being shown as a bogus 0
-    const layerRange = getEnvironmentalDatasetRange(dataset)
-    const hasStaticRange =
-      !isNaN(layerRange?.min) &&
-      !isNaN(layerRange?.max) &&
-      (layerRange.min !== 0 || layerRange.max !== 0)
-    const min = minVisibleValue ?? (hasStaticRange ? layerRange.min : undefined)
-    const max = maxVisibleValue ?? (hasStaticRange ? layerRange.max : undefined)
     // Activity and detections are counts and hours, so the decimals the ckmeans ramp breaks
     // carry are noise. Environmental units can be genuinely fractional, so those keep them.
     // Matches how the legend itself rounds (see MapLegend's roundValues).
@@ -322,10 +310,17 @@ const getFilterOptionsSelectedInDataview = (
       formatI18nNumber(
         dataview.category === DataviewCategory.Environment ? value : Math.round(value)
       ) as string
-    // The deck layers compare inclusively, hence ≥ / ≤ rather than > / <
+    // The deck layers compare inclusively, hence ≥ / ≤ rather than > / <.
+    // Only a bound actually present in the config gets a tag: environmental datasets do carry a
+    // static range, and the unset side used to fall back to it, but since the legend brush landed
+    // that rendered an untouched handle as a filter nobody applied
     return [
-      ...(min !== undefined ? [{ id: `min-${min}`, label: `≥ ${format(min)}` }] : []),
-      ...(max !== undefined ? [{ id: `max-${max}`, label: `≤ ${format(max)}` }] : []),
+      ...(minVisibleValue !== undefined
+        ? [{ id: `min-${minVisibleValue}`, label: `≥ ${format(minVisibleValue)}` }]
+        : []),
+      ...(maxVisibleValue !== undefined
+        ? [{ id: `max-${maxVisibleValue}`, label: `≤ ${format(maxVisibleValue)}` }]
+        : []),
     ]
   }
 
