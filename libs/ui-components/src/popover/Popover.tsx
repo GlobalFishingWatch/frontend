@@ -60,7 +60,7 @@ export function Popover({
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: (nextOpen, event, reason) => {
-      setOpen(nextOpen)
+      setOpen(nextOpen, event as MouseEvent | undefined, reason)
       if (reason === 'escape-key' || reason === 'outside-press') {
         onClickOutside?.()
       }

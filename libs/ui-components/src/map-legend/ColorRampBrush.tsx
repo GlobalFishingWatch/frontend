@@ -23,6 +23,8 @@ type ColorRampBrushProps = ColorRampBrushConfig & {
   percentToValue: (percent: number) => number
   formatValue: (value: number) => string
   roundValue: (value: number) => number
+  /** First break of the ramp, ie. the lowest value it prints */
+  rampMin: number
 }
 
 type Bound = 0 | 1
@@ -52,8 +54,10 @@ export function ColorRampBrush({
   percentToValue,
   formatValue,
   roundValue,
+  rampMin,
 }: ColorRampBrushProps) {
   const trackRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const [state, setDrag] = useState<Drag>()
   const [editing, setEditing] = useState<Bound>()
 
@@ -148,17 +152,26 @@ export function ColorRampBrush({
     commit(next)
   }
 
+  const lowest = roundValue(rampMin)
+
   const commitBound = (bound: Bound, raw: string) => {
     const trimmed = raw.trim()
-    const value = trimmed === '' ? undefined : Number(trimmed)
-    if (value !== undefined && isNaN(value)) {
+    const typed = trimmed === '' ? undefined : Number(trimmed)
+    if (typed !== undefined && isNaN(typed)) {
       return
     }
+    const value = typed === undefined || typed === 0 || typed <= lowest ? undefined : typed
     const next: ColorRampBrushRange = [min, max]
     next[bound] = value
     if (next[0] !== min || next[1] !== max) {
       onChange(sorted(next))
     }
+  }
+
+  const closeAndCommit = (bound: Bound) => {
+    const raw = inputRef.current?.value ?? ''
+    setEditing(undefined)
+    commitBound(bound, raw)
   }
 
   const [low, high] = [Math.min(...percents), Math.max(...percents)]
@@ -220,22 +233,31 @@ export function ColorRampBrush({
       </div>
       {editing !== undefined && (
         <Popover
-          placement="bottom"
-          portal
-          ariaLabel={'Filter values'}
           open
-          onOpenChange={(open) => !open && setEditing(undefined)}
+          portal
+          placement="bottom"
+          ariaLabel={'Filter values'}
+          onOpenChange={(open, _event, reason) => {
+            if (open) {
+              return
+            }
+            if (reason === 'escape-key') {
+              setEditing(undefined)
+            } else {
+              closeAndCommit(editing)
+            }
+          }}
           className={styles.popoverContainer}
           content={
             <div className={styles.popover}>
               <InputText
                 key={editing}
+                ref={inputRef}
                 type="number"
                 inputSize="small"
                 aria-label={editing === 0 ? 'min' : ' max'}
                 defaultValue={(editing === 0 ? min : max) ?? ''}
-                onBlur={(event) => commitBound(editing, event.target.value)}
-                onKeyDown={(event) => event.key === 'Enter' && event.currentTarget.blur()}
+                onKeyDown={(event) => event.key === 'Enter' && closeAndCommit(editing)}
               />
               <IconButton
                 icon="delete"

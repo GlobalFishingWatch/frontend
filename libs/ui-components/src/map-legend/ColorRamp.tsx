@@ -220,6 +220,7 @@ export function ColorRampLegend({
                 percentToValue={percentToValue}
                 formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
                 roundValue={roundValues ? roundLegendNumber : roundLegendDecimals}
+                rampMin={rampScale.domain()[0] as number}
               />
             )}
           </div>
