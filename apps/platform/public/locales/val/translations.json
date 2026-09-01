@@ -451,7 +451,6 @@
         "noPolygonData": "crwdns132559:0crwdne132559:0"
       },
       "name": "crwdns132561:0{{min}}crwdne132561:0",
-      "reservedBandName": "crwdns138419:0{{band}}crwdnd138419:0{{reserved}}crwdne138419:0",
       "shapefile": {
         "invalidData": "crwdns132563:0crwdne132563:0",
         "invalidMultipleFiles": "crwdns132565:0crwdne132565:0",
@@ -465,7 +464,7 @@
     "fieldPlaceholder": "crwdns132577:0crwdne132577:0",
     "gridded": {
       "aggregation": "crwdns138421:0crwdne138421:0",
-      "bandName": "crwdns138423:0{{band}}crwdne138423:0",
+      "band": "crwdns138431:0crwdne138431:0",
       "unit": "crwdns138425:0crwdne138425:0",
       "unitPlaceholder": "crwdns138427:0crwdne138427:0"
     },
@@ -665,6 +664,13 @@
     "loitering_other": "crwdns132917:0crwdne132917:0",
     "loiteringAction": "crwdns132919:0{{start}}crwdnd132919:0{{duration}}crwdne132919:0",
     "loiteringActionIn": "crwdns132921:0{{regionName}}crwdne132921:0",
+    "longlineCategoryEntirelyDay": "crwdns138433:0crwdne138433:0",
+    "longlineCategoryEntirelyNight": "crwdns138435:0crwdne138435:0",
+    "longlineCategoryMostlyDay": "crwdns138437:0crwdne138437:0",
+    "longlineCategoryMostlyNight": "crwdns138439:0crwdne138439:0",
+    "longlineSet": "crwdns138441:0{{category}}crwdne138441:0",
+    "longlineSetAction": "crwdns138443:0{{category}}crwdnd138443:0{{start}}crwdnd138443:0{{duration}}crwdne138443:0",
+    "longlineSetActionIn": "crwdns138445:0{{regionName}}crwdne138445:0",
     "minuteAbbreviated": "crwdns132923:0{{count}}crwdne132923:0",
     "minuteAbbreviated_one": "crwdns132925:0{{count}}crwdne132925:0",
     "minuteAbbreviated_other": "crwdns132929:0{{count}}crwdne132929:0",
@@ -886,6 +892,7 @@
     "highRes": "crwdns133297:0crwdne133297:0",
     "highResDisabled": "crwdns133299:0crwdne133299:0",
     "legend_help": "crwdns133301:0crwdne133301:0",
+    "legendBrushHelp": "crwdns138461:0crwdne138461:0",
     "loading": "crwdns133303:0crwdne133303:0",
     "lowRes": "crwdns133305:0crwdne133305:0",
     "mapLoadingWait": "crwdns133307:0crwdne133307:0",
@@ -1331,15 +1338,22 @@
       "IUUBlackListsCount": "crwdns134111:0crwdne134111:0",
       "IUUBlackListsEmpty": "crwdns134113:0crwdne134113:0",
       "longline": "crwdns134119:0crwdne134119:0",
+      "longlineDownload": "crwdns138447:0crwdne138447:0",
       "longlineEntirelyDaySets_one": "crwdns134121:0{{count}}crwdne134121:0",
       "longlineEntirelyDaySets_other": "crwdns134125:0{{count}}crwdne134125:0",
+      "longlineEntirelyDaySetsLabel": "crwdns138449:0crwdne138449:0",
       "longlineEntirelyNightSets_one": "crwdns134127:0{{count}}crwdne134127:0",
       "longlineEntirelyNightSets_other": "crwdns134131:0{{count}}crwdne134131:0",
+      "longlineEntirelyNightSetsLabel": "crwdns138451:0crwdne138451:0",
       "longlineEventsEmpty": "crwdns134133:0crwdne134133:0",
+      "longlineHideFromMap": "crwdns138453:0crwdne138453:0",
       "longlineMostlyDaySets_one": "crwdns134135:0{{count}}crwdne134135:0",
       "longlineMostlyDaySets_other": "crwdns134139:0{{count}}crwdne134139:0",
+      "longlineMostlyDaySetsLabel": "crwdns138455:0crwdne138455:0",
       "longlineMostlyNightSets_one": "crwdns134141:0{{count}}crwdne134141:0",
       "longlineMostlyNightSets_other": "crwdns134145:0{{count}}crwdne134145:0",
+      "longlineMostlyNightSetsLabel": "crwdns138457:0crwdne138457:0",
+      "longlineShowOnMap": "crwdns138459:0crwdne138459:0",
       "MOULists": "crwdns134147:0crwdne134147:0",
       "MOUListsEmpty": "crwdns134149:0crwdne134149:0",
       "MOUParisBlackListsCount": "crwdns134151:0{{flags}}crwdne134151:0",
@@ -1550,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "crwdns134543:0{{count}}crwdnd134543:0{{vessels}}crwdne134543:0",
       "fishingInRfmoWithoutKnownAuthorization_other": "crwdns134547:0{{count}}crwdnd134547:0{{vessels}}crwdne134547:0",
       "gaps_one": "crwdns134549:0{{count}}crwdnd134549:0{{vessels}}crwdne134549:0",
-      "gaps_other": "crwdns134553:0{{count}}crwdnd134553:0{{vessels}}crwdne134553:0",
-      "longline_one": "crwdns134555:0{{count}}crwdnd134555:0{{vessels}}crwdne134555:0",
-      "longline_other": "crwdns134559:0{{count}}crwdnd134559:0{{vessels}}crwdne134559:0"
+      "gaps_other": "crwdns134553:0{{count}}crwdnd134553:0{{vessels}}crwdne134553:0"
     }
   },
   "workspace": {
