@@ -13,7 +13,12 @@ import type {
   DataviewType,
   Workspace,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EndpointId,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
   getDatasetConfiguration,
@@ -27,6 +32,7 @@ import {
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/deck-layers/config'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -250,6 +256,48 @@ export const resolveVesselDataviewInstance = (
     newDataviewInstance.datasetsConfig = datasetsConfig
   }
   return newDataviewInstance
+}
+
+const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightCategory', 'fishing.fractionAtNight']
+
+export const withLonglineSetsEvents = (
+  dataview: UrlDataviewInstance,
+  datasets: Dataset[]
+): UrlDataviewInstance => {
+  const isFishingEventsConfig = (datasetConfig: DataviewDatasetConfig) =>
+    datasetConfig.endpoint === EndpointId.Events &&
+    datasets.find(({ id }) => id === datasetConfig.datasetId)?.subcategory === EventTypes.Fishing
+
+  const fishingEventsConfig = dataview.datasetsConfig?.find(isFishingEventsConfig)
+  const hasLonglineDataset = datasets.some(({ id }) => id === LONGLINE_FISHING_EVENTS_DATASET)
+  if (!fishingEventsConfig || !hasLonglineDataset) {
+    return dataview
+  }
+  const query = fishingEventsConfig.query || []
+  const hasIncludesQuery = query.some((q) => q.id === 'includes')
+  const nextQuery = hasIncludesQuery
+    ? query.map((q) =>
+        q.id === 'includes'
+          ? { ...q, value: [...(q.value as string[]), ...LONGLINE_EVENTS_INCLUDES] }
+          : q
+      )
+    : [...query, { id: 'includes', value: LONGLINE_EVENTS_INCLUDES }]
+  const datasetsConfig = dataview.datasetsConfig!.map((datasetConfig) =>
+    datasetConfig === fishingEventsConfig
+      ? {
+          ...datasetConfig,
+          datasetId: LONGLINE_FISHING_EVENTS_DATASET,
+          query: nextQuery,
+        }
+      : datasetConfig
+  )
+  return {
+    ...dataview,
+    datasetsConfig,
+    datasets: datasetsConfig.flatMap(
+      (datasetConfig) => datasets.find(({ id }) => id === datasetConfig.datasetId) || []
+    ),
+  }
 }
 
 type VesselDataviewInstanceTemplateParams = {

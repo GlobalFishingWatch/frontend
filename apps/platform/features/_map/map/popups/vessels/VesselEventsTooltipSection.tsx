@@ -11,6 +11,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import type { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
+import { isLonglineSetEvent } from '@globalfishingwatch/deck-loaders'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
@@ -52,7 +53,7 @@ function EventDescription({
   const encounterVesselId = encounter?.vessel?.id
 
   const LinkComponent =
-    vesselId && vesselInfoDataset ? (
+    vesselId && vesselInfoDataset && !isLonglineSetEvent(event) ? (
       <VesselLink
         vesselId={vesselId}
         datasetId={vesselInfoDataset.id}

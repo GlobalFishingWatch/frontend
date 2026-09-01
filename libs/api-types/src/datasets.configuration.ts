@@ -34,7 +34,7 @@ export type UserContextLayerV1Configuration = {
 export const USER_FOURWINGS_VALUE_COLUMN = 'gfw_value'
 
 export type UserFourwingsV1Configuration = {
-  agregationMode: string
+  agregationMode: AggregationFunction
   bands?: string[]
   agregationColumn?: string
   bbox?: [number, number, number, number]
