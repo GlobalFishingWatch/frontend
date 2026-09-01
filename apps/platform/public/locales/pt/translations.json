@@ -451,7 +451,6 @@
         "noPolygonData": "Nenhum dado de polígono encontrado no KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
-      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Os dados do shapefile não possuem um tipo de geometria válido",
         "invalidMultipleFiles": "Ainda não há suporte para shapefiles contendo vários componentes (vários nomes de arquivo)",
@@ -465,7 +464,7 @@
     "fieldPlaceholder": "Selecione um campo do seu conjunto de dados",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name",
+      "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
     },
@@ -665,6 +664,13 @@
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "à deriva começou em {{start}} por {{duration}}",
     "loiteringActionIn": "Á deriva em {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -886,6 +892,7 @@
     "highRes": "Ver mapas de calor em alta resolução",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Área aproximada de células do grid na região do Equador",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Carregando",
     "lowRes": "Ver mapas de calor em baixa resolução",
     "mapLoadingWait": "Por favor, aguarde até que o mapa carregar",
@@ -1331,15 +1338,22 @@
       "IUUBlackListsCount": "A embarcação está presente em uma lista de embarcações de pesca INN das OROP",
       "IUUBlackListsEmpty": "A embarcação não está presente em uma lista de embarcações de pesca de INN das OROP",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Listas de MOU de Tóquio e Paris",
       "MOUListsEmpty": "Embarcação com uma bandeira/bandeiras não presente nas listas negra ou cinza do MOU de Tóquio ou Paris",
       "MOUParisBlackListsCount": "Bandeira presente na lista negra do MOU de Paris ({{flags}})",
@@ -1550,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} eventos de pesca de {{vessels}} embarcações detectadas em AMPs de pesca proibida",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcações detectadas em AMPs de pesca proibida",
       "gaps_one": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado",
-      "gaps_other": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado"
     }
   },
   "workspace": {
