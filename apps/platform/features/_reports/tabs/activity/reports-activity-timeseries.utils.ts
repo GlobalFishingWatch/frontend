@@ -10,8 +10,10 @@ import type {
   FourwingsLayerProps,
 } from '@globalfishingwatch/deck-layers'
 import {
+  aggregateCell,
   getIntervalFrames,
   HEATMAP_STATIC_PROPERTY_ID,
+  isSublayerValueVisible,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
 import type {
@@ -169,17 +171,22 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
   }
   return fourwingsFeaturesToTimeseries(features, params)[0]
 }
+
 export const getFourwingsTimeseriesStats = ({
   features,
   instance,
   start,
   end,
 }: GetFourwingsTimeseriesParams & TimeRange) => {
+  const sublayer = (instance.props as FourwingsLayerProps).sublayers?.[0]
+  const hasVisibleValuesFilter =
+    sublayer?.minVisibleValue !== undefined || sublayer?.maxVisibleValue !== undefined
   if (features?.[0]?.contained?.length > 0) {
     if ((instance as FourwingsLayer).props.static) {
-      const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
-        return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
-      })
+      // A static cell holds a single value, so it is the one the filter runs on
+      const allValues = (features[0].contained as FourwingsStaticFeature[])
+        .flatMap((f) => f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
+        .filter((value) => !hasVisibleValuesFilter || isSublayerValueVisible(value, sublayer))
       if (allValues.length > 0) {
         return {
           type: 'fourwings' as const,
@@ -205,7 +212,20 @@ export const getFourwingsTimeseriesStats = ({
         endFrame,
         startOffset: f.properties.startOffsets?.[0] || 0,
       })
-      return values || []
+      if (!values?.length) {
+        return []
+      }
+      if (!hasVisibleValuesFilter) {
+        return values
+      }
+      const [aggregatedValue] = aggregateCell({
+        cellValues: f.properties.values,
+        startFrame,
+        endFrame,
+        aggregationOperation: instance.getAggregationOperation(),
+        cellStartOffsets: f.properties.startOffsets,
+      })
+      return isSublayerValueVisible(aggregatedValue, sublayer) ? values : []
     })
     if (allValues.length > 0) {
       return {
