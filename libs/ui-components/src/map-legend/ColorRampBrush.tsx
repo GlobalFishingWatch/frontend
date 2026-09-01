@@ -200,6 +200,7 @@ export function ColorRampBrush({
           ariaLabel={'Filter values'}
           open
           onOpenChange={(open) => !open && setEditing(undefined)}
+          className={styles.popoverContainer}
           content={
             <div className={styles.popover}>
               <InputText
@@ -213,7 +214,7 @@ export function ColorRampBrush({
               />
               <IconButton
                 icon="delete"
-                size="small"
+                size="medium"
                 testId="color-ramp-brush-remove"
                 onClick={() => {
                   setEditing(undefined)

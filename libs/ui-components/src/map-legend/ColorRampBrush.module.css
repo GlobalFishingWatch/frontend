@@ -92,11 +92,15 @@
   pointer-events: none;
 }
 
+.popoverContainer {
+  border-radius: var(--border-radius-1);
+}
+
 .popover {
   display: flex;
   align-items: center;
-  gap: var(--space-S);
-  padding: var(--space-S);
+  gap: var(--space-XS);
+  padding: var(--space-XS) var(--space-S);
 }
 
 .popover input {
