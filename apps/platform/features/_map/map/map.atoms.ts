@@ -6,10 +6,6 @@ import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 // MAP INSTANCE
 export const mapInstanceAtom = atom<Deck<MapView> | undefined>(undefined)
 
-// MAP SEARCH
-/** One-shot request to open the map area search bar from outside MapSearch (onboarding panel). */
-export const mapSearchOpenRequestAtom = atom(false)
-
 // BOUNDS
 type BoundsAtom = MiniglobeBounds & { isTransitioning?: boolean }
 export const boundsAtom = atom<BoundsAtom>({
