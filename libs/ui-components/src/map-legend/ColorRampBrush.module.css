@@ -135,5 +135,25 @@
 }
 
 .popover input {
-  width: 9rem;
+  field-sizing: content;
+  min-width: 9rem;
+  max-width: 18rem;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+}
+
+.inputHint {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  display: flex;
+  gap: 0.3rem;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  opacity: var(--opacity-secondary);
+  transform: translateY(-50%);
+  pointer-events: none;
 }

@@ -49,6 +49,7 @@ export function ColorRampBrush({
   onChange,
   className,
   handleTooltip,
+  unit,
   valueToPercent,
   percentToValue,
   formatValue,
@@ -245,15 +246,20 @@ export function ColorRampBrush({
           className={styles.popoverContainer}
           content={
             <div className={styles.popover}>
-              <InputText
-                key={editing}
-                ref={inputRef}
-                type="number"
-                inputSize="small"
-                aria-label={editing === 0 ? 'min' : ' max'}
-                defaultValue={(editing === 0 ? min : max) ?? ''}
-                onKeyDown={(event) => event.key === 'Enter' && closeAndCommit(editing)}
-              />
+              <Tooltip content={unit}>
+                <div className={styles.inputWrapper}>
+                  <InputText
+                    key={editing}
+                    ref={inputRef}
+                    type="number"
+                    inputSize="small"
+                    aria-label={editing === 0 ? 'min' : ' max'}
+                    defaultValue={(editing === 0 ? min : max) ?? ''}
+                    onKeyDown={(event) => event.key === 'Enter' && closeAndCommit(editing)}
+                  />
+                  {/* <span className={styles.inputHint}>⏎</span> */}
+                </div>
+              </Tooltip>
               <IconButton
                 icon="delete"
                 size="medium"

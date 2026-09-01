@@ -139,6 +139,7 @@ const MapLegendWrapper = ({
       ? deckLegend.currentValues
       : deckLegend.currentValues?.[sublayerIndex],
     label: deckLegend.label || '',
+    unit: deckLegend.unit,
   }
 
   const showBrush =
