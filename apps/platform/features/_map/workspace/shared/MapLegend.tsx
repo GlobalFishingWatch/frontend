@@ -80,7 +80,6 @@ const MapLegendWrapper = ({
 
   const onBrushChange = useCallback(
     ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange) => {
-      // Written against the dataview id, not the merged layer id every activity dataview shares
       upsertDataviewInstance({ id: dataview.id, config: { minVisibleValue, maxVisibleValue } })
       trackEvent({
         category: TrackCategory.ActivityData,

@@ -16,6 +16,7 @@ export type ColorRampBrushConfig = {
   onChange: (range: ColorRampBrushRange) => void
   className?: string
   handleTooltip?: string
+  unit?: string
 }
 
 type ColorRampBrushProps = ColorRampBrushConfig & {
@@ -23,8 +24,6 @@ type ColorRampBrushProps = ColorRampBrushConfig & {
   percentToValue: (percent: number) => number
   formatValue: (value: number) => string
   roundValue: (value: number) => number
-  /** First break of the ramp, ie. the lowest value it prints */
-  rampMin: number
 }
 
 type Bound = 0 | 1
@@ -54,7 +53,6 @@ export function ColorRampBrush({
   percentToValue,
   formatValue,
   roundValue,
-  rampMin,
 }: ColorRampBrushProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -152,17 +150,14 @@ export function ColorRampBrush({
     commit(next)
   }
 
-  const lowest = roundValue(rampMin)
-
   const commitBound = (bound: Bound, raw: string) => {
     const trimmed = raw.trim()
     const typed = trimmed === '' ? undefined : Number(trimmed)
     if (typed !== undefined && isNaN(typed)) {
       return
     }
-    const value = typed === undefined || typed === 0 || typed <= lowest ? undefined : typed
     const next: ColorRampBrushRange = [min, max]
-    next[bound] = value
+    next[bound] = typed
     if (next[0] !== min || next[1] !== max) {
       onChange(sorted(next))
     }
