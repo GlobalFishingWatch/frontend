@@ -63,9 +63,11 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       getFillColor,
       stroked: true,
       lineWidthUnits: 'pixels',
-      getLineWidth: 1,
-      getLineColor: (d: any): Color =>
-        isLonglineSetEvent(d) ? DEFAULT_BACKGROUND_COLOR : getFillColor(d),
+      lineWidthMinPixels: 0,
+      getLineWidth: (d: any) => (isLonglineSetEvent(d) ? 1 : 0),
+      getLineColor: (d: any): Color => {
+        return isLonglineSetEvent(d) ? DEFAULT_FISHING_EVENT_COLOR : getFillColor(d)
+      },
       radiusUnits: 'pixels',
       getRadius: (d: any) => {
         const size = d.type === EventTypes.Fishing ? 3 : 6

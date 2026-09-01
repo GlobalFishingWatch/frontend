@@ -6,6 +6,7 @@ import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'

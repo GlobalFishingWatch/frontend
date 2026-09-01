@@ -32,6 +32,7 @@ import {
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/deck-layers/config'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
