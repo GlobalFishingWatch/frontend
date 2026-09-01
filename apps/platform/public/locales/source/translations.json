@@ -451,7 +451,6 @@
         "noPolygonData": "No polygon data found in the KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
-      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Shapefile data does not have a valid geometry type",
         "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet",
@@ -465,7 +464,7 @@
     "fieldPlaceholder": "Select a field from your dataset",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name",
+      "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
     },

@@ -4,7 +4,15 @@ import cx from 'classnames'
 
 import type { AggregationFunction } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
-import { Button, Choice, InputText, Spinner, SwitchRow } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Choice,
+  InputText,
+  Select,
+  Spinner,
+  SwitchRow,
+} from '@globalfishingwatch/ui-components'
 
 import { getDatasetParsed } from 'features/_map/datasets/upload/datasets-parse.utils'
 import { useDatasetMetadata } from 'features/_map/datasets/upload/datasets-upload.hooks'
@@ -37,6 +45,7 @@ function NewGriddedDataset({
   const [dataParseError, setDataParseError] = useState('')
   const [processingData, setProcessingData] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [bandsCount, setBandsCount] = useState(0)
   const { datasetMetadata, setDatasetMetadata } = useDatasetMetadata()
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
@@ -46,8 +55,8 @@ function NewGriddedDataset({
     async (file: File) => {
       setProcessingData(true)
       try {
-        const bands = await getDatasetParsed(file, 'gridded')
-        setDatasetMetadata(getGriddedDatasetMetadata({ name: getFileName(file), bands }))
+        setBandsCount(await getDatasetParsed(file, 'gridded'))
+        setDatasetMetadata(getGriddedDatasetMetadata({ name: getFileName(file) }))
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
@@ -67,10 +76,14 @@ function NewGriddedDataset({
 
   const fourwingsConfig = getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')
   const agregationMode = fourwingsConfig.agregationMode ?? 'AVG'
-  const bands = fourwingsConfig.bands ?? []
+  const band = fourwingsConfig.band ?? 1
+  const bandOptions: SelectOption<number>[] = Array.from({ length: bandsCount }, (_, index) => ({
+    id: index + 1,
+    label: `${index + 1}`,
+  }))
 
   const setFourwingsConfig = useCallback(
-    (patch: { agregationMode?: AggregationFunction; bands?: string[] }) => {
+    (patch: { agregationMode?: AggregationFunction; band?: number }) => {
       setDatasetMetadata({
         configuration: {
           ...datasetMetadata.configuration,
@@ -86,13 +99,6 @@ function NewGriddedDataset({
       })
     },
     [datasetMetadata, setDatasetMetadata]
-  )
-
-  const setBandName = useCallback(
-    (index: number, name: string) => {
-      setFourwingsConfig({ bands: bands.map((band, i) => (i === index ? name : band)) })
-    },
-    [bands, setFourwingsConfig]
   )
 
   const onConfirmClick = useCallback(async () => {
@@ -156,19 +162,16 @@ function NewGriddedDataset({
           disabled={loading}
         />
       </div>
-      {bands.length > 1 &&
-        bands.map((band, index) => (
-          <InputText
-            key={index}
-            value={band}
-            label={t((t) => t.datasetUpload.gridded.bandName, { band: index + 1 })}
-            className={styles.input}
-            onChange={(e) => setBandName(index, e.target.value)}
-            disabled={loading || isEditing}
-          />
-        ))}
-      {errors.bands && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.bands}</p>}
-
+      {bandOptions.length > 1 && (
+        <Select
+          label={t((t) => t.datasetUpload.gridded.band)}
+          options={bandOptions}
+          selectedOption={bandOptions.find((option) => option.id === band)}
+          onSelect={(option) => setFourwingsConfig({ band: option.id })}
+          className={styles.input}
+          disabled={loading || isEditing}
+        />
+      )}
       <SwitchRow
         className={styles.saveAsPublic}
         label={t((t) => t.dataset.uploadPublic)}
