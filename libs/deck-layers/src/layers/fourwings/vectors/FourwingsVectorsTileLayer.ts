@@ -41,6 +41,7 @@ import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getTileDataCache,
   sliceCellValues,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
@@ -122,7 +123,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}-${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {

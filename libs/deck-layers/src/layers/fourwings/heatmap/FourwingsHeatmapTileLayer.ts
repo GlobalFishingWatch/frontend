@@ -75,6 +75,7 @@ import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getTileDataCache,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
@@ -136,7 +137,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}`
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {

@@ -122,9 +122,19 @@ describe('FourwingsHeatmapStaticLayer', () => {
 
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
-    expect(layer.cacheHash).toBe('teal|false')
+    expect(layer.cacheHash).toBe('teal|false|undefined-undefined')
     layer.state.rampDirty = true
-    expect(layer.cacheHash).toBe('teal|true')
+    expect(layer.cacheHash).toBe('teal|true|undefined-undefined')
+  })
+
+  // The report timeseries retriggers off cacheHash, and it honours min/maxVisibleValue even
+  // though the tile data does not change, so the bounds have to be part of the hash.
+  it('cacheHash changes when a visible-value bound changes', () => {
+    const unbounded = makeLayer()
+    const bounded = makeLayer({
+      sublayers: [{ ...baseProps.sublayers[0], maxVisibleValue: 2032 }],
+    })
+    expect(unbounded.cacheHash).not.toBe(bounded.cacheHash)
   })
 
   it('cacheHash changes when the sublayer color ramp changes', () => {
