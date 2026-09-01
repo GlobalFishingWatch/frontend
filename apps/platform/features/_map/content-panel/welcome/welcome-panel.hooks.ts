@@ -1,15 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import type { WelcomeCardId } from 'features/_map/content-panel/welcome/welcome-panel.config'
 import { setMapSearchOpenRequested } from 'features/_map/map/controls/map-controls.slice'
+import {
+  selectReadOnly,
+  selectScreenshotMode,
+} from 'features/_map/workspace/selectors/app.selectors'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { selectWelcomeModalKey } from 'features/modals/modals.selectors'
@@ -41,6 +46,7 @@ export function useWelcomePanelAutoOpen() {
   const isClientHydrated = useIsClientHydrated()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const readOnly = useSelector(selectReadOnly)
+  const screenshotMode = useSelector(selectScreenshotMode)
   // Deep sea mining keeps its own Welcome modal, so the two must not stack.
   const welcomeModalKey = useSelector(selectWelcomeModalKey)
   const { sidePanelContent } = useAppSearch()
@@ -53,10 +59,16 @@ export function useWelcomePanelAutoOpen() {
       !isClientHydrated ||
       dismissed ||
       readOnly ||
+      screenshotMode ||
       !isWorkspaceLocation ||
-      welcomeModalKey === 'deep-sea-mining' ||
-      sidePanelContent
+      welcomeModalKey === 'deep-sea-mining'
     ) {
+      return
+    }
+    if (sidePanelContent) {
+      if (sidePanelContent === 'welcome') {
+        autoOpened.current = true
+      }
       return
     }
     autoOpened.current = true
@@ -65,6 +77,7 @@ export function useWelcomePanelAutoOpen() {
     isClientHydrated,
     dismissed,
     readOnly,
+    screenshotMode,
     isWorkspaceLocation,
     welcomeModalKey,
     sidePanelContent,
@@ -122,8 +135,23 @@ export function useWelcomeCardActions() {
     openSidePanel({ type: 'chat' })
   }, [openSidePanel, track])
 
-  return useMemo(
-    () => ({ onSearchVesselClick, onAreaReportClick, onUserGuideClick, onAssistantClick }),
+  return useCallback(
+    (id: WelcomeCardId) => {
+      switch (id) {
+        case 'searchVessel':
+          onSearchVesselClick()
+          return
+        case 'areaReport':
+          onAreaReportClick()
+          return
+        case 'userGuide':
+          onUserGuideClick()
+          return
+        case 'assistant':
+          onAssistantClick()
+          return
+      }
+    },
     [onSearchVesselClick, onAreaReportClick, onUserGuideClick, onAssistantClick]
   )
 }
