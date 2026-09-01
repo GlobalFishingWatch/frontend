@@ -5,7 +5,6 @@ import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
 import type { Point } from 'geojson'
-import { useAtom } from 'jotai'
 
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -14,7 +13,10 @@ import { OCEAN_AREAS_DATAVIEWS } from 'data/map/dataviews'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { mapSearchOpenRequestAtom } from 'features/_map/map/map.atoms'
+import {
+  selectMapSearchOpenRequested,
+  setMapSearchOpenRequested,
+} from 'features/_map/map/controls/map-controls.slice'
 import { useMapSetViewState } from 'features/_map/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
@@ -40,7 +42,7 @@ const MapSearch = () => {
   const allDataviews = useSelector(selectAllDataviews)
   const { searchOceanAreas } = useOceanAreas()
   const navigateToAreaReport = useNavigateToAreaReport()
-  const [openRequested, setOpenRequested] = useAtom(mapSearchOpenRequestAtom)
+  const openRequested = useSelector(selectMapSearchOpenRequested)
 
   const fitBounds = useMapFitBounds()
   const setMapViewState = useMapSetViewState()
@@ -135,11 +137,11 @@ const MapSearch = () => {
   // the hint tooltip does not sit on top of an already open search.
   useEffect(() => {
     if (!openRequested) return
-    setOpenRequested(false)
+    dispatch(setMapSearchOpenRequested(false))
     dispatch(setHintDismissed('areaSearch'))
     openMenu()
     inputRef.current?.focus()
-  }, [openRequested, setOpenRequested, dispatch, openMenu])
+  }, [openRequested, dispatch, openMenu])
 
   return (
     <div className={styles.container}>

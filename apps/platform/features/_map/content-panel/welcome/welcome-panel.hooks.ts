@@ -7,8 +7,7 @@ import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
-import { mapSearchOpenRequestAtom } from 'features/_map/map/map.atoms'
-import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
+import { setMapSearchOpenRequested } from 'features/_map/map/controls/map-controls.slice'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
@@ -78,10 +77,10 @@ export function useWelcomePanelAutoOpen() {
  * the panel the card was clicked from.
  */
 export function useWelcomeCardActions() {
+  const dispatch = useAppDispatch()
   const router = useRouter()
   const workspace = useSelector(selectWorkspace)
   const { openSidePanel } = useSidePanel()
-  const requestMapSearchOpen = useSetAtom(mapSearchOpenRequestAtom)
 
   const track = useCallback((action: string) => {
     trackEvent({ category: TrackCategory.HelpHints, action: `onboarding panel - ${action}` })
@@ -109,11 +108,9 @@ export function useWelcomeCardActions() {
 
   const onAreaReportClick = useCallback(() => {
     track('run a report on an area')
-    // ponytail: only sets the request — MapSearch consumes it whenever it mounts. Add a navigate to
-    // the map here if the panel ever gets an entry point off a map route.
-    requestMapSearchOpen(true)
+    dispatch(setMapSearchOpenRequested(true))
     openSidePanel({ type: 'userGuide', ...getGuideTarget('analysis-and-dynamic-reports') })
-  }, [openSidePanel, requestMapSearchOpen, track])
+  }, [dispatch, openSidePanel, track])
 
   const onUserGuideClick = useCallback(() => {
     track('learn how to use the tools')
