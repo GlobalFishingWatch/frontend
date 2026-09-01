@@ -121,7 +121,7 @@ export const getPlatformNavSections = (
     subsections: [
       {
         id: 'get-started',
-        label: t((s) => s.onboarding.getStarted, { defaultValue: 'Get started' }),
+        label: t((s) => s.onboarding.getStarted),
         onClick: handlers.onGetStartedClick,
       },
       {
