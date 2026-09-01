@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers/config'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   ColorBar,
@@ -110,32 +111,37 @@ export default function ReportSummaryTags({
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
-        {showColor && !isBathymetryDataview(dataview) && (
-          <ExpandedContainer
-            visible={colorOpen}
-            onClickOutside={onToggleColorOpen}
-            className={styles.expandedContainer}
-            referenceClassName={styles.dotReference}
-            component={
-              <div>
-                {<label>{t((t) => t.layer.properties.color)}</label>}
-                <ColorBar
-                  colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={onColorClick}
-                  swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
-                  hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
-                />
-              </div>
-            }
-          >
-            <button
-              onClick={onToggleColorOpen}
-              className={styles.dot}
-              style={{ cursor: 'pointer', color: dataview.config?.color }}
-            />
-          </ExpandedContainer>
-        )}
+        {showColor &&
+          (isBathymetryDataview(dataview) ? (
+            <span className={styles.dot} style={{ color: HEATMAP_COLORS_BY_ID.bathymetry }} />
+          ) : (
+            <ExpandedContainer
+              visible={colorOpen}
+              onClickOutside={onToggleColorOpen}
+              className={styles.expandedContainer}
+              referenceClassName={styles.dotReference}
+              component={
+                <div>
+                  {<label>{t((t) => t.layer.properties.color)}</label>}
+                  <ColorBar
+                    colorBarOptions={
+                      colorType === 'line' ? LineColorBarOptions : FillColorBarOptions
+                    }
+                    selectedColor={dataview.config?.color}
+                    onColorClick={onColorClick}
+                    swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
+                    hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
+                  />
+                </div>
+              }
+            >
+              <button
+                onClick={onToggleColorOpen}
+                className={styles.dot}
+                style={{ cursor: 'pointer', color: dataview.config?.color }}
+              />
+            </ExpandedContainer>
+          ))}
         {showFilters && showSchemaFilters && !disabledFilters && (
           <ExpandedContainer
             onClickOutside={onToggleFiltersUIOpen}
