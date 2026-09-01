@@ -96,7 +96,7 @@ function HelpHub() {
             className={cx(styles.link)}
             onClick={() => openSidePanel({ type: 'welcome' })}
           >
-            {t((t) => t.onboarding.getStarted, { defaultValue: 'Get started' })}
+            {t((t) => t.onboarding.getStarted)}
           </button>
         </li>
         <li>
