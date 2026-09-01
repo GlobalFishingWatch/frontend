@@ -128,6 +128,7 @@ const MapLegendWrapper = ({
     type: deckLegend?.type,
     values: domain,
     colors,
+    gradient: !isBivariate && !isSymbols,
     currentValue: isBivariate
       ? deckLegend.currentValues
       : deckLegend.currentValues?.[sublayerIndex],

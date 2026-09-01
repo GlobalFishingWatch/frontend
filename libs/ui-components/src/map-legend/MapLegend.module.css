@@ -146,10 +146,6 @@
   line-height: 1.8rem;
 }
 
-.firstStep {
-  transform: translateX(0);
-}
-
 .lastStep {
   transform: translateX(-100%);
 }

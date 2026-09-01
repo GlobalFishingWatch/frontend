@@ -38,7 +38,7 @@ export function ColorRampLegend({
   labelComponent = null,
   brush,
 }: ColorRampLegendProps) {
-  const { gridArea, values, colors, loading, label, unit, currentValue, type } = layer
+  const { gridArea, values, colors, loading, label, unit, currentValue, type, gradient } = layer
   // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
   const omitFirstBucket = !layer.divergent
 
@@ -95,11 +95,18 @@ export function ColorRampLegend({
   )
 
   const backgroundStyle = useMemo(() => {
-    if (!colors || type === 'colorramp-discrete') return {}
-    return {
-      backgroundImage: `linear-gradient(to right, ${colors?.map((color) => color).join()})`,
+    if (!colors?.length) return {}
+    if (type !== 'colorramp-discrete') {
+      return {
+        backgroundImage: `linear-gradient(to right, ${colors?.map((color) => color).join()})`,
+      }
     }
-  }, [colors, type])
+    if (!gradient) return {}
+    const stops = colors.map((color, i) => `${color} ${(i * 100) / colors.length}%`)
+    return {
+      backgroundImage: `linear-gradient(to right, ${[...stops, `${colors[colors.length - 1]} 100%`].join()})`,
+    }
+  }, [colors, type, gradient])
 
   const Label = labelComponent ? (
     labelComponent
@@ -194,7 +201,7 @@ export function ColorRampLegend({
                 })}
               </span>
             )}
-            {type === 'colorramp-discrete' && (
+            {type === 'colorramp-discrete' && !gradient && (
               <div className={styles.discreteSteps}>
                 {colors.map((color, i) => (
                   <span
