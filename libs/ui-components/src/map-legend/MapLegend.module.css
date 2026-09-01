@@ -43,6 +43,10 @@
   position: absolute;
   inset: 0;
   border: var(--border);
+
+  /* Decorative border painted after the positioned children, so it would otherwise sit on top
+     of the brush (ColorRampBrush.module.css) and swallow the drag */
+  pointer-events: none;
 }
 
 .symbols {
@@ -140,10 +144,6 @@
   top: 0;
   transform: translateX(-50%);
   line-height: 1.8rem;
-}
-
-.firstStep {
-  transform: translateX(0);
 }
 
 .lastStep {

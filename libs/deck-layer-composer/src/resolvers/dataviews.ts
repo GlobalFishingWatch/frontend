@@ -137,6 +137,8 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     filterIds: config.filterIds,
+    minVisibleValue: config.minVisibleValue,
+    maxVisibleValue: config.maxVisibleValue,
     vesselGroups: config['vessel-groups'],
     vesselGroupsLength:
       dataview.vesselGroup?.vesselsSummary?.distinctRelationIds ??
@@ -181,8 +183,6 @@ export function getFourwingsDataviewsResolved(
               { ...sublayer, colorRamp: sublayer.color || DEFAULT_COLOR_RAMP_ID }
             : sublayer
         ),
-        minVisibleValue: dataviewsToMerge[0].config?.minVisibleValue,
-        maxVisibleValue: dataviewsToMerge[0].config?.maxVisibleValue,
         colorRampWhiteEnd,
         color: dataviewsToMerge[0].config?.color,
         group: dataviewsToMerge[0].config?.group,

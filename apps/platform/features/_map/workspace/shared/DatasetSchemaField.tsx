@@ -109,12 +109,10 @@ function DatasetSchemaField({
   const onRemoveFilterClick = useCallback(
     (tag: TagItem, tags: TagItem[]) => {
       if (field === 'visibleValues') {
+        const bound = tag.id.toString().startsWith('max-') ? 'maxVisibleValue' : 'minVisibleValue'
         upsertDataviewInstance({
           id: dataview.id,
-          config: {
-            minVisibleValue: undefined,
-            maxVisibleValue: undefined,
-          },
+          config: { [bound]: undefined },
         })
       } else {
         upsertDataviewInstance({
