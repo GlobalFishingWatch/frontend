@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { kebabCase } from 'es-toolkit'
 
@@ -10,10 +9,6 @@ import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
 import { getLonglineCategory, LONGLINE_CATEGORY_COLORS } from '@globalfishingwatch/deck-loaders'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { useHighlightedEventsConnect } from 'features/_map/timebar/timebar.hooks'
-import { useVesselEventBounds } from 'features/_vessels/vessel/activity/event/event.bounds'
-import { selectLonglineSetsOnMap } from 'features/_vessels/vessel/vessel.config.selectors'
-import { useVesselProfileLayer } from 'features/_vessels/vessel/vessel.hooks'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 
@@ -39,6 +34,8 @@ const LonglineSetsGraph = ({
   showEvents = true,
   renderCategoryContent,
   onCategoryToggle,
+  onEventHover,
+  onEventMapClick,
 }: {
   data?: ApiEvents['entries']
   loading?: boolean
@@ -47,31 +44,11 @@ const LonglineSetsGraph = ({
    * Only one category is open at a time, so the content can key its own state on the vessel alone */
   renderCategoryContent?: (events: ApiEvents['entries']) => ReactNode
   onCategoryToggle?: (category: LonglineCategory | null) => void
+  onEventHover?: (event?: VesselEvent) => void
+  onEventMapClick?: (event: VesselEvent) => void
 }) => {
   const { t } = useTranslation()
   const [openCategory, setOpenCategory] = useState<LonglineCategory | null>(null)
-  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
-  const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
-  const vesselLayer = useVesselProfileLayer()
-  const fitEventBounds = useVesselEventBounds(vesselLayer)
-
-  const onEventHover = useCallback(
-    (event?: VesselEvent) => {
-      dispatchHighlightedEvents(event?.id ? [event.id] : [])
-    },
-    [dispatchHighlightedEvents]
-  )
-
-  const onEventMapClick = useCallback(
-    (event: VesselEvent) => {
-      const { lon, lat } = event.position || {}
-      fitEventBounds({
-        ...event,
-        ...(lon !== undefined && lat !== undefined && { coordinates: [lon, lat] }),
-      } as VesselEvent)
-    },
-    [fitEventBounds]
-  )
 
   const sets = useMemo(() => {
     const groups: Record<LonglineCategory, ApiEvents['entries']> = {
@@ -164,8 +141,8 @@ const LonglineSetsGraph = ({
                       key={event.id}
                       event={event as VesselEvent}
                       className={insightStyles.event}
-                      onMapHover={longlineSetsOnMap ? onEventHover : undefined}
-                      onMapClick={longlineSetsOnMap ? onEventMapClick : undefined}
+                      onMapHover={onEventHover}
+                      onMapClick={onEventMapClick}
                     />
                   ))}
                 </ul>

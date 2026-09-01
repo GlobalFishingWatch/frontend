@@ -87,6 +87,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   }
 
   const onCategoryToggle = (category: LonglineCategory | null) => {
+    setOpenVesselId(null)
     if (category) {
       trackEvent({
         category: TrackCategory.VesselGroupReport,

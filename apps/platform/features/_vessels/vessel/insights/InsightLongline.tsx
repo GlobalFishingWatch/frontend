@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
@@ -9,24 +9,26 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import { useHighlightedEventsConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-events.hooks'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
+import { useVesselEventBounds } from 'features/_vessels/vessel/activity/event/event.bounds'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {
   selectLonglineSetsOnMap,
   selectVesselIdentityId,
   selectVesselIdentitySource,
-  selectVesselSection,
 } from 'features/_vessels/vessel/vessel.config.selectors'
 import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
+import { useVesselProfileLayer } from 'features/_vessels/vessel/vessel.hooks'
+import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
-import { LONGLINE_FISHING_EVENTS_DATASET } from './insights.config'
 import { removeNonTunaRFMO } from './insights.utils'
 import LonglineSetsGraph from './LonglineSetsGraph'
 
@@ -37,12 +39,14 @@ const InsightLongline = () => {
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
-  const vesselSection = useSelector(selectVesselSection)
   const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const { replaceQueryParams } = useReplaceQueryParams()
   const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const vesselLayer = useVesselProfileLayer()
+  const fitEventBounds = useVesselEventBounds(vesselLayer)
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
@@ -61,11 +65,23 @@ const InsightLongline = () => {
     dispatch(fetchDatasetsByIdsThunk({ ids: [LONGLINE_FISHING_EVENTS_DATASET] }))
   }, [dispatch])
 
-  useEffect(() => {
-    if (vesselSection !== 'insights' && longlineSetsOnMap) {
-      replaceQueryParams({ longlineSetsOnMap: undefined })
-    }
-  }, [vesselSection, longlineSetsOnMap, replaceQueryParams])
+  const onEventHover = useCallback(
+    (event?: VesselEvent) => {
+      dispatchHighlightedEvents(event?.id ? [event.id] : [])
+    },
+    [dispatchHighlightedEvents]
+  )
+
+  const onEventMapClick = useCallback(
+    (event: VesselEvent) => {
+      const { lon, lat } = event.position || {}
+      fitEventBounds({
+        ...event,
+        ...(lon !== undefined && lat !== undefined && { coordinates: [lon, lat] }),
+      } as VesselEvent)
+    },
+    [fitEventBounds]
+  )
 
   const onShowOnMapClick = () => {
     if (!longlineSetsOnMap) {
@@ -122,7 +138,11 @@ const InsightLongline = () => {
       ) : data.length === 0 ? (
         <p className={styles.secondary}>{t((t) => t.vessel.insights.longlineEventsEmpty)}</p>
       ) : (
-        <LonglineSetsGraph data={data.map(removeNonTunaRFMO)} />
+        <LonglineSetsGraph
+          data={data.map(removeNonTunaRFMO)}
+          onEventHover={longlineSetsOnMap ? onEventHover : undefined}
+          onEventMapClick={longlineSetsOnMap ? onEventMapClick : undefined}
+        />
       )}
     </div>
   )

@@ -56,7 +56,6 @@ import {
   isPrivateDataset,
   isRealTimeDataset,
 } from 'features/_map/datasets/datasets.utils'
-import { LONGLINE_FISHING_EVENTS_DATASET } from 'features/_vessels/vessel/insights/insights.config'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
 import { formatInfoField } from 'utils/info'
 
@@ -274,16 +273,21 @@ export const withLonglineSetsEvents = (
   if (!fishingEventsConfig || !hasLonglineDataset) {
     return dataview
   }
+  const query = fishingEventsConfig.query || []
+  const hasIncludesQuery = query.some((q) => q.id === 'includes')
+  const nextQuery = hasIncludesQuery
+    ? query.map((q) =>
+        q.id === 'includes'
+          ? { ...q, value: [...(q.value as string[]), ...LONGLINE_EVENTS_INCLUDES] }
+          : q
+      )
+    : [...query, { id: 'includes', value: LONGLINE_EVENTS_INCLUDES }]
   const datasetsConfig = dataview.datasetsConfig!.map((datasetConfig) =>
     datasetConfig === fishingEventsConfig
       ? {
           ...datasetConfig,
           datasetId: LONGLINE_FISHING_EVENTS_DATASET,
-          query: (datasetConfig.query || []).map((query) =>
-            query.id === 'includes'
-              ? { ...query, value: [...(query.value as string[]), ...LONGLINE_EVENTS_INCLUDES] }
-              : query
-          ),
+          query: nextQuery,
         }
       : datasetConfig
   )
