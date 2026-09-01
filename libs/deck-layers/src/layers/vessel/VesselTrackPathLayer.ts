@@ -556,17 +556,8 @@ export class VesselTrackPathLayer<
     const timestampBase = data.timestampBase ?? 0
     const relativeStartDate = toRelativeTimestamp(startDate, timestampBase)
     const relativeEndDate = toRelativeTimestamp(endDate, timestampBase)
-    const firstPointIndex = timestamps.findIndex((t) => t > relativeStartDate)
-    const lastPointIndex = timestamps.findLastIndex((t) => t < relativeEndDate)
-    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
-      return null
-    }
-    if (firstPointIndex === lastPointIndex) {
-      const index = firstPointIndex
-      const longitude = positions[index * positionsSize]
-      const latitude = positions[index * positionsSize + 1]
-      return [longitude, latitude, longitude, latitude] as Bbox
-    }
+    const timestampSize = data.attributes?.getTimestamp?.size || 1
+    const pointCount = Math.floor(timestamps.length / timestampSize)
 
     let minLon = Infinity
     let maxLon = -Infinity
@@ -574,7 +565,18 @@ export class VesselTrackPathLayer<
     let maxShiftedLon = -Infinity
     let minLat = Infinity
     let maxLat = -Infinity
-    for (let index = firstPointIndex; index <= lastPointIndex + 1; index++) {
+    let pointsInRange = 0
+    // Every point is tested against the range instead of scanning between a first and a last
+    // matching index: a vessel track holds the segments of every related identity concatenated,
+    // so timestamps only ascend within a segment. An index range between the first and last match
+    // therefore swallows whole segments that fall outside the range - for an 82 minute event it
+    // was keeping 600 of 790 points and fitting the map to most of the year.
+    for (let index = 0; index < pointCount; index++) {
+      const timestamp = timestamps[index * timestampSize]
+      if (timestamp < relativeStartDate || timestamp > relativeEndDate) {
+        continue
+      }
+      pointsInRange++
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
       if (longitude < minLon) minLon = longitude
@@ -584,6 +586,9 @@ export class VesselTrackPathLayer<
       if (shiftedLon > maxShiftedLon) maxShiftedLon = shiftedLon
       if (latitude < minLat) minLat = latitude
       if (latitude > maxLat) maxLat = latitude
+    }
+    if (!pointsInRange) {
+      return null
     }
     const [west, east] = getNarrowestLonSpan(minLon, maxLon, minShiftedLon, maxShiftedLon)
     return [west, minLat, east, maxLat] as Bbox

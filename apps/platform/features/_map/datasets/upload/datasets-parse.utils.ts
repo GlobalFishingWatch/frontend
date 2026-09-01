@@ -18,7 +18,7 @@ import type { GeotiffError } from '@globalfishingwatch/data-transforms/files'
 import {
   fixTextEncoding,
   GEOTIFF_ERRORS,
-  getGeotiffBands,
+  getGeotiffBandsCount,
   kmlToGeoJSON,
   shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms/files'
@@ -37,8 +37,8 @@ import { getFileType, readBlobAs } from 'utils/files'
 // }
 
 export type DataList = Record<string, any>[]
-/** Band names — the raster itself is uploaded raw and parsed by the API */
-export type GriddedData = string[]
+/** Band count — the raster itself is uploaded raw and parsed by the API */
+export type GriddedData = number
 export type DatasetParsedByType = {
   gridded: GriddedData
   polygons: FeatureCollection
@@ -49,7 +49,7 @@ export type DataParsed = DatasetParsedByType[DatasetGeometryTypesSupported]
 
 const NOT_VALID_GEOJSON_FEATURES_ERROR = 'Not valid geojson features'
 
-// getGeotiffBands throws domain codes, on purpose — the i18n keys belong to the app
+// getGeotiffBandsCount throws domain codes, on purpose — the i18n keys belong to the app
 const GEOTIFF_ERROR_KEYS: Record<GeotiffError, string> = {
   [GEOTIFF_ERRORS.InvalidData]: 'datasetUpload.errors.geotiff.invalidData',
 }
@@ -166,7 +166,7 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
       const geoJson = await kmlToGeoJSON(file, type)
       parsed = validateFeatures(geoJson, type)
     } else if (fileType === 'GeoTIFF') {
-      parsed = await getGeotiffBands(file)
+      parsed = await getGeotiffBandsCount(file)
     } else {
       const fileText = await readBlobAs(file, 'text')
       parsed = validatedGeoJSON(fileText, type)

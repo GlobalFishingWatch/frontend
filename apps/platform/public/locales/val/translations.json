@@ -412,6 +412,8 @@
     "requiredFields": "crwdns132509:0{{fields}}crwdne132509:0",
     "SARDelayDisclaimer": "crwdns138373:0crwdne138373:0",
     "title": "crwdns132511:0crwdne132511:0",
+    "typeGridded": "crwdns138413:0crwdne138413:0",
+    "typeGriddedDescription": "crwdns138415:0crwdne138415:0",
     "typePoints": "crwdns132513:0crwdne132513:0",
     "typePointsDescription": "crwdns132515:0crwdne132515:0",
     "typePolygons": "crwdns132517:0crwdne132517:0",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "crwdns132549:0crwdne132549:0"
       },
+      "geotiff": {
+        "invalidData": "crwdns138417:0crwdne138417:0"
+      },
       "invalidDatesFeatures": "crwdns132551:0{{featureType}}crwdne132551:0",
       "kml": {
         "invalidData": "crwdns132553:0crwdne132553:0",
@@ -446,6 +451,7 @@
         "noPolygonData": "crwdns132559:0crwdne132559:0"
       },
       "name": "crwdns132561:0{{min}}crwdne132561:0",
+      "reservedBandName": "crwdns138419:0{{band}}crwdnd138419:0{{reserved}}crwdne138419:0",
       "shapefile": {
         "invalidData": "crwdns132563:0crwdne132563:0",
         "invalidMultipleFiles": "crwdns132565:0crwdne132565:0",
@@ -457,6 +463,12 @@
     "fieldMultiplePlaceholder": "crwdns132573:0crwdne132573:0",
     "fieldNumericPlaceholder": "crwdns132575:0crwdne132575:0",
     "fieldPlaceholder": "crwdns132577:0crwdne132577:0",
+    "gridded": {
+      "aggregation": "crwdns138421:0crwdne138421:0",
+      "bandName": "crwdns138423:0{{band}}crwdne138423:0",
+      "unit": "crwdns138425:0crwdne138425:0",
+      "unitPlaceholder": "crwdns138427:0crwdne138427:0"
+    },
     "maxValuesExceededForFiltering": "crwdns132579:0{{max}}crwdne132579:0",
     "maxValuesExceededForFilteringTooltip": "crwdns132581:0{{max}}crwdne132581:0",
     "noFilters": "crwdns132583:0crwdne132583:0",
@@ -846,6 +858,7 @@
     "toggleVisibility": "crwdns133247:0crwdne133247:0",
     "type": "crwdns133249:0crwdne133249:0",
     "user_context_fit_bounds": "crwdns133251:0crwdne133251:0",
+    "user_gridded_fit_bounds": "crwdns138429:0crwdne138429:0",
     "user_points_fit_bounds": "crwdns133253:0crwdne133253:0",
     "user_points_fit_bounds_out_of_timerange": "crwdns133255:0crwdne133255:0",
     "user_polygons_fit_bounds_out_of_timerange": "crwdns133257:0crwdne133257:0",

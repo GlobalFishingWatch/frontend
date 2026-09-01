@@ -31,16 +31,12 @@ export type UserContextLayerV1Configuration = {
   importLogs?: string
 }
 
-export const USER_FOURWINGS_VALUE_COLUMN = 'gfw_value'
-
 export type UserFourwingsV1Configuration = {
-  agregationMode: string
-  bands?: string[]
-  agregationColumn?: string
+  agregationMode: AggregationFunction
+  /** GDAL band index, 1-based, in file order */
+  band: number
   bbox?: [number, number, number, number]
   filePath?: string
-  latColumn?: string
-  lonColumn?: string
   maxZoom?: number
   tileOffset?: number
   tileScale?: number

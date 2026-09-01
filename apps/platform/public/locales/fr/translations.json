@@ -412,6 +412,8 @@
     "requiredFields": "Champs requis {{fields}}",
     "SARDelayDisclaimer": "En pause pendant le passage de Sentinel-1A à Sentinel-1C et 1D. <0>En savoir plus.</0>",
     "title": "Jeu de données",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "Aucune donnée géospatiale valide trouvée dans le fichier geoJSON"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Certains de vos {{featureType}} ne contiennent pas de date valide. Ils n'apparaîtront pas sur la carte, quel que soit le filtre horaire.",
       "kml": {
         "invalidData": "Aucun type de géométrie trouvé dans les données KML",
@@ -446,6 +451,7 @@
         "noPolygonData": "Aucune donnée de polygone trouvée dans le KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Aucun type de géométrie valide dans les données du fichier de formes",
         "invalidMultipleFiles": "Les fichiers de formes contenant plusieurs composants (noms de fichiers multiples) ne sont pas encore pris en charge",
@@ -457,6 +463,12 @@
     "fieldMultiplePlaceholder": "Sélectionnez un ou plusieurs champs de votre jeu de données",
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "bandName": "Band {{band}} name",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -846,6 +858,7 @@
     "toggleVisibility": "Afficher/cacher calque",
     "type": "Type",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",

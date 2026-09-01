@@ -18,7 +18,6 @@ import {
   DatasetCategory,
   DatasetSubCategory,
   DatasetTypes,
-  USER_FOURWINGS_VALUE_COLUMN,
 } from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
@@ -47,15 +46,7 @@ import type { FileType } from 'utils/files'
 
 export const MIN_NAME_LENGTH = 3
 
-export const GRIDDED_RESERVED_COLUMNS = ['lat', 'lon', USER_FOURWINGS_VALUE_COLUMN, 'band']
-
-export const getReservedBandName = (bandNames?: (string | number | boolean)[]) =>
-  bandNames?.find((band) => GRIDDED_RESERVED_COLUMNS.includes(String(band).trim().toLowerCase()))
-
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
-  const reservedBandName = getReservedBandName(
-    getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')?.bands
-  )
   const errors = {
     name:
       !datasetMetadata.name?.trim() || datasetMetadata.name.trim().length < MIN_NAME_LENGTH
@@ -63,12 +54,6 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
             min: String(MIN_NAME_LENGTH),
           })
         : null,
-    bands: reservedBandName
-      ? t((t) => t.datasetUpload.errors.reservedBandName, {
-          band: String(reservedBandName),
-          reserved: GRIDDED_RESERVED_COLUMNS.join(', '),
-        })
-      : null,
   }
   const isValid = Object.values(errors).every((error) => !error)
   return { isValid, errors }
@@ -163,13 +148,7 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
-export const getGriddedDatasetMetadata = ({
-  name,
-  bands,
-}: {
-  name: string
-  bands: string[]
-}): DatasetMetadata => {
+export const getGriddedDatasetMetadata = ({ name }: { name: string }): DatasetMetadata => {
   return {
     name,
     public: true,
@@ -179,7 +158,8 @@ export const getGriddedDatasetMetadata = ({
     configuration: {
       userFourwingsV1: {
         agregationMode: 'AVG',
-        bands,
+        // GDAL band index, 1-based
+        band: 1,
       },
       frontend: {
         sourceFormat: 'GeoTIFF',

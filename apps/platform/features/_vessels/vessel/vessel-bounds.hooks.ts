@@ -20,17 +20,16 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
-export const useVesselProfileBbox = () => {
+export const useGetVesselProfileBbox = () => {
   const vesselLayer = useVesselProfileLayer()
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
-  const urlTimerange = useSelector(selectUrlTimeRange)
-  return useMemo(() => {
+  return useCallback(() => {
     if (trackLoaded) {
       return vesselLayer?.instance?.getVesselTrackBounds()
     }
     return null
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackLoaded, urlTimerange?.start, urlTimerange?.end])
+  }, [trackLoaded])
 }
 
 export const useVesselProfileBounds = () => {
@@ -42,7 +41,7 @@ export const useVesselProfileBounds = () => {
   const { transmissionDateFrom, transmissionDateTo } = getVesselTransmissionDates(vessel)
   const vesselLayer = useVesselProfileLayer()
   const isTrackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
-  const bounds = useVesselProfileBbox()
+  const getBounds = useGetVesselProfileBbox()
   const pendingFitRef = useRef(false)
 
   const confirmTimerangeChange = useCallback(() => {
@@ -59,6 +58,7 @@ export const useVesselProfileBounds = () => {
   }, [urlTimerange, transmissionDateFrom, transmissionDateTo, t, setTimerange])
 
   const setVesselBounds = useCallback(() => {
+    const bounds = getBounds()
     if (bounds) {
       fitBounds(bounds, { padding: 60, fitZoom: true })
       return
@@ -68,19 +68,20 @@ export const useVesselProfileBounds = () => {
       return
     }
     confirmTimerangeChange()
-  }, [bounds, isTrackLoaded, fitBounds, confirmTimerangeChange])
+  }, [getBounds, isTrackLoaded, fitBounds, confirmTimerangeChange])
 
   useEffect(() => {
     if (!pendingFitRef.current || !isTrackLoaded) {
       return
     }
     pendingFitRef.current = false
+    const bounds = getBounds()
     if (bounds) {
       fitBounds(bounds, { padding: 60, fitZoom: true })
     } else {
       confirmTimerangeChange()
     }
-  }, [isTrackLoaded, bounds, fitBounds, confirmTimerangeChange])
+  }, [isTrackLoaded, getBounds, fitBounds, confirmTimerangeChange])
 
   return useMemo(
     () => ({ setVesselBounds, boundsReady: isTrackLoaded }),
