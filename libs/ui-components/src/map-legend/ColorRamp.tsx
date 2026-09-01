@@ -14,6 +14,13 @@ import type { UILegendColorRamp } from './types'
 
 import styles from './MapLegend.module.css'
 
+type PercentScale = ((value: number) => number) | null
+
+const toPercent = (scale: PercentScale, value: number) => {
+  const scaled = scale?.(value) as number
+  return isNaN(scaled) || scaled < 0 ? 0 : scaled
+}
+
 type ColorRampLegendProps = {
   layer: UILegendColorRamp
   className?: string
@@ -61,12 +68,30 @@ export function ColorRampLegend({
     return scaleLinear().domain(adjustedDomain).range(stepPercents)
   }, [domainValues, stepPercents])
 
-  const valueToPercent = useCallback(
-    (value: number) => {
-      const scaled = rampScale?.(value) as number
-      return isNaN(scaled) || scaled < 0 ? 0 : scaled
+  const valueToPercent = useCallback((value: number) => toPercent(rampScale, value), [rampScale])
+
+  const brushScale = useMemo(() => {
+    if (!rampScale) return null
+    const range = rampScale.range() as number[]
+    if (range[0] === 0) return rampScale
+    const firstValue = values?.[0] as number
+    const floor = omitFirstBucket && Number.isFinite(firstValue) ? firstValue : 0
+    return scaleLinear()
+      .domain([floor, ...(rampScale.domain() as number[])])
+      .range([0, ...range])
+  }, [rampScale, omitFirstBucket, values])
+
+  const brushValueToPercent = useCallback(
+    (value: number) => toPercent(brushScale, value),
+    [brushScale]
+  )
+
+  const percentToValue = useCallback(
+    (percent: number) => {
+      const value = brushScale?.invert(percent) as number
+      return isNaN(value) ? 0 : value
     },
-    [rampScale]
+    [brushScale]
   )
 
   const backgroundStyle = useMemo(() => {
@@ -183,8 +208,8 @@ export function ColorRampLegend({
             {brush && rampScale && !layer.divergent && (
               <ColorRampBrush
                 {...brush}
-                valueToPercent={valueToPercent}
-                percentToValue={rampScale.invert}
+                valueToPercent={brushValueToPercent}
+                percentToValue={percentToValue}
                 formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
               />
             )}
