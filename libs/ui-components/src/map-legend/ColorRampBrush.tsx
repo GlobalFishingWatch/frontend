@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from 'react'
 import cx from 'classnames'
 
+import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { InputText } from '../input-text'
 import { Popover } from '../popover'
@@ -158,6 +159,8 @@ export function ColorRampBrush({
   }
 
   const [low, high] = [Math.min(...percents), Math.max(...percents)]
+  const atStart = drag !== undefined && percents[drag.bound] <= 0
+  const atEnd = drag !== undefined && percents[drag.bound] >= 100
 
   return (
     <Fragment>
@@ -188,8 +191,18 @@ export function ColorRampBrush({
           />
         ))}
         {drag?.moved && (
-          <span className={styles.value} style={{ left: `${percents[drag.bound]}%` }}>
-            {formatValue(percentToValue(percents[drag.bound]))}
+          <span
+            className={cx(styles.value, {
+              [styles.valueAtStart]: atStart,
+              [styles.valueAtEnd]: atEnd,
+            })}
+            style={{ left: `${percents[drag.bound]}%` }}
+          >
+            {atStart || atEnd ? (
+              <Icon icon="delete" className={styles.valueIcon} />
+            ) : (
+              formatValue(percentToValue(percents[drag.bound]))
+            )}
           </span>
         )}
       </div>

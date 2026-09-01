@@ -19,8 +19,8 @@
   position: absolute;
   top: 50%;
   z-index: 2;
-  width: 0.9rem;
-  height: 2.2rem;
+  width: 0.8rem;
+  height: 1.8rem;
   transform: translate(-50%, -50%);
   background-color: var(--color-white);
   border-radius: var(--border-radius-0);
@@ -46,18 +46,18 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 1rem;
+  width: 1px;
+  height: 0.8rem;
   transform: translate(-50%, -50%);
-  background-color: var(--color-secondary-blue);
-  border-radius: var(--border-radius-0);
+  background-color: var(--color-primary-blue);
+  opacity: 0.4;
 }
 
 /* The pill is still a small pointer target */
 .handle::before {
   content: '';
   position: absolute;
-  inset: -0.4rem;
+  inset: -0.5rem;
 }
 
 .handle:focus-visible {
@@ -83,13 +83,34 @@
   top: 100%;
   z-index: 3;
   padding: 0 0.3rem;
+  border-radius: var(--border-radius-1);
   font: var(--font-XS);
   line-height: 1.8rem;
-  color: var(--color-primary-blue);
+  color: var(--color-secondary-blue);
   background-color: var(--color-white);
   white-space: nowrap;
   transform: translateX(-50%);
   pointer-events: none;
+}
+
+.valueAtStart,
+.valueAtEnd {
+  padding: 0;
+  line-height: 1rem;
+  color: var(--color-danger-red);
+}
+
+.valueAtStart {
+  transform: translateX(-30%);
+}
+
+.valueAtEnd {
+  transform: translateX(-70%);
+}
+
+.valueIcon {
+  transform: scale(0.75);
+  opacity: var(--opacity-secondary);
 }
 
 .popoverContainer {
