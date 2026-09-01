@@ -14,6 +14,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/_map/workspace/shared/DatasetSourceField'
@@ -98,18 +99,18 @@ export default function ReportSummaryTags({
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
-  // if (
-  //   reportCategory === ReportCategory.Environment &&
-  //   !dataview.config?.minVisibleValue &&
-  //   !dataview.config?.maxVisibleValue
-  // ) {
-  //   return null
-  // }
+  if (
+    reportCategory === ReportCategory.Environment &&
+    !dataview.config?.minVisibleValue &&
+    !dataview.config?.maxVisibleValue
+  ) {
+    return null
+  }
 
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
-        {showColor && (
+        {showColor && !isBathymetryDataview(dataview) && (
           <ExpandedContainer
             visible={colorOpen}
             onClickOutside={onToggleColorOpen}
@@ -193,16 +194,17 @@ export default function ReportSummaryTags({
               )}
             </Fragment>
           )}
-        {reportCategory === ReportCategory.Environment ? (
-          dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue ? (
+        {showFilters &&
+          (dataview.config?.minVisibleValue !== undefined ||
+            dataview.config?.maxVisibleValue !== undefined) && (
             <DatasetSchemaField
-              key={'visibleValues'}
+              key="visibleValues"
               dataview={dataview}
-              field={'visibleValues'}
+              field="visibleValues"
               label={t((t) => t.common.visibleValues)}
+              className={styles.tag}
             />
-          ) : null
-        ) : null}
+          )}
       </Fragment>
     </div>
   )
