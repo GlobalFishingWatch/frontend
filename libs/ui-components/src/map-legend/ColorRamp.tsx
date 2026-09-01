@@ -1,8 +1,8 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 
-import type { ColorRampBrushRange } from './ColorRampBrush'
+import type { ColorRampBrushConfig } from './ColorRampBrush'
 import { ColorRampBrush } from './ColorRampBrush'
 import {
   formatLegendValue,
@@ -20,12 +20,7 @@ type ColorRampLegendProps = {
   roundValues?: boolean
   currentValueClassName?: string
   labelComponent?: React.ReactNode
-  brushRange?: ColorRampBrushRange
-  onBrushChange?: (range: ColorRampBrushRange) => void
-  brushLabel?: string
-  brushMinLabel?: string
-  brushMaxLabel?: string
-  brushRemoveLabel?: string
+  brush?: ColorRampBrushConfig
 }
 
 export function ColorRampLegend({
@@ -34,12 +29,7 @@ export function ColorRampLegend({
   roundValues = true,
   currentValueClassName = '',
   labelComponent = null,
-  brushRange,
-  onBrushChange,
-  brushLabel = 'Filter values',
-  brushMinLabel = 'Min',
-  brushMaxLabel = 'Max',
-  brushRemoveLabel = 'Remove value filter',
+  brush,
 }: ColorRampLegendProps) {
   const { gridArea, values, colors, loading, label, unit, currentValue, type } = layer
   // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
@@ -60,21 +50,24 @@ export function ColorRampLegend({
     )
   }, [domainValues, colors, type])
 
-  // This scale is only used to draw non discrete gradient, and current value positioning
-  const heatmapLegendScale = useMemo(() => {
-    if (!values || !domainValues || !stepPercents.length) return null
+  const rampScale = useMemo(() => {
+    if (!domainValues?.length || !stepPercents.length) return null
 
     // Reuse d3 logic when values go beyond max value
-    const adjustedDomain = [...domainValues]
+    const adjustedDomain = [...domainValues] as number[]
     if (adjustedDomain[0] === -Infinity) {
       adjustedDomain[0] = adjustedDomain[1] + adjustedDomain[2]
     }
+    return scaleLinear().domain(adjustedDomain).range(stepPercents)
+  }, [domainValues, stepPercents])
 
-    return (value: number) => {
-      const scaled = scaleLinear().range(stepPercents).domain(adjustedDomain)(value)
+  const valueToPercent = useCallback(
+    (value: number) => {
+      const scaled = rampScale?.(value) as number
       return isNaN(scaled) || scaled < 0 ? 0 : scaled
-    }
-  }, [domainValues, values, stepPercents])
+    },
+    [rampScale]
+  )
 
   const backgroundStyle = useMemo(() => {
     if (!colors || type === 'colorramp-discrete') return {}
@@ -157,14 +150,14 @@ export function ColorRampLegend({
       {domainValues?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
-            {currentValue !== null && currentValue !== undefined && heatmapLegendScale && (
+            {currentValue !== null && currentValue !== undefined && rampScale && (
               <span
                 className={cx(styles.currentValue, currentValueClassName, {
-                  [styles.offsetLeft]: heatmapLegendScale(currentValue as number) < 10,
-                  [styles.offsetRight]: heatmapLegendScale(currentValue as number) > 90,
+                  [styles.offsetLeft]: valueToPercent(currentValue as number) < 10,
+                  [styles.offsetRight]: valueToPercent(currentValue as number) > 90,
                 })}
                 style={{
-                  left: `${Math.min(heatmapLegendScale(currentValue as number) as number, 100)}%`,
+                  left: `${Math.min(valueToPercent(currentValue as number), 100)}%`,
                 }}
               >
                 {formatLegendValue({
@@ -187,17 +180,12 @@ export function ColorRampLegend({
                 ))}
               </div>
             )}
-            {onBrushChange && heatmapLegendScale && !layer.divergent && (
+            {brush && rampScale && !layer.divergent && (
               <ColorRampBrush
-                domainValues={domainValues as number[]}
-                stepPercents={stepPercents}
-                valueToPercent={heatmapLegendScale}
-                range={brushRange || [undefined, undefined]}
-                onChange={onBrushChange}
-                label={brushLabel}
-                minLabel={brushMinLabel}
-                maxLabel={brushMaxLabel}
-                removeLabel={brushRemoveLabel}
+                {...brush}
+                valueToPercent={valueToPercent}
+                percentToValue={rampScale.invert}
+                formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
               />
             )}
           </div>

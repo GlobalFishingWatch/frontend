@@ -45,7 +45,7 @@
   border: var(--border);
 
   /* Decorative border painted after the positioned children, so it would otherwise sit on top
-     of the brush thumbs and swallow the drag */
+     of the brush (ColorRampBrush.module.css) and swallow the drag */
   pointer-events: none;
 }
 
@@ -127,91 +127,6 @@
 .offsetRight::after {
   left: unset;
   right: 0;
-}
-
-/* No z-index on purpose: it would make this a stacking context and trap the popover below the
-   sibling layer panels that come later in the DOM */
-.brush {
-  position: absolute;
-  inset: 0;
-}
-
-.brushSlider {
-  position: absolute;
-  inset: 0;
-}
-
-.brushTrack {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  cursor: ew-resize;
-}
-
-/* Click target for the popover. Above the track so the pointer never reaches react aria's
-   click-to-move handler, below the thumbs so they stay draggable */
-.brushSelection {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  cursor: pointer;
-  outline: none;
-}
-
-.brushSelection[data-focus-visible],
-.brushSelection:focus-visible {
-  outline: 2px solid var(--color-white);
-  outline-offset: -2px;
-}
-
-.brushPopover {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-S);
-  padding: var(--space-S);
-  max-width: 28rem;
-}
-
-.brushPopoverInputs {
-  display: flex;
-  gap: var(--space-S);
-  min-width: 0;
-}
-
-.brushPopoverInputs input {
-  width: 9rem;
-}
-
-.brushPopoverRemove {
-  flex-shrink: 0;
-  margin-bottom: 0.2rem;
-}
-
-.brushScrim {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background-color: var(--color-map-background);
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-.brushThumb {
-  top: 50%;
-  z-index: 2;
-  width: 3px;
-  height: 1.4rem;
-  background-color: var(--color-white);
-  border-radius: var(--border-radius-0);
-  outline: none;
-  cursor: ew-resize;
-  box-shadow: 0 0 4px 0 var(--color-border-thick);
-}
-
-.brushThumb[data-focus-visible] {
-  outline: 2px solid var(--color-white);
-  outline-offset: 1px;
 }
 
 .stepsContainer {

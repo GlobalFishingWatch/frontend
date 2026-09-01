@@ -397,6 +397,7 @@ function ActivityLayerPanel({
                 <MapLegend
                   dataview={dataview}
                   showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                  brushClassName={styles.brushIdle}
                 />
               </div>
               {bivariateDataviews?.[0] === dataview.id && (

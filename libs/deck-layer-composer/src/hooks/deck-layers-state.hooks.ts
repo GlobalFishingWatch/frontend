@@ -69,7 +69,7 @@ export const useSetDeckLayerLoadedState = () => {
             }
             newLoadedState[layer.id] = {
               loaded: layer.isLoaded,
-              ready: isDeckLayerReady(layer.lifecycle) || loadedState[layer.id]?.ready === true,
+              ready: isDeckLayerReady(layer.lifecycle),
               cacheHash,
             }
           })

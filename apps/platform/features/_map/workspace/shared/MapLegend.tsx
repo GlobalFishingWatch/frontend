@@ -58,9 +58,11 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
 const MapLegendWrapper = ({
   dataview,
   showPlaceholder = true,
+  brushClassName,
 }: {
   dataview: UrlDataviewInstance
   showPlaceholder?: boolean
+  brushClassName?: string
 }) => {
   const { t } = useTranslation()
   const dataviewId = useActivityDataviewId(dataview)
@@ -133,6 +135,8 @@ const MapLegendWrapper = ({
   }
 
   const showBrush = !isBivariate && !isSymbols && BRUSH_CATEGORIES.includes(dataview.category!)
+  const { minVisibleValue, maxVisibleValue } = dataview.config || {}
+  const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
 
   return (
     <MapLegend
@@ -141,12 +145,11 @@ const MapLegendWrapper = ({
       roundValues={dataview.category !== DataviewCategory.Environment}
       currentValueClassName={styles.currentValue}
       {...(showBrush && {
-        brushRange: [dataview.config?.minVisibleValue, dataview.config?.maxVisibleValue],
-        onBrushChange,
-        brushLabel: t((t) => t.layer.filterValues),
-        brushMinLabel: t((t) => t.layer.filterValuesMin),
-        brushMaxLabel: t((t) => t.layer.filterValuesMax),
-        brushRemoveLabel: t((t) => t.layer.filterValuesRemove),
+        brush: {
+          range: [minVisibleValue, maxVisibleValue] as ColorRampBrushRange,
+          onChange: onBrushChange,
+          className: hasRange ? undefined : brushClassName,
+        },
       })}
       labelComponent={
         uiLegend.label?.includes('²') ? (

@@ -1,0 +1,104 @@
+.root {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  user-select: none;
+  touch-action: none;
+}
+
+.scrim {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: var(--color-map-background);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.handle {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 0.9rem;
+  height: 2.2rem;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-0);
+  outline: none;
+  cursor: ew-resize;
+  box-shadow: 0 1px 4px 0 var(--color-border-thick);
+  transition: opacity 0.15s;
+}
+
+.handleRight {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.handleLeft {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Grip line, so the pill reads as draggable */
+.handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 1rem;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-secondary-blue);
+  border-radius: var(--border-radius-0);
+}
+
+/* The pill is still a small pointer target */
+.handle::before {
+  content: '';
+  position: absolute;
+  inset: -0.4rem;
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 1px;
+}
+
+/* Zero-size popover anchor, moved to whichever handle is being edited. The handles cannot be the
+   anchor themselves: Popover clones its child with its own props and would drop their handlers */
+.anchor {
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Sits in the step labels row, masking the label underneath while a handle is dragged.
+   ponytail: hard-coded to the light panel the brush is used in, no theming channel until a second
+   consumer needs one */
+.value {
+  position: absolute;
+  top: 100%;
+  z-index: 3;
+  padding: 0 0.3rem;
+  font: var(--font-XS);
+  line-height: 1.8rem;
+  color: var(--color-primary-blue);
+  background-color: var(--color-white);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.popover {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+  padding: var(--space-S);
+}
+
+.popover input {
+  width: 9rem;
+}
