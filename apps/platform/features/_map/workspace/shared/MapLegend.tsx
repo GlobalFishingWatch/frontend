@@ -150,6 +150,7 @@ const MapLegendWrapper = ({
           range: [minVisibleValue, maxVisibleValue] as ColorRampBrushRange,
           onChange: onBrushChange,
           className: hasRange ? undefined : brushClassName,
+          handleTooltip: t((t) => t.map.legendBrushHelp),
         },
       })}
       labelComponent={

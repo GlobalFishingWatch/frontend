@@ -6,6 +6,12 @@
   touch-action: none;
 }
 
+/* Pointer capture lives on the track, and the browser takes the cursor from the capture target,
+   so the handle's own ew-resize never shows during a drag */
+.rootDragging {
+  cursor: ew-resize;
+}
+
 .scrim {
   position: absolute;
   top: 0;
@@ -15,13 +21,17 @@
   pointer-events: none;
 }
 
-.handle {
+.handleAnchor {
   position: absolute;
   top: 50%;
   z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+.handle {
+  display: block;
   width: 0.8rem;
   height: 1.8rem;
-  transform: translate(-50%, -50%);
   background-color: var(--color-white);
   border-radius: var(--border-radius-0);
   outline: none;

@@ -886,6 +886,7 @@
     "highRes": "See high resolution heatmaps",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Approximate grid cell area at equator",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Please wait until map loads.",

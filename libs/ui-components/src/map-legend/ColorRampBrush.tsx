@@ -5,6 +5,7 @@ import { Icon } from '../icon'
 import { IconButton } from '../icon-button'
 import { InputText } from '../input-text'
 import { Popover } from '../popover'
+import { Tooltip } from '../tooltip'
 
 import { roundLegendNumber } from './map-legend.utils'
 
@@ -16,6 +17,7 @@ export type ColorRampBrushConfig = {
   range: ColorRampBrushRange
   onChange: (range: ColorRampBrushRange) => void
   className?: string
+  handleTooltip?: string
 }
 
 type ColorRampBrushProps = ColorRampBrushConfig & {
@@ -46,6 +48,7 @@ export function ColorRampBrush({
   range,
   onChange,
   className,
+  handleTooltip,
   valueToPercent,
   percentToValue,
   formatValue,
@@ -159,6 +162,10 @@ export function ColorRampBrush({
   }
 
   const [low, high] = [Math.min(...percents), Math.max(...percents)]
+  const isLowerHandle = (bound: Bound) => {
+    const other = percents[bound === 0 ? 1 : 0]
+    return percents[bound] === other ? bound === 0 : percents[bound] < other
+  }
   const atStart = drag !== undefined && percents[drag.bound] <= 0
   const atEnd = drag !== undefined && percents[drag.bound] >= 100
 
@@ -167,7 +174,7 @@ export function ColorRampBrush({
       <div
         ref={trackRef}
         data-test="color-ramp-brush"
-        className={cx(styles.root, className)}
+        className={cx(styles.root, className, { [styles.rootDragging]: drag?.fromHandle })}
         onPointerDown={onTrackPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -178,17 +185,22 @@ export function ColorRampBrush({
         <span className={styles.scrim} style={{ left: 0, width: `${low}%` }} />
         <span className={styles.scrim} style={{ left: `${high}%`, right: 0 }} />
         {([0, 1] as Bound[]).map((bound) => (
-          <span
-            key={bound}
-            className={cx(styles.handle, styles[`handle${bound === 0 ? 'Left' : 'Right'}`])}
-            style={{ left: `${percents[bound]}%` }}
-            role="slider"
-            tabIndex={0}
-            aria-label={bound === 0 ? 'min' : 'max'}
-            aria-valuenow={percents[bound]}
-            onPointerDown={onHandlePointerDown(bound)}
-            onKeyDown={onHandleKeyDown(bound)}
-          />
+          <Tooltip key={bound} content={handleTooltip}>
+            <span className={styles.handleAnchor} style={{ left: `${percents[bound]}%` }}>
+              <span
+                className={cx(
+                  styles.handle,
+                  styles[`handle${isLowerHandle(bound) ? 'Left' : 'Right'}`]
+                )}
+                role="slider"
+                tabIndex={0}
+                aria-label={isLowerHandle(bound) ? 'min' : 'max'}
+                aria-valuenow={percents[bound]}
+                onPointerDown={onHandlePointerDown(bound)}
+                onKeyDown={onHandleKeyDown(bound)}
+              />
+            </span>
+          </Tooltip>
         ))}
         {drag?.moved && (
           <span
