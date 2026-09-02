@@ -451,7 +451,6 @@
         "noPolygonData": "No se encontraron datos de polígono en el KML"
       },
       "name": "El nombre del conjunto de datos debe tener al menos {{min}} caracteres",
-      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Los datos del shapefile no tienen un tipo de geometría válido",
         "invalidMultipleFiles": "Aún no se admiten shapefiles que contengan varios componentes (varios nombres de archivo)",
@@ -465,7 +464,7 @@
     "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name",
+      "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
     },
@@ -665,6 +664,13 @@
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "Deriva comenzó a partir de {{start}} por {{duration}}",
     "loiteringActionIn": "Merodeando en {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -886,6 +892,7 @@
     "highRes": "Ver mapas de calor de alta resolución",
     "highResDisabled": "Los mapas de calor de alta resolución están desactivados cuando se utiliza un filtro de grupo de embarcaciones",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
@@ -1331,15 +1338,22 @@
       "IUUBlackListsCount": "La embarcación está presente en una lista de embarcaciones INDNR de OROP",
       "IUUBlackListsEmpty": "La embarcación no está presente en una lista de embarcaciones INDNR de OROP",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Listas MOU de Tokio y París",
       "MOUListsEmpty": "Embarcación con una bandera/banderas no presentes en las listas negras o grises del MOU de Tokio o París",
       "MOUParisBlackListsCount": "Pabellón registrado en la lista negra o gris del memorando de París ({{flags}})",
@@ -1550,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado fuera de las OROP con autorización conocida",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados fuera de las OROP con autorización conocida",
       "gaps_one": "{{count}} evento de desactivación probable de AIS de {{vessels}} embarcación detectado",
-      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados"
     }
   },
   "workspace": {

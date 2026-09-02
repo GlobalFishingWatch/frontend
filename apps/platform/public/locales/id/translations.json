@@ -451,7 +451,6 @@
         "noPolygonData": "Tidak ada data poligon yang ditemukan di KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
-      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
       "shapefile": {
         "invalidData": "Data shapefile tidak memiliki bentuk geometri yang valid",
         "invalidMultipleFiles": "Shapefile yang berisi beberapa komponen (beberapa nama file) belum didukung",
@@ -465,7 +464,7 @@
     "fieldPlaceholder": "Pilih bidang dari dataset Anda",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name",
+      "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
     },
@@ -665,6 +664,13 @@
     "loitering_other": "Peristiwa berkeliaran",
     "loiteringAction": "Berkeliaran dimulai pada {{start}} selama {{duration}}",
     "loiteringActionIn": "Berkeliaran di {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -886,6 +892,7 @@
     "highRes": "See high resolution heatmaps",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Perkiraan area grid sel di Khatulistiwa",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Memuat",
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Harap tunggu sampai peta dimuat",
@@ -1331,15 +1338,22 @@
       "IUUBlackListsCount": "The vessel is present on an RFMO IUU vessel list",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU vessel list",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
@@ -1550,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
   },
   "workspace": {
