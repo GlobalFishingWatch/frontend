@@ -14,6 +14,7 @@ type ModalId =
   | 'editWorkspace'
   | 'createWorkspace'
   | 'downloadTrack'
+  | 'welcomePanel'
 
 /**
  * Which GFW-only secret menu is open.
@@ -49,6 +50,7 @@ type ModalsOpenState = {
   editor: boolean
   bigQuery: BigQueryModalMode | false
   downloadTrack: boolean
+  welcomePanel: boolean
 }
 
 const initialState: ModalsOpenState = {
@@ -70,6 +72,7 @@ const initialState: ModalsOpenState = {
   editor: false,
   bigQuery: false,
   downloadTrack: false,
+  welcomePanel: false,
 }
 
 const modals = createSlice({
@@ -139,12 +142,8 @@ export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
 export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
-/**
- * Previously derived from downloadTrack.slice's `ids.length > 0`. It lives here because Modals.tsx and
- * modals.selectors are always loaded, and deriving it kept downloadTrack.slice eagerly registered. The
- * two sites that open/close the modal dispatch this alongside the slice action they already dispatch.
- */
 export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
+export const selectWelcomePanelOpen = (state: RootState) => state.modals.welcomePanel
 export const selectBigQueryModalOpen = (state: RootState) => state.modals.bigQuery === 'default'
 export const selectTurningTidesModalOpen = (state: RootState) =>
   state.modals.bigQuery === 'turning-tides'

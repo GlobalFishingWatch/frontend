@@ -1,10 +1,12 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { selectWelcomePanelOpen } from 'features/modals/modals.slice'
 import { useAppSearch } from 'router/routes.hook'
 
 import styles from './ContentPanel.module.css'
@@ -42,6 +44,7 @@ function ContentPanel({
 }) {
   const { sidePanelContent } = useAppSearch()
   const { closeSidePanel } = useSidePanel()
+  const welcomePanelOpen = useSelector(selectWelcomePanelOpen)
   const isSmallScreen = useSmallScreen(undefined, { initialScreenWidth })
 
   const [isDragging, setIsDragging] = useState(false)
@@ -96,7 +99,7 @@ function ContentPanel({
 
   return (
     <div
-      className={cx(styles.panel, { [styles.hidden]: !sidePanelContent })}
+      className={cx(styles.panel, { [styles.hidden]: !sidePanelContent && !welcomePanelOpen })}
       style={
         (isSmallScreen
           ? {
@@ -118,7 +121,7 @@ function ContentPanel({
         />
       )}
       <Suspense fallback={null}>
-        {sidePanelContent === 'welcome' && <WelcomePanel />}
+        {!sidePanelContent && welcomePanelOpen && <WelcomePanel />}
         {sidePanelContent === 'userGuide' && <UserGuideContent />}
         {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
         {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
