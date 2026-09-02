@@ -18,6 +18,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
   getDatasetConfigurationProperty,
   getRelatedDatasetByType,
+  removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
@@ -297,10 +298,19 @@ const vesselDataviewInstanceTemplate = ({
 const getBestVesselTemplateSlug = (
   dataviewTemplates: (Dataview | DataviewInstance | UrlDataviewInstance)[],
   datasets: VesselInstanceDatasets
-) =>
-  dataviewTemplates.find((dataview) =>
-    dataview.datasetsConfig?.some((d) => d.datasetId === datasets.info)
-  )?.slug || TEMPLATE_VESSEL_DATAVIEW_SLUG
+) => {
+  const info = datasets.info
+  if (!info) return TEMPLATE_VESSEL_DATAVIEW_SLUG
+  const findTemplate = (normalize: (datasetId: string) => string) =>
+    dataviewTemplates.find((dataview) =>
+      dataview.datasetsConfig?.some((d) => normalize(d.datasetId) === normalize(info))
+    )?.slug
+  return (
+    findTemplate((datasetId) => datasetId) ??
+    findTemplate(removeDatasetVersion) ??
+    TEMPLATE_VESSEL_DATAVIEW_SLUG
+  )
+}
 
 export const getVesselDataviewInstance = ({
   vessel,

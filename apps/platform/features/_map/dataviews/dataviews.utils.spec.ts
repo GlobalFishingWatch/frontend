@@ -12,6 +12,7 @@ import { getVesselDataviewInstance } from './dataviews.utils'
 
 const INFO_DATASET = 'public-global-vessel-identity:v4.0'
 const VMS_INFO_DATASET = 'private-per-vessel-identity:v4.0'
+const VMS_INFO_DATASET_NEXT_VERSION = 'private-per-vessel-identity:v5.0'
 
 const standardTemplate = {
   slug: TEMPLATE_VESSEL_DATAVIEW_SLUG,
@@ -57,6 +58,37 @@ describe('getVesselDataviewInstance template selection', () => {
   it('falls back to the default template slug when no info match exists', () => {
     const instance = getInstance({ datasets: { info: 'unknown-dataset', track: 'track' } })
     expect(instance.dataviewId).toBe(TEMPLATE_VESSEL_DATAVIEW_SLUG)
+  })
+
+  it('still matches the country template when the info dataset version moved on', () => {
+    const instance = getInstance({
+      datasets: { info: VMS_INFO_DATASET_NEXT_VERSION, track: 'track' },
+    })
+    expect(instance.dataviewId).toBe(VESSEL_VMS_PERU_DATAVIEW_SLUG)
+  })
+
+  it('never crosses countries when matching without the version', () => {
+    const instance = getInstance({
+      datasets: { info: 'private-vms-bra-vessel-identity:v5.0', track: 'track' },
+    })
+    expect(instance.dataviewId).toBe(TEMPLATE_VESSEL_DATAVIEW_SLUG)
+    expect(instance.dataviewId).not.toBe(VESSEL_VMS_PERU_DATAVIEW_SLUG)
+  })
+
+  it('prefers an exact match over a version-tolerant one', () => {
+    const exactTemplate = {
+      slug: TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG,
+      datasetsConfig: [
+        { datasetId: VMS_INFO_DATASET_NEXT_VERSION, params: [], endpoint: EndpointId.Vessel },
+      ],
+    } as unknown as Dataview
+    const instance = getVesselDataviewInstance({
+      vessel: { id: 'vessel-1' },
+      datasets: { info: VMS_INFO_DATASET_NEXT_VERSION, track: 'track' },
+      // vmsTemplate (:v4.0) comes first, so only an exact-match-first pass picks the other one
+      dataviewTemplates: [vmsTemplate, exactTemplate],
+    })
+    expect(instance.dataviewId).toBe(TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG)
   })
 })
 
