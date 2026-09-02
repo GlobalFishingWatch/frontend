@@ -46,7 +46,7 @@ function NewGriddedDataset({
 }: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [dataParseError, setDataParseError] = useState('')
-  const [processingData, setProcessingData] = useState(false)
+  const [processingData, setProcessingData] = useState(() => Boolean(file))
   const [loading, setLoading] = useState(false)
   const [bandsCount, setBandsCount] = useState(0)
   const [variables, setVariables] = useState<string[]>([])
@@ -55,12 +55,32 @@ function NewGriddedDataset({
   const isPublic = !!datasetMetadata?.public
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
 
-  const handleRawData = useCallback(
-    async (file: File) => {
-      setProcessingData(true)
+  const [prevFile, setPrevFile] = useState(file)
+  if (file !== prevFile) {
+    setPrevFile(file)
+    setProcessingData(Boolean(file))
+    setDataParseError('')
+  }
+
+  const [prevDatasetId, setPrevDatasetId] = useState<string | undefined>()
+  if (!file && dataset && dataset.id !== prevDatasetId) {
+    setPrevDatasetId(dataset.id)
+    setDatasetMetadata(getMetadataFromDataset(dataset))
+  }
+
+  useEffect(() => {
+    if (!file) {
+      return
+    }
+
+    let cancelled = false
+    const parseFile = async () => {
       try {
         const fileTypeResult = await getFileType(file)
         const parsed = await getDatasetParsed(file, 'gridded', fileTypeResult)
+        if (cancelled) {
+          return
+        }
         const parsedVariables = 'variables' in parsed ? parsed.variables : []
         setVariables(parsedVariables)
         setBandsCount('bands' in parsed ? parsed.bands : 0)
@@ -73,20 +93,18 @@ function NewGriddedDataset({
         )
         setProcessingData(false)
       } catch (e: any) {
+        if (cancelled) {
+          return
+        }
         setProcessingData(false)
         onDatasetParseError(e, setDataParseError)
       }
-    },
-    [onDatasetParseError, setDatasetMetadata]
-  )
-
-  useEffect(() => {
-    if (file && !loading) {
-      handleRawData(file)
-    } else if (dataset) {
-      setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file])
+    parseFile()
+    return () => {
+      cancelled = true
+    }
+  }, [file, onDatasetParseError, setDatasetMetadata])
 
   const sourceFormat = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -190,27 +208,26 @@ function NewGriddedDataset({
           disabled={loading}
         />
       </div>
-      {isNetCDF
-        ? variableOptions.length > 0 && (
-            <Select
-              label={t((t) => t.datasetUpload.gridded.variable)}
-              options={variableOptions}
-              selectedOption={variableOptions.find((option) => option.id === variable)}
-              onSelect={(option) => setFourwingsConfig({ variable: option.id })}
-              className={styles.input}
-              disabled={loading || isEditing}
-            />
-          )
-        : bandOptions.length > 1 && (
-            <Select
-              label={t((t) => t.datasetUpload.gridded.band)}
-              options={bandOptions}
-              selectedOption={bandOptions.find((option) => option.id === band)}
-              onSelect={(option) => setFourwingsConfig({ band: option.id })}
-              className={styles.input}
-              disabled={loading || isEditing}
-            />
-          )}
+      {variableOptions.length > 0 && (
+        <Select
+          label={t((t) => t.datasetUpload.gridded.variable)}
+          options={variableOptions}
+          selectedOption={variableOptions.find((option) => option.id === variable)}
+          onSelect={(option) => setFourwingsConfig({ variable: option.id })}
+          className={styles.input}
+          disabled={loading || isEditing}
+        />
+      )}
+      {bandOptions.length > 1 && (
+        <Select
+          label={t((t) => t.datasetUpload.gridded.band)}
+          options={bandOptions}
+          selectedOption={bandOptions.find((option) => option.id === band)}
+          onSelect={(option) => setFourwingsConfig({ band: option.id })}
+          className={styles.input}
+          disabled={loading || isEditing}
+        />
+      )}
       <SwitchRow
         className={styles.saveAsPublic}
         label={t((t) => t.dataset.uploadPublic)}

@@ -258,6 +258,9 @@ importers:
       google-spreadsheet:
         specifier: 5.3.0
         version: 5.3.0(google-auth-library@11.0.2(supports-color@7.2.0))
+      h5wasm:
+        specifier: 0.10.3
+        version: 0.10.3
       html-react-parser:
         specifier: 6.1.7
         version: 6.1.7(@types/react@19.2.18)(react@19.2.8)
@@ -282,9 +285,6 @@ importers:
       jotai:
         specifier: 2.20.2
         version: 2.20.2(@babel/core@7.29.7(supports-color@7.2.0))(@babel/template@7.29.7)(@types/react@19.2.18)(react@19.2.8)
-      jsfive:
-        specifier: 0.4.0
-        version: 0.4.0
       jszip:
         specifier: 3.10.1
         version: 3.10.1
@@ -1006,9 +1006,9 @@ importers:
       geotiff:
         specifier: 3.x
         version: 3.0.5
-      jsfive:
-        specifier: 0.4.x
-        version: 0.4.0
+      h5wasm:
+        specifier: 0.10.3
+        version: 0.10.3
       jszip:
         specifier: 3.x
         version: 3.10.1
@@ -9177,6 +9177,9 @@ packages:
       crossws:
         optional: true
 
+  h5wasm@0.10.3:
+    resolution: {integrity: sha512-W4Jy5ExtX/VNbyD8GdOBckDuj6AL16TemppVNxZsV3rJZEWCv2sxlCzOttZLer3zkMttbDYsWHl0qt1z3Bln+Q==}
+
   has-ansi@2.0.0:
     resolution: {integrity: sha512-C8vBJ8DwUCx19vhm7urhTuUsr4/IyP6l4VzNQDv+ryHQObW3TTTp9yB68WpYgRe2bbaGuZ/se74IqFeVnMnLZg==}
     engines: {node: '>=0.10.0'}
@@ -9891,9 +9894,6 @@ packages:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
     hasBin: true
-
-  jsfive@0.4.0:
-    resolution: {integrity: sha512-3I3feGAFleVsChR4o4g9McAOa3bLlJ8af3oimjHt4nJNnmnbGROqRghb7m4VXNSZO8UbImN3UPc0uY2EZGIw6Q==}
 
   json-bigint@1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
@@ -24182,6 +24182,8 @@ snapshots:
     optionalDependencies:
       crossws: 0.4.10(srvx@0.11.22)
 
+  h5wasm@0.10.3: {}
+
   has-ansi@2.0.0:
     dependencies:
       ansi-regex: 2.1.1
@@ -25021,10 +25023,6 @@ snapshots:
       - '@noble/hashes'
 
   jsesc@3.1.0: {}
-
-  jsfive@0.4.0:
-    dependencies:
-      pako: 2.2.0
 
   json-bigint@1.0.0:
     dependencies:
