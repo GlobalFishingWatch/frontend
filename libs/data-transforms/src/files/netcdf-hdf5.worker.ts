@@ -1,6 +1,8 @@
 import type { Dataset, Group } from 'h5wasm'
 import h5wasm, { FS, ready } from 'h5wasm'
 
+import { handleWorkerRequests } from '../worker'
+
 import { hasLatLonCoordinates, NETCDF_ERRORS } from './netcdf-variables'
 
 /** A griddable variable spans at least latitude and longitude, so 1-D coordinates are out */
@@ -43,14 +45,6 @@ export function listGriddableHdf5Variables(root: Group): string[] {
 
 const MOUNT_POINT = '/work'
 const FALLBACK_NAME = 'upload.nc'
-
-type WorkerRequest = {
-  id: number
-  file: File
-}
-
-type WorkerResponse =
-  { id: number; variables: string[] } | { id: number; error: typeof NETCDF_ERRORS.InvalidData }
 
 const resetWorkMount = () => {
   if (!FS) {
@@ -97,22 +91,11 @@ const readVariablesFromFile = async (file: File): Promise<string[]> => {
   }
 }
 
-let jobQueue = Promise.resolve()
-
-addEventListener('message', (event: MessageEvent<WorkerRequest>) => {
-  const { id, file } = event.data
-  jobQueue = jobQueue
-    .then(async () => {
-      try {
-        const variables = await readVariablesFromFile(file)
-        const response: WorkerResponse = { id, variables }
-        postMessage(response)
-      } catch {
-        const response: WorkerResponse = { id, error: NETCDF_ERRORS.InvalidData }
-        postMessage(response)
-      }
-    })
-    .catch(() => {
-      // keep the queue alive if a prior job threw outside readVariablesFromFile
-    })
+handleWorkerRequests<File, string[]>(async (file) => {
+  try {
+    return await readVariablesFromFile(file)
+  } catch {
+    // every failure in here is the same thing to the caller: this is not usable NetCDF4
+    throw new Error(NETCDF_ERRORS.InvalidData)
+  }
 })
