@@ -18,6 +18,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { selectWelcomeModalKey } from 'features/modals/modals.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useAppSearch } from 'router/routes.hook'
 import { selectIsWorkspaceLocation } from 'router/routes.selectors'
@@ -42,6 +43,7 @@ function getGuideTarget(slug: UserGuideSlug) {
  * Called from MapLayout so it does not pull in the lazy panel chunk.
  */
 export function useWelcomePanelAutoOpen() {
+  const dispatch = useAppDispatch()
   const [dismissed] = useWelcomePanelDismissed()
   const isClientHydrated = useIsClientHydrated()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -50,7 +52,6 @@ export function useWelcomePanelAutoOpen() {
   // Deep sea mining keeps its own Welcome modal, so the two must not stack.
   const welcomeModalKey = useSelector(selectWelcomeModalKey)
   const { sidePanelContent } = useAppSearch()
-  const { openSidePanel } = useSidePanel()
   const autoOpened = useRef(false)
 
   useEffect(() => {
@@ -61,19 +62,15 @@ export function useWelcomePanelAutoOpen() {
       readOnly ||
       screenshotMode ||
       !isWorkspaceLocation ||
-      welcomeModalKey === 'deep-sea-mining'
+      welcomeModalKey === 'deep-sea-mining' ||
+      sidePanelContent
     ) {
       return
     }
-    if (sidePanelContent) {
-      if (sidePanelContent === 'welcome') {
-        autoOpened.current = true
-      }
-      return
-    }
     autoOpened.current = true
-    openSidePanel({ type: 'welcome' })
+    dispatch(setModalOpen({ id: 'welcomePanel', open: true }))
   }, [
+    dispatch,
     isClientHydrated,
     dismissed,
     readOnly,
@@ -81,7 +78,6 @@ export function useWelcomePanelAutoOpen() {
     isWorkspaceLocation,
     welcomeModalKey,
     sidePanelContent,
-    openSidePanel,
   ])
 }
 

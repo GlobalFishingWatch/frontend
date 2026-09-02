@@ -14,12 +14,15 @@ import {
   useWelcomePanelDismissed,
 } from 'features/_map/content-panel/welcome/welcome-panel.hooks'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 
 import panelStyles from '../ContentPanel.module.css'
 import styles from './WelcomePanel.module.css'
 
 function WelcomePanel() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const isGFWUser = useSelector(selectIsGFWUser)
   const [dismissed, setDismissed] = useWelcomePanelDismissed()
   const onCardClick = useWelcomeCardActions()
@@ -37,7 +40,10 @@ function WelcomePanel() {
   return (
     <div className={cx(panelStyles.container, styles.container)}>
       <div className={panelStyles.header}>
-        <ContentHeader title={t((t) => t.onboarding.header, { defaultValue: 'Welcome' })} />
+        <ContentHeader
+          title={t((t) => t.onboarding.header, { defaultValue: 'Welcome' })}
+          onClose={() => dispatch(setModalOpen({ id: 'welcomePanel', open: false }))}
+        />
       </div>
       <div className={cx(panelStyles.scrollContainer, styles.content)}>
         <h2 className={styles.title}>

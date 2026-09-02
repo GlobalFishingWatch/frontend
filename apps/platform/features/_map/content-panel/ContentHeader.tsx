@@ -9,9 +9,10 @@ import styles from './ContentHeader.module.css'
 
 type ContentHeaderProps = {
   title?: string | JSX.Element
+  onClose?: (e?: React.MouseEvent) => void
 }
 
-function ContentHeader({ title }: ContentHeaderProps) {
+function ContentHeader({ title, onClose }: ContentHeaderProps) {
   const { t } = useTranslation()
   const { closeSidePanel } = useSidePanel()
 
@@ -22,7 +23,7 @@ function ContentHeader({ title }: ContentHeaderProps) {
         icon="close"
         type="solid"
         aria-label={t((t) => t.common.close)}
-        onClick={() => closeSidePanel()}
+        onClick={onClose ? onClose : closeSidePanel}
       />
     </div>
   )

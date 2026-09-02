@@ -254,9 +254,8 @@ const AppModals = () => {
               <Welcome contentKey="deep-sea-mining" />
             </Suspense>
           )}
-          {/* fishing-activity and marine-manager are onboarded by the welcome side panel now —
+          {/* Workspace categories are onboarded by the welcome side panel now —
               features/_map/content-panel/welcome */}
-          {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>
       )}
       {isVesselGroupModalOpen && (

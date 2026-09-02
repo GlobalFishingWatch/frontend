@@ -1,10 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import {
-  DEEP_SEA_MINING_WORKSPACE_ID,
-  DEFAULT_WORKSPACE_CATEGORY,
-  WorkspaceCategory,
-} from '@platform/config/map/workspaces'
+import { DEEP_SEA_MINING_WORKSPACE_ID, WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { selectDownloadActivityModalOpen } from 'features/_map/download/download.selectors'
 import { selectVesselGroupModalOpen } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
@@ -70,16 +66,14 @@ export const selectWelcomeModalKey = createSelector(
     workspaceId,
     isAnyVesselLocation,
     isStandaloneSearchLocation
-  ): WelcomeContentKey => {
+  ): WelcomeContentKey | undefined => {
     if (
       locationCategory === WorkspaceCategory.FishingActivity &&
       workspaceId === DEEP_SEA_MINING_WORKSPACE_ID
     ) {
       return 'deep-sea-mining'
     }
-    return isAnyVesselLocation || isStandaloneSearchLocation
-      ? 'vessel-profile'
-      : locationCategory || DEFAULT_WORKSPACE_CATEGORY
+    return isAnyVesselLocation || isStandaloneSearchLocation ? 'vessel-profile' : undefined
   }
 )
 
