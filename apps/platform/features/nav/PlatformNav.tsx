@@ -16,9 +16,11 @@ import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { selectWorkspaceCategory } from 'features/_map/workspace/workspace.selectors'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import UserButton from 'features/_user/UserButton'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
 import { useLanguageOptions } from 'features/i18n/language.hooks'
 import { CrowdinScripts } from 'features/i18n/LanguageToggle'
+import { setModalOpen } from 'features/modals/modals.slice'
 import type { NavItem } from 'features/nav/nav.config'
 import {
   getPlatformBottomSections,
@@ -53,6 +55,7 @@ const HOVER_INTENT_MS = 300
  */
 function PlatformNav() {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const navLinkContext = useNavLinkContext()
   const isItemActive = useIsNavItemActive()
   const locationCategory = useSelector(selectWorkspaceCategory)
@@ -73,9 +76,9 @@ function PlatformNav() {
   const navSections = useMemo(
     () =>
       getPlatformNavSections(t, {
-        onGetStartedClick: () => openSidePanel({ type: 'welcome' }),
+        onGetStartedClick: () => dispatch(setModalOpen({ id: 'onboarding', open: true })),
       }),
-    [t, openSidePanel]
+    [t, dispatch]
   )
 
   const [railExpanded, setRailExpanded] = useState(false)

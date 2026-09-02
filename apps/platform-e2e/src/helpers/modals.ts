@@ -12,7 +12,7 @@ export async function disableWelcomePopups(page: Page) {
       periodComparisonBaseline: true,
       userContextLayers: true,
     })
-    // Map onboarding side panel — auto-opens on a first visit and would shift every layout below.
+    // Map onboarding modal — auto-opens on a first visit and would cover every layout below.
     window.localStorage.setItem('OnboardingPanelDismissed', 'true')
     window.localStorage.setItem('VesselProfilePopup', hidden)
     window.localStorage.setItem('DeepSeaMiningPopup', hidden)

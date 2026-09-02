@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
@@ -7,6 +8,10 @@ import type { TFunction } from 'i18next'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
+import {
+  selectPendingChatPrompt,
+  setPendingChatPrompt,
+} from 'features/_map/content-panel/chat/chat.slice'
 import type { FeedbackRating } from 'features/_map/content-panel/chat/chat-session.hooks'
 import {
   getFeedbackState,
@@ -20,6 +25,7 @@ import {
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 import styles from './Chat.module.css'
 
@@ -254,6 +260,9 @@ function ChatSessionMessages({
   const { ratings, questionIds, hiddenIds } = getFeedbackState(messages)
 
   const [input, setInput] = useState('')
+  const dispatch = useAppDispatch()
+  const pendingPrompt = useSelector(selectPendingChatPrompt)
+  const sentPromptRef = useRef<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRowRef = useRef<HTMLDivElement>(null)
 
@@ -267,6 +276,14 @@ function ChatSessionMessages({
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
   }, [messages, loading])
+
+  useEffect(() => {
+    if (!pendingPrompt || sentPromptRef.current === pendingPrompt) return
+    sentPromptRef.current = pendingPrompt
+    dispatch(setPendingChatPrompt(null))
+    sendMessage(pendingPrompt)
+    onSendMessage?.()
+  }, [dispatch, pendingPrompt, sendMessage, onSendMessage])
 
   const onSend = () => {
     setInput('')

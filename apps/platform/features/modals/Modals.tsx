@@ -24,6 +24,7 @@ import {
   selectEditWorkspaceModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
+  selectOnboardingModalOpen,
   selectTurningTidesModalOpen,
   setModalOpen,
   toggleBigQueryModal,
@@ -51,6 +52,7 @@ const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
+const OnboardingModal = lazy(() => import('features/onboarding/OnboardingModal'))
 
 const DebugMenuConfig = {
   key: 'd',
@@ -107,6 +109,7 @@ const AppModals = () => {
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const feedbackModalOpen = useSelector(selectFeedbackModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
+  const onboardingModalOpen = useSelector(selectOnboardingModalOpen)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
@@ -254,8 +257,11 @@ const AppModals = () => {
               <Welcome contentKey="deep-sea-mining" />
             </Suspense>
           )}
-          {/* Workspace categories are onboarded by the welcome side panel now —
-              features/_map/content-panel/welcome */}
+          {onboardingModalOpen && (
+            <Suspense fallback={null}>
+              <OnboardingModal />
+            </Suspense>
+          )}
         </Fragment>
       )}
       {isVesselGroupModalOpen && (
