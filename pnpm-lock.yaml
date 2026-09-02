@@ -282,6 +282,9 @@ importers:
       jotai:
         specifier: 2.20.2
         version: 2.20.2(@babel/core@7.29.7(supports-color@7.2.0))(@babel/template@7.29.7)(@types/react@19.2.18)(react@19.2.8)
+      jsfive:
+        specifier: 0.4.0
+        version: 0.4.0
       jszip:
         specifier: 3.10.1
         version: 3.10.1
@@ -309,6 +312,9 @@ importers:
       mjolnir.js:
         specifier: 3.0.1
         version: 3.0.1
+      netcdfjs:
+        specifier: 4.0.0
+        version: 4.0.0
       nitro:
         specifier: 3.0.260610-beta
         version: 3.0.260610-beta(chokidar@5.0.0)(dotenv@17.4.2)(ioredis@5.11.1(supports-color@7.2.0))(jiti@2.7.0)(lru-cache@11.5.2)(rollup@4.61.1)(vite@8.2.1)
@@ -1000,12 +1006,18 @@ importers:
       geotiff:
         specifier: 3.x
         version: 3.0.5
+      jsfive:
+        specifier: 0.4.x
+        version: 0.4.0
       jszip:
         specifier: 3.x
         version: 3.10.1
       luxon:
         specifier: 3.x
         version: 3.7.2
+      netcdfjs:
+        specifier: 4.x
+        version: 4.0.0
       shpjs:
         specifier: 6.x
         version: 6.2.0(geotiff@3.0.5)
@@ -9498,6 +9510,9 @@ packages:
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
 
+  iobuffer@6.0.1:
+    resolution: {integrity: sha512-SZWYkWNfjIXIBYSDpXDYIgshqtbOPsi4lviawAEceR1Kqk+sHDlcQjWrzNQsii80AyBY0q5c8HCTNjqo74ul+Q==}
+
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
     engines: {node: '>=12.22.0'}
@@ -9876,6 +9891,9 @@ packages:
     resolution: {integrity: sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA==}
     engines: {node: '>=6'}
     hasBin: true
+
+  jsfive@0.4.0:
+    resolution: {integrity: sha512-3I3feGAFleVsChR4o4g9McAOa3bLlJ8af3oimjHt4nJNnmnbGROqRghb7m4VXNSZO8UbImN3UPc0uY2EZGIw6Q==}
 
   json-bigint@1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
@@ -10648,6 +10666,9 @@ packages:
 
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+
+  netcdfjs@4.0.0:
+    resolution: {integrity: sha512-98DBig9KmiCZC6kU0Y8OXR5Gj39KenMgp6sblpSdg+5oVscTjhm5r5oLiznlqBZyhRGQqlAMEyWjQnMh4/iPOA==}
 
   next-react-memory-stats@1.0.2:
     resolution: {integrity: sha512-CDf3RchKaEe3WES3d4fXgJPDNFsiR88BihcZPQ85NQPiLrdUMSbHx0ZNDDbkRZM5FNovK4eQYMTz19FxwNfsTQ==}
@@ -24600,6 +24621,8 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
+  iobuffer@6.0.1: {}
+
   ioredis@5.11.1(supports-color@7.2.0):
     dependencies:
       '@ioredis/commands': 1.10.0
@@ -24998,6 +25021,10 @@ snapshots:
       - '@noble/hashes'
 
   jsesc@3.1.0: {}
+
+  jsfive@0.4.0:
+    dependencies:
+      pako: 2.2.0
 
   json-bigint@1.0.0:
     dependencies:
@@ -25928,6 +25955,10 @@ snapshots:
   negotiator@0.6.3: {}
 
   neo-async@2.6.2: {}
+
+  netcdfjs@4.0.0:
+    dependencies:
+      iobuffer: 6.0.1
 
   next-react-memory-stats@1.0.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:

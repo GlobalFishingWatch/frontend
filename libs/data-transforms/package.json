@@ -37,8 +37,10 @@
     "geo-coordinates-parser": "1.x",
     "geojson": "0.x",
     "geotiff": "3.x",
+    "jsfive": "0.4.x",
     "jszip": "3.x",
     "luxon": "3.x",
+    "netcdfjs": "4.x",
     "shpjs": "6.x",
     "tslib": "2.x"
   }
