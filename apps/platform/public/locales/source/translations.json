@@ -938,13 +938,24 @@
       "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
       "title": "Run a report on an area"
     },
-    "assistant": {
-      "description": "Tell the GFW AI agent what you would like to analyse and it will customise the view for your needs.",
-      "title": "Chat with the analysis copilot"
+    "copilotExamples": {
+      "carrierEncounters": "Encounters between carriers and longliners in the Indian Ocean",
+      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "lasPalmasVisits": "Which vessels visited Las Palmas in December?",
+      "loiteringWestAfrica": "Loitering events off the coast of West Africa",
+      "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
+      "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
+      "peruEffort": "Apparent fishing effort in the Peruvian EEZ",
+      "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
+      "squidPacific": "Chinese squid jiggers fishing in the Pacific in 2024",
+      "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
     },
+    "copilotLabel": "What do you want to see?",
+    "createAccount": "Create an account",
     "getStarted": "Get started",
     "header": "Welcome",
-    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or learn more <1>here</1>.",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "login": "Log in to get the most out of the platform (free, 2 minutes)",
     "searchVessel": {
       "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
       "title": "Search for a vessel"

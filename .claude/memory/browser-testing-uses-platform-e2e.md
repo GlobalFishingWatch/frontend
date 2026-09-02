@@ -54,7 +54,7 @@ spec starts with the welcome/hint localStorage keys pre-dismissed. A new first-v
 listed there opens in all ~30 specs at once and shifts the layout they assert on — the failures look
 unrelated to the feature that caused them.
 
-Added 2026-08-31 with the map onboarding side panel (`OnboardingPanelDismissed`, set to the string
+Added 2026-08-31 with the map onboarding modal — a side panel until 2026-09-02 (`OnboardingPanelDismissed`, set to the string
 `'true'` because `usehooks-ts`' `useLocalStorage` JSON-encodes). A spec that tests such a panel opts
 back in with its own `page.addInitScript` — init scripts run in registration order, so one added in
-the test body wins over the fixture's.
+the test body wins over the fixture's (`src/tests/OnboardingModal.e2e.spec.ts`).

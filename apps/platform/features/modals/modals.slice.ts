@@ -14,7 +14,7 @@ type ModalId =
   | 'editWorkspace'
   | 'createWorkspace'
   | 'downloadTrack'
-  | 'welcomePanel'
+  | 'onboarding'
 
 /**
  * Which GFW-only secret menu is open.
@@ -50,7 +50,7 @@ type ModalsOpenState = {
   editor: boolean
   bigQuery: BigQueryModalMode | false
   downloadTrack: boolean
-  welcomePanel: boolean
+  onboarding: boolean
 }
 
 const initialState: ModalsOpenState = {
@@ -72,7 +72,7 @@ const initialState: ModalsOpenState = {
   editor: false,
   bigQuery: false,
   downloadTrack: false,
-  welcomePanel: false,
+  onboarding: false,
 }
 
 const modals = createSlice({
@@ -143,7 +143,7 @@ export const selectScreenshotModalOpen = (state: RootState) => state.modals.scre
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
 export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
 export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
-export const selectWelcomePanelOpen = (state: RootState) => state.modals.welcomePanel
+export const selectOnboardingModalOpen = (state: RootState) => state.modals.onboarding
 export const selectBigQueryModalOpen = (state: RootState) => state.modals.bigQuery === 'default'
 export const selectTurningTidesModalOpen = (state: RootState) =>
   state.modals.bigQuery === 'turning-tides'

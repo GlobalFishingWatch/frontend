@@ -31,7 +31,7 @@ export function CrowdinScripts({ enabled }: { enabled: boolean }) {
 
 type LanguageToggleProps = {
   className?: string
-  position?: 'bottomRight' | 'rightDown'
+  position?: 'bottomRight' | 'rightDown' | 'rightUp'
 }
 
 const LanguageToggle: React.FC<LanguageToggleProps> = ({
