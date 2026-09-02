@@ -1,7 +1,6 @@
 import type { AnyRouter, RouterEvents } from '@tanstack/react-router'
 
 import { PATH_BASENAME } from 'data/map/config'
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.slice'
 import type { LinkToPayload } from 'router/routes.types'
@@ -9,7 +8,7 @@ import type { AppStore } from 'store'
 import type { QueryParams } from 'types'
 
 import { setLocation } from './location.slice'
-import { REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
+import { PAGE_TURN_ROUTES, REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
 import type { RoutePathValues } from './routes.utils'
 import { mapRoutePathToType, normalizeRoutePath, ROUTE_PATHS } from './routes.utils'
 
@@ -78,8 +77,6 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
   // Deduplicate rapid-fire events for the same URL (viewport rAF, timebar rAF, etc.)
   let lastDispatchedHref = router.latestLocation.href
 
-  let lastPathname = router.latestLocation.pathname
-
   // onBeforeNavigate: location sync + history tracking.
   // Runs before TanStack Router renders the new route, so layout components
   // uses the new location state and avoids intermediate UI flash.
@@ -120,9 +117,11 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
         const prevQuery = prevLocation.query || ({} as QueryParams)
         const isDifferentTrackCorrection =
           search?.trackCorrectionId && !prevQuery?.trackCorrectionId
+        const isPageTurn = routeType === prevLocation.type && PAGE_TURN_ROUTES.includes(routeType)
 
         if (
           !isHistoryNavigation &&
+          !isPageTurn &&
           (isDifferentRoute || isDifferentTrackCorrection) &&
           (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
         ) {
@@ -135,7 +134,7 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
           store.dispatch(
             setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
           )
-        } else if (lastHistoryNavigation) {
+        } else if (!isPageTurn && lastHistoryNavigation) {
           const updatedHistoryNavigation = currentHistoryNavigation.map(
             (navigation: LastWorkspaceVisited) => {
               const navRouteType = mapRoutePathToType(lastHistoryNavigation.to)
@@ -181,18 +180,12 @@ export function setupRouterSync(router: AnyRouter, store: AppStore) {
     }
   )
 
-  // onResolved: only clear the isHistoryNavigation flag from the committed history and reset sidebarscroll
+  // onResolved: only clear the isHistoryNavigation flag from the committed history.
+  // Scroll reset is the router's job — `scrollToTopSelectors` in router.tsx.
   const unsubscribeResolved = router.subscribe(
     'onResolved',
     (event: RouterEvents['onResolved']) => {
       const navState = (event.toLocation.state || {}) as NavigationState
-
-      if (event.toLocation.pathname !== lastPathname) {
-        lastPathname = event.toLocation.pathname
-        if (!navState.isHistoryNavigation) {
-          resetSidebarScroll()
-        }
-      }
 
       if (navState.isHistoryNavigation) {
         router.navigate({

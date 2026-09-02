@@ -7,6 +7,7 @@ import type { MjolnirEvent } from 'mjolnir.js'
 
 import { EventTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers/utils'
+import { isLonglineSetEvent } from '@globalfishingwatch/deck-loaders'
 
 import type { TrackGraphOrientation } from '../timeline/timeline-context'
 import { useTimelineContext } from '../timeline/timeline-context'
@@ -188,14 +189,19 @@ export const TimebarTracksEvents = ({
       const trackColor = toDeckColor(trackEvents.color)
       const y = trackEvents.y || 0
       trackEvents.chunks.forEach((event) => {
+        const isLonglineSet = isLonglineSetEvent(event as any)
         let colorStr = event.props?.color || 'white'
-        if (tracksLen === 1 && event.type === EventTypes.Fishing) {
-          colorStr = 'white'
-        } else if (useTrackColor || event.type === EventTypes.Fishing) {
-          colorStr = trackEvents.color as string
+        if (!isLonglineSet) {
+          if (tracksLen === 1 && event.type === EventTypes.Fishing) {
+            colorStr = 'white'
+          } else if (useTrackColor || event.type === EventTypes.Fishing) {
+            colorStr = trackEvents.color as string
+          }
         }
         const baseColor =
-          (useTrackColor || event.type === EventTypes.Fishing) && colorStr !== 'white'
+          !isLonglineSet &&
+          (useTrackColor || event.type === EventTypes.Fishing) &&
+          colorStr !== 'white'
             ? trackColor
             : toDeckColor(colorStr)
 

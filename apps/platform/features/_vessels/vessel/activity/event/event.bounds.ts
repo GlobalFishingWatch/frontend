@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { bbox, bboxPolygon, featureCollection, point } from '@turf/turf'
+import { bbox, bboxPolygon, booleanPointInPolygon, featureCollection, point } from '@turf/turf'
 import type { Point, Polygon, Position } from 'geojson'
 
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
@@ -26,10 +26,26 @@ export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
           startDate: event.start,
           endDate: event.end,
         })
+        const eventCoordinates = event.coordinates
+          ? [...(event.coordinates as Position)]
+          : undefined
+        if (eventCoordinates && trackBounds && trackBounds[2] > 180 && eventCoordinates[0] < 0) {
+          eventCoordinates[0] += 360
+        }
+        const trackPolygon = trackBounds ? bboxPolygon(trackBounds) : undefined
+        const eventPoint = eventCoordinates ? point(eventCoordinates) : undefined
+        // filter segments to use only the ones actually overlapping with the event
+        const eventTrackPolygon =
+          !eventPoint || (trackPolygon && booleanPointInPolygon(eventPoint, trackPolygon))
+            ? trackPolygon
+            : undefined
+        if (!eventTrackPolygon && !eventPoint) {
+          return
+        }
         const bounds = bbox(
           featureCollection<Polygon | Point, any>([
-            ...(trackBounds ? [bboxPolygon(trackBounds)] : []),
-            ...(event.coordinates ? [point(event.coordinates as Position)] : []),
+            ...(eventTrackPolygon ? [eventTrackPolygon] : []),
+            ...(eventPoint ? [eventPoint] : []),
           ])
         ) as Bbox
         if (bounds) {

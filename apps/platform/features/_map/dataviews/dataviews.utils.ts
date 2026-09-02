@@ -13,9 +13,15 @@ import type {
   DataviewType,
   Workspace,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EndpointId,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
+  getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getRelatedDatasetByType,
   removeDatasetVersion,
@@ -26,9 +32,8 @@ import {
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-// Leaf subpaths, not the package root: this module has 11 in-graph importers and two slices
-// (workspace, vessel) reach it, so the root barrel would put all of deck.gl in every page's entry chunk.
-import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers/config'
+import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/deck-layers/config'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -37,6 +42,7 @@ import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   TEMPLATE_POINTS_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
@@ -70,6 +76,7 @@ export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 const CONTEXT_LAYER_PREFIX = 'context-'
+export const USER_4WINGS_PREFIX = 'user-4wings-'
 
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -250,6 +257,48 @@ export const resolveVesselDataviewInstance = (
     newDataviewInstance.datasetsConfig = datasetsConfig
   }
   return newDataviewInstance
+}
+
+const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightCategory', 'fishing.fractionAtNight']
+
+export const withLonglineSetsEvents = (
+  dataview: UrlDataviewInstance,
+  datasets: Dataset[]
+): UrlDataviewInstance => {
+  const isFishingEventsConfig = (datasetConfig: DataviewDatasetConfig) =>
+    datasetConfig.endpoint === EndpointId.Events &&
+    datasets.find(({ id }) => id === datasetConfig.datasetId)?.subcategory === EventTypes.Fishing
+
+  const fishingEventsConfig = dataview.datasetsConfig?.find(isFishingEventsConfig)
+  const hasLonglineDataset = datasets.some(({ id }) => id === LONGLINE_FISHING_EVENTS_DATASET)
+  if (!fishingEventsConfig || !hasLonglineDataset) {
+    return dataview
+  }
+  const query = fishingEventsConfig.query || []
+  const hasIncludesQuery = query.some((q) => q.id === 'includes')
+  const nextQuery = hasIncludesQuery
+    ? query.map((q) =>
+        q.id === 'includes'
+          ? { ...q, value: [...(q.value as string[]), ...LONGLINE_EVENTS_INCLUDES] }
+          : q
+      )
+    : [...query, { id: 'includes', value: LONGLINE_EVENTS_INCLUDES }]
+  const datasetsConfig = dataview.datasetsConfig!.map((datasetConfig) =>
+    datasetConfig === fishingEventsConfig
+      ? {
+          ...datasetConfig,
+          datasetId: LONGLINE_FISHING_EVENTS_DATASET,
+          query: nextQuery,
+        }
+      : datasetConfig
+  )
+  return {
+    ...dataview,
+    datasetsConfig,
+    datasets: datasetsConfig.flatMap(
+      (datasetConfig) => datasets.find(({ id }) => id === datasetConfig.datasetId) || []
+    ),
+  }
 }
 
 type VesselDataviewInstanceTemplateParams = {
@@ -450,6 +499,34 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
             },
           ],
         }),
+      },
+    ],
+  }
+}
+
+export const getUserFourwingsDataviewInstance = (
+  dataset: Dataset
+): DataviewInstance<DataviewType> => {
+  const { agregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
+  return {
+    id: `${USER_4WINGS_PREFIX}${dataset.id}`,
+    category: DataviewCategory.User,
+    config: {
+      colorCyclingType: 'fill' as ColorCyclingType,
+      aggregationOperation:
+        (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
+        FourwingsAggregationOperation.Avg,
+      datasets: [dataset.id],
+      group: LayerGroup.CustomLayer,
+    },
+    dataviewId: timestampColumn
+      ? TEMPLATE_ACTIVITY_DATAVIEW_SLUG
+      : TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
+    datasetsConfig: [
+      {
+        datasetId: dataset.id,
+        params: [{ id: 'type', value: 'heatmap' }],
+        endpoint: EndpointId.FourwingsTiles,
       },
     ],
   }

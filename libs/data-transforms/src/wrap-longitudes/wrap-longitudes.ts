@@ -1,7 +1,7 @@
 import { bbox, feature, geometry, polygon } from '@turf/turf'
 import type { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
-export type Bbox = [number, number, number, number]
+import type { Bbox } from '../types'
 
 // Used to detect antimeridian issues in dissolve
 export const BUFFERED_ANTIMERIDIAN_LON = 179.5

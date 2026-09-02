@@ -14,7 +14,11 @@ import type {
   DatasetConfiguration,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DatasetSubCategory,
+  DatasetTypes,
+} from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
@@ -45,7 +49,7 @@ export const MIN_NAME_LENGTH = 3
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
   const errors = {
     name:
-      datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
+      !datasetMetadata.name?.trim() || datasetMetadata.name.trim().length < MIN_NAME_LENGTH
         ? t((t) => t.datasetUpload.errors.name, {
             min: String(MIN_NAME_LENGTH),
           })
@@ -71,6 +75,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
     filters: dataset.filters,
     category: dataset.category,
     configuration: dataset.configuration,
+    unit: dataset.unit,
   }
 }
 
@@ -143,6 +148,27 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
+export const getGriddedDatasetMetadata = ({ name }: { name: string }): DatasetMetadata => {
+  return {
+    name,
+    public: true,
+    unit: '',
+    category: DatasetCategory.Activity,
+    type: DatasetTypes.UserFourwings,
+    configuration: {
+      userFourwingsV1: {
+        agregationMode: 'AVG',
+        // GDAL band index, 1-based
+        band: 1,
+      },
+      frontend: {
+        sourceFormat: 'GeoTIFF',
+        geometryType: 'gridded',
+      },
+    },
+  }
+}
+
 export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromFilters(baseMetadata.filters)
@@ -175,12 +201,15 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
 }
 
 export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) => {
+  const { userContextLayers, ...otherFilters } = datasetMetadata.filters ?? {}
+  const userContextLayersClean = getDatasetFiltersClean(userContextLayers)
   const baseDataset: Partial<Dataset> = {
     ...datasetMetadata,
-    unit: 'TBD',
+    unit: datasetMetadata.unit,
     subcategory: DatasetSubCategory.Info,
     filters: {
-      userContextLayers: getDatasetFiltersClean(datasetMetadata.filters?.userContextLayers),
+      ...otherFilters,
+      ...(userContextLayersClean.length > 0 && { userContextLayers: userContextLayersClean }),
     },
     configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
   }

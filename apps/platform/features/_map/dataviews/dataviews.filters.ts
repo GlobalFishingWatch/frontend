@@ -15,13 +15,13 @@ import {
   datasetHasFilterAllowed,
   getDatasetFilterItem,
   getDatasetFiltersAllowed,
-  getEnvironmentalDatasetRange,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 import { getActiveDatasetsInDataview } from 'features/_map/datasets/datasets.utils'
 import i18n, { t } from 'features/i18n/i18n'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { getPorts, getPortsByIds } from 'utils/ports'
@@ -60,7 +60,11 @@ export const getIncompatibleFilterSelection = (
     }
     return incompatibilityDict.filter(({ id, value, valueNot, disabled }) => {
       const selectedFilterValue = dataview.config?.filters?.[id]
-      if (value === 'undefined' && selectedFilterValue === undefined && valueNot === undefined) {
+      const isFilterValueNotSet =
+        selectedFilterValue === undefined ||
+        selectedFilterValue === null ||
+        selectedFilterValue.length === 0
+      if (value === 'undefined' && isFilterValueNotSet && valueNot === undefined) {
         return disabled.includes(filter)
       }
 
@@ -294,23 +298,29 @@ const getFilterOptionsSelectedInDataview = (
       },
     ])
   }
-  if (
-    filter === 'visibleValues' &&
-    (dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue)
-  ) {
-    const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
-    const layerRange = getEnvironmentalDatasetRange(dataset)
-    const min = dataview.config?.minVisibleValue || layerRange?.min
-    const max = dataview.config?.maxVisibleValue || layerRange?.max
+  if (filter === 'visibleValues') {
+    const { minVisibleValue, maxVisibleValue } = dataview.config || {}
+    if (minVisibleValue === undefined && maxVisibleValue === undefined) {
+      return []
+    }
+    // Activity and detections are counts and hours, so the decimals the ckmeans ramp breaks
+    // carry are noise. Environmental units can be genuinely fractional, so those keep them.
+    // Matches how the legend itself rounds (see MapLegend's roundValues).
+    const format = (value: number) =>
+      formatI18nNumber(
+        dataview.category === DataviewCategory.Environment ? value : Math.round(value)
+      ) as string
+    // The deck layers compare inclusively, hence ≥ / ≤ rather than > / <.
+    // Only a bound actually present in the config gets a tag: environmental datasets do carry a
+    // static range, and the unset side used to fall back to it, but since the legend brush landed
+    // that rendered an untouched handle as a filter nobody applied
     return [
-      {
-        id: min.toString(),
-        label: min,
-      },
-      {
-        id: max.toString(),
-        label: max,
-      },
+      ...(minVisibleValue !== undefined
+        ? [{ id: `min-${minVisibleValue}`, label: `≥ ${format(minVisibleValue)}` }]
+        : []),
+      ...(maxVisibleValue !== undefined
+        ? [{ id: `max-${maxVisibleValue}`, label: `≤ ${format(maxVisibleValue)}` }]
+        : []),
     ]
   }
 

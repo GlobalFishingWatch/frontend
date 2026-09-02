@@ -1,0 +1,104 @@
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
+
+import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+
+import type { SliceExtendedFourwingsPickingObject } from '../../map.slice'
+
+import PositionsTooltipRow from './PositionsTooltipRow'
+
+import styles from '../Popup.module.css'
+
+type PositionsTooltipSectionProps = {
+  features: SliceExtendedFourwingsPickingObject[]
+  showFeaturesDetails: boolean
+  loading: boolean
+  error: string
+}
+
+function PositionsTooltipSection({
+  features,
+  showFeaturesDetails = false,
+  loading,
+  error,
+}: PositionsTooltipSectionProps) {
+  const [currentFeatureIndex, setCurrentFeatureIndex] = useState(0)
+  const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
+
+  const handlePreviousFeature = () => {
+    setCurrentFeatureIndex((prev) => (prev > 0 ? prev - 1 : features.length - 1))
+  }
+
+  const handleNextFeature = () => {
+    setCurrentFeatureIndex((prev) => (prev < features.length - 1 ? prev + 1 : 0))
+  }
+
+  if (features.length === 0) {
+    return null
+  }
+
+  const currentFeature = features[currentFeatureIndex]
+
+  if (!currentFeature) {
+    return null
+  }
+
+  if (showFeaturesDetails) {
+    const dataview = dataviewInstances?.find((instance) => instance.id === currentFeature.layerId)
+    const title = dataview
+      ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+      : currentFeature.title
+    return (
+      <div className={styles.popupSection}>
+        <div>
+          {title && <h3 className={styles.popupSectionTitle}>{title}</h3>}
+          <PositionsTooltipRow
+            key={`${currentFeature.id}-${currentFeatureIndex}`}
+            loading={loading}
+            error={error}
+            feature={currentFeature as any as FourwingsPositionsPickingObject}
+            showFeaturesDetails={true}
+          />
+          {features.length > 1 && (
+            <div className={styles.navigationFooter}>
+              <IconButton
+                icon="arrow-left"
+                size="small"
+                onClick={handlePreviousFeature}
+                aria-label="Previous feature"
+              />
+              <span className={styles.navigationCounter}>
+                {currentFeatureIndex + 1} / {features.length}
+              </span>
+              <IconButton
+                icon="arrow-right"
+                size="small"
+                onClick={handleNextFeature}
+                aria-label="Next feature"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return features.map((feature, i) => {
+    return (
+      <div key={`${feature.id}-${i}`} className={styles.popupSection}>
+        <PositionsTooltipRow
+          loading={loading}
+          error={error}
+          feature={feature as any as FourwingsPositionsPickingObject}
+          showFeaturesDetails={false}
+        />
+      </div>
+    )
+  })
+}
+
+export default PositionsTooltipSection

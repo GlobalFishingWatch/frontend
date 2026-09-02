@@ -14,7 +14,7 @@ import type {
   FourwingsLayer,
   FourwingsTileLayerColorDomain,
 } from '@globalfishingwatch/deck-layers'
-import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { getFourwingsChunk, getSublayersVisibleValuesHash } from '@globalfishingwatch/deck-layers'
 import { isMultiHueColorRampId, rgbaToString } from '@globalfishingwatch/deck-layers/utils'
 import type {
   FourwingsPositionFeature,
@@ -119,8 +119,6 @@ export const useHeatmapActivityGraph = () => {
           interval: chunk.interval,
           sublayers: instance.props.sublayers,
           aggregationOperation: instance.props.aggregationOperation,
-          minVisibleValue: instance.props.minVisibleValue,
-          maxVisibleValue: instance.props.maxVisibleValue,
         })
       )
     } else {
@@ -140,6 +138,8 @@ export const useHeatmapActivityGraph = () => {
     }
   })
 
+  const sublayersVisibleValuesHash = getSublayersVisibleValuesHash(instance?.props.sublayers)
+
   useEffect(() => {
     onViewportDataChange()
   }, [
@@ -152,8 +152,7 @@ export const useHeatmapActivityGraph = () => {
     chunk.bufferedStart,
     chunk.bufferedEnd,
     chunk.interval,
-    instance?.props.minVisibleValue,
-    instance?.props.maxVisibleValue,
+    sublayersVisibleValuesHash,
   ])
 
   return useMemo(

@@ -11,7 +11,6 @@ import {
   WorkspaceCategory,
 } from '@platform/config/map/workspaces'
 
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { cleanReportQuery } from 'features/_map/workspace/workspace.utils'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
@@ -46,7 +45,6 @@ function NavigationWorkspaceButton() {
   const locationCategory = useSelector(selectLocationCategory)
 
   const resetState = useCallback(() => {
-    resetSidebarScroll()
     dispatch(resetVesselState())
   }, [dispatch])
 

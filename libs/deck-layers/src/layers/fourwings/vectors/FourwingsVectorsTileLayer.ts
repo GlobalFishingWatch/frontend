@@ -41,6 +41,7 @@ import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getTileDataCache,
   sliceCellValues,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
@@ -67,8 +68,6 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   debugTiles?: boolean
   availableIntervals?: FourwingsInterval[]
   sublayers: FourwingsDeckVectorSublayer[]
-  minVisibleValue?: number
-  maxVisibleValue?: number
   temporalAggregation?: boolean
 }
 
@@ -124,7 +123,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}-${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -250,8 +249,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       temporalAggregation,
     } = this.props
     const sublayerIndex = 0
-    // Ensure 'u' (eastward) direction always goes first
-    const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
+    // Ensure 'u' (eastward) vector always goes first
+    const vectorLayers = sublayers.sort((a) => (a.vector === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = temporalAggregation
       ? {

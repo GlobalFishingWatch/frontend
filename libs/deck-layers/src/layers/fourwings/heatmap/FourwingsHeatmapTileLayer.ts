@@ -75,6 +75,7 @@ import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getTileDataCache,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
@@ -136,7 +137,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}`
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -706,8 +707,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       compareEnd,
       availableIntervals,
       comparisonMode,
-      minVisibleValue,
-      maxVisibleValue,
       intervalCacheMode,
     } = props
 
@@ -716,14 +715,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
-    const newVisibleValueLimits =
-      minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
-
     const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
 
-    const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
+    const needsColorUpdate = newMode || sublayersHaveNewColors
     if (needsColorUpdate) {
-      const recalculateDomain = newMode || newVisibleValueLimits
+      const recalculateDomain = newMode
       const newColorDomain = recalculateDomain
         ? this._calculateColorDomain()
         : this.state.colorDomain
@@ -808,7 +804,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         scales,
         minZoom: -1, // fixes global report when zoom is 0
         onTileError: this._onLayerError,
-        maxZoom: FOURWINGS_MAX_ZOOM,
+        maxZoom: this.props.maxZoom ?? FOURWINGS_MAX_ZOOM,
         // Bounds bytes retained in the tileset cache during long sessions,
         // using the byteLength the fourwings loader stamps on parsed tiles
         maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,

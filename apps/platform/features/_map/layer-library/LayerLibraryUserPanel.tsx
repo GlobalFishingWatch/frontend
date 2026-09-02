@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -11,7 +11,6 @@ import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/_map/datasets/datasets.hook'
-import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import {
   getDatasetLabel,
   getDatasetTypeIcon,
@@ -27,21 +26,25 @@ import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getIsBrowser } from 'utils/dom'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryUserPanel.module.css'
 
-const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
+const LayerLibraryUserPanel = ({
+  searchQuery,
+  datasetsLoaded,
+}: {
+  searchQuery: string
+  datasetsLoaded: boolean
+}) => {
   const { t } = useTranslation()
 
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const dispatch = useAppDispatch()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const datasets = useSelector(selectUserDatasets)
-  const datasetStatus = useSelector(selectDatasetsStatus)
   const guestUser = useSelector(selectIsGuestUser)
   const onAddNewClick = useAddDataset()
 
@@ -53,11 +56,13 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     [datasets, searchQuery]
   )
 
-  useEffect(() => {
-    if (!guestUser) {
-      dispatch(fetchAllDatasetsThunk())
-    }
-  }, [dispatch, guestUser])
+  const datasetsByGeometryType = useMemo(
+    () =>
+      Object.entries(groupDatasetsByGeometryType(filteredDatasets)).filter(
+        ([, geometryDatasets]) => geometryDatasets.length > 0
+      ),
+    [filteredDatasets]
+  )
 
   const onAddToWorkspaceClick = useCallback(
     (dataset: Dataset) => {
@@ -73,16 +78,6 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     },
     [dispatch, upsertDataviewInstance]
   )
-
-  // const onInfoClick = useCallback(
-  //   (dataset: Dataset) => {
-  //     openSidePanel({
-  //       type: 'userDataset',
-  //       id: dataset.id,
-  //     })
-  //   },
-  //   [openSidePanel]
-  // )
 
   const onUploadClick = useCallback(() => {
     onAddNewClick()
@@ -121,7 +116,8 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         </div>
       )
     }
-    if (datasetStatus !== AsyncReducerStatus.Finished) {
+
+    if (!datasetsLoaded) {
       return (
         <div className={cx(styles.emptyState, styles.center)}>
           <Spinner />
@@ -131,60 +127,59 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
 
     return (
       <div className={styles.userDatasetList}>
-        {filteredDatasets && filteredDatasets.length > 0 ? (
-          Object.entries(groupDatasetsByGeometryType(filteredDatasets)).map(
-            ([geometryType, layer]) => (
-              <ul className={styles.userGeometryList} key={geometryType}>
-                <label id={geometryType} className={styles.categoryLabel}>
-                  {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
-                </label>
-                {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
-                  const datasetError = dataset.status === DatasetStatus.Error
-                  const datasetImporting = dataset.status === DatasetStatus.Importing
-                  let infoTooltip = t((t) => t.layer.seeDescription, {
-                    defaultValue: 'Click to see layer description',
-                  }) as string
-                  if (datasetImporting) {
-                    infoTooltip = t((t) => t.dataset.importing)
-                  }
-                  if (datasetError) {
-                    const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
-                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${configuration.importLogs}`
-                  }
-                  const datasetIcon = getDatasetTypeIcon(dataset)
+        {datasetsByGeometryType.length > 0 ? (
+          datasetsByGeometryType.map(([geometryType, layer]) => (
+            <ul className={styles.userGeometryList} key={geometryType}>
+              <label id={geometryType} className={styles.categoryLabel}>
+                {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
+              </label>
+              {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
+                const datasetError = dataset.status === DatasetStatus.Error
+                const datasetImporting = dataset.status === DatasetStatus.Importing
+                let infoTooltip = t((t) => t.layer.seeDescription, {
+                  defaultValue: 'Click to see layer description',
+                }) as string
+                if (datasetImporting) {
+                  infoTooltip = t((t) => t.dataset.importing)
+                }
+                if (datasetError) {
+                  const importLogs =
+                    getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''
+                  infoTooltip = `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
+                }
+                const datasetIcon = getDatasetTypeIcon(dataset)
 
-                  return (
-                    <li className={styles.dataset} key={dataset.id}>
-                      <span>
-                        {datasetIcon && (
-                          <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
-                        )}
-                        {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
-                      </span>
-                      <div>
-                        {datasetError ? (
-                          <InfoError
-                            error={datasetError}
-                            loading={datasetImporting}
-                            tooltip={infoTooltip}
-                            size="default"
-                            // onClick={() => !datasetError && onInfoClick(dataset)}
-                          />
-                        ) : (
-                          <IconButton
-                            testId={`${dataset.type}-add-to-map-${index}`}
-                            icon="view-on-map"
-                            onClick={() => onAddToWorkspaceClick(dataset)}
-                            tooltip={t((t) => t.user.seeDataset)}
-                          />
-                        )}
-                      </div>
-                    </li>
-                  )
-                })}
-              </ul>
-            )
-          )
+                return (
+                  <li className={styles.dataset} key={dataset.id}>
+                    <span>
+                      {datasetIcon && (
+                        <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                      )}
+                      {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
+                    </span>
+                    <div>
+                      {datasetError ? (
+                        <InfoError
+                          error={datasetError}
+                          loading={datasetImporting}
+                          tooltip={infoTooltip}
+                          size="default"
+                          // onClick={() => !datasetError && onInfoClick(dataset)}
+                        />
+                      ) : (
+                        <IconButton
+                          testId={`${dataset.type}-add-to-map-${index}`}
+                          icon="view-on-map"
+                          onClick={() => onAddToWorkspaceClick(dataset)}
+                          tooltip={t((t) => t.user.seeDataset)}
+                        />
+                      )}
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          ))
         ) : (
           <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
         )}

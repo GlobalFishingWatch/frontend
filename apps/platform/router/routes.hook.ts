@@ -33,10 +33,10 @@ export function useReplaceQueryParams() {
   const router = useRouter()
 
   const replaceQueryParams = useCallback(
-    (search: Partial<QueryParams>) => {
+    (search: Partial<QueryParams>, { resetScroll = false } = {}) => {
       const opts: AppNavigateOptions = {
         replace: true,
-        resetScroll: false,
+        resetScroll,
         search: (prev: QueryParams) => ({ ...prev, ...search }),
       }
       router.navigate(opts)

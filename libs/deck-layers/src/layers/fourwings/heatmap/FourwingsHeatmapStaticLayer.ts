@@ -44,11 +44,16 @@ import type {
   FourwingsHeatmapStaticLayerProps,
   FourwingsHeatmapStaticPickingInfo,
   FourwingsHeatmapStaticPickingObject,
-  FourwingsHeatmapTileLayerProps,
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
-import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
+import {
+  EMPTY_CELL_COLOR,
+  filterCells,
+  getSublayersVisibleValuesHash,
+  getZoomOffsetByResolution,
+  isSublayerValueVisible,
+} from './fourwings-heatmap.utils'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,
@@ -59,7 +64,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   resolution: 'default',
 }
 
-export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
+export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapStaticLayerProps> {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
   declare state: Omit<FourwingsTileLayerState, 'tilesCache'>
@@ -82,7 +87,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${colorRamps}|${this.state.rampDirty}`
+    return `${colorRamps}|${this.state.rampDirty}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -119,7 +124,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     // NO_DATA_VALUE = 0
     // SCALE_VALUE = 0.01
     // OFFSET_VALUE = 0
-    const { minVisibleValue, maxVisibleValue } = this.props
+    // Single dataview layer, so every sublayer carries the same range
+    const { minVisibleValue, maxVisibleValue } = this.props.sublayers?.[0] || {}
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.getColorDomain()
@@ -182,11 +188,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       subcategory: this.props.subcategory,
       sublayers: this.props.sublayers,
     }
-    const { minVisibleValue, maxVisibleValue } = this.props
     if (object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
       if (
-        (minVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] < minVisibleValue) ||
-        (maxVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] > maxVisibleValue)
+        !isSublayerValueVisible(
+          object.properties[HEATMAP_STATIC_PROPERTY_ID],
+          this.props.sublayers?.[0]
+        )
       ) {
         return { ...info, object: undefined } as any
       }
@@ -204,11 +211,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const scale = scales?.[0]
     if (
       !scale ||
-      !feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] ||
-      (this.props.minVisibleValue &&
-        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] < this.props.minVisibleValue) ||
-      (this.props.maxVisibleValue &&
-        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] > this.props.maxVisibleValue)
+      !isSublayerValueVisible(
+        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID],
+        this.props.sublayers?.[0]
+      )
     ) {
       return EMPTY_CELL_COLOR
     }
@@ -222,12 +228,13 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minVisibleValue, maxVisibleValue, sublayers } = props
+    const { sublayers } = props
     const oldColors = oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const colors = sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const isColorChanged = oldColors !== colors
+
     const isVisibleValuesChanged =
-      minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
+      getSublayersVisibleValuesHash(sublayers) !== getSublayersVisibleValuesHash(oldProps.sublayers)
     if (isVisibleValuesChanged || isColorChanged) {
       this._updateColorDomain()
     }
@@ -238,38 +245,43 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       tilesUrl,
       sublayers,
       resolution,
-      minVisibleValue,
-      maxVisibleValue,
       maxZoom,
       highlightedFeatures,
+      aggregationOperation,
+      group = LayerGroup.HeatmapStatic,
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const { zoom } = this.context.viewport
+    const filters = sublayers.flatMap((sublayer) => sublayer.filter || [])
     const params = {
       datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
       format: 'MVT',
       'temporal-aggregation': true,
+      ...(filters.length && { filters }),
     }
 
     const layers: any[] = [
-      new MVTLayer<FourwingsStaticFeatureProperties>(this.props as any, {
-        id: `static-${resolution}`,
-        data: `${tilesUrl}?${stringify(params)}`,
-        maxZoom,
-        binary: false,
-        pickable: true,
-        loaders: [GFWMVTLoader],
-        zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
-        onTileLoad: this._onTileLoad,
-        onTileError: this._onLayerError,
-        onViewportLoad: this._onViewportLoad,
-        getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
-        getFillColor: this.getFillColor,
-        stroked: false,
-        updateTriggers: {
-          getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
-        },
-      }),
+      new MVTLayer<FourwingsStaticFeatureProperties>(
+        this.props as any,
+        this.getSubLayerProps({
+          id: `static-${resolution}-${aggregationOperation}`,
+          data: `${tilesUrl}?${stringify(params)}`,
+          maxZoom,
+          binary: false,
+          pickable: true,
+          loaders: [GFWMVTLoader],
+          zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
+          onTileLoad: this._onTileLoad,
+          onTileError: this._onLayerError,
+          onViewportLoad: this._onViewportLoad,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(group, params),
+          getFillColor: this.getFillColor,
+          stroked: false,
+          updateTriggers: {
+            getFillColor: [colorDomain, colorRanges, getSublayersVisibleValuesHash(sublayers)],
+          },
+        })
+      ),
     ]
 
     const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)

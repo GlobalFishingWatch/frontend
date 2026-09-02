@@ -6,9 +6,11 @@ import { VERSION } from '../version'
 import { NO_DATA_VALUE_32, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
+export const FOURWINGS_TILE_COLUMNS = 113
+
 export const baseFourwingsLoaderOptions: ParseFourwingsOptions = {
   sublayers: 1,
-  cols: [113],
+  cols: [FOURWINGS_TILE_COLUMNS],
   rows: [53],
   scale: [SCALE_VALUE],
   offset: [OFFSET_VALUE],

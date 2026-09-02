@@ -21,6 +21,11 @@ const baseProps = {
   ],
 } as any
 
+// The value range lives on the sublayer, the same shape every fourwings layer uses
+const withRange = (range: { minVisibleValue?: number; maxVisibleValue?: number }) => ({
+  sublayers: [{ ...baseProps.sublayers[0], ...range }],
+})
+
 const makeLayer = (props: Record<string, unknown> = {}) => {
   const layer = new FourwingsHeatmapStaticLayer({ ...baseProps, ...props })
   layer.state = {
@@ -51,10 +56,10 @@ describe('FourwingsHeatmapStaticLayer', () => {
     })
 
     it('hides cells outside the visible value range', () => {
-      expect(makeLayer({ minVisibleValue: 70 }).getFillColor(staticFeature(60))).toEqual(
+      expect(makeLayer(withRange({ minVisibleValue: 70 })).getFillColor(staticFeature(60))).toEqual(
         EMPTY_CELL_COLOR
       )
-      expect(makeLayer({ maxVisibleValue: 50 }).getFillColor(staticFeature(60))).toEqual(
+      expect(makeLayer(withRange({ maxVisibleValue: 50 })).getFillColor(staticFeature(60))).toEqual(
         EMPTY_CELL_COLOR
       )
     })
@@ -90,18 +95,46 @@ describe('FourwingsHeatmapStaticLayer', () => {
     })
 
     it('drops the object when the value is outside visible limits', () => {
-      const info = makeLayer({ minVisibleValue: 50 }).getPickingInfo({
+      const info = makeLayer(withRange({ minVisibleValue: 50 })).getPickingInfo({
         info: { object: { properties: { count: 30, cell: 123 } } } as any,
       })
       expect(info.object).toBeUndefined()
     })
   })
 
+  describe('MVT sublayer id', () => {
+    const renderMVTId = (props: Record<string, unknown>) => {
+      const layer = makeLayer(props)
+      layer.context = { viewport: { zoom: 4 } } as any
+      return (layer.renderLayers() as any[])[0].id
+    }
+
+    it('is namespaced so two static layers never collide', () => {
+      expect(renderMVTId({ id: 'layer-a' })).not.toBe(renderMVTId({ id: 'layer-b' }))
+    })
+
+    it('changes with the aggregation operation so the tileset reloads', () => {
+      expect(renderMVTId({ aggregationOperation: 'sum' })).not.toBe(
+        renderMVTId({ aggregationOperation: 'avg' })
+      )
+    })
+  })
+
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
-    expect(layer.cacheHash).toBe('teal|false')
+    expect(layer.cacheHash).toBe('teal|false|undefined-undefined')
     layer.state.rampDirty = true
-    expect(layer.cacheHash).toBe('teal|true')
+    expect(layer.cacheHash).toBe('teal|true|undefined-undefined')
+  })
+
+  // The report timeseries retriggers off cacheHash, and it honours min/maxVisibleValue even
+  // though the tile data does not change, so the bounds have to be part of the hash.
+  it('cacheHash changes when a visible-value bound changes', () => {
+    const unbounded = makeLayer()
+    const bounded = makeLayer({
+      sublayers: [{ ...baseProps.sublayers[0], maxVisibleValue: 2032 }],
+    })
+    expect(unbounded.cacheHash).not.toBe(bounded.cacheHash)
   })
 
   it('cacheHash changes when the sublayer color ramp changes', () => {

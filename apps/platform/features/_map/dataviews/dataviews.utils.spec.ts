@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest'
 
-import type { Dataview } from '@globalfishingwatch/api-types'
-import { EndpointId } from '@globalfishingwatch/api-types'
+import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import { EndpointId, EventTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 import {
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG,
   VESSEL_VMS_PERU_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 
-import { getVesselDataviewInstance } from './dataviews.utils'
+import { getVesselDataviewInstance, withLonglineSetsEvents } from './dataviews.utils'
 
 const INFO_DATASET = 'public-global-vessel-identity:v4.0'
 const VMS_INFO_DATASET = 'private-per-vessel-identity:v4.0'
@@ -104,5 +106,69 @@ describe('getVesselDataviewInstance trackRealTime ssvid gate', () => {
     const instance = getInstance({ datasets })
     expect(instance.config?.trackRealTime).toBeUndefined()
     expect(instance.config?.track).toBe('track')
+  })
+})
+
+describe('withLonglineSetsEvents', () => {
+  const fishingDatasetId = 'public-global-fishing-events:v3.0'
+  const fishingEventsConfig = {
+    datasetId: fishingDatasetId,
+    endpoint: EndpointId.Events,
+    params: [],
+    query: [{ id: 'vessels', value: ['vessel-1'] }],
+  }
+  const dataview = {
+    id: 'vessel-vessel-1',
+    datasetsConfig: [fishingEventsConfig],
+  } as UrlDataviewInstance
+  const fishingDataset = { id: fishingDatasetId, subcategory: EventTypes.Fishing } as Dataset
+  const longlineDataset = { id: LONGLINE_FISHING_EVENTS_DATASET } as Dataset
+
+  it('swaps the fishing events dataset and upserts day/night includes', () => {
+    const result = withLonglineSetsEvents(dataview, [fishingDataset, longlineDataset])
+    const eventsConfig = result.datasetsConfig?.find(
+      (config) => config.endpoint === EndpointId.Events
+    )
+    expect(eventsConfig?.datasetId).toBe(LONGLINE_FISHING_EVENTS_DATASET)
+    expect(eventsConfig?.query).toEqual([
+      { id: 'vessels', value: ['vessel-1'] },
+      {
+        id: 'includes',
+        value: ['fishing.dayNightCategory', 'fishing.fractionAtNight'],
+      },
+    ])
+  })
+
+  it('appends includes onto an existing includes query', () => {
+    const withIncludes = {
+      ...dataview,
+      datasetsConfig: [
+        {
+          ...fishingEventsConfig,
+          query: [
+            { id: 'vessels', value: ['vessel-1'] },
+            { id: 'includes', value: ['existing'] },
+          ],
+        },
+      ],
+    } as UrlDataviewInstance
+    const result = withLonglineSetsEvents(withIncludes, [fishingDataset, longlineDataset])
+    const eventsConfig = result.datasetsConfig?.find(
+      (config) => config.endpoint === EndpointId.Events
+    )
+    expect(eventsConfig?.query?.find((query) => query.id === 'includes')?.value).toEqual([
+      'existing',
+      'fishing.dayNightCategory',
+      'fishing.fractionAtNight',
+    ])
+  })
+
+  it('is a no-op when the longline dataset is not loaded', () => {
+    expect(withLonglineSetsEvents(dataview, [fishingDataset])).toBe(dataview)
+  })
+
+  it('is a no-op when there is no fishing events config', () => {
+    const noEvents = { ...dataview, datasetsConfig: [] } as UrlDataviewInstance
+    expect(withLonglineSetsEvents(noEvents, [fishingDataset, longlineDataset])).toBe(noEvents)
   })
 })
