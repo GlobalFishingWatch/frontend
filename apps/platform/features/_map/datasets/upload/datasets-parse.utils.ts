@@ -130,7 +130,7 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
 ): Promise<DatasetParsedByType[T]> {
   const { fileType, zipContent } = fileTypeResult || (await getFileType(file))
   if (!fileType) {
-    throw new Error('File type not supported')
+    throw new Error('datasetUpload.errors.default')
   }
   try {
     let parsed: DataParsed

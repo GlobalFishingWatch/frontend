@@ -45,7 +45,6 @@ function NewGriddedDataset({
   onDatasetParseError,
 }: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
-  const [dataParseError, setDataParseError] = useState('')
   const [processingData, setProcessingData] = useState(() => Boolean(file))
   const [loading, setLoading] = useState(false)
   const [bandsCount, setBandsCount] = useState(0)
@@ -59,7 +58,6 @@ function NewGriddedDataset({
   if (file !== prevFile) {
     setPrevFile(file)
     setProcessingData(Boolean(file))
-    setDataParseError('')
   }
 
   const [prevDatasetId, setPrevDatasetId] = useState<string | undefined>()
@@ -97,7 +95,7 @@ function NewGriddedDataset({
           return
         }
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     }
     parseFile()
@@ -158,14 +156,6 @@ function NewGriddedDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t((t) => t.datasetUpload.processingData)}</p>
-      </div>
-    )
-  }
-
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }

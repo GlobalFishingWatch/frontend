@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from 'react'
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -25,6 +24,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { selectLocationType } from 'router/routes.selectors'
+import type { DatasetGeometryTypesSupported } from 'utils/files'
+import { getFileTypes } from 'utils/files'
 
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -35,6 +36,7 @@ import {
 
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import FileDropzone from './FileDropzone'
 
 import styles from './NewDataset.module.css'
 
@@ -45,7 +47,7 @@ export type NewDatasetProps = {
   style?: DatasetUploadStyle
   onFileUpdate: (file: File) => void
   onConfirm: (datasetMetadata: DatasetMetadata, { isEditing, file }: OnConfirmParams) => void
-  onDatasetParseError: (error: any, errorHandleCallback: Dispatch<SetStateAction<string>>) => void
+  onDatasetParseError: (error: any) => void
 }
 
 export type DatasetMetadata = Partial<
@@ -72,17 +74,20 @@ function NewDataset() {
   const isGuestUser = useSelector(selectIsGuestUser)
   const isUserExpired = useSelector(selectIsUserExpired)
   const [error, setError] = useState('')
+  const [parseError, setParseError] = useState('')
   const locationType = useSelector(selectLocationType)
   const { dispatchUpsertDataset } = useDatasetsAPI()
 
   const isDatasetEdit = dataset !== undefined
 
   const onFileLoaded = useCallback((file: File) => {
+    setParseError('')
     setRawFile(file)
   }, [])
 
   const onClose = useCallback(() => {
     setError('')
+    setParseError('')
     dispatchDatasetModalOpen(false)
     dispatchDatasetModalConfig({
       id: undefined,
@@ -156,8 +161,8 @@ function NewDataset() {
   )
 
   const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
-    (error, errorHandleCallback) => {
-      errorHandleCallback(t(`${error?.message}` as any))
+    (error) => {
+      setParseError(t(`${error?.message}` as any))
     },
     [t]
   )
@@ -223,7 +228,27 @@ function NewDataset() {
           )}
         </div>
       ) : type && (rawFile || dataset) ? (
-        <div className={styles.modalContent}>{getDatasetComponentByType(type)}</div>
+        <div className={styles.modalContent}>
+          {parseError ? (
+            <div className={styles.container}>
+              <FileDropzone
+                label={rawFile?.name}
+                fileTypes={getFileTypes(type as DatasetGeometryTypesSupported)}
+                onFileLoaded={onFileLoaded}
+              />
+              <div className={styles.errorMsgContainer}>
+                <p className={styles.errorMsg}>{parseError}</p>
+              </div>
+              <div className={styles.modalFooter}>
+                <div className={styles.footerMsg}>
+                  <UserGuideLink slug="uploading-data" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            getDatasetComponentByType(type)
+          )}
+        </div>
       ) : (
         <Fragment>
           <p className={styles.instructions}>
