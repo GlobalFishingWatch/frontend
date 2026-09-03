@@ -6,8 +6,11 @@ import { useSetAtom } from 'jotai'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { activeThreadAtom, newActiveThread } from 'features/_map/content-panel/chat/chat.atoms'
-import { setPendingChatPrompt } from 'features/_map/content-panel/chat/chat.slice'
+import {
+  activeThreadAtom,
+  newActiveThread,
+  pendingPromptAtom,
+} from 'features/_map/content-panel/chat/chat.atoms'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { setMapSearchOpenRequested } from 'features/_map/map/controls/map-controls.slice'
 import {
@@ -154,6 +157,7 @@ export function useOnboardingCopilotPrompt() {
   const dispatch = useAppDispatch()
   const { openSidePanel } = useSidePanel()
   const setActiveThread = useSetAtom(activeThreadAtom)
+  const setPendingPrompt = useSetAtom(pendingPromptAtom)
 
   return useCallback(
     (query: string) => {
@@ -167,10 +171,10 @@ export function useOnboardingCopilotPrompt() {
       // The question starts its own conversation instead of landing in whichever thread was last
       // open.
       setActiveThread(newActiveThread())
-      dispatch(setPendingChatPrompt(trimmed))
+      setPendingPrompt(trimmed)
       openSidePanel({ type: 'chat' })
     },
-    [dispatch, openSidePanel, setActiveThread]
+    [dispatch, openSidePanel, setActiveThread, setPendingPrompt]
   )
 }
 

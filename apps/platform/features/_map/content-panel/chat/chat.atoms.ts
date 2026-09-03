@@ -1,3 +1,4 @@
+import { atom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThread'
@@ -20,3 +21,9 @@ export const activeThreadAtom = atomWithStorage<ActiveThread>(
 export function newActiveThread(): ActiveThread {
   return { id: crypto.randomUUID(), isNew: true, isLoading: false }
 }
+
+/**
+ * A question asked outside the chat (the onboarding modal), sent as soon as the session mounts.
+ * Not persisted: a reload must not resend it.
+ */
+export const pendingPromptAtom = atom<string | null>(null)
