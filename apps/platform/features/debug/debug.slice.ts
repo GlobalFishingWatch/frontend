@@ -39,7 +39,7 @@ export const debugInitialState: DebugState = {
     hotspotButton: false,
     polygonsReport: false,
     reportPreview: false,
-    griddedHeatmap: true,
+    griddedHeatmap: false,
     legendBrush: false,
   },
   options: {
