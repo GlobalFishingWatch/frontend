@@ -32,17 +32,29 @@ Test files must match `*.e2e.spec.(ts|tsx)` under `src/` or Playwright ignores t
 
 **How to apply:**
 
-| Need                       | Command                                                    |
-| -------------------------- | ---------------------------------------------------------- |
-| Full run (server running)  | `pnpm nx test platform-e2e`                                |
-| Run + auto-start dev server| `pnpm nx test:local platform-e2e`                          |
-| Headed / UI mode           | `pnpm nx test:local:headed platform-e2e` (or `:ui`)        |
-| One spec                   | add `--grep "<name>"`                                      |
-| Screenshots                | `pnpm nx screenshots platform-e2e` (`:update` to rebaseline)|
-| Screenshot report          | `pnpm nx screenshots:report platform-e2e`                  |
+| Need                        | Command                                                      |
+| --------------------------- | ------------------------------------------------------------ |
+| Full run (server running)   | `pnpm nx test platform-e2e`                                  |
+| Run + auto-start dev server | `pnpm nx test:local platform-e2e`                            |
+| Headed / UI mode            | `pnpm nx test:local:headed platform-e2e` (or `:ui`)          |
+| One spec                    | add `--grep "<name>"`                                        |
+| Screenshots                 | `pnpm nx screenshots platform-e2e` (`:update` to rebaseline) |
+| Screenshot report           | `pnpm nx screenshots:report platform-e2e`                    |
 
 New browser check → add a spec under `apps/platform-e2e/src/tests/`, reuse the fixtures and
 helpers, tag it. Ad-hoc interactive poking (Playwright MCP) is fine, but point it at the dev server
 on 3003 and reuse `src/paths.ts` URL shapes; anything worth keeping becomes a spec here.
 
 Vitest is not an alternative — see [[platform-testing]].
+
+## Anything that auto-opens on first visit must be added to `disableWelcomePopups`
+
+`src/fixtures.ts` applies `helpers/modals.ts#disableWelcomePopups` as an **auto** fixture, so every
+spec starts with the welcome/hint localStorage keys pre-dismissed. A new first-visit UI that is not
+listed there opens in all ~30 specs at once and shifts the layout they assert on — the failures look
+unrelated to the feature that caused them.
+
+Added 2026-08-31 with the map onboarding modal — a side panel until 2026-09-02 (`OnboardingPanelDismissed`, set to the string
+`'true'` because `usehooks-ts`' `useLocalStorage` JSON-encodes). A spec that tests such a panel opts
+back in with its own `page.addInitScript` — init scripts run in registration order, so one added in
+the test body wins over the fixture's (`src/tests/OnboardingModal.e2e.spec.ts`).

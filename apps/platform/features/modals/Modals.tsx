@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
-import { WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
@@ -25,12 +24,14 @@ import {
   selectEditWorkspaceModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
+  selectOnboardingModalOpen,
   selectTurningTidesModalOpen,
   setModalOpen,
   toggleBigQueryModal,
   toggleEditorMenu,
   toggleTurningTidesModal,
 } from 'features/modals/modals.slice'
+import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.auto-open.hooks'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
@@ -52,6 +53,7 @@ const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
+const OnboardingModal = lazy(() => import('features/onboarding/OnboardingModal'))
 
 const DebugMenuConfig = {
   key: 'd',
@@ -86,6 +88,7 @@ const ResetWorkspaceConfig = {
 }
 
 const AppModals = () => {
+  useOnboardingAutoOpen()
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -108,6 +111,7 @@ const AppModals = () => {
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const feedbackModalOpen = useSelector(selectFeedbackModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
+  const onboardingModalOpen = useSelector(selectOnboardingModalOpen)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
@@ -255,18 +259,12 @@ const AppModals = () => {
               <Welcome contentKey="deep-sea-mining" />
             </Suspense>
           )}
-          {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
-            <Suspense fallback={null}>
-              <Welcome contentKey={WorkspaceCategory.FishingActivity} />
-            </Suspense>
-          )}
-          {welcomePopupContentKey === WorkspaceCategory.MarineManager && (
-            <Suspense fallback={null}>
-              <Welcome contentKey={WorkspaceCategory.MarineManager} />
-            </Suspense>
-          )}
-          {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>
+      )}
+      {onboardingModalOpen && (
+        <Suspense fallback={null}>
+          <OnboardingModal />
+        </Suspense>
       )}
       {isVesselGroupModalOpen && (
         <Suspense fallback={null}>

@@ -16,13 +16,22 @@ export type MapControl =
   | typeof MAP_CONTROL_ERROR_NOTIFICATIONS
 export type MapControlValue = Partial<MapAnnotation> | RulerData | null
 
-type MapControlsSlice = Record<
-  MapControl,
-  {
-    isEditing: boolean
-    value: MapControlValue
-  }
->
+type MapControlState = {
+  isEditing: boolean
+  value: MapControlValue
+}
+
+type MapControlsSlice = {
+  [K in MapControl]: MapControlState
+} & {
+  mapSearchOpenRequested: boolean
+}
+
+const MAP_CONTROLS: MapControl[] = [
+  MAP_CONTROL_ANNOTATIONS,
+  MAP_CONTROL_RULERS,
+  MAP_CONTROL_ERROR_NOTIFICATIONS,
+]
 
 const initialState: MapControlsSlice = {
   annotations: {
@@ -37,6 +46,7 @@ const initialState: MapControlsSlice = {
     isEditing: false,
     value: null,
   },
+  mapSearchOpenRequested: false,
 }
 
 const slice = createSlice({
@@ -58,8 +68,7 @@ const slice = createSlice({
       state[control].isEditing = editing
       if (editing) {
         // Disable editing of any other control
-        const controls = Object.keys(initialState) as MapControl[]
-        controls.forEach((c) => {
+        MAP_CONTROLS.forEach((c) => {
           if (c !== control) {
             state[c].isEditing = false
           }
@@ -71,10 +80,18 @@ const slice = createSlice({
         state[action.payload].value = null
       }
     },
+    setMapSearchOpenRequested: (state, action: PayloadAction<boolean>) => {
+      state.mapSearchOpenRequested = action.payload
+    },
   },
 })
 
-export const { setMapControlValue, setMapControlEditing, resetMapControlValue } = slice.actions
+export const {
+  setMapControlValue,
+  setMapControlEditing,
+  resetMapControlValue,
+  setMapSearchOpenRequested,
+} = slice.actions
 
 const injectedMapControlsSlice = rootReducer.inject(slice)
 
@@ -94,5 +111,10 @@ export function selectMapControlValue<P = MapControlValue>(control: MapControl) 
     return mapControls[control].value as P
   })
 }
+
+export const selectMapSearchOpenRequested = createSelector(
+  [selectMapControls],
+  (mapControls) => mapControls.mapSearchOpenRequested
+)
 
 export default slice.reducer
