@@ -265,8 +265,8 @@ importers:
         specifier: 6.1.7
         version: 6.1.7(@types/react@19.2.18)(react@19.2.8)
       i18next:
-        specifier: 26.4.0
-        version: 26.4.0(@typescript/typescript6@6.0.2)
+        specifier: 26.4.1
+        version: 26.4.1(@typescript/typescript6@6.0.2)
       i18next-browser-languagedetector:
         specifier: 8.2.1
         version: 8.2.1
@@ -353,7 +353,7 @@ importers:
         version: 3.0.0(@babel/runtime@7.29.7)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-i18next:
         specifier: 17.0.12
-        version: 17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.0(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.1(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-map-gl:
         specifier: 8.1.2
         version: 8.1.2(maplibre-gl@5.24.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -464,8 +464,8 @@ importers:
         version: 4.5.4
     devDependencies:
       '@deck.gl/test-utils':
-        specifier: 9.3.10
-        version: 9.3.10(@deck.gl/core@9.3.11)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6))(@luma.gl/webgpu@9.3.6(@luma.gl/core@9.3.6))(@probe.gl/test-utils@4.1.1)(vitest@4.1.10)
+        specifier: 9.3.11
+        version: 9.3.11(@deck.gl/core@9.3.11)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6))(@luma.gl/webgpu@9.3.6(@luma.gl/core@9.3.6))(@probe.gl/test-utils@4.1.1)(vitest@4.1.10)
       '@eslint/compat':
         specifier: 2.1.0
         version: 2.1.0(eslint@10.9.1(jiti@2.7.0)(supports-color@7.2.0))
@@ -2373,8 +2373,8 @@ packages:
       react: '>=16.3.0'
       react-dom: '>=16.3.0'
 
-  '@deck.gl/test-utils@9.3.10':
-    resolution: {integrity: sha512-6uKT0AaB9nNPmoR9qn9kz4WVwkQAZ8+7ak8/niXkSCy3+w2F6i1KfQWVDMORX+Q8tG4aHa4KNBWWx7/8PNKppg==}
+  '@deck.gl/test-utils@9.3.11':
+    resolution: {integrity: sha512-9OV1LirlysUeteYWPJDDYyKjvfl+Nsf/xrK8laG/vV6h5F18mYTGLsh3E3hgctUeKjJJhT3DU8aTCeXtm8EBBA==}
     peerDependencies:
       '@deck.gl/core': ~9.3.0
       '@luma.gl/core': ~9.3.5
@@ -9363,8 +9363,8 @@ packages:
     resolution: {integrity: sha512-n5UexwEVt0OoIAhG2MWpSnAVJW1U8mQrQTmXyxc5DMAx+NLhcLZhSMJo/FnUsA5JQ3obTYqTgB7YIuZKWpDgow==}
     hasBin: true
 
-  i18next@26.4.0:
-    resolution: {integrity: sha512-rsmK5bFqsD1AetSFSIa43wtNR4WpvvH4p0tLEsTxkC7QTrfdFm06nbQ95bh8Og4wwaCnUEcm9DVYL2cgxitiQg==}
+  i18next@26.4.1:
+    resolution: {integrity: sha512-9YbX5E6gd1H+yaOSX3izCsPj5iWXyH7X4oC+iuHHJJw8AeHglzOK5SJf+1CHxaYKYigcea+8jvzSxqYx46YvyA==}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
@@ -15270,7 +15270,7 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@deck.gl/test-utils@9.3.10(@deck.gl/core@9.3.11)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6))(@luma.gl/webgpu@9.3.6(@luma.gl/core@9.3.6))(@probe.gl/test-utils@4.1.1)(vitest@4.1.10)':
+  '@deck.gl/test-utils@9.3.11(@deck.gl/core@9.3.11)(@luma.gl/core@9.3.6)(@luma.gl/engine@9.3.6(@luma.gl/core@9.3.6)(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6)))(@luma.gl/shadertools@9.3.6(@luma.gl/core@9.3.6))(@luma.gl/webgpu@9.3.6(@luma.gl/core@9.3.6))(@probe.gl/test-utils@4.1.1)(vitest@4.1.10)':
     dependencies:
       '@deck.gl/core': 9.3.11
       '@luma.gl/core': 9.3.6
@@ -24379,7 +24379,7 @@ snapshots:
       commander: 14.0.3
       execa: 9.6.1
       glob: 13.0.6
-      i18next: 26.4.0(@typescript/typescript6@6.0.2)
+      i18next: 26.4.1(@typescript/typescript6@6.0.2)
       i18next-resources-for-ts: 2.1.0(@swc/helpers@0.5.23)
       inquirer: 14.0.2(@types/node@26.2.0)
       jiti: 2.7.0
@@ -24388,7 +24388,7 @@ snapshots:
       minimatch: 10.2.6
       ora: 9.4.1
       react: 19.2.8
-      react-i18next: 17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.0(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      react-i18next: 17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.1(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       yaml: 2.9.0
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -24405,7 +24405,7 @@ snapshots:
       commander: 14.0.3
       execa: 9.6.1
       glob: 13.0.6
-      i18next: 26.4.0(typescript@7.0.2)
+      i18next: 26.4.1(typescript@7.0.2)
       i18next-resources-for-ts: 2.1.0(@swc/helpers@0.5.23)
       inquirer: 14.0.2(@types/node@26.2.0)
       jiti: 2.7.0
@@ -24414,7 +24414,7 @@ snapshots:
       minimatch: 10.2.6
       ora: 9.4.1
       react: 19.2.8
-      react-i18next: 17.0.12(i18next@26.4.0(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
+      react-i18next: 17.0.12(i18next@26.4.1(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
       yaml: 2.9.0
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -24436,11 +24436,11 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  i18next@26.4.0(@typescript/typescript6@6.0.2):
+  i18next@26.4.1(@typescript/typescript6@6.0.2):
     optionalDependencies:
       typescript: '@typescript/typescript6@6.0.2'
 
-  i18next@26.4.0(typescript@7.0.2):
+  i18next@26.4.1(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 
@@ -26991,22 +26991,22 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  react-i18next@17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.0(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  react-i18next@17.0.12(@typescript/typescript6@6.0.2)(i18next@26.4.1(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 4.0.1
-      i18next: 26.4.0(@typescript/typescript6@6.0.2)
+      i18next: 26.4.1(@typescript/typescript6@6.0.2)
       react: 19.2.8
       use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:
       react-dom: 19.2.8(react@19.2.8)
       typescript: '@typescript/typescript6@6.0.2'
 
-  react-i18next@17.0.12(i18next@26.4.0(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2):
+  react-i18next@17.0.12(i18next@26.4.1(@typescript/typescript6@6.0.2))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2):
     dependencies:
       '@babel/runtime': 7.29.7
       html-parse-stringify: 4.0.1
-      i18next: 26.4.0(@typescript/typescript6@6.0.2)
+      i18next: 26.4.1(@typescript/typescript6@6.0.2)
       react: 19.2.8
       use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:
