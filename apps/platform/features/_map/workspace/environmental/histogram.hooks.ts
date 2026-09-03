@@ -29,9 +29,11 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const updateHistogram = useCallback(
     (features: FourwingsFeature[]) => {
       if (features && features.length) {
-        const rawData = features.flatMap((f) =>
-          isHeatmapVector ? f.aggregatedValues?.[0] || [] : f.aggregatedValues || []
-        )
+        // keep measured zeros, drop only the sublayers a cell holds no data for
+        const rawData = features.flatMap((f) => {
+          const values = isHeatmapVector ? f.aggregatedValues?.slice(0, 1) : f.aggregatedValues
+          return (values ?? []).filter((value): value is number => value !== undefined)
+        })
         const layerRange = getEnvironmentalDatasetRange(dataset)
         const data = rawData.filter((d) => {
           const matchesMin = layerRange.min !== undefined ? d >= layerRange.min : true

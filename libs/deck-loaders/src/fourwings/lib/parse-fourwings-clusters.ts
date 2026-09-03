@@ -13,8 +13,9 @@ import {
 import {
   CELL_END_INDEX,
   CELL_START_INDEX,
-  NO_DATA_VALUE_32,
-  NO_DATA_VALUE_64,
+  descaleFourwingsValue,
+  isFourwingsNoDataValue,
+  NO_DATA_VALUE,
 } from './parse-fourwings'
 import type {
   FourwingsClustersLoaderOptions,
@@ -71,7 +72,7 @@ export const getPointsTemporalAggregated = (
         },
         properties: {
           // TODO:deck remove the round as won't be needed with real data
-          value: Math.round(offset[0] + value * scale[0]),
+          value: Math.round(descaleFourwingsValue(value, scale[0], offset[0])),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
           cellNum,
           cellBounds: getCellBounds({
@@ -134,15 +135,11 @@ export const getPoints = (
       })
       const sublayerScale = scale?.[0] ?? SCALE_VALUE
       const sublayerOffset = offset?.[0] ?? OFFSET_VALUE
-      const sublayerNoDataValue = noDataValue?.[0] ?? NO_DATA_VALUE_32
+      const sublayerNoDataValue = noDataValue?.[0] ?? NO_DATA_VALUE
       for (let j = 1; j <= numCellValues; j++) {
         const stime = CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / 1000
         const pointValue = intArray[i + j]
-        if (
-          pointValue !== 0 &&
-          pointValue !== sublayerNoDataValue &&
-          pointValue !== NO_DATA_VALUE_64
-        ) {
+        if (pointValue !== 0 && !isFourwingsNoDataValue(pointValue, sublayerNoDataValue)) {
           // this number defines the cell value frame
           features.push({
             type: 'Feature',
@@ -151,7 +148,7 @@ export const getPoints = (
               coordinates,
             },
             properties: {
-              value: Math.round(sublayerOffset + pointValue * sublayerScale),
+              value: Math.round(descaleFourwingsValue(pointValue, sublayerScale, sublayerOffset)),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
               cellNum,

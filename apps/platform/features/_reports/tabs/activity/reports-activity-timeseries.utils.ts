@@ -12,15 +12,10 @@ import type {
 import {
   aggregateCell,
   getIntervalFrames,
-  HEATMAP_STATIC_PROPERTY_ID,
   isSublayerValueVisible,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
-import type {
-  FourwingsFeature,
-  FourwingsInterval,
-  FourwingsStaticFeature,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { PRIMARY_BLUE_COLOR } from 'data/map/config'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
@@ -183,9 +178,10 @@ export const getFourwingsTimeseriesStats = ({
     sublayer?.minVisibleValue !== undefined || sublayer?.maxVisibleValue !== undefined
   if (features?.[0]?.contained?.length > 0) {
     if ((instance as FourwingsLayer).props.static) {
-      // A static cell holds a single value, so it is the one the filter runs on
-      const allValues = (features[0].contained as FourwingsStaticFeature[])
-        .flatMap((f) => f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
+      // The API already aggregated time away, so a static cell holds a single value
+      // and it is the one the filter runs on
+      const allValues = (features[0].contained as FourwingsFeature[])
+        .flatMap((f) => f.properties?.values?.[0] ?? [])
         .filter((value) => !hasVisibleValuesFilter || isSublayerValueVisible(value, sublayer))
       if (allValues.length > 0) {
         return {

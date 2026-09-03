@@ -63,16 +63,20 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
 
 const MapLegendWrapper = ({
   dataview,
+  // deck layer id to read the legend from, when it isn't resolved from the dataview category
+  layerId,
   showPlaceholder = true,
   brushClassName,
 }: {
   dataview: UrlDataviewInstance
+  layerId?: string
   showPlaceholder?: boolean
   brushClassName?: string
 }) => {
   const { t } = useTranslation()
   const { legendBrush } = useSelector(selectFeatureFlags)
-  const dataviewId = useActivityDataviewId(dataview)
+  const activityDataviewId = useActivityDataviewId(dataview)
+  const dataviewId = layerId || activityDataviewId
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [lastScale, setLastScale] = useState<LegendScale | undefined>(undefined)
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
