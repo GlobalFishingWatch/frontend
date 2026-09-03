@@ -31,7 +31,7 @@ import {
   toggleEditorMenu,
   toggleTurningTidesModal,
 } from 'features/modals/modals.slice'
-import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.hooks'
+import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.auto-open.hooks'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
@@ -259,12 +259,12 @@ const AppModals = () => {
               <Welcome contentKey="deep-sea-mining" />
             </Suspense>
           )}
-          {onboardingModalOpen && (
-            <Suspense fallback={null}>
-              <OnboardingModal />
-            </Suspense>
-          )}
         </Fragment>
+      )}
+      {onboardingModalOpen && (
+        <Suspense fallback={null}>
+          <OnboardingModal />
+        </Suspense>
       )}
       {isVesselGroupModalOpen && (
         <Suspense fallback={null}>

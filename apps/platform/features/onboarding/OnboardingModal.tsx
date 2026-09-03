@@ -17,11 +17,11 @@ import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/use
 import { useAppDispatch } from 'features/app/app.hooks'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { useOnboardingDismissed } from 'features/onboarding/onboarding.auto-open.hooks'
 import { getCopilotExamples, getOnboardingCards } from 'features/onboarding/onboarding.config'
 import {
   useOnboardingCardActions,
   useOnboardingCopilotPrompt,
-  useOnboardingDismissed,
   useTypewriterPlaceholder,
 } from 'features/onboarding/onboarding.hooks'
 import { getIsBrowser } from 'utils/dom'
@@ -61,7 +61,6 @@ function OnboardingModal() {
   return (
     <Modal
       isOpen
-      shouldCloseOnEsc
       header={false}
       ariaLabel={t((t) => t.onboarding.header, { defaultValue: 'Welcome' })}
       className={styles.modal}
