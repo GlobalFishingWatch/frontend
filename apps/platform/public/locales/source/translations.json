@@ -939,15 +939,15 @@
       "title": "Run a report on an area"
     },
     "copilotExamples": {
-      "carrierEncounters": "Encounters between carriers and longliners in the Indian Ocean",
+      "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
       "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
-      "lasPalmasVisits": "Which vessels visited Las Palmas in December?",
+      "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
       "loiteringWestAfrica": "Loitering events off the coast of West Africa",
       "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
       "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
-      "peruEffort": "Apparent fishing effort in the Peruvian EEZ",
+      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
       "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
-      "squidPacific": "Chinese squid jiggers fishing in the Pacific in 2024",
+      "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
       "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
     },
     "copilotLabel": "What do you want to see?",
