@@ -14,11 +14,7 @@ import type {
   DatasetConfiguration,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import {
-  DatasetCategory,
-  DatasetSubCategory,
-  DatasetTypes,
-} from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
@@ -148,7 +144,17 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
-export const getGriddedDatasetMetadata = ({ name }: { name: string }): DatasetMetadata => {
+export type GriddedSourceFormat = Extract<FileType, 'GeoTIFF' | 'NetCDF'>
+
+export const getGriddedDatasetMetadata = ({
+  name,
+  sourceFormat = 'GeoTIFF',
+  variable,
+}: {
+  name: string
+  sourceFormat?: GriddedSourceFormat
+  variable?: string
+}): DatasetMetadata => {
   return {
     name,
     public: true,
@@ -158,11 +164,13 @@ export const getGriddedDatasetMetadata = ({ name }: { name: string }): DatasetMe
     configuration: {
       userFourwingsV1: {
         agregationMode: 'AVG',
-        // GDAL band index, 1-based
+        // GDAL band index, 1-based. NetCDF sends it too — the variable picks the grid, the
+        // band stays 1 and is not offered in the UI
         band: 1,
+        ...(sourceFormat === 'NetCDF' && { variable }),
       },
       frontend: {
-        sourceFormat: 'GeoTIFF',
+        sourceFormat,
         geometryType: 'gridded',
       },
     },

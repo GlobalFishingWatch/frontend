@@ -56,7 +56,6 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
@@ -149,7 +148,7 @@ function NewTrackDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, startTimeProperty, t, onDatasetParseError]
@@ -244,14 +243,6 @@ function NewTrackDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t((t) => t.datasetUpload.processingData)}</p>
-      </div>
-    )
-  }
-
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }

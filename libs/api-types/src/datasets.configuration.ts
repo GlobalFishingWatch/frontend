@@ -33,8 +33,10 @@ export type UserContextLayerV1Configuration = {
 
 export type UserFourwingsV1Configuration = {
   agregationMode: AggregationFunction
-  /** GDAL band index, 1-based, in file order */
-  band: number
+  /** GDAL band index, 1-based, in file order. NetCDF always gets 1 for now */
+  band?: number
+  /** Name of the variable to import. NetCDF only */
+  variable?: string
   bbox?: [number, number, number, number]
   filePath?: string
   maxZoom?: number
@@ -130,7 +132,8 @@ export type DatasetConfigurationByType = Partial<{
 }>
 
 export type TimeFilterType = 'date' | 'dateRange'
-export type DatasetConfigurationSourceFormat = 'GeoJSON' | 'Shapefile' | 'CSV' | 'KML' | 'GeoTIFF'
+export type DatasetConfigurationSourceFormat =
+  'GeoJSON' | 'Shapefile' | 'CSV' | 'KML' | 'GeoTIFF' | 'NetCDF'
 
 export type DatasetGeometryType = 'polygons' | 'tracks' | 'points' | 'draw' | 'gridded'
 export type DatasetGeometryToGeoJSONGeometry = {
