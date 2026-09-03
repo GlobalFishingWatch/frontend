@@ -66,7 +66,9 @@ jobs:
           token: ${{ secrets.GH_PA_TOKEN }}
           fetch-depth: 0 # nx resolves current versions from git tags
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/setup@v2
+        with:
+          install: false # the explicit --frozen-lockfile step below owns installing
 
       - uses: actions/setup-node@v7
         with:

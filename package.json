@@ -9,7 +9,7 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065",
+  "packageManager": "pnpm@12.3.1+sha512.3c14c15408d1489d350f8ed7f93361d26cc707054f6849a4eea3bb7407ff4fe4564b413a1c421a773a176ab1168a8df1c7d548f2cd0dc7d344f58c4e680a5b18",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "release:platform": "nx release --projects='platform' --skip-publish",

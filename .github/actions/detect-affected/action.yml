@@ -18,7 +18,9 @@ runs:
   using: composite
   steps:
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6
+      uses: pnpm/setup@v2
+      with:
+        install: false # node_modules is cached; the step below installs on a miss
 
     - name: Setup Node.js
       uses: actions/setup-node@v6

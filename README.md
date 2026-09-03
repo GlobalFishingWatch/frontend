@@ -57,9 +57,20 @@ See: <a href="https://docs.google.com/presentation/d/1LdxRbB491Rjf64C5VVF9oTWwWj
 The repo uses **pnpm workspaces**; npm and yarn are blocked by an `only-allow pnpm` preinstall hook.
 Node is pinned in [.nvmrc](.nvmrc) — use `nvm use` (or any version manager that reads it).
 
+#### Getting pnpm
+
+The exact pnpm version is pinned in `package.json` `"packageManager"` (currently **12.3.1**).
+pnpm 12 ships as a **native executable**, so Corepack and Homebrew cannot provide it.
+Install it once with the official installer, which downloads the signed platform binary and puts it on your `PATH`:
+
 ```bash
-corepack enable   # pnpm version comes from package.json "packageManager"
+npx get-pnpm 12   # or: curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=12 sh -
 ```
+
+Only the major is pinned in that command; pnpm then honours the exact version from
+`"packageManager"` on its own. If you had pnpm 11 from Homebrew, remove it (`brew uninstall pnpm`)
+so it stops shadowing the new binary — a v11 on `PATH` cannot launch v12 and every `pnpm` command
+in the repo fails. Later upgrades are just `pnpm self-update <version>`.
 
 #### Install a new dependency
 
