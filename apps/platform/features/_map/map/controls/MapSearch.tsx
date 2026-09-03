@@ -133,14 +133,15 @@ const MapSearch = () => {
     onSelectedItemChange: onSelectResult,
   })
 
-  // Opened from elsewhere (onboarding panel). Same side effects as the toggle button's onClick, so
-  // the hint tooltip does not sit on top of an already open search.
   useEffect(() => {
-    if (!openRequested) return
+    if (!openRequested) {
+      return
+    }
     dispatch(setMapSearchOpenRequested(false))
     dispatch(setHintDismissed('areaSearch'))
     openMenu()
-    inputRef.current?.focus()
+    const timeout = setTimeout(() => inputRef.current?.focus(), 1)
+    return () => clearTimeout(timeout)
   }, [openRequested, dispatch, openMenu])
 
   return (
