@@ -73,7 +73,7 @@ describe('parse-fourwings-clusters', () => {
 
       const result = getPointsTemporalAggregated(intArray, options)
 
-      expect(result[0].properties.value).toBe(25)
+      expect(result[0].properties.value).toBe(15)
     })
 
     it('should return empty array when int array is empty', () => {

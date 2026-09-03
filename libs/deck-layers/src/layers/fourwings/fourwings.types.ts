@@ -4,7 +4,6 @@ import type { DeckLayerProps, DeckPickingObject } from '#types'
 import type {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject,
 } from './heatmap/fourwings-heatmap.types'
 import type {
   FourwingsPositionsPickingInfo,
@@ -73,7 +72,5 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
 export type FourwingsPickingObject = DeckPickingObject<
-  | FourwingsHeatmapPickingObject
-  | FourwingsHeatmapStaticPickingObject
-  | FourwingsPositionsPickingObject
+  FourwingsHeatmapPickingObject | FourwingsPositionsPickingObject
 >

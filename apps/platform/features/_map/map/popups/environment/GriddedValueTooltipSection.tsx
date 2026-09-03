@@ -5,11 +5,7 @@ import { format } from 'd3-format'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type {
-  FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject,
-} from '@globalfishingwatch/deck-layers'
-import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/deck-layers'
+import type { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -19,7 +15,7 @@ import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/sele
 import styles from '../Popup.module.css'
 
 type GriddedValueTooltipSectionProps = {
-  features: (FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject)[]
+  features: FourwingsHeatmapPickingObject[]
   showFeaturesDetails: boolean
 }
 
@@ -31,14 +27,6 @@ function parseEnvironmentalValue(value: any) {
     return format(',.2~f')(parseFloat(value))
   }
   return value as number
-}
-
-function getGriddedFeatureValue(
-  feature: FourwingsHeatmapPickingObject | FourwingsHeatmapStaticPickingObject
-) {
-  return feature.subcategory === DataviewType.HeatmapStatic
-    ? (feature as FourwingsHeatmapStaticPickingObject).properties?.[HEATMAP_STATIC_PROPERTY_ID]
-    : feature.sublayers?.[0]?.value
 }
 
 function GriddedValueTooltipSection({
@@ -57,7 +45,7 @@ function GriddedValueTooltipSection({
         const isHeatmapFeature =
           feature.subcategory === DataviewType.HeatmapAnimated ||
           feature.subcategory === DataviewType.HeatmapStatic
-        const value = getGriddedFeatureValue(feature)
+        const value = feature.sublayers?.[0]?.value
 
         const unit = feature.sublayers?.[0]?.unit ?? dataview?.datasets?.[0]?.unit
         return (

@@ -1,7 +1,7 @@
 import type { Feature, Point } from 'geojson'
 
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
-import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
 import type { FilterExtensionProps } from './user.types'
 
@@ -17,7 +17,7 @@ export type IsFeatureInRangeParams = {
 }
 
 export function getFeatureTimeRange(
-  feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
+  feature: Feature<Point> | FourwingsFeature,
   {
     startTimeProperty,
     endTimeProperty,
@@ -47,7 +47,7 @@ export function getFeatureTimeRange(
 }
 
 export function isFeatureInRange(
-  feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
+  feature: Feature<Point> | FourwingsFeature,
   { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType }: IsFeatureInRangeParams
 ) {
   if (!feature || !startTime || !endTime) {

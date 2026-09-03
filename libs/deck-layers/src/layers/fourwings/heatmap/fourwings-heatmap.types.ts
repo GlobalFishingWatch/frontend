@@ -7,7 +7,6 @@ import type {
   FourwingsFeature,
   FourwingsFeatureProperties,
   FourwingsInterval,
-  FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
 import type { LayerGroup } from '#config/sort.config'
@@ -50,13 +49,6 @@ export enum FourwingsComparisonMode {
 export type ColorDomain = number[] | number[][]
 export type ColorRange = FourwingsColorObject[]
 export type SublayerColorRanges = ColorRange[]
-
-export type FourwingsHeatmapStaticPickingObject = DeckPickingObject<
-  FourwingsStaticFeature & {
-    sublayers: FourwingsDeckSublayer[]
-  }
->
-export type FourwingsHeatmapStaticPickingInfo = PickingInfo<FourwingsHeatmapStaticPickingObject>
 
 export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeatureProperties> &
   DeckPickingObject<{
@@ -158,10 +150,7 @@ export type FourwingsVectorsLayerProps = Omit<FourwingsHeatmapTileLayerProps, 's
   highlightedFeatures?: FourwingsPickingObject[]
 }
 
-export type _FourwingsHeatmapStaticLayerProps = Omit<
-  _FourwingsHeatmapTileLayerProps,
-  'data' | 'availableIntervals' | 'comparisonMode'
->
+export type _FourwingsHeatmapStaticLayerProps = Omit<_FourwingsHeatmapTileLayerProps, 'data'>
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>

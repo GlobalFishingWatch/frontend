@@ -155,12 +155,12 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       if (!isSublayerValueVisible(value, sublayers?.[index])) {
         return
       }
-      if (!chosenValue || value > chosenValue) {
+      if (chosenValue === undefined || value > chosenValue) {
         chosenValue = value
         chosenValueIndex = index
       }
     })
-    if (!chosenValue) {
+    if (chosenValue === undefined) {
       target = EMPTY_CELL_COLOR
       return target
     }

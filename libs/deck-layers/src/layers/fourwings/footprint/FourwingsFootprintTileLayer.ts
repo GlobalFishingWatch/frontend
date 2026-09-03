@@ -6,19 +6,15 @@ import type {
   TileLayerProps,
 } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import { parse } from '@loaders.gl/core'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
   FourwingsInterval,
   FourwingsValuesAndStartFrameFeature,
-  ParseFourwingsOptions,
 } from '@globalfishingwatch/deck-loaders'
-import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '#config/layers.config'
 import {
   FOURWINGS_MAX_CACHE_BYTE_SIZE,
   FOURWINGS_MAX_ZOOM,
@@ -26,7 +22,6 @@ import {
   HEATMAP_API_TILES_URL,
 } from '#layers/fourwings/fourwings.config'
 import type {
-  FourwingsDeckSublayer,
   FourwingsHeatmapTilesCache,
   FourwingsTileLayerColorScale,
   GetViewportDataParams,
@@ -36,8 +31,8 @@ import {
   EMPTY_FOURWINGS_TILE_DATA,
   getAreTilePositionsAvailable,
 } from '#layers/fourwings/fourwings-tile.utils'
+import { fetchFourwingsTileData } from '#layers/fourwings/heatmap/fourwings-heatmap.fetch'
 import {
-  getDataUrl,
   getFourwingsChunk,
   getZoomOffsetByResolution,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
@@ -103,97 +98,21 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, availableIntervals, tilesUrl, extentStart } = this.props
-    const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
     this.setState({ rampDirty: true })
-    const cols: number[] = []
-    const rows: number[] = []
-    const scale: number[] = []
-    const offset: number[] = []
-    const noDataValue: number[] = []
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
-      const url = getDataUrl({
-        tile,
-        chunk,
-        sublayer,
-        tilesUrl,
-        extentStart,
-      }) as string
-      const response = await GFWAPI.fetch<Response>(url!, {
-        signal: tile.signal,
-        responseType: 'default',
-      })
-      if (response.status >= 400 && response.status !== 404) {
-        throw new Error(response.statusText)
-      }
-      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
-        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
-      }
-      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
-        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
-      }
-      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
-        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
-      }
-      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
-        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
-      }
-      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
-        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
-      }
-      return await response.arrayBuffer()
-    }
 
-    const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    const settledPromises = await Promise.allSettled(promises)
-
-    const hasChunkError = settledPromises.some(
-      (p) => p.status === 'rejected' && p.reason.status !== 404
-    )
-    if (hasChunkError) {
-      const error =
-        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
-          .statuxText || 'Error loading chunk'
-      throw new Error(error)
-    }
-
-    if (tile.signal?.aborted) {
-      return EMPTY_FOURWINGS_TILE_DATA
-    }
-
-    const arrayBuffers = settledPromises.flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
+    return await fetchFourwingsTileData({
+      tile,
+      chunk,
+      interval,
+      sublayers,
+      startTime,
+      endTime,
+      aggregationOperation: FourwingsAggregationOperation.Sum,
+      tilesUrl,
+      extentStart,
     })
-
-    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: !IS_TEST_ENV,
-      fourwings: {
-        sublayers: 1,
-        cols,
-        rows,
-        scale,
-        offset,
-        noDataValue,
-        bufferedStartDate: chunk.bufferedStart,
-        initialTimeRange: {
-          start: startTime,
-          end: endTime,
-        },
-        interval,
-        tile,
-        aggregationOperation: FourwingsAggregationOperation.Sum,
-        buffersLength: settledPromises.map((p) =>
-          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-        ),
-      } as ParseFourwingsOptions,
-    })
-
-    if (tile.signal?.aborted) {
-      return EMPTY_FOURWINGS_TILE_DATA
-    }
-
-    return data
   }
 
   _getTileData: TileLayerProps['getTileData'] = (tile) => {
