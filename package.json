@@ -255,6 +255,7 @@
     "mochawesome": "8.1.1",
     "next-react-memory-stats": "1.0.2",
     "nx": "23.2.1",
+    "oxc-transform-react": "0.147.0",
     "playwright": "1.63.0",
     "prettier": "3.9.7",
     "prettier-eslint": "17.1.2",
