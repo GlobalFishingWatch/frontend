@@ -31,6 +31,7 @@ import {
   toggleEditorMenu,
   toggleTurningTidesModal,
 } from 'features/modals/modals.slice'
+import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.hooks'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
@@ -87,6 +88,7 @@ const ResetWorkspaceConfig = {
 }
 
 const AppModals = () => {
+  useOnboardingAutoOpen()
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const isGFWUser = useSelector(selectIsGFWUser)

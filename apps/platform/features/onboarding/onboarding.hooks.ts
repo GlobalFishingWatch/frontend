@@ -40,10 +40,6 @@ function getGuideTarget(slug: UserGuideSlug) {
   return { id: match?.section, subcontentId: match?.subSection }
 }
 
-/**
- * Opens the onboarding modal once per map session, unless the user ticked "don't show again".
- * Called from MapLayout so it does not pull in the lazy modal chunk.
- */
 export function useOnboardingAutoOpen() {
   const dispatch = useAppDispatch()
   const [dismissed] = useOnboardingDismissed()

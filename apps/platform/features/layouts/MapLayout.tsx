@@ -17,7 +17,6 @@ import ErrorBoundary from 'features/app/ErrorBoundary'
 import { t } from 'features/i18n/i18n'
 import Main from 'features/layouts/MapMainLayout'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.hooks'
 import { usePersistedPanelWidth } from 'hooks/cookies.hooks'
 import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
@@ -49,7 +48,6 @@ declare global {
 const rootRoute = getRouteApi('__root__')
 
 function MapLayout() {
-  useOnboardingAutoOpen()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
