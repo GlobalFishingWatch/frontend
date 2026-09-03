@@ -3,8 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 import { getTimeRangeKey } from '../helpers/time'
 import { getFourwingsValueTimestamp } from '../helpers/timestamps'
 
-import { createHeatmapPbfBuffer, createMockTileBBox } from './fourwings-test-fixtures'
-import { parseFourwings } from './parse-fourwings'
+import {
+  createAggregatedHeatmapPbfBuffer,
+  createHeatmapPbfBuffer,
+  createMockTileBBox,
+} from './fourwings-test-fixtures'
+import { descaleFourwingsValue, parseFourwings } from './parse-fourwings'
 
 describe('parse-fourwings', () => {
   beforeEach(() => {
@@ -131,6 +135,80 @@ describe('parse-fourwings', () => {
       expect(result[0].properties.values[0][0]).toBeUndefined()
       expect(result[0].properties.values[0][1]).toBe(20)
       expect(result[0].properties.initialValues[getTimeRangeKey(0, 2)][0]).toBe(20)
+    })
+  })
+
+  // The static heatmap requests temporal-aggregation=true, where the API collapses time and
+  // sends one (cellNum, value) pair per cell instead of a start/end/values run.
+  describe('parseFourwings with temporalAggregation', () => {
+    const aggregatedOptions = (overrides: Record<string, unknown> = {}) => ({
+      fourwings: {
+        cols: [113],
+        rows: [53],
+        bufferedStartDate: 0,
+        interval: 'YEAR',
+        temporalAggregation: true,
+        sublayers: 1,
+        buffersLength: [1024],
+        tile: createMockTileBBox(),
+        ...overrides,
+      } as any,
+    })
+
+    it('reads one value per cell into frame 0', () => {
+      const buffer = createAggregatedHeatmapPbfBuffer([
+        { cellNum: 0, value: 2013 },
+        { cellNum: 1, value: 2276 },
+        { cellNum: 5, value: 7734 },
+      ])
+
+      const result = parseFourwings(buffer, aggregatedOptions())
+
+      expect(result).toHaveLength(3)
+      expect(result.map((f) => f.properties.values[0])).toEqual([[2013], [2276], [7734]])
+      expect(result.map((f) => f.properties.startOffsets[0])).toEqual([0, 0, 0])
+      expect(result.map((f) => f.properties.cellNum)).toEqual([0, 1, 5])
+      // col/row are what the vessels-in-cell interaction request needs, and MVT never carried them
+      expect(result[0].properties.col).toBeTypeOf('number')
+      expect(result[0].properties.row).toBeTypeOf('number')
+      // a closed ring: 5 points, so reports-geo.utils can index corners 0..7 positionally
+      expect(result[0].coordinates).toHaveLength(10)
+    })
+
+    it('skips no-data cells instead of reading them as zero', () => {
+      const buffer = createAggregatedHeatmapPbfBuffer([
+        { cellNum: 0, value: 500 },
+        { cellNum: 1, value: 4294967295 },
+        { cellNum: 2, value: 0 },
+      ])
+
+      const result = parseFourwings(buffer, aggregatedOptions({ noDataValue: [4294967295] }))
+
+      // the no-data cell is dropped; a real 0 is kept, which is the point of the binary format
+      expect(result.map((f) => f.properties.cellNum)).toEqual([0, 2])
+      expect(result[1].properties.values[0]).toEqual([0])
+    })
+
+    it('applies scale and offset from the response headers', () => {
+      const buffer = createAggregatedHeatmapPbfBuffer([{ cellNum: 0, value: 300 }])
+
+      const result = parseFourwings(buffer, aggregatedOptions({ scale: [0.01], offset: [2] }))
+
+      expect(result[0].properties.values[0][0]).toBeCloseTo(300 * 0.01 - 2)
+    })
+  })
+
+  // Three different formulas existed in this repo. Only this one turns the raw varints of
+  // public-global-sst-anomalies (X-scale 0.01, X-offset 50) into physical anomalies.
+  describe('descaleFourwingsValue', () => {
+    it('applies value * scale - offset', () => {
+      expect(descaleFourwingsValue(4078, 0.01, 50)).toBeCloseTo(-9.22)
+      expect(descaleFourwingsValue(5490, 0.01, 50)).toBeCloseTo(4.9)
+    })
+
+    it('is the identity with the default scale and offset', () => {
+      expect(descaleFourwingsValue(2013)).toBe(2013)
+      expect(descaleFourwingsValue(2013, 1, 0)).toBe(2013)
     })
   })
 })

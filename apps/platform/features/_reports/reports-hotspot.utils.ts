@@ -175,7 +175,7 @@ export function computeHotspotGeometry(
 
     for (const f of features.contained as FourwingsFeature[]) {
       if (!f.coordinates) continue
-      const total = f.aggregatedValues?.reduce((acc: number, v: number) => acc + v, 0) ?? 0
+      const total = f.aggregatedValues?.reduce((acc: number, v) => acc + (v ?? 0), 0) ?? 0
       if (total > 0) {
         cellTotals.push({ cell: f, total })
       }

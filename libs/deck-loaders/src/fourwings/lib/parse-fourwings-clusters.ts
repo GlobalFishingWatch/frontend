@@ -13,6 +13,7 @@ import {
 import {
   CELL_END_INDEX,
   CELL_START_INDEX,
+  descaleFourwingsValue,
   NO_DATA_VALUE_32,
   NO_DATA_VALUE_64,
 } from './parse-fourwings'
@@ -71,7 +72,7 @@ export const getPointsTemporalAggregated = (
         },
         properties: {
           // TODO:deck remove the round as won't be needed with real data
-          value: Math.round(offset[0] + value * scale[0]),
+          value: Math.round(descaleFourwingsValue(value, scale[0], offset[0])),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
           cellNum,
           cellBounds: getCellBounds({
@@ -151,7 +152,7 @@ export const getPoints = (
               coordinates,
             },
             properties: {
-              value: Math.round(sublayerOffset + pointValue * sublayerScale),
+              value: Math.round(descaleFourwingsValue(pointValue, sublayerScale, sublayerOffset)),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
               cellNum,

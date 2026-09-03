@@ -17,6 +17,7 @@ export const baseFourwingsLoaderOptions: ParseFourwingsOptions = {
   noDataValue: [NO_DATA_VALUE_32],
   bufferedStartDate: 0,
   interval: 'DAY',
+  temporalAggregation: false,
   aggregationOperation: 'sum',
   buffersLength: [],
   initialTimeRange: undefined,

@@ -12,6 +12,19 @@ export const NO_DATA_VALUE_32 = 2 ** 32 - 1
 export const NO_DATA_VALUE_64 = 2 ** 64 - 1
 export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
+
+/**
+ * Turns a raw 4wings varint into its real value, applying the `X-scale` and `X-offset` response headers.
+ * Values travel as unsigned varints, so the offset is what lets a dataset carry negatives.
+ */
+export function descaleFourwingsValue(
+  value: number,
+  scale = SCALE_VALUE,
+  offset = OFFSET_VALUE
+): number {
+  return value * scale - offset
+}
+
 export const CELL_NUM_INDEX = 0
 export const CELL_START_INDEX = 1
 export const CELL_END_INDEX = 2
@@ -129,7 +142,7 @@ export const getCellTimeseries = (
             // no dates array stored: the timestamp of each value is derived as
             // getIntervalTimestamp(tileStartFrame + startOffsets[subLayerIndex] + index)
             feature.properties.values[subLayerIndex][Math.floor(j / sublayers)] =
-              cellValue * sublayerScale - sublayerOffset
+              descaleFourwingsValue(cellValue, sublayerScale, sublayerOffset)
 
             // sum current value to the initialValue for this sublayer
             const inRange =
@@ -138,7 +151,7 @@ export const getCellTimeseries = (
                 : j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame
             if (inRange) {
               feature.properties.initialValues[timeRangeKey][subLayerIndex] +=
-                cellValue * sublayerScale - sublayerOffset
+                descaleFourwingsValue(cellValue, sublayerScale, sublayerOffset)
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }
@@ -162,6 +175,86 @@ export const getCellTimeseries = (
   }
 }
 
+/**
+ * Reads with `temporal-aggregation=true`: the API aggrgates the time so each cell is a single `(cellNum, value)`
+ * Unlike an MVT tile this still carries `X-scale` / `X-offset` / `X-empty-value`
+ */
+export const getCellTemporalAggregated = (
+  _: unknown,
+  data: {
+    features: Map<number, FourwingsFeature>
+    options?: FourwingsLoaderOptions
+  },
+  pbf: Pbf
+) => {
+  const { scale, offset, noDataValue, tile, cols, rows, buffersLength } =
+    data.options?.fourwings || ({} as ParseFourwingsOptions)
+
+  const tileBBox: BBox = [
+    (tile?.bbox as GeoBoundingBox).west,
+    (tile?.bbox as GeoBoundingBox).south,
+    (tile?.bbox as GeoBoundingBox).east,
+    (tile?.bbox as GeoBoundingBox).north,
+  ]
+
+  const sublayersLength = buffersLength.length
+  let cellNum = 0
+  let indexInCell = 0
+  let subLayerIndex = buffersLength.findIndex((length) => length > 0)
+  let subLayerBreak = buffersLength[subLayerIndex]
+  const end = pbf.readPackedEnd()
+
+  while (pbf.pos < end) {
+    const value = pbf.readVarint()
+
+    if (indexInCell === CELL_NUM_INDEX) {
+      cellNum = value
+    } else {
+      const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
+      const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
+      const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE_32
+
+      if (value !== sublayerNoDataValue && value !== NO_DATA_VALUE_64) {
+        let feature = data.features.get(cellNum)
+        if (!feature) {
+          const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
+          feature = {
+            coordinates: getCellCoordinates({
+              cellIndex: cellNum,
+              cols: cols[subLayerIndex],
+              rows: rows[subLayerIndex],
+              tileBBox,
+            }),
+            properties: {
+              col,
+              row,
+              values: new Array(sublayersLength),
+              tileStartFrame: 0,
+              cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+              cellNum,
+              startOffsets: new Array(sublayersLength),
+              initialValues: {},
+            },
+          }
+          data.features.set(cellNum, feature)
+        }
+        // one frame per cell, so the aggregation window is always frame 0
+        feature.properties.values[subLayerIndex] = [
+          descaleFourwingsValue(value, sublayerScale, sublayerOffset),
+        ]
+        feature.properties.startOffsets[subLayerIndex] = 0
+      }
+      // resseting indexInCell to start with the new cell
+      indexInCell = -1
+    }
+    while (pbf.pos >= subLayerBreak) {
+      subLayerIndex++
+      subLayerBreak += buffersLength[subLayerIndex]
+    }
+    indexInCell++
+  }
+}
+
 export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsLoaderOptions) => {
   if (!options?.fourwings?.buffersLength?.length) {
     return assignFourwingsFeaturesByteLength([])
@@ -169,10 +262,13 @@ export const parseFourwings = (datasetsBuffer: ArrayBuffer, options?: FourwingsL
 
   const features: FourwingsFeature[] = Array.from(
     new Pbf(datasetsBuffer)
-      .readFields(getCellTimeseries, {
-        features: new Map<number, FourwingsFeature>(),
-        options,
-      })
+      .readFields(
+        options.fourwings.temporalAggregation ? getCellTemporalAggregated : getCellTimeseries,
+        {
+          features: new Map<number, FourwingsFeature>(),
+          options,
+        }
+      )
       .features.values()
   )
   return assignFourwingsFeaturesByteLength(features)
