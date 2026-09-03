@@ -451,6 +451,9 @@
         "noPolygonData": "crwdns132559:0crwdne132559:0"
       },
       "name": "crwdns132561:0{{min}}crwdne132561:0",
+      "netcdf": {
+        "invalidData": "crwdns138463:0crwdne138463:0"
+      },
       "shapefile": {
         "invalidData": "crwdns132563:0crwdne132563:0",
         "invalidMultipleFiles": "crwdns132565:0crwdne132565:0",
@@ -466,7 +469,8 @@
       "aggregation": "crwdns138421:0crwdne138421:0",
       "band": "crwdns138431:0crwdne138431:0",
       "unit": "crwdns138425:0crwdne138425:0",
-      "unitPlaceholder": "crwdns138427:0crwdne138427:0"
+      "unitPlaceholder": "crwdns138427:0crwdne138427:0",
+      "variable": "crwdns138465:0crwdne138465:0"
     },
     "maxValuesExceededForFiltering": "crwdns132579:0{{max}}crwdne132579:0",
     "maxValuesExceededForFilteringTooltip": "crwdns132581:0{{max}}crwdne132581:0",
@@ -939,6 +943,39 @@
     "topics": "crwdns133385:0crwdne133385:0",
     "useCases": "crwdns133387:0crwdne133387:0",
     "vessels": "crwdns133389:0crwdne133389:0"
+  },
+  "onboarding": {
+    "areaReport": {
+      "description": "crwdns138467:0crwdne138467:0",
+      "title": "crwdns138469:0crwdne138469:0"
+    },
+    "copilotExamples": {
+      "carrierEncounters": "crwdns138471:0crwdne138471:0",
+      "galapagosEffort": "crwdns138473:0crwdne138473:0",
+      "lasPalmasVisits": "crwdns138475:0crwdne138475:0",
+      "loiteringWestAfrica": "crwdns138477:0crwdne138477:0",
+      "nightLightYellowSea": "crwdns138479:0crwdne138479:0",
+      "northSeaTrawling": "crwdns138481:0crwdne138481:0",
+      "peruEffort": "crwdns138483:0crwdne138483:0",
+      "senegalPortVisits": "crwdns138485:0crwdne138485:0",
+      "squidPacific": "crwdns138487:0crwdne138487:0",
+      "trackVessel": "crwdns138489:0crwdne138489:0"
+    },
+    "copilotLabel": "crwdns138491:0crwdne138491:0",
+    "createAccount": "crwdns138493:0crwdne138493:0",
+    "getStarted": "crwdns138495:0crwdne138495:0",
+    "header": "crwdns138497:0crwdne138497:0",
+    "intro": "crwdns138499:0crwdne138499:0",
+    "login": "crwdns138501:0crwdne138501:0",
+    "searchVessel": {
+      "description": "crwdns138503:0crwdne138503:0",
+      "title": "crwdns138505:0crwdne138505:0"
+    },
+    "title": "crwdns138507:0crwdne138507:0",
+    "userGuide": {
+      "description": "crwdns138509:0crwdne138509:0",
+      "title": "crwdns138511:0crwdne138511:0"
+    }
   },
   "portsReport": {
     "seePortReport": "crwdns133391:0crwdne133391:0",
