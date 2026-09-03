@@ -45,7 +45,7 @@ export const plugins = [
       enabled: false,
     },
   }),
-  react(),
+  react(process.env.REACT_COMPILER === '0' ? {} : { compiler: { logDiagnostics: true } }),
   svgr({
     include: ['**/*.svg?react'],
   }),
