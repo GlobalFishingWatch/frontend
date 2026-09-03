@@ -3,7 +3,7 @@ import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import { PATH_BASENAME } from '../loaders.config'
 import { VERSION } from '../version'
 
-import { NO_DATA_VALUE_32, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
+import { NO_DATA_VALUE, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
 export const FOURWINGS_TILE_COLUMNS = 113
@@ -14,7 +14,7 @@ export const baseFourwingsLoaderOptions: ParseFourwingsOptions = {
   rows: [53],
   scale: [SCALE_VALUE],
   offset: [OFFSET_VALUE],
-  noDataValue: [NO_DATA_VALUE_32],
+  noDataValue: [NO_DATA_VALUE],
   bufferedStartDate: 0,
   interval: 'DAY',
   temporalAggregation: false,

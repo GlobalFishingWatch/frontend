@@ -189,6 +189,25 @@ describe('parse-fourwings', () => {
       expect(result[1].properties.values[0]).toEqual([0])
     })
 
+    it('skips a uint64-wrapped negative sentinel the X-empty-value header does not match', () => {
+      // public-o-2-baseline-2000-2018-depthsurf sends `X-empty-value: 18446744073709551615`
+      // (uint64 max) while its cells carry -9999900 as 18446744073699551716. Hand rolled because
+      // the pbf writer refuses to encode either: packed field 1, cellNum 0, the sentinel,
+      // cellNum 1, 500.
+      const buffer = new Uint8Array([
+        0x0a, 0x0e, 0x00, 0xe4, 0xd3, 0x9d, 0xfb, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01, 0x01, 0xf4,
+        0x03,
+      ]).buffer
+
+      const result = parseFourwings(
+        buffer,
+        aggregatedOptions({ scale: [0.001], noDataValue: [Number('18446744073709551615')] })
+      )
+
+      expect(result.map((f) => f.properties.cellNum)).toEqual([1])
+      expect(result[0].properties.values[0][0]).toBeCloseTo(0.5)
+    })
+
     it('applies scale and offset from the response headers', () => {
       const buffer = createAggregatedHeatmapPbfBuffer([{ cellNum: 0, value: 300 }])
 

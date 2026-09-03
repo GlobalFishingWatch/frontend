@@ -8,10 +8,13 @@ import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
 
 import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
-export const NO_DATA_VALUE_32 = 2 ** 32 - 1
-export const NO_DATA_VALUE_64 = 2 ** 64 - 1
+export const NO_DATA_VALUE = 2 ** 32 - 1
 export const SCALE_VALUE = 1
 export const OFFSET_VALUE = 0
+
+export function isFourwingsNoDataValue(value: number, noDataValue = NO_DATA_VALUE): boolean {
+  return value === noDataValue || value > Number.MAX_SAFE_INTEGER
+}
 
 /**
  * Turns a raw 4wings varint into its real value, applying the `X-scale` and `X-offset` response headers.
@@ -125,13 +128,13 @@ export const getCellTimeseries = (
         const numValuesBySubLayer = new Array(sublayersLength).fill(0)
         const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
         const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
-        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE_32
+        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
 
         // Rest of the processing using 'feature' directly instead of features.get(cellNum)
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = pbf.readVarint()
 
-          if (cellValue !== sublayerNoDataValue && cellValue !== NO_DATA_VALUE_64) {
+          if (!isFourwingsNoDataValue(cellValue, sublayerNoDataValue)) {
             if (!feature.properties.values[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
               feature.properties.values[subLayerIndex] = new Array(numCellValues)
@@ -212,9 +215,9 @@ export const getCellTemporalAggregated = (
     } else {
       const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
       const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
-      const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE_32
+      const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
 
-      if (value !== sublayerNoDataValue && value !== NO_DATA_VALUE_64) {
+      if (!isFourwingsNoDataValue(value, sublayerNoDataValue)) {
         let feature = data.features.get(cellNum)
         if (!feature) {
           const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
