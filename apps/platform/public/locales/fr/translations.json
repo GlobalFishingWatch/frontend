@@ -413,7 +413,7 @@
     "SARDelayDisclaimer": "En pause pendant le passage de Sentinel-1A à Sentinel-1C et 1D. <0>En savoir plus.</0>",
     "title": "Jeu de données",
     "typeGridded": "Gridded / Raster",
-    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
@@ -451,6 +451,9 @@
         "noPolygonData": "Aucune donnée de polygone trouvée dans le KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Aucun type de géométrie valide dans les données du fichier de formes",
         "invalidMultipleFiles": "Les fichiers de formes contenant plusieurs composants (noms de fichiers multiples) ne sont pas encore pris en charge",
@@ -466,7 +469,8 @@
       "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
-      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
     },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
