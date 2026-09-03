@@ -72,7 +72,7 @@
   display: block;
   flex: none;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 7 / 3;
   overflow: hidden;
   background-color: var(--color-secondary-blue);
 }
